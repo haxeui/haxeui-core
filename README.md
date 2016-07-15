@@ -21,14 +21,16 @@ In general, using a haxeui `backend` is a simple as just including `haxeui-core`
 Currently haxeui supports the following `backends` (some of which have not yet had an alpha release - indicated by their check-box). Please refer to each `backend` for specific instructions on how to set-up and initialise the host framework (if required).
 
 
-- [x] <a href="https://github.com/haxeui/haxeui-openfl">haxeui-openfl</a>
-- [ ] <a href="https://github.com/haxeui/haxeui-flambe">haxeui-flambe</a>
-- [ ] <a href="https://github.com/haxeui/haxeui-kha">haxeui-kha</a>
-- [ ] <a href="https://github.com/haxeui/haxeui-html5">haxeui-html5</a>
-- [ ] <a href="https://github.com/haxeui/haxeui-pixijs">haxeui-pixijs</a>
-- [ ] <a href="https://github.com/haxeui/haxeui-nme">haxeui-nme</a>
-- [ ] <a href="https://github.com/haxeui/haxeui-luxe">haxeui-luxe</a>
-- [ ] <a href="https://github.com/haxeui/haxeui-hxwidgets">haxeui-hxwidgets</a>
+| Alpha             | Backend Library                   | Dependencies        | Platforms | Native Components |
+| ---------------| -----------------------| ----------------- | ----- | ----- |
+| <p align="center"><img src="https://dl.dropboxusercontent.com/u/26678671/tick.png"></p> | <a href="https://github.com/haxeui/haxeui-openfl">haxeui-openfl</a> | `OpenFL` / `Lime` | `Mobile`, `Desktop`, `Browser` | <p align="center"><img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"></p> |
+| <p align="center"><img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"></p> | <a href="https://github.com/haxeui/haxeui-flambe">haxeui-flambe</a> | `Flambe` | `Mobile`, `Browser` | <p align="center"><img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"></p> |
+| <p align="center"><img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"></p> | <a href="https://github.com/haxeui/haxeui-kha">haxeui-kha</a> | `Kha` | `Mobile`, `Desktop`, `Browser` | <p align="center"><img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"></p> |
+| <p align="center"><img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"></p> | <a href="https://github.com/haxeui/haxeui-html5">haxeui-html5</a> | n/a | `Browser` | <p align="center"><img src="https://dl.dropboxusercontent.com/u/26678671/tick.png"></p> |
+| <p align="center"><img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"></p> | <a href="https://github.com/haxeui/haxeui-pixijs">haxeui-pixijs</a> | `PixiJS` | `Browser` | <p align="center"><img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"></p> |
+| <p align="center"><img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"></p> | <a href="https://github.com/haxeui/haxeui-nme">haxeui-nme</a> | `NME` | `Mobile`, `Desktop`, `Browser` | <p align="center"><img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"></p> |
+| <p align="center"><img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"></p> | <a href="https://github.com/haxeui/haxeui-luxe">haxeui-luxe</a> | `luxe` | `Mobile`, `Desktop`, `Browser` | <p align="center"><img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"></p> |
+| <p align="center"><img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"></p> | <a href="https://github.com/haxeui/haxeui-hxwidgets">haxeui-hxwidgets</a> | `hxWidgets` / `wxWidgets` | `Desktop`` | <p align="center"><img src="https://dl.dropboxusercontent.com/u/26678671/tick.png"></p> |
 
 <h2>Usage</h2>
 Assuming that `haxeui-core` and the `backend` library have been included in your application, initialising the toolkit and using it should be relatively straight forward:
@@ -39,7 +41,7 @@ Toolkit.init();
 
 The `init` function can take an optional `Dynamic` argument that allows certain options to be passed to the host framework. Please refer to each specific backend on how to use these. 
 
-One the toolkit has been initialised components can be added in one of two ways:
+Once the toolkit has been initialised components can be added in one of two ways:
 
 <h3>Adding components using Haxe code</h3>
 Using haxeui components in haxe code is simple and easy:
@@ -73,5 +75,8 @@ _Note: in the alpha release of haxeui-core there is currently no support for bui
 <h2>Addtional resources</h2>
 * <a href="http://haxeui.github.io/haxeui-api/">haxeui-api</a> - The haxeui api docs.
 * <a href="https://github.com/haxeui/haxeui-guides">haxeui-guides</a> - Set of guides to working with haxeui and backends.
+* <a href="https://github.com/haxeui/haxeui-demo">haxeui-demo</a> - Demo application written using haxeui.
 * <a href="https://github.com/haxeui/haxeui-templates">haxeui-templates</a> - Set of templates for IDE's to allow quick project creation.
-* <a href="https://github.com/haxeui/haxeui-bdd">haxeui-bdd</a> - A behaviour driven development engine written specifically for haxeui (uses <a href="https://github.com/haxeui/haxe-bdd">haxe-bdd</a> which is a gherkin/cucumber inspired project)
+* <a href="https://github.com/haxeui/haxeui-bdd">haxeui-bdd</a> - A behaviour driven development engine written specifically for haxeui (uses <a href="https://github.com/haxeui/haxe-bdd">haxe-bdd</a> which is a gherkin/cucumber inspired project).
+* <a href="https://www.youtube.com/watch?v=L8J8qrR2VSg&feature=youtu.be">WWX2016 presentation</a> - A presentation given at WWX2016 regarding haxeui.
+
