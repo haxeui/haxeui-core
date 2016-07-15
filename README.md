@@ -29,7 +29,8 @@ In general, using a haxeui `backend` is a simple as just including `haxeui-core`
 
 Currently haxeui supports the following `backends` (some of which have not yet had an alpha release - indicated by their check-box). Please refer to each `backend` for specific instructions on how to set-up and initialise the host framework (if required).
 
-<center>
+<p align="center">
+
 | Alpha             | Backend Library                   | Dependencies        | Platforms | Native Components |
 | :-------------: | -----------------------| ----------------- | ----- | :---: |
 | <img src="https://dl.dropboxusercontent.com/u/26678671/tick.png"> | <a href="https://github.com/haxeui/haxeui-openfl">haxeui-openfl</a> | `OpenFL` / `Lime` | `Mobile`, `Desktop`, `Browser` | <img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"> |
@@ -40,7 +41,8 @@ Currently haxeui supports the following `backends` (some of which have not yet h
 | <img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"> | <a href="https://github.com/haxeui/haxeui-nme">haxeui-nme</a> | `NME` | `Mobile`, `Desktop`, `Browser` | <img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"> |
 | <img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"> | <a href="https://github.com/haxeui/haxeui-luxe">haxeui-luxe</a> | `luxe` | `Mobile`, `Desktop`, `Browser` | <img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"> |
 | <img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"> | <a href="https://github.com/haxeui/haxeui-hxwidgets">haxeui-hxwidgets</a> | `hxWidgets` / `wxWidgets` | `Desktop` | <img src="https://dl.dropboxusercontent.com/u/26678671/tick.png"> |
-</center>
+
+</p>
 
 <h2>Usage</h2>
 Assuming that `haxeui-core` and the `backend` library have been included in your application, initialising the toolkit and using it should be relatively straight forward:
