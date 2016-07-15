@@ -4,11 +4,20 @@
 
 <h2>haxeui-core</h2>
 
-`haxeui-core` is a users universal entry point into the haxeui framework and allows for the same user interface code (either with markup or via `haxe` source code) to be used to to build a user interface on various platforms using various haxeui `backends`. Below is a general overview of how `haxeui-core` and the various haxeui `backends` fit together.
+`haxeui-core` is a users universal entry point into the haxeui framework and allows for the same user interface code (either with markup or via `haxe` source code) to be used to to build a user interface on various platforms using various haxeui `backends`. Below is a general overview of how `haxeui-core` and the various haxeui `backends` fit together. You can watch a presentation about haxeui to get more of an understanding (given at WWX2016) <a href="https://www.youtube.com/watch?v=L8J8qrR2VSg&feature=youtu.be">here</a>.
 
 <p align="center">
   <img src="https://dl.dropboxusercontent.com/u/26678671/haxeui-overview.png"/>
 </p>
+
+<h2>Installation</h2>
+Eventually all these libs will become haxelibs, however, currently in their alpha form they dont even contain a `haxelib.json` file (for dependencies, etc) and therefore can only be used by downloading the source and using the `haxelib dev` command or by directly using the git versions using the `haxelib git` command (recommended). Eg:
+
+```
+haxelib git haxeui-core https://github.com/haxeui/haxeui-core
+haxelib dev haxeui-openfl path/to/expanded/source/archive
+```
+
 
 <h2>Backends</h2>
 In general, using a haxeui `backend` is a simple as just including `haxeui-core` and the `backend` library into your application, for example:
