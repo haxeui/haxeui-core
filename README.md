@@ -31,15 +31,15 @@ Currently haxeui supports the following `backends` (some of which have not yet h
 
 
 | Alpha             | Backend Library                   | Dependencies        | Platforms | Native Components |
-| ---------------| -----------------------| ----------------- | ----- | ----- |
-| <center><img src="https://dl.dropboxusercontent.com/u/26678671/tick.png"></center> | <a href="https://github.com/haxeui/haxeui-openfl">haxeui-openfl</a> | `OpenFL` / `Lime` | `Mobile`, `Desktop`, `Browser` | <center><img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"></center> |
-| <p align="center"><img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"></p> | <a href="https://github.com/haxeui/haxeui-flambe">haxeui-flambe</a> | `Flambe` | `Mobile`, `Browser` | <p align="center"><img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"></p> |
-| <p align="center"><img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"></p> | <a href="https://github.com/haxeui/haxeui-kha">haxeui-kha</a> | `Kha` | `Mobile`, `Desktop`, `Browser` | <p align="center"><img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"></p> |
-| <p align="center"><img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"></p> | <a href="https://github.com/haxeui/haxeui-html5">haxeui-html5</a> | n/a | `Browser` | <p align="center"><img src="https://dl.dropboxusercontent.com/u/26678671/tick.png"></p> |
-| <p align="center"><img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"></p> | <a href="https://github.com/haxeui/haxeui-pixijs">haxeui-pixijs</a> | `PixiJS` | `Browser` | <p align="center"><img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"></p> |
-| <p align="center"><img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"></p> | <a href="https://github.com/haxeui/haxeui-nme">haxeui-nme</a> | `NME` | `Mobile`, `Desktop`, `Browser` | <p align="center"><img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"></p> |
-| <p align="center"><img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"></p> | <a href="https://github.com/haxeui/haxeui-luxe">haxeui-luxe</a> | `luxe` | `Mobile`, `Desktop`, `Browser` | <p align="center"><img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"></p> |
-| <p align="center"><img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"></p> | <a href="https://github.com/haxeui/haxeui-hxwidgets">haxeui-hxwidgets</a> | `hxWidgets` / `wxWidgets` | `Desktop` | <p align="center"><img src="https://dl.dropboxusercontent.com/u/26678671/tick.png"></p> |
+| :-------------: | -----------------------| ----------------- | ----- | :---: |
+| <img src="https://dl.dropboxusercontent.com/u/26678671/tick.png"> | <a href="https://github.com/haxeui/haxeui-openfl">haxeui-openfl</a> | `OpenFL` / `Lime` | `Mobile`, `Desktop`, `Browser` | <img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"> |
+| <img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"> | <a href="https://github.com/haxeui/haxeui-flambe">haxeui-flambe</a> | `Flambe` | `Mobile`, `Browser` | <img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"> |
+| <img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"> | <a href="https://github.com/haxeui/haxeui-kha">haxeui-kha</a> | `Kha` | `Mobile`, `Desktop`, `Browser` | <img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"> |
+| <img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"> | <a href="https://github.com/haxeui/haxeui-html5">haxeui-html5</a> | n/a | `Browser` | <img src="https://dl.dropboxusercontent.com/u/26678671/tick.png"> |
+| <img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"> | <a href="https://github.com/haxeui/haxeui-pixijs">haxeui-pixijs</a> | `PixiJS` | `Browser` | <img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"> |
+| <img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"> | <a href="https://github.com/haxeui/haxeui-nme">haxeui-nme</a> | `NME` | `Mobile`, `Desktop`, `Browser` | <p align="center"><img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"></p> |
+| <img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"> | <a href="https://github.com/haxeui/haxeui-luxe">haxeui-luxe</a> | `luxe` | `Mobile`, `Desktop`, `Browser` | <img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"> |
+| <img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"> | <a href="https://github.com/haxeui/haxeui-hxwidgets">haxeui-hxwidgets</a> | `hxWidgets` / `wxWidgets` | `Desktop` | <img src="https://dl.dropboxusercontent.com/u/26678671/tick.png"> |
 
 <h2>Usage</h2>
 Assuming that `haxeui-core` and the `backend` library have been included in your application, initialising the toolkit and using it should be relatively straight forward:
