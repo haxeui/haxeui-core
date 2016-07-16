@@ -2,6 +2,8 @@
   <img src="https://dl.dropboxusercontent.com/u/26678671/haxeui2-warning.png"/>
 </p>
 
+<a href="https://www.patreon.com/haxeui"><img src="https://dl.dropboxusercontent.com/u/26678671/patreon_button.png" title="Support this project on Patreon!"/></a>
+
 <h2>haxeui-core</h2>
 
 `haxeui-core` is a users universal entry point into the HaxeUI framework and allows for the same user interface code (either with markup or via `haxe` source code) to be used to build a user interface on various platforms using various HaxeUI `backends`. Below is a general overview of how `haxeui-core` and the various HaxeUI `backends` fit together. You can watch a presentation (given at WWX2016) about HaxeUI to get more of an understanding <a href="https://www.youtube.com/watch?v=L8J8qrR2VSg&feature=youtu.be">here</a>.
