@@ -240,10 +240,13 @@ class ModuleMacros {
                         } else {
                             var file:String = subDir;
                             if (StringTools.startsWith(fileName, "module.")) {
-                                var module:Module = ModuleParser.get(MacroHelpers.extension(fileName)).parse(File.getContent(file));
-                                module.validate();
-                                _modules.push(module);
-                                found = true; // 1 per classpath entry
+                                var moduleParser = ModuleParser.get(MacroHelpers.extension(fileName));
+                                if (moduleParser != null) {
+                                    var module:Module = moduleParser.parse(File.getContent(file));
+                                    module.validate();
+                                    _modules.push(module);
+                                    found = true; // 1 per classpath entry
+                                }
                             }
                         }
                     }

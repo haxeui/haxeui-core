@@ -15,7 +15,7 @@ class ModuleParser {
 
         var cls:Class<ModuleParser> = _parsers.get(extension);
         if (cls == null) {
-            throw 'No module parser found for "${extension}"';
+            return null;
         }
 
         var instance:ModuleParser = Type.createInstance(cls, []);
