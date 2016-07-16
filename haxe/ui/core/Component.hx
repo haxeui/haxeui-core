@@ -1516,7 +1516,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
 
         _layoutInvalidating = false;
 
-        if (_layoutReinvalidation == true) { 
+        if (_layoutReinvalidation == true) {
             _layoutReinvalidation = false;
             invalidateLayout();
         }
