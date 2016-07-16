@@ -5,15 +5,15 @@ package haxe.ui.containers.dialogs;
 **/
 @:dox(icon="/icons/application-dialog.png")
 class DialogButton {
-    public static var OK:Int = 0x000001;
-    public static var CANCEL:Int = 0x000002;
-    public static var CLOSE:Int = 0x000004;
-    public static var CONFIRM:Int = 0x000008;
-    public static var YES:Int = 0x000010;
-    public static var NO:Int = 0x000020;
+    public inline static var OK:Int = 0x000001;
+    public inline static var CANCEL:Int = 0x000002;
+    public inline static var CLOSE:Int = 0x000004;
+    public inline static var CONFIRM:Int = 0x000008;
+    public inline static var YES:Int = 0x000010;
+    public inline static var NO:Int = 0x000020;
 
-    public static var YES_NO:Int = 0x000010 | 0x000020;
-    public static var YES_NO_CANCEL:Int = 0x000010 | 0x000020 | 0x000002;
+    public inline static var YES_NO:Int = 0x000010 | 0x000020;
+    public inline static var YES_NO_CANCEL:Int = 0x000010 | 0x000020 | 0x000002;
 
     /**
      The string to use as the buttons text
