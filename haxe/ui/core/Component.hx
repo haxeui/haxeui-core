@@ -1493,6 +1493,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     // Invalidation
     //***********************************************************************************************************
     private var _layoutInvalidating:Bool = false;
+    private var _layoutReinvalidation:Bool = false;
     /**
      Invalidate this components layout, may result in multiple calls to `invalidateDisplay` and `invalidateLayout` of its children
     **/
@@ -1503,6 +1504,9 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         }
 
         if (_layoutInvalidating == true) {
+            // means that if a request to invalidate comes through and were busy
+            // (like async resources), we make note to invalidate when were done
+            _layoutReinvalidation = true;
             return;
         }
 
@@ -1512,6 +1516,10 @@ class Component extends ComponentBase implements IComponentBase implements IClon
 
         _layoutInvalidating = false;
 
+        if (_layoutReinvalidation == true) { 
+            _layoutReinvalidation = false;
+            invalidateLayout();
+        }
     }
 
     private var _displayingInvalidating:Bool = false;
