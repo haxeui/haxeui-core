@@ -11,7 +11,7 @@ class Backend {
 
     public function validate() {
         if (classEntries.length == 0) {
-            trace("WARNING: no class entries found in backend config");
+            //trace("WARNING: no class entries found in backend config");
         }
     }
 
