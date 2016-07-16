@@ -12,39 +12,39 @@ import haxe.ui.core.Behaviour;
 /**
  Encapsulates shared functionality of both vertical and horizontal scrollbar components
 **/
-@:dox(icon="/icons/ui-scroll-bar-horizontal.png") 
+@:dox(icon="/icons/ui-scroll-bar-horizontal.png")
 class Scroll extends InteractiveComponent implements IClonable<Scroll> {
-	private var _incButton:Button;
-	private var _deincButton:Button;
-	private var _thumb:Button;
-	
-	public function new() {
-		super();
-		addClass("scroll");
-		allowFocus = false;
-	}
-	
-	//***********************************************************************************************************
-	// Internals
-	//***********************************************************************************************************
-    private override function createDefaults():Void {
-		_defaultBehaviours = [
-			"min" => new ScrollDefaultMinBehaviour(this),
-			"max" => new ScrollDefaultMaxBehaviour(this),
-			"pos" => new ScrollDefaultPosBehaviour(this),
-			"pageSize" => new ScrollDefaultPageSizeBehaviour(this)
-		];
+    private var _incButton:Button;
+    private var _deincButton:Button;
+    private var _thumb:Button;
+
+    public function new() {
+        super();
+        addClass("scroll");
+        allowFocus = false;
     }
-    
+
+    //***********************************************************************************************************
+    // Internals
+    //***********************************************************************************************************
+    private override function createDefaults():Void {
+        _defaultBehaviours = [
+            "min" => new ScrollDefaultMinBehaviour(this),
+            "max" => new ScrollDefaultMaxBehaviour(this),
+            "pos" => new ScrollDefaultPosBehaviour(this),
+            "pageSize" => new ScrollDefaultPageSizeBehaviour(this)
+        ];
+    }
+
     private override function create():Void {
         super.create();
-        
-		behaviourSet("min", _min);
-		behaviourSet("max", _max);
-		behaviourSet("pos", _pos);
-		behaviourSet("pageSize", _pageSize);
+
+        behaviourSet("min", _min);
+        behaviourSet("max", _max);
+        behaviourSet("pos", _pos);
+        behaviourSet("pageSize", _pageSize);
     }
-    
+
     private override function createChildren():Void {
         if (componentWidth <= 0) {
             componentWidth = 100;
@@ -52,7 +52,7 @@ class Scroll extends InteractiveComponent implements IClonable<Scroll> {
         if (componentHeight <= 0) {
             componentHeight = 100;
         }
-        
+
         if (_deincButton == null) {
             _deincButton = new Button();
             _deincButton.scriptAccess = false;
@@ -65,7 +65,7 @@ class Scroll extends InteractiveComponent implements IClonable<Scroll> {
             _deincButton.registerEvent(MouseEvent.CLICK, _onDeinc);
             addComponent(_deincButton);
         }
-        
+
         if (_incButton == null) {
             _incButton = new Button();
             _incButton.scriptAccess = false;
@@ -78,7 +78,7 @@ class Scroll extends InteractiveComponent implements IClonable<Scroll> {
             _incButton.registerEvent(MouseEvent.CLICK, _onInc);
             addComponent(_incButton);
         }
-		
+
         if (_thumb == null) {
             _thumb = new Button();
             _thumb.scriptAccess = false;
@@ -91,199 +91,199 @@ class Scroll extends InteractiveComponent implements IClonable<Scroll> {
             _thumb.registerEvent(MouseEvent.MOUSE_DOWN, _onThumbMouseDown);
             addComponent(_thumb);
         }
-        
-		registerEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
+
+        registerEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
     }
-    
-	//***********************************************************************************************************
-	// Overrides
-	//***********************************************************************************************************
-	private override function get_value():Variant {
-		return pos;
-	}
-	
-	private override function set_value(value:Variant):Variant {
-		pos = value;
-		return value;
-	}
-	
-	//***********************************************************************************************************
-	// Public API
-	//***********************************************************************************************************
-	private var _pos:Float = 0;
+
+    //***********************************************************************************************************
+    // Overrides
+    //***********************************************************************************************************
+    private override function get_value():Variant {
+        return pos;
+    }
+
+    private override function set_value(value:Variant):Variant {
+        pos = value;
+        return value;
+    }
+
+    //***********************************************************************************************************
+    // Public API
+    //***********************************************************************************************************
+    private var _pos:Float = 0;
     /**
      The current value of the scrollbar
     **/
-    @:dox(group="Value related properties and methods") 
-	@bindable @clonable public var pos(get, set):Float;
-	private function get_pos():Float {
-		return _pos;
-	}
-	private function set_pos(value:Float):Float {
-		if (_ready) { // only enforce constraints when ready as xml attrs can come in in any order
-			if (value < _min) {
-				value = _min;
-			}
-			if (value > _max) {
-				value = _max;
-			}
-		}
-		
-		if (value != _pos) {
-			_pos = value;
-            behaviourSet("pos", value);
-			var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
-			dispatch(changeEvent);
-			handleBindings(["value"]);
-		}
-		return value;
-	}
-	
-	private function animatePos(value:Float) {
-		if (animatable == false) {
-			pos = value;
-			return;
-		}
-		
-		var animationId:String = getClassProperty("animation.pos");
-		if (animationId == null) {
-			pos = value;
-			return;
-		}
+    @:dox(group="Value related properties and methods")
+    @bindable @clonable public var pos(get, set):Float;
+    private function get_pos():Float {
+        return _pos;
+    }
+    private function set_pos(value:Float):Float {
+        if (_ready) { // only enforce constraints when ready as xml attrs can come in in any order
+            if (value < _min) {
+                value = _min;
+            }
+            if (value > _max) {
+                value = _max;
+            }
+        }
 
-		AnimationManager.instance.run(animationId, ["target" => this], ["pos" => value]);
-	}
-	
-	private var _min:Float = 0;
+        if (value != _pos) {
+            _pos = value;
+            behaviourSet("pos", value);
+            var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
+            dispatch(changeEvent);
+            handleBindings(["value"]);
+        }
+        return value;
+    }
+
+    private function animatePos(value:Float) {
+        if (animatable == false) {
+            pos = value;
+            return;
+        }
+
+        var animationId:String = getClassProperty("animation.pos");
+        if (animationId == null) {
+            pos = value;
+            return;
+        }
+
+        AnimationManager.instance.run(animationId, ["target" => this], ["pos" => value]);
+    }
+
+    private var _min:Float = 0;
     /**
      The minimum value the scrollbar can hold
     **/
-    @:dox(group="Value related properties and methods") 
-	@bindable @clonable public var min(get, set):Float;
-	private function get_min():Float {
-		return _min;
-	}
-	private function set_min(value:Float):Float {
+    @:dox(group="Value related properties and methods")
+    @bindable @clonable public var min(get, set):Float;
+    private function get_min():Float {
+        return _min;
+    }
+    private function set_min(value:Float):Float {
         if (value != _min) {
             _min = value;
             if (_pos < _min) {
                 _pos = _min;
             }
-    		behaviourSet("min", value);
+            behaviourSet("min", value);
         }
-		return value;
-	}
-	
-	private var _max:Float = 100;
+        return value;
+    }
+
+    private var _max:Float = 100;
     /**
      The maximum value the scrollbar can hold
     **/
-    @:dox(group="Value related properties and methods") 
-	@bindable @clonable public var max(get, set):Float;
-	private function get_max():Float {
-		return _max;
-	}
-	private function set_max(value:Float):Float {
+    @:dox(group="Value related properties and methods")
+    @bindable @clonable public var max(get, set):Float;
+    private function get_max():Float {
+        return _max;
+    }
+    private function set_max(value:Float):Float {
         if (value != _max) {
             _max = value;
             if (_pos > _max) {
                 _pos = _max;
             }
-    		behaviourSet("max", value);
+            behaviourSet("max", value);
         }
         return value;
-	}
-	
-	private var _pageSize:Float = 0;
+    }
+
+    private var _pageSize:Float = 0;
     /**
      How big a page is considered to be in this scrollbar (affects the size of the thumb)
     **/
-    @:dox(group="Value related properties and methods") 
-	@bindable @clonable public var pageSize(get, set):Float;
-	private function get_pageSize():Float {
-		return _pageSize;
-	}
-	private function set_pageSize(value:Float):Float {
-		if (value == _pageSize) {
-			return value;
-		}
+    @:dox(group="Value related properties and methods")
+    @bindable @clonable public var pageSize(get, set):Float;
+    private function get_pageSize():Float {
+        return _pageSize;
+    }
+    private function set_pageSize(value:Float):Float {
+        if (value == _pageSize) {
+            return value;
+        }
 
-		_pageSize = value;
-		behaviourSet("pageSize", value);
-		return value;
-	}
-	
-	private var _incrementSize:Float = 20;
+        _pageSize = value;
+        behaviourSet("pageSize", value);
+        return value;
+    }
+
+    private var _incrementSize:Float = 20;
     /**
      What value to add to or subtract from the scrollbars value when using the up/down or left/right buttons
     **/
-    @:dox(group="Value related properties and methods") 
-	@bindable @clonable public var incrementSize(get, set):Float;
-	private function get_incrementSize():Float {
-		return _incrementSize;
-	}
-	private function set_incrementSize(value:Float):Float {
-		if (_incrementSize == value) {
-			return value;
-		}
-		_incrementSize = value;
-		return value;
-	}
+    @:dox(group="Value related properties and methods")
+    @bindable @clonable public var incrementSize(get, set):Float;
+    private function get_incrementSize():Float {
+        return _incrementSize;
+    }
+    private function set_incrementSize(value:Float):Float {
+        if (_incrementSize == value) {
+            return value;
+        }
+        _incrementSize = value;
+        return value;
+    }
 
-	//***********************************************************************************************************
-	// Events
-	//***********************************************************************************************************
-	var _mouseDownOffset:Float = -1;
-	private function _onDeinc(event:MouseEvent) {
-		deincrementValue();
-	}
-	
-	private function _onInc(event:MouseEvent) {
-		incrementValue();
-	}
-	
-	private function _onThumbMouseDown(event:MouseEvent) {
-		screen.registerEvent(MouseEvent.MOUSE_UP, _onScreenMouseUp);
-		screen.registerEvent(MouseEvent.MOUSE_MOVE, _onScreenMouseMove);
-	}
-	
-	private function _onScreenMouseMove(event:MouseEvent) {
-	}	
+    //***********************************************************************************************************
+    // Events
+    //***********************************************************************************************************
+    var _mouseDownOffset:Float = -1;
+    private function _onDeinc(event:MouseEvent) {
+        deincrementValue();
+    }
 
-	private function _onScreenMouseUp(event:MouseEvent) {
-		_mouseDownOffset = -1;
-		screen.unregisterEvent(MouseEvent.MOUSE_UP, _onScreenMouseUp);
-		screen.unregisterEvent(MouseEvent.MOUSE_MOVE, _onScreenMouseMove);
-	}
-	
-	private function _onMouseDown(event:MouseEvent) {
+    private function _onInc(event:MouseEvent) {
+        incrementValue();
+    }
+
+    private function _onThumbMouseDown(event:MouseEvent) {
+        screen.registerEvent(MouseEvent.MOUSE_UP, _onScreenMouseUp);
+        screen.registerEvent(MouseEvent.MOUSE_MOVE, _onScreenMouseMove);
+    }
+
+    private function _onScreenMouseMove(event:MouseEvent) {
+    }
+
+    private function _onScreenMouseUp(event:MouseEvent) {
+        _mouseDownOffset = -1;
+        screen.unregisterEvent(MouseEvent.MOUSE_UP, _onScreenMouseUp);
+        screen.unregisterEvent(MouseEvent.MOUSE_MOVE, _onScreenMouseMove);
+    }
+
+    private function _onMouseDown(event:MouseEvent) {
         if (event.screenY < _thumb.screenTop) {
             animatePos(pos - pageSize);
         } else if (event.screenY > _thumb.screenTop + _thumb.componentHeight) {
             animatePos(pos + pageSize);
         }
-	}
-	
-	//******************************************************************************************
-	// Helpers
-	//******************************************************************************************
+    }
+
+    //******************************************************************************************
+    // Helpers
+    //******************************************************************************************
     /**
      Deincrement the scrollbars value
     **/
-    @:dox(group="Value related properties and methods") 
-	public function deincrementValue():Void {
-		//pos -= _incrementSize;
-		animatePos(pos - _incrementSize);
-	}
-	
+    @:dox(group="Value related properties and methods")
+    public function deincrementValue():Void {
+        //pos -= _incrementSize;
+        animatePos(pos - _incrementSize);
+    }
+
     /**
      Increment the scrollbars value
     **/
-    @:dox(group="Value related properties and methods") 
-	public function incrementValue():Void {
-		//pos += _incrementSize;
-		animatePos(pos + _incrementSize);
-	}
+    @:dox(group="Value related properties and methods")
+    public function incrementValue():Void {
+        //pos += _incrementSize;
+        animatePos(pos + _incrementSize);
+    }
 }
 
 //***********************************************************************************************************
@@ -292,36 +292,36 @@ class Scroll extends InteractiveComponent implements IClonable<Scroll> {
 @:dox(hide)
 @:access(haxe.ui.components.Scroll)
 class ScrollDefaultMinBehaviour extends Behaviour {
-	public override function set(value:Variant) {
-		var scroll:Scroll = cast _component;
+    public override function set(value:Variant) {
+        var scroll:Scroll = cast _component;
         scroll.invalidateLayout();
-	}
+    }
 }
 
 @:dox(hide)
 @:access(haxe.ui.components.Scroll)
 class ScrollDefaultMaxBehaviour extends Behaviour {
-	public override function set(value:Variant) {
-		var scroll:Scroll = cast _component;
+    public override function set(value:Variant) {
+        var scroll:Scroll = cast _component;
         scroll.invalidateLayout();
-	}
+    }
 }
 
 @:dox(hide)
 @:access(haxe.ui.components.Scroll)
 class ScrollDefaultPosBehaviour extends Behaviour {
-	public override function set(value:Variant) {
-		var scroll:Scroll = cast _component;
+    public override function set(value:Variant) {
+        var scroll:Scroll = cast _component;
         scroll.invalidateLayout();
-	}
+    }
 }
 
 @:dox(hide)
 @:access(haxe.ui.components.Scroll)
 class ScrollDefaultPageSizeBehaviour extends Behaviour {
-	public override function set(value:Variant) {
-		var scroll:Scroll = cast _component;
+    public override function set(value:Variant) {
+        var scroll:Scroll = cast _component;
         scroll.invalidateLayout();
-	}
+    }
 }
 

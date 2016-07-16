@@ -3,7 +3,7 @@ package haxe.ui.containers.dialogs;
 /**
  Holds information about a `Button` to create in a `Dialog` button bar
 **/
-@:dox(icon="/icons/application-dialog.png") 
+@:dox(icon="/icons/application-dialog.png")
 class DialogButton {
     public static var OK:Int = 0x000001;
     public static var CANCEL:Int = 0x000002;
@@ -11,10 +11,10 @@ class DialogButton {
     public static var CONFIRM:Int = 0x000008;
     public static var YES:Int = 0x000010;
     public static var NO:Int = 0x000020;
-    
+
     public static var YES_NO:Int = 0x000010 | 0x000020;
     public static var YES_NO_CANCEL:Int = 0x000010 | 0x000020 | 0x000002;
-    
+
     /**
      The string to use as the buttons text
     **/
@@ -41,6 +41,6 @@ class DialogButton {
     public var closesDialog:Bool = true;
 
     public function new() {
-        
+
     }
 }

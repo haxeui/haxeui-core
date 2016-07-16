@@ -5,62 +5,62 @@ import haxe.ui.styles.Style;
 import haxe.ui.util.Size;
 
 class HorizontalLayout extends DefaultLayout {
-	public function new() {
-		super();
-	}
+    public function new() {
+        super();
+    }
 
     private override function repositionChildren() {
         var xpos = paddingLeft;
         var usableSize:Size = component.layout.usableSize;
-        
+
         for (child in component.childComponents) {
             if (child.includeInLayout == false) {
                 continue;
             }
-            
+
             var ypos:Float = 0;
-            
-			switch (verticalAlign(child)) {
-				case "center":
-					ypos = ((component.componentHeight / 2) - (child.componentHeight / 2)) + marginTop(child) - marginBottom(child);
-//					ypos = ((usableSize.height / 2) - (child.componentHeight / 2)) + marginTop(child) - marginBottom(child);
-				case "bottom":
+
+            switch (verticalAlign(child)) {
+                case "center":
+                    ypos = ((component.componentHeight / 2) - (child.componentHeight / 2)) + marginTop(child) - marginBottom(child);
+//                  ypos = ((usableSize.height / 2) - (child.componentHeight / 2)) + marginTop(child) - marginBottom(child);
+                case "bottom":
                     if (child.componentHeight < component.componentHeight) {
-//					    ypos = component.componentHeight - (child.componentHeight + paddingBottom + marginTop(child) - marginBottom(child));
-					    ypos = usableSize.height - (child.componentHeight + paddingBottom + marginTop(child) - marginBottom(child));
+//                      ypos = component.componentHeight - (child.componentHeight + paddingBottom + marginTop(child) - marginBottom(child));
+                        ypos = usableSize.height - (child.componentHeight + paddingBottom + marginTop(child) - marginBottom(child));
                     }
                 default:
                     ypos = paddingTop + marginTop(child) - marginBottom(child);
-			}
+            }
 
             child.moveComponent(xpos + marginLeft(child) - marginRight(child), ypos);
             xpos += child.componentWidth + horizontalSpacing;
         }
     }
-    
+
     private override function get_usableSize():Size {
         var size:Size = super.get_usableSize();
-        
+
         var visibleChildren = component.childComponents.length;
-		for (child in component.childComponents) {
-			if (child.includeInLayout == false) {
+        for (child in component.childComponents) {
+            if (child.includeInLayout == false) {
                 visibleChildren--;
-				continue;
-			}
-			
-			if (child.componentWidth > 0 && child.percentWidth == null) { // means its a fixed width, ie, not a % sized control
-				size.width -= child.componentWidth + marginLeft(child) + marginRight(child);
-			}
-		}
-        
-		if (visibleChildren > 1) {
-			size.width -= horizontalSpacing * (visibleChildren - 1);
-		}
-        
-		if (size.width < 0) {
-			size.width = 0;
-		}
-        
+                continue;
+            }
+
+            if (child.componentWidth > 0 && child.percentWidth == null) { // means its a fixed width, ie, not a % sized control
+                size.width -= child.componentWidth + marginLeft(child) + marginRight(child);
+            }
+        }
+
+        if (visibleChildren > 1) {
+            size.width -= horizontalSpacing * (visibleChildren - 1);
+        }
+
+        if (size.width < 0) {
+            size.width = 0;
+        }
+
         return size;
     }
 }

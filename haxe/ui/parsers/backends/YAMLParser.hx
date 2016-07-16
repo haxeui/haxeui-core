@@ -5,12 +5,12 @@ import yaml.Parser;
 import yaml.Yaml;
 
 class YAMLParser extends ObjectParser {
-	public function new() {
-		super();
-	}
-	
-	public override function parse(data:String):Backend {
-		return fromObject(Yaml.parse(data, Parser.options().useObjects()));
-	}
+    public function new() {
+        super();
+    }
+
+    public override function parse(data:String):Backend {
+        return fromObject(Yaml.parse(data, Parser.options().useObjects()));
+    }
 }
 #end

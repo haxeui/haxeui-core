@@ -10,7 +10,7 @@ class DropShadow extends Filter {
     public var strength:Float;
     public var quality:Int;
     public var inner:Bool;
-    
+
     public function new() {
         super();
     }

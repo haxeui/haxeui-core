@@ -8,11 +8,11 @@ class DialogOptions {
     public static var ICON_INFO:Int = 0x000200;
     public static var ICON_WARNING:Int = 0x000400;
     public static var ICON_QUESTION:Int = 0x000800;
-    
+
     /**
      Array of button definitions in this `Dialog`
-	 
-	 _Note: A button definition is different from a button instance_
+
+     _Note: A button definition is different from a button instance_
     **/
     public var buttons:Array<DialogButton> = new Array<DialogButton>();
     /**
@@ -21,39 +21,39 @@ class DialogOptions {
     public var title:String;
     /**
      The predefined icon of this dialog, values can be:
-	 
-		- `ICON_ERROR` - Error icon
-		
-		- `ICON_INFO` - Info icon
-		
-		- `ICON WARNING` - Warning icon
-		
-		- `ICON_QUESTION` - Question icon
+
+        - `ICON_ERROR` - Error icon
+
+        - `ICON_INFO` - Info icon
+
+        - `ICON WARNING` - Warning icon
+
+        - `ICON_QUESTION` - Question icon
     **/
     public var icon:Int;
     /**
      Any additional styles names to apply to this dialog
     **/
     public var styleNames:String;
-    
+
     public function new() {
-        
+
     }
-    
+
     /**
      Adds a predefined button definition, values can be:
-	 
-		- `DialogButton.OK`
-		
-		- `DialogButton.CANCEL`
-		
-		- `DialogButton.CLOSE`
-		
-		- `DialogButton.CONFIRM`
-		
-		- `DialogButton.YES`
-		
-		- `DialogButton.NO`		
+
+        - `DialogButton.OK`
+
+        - `DialogButton.CANCEL`
+
+        - `DialogButton.CLOSE`
+
+        - `DialogButton.CONFIRM`
+
+        - `DialogButton.YES`
+
+        - `DialogButton.NO`
     **/
     public function addStandardButton(button:Int) {
         switch (button) {
@@ -93,10 +93,10 @@ class DialogOptions {
                 b.id = '${DialogButton.NO}';
                 b.styleNames = "dialog-button dialog-button-no";
                 addButton(b);
-            default:    
+            default:
         }
     }
-    
+
     /**
      Adds a button definition
     **/

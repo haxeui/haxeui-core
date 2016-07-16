@@ -1,41 +1,41 @@
 package haxe.ui.assets;
 
 class AssetNamePlugin extends AssetPlugin {
-	public var startsWith:String;
-	public var prefix:String;
+    public var startsWith:String;
+    public var prefix:String;
     public var replaceWith:String;
-	public var removeExtension:Bool;
-	public var findChars:String;
-    
-	public function new() {
-		super();
-	}	
-	
-	public override function setProperty(name:String, value:String) {
-		switch (name) {
-			case "startsWith":
-				startsWith = value;
-			case "prefix":
-				prefix = value;
-			case "replaceWith":
-				replaceWith = value;
+    public var removeExtension:Bool;
+    public var findChars:String;
+
+    public function new() {
+        super();
+    }
+
+    public override function setProperty(name:String, value:String) {
+        switch (name) {
+            case "startsWith":
+                startsWith = value;
+            case "prefix":
+                prefix = value;
+            case "replaceWith":
+                replaceWith = value;
             case "removeExtension":
                 removeExtension = (value == "true");
             case "findChars":
                 findChars = value;
-			default:
-				super.setProperty(name, value);
-		}
-	}
-	
-	public override function invoke(asset:Dynamic):Dynamic {
+            default:
+                super.setProperty(name, value);
+        }
+    }
+
+    public override function invoke(asset:Dynamic):Dynamic {
         if (Std.is(asset, String)) {
             var stringAsset:String = asset;
             var match:Bool = true;
             if (startsWith != null) {
                 match = StringTools.startsWith(stringAsset, startsWith);
             }
-            
+
             if (match == true) {
                 if (prefix != null) {
                     asset = prefix + stringAsset;
@@ -48,7 +48,7 @@ class AssetNamePlugin extends AssetPlugin {
                         }
                     }
                 }
-                
+
                 stringAsset = asset;
                 if (removeExtension == true) {
                     var n = stringAsset.lastIndexOf(".");
@@ -58,6 +58,6 @@ class AssetNamePlugin extends AssetPlugin {
                 }
             }
         }
-		return asset;
-	}
+        return asset;
+    }
 }

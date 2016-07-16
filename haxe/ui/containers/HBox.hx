@@ -7,10 +7,10 @@ import haxe.ui.core.IClonable;
 /**
  A `Box` component that lays its children out horizontally
 **/
-@:dox(icon="/icons/ui-split-panel.png") 
+@:dox(icon="/icons/ui-split-panel.png")
 class HBox extends Box implements IClonable<HBox> {
-	public function new() {
-		super();
-		layout = new HorizontalLayout();
-	}
+    public function new() {
+        super();
+        layout = new HorizontalLayout();
+    }
 }

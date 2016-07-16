@@ -1,8 +1,8 @@
 package haxe.ui.util.filters;
 
 class FilterParser {
-	private static var filterParamDefaults:Map<String, Array<Dynamic>> = null;
-    
+    private static var filterParamDefaults:Map<String, Array<Dynamic>> = null;
+
     public static function parseFilter(filterDetails:Array<Dynamic>):Filter {
         var filter:Filter = null;
         if (filterDetails[0] == "drop-shadow") {
@@ -12,20 +12,20 @@ class FilterParser {
         }
         return filter;
     }
-    
+
     public static function parseDropShadow(filterDetails:Array<Dynamic>):DropShadow {
-		if (filterDetails == null || filterDetails.length == 0) {
-			return null;
-		}
-        
+        if (filterDetails == null || filterDetails.length == 0) {
+            return null;
+        }
+
         var copy:Array<Dynamic> = filterDetails.copy();
         buildDefaults();
-        
-		var filterName = copy[0];
-		copy.remove(filterName);
-		
-		copy = copyFilterDefaults(filterName, copy);
-        
+
+        var filterName = copy[0];
+        copy.remove(filterName);
+
+        copy = copyFilterDefaults(filterName, copy);
+
         var dropShadow:DropShadow = new DropShadow();
         dropShadow.distance = copy[0];
         dropShadow.angle = copy[1];
@@ -38,56 +38,56 @@ class FilterParser {
         dropShadow.inner = copy[8];
         return dropShadow;
     }
-    
+
     public static function parseBlur(filterDetails:Array<Dynamic>):Blur {
-		if (filterDetails == null || filterDetails.length == 0) {
-			return null;
-		}
-        
+        if (filterDetails == null || filterDetails.length == 0) {
+            return null;
+        }
+
         var copy:Array<Dynamic> = filterDetails.copy();
         buildDefaults();
-        
-		var filterName = copy[0];
-		copy.remove(filterName);
-		
-		copy = copyFilterDefaults(filterName, copy);
-        
+
+        var filterName = copy[0];
+        copy.remove(filterName);
+
+        copy = copyFilterDefaults(filterName, copy);
+
         var blur:Blur = new Blur();
         blur.amount = copy[0];
         return blur;
     }
-    
-	private static function copyFilterDefaults(filterName:String, params:Array<Dynamic>):Array<Dynamic> {
-		var copy:Array<Dynamic> = new Array<Dynamic>();
-		
-		var defaultParams:Array<Dynamic> = filterParamDefaults[filterName];
-		if (defaultParams != null) {
-			for (p in defaultParams) {
-				copy.push(p);
-			}
-		}
-		if (params != null) {
-			var n:Int = 0;
-			for (p in params) {
-				copy[n] = p;
-				n++;
-			}
-		}
-		
-		return copy;
-	}
-	
-	
-	private static function buildDefaults():Void {
-		if (filterParamDefaults != null) {
-			return;
-		}
-		
-		filterParamDefaults = new Map<String, Array<Dynamic>>();
-		filterParamDefaults["drop-shadow"] = new Array<Dynamic>();
-		filterParamDefaults["drop-shadow"] = filterParamDefaults["drop-shadow"].concat([4, 45, 0, 1, 4, 4, 1, 1, false, false, false]);
-        
-		filterParamDefaults["blur"] = new Array<Dynamic>();
-		filterParamDefaults["blur"] = filterParamDefaults["blur"].concat([1]);
-	}
+
+    private static function copyFilterDefaults(filterName:String, params:Array<Dynamic>):Array<Dynamic> {
+        var copy:Array<Dynamic> = new Array<Dynamic>();
+
+        var defaultParams:Array<Dynamic> = filterParamDefaults[filterName];
+        if (defaultParams != null) {
+            for (p in defaultParams) {
+                copy.push(p);
+            }
+        }
+        if (params != null) {
+            var n:Int = 0;
+            for (p in params) {
+                copy[n] = p;
+                n++;
+            }
+        }
+
+        return copy;
+    }
+
+
+    private static function buildDefaults():Void {
+        if (filterParamDefaults != null) {
+            return;
+        }
+
+        filterParamDefaults = new Map<String, Array<Dynamic>>();
+        filterParamDefaults["drop-shadow"] = new Array<Dynamic>();
+        filterParamDefaults["drop-shadow"] = filterParamDefaults["drop-shadow"].concat([4, 45, 0, 1, 4, 4, 1, 1, false, false, false]);
+
+        filterParamDefaults["blur"] = new Array<Dynamic>();
+        filterParamDefaults["blur"] = filterParamDefaults["blur"].concat([1]);
+    }
 }

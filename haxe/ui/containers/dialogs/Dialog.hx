@@ -10,21 +10,21 @@ import haxe.ui.layouts.VerticalLayout;
 /**
  Class returned from `Screen.instance.showDialog` or `Screen.instance.messageDialog`
 **/
-@:dox(icon="/icons/application-sub.png") 
+@:dox(icon="/icons/application-sub.png")
 class Dialog extends Component {
     private var _titleBar:HBox;
     private var _buttons:HBox;
-    
+
     private var _title:Label;
     private var _closeButton:Button;
-    
+
     public function new() {
         super();
     }
-    
-	//***********************************************************************************************************
-	// Internals
-	//***********************************************************************************************************
+
+    //***********************************************************************************************************
+    // Internals
+    //***********************************************************************************************************
     private override function createChildren():Void {
         layout = new VerticalLayout();
     }
@@ -37,40 +37,40 @@ class Dialog extends Component {
             _titleBar = new HBox();
             _titleBar.id = "dialog-title-bar";
             _titleBar.addClass("dialog-title-bar");
-            
+
             _title = new Label();
             _title.text = _options.title;
             _title.id = "dialog-title";
             _title.addClass("dialog-title");
             _titleBar.addComponent(_title);
-            
+
             _closeButton = new Button();
             _closeButton.id = "dialog-close-button";
             _closeButton.addClass("dialog-close-button");
             _closeButton.registerEvent(MouseEvent.CLICK, _onButtonClick);
             _titleBar.addComponent(_closeButton);
-            
+
             addComponent(_titleBar);
         }
     }
-    
+
     private function createButtonBar():Void {
         if (_buttons == null && _options != null && _options.buttons.length > 0) {
             _buttons = new HBox();
             _buttons.id = "dialog-buttons";
             _buttons.addClass("dialog-buttons");
-            
+
             for (b in _options.buttons) {
                 var button = addButton(b);
             }
-            
+
             addComponent(_buttons);
         }
     }
-    
-	//***********************************************************************************************************
-	// Overrides
-	//***********************************************************************************************************
+
+    //***********************************************************************************************************
+    // Overrides
+    //***********************************************************************************************************
     public override function addComponent(child:Component):Component {
         var r = null;
         if (child == _titleBar || child == _buttons) {
@@ -80,21 +80,21 @@ class Dialog extends Component {
             r = super.addComponent(child);
             createButtonBar();
         }
-        
+
         return r;
     }
-    
 
-	//***********************************************************************************************************
-	// Public API
-	//***********************************************************************************************************
+
+    //***********************************************************************************************************
+    // Public API
+    //***********************************************************************************************************
     /**
      Closes this dialog and removes it from the `Screen`
     **/
     public function close() {
         screen.hideDialog(this);
     }
-    
+
     /**
      Adds a button to the button bar of this dialog
     **/
@@ -111,12 +111,12 @@ class Dialog extends Component {
         button.icon = dialogButton.icon;
         button.userData = dialogButton;
         button.registerEvent(MouseEvent.CLICK, _onButtonClick);
-        
+
         _buttons.addComponent(button);
-        
+
         return button;
     }
-    
+
     private var _options:DialogOptions;
     /**
      Sets (or gets) the dialog options associated with this dialog instance
@@ -133,15 +133,15 @@ class Dialog extends Component {
         createTitleBar();
         return value;
     }
-	
+
     /**
      The callback function to invoke when one of the dialog buttons has been clicked
     **/
     public var callback:DialogButton->Void;
-    
-	//***********************************************************************************************************
-	// Event Handlers
-	//***********************************************************************************************************
+
+    //***********************************************************************************************************
+    // Event Handlers
+    //***********************************************************************************************************
     private function _onButtonClick(event:MouseEvent) {
         var dialogButton = null;
         if (event.target.userData != null) {
@@ -153,5 +153,5 @@ class Dialog extends Component {
         if (callback != null) {
             callback(dialogButton);
         }
-    }    
+    }
 }

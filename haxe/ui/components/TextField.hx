@@ -13,119 +13,119 @@ import haxe.ui.util.Size;
 import haxe.ui.util.Variant;
 import haxe.ui.layouts.DefaultLayout;
 
-@:dox(icon="/icons/ui-text-field.png") 
+@:dox(icon="/icons/ui-text-field.png")
 class TextField extends InteractiveComponent implements IFocusable implements IClonable<TextField> {
-	private var _icon:Image;
-    
-	public function new() {
-		super();
-	}
+    private var _icon:Image;
 
-	//***********************************************************************************************************
-	// Overrides
-	//***********************************************************************************************************
-	private override function createDefaults():Void {
-		_defaultBehaviours = [
-			"text" => new TextFieldDefaultTextBehaviour(this),
-			"icon" => new TextFieldDefaultIconBehaviour(this)
-		];
+    public function new() {
+        super();
+    }
+
+    //***********************************************************************************************************
+    // Overrides
+    //***********************************************************************************************************
+    private override function createDefaults():Void {
+        _defaultBehaviours = [
+            "text" => new TextFieldDefaultTextBehaviour(this),
+            "icon" => new TextFieldDefaultIconBehaviour(this)
+        ];
         _defaultLayout = new TextFieldLayout();
-	}
-	
-	private override function create():Void {
-		super.create();
-		//behaviourSet("text", _text);
+    }
+
+    private override function create():Void {
+        super.create();
+        //behaviourSet("text", _text);
         //behaviourSet("icon", _iconResource);
-    }    
-    
+    }
+
     private override function createChildren():Void {
         if (componentWidth == 0) {
             componentWidth = 150;
         }
-        
-		registerEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
-		registerEvent(UIEvent.CHANGE, _onTextChanged);
+
+        registerEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
+        registerEvent(UIEvent.CHANGE, _onTextChanged);
     }
-    
+
     private override function destroyChildren():Void {
         super.destroyChildren();
-        
-		unregisterEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
-		unregisterEvent(UIEvent.CHANGE, _onTextChanged);
-        
-		if (_icon != null) {
-			removeComponent(_icon);
-			_icon = null;
-		}
+
+        unregisterEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
+        unregisterEvent(UIEvent.CHANGE, _onTextChanged);
+
+        if (_icon != null) {
+            removeComponent(_icon);
+            _icon = null;
+        }
     }
-    
-	//***********************************************************************************************************
-	// Overrides
-	//***********************************************************************************************************
-	private override function get_text():String {
+
+    //***********************************************************************************************************
+    // Overrides
+    //***********************************************************************************************************
+    private override function get_text():String {
         return behaviourGet("text");
-	}
-	
-	private override function set_text(value:String):String {
+    }
+
+    private override function set_text(value:String):String {
         if (value == _text) {
             return value;
         }
-        
+
         value = super.set_text(value);
         behaviourSet("text", value);
-		return value;
-	}
-	
+        return value;
+    }
+
     private override function applyStyle(style:Style):Void {
         super.applyStyle(style);
-		if (style.icon != null) {
-			icon = style.icon;
-		}
-		if (hasTextInput() == true) {
-			if (style.color != null) {
-				getTextInput().color = style.color;
-			}
-			if (style.fontName != null) {
-				getTextInput().fontName = style.fontName;
-			}
-			if (style.fontSize != null) {
-				getTextInput().fontSize = style.fontSize;
-			}
-		}
+        if (style.icon != null) {
+            icon = style.icon;
+        }
+        if (hasTextInput() == true) {
+            if (style.color != null) {
+                getTextInput().color = style.color;
+            }
+            if (style.fontName != null) {
+                getTextInput().fontName = style.fontName;
+            }
+            if (style.fontSize != null) {
+                getTextInput().fontSize = style.fontSize;
+            }
+        }
     }
-    
-	//***********************************************************************************************************
-	// Public API
-	//***********************************************************************************************************
-	private var _iconResource:String;
+
+    //***********************************************************************************************************
+    // Public API
+    //***********************************************************************************************************
+    private var _iconResource:String;
     /**
      The image resource to use as the textfields icon
     **/
-	@:clonable public var icon(get, set):String;
-	private function get_icon():String {
+    @:clonable public var icon(get, set):String;
+    private function get_icon():String {
         return _iconResource; // TODO: temp
-	}
-	
-	private function set_icon(value:String):String {
-		if (_iconResource == value) {
-			return value;
-		}
+    }
 
-		_iconResource = value;
+    private function set_icon(value:String):String {
+        if (_iconResource == value) {
+            return value;
+        }
+
+        _iconResource = value;
         behaviourSet("icon", value);
-		return value;
-	}
-    
-	//***********************************************************************************************************
-	// Events
-	//***********************************************************************************************************
-	private function _onTextChanged(event:UIEvent):Void {
-		handleBindings(["text", "value"]);
-	}
-	
-	private function _onMouseDown(event:MouseEvent):Void {
-		FocusManager.instance.focus = this;
-	}
+        return value;
+    }
+
+    //***********************************************************************************************************
+    // Events
+    //***********************************************************************************************************
+    private function _onTextChanged(event:UIEvent):Void {
+        handleBindings(["text", "value"]);
+    }
+
+    private function _onMouseDown(event:MouseEvent):Void {
+        FocusManager.instance.focus = this;
+    }
 }
 
 //***********************************************************************************************************
@@ -134,16 +134,16 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
 @:dox(hide)
 @:access(haxe.ui.components.TextField)
 class TextFieldDefaultTextBehaviour extends Behaviour {
-	public override function set(value:Variant) {
-		if (value.isNull) {
-			return;
-		}
-		
-		var textField:TextField = cast _component;
-		textField.getTextInput().text = value;
+    public override function set(value:Variant) {
+        if (value.isNull) {
+            return;
+        }
+
+        var textField:TextField = cast _component;
+        textField.getTextInput().text = value;
         textField.invalidateDisplay();
-	}
-    
+    }
+
     public override function get():Variant {
         var textField:TextField = cast _component;
         return textField.getTextInput().text;
@@ -157,7 +157,7 @@ class TextFieldDefaultIconBehaviour extends Behaviour {
         if (value == null || value.isNull || value == "null") { // TODO: hack
             return;
         }
-        
+
         var textField:TextField = cast _component;
         if (textField._icon == null) {
             textField._icon = new Image();
@@ -176,14 +176,14 @@ class TextFieldDefaultIconBehaviour extends Behaviour {
 @:dox(hide)
 @:access(haxe.ui.components.TextField)
 class TextFieldLayout extends DefaultLayout {
-	private var iconPosition(get, null):String;
-	private function get_iconPosition():String {
-		if (component.style.iconPosition == null) {
-			return "left";
-		}
-		return component.style.iconPosition;
-	}
-    
+    private var iconPosition(get, null):String;
+    private function get_iconPosition():String {
+        if (component.style.iconPosition == null) {
+            return "left";
+        }
+        return component.style.iconPosition;
+    }
+
     private override function repositionChildren():Void {
         //super.repositionChildren();
         var icon:Image = component.findComponent("textfield-icon");
@@ -199,16 +199,16 @@ class TextFieldLayout extends DefaultLayout {
                     icon.top = (component.componentHeight / 2) - (icon.componentHeight / 2);
             }
         }
-        
+
         if (component.hasTextInput() == true) {
             component.getTextInput().left = xpos;
             component.getTextInput().top = (component.componentHeight / 2) - (component.getTextInput().textHeight / 2);
         }
     }
-    
+
     private override function resizeChildren():Bool {
         super.resizeChildren();
-        
+
         if (component.hasTextInput() == true) {
             var size:Size = usableSize;
             component.getTextInput().width = size.width;
@@ -216,7 +216,7 @@ class TextFieldLayout extends DefaultLayout {
         }
         return true;
     }
-    
+
     public override function calcAutoSize():Size {
         var size:Size = super.calcAutoSize();
         if (component.hasTextInput() == true) {
@@ -230,7 +230,7 @@ class TextFieldLayout extends DefaultLayout {
 
         return size;
     }
-    
+
     private override function get_usableSize():Size {
         var size:Size = super.get_usableSize();
         var icon:Image = component.findComponent("textfield-icon");

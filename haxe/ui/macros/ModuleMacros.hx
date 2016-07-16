@@ -14,22 +14,22 @@ import haxe.macro.Compiler;
 #end
 
 class ModuleMacros {
-	private static var _modules:Array<Module> = new Array<Module>();
-	
+    private static var _modules:Array<Module> = new Array<Module>();
+
     private static var _modulesProcessed:Bool = false;
-	macro public static function processModules():Expr {
+    macro public static function processModules():Expr {
         if (_modulesProcessed == true) {
             return macro null;
         }
-        
-		var code:String = "function() {\n";
-		
-		loadModules();
-		for (m in _modules) {
+
+        var code:String = "function() {\n";
+
+        loadModules();
+        for (m in _modules) {
             //trace("Processing module: " + m.id);
-            
-			// add resources as haxe resources (plus prefix)
-			for (r in m.resourceEntries) {
+
+            // add resources as haxe resources (plus prefix)
+            for (r in m.resourceEntries) {
                 if (r.path != null && MacroHelpers.checkCondition(r.condition) == true) {
                     var resolvedPath = Context.resolvePath(r.path);
                     if (FileSystem.isDirectory(resolvedPath) && FileSystem.exists(resolvedPath)) {
@@ -38,83 +38,83 @@ class ModuleMacros {
                         trace("WARNING: Could not find path " + resolvedPath);
                     }
                 }
-			}
-			
-			for (s in m.scriptletEntries) {
-				var types:Array<haxe.macro.Type> = null;
-				if (s.className != null) {
-					types = Context.getModule(s.className);
-				} else if (s.classPackage != null) {
-					types = MacroHelpers.typesFromPackage(s.classPackage);
-				}
-				
-				if (types != null) {
-					for (t in types) {
-						var skipRest = false;
-						var resolvedClass:String = MacroHelpers.classNameFromType(t);
-						var classAlias:String = s.classAlias;
-						if (classAlias == null) {
-							var parts = resolvedClass.split(".");
-							classAlias = parts[parts.length - 1];
-						} else {
-							skipRest = true; // as we have an alias defined lets skip any other types (assumes the first class is the one to alias)
-						}
-						code += 'haxe.ui.scripting.ScriptInterp.addClassAlias("${classAlias}", "${resolvedClass}");\n';
-						
-						if (skipRest == true) {
-							break;
-						}
-						if (s.keep == true) {
-							MacroHelpers.addMeta(t, ":keep", Context.currentPos());
-						}
-						if (s.staticClass == true) {
-							code += 'haxe.ui.scripting.ScriptInterp.addStaticClass("${classAlias}", ${resolvedClass});\n';
-						}
-					}
-				}
-			}
-            
-			// load component classes from all modules
-            /* this has moved to its own function in order to be able to call it from other places like build macros
-			for (c in m.componentEntries) {
-				var types:Array<haxe.macro.Type> = null;
-				if (c.className != null) {
-					types = Context.getModule(c.className);
-				} else if (c.classPackage != null) {
-					types = MacroHelpers.typesFromPackage(c.classPackage);
-				}
+            }
 
-				if (types != null) {
-					for (t in types) {
-						if (MacroHelpers.hasSuperClass(t, "haxe.ui.core.Component") == true) {
-							var resolvedClass:String = MacroHelpers.classNameFromType(t);
-							if (c.className != null && resolvedClass != c.className) {
-								continue;
-							}
-							var classAlias:String = c.classAlias;
-							if (classAlias == null) {
-								classAlias = resolvedClass.substr(resolvedClass.lastIndexOf(".") + 1, resolvedClass.length);
-							}
-							classAlias = classAlias.toLowerCase();
-							ComponentClassMap.register(classAlias, resolvedClass);
-						}
-					}
-				}
-			}
+            for (s in m.scriptletEntries) {
+                var types:Array<haxe.macro.Type> = null;
+                if (s.className != null) {
+                    types = Context.getModule(s.className);
+                } else if (s.classPackage != null) {
+                    types = MacroHelpers.typesFromPackage(s.classPackage);
+                }
+
+                if (types != null) {
+                    for (t in types) {
+                        var skipRest = false;
+                        var resolvedClass:String = MacroHelpers.classNameFromType(t);
+                        var classAlias:String = s.classAlias;
+                        if (classAlias == null) {
+                            var parts = resolvedClass.split(".");
+                            classAlias = parts[parts.length - 1];
+                        } else {
+                            skipRest = true; // as we have an alias defined lets skip any other types (assumes the first class is the one to alias)
+                        }
+                        code += 'haxe.ui.scripting.ScriptInterp.addClassAlias("${classAlias}", "${resolvedClass}");\n';
+
+                        if (skipRest == true) {
+                            break;
+                        }
+                        if (s.keep == true) {
+                            MacroHelpers.addMeta(t, ":keep", Context.currentPos());
+                        }
+                        if (s.staticClass == true) {
+                            code += 'haxe.ui.scripting.ScriptInterp.addStaticClass("${classAlias}", ${resolvedClass});\n';
+                        }
+                    }
+                }
+            }
+
+            // load component classes from all modules
+            /* this has moved to its own function in order to be able to call it from other places like build macros
+            for (c in m.componentEntries) {
+                var types:Array<haxe.macro.Type> = null;
+                if (c.className != null) {
+                    types = Context.getModule(c.className);
+                } else if (c.classPackage != null) {
+                    types = MacroHelpers.typesFromPackage(c.classPackage);
+                }
+
+                if (types != null) {
+                    for (t in types) {
+                        if (MacroHelpers.hasSuperClass(t, "haxe.ui.core.Component") == true) {
+                            var resolvedClass:String = MacroHelpers.classNameFromType(t);
+                            if (c.className != null && resolvedClass != c.className) {
+                                continue;
+                            }
+                            var classAlias:String = c.classAlias;
+                            if (classAlias == null) {
+                                classAlias = resolvedClass.substr(resolvedClass.lastIndexOf(".") + 1, resolvedClass.length);
+                            }
+                            classAlias = classAlias.toLowerCase();
+                            ComponentClassMap.register(classAlias, resolvedClass);
+                        }
+                    }
+                }
+            }
             */
-			
-			// setup themes 
-			for (t in m.themeEntries) {
-				if (t.parent != null) {
-					code += 'haxe.ui.themes.ThemeManager.instance.getTheme("${t.name}").parent = "${t.parent}";\n';
-				}
-				for (r in t.styles) {
-					code += 'haxe.ui.themes.ThemeManager.instance.addStyleResource("${t.name}", "${r}");\n';
-				}
-			}
-			
-			// handle plugins
-			for (p in m.plugins) {
+
+            // setup themes
+            for (t in m.themeEntries) {
+                if (t.parent != null) {
+                    code += 'haxe.ui.themes.ThemeManager.instance.getTheme("${t.name}").parent = "${t.parent}";\n';
+                }
+                for (r in t.styles) {
+                    code += 'haxe.ui.themes.ThemeManager.instance.addStyleResource("${t.name}", "${r}");\n';
+                }
+            }
+
+            // handle plugins
+            for (p in m.plugins) {
                 if (MacroHelpers.checkCondition(p.condition) == true) {
                     switch (p.type) {
                         case "asset":
@@ -128,153 +128,153 @@ class ModuleMacros {
                             trace("WARNING: unknown plugin type: " + p.type);
                     }
                 }
-			}
+            }
 
-			// set toolkit properties
-			for (p in m.properties) {
-				code += 'Toolkit.properties.set("${p.name}", "${p.value}");\n';
-			}
-			
-			// load animations
-			for (a in m.animations) {
-				code += 'var a:haxe.ui.animation.Animation = new haxe.ui.animation.Animation();\n';
-				code += 'a.id = "${a.id}";\n';
-				code += 'a.easing = haxe.ui.animation.Animation.easingFromString("${a.ease}");\n';
-				for (kf in a.keyFrames) {
-					code += 'var kf:haxe.ui.animation.AnimationKeyFrame = a.addKeyFrame(${kf.time});\n';
-					for (r in kf.componentRefs) {
-						code += 'var ref:haxe.ui.animation.AnimationComponentRef = kf.addComponentRef("${r.id}");\n';
-						for (p in r.properties.keys()) {
-							code += 'ref.addProperty("${p}", ${r.properties.get(p)});\n';
-						}
-						for (v in r.vars.keys()) {
-							code += 'ref.addVar("${v}", "${r.vars.get(v)}");\n';
-						}
-					}
-				}
-				
-				code += 'haxe.ui.animation.AnimationManager.instance.registerAnimation(a.id, a);\n';
-			}
-		}
-		
-		code += "}()\n";
-//		trace(code);
-        
+            // set toolkit properties
+            for (p in m.properties) {
+                code += 'Toolkit.properties.set("${p.name}", "${p.value}");\n';
+            }
+
+            // load animations
+            for (a in m.animations) {
+                code += 'var a:haxe.ui.animation.Animation = new haxe.ui.animation.Animation();\n';
+                code += 'a.id = "${a.id}";\n';
+                code += 'a.easing = haxe.ui.animation.Animation.easingFromString("${a.ease}");\n';
+                for (kf in a.keyFrames) {
+                    code += 'var kf:haxe.ui.animation.AnimationKeyFrame = a.addKeyFrame(${kf.time});\n';
+                    for (r in kf.componentRefs) {
+                        code += 'var ref:haxe.ui.animation.AnimationComponentRef = kf.addComponentRef("${r.id}");\n';
+                        for (p in r.properties.keys()) {
+                            code += 'ref.addProperty("${p}", ${r.properties.get(p)});\n';
+                        }
+                        for (v in r.vars.keys()) {
+                            code += 'ref.addVar("${v}", "${r.vars.get(v)}");\n';
+                        }
+                    }
+                }
+
+                code += 'haxe.ui.animation.AnimationManager.instance.registerAnimation(a.id, a);\n';
+            }
+        }
+
+        code += "}()\n";
+//      trace(code);
+
         _modulesProcessed = true;
-        
+
         populateClassMap();
-        
-		return Context.parseInlineString(code, Context.currentPos());
-	}
-	
-	#if macro
+
+        return Context.parseInlineString(code, Context.currentPos());
+    }
+
+    #if macro
     private static var _classMapPopulated:Bool = false;
     public static function populateClassMap() {
         if (_classMapPopulated == true) {
             return;
         }
-        
+
         var modules:Array<Module> = ModuleMacros.loadModules();
         for (m in modules) {
-			// load component classes from all modules
-			for (c in m.componentEntries) {
-				var types:Array<haxe.macro.Type> = null;
-				if (c.className != null) {
-					types = Context.getModule(c.className);
-				} else if (c.classPackage != null) {
-					types = MacroHelpers.typesFromPackage(c.classPackage);
-				}
+            // load component classes from all modules
+            for (c in m.componentEntries) {
+                var types:Array<haxe.macro.Type> = null;
+                if (c.className != null) {
+                    types = Context.getModule(c.className);
+                } else if (c.classPackage != null) {
+                    types = MacroHelpers.typesFromPackage(c.classPackage);
+                }
 
-				if (types != null) {
-					for (t in types) {
-						if (MacroHelpers.hasSuperClass(t, "haxe.ui.core.Component") == true) {
-							var resolvedClass:String = MacroHelpers.classNameFromType(t);
-							if (c.className != null && resolvedClass != c.className) {
-								continue;
-							}
-							var classAlias:String = c.classAlias;
-							if (classAlias == null) {
-								classAlias = resolvedClass.substr(resolvedClass.lastIndexOf(".") + 1, resolvedClass.length);
-							}
-							classAlias = classAlias.toLowerCase();
-							ComponentClassMap.register(classAlias, resolvedClass);
-						}
-					}
-				}
-			}
+                if (types != null) {
+                    for (t in types) {
+                        if (MacroHelpers.hasSuperClass(t, "haxe.ui.core.Component") == true) {
+                            var resolvedClass:String = MacroHelpers.classNameFromType(t);
+                            if (c.className != null && resolvedClass != c.className) {
+                                continue;
+                            }
+                            var classAlias:String = c.classAlias;
+                            if (classAlias == null) {
+                                classAlias = resolvedClass.substr(resolvedClass.lastIndexOf(".") + 1, resolvedClass.length);
+                            }
+                            classAlias = classAlias.toLowerCase();
+                            ComponentClassMap.register(classAlias, resolvedClass);
+                        }
+                    }
+                }
+            }
         }
-        
+
         _classMapPopulated = true;
     }
-    
-	private static var _modulesLoaded:Bool = false;
-	public static function loadModules():Array<Module> {
-		if (_modulesLoaded == true) {
-			return _modules;
-		}
-		
-		
-		var paths:Array<String> = Context.getClassPath();
-		while (paths.length != 0) {
-			var path:String = paths[0];
-			paths.remove(path);
-			
-			if (MacroHelpers.skipPath(path) == true) {
-				continue;
-			}
-			
-			if (sys.FileSystem.exists(path)) {
-				if (sys.FileSystem.isDirectory(path)) {
-					var subDirs:Array<String> = sys.FileSystem.readDirectory(path);
-					var found = false;
-					for (subDir in subDirs) {
-						var fileName = subDir;
-						if (StringTools.endsWith(path, "/") == false && StringTools.endsWith(path, "\\") == false) {
-							subDir = path + "/" + subDir;
-						} else {
-							subDir = path + subDir;
-						}
 
-						if (sys.FileSystem.isDirectory(subDir) && found == false) {
-							paths.insert(0, subDir);
-						} else {
-							var file:String = subDir;
-							if (StringTools.startsWith(fileName, "module.")) {
-								var module:Module = ModuleParser.get(MacroHelpers.extension(fileName)).parse(File.getContent(file));
-								module.validate();
-								_modules.push(module);
-								found = true; // 1 per classpath entry
-							}
-						}
-					}
-				}
-			}
-			
-		}
-		
-		_modulesLoaded = true;
+    private static var _modulesLoaded:Bool = false;
+    public static function loadModules():Array<Module> {
+        if (_modulesLoaded == true) {
+            return _modules;
+        }
+
+
+        var paths:Array<String> = Context.getClassPath();
+        while (paths.length != 0) {
+            var path:String = paths[0];
+            paths.remove(path);
+
+            if (MacroHelpers.skipPath(path) == true) {
+                continue;
+            }
+
+            if (sys.FileSystem.exists(path)) {
+                if (sys.FileSystem.isDirectory(path)) {
+                    var subDirs:Array<String> = sys.FileSystem.readDirectory(path);
+                    var found = false;
+                    for (subDir in subDirs) {
+                        var fileName = subDir;
+                        if (StringTools.endsWith(path, "/") == false && StringTools.endsWith(path, "\\") == false) {
+                            subDir = path + "/" + subDir;
+                        } else {
+                            subDir = path + subDir;
+                        }
+
+                        if (sys.FileSystem.isDirectory(subDir) && found == false) {
+                            paths.insert(0, subDir);
+                        } else {
+                            var file:String = subDir;
+                            if (StringTools.startsWith(fileName, "module.")) {
+                                var module:Module = ModuleParser.get(MacroHelpers.extension(fileName)).parse(File.getContent(file));
+                                module.validate();
+                                _modules.push(module);
+                                found = true; // 1 per classpath entry
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+
+        _modulesLoaded = true;
         return _modules;
-	}
-	
-	private static function addResources(path:String, base:String, prefix:String) {
-		if (prefix == null) {
-			prefix = "";
-		}
-		var contents:Array<String> = sys.FileSystem.readDirectory(path);
-		for (f in contents) {
-			var file = path + "/" + f;
-			if (sys.FileSystem.isDirectory(file)) {
-				addResources(file, base, prefix);
-			} else {
-				var relativePath = prefix + StringTools.replace(file, base, "");
+    }
+
+    private static function addResources(path:String, base:String, prefix:String) {
+        if (prefix == null) {
+            prefix = "";
+        }
+        var contents:Array<String> = sys.FileSystem.readDirectory(path);
+        for (f in contents) {
+            var file = path + "/" + f;
+            if (sys.FileSystem.isDirectory(file)) {
+                addResources(file, base, prefix);
+            } else {
+                var relativePath = prefix + StringTools.replace(file, base, "");
                 var resourceName:String = relativePath;
                 if (StringTools.startsWith(resourceName, "/")) {
                     resourceName = resourceName.substr(1, resourceName.length);
                 }
-				Context.addResource(resourceName, File.getBytes(file));
-				//trace("Added resource '" + resourceName + "' [" + file + "]");
-			}
-		}
-	}
-	#end
+                Context.addResource(resourceName, File.getBytes(file));
+                //trace("Added resource '" + resourceName + "' [" + file + "]");
+            }
+        }
+    }
+    #end
 }
