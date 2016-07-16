@@ -497,7 +497,7 @@ class Macros {
         return fields;
     }
 
-    private static function insertLine(fn, e:Expr, location:Int):Void {
+    private static function insertLine(fn:{ expr : { pos : haxe.macro.Position, expr : haxe.macro.ExprDef } }, e:Expr, location:Int):Void {
         fn.expr = switch(fn.expr.expr) {
             case EBlock(el): macro $b{insertExpr(el, location, e)};
             case _: macro $b { insertExpr([fn.expr], location, e) }

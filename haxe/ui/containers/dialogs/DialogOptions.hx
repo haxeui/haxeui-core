@@ -4,10 +4,10 @@ package haxe.ui.containers.dialogs;
  Holds options associated with instances of `Dialog`
 **/
 class DialogOptions {
-    public static var ICON_ERROR:Int = 0x000100;
-    public static var ICON_INFO:Int = 0x000200;
-    public static var ICON_WARNING:Int = 0x000400;
-    public static var ICON_QUESTION:Int = 0x000800;
+    public static inline var ICON_ERROR:Int = 0x000100;
+    public static inline var ICON_INFO:Int = 0x000200;
+    public static inline var ICON_WARNING:Int = 0x000400;
+    public static inline var ICON_QUESTION:Int = 0x000800;
 
     /**
      Array of button definitions in this `Dialog`
