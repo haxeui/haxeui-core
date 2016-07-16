@@ -1,7 +1,6 @@
 package haxe.ui.core;
 
 import haxe.ui.core.Component.DeferredBindingInfo;
-import haxe.ui.debug.DebugCounter;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.DelegateLayout;
 import haxe.ui.layouts.Layout;
