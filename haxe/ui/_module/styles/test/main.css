@@ -1,18 +1,18 @@
 .component {
-	__border: 1px solid #DDDDDD;
-	__background-color: white;
+    __border: 1px solid #DDDDDD;
+    __background-color: white;
 }
 
 #bob {
-	offset-top: 15;
-	background-color: blue;
+    offset-top: 15;
+    background-color: blue;
 }
 
 .vbox, .hbox, .absolute {
-	__background-color: white;
-	__border: 1px solid #DDDDDD;
-	__padding: 5px;
-	spacing: 5px 5px;
+    __background-color: white;
+    __border: 1px solid #DDDDDD;
+    __padding: 5px;
+    spacing: 5px 5px;
 }
 
 
@@ -30,33 +30,33 @@
 
 /*
 .button {
-	background: #F8F8F8 #E4E4E4;
-	color: #333333;
-	border: 1px solid #8D8D8D;
-	border-radius: 4px;
-	padding: 5px 10px;
-	cursor: pointer;
-	width: auto;
-	height: auto;
-	spacing: 5px 5px;
+    background: #F8F8F8 #E4E4E4;
+    color: #333333;
+    border: 1px solid #8D8D8D;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+    width: auto;
+    height: auto;
+    spacing: 5px 5px;
 }
 
 .button:hover {
-	background: #F3F3F3 #C9C9C9;
-	color: #000000;
-	border: 1px solid #333333;
+    background: #F3F3F3 #C9C9C9;
+    color: #000000;
+    border: 1px solid #333333;
 }
 
 .button:down {
-	background: #CECECE #B0B0B0;
-	color: #000000;
-	border-color: #333333;
-	___filter: drop-shadow(1, 45, #999999, 1, 1, 1, 1, 1, true);
+    background: #CECECE #B0B0B0;
+    color: #000000;
+    border-color: #333333;
+    ___filter: drop-shadow(1, 45, #999999, 1, 1, 1, 1, 1, true);
 }
 
 .tabbar-button-selected, .tabbar-button-selected:hover, .tabbar-button-selected:down {
-	border-radius: 1px;
-	background-color: white;
-	border: 1px solid #ABABAB;
+    border-radius: 1px;
+    background-color: white;
+    border: 1px solid #ABABAB;
 }
 */
