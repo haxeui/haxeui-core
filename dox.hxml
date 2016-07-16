@@ -1,0 +1,15 @@
+-lib hscript
+#-lib actuate
+-lib haxeui-blank
+#-lib yaml
+
+#-main haxe.ui.Dox
+-cp .
+-xml
+dox.xml
+-dce no
+--no-output 
+--macro haxe.macro.Compiler.include("haxe.ui")
+
+--next
+-cmd dox.bat
