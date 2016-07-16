@@ -10,7 +10,6 @@ import haxe.ui.themes.ThemeManager;
 import haxe.ui.util.GenericConfig;
 import haxe.ui.util.Properties;
 
-@:build(haxe.ui.macros.BackendMacros.test())
 class Toolkit {
     public static var styleSheet:Engine = new Engine();
     public static var theme:String = "default";

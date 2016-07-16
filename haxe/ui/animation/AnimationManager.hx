@@ -1,7 +1,6 @@
 package haxe.ui.animation;
 import haxe.ui.core.Component;
 
-@:build(haxe.ui.macros.BackendMacros.test())
 class AnimationManager {
     private static var _instance:AnimationManager;
     public static var instance(get, never):AnimationManager;

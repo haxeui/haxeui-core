@@ -15,7 +15,6 @@ import motion.easing.Quint;
 import motion.easing.Sine;
 #end
 
-@:build(haxe.ui.macros.BackendMacros.test())
 class Animation {
     public var keyFrames:Array<AnimationKeyFrame> = new Array<AnimationKeyFrame>();
     public var componentMap:Map<String, Component> = new Map<String, Component>();
