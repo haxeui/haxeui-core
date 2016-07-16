@@ -19,6 +19,9 @@
         <import package="haxe.ui.containers.dialogs" />
         <import package="haxe.ui.animation" keep="true" />
         <import class="Std" keep="true" static="true" />
+        <!--
+        TODO: Under neko & haxe 3.3 importing 'Math' like this causes this error: Class<Math> has no field MathImpl
+        -->
         <import class="Math" keep="true" static="true" />
         <import class="StringTools" keep="true" static="true" />
         <import class="haxe.ui.core.Screen" keep="true" static="true" />
