@@ -22,6 +22,8 @@ class ToolkitAssets extends AssetsBase {
     //***********************************************************************************************************
     // Instance
     //***********************************************************************************************************
+    public var options:Dynamic = null;
+
     private var _fontCache:Map<String, FontInfo>;
     private var _fontCallbacks:CallbackMap<FontInfo>;
 

@@ -34,6 +34,7 @@ class Toolkit {
         ThemeManager.instance.applyTheme(theme);
         if (options != null) {
             screen.options = options;
+            ToolkitAssets.instance.options = options;
         }
         screen.registerEvent(KeyboardEvent.KEY_DOWN, onKeyDown);
     }
