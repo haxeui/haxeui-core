@@ -34,7 +34,7 @@ Currently, HaxeUI supports the following `backends` (some of which have not yet 
 | Alpha             | Backend Library                   | Dependencies        | Platforms | Native Components |
 | :-------------: | -----------------------| ----------------- | ----- | :---: |
 | <img src="https://dl.dropboxusercontent.com/u/26678671/tick.png"> | <a href="https://github.com/haxeui/haxeui-openfl">haxeui-openfl</a> | `OpenFL` / `Lime` | `Mobile`, `Desktop`, `Browser` | <img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"> |
-| <img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"> | <a href="https://github.com/haxeui/haxeui-flambe">haxeui-flambe</a> | `Flambe` | `Mobile`, `Browser` | <img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"> |
+| <img src="https://dl.dropboxusercontent.com/u/26678671/tick.png"> | <a href="https://github.com/haxeui/haxeui-flambe">haxeui-flambe</a> | `Flambe` | `Mobile`, `Browser` | <img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"> |
 | <img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"> | <a href="https://github.com/haxeui/haxeui-kha">haxeui-kha</a> | `Kha` | `Mobile`, `Desktop`, `Browser` | <img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"> |
 | <img src="https://dl.dropboxusercontent.com/u/26678671/tick.png"> | <a href="https://github.com/haxeui/haxeui-html5">haxeui-html5</a> | _`none`_ | `Browser` | <img src="https://dl.dropboxusercontent.com/u/26678671/tick.png"> |
 | <img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"> | <a href="https://github.com/haxeui/haxeui-pixijs">haxeui-pixijs</a> | `PixiJS` | `Browser` | <img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"> |
