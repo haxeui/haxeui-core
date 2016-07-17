@@ -13,14 +13,22 @@ class Rectangle {
         this.height = height;
     }
 
-    public var right(get, null):Float;
+    public var right(get, set):Float;
     private function get_right():Float {
         return left + width;
     }
+    private function set_right(value:Float):Float {
+        width = value - left;
+        return value;
+    }
 
-    public var bottom(get, null):Float;
+    public var bottom(get, set):Float;
     private function get_bottom():Float {
         return top + height;
+    }
+    private function set_bottom(value:Float):Float {
+        height = value - top;
+        return value;
     }
 
     public function inflate(dx:Float, dy:Float):Void {
