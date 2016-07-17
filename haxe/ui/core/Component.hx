@@ -773,17 +773,17 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     //***********************************************************************************************************
     // Events
     //***********************************************************************************************************
-    private var _events:EventMap;
+    private var __events:EventMap;
 
     /**
      Register a listener for a certain `UIEvent`
     **/
     @:dox(group="Event related properties and methods")
     public function registerEvent(type:String, listener:Dynamic->Void) {
-        if (_events == null) {
-            _events = new EventMap();
+        if (__events == null) {
+            __events = new EventMap();
         }
-        if (_events.add(type, listener) == true) {
+        if (__events.add(type, listener) == true) {
             mapEvent(type, _onMappedEvent);
         }
     }
@@ -793,8 +793,8 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     **/
     @:dox(group="Event related properties and methods")
     public function unregisterEvent(type:String, listener:Dynamic->Void) {
-        if (_events != null) {
-            if (_events.remove(type, listener) == true) {
+        if (__events != null) {
+            if (__events.remove(type, listener) == true) {
                 unmapEvent(type, _onMappedEvent);
             }
         }
@@ -805,8 +805,8 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     **/
     @:dox(group="Event related properties and methods")
     public function dispatch(event:UIEvent) {
-        if (_events != null) {
-            _events.invoke(event.type, event, this);
+        if (__events != null) {
+            __events.invoke(event.type, event, this);
         }
     }
 
