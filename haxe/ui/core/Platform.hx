@@ -1,5 +1,7 @@
 package haxe.ui.core;
 
+import haxe.ui.backend.PlatformBase;
+
 class Platform extends PlatformBase {
     public static inline var METRIC_VSCROLL_WIDTH:String = "patform.metrics.vscroll.width";
     public static inline var METRIC_HSCROLL_HEIGHT:String = "patform.metrics.hscroll.height";

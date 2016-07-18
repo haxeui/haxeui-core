@@ -1,4 +1,5 @@
 package haxe.ui.core;
+import haxe.ui.backend.ImageDisplayBase;
 
 
 /**

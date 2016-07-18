@@ -2,7 +2,7 @@ package haxe.ui.core;
 
 import haxe.ui.animation.Animation;
 import haxe.ui.animation.AnimationManager;
-//import haxe.ui.components.Image;
+import haxe.ui.backend.ScreenBase;
 import haxe.ui.components.Label;
 import haxe.ui.containers.HBox;
 import haxe.ui.containers.dialogs.Dialog;

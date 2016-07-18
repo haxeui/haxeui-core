@@ -1,5 +1,6 @@
 package haxe.ui.core;
 
+import haxe.ui.backend.TextDisplayBase;
 import haxe.ui.styles.Style;
 
 /**

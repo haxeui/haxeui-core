@@ -1,5 +1,6 @@
 package haxe.ui.core;
 
+import haxe.ui.backend.ComponentBase;
 import haxe.ui.core.Component.DeferredBindingInfo;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.DelegateLayout;
@@ -47,8 +48,6 @@ class DeferredBindingInfo {
 class Component extends ComponentBase implements IComponentBase implements IClonable<Component> {
     public function new() {
         super();
-        //_children = new Array<Component>();
-        //_style = new Style();
 
         #if flash
         addClass("flash");
@@ -57,7 +56,6 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         addClass("html5");
         #end
 
-        //addClass("component");
         var parts:Array<String> = Type.getClassName(Type.getClass(this)).split(".");
         var className:String = parts[parts.length - 1].toLowerCase();
         addClass(className, false);

@@ -4,11 +4,11 @@ import haxe.ds.Either;
 import haxe.io.Bytes;
 import haxe.Resource;
 import haxe.ui.assets.AssetPlugin;
+import haxe.ui.backend.AssetsBase;
 import haxe.ui.util.CallbackMap;
 import haxe.ui.assets.FontInfo;
 import haxe.ui.assets.ImageInfo;
 
-//@:build(haxe.ui.macros.BackendMacros.test())
 class ToolkitAssets extends AssetsBase {
     private static var _instance:ToolkitAssets;
     public static var instance(get, never):ToolkitAssets;
