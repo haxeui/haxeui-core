@@ -1,9 +1,10 @@
 require 'travis'
-require "bundler/gem_tasks"
-require 'rspec/core/rake_task'
+#require "bundler/gem_tasks"
+#require 'rspec/core/rake_task'
 
-RSpec::Core::RakeTask.new
-task :default => :spec
+#RSpec::Core::RakeTask.new
+task :default do
+end
 
 token = ENV['GH_TOKEN']
 
