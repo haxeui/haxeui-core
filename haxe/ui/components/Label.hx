@@ -16,7 +16,7 @@ import haxe.ui.util.Variant;
 class Label extends InteractiveComponent implements IClonable<Label> {
     public function new() {
         super();
-        #if haxeui_openfl
+        #if openfl
         mouseChildren = false;
         #end
     }
@@ -76,7 +76,7 @@ class LabelLayout extends DefaultLayout {
     private override function resizeChildren():Bool {
         if (component.autoWidth == false) {
             component.getTextDisplay().width = component.componentWidth;
-            #if haxeui_openfl // TODO: make not specific
+            #if openfl // TODO: make not specific
             component.getTextDisplay().multiline = true;
             component.getTextDisplay().wordWrap = true;
             #end

@@ -1,7 +1,7 @@
 package haxe.ui.util;
 
 import haxe.io.Bytes;
-#if haxeui_openfl
+#if openfl
 import openfl.utils.ByteArray;
 #end
 

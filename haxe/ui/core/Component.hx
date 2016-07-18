@@ -1125,7 +1125,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         return value;
     }
 
-    #if haxeui_openfl
+    #if openfl
 
     private var _width:Null<Float>;
     #if flash @:setter(width) #else override #end

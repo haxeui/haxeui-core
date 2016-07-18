@@ -190,7 +190,7 @@ class CheckBoxValue extends InteractiveComponent {
 
     public function new() {
         super();
-        #if haxeui_openfl
+        #if openfl
         mouseChildren = false;
         #end
 
