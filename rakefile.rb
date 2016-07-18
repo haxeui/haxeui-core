@@ -16,3 +16,5 @@ puts "Using #{Travis::User.current.name}!"
 
 Travis::Repository.find('haxeui/haxeui-openfl').last_build.restart
 Travis::Repository.find('haxeui/haxeui-html5').last_build.restart
+Travis::Repository.find('haxeui/haxeui-pixijs').last_build.restart
+Travis::Repository.find('haxeui/haxeui-flambe').last_build.restart
