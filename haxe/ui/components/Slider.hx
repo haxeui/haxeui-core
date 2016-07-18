@@ -62,7 +62,7 @@ class Slider extends InteractiveComponent implements IClonable<Slider> {
             _value = new Component();
             _value.id = "slider-value";
             _value.addClass("slider-value");
-            #if haxeui_flambe
+            #if flambe
             _value.pixelSnapping = false;
             #end
             _valueBackground.addComponent(_value);

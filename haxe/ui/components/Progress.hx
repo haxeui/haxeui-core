@@ -50,7 +50,7 @@ class Progress extends InteractiveComponent implements IClonable<Progress> {
             _value = new Component();
             _value.id = "progress-value";
             _value.addClass("progress-value");
-            #if haxeui_flambe
+            #if flambe
             _value.pixelSnapping = false;
             #end
             addComponent(_value);
