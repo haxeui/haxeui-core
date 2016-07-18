@@ -2,5 +2,5 @@ sudo: false
 language: ruby
 before_install:
     - gem install travis
-install:
-    - echo "y" | travis login --org --github-token $GH_TOKEN
+#install:
+#    - echo "y" | travis login --org --github-token $GH_TOKEN

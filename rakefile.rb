@@ -1,13 +1,17 @@
 require 'travis'
-#require "bundler/gem_tasks"
-#require 'rspec/core/rake_task'
 
-#RSpec::Core::RakeTask.new
-#task :default do
-#end
+task :default do
+end
+
+# this should all work, but it doesnt seem to because logins have happend too much
+# see https://github.com/travis-ci/travis.rb/issues/315
+# login has worked a few times, then started failing
 
 token = ENV['GH_TOKEN']
 
 # against the Travis namespace
 Travis.github_auth(token)
 puts "Using #{Travis::User.current.name}!"
+
+
+Travis::Repository.find('haxeui/haxeui-openfl').last_build.restart
