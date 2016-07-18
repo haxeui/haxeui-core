@@ -20,7 +20,6 @@ class Button extends InteractiveComponent implements IClonable<Button> {
     private var _repeatTimer:Timer;
 
     public function new() {
-        // trigger
         super();
         #if openfl
         mouseChildren = false;
