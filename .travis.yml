@@ -3,4 +3,6 @@ language: ruby
 before_install:
     - gem install travis
 install:
-    - echo "y" | travis login --org --github-token $GH_TOKEN    
+    - echo "y" | travis login --org --github-token $GH_TOKEN
+script:
+    - sh ./test.sh        
