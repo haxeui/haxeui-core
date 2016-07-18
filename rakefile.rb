@@ -3,8 +3,8 @@ require 'travis'
 #require 'rspec/core/rake_task'
 
 #RSpec::Core::RakeTask.new
-task :default do
-end
+#task :default do
+#end
 
 token = ENV['GH_TOKEN']
 
