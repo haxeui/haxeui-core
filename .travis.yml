@@ -1,8 +1,17 @@
 sudo: false
-language: ruby
-before_install:
-    - gem install travis
-install:
-    - echo "y" | travis login --org --github-token $GH_TOKEN
+language: node_js
+node_js:
+  - '0.12'
+before_script: 
+install: true
+cache:
+  directories:
+    - node_modules
+    - $HOME/.npm
 script:
-    - sh ./test.sh        
+  #- npm install grunt-cli -g
+  #- npm install travis-ci -g
+  - npm install
+  # - grunt travis
+after_success:
+  - node trigger-build.js
