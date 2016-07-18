@@ -1,17 +1,6 @@
 sudo: false
-language: node_js
-node_js:
-  - '0.12'
-before_script: 
-install: true
-cache:
-  directories:
-    - node_modules
-    - $HOME/.npm
-script:
-  #- npm install grunt-cli -g
-  #- npm install travis-ci -g
-  - npm install
-  # - grunt travis
-after_success:
-  - node trigger-build.js
+language: ruby
+before_install:
+    - gem install travis
+install:
+    - travis login --org --github-token $GH_TOKEN    
