@@ -1,0 +1,7 @@
+{
+    "name" : "trigger-build",
+    "main" : "trigger-build.js",
+    "dependencies": {
+        "travis-ci": "^2.1.0"
+    }
+}
