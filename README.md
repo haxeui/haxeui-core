@@ -43,11 +43,6 @@ Currently, HaxeUI supports the following `backends` (some of which have not yet 
 | <img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"> | <a href="https://github.com/haxeui/haxeui-luxe">haxeui-luxe</a> | `luxe` | <img src="https://dl.dropboxusercontent.com/u/26678671/mobile.png" title="Mobile"> <img src="https://dl.dropboxusercontent.com/u/26678671/desktop.png" title="Desktop"> <img src="https://dl.dropboxusercontent.com/u/26678671/browser.png" title="Browser"> | <img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"> | `n/a` |
 | <img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"> | <a href="https://github.com/haxeui/haxeui-hxwidgets">haxeui-hxwidgets</a> | `hxWidgets` / `wxWidgets` | <img src="https://dl.dropboxusercontent.com/u/26678671/desktop.png" title="Desktop"> | <img src="https://dl.dropboxusercontent.com/u/26678671/tick.png"> | `n/a` |
 
-<img src="https://dl.dropboxusercontent.com/u/26678671/mobile.png" title="Mobile"> = Mobile
-
-<img src="https://dl.dropboxusercontent.com/u/26678671/desktop.png" title="Desktop"> = Desktop
-
-<img src="https://dl.dropboxusercontent.com/u/26678671/browser.png" title="Browser"> = Browser
 
 <h2>Usage</h2>
 Assuming that `haxeui-core` and the `backend` library have been included in your application, initialising the toolkit and using it should be relatively straight forward:
