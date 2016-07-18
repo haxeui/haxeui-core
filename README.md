@@ -33,7 +33,7 @@ In general, using a HaxeUI `backend` is as simple as just including `haxeui-core
 Currently, HaxeUI supports the following `backends` (some of which have not yet had an alpha release - indicated by their check-box). Please refer to each `backend` for specific instructions on how to set-up and initialise the host framework (if required).
 
 | Alpha             | Backend Library                   | Dependencies        | Platforms | Native Components | CI |
-| :-------------: | -----------------------| ----------------- | :-----: | :---: | :---: |
+| :-------------: | -----------------------| ----------------- | ----- | :---: | :---: |
 | <img src="https://dl.dropboxusercontent.com/u/26678671/tick.png"> | <a href="https://github.com/haxeui/haxeui-openfl">haxeui-openfl</a> | `OpenFL` / `Lime` | <img src="https://dl.dropboxusercontent.com/u/26678671/mobile.png" title="Mobile"> <img src="https://dl.dropboxusercontent.com/u/26678671/desktop.png" title="Desktop"> <img src="https://dl.dropboxusercontent.com/u/26678671/browser.png" title="Browser"> | <img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"> | [![Build Status linux/osx](https://img.shields.io/travis/haxeui/haxeui-openfl/master.svg?maxAge=2592000?style=plastic)](https://travis-ci.org/haxeui/haxeui-openfl) |
 | <img src="https://dl.dropboxusercontent.com/u/26678671/tick.png"> | <a href="https://github.com/haxeui/haxeui-flambe">haxeui-flambe</a> | `Flambe` | <img src="https://dl.dropboxusercontent.com/u/26678671/mobile.png" title="Mobile">, <img src="https://dl.dropboxusercontent.com/u/26678671/browser.png" title="Browser"> | <img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"> | [![Build Status linux/osx](https://img.shields.io/travis/haxeui/haxeui-flambe/master.svg?maxAge=2592000?style=plastic)](https://travis-ci.org/haxeui/haxeui-flambe) |
 | <img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"> | <a href="https://github.com/haxeui/haxeui-kha">haxeui-kha</a> | `Kha` | <img src="https://dl.dropboxusercontent.com/u/26678671/mobile.png" title="Mobile"> <img src="https://dl.dropboxusercontent.com/u/26678671/desktop.png" title="Desktop"> <img src="https://dl.dropboxusercontent.com/u/26678671/browser.png" title="Browser"> | <img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"> | `n/a` |
@@ -44,7 +44,9 @@ Currently, HaxeUI supports the following `backends` (some of which have not yet 
 | <img src="https://dl.dropboxusercontent.com/u/26678671/cross.png"> | <a href="https://github.com/haxeui/haxeui-hxwidgets">haxeui-hxwidgets</a> | `hxWidgets` / `wxWidgets` | <img src="https://dl.dropboxusercontent.com/u/26678671/desktop.png" title="Desktop"> | <img src="https://dl.dropboxusercontent.com/u/26678671/tick.png"> | `n/a` |
 
 <img src="https://dl.dropboxusercontent.com/u/26678671/mobile.png" title="Mobile"> = Mobile
+
 <img src="https://dl.dropboxusercontent.com/u/26678671/desktop.png" title="Desktop"> = Desktop
+
 <img src="https://dl.dropboxusercontent.com/u/26678671/browser.png" title="Browser"> = Browser
 
 <h2>Usage</h2>
