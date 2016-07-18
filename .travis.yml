@@ -10,7 +10,8 @@ cache:
     - $HOME/.npm
 script:
   - npm install grunt-cli -g
+  - npm install travis-ci -g
   #- npm install
-  - grunt travis
+  # - grunt travis
 after_success:
   - node trigger-build.js
