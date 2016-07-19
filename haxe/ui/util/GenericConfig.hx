@@ -53,25 +53,10 @@ class GenericConfig {
     }
 
     public function query(q:String, defaultValue:String = null):String {
-        var parts:Array<String> = q.split(".");
-
+        var regexp:EReg = new EReg("\\.(?![^\\[]*\\])", "g");
+        var final:Array<String> = regexp.split(q);
         var ref:GenericConfig = this;
-        var final:Array<String> = new Array<String>();
-        var temp:String = null;
-        for (p in parts) {
-            if (temp == null && p.indexOf("[") == -1 && p.indexOf("]") == -1) {
-                final.push(p);
-            } else if (p.indexOf("[") != -1) {
-                temp = p;
-            } else if (p.indexOf("]") != -1) {
-                temp += "." + p;
-                final.push(temp);
-                temp = null;
-            } else if (temp != null) {
-                temp += "." + p;
-            }
-        }
-
+        
         var value:String = null;
         for (f in final) {
             if (f.indexOf("[") == -1 && f.indexOf("@") == -1) {
@@ -100,5 +85,32 @@ class GenericConfig {
         }
 
         return value;
+    }
+    
+    // TODO: duplication
+    public function queryValues(q:String):Map<String, String> {
+        var regexp:EReg = new EReg("\\.(?![^\\[]*\\])", "g");
+        var final:Array<String> = regexp.split(q);
+        var ref:GenericConfig = this;
+        
+        for (f in final) {
+            if (f.indexOf("[") == -1 && f.indexOf("@") == -1) {
+                ref = ref.findBy(f);
+            } else if (f.indexOf("[") != -1) {
+                var p:Array<String> = f.split("[");
+                var p1:String = p[0];
+                var p2:String = p[1].split("=")[0];
+                var p3:String = p[1].split("=")[1];
+                p3 = p3.substr(0, p3.length - 1);
+
+                ref = ref.findBy(p1, p2, p3);
+             }
+
+            if (ref == null) {
+                return null;
+            }
+        }
+
+        return ref.values;
     }
 }

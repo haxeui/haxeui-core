@@ -5,6 +5,7 @@ import haxe.ui.core.Screen;
 import haxe.ui.focus.FocusManager;
 import haxe.ui.macros.BackendMacros;
 import haxe.ui.macros.ModuleMacros;
+import haxe.ui.macros.NativeMacros;
 import haxe.ui.styles.Engine;
 import haxe.ui.themes.ThemeManager;
 import haxe.ui.util.GenericConfig;
@@ -16,8 +17,8 @@ class Toolkit {
 
     public static var properties:Map<String, String> = new Map<String, String>();
 
-    public static var backendConfig:GenericConfig = new GenericConfig();
     public static var backendProperties:Properties = new Properties();
+    public static var nativeConfig:GenericConfig = new GenericConfig();
 
     private static var _built:Bool = false;
     public static function build() {
@@ -26,6 +27,7 @@ class Toolkit {
         }
         BackendMacros.processBackend();
         ModuleMacros.processModules();
+        NativeMacros.processNative();
         _built = true;
     }
 

@@ -2,7 +2,7 @@
     native: true;
 }
 
-.hslider, .vslider, .hprogress, .vprogress {
+.hslider:native, .vslider:native, .hprogress:native, .vprogress:native {
     width: auto;
     height: auto;
     background: none;
@@ -10,14 +10,14 @@
     border-radius: none;
 }
 
-.button {
+.button:native {
     background: none;
     border: none;
     border-radius: none;
     color: none;
 }
 
-.textfield {
+.textfield:native {
     background: none;
     border: none;
     border-radius: none;
@@ -25,45 +25,6 @@
     filter: none;
 }
 
-/*
-.button {
-    background: none;
-    border: none;
-    border-radius: none;
-    color: none;
-}
-
-.hprogress, .vprogress, .hslider, .vslider {
-    background: none;
-    border: none;
-    border-radius: none;
-}
-
-.tabbar-button {
-    border-radius: 0px;
-    background: #EDEDED #E6E6E6;
-    color: #222222;
-    border: 1px solid #ABABAB;
-    border-radius: 2px;
-    padding: 5px 10px;
-    cursor: pointer;
-    width: auto;
-    height: auto;
-    spacing: 5px 5px;
-}
-
-.tabbar-button:down {
-    border: 1px solid #ABABAB;
-}
-
-.tabbar-button-selected, .tabbar-button-selected:hover, .tabbar-button-selected:down {
-    border-radius: 0px;
-    background-color: white;
-    border: 1px solid #ABABAB;
-}
-*/
-
-
-.dialog {
+.dialog:native {
     padding-top: 0px !important;
 }

@@ -40,6 +40,7 @@ class DeferredBindingInfo {
 /**
  Base class of all HaxeUI controls
 **/
+@:allow(haxe.ui.backend.ComponentBase)
 @:build(haxe.ui.macros.Macros.buildStyles())
 @:autoBuild(haxe.ui.macros.Macros.buildStyles())
 @:autoBuild(haxe.ui.macros.Macros.buildBindings())
@@ -66,7 +67,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
 
         // we dont want to actually apply the classes, just find out if native is there or not
         var s = Toolkit.styleSheet.applyClasses(this, false);
-        if (s.native != null) {
+        if (s.native != null && hasNativeEntry == true) {
             native = s.native;
         } else {
             create();
@@ -100,39 +101,22 @@ class Component extends ComponentBase implements IComponentBase implements IClon
 
     private var hasNativeEntry(get, null):Bool;
     private function get_hasNativeEntry():Bool {
-        var h = false;
-        var nativeConfig:GenericConfig = Toolkit.backendConfig.findBy("native");
-        if (nativeConfig != null) {
-            var className = Type.getClassName(Type.getClass(this));
-            var componentConfig:GenericConfig = nativeConfig.findBy("component", "id", className);
-            if (componentConfig != null) {
-                h = true;
-            }
-        }
-        return h;
+        return getNativeConfigProperty(".@id") != null;
     }
 
     private var _defaultLayout:Layout;
     private function createLayout():Layout {
         var l:Layout = null;
         if (native == true) {
-            var nativeConfig:GenericConfig = Toolkit.backendConfig.findBy("native");
-            if (nativeConfig != null) {
-                var className = Type.getClassName(Type.getClass(this));
-                var componentConfig:GenericConfig = nativeConfig.findBy("component", "id", className);
-                if (componentConfig != null) {
-                    var sizeConfig:GenericConfig = componentConfig.findBy("size");
-                    if (sizeConfig != null) {
-                        var sizeClass:String = sizeConfig.values.get("class");
-                        var size:DelegateLayoutSize = Type.createInstance(Type.resolveClass(sizeClass), []);
-                        size.config = sizeConfig.values;
-                        l = new DelegateLayout(size);
-                    }
-                    var layoutConfig:GenericConfig = componentConfig.findBy("layout");
-                    if (layoutConfig != null) {
-                        var layoutClass:String = layoutConfig.values.get("class");
-                        l = Type.createInstance(Type.resolveClass(layoutClass), []);
-                    }
+            var sizeProps = getNativeConfigProperties('.size');
+            if (sizeProps != null && sizeProps.exists("class")) {
+                var size:DelegateLayoutSize = Type.createInstance(Type.resolveClass(sizeProps.get("class")), []);
+                size.config = sizeProps;
+                l = new DelegateLayout(size);
+            } else {
+                var layoutProps = getNativeConfigProperties('.layout');
+                if (layoutProps != null && layoutProps.exists("class")) {
+                    l = Type.createInstance(Type.resolveClass(layoutProps.get("class")), []);
                 }
             }
         }
@@ -155,18 +139,10 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         }
 
         if (native == true) {
-            var nativeConfig:GenericConfig = Toolkit.backendConfig.findBy("native");
-            if (nativeConfig != null) {
-                var className = Type.getClassName(Type.getClass(this));
-                var componentConfig:GenericConfig = nativeConfig.findBy("component", "id", className);
-                if (componentConfig != null) {
-                    var behaviourConfig:GenericConfig = componentConfig.findBy("behaviour", "id", id);
-                    if (behaviourConfig != null) {
-                        var behaviourClass:String = behaviourConfig.values.get("class");
-                        b = Type.createInstance(Type.resolveClass(behaviourClass), [this]);
-                        b.config = behaviourConfig.values;
-                    }
-                }
+            var nativeProps = getNativeConfigProperties('.behaviour[id=${id}]');
+            if (nativeProps != null && nativeProps.exists("class")) {
+                b = Type.createInstance(Type.resolveClass(nativeProps.get("class")), [this]);
+                b.config = nativeProps;
             }
         }
 
@@ -212,6 +188,10 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         return _native;
     }
     private function set_native(value:Null<Bool>):Null<Bool> {
+        var className:String = Type.getClassName(Type.getClass(this));
+        if (hasNativeEntry == false) {
+            return value;
+        }
         if (_native == value) {
             return value;
         }
@@ -221,6 +201,11 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         }
 
         _native = value;
+        if (_native == true && hasNativeEntry) {
+            addClass(":native");
+        } else {
+            removeClass(":native");
+        }
         _behaviours  = new Map<String, Behaviour>();
         create();
         return value;
@@ -468,7 +453,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     public function addComponent(child:Component):Component {
         if (this.native == true) {
             var className:String = Type.getClassName(Type.getClass(this));
-            var allowChildren:Bool = Toolkit.backendConfig.queryBool('native.component[id=${className}].@allowChildren', true);
+            var allowChildren:Bool = getNativeConfigPropertyBool('.@allowChildren', true);
             if (allowChildren == false) {
                 return child;
             }
@@ -1648,5 +1633,25 @@ class Component extends ComponentBase implements IComponentBase implements IClon
             _classProperties = new Map<String, String>();
         }
         _classProperties.set(name, value);
+    }
+    
+    private function getNativeConfigProperty(query:String, defaultValue:String = null):String {
+        query = 'component[id=${className}]${query}';
+        return Toolkit.nativeConfig.query(query, defaultValue);
+    }
+    
+    private function getNativeConfigPropertyBool(query:String, defaultValue:Bool = false):Bool {
+        query = 'component[id=${className}]${query}';
+        return Toolkit.nativeConfig.queryBool(query, defaultValue);
+    }
+    
+    private function getNativeConfigProperties(query:String = ""):Map<String, String> {
+        query = 'component[id=${className}]${query}';
+        return Toolkit.nativeConfig.queryValues(query);
+    }
+    
+    public var className(get, null):String;
+    private function get_className():String {
+        return Type.getClassName(Type.getClass(this));
     }
 }

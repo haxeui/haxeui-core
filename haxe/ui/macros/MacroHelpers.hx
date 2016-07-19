@@ -1,4 +1,5 @@
 package haxe.ui.macros;
+import haxe.ui.util.GenericConfig;
 
 #if macro
 import haxe.macro.Expr;
@@ -241,5 +242,87 @@ class MacroHelpers {
         return result;
     }
 
+    public static function buildGenericConfigCode(c:GenericConfig, name:String, v:Int = 0):String {
+        var code:String = "";
+        for (key in c.values.keys()) {
+            code += 's${v}.values.set("${key}", "${c.values.get(key)}");\n';
+        }
+        for (sectionName in c.sections.keys()) {
+            for (section in c.sections.get(sectionName)) {
+                if (v == 0) {
+                    code += 'var s1 = ${name}.addSection("${sectionName}");\n';
+                } else {
+                    code += 'var s${v + 1} = s${v}.addSection("${sectionName}");\n';
+                }
+                code += buildGenericConfigCode(section, name, v + 1);
+            }
+        }
+        return code;
+    }
+    
+    public static function scanClassPath(processFileFn:String->Bool, searchCriteria:String = null, skipHidden:Bool = true) {
+        var paths:Array<String> = Context.getClassPath();
+        var processedFiles:Array<String> = new Array<String>();
+        while (paths.length != 0) {
+            var path:String = paths[0];
+            paths.remove(path);
+            path = StringTools.replace(path, "\\", "/");
+            
+            if (MacroHelpers.skipPath(path) == true) {
+                continue;
+            }
+            var pathArray:Array<String> = path.split("/");
+            var lastPath:String = pathArray[pathArray.length - 1];
+            if (StringTools.startsWith(lastPath, ".") && skipHidden == true) {
+                continue;
+            }
+
+            if (sys.FileSystem.exists(path)) {
+                if (sys.FileSystem.isDirectory(path)) {
+                    var subDirs:Array<String> = sys.FileSystem.readDirectory(path);
+                    var continueSearch = true;
+                    for (subDir in subDirs) {
+                        var fileName = subDir;
+                        if (StringTools.endsWith(path, "/") == false && StringTools.endsWith(path, "\\") == false) {
+                            subDir = path + "/" + subDir;
+                        } else {
+                            subDir = path + subDir;
+                        }
+                        
+                        if (sys.FileSystem.isDirectory(subDir)) {
+                            subDir = StringTools.replace(subDir, "\\", "/");
+                            paths.insert(0, subDir);
+                        } else {
+                            var file:String = subDir;
+                            if (searchCriteria == null) {
+                                if (processedFiles.indexOf(file) == -1) {
+                                    continueSearch = !processFileFn(file);
+                                    if (continueSearch == false) {
+                                        processedFiles.push(file);
+                                    }
+                                } else {
+                                    continueSearch = false;
+                                }
+                            } else if (StringTools.startsWith(fileName, searchCriteria)) {
+                                if (processedFiles.indexOf(file) == -1) {
+                                    continueSearch = !processFileFn(file);
+                                    if (continueSearch == false) {
+                                        processedFiles.push(file);
+                                    }
+                                } else {
+                                    continueSearch = false;
+                                }
+                            }
+                        }
+                        
+                        if (continueSearch == false) {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
     #end
 }

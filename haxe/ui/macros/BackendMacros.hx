@@ -34,7 +34,8 @@ class BackendMacros {
 
         loadBackends();
         if (_backend == null) {
-            throw "No backend config found!";
+            //throw "No backend config found!";
+            return macro null;
         } else if (Lambda.count(backends) > 1) {
             trace("WARNING: mulitple backend configs found, use --XXX to specify which to use"); // place holder
         }
@@ -80,7 +81,7 @@ class BackendMacros {
         loadBackendProperties();
 
         var code:String = "function() {\n";
-        code += buildBackendConfig(_backend.config, 0);
+        //code += buildBackendConfig(_backend.config, 0);
         for (name in properties.names()) {
             code += 'Toolkit.backendProperties.setProp("${name}", "${properties.getProp(name)}");\n';
         }

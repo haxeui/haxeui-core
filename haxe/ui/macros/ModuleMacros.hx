@@ -213,47 +213,17 @@ class ModuleMacros {
             return _modules;
         }
 
-
-        var paths:Array<String> = Context.getClassPath();
-        while (paths.length != 0) {
-            var path:String = paths[0];
-            paths.remove(path);
-
-            if (MacroHelpers.skipPath(path) == true) {
-                continue;
+        MacroHelpers.scanClassPath(function(filePath:String) {
+            var moduleParser = ModuleParser.get(MacroHelpers.extension(filePath));
+            if (moduleParser != null) {
+                var module:Module = moduleParser.parse(File.getContent(filePath));
+                module.validate();
+                _modules.push(module);
+                return true;
             }
-
-            if (sys.FileSystem.exists(path)) {
-                if (sys.FileSystem.isDirectory(path)) {
-                    var subDirs:Array<String> = sys.FileSystem.readDirectory(path);
-                    var found = false;
-                    for (subDir in subDirs) {
-                        var fileName = subDir;
-                        if (StringTools.endsWith(path, "/") == false && StringTools.endsWith(path, "\\") == false) {
-                            subDir = path + "/" + subDir;
-                        } else {
-                            subDir = path + subDir;
-                        }
-
-                        if (sys.FileSystem.isDirectory(subDir) && found == false) {
-                            paths.insert(0, subDir);
-                        } else {
-                            var file:String = subDir;
-                            if (StringTools.startsWith(fileName, "module.")) {
-                                var moduleParser = ModuleParser.get(MacroHelpers.extension(fileName));
-                                if (moduleParser != null) {
-                                    var module:Module = moduleParser.parse(File.getContent(file));
-                                    module.validate();
-                                    _modules.push(module);
-                                    found = true; // 1 per classpath entry
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-        }
+            return false;
+        }, "module.");
+        
 
         _modulesLoaded = true;
         return _modules;

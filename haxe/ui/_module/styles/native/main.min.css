@@ -1,5 +1,5 @@
 *{native:true;}
-.hslider,.vslider,.hprogress,.vprogress{width:auto;height:auto;background:none;border:none;border-radius:none;}
-.button{background:none;border:none;border-radius:none;color:none;}
-.textfield{background:none;border:none;border-radius:none;color:none;filter:none;}
-.dialog{padding-top:0px!important;}
+.hslider:native,.vslider:native,.hprogress:native,.vprogress:native{width:auto;height:auto;background:none;border:none;border-radius:none;}
+.button:native{background:none;border:none;border-radius:none;color:none;}
+.textfield:native{background:none;border:none;border-radius:none;color:none;filter:none;}
+.dialog:native{padding-top:0px!important;}
