@@ -2,7 +2,7 @@
   <img src="https://dl.dropboxusercontent.com/u/26678671/haxeui2-warning.png"/>
 </p>
 
-[![Build Status linux/osx](https://img.shields.io/travis/haxeui/haxeui-core/master.svg?maxAge=2592000?style=plastic)](https://travis-ci.org/haxeui/haxeui-core)
+[![Build Status](https://travis-ci.org/haxeui/haxeui-flambe.svg?branch=master)](https://travis-ci.org/haxeui/haxeui-flambe)
 [![Support this project on Patreon](https://dl.dropboxusercontent.com/u/26678671/patreon_button.png)](https://www.patreon.com/haxeui)
 
 <h2>haxeui-core</h2>
