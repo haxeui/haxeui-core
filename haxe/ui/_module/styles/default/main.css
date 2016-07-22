@@ -226,7 +226,7 @@
 }
 
 .vscroll .button.deinc {
-    icon: "haxeui-core/styles/default/up_arrow - Copy.png";
+    icon: "haxeui-core/styles/default/up_arrow.png";
 }
 
 .vscroll .button.deinc:down {
@@ -318,7 +318,7 @@
 }
 
 .checkbox-value:selected {
-    icon: "haxeui-core/styles/default/check4.png";
+    icon: "haxeui-core/styles/default/check.png";
 }
 
 .checkbox-label {
@@ -363,7 +363,7 @@
 }
 
 .optionbox-value:selected {
-    icon: "haxeui-core/styles/default/option5.png";
+    icon: "haxeui-core/styles/default/option.png";
 }
 
 .optionbox-label {
