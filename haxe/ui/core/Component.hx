@@ -613,6 +613,9 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     public function hide():Void {
         handleVisibility(false);
         _hidden = true;
+        if (parentComponent != null) {
+            parentComponent.invalidateLayout();
+        }
     }
 
     /**
@@ -622,6 +625,9 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     public function show():Void {
         handleVisibility(true);
         _hidden = false;
+        if (parentComponent != null) {
+            parentComponent.invalidateLayout();
+        }
     }
 
     private var _hidden:Bool = false;
