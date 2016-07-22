@@ -14,7 +14,10 @@ class FileResourceResolver extends ResourceResolver {
         _rootFile = rootFile;
         var arr:Array<String> = _rootFile.split("/");
         arr.pop();
-        _rootDir = arr.join("/") + "/";
+        _rootDir = arr.join("/");
+        if (arr.length > 1) {
+            _rootDir += "/";
+        }
     }
 
     #if (macro || sys)
