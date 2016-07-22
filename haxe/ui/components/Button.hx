@@ -22,7 +22,7 @@ class Button extends InteractiveComponent implements IClonable<Button> {
     public function new() {
         super();
         #if openfl
-        mouseChildren = false;
+        //mouseChildren = false;
         #end
     }
 
