@@ -646,6 +646,9 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         return false;
     }
     private function set_hidden(value:Bool):Bool {
+        if (value == _hidden) {
+            return value;
+        }
         if (value == true) {
             hide();
         } else {
