@@ -1,6 +1,4 @@
 .component {
-    __width: auto;
-    __height: auto;
 }
 
 .custom-component {
@@ -28,13 +26,11 @@
     width: 300px;
     background-color: white;
     padding: 1px;
-    ___border: 1px solid black;
 }
 
 .dialog-title-bar {
     background-color: #EEEEEE;
     padding: 5px;
-    __border: 1px solid #ABABAB;
     width: 100%;
     border-bottom-width: 1px;
     border-bottom-color: #ABABAB;
@@ -45,12 +41,10 @@
     vertical-align: center;
     font-style: bold;
     color: #888888;
-    __padding-top: 5px;
 }
 
 .dialog-content {
     padding: 10px;
-    __padding-top: 0px;
 }
 
 .dialog-close-button {
@@ -159,8 +153,6 @@
 *************************************************************************/
 .vbox, .hbox, .absolute {
     spacing: 5px 5px;
-    __border: 1px solid #DDDDDD;
-    __padding: 5px;
     spacing: 5px 5px;
 }
 
@@ -281,7 +273,6 @@
 ** SCROLLVIEW
 *************************************************************************/
 .scrollview {
-    __background-color: white;
     border: 1px solid #ABABAB;
     border-radius: 1px;
     padding: 1px;
@@ -308,7 +299,6 @@
 }
 
 .checkbox:hover {
-    __color: #216AAE;
 }
 
 .checkbox-value {
@@ -353,7 +343,6 @@
 }
 
 .optionbox:hover {
-    __color: #216AAE;
 }
 
 .optionbox-value {
@@ -430,8 +419,6 @@
 .hslider {
     padding-left: 5px;
     padding-right: 5px;
-    __height: auto;
-    __width: auto;
 }
 
 .hslider .slider-value-background {
@@ -444,8 +431,6 @@
     height: 8px;
     vertical-align: center;
     cursor: pointer;
-    __padding-left: 10px;
-    __padding-right: 10px;
 }
 
 .hslider .slider-value {
@@ -502,13 +487,11 @@
 ** TABS
 *************************************************************************/
 .tabbar {
-    __background-color: #ABABAB;
     horizontal-spacing: 5px;
     padding-left: 5px;
     padding-right: 5px;
     height: auto;
     width: auto;
-    __border: none;
     background-color: white;
     border-bottom-width: 1px;
     border-bottom-color: #ABABAB;
@@ -529,13 +512,10 @@
 }
 
 .tabbar-button:down {
-    __border: 1px solid #ABABAB;
 }
 
 .tabbar-button-selected, .tabbar-button-selected:hover, .tabbar-button-selected:down {
     border-radius: 0px;
-    __background-color: white;
-    __border: 1px solid #ABABAB;
 
     border: 1px solid #ABABAB;
     border-bottom-width: 1px;
@@ -544,11 +524,9 @@
 }
 
 .tabbar-button-selected .label {
-    __margin-top: -1px;
 }
 
 .tabbar-button-selected .icon {
-    __margin-top: -1px;
 }
 
 .tabview {
@@ -558,7 +536,6 @@
 }
 
 .tabview .tabview-tabs {
-    __border: none;
 }
 
 .tabview .tabview-content {

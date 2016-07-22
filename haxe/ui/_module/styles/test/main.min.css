@@ -1,4 +1,4 @@
-.component{__border:1px solid #DDDDDD;__background-color:white;}
+.component{}
 #bob{offset-top:15;background-color:blue;}
-.vbox,.hbox,.absolute{__background-color:white;__border:1px solid #DDDDDD;__padding:5px;spacing:5px 5px;}
-/
+.vbox,.hbox,.absolute{spacing:5px 5px;}
+
