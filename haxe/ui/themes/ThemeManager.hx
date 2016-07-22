@@ -48,7 +48,6 @@ class ThemeManager {
         var styles = theme.styles;
         styles.reverse();
         for (s in styles) {
-            trace(s);
             var css:String = Toolkit.assets.getText(s);
             if (css != null) {
                 Toolkit.styleSheet.addRules(css);
