@@ -5,15 +5,15 @@ class XMLParser extends ConfigParser {
     public function new() {
         super();
     }
-    
+
     public override function parse(data:String):GenericConfig {
         var config:GenericConfig = new GenericConfig();
-        
+
         var xml:Xml = Xml.parse(data).firstElement();
         for (el in xml.elements()) {
             parseAddionalConfig(el, config);
         }
-        
+
         return config;
     }
 

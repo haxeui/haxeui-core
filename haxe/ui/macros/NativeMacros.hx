@@ -20,20 +20,20 @@ class NativeMacros {
         if (_nativeProcessed == true) {
             return macro null;
         }
-        
+
         var code:String = "function() {\n";
-        
+
         var nativeConfigs:Array<GenericConfig> = loadNativeConfig();
         for (config in nativeConfigs) {
             code += MacroHelpers.buildGenericConfigCode(config, "nativeConfig");
         }
-        
+
         code += "}()\n";
-        
+
         _nativeProcessed = true;
         return Context.parseInlineString(code, Context.currentPos());
     }
-    
+
     #if macro
     private static var _nativeConfigLoaded:Bool = false;
     private static var _nativeConfigs:Array<GenericConfig> = new Array<GenericConfig>();
@@ -41,7 +41,7 @@ class NativeMacros {
         if (_nativeConfigLoaded == true) {
             return _nativeConfigs;
         }
-        
+
         MacroHelpers.scanClassPath(function(filePath:String) {
             var parser:ConfigParser = ConfigParser.get(MacroHelpers.extension(filePath));
             if (parser != null) {
@@ -49,10 +49,10 @@ class NativeMacros {
                 _nativeConfigs.push(config);
                 return true;
             }
-            
+
             return false;
         }, "native.");
-        
+
         _nativeConfigLoaded = true;
         return _nativeConfigs;
     }

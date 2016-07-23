@@ -56,7 +56,7 @@ class GenericConfig {
         var regexp:EReg = new EReg("\\.(?![^\\[]*\\])", "g");
         var final:Array<String> = regexp.split(q);
         var ref:GenericConfig = this;
-        
+
         var value:String = null;
         for (f in final) {
             if (f.indexOf("[") == -1 && f.indexOf("@") == -1) {
@@ -86,13 +86,13 @@ class GenericConfig {
 
         return value;
     }
-    
+
     // TODO: duplication
     public function queryValues(q:String):Map<String, String> {
         var regexp:EReg = new EReg("\\.(?![^\\[]*\\])", "g");
         var final:Array<String> = regexp.split(q);
         var ref:GenericConfig = this;
-        
+
         for (f in final) {
             if (f.indexOf("[") == -1 && f.indexOf("@") == -1) {
                 ref = ref.findBy(f);

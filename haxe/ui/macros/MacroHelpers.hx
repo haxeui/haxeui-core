@@ -259,7 +259,7 @@ class MacroHelpers {
         }
         return code;
     }
-    
+
     public static function scanClassPath(processFileFn:String->Bool, searchCriteria:String = null, skipHidden:Bool = true) {
         var paths:Array<String> = Context.getClassPath();
         var processedFiles:Array<String> = new Array<String>();
@@ -267,7 +267,7 @@ class MacroHelpers {
             var path:String = paths[0];
             paths.remove(path);
             path = StringTools.replace(path, "\\", "/");
-            
+
             if (MacroHelpers.skipPath(path) == true) {
                 continue;
             }
@@ -288,7 +288,7 @@ class MacroHelpers {
                         } else {
                             subDir = path + subDir;
                         }
-                        
+
                         if (sys.FileSystem.isDirectory(subDir)) {
                             subDir = StringTools.replace(subDir, "\\", "/");
                             paths.insert(0, subDir);
@@ -314,7 +314,7 @@ class MacroHelpers {
                                 }
                             }
                         }
-                        
+
                         if (continueSearch == false) {
                             break;
                         }
@@ -323,6 +323,6 @@ class MacroHelpers {
             }
         }
     }
-    
+
     #end
 }

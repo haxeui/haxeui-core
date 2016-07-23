@@ -1117,7 +1117,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         return value;
     }
 
-    #if openfl
+    #if (openfl || nme)
 
     private var _width:Null<Float>;
     #if flash @:setter(width) #else override #end
@@ -1643,22 +1643,22 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         }
         _classProperties.set(name, value);
     }
-    
+
     private function getNativeConfigProperty(query:String, defaultValue:String = null):String {
         query = 'component[id=${className}]${query}';
         return Toolkit.nativeConfig.query(query, defaultValue);
     }
-    
+
     private function getNativeConfigPropertyBool(query:String, defaultValue:Bool = false):Bool {
         query = 'component[id=${className}]${query}';
         return Toolkit.nativeConfig.queryBool(query, defaultValue);
     }
-    
+
     private function getNativeConfigProperties(query:String = ""):Map<String, String> {
         query = 'component[id=${className}]${query}';
         return Toolkit.nativeConfig.queryValues(query);
     }
-    
+
     public var className(get, null):String;
     private function get_className():String {
         return Type.getClassName(Type.getClass(this));

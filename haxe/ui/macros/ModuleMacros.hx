@@ -223,7 +223,7 @@ class ModuleMacros {
             }
             return false;
         }, "module.");
-        
+
 
         _modulesLoaded = true;
         return _modules;

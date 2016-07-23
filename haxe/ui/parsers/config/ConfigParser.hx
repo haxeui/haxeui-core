@@ -3,18 +3,18 @@ import haxe.ui.util.GenericConfig;
 
 class ConfigParser {
     private static var _parsers:Map<String, Class<ConfigParser>>;
-    
+
     public function new() {
-        
+
     }
-    
+
     public function parse(data:String):GenericConfig {
         throw "Config parser not implemented!";
     }
 
     public static function get(extension:String):ConfigParser {
         defaultParsers();
-        
+
         var cls:Class<ConfigParser> = _parsers.get(extension);
         if (cls == null) {
             throw 'No config parser found for "${extension}"';
@@ -27,13 +27,13 @@ class ConfigParser {
 
         return instance;
     }
-    
+
     private static function defaultParsers() {
         if (_parsers == null) {
             register("xml", XMLParser);
         }
     }
-    
+
     public static function register(extension:String, cls:Class<ConfigParser>) {
         if (_parsers == null) {
             _parsers = new Map<String, Class<ConfigParser>>();
