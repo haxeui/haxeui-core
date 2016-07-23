@@ -19,3 +19,4 @@ Travis::Repository.find('haxeui/haxeui-html5').last_build.restart
 Travis::Repository.find('haxeui/haxeui-pixijs').last_build.restart
 Travis::Repository.find('haxeui/haxeui-flambe').last_build.restart
 Travis::Repository.find('haxeui/haxeui-nme').last_build.restart
+Travis::Repository.find('haxeui/haxeui-kha').last_build.restart
