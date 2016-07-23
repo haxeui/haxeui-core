@@ -1,9 +1,16 @@
 package haxe.ui.util;
 
-#if (openfl || flash)
+#if (openfl || flash || nme)
 
 import haxe.io.Bytes;
+
+#if (openfl)
 import openfl.utils.ByteArray;
+#elseif (flash)
+import flash.utils.ByteArray;
+#elseif (nme)
+import nme.utils.ByteArray;
+#end
 
 class ByteConverter {
     public static function fromHaxeBytes(bytes:Bytes):ByteArray {
