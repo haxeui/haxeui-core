@@ -13,9 +13,6 @@ import sys.io.File;
 import haxe.macro.Compiler;
 #end
 
-@:remove @:autoBuild(haxe.ui.macros.BackendMacros.test())
-extern interface TestClass {}
-
 class BackendMacros {
     public static var backends:Map<String, Backend> = new Map<String, Backend>();
     public static var properties:Properties = new Properties();
