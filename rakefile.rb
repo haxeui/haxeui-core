@@ -21,3 +21,4 @@ Travis::Repository.find('haxeui/haxeui-flambe').last_build.restart
 Travis::Repository.find('haxeui/haxeui-nme').last_build.restart
 Travis::Repository.find('haxeui/haxeui-kha').last_build.restart
 Travis::Repository.find('haxeui/haxeui-luxe').last_build.restart
+Travis::Repository.find('haxeui/haxeui-hxwidgets').last_build.restart
