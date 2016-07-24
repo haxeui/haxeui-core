@@ -119,14 +119,14 @@ class XMLParser extends ModuleParser {
     private function buildCondition(parentNode:Xml, node:Xml):String {
         var condition:String = parentNode.get("condition");
         if (parentNode.get("if") != null) {
-            condition = '(backend == "${parentNode.get("if")}")';
+            condition = '${parentNode.get("if")}';
         }
 
         if (node.get("condition") != null) {
             condition = node.get("condition");
         }
         if (node.get("if") != null) {
-            condition = '(backend == "${node.get("if")}")';
+            condition = '${node.get("if")}';
         }
 
         return condition;

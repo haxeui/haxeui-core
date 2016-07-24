@@ -229,7 +229,11 @@ class MacroHelpers {
             var parser = new hscript.Parser();
             var program = parser.parseString(condition);
             var interp = new hscript.Interp();
-            interp.variables.set("backend", BackendMacros.backendId);
+
+            var defines:Map<String, String> = Context.getDefines();
+            for (key in defines.keys()) {
+                interp.variables.set(key, defines.get(key));
+            }
 
             try {
                 var r = interp.execute(program);
