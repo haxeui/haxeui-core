@@ -30,7 +30,7 @@ In general, using a HaxeUI `backend` is as simple as just including `haxeui-core
 -lib haxeui-openfl
 ```
 
-Currently, HaxeUI supports the following `backends` (some of which have not yet had an alpha release - indicated by their check-box). Please refer to each `backend` for specific instructions on how to set-up and initialise the host framework (if required).
+Currently, HaxeUI supports the following `backends`. Please refer to each `backend` for specific instructions on how to set-up and initialise the host framework (if required).
 
 | Backend Library                   | Dependencies        | Platforms | Native Components | CI |
 | ------------- | -----------------------| ----------------- | :-----: | :------: |
