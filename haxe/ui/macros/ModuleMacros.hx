@@ -222,7 +222,7 @@ class ModuleMacros {
                 return true;
             }
             return false;
-        }, "module.");
+        }, ["module."]);
 
 
         _modulesLoaded = true;

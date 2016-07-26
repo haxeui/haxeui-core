@@ -16,7 +16,8 @@ class MacroHelpers {
                                         "/lib/openfl/",
                                         "/lib/yaml/",
                                         "/lib/hscript/",
-                                        "/haxe/std/"];
+                                        "/haxe/std/",
+                                        "bin/"];
 
     #if macro
     public static function getConstructor(fields:Array<Field>) {
@@ -264,7 +265,7 @@ class MacroHelpers {
         return code;
     }
 
-    public static function scanClassPath(processFileFn:String->Bool, searchCriteria:String = null, skipHidden:Bool = true) {
+    public static function scanClassPath(processFileFn:String->Bool, searchCriteria:Array<String> = null, skipHidden:Bool = true) {
         var paths:Array<String> = Context.getClassPath();
         var processedFiles:Array<String> = new Array<String>();
         while (paths.length != 0) {
@@ -307,14 +308,23 @@ class MacroHelpers {
                                 } else {
                                     continueSearch = false;
                                 }
-                            } else if (StringTools.startsWith(fileName, searchCriteria)) {
-                                if (processedFiles.indexOf(file) == -1) {
-                                    continueSearch = !processFileFn(file);
-                                    if (continueSearch == false) {
-                                        processedFiles.push(file);
+                            } else {
+                                var found:Bool = false;
+                                for (s in searchCriteria) {
+                                    if (StringTools.startsWith(fileName, s)) {
+                                        found = true;
+                                        break;
                                     }
-                                } else {
-                                    continueSearch = false;
+                                }
+                                if (found) {
+                                    if (processedFiles.indexOf(file) == -1) {
+                                        continueSearch = !processFileFn(file);
+                                        if (continueSearch == false) {
+                                            processedFiles.push(file);
+                                        }
+                                    } else {
+                                        continueSearch = false;
+                                    }
                                 }
                             }
                         }

@@ -51,7 +51,7 @@ class NativeMacros {
             }
 
             return false;
-        }, "native.");
+        }, ["native."]);
 
         _nativeConfigLoaded = true;
         return _nativeConfigs;
