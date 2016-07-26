@@ -964,10 +964,6 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     **/
     @:dox(group="Size related properties and methods")
     public function resizeComponent(width:Null<Float>, height:Null<Float>) {
-        if (_ready == false) {
-            //return;
-        }
-
         var invalidate:Bool = false;
         if (width != null && _componentWidth != width) {
             _componentWidth = width;
@@ -1205,10 +1201,6 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     **/
     @:dox(group="Position related properties and methods")
     public function moveComponent(left:Null<Float>, top:Null<Float>) {
-        if (_ready == false) {
-            return;
-        }
-
         var invalidate:Bool = false;
         if (left != null && _left != left) {
             _left = left;
