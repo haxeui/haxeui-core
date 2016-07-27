@@ -108,7 +108,7 @@ class ScrollView extends Component implements IClonable<ScrollView> {
             v = super.addComponent(_contents);
         } else {
             if (_contents == null) {
-                _contents = new Box();
+                _contents = new VBox();
                 _contents.addClass("scrollview-contents");
                 _contents.registerEvent(UIEvent.RESIZE, _onContentsResized);
                 _contents.registerEvent(MouseEvent.MOUSE_WHEEL, _onMouseWheel);
