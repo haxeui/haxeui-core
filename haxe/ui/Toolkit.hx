@@ -29,6 +29,10 @@ class Toolkit {
         ModuleMacros.processModules();
         NativeMacros.processNative();
         _built = true;
+        
+        #if (haxeui_remoting && !haxeui_remoting_server)
+        var client:haxe.ui.remoting.client.Client = new haxe.ui.remoting.client.Client();
+        #end
     }
 
     public static function init(options:Dynamic = null) {
