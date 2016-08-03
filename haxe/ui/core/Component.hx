@@ -1446,13 +1446,13 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         }
     }
 
-    private var __onClick:UIEvent->Void;
+    private var __onClick:MouseEvent->Void;
     /**
      Utility property to add a single `UIEvent.CLICK` event
     **/
     @:dox(group="Event related properties and methods")
-    public var onClick(null, set):UIEvent->Void;
-    private function set_onClick(value:UIEvent->Void):UIEvent->Void {
+    public var onClick(null, set):MouseEvent->Void;
+    private function set_onClick(value:MouseEvent->Void):MouseEvent->Void {
         if (__onClick != null) {
             unregisterEvent(MouseEvent.CLICK, __onClick);
             __onClick = null;
