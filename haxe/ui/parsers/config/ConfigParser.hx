@@ -17,7 +17,7 @@ class ConfigParser {
 
         var cls:Class<ConfigParser> = _parsers.get(extension);
         if (cls == null) {
-            throw 'No config parser found for "${extension}"';
+            return null;
         }
 
         var instance:ConfigParser = Type.createInstance(cls, []);
