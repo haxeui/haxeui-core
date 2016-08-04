@@ -52,7 +52,9 @@ class ThemeManager {
             if (css != null) {
                 Toolkit.styleSheet.addRules(css);
             } else {
+                #if debug
                 trace("WARNING: could not find " + s);
+                #end
             }
         }
     }
