@@ -1128,7 +1128,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
 
     #if flash @:getter(width) #else override #end
     public function get_width():Float {
-        var f:Float = _width;
+        var f:Float = componentWidth;
         return f;
     }
 
@@ -1145,7 +1145,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
 
     #if flash @:getter(height) #else override #end
     public function get_height():Float {
-        var f:Float = _height;
+        var f:Float = componentHeight;
         return f;
     }
 
@@ -1167,7 +1167,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     }
 
     private function get_width():Float {
-        var f:Float = _width;
+        var f:Float = componentWidth;
         return f;
     }
 
@@ -1187,7 +1187,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     }
 
     private function get_height() {
-        var f:Float = _height;
+        var f:Float = componentHeight;
         return f;
     }
 
