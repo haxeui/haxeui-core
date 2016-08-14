@@ -157,12 +157,16 @@ class ModuleMacros {
             }
         }
 
+        populateClassMap();
+        for (alias in ComponentClassMap.list()) {
+            var className:String = ComponentClassMap.get(alias);
+            code += 'haxe.ui.core.ComponentClassMap.register("${alias}", "${className}");\n';
+        }
+        
         code += "}()\n";
-//      trace(code);
+        //trace(code);
 
         _modulesProcessed = true;
-
-        populateClassMap();
 
         return Context.parseInlineString(code, Context.currentPos());
     }
