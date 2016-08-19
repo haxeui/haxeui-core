@@ -68,18 +68,18 @@ class Toolkit {
     private static function get_screen():Screen {
         return Screen.instance;
     }
-    
+
     public static function componentFromString(data:String, type:String = null):Component {
         if (data == null || data.length == 0) {
             return null;
         }
-        
+
         if (type == null) { // lets try and auto detect
             if (StringTools.startsWith(StringTools.trim(data), "<")) {
                 type = "xml";
             }
         }
-        
+
         var parser:ComponentParser = ComponentParser.get(type);
         if (parser == null) {
             trace('WARNING: type "${type}" not recognised');
@@ -88,30 +88,30 @@ class Toolkit {
 
         var c:ComponentInfo = parser.parse(data);
         var component = buildComponentFromInfo(c);
-        
+
         var fullScript = "";
         for (scriptString in c.scriptlets) {
             fullScript += scriptString;
         }
 
         component.script = fullScript;
-        
+
         return component;
     }
-    
+
     private static function buildComponentFromInfo(c:ComponentInfo):Component {
         var className:String = ComponentClassMap.get(c.type);
         if (className == null) {
             trace("WARNING: no class found for component: " + c.type);
             return null;
         }
-        
+
         var component:Component = Type.createInstance(Type.resolveClass(className), []);
         if (component == null) {
             trace("WARNING: could not create class instance: " + className);
             return null;
         }
-        
+
         if (c.id != null)               component.id = c.id;
         if (c.left != null)             component.left = c.left;
         if (c.top != null)              component.top = c.top;
@@ -136,11 +136,11 @@ class Toolkit {
                 } else if (Std.parseInt(propValue) != null) {
                     propValue = Std.parseInt(propValue);
                 }
-                
+
                 Reflect.setField(component, propName, propValue);
             }
         }
-        
+
         for (childInfo in c.children) {
             var childComponent = buildComponentFromInfo(childInfo);
             if (childComponent != null) {

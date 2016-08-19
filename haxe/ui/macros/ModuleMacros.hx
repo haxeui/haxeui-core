@@ -162,7 +162,7 @@ class ModuleMacros {
             var className:String = ComponentClassMap.get(alias);
             code += 'haxe.ui.core.ComponentClassMap.register("${alias}", "${className}");\n';
         }
-        
+
         code += "}()\n";
         //trace(code);
 
