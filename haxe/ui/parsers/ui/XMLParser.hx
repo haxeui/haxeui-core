@@ -37,6 +37,13 @@ class XMLParser extends ComponentParser {
         } else if (nodeName == "bind") {
             parseBindNode(component, xml);
             isComponent = false;
+        } else if (nodeName == "data") {
+            if (xml.firstElement() != null) {
+                component.parent.data = StringTools.trim(xml.toString());
+            } else if (StringTools.startsWith(StringTools.trim(xml.firstChild().nodeValue), "[")) {
+                component.parent.data = StringTools.trim(xml.firstChild().nodeValue);
+            }
+            isComponent = false;
         } else {
             parseDetails(component, xml);
             parseAttributes(component, xml);

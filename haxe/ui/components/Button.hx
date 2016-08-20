@@ -15,8 +15,6 @@ import haxe.ui.util.Variant;
 **/
 @:dox(icon="/icons/ui-button.png")
 class Button extends InteractiveComponent implements IClonable<Button> {
-    private var _label:Label;
-    private var _icon:Image;
     private var _repeatTimer:Timer;
 
     public function new() {
@@ -56,13 +54,16 @@ class Button extends InteractiveComponent implements IClonable<Button> {
         unregisterEvent(MouseEvent.MOUSE_OUT, _onMouseOut);
         unregisterEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
 
-        if (_label != null) {
-            removeComponent(_label);
-            _label = null;
+        var label:Label = findComponent(Label);
+        if (label != null) {
+            removeComponent(label);
+            label = null;
         }
-        if (_icon != null) {
-            removeComponent(_icon);
-            _icon = null;
+        
+        var icon:Image = findComponent(Image);
+        if (icon != null) {
+            removeComponent(icon);
+            icon = null;
         }
     }
 
@@ -80,16 +81,20 @@ class Button extends InteractiveComponent implements IClonable<Button> {
         if (style.icon != null) {
             icon = style.icon;
         }
-        if (_label != null) {
-            _label.customStyle.color = style.color;
-            _label.customStyle.fontName = style.fontName;
-            _label.customStyle.fontSize = style.fontSize;
-            _label.customStyle.cursor = style.cursor;
-            _label.invalidateStyle();
+        
+        var label:Label = findComponent(Label);
+        if (label != null) {
+            label.customStyle.color = style.color;
+            label.customStyle.fontName = style.fontName;
+            label.customStyle.fontSize = style.fontSize;
+            label.customStyle.cursor = style.cursor;
+            label.invalidateStyle();
         }
-        if (_icon != null) {
-            _icon.customStyle.cursor = style.cursor;
-            _icon.invalidateStyle();
+        
+        var icon:Image = findComponent(Image);
+        if (icon != null) {
+            icon.customStyle.cursor = style.cursor;
+            icon.invalidateStyle();
         }
     }
 
@@ -201,13 +206,14 @@ class ButtonDefaultTextBehaviour extends Behaviour {
         }
 
         var button:Button = cast _component;
-        if (button._label == null) {
-            button._label = new Label();
-            button._label.id = "button-label";
-            button._label.scriptAccess = false;
-            button.addComponent(button._label);
+        var label:Label = button.findComponent(Label);
+        if (label == null) {
+            label = new Label();
+            label.id = "button-label";
+            label.scriptAccess = false;
+            button.addComponent(label);
         }
-        button._label.text = value;
+        label.text = value;
     }
 }
 
@@ -216,11 +222,12 @@ class ButtonDefaultTextBehaviour extends Behaviour {
 class ButtonDefaultIconBehaviour extends Behaviour {
     public override function get():Variant {
         var button:Button = cast _component;
-        if (button._icon == null) {
+        var icon:Image = button.findComponent(Image);
+        if (icon == null) {
             return null;
         }
 
-        return button._icon.resource;
+        return icon.resource;
     }
 
     public override function set(value:Variant) {
@@ -229,15 +236,16 @@ class ButtonDefaultIconBehaviour extends Behaviour {
         }
 
         var button:Button = cast _component;
-        if (button._icon == null) {
-            button._icon = new Image();
-            button._icon.addClass("icon");
-            button._icon.id = "button-icon";
-            button._icon.scriptAccess = false;
-            button.addComponent(button._icon);
+        var icon:Image = button.findComponent(Image);
+        if (icon == null) {
+            icon = new Image();
+            icon.addClass("icon");
+            icon.id = "button-icon";
+            icon.scriptAccess = false;
+            button.addComponent(icon);
         }
 
-        button._icon.resource = value.toString();
+        icon.resource = value.toString();
     }
 }
 

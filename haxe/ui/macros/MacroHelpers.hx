@@ -175,6 +175,43 @@ class MacroHelpers {
         return has;
     }
 
+    public static function hasInterface(t:haxe.macro.Type, interfaceRequired:String):Bool {
+        var has:Bool = false;
+        switch (t) {
+                case TAnonymous(t): {};
+                case TMono(t): {};
+                case TLazy(t): {};
+                case TFun(t, _): {};
+                case TDynamic(t): {};
+                case TInst(t, _): {
+                    while (t != null) {
+                        for (i in t.get().interfaces) {
+                            var interfaceName:String = i.t.toString();
+                            if (interfaceName == interfaceRequired) {
+                                has = true;
+                                break;
+                            }
+                        }
+
+                        if (has == false) {
+                            if (t.get().superClass != null) {
+                                t = t.get().superClass.t;
+                            } else {
+                                t = null;
+                            }
+                        } else {
+                            break;
+                        }
+                    }
+                }
+                case TEnum(t, _): {};
+                case TType(t, _): {};
+                case TAbstract(t, _): {};
+        }
+
+        return has;
+    }
+    
     public static function mkPath(name:String):TypePath {
         var parts = name.split('.');
         return {

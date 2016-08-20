@@ -235,7 +235,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     //***********************************************************************************************************
     // General
     //***********************************************************************************************************
-    @clonable private var _id:String = null;
+    private var _id:String = null;
     /**
      The identifier of this component
     **/
@@ -551,7 +551,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
             - `css` - The first component that contains a style name specified by `criteria` will be considered a match
     **/
     @:dox(group="Display tree related properties and methods")
-    public function findComponent<T>(critera:String, type:Class<T> = null, recursive:Bool = false, searchType:String = "id"):Null<T> {
+    public function findComponent<T>(critera:String = null, type:Class<T> = null, recursive:Bool = false, searchType:String = "id"):Null<T> {
         var match:Component = null;
         for (child in childComponents) {
             if (critera != null) {
@@ -728,7 +728,10 @@ class Component extends ComponentBase implements IComponentBase implements IClon
      An inline css string that will be parsed and applied as a custom style
     **/
     @:dox(group="Style related properties and methods")
-    @clonable public var styleString(null, set):String;
+    @clonable public var styleString(get, set):String;
+    private function get_styleString():String {
+        return _styleString;
+    }
     private function set_styleString(value:String):String {
         if (value == null) {
             return value;
@@ -1001,7 +1004,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         return layout.autoSize();
     }
 
-    @clonable private var _percentWidth:Null<Float>;
+    private var _percentWidth:Null<Float>;
     /**
      What percentage of this components parent to use to calculate its width
     **/
@@ -1023,7 +1026,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         return value;
     }
 
-    @clonable private var _percentHeight:Null<Float>;
+    private var _percentHeight:Null<Float>;
     /**
      What percentage of this components parent to use to calculate its height
     **/
@@ -1081,7 +1084,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
      The calculated width of this component
     **/
     @:dox(group="Size related properties and methods")
-    private var componentWidth(get, set):Null<Float>;
+    @:clonable private var componentWidth(get, set):Null<Float>;
     private function get_componentWidth():Null<Float> {
         if (_componentWidth == null) {
             return 0;
@@ -1093,7 +1096,6 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         return value;
     }
 
-
     private var _componentHeight:Null<Float>;
     @:allow(haxe.ui.layouts.Layout)
     @:allow(haxe.ui.core.Screen)
@@ -1101,7 +1103,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
      The calculated height of this component
     **/
     @:dox(group="Size related properties and methods")
-    private var componentHeight(get, set):Null<Float>;
+    @:clonable private var componentHeight(get, set):Null<Float>;
     private function get_componentHeight():Null<Float> {
         if (_componentHeight == null) {
             return 0;
@@ -1588,7 +1590,15 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         }
         */
     }
-
+    
+    //***********************************************************************************************************
+    // Clonable
+    //***********************************************************************************************************
+    public function cloneComponent():Component {
+        if (c.width > 0) c.width = this.width;
+        if (c.height > 0) c.height = this.height;
+    }
+    
     //***********************************************************************************************************
     // Properties
     //***********************************************************************************************************

@@ -14,9 +14,6 @@ import haxe.ui.util.Variant;
 **/
 @:dox(icon="/icons/ui-check-boxes.png")
 class CheckBox extends InteractiveComponent implements IClonable<CheckBox> {
-    private var _value:CheckBoxValue;
-    private var _label:Label;
-
     public function new() {
         super();
     }
@@ -35,30 +32,34 @@ class CheckBox extends InteractiveComponent implements IClonable<CheckBox> {
     private override function create():Void {
         super.create();
         behaviourSet("text", _text);
-        behaviourSet("selected", selected);
+        behaviourSet("selected", _selected);
     }
 
     private override function createChildren():Void {
-        if (_value == null) {
-            _value = new CheckBoxValue();
-            _value.id = "checkbox-value";
-            _value.addClass("checkbox-value");
-            addComponent(_value);
+        var checkboxValue:CheckBoxValue = findComponent(CheckBoxValue);
+        if (checkboxValue == null) {
+            checkboxValue = new CheckBoxValue();
+            checkboxValue.id = "checkbox-value";
+            checkboxValue.addClass("checkbox-value");
+            addComponent(checkboxValue);
 
-            _value.registerEvent(MouseEvent.CLICK, _onClick);
-            _value.registerEvent(MouseEvent.MOUSE_OVER, _onMouseOver);
-            _value.registerEvent(MouseEvent.MOUSE_OUT, _onMouseOut);
+            checkboxValue.registerEvent(MouseEvent.CLICK, _onClick);
+            checkboxValue.registerEvent(MouseEvent.MOUSE_OVER, _onMouseOver);
+            checkboxValue.registerEvent(MouseEvent.MOUSE_OUT, _onMouseOut);
         }
     }
 
     private override function destroyChildren():Void {
-        if (_value != null) {
-            removeComponent(_value);
-            _value = null;
+        var value:CheckBoxValue = findComponent(CheckBoxValue);
+        if (value != null) {
+            removeComponent(value);
+            value = null;
         }
-        if (_label != null) {
-            removeComponent(_label);
-            _label = null;
+        
+        var label:Label = findComponent(Label);
+        if (label != null) {
+            removeComponent(label);
+            label = null;
         }
     }
 
@@ -82,12 +83,14 @@ class CheckBox extends InteractiveComponent implements IClonable<CheckBox> {
 
     private override function applyStyle(style:Style):Void {
         super.applyStyle(style);
-        if (_label != null) {
-            _label.customStyle.color = style.color;
-            _label.customStyle.fontName = style.fontName;
-            _label.customStyle.fontSize = style.fontSize;
-            _label.customStyle.cursor = style.cursor;
-            _label.invalidateStyle();
+        
+        var label:Label = findComponent(Label);
+        if (label != null) {
+            label.customStyle.color = style.color;
+            label.customStyle.fontName = style.fontName;
+            label.customStyle.fontSize = style.fontSize;
+            label.customStyle.cursor = style.cursor;
+            label.invalidateStyle();
         }
     }
 
@@ -130,12 +133,14 @@ class CheckBox extends InteractiveComponent implements IClonable<CheckBox> {
 
     private function _onMouseOver(event:MouseEvent):Void {
         addClass(":hover");
-        _value.addClass(":hover");
+        var value:CheckBoxValue = findComponent(CheckBoxValue);
+        value.addClass(":hover");
     }
 
     private function _onMouseOut(event:MouseEvent):Void {
         removeClass(":hover");
-        _value.removeClass(":hover");
+        var value:CheckBoxValue = findComponent(CheckBoxValue);
+        value.removeClass(":hover");
     }
 }
 
@@ -147,18 +152,19 @@ class CheckBox extends InteractiveComponent implements IClonable<CheckBox> {
 class CheckBoxDefaultTextBehaviour extends Behaviour {
     public override function set(value:Variant) {
         var checkbox:CheckBox = cast _component;
-        if (checkbox._label == null) {
-            checkbox._label = new Label();
-            checkbox._label.id = "checkbox-label";
-            checkbox._label.addClass("checkbox-label");
+        var label:Label = checkbox.findComponent(Label);
+        if (label == null) {
+            label = new Label();
+            label.id = "checkbox-label";
+            label.addClass("checkbox-label");
 
-            checkbox._label.registerEvent(MouseEvent.CLICK, checkbox._onClick);
-            checkbox._label.registerEvent(MouseEvent.MOUSE_OVER, checkbox._onMouseOver);
-            checkbox._label.registerEvent(MouseEvent.MOUSE_OUT, checkbox._onMouseOut);
+            label.registerEvent(MouseEvent.CLICK, checkbox._onClick);
+            label.registerEvent(MouseEvent.MOUSE_OVER, checkbox._onMouseOver);
+            label.registerEvent(MouseEvent.MOUSE_OUT, checkbox._onMouseOut);
 
-            checkbox.addComponent(checkbox._label);
+            checkbox.addComponent(label);
         }
-        checkbox._label.text = value;
+        label.text = value;
     }
 }
 
@@ -167,14 +173,15 @@ class CheckBoxDefaultTextBehaviour extends Behaviour {
 class CheckBoxDefaultSelectedBehaviour extends Behaviour {
     public override function set(value:Variant) {
         var checkbox:CheckBox = cast _component;
-        if (checkbox._value == null) {
+        var checkboxValue:CheckBoxValue = checkbox.findComponent(CheckBoxValue);
+        if (checkboxValue == null) {
             return;
         }
 
         if (value == true) {
-            checkbox._value.addClass(":selected");
+            checkboxValue.addClass(":selected");
         } else {
-            checkbox._value.removeClass(":selected");
+            checkboxValue.removeClass(":selected");
         }
     }
 }
@@ -186,24 +193,26 @@ class CheckBoxDefaultSelectedBehaviour extends Behaviour {
  Specialised `InteractiveComponent` used to contain the `CheckBox` icon and respond to style changes
 **/
 class CheckBoxValue extends InteractiveComponent {
-    private var _icon:Image;
-
     public function new() {
         super();
         #if openfl
         mouseChildren = false;
         #end
 
-        _icon = new Image();
-        _icon.id = "checkbox-icon";
-        _icon.addClass("checkbox-icon");
-        addComponent(_icon);
+        var icon:Image = findComponent(Image); // its going to be null, but just in case it moves
+        if (icon == null) {
+            icon = new Image();
+            icon.id = "checkbox-icon";
+            icon.addClass("checkbox-icon");
+            addComponent(icon);
+        }
     }
 
     private override function applyStyle(style:Style):Void {
         super.applyStyle(style);
-        if (_icon != null) {
-            _icon.resource = style.icon;
+        var icon:Image = findComponent(Image);
+        if (icon != null) {
+            icon.resource = style.icon;
         }
     }
 }

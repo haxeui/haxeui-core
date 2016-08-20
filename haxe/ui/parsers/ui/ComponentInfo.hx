@@ -22,6 +22,8 @@ class ComponentInfo {
     public var scriptlets:Array<String> = new Array<String>();
     public var styles:Array<String> = new Array<String>();
 
+    public var data:String;
+    
     public function new() {
 
     }
@@ -33,6 +35,15 @@ class ComponentInfo {
         }
         return StringTools.replace(style, "\"", "'");
     }
+
+    public var dataString(get, never):String;
+    private function get_dataString():String {
+        if (data == null) {
+            return null;
+        }
+        return StringTools.replace(data, "\"", "'");
+    }
+
 
     public function findRootComponent():ComponentInfo {
         var r = this;

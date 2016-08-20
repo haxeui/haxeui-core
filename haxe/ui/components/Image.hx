@@ -38,6 +38,21 @@ class Image extends Component implements IClonable<Image> {
     }
 
     //***********************************************************************************************************
+    // Overrides
+    //***********************************************************************************************************
+    private override function get_value():Variant {
+        return Variant.fromDynamic(resource);
+    }
+
+    private override function set_value(value:Variant):Variant {
+        if (value == null) {
+            return null;
+        }
+        resource = value.toString();
+        return value;
+    }
+    
+    //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
     private var _resource:String;
@@ -136,7 +151,7 @@ class ImageDefaultResourceBehaviour extends Behaviour {
             image.removeImageDisplay();
             return;
         }
-
+        
         if (value.isString) {
             var resource:String = value.toString();
             if (StringTools.startsWith(resource, "http://")) {

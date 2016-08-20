@@ -1,5 +1,6 @@
 package haxe.ui.macros;
 
+import haxe.macro.ExprTools;
 import haxe.ui.util.StringUtil;
 
 #if macro
@@ -88,7 +89,7 @@ class Macros {
                 code += "var c:" + className + " = cast super.cloneComponent();\n";
             } else {
                 code += "var c:" + className + " = self();\n";
-                code += "for (child in this.childComponents) c.addComponent(child.cloneComponent());\n";
+                code += "if (this.childComponents.length != c.childComponents.length) for (child in this.childComponents) c.addComponent(child.cloneComponent());\n";
             }
             for (f in getFieldsWithMeta("clonable", fields)) {
                 code += "c." + f.name + " = this." + f.name + ";\n";
@@ -105,6 +106,7 @@ class Macros {
             }
             addFunction("cloneComponent", Context.parseInlineString(code, pos), access, fields, pos);
         } else {
+            var n = 0;
             var code:String = "";
             if (useSelf == false) {
                 code += "var c:" + className + " = cast super.cloneComponent()\n";
@@ -112,14 +114,14 @@ class Macros {
                 code += "var c:" + className + " = self()\n";
             }
 
-            insertLine(currentCloneFn, Context.parseInlineString(code, pos), 0);
+            insertLine(currentCloneFn, Context.parseInlineString(code, pos), n++);
             if (useSelf == true) {
-                insertLine(currentCloneFn, Context.parseInlineString("for (child in this.childComponents) c.addComponent(child.cloneComponent());", pos), -1);
+                insertLine(currentCloneFn, Context.parseInlineString("if (this.childComponents.length != c.childComponents.length) for (child in this.childComponents) c.addComponent(child.cloneComponent())", pos), n++);
             }
 
             for (f in getFieldsWithMeta("clonable", fields)) {
                 code = "c." + f.name + " = this." + f.name + "";
-                insertLine(currentCloneFn, Context.parseInlineString(code, pos), -1);
+                insertLine(currentCloneFn, Context.parseInlineString(code, pos), n++);
             }
 
             insertLine(currentCloneFn, Context.parseInlineString("return c", pos), -1);
