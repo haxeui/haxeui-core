@@ -594,3 +594,8 @@
 .listview.popup {
     filter: drop-shadow(1, 45, #000000, 0.2, 2, 2, 1, 3, false);
 }
+
+.dropdown {
+    icon: "haxeui-core/styles/default/up_down_arrows.png";
+    icon-position: far-right;
+}
