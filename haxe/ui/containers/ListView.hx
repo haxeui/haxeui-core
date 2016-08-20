@@ -62,9 +62,10 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
             return value;
         }
         
+        lockLayout();
+        
         if (Std.is(value, String)) {
             var stringValue:String = StringTools.trim('${value}');
-            trace(stringValue);
             if (StringTools.startsWith(stringValue, "<")) { // xml
                 var xml:Xml = Xml.parse(stringValue).firstElement();
                 for (el in xml.elements()) {
@@ -82,6 +83,9 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
                 }
             }
         }
+        
+        unlockLayout();
+        
         return value;
     }
 }

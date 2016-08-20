@@ -544,3 +544,42 @@
     width: 100%;
     height: 100%;
 }
+
+/************************************************************************
+** LISTVIEW
+*************************************************************************/
+.listview {
+    border: 1px solid #ABABAB;
+    border-radius: 1px;
+    padding: 1px;
+    width: auto;
+    height: auto;
+}
+
+.listview .listview-contents {
+    spacing: 0;
+    width: 100%;
+    padding: 1px;
+}
+
+.itemrenderer {
+    height: auto;
+    background-color: red;
+    padding: 5px;
+}
+
+.listview .itemrenderer.even {
+    background-color: #FFFFFF;
+}
+
+.listview .itemrenderer.even:hover {
+    background-color: #F0F0F0;
+}
+
+.listview .itemrenderer.odd {
+    background-color: #F8F8F8;
+}
+
+.listview .itemrenderer.odd:hover {
+    background-color: #F0F0F0;
+}

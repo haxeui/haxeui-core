@@ -847,6 +847,20 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         return value;
     }
 
+    private var _layoutLocked:Bool = false;
+    public function lockLayout() {
+        _layoutReinvalidation = false;
+        _layoutLocked = true;
+    }
+    
+    public function unlockLayout() {
+        _layoutLocked = false;
+        if (_layoutReinvalidation == true) {
+            _layoutReinvalidation = false;
+            invalidateLayout();
+        }
+    }
+    
     //***********************************************************************************************************
     // Event handlers
     //***********************************************************************************************************
@@ -1157,7 +1171,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
      The width of this component
     **/
     @:dox(group="Size related properties and methods")
-    @clonable @bindable public var width(get, set):Float;
+    @bindable public var width(get, set):Float;
     private var _width:Null<Float>;
     private function set_width(value:Float):Float {
         if (_width == value) {
@@ -1177,7 +1191,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
      The height of this component
     **/
     @:dox(group="Size related properties and methods")
-    @clonable @bindable public var height(get, set):Float;
+    @bindable public var height(get, set):Float;
     private var _height:Null<Float>;
     private function set_height(value:Float):Float {
         if (_height == value) {
@@ -1489,7 +1503,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
             return;
         }
 
-        if (_layoutInvalidating == true) {
+        if (_layoutInvalidating == true || _layoutLocked == true) {
             // means that if a request to invalidate comes through and were busy
             // (like async resources), we make note to invalidate when were done
             _layoutReinvalidation = true;
