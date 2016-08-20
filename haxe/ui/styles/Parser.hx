@@ -508,7 +508,7 @@ class Parser {
         case "icon-position":
             var x = getIdent(v);
             switch(x) {
-            case "top" | "left" | "bottom" | "right":
+            case "top" | "left" | "bottom" | "right" | "far-right" | "far-left":
                 s.iconPosition = x;
                 return true;
             default:

@@ -5,7 +5,7 @@ import haxe.ui.core.IClonable;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.util.Variant;
 
-class ItemRenderer extends Component implements IClonable<ItemRenderer> {
+class ItemRenderer extends Component implements IDataComponent implements IClonable<ItemRenderer> {
     public function new() {
         super();
         registerEvent(MouseEvent.MOUSE_OVER, _onItemMouseOver);

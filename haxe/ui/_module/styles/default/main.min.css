@@ -82,11 +82,13 @@
 .tabview{border:none;width:auto;height:auto;}
 .tabview .tabview-tabs{}
 .tabview .tabview-content{border:1px solid #ABABAB;padding:5px;width:100%;height:100%;}
-.listview{border:1px solid #ABABAB;border-radius:1px;padding:1px;width:auto;height:auto;}
+.listview{border:1px solid #ABABAB;border-radius:1px;padding:1px;width:auto;height:auto;background-color:#FFFFFF;}
 .listview .listview-contents{spacing:0;width:100%;padding:1px;}
-.itemrenderer{height:auto;background-color:red;padding:5px;}
+.itemrenderer{height:auto;padding:5px;}
 .listview .itemrenderer.even{background-color:#FFFFFF;}
 .listview .itemrenderer.even:hover{background-color:#F0F0F0;}
 .listview .itemrenderer.odd{background-color:#F8F8F8;}
 .listview .itemrenderer.odd:hover{background-color:#F0F0F0;}
+.listview .itemrenderer:selected{background-color:#CCCCCC;}
+.listview.popup{filter:drop-shadow(1,45,#000000,0.2,2,2,1,3,false);}
 

@@ -1,14 +1,19 @@
 package haxe.ui.containers;
 
 import haxe.Json;
+import haxe.ui.components.Label;
 import haxe.ui.containers.ScrollView;
 import haxe.ui.containers.VBox;
 import haxe.ui.core.Component;
 import haxe.ui.core.IClonable;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.ItemRenderer;
+import haxe.ui.core.MouseEvent;
+import haxe.ui.core.UIEvent;
 
 class ListView extends ScrollView implements IDataComponent implements IClonable<ListView> {
+    private var _itemRenderer:ItemRenderer;
+    
     public function new() {
         super();
     }
@@ -21,7 +26,12 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
         addComponent(vbox);
     }
     
-    private var _itemRenderer:ItemRenderer;
+    private override function onReady() {
+        super.onReady();
+        if (_itemRenderer == null) {
+            addComponent(new BasicItemRenderer());
+        }
+    }
     
     @:access(haxe.ui.core.Component)
     public override function addComponent(child:Component):Component {
@@ -32,9 +42,32 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
                 data = _data;
             }
         } else {
+            if (Std.is(child, ItemRenderer)) {
+                child.registerEvent(MouseEvent.CLICK, onItemClick);
+            }
             r = super.addComponent(child);
         }
         return r;
+    }
+
+    private var _currentSelection:ItemRenderer;
+    private function onItemClick(event:MouseEvent) {
+        if (event.target == _currentSelection) {
+            return;
+        }
+
+        if (_currentSelection != null) {
+            _currentSelection.removeClass(":selected");
+        }
+        
+        _currentSelection = cast event.target;
+        _currentSelection.addClass(":selected");
+        dispatch(new UIEvent(UIEvent.CHANGE));
+    }
+    
+    public var selectedItem(get, null):ItemRenderer;
+    private function get_selectedItem():ItemRenderer {
+        return _currentSelection;
     }
     
     public function addItem(data:Dynamic):ItemRenderer {
@@ -87,5 +120,24 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
         unlockLayout();
         
         return value;
+    }
+}
+
+class BasicItemRenderer extends ItemRenderer {
+    public function new() {
+        super();
+        
+        addClass("itemrenderer"); // TODO: shouldnt have to do this
+        this.percentWidth = 100;
+        
+        var hbox:HBox = new HBox();
+        hbox.percentWidth = 100;
+        
+        var label:Label = new Label();
+        label.id = "text";
+        label.percentWidth = 100;
+        hbox.addComponent(label);
+        
+        addComponent(hbox);
     }
 }
