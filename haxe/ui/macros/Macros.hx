@@ -83,17 +83,15 @@ class Macros {
         if (currentCloneFn == null) {
             var code:String = "";
             code += "function():" + className + " {\n";
+
             if (useSelf == false) {
                 code += "var c:" + className + " = cast super.cloneComponent();\n";
             } else {
                 code += "var c:" + className + " = self();\n";
+                code += "for (child in this.childComponents) c.addComponent(child.cloneComponent());\n";
             }
             for (f in getFieldsWithMeta("clonable", fields)) {
                 code += "c." + f.name + " = this." + f.name + ";\n";
-            }
-            
-            if (useSelf == true) {
-                code += "for (child in this.childComponents) c.addComponent(child.cloneComponent());\n";
             }
             
             code += "return c;\n";
@@ -115,16 +113,15 @@ class Macros {
             }
 
             insertLine(currentCloneFn, Context.parseInlineString(code, pos), 0);
+            if (useSelf == true) {
+                insertLine(currentCloneFn, Context.parseInlineString("for (child in this.childComponents) c.addComponent(child.cloneComponent());", pos), -1);
+            }
 
             for (f in getFieldsWithMeta("clonable", fields)) {
                 code = "c." + f.name + " = this." + f.name + "";
                 insertLine(currentCloneFn, Context.parseInlineString(code, pos), -1);
             }
 
-            if (useSelf == true) {
-                insertLine(currentCloneFn, Context.parseInlineString("for (child in this.childComponents) c.addComponent(child.cloneComponent());", pos), -1);
-            }
-            
             insertLine(currentCloneFn, Context.parseInlineString("return c", pos), -1);
         }
 
