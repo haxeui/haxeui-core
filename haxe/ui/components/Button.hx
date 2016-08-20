@@ -137,11 +137,38 @@ class Button extends InteractiveComponent implements IClonable<Button> {
         return value;
     }
 
+    /**
+     Whether this button should behave as a toggle button or not
+    **/
+    private var _toggle:Bool;
+    @:clonable public var toggle(get, set):Bool;
+    private function get_toggle():Bool {
+        return _toggle;
+    }
+    private function set_toggle(value:Bool):Bool {
+        if (value == _toggle) {
+            return value;
+        }
+        
+        if (value == false) {
+            unregisterEvent(MouseEvent.CLICK, _onMouseClick);
+        } else {
+            registerEvent(MouseEvent.CLICK, _onMouseClick);
+        }
+        
+        _toggle = value;
+        return value;
+    }
+    
     //***********************************************************************************************************
     // Events
     //***********************************************************************************************************
     private var _down:Bool = false;
     private function _onMouseOver(event:MouseEvent):Void {
+        if (_toggle == true && hasClass(":down")) {
+            return;
+        }
+        
         if (event.buttonDown == false || _down == false) {
             addClass(":hover");
         } else {
@@ -150,6 +177,10 @@ class Button extends InteractiveComponent implements IClonable<Button> {
     }
 
     private function _onMouseOut(event:MouseEvent):Void {
+        if (_toggle == true && hasClass(":down")) {
+            return;
+        }
+        
         if (remainPressed == false) {
             removeClass(":down");
         }
@@ -178,6 +209,10 @@ class Button extends InteractiveComponent implements IClonable<Button> {
 
     private function _onMouseUp(event:MouseEvent):Void {
         _down = false;
+        if (_toggle == true) {
+            return;
+        }
+        
         removeClass(":down");
         if (hitTest(event.screenX, event.screenY)) {
             addClass(":hover");
@@ -191,6 +226,20 @@ class Button extends InteractiveComponent implements IClonable<Button> {
         }
 
         screen.unregisterEvent(MouseEvent.MOUSE_UP, _onMouseUp);
+    }
+    
+    private var _selected:Bool = false;
+    private function _onMouseClick(event:MouseEvent):Void {
+        trace("CLICK");
+        _selected = !_selected;
+        if (_selected == false) {
+            removeClass(":down");
+        }
+        if (hasClass(":down")) {
+            //removeClass(":down");
+        } else {
+            //addClass(":down");
+        }
     }
 }
 
