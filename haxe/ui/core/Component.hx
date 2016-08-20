@@ -852,7 +852,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         _layoutReinvalidation = false;
         _layoutLocked = true;
     }
-    
+
     public function unlockLayout() {
         _layoutLocked = false;
         if (_layoutReinvalidation == true) {
@@ -860,7 +860,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
             invalidateLayout();
         }
     }
-    
+
     //***********************************************************************************************************
     // Event handlers
     //***********************************************************************************************************
@@ -1604,7 +1604,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         }
         */
     }
-    
+
     //***********************************************************************************************************
     // Clonable
     //***********************************************************************************************************
@@ -1612,7 +1612,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         if (c.width > 0) c.width = this.width;
         if (c.height > 0) c.height = this.height;
     }
-    
+
     //***********************************************************************************************************
     // Properties
     //***********************************************************************************************************

@@ -211,7 +211,7 @@ class MacroHelpers {
 
         return has;
     }
-    
+
     public static function mkPath(name:String):TypePath {
         var parts = name.split('.');
         return {

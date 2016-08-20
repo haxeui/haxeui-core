@@ -11,15 +11,15 @@ class ItemRenderer extends Component implements IDataComponent implements IClona
         registerEvent(MouseEvent.MOUSE_OVER, _onItemMouseOver);
         registerEvent(MouseEvent.MOUSE_OUT, _onItemMouseOut);
     }
-    
+
     private function _onItemMouseOver(event:MouseEvent) {
         addClass(":hover");
     }
-    
+
     private function _onItemMouseOut(event:MouseEvent) {
         removeClass(":hover");
     }
-    
+
     private var _data:Dynamic;
     public var data(get, set):Dynamic;
     private function get_data():Dynamic {

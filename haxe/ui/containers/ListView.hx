@@ -13,26 +13,26 @@ import haxe.ui.core.UIEvent;
 
 class ListView extends ScrollView implements IDataComponent implements IClonable<ListView> {
     private var _itemRenderer:ItemRenderer;
-    
+
     public function new() {
         super();
     }
-    
+
     private override function createChildren():Void {
         super.createChildren();
-        
+
         var vbox:VBox = new VBox();
         vbox.addClass("listview-contents");
         addComponent(vbox);
     }
-    
+
     private override function onReady() {
         super.onReady();
         if (_itemRenderer == null) {
             addComponent(new BasicItemRenderer());
         }
     }
-    
+
     @:access(haxe.ui.core.Component)
     public override function addComponent(child:Component):Component {
         var r = null;
@@ -59,31 +59,31 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
         if (_currentSelection != null) {
             _currentSelection.removeClass(":selected");
         }
-        
+
         _currentSelection = cast event.target;
         _currentSelection.addClass(":selected");
         dispatch(new UIEvent(UIEvent.CHANGE));
     }
-    
+
     public var selectedItem(get, null):ItemRenderer;
     private function get_selectedItem():ItemRenderer {
         return _currentSelection;
     }
-    
+
     public function addItem(data:Dynamic):ItemRenderer {
         if (_itemRenderer == null) {
             return null;
         }
-        
+
         var r = _itemRenderer.cloneComponent();
         var n = contents.childComponents.length;
         var item:ItemRenderer = cast addComponent(r);
         item.addClass(n % 2 == 0 ? "even" : "odd");
         item.data = data;
-        
+
         return item;
     }
-    
+
     public var itemCount(get, null):Int;
     private function get_itemCount():Int {
         if (contents == null) {
@@ -91,7 +91,7 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
         }
         return contents.childComponents.length;
     }
-    
+
     public var itemHeight(get, null):Float;
     private function get_itemHeight():Float {
         if (itemCount == 0 || contents == null) {
@@ -112,7 +112,7 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
         }
         return (cy / n);
     }
-    
+
     private var _data:Dynamic;
     public var data(get, set):Dynamic;
     private function get_data():Dynamic {
@@ -123,9 +123,9 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
         if (_itemRenderer == null) {
             return value;
         }
-        
+
         lockLayout();
-        
+
         if (Std.is(value, String)) {
             var stringValue:String = StringTools.trim('${value}');
             if (StringTools.startsWith(stringValue, "<")) { // xml
@@ -145,9 +145,9 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
                 }
             }
         }
-        
+
         unlockLayout();
-        
+
         return value;
     }
 }
@@ -155,18 +155,18 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
 class BasicItemRenderer extends ItemRenderer {
     public function new() {
         super();
-        
+
         addClass("itemrenderer"); // TODO: shouldnt have to do this
         this.percentWidth = 100;
-        
+
         var hbox:HBox = new HBox();
         hbox.percentWidth = 100;
-        
+
         var label:Label = new Label();
         label.id = "text";
         label.percentWidth = 100;
         hbox.addComponent(label);
-        
+
         addComponent(hbox);
     }
 }

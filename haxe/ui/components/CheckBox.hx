@@ -55,7 +55,7 @@ class CheckBox extends InteractiveComponent implements IClonable<CheckBox> {
             removeComponent(value);
             value = null;
         }
-        
+
         var label:Label = findComponent(Label);
         if (label != null) {
             removeComponent(label);
@@ -83,7 +83,7 @@ class CheckBox extends InteractiveComponent implements IClonable<CheckBox> {
 
     private override function applyStyle(style:Style):Void {
         super.applyStyle(style);
-        
+
         var label:Label = findComponent(Label);
         if (label != null) {
             label.customStyle.color = style.color;

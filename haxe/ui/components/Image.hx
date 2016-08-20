@@ -51,7 +51,7 @@ class Image extends Component implements IClonable<Image> {
         resource = value.toString();
         return value;
     }
-    
+
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
@@ -151,7 +151,7 @@ class ImageDefaultResourceBehaviour extends Behaviour {
             image.removeImageDisplay();
             return;
         }
-        
+
         if (value.isString) {
             var resource:String = value.toString();
             if (StringTools.startsWith(resource, "http://")) {

@@ -8,14 +8,14 @@ import haxe.ui.core.UIEvent;
 
 class DropDown extends Button implements IDataComponent implements IClonable<DropDown> {
     private var _listview:ListView;
-    
+
     public function new() {
         super();
         addClass("button"); // TODO: shouldnt have to do this
         toggle = true;
         registerEvent(MouseEvent.CLICK, onMouseClick);
     }
-    
+
     private var _data:Dynamic;
     public var data(get, set):Dynamic;
     private function get_data():Dynamic {
@@ -25,7 +25,7 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
         _data = value;
         return value;
     }
-    
+
     private var _listWidth:Null<Float>;
     public var listWidth(get, set):Null<Float>;
     private function get_listWidth():Null<Float> {
@@ -35,7 +35,7 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
         _listWidth = value;
         return value;
     }
-    
+
     private var _listHeight:Null<Float>;
     public var listHeight(get, set):Null<Float>;
     private function get_listHeight():Null<Float> {
@@ -45,7 +45,7 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
         _listHeight = value;
         return value;
     }
-    
+
     private var _listSize:Int = 4;
     public var listSize(get, set):Int;
     private function get_listSize():Int {
@@ -55,7 +55,7 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
         _listSize = value;
         return value;
     }
-    
+
     private function onMouseClick(event:MouseEvent) {
         if (selected == true) {
             if (_listview == null) {
@@ -68,7 +68,7 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
                 _listview.registerEvent(UIEvent.CHANGE, onItemChange);
             }
             Screen.instance.addComponent(_listview);
-            
+
             _listview.left = this.screenLeft;
             _listview.top = this.screenTop + this.componentHeight;
             if (_listWidth == null) {
@@ -76,7 +76,7 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
             } else {
                 _listview.width = _listWidth;
             }
-            
+
             var listHeight = _listHeight;
             if (_listHeight == null) {
                 var n:Int = _listSize;
@@ -86,7 +86,7 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
                 listHeight = n * _listview.itemHeight + (_listview.layout.paddingTop + _listview.layout.paddingBottom);
             }
             _listview.height = listHeight;
-            
+
             Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
         } else {
             if (_listview != null) {
@@ -95,7 +95,7 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
             Screen.instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
         }
     }
-    
+
     private function onItemChange(event:UIEvent) {
         if (_listview.selectedItem.data.text != null) {
             this.text = _listview.selectedItem.data.text;
@@ -103,7 +103,7 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
         selected = false;
         onMouseClick(null);
     }
-    
+
     private function onScreenMouseDown(event:MouseEvent) {
         if (hitTest(event.screenX, event.screenY) == true) {
             return;
@@ -114,6 +114,6 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
         selected = !selected;
         onMouseClick(null);
     }
-    
+
 }
 

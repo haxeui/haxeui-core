@@ -94,7 +94,7 @@ class Macros {
             for (f in getFieldsWithMeta("clonable", fields)) {
                 code += "c." + f.name + " = this." + f.name + ";\n";
             }
-            
+
             code += "return c;\n";
             code += "}\n";
 
@@ -428,9 +428,9 @@ class Macros {
                                 switch(p) {
                                     case TPath(tp):
                                         subType = tp.name;
-                                    case _:    
+                                    case _:
                                 }
-                            case _:    
+                            case _:
                         }
                     }
                     if (subType == null) {

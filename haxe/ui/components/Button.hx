@@ -59,7 +59,7 @@ class Button extends InteractiveComponent implements IClonable<Button> {
             removeComponent(label);
             label = null;
         }
-        
+
         var icon:Image = findComponent(Image);
         if (icon != null) {
             removeComponent(icon);
@@ -81,7 +81,7 @@ class Button extends InteractiveComponent implements IClonable<Button> {
         if (style.icon != null) {
             icon = style.icon;
         }
-        
+
         var label:Label = findComponent(Label);
         if (label != null) {
             label.customStyle.color = style.color;
@@ -90,7 +90,7 @@ class Button extends InteractiveComponent implements IClonable<Button> {
             label.customStyle.cursor = style.cursor;
             label.invalidateStyle();
         }
-        
+
         var icon:Image = findComponent(Image);
         if (icon != null) {
             icon.customStyle.cursor = style.cursor;
@@ -149,17 +149,17 @@ class Button extends InteractiveComponent implements IClonable<Button> {
         if (value == _toggle) {
             return value;
         }
-        
+
         if (value == false) {
             unregisterEvent(MouseEvent.CLICK, _onMouseClick);
         } else {
             registerEvent(MouseEvent.CLICK, _onMouseClick);
         }
-        
+
         _toggle = value;
         return value;
     }
-    
+
     //***********************************************************************************************************
     // Events
     //***********************************************************************************************************
@@ -168,7 +168,7 @@ class Button extends InteractiveComponent implements IClonable<Button> {
         if (_toggle == true && hasClass(":down")) {
             return;
         }
-        
+
         if (event.buttonDown == false || _down == false) {
             addClass(":hover");
         } else {
@@ -180,7 +180,7 @@ class Button extends InteractiveComponent implements IClonable<Button> {
         if (_toggle == true && hasClass(":down")) {
             return;
         }
-        
+
         if (remainPressed == false) {
             removeClass(":down");
         }
@@ -212,7 +212,7 @@ class Button extends InteractiveComponent implements IClonable<Button> {
         if (_toggle == true) {
             return;
         }
-        
+
         removeClass(":down");
         if (hitTest(event.screenX, event.screenY)) {
             addClass(":hover");
@@ -227,14 +227,14 @@ class Button extends InteractiveComponent implements IClonable<Button> {
 
         screen.unregisterEvent(MouseEvent.MOUSE_UP, _onMouseUp);
     }
-    
+
     private function _onMouseClick(event:MouseEvent):Void {
         _selected = !_selected;
         if (_selected == false) {
             removeClass(":down");
         }
     }
-    
+
     private var _selected:Bool = false;
     public var selected(get, set):Bool;
     private function get_selected():Bool {
@@ -346,7 +346,7 @@ class ButtonLayout extends DefaultLayout {
                             x += horizontalSpacing + label.componentWidth;
                             icon.left = x + marginLeft(icon) - marginRight(icon);
                         }
-                        
+
                     }
 
                     label.top = Std.int((component.componentHeight / 2) - (label.componentHeight / 2)) + marginTop(label) - marginBottom(label);

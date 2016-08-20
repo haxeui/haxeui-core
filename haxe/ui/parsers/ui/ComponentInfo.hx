@@ -23,7 +23,7 @@ class ComponentInfo {
     public var styles:Array<String> = new Array<String>();
 
     public var data:String;
-    
+
     public function new() {
 
     }

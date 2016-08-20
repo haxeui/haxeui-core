@@ -131,7 +131,7 @@ class ComponentMacros {
 
         var type = Context.getModule(className)[0];
         //trace(className + " = " + MacroHelpers.hasInterface(type, "haxe.ui.core.IDataComponent"));
-        
+
         var s = 'var c${id} = new ${className}();\n';
         //if (c.composite != null)      s += 'c${id}.composite = ${c.composite};\n';
         //s += 'c${id}.build();\n';
@@ -162,11 +162,11 @@ class ComponentMacros {
             }
         }
 
-        
+
         if (MacroHelpers.hasInterface(type, "haxe.ui.core.IDataComponent") == true && c.data != null) {
             s += 'cast(c${id}, haxe.ui.core.IDataComponent).data = "${c.dataString}";\n';
         }
-        
+
         if (c.id != null && namedComponents != null) {
             namedComponents.set(c.id, className);
         }
