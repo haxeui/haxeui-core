@@ -39,7 +39,6 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
     
     public function addItem(data:Dynamic):ItemRenderer {
         if (_itemRenderer == null) {
-            trace("NOPE!");
             return null;
         }
         
