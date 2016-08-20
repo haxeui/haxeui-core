@@ -84,6 +84,35 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
         return item;
     }
     
+    public var itemCount(get, null):Int;
+    private function get_itemCount():Int {
+        if (contents == null) {
+            return 0;
+        }
+        return contents.childComponents.length;
+    }
+    
+    public var itemHeight(get, null):Float;
+    private function get_itemHeight():Float {
+        if (itemCount == 0 || contents == null) {
+            return 0;
+        }
+        var n:Int = 0;
+        var cy:Float = contents.layout.paddingTop + contents.layout.paddingBottom;
+        var scy:Float = contents.layout.verticalSpacing;
+        for (child in contents.childComponents) {
+            cy += child.height + scy;
+            n++;
+            if (n > 100) {
+                break;
+            }
+        }
+        if (n > 0) {
+            cy -= scy;
+        }
+        return (cy / n);
+    }
+    
     private var _data:Dynamic;
     public var data(get, set):Dynamic;
     private function get_data():Dynamic {

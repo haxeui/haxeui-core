@@ -26,6 +26,36 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
         return value;
     }
     
+    private var _listWidth:Null<Float>;
+    public var listWidth(get, set):Null<Float>;
+    private function get_listWidth():Null<Float> {
+        return _listWidth;
+    }
+    private function set_listWidth(value:Null<Float>):Null<Float> {
+        _listWidth = value;
+        return value;
+    }
+    
+    private var _listHeight:Null<Float>;
+    public var listHeight(get, set):Null<Float>;
+    private function get_listHeight():Null<Float> {
+        return _listHeight;
+    }
+    private function set_listHeight(value:Null<Float>):Null<Float> {
+        _listHeight = value;
+        return value;
+    }
+    
+    private var _listSize:Int = 4;
+    public var listSize(get, set):Int;
+    private function get_listSize():Int {
+        return _listSize;
+    }
+    private function set_listSize(value:Int):Int {
+        _listSize = value;
+        return value;
+    }
+    
     private function onMouseClick(event:MouseEvent) {
         if (selected == true) {
             if (_listview == null) {
@@ -35,24 +65,28 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
                 if (_data != null) {
                     _listview.data = _data;
                 }
-                /*
-                _listview.addItem( { text:"item 1" } );
-                _listview.addItem( { text:"item 2" } );
-                _listview.addItem( { text:"item 3" } );
-                _listview.addItem( { text:"item 4" } );
-                _listview.addItem( { text:"item 5" } );
-                _listview.addItem( { text:"item 6" } );
-                _listview.addItem( { text:"item 7" } );
-                */
                 _listview.registerEvent(UIEvent.CHANGE, onItemChange);
             }
+            Screen.instance.addComponent(_listview);
             
             _listview.left = this.screenLeft;
             _listview.top = this.screenTop + this.componentHeight;
-            _listview.width = Math.ffloor(this.componentWidth);
-            _listview.height = 105; // TODO: create a DropDown.listSize (need a ListView.itemHeight to work)
+            if (_listWidth == null) {
+                _listview.width = Math.ffloor(this.componentWidth);
+            } else {
+                _listview.width = _listWidth;
+            }
             
-            Screen.instance.addComponent(_listview);
+            var listHeight = _listHeight;
+            if (_listHeight == null) {
+                var n:Int = _listSize;
+                if (n > _listview.itemCount) {
+                    n = _listview.itemCount;
+                }
+                listHeight = n * _listview.itemHeight + (_listview.layout.paddingTop + _listview.layout.paddingBottom);
+            }
+            _listview.height = listHeight;
+            
             Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
         } else {
             if (_listview != null) {
