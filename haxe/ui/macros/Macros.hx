@@ -91,6 +91,11 @@ class Macros {
             for (f in getFieldsWithMeta("clonable", fields)) {
                 code += "c." + f.name + " = this." + f.name + ";\n";
             }
+            
+            if (useSelf == true) {
+                code += "for (child in this.childComponents) c.addComponent(child.cloneComponent());\n";
+            }
+            
             code += "return c;\n";
             code += "}\n";
 
@@ -116,6 +121,10 @@ class Macros {
                 insertLine(currentCloneFn, Context.parseInlineString(code, pos), -1);
             }
 
+            if (useSelf == true) {
+                insertLine(currentCloneFn, Context.parseInlineString("for (child in this.childComponents) c.addComponent(child.cloneComponent());", pos), -1);
+            }
+            
             insertLine(currentCloneFn, Context.parseInlineString("return c", pos), -1);
         }
 
@@ -407,13 +416,29 @@ class Macros {
                 case _:
             }
             var typeName:String = null;
-            switch (type) {
+            var subType:String = null;
+            switch (type) { // almost certainly a better way to be doing this
                 case TPath(type): {
                     typeName = "";
                     if (type.pack.length > 0) {
                         typeName += type.pack.join(".") + ".";
                     }
-                    typeName += type.name;
+                    if (type.params != null && type.params.length == 1) {
+                        switch (type.params[0]) {
+                            case TPType(p):
+                                switch(p) {
+                                    case TPath(tp):
+                                        subType = tp.name;
+                                    case _:    
+                                }
+                            case _:    
+                        }
+                    }
+                    if (subType == null) {
+                        typeName += type.name;
+                    } else {
+                        typeName += type.name + '<${subType}>';
+                    }
                 }
                 case _:
             }
@@ -438,12 +463,14 @@ class Macros {
             // add getter function
             var code = "function ():" + typeName + " {\n";
             if (getClassNameFromType(Context.getLocalType()) != "haxe.ui.styles.Style") {
-                var defaultValue = null;
+                var defaultValue:Dynamic = null;
                 if (typeName == "Float" || typeName == "Int") {
                     defaultValue = 0;
+                } else if (typeName == "Bool") {
+                    defaultValue = false;
                 }
-                if (defaultValue != null) {
-                    code += "if (style." + name + " == null) {\n return " + defaultValue + ";\n }\n" ;
+                if (defaultValue != null || subType != null) {
+                    code += "if (style == null || style." + name + " == null) {\n return " + defaultValue + ";\n }\n" ;
                 }
                 code += "return style." + name + ";\n";
             } else {
@@ -471,9 +498,6 @@ class Macros {
             } else {
                 code += "if (customStyle." + name + " == value) return value;\n";
                 code += "customStyle." + name + " = value;\n";
-                //code += "" + f.name + " = value;\n";
-                //code += "invalidate(InvalidationFlags.STYLE);\n";
-                //code += "invalidateDisplay();\n";
                 code += "invalidateStyle();\n";
             }
             code += "return value;\n";

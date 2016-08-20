@@ -708,7 +708,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
      A string representation of the css classes associated with this component
     **/
     @:dox(group="Style related properties and methods")
-    public var styleNames(get, set):String;
+    @clonable public var styleNames(get, set):String;
     private function get_styleNames():String {
         return classes.join(" ");
     }
@@ -728,7 +728,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
      An inline css string that will be parsed and applied as a custom style
     **/
     @:dox(group="Style related properties and methods")
-    public var styleString(null, set):String;
+    @clonable public var styleString(null, set):String;
     private function set_styleString(value:String):String {
         if (value == null) {
             return value;
@@ -908,23 +908,23 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     //***********************************************************************************************************
     // Styles
     //***********************************************************************************************************
-    @style      public var backgroundColor:Int;
-    @style      public var borderColor:Int;
-    @style      public var borderSize:Float;
-    @style      public var borderRadius:Float;
+    @style      public var backgroundColor:Null<Int>;
+    @style      public var borderColor:Null<Int>;
+    @style      public var borderSize:Null<Float>;
+    @style      public var borderRadius:Null<Float>;
 
-    @style      public var paddingLeft:Float;
-    @style      public var paddingRight:Float;
-    @style      public var paddingTop:Float;
-    @style      public var paddingBottom:Float;
+    @style      public var paddingLeft:Null<Float>;
+    @style      public var paddingRight:Null<Float>;
+    @style      public var paddingTop:Null<Float>;
+    @style      public var paddingBottom:Null<Float>;
 
-    @style      public var marginLeft:Float;
-    @style      public var marginRight:Float;
-    @style      public var marginTop:Float;
-    @style      public var marginBottom:Float;
-    @style      public var clip:Bool;
+    @style      public var marginLeft:Null<Float>;
+    @style      public var marginRight:Null<Float>;
+    @style      public var marginTop:Null<Float>;
+    @style      public var marginBottom:Null<Float>;
+    @style      public var clip:Null<Bool>;
 
-    @style      public var opacity:Float;
+    @style      public var opacity:Null<Float>;
 
     //***********************************************************************************************************
     // Size related
