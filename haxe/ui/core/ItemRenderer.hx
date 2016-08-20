@@ -8,15 +8,15 @@ import haxe.ui.util.Variant;
 class ItemRenderer extends Component implements IClonable<ItemRenderer> {
     public function new() {
         super();
-        registerEvent(MouseEvent.MOUSE_OVER, onMouseOver);
-        registerEvent(MouseEvent.MOUSE_OUT, onMouseOut);
+        registerEvent(MouseEvent.MOUSE_OVER, _onItemMouseOver);
+        registerEvent(MouseEvent.MOUSE_OUT, _onItemMouseOut);
     }
     
-    private function onMouseOver(event:MouseEvent) {
+    private function _onItemMouseOver(event:MouseEvent) {
         addClass(":hover");
     }
     
-    private function onMouseOut(event:MouseEvent) {
+    private function _onItemMouseOut(event:MouseEvent) {
         removeClass(":hover");
     }
     
