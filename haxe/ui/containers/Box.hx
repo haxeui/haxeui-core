@@ -1,5 +1,6 @@
 package haxe.ui.containers;
 
+import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.VerticalLayout;
 import haxe.ui.core.IClonable;
 
@@ -11,7 +12,7 @@ import haxe.ui.core.IClonable;
 class Box extends haxe.ui.core.Component implements IClonable<Box> {
     public function new() {
         super();
-        layout = new VerticalLayout();
+        layout = new DefaultLayout();
     }
 
     //***********************************************************************************************************

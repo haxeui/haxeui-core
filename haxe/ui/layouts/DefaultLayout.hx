@@ -53,7 +53,7 @@ class DefaultLayout extends Layout {
                     ypos = ((component.componentHeight / 2) - (child.componentHeight / 2)) + marginTop(child) - marginBottom(child);
 //                  ypos = ((usableSize.height / 2) - (child.componentHeight / 2)) + marginTop(child) - marginBottom(child);
                 case "bottom":
-                    ypos = ((component.componentHeight / 2) - (child.componentHeight / 2)) + marginTop(child) - marginBottom(child);
+                    ypos = component.componentHeight - (child.componentHeight + paddingBottom + marginTop(child) - marginBottom(child));
 //                  ypos = ((usableSize.height / 2) - (child.componentHeight / 2)) + marginTop(child) - marginBottom(child);
             }
 
