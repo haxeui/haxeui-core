@@ -1,13 +1,16 @@
 package haxe.ui.components;
 import haxe.ui.containers.ListView;
+import haxe.ui.core.Component;
 import haxe.ui.core.IClonable;
 import haxe.ui.core.IDataComponent;
+import haxe.ui.core.ItemRenderer;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.Screen;
 import haxe.ui.core.UIEvent;
 
 class DropDown extends Button implements IDataComponent implements IClonable<DropDown> {
     private var _listview:ListView;
+    private var _itemRenderer:ItemRenderer;
 
     public function new() {
         super();
@@ -65,18 +68,33 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
         _listStyleNames = value;
         return value;
     }
+
+    public override function addComponent(child:Component):Component {
+        var r = null;
+        if (Std.is(child, ItemRenderer) && _itemRenderer == null) {
+            _itemRenderer = cast(child, ItemRenderer);
+            #if haxeui_luxe
+            _itemRenderer.hide();
+            #end
+        } else {
+            r = super.addComponent(child);
+        }
+        return r;
+    }
     
     private function onMouseClick(event:MouseEvent) {
         if (selected == true) {
             if (_listview == null) {
                 _listview = new ListView();
+                if (_itemRenderer != null) {
+                    _listview.addComponent(_itemRenderer);
+                }
                 _listview.addClass("popup");
                 if (_listStyleNames != null) {
                     for (s in _listStyleNames.split(" ")) {
                         _listview.addClass(s);
                     }
                 }
-                _listview.addComponent(new BasicItemRenderer());
                 if (_data != null) {
                     _listview.data = _data;
                 }

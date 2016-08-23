@@ -33,7 +33,6 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
         }
     }
 
-    @:access(haxe.ui.core.Component)
     public override function addComponent(child:Component):Component {
         var r = null;
         if (Std.is(child, ItemRenderer) && _itemRenderer == null) {

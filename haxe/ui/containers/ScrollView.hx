@@ -268,18 +268,6 @@ class ScrollViewLayout extends DefaultLayout {
         super();
     }
 
-    private override function resizeChildren():Bool {
-        super.resizeChildren();
-
-        var hscroll:Component = component.findComponent("scrollview-hscroll");
-        var vscroll:Component = component.findComponent("scrollview-vscroll");
-
-        var ucx = usableWidth;
-        var ucy = usableHeight;
-
-        return true;
-    }
-
     private override function repositionChildren():Void {
         var contents:Component = component.findComponent("scrollview-contents", null, false, "css");
         if (contents == null) {
