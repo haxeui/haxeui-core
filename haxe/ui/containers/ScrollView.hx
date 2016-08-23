@@ -150,7 +150,7 @@ class ScrollView extends Component implements IClonable<ScrollView> {
     }
 
     public function checkScrolls():Void {
-        if (isReady == false || _contents == null || native == true) {
+        if (isReady == false || _contents == null || native == true || _contents.childComponents.length == 0) {
             return;
         }
 
