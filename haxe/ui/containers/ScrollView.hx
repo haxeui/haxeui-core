@@ -132,7 +132,7 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         updateScrollRect();
     }
     */
-
+    
     private function _onMouseWheel(event:MouseEvent) {
         if (_vscroll != null) {
             if (event.delta > 0) {

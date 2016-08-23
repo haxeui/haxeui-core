@@ -38,6 +38,9 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
         var r = null;
         if (Std.is(child, ItemRenderer) && _itemRenderer == null) {
             _itemRenderer = cast(child, ItemRenderer);
+            #if haxeui_luxe
+            _itemRenderer.hide();
+            #end
             if (_data != null) {
                 data = _data;
             }

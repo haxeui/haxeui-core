@@ -270,7 +270,7 @@ class MacroHelpers {
 
             var defines:Map<String, String> = Context.getDefines();
             for (key in defines.keys()) {
-                interp.variables.set(key, defines.get(key));
+                interp.variables.set(StringTools.replace(key, "-", "_"), defines.get(key));
             }
 
             try {

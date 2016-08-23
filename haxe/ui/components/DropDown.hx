@@ -56,11 +56,26 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
         return value;
     }
 
+    private var _listStyleNames:String;
+    public var listStyleNames(get, set):String;
+    private function get_listStyleNames():String {
+        return _listStyleNames;
+    }
+    private function set_listStyleNames(value:String):String {
+        _listStyleNames = value;
+        return value;
+    }
+    
     private function onMouseClick(event:MouseEvent) {
         if (selected == true) {
             if (_listview == null) {
                 _listview = new ListView();
                 _listview.addClass("popup");
+                if (_listStyleNames != null) {
+                    for (s in _listStyleNames.split(" ")) {
+                        _listview.addClass(s);
+                    }
+                }
                 _listview.addComponent(new BasicItemRenderer());
                 if (_data != null) {
                     _listview.data = _data;
