@@ -121,10 +121,8 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
             _listview.height = listHeight;
             
             if (_listview.screenTop + _listview.height > Screen.instance.height) {
-                _listview.y = this.screenTop - _listview.height;
+                _listview.top = this.screenTop - _listview.height;
             }
-            
-            
 
             Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
         } else {
