@@ -1,5 +1,7 @@
 package haxe.ui.core;
 
+import haxe.ui.data.DataSource;
+
 interface IDataComponent {
-    public var data(get, set):Dynamic;
+    public var dataSource(get, set):DataSource<Dynamic>;
 }

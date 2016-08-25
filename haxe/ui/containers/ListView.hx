@@ -1,6 +1,5 @@
 package haxe.ui.containers;
 
-import haxe.Json;
 import haxe.ui.components.Label;
 import haxe.ui.containers.ScrollView;
 import haxe.ui.containers.VBox;
@@ -10,6 +9,7 @@ import haxe.ui.core.IDataComponent;
 import haxe.ui.core.ItemRenderer;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.UIEvent;
+import haxe.ui.data.DataSource;
 
 class ListView extends ScrollView implements IDataComponent implements IClonable<ListView> {
     private var _itemRenderer:ItemRenderer;
@@ -40,8 +40,8 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
             #if haxeui_luxe
             _itemRenderer.hide();
             #end
-            if (_data != null) {
-                data = _data;
+            if (_dataSource != null) {
+                syncUI();
             }
         } else {
             if (Std.is(child, ItemRenderer)) {
@@ -114,43 +114,44 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
         }
         return (cy / n);
     }
-
-    private var _data:Dynamic;
-    public var data(get, set):Dynamic;
-    private function get_data():Dynamic {
-        return null;
+    
+    private var _dataSource:DataSource<Dynamic>;
+    public var dataSource(get, set):DataSource<Dynamic>;
+    private function get_dataSource():DataSource<Dynamic> {
+        return _dataSource;
     }
-    private function set_data(value:Dynamic):Dynamic {
-        _data = value;
-        if (_itemRenderer == null) {
-            return value;
+    private function set_dataSource(value:DataSource<Dynamic>):DataSource<Dynamic> {
+        _dataSource = value;
+        syncUI();
+        return value;
+    }
+    
+    private function syncUI() {
+        if (_itemRenderer == null || _dataSource == null) {
+            return;
         }
-
+        
         lockLayout();
-
-        if (Std.is(value, String)) {
-            var stringValue:String = StringTools.trim('${value}');
-            if (StringTools.startsWith(stringValue, "<")) { // xml
-                var xml:Xml = Xml.parse(stringValue).firstElement();
-                for (el in xml.elements()) {
-                    var o:Dynamic = { };
-                    Reflect.setField(o, "id", el.nodeName);
-                    for (attr in el.attributes()) {
-                        Reflect.setField(o, attr, el.get(attr));
-                    }
-                    addItem(o);
-                }
-            } else if (StringTools.startsWith(stringValue, "[")) { // json array
-                var json:Array<Dynamic> = Json.parse(StringTools.replace(stringValue, "'", "\""));
-                for (o in json) {
-                    addItem(o);
-                }
+        
+        var delta = _dataSource.size - itemCount;
+        if (delta > 0) { // not enough items
+            for (n in 0...delta) {
+                addComponent(_itemRenderer.cloneComponent());
+            }
+        } else if (delta < 0) { // too many items
+            while (delta < 0) {
+                contents.removeComponent(contents.childComponents[contents.childComponents.length - 1]); // remove last
+                delta++;
             }
         }
-
+        
+        for (n in 0..._dataSource.size) {
+            var item:ItemRenderer = cast(contents.childComponents[n], ItemRenderer);
+            item.addClass(n % 2 == 0 ? "even" : "odd");
+            item.data = _dataSource.get(n);
+        }
+        
         unlockLayout();
-
-        return value;
     }
 }
 

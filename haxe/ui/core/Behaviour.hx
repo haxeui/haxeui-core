@@ -37,6 +37,13 @@ class Behaviour {
     }
 
     /**
+     Make a specific call to an operation
+    **/
+    public function call(id:String):Variant {
+        return null;
+    }
+    
+    /**
      Utility function to retrieve a string config value for this behaviour
     **/
     public function getConfigValue(name:String, defaultValue:String = null):String {

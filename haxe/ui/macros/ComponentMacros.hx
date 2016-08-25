@@ -164,7 +164,7 @@ class ComponentMacros {
 
 
         if (MacroHelpers.hasInterface(type, "haxe.ui.core.IDataComponent") == true && c.data != null) {
-            s += 'cast(c${id}, haxe.ui.core.IDataComponent).data = "${c.dataString}";\n';
+            s += 'cast(c${id}, haxe.ui.core.IDataComponent).dataSource = new haxe.ui.data.DataSourceFactory<Dynamic>().fromString("${c.dataString}", haxe.ui.data.ArrayDataSource);\n';
         }
 
         if (c.id != null && namedComponents != null) {

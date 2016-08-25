@@ -1,4 +1,5 @@
 package haxe.ui.components;
+
 import haxe.ui.containers.ListView;
 import haxe.ui.core.Component;
 import haxe.ui.core.IClonable;
@@ -7,6 +8,7 @@ import haxe.ui.core.ItemRenderer;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.Screen;
 import haxe.ui.core.UIEvent;
+import haxe.ui.data.DataSource;
 
 class DropDown extends Button implements IDataComponent implements IClonable<DropDown> {
     private var _listview:ListView;
@@ -15,17 +17,35 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
     public function new() {
         super();
         addClass("button"); // TODO: shouldnt have to do this
-        toggle = true;
-        registerEvent(MouseEvent.CLICK, onMouseClick);
+        if (native == false) {
+            toggle = true;
+            registerEvent(MouseEvent.CLICK, onMouseClick);
+        }
     }
 
-    private var _data:Dynamic;
-    public var data(get, set):Dynamic;
-    private function get_data():Dynamic {
-        return null;
+    private override function create():Void {
+        super.create();
     }
-    private function set_data(value:Dynamic):Dynamic {
-        _data = value;
+
+    private override function createChildren():Void {
+        super.createChildren();
+    }
+
+    private override function destroyChildren():Void {
+        super.destroyChildren();
+        unregisterEvent(MouseEvent.CLICK, onMouseClick);
+    }
+    
+    private var _dataSource:DataSource<Dynamic>;
+    public var dataSource(get, set):DataSource<Dynamic>;
+    private function get_dataSource():DataSource<Dynamic> {
+        return _dataSource;
+    }
+    private function set_dataSource(value:DataSource<Dynamic>):DataSource<Dynamic> {
+        _dataSource = value;
+        if (_listview != null) {
+            _dataSource = value;
+        }
         return value;
     }
 
@@ -95,8 +115,8 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
                         _listview.addClass(s);
                     }
                 }
-                if (_data != null) {
-                    _listview.data = _data;
+                if (_dataSource != null) {
+                    _listview.dataSource = _dataSource;
                 }
                 _listview.registerEvent(UIEvent.CHANGE, onItemChange);
             }
@@ -151,6 +171,5 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
         selected = !selected;
         onMouseClick(null);
     }
-
 }
 
