@@ -1,6 +1,7 @@
 package haxe.ui.components;
 
 import haxe.ui.containers.ListView;
+import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.IClonable;
 import haxe.ui.core.IDataComponent;
@@ -9,6 +10,7 @@ import haxe.ui.core.MouseEvent;
 import haxe.ui.core.Screen;
 import haxe.ui.core.UIEvent;
 import haxe.ui.data.DataSource;
+import haxe.ui.util.Variant;
 
 class DropDown extends Button implements IDataComponent implements IClonable<DropDown> {
     private var _listview:ListView;
@@ -17,12 +19,15 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
     public function new() {
         super();
         addClass("button"); // TODO: shouldnt have to do this
-        if (native == false) {
-            toggle = true;
-            registerEvent(MouseEvent.CLICK, onMouseClick);
-        }
+        toggle = true;
+        registerEvent(MouseEvent.CLICK, onMouseClick);
     }
 
+    private override function createDefaults():Void {
+        super.createDefaults();
+        _defaultBehaviours.set("dataSource", new DropDownDefaultDataSourceBehaviour(this));
+    }
+    
     private override function create():Void {
         super.create();
     }
@@ -46,6 +51,7 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
         if (_listview != null) {
             _dataSource = value;
         }
+        behaviourSet("dataSource", Variant.fromDynamic(value));
         return value;
     }
 
@@ -103,6 +109,10 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
     }
     
     private function onMouseClick(event:MouseEvent) {
+        if (native == true) {
+            return;
+        }
+        
         if (selected == true) {
             if (_listview == null) {
                 _listview = new ListView();
@@ -173,3 +183,13 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
     }
 }
 
+//***********************************************************************************************************
+// Default behaviours
+//***********************************************************************************************************
+
+@:dox(hide)
+class DropDownDefaultDataSourceBehaviour extends Behaviour {
+    public override function set(value:Variant) {    
+        
+    }
+}

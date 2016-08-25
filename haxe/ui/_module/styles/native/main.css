@@ -10,7 +10,7 @@
     border-radius: none;
 }
 
-.button:native {
+.button:native, .dropdown:native {
     background: none;
     border: none;
     border-radius: none;

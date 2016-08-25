@@ -1,11 +1,11 @@
 package haxe.ui.util;
-import haxe.ui.core.Component;
 
 enum VariantType {
     Int(s:Int);
     Float(s:Float);
     String(s:String);
     Bool(s:Bool);
+    Dynamic(s:Dynamic);
 }
 
 abstract Variant(VariantType) from VariantType {
@@ -22,6 +22,7 @@ abstract Variant(VariantType) from VariantType {
             case Int(s): return Std.string(s);
             case Float(s): return Std.string(s);
             case Bool(s): return Std.string(s);
+            case Dynamic(s): return Std.string(s);
             default: throw "Variant Type Error";
         }
     }
@@ -101,7 +102,7 @@ abstract Variant(VariantType) from VariantType {
     }
 
     public var isBool(get, never):Bool;
-    public function get_isBool():Bool {
+    private function get_isBool():Bool {
         switch (this) {
             case Bool(_): return true;
             default:
@@ -210,7 +211,7 @@ abstract Variant(VariantType) from VariantType {
     // HELPERS
     // ************************************************************************************************************
     public var isNull(get, never):Bool;
-    public function get_isNull():Bool {
+    private function get_isNull():Bool {
         return toString() == null;
     }
 
@@ -225,8 +226,10 @@ abstract Variant(VariantType) from VariantType {
                 }
             } else if ((("" + r) == "true" || (r + "") == "false")) {
                 v = (("" + r) == "true");
-            } else {
+            } else if (Std.is(r, String)) {
                 v = Std.string(r);
+            } else {
+                v = VariantType.Dynamic(r);
             }
         }
         return v;
@@ -240,6 +243,7 @@ abstract Variant(VariantType) from VariantType {
                 case VariantType.Float(y):      d = y;
                 case VariantType.String(y):     d = y;
                 case VariantType.Bool(y):       d = y;
+                case VariantType.Dynamic(y):    d = y;
             }
         }
         return d;
