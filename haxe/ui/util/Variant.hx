@@ -117,7 +117,6 @@ abstract Variant(VariantType) from VariantType {
     // BOOLS
     // ************************************************************************************************************
     @:from static function fromDataSource(s:DataSource<Dynamic>):Variant {
-        trace("HEWRE");
         return DataSource(s);
     }
 
