@@ -1,11 +1,13 @@
 package haxe.ui.util;
+import haxe.ui.data.DataSource;
 
 enum VariantType {
     Int(s:Int);
     Float(s:Float);
     String(s:String);
     Bool(s:Bool);
-    Dynamic(s:Dynamic);
+//    Dynamic(s:Dynamic);
+    DataSource(s:DataSource<Dynamic>);
 }
 
 abstract Variant(VariantType) from VariantType {
@@ -22,7 +24,8 @@ abstract Variant(VariantType) from VariantType {
             case Int(s): return Std.string(s);
             case Float(s): return Std.string(s);
             case Bool(s): return Std.string(s);
-            case Dynamic(s): return Std.string(s);
+            //case Dynamic(s): return Std.string(s);
+            case DataSource(s): return Std.string(s);
             default: throw "Variant Type Error";
         }
     }
@@ -110,6 +113,30 @@ abstract Variant(VariantType) from VariantType {
         return false; // this.match(Bool(_));
     }
 
+    // ************************************************************************************************************
+    // BOOLS
+    // ************************************************************************************************************
+    @:from static function fromDataSource(s:DataSource<Dynamic>):Variant {
+        trace("HEWRE");
+        return DataSource(s);
+    }
+
+    @:to function toDataSource() {
+        return switch(this) {
+            case DataSource(s): return s;
+            default: throw "Variant Type Error";
+        }
+    }
+
+    public var isDataSource(get, never):Bool;
+    private function get_isDataSource():Bool {
+        switch (this) {
+            case DataSource(_): return true;
+            default:
+        }
+        return false; // this.match(Bool(_));
+    }
+    
     // ************************************************************************************************************
     // OPERATIONS
     // ************************************************************************************************************
@@ -228,8 +255,10 @@ abstract Variant(VariantType) from VariantType {
                 v = (("" + r) == "true");
             } else if (Std.is(r, String)) {
                 v = Std.string(r);
+            } else if (Std.is(r, DataSource)) {
+                v =  cast r;
             } else {
-                v = VariantType.Dynamic(r);
+                v = Std.string(r);
             }
         }
         return v;
@@ -243,7 +272,8 @@ abstract Variant(VariantType) from VariantType {
                 case VariantType.Float(y):      d = y;
                 case VariantType.String(y):     d = y;
                 case VariantType.Bool(y):       d = y;
-                case VariantType.Dynamic(y):    d = y;
+                //case VariantType.Dynamic(y):    d = y;
+                case VariantType.DataSource(y):       d = y;
             }
         }
         return d;
