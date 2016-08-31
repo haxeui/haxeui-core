@@ -118,7 +118,6 @@ class ComponentMacros {
         code += "return c0;\n";
         code += "}()\n";
 
-        //trace(code);
         return code;
     }
 

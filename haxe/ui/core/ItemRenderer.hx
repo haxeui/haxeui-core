@@ -30,7 +30,7 @@ class ItemRenderer extends Component implements IClonable<ItemRenderer> {
         for (f in Reflect.fields(_data)) {
             var v = Reflect.field(_data, f);
             var c:Component = findComponent(f, null, true);
-            if (c != null) {
+            if (c != null && v != null) {
                 c.value = Variant.fromDynamic(v);
             }
         }

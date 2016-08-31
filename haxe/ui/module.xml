@@ -7,6 +7,7 @@
     <components>
         <class name="haxe.ui.core.Component" />
         <class name="haxe.ui.core.ItemRenderer" />
+        <class name="haxe.ui.core.BasicItemRenderer" />
         <class package="haxe.ui.components" />
         <class package="haxe.ui.containers" />
         <class package="haxe.ui.containers.dialogs" />

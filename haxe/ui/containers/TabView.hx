@@ -159,11 +159,11 @@ class TabViewLayout extends DefaultLayout {
         }
     }
 
-    private override function resizeChildren():Bool {
+    private override function resizeChildren() {
         var content:Component = component.findComponent("tabview-content");
         var tabs:TabBar = component.findComponent("tabview-tabs");
         if (tabs == null || content == null) {
-            return false;
+            return;
         }
 
         if (component.autoHeight == false) {
@@ -174,8 +174,6 @@ class TabViewLayout extends DefaultLayout {
             content.componentWidth = component.componentWidth;
         } else {
         }
-
-        return true;
     }
 
     private override function get_usableSize():Size {

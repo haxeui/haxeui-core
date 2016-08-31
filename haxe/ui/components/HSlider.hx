@@ -160,7 +160,7 @@ class HSliderLayout extends DefaultLayout {
         super();
     }
 
-    public override function resizeChildren():Bool {
+    public override function resizeChildren() {
         super.resizeChildren();
 
         var background:Component = component.findComponent("slider-value-background");
@@ -199,7 +199,6 @@ class HSliderLayout extends DefaultLayout {
                 }
             }
         }
-        return true;
     }
 
     public override function repositionChildren():Void {

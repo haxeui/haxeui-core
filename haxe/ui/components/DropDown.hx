@@ -1,6 +1,7 @@
 package haxe.ui.components;
 
 import haxe.ui.containers.ListView;
+import haxe.ui.core.BasicItemRenderer;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.IClonable;
@@ -41,6 +42,13 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
         unregisterEvent(MouseEvent.CLICK, onMouseClick);
     }
     
+    private override function onReady() {
+        super.onReady();
+        if (_itemRenderer == null) {
+            addComponent(new BasicItemRenderer());
+        }
+    }
+    
     private var _dataSource:DataSource<Dynamic>;
     public var dataSource(get, set):DataSource<Dynamic>;
     private function get_dataSource():DataSource<Dynamic> {
@@ -51,7 +59,8 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
         if (_listview != null) {
             _dataSource = value;
         }
-        behaviourSet("dataSource", Variant.fromDynamic(value));
+        //behaviourSet("dataSource", Variant.fromDynamic(value));
+        behaviourSet("dataSource", value);
         return value;
     }
 

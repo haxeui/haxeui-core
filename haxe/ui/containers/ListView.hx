@@ -1,8 +1,8 @@
 package haxe.ui.containers;
 
-import haxe.ui.components.Label;
 import haxe.ui.containers.ScrollView;
 import haxe.ui.containers.VBox;
+import haxe.ui.core.BasicItemRenderer;
 import haxe.ui.core.Component;
 import haxe.ui.core.IClonable;
 import haxe.ui.core.IDataComponent;
@@ -78,6 +78,7 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
         }
 
         var r = _itemRenderer.cloneComponent();
+        r.percentWidth = 100;
         var n = contents.childComponents.length;
         var item:ItemRenderer = cast addComponent(r);
         item.addClass(n % 2 == 0 ? "even" : "odd");
@@ -152,24 +153,5 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
         }
         
         unlockLayout();
-    }
-}
-
-class BasicItemRenderer extends ItemRenderer {
-    public function new() {
-        super();
-
-        addClass("itemrenderer"); // TODO: shouldnt have to do this
-        this.percentWidth = 100;
-
-        var hbox:HBox = new HBox();
-        hbox.percentWidth = 100;
-
-        var label:Label = new Label();
-        label.id = "text";
-        label.percentWidth = 100;
-        hbox.addComponent(label);
-
-        addComponent(hbox);
     }
 }

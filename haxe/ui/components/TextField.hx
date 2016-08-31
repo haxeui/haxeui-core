@@ -206,7 +206,7 @@ class TextFieldLayout extends DefaultLayout {
         }
     }
 
-    private override function resizeChildren():Bool {
+    private override function resizeChildren() {
         super.resizeChildren();
 
         if (component.hasTextInput() == true) {
@@ -214,7 +214,6 @@ class TextFieldLayout extends DefaultLayout {
             component.getTextInput().width = size.width;
             //component.getTextInput().height = size.height;
         }
-        return true;
     }
 
     public override function calcAutoSize():Size {

@@ -120,6 +120,10 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         return v;
     }
 
+    private function addComponentToSuper(child:Component):Component {
+        return super.addComponent(child);
+    }
+    
     public var contents(get, null):Component;
     private function get_contents():Component {
         return _contents;
@@ -132,6 +136,16 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         updateScrollRect();
     }
     */
+    
+    private var horizontalConstraint(get, null):Component;
+    private function get_horizontalConstraint():Component {
+        return _contents;
+    }
+    
+    private var verticalConstraint(get, null):Component;
+    private function get_verticalConstraint():Component {
+        return _contents;
+    }
     
     private function _onMouseWheel(event:MouseEvent) {
         if (_vscroll != null) {
@@ -149,19 +163,27 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         updateScrollRect();
     }
 
+    private var hscrollOffset(get, null):Float;
+    private function get_hscrollOffset():Float {
+        return 0;
+    }
+    
     public function checkScrolls():Void {
-        if (isReady == false || _contents == null || native == true || _contents.childComponents.length == 0) {
+        if (isReady == false
+            || horizontalConstraint == null || horizontalConstraint.childComponents.length == 0
+            || verticalConstraint == null || verticalConstraint.childComponents.length == 0
+            || native == true) {
             return;
         }
 
         checkHScroll();
         checkVScroll();
 
-        if (_contents.componentWidth > layout.usableWidth) {
+        if (horizontalConstraint.componentWidth > layout.usableWidth) {
             if (_hscroll != null) {
                 _hscroll.hidden = false;
-                _hscroll.max = _contents.componentWidth - layout.usableWidth;
-                _hscroll.pageSize = (layout.usableWidth / _contents.componentWidth) * _hscroll.max;
+                _hscroll.max = horizontalConstraint.componentWidth - layout.usableWidth - hscrollOffset;// _contents.layout.horizontalSpacing;
+                _hscroll.pageSize = (layout.usableWidth / horizontalConstraint.componentWidth) * _hscroll.max;
             }
         } else {
             if (_hscroll != null) {
@@ -169,11 +191,11 @@ class ScrollView extends Component implements IClonable<ScrollView> {
             }
         }
 
-        if (_contents.componentHeight > layout.usableHeight) {
+        if (verticalConstraint.componentHeight > layout.usableHeight) {
             if (_vscroll != null) {
                 _vscroll.hidden = false;
-                _vscroll.max = _contents.componentHeight - layout.usableHeight;
-                _vscroll.pageSize = (layout.usableHeight / _contents.componentHeight) * _vscroll.max;
+                _vscroll.max = verticalConstraint.componentHeight - layout.usableHeight;
+                _vscroll.pageSize = (layout.usableHeight / verticalConstraint.componentHeight) * _vscroll.max;
             }
         } else {
             if (_vscroll != null) {
@@ -185,11 +207,11 @@ class ScrollView extends Component implements IClonable<ScrollView> {
     }
 
     private function checkHScroll() {
-        if (componentWidth <= 0) {
+        if (componentWidth <= 0 || horizontalConstraint == null) {
             return;
         }
 
-        if (_contents.componentWidth > layout.usableWidth) {
+        if (horizontalConstraint.componentWidth > layout.usableWidth) {
             if (_hscroll == null) {
                 _hscroll = new HScroll();
                 _hscroll.percentWidth = 100;
@@ -206,11 +228,11 @@ class ScrollView extends Component implements IClonable<ScrollView> {
     }
 
     private function checkVScroll() {
-        if (componentHeight <= 0) {
+        if (componentHeight <= 0 || verticalConstraint == null) {
             return;
         }
 
-        if (_contents.componentHeight > layout.usableHeight) {
+        if (verticalConstraint.componentHeight > layout.usableHeight) {
             if (_vscroll == null) {
                 _vscroll = new VScroll();
                 _vscroll.percentHeight = 100;
@@ -231,7 +253,7 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         handleBindings(["vscrollPos"]);
     }
 
-    public function updateScrollRect():Void {
+    public function updateScrollRect() {
         if (_contents == null) {
             return;
         }

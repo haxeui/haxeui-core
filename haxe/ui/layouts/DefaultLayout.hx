@@ -9,23 +9,23 @@ class DefaultLayout extends Layout {
 
     private override function resizeChildren() {
         var usableSize:Size = usableSize;
-        var resized:Bool = false;
         for (child in component.childComponents) {
+            if (child.includeInLayout == false) {
+                continue;
+            }
+            
             var cx:Null<Float> = null;
             var cy:Null<Float> = null;
 
             if (child.percentWidth != null) {
                 cx = (usableSize.width * child.percentWidth) / 100;
-                resized = true;
             }
             if (child.percentHeight != null) {
                 cy = (usableSize.height * child.percentHeight) / 100;
-                resized = true;
             }
 
             child.resizeComponent(cx, cy);
         }
-        return resized;
     }
 
     private override function repositionChildren() {

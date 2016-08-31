@@ -42,7 +42,7 @@ class VProgressLayout extends DefaultLayout {
         super();
     }
 
-    public override function resizeChildren():Bool {
+    public override function resizeChildren() {
         super.resizeChildren();
 
         var value:Component = component.findComponent("progress-value");
@@ -71,7 +71,6 @@ class VProgressLayout extends DefaultLayout {
                 value.hidden = false;
             }
         }
-        return true;
     }
 
     public override function repositionChildren():Void {

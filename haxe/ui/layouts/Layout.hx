@@ -175,6 +175,7 @@ class Layout implements ILayout {
         }
         return _component.style.verticalSpacing;
     }
+    
     //******************************************************************************************
     // Helpers
     //******************************************************************************************
@@ -201,8 +202,7 @@ class Layout implements ILayout {
         return icy;
     }
 
-    private function resizeChildren():Bool {
-        return true;
+    private function resizeChildren() {
     }
 
     private function repositionChildren() {

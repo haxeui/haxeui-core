@@ -599,3 +599,56 @@
     icon: "haxeui-core/styles/default/up_down_arrows.png";
     icon-position: far-right;
 }
+
+/************************************************************************
+** HEADER
+*************************************************************************/
+.header .column {
+    border-radius: 0;
+    icon-position: far-right;
+}
+
+.header .column.sortable {
+    icon: "haxeui-core/styles/default/up_down_arrows.png";
+    icon-position: far-right;
+}
+
+/************************************************************************
+** TABLEVIEW
+*************************************************************************/
+.tableview {
+    border: 1px solid #ABABAB;
+    border-radius: 1px;
+}
+
+.tableview .tableview-row {
+    padding: 0px;
+    spacing: 2px;
+    background-color: #DDDDDD;
+}
+
+.tableview .tableview-contents {
+    spacing: 0;
+    padding: 0;
+    margin-top: -1px;
+}
+
+.tableview .itemrenderer.even {
+    background-color: #FFFFFF;
+}
+
+.tableview .itemrenderer.even:hover {
+    background-color: #F0F0F0;
+}
+
+.tableview .itemrenderer.odd {
+    background-color: #F8F8F8;
+}
+
+.tableview .itemrenderer.odd:hover {
+    background-color: #F0F0F0;
+}
+
+.tableview .itemrenderer:selected {
+    background-color: #CCCCCC;
+}

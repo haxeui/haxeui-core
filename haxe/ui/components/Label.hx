@@ -73,7 +73,7 @@ class Label extends InteractiveComponent implements IClonable<Label> {
 @:dox(hide)
 @:access(haxe.ui.components.Label)
 class LabelLayout extends DefaultLayout {
-    private override function resizeChildren():Bool {
+    private override function resizeChildren() {
         if (component.autoWidth == false) {
             component.getTextDisplay().width = component.componentWidth;
             #if openfl // TODO: make not specific
@@ -81,7 +81,6 @@ class LabelLayout extends DefaultLayout {
             component.getTextDisplay().wordWrap = true;
             #end
         }
-        return true;
     }
 
     private override function repositionChildren():Void {

@@ -92,7 +92,7 @@ class ImageLayout extends DefaultLayout {
         return true;
     }
 
-    private override function resizeChildren():Bool {
+    private override function resizeChildren() {
         if (component.hasImageDisplay()) {
             // this feels like it might be the wrong place to do this, ie, setting the component size here - its a special case though
             if (component.autoWidth == false) {
@@ -117,8 +117,6 @@ class ImageLayout extends DefaultLayout {
                 }
             }
         }
-
-        return true;
     }
 
     private override function repositionChildren():Void {

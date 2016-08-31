@@ -1,0 +1,23 @@
+package haxe.ui.components;
+
+import haxe.ui.components.Button;
+
+class Column extends Button {
+    public function new() {
+        super();
+        addClass("button");
+    }
+    
+    public var sortable(get, set):Bool;
+    private function get_sortable():Bool {
+        return hasClass("sortable");
+    }
+    private function set_sortable(value:Bool):Bool {
+        if (value == true) {
+            addClass("sortable");
+        } else {
+            removeClass("sortable");
+        }
+        return value;
+    }
+}

@@ -821,7 +821,10 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     @:dox(group="Layout related properties and methods")
     public var includeInLayout(get, set):Bool;
     private function get_includeInLayout():Bool {
-        return _includeInLayout && !_hidden;
+        if (_hidden == true) {
+            return false;
+        }
+        return _includeInLayout;
     }
     private function set_includeInLayout(value:Bool):Bool {
         _includeInLayout = value;
@@ -848,12 +851,23 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     }
 
     private var _layoutLocked:Bool = false;
-    public function lockLayout() {
+    public function lockLayout(recursive:Bool = false) {
         _layoutReinvalidation = false;
         _layoutLocked = true;
+        if (recursive == true) {
+            for (child in childComponents) {
+                child.lockLayout(recursive);
+            }
+        }
     }
 
-    public function unlockLayout() {
+    public function unlockLayout(recursive:Bool = false) {
+        if (recursive == true) {
+            for (child in childComponents) {
+                child.unlockLayout(recursive);
+            }
+        }
+        
         _layoutLocked = false;
         if (_layoutReinvalidation == true) {
             _layoutReinvalidation = false;
@@ -1503,7 +1517,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
             return;
         }
 
-        if (_layoutInvalidating == true || _layoutLocked == true) {
+        if ((_layoutInvalidating == true || _layoutLocked == true) && _layoutReinvalidation == false) {
             // means that if a request to invalidate comes through and were busy
             // (like async resources), we make note to invalidate when were done
             _layoutReinvalidation = true;

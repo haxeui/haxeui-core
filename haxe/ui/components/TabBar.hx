@@ -95,37 +95,7 @@ class TabBarLayout extends HorizontalLayout {
         super();
     }
 
-    private override function resizeChildren():Bool {
+    private override function resizeChildren() {
         super.resizeChildren();
-
-        return true;
-
-        var background:Component = component.findComponent("tabbar-background");
-        if (background != null) {
-            background.componentWidth = component.componentWidth;
-            background.componentHeight = component.componentHeight - 1;
-        }
-
-        return true;
-
-        var ucy = usableHeight;
-
-        var background:Component = component.findComponent("tabbar-background");
-        if (background != null) {
-            background.componentWidth = component.componentWidth;
-            background.componentHeight = component.componentHeight - 1;
-        }
-
-        for (c in component.childComponents) {
-            if (c.includeInLayout == false) {
-                continue;
-            }
-
-            if (c.hasClass("tabbar-button-selected")) {
-                c.componentHeight = ucy;// + 1;
-            } else {
-                c.componentHeight = ucy;
-            }
-        }
     }
 }

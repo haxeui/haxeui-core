@@ -69,7 +69,7 @@ class HScrollLayout extends DefaultLayout {
         super();
     }
 
-    public override function resizeChildren():Bool {
+    public override function resizeChildren() {
         super.resizeChildren();
 
         var scroll:Scroll = cast component;
@@ -87,7 +87,6 @@ class HScrollLayout extends DefaultLayout {
                 thumb.componentWidth = thumbWidth;
             }
         }
-        return true;
     }
 
     public override function repositionChildren():Void {

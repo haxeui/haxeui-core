@@ -37,6 +37,6 @@ class Rectangle {
     }
 
     public function toString():String {
-        return "{left: " + left + ", top: " + top + ", width: " + width + ", height: " + height + "}";
+        return "{left: " + left + ", top: " + top + ", bottom: " + bottom + ", right: " + right + ", width: " + width + ", height: " + height + "}";
     }
 }

@@ -62,7 +62,7 @@ class VScrollLayout extends DefaultLayout {
         super();
     }
 
-    public override function resizeChildren():Bool {
+    public override function resizeChildren() {
         super.resizeChildren();
 
         var scroll:Scroll = cast component;
@@ -80,7 +80,6 @@ class VScrollLayout extends DefaultLayout {
                 thumb.componentHeight = thumbHeight;
             }
         }
-        return true;
     }
 
     public override function repositionChildren():Void {
