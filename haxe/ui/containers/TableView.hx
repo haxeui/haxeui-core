@@ -67,10 +67,12 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
             
             
             #if haxeui_html5 // TODO: should be in backend somehow
-            this.element.onscroll = function(e) {
-                if (lastScrollLeft != this.element.scrollLeft) {
-                    lastScrollLeft = this.element.scrollLeft;
-                    _onHeaderResized(null);
+            if (native == true) {
+                this.element.onscroll = function(e) {
+                    if (lastScrollLeft != this.element.scrollLeft) {
+                        lastScrollLeft = this.element.scrollLeft;
+                        _onHeaderResized(null);
+                    }
                 }
             }
             #end
@@ -244,7 +246,7 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
             ypos = _vscroll.pos;
         }
         
-        if (_header != null && native == false) {
+        if (_header != null && (native == false || native == null)) {
             var clipCX = ucx;
             if (clipCX > _header.componentWidth) {
                 clipCX = _header.componentWidth;
