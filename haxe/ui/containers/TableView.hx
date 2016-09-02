@@ -56,11 +56,25 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
         sizeItems();
     }
 
+    #if haxeui_html5 // TODO: should be in backend somehow
+    private var lastScrollLeft = 0;
+    #end
     public override function addComponent(child:Component):Component {
         var v = null;
         if (Std.is(child, Header)) {
             _header = cast(child, Header);
             _header.registerEvent(UIEvent.RESIZE, _onHeaderResized);
+            
+            
+            #if haxeui_html5 // TODO: should be in backend somehow
+            this.element.onscroll = function(e) {
+                if (lastScrollLeft != this.element.scrollLeft) {
+                    lastScrollLeft = this.element.scrollLeft;
+                    _onHeaderResized(null);
+                }
+            }
+            #end
+            
             v = addComponentToSuper(child);
             if (_dataSource != null) {
                 syncUI();
@@ -84,7 +98,31 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
         checkScrolls();
         updateScrollRect();
         */
+
+        #if haxeui_html5 // TODO: this should be in the backend somehow
+        updateNativeHeaderClip();
+        #end
     }
+    
+    #if haxeui_html5
+    private function updateNativeHeaderClip() {
+        if (native == true) {
+            if (_header != null) {
+                var ucx = layout.usableWidth;
+                var xpos = this.element.scrollLeft;// _hscroll.pos;
+                var clipCX = ucx;
+                if (clipCX > _header.componentWidth) {
+                    clipCX = _header.componentWidth;
+                }
+                if (xpos > 0) { // TODO: bit hacky - should use style or calc
+                    _header.left = 2;
+                }
+                var rc:Rectangle = new Rectangle(Std.int(xpos + 1), Std.int(0), clipCX, _header.componentHeight);
+                _header.clipRect = rc;
+            }
+        }
+    }
+    #end
     
     private override function get_horizontalConstraint():Component {
         return _header;
@@ -203,14 +241,17 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
             ypos = _vscroll.pos;
         }
         
-        if (_header != null) {
+        if (_header != null && native == false) {
             var clipCX = ucx;
             if (clipCX > _header.componentWidth) {
                 clipCX = _header.componentWidth;
             }
-            
             var rc:Rectangle = new Rectangle(Std.int(xpos + 1), Std.int(1), clipCX, _header.componentHeight);
             _header.clipRect = rc;
+        } else {
+            #if haxeui_html5
+            updateNativeHeaderClip();
+            #end
         }
         
         if (_contents != null) {
