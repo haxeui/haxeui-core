@@ -116,8 +116,11 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
                 }
                 if (xpos > 0) { // TODO: bit hacky - should use style or calc
                     _header.left = 2;
+                    xpos++;
+                } else {
+                    _header.left = 1;
                 }
-                var rc:Rectangle = new Rectangle(Std.int(xpos + 1), Std.int(0), clipCX, _header.componentHeight);
+                var rc:Rectangle = new Rectangle(Std.int(xpos), Std.int(0), clipCX, _header.componentHeight);
                 _header.clipRect = rc;
             }
         }
