@@ -57,7 +57,7 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
     private function set_dataSource(value:DataSource<Dynamic>):DataSource<Dynamic> {
         _dataSource = value;
         if (_listview != null) {
-            _dataSource = value;
+            _listview.dataSource = value;
         }
         //behaviourSet("dataSource", Variant.fromDynamic(value));
         behaviourSet("dataSource", value);
