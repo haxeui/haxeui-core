@@ -120,6 +120,16 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         return v;
     }
 
+    public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
+        var v = null;
+        if (Std.is(child, HScroll) || Std.is(child, VScroll) || child == _contents) {
+            v = super.removeComponent(child, dispose, invalidate);
+        } else if (_contents != null) {
+            v = _contents.removeComponent(child, dispose, invalidate);
+        }
+        return v;
+    }
+    
     private function addComponentToSuper(child:Component):Component {
         return super.addComponent(child);
     }
