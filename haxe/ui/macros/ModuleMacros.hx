@@ -220,10 +220,14 @@ class ModuleMacros {
         MacroHelpers.scanClassPath(function(filePath:String) {
             var moduleParser = ModuleParser.get(MacroHelpers.extension(filePath));
             if (moduleParser != null) {
-                var module:Module = moduleParser.parse(File.getContent(filePath));
-                module.validate();
-                _modules.push(module);
-                return true;
+                try {
+                    var module:Module = moduleParser.parse(File.getContent(filePath));
+                    module.validate();
+                    _modules.push(module);
+                    return true;
+                } catch (e:Dynamic) {
+                    trace('WARNING: Problem parsing module ${MacroHelpers.extension(filePath)} (${filePath}) - ${e} (skipping file)');
+                }
             }
             return false;
         }, ["module."]);

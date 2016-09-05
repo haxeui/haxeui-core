@@ -45,9 +45,14 @@ class NativeMacros {
         MacroHelpers.scanClassPath(function(filePath:String) {
             var parser:ConfigParser = ConfigParser.get(MacroHelpers.extension(filePath));
             if (parser != null) {
-                var config:GenericConfig = parser.parse(File.getContent(filePath));
-                _nativeConfigs.push(config);
-                return true;
+                try {
+                    var config:GenericConfig = parser.parse(File.getContent(filePath));
+                    _nativeConfigs.push(config);
+                    return true;
+                } catch (e:Dynamic) {
+                    trace('WARNING: Problem parsing native ${MacroHelpers.extension(filePath)} (${filePath}) - ${e} (skipping file)');
+                    return false;
+                }
             }
 
             return false;
