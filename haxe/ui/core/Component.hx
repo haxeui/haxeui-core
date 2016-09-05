@@ -1016,12 +1016,12 @@ class Component extends ComponentBase implements IComponentBase implements IClon
             invalidateDisplay();
             invalidateLayout();
 
-            onResized();
-            dispatch(new UIEvent(UIEvent.RESIZE));
-
             if (parentComponent != null) {
                 parentComponent.invalidateLayout();
             }
+            
+            onResized();
+            dispatch(new UIEvent(UIEvent.RESIZE));
         }
     }
 
