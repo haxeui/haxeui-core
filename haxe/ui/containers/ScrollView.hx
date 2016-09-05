@@ -98,7 +98,6 @@ class ScrollView extends Component implements IClonable<ScrollView> {
     public override function addComponent(child:Component):Component {
         var v = null;
         if (Std.is(child, HScroll) || Std.is(child, VScroll)) {
-            //child.registerEvent(UIEvent.READY, _onScrollReady);
             v = super.addComponent(child);
         } else if (Std.is(child, Box) && _contents == null) {
             _contents = cast child;
@@ -109,12 +108,15 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         } else {
             if (_contents == null) {
                 _contents = new VBox();
+                _contents.lockLayout(true);
                 _contents.addClass("scrollview-contents");
                 _contents.registerEvent(UIEvent.RESIZE, _onContentsResized);
                 _contents.registerEvent(MouseEvent.MOUSE_WHEEL, _onMouseWheel);
+                v = _contents.addComponent(child);
                 super.addComponent(_contents);
+                _contents.unlockLayout(true);
+                return v;
             }
-            //trace(_contents);
             v = _contents.addComponent(child);
         }
         return v;
