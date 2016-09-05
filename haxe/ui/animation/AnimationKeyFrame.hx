@@ -51,6 +51,8 @@ class AnimationKeyFrame {
 
                 #if actuate
                 Actuate.tween(actualComponent, duration / 1000, props, true).ease(animation.easing).onComplete(onComplete);
+                #else
+                onComplete();
                 #end
             }
         }

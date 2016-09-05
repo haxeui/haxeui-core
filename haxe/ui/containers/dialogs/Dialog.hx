@@ -48,6 +48,10 @@ class Dialog extends Component {
             _closeButton.id = "dialog-close-button";
             _closeButton.addClass("dialog-close-button");
             _closeButton.registerEvent(MouseEvent.CLICK, _onButtonClick);
+            var dialogButton:DialogButton = new DialogButton();
+            dialogButton.closesDialog = true;
+            dialogButton.id = '${DialogButton.CLOSE}';
+            _closeButton.userData = dialogButton;
             _titleBar.addComponent(_closeButton);
 
             addComponent(_titleBar);
