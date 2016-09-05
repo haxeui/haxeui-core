@@ -141,6 +141,12 @@ class XMLParser extends ComponentParser {
     }
 
     private static function parseDetails(component:ComponentInfo, xml:Xml) {
+        if (xml.firstChild() != null && '${xml.firstChild().nodeType}' == '1') {
+            var value = StringTools.trim(xml.firstChild().nodeValue);
+            if (value != null && value.length > 0) {
+                component.text = value;
+            }
+        }
         component.type = xml.nodeName;
     }
 
