@@ -9,6 +9,7 @@ import haxe.ui.core.IDataComponent;
 import haxe.ui.core.ItemRenderer;
 import haxe.ui.core.Platform;
 import haxe.ui.core.UIEvent;
+import haxe.ui.data.ArrayDataSource;
 import haxe.ui.data.DataSource;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.util.Rectangle;
@@ -144,14 +145,25 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
     private var _dataSource:DataSource<Dynamic>;
     public var dataSource(get, set):DataSource<Dynamic>;
     private function get_dataSource():DataSource<Dynamic> {
+        if (_dataSource == null) {
+            _dataSource = new ArrayDataSource();
+            _dataSource.onChange = onDataSourceChanged;
+        }
         return _dataSource;
     }
     private function set_dataSource(value:DataSource<Dynamic>):DataSource<Dynamic> {
         _dataSource = value;
         syncUI();
+        _dataSource.onChange = onDataSourceChanged;
         return value;
     }
 
+    private function onDataSourceChanged() {
+        if (_ready == true) {
+            syncUI();
+        }
+    }
+    
     private function syncUI() {
         if (_dataSource == null || _header == null || _contents == null || _itemRenderers.length < _header.childComponents.length) {
             return;

@@ -5,6 +5,8 @@ class DataSource<T> {
         
     }
     
+    public var onChange:Void->Void;
+    
     public var size(get, null):Int;
     private function get_size():Int {
         return handleGetSize();
@@ -15,15 +17,27 @@ class DataSource<T> {
     }
     
     public function add(item:T):T {
-        return handleAddItem(item);
+        var r = handleAddItem(item);
+        if (onChange != null) {
+            onChange();
+        }
+        return r;
     }
     
     public function remove(item:T):T {
-        return handleRemoveItem(item);
+        var r = handleRemoveItem(item);
+        if (onChange != null) {
+            onChange();
+        }
+        return r;
     }
     
     public function update(index:Int, item:T):T {
-        return handleUpdateItem(index, item);
+        var r = handleUpdateItem(index, item);
+        if (onChange != null) {
+            onChange();
+        }
+        return r;
     }
     
     // overrides
