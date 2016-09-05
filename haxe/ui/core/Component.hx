@@ -538,7 +538,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     /**
      Finds a specific child in this components display tree (recusively if desired) and can optionally cast the result
 
-     - `critera` - The criteria by which to search, the interpretation of this is defined using `searchType` (the default search type is _id_)
+     - `criteria` - The criteria by which to search, the interpretation of this is defined using `searchType` (the default search type is _id_)
 
      - `type` - The component class you wish to cast the result to (defaults to _null_)
 
@@ -551,14 +551,18 @@ class Component extends ComponentBase implements IComponentBase implements IClon
             - `css` - The first component that contains a style name specified by `criteria` will be considered a match
     **/
     @:dox(group="Display tree related properties and methods")
-    public function findComponent<T>(critera:String = null, type:Class<T> = null, recursive:Bool = false, searchType:String = "id"):Null<T> {
+    public function findComponent<T>(criteria:String = null, type:Class<T> = null, recursive:Null<Bool> = null, searchType:String = "id"):Null<T> {
+        if (recursive == null && criteria != null && searchType == "id") {
+            recursive = true;
+        }
+        
         var match:Component = null;
         for (child in childComponents) {
-            if (critera != null) {
-                if (searchType == "id" && child.id == critera) {
+            if (criteria != null) {
+                if (searchType == "id" && child.id == criteria) {
                     match = cast child;
                     break;
-                } else if (searchType == "css" && child.hasClass(critera) == true) {
+                } else if (searchType == "css" && child.hasClass(criteria) == true) {
                     match = cast child;
                     break;
                 }
@@ -571,7 +575,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         }
         if (match == null && recursive == true) {
             for (child in childComponents) {
-                var temp:Component = cast child.findComponent(critera, type, recursive, searchType);
+                var temp:Component = cast child.findComponent(criteria, type, recursive, searchType);
                 if (temp != null) {
                     match = temp;
                     break;
