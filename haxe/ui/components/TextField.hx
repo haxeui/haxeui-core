@@ -34,7 +34,9 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
 
     private override function create():Void {
         super.create();
-        //behaviourSet("text", _text);
+        if (_text == null) {
+            behaviourSet("text", "");
+        }
         //behaviourSet("icon", _iconResource);
     }
 
