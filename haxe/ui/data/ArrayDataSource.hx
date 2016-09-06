@@ -1,10 +1,12 @@
 package haxe.ui.data;
 
+import haxe.ui.data.transformation.IItemTransformer;
+
 class ArrayDataSource<T> extends DataSource<T> {
     private var _array:Array<T> = new Array<T>();
     
-    public function new() {
-        super();
+    public function new(transformer:IItemTransformer<T> = null) {
+        super(transformer);
     }
     
     // overrides

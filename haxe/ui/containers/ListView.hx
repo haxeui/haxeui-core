@@ -11,6 +11,7 @@ import haxe.ui.core.MouseEvent;
 import haxe.ui.core.UIEvent;
 import haxe.ui.data.ArrayDataSource;
 import haxe.ui.data.DataSource;
+import haxe.ui.data.transformation.NativeTypeTransformer;
 
 class ListView extends ScrollView implements IDataComponent implements IClonable<ListView> {
     private var _itemRenderer:ItemRenderer;
@@ -121,13 +122,14 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
     public var dataSource(get, set):DataSource<Dynamic>;
     private function get_dataSource():DataSource<Dynamic> {
         if (_dataSource == null) {
-            _dataSource = new ArrayDataSource();
+            _dataSource = new ArrayDataSource(new NativeTypeTransformer());
             _dataSource.onChange = onDataSourceChanged;
         }
         return _dataSource;
     }
     private function set_dataSource(value:DataSource<Dynamic>):DataSource<Dynamic> {
         _dataSource = value;
+        _dataSource.transformer = new NativeTypeTransformer();
         syncUI();
         _dataSource.onChange = onDataSourceChanged;
         return value;

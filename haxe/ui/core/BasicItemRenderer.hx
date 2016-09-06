@@ -14,7 +14,7 @@ class BasicItemRenderer extends ItemRenderer {
         hbox.percentWidth = 100;
 
         var label:Label = new Label();
-        label.id = "text";
+        label.id = "value";
         label.percentWidth = 100;
         hbox.addComponent(label);
 

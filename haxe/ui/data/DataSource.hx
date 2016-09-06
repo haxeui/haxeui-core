@@ -1,11 +1,13 @@
 package haxe.ui.data;
+import haxe.ui.data.transformation.IItemTransformer;
 
 class DataSource<T> {
-    public function new() {
-        
-    }
-    
     public var onChange:Void->Void;
+    public var transformer:IItemTransformer<T>;
+    
+    public function new(transformer:IItemTransformer<T> = null) {
+        this.transformer = transformer;
+    }
     
     public var size(get, null):Int;
     private function get_size():Int {
@@ -13,7 +15,11 @@ class DataSource<T> {
     }
     
     public function get(index:Int):T {
-        return handleGetItem(index);
+        var r = handleGetItem(index);
+        if (transformer != null) {
+            r = transformer.transformFrom(r);
+        }
+        return r;
     }
     
     public function add(item:T):T {
