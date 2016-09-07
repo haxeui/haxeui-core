@@ -22,10 +22,7 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
 
     private override function createChildren():Void {
         super.createChildren();
-
-        var vbox:VBox = new VBox();
-        vbox.addClass("listview-contents");
-        addComponent(vbox);
+        _contents.addClass("listview-contents");
     }
 
     private override function onReady() {

@@ -30,13 +30,11 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
 
     private override function createChildren():Void {
         super.createChildren();
+        _contents.addClass("tableview-contents");
     }
 
     private override function create():Void {
         super.create();
-        var vbox:VBox = new VBox();
-        vbox.addClass("tableview-contents");
-        addComponent(vbox);
     }
     
     private override function onReady():Void {
