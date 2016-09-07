@@ -88,6 +88,8 @@ class ComponentMacros {
     }
 
     macro public static function buildComponent(filePath:String):Expr {
+        ModuleMacros.populateClassMap();
+        
         return Context.parseInlineString(buildComponentSource(filePath), Context.currentPos());
     }
 
