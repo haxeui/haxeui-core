@@ -156,7 +156,7 @@
     spacing: 5px 5px;
 }
 
-.vbox, .hbox {
+.vbox, .hbox, .box {
     width: auto;
     height: auto;
 }

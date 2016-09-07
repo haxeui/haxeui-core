@@ -1,15 +1,15 @@
 package haxe.ui.containers;
 
-import haxe.ui.core.MouseEvent;
-import haxe.ui.core.Platform;
-import haxe.ui.macros.ComponentMacros;
-import haxe.ui.util.Rectangle;
 import haxe.ui.components.HScroll;
 import haxe.ui.components.VScroll;
 import haxe.ui.core.Component;
+import haxe.ui.core.IClonable;
+import haxe.ui.core.MouseEvent;
+import haxe.ui.core.Platform;
 import haxe.ui.core.UIEvent;
 import haxe.ui.layouts.DefaultLayout;
-import haxe.ui.core.IClonable;
+import haxe.ui.layouts.LayoutFactory;
+import haxe.ui.util.Rectangle;
 import haxe.ui.util.Size;
 
 @:dox(icon="/icons/ui-scroll-pane-both.png")
@@ -37,8 +37,31 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         }
     }
 
+    private var _layoutName:String = "vertical";
+    public var layoutName(get, set):String;
+    private function get_layoutName():String {
+        return _layoutName;
+    }
+    private function set_layoutName(value:String):String {
+        if (_layoutName == value) {
+            return value;
+        }
+        
+        _layoutName = value;
+        if (_contents != null) {
+            _contents.layout = LayoutFactory.createFromName(layoutName);
+        }
+        return value;
+    }
+    
     private override function createChildren():Void {
         super.createChildren();
+        _contents = new Box();
+        _contents.addClass("scrollview-contents");
+        _contents.registerEvent(UIEvent.RESIZE, _onContentsResized);
+        _contents.registerEvent(MouseEvent.MOUSE_WHEEL, _onMouseWheel);
+        _contents.layout = LayoutFactory.createFromName(layoutName);
+        addComponent(_contents);
     }
 
     private override function destroyChildren():Void {
@@ -97,26 +120,9 @@ class ScrollView extends Component implements IClonable<ScrollView> {
 
     public override function addComponent(child:Component):Component {
         var v = null;
-        if (Std.is(child, HScroll) || Std.is(child, VScroll)) {
+        if (Std.is(child, HScroll) || Std.is(child, VScroll) || child == _contents) {
             v = super.addComponent(child);
-        } else if (Std.is(child, Box) && _contents == null) {
-            _contents = cast child;
-            _contents.addClass("scrollview-contents");
-            _contents.registerEvent(UIEvent.RESIZE, _onContentsResized);
-            _contents.registerEvent(MouseEvent.MOUSE_WHEEL, _onMouseWheel);
-            v = super.addComponent(_contents);
         } else {
-            if (_contents == null) {
-                _contents = new VBox();
-                _contents.lockLayout(true);
-                _contents.addClass("scrollview-contents");
-                _contents.registerEvent(UIEvent.RESIZE, _onContentsResized);
-                _contents.registerEvent(MouseEvent.MOUSE_WHEEL, _onMouseWheel);
-                v = _contents.addComponent(child);
-                super.addComponent(_contents);
-                _contents.unlockLayout(true);
-                return v;
-            }
             v = _contents.addComponent(child);
         }
         return v;

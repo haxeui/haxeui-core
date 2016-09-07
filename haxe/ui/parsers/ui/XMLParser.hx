@@ -180,6 +180,8 @@ class XMLParser extends ComponentParser {
                     component.styleNames = attrValue;
                 case "composite":
                     component.composite = (attrValue == "true");
+                case "layout":
+                    component.layoutName = attrValue;
                 case "bindTo" | "bindTransform": // do nothing
                 default:
                     component.properties.set(attrName, attrValue);

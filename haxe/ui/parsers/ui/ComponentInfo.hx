@@ -13,6 +13,7 @@ class ComponentInfo {
     public var style:Null<String>;
     public var styleNames:Null<String>;
     public var composite:Null<Bool>;
+    public var layoutName:Null<String>;
 
     public var properties:Map<String, String> = new Map<String, String>();
     public var parent:ComponentInfo;

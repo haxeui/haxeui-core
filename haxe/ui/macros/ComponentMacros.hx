@@ -144,6 +144,7 @@ class ComponentMacros {
         if (c.text != null)             s += 'c${id}.text = "${c.text}";\n';
         if (c.styleNames != null)       s += 'c${id}.styleNames = "${c.styleNames}";\n';
         if (c.style != null)            s += 'c${id}.styleString = "${c.styleString}";\n';
+        if (c.layoutName != null)       s += 'c${id}.layoutName = "${c.layoutName}";\n';
         for (propName in c.properties.keys()) {
             var propValue = c.properties.get(propName);
             if (propValue == "true" || propValue == "yes" || propValue == "false" || propValue == "no") {
