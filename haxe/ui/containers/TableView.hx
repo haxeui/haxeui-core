@@ -198,12 +198,12 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
                 var textData:String = Reflect.field(data, _header.childComponents[c].id);
                 var reset:Bool = false;
                 if (textData != null && data.text == null) {
-                    data.text = textData;
+                    data.value = textData;
                     reset = true;
                 }
                 item.data = data;
                 if (reset) {
-                    data.text = null;
+                    data.value = null;
                 }
             }
         }
