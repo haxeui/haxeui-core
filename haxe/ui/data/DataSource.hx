@@ -5,8 +5,26 @@ class DataSource<T> {
     public var onChange:Void->Void;
     public var transformer:IItemTransformer<T>;
     
+    private var _changed:Bool = false;
+    
     public function new(transformer:IItemTransformer<T> = null) {
         this.transformer = transformer;
+    }
+    
+    private var _allowCallbacks:Bool = true;
+    public var allowCallbacks(get, set):Bool;
+    private function get_allowCallbacks():Bool {
+        return _allowCallbacks;
+    }
+    private function set_allowCallbacks(value:Bool):Bool {
+        _allowCallbacks = value;
+        if (_allowCallbacks == true && _changed == true) {
+            _changed = false;
+            if (onChange != null) {
+                onChange();
+            }
+        }
+        return value;
     }
     
     public var size(get, null):Int;
@@ -24,26 +42,28 @@ class DataSource<T> {
     
     public function add(item:T):T {
         var r = handleAddItem(item);
-        if (onChange != null) {
-            onChange();
-        }
+        handleChanged();
         return r;
     }
     
     public function remove(item:T):T {
         var r = handleRemoveItem(item);
-        if (onChange != null) {
-            onChange();
-        }
+        handleChanged();
         return r;
     }
     
     public function update(index:Int, item:T):T {
         var r = handleUpdateItem(index, item);
-        if (onChange != null) {
+        handleChanged();
+        return r;
+    }
+    
+    private function handleChanged() {
+        _changed = true;
+        if (_allowCallbacks == true && onChange != null) {
+            _changed = false;
             onChange();
         }
-        return r;
     }
     
     // overrides

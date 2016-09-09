@@ -598,6 +598,15 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         return index;
     }
 
+    public function setComponentIndex(child:Component, index:Int) {
+        if (index >= 0 && index <= _children.length && child.parentComponent == this) {
+            handleSetComponentIndex(child, index);
+			_children.remove(child);
+			_children.insert(index, child);
+            invalidateLayout();
+        }
+    }
+    
     /**
      Gets a child component at a specified index
     **/

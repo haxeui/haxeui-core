@@ -59,6 +59,14 @@ class Screen extends ScreenBase {
         rootComponents.remove(component);
     }
 
+    public function setComponentIndex(child:Component, index:Int) {
+        if (index >= 0 && index <= rootComponents.length) {
+            handleSetComponentIndex(child, index);
+			rootComponents.remove(child);
+			rootComponents.insert(index, child);
+        }
+    }
+    
     //***********************************************************************************************************
     // Dialogs
     //***********************************************************************************************************

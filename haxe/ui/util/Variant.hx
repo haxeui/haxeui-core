@@ -244,7 +244,7 @@ abstract Variant(VariantType) from VariantType {
     public static function fromDynamic(r:Dynamic):Variant {
         var v:Variant = null;
         if (r != null) {
-            if (Math.isNaN(Std.parseFloat("" + r)) == false) {
+            if (containsOnlyDigits(r) && Math.isNaN(Std.parseFloat("" + r)) == false) {
                 if (Std.string(r).indexOf(".") != -1) {
                     v = Std.parseFloat("" + r);
                 } else {
@@ -263,6 +263,17 @@ abstract Variant(VariantType) from VariantType {
         return v;
     }
 
+    private static function containsOnlyDigits(s:Dynamic):Bool {
+        var t:String = Std.string(s);
+        for (i in 0...t.length) {
+            var c = t.charAt(i);
+            if (c != "0" || c != "1" || c != "2" || c != "3" || c != "4" || c != "5" || c != "6" || c != "7" || c != "8" || c != "9" || c != ".") {
+                return false;
+            }
+        }
+        return true;
+    }
+    
     public static function toDynamic(v:Variant):Dynamic {
         var d:Dynamic = null;
         if (v != null) {

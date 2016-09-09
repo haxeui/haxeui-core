@@ -126,6 +126,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     }
 
     private function _onMouseDown(event:MouseEvent):Void {
+        
         FocusManager.instance.focus = this;
     }
 }

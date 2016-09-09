@@ -71,6 +71,13 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
         return _currentSelection;
     }
 
+    public function resetSelection() {
+        if (_currentSelection != null) {
+            _currentSelection.removeClass(":selected");
+            _currentSelection = null;
+        }
+    }
+    
     public function addItem(data:Dynamic):ItemRenderer {
         if (_itemRenderer == null) {
             return null;
