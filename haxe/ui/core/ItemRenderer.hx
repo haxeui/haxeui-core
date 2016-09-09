@@ -20,6 +20,26 @@ class ItemRenderer extends Component implements IClonable<ItemRenderer> {
         removeClass(":hover");
     }
 
+    private var _allowHover:Bool = true;
+    @clonable public var allowHover(get, set):Bool;
+    private function get_allowHover():Bool {
+        return _allowHover;
+    }
+    private function set_allowHover(value:Bool):Bool {
+        if (_allowHover == value) {
+            return value;
+        }
+        _allowHover = value;
+        if (_allowHover == true) {
+            registerEvent(MouseEvent.MOUSE_OVER, _onItemMouseOver);
+            registerEvent(MouseEvent.MOUSE_OUT, _onItemMouseOut);
+        } else {
+            unregisterEvent(MouseEvent.MOUSE_OVER, _onItemMouseOver);
+            unregisterEvent(MouseEvent.MOUSE_OUT, _onItemMouseOut);
+        }
+        return value;
+    }
+    
     private var _data:Dynamic;
     public var data(get, set):Dynamic;
     private function get_data():Dynamic {

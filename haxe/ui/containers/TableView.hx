@@ -2,11 +2,13 @@ package haxe.ui.containers;
 
 import haxe.ui.components.HScroll;
 import haxe.ui.components.VScroll;
+import haxe.ui.containers.TableView.TableViewRow;
 import haxe.ui.core.BasicItemRenderer;
 import haxe.ui.core.Component;
 import haxe.ui.core.IClonable;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.ItemRenderer;
+import haxe.ui.core.MouseEvent;
 import haxe.ui.core.Platform;
 import haxe.ui.core.UIEvent;
 import haxe.ui.data.ArrayDataSource;
@@ -84,7 +86,9 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
             #if haxeui_luxe
             child.hide();
             #end
-            _itemRenderers.push(cast(child, ItemRenderer));
+            var itemRenderer:ItemRenderer = cast(child, ItemRenderer);
+            itemRenderer.allowHover = false;
+            _itemRenderers.push(itemRenderer);
         } else if (Std.is(child, VScroll)) {
             child.includeInLayout = false;
             super.addComponent(child);
@@ -172,12 +176,13 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
         var delta = _dataSource.size - itemCount;
         if (delta > 0) { // not enough items
             for (n in 0...delta) {
-                var hbox:HBox = new HBox();
-                hbox.addClass("tableview-row");
+                var row:TableViewRow = new TableViewRow();
+                row.addClass("tableview-row");
                 for (n in 0..._header.childComponents.length) {
-                    hbox.addComponent(_itemRenderers[n].cloneComponent());
+                    row.addComponent(_itemRenderers[n].cloneComponent());
                 }
-                addComponent(hbox);
+                row.registerEvent(MouseEvent.CLICK, onRowClick);
+                addComponent(row);
             }
         } else if (delta < 0) { // too many items
             while (delta < 0) {
@@ -187,7 +192,7 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
         }
         
         for (n in 0..._dataSource.size) {
-            var row:HBox = cast(_contents.childComponents[n], HBox);
+            var row:TableViewRow = cast(_contents.childComponents[n], TableViewRow);
             //row.addClass(n % 2 == 0 ? "even" : "odd");
             var data:Dynamic = _dataSource.get(n);
             for (c in 0..._header.childComponents.length) {
@@ -211,6 +216,27 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
         sizeItems();
         
         contents.unlockLayout(true);
+    }
+    
+    private var _selectedRow:TableViewRow;
+    private function onRowClick(event:MouseEvent) {
+        if (_selectedRow == event.target) {
+            return;
+        }
+        
+        if (_selectedRow != null) {
+            for (c in _selectedRow.childComponents) {
+                c.removeClass(":selected");
+            }
+        }
+        
+        _selectedRow = cast event.target;
+        for (c in _selectedRow.childComponents) {
+            c.addClass(":selected");
+        }
+        
+        var event:UIEvent = new UIEvent(UIEvent.CHANGE);
+        dispatch(event);
     }
     
     private function sizeItems() {
@@ -380,5 +406,26 @@ class TableViewLayout extends DefaultLayout {
             size.width += vscroll.componentWidth;
         }
         return size;
+    }
+}
+
+class TableViewRow extends HBox {
+    public function new() {
+        super();
+        addClass("hbox");
+        registerEvent(MouseEvent.MOUSE_OVER, _onMouseOver);
+        registerEvent(MouseEvent.MOUSE_OUT, _onMouseOut);
+    }
+    
+    private function _onMouseOver(event:MouseEvent) {
+        for (c in childComponents) {
+            c.addClass(":hover");
+        }
+    }
+
+    private function _onMouseOut(event:MouseEvent) {
+        for (c in childComponents) {
+            c.removeClass(":hover");
+        }
     }
 }
