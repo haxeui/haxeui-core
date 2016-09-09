@@ -173,8 +173,8 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
     }
 
     private function onItemChange(event:UIEvent) {
-        if (_listview.selectedItem.data.text != null) {
-            this.text = _listview.selectedItem.data.text;
+        if (_listview.selectedItem.data.value != null) {
+            this.text = _listview.selectedItem.data.value;
         }
         selected = false;
         onMouseClick(null);
