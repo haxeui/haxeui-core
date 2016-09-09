@@ -195,6 +195,7 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
             var row:TableViewRow = cast(_contents.childComponents[n], TableViewRow);
             //row.addClass(n % 2 == 0 ? "even" : "odd");
             var data:Dynamic = _dataSource.get(n);
+            row.userData = data;
             for (c in 0..._header.childComponents.length) {
                 var item:ItemRenderer = cast(row.childComponents[c], ItemRenderer);
                 item.addClass(n % 2 == 0 ? "even" : "odd");
@@ -218,17 +219,27 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
         contents.unlockLayout(true);
     }
     
-    private var _selectedRow:TableViewRow;
-    private function onRowClick(event:MouseEvent) {
-        if (_selectedRow == event.target) {
-            return;
-        }
-        
+    public function resetSelection() {
         if (_selectedRow != null) {
             for (c in _selectedRow.childComponents) {
                 c.removeClass(":selected");
             }
+            _selectedRow = null;
         }
+    }
+    
+    private var _selectedRow:TableViewRow;
+    public var selectedRow(get, null):TableViewRow;
+    private function get_selectedRow():TableViewRow {
+        return _selectedRow;
+    }
+    
+    private function onRowClick(event:MouseEvent) {
+        if (_selectedRow == event.target) {
+            return;
+        }
+
+        resetSelection();
         
         _selectedRow = cast event.target;
         for (c in _selectedRow.childComponents) {
@@ -427,5 +438,14 @@ class TableViewRow extends HBox {
         for (c in childComponents) {
             c.removeClass(":hover");
         }
+    }
+    
+    public var data(get, set):Dynamic;
+    private function get_data():Dynamic {
+        return userData;
+    }
+    private function set_data(value:Dynamic):Dynamic {
+        userData = value;
+        return value;
     }
 }
