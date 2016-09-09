@@ -264,6 +264,10 @@ abstract Variant(VariantType) from VariantType {
     }
 
     private static function containsOnlyDigits(s:Dynamic):Bool {
+        if (Std.is(s, Int) || Std.is(s, Float)) {
+            return true;
+        }
+
         var t:String = Std.string(s);
         for (i in 0...t.length) {
             var c = t.charAt(i);
