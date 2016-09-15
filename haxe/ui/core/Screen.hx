@@ -143,7 +143,7 @@ class Screen extends ScreenBase {
         var y = (height / 2) - (dialog.componentHeight / 2);
         var vars:Map<String, Float> = [
             "startLeft" => x,
-            "startTop" => -dialog.componentHeight,
+            "startTop" => y + 20,
             "endLeft" => x,
             "endTop" => y
         ];
@@ -260,7 +260,7 @@ class Screen extends ScreenBase {
             "startLeft" => dialog.left,
             "startTop" => dialog.top,
             "endLeft" => x,
-            "endTop" => y
+            "endTop" => dialog.top - 20
         ];
         AnimationManager.instance.run("haxe.ui.components.animation.dialog.hide", ["target" => dialog], vars, function() {
             Screen.instance.removeComponent(entry.dialog);
