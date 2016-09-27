@@ -57,6 +57,10 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
         sizeItems();
     }
 
+    private override function _onContentsResized(event:UIEvent):Void {
+        super._onContentsResized(event);
+    }
+    
     #if haxeui_html5 // TODO: should be in backend somehow
     private var lastScrollLeft = 0;
     #end
