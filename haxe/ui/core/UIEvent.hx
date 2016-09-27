@@ -4,6 +4,7 @@ class UIEvent {
     public static inline var READY:String = "Ready";
     public static inline var RESIZE:String = "Resize";
     public static inline var CHANGE:String = "Change";
+    public static inline var MOVE:String = "Move";
 
     public var type(default, default):String;
     public var target(default, default):Component;
