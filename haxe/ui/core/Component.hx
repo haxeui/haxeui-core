@@ -949,6 +949,10 @@ class Component extends ComponentBase implements IComponentBase implements IClon
 
     }
 
+    private function onMoved() {
+
+    }
+
     //***********************************************************************************************************
     // Styles
     //***********************************************************************************************************
@@ -1256,6 +1260,9 @@ class Component extends ComponentBase implements IComponentBase implements IClon
 
         if (invalidate == true) {
             handlePosition(_left, _top, _style);
+            
+            onMoved();
+            dispatch(new UIEvent(UIEvent.MOVE));
         }
     }
 
@@ -1636,8 +1643,11 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     // Clonable
     //***********************************************************************************************************
     public function cloneComponent():Component {
-        if (c.width > 0) c.width = this.width;
-        if (c.height > 0) c.height = this.height;
+        if (_ready == false) {
+            ready();
+        }
+        if (autoWidth == false) c.width = this.width;
+        if (autoHeight == false) c.height = this.height;
     }
 
     //***********************************************************************************************************

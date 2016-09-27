@@ -1,4 +1,5 @@
 package haxe.ui.data;
+
 import haxe.ui.data.transformation.IItemTransformer;
 
 class DataSource<T> {
@@ -85,6 +86,11 @@ class DataSource<T> {
     
     private function handleUpdateItem(index:Int, item:T):T {
         return null;
+    }
+    
+    public function clone():DataSource<T> {
+        var c:DataSource<T> = new DataSource<T>();
+        return c;
     }
     
     // helpers

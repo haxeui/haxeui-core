@@ -563,6 +563,12 @@ class Parser {
                 s.opacity = i;
                 return true;
             }
+        case "background-opacity":
+            var i = getVal(v);
+            if( i != null ) {
+                s.backgroundOpacity = i;
+                return true;
+            }
 
         case "offset":
             return applyComposite(["offset-left", "offset-top"], v, s);

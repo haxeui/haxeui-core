@@ -57,6 +57,10 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
         sizeItems();
     }
 
+    private override function _onContentsResized(event:UIEvent):Void {
+        super._onContentsResized(event);
+    }
+    
     #if haxeui_html5 // TODO: should be in backend somehow
     private var lastScrollLeft = 0;
     #end
@@ -318,6 +322,15 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
             
             var rc:Rectangle = new Rectangle(Std.int(xpos + 0), Std.int(ypos), clipCX, clipCY);
             _contents.clipRect = rc;
+        }
+    }
+    
+    //***********************************************************************************************************
+    // Clonable
+    //***********************************************************************************************************
+    public override function cloneComponent():TableView {
+        if (_dataSource != null) {
+            c.dataSource = _dataSource.clone();
         }
     }
 }

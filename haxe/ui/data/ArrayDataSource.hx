@@ -31,4 +31,11 @@ class ArrayDataSource<T> extends DataSource<T> {
     private override function handleUpdateItem(index:Int, item:T):T {
         return _array[index] = item;
     }
+    
+    public override function clone():DataSource<T> {
+        var c:ArrayDataSource<T> = new ArrayDataSource<T>();
+        c._array = _array.copy(); // this is a shallow copy
+        return c;
+    }
+    
 }
