@@ -949,6 +949,10 @@ class Component extends ComponentBase implements IComponentBase implements IClon
 
     }
 
+    private function onMoved() {
+
+    }
+
     //***********************************************************************************************************
     // Styles
     //***********************************************************************************************************
@@ -1256,6 +1260,9 @@ class Component extends ComponentBase implements IComponentBase implements IClon
 
         if (invalidate == true) {
             handlePosition(_left, _top, _style);
+            
+            onMoved();
+            dispatch(new UIEvent(UIEvent.MOVE));
         }
     }
 
