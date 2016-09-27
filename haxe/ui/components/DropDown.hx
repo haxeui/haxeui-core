@@ -178,6 +178,7 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
         }
         selected = false;
         onMouseClick(null);
+		dispatch(new UIEvent(UIEvent.CHANGE));
     }
 
     private function onScreenMouseDown(event:MouseEvent) {
