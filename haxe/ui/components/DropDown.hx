@@ -190,6 +190,15 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
         selected = !selected;
         onMouseClick(null);
     }
+    
+    //***********************************************************************************************************
+    // Clonable
+    //***********************************************************************************************************
+    public override function cloneComponent():DropDown {
+        if (_dataSource != null) {
+            c.dataSource = _dataSource.clone();
+        }
+    }
 }
 
 //***********************************************************************************************************

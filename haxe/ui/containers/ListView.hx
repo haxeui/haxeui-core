@@ -172,4 +172,13 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
         
         unlockLayout();
     }
+    
+    //***********************************************************************************************************
+    // Clonable
+    //***********************************************************************************************************
+    public override function cloneComponent():ListView {
+        if (_dataSource != null) {
+            c.dataSource = _dataSource.clone();
+        }
+    }
 }

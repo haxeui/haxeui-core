@@ -324,6 +324,15 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
             _contents.clipRect = rc;
         }
     }
+    
+    //***********************************************************************************************************
+    // Clonable
+    //***********************************************************************************************************
+    public override function cloneComponent():TableView {
+        if (_dataSource != null) {
+            c.dataSource = _dataSource.clone();
+        }
+    }
 }
 
 class TableViewLayout extends DefaultLayout {
