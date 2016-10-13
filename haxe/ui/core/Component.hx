@@ -500,7 +500,9 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     public function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
         handleRemoveComponent(child, dispose);
         if (_children != null) {
-            _children.remove(child);
+            if(_children.remove(child)) {
+                child.parentComponent = null;
+            }
             invalidateLayout();
         }
 
