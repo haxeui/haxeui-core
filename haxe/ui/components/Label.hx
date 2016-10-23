@@ -91,16 +91,6 @@ class LabelLayout extends DefaultLayout {
 
     private override function repositionChildren():Void {
         if (component.hasTextDisplay() == true) {
-            switch (textAlign(component)) {
-                case "center":
-                    trace(component.text, usableWidth, component.componentWidth, component.getTextDisplay().width, paddingLeft, paddingRight);
-                    component.getTextDisplay().left = (usableWidth / 2) - (component.getTextDisplay().width / 2) + paddingLeft - paddingRight;
-                case "right":
-//                trace(component.text, paddingLeft, paddingRight);
-                    component.getTextDisplay().left = paddingLeft + usableWidth - (component.getTextDisplay().width + paddingRight);
-                default:
-                    component.getTextDisplay().left = paddingLeft;
-            }
             component.getTextDisplay().left = paddingLeft;
             component.getTextDisplay().top = paddingTop;
         }
