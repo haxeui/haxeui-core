@@ -95,6 +95,9 @@ class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
             _label.customStyle.color = style.color;
             _label.customStyle.fontName = style.fontName;
             _label.customStyle.fontSize = style.fontSize;
+            #if openfl  //TODO - all platforms
+            _label.customStyle.textAlign = style.textAlign;
+            #end
             _label.customStyle.cursor = style.cursor;
             _label.invalidateStyle();
         }

@@ -1,5 +1,6 @@
 package haxe.ui.components;
 
+import haxe.ui.core.Component;
 import haxe.ui.components.Label.LabelLayout;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.IClonable;
@@ -63,6 +64,11 @@ class Label extends InteractiveComponent implements IClonable<Label> {
             if (style.fontSize != null) {
                 getTextDisplay().fontSize = style.fontSize;
             }
+            #if openfl  //TODO - all platforms
+            if (style.textAlign != null) {
+                getTextDisplay().textAlign = style.textAlign;
+            }
+            #end
         }
     }
 }
@@ -75,7 +81,7 @@ class Label extends InteractiveComponent implements IClonable<Label> {
 class LabelLayout extends DefaultLayout {
     private override function resizeChildren() {
         if (component.autoWidth == false) {
-            component.getTextDisplay().width = component.componentWidth;
+            component.getTextDisplay().width = component.componentWidth - paddingLeft - paddingRight;
             #if openfl // TODO: make not specific
             component.getTextDisplay().multiline = true;
             component.getTextDisplay().wordWrap = true;
@@ -85,6 +91,16 @@ class LabelLayout extends DefaultLayout {
 
     private override function repositionChildren():Void {
         if (component.hasTextDisplay() == true) {
+            switch (textAlign(component)) {
+                case "center":
+                    trace(component.text, usableWidth, component.componentWidth, component.getTextDisplay().width, paddingLeft, paddingRight);
+                    component.getTextDisplay().left = (usableWidth / 2) - (component.getTextDisplay().width / 2) + paddingLeft - paddingRight;
+                case "right":
+//                trace(component.text, paddingLeft, paddingRight);
+                    component.getTextDisplay().left = paddingLeft + usableWidth - (component.getTextDisplay().width + paddingRight);
+                default:
+                    component.getTextDisplay().left = paddingLeft;
+            }
             component.getTextDisplay().left = paddingLeft;
             component.getTextDisplay().top = paddingTop;
         }
@@ -97,6 +113,13 @@ class LabelLayout extends DefaultLayout {
             size.height += component.getTextDisplay().textHeight;
         }
         return size;
+    }
+
+    private function textAlign(child:Component):String {
+        if (child == null || child.style == null || child.style.textAlign == null) {
+            return "left";
+        }
+        return child.style.textAlign;
     }
 }
 

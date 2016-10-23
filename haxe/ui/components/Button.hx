@@ -87,6 +87,9 @@ class Button extends InteractiveComponent implements IClonable<Button> {
             label.customStyle.color = style.color;
             label.customStyle.fontName = style.fontName;
             label.customStyle.fontSize = style.fontSize;
+            #if openfl  //TODO - all platforms
+            label.customStyle.textAlign = style.textAlign;
+            #end
             label.customStyle.cursor = style.cursor;
             label.invalidateStyle();
         }

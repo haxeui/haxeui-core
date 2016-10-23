@@ -557,6 +557,14 @@ class Parser {
                 return true;
             default:
             }
+        case "text-align":
+            var x = getIdent(v);
+            switch(x) {
+            case "left" | "right" | "center" | "justify":
+                s.textAlign = x;
+                return true;
+            default:
+            }
         case "opacity":
             var i = getVal(v);
             if( i != null ) {
