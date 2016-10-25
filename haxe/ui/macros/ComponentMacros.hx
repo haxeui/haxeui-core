@@ -142,19 +142,21 @@ class ComponentMacros {
         }
         add(macro var $componentVarName = new $typePath());
 
-        //if (c.composite != null)      s += 'c${id}.composite = ${c.composite};\n';
-        //s += 'c${id}.build();\n';
-        if (c.id != null)               assign("id", c.id);
-        if (c.left != null)             assign("left", c.left);
-        if (c.top != null)              assign("top", c.top);
-        if (c.width != null)            assign("width", c.width);
-        if (c.height != null)           assign("height", c.height);
-        if (c.percentWidth != null)     assign("percentWidth", c.percentWidth);
-        if (c.percentHeight != null)    assign("percentHeight", c.percentHeight);
-        if (c.text != null)             assign("text", c.text);
-        if (c.styleNames != null)       assign("styleNames", c.styleNames);
-        if (c.style != null)            assign("styleString", c.styleString);
-        if (c.layoutName != null)       assign("layoutName", c.layoutName);
+        if (c.id != null)                       assign("id", c.id);
+        if (c.left != null)                     assign("left", c.left);
+        if (c.top != null)                      assign("top", c.top);
+        if (c.width != null)                    assign("width", c.width);
+        if (c.height != null)                   assign("height", c.height);
+        if (c.percentWidth != null)             assign("percentWidth", c.percentWidth);
+        if (c.percentHeight != null)            assign("percentHeight", c.percentHeight);
+        if (c.contentWidth != null)             assign("contentWidth", c.contentWidth);
+        if (c.contentHeight != null)            assign("contentHeight", c.contentHeight);
+        if (c.percentContentWidth != null)      assign("percentContentWidth", c.percentContentWidth);
+        if (c.percentContentHeight != null)     assign("percentContentHeight", c.percentContentHeight);
+        if (c.text != null)                     assign("text", c.text);
+        if (c.styleNames != null)               assign("styleNames", c.styleNames);
+        if (c.style != null)                    assign("styleString", c.styleString);
+        if (c.layoutName != null)               assign("layoutName", c.layoutName);
         for (propName in c.properties.keys()) {
             var propValue = c.properties.get(propName);
             var propExpr = if (propValue == "true" || propValue == "yes" || propValue == "false" || propValue == "no") {

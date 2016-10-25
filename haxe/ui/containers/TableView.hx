@@ -32,6 +32,7 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
 
     private override function createChildren():Void {
         super.createChildren();
+        percentContentWidth = 100;
         _contents.addClass("tableview-contents");
     }
 

@@ -172,6 +172,18 @@ class XMLParser extends ComponentParser {
                     } else {
                         component.height = ComponentParser.float(attrValue);
                     }
+                case "contentWidth":
+                    if (ComponentParser.isPercentage(attrValue) == true) {
+                        component.percentContentWidth = ComponentParser.float(attrValue);
+                    } else {
+                        component.contentWidth = ComponentParser.float(attrValue);
+                    }
+                case "contentHeight":
+                    if (ComponentParser.isPercentage(attrValue) == true) {
+                        component.percentContentHeight = ComponentParser.float(attrValue);
+                    } else {
+                        component.contentHeight = ComponentParser.float(attrValue);
+                    }
                 case "text":
                     component.text = attrValue;
                 case "style":
