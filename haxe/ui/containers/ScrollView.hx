@@ -59,7 +59,6 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         registerEvent(MouseEvent.MOUSE_WHEEL, _onMouseWheel);
         _contents = new Box();
         _contents.addClass("scrollview-contents");
-        //_contents.percentWidth = 100;
         _contents.registerEvent(UIEvent.RESIZE, _onContentsResized);
         _contents.layout = LayoutFactory.createFromName(layoutName);
         addComponent(_contents);
@@ -119,6 +118,62 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         return value;
     }
 
+    public var contentWidth(get, set):Null<Float>;
+    private function get_contentWidth():Null<Float> {
+        if (_contents != null) {
+            return _contents.width;
+        }
+        return null;
+    }
+    private function set_contentWidth(value:Null<Float>):Null<Float> {
+        if (_contents != null) {
+            _contents.width = value;
+        }
+        return value;
+    }
+    
+    public var contentHeight(get, set):Null<Float>;
+    private function get_contentHeight():Null<Float> {
+        if (_contents != null) {
+            return _contents.height;
+        }
+        return null;
+    }
+    private function set_contentHeight(value:Null<Float>):Null<Float> {
+        if (_contents != null) {
+            _contents.height = value;
+        }
+        return value;
+    }
+    
+    public var percentContentWidth(get, set):Null<Float>;
+    private function get_percentContentWidth():Null<Float> {
+        if (_contents != null) {
+            return _contents.percentWidth;
+        }
+        return null;
+    }
+    private function set_percentContentWidth(value:Null<Float>):Null<Float> {
+        if (_contents != null) {
+            _contents.percentWidth = value;
+        }
+        return value;
+    }
+    
+    public var percentContentHeight(get, set):Null<Float>;
+    private function get_percentContentHeight():Null<Float> {
+        if (_contents != null) {
+            return _contents.percentHeight;
+        }
+        return null;
+    }
+    private function set_percentContentHeight(value:Null<Float>):Null<Float> {
+        if (_contents != null) {
+            _contents.percentHeight = value;
+        }
+        return value;
+    }
+    
     public override function addComponent(child:Component):Component {
         var v = null;
         if (Std.is(child, HScroll) || Std.is(child, VScroll) || child == _contents) {

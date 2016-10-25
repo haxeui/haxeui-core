@@ -22,6 +22,7 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
 
     private override function createChildren():Void {
         super.createChildren();
+        percentContentWidth = 100;
         _contents.addClass("listview-contents");
     }
 

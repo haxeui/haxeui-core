@@ -9,6 +9,10 @@ class ComponentInfo {
     public var height:Null<Float>;
     public var percentWidth:Null<Float>;
     public var percentHeight:Null<Float>;
+    public var contentWidth:Null<Float>;
+    public var contentHeight:Null<Float>;
+    public var percentContentWidth:Null<Float>;
+    public var percentContentHeight:Null<Float>;
     public var text:Null<String>;
     public var style:Null<String>;
     public var styleNames:Null<String>;
