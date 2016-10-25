@@ -2,6 +2,7 @@ package haxe.ui.components;
 
 import haxe.ui.components.Label.LabelLayout;
 import haxe.ui.core.Behaviour;
+import haxe.ui.core.Component;
 import haxe.ui.core.IClonable;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.layouts.DefaultLayout;
@@ -90,8 +91,8 @@ class LabelLayout extends DefaultLayout {
         }
     }
 
-    public override function calcAutoSize():Size {
-        var size:Size = super.calcAutoSize();
+    public override function calcAutoSize(exclusions:Array<Component> = null):Size {
+        var size:Size = super.calcAutoSize(exclusions);
         if (component.hasTextDisplay() == true) {
             size.width += component.getTextDisplay().textWidth;
             size.height += component.getTextDisplay().textHeight;

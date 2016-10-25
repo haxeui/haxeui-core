@@ -243,13 +243,13 @@ class Layout implements ILayout {
         return calcAutoSize().height;
     }
 
-    public function calcAutoSize():Size {
+    public function calcAutoSize(exclusions:Array<Component> = null):Size {
         var x1:Float = 0xFFFFFF;
         var x2:Float = 0;
         var y1:Float = 0xFFFFFF;
         var y2:Float = 0;
         for (child in component.childComponents) {
-            if (child.includeInLayout == false) {
+            if (child.includeInLayout == false || excluded(exclusions, child) == true) {
                 continue;
             }
 
@@ -283,5 +283,12 @@ class Layout implements ILayout {
         var w:Float = (x2 - x1) + (paddingLeft + paddingRight);
         var h:Float = (y2 - y1) + (paddingTop + paddingBottom);
         return new Size(w, h);
+    }
+    
+    private function excluded(exclusions:Array<Component>, child:Component):Bool {
+        if (exclusions == null) {
+            return false;
+        }
+        return exclusions.indexOf(child) != -1;
     }
 }
