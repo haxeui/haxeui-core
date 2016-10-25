@@ -359,20 +359,15 @@ class ScrollViewLayout extends DefaultLayout {
         return size;
     }
 
-    public override function calcAutoSize():Size {
-        var size:Size = super.calcAutoSize();
+    public override function calcAutoSize(exclusions:Array<Component> = null):Size {
         var hscroll:Component = component.findComponent("scrollview-hscroll");
         var vscroll:Component = component.findComponent("scrollview-vscroll");
+        var size:Size = super.calcAutoSize([hscroll, vscroll]);
         if (hscroll != null && hscroll.hidden == false) {
             size.height += hscroll.componentHeight;
         }
         if (vscroll != null && vscroll.hidden == false) {
             size.width += vscroll.componentWidth;
-        }
-
-        var contents:Component = component.findComponent("scrollview-contents", null, false, "css");
-        if (contents != null) {
-            //size.width = contents.componentWidth;
         }
         return size;
     }
