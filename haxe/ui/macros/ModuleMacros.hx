@@ -59,6 +59,9 @@ class ModuleMacros {
                         } else {
                             skipRest = true; // as we have an alias defined lets skip any other types (assumes the first class is the one to alias)
                         }
+                        if (StringTools.startsWith(resolvedClass, ".")) {
+                            continue;
+                        }
                         code += 'haxe.ui.scripting.ScriptInterp.addClassAlias("${classAlias}", "${resolvedClass}");\n';
 
                         if (skipRest == true) {

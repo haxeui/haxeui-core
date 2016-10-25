@@ -25,7 +25,7 @@ class BackendMacros {
 
     #if macro
 
-    macro private static function loadBackendProperties():Expr {
+    private static function loadBackendProperties():Expr {
         var searchCriteria:Array<String> = [];
         for (k in Context.getDefines().keys()) {
             if (StringTools.startsWith(k, "haxeui-")) {
