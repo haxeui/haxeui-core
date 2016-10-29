@@ -165,6 +165,7 @@ class ImageDefaultResourceBehaviour extends Behaviour {
                                 image.parentComponent.invalidateLayout();
                             }
                         }
+                        image.invalidateLayout();
                     }
                 });
             }
