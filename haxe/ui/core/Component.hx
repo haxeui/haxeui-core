@@ -1306,11 +1306,11 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         var xpos:Float = 0;
         while (c != null) {
             xpos += c.left;
-            /*
-            if (c.sprite.scrollRect != null) {
-                xpos -= c.sprite.scrollRect.left;
+
+            if (c.scrollRect != null) {
+                xpos -= c.scrollRect.left;
             }
-            */
+
             c = c.parentComponent;
         }
         return xpos;
@@ -1326,11 +1326,11 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         var ypos:Float = 0;
         while (c != null) {
             ypos += c.top;
-            /*
-            if (c.sprite.scrollRect != null) {
-                ypos -= c.sprite.scrollRect.top;
+
+            if (c.scrollRect != null) {
+                ypos -= c.scrollRect.top;
             }
-            */
+
             c = c.parentComponent;
         }
         return ypos;
