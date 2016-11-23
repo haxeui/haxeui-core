@@ -35,7 +35,7 @@
 .scroll .button.thumb:down{background-color:#525252;}
 .vscroll{width:17px;}
 .vscroll .button.thumb{width:17px;height:17px;}
-.vscroll .button.deinc{icon:"haxeui-core/styles/default/up_arrow.png";}
+.vscroll .button.deinc{icon:"haxeui-core/styles/default/up_arrow.svg";}
 .vscroll .button.deinc:down{icon:"haxeui-core/styles/default/up_arrow_white.png";}
 .vscroll .button.inc{icon:"haxeui-core/styles/default/down_arrow.png";}
 .vscroll .button.inc:down{icon:"haxeui-core/styles/default/down_arrow_white.png";}
