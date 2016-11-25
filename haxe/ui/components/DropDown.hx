@@ -172,6 +172,14 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
         }
     }
 
+    public var selectedItem(get, null):ItemRenderer;
+    private function get_selectedItem():ItemRenderer {
+        if (_listview == null) {
+            return null;
+        }
+        return _listview.selectedItem;
+    }
+    
     private function onItemChange(event:UIEvent) {
         if (_listview.selectedItem.data.value != null) {
             this.text = _listview.selectedItem.data.value;
