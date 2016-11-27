@@ -234,15 +234,25 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
     }
     
     private var _selectedRow:TableViewRow;
-    public var selectedRow(get, null):TableViewRow;
+    public var selectedRow(get, set):TableViewRow;
+	private function set_selectedRow(row:TableViewRow):TableViewRow {
+		resetSelection();
+		_selectedRow = row;
+		if (_selectedRow!=null){
+			for (c in _selectedRow.childComponents) {
+				c.addClass(":selected");
+			}
+		}
+        return _selectedRow;
+    }
     private function get_selectedRow():TableViewRow {
         return _selectedRow;
     }
     
     private function onRowClick(event:MouseEvent) {
-        if (_selectedRow == event.target) {
+        /*if (_selectedRow == event.target) {
             return;
-        }
+        }*/
 
         resetSelection();
         
