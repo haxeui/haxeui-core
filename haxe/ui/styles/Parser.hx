@@ -817,7 +817,7 @@ class Parser {
     function getGroup<T>( v : Value, f : Value -> Null<T> ) : Null<Array<T>> {
         switch(v) {
         case VGroup(l):
-            var a = [];
+            var a = new Array<T>();
             for( v in l ) {
                 var v = f(v);
                 if( v == null ) return null;
@@ -833,7 +833,7 @@ class Parser {
     function getList<T>( v : Value, f : Value -> Null<T> ) : Null<Array<T>> {
         switch(v) {
         case VList(l):
-            var a = [];
+            var a = new Array<T>();
             for( v in l ) {
                 var v = f(v);
                 if( v == null ) return null;
