@@ -5,6 +5,7 @@ import haxe.ui.parsers.modules.Module;
 import haxe.ui.parsers.ui.ComponentInfo;
 import haxe.ui.parsers.ui.ComponentParser;
 import haxe.ui.parsers.ui.resolvers.FileResourceResolver;
+import haxe.ui.scripting.ConditionEvaluator;
 import haxe.ui.util.StringUtil;
 
 #if macro
@@ -121,6 +122,10 @@ class ComponentMacros {
     }
 
     private static function buildComponentCode(code:Array<Expr>, c:ComponentInfo, id:Int, namedComponents:Map<String, String>) {
+        if (c.condition != null && new ConditionEvaluator().evaluate(c.condition) == false) {
+            return;
+        }
+        
         var className:String = ComponentClassMap.get(c.type);
         if (className == null) {
             trace("WARNING: no class found for component: " + c.type);
