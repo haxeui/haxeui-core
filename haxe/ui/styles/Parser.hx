@@ -359,6 +359,38 @@ class Parser {
                 s.borderRightColor = MathUtil.MIN_INT;// Transparent;
                 return true;
             }
+        case "border-top":
+            if( applyComposite(["border-top-width", "border-top-color"], v, s) )
+                return true;
+            if (getIdent(v) == "none" ) {
+                s.borderTopSize = MathUtil.MIN_INT;
+                s.borderTopColor = MathUtil.MIN_INT;// Transparent;
+                return true;
+            }
+        case "border-left":
+            if( applyComposite(["border-left-width", "border-left-color"], v, s) )
+                return true;
+            if (getIdent(v) == "none" ) {
+                s.borderLeftSize = MathUtil.MIN_INT;
+                s.borderLeftColor = MathUtil.MIN_INT;// Transparent;
+                return true;
+            }
+        case "border-bottom":
+            if( applyComposite(["border-bottom-width", "border-bottom-color"], v, s) )
+                return true;
+            if (getIdent(v) == "none" ) {
+                s.borderBottomSize = MathUtil.MIN_INT;
+                s.borderBottomColor = MathUtil.MIN_INT;// Transparent;
+                return true;
+            }
+        case "border-right":
+            if( applyComposite(["border-right-width", "border-right-color"], v, s) )
+                return true;
+            if (getIdent(v) == "none" ) {
+                s.borderRightSize = MathUtil.MIN_INT;
+                s.borderRightColor = MathUtil.MIN_INT;// Transparent;
+                return true;
+            }
         case "border-width" | "border-size":
             var i = getVal(v);
             if( i != null ) {
