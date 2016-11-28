@@ -20,6 +20,27 @@ class MacroHelpers {
                                         "bin/"];
 
     #if macro
+    public static function exprToMap(params:Expr):Map<String, Dynamic> {
+        if (params == null) {
+            return null;
+        }
+        
+        var map:Map<String, Dynamic> = new Map<String, Dynamic>();
+        switch (params.expr) {
+            case EObjectDecl(x):
+                for (y in x) {
+                    var fieldName:String = y.field;
+                    switch (y.expr.expr) {
+                        case EConst(CString(z)) | EConst(CInt(z))  | EConst(CFloat(z))  | EConst(CIdent(z)) :
+                            map.set(y.field, z);
+                        case _:
+                    }
+                }
+            case _:
+        }
+        return map;
+    }
+    
     public static function getConstructor(fields:Array<Field>) {
         return getFunction(fields, "new");
     }

@@ -1,4 +1,5 @@
 package haxe.ui.parsers.ui.resolvers;
+import haxe.ui.util.StringUtil;
 
 #if (macro || sys)
 import sys.io.File;
@@ -9,8 +10,8 @@ class FileResourceResolver extends ResourceResolver {
     private var _rootFile:String;
     private var _rootDir:String;
 
-    public function new(rootFile:String) {
-        super();
+    public function new(rootFile:String, params:Map<String, Dynamic> = null) {
+        super(params);
         _rootFile = rootFile;
         var arr:Array<String> = _rootFile.split("/");
         arr.pop();
@@ -25,7 +26,7 @@ class FileResourceResolver extends ResourceResolver {
         var f:String = _rootDir + r;
         var data:String = null;
         if (FileSystem.exists(f)) {
-            data = File.getContent(f);
+            data = StringUtil.replaceVars(File.getContent(f), _params);
         }
         if (data == null) {
             trace("WARNING: Could not find file: " + f);
