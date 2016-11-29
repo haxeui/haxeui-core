@@ -29,6 +29,8 @@ class ComponentInfo {
 
     public var data:String;
 
+    public var condition:String;
+    
     public function new() {
 
     }

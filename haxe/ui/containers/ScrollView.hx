@@ -28,7 +28,6 @@ class ScrollView extends Component implements IClonable<ScrollView> {
 
     private override function create():Void {
         super.create();
-
         if (native == true) {
             updateScrollRect();
         } else {
@@ -57,13 +56,19 @@ class ScrollView extends Component implements IClonable<ScrollView> {
     private override function createChildren():Void {
         super.createChildren();
         registerEvent(MouseEvent.MOUSE_WHEEL, _onMouseWheel);
-        _contents = new Box();
-        _contents.addClass("scrollview-contents");
-        _contents.registerEvent(UIEvent.RESIZE, _onContentsResized);
-        _contents.layout = LayoutFactory.createFromName(layoutName);
-        addComponent(_contents);
+        createContentContainer();
     }
 
+    private function createContentContainer() {
+        if (_contents == null) {
+            _contents = new Box();
+            _contents.addClass("scrollview-contents");
+            _contents.registerEvent(UIEvent.RESIZE, _onContentsResized);
+            _contents.layout = LayoutFactory.createFromName(layoutName);
+            addComponent(_contents);
+        }
+    }
+    
     private override function destroyChildren():Void {
         if (_hscroll != null) {
             removeComponent(_hscroll);
@@ -120,12 +125,14 @@ class ScrollView extends Component implements IClonable<ScrollView> {
 
     public var contentWidth(get, set):Null<Float>;
     private function get_contentWidth():Null<Float> {
+        createContentContainer();
         if (_contents != null) {
             return _contents.width;
         }
         return null;
     }
     private function set_contentWidth(value:Null<Float>):Null<Float> {
+        createContentContainer();
         if (_contents != null) {
             _contents.width = value;
         }
@@ -134,12 +141,14 @@ class ScrollView extends Component implements IClonable<ScrollView> {
     
     public var contentHeight(get, set):Null<Float>;
     private function get_contentHeight():Null<Float> {
+        createContentContainer();
         if (_contents != null) {
             return _contents.height;
         }
         return null;
     }
     private function set_contentHeight(value:Null<Float>):Null<Float> {
+        createContentContainer();
         if (_contents != null) {
             _contents.height = value;
         }
@@ -148,12 +157,14 @@ class ScrollView extends Component implements IClonable<ScrollView> {
     
     public var percentContentWidth(get, set):Null<Float>;
     private function get_percentContentWidth():Null<Float> {
+        createContentContainer();
         if (_contents != null) {
             return _contents.percentWidth;
         }
         return null;
     }
     private function set_percentContentWidth(value:Null<Float>):Null<Float> {
+        createContentContainer();
         if (_contents != null) {
             _contents.percentWidth = value;
         }
@@ -162,12 +173,14 @@ class ScrollView extends Component implements IClonable<ScrollView> {
     
     public var percentContentHeight(get, set):Null<Float>;
     private function get_percentContentHeight():Null<Float> {
+        createContentContainer();
         if (_contents != null) {
             return _contents.percentHeight;
         }
         return null;
     }
     private function set_percentContentHeight(value:Null<Float>):Null<Float> {
+        createContentContainer();
         if (_contents != null) {
             _contents.percentHeight = value;
         }
@@ -179,6 +192,7 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         if (Std.is(child, HScroll) || Std.is(child, VScroll) || child == _contents) {
             v = super.addComponent(child);
         } else {
+            createContentContainer();
             v = _contents.addComponent(child);
         }
         return v;

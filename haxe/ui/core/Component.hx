@@ -56,6 +56,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         #if html5
         addClass("html5");
         #end
+        addClass(Backend.id);
 
         var parts:Array<String> = Type.getClassName(Type.getClass(this)).split(".");
         var className:String = parts[parts.length - 1].toLowerCase();

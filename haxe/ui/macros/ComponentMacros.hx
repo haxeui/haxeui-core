@@ -5,6 +5,7 @@ import haxe.ui.parsers.modules.Module;
 import haxe.ui.parsers.ui.ComponentInfo;
 import haxe.ui.parsers.ui.ComponentParser;
 import haxe.ui.parsers.ui.resolvers.FileResourceResolver;
+import haxe.ui.scripting.ConditionEvaluator;
 import haxe.ui.util.StringUtil;
 
 #if macro
@@ -16,7 +17,7 @@ import sys.io.File;
 #end
 
 class ComponentMacros {
-    macro public static function build(resourcePath:String, alias:String = null):Array<Field> {
+    macro public static function build(resourcePath:String, params:Expr = null, alias:String = null):Array<Field> {
         var pos = haxe.macro.Context.currentPos();
         var fields = haxe.macro.Context.getBuildFields();
 
@@ -36,7 +37,7 @@ class ComponentMacros {
         ModuleMacros.populateClassMap();
 
         var namedComponents:Map<String, String> = new Map<String, String>();
-        var code:Expr = buildComponentSource([], resourcePath, namedComponents);
+        var code:Expr = buildComponentSource([], resourcePath, namedComponents, MacroHelpers.exprToMap(params));
         var e:Expr = macro addComponent($code);
         //code += "this.addClass('custom-component');";
         //trace(code);
@@ -86,20 +87,21 @@ class ComponentMacros {
         return fields;
     }
 
-    macro public static function buildComponent(filePath:String):Expr {
+    macro public static function buildComponent(filePath:String, params:Expr = null):Expr {
         ModuleMacros.populateClassMap();
 
-        return buildComponentSource([], filePath);
+        return buildComponentSource([], filePath, null, MacroHelpers.exprToMap(params));
     }
 
     #if macro
-    public static function buildComponentSource(code:Array<Expr>, filePath:String, namedComponents:Map<String, String> = null):Expr {
+    public static function buildComponentSource(code:Array<Expr>, filePath:String, namedComponents:Map<String, String> = null, params:Map<String, Dynamic> = null):Expr {
         var f = MacroHelpers.resolveFile(filePath);
         if (f == null) {
             throw "Could not resolve: " + filePath;
         }
 
-        var c:ComponentInfo = ComponentParser.get(MacroHelpers.extension(f)).parse(File.getContent(f), new FileResourceResolver(f));
+        var fileContent:String = StringUtil.replaceVars(File.getContent(f), params);
+        var c:ComponentInfo = ComponentParser.get(MacroHelpers.extension(f)).parse(fileContent, new FileResourceResolver(f, params));
         //trace(c);
 
         for (styleString in c.styles) {
@@ -120,6 +122,10 @@ class ComponentMacros {
     }
 
     private static function buildComponentCode(code:Array<Expr>, c:ComponentInfo, id:Int, namedComponents:Map<String, String>) {
+        if (c.condition != null && new ConditionEvaluator().evaluate(c.condition) == false) {
+            return;
+        }
+        
         var className:String = ComponentClassMap.get(c.type);
         if (className == null) {
             trace("WARNING: no class found for component: " + c.type);

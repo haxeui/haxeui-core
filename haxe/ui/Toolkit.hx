@@ -10,6 +10,7 @@ import haxe.ui.macros.ModuleMacros;
 import haxe.ui.macros.NativeMacros;
 import haxe.ui.parsers.ui.ComponentInfo;
 import haxe.ui.parsers.ui.ComponentParser;
+import haxe.ui.scripting.ConditionEvaluator;
 import haxe.ui.styles.Engine;
 import haxe.ui.themes.ThemeManager;
 import haxe.ui.util.GenericConfig;
@@ -100,6 +101,10 @@ class Toolkit {
     }
 
     private static function buildComponentFromInfo(c:ComponentInfo):Component {
+        if (c.condition != null && new ConditionEvaluator().evaluate(c.condition) == false) {
+            return null;
+        }
+
         var className:String = ComponentClassMap.get(c.type);
         if (className == null) {
             trace("WARNING: no class found for component: " + c.type);

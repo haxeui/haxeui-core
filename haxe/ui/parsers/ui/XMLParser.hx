@@ -154,6 +154,20 @@ class XMLParser extends ComponentParser {
         for (attrName in xml.attributes()) {
             var attrValue:String = xml.get(attrName);
             switch (attrName) {
+                case "condition":
+                    component.condition = attrValue;
+                case "if":
+                    var condition = [];
+                    for (t in attrValue.split(",")) {
+                        condition.push('backend == "${StringTools.trim(t)}"');
+                    }
+                    component.condition = condition.join(" || ");
+                case "unless":
+                    var condition = [];
+                    for (t in attrValue.split(",")) {
+                        condition.push('backend != "${StringTools.trim(t)}"');
+                    }
+                    component.condition = condition.join(" && ");
                 case "id":
                     component.id = attrValue;
                 case "left":
@@ -188,7 +202,7 @@ class XMLParser extends ComponentParser {
                     component.text = attrValue;
                 case "style":
                     component.style = attrValue;
-                case "styleNames":
+                case "styleNames" | "styleName":
                     component.styleNames = attrValue;
                 case "composite":
                     component.composite = (attrValue == "true");

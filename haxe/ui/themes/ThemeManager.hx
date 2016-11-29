@@ -33,7 +33,6 @@ class ThemeManager {
         getTheme(themeName).styles.push(resourceId);
     }
 
-
     public function applyTheme(themeName:String):Void {
         applyThemeStyles("global");
         applyThemeStyles(themeName);
@@ -41,6 +40,9 @@ class ThemeManager {
 
     public function applyThemeStyles(themeName:String):Void {
         var theme:Theme = _themes.get(themeName);
+        if (theme == null) {
+            return;
+        }
         if (theme.parent != null) {
             applyThemeStyles(theme.parent);
         }
