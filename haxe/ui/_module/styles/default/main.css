@@ -151,12 +151,12 @@
 /************************************************************************
 ** CONTAINERS
 *************************************************************************/
-.vbox, .hbox, .absolute {
+.vbox, .hbox, .absolute, .continuoushbox {
     spacing: 5px 5px;
     spacing: 5px 5px;
 }
 
-.vbox, .hbox, .box {
+.vbox, .hbox, .box, .continuoushbox {
     width: auto;
     height: auto;
 }
