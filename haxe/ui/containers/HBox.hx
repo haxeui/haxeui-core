@@ -1,5 +1,6 @@
 package haxe.ui.containers;
 
+import haxe.ui.layouts.HorizontalContinuousLayout;
 import haxe.ui.layouts.HorizontalLayout;
 import haxe.ui.core.IClonable;
 
@@ -11,5 +12,18 @@ class HBox extends Box implements IClonable<HBox> {
     public function new() {
         super();
         layout = new HorizontalLayout();
+    }
+    
+    @:clonable public var continuous(get, set):Bool;
+    private function get_continuous():Bool {
+        return Std.is(_layout, HorizontalContinuousLayout);
+    }
+    private function set_continuous(value:Bool):Bool {
+        if (value == true) {
+            layout = new HorizontalContinuousLayout();
+        } else {
+            layout = new HorizontalLayout();
+        }
+        return value;
     }
 }
