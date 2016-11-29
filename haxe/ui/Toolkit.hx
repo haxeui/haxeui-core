@@ -105,7 +105,7 @@ class Toolkit {
             return null;
         }
 
-        var className:String = ComponentClassMap.get(c.type);
+        var className:String = ComponentClassMap.get(c.type.toLowerCase());
         if (className == null) {
             trace("WARNING: no class found for component: " + c.type);
             return null;
