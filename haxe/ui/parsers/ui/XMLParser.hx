@@ -202,7 +202,7 @@ class XMLParser extends ComponentParser {
                     component.text = attrValue;
                 case "style":
                     component.style = attrValue;
-                case "styleNames":
+                case "styleNames" | "styleName":
                     component.styleNames = attrValue;
                 case "composite":
                     component.composite = (attrValue == "true");
