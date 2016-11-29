@@ -8,6 +8,8 @@ class LayoutFactory {
                 return new VerticalLayout();
             case "horizontal":
                 return new HorizontalLayout();
+            case "continuous horizontal" | "continuousHorizontal":
+                return new HorizontalContinuousLayout();
             case "absolute":
                 return new AbsoluteLayout();
         }
