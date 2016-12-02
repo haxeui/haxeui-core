@@ -1,9 +1,15 @@
 package haxe.ui.layouts;
+import haxe.ui.core.Component;
+import haxe.ui.util.Rectangle;
 import haxe.ui.util.Size;
 
 class HorizontalContinuousLayout extends HorizontalLayout {
     public function new() {
         super();
+    }
+    
+    private override function resizeChildren() {
+        //super.resizeChildren
     }
     
     private override function repositionChildren() {
@@ -17,64 +23,93 @@ class HorizontalContinuousLayout extends HorizontalLayout {
             return;
         }
         
-        // lets build the row heights first
-        var xpos = paddingLeft;
-        var yoffset:Float = 0;
+        // first lets calculate our dimentions without changing anthing for perf
+        var ucx:Float = component.componentWidth - (paddingLeft + paddingRight);
+        var dimensions:Array<Array<ComponentRectangle>> = new Array<Array<ComponentRectangle>>();
+        var heights:Array<Float> = new Array<Float>();
+        
+        var row = 0;
+        var usedCX:Float = 0;
+        var xpos:Float = paddingLeft;
+        var ypos:Float = paddingTop;
         var rowCY:Float = 0;
-        var rowHeights:Array<Float> = new Array<Float>();
         for (child in component.childComponents) {
             if (child.includeInLayout == false) {
                 continue;
             }
             
-            if (child.componentHeight > rowCY) {
-                rowCY = child.componentHeight;
+            var rc:ComponentRectangle = new ComponentRectangle(child.left, child.top, child.componentWidth, child.componentHeight);
+            if (child.percentWidth != null) {
+                rc.width = (ucx * child.percentWidth) / 100;
+            } else {
+                usedCX += horizontalSpacing;
             }
+            rc.component = child;
+            usedCX += rc.width;
             
-            if (xpos + child.componentWidth > ucx) {
-                rowHeights.push(rowCY);
+            if (usedCX > ucx) {
+                heights.push(rowCY);
+                ypos += rowCY + verticalSpacing;
                 xpos = paddingLeft;
-                yoffset += rowCY;
+                usedCX = rc.width;
                 rowCY = 0;
+                row++;
             }
             
-            xpos += child.componentWidth + horizontalSpacing;
-        }
-        if (rowCY > 0) {
-            rowHeights.push(rowCY);
+            if (dimensions.length <= row) {
+                dimensions.push(new Array<ComponentRectangle>());
+            }
+            
+            rc.left = xpos;
+            rc.top = ypos;
+            dimensions[row].push(rc);
+            xpos += rc.width;
+            if (rc.height > rowCY) {
+                rowCY = rc.height;
+            }
         }
         
-        var xpos = paddingLeft;
-        var yoffset:Float = 0;
-        var n:Int = 0;
-        for (child in component.childComponents) {
-            if (child.includeInLayout == false) {
-                continue;
-            }
-            
-            var ypos:Float = 0;
-            
-            if (xpos + child.componentWidth > ucx) {
-                xpos = paddingLeft;
-                yoffset += rowHeights[n] + verticalSpacing;
+        if (rowCY > 0) {
+            heights.push(rowCY);
+        }
+        
+        // now lets do some spacing calculations and actual apply dimentions
+        var x:Int = 0;
+        for (r in dimensions) {
+            var height:Float = heights[x];
+            var spaceX:Float = ((r.length - 1) / r.length) * horizontalSpacing;
+            var t = horizontalSpacing / 3;
+            var n:Int = 0;
+            for (c in r) {
+                switch (verticalAlign(c.component)) {
+                    case "center":
+                        c.top += (height / 2) - (c.height / 2);
+                    case "bottom":
+                        c.top += height - c.height;
+                    default:    
+                }
+                
+                
+                if (c.component.percentWidth != null) {
+                    c.left += n * (horizontalSpacing - spaceX); 
+                    c.width -= spaceX;
+                } else {
+                    c.left += n * horizontalSpacing;
+                }
+
+                c.apply();
+                
                 n++;
             }
-            
-            switch (verticalAlign(child)) {
-                case "center":
-                    ypos = (((rowHeights[n] + verticalSpacing + paddingTop) / 2) - (child.componentHeight / 2)) + marginTop(child) - marginBottom(child);
-                case "bottom":
-                    ypos = rowHeights[n] - child.componentHeight + paddingTop + marginTop(child) - marginBottom(child);
-                default:
-                    ypos = paddingTop + marginTop(child) - marginBottom(child);
-            }
-            
-            child.moveComponent(xpos + marginLeft(child) - marginRight(child), ypos + yoffset);
-            xpos += child.componentWidth + horizontalSpacing;
+            x++;
         }
     }
 
     private override function get_usableSize():Size {
+        if (component.autoWidth == true) {
+            return super.get_usableSize();
+        }
+        
         var ucx:Float = 0;
         if (_component.componentWidth != null) {
             ucx = _component.componentWidth;
@@ -88,5 +123,14 @@ class HorizontalContinuousLayout extends HorizontalLayout {
         }
 
         return new Size(ucx, ucy);
+    }
+}
+
+class ComponentRectangle extends Rectangle {
+    public var component:Component;
+    
+    public function apply() {
+        component.moveComponent(left, top);
+        component.resizeComponent(width, height);
     }
 }
