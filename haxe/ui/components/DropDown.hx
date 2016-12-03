@@ -221,8 +221,13 @@ class DropDownDefaultDataSourceBehaviour extends Behaviour {
 
 
 @:dox(hide)
+@:access(haxe.ui.components.DropDown)
 class DropDownDefaultSelectedItemBehaviour extends Behaviour {
     public override function getDynamic():Dynamic {    
-        return null;
+        var lv:ListView = cast(_component, DropDown)._listview;
+        if (lv == null || lv.selectedItem == null) {
+            return null;
+        }
+        return lv.selectedItem.data;
     }
 }
