@@ -160,6 +160,14 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         return null;
     }
 
+    private function behaviourGetDynamic(id:String):Dynamic {
+        var b:Behaviour = getBehaviour(id);
+        if (b != null) {
+            return b.getDynamic();
+        }
+        return null;
+    }
+
     private function behaviourSet(id:String, value:Variant):Void {
         var b:Behaviour = getBehaviour(id);
         if (b != null) {
