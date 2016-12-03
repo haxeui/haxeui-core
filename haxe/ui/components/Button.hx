@@ -142,7 +142,7 @@ class Button extends InteractiveComponent implements IClonable<Button> {
         return style.iconPosition;
     }
     private function set_iconPosition(value:String):String {
-        style.iconPosition = value;
+        customStyle.iconPosition = value;
         invalidateStyle();
         invalidateLayout();
         return value;
