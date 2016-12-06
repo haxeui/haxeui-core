@@ -62,15 +62,13 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         var className:String = parts[parts.length - 1].toLowerCase();
         addClass(className, false);
 
-        layout = new DefaultLayout();
-
-        createDefaults();
 
         // we dont want to actually apply the classes, just find out if native is there or not
         var s = Toolkit.styleSheet.applyClasses(this, false);
         if (s.native != null && hasNativeEntry == true) {
             native = s.native;
         } else {
+            createDefaults();
             create();
         }
     }
@@ -89,7 +87,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     }
 
     private function createDefaults():Void {
-
+        layout = new DefaultLayout();
     }
 
     private function createChildren():Void {
@@ -162,6 +160,14 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         return null;
     }
 
+    private function behaviourGetDynamic(id:String):Dynamic {
+        var b:Behaviour = getBehaviour(id);
+        if (b != null) {
+            return b.getDynamic();
+        }
+        return null;
+    }
+
     private function behaviourSet(id:String, value:Variant):Void {
         var b:Behaviour = getBehaviour(id);
         if (b != null) {
@@ -207,6 +213,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         } else {
             removeClass(":native");
         }
+
         _behaviours  = new Map<String, Behaviour>();
         create();
         return value;
@@ -861,6 +868,11 @@ class Component extends ComponentBase implements IComponentBase implements IClon
             //_layout = null;
             return value;
         }
+        
+        if (_layout != null && Type.getClassName(Type.getClass(value)) == Type.getClassName(Type.getClass(_layout))) {
+            return value;
+        }
+        
         _layout = value;
         _layout.component = this;
         return value;

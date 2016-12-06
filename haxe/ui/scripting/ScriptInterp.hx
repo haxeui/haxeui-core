@@ -11,11 +11,16 @@ class ScriptInterp extends Interp {
         if (_staticClasses != null) {
             for (name in _staticClasses.keys()) {
                 var c:Dynamic = _staticClasses.get(name);
-                this.variables.set(name, c);
+                variables.set(name, c);
             }
         }
+        variables.set("isVar", isVar);
     }
 
+    private function isVar(varName:String):Bool {
+        return variables.exists(varName);
+    }
+    
     override function cnew( cl : String, args : Array<Dynamic> ) : Dynamic {
         if (_classAliases != null && _classAliases.exists(cl)) {
             cl = _classAliases.get(cl);

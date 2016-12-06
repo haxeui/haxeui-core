@@ -29,6 +29,10 @@ class Behaviour {
         return null;
     }
 
+    public function getDynamic():Dynamic {
+        return null;
+    }
+    
     /**
      Update this behaviour with its current value
     **/
