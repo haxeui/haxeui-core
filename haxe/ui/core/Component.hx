@@ -62,7 +62,6 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         var className:String = parts[parts.length - 1].toLowerCase();
         addClass(className, false);
 
-
         // we dont want to actually apply the classes, just find out if native is there or not
         var s = Toolkit.styleSheet.applyClasses(this, false);
         if (s.native != null && hasNativeEntry == true) {
@@ -1548,7 +1547,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     **/
     @:dox(group="Invalidation related properties and methods")
     public function invalidateLayout() {
-        if (_ready == false) {
+        if (_ready == false || _layout == null) {
             return;
         }
 
