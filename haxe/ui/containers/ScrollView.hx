@@ -372,7 +372,7 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         }
 
         var rc:Rectangle = new Rectangle(Std.int(xpos), Std.int(ypos), clipCX, clipCY);
-        _contents.clipRect = rc;
+        _contents.componentClipRect = rc;
     }
 }
 

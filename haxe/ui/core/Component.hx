@@ -415,16 +415,16 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     //***********************************************************************************************************
     // Clip rect
     //***********************************************************************************************************
-    private var _clipRect:Rectangle = null;
+    private var _componentClipRect:Rectangle = null;
     /**
      Whether to clip the display of this component
     **/
-    public var clipRect(get, set):Rectangle;
-    private function get_clipRect():Rectangle {
-        return _clipRect;
+    public var componentClipRect(get, set):Rectangle;
+    private function get_componentClipRect():Rectangle {
+        return _componentClipRect;
     }
-    private function set_clipRect(value:Rectangle):Rectangle {
-        _clipRect = value;
+    private function set_componentClipRect(value:Rectangle):Rectangle {
+        _componentClipRect = value;
         handleClipRect(value);
         return value;
     }
