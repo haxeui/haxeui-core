@@ -131,7 +131,7 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
                     _header.left = 1;
                 }
                 var rc:Rectangle = new Rectangle(Std.int(xpos), Std.int(0), clipCX, _header.componentHeight);
-                _header.clipRect = rc;
+                _header.componentClipRect = rc;
             }
         }
     }
@@ -314,7 +314,7 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
                 clipCX = _header.componentWidth;
             }
             var rc:Rectangle = new Rectangle(Std.int(xpos + 1), Std.int(1), clipCX, _header.componentHeight);
-            _header.clipRect = rc;
+            _header.componentClipRect = rc;
         } else {
             #if haxeui_html5
             updateNativeHeaderClip();
@@ -332,7 +332,7 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
             }
             
             var rc:Rectangle = new Rectangle(Std.int(xpos + 0), Std.int(ypos), clipCX, clipCY);
-            _contents.clipRect = rc;
+            _contents.componentClipRect = rc;
         }
     }
     

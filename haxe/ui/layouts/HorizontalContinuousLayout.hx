@@ -25,6 +25,7 @@ class HorizontalContinuousLayout extends HorizontalLayout {
         
         // first lets calculate our dimentions without changing anthing for perf
         var ucx:Float = component.componentWidth - (paddingLeft + paddingRight);
+        var ucy:Float = component.componentHeight - (paddingTop + paddingBottom);
         var dimensions:Array<Array<ComponentRectangle>> = new Array<Array<ComponentRectangle>>();
         var heights:Array<Float> = new Array<Float>();
         
@@ -43,6 +44,9 @@ class HorizontalContinuousLayout extends HorizontalLayout {
                 rc.width = (ucx * child.percentWidth) / 100;
             } else {
                 usedCX += horizontalSpacing;
+            }
+            if (child.percentHeight != null) {
+                rc.height = (ucy * child.percentHeight) / 100;
             }
             rc.component = child;
             usedCX += rc.width;
