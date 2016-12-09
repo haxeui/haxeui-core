@@ -52,11 +52,13 @@ class Screen extends ScreenBase {
         component.ready();
         rootComponents.push(component);
         FocusManager.instance.pushView(component);
+        component.registerEvent(UIEvent.RESIZE, _onRootComponentResize);    //refresh vh & vw
     }
 
     public override function removeComponent(component:Component) {
         super.removeComponent(component);
         rootComponents.remove(component);
+        component.unregisterEvent(UIEvent.RESIZE, _onRootComponentResize);
     }
 
     public function setComponentIndex(child:Component, index:Int) {
@@ -65,6 +67,25 @@ class Screen extends ScreenBase {
 			rootComponents.remove(child);
 			rootComponents.insert(index, child);
         }
+    }
+
+    public function refreshStyleRootComponents():Void {
+        for(component in rootComponents) {
+            _refreshStyleComponent(component);
+        }
+    }
+
+    @:access(haxe.ui.core.Component)
+    private function _refreshStyleComponent(component:Component):Void {
+        for(child in component.childComponents) {
+            child.applyStyle(child.style);
+            child.invalidateDisplay();
+            _refreshStyleComponent(child);
+        }
+    }
+
+    private function _onRootComponentResize(e:UIEvent):Void {
+        _refreshStyleComponent(e.target);
     }
     
     //***********************************************************************************************************

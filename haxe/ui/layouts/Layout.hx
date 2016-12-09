@@ -196,8 +196,8 @@ class Layout implements ILayout {
             return 0;
         }
         var padding:Float = 0;
-        if (component.style.paddingTop != null) padding += component.style.paddingTop;
-        if (component.style.paddingBottom != null) padding += component.style.paddingBottom;
+        if (component.style.paddingTop != null) padding = component.style.paddingTop + padding;
+        if (component.style.paddingBottom != null) padding = component.style.paddingBottom + padding;
         var icy:Float = component.componentHeight - padding;
         return icy;
     }

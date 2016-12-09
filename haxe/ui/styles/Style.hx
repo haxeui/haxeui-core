@@ -1,4 +1,5 @@
 package haxe.ui.styles;
+import haxe.ui.util.Variant;
 import haxe.ui.util.MathUtil;
 
 class Style {
@@ -10,26 +11,26 @@ class Style {
 
     @style      public var autoWidth:Null<Bool>;
     @style      public var autoHeight:Null<Bool>;
-    @style      public var verticalSpacing:Null<Float>;
-    @style      public var horizontalSpacing:Null<Float>;
+    @style      public var verticalSpacing:Null<Variant>;
+    @style      public var horizontalSpacing:Null<Variant>;
 
-    @style      public var offsetLeft:Null<Float>;
-    @style      public var offsetTop:Null<Float>;
+    @style      public var offsetLeft:Null<Variant>;
+    @style      public var offsetTop:Null<Variant>;
 
-    @style      public var width:Null<Float>;
-    @style      public var height:Null<Float>;
+    @style      public var width:Null<Variant>;
+    @style      public var height:Null<Variant>;
     @style      public var percentWidth:Null<Float>;
     @style      public var percentHeight:Null<Float>;
 
-    @style      public var paddingTop:Null<Float>;
-    @style      public var paddingLeft:Null<Float>;
-    @style      public var paddingRight:Null<Float>;
-    @style      public var paddingBottom:Null<Float>;
+    @style      public var paddingTop:Null<Variant>;
+    @style      public var paddingLeft:Null<Variant>;
+    @style      public var paddingRight:Null<Variant>;
+    @style      public var paddingBottom:Null<Variant>;
 
-    @style      public var marginTop:Null<Float>;
-    @style      public var marginLeft:Null<Float>;
-    @style      public var marginRight:Null<Float>;
-    @style      public var marginBottom:Null<Float>;
+    @style      public var marginTop:Null<Variant>;
+    @style      public var marginLeft:Null<Variant>;
+    @style      public var marginRight:Null<Variant>;
+    @style      public var marginBottom:Null<Variant>;
 
     @style      public var color:Null<Int>;
 
@@ -41,27 +42,27 @@ class Style {
     @style      public var backgroundImage:Null<String>;
     @style      public var backgroundImageRepeat:Null<String>;
 
-    @style      public var backgroundImageClipTop:Null<Float>;
-    @style      public var backgroundImageClipLeft:Null<Float>;
-    @style      public var backgroundImageClipBottom:Null<Float>;
-    @style      public var backgroundImageClipRight:Null<Float>;
+    @style      public var backgroundImageClipTop:Null<Variant>;
+    @style      public var backgroundImageClipLeft:Null<Variant>;
+    @style      public var backgroundImageClipBottom:Null<Variant>;
+    @style      public var backgroundImageClipRight:Null<Variant>;
 
-    @style      public var backgroundImageSliceTop:Null<Float>;
-    @style      public var backgroundImageSliceLeft:Null<Float>;
-    @style      public var backgroundImageSliceBottom:Null<Float>;
-    @style      public var backgroundImageSliceRight:Null<Float>;
+    @style      public var backgroundImageSliceTop:Null<Variant>;
+    @style      public var backgroundImageSliceLeft:Null<Variant>;
+    @style      public var backgroundImageSliceBottom:Null<Variant>;
+    @style      public var backgroundImageSliceRight:Null<Variant>;
 
     @style      public var borderColor:Null<Int>;
     @style      public var borderTopColor:Null<Int>;
     @style      public var borderLeftColor:Null<Int>;
     @style      public var borderBottomColor:Null<Int>;
     @style      public var borderRightColor:Null<Int>;
-    @style      public var borderSize:Null<Float>;
-    @style      public var borderTopSize:Null<Float>;
-    @style      public var borderLeftSize:Null<Float>;
-    @style      public var borderBottomSize:Null<Float>;
-    @style      public var borderRightSize:Null<Float>;
-    @style      public var borderRadius:Null<Float>;
+    @style      public var borderSize:Null<Variant>;
+    @style      public var borderTopSize:Null<Variant>;
+    @style      public var borderLeftSize:Null<Variant>;
+    @style      public var borderBottomSize:Null<Variant>;
+    @style      public var borderRightSize:Null<Variant>;
+    @style      public var borderRadius:Null<Variant>;
     @style      public var borderOpacity:Null<Float>;
 
     @style      public var filter:Array<Dynamic>;
@@ -78,7 +79,7 @@ class Style {
     @style      public var native:Null<Bool>;
 
     @style      public var fontName:Null<String>;
-    @style      public var fontSize:Null<Float>;
+    @style      public var fontSize:Null<Variant>;
     @style      public var fontBold:Null<Bool>;
     @style      public var fontUnderline:Null<Bool>;
     @style      public var fontItalic:Null<Bool>;
@@ -276,12 +277,12 @@ class Style {
             backgroundColor = null;
             backgroundColorEnd = null;
         }
-        if (borderSize == MathUtil.MIN_INT) borderSize = null;
-        if (borderTopSize == MathUtil.MIN_INT) borderTopSize = null;
-        if (borderLeftSize == MathUtil.MIN_INT) borderLeftSize = null;
-        if (borderBottomSize == MathUtil.MIN_INT) borderBottomSize = null;
-        if (borderRightSize == MathUtil.MIN_INT) borderRightSize = null;
-        if (borderRadius == MathUtil.MIN_INT) borderRadius = null;
+//        if (borderSize == MathUtil.MIN_INT) borderSize = null;
+//        if (borderTopSize == MathUtil.MIN_INT) borderTopSize = null;
+//        if (borderLeftSize == MathUtil.MIN_INT) borderLeftSize = null;
+//        if (borderBottomSize == MathUtil.MIN_INT) borderBottomSize = null;
+//        if (borderRightSize == MathUtil.MIN_INT) borderRightSize = null;
+//        if (borderRadius == MathUtil.MIN_INT) borderRadius = null;
         if (borderColor == MathUtil.MIN_INT) borderColor = null;
         if (borderTopColor == MathUtil.MIN_INT) borderTopColor = null;
         if (borderLeftColor == MathUtil.MIN_INT) borderLeftColor = null;
@@ -291,14 +292,14 @@ class Style {
         if (icon == "none") icon = null;
     }
 
-    public function padding(v:Float) {
+    public function padding(v:Variant) {
         this.paddingTop = v;
         this.paddingLeft = v;
         this.paddingRight = v;
         this.paddingBottom = v;
     }
 
-    public function margin(v:Float) {
+    public function margin(v:Variant) {
         this.marginTop = v;
         this.marginLeft = v;
         this.marginRight = v;

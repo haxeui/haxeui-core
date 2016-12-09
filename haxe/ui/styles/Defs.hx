@@ -4,6 +4,9 @@ enum Unit {
     Pix( v : Float );
     Percent( v : Float );
     EM( v : Float );
+    REM( v : Float );
+    VH( v : Float );
+    VW( v : Float );
 }
 
 enum FillStyle {
