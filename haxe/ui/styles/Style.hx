@@ -11,26 +11,26 @@ class Style {
 
     @style      public var autoWidth:Null<Bool>;
     @style      public var autoHeight:Null<Bool>;
-    @style      public var verticalSpacing:Null<Variant>;
-    @style      public var horizontalSpacing:Null<Variant>;
+    @style      public var verticalSpacing:Variant;
+    @style      public var horizontalSpacing:Variant;
 
-    @style      public var offsetLeft:Null<Variant>;
-    @style      public var offsetTop:Null<Variant>;
+    @style      public var offsetLeft:Variant;
+    @style      public var offsetTop:Variant;
 
-    @style      public var width:Null<Variant>;
-    @style      public var height:Null<Variant>;
+    @style      public var width:Variant;
+    @style      public var height:Variant;
     @style      public var percentWidth:Null<Float>;
     @style      public var percentHeight:Null<Float>;
 
-    @style      public var paddingTop:Null<Variant>;
-    @style      public var paddingLeft:Null<Variant>;
-    @style      public var paddingRight:Null<Variant>;
-    @style      public var paddingBottom:Null<Variant>;
+    @style      public var paddingTop:Variant;
+    @style      public var paddingLeft:Variant;
+    @style      public var paddingRight:Variant;
+    @style      public var paddingBottom:Variant;
 
-    @style      public var marginTop:Null<Variant>;
-    @style      public var marginLeft:Null<Variant>;
-    @style      public var marginRight:Null<Variant>;
-    @style      public var marginBottom:Null<Variant>;
+    @style      public var marginTop:Variant;
+    @style      public var marginLeft:Variant;
+    @style      public var marginRight:Variant;
+    @style      public var marginBottom:Variant;
 
     @style      public var color:Null<Int>;
 
@@ -42,27 +42,27 @@ class Style {
     @style      public var backgroundImage:Null<String>;
     @style      public var backgroundImageRepeat:Null<String>;
 
-    @style      public var backgroundImageClipTop:Null<Variant>;
-    @style      public var backgroundImageClipLeft:Null<Variant>;
-    @style      public var backgroundImageClipBottom:Null<Variant>;
-    @style      public var backgroundImageClipRight:Null<Variant>;
+    @style      public var backgroundImageClipTop:Variant;
+    @style      public var backgroundImageClipLeft:Variant;
+    @style      public var backgroundImageClipBottom:Variant;
+    @style      public var backgroundImageClipRight:Variant;
 
-    @style      public var backgroundImageSliceTop:Null<Variant>;
-    @style      public var backgroundImageSliceLeft:Null<Variant>;
-    @style      public var backgroundImageSliceBottom:Null<Variant>;
-    @style      public var backgroundImageSliceRight:Null<Variant>;
+    @style      public var backgroundImageSliceTop:Variant;
+    @style      public var backgroundImageSliceLeft:Variant;
+    @style      public var backgroundImageSliceBottom:Variant;
+    @style      public var backgroundImageSliceRight:Variant;
 
     @style      public var borderColor:Null<Int>;
     @style      public var borderTopColor:Null<Int>;
     @style      public var borderLeftColor:Null<Int>;
     @style      public var borderBottomColor:Null<Int>;
     @style      public var borderRightColor:Null<Int>;
-    @style      public var borderSize:Null<Variant>;
-    @style      public var borderTopSize:Null<Variant>;
-    @style      public var borderLeftSize:Null<Variant>;
-    @style      public var borderBottomSize:Null<Variant>;
-    @style      public var borderRightSize:Null<Variant>;
-    @style      public var borderRadius:Null<Variant>;
+    @style      public var borderSize:Variant;
+    @style      public var borderTopSize:Variant;
+    @style      public var borderLeftSize:Variant;
+    @style      public var borderBottomSize:Variant;
+    @style      public var borderRightSize:Variant;
+    @style      public var borderRadius:Variant;
     @style      public var borderOpacity:Null<Float>;
 
     @style      public var filter:Array<Dynamic>;
@@ -79,7 +79,7 @@ class Style {
     @style      public var native:Null<Bool>;
 
     @style      public var fontName:Null<String>;
-    @style      public var fontSize:Null<Variant>;
+    @style      public var fontSize:Variant;
     @style      public var fontBold:Null<Bool>;
     @style      public var fontUnderline:Null<Bool>;
     @style      public var fontItalic:Null<Bool>;
@@ -277,12 +277,12 @@ class Style {
             backgroundColor = null;
             backgroundColorEnd = null;
         }
-//        if (borderSize == MathUtil.MIN_INT) borderSize = null;
-//        if (borderTopSize == MathUtil.MIN_INT) borderTopSize = null;
-//        if (borderLeftSize == MathUtil.MIN_INT) borderLeftSize = null;
-//        if (borderBottomSize == MathUtil.MIN_INT) borderBottomSize = null;
-//        if (borderRightSize == MathUtil.MIN_INT) borderRightSize = null;
-//        if (borderRadius == MathUtil.MIN_INT) borderRadius = null;
+        if (borderSize == MathUtil.MIN_INT) borderSize = null;
+        if (borderTopSize == MathUtil.MIN_INT) borderTopSize = null;
+        if (borderLeftSize == MathUtil.MIN_INT) borderLeftSize = null;
+        if (borderBottomSize == MathUtil.MIN_INT) borderBottomSize = null;
+        if (borderRightSize == MathUtil.MIN_INT) borderRightSize = null;
+        if (borderRadius == MathUtil.MIN_INT) borderRadius = null;
         if (borderColor == MathUtil.MIN_INT) borderColor = null;
         if (borderTopColor == MathUtil.MIN_INT) borderTopColor = null;
         if (borderLeftColor == MathUtil.MIN_INT) borderLeftColor = null;

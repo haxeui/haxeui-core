@@ -24,12 +24,12 @@ abstract Variant(VariantType) from VariantType {
     @:to public function toString() {
         return switch(this) {
             case String(s): s;
-            case Int(s): return Std.string(s);
-            case Float(s): return Std.string(s);
-            case Unit(s): return Std.string(s);
-            case Bool(s): return Std.string(s);
-            //case Dynamic(s): return Std.string(s);
-            case DataSource(s): return Std.string(s);
+            case Int(s): Std.string(s);
+            case Float(s): Std.string(s);
+            case Unit(s): Std.string(s);
+            case Bool(s): Std.string(s);
+            //case Dynamic(s): Std.string(s);
+            case DataSource(s): Std.string(s);
             default: throw "Variant Type Error";
         }
     }
@@ -46,15 +46,16 @@ abstract Variant(VariantType) from VariantType {
         return Int(s);
     }
 
-    @:to function toInt():Int {
+    @:to function toInt():Null<Int> {
+        if(isNull) return null;
         return switch(this) {
-            case Int(s): return s;
-            case Float(s): return Std.int(s);
+            case Int(s): s;
+            case Float(s): Std.int(s);
             case Unit(s): switch(s) {
-                case Pix(v): return Std.int(v);
-                case REM(v): return Std.int(v * Toolkit.pixelsPerRem);
-                case VH(v): return Std.int(v / 100 * Screen.instance.height);
-                case VW(v): return Std.int(v / 100 * Screen.instance.width);
+                case Pix(v): Std.int(v);
+                case REM(v): Std.int(v * Toolkit.pixelsPerRem);
+                case VH(v): Std.int(v / 100 * Screen.instance.height);
+                case VW(v): Std.int(v / 100 * Screen.instance.width);
                 default: throw "Variant Type Error";
             }
             default: throw "Variant Type Error";
@@ -73,15 +74,16 @@ abstract Variant(VariantType) from VariantType {
         return Float(s);
     }
 
-    @:to function toFloat():Float {
+    @:to function toFloat():Null<Float> {
+        if(isNull) return null;
         return switch(this) {
-            case Float(s): return s;
+            case Float(s): s;
             case Unit(s): switch(s) {
-                case Pix(v): return v;
-                case REM(v): return v * Toolkit.pixelsPerRem;
-                case VH(v): return v / 100 * Screen.instance.height;
-                case VW(v): return v / 100 * Screen.instance.width;
-                default: throw "Variant Type Error";
+                case Pix(v): v;
+                case REM(v): v * Toolkit.pixelsPerRem;
+                case VH(v): v / 100 * Screen.instance.height;
+                case VW(v): v / 100 * Screen.instance.width;
+                default: throw "Variant Typfe Error";
             }
             default: throw "Variant Type Error";
         }
@@ -102,9 +104,9 @@ abstract Variant(VariantType) from VariantType {
 
     @:to function toUnit():StyleUnit {
         return switch(this) {
-            case Int(s): return Pix(s);
-            case Float(s): return Pix(s);
-            case Unit(s): return s;
+            case Int(s): Pix(s);
+            case Float(s): Pix(s);
+            case Unit(s): s;
             default: throw "Variant Type Error";
         }
     }
@@ -124,13 +126,13 @@ abstract Variant(VariantType) from VariantType {
 
     function toNumber():Float {
         return switch(this) {
-            case Int(s): return s;
-            case Float(s): return s;
+            case Int(s): s;
+            case Float(s): s;
             case Unit(s): switch(s) {
-                case Pix(v): return v;
-                case REM(v): return v * Toolkit.pixelsPerRem;
-                case VH(v): return v / 100 * Screen.instance.height;
-                case VW(v): return v / 100 * Screen.instance.width;
+                case Pix(v): v;
+                case REM(v): v * Toolkit.pixelsPerRem;
+                case VH(v): v / 100 * Screen.instance.height;
+                case VW(v): v / 100 * Screen.instance.width;
                 default: throw "Variant Type Error";
             }
             default: throw "Variant Type Error";
@@ -146,7 +148,7 @@ abstract Variant(VariantType) from VariantType {
 
     @:to function toBool() {
         return switch(this) {
-            case Bool(s): return s;
+            case Bool(s): s;
             default: throw "Variant Type Error";
         }
     }
@@ -169,7 +171,7 @@ abstract Variant(VariantType) from VariantType {
 
     @:to function toDataSource() {
         return switch(this) {
-            case DataSource(s): return s;
+            case DataSource(s): s;
             default: throw "Variant Type Error";
         }
     }
@@ -358,17 +360,6 @@ abstract Variant(VariantType) from VariantType {
         throw "Variant operation error";
     }
 
-    @:op(A == B)
-    private function compare(rhs:Variant):Bool {
-        if(isNumber) {
-            return toNumber() == rhs.toNumber();
-        } else if(isString) {
-            return toString() == rhs.toString();
-        }
-
-        throw "Variant operation error";
-    }
-
     @:op(-A)
     private function negate():Variant {
         if(isNumber) {
@@ -393,7 +384,7 @@ abstract Variant(VariantType) from VariantType {
     // ************************************************************************************************************
     public var isNull(get, never):Bool;
     private function get_isNull():Bool {
-        return toString() == null;
+        return this == null || toString() == null;
     }
 
     public static function fromDynamic(r:Dynamic):Variant {
