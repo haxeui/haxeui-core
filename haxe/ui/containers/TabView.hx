@@ -185,8 +185,8 @@ class TabViewLayout extends DefaultLayout {
         return size;
     }
 
-    public override function calcAutoSize():Size {
-        var size:Size = super.calcAutoSize();
+    public override function calcAutoSize(exclusions:Array<Component> = null):Size {
+        var size:Size = super.calcAutoSize(exclusions);
         return size;
     }
 }

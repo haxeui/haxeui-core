@@ -219,13 +219,16 @@ class TextFieldLayout extends DefaultLayout {
 
         if (component.hasTextInput() == true) {
             var size:Size = usableSize;
+            #if !pixijs
             component.getTextInput().width = size.width;
+            #end
+            
             //component.getTextInput().height = size.height;
         }
     }
 
-    public override function calcAutoSize():Size {
-        var size:Size = super.calcAutoSize();
+    public override function calcAutoSize(exclusions:Array<Component> = null):Size {
+        var size:Size = super.calcAutoSize(exclusions);
         if (component.hasTextInput() == true) {
             if (component.getTextInput().textWidth + paddingLeft + paddingRight > size.width) {
                 size.width = component.getTextInput().textWidth + paddingLeft + paddingRight;

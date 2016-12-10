@@ -140,6 +140,17 @@ class Button extends InteractiveComponent implements IClonable<Button> {
         return value;
     }
 
+    @:clonable public var iconPosition(get, set):String;
+    private function get_iconPosition():String {
+        return style.iconPosition;
+    }
+    private function set_iconPosition(value:String):String {
+        customStyle.iconPosition = value;
+        invalidateStyle();
+        invalidateLayout();
+        return value;
+    }
+    
     /**
      Whether this button should behave as a toggle button or not
     **/
@@ -155,6 +166,7 @@ class Button extends InteractiveComponent implements IClonable<Button> {
 
         if (value == false) {
             unregisterEvent(MouseEvent.CLICK, _onMouseClick);
+            selected = false;
         } else {
             registerEvent(MouseEvent.CLICK, _onMouseClick);
         }

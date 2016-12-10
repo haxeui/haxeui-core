@@ -56,20 +56,18 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         #if html5
         addClass("html5");
         #end
+        addClass(Backend.id);
 
         var parts:Array<String> = Type.getClassName(Type.getClass(this)).split(".");
         var className:String = parts[parts.length - 1].toLowerCase();
         addClass(className, false);
-
-        layout = new DefaultLayout();
-
-        createDefaults();
 
         // we dont want to actually apply the classes, just find out if native is there or not
         var s = Toolkit.styleSheet.applyClasses(this, false);
         if (s.native != null && hasNativeEntry == true) {
             native = s.native;
         } else {
+            createDefaults();
             create();
         }
     }
@@ -88,7 +86,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     }
 
     private function createDefaults():Void {
-
+        layout = new DefaultLayout();
     }
 
     private function createChildren():Void {
@@ -161,6 +159,14 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         return null;
     }
 
+    private function behaviourGetDynamic(id:String):Dynamic {
+        var b:Behaviour = getBehaviour(id);
+        if (b != null) {
+            return b.getDynamic();
+        }
+        return null;
+    }
+
     private function behaviourSet(id:String, value:Variant):Void {
         var b:Behaviour = getBehaviour(id);
         if (b != null) {
@@ -206,6 +212,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         } else {
             removeClass(":native");
         }
+
         _behaviours  = new Map<String, Behaviour>();
         create();
         return value;
@@ -408,16 +415,16 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     //***********************************************************************************************************
     // Clip rect
     //***********************************************************************************************************
-    private var _clipRect:Rectangle = null;
+    private var _componentClipRect:Rectangle = null;
     /**
      Whether to clip the display of this component
     **/
-    public var clipRect(get, set):Rectangle;
-    private function get_clipRect():Rectangle {
-        return _clipRect;
+    public var componentClipRect(get, set):Rectangle;
+    private function get_componentClipRect():Rectangle {
+        return _componentClipRect;
     }
-    private function set_clipRect(value:Rectangle):Rectangle {
-        _clipRect = value;
+    private function set_componentClipRect(value:Rectangle):Rectangle {
+        _componentClipRect = value;
         handleClipRect(value);
         return value;
     }
@@ -860,6 +867,11 @@ class Component extends ComponentBase implements IComponentBase implements IClon
             //_layout = null;
             return value;
         }
+        
+        if (_layout != null && Type.getClassName(Type.getClass(value)) == Type.getClassName(Type.getClass(_layout))) {
+            return value;
+        }
+        
         _layout = value;
         _layout.component = this;
         return value;
@@ -1535,7 +1547,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     **/
     @:dox(group="Invalidation related properties and methods")
     public function invalidateLayout() {
-        if (_ready == false) {
+        if (_ready == false || _layout == null) {
             return;
         }
 

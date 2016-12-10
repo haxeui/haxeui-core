@@ -8,6 +8,7 @@ import haxe.ui.core.MouseEvent;
 import haxe.ui.core.Platform;
 import haxe.ui.core.UIEvent;
 import haxe.ui.layouts.DefaultLayout;
+import haxe.ui.layouts.Layout;
 import haxe.ui.layouts.LayoutFactory;
 import haxe.ui.util.Rectangle;
 import haxe.ui.util.Size;
@@ -22,13 +23,15 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         super();
     }
 
+    private override function createLayout():Layout {
+        return new ScrollViewLayout();
+    }
+    
     private override function createDefaults():Void {
-        _defaultLayout = new ScrollViewLayout();
     }
 
     private override function create():Void {
         super.create();
-
         if (native == true) {
             updateScrollRect();
         } else {
@@ -56,14 +59,20 @@ class ScrollView extends Component implements IClonable<ScrollView> {
     
     private override function createChildren():Void {
         super.createChildren();
-        _contents = new Box();
-        _contents.addClass("scrollview-contents");
-        _contents.registerEvent(UIEvent.RESIZE, _onContentsResized);
-        _contents.registerEvent(MouseEvent.MOUSE_WHEEL, _onMouseWheel);
-        _contents.layout = LayoutFactory.createFromName(layoutName);
-        addComponent(_contents);
+        registerEvent(MouseEvent.MOUSE_WHEEL, _onMouseWheel);
+        createContentContainer();
     }
 
+    private function createContentContainer() {
+        if (_contents == null) {
+            _contents = new Box();
+            _contents.addClass("scrollview-contents");
+            _contents.registerEvent(UIEvent.RESIZE, _onContentsResized);
+            _contents.layout = LayoutFactory.createFromName(layoutName);
+            addComponent(_contents);
+        }
+    }
+    
     private override function destroyChildren():Void {
         if (_hscroll != null) {
             removeComponent(_hscroll);
@@ -118,11 +127,76 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         return value;
     }
 
+    public var contentWidth(get, set):Null<Float>;
+    private function get_contentWidth():Null<Float> {
+        createContentContainer();
+        if (_contents != null) {
+            return _contents.width;
+        }
+        return null;
+    }
+    private function set_contentWidth(value:Null<Float>):Null<Float> {
+        createContentContainer();
+        if (_contents != null) {
+            _contents.width = value;
+        }
+        return value;
+    }
+    
+    public var contentHeight(get, set):Null<Float>;
+    private function get_contentHeight():Null<Float> {
+        createContentContainer();
+        if (_contents != null) {
+            return _contents.height;
+        }
+        return null;
+    }
+    private function set_contentHeight(value:Null<Float>):Null<Float> {
+        createContentContainer();
+        if (_contents != null) {
+            _contents.height = value;
+        }
+        return value;
+    }
+    
+    public var percentContentWidth(get, set):Null<Float>;
+    private function get_percentContentWidth():Null<Float> {
+        createContentContainer();
+        if (_contents != null) {
+            return _contents.percentWidth;
+        }
+        return null;
+    }
+    private function set_percentContentWidth(value:Null<Float>):Null<Float> {
+        createContentContainer();
+        if (_contents != null) {
+            _contents.percentWidth = value;
+        }
+        return value;
+    }
+    
+    public var percentContentHeight(get, set):Null<Float>;
+    private function get_percentContentHeight():Null<Float> {
+        createContentContainer();
+        if (_contents != null) {
+            return _contents.percentHeight;
+        }
+        return null;
+    }
+    private function set_percentContentHeight(value:Null<Float>):Null<Float> {
+        createContentContainer();
+        if (_contents != null) {
+            _contents.percentHeight = value;
+        }
+        return value;
+    }
+    
     public override function addComponent(child:Component):Component {
         var v = null;
         if (Std.is(child, HScroll) || Std.is(child, VScroll) || child == _contents) {
             v = super.addComponent(child);
         } else {
+            createContentContainer();
             v = _contents.addComponent(child);
         }
         return v;
@@ -298,7 +372,7 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         }
 
         var rc:Rectangle = new Rectangle(Std.int(xpos), Std.int(ypos), clipCX, clipCY);
-        _contents.clipRect = rc;
+        _contents.componentClipRect = rc;
     }
 }
 
@@ -359,20 +433,15 @@ class ScrollViewLayout extends DefaultLayout {
         return size;
     }
 
-    public override function calcAutoSize():Size {
-        var size:Size = super.calcAutoSize();
+    public override function calcAutoSize(exclusions:Array<Component> = null):Size {
         var hscroll:Component = component.findComponent("scrollview-hscroll");
         var vscroll:Component = component.findComponent("scrollview-vscroll");
+        var size:Size = super.calcAutoSize([hscroll, vscroll]);
         if (hscroll != null && hscroll.hidden == false) {
             size.height += hscroll.componentHeight;
         }
         if (vscroll != null && vscroll.hidden == false) {
             size.width += vscroll.componentWidth;
-        }
-
-        var contents:Component = component.findComponent("scrollview-contents", null, false, "css");
-        if (contents != null) {
-            //size.width = contents.componentWidth;
         }
         return size;
     }

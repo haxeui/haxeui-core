@@ -27,6 +27,7 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
     private override function createDefaults():Void {
         super.createDefaults();
         _defaultBehaviours.set("dataSource", new DropDownDefaultDataSourceBehaviour(this));
+        _defaultBehaviours.set("selectedItem", new DropDownDefaultSelectedItemBehaviour(this));
     }
     
     private override function create():Void {
@@ -172,6 +173,11 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
         }
     }
 
+    public var selectedItem(get, null):Dynamic;
+    private function get_selectedItem():Dynamic {
+        return behaviourGetDynamic("selectedItem");
+    }
+    
     private function onItemChange(event:UIEvent) {
         if (_listview.selectedItem.data.value != null) {
             this.text = _listview.selectedItem.data.value;
@@ -210,5 +216,18 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
 class DropDownDefaultDataSourceBehaviour extends Behaviour {
     public override function set(value:Variant) {    
         
+    }
+}
+
+
+@:dox(hide)
+@:access(haxe.ui.components.DropDown)
+class DropDownDefaultSelectedItemBehaviour extends Behaviour {
+    public override function getDynamic():Dynamic {    
+        var lv:ListView = cast(_component, DropDown)._listview;
+        if (lv == null || lv.selectedItem == null) {
+            return null;
+        }
+        return lv.selectedItem.data;
     }
 }

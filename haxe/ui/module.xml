@@ -71,7 +71,7 @@
         <animation id="haxe.ui.components.animation.pos" ease="Linear.easeNone">
         <animation id="haxe.ui.components.animation.pos" ease="Linear.easeNone">
         -->
-        <animation id="haxe.ui.components.animation.pos" ease="Bounce.easeOut">
+        <animation id="haxe.ui.components.animation.pos" ease="Bounce.easeNone">
             <keyframe time="300">
                 <target pos="{pos}" />
             </keyframe>

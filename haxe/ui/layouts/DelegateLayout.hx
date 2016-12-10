@@ -11,7 +11,7 @@ class DelegateLayout extends VerticalLayout {
         _size = size;
     }
 
-    public override function calcAutoSize():Size {
+    public override function calcAutoSize(exclusions:Array<Component> = null):Size {
         _size.component = component;
 
         var cx:Float = _size.width;

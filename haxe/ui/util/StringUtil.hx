@@ -17,4 +17,13 @@ class StringUtil {
         }
         return r;
     }
+    
+    public static function replaceVars(s:String, params:Map<String, Dynamic>):String {
+        if (params != null) {
+            for (k in params.keys()) {
+                s = StringTools.replace(s, "${" + k + "}", params.get(k));
+            }
+        }
+        return s;
+    }
 }

@@ -10,6 +10,7 @@ import haxe.ui.macros.ModuleMacros;
 import haxe.ui.macros.NativeMacros;
 import haxe.ui.parsers.ui.ComponentInfo;
 import haxe.ui.parsers.ui.ComponentParser;
+import haxe.ui.scripting.ConditionEvaluator;
 import haxe.ui.styles.Engine;
 import haxe.ui.themes.ThemeManager;
 import haxe.ui.util.GenericConfig;
@@ -100,7 +101,11 @@ class Toolkit {
     }
 
     private static function buildComponentFromInfo(c:ComponentInfo):Component {
-        var className:String = ComponentClassMap.get(c.type);
+        if (c.condition != null && new ConditionEvaluator().evaluate(c.condition) == false) {
+            return null;
+        }
+
+        var className:String = ComponentClassMap.get(c.type.toLowerCase());
         if (className == null) {
             trace("WARNING: no class found for component: " + c.type);
             return null;
@@ -149,5 +154,70 @@ class Toolkit {
         }
 
         return component;
+    }
+    
+    public static var autoScale:Bool = true;
+    public static var autoScaleDPIThreshold:Int = 160;
+    
+    private static var _scaleX:Float = 0;
+    public static var scaleX(get, set):Float;
+    private static function get_scaleX():Float {
+        if (_scaleX == 0) {
+            if (autoScale == true) {
+                var dpi:Float = Screen.instance.dpi;
+                if (dpi > autoScaleDPIThreshold) {
+                    _scaleX = dpi / autoScaleDPIThreshold;
+                } else {
+                    _scaleX = 1; 
+                }
+            } else {
+                _scaleX = 1;
+            }
+        }
+        return _scaleX;
+    }
+    private static function set_scaleX(value:Float):Float {
+        if (_scaleX == value) {
+            return value;
+        }
+        _scaleX = value;
+        autoScale = false;
+        return value;
+    }
+    
+    private static var _scaleY:Float = 0;
+    public static var scaleY(get, set):Float;
+    private static function get_scaleY():Float {
+        if (_scaleY == 0) {
+            if (autoScale == true) {
+                var dpi:Float = Screen.instance.dpi;
+                if (dpi > autoScaleDPIThreshold) {
+                    _scaleY = dpi / autoScaleDPIThreshold;
+                } else {
+                    _scaleY = 1; 
+                }
+            } else {
+                _scaleY = 1;
+            }
+        }
+        return _scaleY;
+    }
+    private static function set_scaleY(value:Float):Float {
+        if (_scaleY == value) {
+            return value;
+        }
+        _scaleY = value;
+        autoScale = false;
+        return value;
+    }
+    
+    public static var scale(get, set):Float;
+    private static function get_scale():Float {
+        return Math.max(scaleX, scaleY);
+    }
+    private static function set_scale(value:Float):Float {
+        scaleX = value;
+        scaleY = value;
+        return value;
     }
 }

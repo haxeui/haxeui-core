@@ -32,6 +32,7 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
 
     private override function createChildren():Void {
         super.createChildren();
+        percentContentWidth = 100;
         _contents.addClass("tableview-contents");
     }
 
@@ -130,7 +131,7 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
                     _header.left = 1;
                 }
                 var rc:Rectangle = new Rectangle(Std.int(xpos), Std.int(0), clipCX, _header.componentHeight);
-                _header.clipRect = rc;
+                _header.componentClipRect = rc;
             }
         }
     }
@@ -175,7 +176,7 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
             return;
         }
         
-        contents.lockLayout(true);
+        //contents.lockLayout(true);
         
         var delta = _dataSource.size - itemCount;
         if (delta > 0) { // not enough items
@@ -220,7 +221,7 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
 
         sizeItems();
         
-        contents.unlockLayout(true);
+        //contents.unlockLayout(true);
     }
     
     public function resetSelection() {
@@ -303,7 +304,7 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
                 clipCX = _header.componentWidth;
             }
             var rc:Rectangle = new Rectangle(Std.int(xpos + 1), Std.int(1), clipCX, _header.componentHeight);
-            _header.clipRect = rc;
+            _header.componentClipRect = rc;
         } else {
             #if haxeui_html5
             updateNativeHeaderClip();
@@ -321,7 +322,7 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
             }
             
             var rc:Rectangle = new Rectangle(Std.int(xpos + 0), Std.int(ypos), clipCX, clipCY);
-            _contents.clipRect = rc;
+            _contents.componentClipRect = rc;
         }
     }
     
@@ -419,8 +420,8 @@ class TableViewLayout extends DefaultLayout {
         return size;
     }
 
-    public override function calcAutoSize():Size {
-        var size:Size = super.calcAutoSize();
+    public override function calcAutoSize(exclusions:Array<Component> = null):Size {
+        var size:Size = super.calcAutoSize(exclusions);
         var hscroll:Component = component.findComponent(HScroll);
         var vscroll:Component = component.findComponent(VScroll);
         if (hscroll != null && hscroll.hidden == false) {
