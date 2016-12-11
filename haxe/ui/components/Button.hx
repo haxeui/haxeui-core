@@ -87,9 +87,6 @@ class Button extends InteractiveComponent implements IClonable<Button> {
             label.customStyle.color = style.color;
             label.customStyle.fontName = style.fontName;
             label.customStyle.fontSize = style.fontSize;
-            #if openfl  //TODO - all platforms
-            label.customStyle.textAlign = style.textAlign;
-            #end
             label.customStyle.cursor = style.cursor;
             label.invalidateStyle();
         }
@@ -150,7 +147,21 @@ class Button extends InteractiveComponent implements IClonable<Button> {
         invalidateLayout();
         return value;
     }
-    
+
+    @:clonable public var textAlign(get, set):String;
+    private function get_textAlign():String {
+        return style.textAlign;
+    }
+    private function set_textAlign(value:String):String {
+        if(textAlign == value) {
+            return value;
+        }
+
+        customStyle.textAlign = value;
+        invalidateLayout();
+        return value;
+    }
+
     /**
      Whether this button should behave as a toggle button or not
     **/
@@ -391,7 +402,7 @@ class ButtonLayout extends DefaultLayout {
                     label.top = Std.int((component.componentHeight / 2) - (label.componentHeight / 2)) + marginTop(label) - marginBottom(label);
                     icon.top = Std.int((component.componentHeight / 2) - (icon.componentHeight / 2)) + marginTop(icon) - marginBottom(icon);
                 } else if (label != null) {
-                    label.left = Std.int((component.componentWidth / 2) - (label.componentWidth / 2)) + marginLeft(label) - marginRight(label);
+                    label.left = getTextAlignPos(label, component.componentWidth);
                     label.top = Std.int((component.componentHeight / 2) - (label.componentHeight / 2)) + marginTop(label) - marginBottom(label);
                 } else if (icon != null) {
                     icon.left = Std.int((component.componentWidth / 2) - (icon.componentWidth / 2));// + marginLeft(icon) - marginRight(icon);
@@ -412,7 +423,7 @@ class ButtonLayout extends DefaultLayout {
                         label.top = y + marginTop(label) - marginBottom(label);
                     }
 
-                    label.left = Std.int((component.componentWidth / 2) - (label.componentWidth / 2)) + marginLeft(label) - marginRight(label);
+                    label.left = getTextAlignPos(label, component.componentWidth);
                     icon.left = Std.int((component.componentWidth / 2) - (icon.componentWidth / 2)) + marginLeft(icon) - marginRight(icon);
                 } else if (label != null) {
                     label.left = Std.int((component.componentWidth / 2) - (label.componentWidth / 2)) + marginLeft(label) - marginRight(label);
@@ -421,6 +432,18 @@ class ButtonLayout extends DefaultLayout {
                     icon.left = Std.int((component.componentWidth / 2) - (icon.componentWidth / 2)) + marginLeft(icon) - marginRight(icon);
                     icon.top = Std.int((component.componentHeight / 2) - (icon.componentHeight / 2)) + marginTop(icon) - marginBottom(icon);
                 }
+        }
+    }
+
+    private function getTextAlignPos(label:Label, usableWidth:Float):Float
+    {
+        switch(cast(component, Button).textAlign) {
+            case "left":
+                return marginLeft(label) + paddingLeft;
+            case "right":
+                return usableWidth - label.componentWidth - marginRight(label) - paddingRight;
+            default:
+                return Std.int((usableWidth / 2) - (label.componentWidth / 2)) + marginLeft(label) - marginRight(label);
         }
     }
 }

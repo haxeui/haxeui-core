@@ -64,11 +64,9 @@ class Label extends InteractiveComponent implements IClonable<Label> {
             if (style.fontSize != null) {
                 getTextDisplay().fontSize = style.fontSize;
             }
-            #if openfl  //TODO - all platforms
             if (style.textAlign != null) {
                 getTextDisplay().textAlign = style.textAlign;
             }
-            #end
         }
     }
 }

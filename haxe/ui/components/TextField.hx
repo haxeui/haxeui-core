@@ -93,11 +93,9 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
             if (style.fontSize != null) {
                 getTextInput().fontSize = style.fontSize;
             }
-            #if openfl  //TODO - all platforms
             if (style.textAlign != null) {
                 getTextInput().textAlign = style.textAlign;
             }
-            #end
         }
     }
 
