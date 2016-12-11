@@ -72,6 +72,7 @@ class Style {
 
     @style      public var horizontalAlign:Null<String>;
     @style      public var verticalAlign:Null<String>;
+    @style      public var textAlign:Null<String>;
 
     @style      public var opacity:Null<Float>;
 
@@ -168,6 +169,7 @@ class Style {
 
         if (s.horizontalAlign != null) horizontalAlign = s.horizontalAlign;
         if (s.verticalAlign != null) verticalAlign = s.verticalAlign;
+        if (s.textAlign != null) textAlign = s.textAlign;
 
         if (s.opacity != null) opacity = s.opacity;
 
@@ -252,6 +254,7 @@ class Style {
 
         if (s.horizontalAlign != horizontalAlign) return false;
         if (s.verticalAlign != verticalAlign) return false;
+        if (s.textAlign != textAlign) return false;
 
         if (s.opacity != opacity) return false;
 
