@@ -210,6 +210,9 @@ class XMLParser extends ComponentParser {
                     component.layoutName = attrValue;
                 case "bindTo" | "bindTransform": // do nothing
                 default:
+                    if (attrName == "group") {
+                        attrName = "groupName";
+                    }
                     component.properties.set(attrName, attrValue);
             }
         }

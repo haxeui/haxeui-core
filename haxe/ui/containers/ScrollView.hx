@@ -8,6 +8,7 @@ import haxe.ui.core.MouseEvent;
 import haxe.ui.core.Platform;
 import haxe.ui.core.UIEvent;
 import haxe.ui.layouts.DefaultLayout;
+import haxe.ui.layouts.Layout;
 import haxe.ui.layouts.LayoutFactory;
 import haxe.ui.util.Rectangle;
 import haxe.ui.util.Size;
@@ -22,8 +23,11 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         super();
     }
 
+    private override function createLayout():Layout {
+        return new ScrollViewLayout();
+    }
+    
     private override function createDefaults():Void {
-        _defaultLayout = new ScrollViewLayout();
     }
 
     private override function create():Void {
@@ -368,7 +372,7 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         }
 
         var rc:Rectangle = new Rectangle(Std.int(xpos), Std.int(ypos), clipCX, clipCY);
-        _contents.clipRect = rc;
+        _contents.componentClipRect = rc;
     }
 }
 

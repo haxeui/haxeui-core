@@ -9,7 +9,7 @@ import haxe.ui.core.IClonable;
 class Spacer extends Component implements IClonable<Spacer> {
     public function new() {
         super();
-        #if openfl
+        #if (openfl && !flixel)
         mouseChildren = false;
         #end
     }
