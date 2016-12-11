@@ -155,7 +155,7 @@ class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
     }
 
     private function get_selected():Bool {
-        return _selected;
+        return behaviourGet("selected");
     }
 
     private function toggleSelected():Bool {
@@ -292,6 +292,11 @@ class OptionBoxDefaultSelectedBehaviour extends Behaviour {
         } else {
             optionbox._value.removeClass(":selected");
         }
+    }
+    
+    public override function get():Variant {
+        var optionbox:OptionBox = cast _component;
+        return optionbox._selected;
     }
 }
 

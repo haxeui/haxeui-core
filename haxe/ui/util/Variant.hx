@@ -147,6 +147,9 @@ abstract Variant(VariantType) from VariantType {
     }
 
     @:to function toBool() {
+        if (this == null) {
+            return false;
+        }
         return switch(this) {
             case Bool(s): s;
             default: throw "Variant Type Error";
