@@ -197,6 +197,16 @@ abstract Variant(VariantType) from VariantType {
     private static function addInt(lhs:Int, rhs:Variant):Int {
         return lhs + rhs.toInt();
     }
+
+    @:op(A - B)
+    private static function subtractFloat(lhs:Float, rhs:Variant):Float {
+        return lhs - rhs.toNumber();
+    }
+    
+    @:op(A - B)
+    private static function subtractInt(lhs:Int, rhs:Variant):Int {
+        return lhs - rhs.toInt();
+    }
     
     @:op(A + B)
     private function add(rhs:Variant):Variant {
