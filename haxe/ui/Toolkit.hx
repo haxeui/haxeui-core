@@ -155,7 +155,19 @@ class Toolkit {
 
         return component;
     }
-    
+
+    public static var pixelsPerRem(default, set):Int = 16;
+    private static function set_pixelsPerRem(value:Int):Int {
+        if(pixelsPerRem == value) {
+            return value;
+        }
+
+        pixelsPerRem = value;
+        Screen.instance.refreshStyleRootComponents();
+
+        return value;
+    }
+
     public static var autoScale:Bool = true;
     public static var autoScaleDPIThreshold:Int = 160;
     

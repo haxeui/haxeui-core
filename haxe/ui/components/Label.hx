@@ -17,7 +17,7 @@ import haxe.ui.util.Variant;
 class Label extends InteractiveComponent implements IClonable<Label> {
     public function new() {
         super();
-        #if openfl
+        #if (openfl && !flixel)
         mouseChildren = false;
         #end
     }
@@ -82,8 +82,8 @@ class LabelLayout extends DefaultLayout {
             #if !pixijs
             component.getTextDisplay().width = component.componentWidth - paddingLeft - paddingRight;
             #end
-
-            #if openfl // TODO: make not specific
+            
+            #if (openfl && !flixel) // TODO: make not specific
             component.getTextDisplay().multiline = true;
             component.getTextDisplay().wordWrap = true;
             #end

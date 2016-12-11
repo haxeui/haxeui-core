@@ -26,7 +26,7 @@ class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
         if (_groups == null) {
             _groups = new StringMap<Array<OptionBox>>();
         }
-        group = "defaultGroup";
+        groupName = "defaultGroup";
     }
 
     //***********************************************************************************************************
@@ -43,7 +43,7 @@ class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
     private override function create():Void {
         super.create();
         behaviourSet("text", _text);
-        behaviourSet("group", _group);
+        behaviourSet("group", _groupName);
         behaviourSet("selected", selected);
     }
 
@@ -113,8 +113,8 @@ class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
             return value;
         }
 
-        if (_group != null && value == false) { // dont allow false if no other group selection
-            var arr:Array<OptionBox> = _groups.get(_group);
+        if (_groupName != null && value == false) { // dont allow false if no other group selection
+            var arr:Array<OptionBox> = _groups.get(_groupName);
             var hasSelection:Bool = false;
             if (arr != null) {
                 for (option in arr) {
@@ -140,8 +140,8 @@ class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
         }
         */
 
-        if (_group != null && value == true) { // set all the others in group
-            var arr:Array<OptionBox> = _groups.get(_group);
+        if (_groupName != null && value == true) { // set all the others in group
+            var arr:Array<OptionBox> = _groups.get(_groupName);
             if (arr != null) {
                 for (option in arr) {
                     if (option != this) {
@@ -155,23 +155,23 @@ class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
     }
 
     private function get_selected():Bool {
-        return _selected;
+        return behaviourGet("selected");
     }
 
     private function toggleSelected():Bool {
         return selected = !selected;
     }
 
-    private var _group:String;
+    private var _groupName:String;
     /**
      The group that this optionbox belongs to, any options that belong to the same group can only ever have a single option selected at a time
     **/
-    @:clonable public var group(get, set):String;
-    private function get_group():String {
-        return _group;
+    @:clonable public var groupName(get, set):String;
+    private function get_groupName():String {
+        return _groupName;
     }
 
-    private function set_group(value:String):String {
+    private function set_groupName(value:String):String {
         if (value != null) {
             var arr:Array<OptionBox> = _groups.get(value);
             if (arr != null) {
@@ -179,7 +179,7 @@ class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
             }
         }
 
-        _group = value;
+        _groupName = value;
         behaviourSet("group", value);
         var arr:Array<OptionBox> = _groups.get(value);
         if (arr == null) {
@@ -199,7 +199,7 @@ class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
     **/
     public var selectedOption(get, null):OptionBox;
     private function get_selectedOption():OptionBox {
-        var arr:Array<OptionBox> = getGroupOptions(_group);
+        var arr:Array<OptionBox> = getGroupOptions(_groupName);
         var selectionOption:OptionBox = null;
         if (arr != null) {
             for (test in arr) {
@@ -293,6 +293,11 @@ class OptionBoxDefaultSelectedBehaviour extends Behaviour {
             optionbox._value.removeClass(":selected");
         }
     }
+    
+    public override function get():Variant {
+        var optionbox:OptionBox = cast _component;
+        return optionbox._selected;
+    }
 }
 
 //***********************************************************************************************************
@@ -306,7 +311,7 @@ class OptionBoxValue extends InteractiveComponent {
 
     public function new() {
         super();
-        #if openfl
+        #if (openfl && !flixel)
         mouseChildren = false;
         #end
 
