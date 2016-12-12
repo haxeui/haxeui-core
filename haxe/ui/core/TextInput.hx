@@ -10,7 +10,7 @@ class TextInput extends TextInputBase {
     public function new() {
         super();
     }
-	public var textAlign:String;
+	
     private var _textStyle:Style;
     /**
      The style to use for this text
