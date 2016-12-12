@@ -1174,7 +1174,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         return value;
     }
 
-    #if (openfl || nme)
+    #if ((openfl || nme) && !flixel)
 
     private var _width:Null<Float>;
     #if flash @:setter(width) #else override #end
@@ -1210,6 +1210,38 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         return f;
     }
 
+    #elseif (flixel)
+    
+    private var _width:Null<Float>;
+    private override function set_width(value:Float):Float {
+        if (_width == value) {
+            return value;
+        }
+        _width = value;
+        componentWidth = value;
+        return value;
+    }
+
+    private override function get_width():Float {
+        var f:Float = componentWidth;
+        return f;
+    }
+
+    private var _height:Null<Float>;
+    private override function set_height(value:Float):Float {
+        if (_height == value) {
+            return value;
+        }
+        _height = value;
+        componentHeight = value;
+        return value;
+    }
+
+    private override function get_height() {
+        var f:Float = componentHeight;
+        return f;
+    }
+    
     #else
 
     /**

@@ -17,7 +17,7 @@ import haxe.ui.util.Variant;
 class Label extends InteractiveComponent implements IClonable<Label> {
     public function new() {
         super();
-        #if openfl
+        #if (openfl && !flixel)
         mouseChildren = false;
         #end
     }
@@ -64,6 +64,9 @@ class Label extends InteractiveComponent implements IClonable<Label> {
             if (style.fontSize != null) {
                 getTextDisplay().fontSize = style.fontSize;
             }
+            if (style.textAlign != null) {
+                getTextDisplay().textAlign = style.textAlign;
+            }
         }
     }
 }
@@ -77,10 +80,10 @@ class LabelLayout extends DefaultLayout {
     private override function resizeChildren() {
         if (component.autoWidth == false) {
             #if !pixijs
-            component.getTextDisplay().width = component.componentWidth;
+            component.getTextDisplay().width = component.componentWidth - paddingLeft - paddingRight;
             #end
             
-            #if openfl // TODO: make not specific
+            #if (openfl && !flixel) // TODO: make not specific
             component.getTextDisplay().multiline = true;
             component.getTextDisplay().wordWrap = true;
             #end
@@ -101,6 +104,13 @@ class LabelLayout extends DefaultLayout {
             size.height += component.getTextDisplay().textHeight;
         }
         return size;
+    }
+
+    private function textAlign(child:Component):String {
+        if (child == null || child.style == null || child.style.textAlign == null) {
+            return "left";
+        }
+        return child.style.textAlign;
     }
 }
 

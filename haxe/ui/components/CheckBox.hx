@@ -195,7 +195,7 @@ class CheckBoxDefaultSelectedBehaviour extends Behaviour {
 class CheckBoxValue extends InteractiveComponent {
     public function new() {
         super();
-        #if openfl
+        #if (openfl && !flixel)
         mouseChildren = false;
         #end
 
