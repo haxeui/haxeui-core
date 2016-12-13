@@ -13,7 +13,7 @@ class LayoutFactory {
             case "absolute":
                 return new AbsoluteLayout();
         }
-        
+
         return new DefaultLayout();
     }
-} 
+}

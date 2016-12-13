@@ -20,12 +20,12 @@ import haxe.ui.util.Size;
 class TableView extends ScrollView implements IDataComponent implements IClonable<TableView> {
     private var _header:Header;
     private var _itemRenderers:Array<ItemRenderer> = new Array<ItemRenderer>();
-    
+
     public function new() {
         super();
         addClass("scrollview");
     }
-    
+
     private override function createDefaults():Void {
         _defaultLayout = new TableViewLayout();
     }
@@ -39,17 +39,17 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
     private override function create():Void {
         super.create();
     }
-    
+
     private override function onReady():Void {
         super.onReady();
-        
+
         if (_header != null && _itemRenderers.length < _header.childComponents.length) {
             var delta:Int = _header.childComponents.length - _itemRenderers.length;
             for (n in 0...delta) {
                 addComponent(new BasicItemRenderer());
             }
         }
-        
+
         syncUI();
     }
 
@@ -61,7 +61,7 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
     private override function _onContentsResized(event:UIEvent):Void {
         super._onContentsResized(event);
     }
-    
+
     #if haxeui_html5 // TODO: should be in backend somehow
     private var lastScrollLeft = 0;
     #end
@@ -70,8 +70,8 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
         if (Std.is(child, Header)) {
             _header = cast(child, Header);
             _header.registerEvent(UIEvent.RESIZE, _onHeaderResized);
-            
-            
+
+
             #if haxeui_html5 // TODO: should be in backend somehow
             if (native == true) {
                 this.element.onscroll = function(e) {
@@ -82,7 +82,7 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
                 }
             }
             #end
-            
+
             v = addComponentToSuper(child);
             if (_dataSource != null) {
                 syncUI();
@@ -102,7 +102,7 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
         }
         return v;
     }
-    
+
     private function _onHeaderResized(event:UIEvent) {
         /*
         checkScrolls();
@@ -113,7 +113,7 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
         updateNativeHeaderClip();
         #end
     }
-    
+
     #if haxeui_html5
     private function updateNativeHeaderClip() {
         if (native == true) {
@@ -136,19 +136,19 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
         }
     }
     #end
-    
+
     private override function get_horizontalConstraint():Component {
         return _header;
     }
-    
+
     private override function get_verticalConstraint():Component {
         return _contents;
     }
-    
+
     private override function get_hscrollOffset():Float {
         return 2;
     }
-    
+
     private var _dataSource:DataSource<Dynamic>;
     public var dataSource(get, set):DataSource<Dynamic>;
     private function get_dataSource():DataSource<Dynamic> {
@@ -170,14 +170,14 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
             syncUI();
         }
     }
-    
+
     private function syncUI() {
         if (_dataSource == null || _header == null || _contents == null || _itemRenderers.length < _header.childComponents.length) {
             return;
         }
-        
+
         //contents.lockLayout(true);
-        
+
         var delta = _dataSource.size - itemCount;
         if (delta > 0) { // not enough items
             for (n in 0...delta) {
@@ -195,7 +195,7 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
                 delta++;
             }
         }
-        
+
         for (n in 0..._dataSource.size) {
             var row:TableViewRow = cast(_contents.childComponents[n], TableViewRow);
             //row.addClass(n % 2 == 0 ? "even" : "odd");
@@ -220,10 +220,10 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
         }
 
         sizeItems();
-        
+
         //contents.unlockLayout(true);
     }
-    
+
     public function resetSelection() {
         if (_selectedRow != null) {
             for (c in _selectedRow.childComponents) {
@@ -232,32 +232,32 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
             _selectedRow = null;
         }
     }
-    
+
     private var _selectedRow:TableViewRow;
     public var selectedRow(get, null):TableViewRow;
     private function get_selectedRow():TableViewRow {
         return _selectedRow;
     }
-    
+
     private function onRowClick(event:MouseEvent) {
         if (_selectedRow == event.target) {
             return;
         }
 
         resetSelection();
-        
+
         _selectedRow = cast event.target;
         for (c in _selectedRow.childComponents) {
             c.addClass(":selected");
         }
-        
+
         var event:UIEvent = new UIEvent(UIEvent.CHANGE);
         dispatch(event);
     }
-    
+
     private function sizeItems() {
         contents.lockLayout(true);
-        
+
         for (row in _contents.childComponents) {
             for (c in 0..._header.childComponents.length) {
                 var item = row.childComponents[c];
@@ -266,10 +266,10 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
                 item.height = row.componentHeight;
             }
         }
-        
+
         contents.unlockLayout(true);
     }
-    
+
     public var itemCount(get, null):Int;
     private function get_itemCount():Int {
         if (_contents == null) {
@@ -277,27 +277,27 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
         }
         return _contents.childComponents.length;
     }
-    
+
     private override function _onScroll(event:UIEvent) {
         updateScrollRect();
     }
-    
+
     public override function updateScrollRect() {
         var rc:Rectangle = null;
 
         var ucx = layout.usableWidth;
         var ucy = layout.usableHeight;
-        
+
         var xpos:Float = 0;
         if (_hscroll != null) {
             xpos = _hscroll.pos;
         }
-        
+
         var ypos:Float = 0;
         if (_vscroll != null) {
             ypos = _vscroll.pos;
         }
-        
+
         if (_header != null && (native == false || native == null)) {
             var clipCX = ucx;
             if (clipCX > _header.componentWidth) {
@@ -310,7 +310,7 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
             updateNativeHeaderClip();
             #end
         }
-        
+
         if (_contents != null) {
             var clipCX = ucx;
             if (clipCX > _contents.componentWidth) {
@@ -320,12 +320,12 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
             if (clipCY > _contents.componentHeight) {
                 clipCY = _contents.componentHeight;
             }
-            
+
             var rc:Rectangle = new Rectangle(Std.int(xpos + 0), Std.int(ypos), clipCX, clipCY);
             _contents.componentClipRect = rc;
         }
     }
-    
+
     //***********************************************************************************************************
     // Clonable
     //***********************************************************************************************************
@@ -340,7 +340,7 @@ class TableViewLayout extends DefaultLayout {
     public function new() {
         super();
     }
-    
+
     private override function resizeChildren() {
         super.resizeChildren();
         var vscroll:Component = component.findComponent(VScroll);
@@ -350,18 +350,18 @@ class TableViewLayout extends DefaultLayout {
             if (header != null) {
                 offsetY += header.componentHeight;
             }
-            
+
             vscroll.componentHeight = usableHeight + offsetY;
         }
     }
-    
+
     private override function repositionChildren():Void {
         var header:Header = component.findComponent(Header);
         if (header != null) {
             header.left = paddingLeft + marginLeft(header) - marginRight(header);
             header.top = paddingTop + marginTop(header) - marginBottom(header);
         }
-        
+
         var hscroll:Component = component.findComponent(HScroll);
         var vscroll:Component = component.findComponent(VScroll);
 
@@ -377,7 +377,7 @@ class TableViewLayout extends DefaultLayout {
             vscroll.left = ucx - vscroll.componentWidth + paddingRight;
             vscroll.top = paddingTop;
         }
-        
+
         var contents:Component = component.findComponent("tableview-contents", null, false, "css");
         if (contents != null) {
             var offsetY:Float = 0;
@@ -388,7 +388,7 @@ class TableViewLayout extends DefaultLayout {
             contents.top = paddingTop + marginTop(contents) - marginBottom(contents) + offsetY;
         }
     }
-    
+
     private override function get_usableSize():Size {
         var size:Size = super.get_usableSize();
         var hscroll:Component = component.findComponent(HScroll);
@@ -441,7 +441,7 @@ class TableViewRow extends HBox {
         registerEvent(MouseEvent.MOUSE_OVER, _onMouseOver);
         registerEvent(MouseEvent.MOUSE_OUT, _onMouseOut);
     }
-    
+
     private function _onMouseOver(event:MouseEvent) {
         for (c in childComponents) {
             c.addClass(":hover");
@@ -453,7 +453,7 @@ class TableViewRow extends HBox {
             c.removeClass(":hover");
         }
     }
-    
+
     public var data(get, set):Dynamic;
     private function get_data():Dynamic {
         return userData;

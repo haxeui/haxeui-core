@@ -29,7 +29,7 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
         _contents.percentWidth = 100;
         _contents.addClass("listview-contents");
     }
-    
+
     private override function onReady() {
         super.onReady();
         if (_itemRenderer == null) {
@@ -82,7 +82,7 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
             _currentSelection = null;
         }
     }
-    
+
     public function addItem(data:Dynamic):ItemRenderer {
         if (_itemRenderer == null) {
             return null;
@@ -126,7 +126,7 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
         }
         return (cy / n);
     }
-    
+
     private var _dataSource:DataSource<Dynamic>;
     public var dataSource(get, set):DataSource<Dynamic>;
     private function get_dataSource():DataSource<Dynamic> {
@@ -143,20 +143,20 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
         _dataSource.onChange = onDataSourceChanged;
         return value;
     }
-    
+
     private function onDataSourceChanged() {
         if (_ready == true) {
             syncUI();
         }
     }
-    
+
     private function syncUI() {
         if (_itemRenderer == null || _dataSource == null) {
             return;
         }
-        
+
         lockLayout();
-        
+
         var delta = _dataSource.size - itemCount;
         if (delta > 0) { // not enough items
             for (n in 0...delta) {
@@ -168,16 +168,16 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
                 delta++;
             }
         }
-        
+
         for (n in 0..._dataSource.size) {
             var item:ItemRenderer = cast(contents.childComponents[n], ItemRenderer);
             item.addClass(n % 2 == 0 ? "even" : "odd");
             item.data = _dataSource.get(n);
         }
-        
+
         unlockLayout();
     }
-    
+
     //***********************************************************************************************************
     // Clonable
     //***********************************************************************************************************

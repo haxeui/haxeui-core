@@ -26,7 +26,7 @@ class ScrollView extends Component implements IClonable<ScrollView> {
     private override function createLayout():Layout {
         return new ScrollViewLayout();
     }
-    
+
     private override function createDefaults():Void {
     }
 
@@ -49,14 +49,14 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         if (_layoutName == value) {
             return value;
         }
-        
+
         _layoutName = value;
         if (_contents != null) {
             _contents.layout = LayoutFactory.createFromName(layoutName);
         }
         return value;
     }
-    
+
     private override function createChildren():Void {
         super.createChildren();
         registerEvent(MouseEvent.MOUSE_WHEEL, _onMouseWheel);
@@ -72,7 +72,7 @@ class ScrollView extends Component implements IClonable<ScrollView> {
             addComponent(_contents);
         }
     }
-    
+
     private override function destroyChildren():Void {
         if (_hscroll != null) {
             removeComponent(_hscroll);
@@ -142,7 +142,7 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         }
         return value;
     }
-    
+
     public var contentHeight(get, set):Null<Float>;
     private function get_contentHeight():Null<Float> {
         createContentContainer();
@@ -158,7 +158,7 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         }
         return value;
     }
-    
+
     public var percentContentWidth(get, set):Null<Float>;
     private function get_percentContentWidth():Null<Float> {
         createContentContainer();
@@ -174,7 +174,7 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         }
         return value;
     }
-    
+
     public var percentContentHeight(get, set):Null<Float>;
     private function get_percentContentHeight():Null<Float> {
         createContentContainer();
@@ -190,7 +190,7 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         }
         return value;
     }
-    
+
     public override function addComponent(child:Component):Component {
         var v = null;
         if (Std.is(child, HScroll) || Std.is(child, VScroll) || child == _contents) {
@@ -211,11 +211,11 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         }
         return v;
     }
-    
+
     private function addComponentToSuper(child:Component):Component {
         return super.addComponent(child);
     }
-    
+
     public var contents(get, null):Component;
     private function get_contents():Component {
         return _contents;
@@ -228,17 +228,17 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         updateScrollRect();
     }
     */
-    
+
     private var horizontalConstraint(get, null):Component;
     private function get_horizontalConstraint():Component {
         return _contents;
     }
-    
+
     private var verticalConstraint(get, null):Component;
     private function get_verticalConstraint():Component {
         return _contents;
     }
-    
+
     private function _onMouseWheel(event:MouseEvent) {
         if (_vscroll != null) {
             if (event.delta > 0) {
@@ -259,7 +259,7 @@ class ScrollView extends Component implements IClonable<ScrollView> {
     private function get_hscrollOffset():Float {
         return 0;
     }
-    
+
     public function checkScrolls():Void {
         if (isReady == false
             || horizontalConstraint == null || horizontalConstraint.childComponents.length == 0

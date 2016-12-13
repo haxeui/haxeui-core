@@ -564,7 +564,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         if (recursive == null && criteria != null && searchType == "id") {
             recursive = true;
         }
-        
+
         var match:Component = null;
         for (child in childComponents) {
             if (criteria != null) {
@@ -610,12 +610,12 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     public function setComponentIndex(child:Component, index:Int) {
         if (index >= 0 && index <= _children.length && child.parentComponent == this) {
             handleSetComponentIndex(child, index);
-			_children.remove(child);
-			_children.insert(index, child);
+            _children.remove(child);
+            _children.insert(index, child);
             invalidateLayout();
         }
     }
-    
+
     /**
      Gets a child component at a specified index
     **/
@@ -867,11 +867,11 @@ class Component extends ComponentBase implements IComponentBase implements IClon
             //_layout = null;
             return value;
         }
-        
+
         if (_layout != null && Type.getClassName(Type.getClass(value)) == Type.getClassName(Type.getClass(_layout))) {
             return value;
         }
-        
+
         _layout = value;
         _layout.component = this;
         return value;
@@ -894,7 +894,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
                 child.unlockLayout(recursive);
             }
         }
-        
+
         _layoutLocked = false;
         if (_layoutReinvalidation == true) {
             _layoutReinvalidation = false;
@@ -1046,7 +1046,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
             if (parentComponent != null) {
                 parentComponent.invalidateLayout();
             }
-            
+
             onResized();
             dispatch(new UIEvent(UIEvent.RESIZE));
         }
@@ -1211,7 +1211,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     }
 
     #elseif (flixel)
-    
+
     private var _width:Null<Float>;
     private override function set_width(value:Float):Float {
         if (_width == value) {
@@ -1241,7 +1241,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         var f:Float = componentHeight;
         return f;
     }
-    
+
     #else
 
     /**
@@ -1306,7 +1306,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
 
         if (invalidate == true) {
             handlePosition(_left, _top, _style);
-            
+
             onMoved();
             dispatch(new UIEvent(UIEvent.MOVE));
         }

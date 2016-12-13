@@ -39,7 +39,7 @@ class ItemRenderer extends Component implements IClonable<ItemRenderer> {
         }
         return value;
     }
-    
+
     private var _data:Dynamic;
     public var data(get, set):Dynamic;
     private function get_data():Dynamic {

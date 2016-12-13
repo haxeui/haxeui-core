@@ -13,7 +13,7 @@ class HBox extends Box implements IClonable<HBox> {
         super();
         layout = new HorizontalLayout();
     }
-    
+
     @:clonable public var continuous(get, set):Bool;
     private function get_continuous():Bool {
         return Std.is(_layout, HorizontalContinuousLayout);

@@ -3,7 +3,7 @@ package haxe.ui.data.transformation;
 class NativeTypeTransformer implements IItemTransformer<Dynamic> {
     public function new() {
     }
-    
+
     public function transformFrom(i:Dynamic):Dynamic {
         var o:Dynamic = null;
         if (Std.is(i, String)) {

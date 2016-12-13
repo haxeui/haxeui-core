@@ -3,15 +3,15 @@ package haxe.ui.data;
 class DataSourceFactory<T> {
     public function new() {
     }
-    
+
     public function create<T>(type:Class<DataSource<T>>):DataSource<T> {
         var ds:DataSource<T> = Type.createInstance(type, []);
         return ds;
     }
-    
+
     public function fromString<T>(data:String, type:Class<DataSource<T>>):DataSource<T> {
         var ds = create(type);
-        
+
         if (StringTools.startsWith(data, "<")) { // xml
             var xml:Xml = Xml.parse(data).firstElement();
             for (el in xml.elements()) {
@@ -28,7 +28,7 @@ class DataSourceFactory<T> {
                 ds.add(o);
             }
         }
-        
+
         return ds;
     }
 }

@@ -82,7 +82,7 @@ class LabelLayout extends DefaultLayout {
             #if !pixijs
             component.getTextDisplay().width = component.componentWidth - paddingLeft - paddingRight;
             #end
-            
+
             #if (openfl && !flixel) // TODO: make not specific
             component.getTextDisplay().multiline = true;
             component.getTextDisplay().wordWrap = true;

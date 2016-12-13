@@ -125,7 +125,7 @@ class ComponentMacros {
         if (c.condition != null && new ConditionEvaluator().evaluate(c.condition) == false) {
             return;
         }
-        
+
         var className:String = ComponentClassMap.get(c.type.toLowerCase());
         if (className == null) {
             trace("WARNING: no class found for component: " + c.type);

@@ -119,12 +119,12 @@ class Macros {
             }
 
             insertLine(currentCloneFn, Context.parseInlineString(code, pos), n++);
-            
+
             for (f in getFieldsWithMeta("clonable", fields)) {
                 code = "c." + f.name + " = this." + f.name + "";
                 insertLine(currentCloneFn, Context.parseInlineString(code, pos), n++);
             }
-            
+
             if (useSelf == true) {
                 insertLine(currentCloneFn, Context.parseInlineString("if (this.childComponents.length != c.childComponents.length) for (child in this.childComponents) c.addComponent(child.cloneComponent())", pos), n++);
             }

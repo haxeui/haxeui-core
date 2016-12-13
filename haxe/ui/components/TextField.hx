@@ -129,7 +129,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     }
 
     private function _onMouseDown(event:MouseEvent):Void {
-        
+
         FocusManager.instance.focus = this;
     }
 }
@@ -220,7 +220,7 @@ class TextFieldLayout extends DefaultLayout {
             #if !pixijs
             component.getTextInput().width = size.width;
             #end
-            
+
             //component.getTextInput().height = size.height;
         }
     }

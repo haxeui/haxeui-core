@@ -24,7 +24,7 @@ class MacroHelpers {
         if (params == null) {
             return null;
         }
-        
+
         var map:Map<String, Dynamic> = new Map<String, Dynamic>();
         switch (params.expr) {
             case EObjectDecl(x):
@@ -40,7 +40,7 @@ class MacroHelpers {
         }
         return map;
     }
-    
+
     public static function getConstructor(fields:Array<Field>) {
         return getFunction(fields, "new");
     }

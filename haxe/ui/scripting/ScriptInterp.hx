@@ -20,7 +20,7 @@ class ScriptInterp extends Interp {
     private function isVar(varName:String):Bool {
         return variables.exists(varName);
     }
-    
+
     override function cnew( cl : String, args : Array<Dynamic> ) : Dynamic {
         if (_classAliases != null && _classAliases.exists(cl)) {
             cl = _classAliases.get(cl);

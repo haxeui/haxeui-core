@@ -17,7 +17,7 @@ class StringUtil {
         }
         return r;
     }
-    
+
     public static function replaceVars(s:String, params:Map<String, Dynamic>):String {
         if (params != null) {
             for (k in params.keys()) {
