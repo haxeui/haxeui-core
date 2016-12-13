@@ -7,28 +7,28 @@ class HorizontalContinuousLayout extends HorizontalLayout {
     public function new() {
         super();
     }
-    
+
     private override function resizeChildren() {
         //super.resizeChildren
     }
-    
+
     private override function repositionChildren() {
         if (component.autoWidth == true) {
             super.repositionChildren();
             return;
         }
-        
+
         var ucx:Float = usableWidth;
         if (ucx <= 0) {
             return;
         }
-        
+
         // first lets calculate our dimentions without changing anthing for perf
         var ucx:Float = component.componentWidth - (paddingLeft + paddingRight);
         var ucy:Float = component.componentHeight - (paddingTop + paddingBottom);
         var dimensions:Array<Array<ComponentRectangle>> = new Array<Array<ComponentRectangle>>();
         var heights:Array<Float> = new Array<Float>();
-        
+
         var row = 0;
         var usedCX:Float = 0;
         var xpos:Float = paddingLeft;
@@ -38,7 +38,7 @@ class HorizontalContinuousLayout extends HorizontalLayout {
             if (child.includeInLayout == false) {
                 continue;
             }
-            
+
             var rc:ComponentRectangle = new ComponentRectangle(child.left, child.top, child.componentWidth, child.componentHeight);
             if (child.percentWidth != null) {
                 rc.width = (ucx * child.percentWidth) / 100;
@@ -50,7 +50,7 @@ class HorizontalContinuousLayout extends HorizontalLayout {
             }
             rc.component = child;
             usedCX += rc.width;
-            
+
             if (usedCX > ucx) {
                 heights.push(rowCY);
                 ypos += rowCY + verticalSpacing;
@@ -59,11 +59,11 @@ class HorizontalContinuousLayout extends HorizontalLayout {
                 rowCY = 0;
                 row++;
             }
-            
+
             if (dimensions.length <= row) {
                 dimensions.push(new Array<ComponentRectangle>());
             }
-            
+
             rc.left = xpos;
             rc.top = ypos;
             dimensions[row].push(rc);
@@ -72,11 +72,11 @@ class HorizontalContinuousLayout extends HorizontalLayout {
                 rowCY = rc.height;
             }
         }
-        
+
         if (rowCY > 0) {
             heights.push(rowCY);
         }
-        
+
         // now lets do some spacing calculations and actual apply dimentions
         var x:Int = 0;
         for (r in dimensions) {
@@ -90,19 +90,19 @@ class HorizontalContinuousLayout extends HorizontalLayout {
                         c.top += (height / 2) - (c.height / 2);
                     case "bottom":
                         c.top += height - c.height;
-                    default:    
+                    default:
                 }
-                
-                
+
+
                 if (c.component.percentWidth != null) {
-                    c.left += n * (horizontalSpacing - spaceX); 
+                    c.left += n * (horizontalSpacing - spaceX);
                     c.width -= spaceX;
                 } else {
                     c.left += n * horizontalSpacing;
                 }
 
                 c.apply();
-                
+
                 n++;
             }
             x++;
@@ -113,7 +113,7 @@ class HorizontalContinuousLayout extends HorizontalLayout {
         if (component.autoWidth == true) {
             return super.get_usableSize();
         }
-        
+
         var ucx:Float = 0;
         if (_component.componentWidth != null) {
             ucx = _component.componentWidth;
@@ -132,7 +132,7 @@ class HorizontalContinuousLayout extends HorizontalLayout {
 
 class ComponentRectangle extends Rectangle {
     public var component:Component;
-    
+
     public function apply() {
         component.moveComponent(left, top);
         component.resizeComponent(width, height);

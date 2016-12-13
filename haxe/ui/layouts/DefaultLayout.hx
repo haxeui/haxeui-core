@@ -13,7 +13,7 @@ class DefaultLayout extends Layout {
             if (child.includeInLayout == false) {
                 continue;
             }
-            
+
             var cx:Null<Float> = null;
             var cy:Null<Float> = null;
 

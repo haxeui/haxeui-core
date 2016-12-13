@@ -29,7 +29,7 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
         _defaultBehaviours.set("dataSource", new DropDownDefaultDataSourceBehaviour(this));
         _defaultBehaviours.set("selectedItem", new DropDownDefaultSelectedItemBehaviour(this));
     }
-    
+
     private override function create():Void {
         super.create();
     }
@@ -42,14 +42,14 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
         super.destroyChildren();
         unregisterEvent(MouseEvent.CLICK, onMouseClick);
     }
-    
+
     private override function onReady() {
         super.onReady();
         if (_itemRenderer == null) {
             addComponent(new BasicItemRenderer());
         }
     }
-    
+
     private var _dataSource:DataSource<Dynamic>;
     public var dataSource(get, set):DataSource<Dynamic>;
     private function get_dataSource():DataSource<Dynamic> {
@@ -117,12 +117,12 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
         }
         return r;
     }
-    
+
     private function onMouseClick(event:MouseEvent) {
         if (native == true) {
             return;
         }
-        
+
         if (selected == true) {
             if (_listview == null) {
                 _listview = new ListView();
@@ -159,7 +159,7 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
                 listHeight = n * _listview.itemHeight + (_listview.layout.paddingTop + _listview.layout.paddingBottom);
             }
             _listview.height = listHeight;
-            
+
             if (_listview.screenTop + _listview.height > Screen.instance.height) {
                 _listview.top = this.screenTop - _listview.height;
             }
@@ -177,14 +177,14 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
     private function get_selectedItem():Dynamic {
         return behaviourGetDynamic("selectedItem");
     }
-    
+
     private function onItemChange(event:UIEvent) {
         if (_listview.selectedItem.data.value != null) {
             this.text = _listview.selectedItem.data.value;
         }
         selected = false;
         onMouseClick(null);
-		dispatch(new UIEvent(UIEvent.CHANGE));
+        dispatch(new UIEvent(UIEvent.CHANGE));
     }
 
     private function onScreenMouseDown(event:MouseEvent) {
@@ -197,7 +197,7 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
         selected = !selected;
         onMouseClick(null);
     }
-    
+
     //***********************************************************************************************************
     // Clonable
     //***********************************************************************************************************
@@ -214,8 +214,8 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
 
 @:dox(hide)
 class DropDownDefaultDataSourceBehaviour extends Behaviour {
-    public override function set(value:Variant) {    
-        
+    public override function set(value:Variant) {
+
     }
 }
 
@@ -223,7 +223,7 @@ class DropDownDefaultDataSourceBehaviour extends Behaviour {
 @:dox(hide)
 @:access(haxe.ui.components.DropDown)
 class DropDownDefaultSelectedItemBehaviour extends Behaviour {
-    public override function getDynamic():Dynamic {    
+    public override function getDynamic():Dynamic {
         var lv:ListView = cast(_component, DropDown)._listview;
         if (lv == null || lv.selectedItem == null) {
             return null;

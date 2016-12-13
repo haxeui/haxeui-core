@@ -293,7 +293,7 @@ class OptionBoxDefaultSelectedBehaviour extends Behaviour {
             optionbox._value.removeClass(":selected");
         }
     }
-    
+
     public override function get():Variant {
         var optionbox:OptionBox = cast _component;
         return optionbox._selected;

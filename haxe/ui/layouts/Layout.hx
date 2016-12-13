@@ -175,7 +175,7 @@ class Layout implements ILayout {
         }
         return _component.style.verticalSpacing;
     }
-    
+
     //******************************************************************************************
     // Helpers
     //******************************************************************************************
@@ -284,7 +284,7 @@ class Layout implements ILayout {
         var h:Float = (y2 - y1) + (paddingTop + paddingBottom);
         return new Size(w, h);
     }
-    
+
     private function excluded(exclusions:Array<Component>, child:Component):Bool {
         if (exclusions == null) {
             return false;

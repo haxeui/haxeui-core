@@ -142,6 +142,10 @@ class Button extends InteractiveComponent implements IClonable<Button> {
         return style.iconPosition;
     }
     private function set_iconPosition(value:String):String {
+        if(iconPosition == value) {
+            return value;
+        }
+
         customStyle.iconPosition = value;
         invalidateStyle();
         invalidateLayout();
@@ -158,6 +162,7 @@ class Button extends InteractiveComponent implements IClonable<Button> {
         }
 
         customStyle.textAlign = value;
+        invalidateStyle();
         invalidateLayout();
         return value;
     }

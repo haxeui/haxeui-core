@@ -2,7 +2,7 @@ package haxe.ui.parsers.ui.resolvers;
 
 class ResourceResolver {
     private var _params:Map<String, Dynamic>;
-    
+
     public function new(params:Map<String, Dynamic> = null) {
         _params = params;
     }

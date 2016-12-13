@@ -64,8 +64,8 @@ class Screen extends ScreenBase {
     public function setComponentIndex(child:Component, index:Int) {
         if (index >= 0 && index <= rootComponents.length) {
             handleSetComponentIndex(child, index);
-			rootComponents.remove(child);
-			rootComponents.insert(index, child);
+            rootComponents.remove(child);
+            rootComponents.insert(index, child);
         }
     }
 
@@ -87,7 +87,7 @@ class Screen extends ScreenBase {
     private function _onRootComponentResize(e:UIEvent):Void {
         _refreshStyleComponent(e.target);
     }
-    
+
     //***********************************************************************************************************
     // Dialogs
     //***********************************************************************************************************

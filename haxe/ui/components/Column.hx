@@ -7,7 +7,7 @@ class Column extends Button {
         super();
         addClass("button");
     }
-    
+
     public var sortable(get, set):Bool;
     private function get_sortable():Bool {
         return hasClass("sortable");

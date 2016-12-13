@@ -32,7 +32,7 @@ class Behaviour {
     public function getDynamic():Dynamic {
         return null;
     }
-    
+
     /**
      Update this behaviour with its current value
     **/
@@ -46,7 +46,7 @@ class Behaviour {
     public function call(id:String):Variant {
         return null;
     }
-    
+
     /**
      Utility function to retrieve a string config value for this behaviour
     **/
