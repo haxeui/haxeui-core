@@ -145,7 +145,7 @@ class Button extends InteractiveComponent implements IClonable<Button> {
         if(iconPosition == value) {
             return value;
         }
-        
+
         customStyle.iconPosition = value;
         invalidateStyle();
         invalidateLayout();
