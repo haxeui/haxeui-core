@@ -1,5 +1,7 @@
 package haxe.ui;
 
+import haxe.ui.components.Button;
+import haxe.ui.components.Image;
 import haxe.ui.core.Component;
 import haxe.ui.core.ComponentClassMap;
 import haxe.ui.core.KeyboardEvent;
@@ -133,6 +135,11 @@ class Toolkit {
                 component.addScriptEvent(propName, propValue);
             } else {
                 if (Reflect.hasField(component, propName) == false) {
+                    if (Std.is(component, Image) && propName == "resource") {
+                        cast(component, Image).resource = propValue;
+                    } else if (Std.is(component, Button) && propName == "icon") {
+                        cast(component, Button).icon = propValue;
+                    }
                     continue;
                 }
 
