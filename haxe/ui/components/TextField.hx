@@ -76,6 +76,19 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
 
         value = super.set_text(value);
         behaviourSet("text", value);
+        _checkPlaceholderText();
+
+        return value;
+    }
+
+    private override function set_focus(value:Bool):Bool {
+        if(_focus == value || allowFocus == false) {
+            return value;
+        }
+
+        super.set_focus(value);
+        _checkPlaceholderText();
+
         return value;
     }
 
@@ -122,6 +135,27 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
         return value;
     }
 
+    private var _placeholderText:String;
+    /**
+     A short hint that describes the expected value.
+     The short hint is displayed in the textfield before the user enters a value.
+    **/
+    @:clonable public var placeholderText(get, set):String;
+    private function get_placeholderText():String {
+        return _placeholderText;
+    }
+
+    private function set_placeholderText(value:String):String {
+        if (_placeholderText == value) {
+            return value;
+        }
+
+        _placeholderText = value;
+        _checkPlaceholderText();
+
+        return value;
+    }
+
     //***********************************************************************************************************
     // Events
     //***********************************************************************************************************
@@ -132,6 +166,24 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     private function _onMouseDown(event:MouseEvent):Void {
 
         FocusManager.instance.focus = this;
+    }
+
+    //***********************************************************************************************************
+    // Others
+    //***********************************************************************************************************
+    private function _checkPlaceholderText():Void {
+        var text:String = behaviourGet("text");
+        var placeholderVisible:Bool = hasClass(":empty");
+        if(focus == false) {
+            if(text == "" && !placeholderVisible) {
+                behaviourSet("text", _placeholderText);
+                addClass(":empty");
+            }
+        }
+        else if(placeholderVisible){
+            behaviourSet("text", "");
+            removeClass(":empty");
+        }
     }
 }
 
