@@ -70,13 +70,8 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     }
 
     private override function set_text(value:String):String {
-        if (value == _text) {
-            return value;
-        }
-
         value = super.set_text(value);
-        behaviourSet("text", value);
-        _checkPlaceholderText();
+        _validateText();
 
         return value;
     }
@@ -87,7 +82,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
         }
 
         super.set_focus(value);
-        _checkPlaceholderText();
+        text = behaviourGet("text");
 
         return value;
     }
@@ -135,6 +130,26 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
         return value;
     }
 
+    private var _maxChars:Int = -1;
+    /**
+     Maximum number of characters allowed in the textfield. By default -1 (unlimited chars).
+    **/
+    @:clonable public var maxChars(get, set):Int;
+    private function get_maxChars():Int {
+        return _maxChars;
+    }
+
+    private function set_maxChars(value:Int):Int {
+        if (_maxChars == value) {
+            return value;
+        }
+
+        _maxChars = value;
+        _validateText();
+
+        return value;
+    }
+
     private var _placeholderText:String;
     /**
      A short hint that describes the expected value.
@@ -151,7 +166,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
         }
 
         _placeholderText = value;
-        _checkPlaceholderText();
+        _validateText();
 
         return value;
     }
@@ -160,6 +175,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     // Events
     //***********************************************************************************************************
     private function _onTextChanged(event:UIEvent):Void {
+        text = behaviourGet("text");
         handleBindings(["text", "value"]);
     }
 
@@ -169,21 +185,32 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     }
 
     //***********************************************************************************************************
-    // Others
+    // Validation
     //***********************************************************************************************************
-    private function _checkPlaceholderText():Void {
-        var text:String = behaviourGet("text");
+    private function _validateText():Void {
+        var text:String = _text != null ? _text : "";
         var placeholderVisible:Bool = hasClass(":empty");
+
+        //Max chars
+        if(_maxChars != -1 && text.length > _maxChars && !placeholderVisible) {
+            text = text.substr(0, _maxChars);
+        }
+
+        //Placeholder
         if(focus == false) {
-            if(text == "" && !placeholderVisible) {
-                behaviourSet("text", _placeholderText);
-                addClass(":empty");
+            if(text == "") {
+                text = _placeholderText;
+                if(!placeholderVisible) {
+                    addClass(":empty");
+                }
             }
         }
         else if(placeholderVisible){
-            behaviourSet("text", "");
+            text = "";
             removeClass(":empty");
         }
+
+        behaviourSet("text", text);
     }
 }
 
