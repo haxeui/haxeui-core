@@ -65,9 +65,9 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     //***********************************************************************************************************
     // Overrides
     //***********************************************************************************************************
-    private override function get_text():String {
-        return behaviourGet("text");
-    }
+//    private override function get_text():String {
+//        return behaviourGet("text");
+//    }
 
     private override function set_text(value:String):String {
         value = super.set_text(value);
@@ -171,11 +171,49 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
         return value;
     }
 
+    private var _restrictEReg:EReg;
+    private var _restrictChars:String;
+    /**
+     Indicates the set of characters that a user can enter into the textfield.
+    **/
+    @:clonable public var restrictChars(get, set):String;
+    private function get_restrictChars():String {
+        return _restrictChars;
+    }
+
+    private function set_restrictChars(value:String):String {
+        if (_restrictChars == value) {
+            return value;
+        }
+
+        _restrictChars = value;
+        if(value != null) {
+            var result = value.split(' ');
+            for(i in 0...result.length) {
+                result[i] = '[${result[i]}]';
+            }
+            _restrictEReg = new EReg(result.join("|"), "");
+        } else {
+            _restrictEReg = null;
+        }
+
+        return value;
+    }
+
     //***********************************************************************************************************
     // Events
     //***********************************************************************************************************
     private function _onTextChanged(event:UIEvent):Void {
-        text = behaviourGet("text");
+        var newText:String = behaviourGet("text");
+        if(newText.length > text.length && _restrictEReg != null)
+        {
+            if(!_restrictEReg.match(newText.substr(newText.length-1, 1))) {
+                behaviourSet("text", text);
+                return;
+            }
+        }
+
+        text = newText;
         handleBindings(["text", "value"]);
     }
 
