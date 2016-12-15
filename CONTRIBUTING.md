@@ -1,6 +1,6 @@
-# Contributing to haxe-strings
+# Contributing to HaxeUI
 
-Thanks for contributing to haxe-strings!  
+Thanks for contributing to HaxeUI!  
 
 ## License
 
