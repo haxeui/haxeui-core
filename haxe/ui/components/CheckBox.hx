@@ -151,6 +151,10 @@ class CheckBox extends InteractiveComponent implements IClonable<CheckBox> {
 @:access(haxe.ui.components.CheckBox)
 class CheckBoxDefaultTextBehaviour extends Behaviour {
     public override function set(value:Variant) {
+        if (value == null || value.isNull) {
+            return;
+        }
+        
         var checkbox:CheckBox = cast _component;
         var label:Label = checkbox.findComponent(Label);
         if (label == null) {
