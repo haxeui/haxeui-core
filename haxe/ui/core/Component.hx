@@ -949,6 +949,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
             invalidateLayout();
 
             onReady();
+            dispatch(new UIEvent(UIEvent.READY));
         }
     }
 

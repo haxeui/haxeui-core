@@ -79,6 +79,19 @@ class Image extends Component implements IClonable<Image> {
         _resource = value;
         return value;
     }
+    
+    private var _maintainAspectRatio:Bool = true;
+    @:clonable public var maintainAspectRatio(get, set):Bool;
+    private function get_maintainAspectRatio():Bool {
+        return _maintainAspectRatio;
+    }
+    private function set_maintainAspectRatio(value:Bool):Bool {
+        if (value == _maintainAspectRatio) {
+            return value;
+        }
+        _maintainAspectRatio = value;
+        return value;
+    }
 }
 
 //***********************************************************************************************************
@@ -89,7 +102,7 @@ class Image extends Component implements IClonable<Image> {
 class ImageLayout extends DefaultLayout {
     private var maintainAspectRatio(get, null):Bool;
     private function get_maintainAspectRatio():Bool {
-        return true;
+        return cast(_component, Image)._maintainAspectRatio;
     }
 
     private override function resizeChildren() {

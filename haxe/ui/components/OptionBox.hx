@@ -262,6 +262,10 @@ class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
 @:access(haxe.ui.components.OptionBox)
 class OptionBoxDefaultTextBehaviour extends Behaviour {
     public override function set(value:Variant) {
+        if (value == null || value.isNull) {
+            return;
+        }
+        
         var optionbox:OptionBox = cast _component;
         if (optionbox._label == null) {
             optionbox._label = new Label();
