@@ -188,20 +188,21 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     /**
      Indicates the set of characters that a user can enter into the textfield.
      You can insert a range with the "-" character, or you can exclude with
-     the "^" character. If you want to include multiple expressions, you must
-     separate with spaces.
+     the "^" character.
 
      For example:
 
-     * "a-z" : Only lowercase letters.
+     * "a-z" : Allowed lowercase letters.
 
-     * "a-z A-Z" : Any letter.
+     * "a-zA-Z" : Allowed any letter.
 
-     * "a-z^q": Only lowercase letters except "q".
+     * "^Qq" : Allowed any char except "q" and "Q".
 
-     * "0-9 a-z": Only numbers and lowercase letters.
+     * "a-z^q": Allowed lowercase letters except "q".
 
-     * "0-9^4-6": Only numbers except 4, 5 and 6.
+     * "0-9a-z": Allowed numbers and lowercase letters.
+
+     * "0-9^4-6": Allowed  numbers except 4, 5 and 6.
     **/
     @:clonable public var restrictChars(get, set):String;
     private function get_restrictChars():String {
@@ -224,11 +225,10 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     //***********************************************************************************************************
     private function _onTextChanged(event:UIEvent):Void {
         var newText:String = behaviourGet("text");
-        var oldText:String = _text != null ? _text : "";
-        if(newText.length > oldText.length && _restrictEReg != null)
+        if(_restrictEReg != null)
         {
-            if(!_restrictEReg.match(newText.substr(newText.length-1, 1))) {
-                behaviourSet("text", oldText);
+            if(!_restrictEReg.match(newText)) {
+                behaviourSet("text", _text != null ? _text : "");
                 return;
             }
         }
@@ -281,18 +281,24 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
             return null;
         }
 
-        var excludeEReg:EReg = ~/\^(\S+)/g;
-        var result = _restrictChars.split(' ');
-        for(i in 0...result.length) {
-            var expr:String = result[i];
-            if(excludeEReg.match(expr)) {
-                result[i] = '(?=[^${excludeEReg.matched(1)}])[${excludeEReg.matchedLeft()}]';
-            }
-            else {
-                result[i] = '[${expr}]';
-            }
+        var excludeEReg:EReg = ~/\^(.+)/g;
+        var excludeChars:String = null;
+        var includeChars:String = null;
+        if(excludeEReg.match(_restrictChars)) {
+            includeChars = excludeEReg.matchedLeft();
+            excludeChars = excludeEReg.matched(1);
         }
-        return new EReg(result.join("|"), "");
+        else {
+            includeChars = _restrictChars;
+        }
+
+        includeChars = (includeChars.length == 0) ? '.' : '[$includeChars]';    //Any character if it is empty
+
+        if(excludeChars != null && excludeChars.length > 0) {
+            return new EReg('^((?=[^${excludeChars}])${includeChars})+$', "");
+        } else {
+            return new EReg('^${includeChars}+$', "");
+        }
     }
 }
 
