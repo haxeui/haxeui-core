@@ -82,7 +82,11 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
         }
 
         super.set_focus(value);
-        text = behaviourGet("text");
+        if(empty == false) {
+            text = behaviourGet("text");
+        } else {
+            _validateText();
+        }
 
         return value;
     }
@@ -111,6 +115,14 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
+    /**
+     Return if the textfield is empty.
+    **/
+    public var empty(get, never):Bool;
+    private function get_empty():Bool {
+        return _text == null || _text.length == 0;
+    }
+
     private var _iconResource:String;
     /**
      The image resource to use as the textfields icon
@@ -197,7 +209,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
             _restrictEReg = null;
         }
 
-        return value;
+        return _restrictChars;
     }
 
     //***********************************************************************************************************
@@ -205,10 +217,11 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     //***********************************************************************************************************
     private function _onTextChanged(event:UIEvent):Void {
         var newText:String = behaviourGet("text");
-        if(newText.length > text.length && _restrictEReg != null)
+        var oldText:String = _text != null ? _text : "";
+        if(newText.length > oldText.length && _restrictEReg != null)
         {
             if(!_restrictEReg.match(newText.substr(newText.length-1, 1))) {
-                behaviourSet("text", text);
+                behaviourSet("text", oldText);
                 return;
             }
         }
@@ -227,7 +240,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     //***********************************************************************************************************
     private function _validateText():Void {
         var text:String = _text != null ? _text : "";
-        var placeholderVisible:Bool = hasClass(":empty");
+        var placeholderVisible:Bool = empty;
 
         //Max chars
         if(_maxChars != -1 && text.length > _maxChars && !placeholderVisible) {
