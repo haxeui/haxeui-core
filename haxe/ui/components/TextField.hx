@@ -235,7 +235,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
         var placeholderVisible:Bool = empty;
 
         //Max chars
-        if(_maxChars != -1 && text.length > _maxChars && !placeholderVisible) {
+        if(_maxChars != -1 && text.length > _maxChars && placeholderVisible == false) {
             text = text.substr(0, _maxChars);
         }
 
@@ -243,12 +243,12 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
         if(focus == false) {
             if(text == "") {
                 text = _placeholderText;
-                if(!placeholderVisible) {
+                if(placeholderVisible == false) {
                     addClass(":empty");
                 }
             }
         }
-        else if(placeholderVisible){
+        else if(placeholderVisible == true){
             text = "";
             removeClass(":empty");
         }
