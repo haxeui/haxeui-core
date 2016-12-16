@@ -225,12 +225,9 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     //***********************************************************************************************************
     private function _onTextChanged(event:UIEvent):Void {
         var newText:String = behaviourGet("text");
-        if(_restrictEReg != null)
-        {
-            if(!_restrictEReg.match(newText)) {
-                behaviourSet("text", _text != null ? _text : "");
-                return;
-            }
+        if(_restrictEReg != null && !_restrictEReg.match(newText)) {
+            behaviourSet("text", _text != null ? _text : "");
+            return;
         }
 
         text = newText;
@@ -262,8 +259,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
                     addClass(":empty");
                 }
             }
-        }
-        else if(placeholderVisible == true){
+        } else if(placeholderVisible == true){
             text = "";
             removeClass(":empty");
         }
@@ -287,8 +283,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
         if(excludeEReg.match(_restrictChars)) {
             includeChars = excludeEReg.matchedLeft();
             excludeChars = excludeEReg.matched(1);
-        }
-        else {
+        } else {
             includeChars = _restrictChars;
         }
 
