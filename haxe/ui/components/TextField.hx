@@ -65,17 +65,29 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     //***********************************************************************************************************
     // Overrides
     //***********************************************************************************************************
-    private override function get_text():String {
-        return behaviourGet("text");
-    }
+//    private override function get_text():String {
+//        return behaviourGet("text");
+//    }
 
     private override function set_text(value:String):String {
-        if (value == _text) {
+        value = super.set_text(value);
+        _validateText();
+
+        return value;
+    }
+
+    private override function set_focus(value:Bool):Bool {
+        if(_focus == value || allowFocus == false) {
             return value;
         }
 
-        value = super.set_text(value);
-        behaviourSet("text", value);
+        super.set_focus(value);
+        if(empty == false) {
+            text = behaviourGet("text");
+        } else {
+            _validateText();
+        }
+
         return value;
     }
 
@@ -103,6 +115,14 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
+    /**
+     Return if the textfield is empty.
+    **/
+    public var empty(get, never):Bool;
+    private function get_empty():Bool {
+        return _text == null || _text.length == 0;
+    }
+
     private var _iconResource:String;
     /**
      The image resource to use as the textfields icon
@@ -122,16 +142,159 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
         return value;
     }
 
+    private var _maxChars:Int = -1;
+    /**
+     Maximum number of characters allowed in the textfield. By default -1 (unlimited chars).
+    **/
+    @:clonable public var maxChars(get, set):Int;
+    private function get_maxChars():Int {
+        return _maxChars;
+    }
+
+    private function set_maxChars(value:Int):Int {
+        if (_maxChars == value) {
+            return value;
+        }
+
+        _maxChars = value;
+        _validateText();
+
+        return value;
+    }
+
+    private var _placeholderText:String;
+    /**
+     A short hint that describes the expected value.
+     The short hint is displayed in the textfield before the user enters a value.
+     Use ":empty" css class to change the style.
+    **/
+    @:clonable public var placeholderText(get, set):String;
+    private function get_placeholderText():String {
+        return _placeholderText;
+    }
+
+    private function set_placeholderText(value:String):String {
+        if (_placeholderText == value) {
+            return value;
+        }
+
+        _placeholderText = value;
+        _validateText();
+
+        return value;
+    }
+
+    private var _restrictEReg:EReg;
+    private var _restrictChars:String;
+    /**
+     Indicates the set of characters that an user can enter into the textfield.
+     You can insert a range with the "-" character, or you can exclude with
+     the "^" character.
+
+     For example:
+
+     * "a-z" : Allowed lowercase letters.
+
+     * "a-zA-Z" : Allowed any letter.
+
+     * "^Qq" : Allowed any char except "q" and "Q".
+
+     * "a-z^q": Allowed lowercase letters except "q".
+
+     * "0-9a-z": Allowed numbers and lowercase letters.
+
+     * "0-9^4-6": Allowed  numbers except 4, 5 and 6.
+    **/
+    @:clonable public var restrictChars(get, set):String;
+    private function get_restrictChars():String {
+        return _restrictChars;
+    }
+
+    private function set_restrictChars(value:String):String {
+        if (_restrictChars == value) {
+            return value;
+        }
+
+        _restrictChars = value;
+        _restrictEReg = _generateRestrictEReg();
+
+        return _restrictChars;
+    }
+
     //***********************************************************************************************************
     // Events
     //***********************************************************************************************************
     private function _onTextChanged(event:UIEvent):Void {
+        var newText:String = behaviourGet("text");
+        if(_restrictEReg != null && !_restrictEReg.match(newText)) {
+            behaviourSet("text", _text != null ? _text : "");
+            return;
+        }
+
+        text = newText;
         handleBindings(["text", "value"]);
     }
 
     private function _onMouseDown(event:MouseEvent):Void {
 
         FocusManager.instance.focus = this;
+    }
+
+    //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+    private function _validateText():Void {
+        var text:String = _text != null ? _text : "";
+        var placeholderVisible:Bool = empty;
+
+        //Max chars
+        if(_maxChars != -1 && text.length > _maxChars && placeholderVisible == false) {
+            text = text.substr(0, _maxChars);
+        }
+
+        //Placeholder
+        if(focus == false) {
+            if(text == "") {
+                text = _placeholderText;
+                if(placeholderVisible == false) {
+                    addClass(":empty");
+                }
+            }
+        } else if(placeholderVisible == true){
+            text = "";
+            removeClass(":empty");
+        }
+
+        behaviourSet("text", text);
+    }
+
+    //***********************************************************************************************************
+    // Others
+    //***********************************************************************************************************
+
+    private function _generateRestrictEReg():EReg
+    {
+        if(_restrictChars == null) {
+            return null;
+        }
+
+        var excludeEReg:EReg = ~/\^(.+)/g;
+        var excludeChars:String = null;
+        var includeChars:String = null;
+        if(excludeEReg.match(_restrictChars)) {
+            includeChars = excludeEReg.matchedLeft();
+            excludeChars = excludeEReg.matched(1);
+        } else {
+            includeChars = _restrictChars;
+        }
+
+        includeChars = (includeChars.length == 0) ? '.' : '[$includeChars]';    //Any character if it is empty
+
+        if(excludeChars != null && excludeChars.length > 0) {
+            return new EReg('^((?=[^${excludeChars}])${includeChars})+$', "");
+        } else {
+            return new EReg('^${includeChars}+$', "");
+        }
     }
 }
 
