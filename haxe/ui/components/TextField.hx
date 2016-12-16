@@ -187,7 +187,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     private var _restrictEReg:EReg;
     private var _restrictChars:String;
     /**
-     Indicates the set of characters that a user can enter into the textfield.
+     Indicates the set of characters that an user can enter into the textfield.
      You can insert a range with the "-" character, or you can exclude with
      the "^" character.
 
