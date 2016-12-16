@@ -199,15 +199,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
         }
 
         _restrictChars = value;
-        if(value != null) {
-            var result = value.split(' ');
-            for(i in 0...result.length) {
-                result[i] = '[${result[i]}]';
-            }
-            _restrictEReg = new EReg(result.join("|"), "");
-        } else {
-            _restrictEReg = null;
-        }
+        _restrictEReg = _generateRestrictEReg();
 
         return _restrictChars;
     }
@@ -262,6 +254,30 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
         }
 
         behaviourSet("text", text);
+    }
+
+    //***********************************************************************************************************
+    // Others
+    //***********************************************************************************************************
+
+    private function _generateRestrictEReg():EReg
+    {
+        if(_restrictChars == null) {
+            return null;
+        }
+
+        var excludeEReg:EReg = ~/\^(\S+)/g;
+        var result = _restrictChars.split(' ');
+        for(i in 0...result.length) {
+            var expr:String = result[i];
+            if(excludeEReg.match(expr)) {
+                result[i] = '(?=[^${excludeEReg.matched(1)}])[${excludeEReg.matchedLeft()}]';
+            }
+            else {
+                result[i] = '[${expr}]';
+            }
+        }
+        return new EReg(result.join("|"), "");
     }
 }
 
