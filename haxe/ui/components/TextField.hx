@@ -166,6 +166,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     /**
      A short hint that describes the expected value.
      The short hint is displayed in the textfield before the user enters a value.
+     Use ":empty" css class to change the style.
     **/
     @:clonable public var placeholderText(get, set):String;
     private function get_placeholderText():String {
