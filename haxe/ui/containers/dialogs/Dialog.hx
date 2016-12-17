@@ -4,13 +4,12 @@ import haxe.ui.components.Button;
 import haxe.ui.components.Label;
 import haxe.ui.core.Component;
 import haxe.ui.core.MouseEvent;
-import haxe.ui.core.UIEvent;
 import haxe.ui.layouts.VerticalLayout;
 
 /**
  Class returned from `Screen.instance.showDialog` or `Screen.instance.messageDialog`
 **/
-@:dox(icon="/icons/application-sub.png")
+@:dox(icon = "/icons/application-sub.png")
 class Dialog extends Component {
     private var _titleBar:HBox;
     private var _buttons:HBox;
@@ -25,11 +24,11 @@ class Dialog extends Component {
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************
-    private override function createChildren():Void {
+    private override function createChildren() {
         layout = new VerticalLayout();
     }
 
-    private function createTitleBar():Void {
+    private function createTitleBar() {
         if (native == true) {
             return;
         }
@@ -58,14 +57,14 @@ class Dialog extends Component {
         }
     }
 
-    private function createButtonBar():Void {
+    private function createButtonBar() {
         if (_buttons == null && _options != null && _options.buttons.length > 0) {
             _buttons = new HBox();
             _buttons.id = "dialog-buttons";
             _buttons.addClass("dialog-buttons");
 
             for (b in _options.buttons) {
-                var button = addButton(b);
+                addButton(b);
             }
 
             addComponent(_buttons);
@@ -87,7 +86,6 @@ class Dialog extends Component {
 
         return r;
     }
-
 
     //***********************************************************************************************************
     // Public API

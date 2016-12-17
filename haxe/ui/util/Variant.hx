@@ -1,4 +1,5 @@
 package haxe.ui.util;
+
 import haxe.ui.core.Screen;
 import haxe.ui.styles.Defs.Unit in StyleUnit;
 import haxe.ui.data.DataSource;
@@ -21,8 +22,8 @@ abstract Variant(VariantType) from VariantType {
         return String(s);
     }
 
-    @:to public function toString() {
-        return switch(this) {
+    @:to public function toString():String {
+        return switch (this) {
             case String(s): s;
             case Int(s): Std.string(s);
             case Float(s): Std.string(s);
@@ -47,11 +48,13 @@ abstract Variant(VariantType) from VariantType {
     }
 
     @:to function toInt():Null<Int> {
-        if(isNull) return null;
-        return switch(this) {
+        if (isNull) {
+            return null;
+        }
+        return switch (this) {
             case Int(s): s;
             case Float(s): Std.int(s);
-            case Unit(s): switch(s) {
+            case Unit(s): switch (s) {
                 case Pix(v): Std.int(v);
                 case REM(v): Std.int(v * Toolkit.pixelsPerRem);
                 case VH(v): Std.int(v / 100 * Screen.instance.height);
@@ -75,10 +78,12 @@ abstract Variant(VariantType) from VariantType {
     }
 
     @:to function toFloat():Null<Float> {
-        if(isNull) return null;
-        return switch(this) {
+        if (isNull) {
+            return null;
+        }
+        return switch (this) {
             case Float(s): s;
-            case Unit(s): switch(s) {
+            case Unit(s): switch (s) {
                 case Pix(v): v;
                 case REM(v): v * Toolkit.pixelsPerRem;
                 case VH(v): v / 100 * Screen.instance.height;
@@ -103,7 +108,7 @@ abstract Variant(VariantType) from VariantType {
     }
 
     @:to function toUnit():StyleUnit {
-        return switch(this) {
+        return switch (this) {
             case Int(s): Pix(s);
             case Float(s): Pix(s);
             case Unit(s): s;
@@ -125,10 +130,10 @@ abstract Variant(VariantType) from VariantType {
     }
 
     function toNumber():Float {
-        return switch(this) {
+        return switch (this) {
             case Int(s): s;
             case Float(s): s;
-            case Unit(s): switch(s) {
+            case Unit(s): switch (s) {
                 case Pix(v): v;
                 case REM(v): v * Toolkit.pixelsPerRem;
                 case VH(v): v / 100 * Screen.instance.height;
@@ -146,11 +151,11 @@ abstract Variant(VariantType) from VariantType {
         return Bool(s);
     }
 
-    @:to function toBool() {
+    @:to function toBool():Bool {
         if (this == null) {
             return false;
         }
-        return switch(this) {
+        return switch (this) {
             case Bool(s): s;
             default: throw "Variant Type Error";
         }
@@ -172,8 +177,8 @@ abstract Variant(VariantType) from VariantType {
         return DataSource(s);
     }
 
-    @:to function toDataSource() {
-        return switch(this) {
+    @:to function toDataSource():DataSource<Dynamic> {
+        return switch (this) {
             case DataSource(s): s;
             default: throw "Variant Type Error";
         }
@@ -225,8 +230,8 @@ abstract Variant(VariantType) from VariantType {
     @:op(A++)
     private inline function postInc():Variant {
         if (isUnit) {
-            switch(this) {
-                case Unit(s): switch(s) {
+            switch (this) {
+                case Unit(s): switch (s) {
                     case Pix(v): return this = Unit(Pix(v++));
                     case REM(v): return this = Unit(REM(v++));
                     case VH(v): return this = Unit(VH(v++));
@@ -247,8 +252,8 @@ abstract Variant(VariantType) from VariantType {
     @:op(++A)
     private inline function preInc():Variant {
         if (isUnit) {
-            switch(this) {
-                case Unit(s): switch(s) {
+            switch (this) {
+                case Unit(s): switch (s) {
                     case Pix(v): return this = Unit(Pix(++v));
                     case REM(v): return this = Unit(REM(++v));
                     case VH(v): return this = Unit(VH(++v));
@@ -280,8 +285,8 @@ abstract Variant(VariantType) from VariantType {
     @:op(A--)
     private inline function postDeinc():Variant {
         if (isUnit) {
-            switch(this) {
-                case Unit(s): switch(s) {
+            switch (this) {
+                case Unit(s): switch (s) {
                     case Pix(v): return this = Unit(Pix(v--));
                     case REM(v): return this = Unit(REM(v--));
                     case VH(v): return this = Unit(VH(v--));
@@ -302,8 +307,8 @@ abstract Variant(VariantType) from VariantType {
     @:op(--A)
     private inline function preDeinc():Variant {
         if (isUnit) {
-            switch(this) {
-                case Unit(s): switch(s) {
+            switch (this) {
+                case Unit(s): switch (s) {
                     case Pix(v): return this = Unit(Pix(--v));
                     case REM(v): return this = Unit(REM(--v));
                     case VH(v): return this = Unit(VH(--v));
@@ -341,9 +346,9 @@ abstract Variant(VariantType) from VariantType {
 
     @:op(A > B)
     private function gt(rhs:Variant):Bool {
-        if(isNumber) {
+        if (isNumber) {
             return toNumber() > rhs.toNumber();
-        } else if(isString) {
+        } else if (isString) {
             return toString() > rhs.toString();
         }
 
@@ -352,9 +357,9 @@ abstract Variant(VariantType) from VariantType {
 
     @:op(A >= B)
     private function gte(rhs:Variant):Bool {
-        if(isNumber) {
+        if (isNumber) {
             return toNumber() >= rhs.toNumber();
-        } else if(isString) {
+        } else if (isString) {
             return toString() >= rhs.toString();
         }
 
@@ -363,9 +368,9 @@ abstract Variant(VariantType) from VariantType {
 
     @:op(A < B)
     private function lt(rhs:Variant):Bool {
-        if(isNumber) {
+        if (isNumber) {
             return toNumber() < rhs.toNumber();
-        } else if(isString) {
+        } else if (isString) {
             return toString() < rhs.toString();
         }
 
@@ -374,9 +379,9 @@ abstract Variant(VariantType) from VariantType {
 
     @:op(A <= B)
     private function lte(rhs:Variant):Bool {
-        if(isNumber) {
+        if (isNumber) {
             return toNumber() <= rhs.toNumber();
-        } else if(isString) {
+        } else if (isString) {
             return toString() <= rhs.toString();
         }
 
@@ -385,7 +390,7 @@ abstract Variant(VariantType) from VariantType {
 
     @:op(-A)
     private function negate():Variant {
-        if(isNumber) {
+        if (isNumber) {
             return -toNumber();
         }
 

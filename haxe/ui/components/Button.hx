@@ -13,7 +13,7 @@ import haxe.ui.util.Variant;
 /**
  General purpose push button that supports both text and icon as well as repeat event dispatching
 **/
-@:dox(icon="/icons/ui-button.png")
+@:dox(icon = "/icons/ui-button.png")
 class Button extends InteractiveComponent implements IClonable<Button> {
     private var _repeatTimer:Timer;
 
@@ -27,7 +27,7 @@ class Button extends InteractiveComponent implements IClonable<Button> {
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************
-    private override function createDefaults():Void {
+    private override function createDefaults() {
         _defaultBehaviours = [
             "text" => new ButtonDefaultTextBehaviour(this),
             "icon" => new ButtonDefaultIconBehaviour(this)
@@ -35,19 +35,19 @@ class Button extends InteractiveComponent implements IClonable<Button> {
         _defaultLayout = new ButtonLayout();
     }
 
-    private override function create():Void {
+    private override function create() {
         super.create();
         behaviourSet("text", _text);
         behaviourSet("icon", _iconResource);
     }
 
-    private override function createChildren():Void {
+    private override function createChildren() {
         registerEvent(MouseEvent.MOUSE_OVER, _onMouseOver);
         registerEvent(MouseEvent.MOUSE_OUT, _onMouseOut);
         registerEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
     }
 
-    private override function destroyChildren():Void {
+    private override function destroyChildren() {
         super.destroyChildren();
 
         unregisterEvent(MouseEvent.MOUSE_OVER, _onMouseOver);
@@ -76,7 +76,7 @@ class Button extends InteractiveComponent implements IClonable<Button> {
         return value;
     }
 
-    private override function applyStyle(style:Style):Void {
+    private override function applyStyle(style:Style) {
         super.applyStyle(style);
         if (style.icon != null) {
             icon = style.icon;
@@ -109,13 +109,13 @@ class Button extends InteractiveComponent implements IClonable<Button> {
     /**
      Whether this button will dispatch multiple click events while the the mouse is pressed within it
     **/
-    @:dox(group="Repeater related properties")
+    @:dox(group = "Repeater related properties")
     @:clonable public var repeater(default, default):Bool = false;
 
     /**
      How often this button will dispatch multiple click events while the the mouse is pressed within it
     **/
-    @:dox(group="Repeater related properties")
+    @:dox(group = "Repeater related properties")
     @:clonable public var repeatInterval(default, default):Int = 50;
 
     private var _iconResource:String;
@@ -142,7 +142,7 @@ class Button extends InteractiveComponent implements IClonable<Button> {
         return style.iconPosition;
     }
     private function set_iconPosition(value:String):String {
-        if(iconPosition == value) {
+        if (iconPosition == value) {
             return value;
         }
 
@@ -157,7 +157,7 @@ class Button extends InteractiveComponent implements IClonable<Button> {
         return style.textAlign;
     }
     private function set_textAlign(value:String):String {
-        if(textAlign == value) {
+        if (textAlign == value) {
             return value;
         }
 
@@ -195,7 +195,7 @@ class Button extends InteractiveComponent implements IClonable<Button> {
     // Events
     //***********************************************************************************************************
     private var _down:Bool = false;
-    private function _onMouseOver(event:MouseEvent):Void {
+    private function _onMouseOver(event:MouseEvent) {
         if (_toggle == true && hasClass(":down")) {
             return;
         }
@@ -207,7 +207,7 @@ class Button extends InteractiveComponent implements IClonable<Button> {
         }
     }
 
-    private function _onMouseOut(event:MouseEvent):Void {
+    private function _onMouseOut(event:MouseEvent) {
         if (_toggle == true && hasClass(":down")) {
             return;
         }
@@ -218,7 +218,7 @@ class Button extends InteractiveComponent implements IClonable<Button> {
         removeClass(":hover");
     }
 
-    private function _onMouseDown(event:MouseEvent):Void {
+    private function _onMouseDown(event:MouseEvent) {
         if (FocusManager.instance.focusInfo != null && FocusManager.instance.focusInfo.currentFocus != null) {
             FocusManager.instance.focusInfo.currentFocus.focus = false;
         }
@@ -238,7 +238,7 @@ class Button extends InteractiveComponent implements IClonable<Button> {
         }
     }
 
-    private function _onMouseUp(event:MouseEvent):Void {
+    private function _onMouseUp(event:MouseEvent) {
         _down = false;
         if (_toggle == true) {
             return;
@@ -259,7 +259,7 @@ class Button extends InteractiveComponent implements IClonable<Button> {
         screen.unregisterEvent(MouseEvent.MOUSE_UP, _onMouseUp);
     }
 
-    private function _onMouseClick(event:MouseEvent):Void {
+    private function _onMouseClick(event:MouseEvent) {
         _selected = !_selected;
         if (_selected == false) {
             removeClass(":down");
@@ -355,7 +355,7 @@ class ButtonLayout extends DefaultLayout {
         return component.style.iconPosition;
     }
 
-    private override function repositionChildren():Void {
+    private override function repositionChildren() {
         super.repositionChildren();
 
         var label:Label = component.findComponent("button-label");
@@ -386,7 +386,7 @@ class ButtonLayout extends DefaultLayout {
                     label.left = paddingLeft;
                     label.top = Std.int((component.componentHeight / 2) - (label.componentHeight / 2)) + marginTop(label) - marginBottom(label);
                 } else if (icon != null) {
-                    icon.left = Std.int((component.componentWidth / 2) - (icon.componentWidth / 2));// + marginLeft(icon) - marginRight(icon);
+                    icon.left = Std.int((component.componentWidth / 2) - (icon.componentWidth / 2)); // + marginLeft(icon) - marginRight(icon);
                     icon.top = Std.int((component.componentHeight / 2) - (icon.componentHeight / 2)) + marginTop(icon) - marginBottom(icon);
                 }
             case "left" | "right":
@@ -410,7 +410,7 @@ class ButtonLayout extends DefaultLayout {
                     label.left = getTextAlignPos(label, component.componentWidth);
                     label.top = Std.int((component.componentHeight / 2) - (label.componentHeight / 2)) + marginTop(label) - marginBottom(label);
                 } else if (icon != null) {
-                    icon.left = Std.int((component.componentWidth / 2) - (icon.componentWidth / 2));// + marginLeft(icon) - marginRight(icon);
+                    icon.left = Std.int((component.componentWidth / 2) - (icon.componentWidth / 2)); // + marginLeft(icon) - marginRight(icon);
                     icon.top = Std.int((component.componentHeight / 2) - (icon.componentHeight / 2)) + marginTop(icon) - marginBottom(icon);
                 }
             case "top" | "bottom":
@@ -440,9 +440,8 @@ class ButtonLayout extends DefaultLayout {
         }
     }
 
-    private function getTextAlignPos(label:Label, usableWidth:Float):Float
-    {
-        switch(cast(component, Button).textAlign) {
+    private function getTextAlignPos(label:Label, usableWidth:Float):Float {
+        switch (cast(component, Button).textAlign) {
             case "left":
                 return marginLeft(label) + paddingLeft;
             case "right":

@@ -2,18 +2,18 @@ package haxe.ui.components;
 
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
+import haxe.ui.core.IClonable;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.UIEvent;
 import haxe.ui.focus.FocusManager;
 import haxe.ui.focus.IFocusable;
-import haxe.ui.core.IClonable;
+import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.styles.Style;
 import haxe.ui.util.Size;
 import haxe.ui.util.Variant;
-import haxe.ui.layouts.DefaultLayout;
 
-@:dox(icon="/icons/ui-text-field.png")
+@:dox(icon = "/icons/ui-text-field.png")
 class TextField extends InteractiveComponent implements IFocusable implements IClonable<TextField> {
     private var _icon:Image;
 
@@ -24,7 +24,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     //***********************************************************************************************************
     // Overrides
     //***********************************************************************************************************
-    private override function createDefaults():Void {
+    private override function createDefaults() {
         _defaultBehaviours = [
             "text" => new TextFieldDefaultTextBehaviour(this),
             "icon" => new TextFieldDefaultIconBehaviour(this)
@@ -32,7 +32,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
         _defaultLayout = new TextFieldLayout();
     }
 
-    private override function create():Void {
+    private override function create() {
         super.create();
         if (_text == null) {
             behaviourSet("text", "");
@@ -40,7 +40,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
         //behaviourSet("icon", _iconResource);
     }
 
-    private override function createChildren():Void {
+    private override function createChildren() {
         if (componentWidth == 0) {
             componentWidth = 150;
         }
@@ -50,7 +50,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
         registerEvent(UIEvent.CHANGE, _onTextChanged);
     }
 
-    private override function destroyChildren():Void {
+    private override function destroyChildren() {
         super.destroyChildren();
 
         unregisterEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
@@ -77,12 +77,12 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     }
 
     private override function set_focus(value:Bool):Bool {
-        if(_focus == value || allowFocus == false) {
+        if (_focus == value || allowFocus == false) {
             return value;
         }
 
         super.set_focus(value);
-        if(empty == false) {
+        if (empty == false) {
             text = behaviourGet("text");
         } else {
             _validateText();
@@ -91,7 +91,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
         return value;
     }
 
-    private override function applyStyle(style:Style):Void {
+    private override function applyStyle(style:Style) {
         super.applyStyle(style);
         if (style.icon != null) {
             icon = style.icon;
@@ -224,9 +224,9 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     //***********************************************************************************************************
     // Events
     //***********************************************************************************************************
-    private function _onTextChanged(event:UIEvent):Void {
+    private function _onTextChanged(event:UIEvent) {
         var newText:String = behaviourGet("text");
-        if(_restrictEReg != null && !_restrictEReg.match(newText)) {
+        if (_restrictEReg != null && !_restrictEReg.match(newText)) {
             behaviourSet("text", _text != null ? _text : "");
             return;
         }
@@ -235,7 +235,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
         handleBindings(["text", "value"]);
     }
 
-    private function _onMouseDown(event:MouseEvent):Void {
+    private function _onMouseDown(event:MouseEvent) {
 
         FocusManager.instance.focus = this;
     }
@@ -243,24 +243,24 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     //***********************************************************************************************************
     // Validation
     //***********************************************************************************************************
-    private function _validateText():Void {
+    private function _validateText() {
         var text:String = _text != null ? _text : "";
         var placeholderVisible:Bool = empty;
 
         //Max chars
-        if(_maxChars != -1 && text.length > _maxChars && placeholderVisible == false) {
+        if (_maxChars != -1 && text.length > _maxChars && placeholderVisible == false) {
             text = text.substr(0, _maxChars);
         }
 
         //Placeholder
-        if(focus == false) {
-            if(text == "") {
+        if (focus == false) {
+            if (text == "") {
                 text = _placeholderText;
-                if(placeholderVisible == false) {
+                if (placeholderVisible == false) {
                     addClass(":empty");
                 }
             }
-        } else if(placeholderVisible == true){
+        } else if (placeholderVisible == true){
             text = "";
             removeClass(":empty");
         }
@@ -272,16 +272,15 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     // Others
     //***********************************************************************************************************
 
-    private function _generateRestrictEReg():EReg
-    {
-        if(_restrictChars == null) {
+    private function _generateRestrictEReg():EReg {
+        if (_restrictChars == null) {
             return null;
         }
 
         var excludeEReg:EReg = ~/\^(.+)/g;
         var excludeChars:String = null;
         var includeChars:String = null;
-        if(excludeEReg.match(_restrictChars)) {
+        if (excludeEReg.match(_restrictChars)) {
             includeChars = excludeEReg.matchedLeft();
             excludeChars = excludeEReg.matched(1);
         } else {
@@ -290,7 +289,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
 
         includeChars = (includeChars.length == 0) ? '.' : '[$includeChars]';    //Any character if it is empty
 
-        if(excludeChars != null && excludeChars.length > 0) {
+        if (excludeChars != null && excludeChars.length > 0) {
             return new EReg('^((?=[^${excludeChars}])${includeChars})+$', "");
         } else {
             return new EReg('^${includeChars}+$', "");
@@ -354,7 +353,7 @@ class TextFieldLayout extends DefaultLayout {
         return component.style.iconPosition;
     }
 
-    private override function repositionChildren():Void {
+    private override function repositionChildren() {
         //super.repositionChildren();
         var icon:Image = component.findComponent("textfield-icon");
         var xpos:Float = paddingLeft;

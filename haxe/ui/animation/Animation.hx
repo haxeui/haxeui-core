@@ -1,13 +1,13 @@
 package haxe.ui.animation;
 
 import haxe.ui.core.Component;
+
 #if actuate
 import motion.easing.IEasing;
 import motion.easing.Back;
 import motion.easing.Bounce;
 import motion.easing.Cubic;
 import motion.easing.Expo;
-import motion.easing.IEasing;
 import motion.easing.Linear;
 import motion.easing.Quad;
 import motion.easing.Quart;
@@ -16,7 +16,7 @@ import motion.easing.Sine;
 #end
 
 class Animation {
-    public var keyFrames:Array<AnimationKeyFrame> = new Array<AnimationKeyFrame>();
+    public var keyFrames:Array<AnimationKeyFrame> = [];
     public var componentMap:Map<String, Component> = new Map<String, Component>();
 
     #if actuate
@@ -149,7 +149,7 @@ class Animation {
 
     #if actuate
     public static function easingFromString(s:String):IEasing {
-        switch(s) {
+        switch (s) {
             case "Linear.easeNone": return Linear.easeNone;
             case "Back.easeIn":     return Back.easeIn;
             case "Back.easeOut":    return Back.easeOut;

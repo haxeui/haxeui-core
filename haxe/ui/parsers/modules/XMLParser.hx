@@ -1,6 +1,4 @@
 package haxe.ui.parsers.modules;
-import haxe.ui.parsers.modules.Module.ModulePluginEntry;
-import haxe.ui.parsers.modules.Module.ModulePropertyEntry;
 
 class XMLParser extends ModuleParser {
     public function new() {

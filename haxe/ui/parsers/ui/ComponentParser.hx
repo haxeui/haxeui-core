@@ -1,4 +1,5 @@
 package haxe.ui.parsers.ui;
+
 import haxe.ui.parsers.ui.resolvers.ResourceResolver;
 
 class ComponentParser {
@@ -47,8 +48,7 @@ class ComponentParser {
         _parsers.set(extension, cls);
     }
 
-
-    private static var _nextId:Int = 0;
+    private static var _nextId:Int;
     private static function nextId(prefix:String = "component"):String {
         var s = prefix + _nextId;
         _nextId++;

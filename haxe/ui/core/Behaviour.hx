@@ -18,7 +18,7 @@ class Behaviour {
     /**
      Called when a component property setter is called
     **/
-    public function set(value:Variant):Void {
+    public function set(value:Variant) {
 
     }
 
@@ -36,7 +36,7 @@ class Behaviour {
     /**
      Update this behaviour with its current value
     **/
-    public function update():Void {
+    public function update() {
 
     }
 

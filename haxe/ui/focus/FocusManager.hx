@@ -1,7 +1,6 @@
 package haxe.ui.focus;
 
 import haxe.ui.core.Component;
-import haxe.ui.core.Screen;
 
 class FocusInfo {
     public function new() {
@@ -28,7 +27,7 @@ class FocusManager {
     private var _focusInfo:Map<Component, FocusInfo>;
 
     public function new() {
-        _views = new Array<Component>();
+        _views = [];
         _focusInfo = new Map<Component, FocusInfo>();
     }
 
@@ -82,7 +81,7 @@ class FocusManager {
             return null;
         }
 
-        var list:Array<IFocusable> = new Array<IFocusable>();
+        var list:Array<IFocusable> = [];
         var info = focusInfo;
         var currentFocus = buildFocusableList(info.view, list);
 
@@ -106,7 +105,7 @@ class FocusManager {
             return null;
         }
 
-        var list:Array<IFocusable> = new Array<IFocusable>();
+        var list:Array<IFocusable> = [];
         var info = focusInfo;
         var currentFocus = buildFocusableList(info.view, list);
 

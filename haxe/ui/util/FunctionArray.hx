@@ -5,7 +5,7 @@ class FunctionArray<T> {
 
     public function new(array:Array<T> = null) {
         if (array == null) {
-            _array = new Array<T>();
+            _array = [];
         } else {
             _array = array;
         }

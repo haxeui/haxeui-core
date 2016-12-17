@@ -12,7 +12,7 @@ import haxe.ui.util.Variant;
 /**
  Checkbox component showing either a selected or unselected state including a text label
 **/
-@:dox(icon="/icons/ui-check-boxes.png")
+@:dox(icon = "/icons/ui-check-boxes.png")
 class CheckBox extends InteractiveComponent implements IClonable<CheckBox> {
     public function new() {
         super();
@@ -21,7 +21,7 @@ class CheckBox extends InteractiveComponent implements IClonable<CheckBox> {
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************
-    private override function createDefaults():Void {
+    private override function createDefaults() {
         _defaultBehaviours = [
             "text" => new CheckBoxDefaultTextBehaviour(this),
             "selected" => new CheckBoxDefaultSelectedBehaviour(this)
@@ -29,13 +29,13 @@ class CheckBox extends InteractiveComponent implements IClonable<CheckBox> {
         _defaultLayout = new HorizontalLayout();
     }
 
-    private override function create():Void {
+    private override function create() {
         super.create();
         behaviourSet("text", _text);
         behaviourSet("selected", _selected);
     }
 
-    private override function createChildren():Void {
+    private override function createChildren() {
         var checkboxValue:CheckBoxValue = findComponent(CheckBoxValue);
         if (checkboxValue == null) {
             checkboxValue = new CheckBoxValue();
@@ -49,7 +49,7 @@ class CheckBox extends InteractiveComponent implements IClonable<CheckBox> {
         }
     }
 
-    private override function destroyChildren():Void {
+    private override function destroyChildren() {
         var value:CheckBoxValue = findComponent(CheckBoxValue);
         if (value != null) {
             removeComponent(value);
@@ -81,7 +81,7 @@ class CheckBox extends InteractiveComponent implements IClonable<CheckBox> {
         return value;
     }
 
-    private override function applyStyle(style:Style):Void {
+    private override function applyStyle(style:Style) {
         super.applyStyle(style);
 
         var label:Label = findComponent(Label);
@@ -101,7 +101,7 @@ class CheckBox extends InteractiveComponent implements IClonable<CheckBox> {
     /**
      Whether to show a checkmark in this checkbox component or not
     **/
-    @:dox(group="Selection related properties")
+    @:dox(group = "Selection related properties")
     @:clonable public var selected(get, set):Bool;
     private function set_selected(value:Bool):Bool {
         if (value == _selected) {
@@ -125,19 +125,19 @@ class CheckBox extends InteractiveComponent implements IClonable<CheckBox> {
     //***********************************************************************************************************
     // Events
     //***********************************************************************************************************
-    private function _onClick(event:MouseEvent):Void {
+    private function _onClick(event:MouseEvent) {
         toggleSelected();
         var event:UIEvent = new UIEvent(UIEvent.CHANGE);
         dispatch(event);
     }
 
-    private function _onMouseOver(event:MouseEvent):Void {
+    private function _onMouseOver(event:MouseEvent) {
         addClass(":hover");
         var value:CheckBoxValue = findComponent(CheckBoxValue);
         value.addClass(":hover");
     }
 
-    private function _onMouseOut(event:MouseEvent):Void {
+    private function _onMouseOut(event:MouseEvent) {
         removeClass(":hover");
         var value:CheckBoxValue = findComponent(CheckBoxValue);
         value.removeClass(":hover");
@@ -154,7 +154,7 @@ class CheckBoxDefaultTextBehaviour extends Behaviour {
         if (value == null || value.isNull) {
             return;
         }
-        
+
         var checkbox:CheckBox = cast _component;
         var label:Label = checkbox.findComponent(Label);
         if (label == null) {
@@ -212,7 +212,7 @@ class CheckBoxValue extends InteractiveComponent {
         }
     }
 
-    private override function applyStyle(style:Style):Void {
+    private override function applyStyle(style:Style) {
         super.applyStyle(style);
         var icon:Image = findComponent(Image);
         if (icon != null) {

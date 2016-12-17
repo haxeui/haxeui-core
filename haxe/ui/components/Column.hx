@@ -1,7 +1,5 @@
 package haxe.ui.components;
 
-import haxe.ui.components.Button;
-
 class Column extends Button {
     public function new() {
         super();

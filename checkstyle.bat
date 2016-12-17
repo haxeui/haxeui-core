@@ -1,0 +1,1 @@
+haxelib run checkstyle -s .

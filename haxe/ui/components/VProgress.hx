@@ -1,14 +1,13 @@
 package haxe.ui.components;
 
 import haxe.ui.core.Component;
-import haxe.ui.core.MouseEvent;
-import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.core.IClonable;
+import haxe.ui.layouts.DefaultLayout;
 
 /**
  A vertical implementation of a `Progress`
 **/
-@:dox(icon="/icons/ui-progress-bar-vertical.png")
+@:dox(icon = "/icons/ui-progress-bar-vertical.png")
 class VProgress extends Progress implements IClonable<VProgress> {
     public function new() {
         super();
@@ -17,12 +16,12 @@ class VProgress extends Progress implements IClonable<VProgress> {
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************
-    private override function createDefaults():Void {
+    private override function createDefaults() {
         super.createDefaults();
         _defaultLayout = new VProgressLayout();
     }
 
-    private override function createChildren():Void {
+    private override function createChildren() {
         super.createChildren();
         if (componentWidth <= 0) {
             componentWidth = 20;
@@ -73,7 +72,7 @@ class VProgressLayout extends DefaultLayout {
         }
     }
 
-    public override function repositionChildren():Void {
+    public override function repositionChildren() {
         super.repositionChildren();
 
         var value:Component = component.findComponent("progress-value");

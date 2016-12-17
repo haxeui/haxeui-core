@@ -1,7 +1,5 @@
 package haxe.ui.containers;
 
-import haxe.ui.containers.ScrollView;
-import haxe.ui.containers.VBox;
 import haxe.ui.core.BasicItemRenderer;
 import haxe.ui.core.Component;
 import haxe.ui.core.IClonable;
@@ -20,7 +18,7 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
         super();
     }
 
-    private override function createChildren():Void {
+    private override function createChildren() {
         super.createChildren();
     }
 

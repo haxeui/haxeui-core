@@ -1,23 +1,20 @@
 package haxe.ui.macros;
+
 import haxe.ui.util.GenericConfig;
 
 #if macro
 import haxe.macro.Expr;
 import haxe.macro.Context;
-import haxe.rtti.Meta;
-import sys.FileSystem;
-import sys.io.File;
-import haxe.macro.Type.ClassField;
 #end
 
 class MacroHelpers {
-    private static var SKIP_PATTERNS = ["/lib/actuate/",
-                                        "/lib/lime/",
-                                        "/lib/openfl/",
-                                        "/lib/yaml/",
-                                        "/lib/hscript/",
-                                        "/haxe/std/",
-                                        "bin/"];
+    private static var SKIP_PATTERNS:Array<String> = ["/lib/actuate/",
+                                                      "/lib/lime/",
+                                                      "/lib/openfl/",
+                                                      "/lib/yaml/",
+                                                      "/lib/hscript/",
+                                                      "/haxe/std/",
+                                                      "bin/"];
 
     #if macro
     public static function exprToMap(params:Expr):Map<String, Dynamic> {
@@ -29,7 +26,6 @@ class MacroHelpers {
         switch (params.expr) {
             case EObjectDecl(x):
                 for (y in x) {
-                    var fieldName:String = y.field;
                     switch (y.expr.expr) {
                         case EConst(CString(z)) | EConst(CInt(z))  | EConst(CFloat(z))  | EConst(CIdent(z)) :
                             map.set(y.field, z);
@@ -101,7 +97,7 @@ class MacroHelpers {
         var arr:Array<String> = pack.split(".");
         for (path in paths) {
             var dir:String = path + arr.join("/");
-            if(!sys.FileSystem.exists(dir) || !sys.FileSystem.isDirectory(dir)) {
+            if (!sys.FileSystem.exists(dir) || !sys.FileSystem.isDirectory(dir)) {
                 continue;
             }
 
@@ -165,11 +161,6 @@ class MacroHelpers {
     public static function hasSuperClass(t:haxe.macro.Type, classRequired:String):Bool {
         var has:Bool = false;
         switch (t) {
-                case TAnonymous(t): {};
-                case TMono(t): {};
-                case TLazy(t): {};
-                case TFun(t, _): {};
-                case TDynamic(t): {};
                 case TInst(t, _): {
                     if (t.toString() == classRequired) {
                         has = true;
@@ -188,9 +179,7 @@ class MacroHelpers {
                         }
                     }
                 }
-                case TEnum(t, _): {};
-                case TType(t, _): {};
-                case TAbstract(t, _): {};
+                case _:
         }
 
         return has;
@@ -199,11 +188,6 @@ class MacroHelpers {
     public static function hasInterface(t:haxe.macro.Type, interfaceRequired:String):Bool {
         var has:Bool = false;
         switch (t) {
-                case TAnonymous(t): {};
-                case TMono(t): {};
-                case TLazy(t): {};
-                case TFun(t, _): {};
-                case TDynamic(t): {};
                 case TInst(t, _): {
                     while (t != null) {
                         for (i in t.get().interfaces) {
@@ -225,9 +209,7 @@ class MacroHelpers {
                         }
                     }
                 }
-                case TEnum(t, _): {};
-                case TType(t, _): {};
-                case TAbstract(t, _): {};
+                case _:
         }
 
         return has;

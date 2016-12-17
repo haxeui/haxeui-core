@@ -6,7 +6,7 @@ class Module2 {
     public var themeEntries(default, default):Map<String, ModuleThemeEntry>;
 
     public function new() {
-        resourceEntries = new Array<ModuleResourceEntry>();
+        resourceEntries = [];
         themeEntries = new Map<String, ModuleThemeEntry>();
     }
 
@@ -49,9 +49,10 @@ class ModuleResourceEntry {
 
 class ModuleThemeEntry {
     public function new() {
+        styles = [];
     }
 
     public var name(default, default):String;
     public var parent(default, default):String;
-    public var styles(default, default):Array<String> = new Array<String>();
+    public var styles(default, default):Array<String>;
 }

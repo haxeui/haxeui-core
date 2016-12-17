@@ -21,7 +21,7 @@ class Slice9 {
         var x2:Float = slice.right;
         var y2:Float = slice.bottom;
 
-        var srcRects:Array<Rectangle> = new Array<Rectangle>();
+        var srcRects:Array<Rectangle> = [];
         srcRects.push(new Rectangle(0, 0, x1, y1)); // top left
         srcRects.push(new Rectangle(x1, 0, x2 - x1, y1)); // top middle
         srcRects.push(new Rectangle(x2, 0, bitmapWidth - x2, y1)); // top right
@@ -38,7 +38,7 @@ class Slice9 {
     }
 
     public static function buildDstRects(w:Float, h:Float, srcRects:Array<Rectangle>):Array<Rectangle> {
-        var dstRects:Array<Rectangle> = new Array<Rectangle>();
+        var dstRects:Array<Rectangle> = [];
 
         dstRects.push(srcRects[0]);
         dstRects.push(new Rectangle(srcRects[0].width, 0, w - srcRects[0].width - srcRects[2].width, srcRects[1].height));

@@ -2,8 +2,42 @@
 	"defineCombinations": [],
 	"defaultSeverity": "INFO",
 	"baseDefines": [],
-	"exclude": {},
+	"exclude": {
+		"all": [
+			"haxe.ui.styles"
+		],
+		"Trace": [
+			"haxe.ui.util.CallStackHelper",
+			"haxe.ui.themes.ThemeManager",
+			"haxe.ui.parsers.ui.resolvers.FileResourceResolver",
+			"haxe.ui.macros.NativeMacros",
+			"haxe.ui.macros.ModuleMacros",
+			"haxe.ui.debug.DebugCounter",
+			"haxe.ui.macros.MacroHelpers",
+			"haxe.ui.core.Screen",
+			"haxe.ui.core.Component",
+			"haxe.ui.ToolkitAssets",
+			"haxe.ui.Toolkit"
+		],
+		"ConstantName": [
+			"haxe.ui.macros.BackendMacros",
+			"haxe.ui.macros.ModuleMacros",
+			"haxe.ui.Toolkit"
+		],
+		"NeedBraces": [
+			"haxe.ui.Toolkit"
+		],
+		"OperatorWrap": [
+			"haxe.ui.util.Variant"
+		]
+	},
 	"checks": [
+		{
+			"props": {
+				"severity": "WARNING"
+			},
+			"type": "UnusedLocalVar"
+		},
 		{
 			"props": {
 				"severity": "ERROR"
@@ -32,7 +66,7 @@
 		},
 		{
 			"props": {
-				"severity": "IGNORE"
+				"severity": "WARNING"
 			},
 			"type": "AvoidStarImport"
 		},
@@ -76,13 +110,13 @@
 		},
 		{
 			"props": {
-				"severity": "ERROR"
+				"severity": "IGNORE"
 			},
 			"type": "Dynamic"
 		},
 		{
 			"props": {
-				"severity": "ERROR"
+				"severity": "IGNORE"
 			},
 			"type": "ERegLiteral"
 		},
@@ -111,11 +145,11 @@
 		{
 			"props": {
 				"requireEmptyLineAfterPackage": true,
-				"requireEmptyLineAfterInterface": true,
-				"requireEmptyLineAfterAbstract": true,
+				"requireEmptyLineAfterInterface": false,
+				"requireEmptyLineAfterAbstract": false,
 				"allowEmptyLineAfterSingleLineComment": true,
 				"max": 1,
-				"requireEmptyLineAfterClass": true,
+				"requireEmptyLineAfterClass": false,
 				"allowEmptyLineAfterMultiLineComment": true,
 				"severity": "ERROR"
 			},
@@ -153,21 +187,21 @@
 		},
 		{
 			"props": {
-				"character": "tab",
+				"character": "space",
 				"ignorePattern": "^$",
-				"severity": "IGNORE"
+				"severity": "ERROR"
 			},
 			"type": "IndentationCharacter"
 		},
 		{
 			"props": {
-				"severity": "ERROR"
+				"severity": "IGNORE"
 			},
 			"type": "InnerAssignment"
 		},
 		{
 			"props": {
-				"allowProperties": false,
+				"allowProperties": true,
 				"allowMarkerInterfaces": true,
 				"severity": "ERROR"
 			},
@@ -265,7 +299,7 @@
 		{
 			"props": {
 				"ignoreExtern": true,
-				"format": "^[a-z][a-zA-Z0-9]*$",
+				"format": "^[a-z|_][a-zA-Z0-9]*$",
 				"tokens": [],
 				"severity": "ERROR"
 			},
@@ -275,8 +309,8 @@
 			"props": {
 				"modifiers": [
 					"MACRO",
-					"OVERRIDE",
 					"PUBLIC_PRIVATE",
+					"OVERRIDE",
 					"STATIC",
 					"INLINE",
 					"DYNAMIC"
@@ -317,7 +351,7 @@
 		},
 		{
 			"props": {
-				"max": 3,
+				"max": 4,
 				"severity": "ERROR"
 			},
 			"type": "NestedForDepth"
@@ -354,7 +388,7 @@
 				"bitwiseOpPolicy": "around",
 				"arithmeticOpPolicy": "around",
 				"compareOpPolicy": "around",
-				"arrowPolicy": "none",
+				"arrowPolicy": "around",
 				"severity": "ERROR"
 			},
 			"type": "OperatorWhitespace"
@@ -439,7 +473,7 @@
 			"props": {
 				"ignoreFormat": "^$",
 				"max": 2,
-				"severity": "WARNING"
+				"severity": "IGNORE"
 			},
 			"type": "ReturnCount"
 		},
@@ -451,7 +485,6 @@
 					"ABSTRACT_DEF",
 					"TYPEDEF_DEF",
 					"INTERFACE_DEF",
-					"OBJECT_DECL",
 					"FUNCTION",
 					"FOR",
 					"IF",
@@ -460,7 +493,7 @@
 					"TRY",
 					"CATCH"
 				],
-				"option": "aloneorsingle",
+				"option": "same",
 				"severity": "ERROR"
 			},
 			"type": "RightCurly"
@@ -487,7 +520,7 @@
 		},
 		{
 			"props": {
-				"severity": "ERROR"
+				"severity": "IGNORE"
 			},
 			"type": "SimplifyBooleanExpression"
 		},
@@ -515,7 +548,7 @@
 			"props": {
 				"policy": "doubleAndInterpolation",
 				"allowException": true,
-				"severity": "ERROR"
+				"severity": "IGNORE"
 			},
 			"type": "StringLiteral"
 		},
@@ -577,7 +610,7 @@
 		},
 		{
 			"props": {
-				"severity": "ERROR"
+				"severity": "IGNORE"
 			},
 			"type": "VariableInitialisation"
 		},

@@ -1,4 +1,5 @@
 package haxe.ui.parsers.ui;
+
 import haxe.ui.parsers.ui.ComponentInfo.ComponentBindingInfo;
 import haxe.ui.parsers.ui.resolvers.ResourceResolver;
 

@@ -1,4 +1,5 @@
 package haxe.ui.animation;
+
 import haxe.ui.core.Component;
 
 class AnimationManager {

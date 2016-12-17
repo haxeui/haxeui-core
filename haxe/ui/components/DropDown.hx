@@ -24,21 +24,21 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
         registerEvent(MouseEvent.CLICK, onMouseClick);
     }
 
-    private override function createDefaults():Void {
+    private override function createDefaults() {
         super.createDefaults();
         _defaultBehaviours.set("dataSource", new DropDownDefaultDataSourceBehaviour(this));
         _defaultBehaviours.set("selectedItem", new DropDownDefaultSelectedItemBehaviour(this));
     }
 
-    private override function create():Void {
+    private override function create() {
         super.create();
     }
 
-    private override function createChildren():Void {
+    private override function createChildren() {
         super.createChildren();
     }
 
-    private override function destroyChildren():Void {
+    private override function destroyChildren() {
         super.destroyChildren();
         unregisterEvent(MouseEvent.CLICK, onMouseClick);
     }
@@ -218,7 +218,6 @@ class DropDownDefaultDataSourceBehaviour extends Behaviour {
 
     }
 }
-
 
 @:dox(hide)
 @:access(haxe.ui.components.DropDown)

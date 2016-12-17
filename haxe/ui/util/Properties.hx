@@ -5,8 +5,9 @@ import sys.io.File;
 #end
 
 class Properties {
-    private var _props:Map<String, String> = new Map<String, String>();
+    private var _props:Map<String, String>;
     public function new() {
+        _props = new Map<String, String>();
     }
 
     #if (macro || sys)

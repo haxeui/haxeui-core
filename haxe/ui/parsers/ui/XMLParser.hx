@@ -1,4 +1,5 @@
 package haxe.ui.parsers.ui;
+
 import haxe.ui.parsers.ui.ComponentInfo.ComponentBindingInfo;
 import haxe.ui.parsers.ui.resolvers.ResourceResolver;
 
@@ -22,7 +23,7 @@ class XMLParser extends ComponentParser {
         return component;
     }
 
-    private static function parseComponent(component:ComponentInfo, xml:Xml, resourceResolver:ResourceResolver) {
+    private static function parseComponent(component:ComponentInfo, xml:Xml, resourceResolver:ResourceResolver):Bool {
         var isComponent:Bool = true;
         var nodeName = xml.nodeName;
         if (nodeName == "import") {
@@ -141,7 +142,7 @@ class XMLParser extends ComponentParser {
     }
 
     private static function parseDetails(component:ComponentInfo, xml:Xml) {
-        if (xml.firstChild() != null && '${xml.firstChild().nodeType}' == '1') {
+        if (xml.firstChild() != null && '${xml.firstChild().nodeType}' == "1") {
             var value = StringTools.trim(xml.firstChild().nodeValue);
             if (value != null && value.length > 0) {
                 component.text = value;

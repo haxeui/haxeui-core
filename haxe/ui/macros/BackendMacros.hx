@@ -5,9 +5,6 @@ import haxe.ui.util.Properties;
 #if macro
 import haxe.macro.Expr;
 import haxe.macro.Context;
-import sys.FileSystem;
-import sys.io.File;
-import haxe.macro.Compiler;
 #end
 
 class BackendMacros {

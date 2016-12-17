@@ -19,28 +19,28 @@ import haxe.ui.util.Size;
 
 class TableView extends ScrollView implements IDataComponent implements IClonable<TableView> {
     private var _header:Header;
-    private var _itemRenderers:Array<ItemRenderer> = new Array<ItemRenderer>();
+    private var _itemRenderers:Array<ItemRenderer> = [];
 
     public function new() {
         super();
         addClass("scrollview");
     }
 
-    private override function createDefaults():Void {
+    private override function createDefaults() {
         _defaultLayout = new TableViewLayout();
     }
 
-    private override function createChildren():Void {
+    private override function createChildren() {
         super.createChildren();
         percentContentWidth = 100;
         _contents.addClass("tableview-contents");
     }
 
-    private override function create():Void {
+    private override function create() {
         super.create();
     }
 
-    private override function onReady():Void {
+    private override function onReady() {
         super.onReady();
 
         if (_header != null && _itemRenderers.length < _header.childComponents.length) {
@@ -53,12 +53,12 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
         syncUI();
     }
 
-    private override function onResized():Void {
+    private override function onResized() {
         super.onResized();
         sizeItems();
     }
 
-    private override function _onContentsResized(event:UIEvent):Void {
+    private override function _onContentsResized(event:UIEvent) {
         super._onContentsResized(event);
     }
 
@@ -70,7 +70,6 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
         if (Std.is(child, Header)) {
             _header = cast(child, Header);
             _header.registerEvent(UIEvent.RESIZE, _onHeaderResized);
-
 
             #if haxeui_html5 // TODO: should be in backend somehow
             if (native == true) {
@@ -119,7 +118,7 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
         if (native == true) {
             if (_header != null) {
                 var ucx = layout.usableWidth;
-                var xpos = this.element.scrollLeft;// _hscroll.pos;
+                var xpos = this.element.scrollLeft; // _hscroll.pos;
                 var clipCX = ucx;
                 if (clipCX > _header.componentWidth) {
                     clipCX = _header.componentWidth;
@@ -355,7 +354,7 @@ class TableViewLayout extends DefaultLayout {
         }
     }
 
-    private override function repositionChildren():Void {
+    private override function repositionChildren() {
         var header:Header = component.findComponent(Header);
         if (header != null) {
             header.left = paddingLeft + marginLeft(header) - marginRight(header);

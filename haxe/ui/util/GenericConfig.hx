@@ -1,18 +1,19 @@
 package haxe.ui.util;
 
 class GenericConfig {
-    public var values:Map<String, String> = new Map<String, String>();
-    public var sections:Map<String, Array<GenericConfig>> = new Map<String, Array<GenericConfig>>();
+    public var values:Map<String, String>;
+    public var sections:Map<String, Array<GenericConfig>>;
 
     public function new() {
-
+        values = new Map<String, String>();
+        sections = new Map<String, Array<GenericConfig>>();
     }
 
     public function addSection(name:String):GenericConfig {
         var config:GenericConfig = new GenericConfig();
         var array:Array<GenericConfig> = sections.get(name);
         if (array == null) {
-            array = new Array<GenericConfig>();
+            array = [];
             sections.set(name, array);
         }
         array.push(config);

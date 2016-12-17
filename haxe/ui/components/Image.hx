@@ -1,20 +1,19 @@
 package haxe.ui.components;
 
+import haxe.ui.Toolkit;
+import haxe.ui.assets.ImageInfo;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
-import haxe.ui.core.ImageDisplay;
-import haxe.ui.Toolkit;
 import haxe.ui.core.IClonable;
-import haxe.ui.assets.ImageInfo;
+import haxe.ui.core.ImageDisplay;
 import haxe.ui.layouts.DefaultLayout;
-import haxe.ui.styles.Style;
 import haxe.ui.util.Size;
 import haxe.ui.util.Variant;
 
 /**
  A general purpose component to display images
 **/
-@:dox(icon="/icons/image-sunset.png")
+@:dox(icon = "/icons/image-sunset.png")
 class Image extends Component implements IClonable<Image> {
     private var _originalSize:Size = new Size();
 
@@ -25,14 +24,14 @@ class Image extends Component implements IClonable<Image> {
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************
-    private override function createDefaults():Void {
+    private override function createDefaults() {
         _defaultBehaviours = [
             "resource" => new ImageDefaultResourceBehaviour(this)
         ];
         _defaultLayout = new ImageLayout();
     }
 
-    private override function create():Void {
+    private override function create() {
         super.create();
         behaviourSet("resource", _resource);
     }
@@ -79,7 +78,7 @@ class Image extends Component implements IClonable<Image> {
         _resource = value;
         return value;
     }
-    
+
     private var _maintainAspectRatio:Bool = true;
     @:clonable public var maintainAspectRatio(get, set):Bool;
     private function get_maintainAspectRatio():Bool {
@@ -132,7 +131,7 @@ class ImageLayout extends DefaultLayout {
         }
     }
 
-    private override function repositionChildren():Void {
+    private override function repositionChildren() {
         if (component.hasImageDisplay()) {
             component.getImageDisplay().left = paddingLeft;
             component.getImageDisplay().top = paddingTop;

@@ -6,13 +6,15 @@ class DataSource<T> {
     public var onChange:Void->Void;
     public var transformer:IItemTransformer<T>;
 
-    private var _changed:Bool = false;
+    private var _changed:Bool;
 
     public function new(transformer:IItemTransformer<T> = null) {
         this.transformer = transformer;
+        _allowCallbacks = true;
+        _changed = false;
     }
 
-    private var _allowCallbacks:Bool = true;
+    private var _allowCallbacks:Bool;
     public var allowCallbacks(get, set):Bool;
     private function get_allowCallbacks():Bool {
         return _allowCallbacks;

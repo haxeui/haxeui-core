@@ -1,5 +1,5 @@
 package haxe.ui.layouts;
-import haxe.ui.styles.Style;
+
 import haxe.ui.util.Size;
 
 class DefaultLayout extends Layout {

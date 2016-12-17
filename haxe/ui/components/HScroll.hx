@@ -1,13 +1,13 @@
 package haxe.ui.components;
 
+import haxe.ui.core.IClonable;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.layouts.DefaultLayout;
-import haxe.ui.core.IClonable;
 
 /**
  A horizontal implementation of a `Scroll`
 **/
-@:dox(icon="/icons/ui-scroll-bar-horizontal.png")
+@:dox(icon = "/icons/ui-scroll-bar-horizontal.png")
 class HScroll extends Scroll implements IClonable<HScroll> {
     public function new() {
         super();
@@ -16,7 +16,7 @@ class HScroll extends Scroll implements IClonable<HScroll> {
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************
-    private override function createDefaults():Void {
+    private override function createDefaults() {
         super.createDefaults();
         _defaultLayout = new HScrollLayout();
     }
@@ -89,7 +89,7 @@ class HScrollLayout extends DefaultLayout {
         }
     }
 
-    public override function repositionChildren():Void {
+    public override function repositionChildren() {
         super.repositionChildren();
 
         var deinc:Button = component.findComponent("scroll-deinc-button");

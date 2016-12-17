@@ -8,7 +8,7 @@ class AnimationKeyFrame {
     public var animation:Animation;
     public var time(default, default):Int;
 
-    public var componentRefs:Array<AnimationComponentRef> = new Array<AnimationComponentRef>();
+    public var componentRefs:Array<AnimationComponentRef> = [];
 
     public function new(time:Int) {
         this.time = time;

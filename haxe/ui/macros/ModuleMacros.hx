@@ -7,16 +7,14 @@ import haxe.ui.parsers.modules.ModuleParser;
 #if macro
 import haxe.macro.Expr;
 import haxe.macro.Context;
-import haxe.rtti.Meta;
 import sys.FileSystem;
 import sys.io.File;
-import haxe.macro.Compiler;
 #end
 
 class ModuleMacros {
-    private static var _modules:Array<Module> = new Array<Module>();
+    private static var _modules:Array<Module> = [];
 
-    private static var _modulesProcessed:Bool = false;
+    private static var _modulesProcessed:Bool;
     macro public static function processModules():Expr {
         if (_modulesProcessed == true) {
             return macro null;
@@ -234,7 +232,6 @@ class ModuleMacros {
             }
             return false;
         }, ["module."]);
-
 
         _modulesLoaded = true;
         return _modules;

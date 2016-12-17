@@ -1,4 +1,5 @@
 package haxe.ui.layouts;
+
 import haxe.ui.core.Component;
 import haxe.ui.util.Rectangle;
 import haxe.ui.util.Size;
@@ -26,8 +27,8 @@ class HorizontalContinuousLayout extends HorizontalLayout {
         // first lets calculate our dimentions without changing anthing for perf
         var ucx:Float = component.componentWidth - (paddingLeft + paddingRight);
         var ucy:Float = component.componentHeight - (paddingTop + paddingBottom);
-        var dimensions:Array<Array<ComponentRectangle>> = new Array<Array<ComponentRectangle>>();
-        var heights:Array<Float> = new Array<Float>();
+        var dimensions:Array<Array<ComponentRectangle>> = [];
+        var heights:Array<Float> = [];
 
         var row = 0;
         var usedCX:Float = 0;
@@ -61,7 +62,7 @@ class HorizontalContinuousLayout extends HorizontalLayout {
             }
 
             if (dimensions.length <= row) {
-                dimensions.push(new Array<ComponentRectangle>());
+                dimensions.push([]);
             }
 
             rc.left = xpos;
@@ -82,7 +83,6 @@ class HorizontalContinuousLayout extends HorizontalLayout {
         for (r in dimensions) {
             var height:Float = heights[x];
             var spaceX:Float = ((r.length - 1) / r.length) * horizontalSpacing;
-            var t = horizontalSpacing / 3;
             var n:Int = 0;
             for (c in r) {
                 switch (verticalAlign(c.component)) {
@@ -92,7 +92,6 @@ class HorizontalContinuousLayout extends HorizontalLayout {
                         c.top += height - c.height;
                     default:
                 }
-
 
                 if (c.component.percentWidth != null) {
                     c.left += n * (horizontalSpacing - spaceX);
