@@ -2,7 +2,7 @@ engines:
   haxe-checkstyle:
     enabled: true
   markdownlint:
-    enabled: true
+    enabled: false
   csslint:
     enabled: false  
 ratings:
