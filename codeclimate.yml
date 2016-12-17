@@ -3,6 +3,8 @@ engines:
     enabled: true
   markdownlint:
     enabled: true
+  csslint:
+    enabled: false  
 ratings:
   paths:
     - "**.hx"
