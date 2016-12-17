@@ -1307,8 +1307,8 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         while (c != null) {
             xpos += c.left;
 
-            if (c.scrollRect != null) {
-                xpos -= c.scrollRect.left;
+            if (c.componentClipRect != null) {
+                xpos -= c.componentClipRect.left;
             }
 
             c = c.parentComponent;
@@ -1327,8 +1327,8 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         while (c != null) {
             ypos += c.top;
 
-            if (c.scrollRect != null) {
-                ypos -= c.scrollRect.top;
+            if (c.componentClipRect != null) {
+                ypos -= c.componentClipRect.top;
             }
 
             c = c.parentComponent;
