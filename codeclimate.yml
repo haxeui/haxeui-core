@@ -9,3 +9,6 @@ ratings:
   paths:
     - "**.hx"
     - "**.md"
+exclude_paths:
+  - "**.css"
+  
