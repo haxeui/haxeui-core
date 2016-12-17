@@ -13,7 +13,7 @@ import haxe.ui.util.Variant;
 /**
  Optionbox component where only one option of a group may be selected at a single time
 **/
-@:dox(icon="/icons/ui-radio-buttons.png")
+@:dox(icon = "/icons/ui-radio-buttons.png")
 class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
     private static var _groups:StringMap<Array<OptionBox>>;
 
@@ -32,7 +32,7 @@ class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************
-    private override function createDefaults():Void {
+    private override function createDefaults() {
         _defaultBehaviours = [
             "text" => new OptionBoxDefaultTextBehaviour(this),
             "selected" => new OptionBoxDefaultSelectedBehaviour(this)
@@ -40,14 +40,14 @@ class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
         _defaultLayout = new HorizontalLayout();
     }
 
-    private override function create():Void {
+    private override function create() {
         super.create();
         behaviourSet("text", _text);
         behaviourSet("group", _groupName);
         behaviourSet("selected", selected);
     }
 
-    private override function createChildren():Void {
+    private override function createChildren() {
         if (_value == null) {
             _value = new OptionBoxValue();
             _value.id = "optionbox-value";
@@ -60,7 +60,7 @@ class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
         }
     }
 
-    private override function destroyChildren():Void {
+    private override function destroyChildren() {
         if (_value != null) {
             removeComponent(_value);
             _value = null;
@@ -89,7 +89,7 @@ class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
         return value;
     }
 
-    private override function applyStyle(style:Style):Void {
+    private override function applyStyle(style:Style) {
         super.applyStyle(style);
         if (_label != null) {
             _label.customStyle.color = style.color;
@@ -183,7 +183,7 @@ class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
         behaviourSet("group", value);
         var arr:Array<OptionBox> = _groups.get(value);
         if (arr == null) {
-            arr = new Array<OptionBox>();
+            arr = [];
         }
 
         if (optionInGroup(value, this) == false) {
@@ -216,18 +216,18 @@ class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
     //***********************************************************************************************************
     // Events
     //***********************************************************************************************************
-    private function _onClick(event:MouseEvent):Void {
+    private function _onClick(event:MouseEvent) {
         toggleSelected();
         var event:UIEvent = new UIEvent(UIEvent.CHANGE);
         dispatch(event);
     }
 
-    private function _onMouseOver(event:MouseEvent):Void {
+    private function _onMouseOver(event:MouseEvent) {
         addClass(":hover");
         _value.addClass(":hover");
     }
 
-    private function _onMouseOut(event:MouseEvent):Void {
+    private function _onMouseOut(event:MouseEvent) {
         removeClass(":hover");
         _value.removeClass(":hover");
     }
@@ -265,7 +265,7 @@ class OptionBoxDefaultTextBehaviour extends Behaviour {
         if (value == null || value.isNull) {
             return;
         }
-        
+
         var optionbox:OptionBox = cast _component;
         if (optionbox._label == null) {
             optionbox._label = new Label();
@@ -325,7 +325,7 @@ class OptionBoxValue extends InteractiveComponent {
         addComponent(_icon);
     }
 
-    private override function applyStyle(style:Style):Void {
+    private override function applyStyle(style:Style) {
         super.applyStyle(style);
         if (_icon != null) {
             _icon.resource = style.icon;

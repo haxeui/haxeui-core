@@ -2,14 +2,24 @@ package haxe.ui.util;
 
 class ColorUtil {
     public static function buildColorArray(startColor:Int, endColor:Int, size:Float):Array<Int> {
-        var array:Array<Int> = new Array<Int>();
+        var array:Array<Int> = [];
 
-        var r1 = r(startColor), g1 = g(startColor), b1 = b(startColor);
-        var r2 = r(endColor), g2 = g(endColor), b2 = b(endColor);
-        var rd = r2 - r1, gd = g2 - g1, bd = b2 - b1; // deltas
-        var ri:Float = rd / (size - 1), gi:Float = gd / (size - 1), bi:Float = bd / (size - 1); // increments
+        var r1 = r(startColor);
+        var g1 = g(startColor);
+        var b1 = b(startColor);
+        var r2 = r(endColor);
+        var g2 = g(endColor);
+        var b2 = b(endColor);
+        var rd = r2 - r1; // deltas
+        var gd = g2 - g1; // deltas
+        var bd = b2 - b1; // deltas
+        var ri:Float = rd / (size - 1); // increments
+        var gi:Float = gd / (size - 1); // increments
+        var bi:Float = bd / (size - 1); // increments
 
-        var r:Float = r1, g:Float = g1, b:Float = b1;
+        var r:Float = r1;
+        var g:Float = g1;
+        var b:Float = b1;
         for (n in 0...cast size) {
             var c = color(r, g, b);
             array.push(c);

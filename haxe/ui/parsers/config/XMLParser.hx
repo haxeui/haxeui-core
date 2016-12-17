@@ -1,4 +1,5 @@
 package haxe.ui.parsers.config;
+
 import haxe.ui.util.GenericConfig;
 
 class XMLParser extends ConfigParser {
@@ -17,7 +18,7 @@ class XMLParser extends ConfigParser {
         return config;
     }
 
-    private function parseAddionalConfig(node:Xml, parent:GenericConfig):Void {
+    private function parseAddionalConfig(node:Xml, parent:GenericConfig) {
         var group = parent.addSection(node.nodeName);
         for (attr in node.attributes()) {
             group.values.set(attr, node.get(attr));

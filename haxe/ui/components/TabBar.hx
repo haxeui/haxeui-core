@@ -1,22 +1,21 @@
 package haxe.ui.components;
 
 import haxe.ui.core.Component;
+import haxe.ui.core.IClonable;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.UIEvent;
 import haxe.ui.layouts.HorizontalLayout;
-import haxe.ui.core.IClonable;
-import haxe.ui.util.Size;
 
 /**
  A specially styled list of toggle buttons where one one can be selected at a time
 **/
-@:dox(icon="/icons/ui-tab.png")
+@:dox(icon = "/icons/ui-tab.png")
 class TabBar extends Component implements IClonable<TabBar> {
     private var _currentButton:Button;
 
     public function new() {
         super();
-        layout = new HorizontalLayout();// TabBarLayout();
+        layout = new HorizontalLayout(); // TabBarLayout();
     }
 
     //***********************************************************************************************************
@@ -27,7 +26,7 @@ class TabBar extends Component implements IClonable<TabBar> {
 
         //if (child != _background) {
             child.addClass("tabbar-button");
-            child.registerEvent(MouseEvent.MOUSE_DOWN, __onButtonMouseDown);
+            child.registerEvent(MouseEvent.MOUSE_DOWN, _onButtonMouseDown);
             if (_selectedIndex == -1) {
                 selectedIndex = 0;
             }
@@ -46,7 +45,7 @@ class TabBar extends Component implements IClonable<TabBar> {
     private function get_selectedIndex():Int {
         return _selectedIndex;
     }
-    private function set_selectedIndex(value:Int) {
+    private function set_selectedIndex(value:Int):Int {
         if (value < 0) {
             return value;
         }
@@ -75,13 +74,12 @@ class TabBar extends Component implements IClonable<TabBar> {
     //***********************************************************************************************************
     // Events
     //***********************************************************************************************************
-    private function __onButtonMouseDown(event:MouseEvent):Void {
+    private function _onButtonMouseDown(event:MouseEvent){
         if (event.target == _currentButton) {
             return;
         }
 
-        selectedIndex = getComponentIndex(event.target);// - 1;
-
+        selectedIndex = getComponentIndex(event.target); // - 1;
     }
 
 }

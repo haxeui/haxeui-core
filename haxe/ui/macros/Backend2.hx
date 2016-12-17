@@ -5,7 +5,7 @@ class Backend2 {
     public var classEntries(default, default):Array<BackendClassEntry>;
 
     public function new() {
-        classEntries = new Array<BackendClassEntry>();
+        classEntries = [];
     }
 
     public function fromXML(xml:Xml) {

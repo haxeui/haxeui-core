@@ -31,7 +31,7 @@ class Rectangle {
         return value;
     }
 
-    public function inflate(dx:Float, dy:Float):Void {
+    public function inflate(dx:Float, dy:Float) {
         left -= dx; width += dx * 2;
         top -= dy; height += dy * 2;
     }

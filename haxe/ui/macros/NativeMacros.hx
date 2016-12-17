@@ -1,21 +1,16 @@
 package haxe.ui.macros;
 
 import haxe.ui.parsers.config.ConfigParser;
-import haxe.ui.parsers.modules.Module;
-import haxe.ui.parsers.modules.ModuleParser;
 import haxe.ui.util.GenericConfig;
 
 #if macro
 import haxe.macro.Expr;
 import haxe.macro.Context;
-import haxe.rtti.Meta;
-import sys.FileSystem;
 import sys.io.File;
-import haxe.macro.Compiler;
 #end
 
 class NativeMacros {
-    private static var _nativeProcessed:Bool = false;
+    private static var _nativeProcessed:Bool;
     macro public static function processNative():Expr {
         if (_nativeProcessed == true) {
             return macro null;

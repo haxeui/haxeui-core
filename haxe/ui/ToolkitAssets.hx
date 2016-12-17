@@ -1,13 +1,12 @@
 package haxe.ui;
 
-import haxe.ds.Either;
-import haxe.io.Bytes;
 import haxe.Resource;
+import haxe.io.Bytes;
 import haxe.ui.assets.AssetPlugin;
-import haxe.ui.backend.AssetsBase;
-import haxe.ui.util.CallbackMap;
 import haxe.ui.assets.FontInfo;
 import haxe.ui.assets.ImageInfo;
+import haxe.ui.backend.AssetsBase;
+import haxe.ui.util.CallbackMap;
 
 class ToolkitAssets extends AssetsBase {
     private static var _instance:ToolkitAssets;
@@ -34,7 +33,7 @@ class ToolkitAssets extends AssetsBase {
         super();
     }
 
-    public function getFont(resourceId:String, callback:FontInfo->Void, useCache:Bool = true):Void {
+    public function getFont(resourceId:String, callback:FontInfo->Void, useCache:Bool = true) {
         if (_fontCache != null && _fontCache.get(resourceId) != null && useCache == true) {
             callback(_fontCache.get(resourceId));
         } else {
@@ -59,7 +58,7 @@ class ToolkitAssets extends AssetsBase {
         }
     }
 
-    private function _onFontLoaded(resourceId:String, font:FontInfo):Void {
+    private function _onFontLoaded(resourceId:String, font:FontInfo) {
         if (_fontCache == null) {
             _fontCache = new Map<String, FontInfo>();
         }
@@ -67,7 +66,7 @@ class ToolkitAssets extends AssetsBase {
         _fontCallbacks.invokeAndRemove(resourceId, font);
     }
 
-    public function getImage(resourceId:String, callback:ImageInfo->Void, useCache:Bool = true):Void {
+    public function getImage(resourceId:String, callback:ImageInfo->Void, useCache:Bool = true) {
         var orginalResourceId = resourceId;
         resourceId = runPlugins(resourceId);
         if (_imageCache != null && _imageCache.get(resourceId) != null && useCache == true) {
@@ -98,7 +97,7 @@ class ToolkitAssets extends AssetsBase {
         }
     }
 
-    private function _onImageLoaded(resourceId:String, imageInfo:ImageInfo):Void {
+    private function _onImageLoaded(resourceId:String, imageInfo:ImageInfo) {
         if (imageInfo != null && (imageInfo.width == -1 || imageInfo.width == -1)) {
             trace("WARNING: imageData.originalWidth == -1 || imageData.originalHeight == -1");
         }
@@ -109,7 +108,6 @@ class ToolkitAssets extends AssetsBase {
         _imageCache.set(resourceId, imageInfo);
         _imageCallbacks.invokeAndRemove(resourceId, imageInfo);
     }
-
 
     public function getText(resourceId:String):String {
         var s = getTextDelegate(resourceId);
@@ -129,7 +127,7 @@ class ToolkitAssets extends AssetsBase {
     private var _plugins:Array<AssetPlugin>;
     public function addPlugin(plugin:AssetPlugin) {
         if (_plugins == null) {
-            _plugins = new Array<AssetPlugin>();
+            _plugins = [];
         }
         _plugins.push(plugin);
     }

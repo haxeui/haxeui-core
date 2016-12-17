@@ -1,4 +1,5 @@
 package haxe.ui.parsers.config;
+
 import haxe.ui.util.GenericConfig;
 
 class ConfigParser {

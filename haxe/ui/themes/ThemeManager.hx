@@ -1,4 +1,5 @@
 package haxe.ui.themes;
+
 import haxe.ui.Toolkit;
 
 class ThemeManager {
@@ -29,16 +30,16 @@ class ThemeManager {
         return theme;
     }
 
-    public function addStyleResource(themeName:String, resourceId:String):Void {
+    public function addStyleResource(themeName:String, resourceId:String) {
         getTheme(themeName).styles.push(resourceId);
     }
 
-    public function applyTheme(themeName:String):Void {
+    public function applyTheme(themeName:String) {
         applyThemeStyles("global");
         applyThemeStyles(themeName);
     }
 
-    public function applyThemeStyles(themeName:String):Void {
+    public function applyThemeStyles(themeName:String) {
         var theme:Theme = _themes.get(themeName);
         if (theme == null) {
             return;

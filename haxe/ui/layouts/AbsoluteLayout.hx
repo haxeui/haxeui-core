@@ -5,7 +5,7 @@ class AbsoluteLayout extends DefaultLayout {
         super();
     }
 
-    private override function repositionChildren():Void {
+    private override function repositionChildren() {
 
     }
 }

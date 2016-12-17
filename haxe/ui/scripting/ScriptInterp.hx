@@ -29,24 +29,28 @@ class ScriptInterp extends Interp {
     }
 
     override function get( o : Dynamic, f : String ) : Dynamic {
-        if( o == null ) throw error(EInvalidAccess(f));
-        return Reflect.getProperty(o,f);
+        if ( o == null ) {
+            throw error(EInvalidAccess(f));
+        }
+        return Reflect.getProperty(o, f);
     }
 
     override function set( o : Dynamic, f : String, v : Dynamic ) : Dynamic {
-        if( o == null ) throw error(EInvalidAccess(f));
-        Reflect.setProperty(o,f,v);
+        if ( o == null ) {
+            throw error(EInvalidAccess(f));
+        }
+        Reflect.setProperty(o, f, v);
         return v;
     }
 
-    public static function addClassAlias(alias:String, classPath:String):Void {
+    public static function addClassAlias(alias:String, classPath:String) {
         if (_classAliases == null) {
             _classAliases = new Map<String, String>();
         }
         _classAliases.set(alias, classPath);
     }
 
-    public static function addStaticClass(alias:String, c:Dynamic):Void {
+    public static function addStaticClass(alias:String, c:Dynamic) {
         if (_staticClasses == null) {
             _staticClasses = new Map<String, Dynamic>();
         }

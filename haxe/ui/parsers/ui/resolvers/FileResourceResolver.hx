@@ -1,4 +1,5 @@
 package haxe.ui.parsers.ui.resolvers;
+
 import haxe.ui.util.StringUtil;
 
 #if (macro || sys)

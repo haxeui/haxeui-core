@@ -1,17 +1,5 @@
 package haxe.ui.components;
 
-import haxe.ui.core.Behaviour;
-import haxe.ui.core.IClonable;
-import haxe.ui.core.InteractiveComponent;
-import haxe.ui.core.MouseEvent;
-import haxe.ui.core.TextInput;
-import haxe.ui.core.UIEvent;
-import haxe.ui.focus.FocusManager;
-import haxe.ui.focus.IFocusable;
-import haxe.ui.layouts.DefaultLayout;
-import haxe.ui.util.Size;
-import haxe.ui.util.Variant;
-
 class TextArea /* extends InteractiveComponent implements IFocusable implements IClonable<TextArea> */ {
     public function new() {
         /*
@@ -24,14 +12,14 @@ class TextArea /* extends InteractiveComponent implements IFocusable implements 
     // Overrides
     //***********************************************************************************************************
     /*
-    private override function createDefaults():Void {
+    private override function createDefaults() {
         _defaultBehaviours = [
             "text" => new TextAreaDefaultTextBehaviour(this)
         ];
         _defaultLayout = new TextAreaLayout();
     }
 
-    private override function create():Void {
+    private override function create() {
         super.create();
         if (_text == null) {
             behaviourSet("text", "");
@@ -127,7 +115,7 @@ class TextArea /* extends InteractiveComponent implements IFocusable implements 
         invalidateLayout();
     }
 
-    private override function createChildren():Void {
+    private override function createChildren() {
         if (componentWidth == 0) {
             componentWidth = 150;
         }
@@ -136,7 +124,7 @@ class TextArea /* extends InteractiveComponent implements IFocusable implements 
         registerEvent(UIEvent.CHANGE, _onTextChanged);
     }
 
-    private override function destroyChildren():Void {
+    private override function destroyChildren() {
         super.destroyChildren();
 
         unregisterEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
@@ -154,11 +142,11 @@ class TextArea /* extends InteractiveComponent implements IFocusable implements 
     // Events
     //***********************************************************************************************************
     /*
-    private function _onTextChanged(event:UIEvent):Void {
+    private function _onTextChanged(event:UIEvent) {
         handleBindings(["text", "value"]);
     }
 
-    private function _onMouseDown(event:MouseEvent):Void {
+    private function _onMouseDown(event:MouseEvent) {
         FocusManager.instance.focus = this;
     }
     */
@@ -217,7 +205,7 @@ class TextAreaDefaultTextBehaviour extends Behaviour {
 @:dox(hide)
 @:access(haxe.ui.components.TextArea)
 class TextAreaLayout extends DefaultLayout {
-    private override function repositionChildren():Void {
+    private override function repositionChildren() {
         var xpos:Float = paddingLeft;
         var ypos:Float = paddingTop;
         if (component.hasTextInput() == true) {

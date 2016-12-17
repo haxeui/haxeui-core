@@ -1,7 +1,5 @@
 package haxe.ui.layouts;
 
-import haxe.ui.core.Component;
-import haxe.ui.styles.Style;
 import haxe.ui.util.Size;
 
 class HorizontalLayout extends DefaultLayout {

@@ -1,6 +1,5 @@
 package haxe.ui.core;
 
-import haxe.ui.focus.FocusManager;
 import haxe.ui.focus.IFocusable;
 
 /**
@@ -11,7 +10,7 @@ class InteractiveComponent extends Component implements IFocusable implements IC
         super();
     }
 
-    private var _focus:Bool;
+    private var _focus:Bool = false;
     /**
      Whether this component currently has focus
 

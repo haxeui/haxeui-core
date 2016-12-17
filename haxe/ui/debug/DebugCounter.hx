@@ -5,11 +5,13 @@ import haxe.ui.util.CallStackHelper;
 
 class DebugCounter {
     public var name:String;
-    private var _counters:Map<String, Int> = new Map<String, Int>();
-    private var _stacks:Map<String, Int> = new Map<String, Int>();
+    private var _counters:Map<String, Int>;
+    private var _stacks:Map<String, Int>;
 
     public function new(name:String = null) {
         this.name = name;
+        _counters = new Map<String, Int>();
+        _stacks = new Map<String, Int>();
     }
 
     public function incrementComponent(component:Component, fn:String = null, by:Int = 1) {

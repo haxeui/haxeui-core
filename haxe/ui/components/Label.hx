@@ -13,7 +13,7 @@ import haxe.ui.util.Variant;
 /**
  A general purpose component to display text
 **/
-@:dox(icon="/icons/ui-label.png")
+@:dox(icon = "/icons/ui-label.png")
 class Label extends InteractiveComponent implements IClonable<Label> {
     public function new() {
         super();
@@ -25,14 +25,14 @@ class Label extends InteractiveComponent implements IClonable<Label> {
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************
-    private override function createDefaults():Void {
+    private override function createDefaults() {
         _defaultBehaviours = [
             "text" => new LabelDefaultTextBehaviour(this)
         ];
         _defaultLayout = new LabelLayout();
     }
 
-    private override function create():Void {
+    private override function create() {
         super.create();
         behaviourSet("text", _text);
     }
@@ -52,7 +52,7 @@ class Label extends InteractiveComponent implements IClonable<Label> {
         return value;
     }
 
-    private override function applyStyle(style:Style):Void {
+    private override function applyStyle(style:Style) {
         super.applyStyle(style);
         if (hasTextDisplay() == true) {
             if (style.color != null) {
@@ -90,7 +90,7 @@ class LabelLayout extends DefaultLayout {
         }
     }
 
-    private override function repositionChildren():Void {
+    private override function repositionChildren() {
         if (component.hasTextDisplay() == true) {
             component.getTextDisplay().left = paddingLeft;
             component.getTextDisplay().top = paddingTop;

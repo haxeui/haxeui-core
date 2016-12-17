@@ -14,7 +14,7 @@ class DialogOptions {
 
      _Note: A button definition is different from a button instance_
     **/
-    public var buttons:Array<DialogButton> = new Array<DialogButton>();
+    public var buttons:Array<DialogButton> = [];
     /**
      The string to display in the dialogs title bar
     **/

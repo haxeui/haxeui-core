@@ -1,7 +1,7 @@
 package haxe.ui.util.filters;
 
 class FilterParser {
-    private static var filterParamDefaults:Map<String, Array<Dynamic>> = null;
+    private static var filterParamDefaults:Map<String, Array<Dynamic>>;
 
     public static function parseFilter(filterDetails:Array<Dynamic>):Filter {
         var filter:Filter = null;
@@ -58,7 +58,7 @@ class FilterParser {
     }
 
     private static function copyFilterDefaults(filterName:String, params:Array<Dynamic>):Array<Dynamic> {
-        var copy:Array<Dynamic> = new Array<Dynamic>();
+        var copy:Array<Dynamic> = [];
 
         var defaultParams:Array<Dynamic> = filterParamDefaults[filterName];
         if (defaultParams != null) {
@@ -77,17 +77,16 @@ class FilterParser {
         return copy;
     }
 
-
-    private static function buildDefaults():Void {
+    private static function buildDefaults() {
         if (filterParamDefaults != null) {
             return;
         }
 
         filterParamDefaults = new Map<String, Array<Dynamic>>();
-        filterParamDefaults["drop-shadow"] = new Array<Dynamic>();
+        filterParamDefaults["drop-shadow"] = [];
         filterParamDefaults["drop-shadow"] = filterParamDefaults["drop-shadow"].concat([4, 45, 0, 1, 4, 4, 1, 1, false, false, false]);
 
-        filterParamDefaults["blur"] = new Array<Dynamic>();
+        filterParamDefaults["blur"] = [];
         filterParamDefaults["blur"] = filterParamDefaults["blur"].concat([1]);
     }
 }

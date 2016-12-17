@@ -21,7 +21,6 @@ class DelegateLayout extends VerticalLayout {
             cy += (paddingTop + paddingBottom);
         }
 
-
         var size:Size = new Size(cx, cy);
         return size;
     }

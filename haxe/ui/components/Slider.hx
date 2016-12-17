@@ -3,16 +3,16 @@ package haxe.ui.components;
 import haxe.ui.animation.AnimationManager;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
+import haxe.ui.core.IClonable;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.UIEvent;
 import haxe.ui.util.Variant;
-import haxe.ui.core.IClonable;
 
 /**
  Encapsulates shared functionality of both vertical and horizontal slider components
 **/
-@:dox(icon="/icons/ui-slider-050.png")
+@:dox(icon = "/icons/ui-slider-050.png")
 class Slider extends InteractiveComponent implements IClonable<Slider> {
     private var _valueBackground:Component;
     private var _value:Component;
@@ -29,7 +29,7 @@ class Slider extends InteractiveComponent implements IClonable<Slider> {
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************
-    private override function createDefaults():Void {
+    private override function createDefaults() {
         _defaultBehaviours = [
             "min" => new SliderDefaultMinBehaviour(this),
             "max" => new SliderDefaultMaxBehaviour(this),
@@ -39,7 +39,7 @@ class Slider extends InteractiveComponent implements IClonable<Slider> {
         ];
     }
 
-    private override function create():Void {
+    private override function create() {
         super.create();
 
         behaviourSet("min", _min);
@@ -47,7 +47,7 @@ class Slider extends InteractiveComponent implements IClonable<Slider> {
         behaviourSet("pos", _pos);
     }
 
-    private override function createChildren():Void {
+    private override function createChildren() {
         super.createChildren();
 
         if (_valueBackground == null) {
@@ -82,7 +82,7 @@ class Slider extends InteractiveComponent implements IClonable<Slider> {
         }
     }
 
-    private override function destroyChildren():Void {
+    private override function destroyChildren() {
         if (_valueBackground != null) {
             if (_value != null) {
                 _valueBackground.removeComponent(_value);
@@ -121,7 +121,7 @@ class Slider extends InteractiveComponent implements IClonable<Slider> {
     /**
      The current value of the slider
     **/
-    @:dox(group="Value related properties and methods")
+    @:dox(group = "Value related properties and methods")
     @bindable @clonable public var pos(get, set):Float;
     private function get_pos():Float {
         return _pos;
@@ -166,7 +166,7 @@ class Slider extends InteractiveComponent implements IClonable<Slider> {
     /**
      The minimum value the slider can hold
     **/
-    @:dox(group="Value related properties and methods")
+    @:dox(group = "Value related properties and methods")
     @bindable @clonable public var min(get, set):Float;
     private function get_min():Float {
         return _min;
@@ -190,7 +190,7 @@ class Slider extends InteractiveComponent implements IClonable<Slider> {
     /**
      The maximum value the slider can hold
     **/
-    @:dox(group="Value related properties and methods")
+    @:dox(group = "Value related properties and methods")
     @bindable @clonable public var max(get, set):Float;
     private function get_max():Float {
         return _max;
@@ -214,7 +214,7 @@ class Slider extends InteractiveComponent implements IClonable<Slider> {
     /**
      The start of the sliders range value
     **/
-    @:dox(group="Range related properties and methods")
+    @:dox(group = "Range related properties and methods")
     @bindable @clonable public var rangeStart(get, set):Float;
     private function get_rangeStart():Float {
         return _rangeStart;
@@ -268,7 +268,7 @@ class Slider extends InteractiveComponent implements IClonable<Slider> {
     /**
      The end of the sliders range value
     **/
-    @:dox(group="Range related properties and methods")
+    @:dox(group = "Range related properties and methods")
     @bindable @clonable public var rangeEnd(get, set):Float;
     private function get_rangeEnd():Float {
         return _rangeEnd;
@@ -305,11 +305,10 @@ class Slider extends InteractiveComponent implements IClonable<Slider> {
         AnimationManager.instance.run(animationId, ["target" => this], ["rangeEnd" => value]);
     }
 
-
     /**
      Allows setting the sliders start and end range at the same time
     **/
-    @:dox(group="Range related properties and methods")
+    @:dox(group = "Range related properties and methods")
     public function setRange(start:Float, end:Float) {
         if (start != _rangeStart) {
             _rangeStart = start;

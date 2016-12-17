@@ -1,8 +1,5 @@
 package haxe.ui.core;
 
-import haxe.ui.core.Component;
-import haxe.ui.core.IClonable;
-import haxe.ui.core.MouseEvent;
 import haxe.ui.util.Variant;
 
 class ItemRenderer extends Component implements IClonable<ItemRenderer> {

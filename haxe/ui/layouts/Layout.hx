@@ -1,9 +1,7 @@
 package haxe.ui.layouts;
 
-import haxe.ui.containers.ScrollView;
 import haxe.ui.core.Component;
 import haxe.ui.util.Size;
-import haxe.ui.util.CallStackHelper;
 
 class Layout implements ILayout {
     public function new() {
@@ -22,7 +20,7 @@ class Layout implements ILayout {
     }
 
     @:access(haxe.ui.core.Component)
-    public function refresh():Void {
+    public function refresh() {
         if (_component != null && _component.isReady == true) {
 
             resizeChildren();
@@ -196,8 +194,12 @@ class Layout implements ILayout {
             return 0;
         }
         var padding:Float = 0;
-        if (component.style.paddingTop != null) padding = component.style.paddingTop + padding;
-        if (component.style.paddingBottom != null) padding = component.style.paddingBottom + padding;
+        if (component.style.paddingTop != null) {
+            padding = component.style.paddingTop + padding;
+        }
+        if (component.style.paddingBottom != null) {
+            padding = component.style.paddingBottom + padding;
+        }
         var icy:Float = component.componentHeight - padding;
         return icy;
     }
@@ -252,7 +254,6 @@ class Layout implements ILayout {
             if (child.includeInLayout == false || excluded(exclusions, child) == true) {
                 continue;
             }
-
 
             if (child.percentWidth == null) {
                 if (child.left < x1) {

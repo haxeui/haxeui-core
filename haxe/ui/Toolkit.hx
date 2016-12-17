@@ -165,7 +165,7 @@ class Toolkit {
 
     public static var pixelsPerRem(default, set):Int = 16;
     private static function set_pixelsPerRem(value:Int):Int {
-        if(pixelsPerRem == value) {
+        if (pixelsPerRem == value) {
             return value;
         }
 
