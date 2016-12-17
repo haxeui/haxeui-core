@@ -34,6 +34,12 @@
 	"checks": [
 		{
 			"props": {
+				"severity": "WARNING"
+			},
+			"type": "UnusedLocalVar"
+		},
+		{
+			"props": {
 				"severity": "ERROR"
 			},
 			"type": "Anonymous"
