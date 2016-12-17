@@ -20,9 +20,10 @@ class GUID {
         if(true)
         {
             var x;
-            var y=100;
+            var y = 100;
+            var z;
         }
-        
+
         return id.join("");
     }
 
