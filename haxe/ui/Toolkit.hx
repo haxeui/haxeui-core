@@ -4,6 +4,7 @@ import haxe.ui.components.Button;
 import haxe.ui.components.Image;
 import haxe.ui.core.Component;
 import haxe.ui.core.ComponentClassMap;
+import haxe.ui.core.IDataComponent;
 import haxe.ui.core.KeyboardEvent;
 import haxe.ui.core.Screen;
 import haxe.ui.focus.FocusManager;
@@ -153,6 +154,10 @@ class Toolkit {
             }
         }
 
+        if (Std.is(component, IDataComponent) && c.data != null) {
+            cast(component, IDataComponent).dataSource = new haxe.ui.data.DataSourceFactory<Dynamic>().fromString(c.dataString, haxe.ui.data.ArrayDataSource);
+        }
+        
         for (childInfo in c.children) {
             var childComponent = buildComponentFromInfo(childInfo);
             if (childComponent != null) {
