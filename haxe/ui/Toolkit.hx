@@ -130,6 +130,16 @@ class Toolkit {
         if (c.text != null)             component.text = c.text;
         if (c.styleNames != null)       component.styleNames = c.styleNames;
         if (c.style != null)            component.styleString = c.style;
+        
+        if (Std.is(component, haxe.ui.containers.ScrollView)) { // special properties for scrollview and derived classes
+            var scrollview:haxe.ui.containers.ScrollView = cast(component, haxe.ui.containers.ScrollView);
+            if (c.contentWidth != null)             scrollview.contentWidth = c.contentWidth;
+            if (c.contentHeight != null)            scrollview.contentHeight = c.contentHeight;
+            if (c.percentContentWidth != null)      scrollview.percentContentWidth = c.percentContentWidth;
+            if (c.percentContentHeight != null)     scrollview.percentContentHeight = c.percentContentHeight;
+            if (c.layoutName != null)               scrollview.layoutName = c.layoutName;
+        }
+        
         for (propName in c.properties.keys()) {
             var propValue:Dynamic = c.properties.get(propName);
             if (StringTools.startsWith(propName, "on")) {
