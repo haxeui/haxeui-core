@@ -173,7 +173,7 @@ class ImageDefaultResourceBehaviour extends Behaviour {
                         if (display != null) {
                             display.imageInfo = imageInfo;
                             image._originalSize = new Size(imageInfo.width, imageInfo.height);
-                            if (image.autoSize() == true) {
+                            if (image.autoSize() == true && image.parentComponent != null) {
                                 image.parentComponent.invalidateLayout();
                             }
                         }
