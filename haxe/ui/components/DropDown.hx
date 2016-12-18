@@ -278,10 +278,11 @@ class DropDownDefaultDataSourceBehaviour extends Behaviour {
 @:access(haxe.ui.components.DropDown)
 class DropDownDefaultSelectedItemBehaviour extends Behaviour {
     public override function getDynamic():Dynamic {
-        var lv:ListView = cast(_component, DropDown)._listview;
-        if (lv == null || lv.selectedItem == null) {
+        var dropDown:DropDown = cast(_component, DropDown);
+        var lv:ListView = dropDown._listview;
+        if (dropDown.dataSource == null || dropDown._selectedIndex == DropDown.NO_SELECTION) {
             return null;
         }
-        return lv.selectedItem.data;
+        return dropDown.dataSource.get(dropDown._selectedIndex);
     }
 }
