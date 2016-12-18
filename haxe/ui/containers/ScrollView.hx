@@ -212,6 +212,10 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         return v;
     }
 
+    public function clearContents() {
+        _contents.removeAllComponents();
+    }
+    
     private function addComponentToSuper(child:Component):Component {
         return super.addComponent(child);
     }
