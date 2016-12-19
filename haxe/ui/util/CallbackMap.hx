@@ -8,6 +8,9 @@ class CallbackMap<T> {
     }
 
     public function add(key:String, callback:T->Void):Bool { // returns true if a new FunctionArray was created
+        if (callback == null) {
+            return false;
+        }
         var b:Bool = false;
         var arr:FunctionArray<T->Void> = _map.get(key);
         if (arr == null) {

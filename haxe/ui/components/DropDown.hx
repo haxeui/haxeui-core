@@ -14,6 +14,8 @@ import haxe.ui.data.DataSource;
 import haxe.ui.util.Variant;
 
 class DropDown extends Button implements IDataComponent implements IClonable<DropDown> {
+    static private inline var NO_SELECTION:Int = -1;
+
     private var _listview:ListView;
     private var _itemRenderer:ItemRenderer;
 
@@ -62,6 +64,59 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
         }
         //behaviourSet("dataSource", Variant.fromDynamic(value));
         behaviourSet("dataSource", value);
+
+        if(_requireSelection == true && _dataSource != null && _selectedIndex < 0) {
+            selectedIndex = 0;
+        }
+
+        return value;
+    }
+
+    private var _selectedIndex:Int = NO_SELECTION;
+    @bindable public var selectedIndex(get, set):Int;
+    private function get_selectedIndex():Int {
+        return _selectedIndex;
+    }
+    private function set_selectedIndex(value:Int):Int {
+        if(_dataSource == null || value >= _dataSource.size) {
+            return value;
+        }
+
+        if(_selectedIndex == value) {
+            return value;
+        }
+
+        _selectedIndex = value;
+
+        if(_dataSource != null) {
+            if(_requireSelection == true && _selectedIndex < 0 && _dataSource.size > 0) {
+                _selectedIndex = 0;
+            }
+
+            if(_selectedIndex >= 0) {
+                text = _dataSource.get(_selectedIndex).value;
+            }
+        }
+        else {
+            text = null;
+        }
+
+        return _selectedIndex;
+    }
+
+    private var _requireSelection:Bool = false;
+    public var requireSelection(get, set):Bool;
+    private function get_requireSelection():Bool {
+        return _requireSelection;
+    }
+    private function set_requireSelection(value:Bool):Bool {
+        if(_requireSelection != value) {
+            _requireSelection = value;
+            if(_requireSelection == true && _dataSource != null && _selectedIndex < 0) {
+                selectedIndex = 0;
+            }
+        }
+
         return value;
     }
 
@@ -223,10 +278,11 @@ class DropDownDefaultDataSourceBehaviour extends Behaviour {
 @:access(haxe.ui.components.DropDown)
 class DropDownDefaultSelectedItemBehaviour extends Behaviour {
     public override function getDynamic():Dynamic {
-        var lv:ListView = cast(_component, DropDown)._listview;
-        if (lv == null || lv.selectedItem == null) {
+        var dropDown:DropDown = cast(_component, DropDown);
+        var lv:ListView = dropDown._listview;
+        if (dropDown.dataSource == null || dropDown._selectedIndex == DropDown.NO_SELECTION) {
             return null;
         }
-        return lv.selectedItem.data;
+        return dropDown.dataSource.get(dropDown._selectedIndex);
     }
 }

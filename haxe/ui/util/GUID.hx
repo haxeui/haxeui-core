@@ -17,6 +17,13 @@ class GUID {
            id.push(characters[GUID.randomIntegerWithinRange(0, radix)]);
         }
 
+        if(true)
+        {
+            var x;
+            var y = 100;
+            var z;
+        }
+
         return id.join("");
     }
 
