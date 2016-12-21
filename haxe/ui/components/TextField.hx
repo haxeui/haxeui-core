@@ -382,9 +382,9 @@ class TextFieldLayout extends DefaultLayout {
             var size:Size = usableSize;
             #if !pixijs
             component.getTextInput().width = size.width;
+            component.getTextInput().height = size.height;
             #end
 
-            //component.getTextInput().height = size.height;
         }
     }
 
