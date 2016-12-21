@@ -371,7 +371,7 @@ class TextFieldLayout extends DefaultLayout {
 
         if (component.hasTextInput() == true) {
             component.getTextInput().left = xpos;
-            component.getTextInput().top = (component.componentHeight / 2) - (component.getTextInput().textHeight / 2);
+            component.getTextInput().top = paddingTop;// (component.componentHeight / 2) - (component.getTextInput().textHeight / 2);
         }
     }
 
