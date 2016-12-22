@@ -1664,6 +1664,10 @@ class Component extends ComponentBase implements IComponentBase implements IClon
             native = style.native;
         }
 
+        if (style.hidden != null) {
+            hidden = style.hidden;
+        }
+        
         /*
         if (style.clip != null) {
             clipContent = style.clip;
