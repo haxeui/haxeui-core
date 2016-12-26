@@ -1,5 +1,6 @@
 package haxe.ui.components;
 
+import haxe.ui.focus.FocusManager;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.IClonable;
@@ -16,19 +17,67 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
     public function new() {
         super();
     }
+
+    //***********************************************************************************************************
+    // Public API
+    //***********************************************************************************************************
+    /**
+     Return if the textfield is empty.
+    **/
+    public var empty(get, never):Bool;
+    private function get_empty():Bool {
+        return _text == null || _text.length == 0;
+    }
+
+    private var _placeholderText:String;
+    /**
+     A short hint that describes the expected value.
+     The short hint is displayed in the textfield before the user enters a value.
+     Use ":empty" css class to change the style.
+    **/
+    @:clonable public var placeholderText(get, set):String;
+    private function get_placeholderText():String {
+        return _placeholderText;
+    }
+
+    private function set_placeholderText(value:String):String {
+        if (_placeholderText == value) {
+            return value;
+        }
+
+        _placeholderText = value;
+        _validateText();
+
+        return value;
+    }
     
     //***********************************************************************************************************
     // Overrides
     //***********************************************************************************************************
     private override function set_text(value:String):String {
         value = super.set_text(value);
-        behaviourSet("text", value);
+        _validateText();
         checkScrolls();
         return value;
     }
     
-    private override function get_text():String {
-        return behaviourGet("text");
+//    private override function get_text():String {
+//        return behaviourGet("text");
+//    }
+
+    private override function set_focus(value:Bool):Bool {
+        if (_focus == value || allowFocus == false) {
+            return value;
+        }
+
+        super.set_focus(value);
+        if (empty == false) {
+            text = behaviourGet("text");
+        } else {
+            _validateText();
+        }
+
+        return value;
     }
     
     private override function createDefaults() {
@@ -49,7 +98,18 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
     private override function createChildren() {
         super.createChildren();
         getTextInput().multiline = true;
+
         registerEvent(MouseEvent.MOUSE_WHEEL, _onMouseWheel);
+        registerEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
+        registerEvent(UIEvent.CHANGE, _onTextChanged);
+    }
+
+    private override function destroyChildren() {
+        super.destroyChildren();
+
+        unregisterEvent(MouseEvent.MOUSE_WHEEL, _onMouseWheel);
+        unregisterEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
+        unregisterEvent(UIEvent.CHANGE, _onTextChanged);
     }
     
     private override function onReady() {
@@ -107,6 +167,16 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
         }
     }
 
+    private function _onMouseDown(event:MouseEvent) {
+        FocusManager.instance.focus = this;
+    }
+
+    private function _onTextChanged(event:UIEvent) {
+        var newText:String = behaviourGet("text");
+        text = newText;
+        handleBindings(["text", "value"]);
+    }
+
     private function _onVScrollChange(e:UIEvent) {
         getTextInput().vscrollPos = _vscroll.pos;
     }
@@ -114,6 +184,29 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
     public override function onResized() {
         super.onResized();
         checkScrolls();
+    }
+
+    //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+    private function _validateText() {
+        var text:String = _text != null ? _text : "";
+        var placeholderVisible:Bool = empty;
+
+        //Placeholder
+        if (focus == false) {
+            if (text == "") {
+                text = _placeholderText;
+                if (placeholderVisible == false) {
+                    addClass(":empty");
+                }
+            }
+        } else if (placeholderVisible == true){
+            text = "";
+            removeClass(":empty");
+        }
+
+        behaviourSet("text", text);
     }
 }
 
