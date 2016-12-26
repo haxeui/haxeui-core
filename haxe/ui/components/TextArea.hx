@@ -27,6 +27,10 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
         return value;
     }
     
+    private override function get_text():String {
+        return behaviourGet("text");
+    }
+    
     private override function createDefaults() {
         _defaultBehaviours = [
             "text" => new TextAreaDefaultTextBehaviour(this)
