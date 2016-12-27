@@ -256,11 +256,6 @@ class Scroll extends InteractiveComponent implements IClonable<Scroll> {
     }
 
     private function _onMouseDown(event:MouseEvent) {
-        if (event.screenY < _thumb.screenTop) {
-            animatePos(pos - pageSize);
-        } else if (event.screenY > _thumb.screenTop + _thumb.componentHeight) {
-            animatePos(pos + pageSize);
-        }
     }
 
     //******************************************************************************************

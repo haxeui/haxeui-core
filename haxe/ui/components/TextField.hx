@@ -45,7 +45,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
             componentWidth = 150;
         }
 
-        getTextInput(); //create the text input if it doesn't exist
+        getTextInput().multiline = false;
         registerEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
         registerEvent(UIEvent.CHANGE, _onTextChanged);
     }

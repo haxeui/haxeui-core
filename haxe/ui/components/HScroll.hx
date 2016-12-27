@@ -27,7 +27,7 @@ class HScroll extends Scroll implements IClonable<HScroll> {
     private override function _onThumbMouseDown(event:MouseEvent) {
         super._onThumbMouseDown(event);
 
-        _mouseDownOffset = event.screenX - _thumb.left;
+        _mouseDownOffset = event.screenX - _thumb.left + layout.paddingLeft;
     }
 
     private override function _onScreenMouseMove(event:MouseEvent) {
@@ -38,11 +38,11 @@ class HScroll extends Scroll implements IClonable<HScroll> {
 
         var xpos:Float = event.screenX - _mouseDownOffset;
         var minX:Float = 0;
-        if (_deincButton != null) {
+        if (_deincButton != null && _deincButton.hidden == false) {
             minX = _deincButton.componentWidth + layout.horizontalSpacing;
         }
         var maxX:Float = layout.usableWidth - _thumb.componentWidth;
-        if (_deincButton != null) {
+        if (_deincButton != null && _deincButton.hidden == false) {
             maxX += _deincButton.componentWidth + layout.horizontalSpacing;
         }
         if (xpos < minX) {
@@ -57,6 +57,14 @@ class HScroll extends Scroll implements IClonable<HScroll> {
         var v:Float = xpos - minX;
         var newValue:Float = min + ((v / ucx) * m);
         pos = newValue;
+    }
+    
+    private override function _onMouseDown(event:MouseEvent) {
+        if (event.screenX < _thumb.screenLeft) {
+            animatePos(pos - pageSize);
+        } else if (event.screenX > _thumb.screenLeft + _thumb.componentWidth) {
+            animatePos(pos + pageSize);
+        }
     }
 }
 

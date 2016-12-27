@@ -13,6 +13,8 @@ import haxe.ui.macros.ModuleMacros;
 import haxe.ui.macros.NativeMacros;
 import haxe.ui.parsers.ui.ComponentInfo;
 import haxe.ui.parsers.ui.ComponentParser;
+import haxe.ui.parsers.ui.resolvers.AssetResourceResolver;
+import haxe.ui.parsers.ui.resolvers.ResourceResolver;
 import haxe.ui.scripting.ConditionEvaluator;
 import haxe.ui.styles.Engine;
 import haxe.ui.themes.ThemeManager;
@@ -73,7 +75,12 @@ class Toolkit {
         return Screen.instance;
     }
 
-    public static function componentFromString(data:String, type:String = null):Component {
+    public static function componentFromAsset(assetId:String):Component {
+        var data = ToolkitAssets.instance.getText(assetId);
+        return componentFromString(data, null, new AssetResourceResolver(assetId));
+    }
+    
+    public static function componentFromString(data:String, type:String = null, resourceResolver:ResourceResolver = null):Component {
         if (data == null || data.length == 0) {
             return null;
         }
@@ -90,7 +97,7 @@ class Toolkit {
             return null;
         }
 
-        var c:ComponentInfo = parser.parse(data);
+        var c:ComponentInfo = parser.parse(data, resourceResolver);
         var component = buildComponentFromInfo(c);
 
         var fullScript = "";
