@@ -165,11 +165,9 @@ class ImageLayout extends DefaultLayout {
             var scaleW:Float = maxWidth != -1 ? maxWidth / image._originalSize.width : 1;
             var scaleH:Float = maxHeight != -1 ? maxHeight / image._originalSize.height : 1;
 
-            if(imageScaleMode != ScaleMode.FILL)
-            {
+            if(imageScaleMode != ScaleMode.FILL) {
                 var scale:Float;
-                switch(imageScaleMode)
-                {
+                switch(imageScaleMode) {
                     case ScaleMode.FIT_INSIDE:
                         scale = (scaleW < scaleH) ? scaleW : scaleH;
                     case ScaleMode.FIT_OUTSIDE:
@@ -184,9 +182,7 @@ class ImageLayout extends DefaultLayout {
 
                 imageDisplay.imageWidth = image._originalSize.width * scale;
                 imageDisplay.imageHeight = image._originalSize.height * scale;
-            }
-            else
-            {
+            } else {
                 imageDisplay.imageWidth = image._originalSize.width * scaleW;
                 imageDisplay.imageHeight = image._originalSize.height * scaleH;
             }
