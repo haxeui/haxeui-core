@@ -1,5 +1,9 @@
 package haxe.ui.components;
 
+import haxe.ui.util.Rectangle;
+import haxe.ui.constants.VerticalAlign;
+import haxe.ui.constants.HorizontalAlign;
+import haxe.ui.constants.ScaleMode;
 import haxe.ui.Toolkit;
 import haxe.ui.assets.ImageInfo;
 import haxe.ui.core.Behaviour;
@@ -79,16 +83,45 @@ class Image extends Component implements IClonable<Image> {
         return value;
     }
 
-    private var _maintainAspectRatio:Bool = true;
-    @:clonable public var maintainAspectRatio(get, set):Bool;
-    private function get_maintainAspectRatio():Bool {
-        return _maintainAspectRatio;
+    private var _imageScaleMode:ScaleMode = ScaleMode.FIT_INSIDE;
+    @:clonable public var imageScaleMode(get, set):ScaleMode;
+    private function get_imageScaleMode():ScaleMode {
+        return _imageScaleMode;
     }
-    private function set_maintainAspectRatio(value:Bool):Bool {
-        if (value == _maintainAspectRatio) {
+    private function set_imageScaleMode(value:ScaleMode):ScaleMode {
+        if (value == _imageScaleMode) {
             return value;
         }
-        _maintainAspectRatio = value;
+        _imageScaleMode = value;
+        invalidateLayout();
+        return value;
+    }
+
+    private var _imageHorizontalAlign:HorizontalAlign = HorizontalAlign.CENTER;
+    @:clonable public var imageHorizontalAlign(get, set):HorizontalAlign;
+    private function get_imageHorizontalAlign():HorizontalAlign {
+        return _imageHorizontalAlign;
+    }
+    private function set_imageHorizontalAlign(value:HorizontalAlign):HorizontalAlign {
+        if (value == _imageHorizontalAlign) {
+            return value;
+        }
+        _imageHorizontalAlign = value;
+        invalidateLayout();
+        return value;
+    }
+
+    private var _imageVerticalAlign:VerticalAlign = VerticalAlign.CENTER;
+    @:clonable public var imageVerticalAlign(get, set):VerticalAlign;
+    private function get_imageVerticalAlign():VerticalAlign {
+        return _imageVerticalAlign;
+    }
+    private function set_imageVerticalAlign(value:VerticalAlign):VerticalAlign {
+        if (value == _imageVerticalAlign) {
+            return value;
+        }
+        _imageVerticalAlign = value;
+        invalidateLayout();
         return value;
     }
 }
@@ -99,42 +132,97 @@ class Image extends Component implements IClonable<Image> {
 @:dox(hide)
 @:access(haxe.ui.components.Image)
 class ImageLayout extends DefaultLayout {
-    private var maintainAspectRatio(get, null):Bool;
-    private function get_maintainAspectRatio():Bool {
-        return cast(_component, Image)._maintainAspectRatio;
+    private var imageScaleMode(get, never):ScaleMode;
+    private function get_imageScaleMode():ScaleMode {
+        return cast(_component, Image).imageScaleMode;
+    }
+
+    private var imageHorizontalAlign(get, never):HorizontalAlign;
+    private function get_imageHorizontalAlign():HorizontalAlign {
+        return cast(_component, Image).imageHorizontalAlign;
+    }
+
+    private var imageVerticalAlign(get, never):VerticalAlign;
+    private function get_imageVerticalAlign():VerticalAlign {
+        return cast(_component, Image).imageVerticalAlign;
     }
 
     private override function resizeChildren() {
         if (component.hasImageDisplay()) {
-            // this feels like it might be the wrong place to do this, ie, setting the component size here - its a special case though
-            if (component.autoWidth == false) {
-                var usz = usableSize;
-                component.getImageDisplay().imageWidth = usz.width;
-                if (maintainAspectRatio == true) {
-                    var image:Image = cast _component;
-                    var r:Float = usz.width / image._originalSize.width;
-                    component.getImageDisplay().imageHeight = image._originalSize.height * r;
-                    component.componentHeight = component.getImageDisplay().imageHeight + (paddingTop + paddingBottom);
-                }
+            var usz = usableSize;
+            var image:Image = cast _component;
+            var imageDisplay = image.getImageDisplay();
+            var maxWidth:Float = usableSize.width;
+            var maxHeight:Float = usableSize.height;
+            if(component.autoWidth == true) {
+                maxWidth = -1;
             }
 
-            if (component.autoHeight == false) {
-                var usz = usableSize;
-                component.getImageDisplay().imageHeight = usz.height;
-                if (maintainAspectRatio == true) {
-                    var image:Image = cast _component;
-                    var r:Float = usz.height / image._originalSize.height;
-                    component.getImageDisplay().imageWidth = image._originalSize.width * r;
-                    component.componentWidth = component.getImageDisplay().imageWidth + (paddingLeft + paddingRight);
-                }
+            if(_component.autoHeight == true) {
+                maxHeight = -1;
             }
+
+            var scaleW:Float = maxWidth != -1 ? maxWidth / image._originalSize.width : 1;
+            var scaleH:Float = maxHeight != -1 ? maxHeight / image._originalSize.height : 1;
+
+            if(imageScaleMode != ScaleMode.FILL)
+            {
+                var scale:Float;
+                switch(imageScaleMode)
+                {
+                    case ScaleMode.FIT_INSIDE:
+                        scale = (scaleW < scaleH) ? scaleW : scaleH;
+                    case ScaleMode.FIT_OUTSIDE:
+                        scale = (scaleW > scaleH) ? scaleW : scaleH;
+                    case ScaleMode.FIT_WIDTH:
+                        scale = scaleW;
+                    case ScaleMode.FIT_HEIGHT:
+                        scale = scaleH;
+                    default:    //ScaleMode.NONE
+                        scale = 1;
+                }
+
+                imageDisplay.imageWidth = image._originalSize.width * scale;
+                imageDisplay.imageHeight = image._originalSize.height * scale;
+            }
+            else
+            {
+                imageDisplay.imageWidth = image._originalSize.width * scaleW;
+                imageDisplay.imageHeight = image._originalSize.height * scaleH;
+            }
+
+            updateClipRect(usz);
         }
     }
 
     private override function repositionChildren() {
         if (component.hasImageDisplay()) {
-            component.getImageDisplay().left = paddingLeft;
-            component.getImageDisplay().top = paddingTop;
+            var image:Image = cast _component;
+            var imageDisplay:ImageDisplay = _component.getImageDisplay();
+
+            switch(image.imageHorizontalAlign) {
+                case HorizontalAlign.CENTER:
+                    imageDisplay.left = (_component.componentWidth - imageDisplay.imageWidth) / 2;  //TODO
+
+                case HorizontalAlign.RIGHT:
+                    imageDisplay.left = _component.componentWidth - imageDisplay.imageWidth - paddingRight;
+
+                case HorizontalAlign.LEFT:
+                    imageDisplay.left = paddingLeft;
+            }
+
+            switch(image.imageVerticalAlign) {
+                case VerticalAlign.CENTER:
+                    imageDisplay.top = (_component.componentHeight - imageDisplay.imageHeight) / 2;  //TODO
+
+                case VerticalAlign.BOTTOM:
+                    imageDisplay.top = _component.componentHeight - imageDisplay.imageHeight - paddingBottom;
+
+                case VerticalAlign.TOP:
+                    imageDisplay.top = paddingTop;
+            }
+
+            updateClipRect(usableSize);
         }
     }
 
@@ -145,6 +233,25 @@ class ImageLayout extends DefaultLayout {
             size.height += component.getImageDisplay().imageHeight;
         }
         return size;
+    }
+
+    private function updateClipRect(usz:Size):Void {
+        var imageDisplay:ImageDisplay = _component.getImageDisplay();
+        var rc:Rectangle = imageDisplay.imageClipRect;
+        if(rc == null)
+            rc = new Rectangle();
+
+        if(imageDisplay.imageWidth > usz.width
+           || imageDisplay.imageHeight > usz.height) {
+            rc.top = paddingLeft;
+            rc.left = paddingTop;
+            rc.width = usz.width;
+            rc.height = usz.height;
+        } else {
+            rc = null;
+        }
+
+        imageDisplay.imageClipRect = rc;
     }
 }
 
