@@ -516,9 +516,9 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     }
 
     private function onDestroy() {
-        
+
     }
-    
+
     /**
      Removes all child components from this component instance
     **/
@@ -1667,7 +1667,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         if (style.hidden != null) {
             hidden = style.hidden;
         }
-        
+
         /*
         if (style.clip != null) {
             clipContent = style.clip;

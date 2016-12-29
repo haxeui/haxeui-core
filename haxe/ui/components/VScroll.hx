@@ -34,12 +34,12 @@ class VScroll extends Scroll implements IClonable<VScroll> {
         if (_deincButton != null && _deincButton.hidden == false) {
             minY = _deincButton.componentHeight + layout.verticalSpacing;
         }
-        
+
         var maxY:Float = layout.usableHeight - _thumb.componentHeight;
         if (_deincButton != null && _deincButton.hidden == false) {
             maxY += _deincButton.componentHeight + layout.verticalSpacing;
         }
-        
+
         if (ypos < minY) {
             ypos = minY;
         } else if (ypos > maxY) {
@@ -53,7 +53,7 @@ class VScroll extends Scroll implements IClonable<VScroll> {
         var newValue:Float = min + ((v / ucy) * m);
         pos = newValue;
     }
-    
+
     private override function _onMouseDown(event:MouseEvent) {
         if (event.screenY < _thumb.screenTop) {
             animatePos(pos - pageSize);

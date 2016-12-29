@@ -58,7 +58,7 @@ class HScroll extends Scroll implements IClonable<HScroll> {
         var newValue:Float = min + ((v / ucx) * m);
         pos = newValue;
     }
-    
+
     private override function _onMouseDown(event:MouseEvent) {
         if (event.screenX < _thumb.screenLeft) {
             animatePos(pos - pageSize);

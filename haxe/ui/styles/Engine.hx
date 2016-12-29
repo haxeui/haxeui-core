@@ -70,14 +70,14 @@ class Engine {
             if( !found )
                 return false;
         }
-        
+
         if (c.node != null) {
             var className:String = Type.getClassName(Type.getClass(d)).split(".").pop();
             if (c.node.toLowerCase() != className.toLowerCase()) {
                 return false;
             }
         }
-        
+
         if( c.id != null && c.id != d.id )
             return false;
         if( c.parent != null ) {

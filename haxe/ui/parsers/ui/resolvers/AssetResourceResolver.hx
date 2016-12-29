@@ -15,7 +15,7 @@ class AssetResourceResolver extends ResourceResolver {
             _rootDir += "/";
         }
     }
-    
+
     public override function getResourceData(r:String):String {
         var f:String = Path.normalize(_rootDir + r);
         return ToolkitAssets.instance.getText(f);
