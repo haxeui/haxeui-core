@@ -19,6 +19,10 @@ class ArrayDataSource<T> extends DataSource<T> {
         return _array[index];
     }
 
+    private override function handleIndexOf(item:T):Int {
+        return _array.indexOf(item);
+    }
+
     private override function handleAddItem(item:T):T {
         _array.push(item);
         return item;
