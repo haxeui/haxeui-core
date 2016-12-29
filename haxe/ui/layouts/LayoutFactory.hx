@@ -11,6 +11,10 @@ class LayoutFactory {
                 return new HorizontalContinuousLayout();
             case "absolute":
                 return new AbsoluteLayout();
+            case "vertical grid" | "verticalgrid":
+                return new VerticalGridLayout();
+            case "horizontal grid" | "horizontalgrid":
+                return new HorizontalGridLayout();
         }
 
         return new DefaultLayout();
