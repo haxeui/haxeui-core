@@ -58,6 +58,17 @@ class AnimationKeyFrame {
         }
     }
 
+    public function stop() {
+        #if actuate
+        for (ref in componentRefs) {
+            var actualComponent = animation.getComponent(ref.id);
+            if (actualComponent != null) {
+                Actuate.stop(actualComponent);
+            }
+        }
+        #end
+    }
+    
     private function onComplete() {
         _count--;
         if (_count == 0) {

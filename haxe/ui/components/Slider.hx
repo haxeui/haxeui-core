@@ -1,5 +1,6 @@
 package haxe.ui.components;
 
+import haxe.ui.animation.Animation;
 import haxe.ui.animation.AnimationManager;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
@@ -147,7 +148,8 @@ class Slider extends InteractiveComponent implements IClonable<Slider> {
         return value;
     }
 
-    private function animatePos(value:Float) {
+    private var _currentAnimation:Animation;
+    private function animatePos(value:Float, callback:Void->Void = null) {
         if (animatable == false) {
             pos = value;
             return;
@@ -159,7 +161,11 @@ class Slider extends InteractiveComponent implements IClonable<Slider> {
             return;
         }
 
-        AnimationManager.instance.run(animationId, ["target" => this], ["pos" => value]);
+        if (_currentAnimation != null) {
+            _currentAnimation.stop();
+        }
+        
+        _currentAnimation = AnimationManager.instance.run(animationId, ["target" => this], ["pos" => value], callback);
     }
 
     private var _min:Float = 0;
@@ -349,6 +355,12 @@ class Slider extends InteractiveComponent implements IClonable<Slider> {
     }
 
     private function _onScreenMouseMove(event:MouseEvent) {
+        if (_mouseDownOffset == -1) {
+            return;
+        }
+        if (_currentAnimation != null && event.buttonDown == true) {
+            _currentAnimation.stop();
+        }
     }
 
     private function _onScreenMouseUp(event:MouseEvent) {

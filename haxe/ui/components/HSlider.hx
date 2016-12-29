@@ -65,7 +65,11 @@ class HSlider extends Slider implements IClonable<HSlider> {
             } else {
                 _activeThumb = _rangeEndThumb;
                 var xpos:Float = event.screenX - _valueBackground.screenLeft - (_activeThumb.componentWidth / 2) - _valueBackground.paddingLeft;
-                animatePos(calcPosFromCoord(xpos));
+                animatePos(calcPosFromCoord(xpos), function() {
+                    if (_activeThumb != null) {
+                        _mouseDownOffset = (_activeThumb.componentWidth / 2) + _valueBackground.paddingLeft;
+                    }
+                });
                 //pos = calcPosFromCoord(xpos);
                 _onRangeEndThumbMouseDown(event);
             }
@@ -79,7 +83,11 @@ class HSlider extends Slider implements IClonable<HSlider> {
         } else {
             _activeThumb = _rangeEndThumb;
             var xpos:Float = event.screenX - _valueBackground.screenLeft - (_activeThumb.componentWidth / 2) - _valueBackground.paddingLeft;
-            animatePos(calcPosFromCoord(xpos));
+            animatePos(calcPosFromCoord(xpos), function() {
+                if (_activeThumb != null) {
+                    _mouseDownOffset = (_activeThumb.componentWidth / 2) + _valueBackground.paddingLeft;
+                }
+            });
             //pos = calcPosFromCoord(xpos);
             _onRangeEndThumbMouseDown(event);
         }
@@ -96,6 +104,7 @@ class HSlider extends Slider implements IClonable<HSlider> {
     }
 
     private override function _onScreenMouseMove(event:MouseEvent) {
+        super._onScreenMouseMove(event);
         if (_mouseDownOffset == -1) {
             return;
         }
