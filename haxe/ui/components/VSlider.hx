@@ -59,7 +59,11 @@ class VSlider extends Slider implements IClonable<VSlider> {
                 _activeThumb = _rangeEndThumb;
                 var ypos:Float = event.screenY - _valueBackground.screenTop - (_activeThumb.componentHeight / 2) - _valueBackground.paddingBottom;
                 //pos = calcPosFromCoord(ypos);
-                animatePos(calcPosFromCoord(ypos));
+                animatePos(calcPosFromCoord(ypos), function() {
+                    if (_activeThumb != null) {
+                        _mouseDownOffset = (_activeThumb.componentWidth / 2) + _valueBackground.paddingBottom;
+                    }
+                });
                 _onRangeEndThumbMouseDown(event);
             }
         }
@@ -73,7 +77,11 @@ class VSlider extends Slider implements IClonable<VSlider> {
             _activeThumb = _rangeEndThumb;
             var ypos:Float = event.screenY - _valueBackground.screenTop - (_activeThumb.componentHeight / 2) - _valueBackground.paddingBottom;
             //pos = calcPosFromCoord(ypos);
-            animatePos(calcPosFromCoord(ypos));
+            animatePos(calcPosFromCoord(ypos), function() {
+                if (_activeThumb != null) {
+                    _mouseDownOffset = (_activeThumb.componentWidth / 2) + _valueBackground.paddingBottom;
+                }
+            });
             _onRangeEndThumbMouseDown(event);
         }
     }
@@ -89,6 +97,7 @@ class VSlider extends Slider implements IClonable<VSlider> {
     }
 
     private override function _onScreenMouseMove(event:MouseEvent) {
+        super._onScreenMouseMove(event);
         if (_mouseDownOffset == -1) {
             return;
         }

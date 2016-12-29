@@ -20,18 +20,16 @@ class HorizontalLayout extends DefaultLayout {
 
             switch (verticalAlign(child)) {
                 case "center":
-                    ypos = ((component.componentHeight / 2) - (child.componentHeight / 2)) + marginTop(child) - marginBottom(child);
-//                  ypos = ((usableSize.height / 2) - (child.componentHeight / 2)) + marginTop(child) - marginBottom(child);
+                    ypos = ((component.componentHeight - child.componentHeight) / 2) + marginTop(child) - marginBottom(child);
                 case "bottom":
                     if (child.componentHeight < component.componentHeight) {
-//                      ypos = component.componentHeight - (child.componentHeight + paddingBottom + marginTop(child) - marginBottom(child));
-                        ypos = usableSize.height - (child.componentHeight + paddingBottom + marginTop(child) - marginBottom(child));
+                        ypos = component.componentHeight - (child.componentHeight + paddingBottom + marginTop(child));
                     }
                 default:
-                    ypos = paddingTop + marginTop(child) - marginBottom(child);
+                    ypos = paddingTop + marginTop(child);
             }
 
-            child.moveComponent(xpos + marginLeft(child) - marginRight(child), ypos);
+            child.moveComponent(xpos + marginLeft(child), ypos);
             xpos += child.componentWidth + horizontalSpacing;
         }
     }

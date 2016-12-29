@@ -43,6 +43,14 @@ class DataSource<T> {
         return r;
     }
 
+    public function indexOf(item:T):Int {
+        if(transformer != null) {
+            item = transformer.transformFrom(item);
+        }
+
+        return handleIndexOf(item);
+    }
+
     public function add(item:T):T {
         var r = handleAddItem(item);
         handleChanged();
@@ -76,6 +84,10 @@ class DataSource<T> {
 
     private function handleGetItem(index:Int):T {
         return null;
+    }
+
+    private function handleIndexOf(item:T):Int {
+        return 0;
     }
 
     private function handleAddItem(item:T):T {

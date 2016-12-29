@@ -79,7 +79,7 @@ class Toolkit {
         var data = ToolkitAssets.instance.getText(assetId);
         return componentFromString(data, null, new AssetResourceResolver(assetId));
     }
-    
+
     public static function componentFromString(data:String, type:String = null, resourceResolver:ResourceResolver = null):Component {
         if (data == null || data.length == 0) {
             return null;
@@ -137,7 +137,7 @@ class Toolkit {
         if (c.text != null)             component.text = c.text;
         if (c.styleNames != null)       component.styleNames = c.styleNames;
         if (c.style != null)            component.styleString = c.style;
-        
+
         if (Std.is(component, haxe.ui.containers.ScrollView)) { // special properties for scrollview and derived classes
             var scrollview:haxe.ui.containers.ScrollView = cast(component, haxe.ui.containers.ScrollView);
             if (c.contentWidth != null)             scrollview.contentWidth = c.contentWidth;
@@ -146,7 +146,7 @@ class Toolkit {
             if (c.percentContentHeight != null)     scrollview.percentContentHeight = c.percentContentHeight;
             if (c.layoutName != null)               scrollview.layoutName = c.layoutName;
         }
-        
+
         for (propName in c.properties.keys()) {
             var propValue:Dynamic = c.properties.get(propName);
             if (StringTools.startsWith(propName, "on")) {
@@ -174,7 +174,7 @@ class Toolkit {
         if (Std.is(component, IDataComponent) && c.data != null) {
             cast(component, IDataComponent).dataSource = new haxe.ui.data.DataSourceFactory<Dynamic>().fromString(c.dataString, haxe.ui.data.ArrayDataSource);
         }
-        
+
         for (childInfo in c.children) {
             var childComponent = buildComponentFromInfo(childInfo);
             if (childComponent != null) {

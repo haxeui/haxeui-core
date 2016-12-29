@@ -516,9 +516,9 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     }
 
     private function onDestroy() {
-        
+
     }
-    
+
     /**
      Removes all child components from this component instance
     **/
@@ -1353,11 +1353,11 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         var xpos:Float = 0;
         while (c != null) {
             xpos += c.left;
-            /*
-            if (c.sprite.scrollRect != null) {
-                xpos -= c.sprite.scrollRect.left;
+
+            if (c.componentClipRect != null) {
+                xpos -= c.componentClipRect.left;
             }
-            */
+
             c = c.parentComponent;
         }
         return xpos;
@@ -1373,11 +1373,11 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         var ypos:Float = 0;
         while (c != null) {
             ypos += c.top;
-            /*
-            if (c.sprite.scrollRect != null) {
-                ypos -= c.sprite.scrollRect.top;
+
+            if (c.componentClipRect != null) {
+                ypos -= c.componentClipRect.top;
             }
-            */
+
             c = c.parentComponent;
         }
         return ypos;
@@ -1667,7 +1667,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         if (style.hidden != null) {
             hidden = style.hidden;
         }
-        
+
         /*
         if (style.clip != null) {
             clipContent = style.clip;

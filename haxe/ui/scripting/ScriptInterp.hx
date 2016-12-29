@@ -32,9 +32,33 @@ class ScriptInterp extends Interp {
         if ( o == null ) {
             throw error(EInvalidAccess(f));
         }
-        return Reflect.getProperty(o, f);
+        var v = Reflect.getProperty(o, f);
+        return parseResult(v);
     }
 
+    private function parseResult(v):Dynamic {
+        var temp = Std.string(v);
+        var regexp:EReg = new EReg("_?(Bool|Float|Int|String)\\((.*)\\)", "g");
+        if (regexp.match(temp) == false) {
+            return v;
+        }
+
+        var m1 = regexp.matched(1);
+        var m2 = regexp.matched(2);
+        switch (m1) {
+            case "Bool":
+                return Std.parseFloat(m2);
+            case "Float":
+                return Std.parseFloat(m2);
+            case "Int":
+                return Std.parseInt(m2);
+            case "String":    
+                return Std.string(m2);
+            case _:    
+        }
+        return v;
+    }
+    
     override function set( o : Dynamic, f : String, v : Dynamic ) : Dynamic {
         if ( o == null ) {
             throw error(EInvalidAccess(f));

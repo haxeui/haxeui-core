@@ -27,6 +27,8 @@ class Animation {
 
     public var id:String;
 
+    private var _currentKeyFrame:AnimationKeyFrame;
+    
     public function new() {
     }
 
@@ -59,11 +61,13 @@ class Animation {
         _stopped = false;
         _currentTime = 0;
         _currentFrameIndex = 0;
+        _currentKeyFrame = null;
         runFrame(_currentFrameIndex);
     }
 
     private function runFrame(index:Int) {
         var f:AnimationKeyFrame = keyFrames[index];
+        _currentKeyFrame = f;
         var duration:Float = f.time - _currentTime;
         f.run(duration, function() {
             _currentTime = f.time;
@@ -105,6 +109,9 @@ class Animation {
 
     private var _stopped:Bool = false;
     public function stop() {
+        if (_currentKeyFrame != null) {
+            _currentKeyFrame.stop();
+        }
         _stopped = true;
         _loop = false;
     }
