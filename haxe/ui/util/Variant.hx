@@ -229,46 +229,44 @@ abstract Variant(VariantType) from VariantType {
 
     @:op(A++)
     private inline function postInc():Variant {
-        if (isUnit) {
+        return if (isUnit) {
             switch (this) {
                 case Unit(s): switch (s) {
-                    case Pix(v): return this = Unit(Pix(v++));
-                    case REM(v): return this = Unit(REM(v++));
-                    case VH(v): return this = Unit(VH(v++));
-                    case VW(v): return this = Unit(VW(v++));
+                    case Pix(v): var old = this; this = Unit(Pix(v+1)); old;
+                    case REM(v): var old = this; this = Unit(REM(v+1)); old;
+                    case VH(v): var old = this; this = Unit(VH(v+1)); old;
+                    case VW(v): var old = this; this = Unit(VW(v+1)); old;
                     default: throw "Variant Type Error";
                 }
                 default: throw "Variant Type Error";
             }
         } else if (isNumber) {
-            var v = toNumber();
-            v++;
-            this = Float(v);
-            return v;
+            var old = this;
+            this = Float(toNumber()+1);
+            old;
+        } else {
+            throw "Variant operation error";
         }
-        throw "Variant operation error";
     }
 
     @:op(++A)
     private inline function preInc():Variant {
-        if (isUnit) {
+        return if (isUnit) {
             switch (this) {
                 case Unit(s): switch (s) {
-                    case Pix(v): return this = Unit(Pix(++v));
-                    case REM(v): return this = Unit(REM(++v));
-                    case VH(v): return this = Unit(VH(++v));
-                    case VW(v): return this = Unit(VW(++v));
+                    case Pix(v): this = Unit(Pix(v+1));
+                    case REM(v): this = Unit(REM(v+1));
+                    case VH(v): this = Unit(VH(v+1));
+                    case VW(v): this = Unit(VW(v+1));
                     default: throw "Variant Type Error";
                 }
                 default: throw "Variant Type Error";
             }
         } else if (isNumber) {
-            var v = toNumber();
-            ++v;
-            this = Float(v);
-            return v;
+            this = Float(toNumber()+1);
+        } else {
+            throw "Variant operation error";
         }
-        throw "Variant operation error";
     }
 
     @:op(A - B)
@@ -284,46 +282,44 @@ abstract Variant(VariantType) from VariantType {
 
     @:op(A--)
     private inline function postDeinc():Variant {
-        if (isUnit) {
+        return if (isUnit) {
             switch (this) {
                 case Unit(s): switch (s) {
-                    case Pix(v): return this = Unit(Pix(v--));
-                    case REM(v): return this = Unit(REM(v--));
-                    case VH(v): return this = Unit(VH(v--));
-                    case VW(v): return this = Unit(VW(v--));
+                    case Pix(v): var old = this; this = Unit(Pix(v-1)); old;
+                    case REM(v): var old = this; this = Unit(REM(v-1)); old;
+                    case VH(v): var old = this; this = Unit(VH(v-1)); old;
+                    case VW(v): var old = this; this = Unit(VW(v-1)); old;
                     default: throw "Variant Type Error";
                 }
                 default: throw "Variant Type Error";
             }
         } else if (isNumber) {
-            var v = toNumber();
-            v--;
-            this = Float(v);
-            return v;
+            var old = this;
+            this = Float(toNumber()-1);
+            old;
+        } else {
+            throw "Variant operation error";
         }
-        throw "Variant operation error";
     }
 
     @:op(--A)
     private inline function preDeinc():Variant {
-        if (isUnit) {
+        return if (isUnit) {
             switch (this) {
                 case Unit(s): switch (s) {
-                    case Pix(v): return this = Unit(Pix(--v));
-                    case REM(v): return this = Unit(REM(--v));
-                    case VH(v): return this = Unit(VH(--v));
-                    case VW(v): return this = Unit(VW(--v));
+                    case Pix(v): this = Unit(Pix(v-1));
+                    case REM(v): this = Unit(REM(v-1));
+                    case VH(v): this = Unit(VH(v-1));
+                    case VW(v): this = Unit(VW(v-1));
                     default: throw "Variant Type Error";
                 }
                 default: throw "Variant Type Error";
             }
         } else if (isNumber) {
-            var v = toNumber();
-            --v;
-            this = Float(v);
-            return v;
+            this = Float(toNumber()-1);
+        } else {
+            throw "Variant operation error";
         }
-        throw "Variant operation error";
     }
 
     @:op(A * B)
