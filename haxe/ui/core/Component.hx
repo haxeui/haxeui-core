@@ -945,10 +945,9 @@ class Component extends ComponentBase implements IComponentBase implements IClon
                     calculatedHeight = s.height;
                 }
                 resizeComponent(calculatedWidth, calculatedHeight);
-            } else {
-                invalidateDisplay();
             }
             invalidateLayout();
+            invalidateDisplay();
 
             onReady();
             dispatch(new UIEvent(UIEvent.READY));
