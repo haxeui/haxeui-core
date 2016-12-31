@@ -703,11 +703,11 @@
 }
 
 .switch:hover {
-    background-color: #AAAAAA;
+    background-color: #FFFFFF;
 }
 
 .switch:selected {
-    background: #6CAADB;
+    background: #98c4e6;
 }
 
 .switch .button {
