@@ -688,6 +688,34 @@
 }
 
 /************************************************************************
+** SWITCH
+*************************************************************************/
+
+.switch {
+    background-color: #747474;
+    border: 1px solid #888888;
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 2px;
+    width: 60px;
+    height: 20px;
+}
+
+.switch:hover {
+    background-color: #AAAAAA;
+}
+
+.switch:selected {
+    background-color: #9abcc1;
+}
+
+.switch .button {
+    background-color: #FFFFFF;
+    height: 100%;
+    width: 50%;
+}
+
+/************************************************************************
 ** GRID
 *************************************************************************/
 .hgrid {
