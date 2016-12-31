@@ -598,6 +598,22 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         return cast match;
     }
 
+    public function findComponentsUnderPoint(screenX:Float, screenY:Float):Array<Component> {
+        var c:Array<Component> = [];
+        if (screenX >= this.screenLeft && screenX <= this.screenLeft + this.width
+            && screenY >= this.screenTop && screenY <= this.screenTop + this.height) {
+            for (child in childComponents) {
+                if (screenX >= child.screenLeft && screenX <= child.screenLeft + child.width
+                    && screenY >= child.screenTop && screenY <= child.screenTop + child.height) {
+                    c.push(child);
+                }
+                
+                c = c.concat(child.findComponentsUnderPoint(screenX, screenY));
+            }
+        }
+        return c;
+    }
+    
     /**
      Gets the index of a child component
     **/

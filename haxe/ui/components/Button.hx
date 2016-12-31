@@ -196,7 +196,6 @@ class Button extends InteractiveComponent implements IClonable<Button> {
     //***********************************************************************************************************
     private var _down:Bool = false;
     private function _onMouseOver(event:MouseEvent) {
-        event.cancel();
         if (_toggle == true && hasClass(":down")) {
             return;
         }
@@ -209,7 +208,6 @@ class Button extends InteractiveComponent implements IClonable<Button> {
     }
 
     private function _onMouseOut(event:MouseEvent) {
-        event.cancel();
         if (_toggle == true && hasClass(":down")) {
             return;
         }
