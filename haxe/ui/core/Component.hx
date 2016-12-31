@@ -66,7 +66,6 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         if (s.native != null && hasNativeEntry == true) {
             native = s.native;
         } else {
-            createDefaults();
             create();
         }
     }
@@ -75,6 +74,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     // Construction
     //***********************************************************************************************************
     private function create() {
+        createDefaults();
         handleCreate(native);
         destroyChildren();
 
