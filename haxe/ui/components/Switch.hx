@@ -37,7 +37,9 @@ class Switch extends InteractiveComponent implements IClonable<Switch> {
             _button = new Button();
             _button.id = "switch-button";
             _button.addClass("switch-button");
-
+            _button.onClick = function(e) {
+                selected = !selected;
+            }
             addComponent(_button);
         }
 
