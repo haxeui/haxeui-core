@@ -945,9 +945,10 @@ class Component extends ComponentBase implements IComponentBase implements IClon
                     calculatedHeight = s.height;
                 }
                 resizeComponent(calculatedWidth, calculatedHeight);
+            } else {
+                invalidateDisplay();
             }
             invalidateLayout();
-            invalidateDisplay();
 
             onReady();
             dispatch(new UIEvent(UIEvent.READY));
@@ -1695,12 +1696,12 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     //***********************************************************************************************************
     public function cloneComponent():Component {
         if (_ready == false) {
-            ready();
+            //ready();
         }
-        if (autoWidth == false) {
+        if (autoWidth == false && this.width > 0) {
             c.width = this.width;
         }
-        if (autoHeight == false) {
+        if (autoHeight == false && this.height > 0) {
             c.height = this.height;
         }
     }
