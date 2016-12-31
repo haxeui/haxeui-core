@@ -50,9 +50,9 @@
 .dialog-close-button {
     icon: "haxeui-core/styles/default/small-close-button.png";
     padding: 0 !important;
-    vertical-align: center;
     border: none !important;
     background-color: none !important;
+    horizontal-align: right;
     vertical-align: center;
 }
 
