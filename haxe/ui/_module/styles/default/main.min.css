@@ -112,5 +112,7 @@
 .switch:hover{background-color:#FFFFFF;}
 .switch:selected{background:#98c4e6;}
 .switch .button{height:100%;width:50%;}
+.switch-label{color:#ABABAB;}
+.switch-label:selected{color:#2d7cb9;}
 .hgrid{height:auto;}
 .vgrid{width:auto;}

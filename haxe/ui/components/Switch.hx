@@ -16,6 +16,7 @@ import haxe.ui.util.MathUtil;
 //@:dox(icon = "")  //TODO
 class Switch extends InteractiveComponent implements IClonable<Switch> {
     private var _button:Button;
+    private var _label:Label;
 
     public function new() {
         super();
@@ -33,7 +34,13 @@ class Switch extends InteractiveComponent implements IClonable<Switch> {
     }
 
     private override function createChildren() {
-        if(_button == null) {
+        if (_button == null) {
+            _label = new Label();
+            _label.id = "switch-label";
+            _label.addClass("switch-label");
+            _label.text = _unselectedText;
+            addComponent(_label);
+            
             _button = new Button();
             _button.id = "switch-button";
             _button.addClass("switch-button");
@@ -94,8 +101,12 @@ class Switch extends InteractiveComponent implements IClonable<Switch> {
 
         _selected = value;
         if (_selected == false) {
+            _label.text = _unselectedText;
+            _label.removeClass(":selected");
             removeClass(":selected");
         } else {
+            _label.text = _selectedText;
+            _label.addClass(":selected");
             addClass(":selected");
         }
 
@@ -107,6 +118,32 @@ class Switch extends InteractiveComponent implements IClonable<Switch> {
         return value;
     }
 
+    private var _selectedText:String = "On";
+    public var selectedText(get, set):String;
+    private function get_selectedText():String {
+        return _selectedText;
+    }
+    private function set_selectedText(value:String):String {
+        _selectedText = value;
+        if (_ready && _selected == true) {
+            _label.text = _selectedText;
+        }
+        return value;
+    }
+    
+    private var _unselectedText:String = "Off";
+    public var unselectedText(get, set):String;
+    private function get_unselectedText():String {
+        return _unselectedText;
+    }
+    private function set_unselectedText(value:String):String {
+        _unselectedText = value;
+        if (_ready && _selected == false) {
+            _label.text = _unselectedText;
+        }
+        return value;
+    }
+    
     //***********************************************************************************************************
     // Events
     //***********************************************************************************************************
@@ -162,11 +199,17 @@ class SwitchLayout extends DefaultLayout {
     private override function repositionChildren() {
         var switchComp:Switch = cast _component;
         var button:Button = switchComp.findComponent("switch-button");
+        var label:Label = switchComp.findComponent("switch-label");
+        
         button.top = paddingTop;
+        label.top = (component.componentHeight / 2) - (label.componentHeight / 2);
+        
         if(switchComp.selected == true) {
             button.left = switchComp.componentWidth - button.componentWidth - paddingRight;
+            label.left = (button.componentWidth / 2) - (label.componentWidth / 2);
         } else {
             button.left = paddingLeft;
+            label.left = button.left + button.componentWidth + (button.componentWidth / 2) - (label.componentWidth / 2);
         }
     }
 }
