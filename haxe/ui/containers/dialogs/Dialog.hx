@@ -11,7 +11,7 @@ import haxe.ui.layouts.VerticalLayout;
 **/
 @:dox(icon = "/icons/application-sub.png")
 class Dialog extends Component {
-    private var _titleBar:HBox;
+    private var _titleBar:Box;
     private var _buttons:HBox;
 
     private var _title:Label;
@@ -33,7 +33,7 @@ class Dialog extends Component {
             return;
         }
         if (_titleBar == null) {
-            _titleBar = new HBox();
+            _titleBar = new Box();
             _titleBar.id = "dialog-title-bar";
             _titleBar.addClass("dialog-title-bar");
 
