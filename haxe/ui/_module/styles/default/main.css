@@ -692,13 +692,14 @@
 *************************************************************************/
 
 .switch {
-    background-color: #747474;
-    border: 1px solid #888888;
-    border-radius: 10px;
+    background-color: #FFFFFF;
+    border: 1px solid #ABABAB;
+    border-radius: 2px;
     cursor: pointer;
-    padding: 2px;
+    padding: 0px;
     width: 60px;
     height: 20px;
+    filter: drop-shadow(1, 45, #888888, 0.3, 1, 1, 1, 3, true);
 }
 
 .switch:hover {
@@ -706,11 +707,10 @@
 }
 
 .switch:selected {
-    background-color: #9abcc1;
+    background: #6CAADB;
 }
 
 .switch .button {
-    background-color: #FFFFFF;
     height: 100%;
     width: 50%;
 }
