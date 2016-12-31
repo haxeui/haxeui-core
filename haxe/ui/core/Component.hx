@@ -1233,6 +1233,9 @@ class Component extends ComponentBase implements IComponentBase implements IClon
 
     private var _width:Null<Float>;
     private override function set_width(value:Float):Float {
+        if (value == 0) {
+            return value;
+        }
         if (_width == value) {
             return value;
         }
@@ -1248,6 +1251,9 @@ class Component extends ComponentBase implements IComponentBase implements IClon
 
     private var _height:Null<Float>;
     private override function set_height(value:Float):Float {
+        if (value == 0) {
+            return value;
+        }
         if (_height == value) {
             return value;
         }
