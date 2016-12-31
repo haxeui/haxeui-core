@@ -1506,6 +1506,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         if (_scriptEvents != null) {
             var script:String = _scriptEvents.get("onclick");
             if (script != null) {
+                event.cancel();
                 executeScriptCall(script);
             }
         }
@@ -1515,6 +1516,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         if (_scriptEvents != null) {
             var script:String = _scriptEvents.get("onchange");
             if (script != null) {
+                event.cancel();
                 executeScriptCall(script);
             }
         }

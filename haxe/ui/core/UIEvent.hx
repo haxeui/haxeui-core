@@ -1,6 +1,8 @@
 package haxe.ui.core;
 
-class UIEvent {
+import haxe.ui.backend.EventBase;
+
+class UIEvent extends EventBase {
     public static inline var READY:String = "Ready";
     public static inline var RESIZE:String = "Resize";
     public static inline var CHANGE:String = "Change";
@@ -10,6 +12,7 @@ class UIEvent {
     public var target(default, default):Component;
 
     public function new(type:String) {
+        super();
         this.type = type;
     }
 
@@ -17,6 +20,7 @@ class UIEvent {
         var c:UIEvent = new UIEvent(this.type);
         c.type = this.type;
         c.target = this.target;
+        postClone(c);
         return c;
     }
 }

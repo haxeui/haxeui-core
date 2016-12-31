@@ -26,6 +26,7 @@ class MouseEvent extends UIEvent {
         c.screenY = this.screenY;
         c.buttonDown = this.buttonDown;
         c.delta = this.delta;
+        postClone(c);
         return c;
     }
 }
