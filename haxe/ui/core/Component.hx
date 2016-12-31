@@ -1704,6 +1704,11 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         if (autoHeight == false && this.height > 0) {
             c.height = this.height;
         }
+        if (_scriptEvents != null) {
+            for (k in _scriptEvents.keys()) {
+                c.addScriptEvent(k, _scriptEvents.get(k));
+            }
+        }
     }
 
     //***********************************************************************************************************
