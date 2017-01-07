@@ -178,11 +178,6 @@ class Slider extends InteractiveComponent implements IClonable<Slider> {
         return _min;
     }
     private function set_min(value:Float):Float {
-        if (_ready) {
-            if (value < _min) {
-                value = _min;
-            }
-        }
         if (value == _min) {
             return value;
         }
@@ -202,11 +197,6 @@ class Slider extends InteractiveComponent implements IClonable<Slider> {
         return _max;
     }
     private function set_max(value:Float):Float {
-        if (_ready) {
-            if (value > _max) {
-                value = _max;
-            }
-        }
         if (value == _max) {
             return value;
         }
