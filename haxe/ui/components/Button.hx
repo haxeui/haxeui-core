@@ -208,7 +208,7 @@ class Button extends InteractiveComponent implements IClonable<Button> {
     }
 
     private function _onMouseOut(event:MouseEvent) {
-        if (_toggle == true && hasClass(":down")) {
+        if (_toggle == true && _selected == true) {
             return;
         }
 
@@ -242,6 +242,8 @@ class Button extends InteractiveComponent implements IClonable<Button> {
     private function _onMouseUp(event:MouseEvent) {
         event.cancel();
         _down = false;
+        screen.unregisterEvent(MouseEvent.MOUSE_UP, _onMouseUp);
+
         if (_toggle == true) {
             return;
         }
@@ -257,8 +259,6 @@ class Button extends InteractiveComponent implements IClonable<Button> {
             _repeatTimer = null;
             #end
         }
-
-        screen.unregisterEvent(MouseEvent.MOUSE_UP, _onMouseUp);
     }
 
     private function _onMouseClick(event:MouseEvent) {
