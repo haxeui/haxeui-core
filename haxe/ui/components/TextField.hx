@@ -309,8 +309,10 @@ class TextFieldDefaultTextBehaviour extends Behaviour {
         }
 
         var textField:TextField = cast _component;
-        textField.getTextInput().text = value;
-        textField.invalidateDisplay();
+        if (value != textField.getTextInput().text) {
+            textField.getTextInput().text = value;
+            textField.invalidateDisplay();
+        }
     }
 
     public override function get():Variant {
