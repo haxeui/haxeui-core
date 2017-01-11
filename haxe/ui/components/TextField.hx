@@ -226,7 +226,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     //***********************************************************************************************************
     private function _onTextChanged(event:UIEvent) {
         var newText:String = behaviourGet("text");
-        if (_restrictEReg != null && !_restrictEReg.match(newText)) {
+        if (_restrictEReg != null && newText != "" && !_restrictEReg.match(newText)) {
             behaviourSet("text", _text != null ? _text : "");
             return;
         }
@@ -309,8 +309,10 @@ class TextFieldDefaultTextBehaviour extends Behaviour {
         }
 
         var textField:TextField = cast _component;
-        textField.getTextInput().text = value;
-        textField.invalidateDisplay();
+        if (value != textField.getTextInput().text) {
+            textField.getTextInput().text = value;
+            textField.invalidateDisplay();
+        }
     }
 
     public override function get():Variant {

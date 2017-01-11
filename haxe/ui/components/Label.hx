@@ -14,7 +14,7 @@ import haxe.ui.util.Variant;
  A general purpose component to display text
 **/
 @:dox(icon = "/icons/ui-label.png")
-class Label extends InteractiveComponent implements IClonable<Label> {
+class Label extends Component implements IClonable<Label> {
     public function new() {
         super();
         #if (openfl && !flixel)

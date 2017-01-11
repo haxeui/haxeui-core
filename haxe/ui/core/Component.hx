@@ -66,7 +66,6 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         if (s.native != null && hasNativeEntry == true) {
             native = s.native;
         } else {
-            createDefaults();
             create();
         }
     }
@@ -75,6 +74,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     // Construction
     //***********************************************************************************************************
     private function create() {
+        createDefaults();
         handleCreate(native);
         destroyChildren();
 
@@ -599,6 +599,58 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     }
 
     /**
+     Finds a specific parent in this components display tree and can optionally cast the result
+
+     - `criteria` - The criteria by which to search, the interpretation of this is defined using `searchType` (the default search type is _id_)
+
+     - `type` - The component class you wish to cast the result to (defaults to _null_)
+
+     - `searchType` - Allows you specify how to consider a parent a match (defaults to _id_), can be either:
+
+            - `id` - The first component that has the id specified in `criteria` will be considered a match
+
+            - `css` - The first component that contains a style name specified by `criteria` will be considered a match
+    **/
+    @:dox(group = "Display tree related properties and methods")
+    public function findAncestor<T>(criteria:String = null, type:Class<T> = null, searchType:String = "id"):Null<T> {
+        var match:Component = null;
+        var p = this.parentComponent;
+        while (p != null) {
+            if (criteria != null) {
+                if (searchType == "id" && p.id == criteria) {
+                    match = cast p;
+                    break;
+                } else if (searchType == "css" && p.hasClass(criteria) == true) {
+                    match = cast p;
+                    break;
+                }
+            } else if (type != null) {
+                if (Std.is(p, type) == true) {
+                    match = cast p;
+                    break;
+                }
+            }
+        }
+        return cast match;
+    }
+    
+    public function findComponentsUnderPoint(screenX:Float, screenY:Float):Array<Component> {
+        var c:Array<Component> = [];
+        if (screenX >= this.screenLeft && screenX <= this.screenLeft + this.width
+            && screenY >= this.screenTop && screenY <= this.screenTop + this.height) {
+            for (child in childComponents) {
+                if (screenX >= child.screenLeft && screenX <= child.screenLeft + child.width
+                    && screenY >= child.screenTop && screenY <= child.screenTop + child.height) {
+                    c.push(child);
+                }
+                
+                c = c.concat(child.findComponentsUnderPoint(screenX, screenY));
+            }
+        }
+        return c;
+    }
+    
+    /**
      Gets the index of a child component
     **/
     @:dox(group = "Display tree related properties and methods")
@@ -945,9 +997,10 @@ class Component extends ComponentBase implements IComponentBase implements IClon
                     calculatedHeight = s.height;
                 }
                 resizeComponent(calculatedWidth, calculatedHeight);
+            } else {
+                invalidateDisplay();
             }
             invalidateLayout();
-            invalidateDisplay();
 
             onReady();
             dispatch(new UIEvent(UIEvent.READY));
@@ -1216,6 +1269,9 @@ class Component extends ComponentBase implements IComponentBase implements IClon
 
     private var _width:Null<Float>;
     private override function set_width(value:Float):Float {
+        if (value == 0) {
+            return value;
+        }
         if (_width == value) {
             return value;
         }
@@ -1231,6 +1287,9 @@ class Component extends ComponentBase implements IComponentBase implements IClon
 
     private var _height:Null<Float>;
     private override function set_height(value:Float):Float {
+        if (value == 0) {
+            return value;
+        }
         if (_height == value) {
             return value;
         }
@@ -1505,6 +1564,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         if (_scriptEvents != null) {
             var script:String = _scriptEvents.get("onclick");
             if (script != null) {
+                event.cancel();
                 executeScriptCall(script);
             }
         }
@@ -1514,6 +1574,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         if (_scriptEvents != null) {
             var script:String = _scriptEvents.get("onchange");
             if (script != null) {
+                event.cancel();
                 executeScriptCall(script);
             }
         }
@@ -1695,13 +1756,18 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     //***********************************************************************************************************
     public function cloneComponent():Component {
         if (_ready == false) {
-            ready();
+            //ready();
         }
-        if (autoWidth == false) {
+        if (autoWidth == false && this.width > 0) {
             c.width = this.width;
         }
-        if (autoHeight == false) {
+        if (autoHeight == false && this.height > 0) {
             c.height = this.height;
+        }
+        if (_scriptEvents != null) {
+            for (k in _scriptEvents.keys()) {
+                c.addScriptEvent(k, _scriptEvents.get(k));
+            }
         }
     }
 

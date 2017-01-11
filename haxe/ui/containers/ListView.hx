@@ -4,6 +4,7 @@ import haxe.ui.core.BasicItemRenderer;
 import haxe.ui.core.Component;
 import haxe.ui.core.IClonable;
 import haxe.ui.core.IDataComponent;
+import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.ItemRenderer;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.UIEvent;
@@ -60,6 +61,13 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
             return;
         }
 
+        var arr = event.target.findComponentsUnderPoint(event.screenX, event.screenY);
+        for (a in arr) {
+            if (Std.is(a, InteractiveComponent)) {
+                return;
+            }
+        }
+        
         if (_currentSelection != null) {
             _currentSelection.removeClass(":selected");
         }
