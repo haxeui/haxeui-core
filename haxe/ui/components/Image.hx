@@ -83,7 +83,7 @@ class Image extends Component implements IClonable<Image> {
         return value;
     }
 
-    private var _scaleMode:ScaleMode = ScaleMode.FIT_INSIDE;
+    private var _scaleMode:ScaleMode = ScaleMode.FILL;
     @:clonable public var scaleMode(get, set):ScaleMode;
     private function get_scaleMode():ScaleMode {
         return _scaleMode;
