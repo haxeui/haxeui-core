@@ -27,7 +27,8 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     private override function createDefaults() {
         _defaultBehaviours = [
             "text" => new TextFieldDefaultTextBehaviour(this),
-            "icon" => new TextFieldDefaultIconBehaviour(this)
+            "icon" => new TextFieldDefaultIconBehaviour(this),
+            "password" => new TextFieldDefaultPasswordBehaviour(this)
         ];
         _defaultLayout = new TextFieldLayout();
     }
@@ -142,6 +143,19 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
         return value;
     }
 
+    /**
+     Whether to use this text field as a password text field
+    **/
+    @:clonable public var password(get, set):Bool;
+    private function get_password():Bool {
+        return behaviourGet("password");
+    }
+
+    private function set_password(value:Bool):Bool {
+        behaviourSet("password", value);
+        return value;
+    }
+    
     private var _maxChars:Int = -1;
     /**
      Maximum number of characters allowed in the textfield. By default -1 (unlimited chars).
@@ -338,6 +352,20 @@ class TextFieldDefaultIconBehaviour extends Behaviour {
             textField.addComponent(textField._icon);
         }
         textField._icon.resource = value.toString();
+    }
+}
+
+@:dox(hide)
+@:access(haxe.ui.components.TextField)
+class TextFieldDefaultPasswordBehaviour extends Behaviour {
+    public override function set(value:Variant) {
+        var textField:TextField = cast _component;
+        textField.getTextInput().password = value;
+    }
+    
+    public override function get():Variant {
+        var textField:TextField = cast _component;
+        return textField.getTextInput().password;
     }
 }
 
