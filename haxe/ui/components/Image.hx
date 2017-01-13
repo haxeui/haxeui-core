@@ -83,16 +83,16 @@ class Image extends Component implements IClonable<Image> {
         return value;
     }
 
-    private var _imageScaleMode:ScaleMode = ScaleMode.FIT_INSIDE;
-    @:clonable public var imageScaleMode(get, set):ScaleMode;
-    private function get_imageScaleMode():ScaleMode {
-        return _imageScaleMode;
+    private var _scaleMode:ScaleMode = ScaleMode.FIT_INSIDE;
+    @:clonable public var scaleMode(get, set):ScaleMode;
+    private function get_scaleMode():ScaleMode {
+        return _scaleMode;
     }
-    private function set_imageScaleMode(value:ScaleMode):ScaleMode {
-        if (value == _imageScaleMode) {
+    private function set_scaleMode(value:ScaleMode):ScaleMode {
+        if (value == _scaleMode) {
             return value;
         }
-        _imageScaleMode = value;
+        _scaleMode = value;
         invalidateLayout();
         return value;
     }
@@ -134,7 +134,7 @@ class Image extends Component implements IClonable<Image> {
 class ImageLayout extends DefaultLayout {
     private var imageScaleMode(get, never):ScaleMode;
     private function get_imageScaleMode():ScaleMode {
-        return cast(_component, Image).imageScaleMode;
+        return cast(_component, Image).scaleMode;
     }
 
     private var imageHorizontalAlign(get, never):HorizontalAlign;
