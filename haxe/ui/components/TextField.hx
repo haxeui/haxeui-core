@@ -85,6 +85,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
         super.set_focus(value);
         if (empty == false) {
             text = behaviourGet("text");
+            behaviourSet("password", _password);
         } else {
             _validateText();
         }
@@ -143,16 +144,23 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
         return value;
     }
 
+    private var _password:Bool = false;
     /**
      Whether to use this text field as a password text field
     **/
     @:clonable public var password(get, set):Bool;
     private function get_password():Bool {
-        return behaviourGet("password");
+        return _password;
     }
 
     private function set_password(value:Bool):Bool {
+        if (_password == value) {
+            return value;
+        }
+
         behaviourSet("password", value);
+        _password = value;
+        _validateText();
         return value;
     }
     
@@ -270,13 +278,13 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
         if (focus == false) {
             if (text == "") {
                 text = _placeholderText;
-                if (placeholderVisible == false) {
-                    addClass(":empty");
-                }
+                behaviourSet("password", false);
+                addClass(":empty");
             }
         } else if (placeholderVisible == true){
             text = "";
             removeClass(":empty");
+            behaviourSet("password", _password);
         }
 
         behaviourSet("text", text);
