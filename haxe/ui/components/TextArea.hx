@@ -29,24 +29,23 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
         return _text == null || _text.length == 0;
     }
 
-    private var _placeholderText:String;
+    private var _placeholder:String;
     /**
      A short hint that describes the expected value.
      The short hint is displayed in the textfield before the user enters a value.
      Use ":empty" css class to change the style.
     **/
-    @:clonable public var placeholderText(get, set):String;
-    private function get_placeholderText():String {
-        return _placeholderText;
+    @:clonable public var placeholder(get, set):String;
+    private function get_placeholder():String {
+        return behaviourGet("placeholder");
     }
 
-    private function set_placeholderText(value:String):String {
-        if (_placeholderText == value) {
+    private function set_placeholder(value:String):String {
+        if (_placeholder == value) {
             return value;
         }
 
-        _placeholderText = value;
-        _validateText();
+        behaviourSet("placeholder", value);
 
         return value;
     }
@@ -82,7 +81,8 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
 
     private override function createDefaults() {
         _defaultBehaviours = [
-            "text" => new TextAreaDefaultTextBehaviour(this)
+            "text" => new TextAreaDefaultTextBehaviour(this),
+            "placeholder" => new TextAreaDefaultPlaceholderBehaviour(this)
         ];
         _defaultLayout = new TextAreaLayout();
     }
@@ -194,12 +194,10 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
         var placeholderVisible:Bool = empty;
 
         //Placeholder
-        if (focus == false) {
+        if (focus == false && _placeholder != null) {
             if (text == "") {
-                text = _placeholderText;
-                if (placeholderVisible == false) {
-                    addClass(":empty");
-                }
+                text = _placeholder;
+                addClass(":empty");
             }
         } else if (placeholderVisible == true){
             text = "";
@@ -232,6 +230,20 @@ class TextAreaDefaultTextBehaviour extends Behaviour {
     }
 }
 
+@:dox(hide)
+@:access(haxe.ui.components.TextArea)
+class TextAreaDefaultPlaceholderBehaviour extends Behaviour {
+    public override function set(value:Variant) {
+        var textArea:TextArea = cast _component;
+        textArea._placeholder = value;
+        textArea._validateText();
+    }
+    
+    public override function get():Variant {
+        var textArea:TextArea = cast _component;
+        return textArea._placeholder;
+    }
+}
 //***********************************************************************************************************
 // Custom layouts
 //***********************************************************************************************************
