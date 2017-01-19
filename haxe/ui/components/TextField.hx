@@ -28,7 +28,8 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
         _defaultBehaviours = [
             "text" => new TextFieldDefaultTextBehaviour(this),
             "icon" => new TextFieldDefaultIconBehaviour(this),
-            "password" => new TextFieldDefaultPasswordBehaviour(this)
+            "password" => new TextFieldDefaultPasswordBehaviour(this),
+            "placeholder" => new TextFieldDefaultPlaceholderBehaviour(this)
         ];
         _defaultLayout = new TextFieldLayout();
     }
@@ -184,24 +185,23 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
         return value;
     }
 
-    private var _placeholderText:String;
+    private var _placeholder:String;
     /**
      A short hint that describes the expected value.
      The short hint is displayed in the textfield before the user enters a value.
      Use ":empty" css class to change the style.
     **/
-    @:clonable public var placeholderText(get, set):String;
-    private function get_placeholderText():String {
-        return _placeholderText;
+    @:clonable public var placeholder(get, set):String;
+    private function get_placeholder():String {
+        return behaviourGet("placeholder");
     }
 
-    private function set_placeholderText(value:String):String {
-        if (_placeholderText == value) {
+    private function set_placeholder(value:String):String {
+        if (_placeholder == value) {
             return value;
         }
 
-        _placeholderText = value;
-        _validateText();
+        behaviourSet("placeholder", value);
 
         return value;
     }
@@ -276,8 +276,8 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
 
         //Placeholder
         if (focus == false) {
-            if (text == "") {
-                text = _placeholderText;
+            if (text == "" && _placeholder != null) {
+                text = _placeholder;
                 behaviourSet("password", false);
                 addClass(":empty");
             }
@@ -374,6 +374,21 @@ class TextFieldDefaultPasswordBehaviour extends Behaviour {
     public override function get():Variant {
         var textField:TextField = cast _component;
         return textField.getTextInput().password;
+    }
+}
+
+@:dox(hide)
+@:access(haxe.ui.components.TextField)
+class TextFieldDefaultPlaceholderBehaviour extends Behaviour {
+    public override function set(value:Variant) {
+        var textField:TextField = cast _component;
+        textField._placeholder = value;
+        textField._validateText();
+    }
+    
+    public override function get():Variant {
+        var textField:TextField = cast _component;
+        return textField._placeholder;
     }
 }
 
