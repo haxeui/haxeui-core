@@ -1,5 +1,6 @@
 package haxe.ui.core;
 
+import haxe.ui.containers.dialogs.DialogButtonData;
 import haxe.ui.animation.AnimationManager;
 import haxe.ui.backend.ScreenBase;
 import haxe.ui.components.Label;
@@ -234,14 +235,11 @@ class Screen extends ScreenBase {
                 if (b & DialogButton.NO == DialogButton.NO) {
                     dialogOptions.addStandardButton(DialogButton.NO);
                 }
+            } else if(Std.is(b, DialogButton)) {
+                dialogOptions.addButton(b);
             } else {
-                var dialogButton:DialogButton = new DialogButton();
-                dialogButton.text = b.text;
-                dialogButton.icon = b.icon;
-                if (b.closesDialog != null) {
-                    dialogButton.closesDialog = b.closesDialog;
-                }
-                dialogOptions.addButton(dialogButton);
+                var data:DialogButtonData = cast b;
+                dialogOptions.addButton(DialogButton.fromData(data));
             }
         }
 
