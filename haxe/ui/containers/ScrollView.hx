@@ -2,16 +2,19 @@ package haxe.ui.containers;
 
 import haxe.ui.components.HScroll;
 import haxe.ui.components.VScroll;
+import haxe.ui.constants.ScrollMode;
 import haxe.ui.core.Component;
 import haxe.ui.core.IClonable;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.Platform;
+import haxe.ui.core.Screen;
 import haxe.ui.core.UIEvent;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.Layout;
 import haxe.ui.layouts.LayoutFactory;
 import haxe.ui.util.Rectangle;
 import haxe.ui.util.Size;
+import haxe.ui.util.Timer;
 
 @:dox(icon = "/icons/ui-scroll-pane-both.png")
 class ScrollView extends Component implements IClonable<ScrollView> {
@@ -60,6 +63,9 @@ class ScrollView extends Component implements IClonable<ScrollView> {
     private override function createChildren() {
         super.createChildren();
         registerEvent(MouseEvent.MOUSE_WHEEL, _onMouseWheel);
+        if (_scrollMode == ScrollMode.DRAG || _scrollMode == ScrollMode.INERTIAL) {
+            registerEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
+        }
         createContentContainer();
     }
 
@@ -246,14 +252,189 @@ class ScrollView extends Component implements IClonable<ScrollView> {
     private function _onMouseWheel(event:MouseEvent) {
         if (_vscroll != null) {
             if (event.delta > 0) {
-                _vscroll.pos -= 60; // TODO: calculate this
-                //_vscroll.animatePos(_vscroll.pos - 60);
+                _vscroll.pos -= 50; // TODO: calculate this
+                //_vscroll.animatePos(_vscroll.pos - 50);
             } else if (event.delta < 0) {
-                _vscroll.pos += 60;
+                _vscroll.pos += 50;
             }
         }
     }
 
+    private var _scrollMode:ScrollMode = ScrollMode.DRAG;
+    public var scrollMode(get, set):ScrollMode;
+    private function get_scrollMode():ScrollMode {
+        return _scrollMode;
+    }
+    private function set_scrollMode(value:String):String {
+        if (value == _scrollMode) {
+            return value;
+        }
+        
+        _scrollMode = value;
+        if (_scrollMode == ScrollMode.DRAG || _scrollMode == ScrollMode.INERTIAL) {
+            registerEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
+        } else {
+            unregisterEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
+        }
+        
+        return value;
+    }
+
+    // ********************************************************************************
+    // Inertial and drag scroll functions
+    // ********************************************************************************
+    
+    private var _inertialTimestamp:Float;
+    private static inline var INERTIAL_TIME_CONSTANT = 325;
+    private var _inertialTimer:Timer;
+
+    private var _offsetX:Float = 0;
+    private var _screenOffsetX:Float;
+    private var _inertialAmplitudeX:Float = 0;
+    private var _inertialTargetX:Float = 0;
+    private var _inertiaDirectionX:Int;
+    
+    private var _offsetY:Float = 0;
+    private var _screenOffsetY:Float;
+    private var _inertialAmplitudeY:Float = 0;
+    private var _inertialTargetY:Float = 0;
+    private var _inertiaDirectionY:Int;
+    
+    private function _onMouseDown(event:MouseEvent) {
+        event.cancel();
+        if (_hscroll != null && _hscroll.hidden == false && _hscroll.hitTest(event.screenX, event.screenY) == true) {
+            return;
+        }
+        if (_vscroll != null && _vscroll.hidden == false && _vscroll.hitTest(event.screenX, event.screenY) == true) {
+            return;
+        }
+
+        _offsetX = hscrollPos + event.screenX;
+        _offsetY = vscrollPos + event.screenY;
+
+        if (_scrollMode == ScrollMode.INERTIAL) {
+            _inertialTargetX = hscrollPos;
+            _inertialTargetY = vscrollPos;
+            _inertialAmplitudeX = 0;
+            _inertialAmplitudeY = 0;
+            
+            if (_inertialTimer != null) {
+                _inertialTimer.stop();
+                _inertialTimer = null;
+            }
+            
+            _screenOffsetX = event.screenX;
+            _screenOffsetY = event.screenY;
+            
+            _inertialTimestamp = haxe.Timer.stamp();
+        }
+        
+        Screen.instance.registerEvent(MouseEvent.MOUSE_MOVE, _onMouseMove);
+        Screen.instance.registerEvent(MouseEvent.MOUSE_UP, _onMouseUp);
+    }
+    
+    private function _onMouseMove(event:MouseEvent) {
+        hscrollPos = _offsetX - event.screenX;
+        vscrollPos = _offsetY - event.screenY;
+    }
+    
+    private function _onMouseUp(event:MouseEvent) {
+        Screen.instance.unregisterEvent(MouseEvent.MOUSE_MOVE, _onMouseMove);
+        Screen.instance.unregisterEvent(MouseEvent.MOUSE_UP, _onMouseUp);
+        
+        if (_scrollMode == ScrollMode.INERTIAL) {
+            var now = haxe.Timer.stamp();
+            var elapsed = (now - _inertialTimestamp) * 1000;
+            
+            var deltaX = Math.abs(_screenOffsetX - event.screenX);
+            var deltaY = Math.abs(_screenOffsetY - event.screenY);
+
+            _inertiaDirectionX = (_screenOffsetX - event.screenX) < 0 ? 0 : 1;
+            var velocityX = deltaX / elapsed;
+            var v = 1000 * deltaX / (1 + elapsed);
+            velocityX = 0.8 * v + 0.2 * velocityX;
+            
+            _inertiaDirectionY = (_screenOffsetY - event.screenY) < 0 ? 0 : 1;
+            var velocityY = deltaY / elapsed;
+            var v = 1000 * deltaY / (1 + elapsed);
+            velocityY = 0.8 * v + 0.2 * velocityY;
+
+            if (velocityX <= 75 && velocityY <= 75) {
+                return;
+            }
+            
+            _inertialTimestamp = haxe.Timer.stamp();
+
+            _inertialAmplitudeX = 0.8 * velocityX;
+            if (_inertiaDirectionX == 0) {
+                _inertialTargetX = Math.round(hscrollPos - _inertialAmplitudeX);
+            } else {
+                _inertialTargetX = Math.round(hscrollPos + _inertialAmplitudeX);
+            }
+            
+            _inertialAmplitudeY = 0.8 * velocityY;
+            if (_inertiaDirectionY == 0) {
+                _inertialTargetY = Math.round(vscrollPos - _inertialAmplitudeY);
+            } else {
+                _inertialTargetY = Math.round(vscrollPos + _inertialAmplitudeY);
+            }
+            
+            if (hscrollPos == _inertialTargetX && vscrollPos == _inertialTargetY) {
+                return;
+            }
+
+            if (hscrollPos == _inertialTargetX) {
+                _inertialAmplitudeX = 0;
+            }
+            if (vscrollPos == _inertialTargetY) {
+                _inertialAmplitudeY = 0;
+            }
+            
+            _inertialTimer = new Timer(20, inertialScroll);
+        }
+    }
+    
+    private function inertialScroll() {
+        var elapsed = (haxe.Timer.stamp() - _inertialTimestamp) * 1000;
+
+        var finishedX = false;
+        if (_inertialAmplitudeX != 0) {
+            var deltaX = -_inertialAmplitudeX * Math.exp(-elapsed / INERTIAL_TIME_CONSTANT);
+            if (deltaX > 0.5 || deltaX < -0.5) {
+                if (_inertiaDirectionX == 0) {
+                    hscrollPos = _inertialTargetX - deltaX;
+                } else {
+                    hscrollPos = _inertialTargetX + deltaX;
+                }
+            } else {
+                finishedX = true;
+            }
+        } else {
+            finishedX = true;
+        }
+        
+        var finishedY = false;
+        if (_inertialAmplitudeY != 0) { 
+            var deltaY = -_inertialAmplitudeY * Math.exp(-elapsed / INERTIAL_TIME_CONSTANT);
+            if (deltaY > 0.5 || deltaY < -0.5) {
+                if (_inertiaDirectionY == 0) {
+                    vscrollPos = _inertialTargetY - deltaY;
+                } else {
+                    vscrollPos = _inertialTargetY + deltaY;
+                }
+            } else {
+                finishedY = true;
+            }
+        } else {
+           finishedY = true; 
+        }
+        
+        if (finishedX == true && finishedY == true) {
+            _inertialTimer.stop();
+            _inertialTimer = null;
+        }
+    }
+    
     private function _onContentsResized(event:UIEvent) {
         checkScrolls();
         updateScrollRect();
