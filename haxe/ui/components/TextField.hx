@@ -158,6 +158,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
             return value;
         }
 
+        behaviourSet("password", value);
         _password = value;
         _validateText();
         return value;
@@ -278,9 +279,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
             if (text == "") {
                 text = _placeholderText;
                 behaviourSet("password", false);
-                if (placeholderVisible == false) {
-                    addClass(":empty");
-                }
+                addClass(":empty");
             }
         } else if (placeholderVisible == true){
             text = "";
