@@ -66,13 +66,14 @@ class FocusManager {
         if (focusInfo.currentFocus != null && focusInfo.currentFocus != value) {
             focusInfo.currentFocus.focus = false;
             focusInfo.currentFocus = null;
-            Toolkit.screen.focus = null;
         }
         if (value != null) {
             focusInfo.currentFocus = value;
             focusInfo.currentFocus.focus = true;
-            Toolkit.screen.focus = cast value;
         }
+
+        Toolkit.screen.focus = cast value;
+
         return focusInfo.currentFocus;
     }
 
