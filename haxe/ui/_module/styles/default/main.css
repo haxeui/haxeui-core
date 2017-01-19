@@ -176,12 +176,12 @@
 /************************************************************************
 ** CONTAINERS
 *************************************************************************/
-.vbox, .hbox, .absolute, .continuoushbox {
+.vbox, .hbox, .absolute, .continuoushbox, .grid {
     spacing: 5px 5px;
     spacing: 5px 5px;
 }
 
-.vbox, .hbox, .box, .continuoushbox {
+.vbox, .hbox, .box, .continuoushbox, .grid {
     width: auto;
     height: auto;
 }
