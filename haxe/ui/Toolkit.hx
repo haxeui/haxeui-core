@@ -2,6 +2,7 @@ package haxe.ui;
 
 import haxe.ui.components.Button;
 import haxe.ui.components.Image;
+import haxe.ui.components.TextField;
 import haxe.ui.core.Component;
 import haxe.ui.core.ComponentClassMap;
 import haxe.ui.core.IDataComponent;
@@ -157,6 +158,8 @@ class Toolkit {
                         cast(component, Image).resource = propValue;
                     } else if (Std.is(component, Button) && propName == "icon") {
                         cast(component, Button).icon = propValue;
+                    } else if (Std.is(component, TextField) && propName == "password") {
+                        cast(component, TextField).password = propValue;
                     }
                     continue;
                 }

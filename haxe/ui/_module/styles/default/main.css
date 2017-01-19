@@ -149,7 +149,7 @@
 }
 
 .textfield:empty {
-    color: #888888;
+    color: #A0A0A0;
 }
 
 .textarea {
@@ -170,18 +170,18 @@
 }
 
 .textarea:empty {
-    color: #888888;
+    color: #A0A0A0;
 }
 
 /************************************************************************
 ** CONTAINERS
 *************************************************************************/
-.vbox, .hbox, .absolute, .continuoushbox {
+.vbox, .hbox, .absolute, .continuoushbox, .grid {
     spacing: 5px 5px;
     spacing: 5px 5px;
 }
 
-.vbox, .hbox, .box, .continuoushbox {
+.vbox, .hbox, .box, .continuoushbox, .grid {
     width: auto;
     height: auto;
 }
