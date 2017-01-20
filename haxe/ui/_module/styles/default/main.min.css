@@ -18,25 +18,30 @@
 .button.emphasized{background:#DAE4EE #D4DEE8;border-color:#6CA1D7;}
 .button.emphasized:hover{background:#E2ECF6 #DEE8F2;border-color:#6CA1D7;}
 .button.emphasized:down{background:#C2CCD6 #B4BEC8;border-color:#568CC1;}
+.button:disabled{background:#D4D4D4 #CCCCCC;color:#909090;cursor:default;}
 .textfield{background:#FFFFFF;color:#444444;border:1px solid #ABABAB;border-radius:2px;padding:5px 5px;filter:drop-shadow(1,45,#888888,0.2,1,1,1,3,true);height:auto;spacing:5px;icon-position:right;}
 .textfield:active{border:1px solid #216AAE;}
 .textfield:empty{color:#A0A0A0;}
+.textfield:disabled{background:#D4D4D4 #CCCCCC;}
 .textarea{background:#FFFFFF;color:#444444;border:1px solid #ABABAB;border-radius:2px;padding-top:1px;padding-left:1px;padding-bottom:1px;padding-right:0px;filter:drop-shadow(1,45,#888888,0.2,1,1,1,3,true);height:auto;}
 .textarea:active{border:1px solid #216AAE;}
 .textarea:empty{color:#A0A0A0;}
-.vbox,.hbox,.absolute,.continuoushbox,.grid{spacing:5px 5px;spacing:5px 5px;}
-.vbox,.hbox,.box,.continuoushbox,.grid{width:auto;height:auto;}
+.vbox,.hbox,.absolute,.continuoushbox,.hgrid,.vgrid,.grid{spacing:5px 5px;spacing:5px 5px;}
+.vbox,.hbox,.box,.continuoushbox,.hgrid,.vgrid,.grid{width:auto;height:auto;}
 .scroll{background-color:#E9E9E9;}
 .scroll .button{border-radius:0;border:none;background-color:#E9E9E9;padding:0;filter:none;}
 .scroll .button:hover{background-color:#D7D7D7;}
 .scroll .button:down{background-color:#525252;filter:none;}
-.scroll .button.deinc{height:17px;width:17px;}
+.scroll .button.deinc{height:17px;width:17px;opacity:1;}
+.scroll .button.deinc:disabled{opacity:0.5;}
 .scroll .button.deinc:down{}
-.scroll .button.inc{height:17px;width:17px;}
+.scroll .button.inc{height:17px;width:17px;opacity:1;}
+.scroll .button.inc:disabled{opacity:0.5;}
 .scroll .button.inc:down{}
 .scroll .button.thumb{background-color:#C6C6C6;}
 .scroll .button.thumb:hover{background-color:#AAAAAA;}
 .scroll .button.thumb:down{background-color:#525252;}
+.scroll .button.thumb:disabled{background-color:#DDDDDD;}
 .vscroll{width:17px;}
 .vscroll .button.thumb{width:17px;height:17px;}
 .vscroll .button.deinc{icon:"haxeui-core/styles/default/up_arrow.png";}
@@ -53,29 +58,41 @@
 .scrollview .scrollview-contents{height:auto;spacing:5px;padding:5px;border:none;}
 .checkbox{width:auto;height:auto;horizontal-spacing:4px;cursor:pointer;color:#000000;}
 .checkbox:hover{}
+.checkbox:disabled{cursor:default;color:#909090;}
 .checkbox-value{border:1px solid #ABABAB;background-color:#FFFFFF;width:16px;height:16px;vertical-align:center;border-radius:2px;icon:none;filter:drop-shadow(1,45,#888888,0.2,2,2,1,3,true);cursor:pointer;}
 .checkbox-value:hover{border:1px solid #216AAE;}
 .checkbox-value:selected{icon:"haxeui-core/styles/default/check.png";}
+.checkbox-value:disabled{background:#D4D4D4 #CCCCCC;cursor:default;}
 .checkbox-label{vertical-align:center;}
-.checkbox-icon{horizontal-align:center;vertical-align:center;cursor:pointer;}
+.checkbox-icon{horizontal-align:center;vertical-align:center;cursor:pointer;opacity:1;}
+.checkbox-icon:disabled{cursor:default;opacity:0.5;}
 .optionbox{width:auto;height:auto;horizontal-spacing:4px;cursor:pointer;color:#000000;}
 .optionbox:hover{}
+.optionbox:disabled{cursor:default;color:#909090;}
 .optionbox-value{border:1px solid #ABABAB;background-color:#FFFFFF;width:16px;height:16px;vertical-align:center;border-radius:18px;icon:none;filter:drop-shadow(1,45,#888888,0.2,2,2,1,3,true);padding-top:1px;cursor:pointer;}
 .optionbox-value:hover{border:1px solid #216AAE;}
 .optionbox-value:selected{icon:"haxeui-core/styles/default/option.png";}
+.optionbox-value:disabled{background:#D4D4D4 #CCCCCC;cursor:default;}
 .optionbox-label{vertical-align:center;cursor:pointer;}
-.optionbox-icon{horizontal-align:center;vertical-align:center;cursor:pointer;}
+.optionbox-icon{horizontal-align:center;vertical-align:center;cursor:pointer;opacity:1;}
+.optionbox-icon:disabled{cursor:default;opacity:0.5;}
 .hprogress{border:1px solid #ABABAB;padding:2px;border-radius:2px;background:#F1F1F1 #FFFFFF vertical;filter:drop-shadow(1,45,#888888,0.2,2,2,1,3,true);}
 .hprogress .progress-value{border:none;background:#6CAADB #216AAE vertical;height:100%;border-radius:2px;}
+.hprogress .progress-value:disabled{background:#BFBFBF #8C8C8C vertical;}
 .vprogress{border:1px solid #ABABAB;padding:2px;border-radius:2px;background:#F1F1F1 #FFFFFF horizontal;filter:drop-shadow(1,45,#888888,0.2,2,2,1,3,true);}
 .vprogress .progress-value{border:none;background:#6CAADB #216AAE horizontal;width:100%;border-radius:2px;}
+.vprogress .progress-value:disabled{background:#BFBFBF #8C8C8C horizontal;}
 .hslider{padding-left:5px;padding-right:5px;}
 .hslider .slider-value-background{border:1px solid #ABABAB;padding:2px;border-radius:4px;background:#F1F1F1 #FFFFFF vertical;filter:drop-shadow(1,45,#888888,0.2,2,2,1,3,true);width:100%;height:8px;vertical-align:center;cursor:pointer;}
+.hslider .slider-value-background:disabled{cursor:default;}
 .hslider .slider-value{border:none;background:#6CAADB #216AAE vertical;height:100%;border-radius:2px;cursor:pointer;}
+.hslider .slider-value:disabled{background:#BFBFBF #8C8C8C vertical;cursor:default;}
 .hslider .slider-button{vertical-align:center;height:14px;width:14px;border-radius:16px;}
 .vslider{padding-top:5px;padding-bottom:5px;}
 .vslider .slider-value-background{border:1px solid #ABABAB;padding:2px;border-radius:4px;background:#F1F1F1 #FFFFFF horizontal;filter:drop-shadow(1,45,#888888,0.2,2,2,1,3,true);height:100%;width:8px;horizontal-align:center;cursor:pointer;}
+.vslider .slider-value-background:disabled{cursor:default;}
 .vslider .slider-value{border:none;background:#6CAADB #216AAE horizontal;width:100%;border-radius:2px;cursor:pointer;}
+.vslider .slider-value:disabled{background:#BFBFBF #8C8C8C horizontal;cursor:default;}
 .vslider .slider-button{horizontal-align:center;height:14px;width:14px;border-radius:16px;}
 .tabbar{horizontal-spacing:5px;padding-left:5px;padding-right:5px;height:auto;width:auto;background-color:white;border-bottom-width:1px;border-bottom-color:#ABABAB;}
 .tabbar-button{border-radius:0px;background:#EDEDED #E6E6E6;padding:6px;vertical-align:bottom;}
@@ -114,5 +131,4 @@
 .switch .button{height:100%;width:50%;}
 .switch-label{color:#ABABAB;}
 .switch-label:selected{color:#2d7cb9;}
-.hgrid{height:auto;}
-.vgrid{width:auto;}
+

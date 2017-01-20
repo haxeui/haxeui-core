@@ -10,6 +10,10 @@ class EventMap  {
         _map = new Map<String, FunctionArray<UIEvent->Void>>();
     }
 
+    public function keys():Iterator<String> {
+        return _map.keys();
+    }
+    
     public function add(type:String,  listener:UIEvent->Void):Bool { // returns true if a new FunctionArray was created
         var b:Bool = false;
         var arr:FunctionArray<UIEvent->Void> = _map.get(type);
@@ -56,5 +60,13 @@ class EventMap  {
             n = arr.length;
         }
         return n;
+    }
+    
+    public function listeners(type:String):FunctionArray<UIEvent->Void> {
+        var arr:FunctionArray<UIEvent->Void> = _map.get(type);
+        if (arr == null) {
+            return null;
+        }
+        return arr;
     }
 }

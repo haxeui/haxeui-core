@@ -10,6 +10,7 @@ import haxe.ui.styles.Parser;
 import haxe.ui.styles.Style;
 import haxe.ui.util.CallStackHelper;
 import haxe.ui.util.EventMap;
+import haxe.ui.util.FunctionArray;
 import haxe.ui.util.Rectangle;
 import haxe.ui.util.Size;
 import haxe.ui.util.StringUtil;
@@ -493,6 +494,9 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         }
 
         invalidateLayout();
+        if (_disabled == true) {
+            child.disabled = true;
+        }
         return child;
     }
 
@@ -733,6 +737,17 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         return value;
     }
 
+    private var _disabled:Bool = false;
+    public var disabled(get, set):Bool;
+    private function get_disabled():Bool {
+        return _disabled;
+    }
+    private function set_disabled(value:Bool):Bool {
+        disableInteractivity(value);
+        _disabled = value;
+        return value;
+    }
+    
     //***********************************************************************************************************
     // Style related
     //***********************************************************************************************************
@@ -851,6 +866,16 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     **/
     @:dox(group = "Event related properties and methods")
     public function registerEvent(type:String, listener:Dynamic->Void) {
+        if (_disabled == true && isInteractiveEvent(type) == true) {
+            trace("its disabled");
+            if (_disabledEvents == null) {
+                _disabledEvents = new EventMap();
+            }
+            trace("adding to disabled: " + type);
+            _disabledEvents.add(type, listener);
+            return;
+        }
+        
         if (__events == null) {
             __events = new EventMap();
         }
@@ -864,6 +889,10 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     **/
     @:dox(group = "Event related properties and methods")
     public function unregisterEvent(type:String, listener:Dynamic->Void) {
+        if (_disabledEvents != null && _disabled == false) {
+            _disabledEvents.remove(type, listener);
+        }
+        
         if (__events != null) {
             if (__events.remove(type, listener) == true) {
                 unmapEvent(type, _onMappedEvent);
@@ -885,6 +914,66 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         dispatch(event);
     }
 
+    private var _disabledEvents:EventMap;
+    private static var INTERACTIVE_EVENTS:Array<String> = [
+        MouseEvent.MOUSE_MOVE, MouseEvent.MOUSE_OVER, MouseEvent.MOUSE_OUT, MouseEvent.MOUSE_DOWN,
+        MouseEvent.MOUSE_UP, MouseEvent.MOUSE_WHEEL, MouseEvent.CLICK, KeyboardEvent.KEY_DOWN,
+        KeyboardEvent.KEY_UP
+    ];
+    
+    private function isInteractiveEvent(type:String):Bool {
+        return INTERACTIVE_EVENTS.indexOf(type) != -1;
+    }
+    
+    private function disableInteractivity(disable:Bool, styleName:String = ":disabled") {
+        if (disable == _disabled) {
+            return;
+        }
+        
+        _disabled = disable;
+        
+        if (styleName != null) {
+            if (disable == true) {
+                addClass(styleName);
+            } else {
+                removeClass(styleName);
+            }
+        }
+        
+        if (disable == true) {
+            if (__events != null) {
+                for (eventType in __events.keys()) {
+                    var listeners:FunctionArray<UIEvent->Void> = __events.listeners(eventType);
+                    if (listeners != null) {
+                        for (listener in listeners.copy()) {
+                            if (_disabledEvents == null) {
+                                _disabledEvents = new EventMap();
+                            }
+                            _disabledEvents.add(eventType, listener);
+                            unregisterEvent(eventType, listener);
+                        }
+                    }
+                }
+            }
+        } else {
+            if (_disabledEvents != null) {
+                for (eventType in _disabledEvents.keys()) {
+                    var listeners:FunctionArray<UIEvent->Void> = _disabledEvents.listeners(eventType);
+                    if (listeners != null) {
+                        for (listener in listeners.copy()) {
+                            registerEvent(eventType, listener);
+                        }
+                    }
+                }
+                _disabledEvents = null;
+            }
+        }
+        
+        for (child in childComponents) {
+            child.disableInteractivity(disable, styleName);
+        }
+    }
+    
     //***********************************************************************************************************
     // Layout related
     //***********************************************************************************************************
