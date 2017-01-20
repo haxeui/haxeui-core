@@ -80,10 +80,11 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
     }
 
     private override function createDefaults() {
-        _defaultBehaviours = [
+        super.createDefaults();
+        defaultBehaviours([
             "text" => new TextAreaDefaultTextBehaviour(this),
             "placeholder" => new TextAreaDefaultPlaceholderBehaviour(this)
-        ];
+        ]);
         _defaultLayout = new TextAreaLayout();
     }
 

@@ -28,10 +28,11 @@ class Button extends InteractiveComponent implements IClonable<Button> {
     // Internals
     //***********************************************************************************************************
     private override function createDefaults() {
-        _defaultBehaviours = [
+        super.createDefaults();
+        defaultBehaviours([
             "text" => new ButtonDefaultTextBehaviour(this),
             "icon" => new ButtonDefaultIconBehaviour(this)
-        ];
+        ]);
         _defaultLayout = new ButtonLayout();
     }
 

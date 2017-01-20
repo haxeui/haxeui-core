@@ -28,8 +28,10 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
 
     private override function createDefaults() {
         super.createDefaults();
-        _defaultBehaviours.set("dataSource", new DropDownDefaultDataSourceBehaviour(this));
-        _defaultBehaviours.set("selectedItem", new DropDownDefaultSelectedItemBehaviour(this));
+        defaultBehaviours([
+            "dataSource" => new DropDownDefaultDataSourceBehaviour(this),
+            "selectedItem" => new DropDownDefaultSelectedItemBehaviour(this)
+        ]);
     }
 
     private override function create() {

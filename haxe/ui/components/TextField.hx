@@ -25,12 +25,13 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     // Overrides
     //***********************************************************************************************************
     private override function createDefaults() {
-        _defaultBehaviours = [
+        super.createDefaults();
+        defaultBehaviours([
             "text" => new TextFieldDefaultTextBehaviour(this),
             "icon" => new TextFieldDefaultIconBehaviour(this),
             "password" => new TextFieldDefaultPasswordBehaviour(this),
             "placeholder" => new TextFieldDefaultPlaceholderBehaviour(this)
-        ];
+        ]);
         _defaultLayout = new TextFieldLayout();
     }
 

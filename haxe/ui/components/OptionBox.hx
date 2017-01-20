@@ -33,10 +33,11 @@ class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
     // Internals
     //***********************************************************************************************************
     private override function createDefaults() {
-        _defaultBehaviours = [
+        super.createDefaults();
+        defaultBehaviours([
             "text" => new OptionBoxDefaultTextBehaviour(this),
             "selected" => new OptionBoxDefaultSelectedBehaviour(this)
-        ];
+        ]);
         _defaultLayout = new HorizontalLayout();
     }
 

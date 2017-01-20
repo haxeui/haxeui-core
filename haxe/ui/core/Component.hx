@@ -129,6 +129,15 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     }
 
     private var _defaultBehaviours:Map<String, Behaviour> = new Map<String, Behaviour>();
+    private function defaultBehaviour(name:String, behaviour:Behaviour) {
+        _defaultBehaviours.set(name, behaviour);
+    }
+    private function defaultBehaviours(behaviours:Map<String, Behaviour>) {
+        for (name in behaviours.keys()) {
+            defaultBehaviour(name, behaviours.get(name));
+        }
+    }
+    
     private var _behaviours:Map<String, Behaviour> = new Map<String, Behaviour>();
     private function getBehaviour(id:String):Behaviour {
         var b:Behaviour = _behaviours.get(id);

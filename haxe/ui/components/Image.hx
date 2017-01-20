@@ -29,9 +29,10 @@ class Image extends Component implements IClonable<Image> {
     // Internals
     //***********************************************************************************************************
     private override function createDefaults() {
-        _defaultBehaviours = [
+        super.createDefaults();
+        defaultBehaviours([
             "resource" => new ImageDefaultResourceBehaviour(this)
-        ];
+        ]);
         _defaultLayout = new ImageLayout();
     }
 

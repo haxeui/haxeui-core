@@ -27,12 +27,13 @@ class Scroll extends InteractiveComponent implements IClonable<Scroll> {
     // Internals
     //***********************************************************************************************************
     private override function createDefaults() {
-        _defaultBehaviours = [
+        super.createDefaults();
+        defaultBehaviours([
             "min" => new ScrollDefaultMinBehaviour(this),
             "max" => new ScrollDefaultMaxBehaviour(this),
             "pos" => new ScrollDefaultPosBehaviour(this),
             "pageSize" => new ScrollDefaultPageSizeBehaviour(this)
-        ];
+        ]);
     }
 
     private override function create() {
