@@ -176,12 +176,12 @@
 /************************************************************************
 ** CONTAINERS
 *************************************************************************/
-.vbox, .hbox, .absolute, .continuoushbox, .grid {
+.vbox, .hbox, .absolute, .continuoushbox, .hgrid, .vgrid, .grid {
     spacing: 5px 5px;
     spacing: 5px 5px;
 }
 
-.vbox, .hbox, .box, .continuoushbox, .grid {
+.vbox, .hbox, .box, .continuoushbox, .hgrid, .vgrid, .grid {
     width: auto;
     height: auto;
 }
@@ -721,15 +721,4 @@
 
 .switch-label:selected {
     color: #2d7cb9;
-}
-
-/************************************************************************
-** GRID
-*************************************************************************/
-.hgrid {
-    height: auto;
-}
-
-.vgrid {
-    width: auto;
 }
