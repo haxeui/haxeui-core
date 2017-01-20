@@ -22,6 +22,7 @@ class TabView extends Component implements IClonable<TabView> {
     // Internals
     //***********************************************************************************************************
     private override function createDefaults() {
+        super.createDefaults();
         _defaultLayout = new TabViewLayout();
     }
 

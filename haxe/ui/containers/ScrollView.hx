@@ -31,6 +31,7 @@ class ScrollView extends Component implements IClonable<ScrollView> {
     }
 
     private override function createDefaults() {
+        super.createDefaults();
     }
 
     private override function create() {

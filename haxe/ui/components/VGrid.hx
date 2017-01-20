@@ -16,6 +16,7 @@ class VGrid extends Component implements IClonable<VGrid> {
     // Internals
     //***********************************************************************************************************
     private override function createDefaults() {
+        super.createDefaults();
         _defaultLayout = new VerticalGridLayout();
     }
 

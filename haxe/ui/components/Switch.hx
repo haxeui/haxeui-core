@@ -26,6 +26,7 @@ class Switch extends InteractiveComponent implements IClonable<Switch> {
     // Internals
     //***********************************************************************************************************
     private override function createDefaults() {
+        super.createDefaults();
         _defaultLayout = new SwitchLayout();
     }
 

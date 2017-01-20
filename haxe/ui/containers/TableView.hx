@@ -27,6 +27,7 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
     }
 
     private override function createDefaults() {
+        super.createDefaults();
         _defaultLayout = new TableViewLayout();
     }
 

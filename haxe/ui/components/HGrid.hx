@@ -16,6 +16,7 @@ class HGrid extends Component implements IClonable<HGrid> {
     // Internals
     //***********************************************************************************************************
     private override function createDefaults() {
+        super.createDefaults();
         _defaultLayout = new HorizontalGridLayout();
     }
 

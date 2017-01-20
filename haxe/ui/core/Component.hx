@@ -86,6 +86,9 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     }
 
     private function createDefaults() {
+        defaultBehaviours([
+            "disabled" =>  new ComponentDefaultDisabledBehaviour(this)
+        ]);
         layout = new DefaultLayout();
     }
 
@@ -749,10 +752,10 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     private var _disabled:Bool = false;
     public var disabled(get, set):Bool;
     private function get_disabled():Bool {
-        return _disabled;
+        return behaviourGet("disabled");
     }
     private function set_disabled(value:Bool):Bool {
-        disableInteractivity(value);
+        behaviourSet("disabled", value);
         _disabled = value;
         return value;
     }
@@ -1934,5 +1937,24 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     public var className(get, null):String;
     private function get_className():String {
         return Type.getClassName(Type.getClass(this));
+    }
+}
+
+//***********************************************************************************************************
+// Default behaviours
+//***********************************************************************************************************
+@:dox(hide)
+@:access(haxe.ui.core.Component)
+class ComponentDefaultDisabledBehaviour extends Behaviour {
+    public override function set(value:Variant) {
+        if (value.isNull) {
+            return;
+        }
+
+        _component.disableInteractivity(value);
+    }
+
+    public override function get():Variant {
+        return _component._disabled;
     }
 }
