@@ -199,6 +199,8 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
             if (text == "") {
                 text = _placeholder;
                 addClass(":empty");
+            } else {
+                removeClass(":empty");
             }
         } else if (placeholderVisible == true){
             text = "";
