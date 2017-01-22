@@ -101,7 +101,7 @@ class Image extends Component implements IClonable<Image> {
         return value;
     }
 
-    private var _scaleMode:ScaleMode = ScaleMode.FILL;
+    private var _scaleMode:ScaleMode;
     @:clonable public var scaleMode(get, set):ScaleMode;
     private function get_scaleMode():ScaleMode {
         return _scaleMode;
@@ -115,7 +115,7 @@ class Image extends Component implements IClonable<Image> {
         return value;
     }
 
-    private var _imageHorizontalAlign:HorizontalAlign = HorizontalAlign.CENTER;
+    private var _imageHorizontalAlign:HorizontalAlign;
     @:clonable public var imageHorizontalAlign(get, set):HorizontalAlign;
     private function get_imageHorizontalAlign():HorizontalAlign {
         return _imageHorizontalAlign;
@@ -129,7 +129,7 @@ class Image extends Component implements IClonable<Image> {
         return value;
     }
 
-    private var _imageVerticalAlign:VerticalAlign = VerticalAlign.CENTER;
+    private var _imageVerticalAlign:VerticalAlign;
     @:clonable public var imageVerticalAlign(get, set):VerticalAlign;
     private function get_imageVerticalAlign():VerticalAlign {
         return _imageVerticalAlign;
@@ -221,7 +221,7 @@ class ImageLayout extends DefaultLayout {
                 case HorizontalAlign.RIGHT:
                     imageDisplay.left = _component.componentWidth - imageDisplay.imageWidth - paddingRight;
 
-                case HorizontalAlign.LEFT:
+                default: //HorizontalAlign.LEFT:
                     imageDisplay.left = paddingLeft;
             }
 
@@ -232,7 +232,7 @@ class ImageLayout extends DefaultLayout {
                 case VerticalAlign.BOTTOM:
                     imageDisplay.top = _component.componentHeight - imageDisplay.imageHeight - paddingBottom;
 
-                case VerticalAlign.TOP:
+                default: //VerticalAlign.TOP:
                     imageDisplay.top = paddingTop;
             }
 
