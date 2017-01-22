@@ -560,6 +560,30 @@ class Parser {
                 s.icon = x;
                 return true;
             }
+        case "scale-mode":
+            var x = getIdent(v);
+            switch(x) {
+                case "none" | "fill" | "fitinside" | "fitoutside" | "fitwidth" | "fitheight":
+                    s.scaleMode = x;
+                    return true;
+                default:
+            }
+        case "image-horizontal-align":
+            var x = getString(v);
+            switch(x) {
+                case "left" | "center" | "right":
+                    s.imageHorizontalAlign = x;
+                    return true;
+                default:
+            }
+        case "image-vertical-align":
+            var x = getString(v);
+            switch(x) {
+                case "top" | "center" | "bottom":
+                    s.imageVerticalAlign = x;
+                    return true;
+                default:
+            }
         case "hidden":
             var b = getBool(v);
             if (b != null) {

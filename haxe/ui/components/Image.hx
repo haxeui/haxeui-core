@@ -1,5 +1,6 @@
 package haxe.ui.components;
 
+import haxe.ui.styles.Style;
 import haxe.ui.util.Rectangle;
 import haxe.ui.constants.VerticalAlign;
 import haxe.ui.constants.HorizontalAlign;
@@ -39,6 +40,22 @@ class Image extends Component implements IClonable<Image> {
     private override function create() {
         super.create();
         behaviourSet("resource", _resource);
+    }
+
+    private override function applyStyle(style:Style) {
+        super.applyStyle(style);
+
+        if (style.scaleMode != null) {
+            scaleMode = style.scaleMode;
+        }
+
+        if (style.imageHorizontalAlign != null) {
+            imageHorizontalAlign = style.imageHorizontalAlign;
+        }
+
+        if (style.imageVerticalAlign != null) {
+            imageVerticalAlign = style.imageVerticalAlign;
+        }
     }
 
     //***********************************************************************************************************
