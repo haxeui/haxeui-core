@@ -45,15 +45,15 @@ class Image extends Component implements IClonable<Image> {
     private override function applyStyle(style:Style) {
         super.applyStyle(style);
 
-        if (style.scaleMode != null) {
+        if (_scaleMode == null && style.scaleMode != null) {
             scaleMode = style.scaleMode;
         }
 
-        if (style.imageHorizontalAlign != null) {
+        if (_imageHorizontalAlign == null && style.imageHorizontalAlign != null) {
             imageHorizontalAlign = style.imageHorizontalAlign;
         }
 
-        if (style.imageVerticalAlign != null) {
+        if (_imageVerticalAlign == null && style.imageVerticalAlign != null) {
             imageVerticalAlign = style.imageVerticalAlign;
         }
     }
@@ -104,7 +104,7 @@ class Image extends Component implements IClonable<Image> {
     private var _scaleMode:ScaleMode;
     @:clonable public var scaleMode(get, set):ScaleMode;
     private function get_scaleMode():ScaleMode {
-        return _scaleMode;
+        return _scaleMode != null ? _scaleMode : style.scaleMode;
     }
     private function set_scaleMode(value:ScaleMode):ScaleMode {
         if (value == _scaleMode) {
@@ -118,7 +118,7 @@ class Image extends Component implements IClonable<Image> {
     private var _imageHorizontalAlign:HorizontalAlign;
     @:clonable public var imageHorizontalAlign(get, set):HorizontalAlign;
     private function get_imageHorizontalAlign():HorizontalAlign {
-        return _imageHorizontalAlign;
+        return _imageHorizontalAlign != null ? _imageHorizontalAlign : style.imageHorizontalAlign;
     }
     private function set_imageHorizontalAlign(value:HorizontalAlign):HorizontalAlign {
         if (value == _imageHorizontalAlign) {
@@ -132,7 +132,7 @@ class Image extends Component implements IClonable<Image> {
     private var _imageVerticalAlign:VerticalAlign;
     @:clonable public var imageVerticalAlign(get, set):VerticalAlign;
     private function get_imageVerticalAlign():VerticalAlign {
-        return _imageVerticalAlign;
+        return _imageVerticalAlign != null ? _imageVerticalAlign : style.imageVerticalAlign;
     }
     private function set_imageVerticalAlign(value:VerticalAlign):VerticalAlign {
         if (value == _imageVerticalAlign) {
