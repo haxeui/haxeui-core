@@ -569,7 +569,7 @@ class Parser {
                 default:
             }
         case "image-horizontal-align":
-            var x = getString(v);
+            var x = getIdent(v);
             switch(x) {
                 case "left" | "center" | "right":
                     s.imageHorizontalAlign = x;
@@ -577,7 +577,7 @@ class Parser {
                 default:
             }
         case "image-vertical-align":
-            var x = getString(v);
+            var x = getIdent(v);
             switch(x) {
                 case "top" | "center" | "bottom":
                     s.imageVerticalAlign = x;
