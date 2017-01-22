@@ -563,7 +563,7 @@ class Parser {
         case "scale-mode":
             var x = getIdent(v);
             switch(x) {
-                case "none" | "fill" | "fitinside" | "fitoutside" | "fitwidth" | "fitheight":
+                case "none" | "fill" | "fit-inside" | "fit-outside" | "fit-width" | "fit-height":
                     s.scaleMode = x;
                     return true;
                 default:

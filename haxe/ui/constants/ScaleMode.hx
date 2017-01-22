@@ -4,8 +4,8 @@ package haxe.ui.constants;
 abstract ScaleMode(String) from String to String {
     var NONE = "none";
     var FILL = "fill";
-    var FIT_INSIDE = "fitinside";
-    var FIT_OUTSIDE = "fitoutside";
-    var FIT_WIDTH = "fitwidth";
-    var FIT_HEIGHT = "fitheight";
+    var FIT_INSIDE = "fit-inside";
+    var FIT_OUTSIDE = "fit-outside";
+    var FIT_WIDTH = "fit-width";
+    var FIT_HEIGHT = "fit-height";
 }
