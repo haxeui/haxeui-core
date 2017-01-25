@@ -468,6 +468,14 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     **/
     @:dox(group = "Display tree related properties and methods")
     public function addComponent(child:Component):Component {
+        return addComponentAt(child, childComponents.length);
+    }
+
+    /**
+     Adds a child component to this component instance at the index position specified
+    **/
+    @:dox(group = "Display tree related properties and methods")
+    public function addComponentAt(child:Component, index:Int):Component {
         if (this.native == true) {
             var allowChildren:Bool = getNativeConfigPropertyBool('.@allowChildren', true);
             if (allowChildren == false) {
@@ -480,7 +488,14 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         if (_children == null) {
             _children = [];
         }
-        _children.push(child);
+
+        if (index < 0) {
+            index = 0;
+        } else if(index > _children.length) {
+            index = _children.length;
+        }
+
+        _children.insert(index, child);
 
         var deferredBindings:Array<DeferredBindingInfo> = getDefferedBindings();
         if (deferredBindings != null) {
@@ -500,7 +515,11 @@ class Component extends ComponentBase implements IComponentBase implements IClon
             }
         }
 
-        handleAddComponent(child);
+        handleAddComponent(child);  //TODO - it could be convenient to create handleAddComponentAt(component, index)
+        if (index != childComponents.length) {
+            handleSetComponentIndex(child, index);
+        }
+
         if (_ready) {
             child.ready();
         }
