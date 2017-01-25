@@ -1,6 +1,5 @@
 package haxe.ui.components;
 
-import haxe.ui.styles.Style;
 import haxe.ui.util.Rectangle;
 import haxe.ui.constants.VerticalAlign;
 import haxe.ui.constants.HorizontalAlign;
@@ -40,22 +39,6 @@ class Image extends Component implements IClonable<Image> {
     private override function create() {
         super.create();
         behaviourSet("resource", _resource);
-    }
-
-    private override function applyStyle(style:Style) {
-        super.applyStyle(style);
-
-        if (_scaleMode == null && style.scaleMode != null) {
-            scaleMode = style.scaleMode;
-        }
-
-        if (_imageHorizontalAlign == null && style.imageHorizontalAlign != null) {
-            imageHorizontalAlign = style.imageHorizontalAlign;
-        }
-
-        if (_imageVerticalAlign == null && style.imageVerticalAlign != null) {
-            imageVerticalAlign = style.imageVerticalAlign;
-        }
     }
 
     //***********************************************************************************************************
@@ -152,17 +135,38 @@ class Image extends Component implements IClonable<Image> {
 class ImageLayout extends DefaultLayout {
     private var imageScaleMode(get, never):ScaleMode;
     private function get_imageScaleMode():ScaleMode {
-        return cast(_component, Image).scaleMode;
+        var image:Image = cast _component;
+        if (image.scaleMode != null) {
+            return image.scaleMode;
+        } else if (image.style.scaleMode != null) {
+            return image.style.scaleMode;
+        } else {
+            return ScaleMode.FILL;
+        }
     }
 
     private var imageHorizontalAlign(get, never):HorizontalAlign;
     private function get_imageHorizontalAlign():HorizontalAlign {
-        return cast(_component, Image).imageHorizontalAlign;
+        var image:Image = cast _component;
+        if (image.imageHorizontalAlign != null) {
+            return image.imageHorizontalAlign;
+        } else if (image.style.imageHorizontalAlign != null) {
+            return image.style.imageHorizontalAlign;
+        } else {
+            return HorizontalAlign.CENTER;
+        }
     }
 
     private var imageVerticalAlign(get, never):VerticalAlign;
     private function get_imageVerticalAlign():VerticalAlign {
-        return cast(_component, Image).imageVerticalAlign;
+        var image:Image = cast _component;
+        if (image.imageVerticalAlign != null) {
+            return image.imageVerticalAlign;
+        } else if (image.style.imageVerticalAlign != null) {
+            return image.style.imageVerticalAlign;
+        } else {
+            return VerticalAlign.CENTER;
+        }
     }
 
     private override function resizeChildren() {
@@ -170,6 +174,7 @@ class ImageLayout extends DefaultLayout {
             var usz = usableSize;
             var image:Image = cast _component;
             var imageDisplay = image.getImageDisplay();
+            var scaleMode:ScaleMode = imageScaleMode;
             var maxWidth:Float = usableSize.width;
             var maxHeight:Float = usableSize.height;
             if(component.autoWidth == true) {
@@ -183,9 +188,9 @@ class ImageLayout extends DefaultLayout {
             var scaleW:Float = maxWidth != -1 ? maxWidth / image._originalSize.width : 1;
             var scaleH:Float = maxHeight != -1 ? maxHeight / image._originalSize.height : 1;
 
-            if(imageScaleMode != ScaleMode.FILL) {
+            if(scaleMode != ScaleMode.FILL) {
                 var scale:Float;
-                switch(imageScaleMode) {
+                switch(scaleMode) {
                     case ScaleMode.FIT_INSIDE:
                         scale = (scaleW < scaleH) ? scaleW : scaleH;
                     case ScaleMode.FIT_OUTSIDE:
