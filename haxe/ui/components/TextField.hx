@@ -276,11 +276,13 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
         }
 
         //Placeholder
-        if (focus == false) {
-            if (text == "" && _placeholder != null) {
+        if (focus == false && _placeholder != null) {
+            if (text == "") {
                 text = _placeholder;
                 behaviourSet("password", false);
                 addClass(":empty");
+            } else {
+                removeClass(":empty");
             }
         } else if (placeholderVisible == true){
             text = "";
