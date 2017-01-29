@@ -1,5 +1,6 @@
 package haxe.ui.parsers.modules;
 
+import haxe.ui.parsers.modules.Module.ModuleAnimationEntry;
 class XMLParser extends ModuleParser {
     public function new() {
         super();
@@ -76,42 +77,68 @@ class XMLParser extends ModuleParser {
                     module.properties.push(property);
                 }
             } else if (nodeName == "animations") {
-                for (animationNode in el.elementsNamed("animation")) {
-                    var animation:Module.ModuleAnimationEntry = new Module.ModuleAnimationEntry();
-                    animation.id = animationNode.get("id");
-                    animation.ease = animationNode.get("ease");
+                parseAnimations(el, module.animations);
+            } else if (nodeName == "transitions") {
+                for (transitionNode in el.elementsNamed("transition")) {
+                    var transition:Module.ModuleTransitionEntry = new Module.ModuleTransitionEntry();
+                    transition.id = transitionNode.get("id");
 
-                    for (keyFrameNode in animationNode.elementsNamed("keyframe")) {
-                        var keyFrame:Module.ModuleAnimationKeyFrameEntry = new Module.ModuleAnimationKeyFrameEntry();
-                        if (keyFrameNode.get("time") != null) {
-                            keyFrame.time = Std.parseInt(keyFrameNode.get("time"));
-                        }
-
-                        for (componentRefNode in keyFrameNode.elements()) {
-                            var componentRef:Module.ModuleAnimationComponentRefEntry = new Module.ModuleAnimationComponentRefEntry();
-                            componentRef.id = componentRefNode.nodeName;
-                            for (attrName in componentRefNode.attributes()) {
-                                var attrValue = componentRefNode.get(attrName);
-                                if (StringTools.startsWith(attrValue, "{") && StringTools.endsWith(attrValue, "}")) {
-                                    attrValue = attrValue.substring(1, attrValue.length - 1);
-                                    componentRef.vars.set(attrName, attrValue);
-                                } else {
-                                    componentRef.properties.set(attrName, Std.parseFloat(attrValue));
-                                }
-                            }
-
-                            keyFrame.componentRefs.set(componentRef.id, componentRef);
-                        }
-
-                        animation.keyFrames.push(keyFrame);
+                    for (inAnimationNode in transitionNode.elementsNamed("inAnimations")) {
+                        parseAnimations(inAnimationNode, transition.inAnimations);
                     }
 
-                    module.animations.push(animation);
+                    for (outAnimationNode in transitionNode.elementsNamed("outAnimations")) {
+                        parseAnimations(outAnimationNode, transition.outAnimations);
+                    }
+
+                    module.transitions.push(transition);
                 }
             }
         }
 
         return module;
+    }
+
+    private function parseAnimations(node:Xml, result:Array<ModuleAnimationEntry>=null):Array<ModuleAnimationEntry>
+    {
+        if (result == null) {
+            result = [];
+        }
+
+        for (animationNode in node.elementsNamed("animation")) {
+            var animation:Module.ModuleAnimationEntry = new Module.ModuleAnimationEntry();
+            animation.id = animationNode.get("id");
+            animation.ease = animationNode.get("ease");
+
+            for (keyFrameNode in animationNode.elementsNamed("keyframe")) {
+                var keyFrame:Module.ModuleAnimationKeyFrameEntry = new Module.ModuleAnimationKeyFrameEntry();
+                if (keyFrameNode.get("time") != null) {
+                    keyFrame.time = Std.parseInt(keyFrameNode.get("time"));
+                }
+
+                for (componentRefNode in keyFrameNode.elements()) {
+                    var componentRef:Module.ModuleAnimationComponentRefEntry = new Module.ModuleAnimationComponentRefEntry();
+                    componentRef.id = componentRefNode.nodeName;
+                    for (attrName in componentRefNode.attributes()) {
+                        var attrValue = componentRefNode.get(attrName);
+                        if (StringTools.startsWith(attrValue, "{") && StringTools.endsWith(attrValue, "}")) {
+                            attrValue = attrValue.substring(1, attrValue.length - 1);
+                            componentRef.vars.set(attrName, attrValue);
+                        } else {
+                            componentRef.properties.set(attrName, Std.parseFloat(attrValue));
+                        }
+                    }
+
+                    keyFrame.componentRefs.set(componentRef.id, componentRef);
+                }
+
+                animation.keyFrames.push(keyFrame);
+            }
+
+            result.push(animation);
+        }
+
+        return result;
     }
 
     private function buildCondition(parentNode:Xml, node:Xml):String {

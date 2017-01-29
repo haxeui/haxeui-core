@@ -138,23 +138,26 @@ class ModuleMacros {
 
             // load animations
             for (a in m.animations) {
-                code += 'var a:haxe.ui.animation.Animation = new haxe.ui.animation.Animation();\n';
-                code += 'a.id = "${a.id}";\n';
-                code += 'a.easing = haxe.ui.animation.Animation.easingFromString("${a.ease}");\n';
-                for (kf in a.keyFrames) {
-                    code += 'var kf:haxe.ui.animation.AnimationKeyFrame = a.addKeyFrame(${kf.time});\n';
-                    for (r in kf.componentRefs) {
-                        code += 'var ref:haxe.ui.animation.AnimationComponentRef = kf.addComponentRef("${r.id}");\n';
-                        for (p in r.properties.keys()) {
-                            code += 'ref.addProperty("${p}", ${r.properties.get(p)});\n';
-                        }
-                        for (v in r.vars.keys()) {
-                            code += 'ref.addVar("${v}", "${r.vars.get(v)}");\n';
-                        }
-                    }
+                code += getAnimationCode(a);
+            }
+
+            //load transitions
+            for (t in m.transitions) {
+                code += 'var t:haxe.ui.animation.transition.Transition = new haxe.ui.animation.transition.Transition();\n';
+                code += 't.id = "${t.id}";\n';
+
+                for (inAnim in t.inAnimations) {
+                    code += getAnimationCode(inAnim);
+                    code += 't.addInAnimation(a);\n';
                 }
 
-                code += 'haxe.ui.animation.AnimationManager.instance.registerAnimation(a.id, a);\n';
+                for (outAnim in t.outAnimations) {
+
+                    code += getAnimationCode(outAnim);
+                    code += 't.addOutAnimation(a);\n';
+                }
+
+                code += 'haxe.ui.animation.transition.TransitionManager.instance.registerTransition(t.id, t);\n';
             }
         }
 
@@ -170,6 +173,28 @@ class ModuleMacros {
         _modulesProcessed = true;
 
         return Context.parseInlineString(code, Context.currentPos());
+    }
+
+    private static function getAnimationCode(animationEntry:ModuleAnimationEntry):String {
+        var code:String = 'var a:haxe.ui.animation.Animation = new haxe.ui.animation.Animation();\n';
+        code += 'a.id = "${animationEntry.id}";\n';
+        code += 'a.easing = haxe.ui.animation.Animation.easingFromString("${animationEntry.ease}");\n';
+        for (kf in animationEntry.keyFrames) {
+            code += 'var kf:haxe.ui.animation.AnimationKeyFrame = a.addKeyFrame(${kf.time});\n';
+            for (r in kf.componentRefs) {
+                code += 'var ref:haxe.ui.animation.AnimationComponentRef = kf.addComponentRef("${r.id}");\n';
+                for (p in r.properties.keys()) {
+                    code += 'ref.addProperty("${p}", ${r.properties.get(p)});\n';
+                }
+                for (v in r.vars.keys()) {
+                    code += 'ref.addVar("${v}", "${r.vars.get(v)}");\n';
+                }
+            }
+        }
+
+        code += 'haxe.ui.animation.AnimationManager.instance.registerAnimation(a.id, a);\n';
+
+        return code;
     }
 
     #if macro

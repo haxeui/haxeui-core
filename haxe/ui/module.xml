@@ -63,6 +63,9 @@
         <property name="haxe.ui.components.hscroll.animation.pos" value="haxe.ui.components.animation.pos" />
 
         <property name="haxe.ui.components.vscroll.animation.pos" value="haxe.ui.components.animation.pos" />
+
+        <property name="haxe.ui.containers.stack.transition.slide" value="haxe.ui.containers.transition.slide" />
+        <property name="haxe.ui.containers.stack.transition.fade" value="haxe.ui.containers.transition.fade" />
     </properties>
 
     <animations>
@@ -84,6 +87,16 @@
         <animation id="haxe.ui.components.animation.rangeEnd" ease="Bounce.easeOut">
             <keyframe time="300">
                 <target rangeEnd="{rangeEnd}" />
+            </keyframe>
+        </animation>
+        <animation id="haxe.ui.components.animation.slide" ease="Bounce.easeOut">
+            <keyframe time="300">
+                <target pos="{pos}" />
+            </keyframe>
+        </animation>
+        <animation id="haxe.ui.components.animation.fade" ease="Bounce.easeNone">
+            <keyframe time="300">
+                <target pos="{opacity}" />
             </keyframe>
         </animation>
 
@@ -118,4 +131,53 @@
             </keyframe>
         </animation>
     </animations>
+
+    <transitions>
+        <transition id="haxe.ui.containers.transition.slide">
+            <inAnimations>
+                <animation id="haxe.ui.containers.animation.slide.in" ease="Cubic.easeIn">
+                    <keyframe time="0">
+                        <target top="{startTop}" left="{startLeft}" />
+                    </keyframe>
+                    <keyframe time="300">
+                        <target top="{endTop}" left="{endLeft}" />
+                    </keyframe>
+                </animation>
+            </inAnimations>
+
+            <outAnimations>
+                <animation id="haxe.ui.containers.animation.slide.out" ease="Cubic.easeIn">
+                    <keyframe time="0">
+                        <target top="{startTop}" left="{startLeft}" />
+                    </keyframe>
+                    <keyframe time="300">
+                        <target top="{endTop}" left="{endLeft}" />
+                    </keyframe>
+                </animation>
+            </outAnimations>
+        </transition>
+
+        <transition id="haxe.ui.containers.transition.fade">
+            <inAnimations>
+                <animation id="haxe.ui.containers.animation.fade.in" ease="Linear.easeNone">
+                    <keyframe time="0">
+                        <target opacity="0" />
+                    </keyframe>
+                    <keyframe time="300">
+                        <target opacity="1" />
+                    </keyframe>
+                </animation>
+            </inAnimations>
+            <outAnimations>
+                <animation id="haxe.ui.containers.animation.fade.out" ease="Linear.easeNone">
+                    <keyframe time="0">
+                        <target opacity="1" />
+                    </keyframe>
+                    <keyframe time="300">
+                        <target opacity="0" />
+                    </keyframe>
+                </animation>
+            </outAnimations>
+        </transition>
+    </transitions>
 </module>
