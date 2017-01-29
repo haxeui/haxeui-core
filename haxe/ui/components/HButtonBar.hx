@@ -19,7 +19,7 @@ class HButtonBarLayout extends HorizontalLayout {
 
     private override function resizeChildren() {
         var usableSize:Size = usableSize;
-        trace(component.id, component.autoWidth);
+
         for (child in component.childComponents) {
             if (child.includeInLayout == false) {
                 continue;
