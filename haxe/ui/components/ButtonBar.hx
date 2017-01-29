@@ -33,8 +33,7 @@ class ButtonBar extends InteractiveComponent implements IDataComponent {
         for (i in 0...childComponents.length) {
             var child = childComponents[i];
             if (child.text == value.toString()) {
-                _selectedIndex = i;
-                syncUI();
+                selectedIndex = i;
                 break;
             }
         }
@@ -126,7 +125,6 @@ class ButtonBar extends InteractiveComponent implements IDataComponent {
             _requireSelection = value;
             if (_requireSelection == true && _dataSource != null && _selectedIndex < 0) {
                 selectedIndex = 0;
-                syncUI();
             }
         }
 
@@ -197,7 +195,6 @@ class ButtonBar extends InteractiveComponent implements IDataComponent {
                 }
 
                 button.selected = n == _selectedIndex;
-                //                button.percentWidth = 100 / size;   //TODO
 
                 var data = _dataSource.get(n);
                 for (f in Reflect.fields(data)) {
