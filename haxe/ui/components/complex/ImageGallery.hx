@@ -84,9 +84,15 @@ class ImageGallery extends Stack {
     private var _startPosY:Float;
     private var _currentPosX:Float;
     private var _currentPosY:Float;
-    private var _drag:Bool;     //TODO - it isn't necessary, but something is wrong with _onMouseUp. It can be called twice (race condition?) and still _drag is ignored
+    private var _dragging:Bool = false;
 
     private function _onMouseDown(e:MouseEvent):Void {
+        if (_dragging == true) {
+            return;
+        }
+
+        _dragging = true;
+
         Screen.instance.registerEvent(MouseEvent.MOUSE_MOVE, _onMouseMove);
         Screen.instance.registerEvent(MouseEvent.MOUSE_UP, _onMouseUp);
 
@@ -97,8 +103,6 @@ class ImageGallery extends Stack {
             _currentTransition.stop();
             _currentTransition = null;
         }
-
-        _drag = true;
     }
 
     private function _onMouseMove(e:MouseEvent):Void {
@@ -112,11 +116,11 @@ class ImageGallery extends Stack {
     }
 
     private function _onMouseUp(e:MouseEvent):Void {
-        if (_drag == false) {
+        if (_dragging == false) {
             return;
         }
 
-        _drag = false;
+        _dragging = false;
 
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_MOVE, _onMouseMove);
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_UP, _onMouseUp);
@@ -129,9 +133,9 @@ class ImageGallery extends Stack {
                     selectedIndex -= 1;
                 } else if (currentComponent.top < -height * percentToChange / 100) {
                     selectedIndex += 1;
-                } else if (currentComponent.top != paddingTop) {
+                } else if (currentComponent.top != layout.paddingTop) {
                         var currentIndex:Int = _selectedIndex;
-                        _selectedIndex = currentComponent.top > paddingTop ? _selectedIndex - 1 : _selectedIndex + 1;
+                        _selectedIndex = currentComponent.top > layout.paddingTop ? _selectedIndex - 1 : _selectedIndex + 1;
                         selectedIndex = currentIndex;
                 }
 
@@ -141,9 +145,9 @@ class ImageGallery extends Stack {
                     selectedIndex -= 1;
                 } else if (currentComponent.left < -width * percentToChange / 100) {
                     selectedIndex += 1;
-                } else if (currentComponent.left != paddingLeft) {
+                } else if (currentComponent.left != layout.paddingLeft) {
                         var currentIndex:Int = _selectedIndex;
-                        _selectedIndex = currentComponent.left > paddingLeft ? _selectedIndex - 1 : _selectedIndex + 1;
+                        _selectedIndex = currentComponent.left > layout.paddingLeft ? _selectedIndex - 1 : _selectedIndex + 1;
                         selectedIndex = currentIndex;
                 }
         }
@@ -165,51 +169,51 @@ class ImageGallery extends Stack {
             case TransitionMode.VERTICAL_SLIDE:
                 var offset:Float = screenY - _currentPosY;
                 var newTop:Float = currentComponent.top + offset;
-                if (((newTop >= paddingTop) && (offset > 0 && selectedIndex == 0))
-                    || ((newTop <= paddingTop) && (offset < 0 && selectedIndex == childrenCount - 1))) {
-                    newTop = paddingTop;
+                if (((newTop >= layout.paddingTop) && (offset > 0 && selectedIndex == 0))
+                    || ((newTop <= layout.paddingTop) && (offset < 0 && selectedIndex == childrenCount - 1))) {
+                    newTop = layout.paddingTop;
                 }
 
                 currentComponent.top = newTop;
 
                 if (selectedIndex > 0) {
                     var previousComponent = getComponentAt(selectedIndex - 1);
-                    var top:Float = currentComponent.top - previousComponent.height - paddingBottom;
+                    var top:Float = currentComponent.top - previousComponent.height - layout.paddingBottom;
                     var hidden:Bool = (top + previousComponent.height <= 0 || top + previousComponent.height >= height);
                     if (previousComponent.hidden != hidden) {
                         previousComponent.includeInLayout = !hidden;
                         previousComponent.hidden = hidden;
                     }
 
-                    previousComponent.left = paddingTop;
+                    previousComponent.left = layout.paddingTop;
                     previousComponent.top = top;
                 }
 
                 if (selectedIndex < childrenCount - 1) {
                     var nextComponent = getComponentAt(selectedIndex + 1);
-                    var top:Float  = currentComponent.top + currentComponent.height + paddingTop;
+                    var top:Float  = currentComponent.top + currentComponent.height + layout.paddingTop;
                     var hidden:Bool = (top <= 0 || top >= width);
                     if (nextComponent.hidden != hidden) {
                         nextComponent.includeInLayout = !hidden;
                         nextComponent.hidden = hidden;
                     }
 
-                    nextComponent.left = paddingTop;
+                    nextComponent.left = layout.paddingTop;
                     nextComponent.top = top;
                 }
             case _:
                 var offset:Float = screenX - _currentPosX;
                 var newLeft:Float = currentComponent.left + offset;
-                if (((newLeft >= paddingLeft) && (offset > 0 && selectedIndex == 0))
-                    || ((newLeft <= paddingLeft) && (offset < 0 && selectedIndex == childrenCount - 1))) {
-                    newLeft = paddingLeft;
+                if (((newLeft >= layout.paddingLeft) && (offset > 0 && selectedIndex == 0))
+                    || ((newLeft <= layout.paddingLeft) && (offset < 0 && selectedIndex == childrenCount - 1))) {
+                    newLeft = layout.paddingLeft;
                 }
 
                 currentComponent.left = newLeft;
 
                 if (selectedIndex > 0) {
                     var previousComponent = getComponentAt(selectedIndex - 1);
-                    var left:Float = currentComponent.left - previousComponent.width - paddingRight;
+                    var left:Float = currentComponent.left - previousComponent.width - layout.paddingRight;
                     var hidden:Bool = (left + previousComponent.width <= 0 || left + previousComponent.width >= width);
                     if (previousComponent.hidden != hidden) {
                         previousComponent.includeInLayout = !hidden;
@@ -217,12 +221,12 @@ class ImageGallery extends Stack {
                     }
 
                     previousComponent.left = left;
-                    previousComponent.top = paddingTop;
+                    previousComponent.top = layout.paddingTop;
                 }
 
                 if (selectedIndex < childrenCount - 1) {
                     var nextComponent = getComponentAt(selectedIndex + 1);
-                    var left:Float  = currentComponent.left + currentComponent.width + paddingLeft;
+                    var left:Float  = currentComponent.left + currentComponent.width + layout.paddingLeft;
                     var hidden:Bool = (left <= 0 || left >= width);
                     if (nextComponent.hidden != hidden) {
                         nextComponent.includeInLayout = !hidden;
@@ -230,7 +234,7 @@ class ImageGallery extends Stack {
                     }
 
                     nextComponent.left = left;
-                    nextComponent.top = paddingTop;
+                    nextComponent.top = layout.paddingTop;
                 }
         }
     }

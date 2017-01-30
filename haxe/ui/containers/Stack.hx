@@ -172,24 +172,24 @@ class Stack extends Box implements IClonable<Stack> {
                 case TransitionMode.HORIZONTAL_SLIDE:
                     inVars = [
                         "startLeft" => ((fromIndex < toIndex) ?
-                                        outComponent.left + outComponent.width + paddingLeft
-                                        : outComponent.left - paddingRight - inComponent.width),
-                        "startTop" => paddingTop,
-                        "endLeft" => paddingLeft
+                                        outComponent.left + outComponent.width + layout.paddingLeft
+                                        : outComponent.left - layout.paddingRight - inComponent.width),
+                        "startTop" => layout.paddingTop,
+                        "endLeft" => layout.paddingLeft
                     ];
 
                     outVars = [
                         "startLeft" => outComponent.left,
                         "endLeft" => ((fromIndex < toIndex) ?
-                                      -width + paddingLeft + paddingRight
+                                      -width + layout.paddingLeft + layout.paddingRight
                                       : width)
                     ];
 
                 case TransitionMode.HORIZONTAL_SLIDE_FROM_LEFT:
                     inVars = [
-                        "startLeft" => outComponent.left - paddingRight - inComponent.width,
-                        "startTop" => paddingTop,
-                        "endLeft" => paddingLeft
+                        "startLeft" => outComponent.left - layout.paddingRight - inComponent.width,
+                        "startTop" => layout.paddingTop,
+                        "endLeft" => layout.paddingLeft
                     ];
 
                     outVars = [
@@ -199,37 +199,37 @@ class Stack extends Box implements IClonable<Stack> {
 
                 case TransitionMode.HORIZONTAL_SLIDE_FROM_RIGHT:
                     inVars = [
-                        "startLeft" => outComponent.left + outComponent.width + paddingLeft,
-                        "startTop" => paddingTop,
-                        "endLeft" => paddingLeft
+                        "startLeft" => outComponent.left + outComponent.width + layout.paddingLeft,
+                        "startTop" => layout.paddingTop,
+                        "endLeft" => layout.paddingLeft
                     ];
 
                     outVars = [
                         "startLeft" => outComponent.left,
-                        "endLeft" => -width + paddingLeft + paddingRight
+                        "endLeft" => -width + layout.paddingLeft + layout.paddingRight
                     ];
 
                 case TransitionMode.VERTICAL_SLIDE:
                     inVars = [
-                        "startLeft" => paddingLeft,
+                        "startLeft" => layout.paddingLeft,
                         "startTop" => ((fromIndex < toIndex) ?
-                                       outComponent.top + outComponent.height + paddingTop
-                                       : outComponent.top - paddingBottom - inComponent.height),
-                        "endTop" => paddingTop
+                                       outComponent.top + outComponent.height + layout.paddingTop
+                                       : outComponent.top - layout.paddingBottom - inComponent.height),
+                        "endTop" => layout.paddingTop
                     ];
 
                     outVars = [
                         "startTop" => outComponent.top,
                         "endTop" => ((fromIndex < toIndex) ?
-                                     -height + paddingTop + paddingBottom
+                                     -height + layout.paddingTop + layout.paddingBottom
                                      : height)
                     ];
 
                 case TransitionMode.VERTICAL_SLIDE_FROM_TOP:
                     inVars = [
-                        "startLeft" => paddingLeft,
-                        "startTop" => outComponent.top - paddingBottom - inComponent.height,
-                        "endTop" => paddingTop
+                        "startLeft" => layout.paddingLeft,
+                        "startTop" => outComponent.top - layout.paddingBottom - inComponent.height,
+                        "endTop" => layout.paddingTop
                     ];
 
                     outVars = [
@@ -239,14 +239,14 @@ class Stack extends Box implements IClonable<Stack> {
 
                 case TransitionMode.VERTICAL_SLIDE_FROM_BOTTOM:
                     inVars = [
-                        "startLeft" => paddingLeft,
-                        "startTop" => outComponent.top + outComponent.height + paddingTop,
-                        "endTop" => paddingTop
+                        "startLeft" => layout.paddingLeft,
+                        "startTop" => outComponent.top + outComponent.height + layout.paddingTop,
+                        "endTop" => layout.paddingTop
                     ];
 
                     outVars = [
                         "startTop" => outComponent.top,
-                        "endTop" => -height + paddingTop + paddingBottom
+                        "endTop" => -height + layout.paddingTop + layout.paddingBottom
                     ];
 
                 case TransitionMode.FADE:
@@ -266,8 +266,8 @@ class Stack extends Box implements IClonable<Stack> {
 
         } else {
             if (inComponent != null) {
-                inComponent.left = paddingLeft;
-                inComponent.top = paddingTop;
+                inComponent.left = layout.paddingLeft;
+                inComponent.top = layout.paddingTop;
             }
 
             if (outComponent != null) {
