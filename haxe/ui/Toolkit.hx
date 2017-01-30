@@ -210,7 +210,7 @@ class Toolkit {
             if (autoScale == true) {
                 var dpi:Float = Screen.instance.dpi;
                 if (dpi > autoScaleDPIThreshold) {
-                    _scaleX = dpi / autoScaleDPIThreshold;
+                    _scaleX = Math.fround(dpi / autoScaleDPIThreshold);
                 } else {
                     _scaleX = 1;
                 }
@@ -224,7 +224,7 @@ class Toolkit {
         if (_scaleX == value) {
             return value;
         }
-        _scaleX = value;
+        _scaleX = Math.fround(value);
         autoScale = false;
         return value;
     }
@@ -236,7 +236,7 @@ class Toolkit {
             if (autoScale == true) {
                 var dpi:Float = Screen.instance.dpi;
                 if (dpi > autoScaleDPIThreshold) {
-                    _scaleY = dpi / autoScaleDPIThreshold;
+                    _scaleY = Math.fround(dpi / autoScaleDPIThreshold);
                 } else {
                     _scaleY = 1;
                 }
@@ -250,7 +250,7 @@ class Toolkit {
         if (_scaleY == value) {
             return value;
         }
-        _scaleY = value;
+        _scaleY = Math.fround(value);
         autoScale = false;
         return value;
     }

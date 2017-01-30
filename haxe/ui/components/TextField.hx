@@ -25,12 +25,13 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     // Overrides
     //***********************************************************************************************************
     private override function createDefaults() {
-        _defaultBehaviours = [
+        super.createDefaults();
+        defaultBehaviours([
             "text" => new TextFieldDefaultTextBehaviour(this),
             "icon" => new TextFieldDefaultIconBehaviour(this),
             "password" => new TextFieldDefaultPasswordBehaviour(this),
             "placeholder" => new TextFieldDefaultPlaceholderBehaviour(this)
-        ];
+        ]);
         _defaultLayout = new TextFieldLayout();
     }
 
@@ -275,11 +276,13 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
         }
 
         //Placeholder
-        if (focus == false) {
-            if (text == "" && _placeholder != null) {
+        if (focus == false && _placeholder != null) {
+            if (text == "") {
                 text = _placeholder;
                 behaviourSet("password", false);
                 addClass(":empty");
+            } else {
+                removeClass(":empty");
             }
         } else if (placeholderVisible == true){
             text = "";

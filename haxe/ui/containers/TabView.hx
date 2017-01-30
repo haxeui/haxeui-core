@@ -22,6 +22,7 @@ class TabView extends Component implements IClonable<TabView> {
     // Internals
     //***********************************************************************************************************
     private override function createDefaults() {
+        super.createDefaults();
         _defaultLayout = new TabViewLayout();
     }
 
@@ -130,6 +131,18 @@ class TabView extends Component implements IClonable<TabView> {
         return value;
     }
 
+    public function removeAllTabs() {
+        for (view in _views) {
+            removeComponent(view);
+        }
+        _views = [];
+        _currentView = null;
+        _pageIndex = -1;
+        _content.removeAllComponents();
+        _tabs.removeAllComponents();
+        _tabs.resetSelection();
+    }
+    
     //***********************************************************************************************************
     // Event Handlers
     //***********************************************************************************************************

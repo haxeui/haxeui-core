@@ -37,8 +37,11 @@ class ScriptInterp extends Interp {
     }
 
     private function parseResult(v):Dynamic {
+        if (v == null) {
+            return v;
+        }
         var temp = Std.string(v);
-        var regexp:EReg = new EReg("_?(Bool|Float|Int|String)\\((.*)\\)", "g");
+        var regexp:EReg = new EReg("^_?(Bool|Float|Int|String)\\((.*)\\)", "g");
         if (regexp.match(temp) == false) {
             return v;
         }

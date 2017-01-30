@@ -26,9 +26,10 @@ class Label extends Component implements IClonable<Label> {
     // Internals
     //***********************************************************************************************************
     private override function createDefaults() {
-        _defaultBehaviours = [
+        super.createDefaults();
+        defaultBehaviours([
             "text" => new LabelDefaultTextBehaviour(this)
-        ];
+        ]);
         _defaultLayout = new LabelLayout();
     }
 

@@ -309,6 +309,7 @@ class Style {
         this.marginBottom = v;
     }
 
+    /*
     public function toString() {
         var fields = [];
         for( f in Type.getInstanceFields(Style) ) {
@@ -321,4 +322,5 @@ class Style {
         }
         return "{" + fields.join(", ") + "}";
     }
+    */
 }

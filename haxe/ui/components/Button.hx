@@ -28,10 +28,11 @@ class Button extends InteractiveComponent implements IClonable<Button> {
     // Internals
     //***********************************************************************************************************
     private override function createDefaults() {
-        _defaultBehaviours = [
+        super.createDefaults();
+        defaultBehaviours([
             "text" => new ButtonDefaultTextBehaviour(this),
             "icon" => new ButtonDefaultIconBehaviour(this)
-        ];
+        ]);
         _defaultLayout = new ButtonLayout();
     }
 
@@ -147,6 +148,21 @@ class Button extends InteractiveComponent implements IClonable<Button> {
         }
 
         customStyle.iconPosition = value;
+        invalidateStyle();
+        invalidateLayout();
+        return value;
+    }
+
+    @:clonable public var fontSize(get, set):Float;
+    private function get_fontSize():Float {
+        return style.fontSize;
+    }
+    private function set_fontSize(value:Float):Float {
+        if (fontSize == value) {
+            return value;
+        }
+
+        customStyle.fontSize = value;
         invalidateStyle();
         invalidateLayout();
         return value;

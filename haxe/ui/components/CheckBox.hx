@@ -22,10 +22,11 @@ class CheckBox extends InteractiveComponent implements IClonable<CheckBox> {
     // Internals
     //***********************************************************************************************************
     private override function createDefaults() {
-        _defaultBehaviours = [
+        super.createDefaults();
+        defaultBehaviours([
             "text" => new CheckBoxDefaultTextBehaviour(this),
             "selected" => new CheckBoxDefaultSelectedBehaviour(this)
-        ];
+        ]);
         _defaultLayout = new HorizontalLayout();
     }
 

@@ -31,13 +31,14 @@ class Slider extends InteractiveComponent implements IClonable<Slider> {
     // Internals
     //***********************************************************************************************************
     private override function createDefaults() {
-        _defaultBehaviours = [
+        super.createDefaults();
+        defaultBehaviours([
             "min" => new SliderDefaultMinBehaviour(this),
             "max" => new SliderDefaultMaxBehaviour(this),
             "pos" => new SliderDefaultPosBehaviour(this),
             "rangeStart" => new SliderDefaultRangeStartBehaviour(this),
             "rangeEnd" => new SliderDefaultRangeEndBehaviour(this)
-        ];
+        ]);
     }
 
     private override function create() {

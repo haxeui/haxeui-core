@@ -26,14 +26,15 @@ class Progress extends InteractiveComponent implements IClonable<Progress> {
     // Internals
     //***********************************************************************************************************
     private override function createDefaults() {
-        _defaultBehaviours = [
+        super.createDefaults();
+        defaultBehaviours([
             "min" => new ProgressDefaultMinBehaviour(this),
             "max" => new ProgressDefaultMaxBehaviour(this),
             "pos" => new ProgressDefaultPosBehaviour(this),
             "rangeStart" => new ProgressDefaultRangeStartBehaviour(this),
             "rangeEnd" => new ProgressDefaultRangeEndBehaviour(this),
             "indeterminate" => new ProgressDefaultIndeterminateBehaviour(this)
-        ];
+        ]);
     }
 
     private override function create() {
