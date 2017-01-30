@@ -153,6 +153,21 @@ class Button extends InteractiveComponent implements IClonable<Button> {
         return value;
     }
 
+    @:clonable public var fontSize(get, set):Float;
+    private function get_fontSize():Float {
+        return style.fontSize;
+    }
+    private function set_fontSize(value:Float):Float {
+        if (fontSize == value) {
+            return value;
+        }
+
+        customStyle.fontSize = value;
+        invalidateStyle();
+        invalidateLayout();
+        return value;
+    }
+
     @:clonable public var textAlign(get, set):String;
     private function get_textAlign():String {
         return style.textAlign;
