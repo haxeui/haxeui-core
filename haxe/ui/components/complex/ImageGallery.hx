@@ -6,7 +6,6 @@ import haxe.ui.core.Component;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.Screen;
 import haxe.ui.layouts.AbsoluteLayout;
-import haxe.ui.util.MathUtil;
 
 class ImageGallery extends Stack {
     public function new() {
@@ -80,8 +79,6 @@ class ImageGallery extends Stack {
     // Events
     //******************************************************************************************
 
-    private var _startPosX:Float;
-    private var _startPosY:Float;
     private var _currentPosX:Float;
     private var _currentPosY:Float;
     private var _dragging:Bool = false;
@@ -96,8 +93,8 @@ class ImageGallery extends Stack {
         Screen.instance.registerEvent(MouseEvent.MOUSE_MOVE, _onMouseMove);
         Screen.instance.registerEvent(MouseEvent.MOUSE_UP, _onMouseUp);
 
-        _startPosX = _currentPosX = e.screenX;
-        _startPosY = _currentPosY = e.screenY;
+        _currentPosX = e.screenX;
+        _currentPosY = e.screenY;
 
         if (_currentTransition != null) {
             _currentTransition.stop();
@@ -150,10 +147,6 @@ class ImageGallery extends Stack {
                         _selectedIndex = currentComponent.left > layout.paddingLeft ? _selectedIndex - 1 : _selectedIndex + 1;
                         selectedIndex = currentIndex;
                 }
-        }
-
-        if (MathUtil.distance(_startPosX, _startPosY, _currentPosX, _currentPosY) < 1 * Toolkit.pixelsPerRem * Toolkit.scale) {
-            dispatch(new MouseEvent(MouseEvent.CLICK));
         }
     }
 
