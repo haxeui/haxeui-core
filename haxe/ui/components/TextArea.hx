@@ -198,8 +198,12 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
     }
 
     private function _onScrollChange(e:UIEvent) {
-        getTextInput().hscrollPos = _hscroll.pos;
-        getTextInput().vscrollPos = _vscroll.pos;
+        if (_hscroll != null) {
+            getTextInput().hscrollPos = _hscroll.pos;
+        }
+        if (_vscroll != null) {
+            getTextInput().vscrollPos = _vscroll.pos;
+        }
     }
 
     public override function onResized() {
