@@ -302,6 +302,10 @@ class ScrollView extends Component implements IClonable<ScrollView> {
     private var _inertiaDirectionY:Int;
     
     private function _onMouseDown(event:MouseEvent) {
+        if ((_hscroll == null || _hscroll.hidden == true) && (_vscroll == null || _vscroll.hidden == true)) {
+            return;
+        }
+        
         event.cancel();
         if (_hscroll != null && _hscroll.hidden == false && _hscroll.hitTest(event.screenX, event.screenY) == true) {
             return;
