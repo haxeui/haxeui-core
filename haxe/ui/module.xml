@@ -9,6 +9,7 @@
         <class name="haxe.ui.core.ItemRenderer" />
         <class name="haxe.ui.core.BasicItemRenderer" />
         <class package="haxe.ui.components" />
+        <class package="haxe.ui.components.complex" />
         <class package="haxe.ui.containers" />
         <class package="haxe.ui.containers.dialogs" />
         <class name="haxe.ui.components.Label" alias="text" />
@@ -17,6 +18,7 @@
     <scriptlets>
         <import class="haxe.ui.core.Component" keep="true" />
         <import package="haxe.ui.components" keep="true" /> <!-- TODO: remove this eventually -->
+        <import package="haxe.ui.components.complex" />
         <import package="haxe.ui.containers" />
         <import package="haxe.ui.containers.dialogs" />
         <import package="haxe.ui.animation" keep="true" />
@@ -66,6 +68,9 @@
 
         <property name="haxe.ui.containers.stack.transition.slide" value="haxe.ui.containers.transition.slide" />
         <property name="haxe.ui.containers.stack.transition.fade" value="haxe.ui.containers.transition.fade" />
+
+        <property name="haxe.ui.components.complex.imagegallery.transition.slide" value="haxe.ui.containers.transition.slide" />
+        <property name="haxe.ui.components.complex.imagegallery.transition.fade" value="haxe.ui.containers.transition.fade" />
     </properties>
 
     <animations>
