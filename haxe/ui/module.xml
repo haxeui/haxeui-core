@@ -135,7 +135,7 @@
     <transitions>
         <transition id="haxe.ui.containers.transition.slide">
             <inAnimations>
-                <animation id="haxe.ui.containers.animation.slide.in" ease="Cubic.easeIn">
+                <animation id="haxe.ui.containers.animation.slide.in" ease="Cubic.easeOut">
                     <keyframe time="0">
                         <target top="{startTop}" left="{startLeft}" />
                     </keyframe>
@@ -146,7 +146,7 @@
             </inAnimations>
 
             <outAnimations>
-                <animation id="haxe.ui.containers.animation.slide.out" ease="Cubic.easeIn">
+                <animation id="haxe.ui.containers.animation.slide.out" ease="Cubic.easeOut">
                     <keyframe time="0">
                         <target top="{startTop}" left="{startLeft}" />
                     </keyframe>
