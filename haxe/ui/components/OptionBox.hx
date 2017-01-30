@@ -210,7 +210,6 @@ class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
                 }
             }
         }
-
         return selectionOption;
     }
 

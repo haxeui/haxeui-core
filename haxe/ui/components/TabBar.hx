@@ -71,6 +71,11 @@ class TabBar extends Component implements IClonable<TabBar> {
         return value;
     }
 
+    public function resetSelection() {
+        _selectedIndex = -1;
+        _currentButton = null;
+    }
+    
     //***********************************************************************************************************
     // Events
     //***********************************************************************************************************
