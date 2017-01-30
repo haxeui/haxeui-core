@@ -127,9 +127,9 @@ class Stack extends Box implements IClonable<Stack> {
     //***********************************************************************************************************
 
     private var _currentTransition:Transition;
-    private function animateTo(index:Int) {
-        var inComponent:Component = (index != -1) ? getComponentAt(index) : null;
-        var outComponent:Component = (_selectedIndex != -1) ? getComponentAt(_selectedIndex) : null;
+    private function animateTo(fromIndex:Int, toIndex:Int) {
+        var inComponent:Component = (toIndex != -1) ? getComponentAt(toIndex) : null;
+        var outComponent:Component = (fromIndex != -1) ? getComponentAt(fromIndex) : null;
 
         var transitionId:String = null;
         var mode:TransitionMode = transitionMode;
@@ -171,18 +171,24 @@ class Stack extends Box implements IClonable<Stack> {
             switch (mode) {
                 case TransitionMode.HORIZONTAL_SLIDE:
                     inVars = [
-                        "startLeft" => ((_selectedIndex < index) ? width : -width),
+                        "startLeft" => ((fromIndex < toIndex) ?
+                                        outComponent.left + outComponent.width + paddingLeft
+                                        : outComponent.left - paddingRight - inComponent.width),
+                        "startTop" => paddingTop,
                         "endLeft" => paddingLeft
                     ];
 
                     outVars = [
                         "startLeft" => outComponent.left,
-                        "endLeft" => ((_selectedIndex < index) ? -width : width)
+                        "endLeft" => ((fromIndex < toIndex) ?
+                                      -width + paddingLeft + paddingRight
+                                      : width)
                     ];
 
                 case TransitionMode.HORIZONTAL_SLIDE_FROM_LEFT:
                     inVars = [
-                        "startLeft" => -width,
+                        "startLeft" => outComponent.left - paddingRight - inComponent.width,
+                        "startTop" => paddingTop,
                         "endLeft" => paddingLeft
                     ];
 
@@ -193,29 +199,36 @@ class Stack extends Box implements IClonable<Stack> {
 
                 case TransitionMode.HORIZONTAL_SLIDE_FROM_RIGHT:
                     inVars = [
-                        "startLeft" => width,
+                        "startLeft" => outComponent.left + outComponent.width + paddingLeft,
+                        "startTop" => paddingTop,
                         "endLeft" => paddingLeft
                     ];
 
                     outVars = [
                         "startLeft" => outComponent.left,
-                        "endLeft" => -width
+                        "endLeft" => -width + paddingLeft + paddingRight
                     ];
 
                 case TransitionMode.VERTICAL_SLIDE:
                     inVars = [
-                        "startTop" => ((_selectedIndex < index) ? height : -height),
+                        "startLeft" => paddingLeft,
+                        "startTop" => ((fromIndex < toIndex) ?
+                                       outComponent.top + outComponent.height + paddingTop
+                                       : outComponent.top - paddingBottom - inComponent.height),
                         "endTop" => paddingTop
                     ];
 
                     outVars = [
                         "startTop" => outComponent.top,
-                        "endTop" => ((_selectedIndex < index) ? -height : height)
+                        "endTop" => ((fromIndex < toIndex) ?
+                                     -height + paddingTop + paddingBottom
+                                     : height)
                     ];
 
                 case TransitionMode.VERTICAL_SLIDE_FROM_TOP:
                     inVars = [
-                        "startTop" => -height,
+                        "startLeft" => paddingLeft,
+                        "startTop" => outComponent.top - paddingBottom - inComponent.height,
                         "endTop" => paddingTop
                     ];
 
@@ -226,13 +239,14 @@ class Stack extends Box implements IClonable<Stack> {
 
                 case TransitionMode.VERTICAL_SLIDE_FROM_BOTTOM:
                     inVars = [
-                        "startTop" => height,
+                        "startLeft" => paddingLeft,
+                        "startTop" => outComponent.top + outComponent.height + paddingTop,
                         "endTop" => paddingTop
                     ];
 
                     outVars = [
                         "startTop" => outComponent.top,
-                        "endTop" => -height
+                        "endTop" => -height + paddingTop + paddingBottom
                     ];
 
                 case TransitionMode.FADE:
@@ -245,6 +259,7 @@ class Stack extends Box implements IClonable<Stack> {
                 ["target" => inComponent], inVars,
                 ["target" => outComponent], outVars,
                 function() {
+                    _currentTransition = null;
                     outComponent.includeInLayout = false;
                     outComponent.hidden = true;
                 });
@@ -285,6 +300,6 @@ class StackDefaultTransitionModeBehaviour extends Behaviour {
 class StackDefaultSelectedIndexBehaviour extends Behaviour {
     public override function set(value:Variant) {
         var stack:Stack = cast _component;
-        stack.animateTo(value);
+        stack.animateTo(stack._selectedIndex, value);
     }
 }
