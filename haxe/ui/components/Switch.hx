@@ -201,6 +201,9 @@ class SwitchLayout extends DefaultLayout {
         var switchComp:Switch = cast _component;
         var button:Button = switchComp.findComponent("switch-button");
         var label:Label = switchComp.findComponent("switch-label");
+        if (button == null || label == null) {
+            return;
+        }
         
         button.top = paddingTop;
         label.top = (component.componentHeight / 2) - (label.componentHeight / 2);
