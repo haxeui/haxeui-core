@@ -133,18 +133,37 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
         }
     }
 
+    private var _hscroll:HScroll;
     private var _vscroll:VScroll;
     private function checkScrolls() {
         if (native == true) {
             return;
         }
 
+        if (getTextInput().textWidth > getTextInput().width) {
+            if (_hscroll == null) {
+                _hscroll = new HScroll();
+                _hscroll.id = "textarea-hscroll";
+                addComponent(_hscroll);
+                _hscroll.registerEvent(UIEvent.CHANGE, _onScrollChange);
+            }
+            _hscroll.max = getTextInput().textWidth - getTextInput().width;
+            _hscroll.pos = getTextInput().hscrollPos;
+
+            _hscroll.pageSize = (getTextInput().width * _hscroll.max) / getTextInput().textWidth;
+            _hscroll.show();
+        } else {
+            if (_hscroll != null) {
+                _hscroll.hide();
+            }
+        }
+        
         if (getTextInput().textHeight > getTextInput().height) {
             if (_vscroll == null) {
                 _vscroll = new VScroll();
                 _vscroll.id = "textarea-vscroll";
                 addComponent(_vscroll);
-                _vscroll.registerEvent(UIEvent.CHANGE, _onVScrollChange);
+                _vscroll.registerEvent(UIEvent.CHANGE, _onScrollChange);
             }
             _vscroll.max = getTextInput().textHeight - getTextInput().height;
             _vscroll.pos = getTextInput().vscrollPos;
@@ -178,7 +197,8 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
         handleBindings(["text", "value"]);
     }
 
-    private function _onVScrollChange(e:UIEvent) {
+    private function _onScrollChange(e:UIEvent) {
+        getTextInput().hscrollPos = _hscroll.pos;
         getTextInput().vscrollPos = _vscroll.pos;
     }
 
@@ -251,7 +271,7 @@ class TextAreaDefaultPlaceholderBehaviour extends Behaviour {
 // Custom layouts
 //***********************************************************************************************************
 @:dox(hide)
-@:access(haxe.ui.components.TextField)
+@:access(haxe.ui.components.TextArea)
 class TextAreaLayout extends DefaultLayout {
     private override function repositionChildren() {
         var hscroll:Component = component.findComponent("textarea-hscroll");
@@ -268,7 +288,6 @@ class TextAreaLayout extends DefaultLayout {
         if (vscroll != null && hidden(vscroll) == false) {
             vscroll.left = ucx - vscroll.componentWidth + paddingRight;
             vscroll.top = paddingTop;
-            vscroll.componentHeight = ucy;
         }
 
         if (component.hasTextInput() == true) {
@@ -280,6 +299,18 @@ class TextAreaLayout extends DefaultLayout {
     private override function resizeChildren() {
         super.resizeChildren();
 
+        var hscroll:Component = component.findComponent("textarea-hscroll");
+        var vscroll:Component = component.findComponent("textarea-vscroll");
+
+        var usableSize:Size = usableSize;
+        if (hscroll != null && hidden(hscroll) == false) {
+            hscroll.width = usableSize.width;
+        }
+        
+        if (vscroll != null && hidden(vscroll) == false) {
+            vscroll.height = usableSize.height;
+        }
+        
         if (component.hasTextInput() == true) {
             var size:Size = usableSize;
             #if !pixijs
@@ -303,4 +334,19 @@ class TextAreaLayout extends DefaultLayout {
 
         return size;
     }
+    
+    /*
+    public override function calcAutoSize(exclusions:Array<Component> = null):Size {
+        var hscroll:Component = component.findComponent("textarea-hscroll");
+        var vscroll:Component = component.findComponent("textarea-vscroll");
+        var size:Size = super.calcAutoSize([hscroll, vscroll]);
+        if (hscroll != null && hscroll.hidden == false) {
+            size.height += hscroll.componentHeight;
+        }
+        if (vscroll != null && vscroll.hidden == false) {
+            size.width += vscroll.componentWidth;
+        }
+        return size;
+    }
+    */
 }
