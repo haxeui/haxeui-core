@@ -103,10 +103,7 @@ class Layout implements ILayout {
         if (c == null) {
             c = component;
         }
-        if (c.style.hidden == null) {
-            return false;
-        }
-        return c.style.hidden;
+        return c.hidden;
     }
 
     private function horizontalAlign(child:Component):String {
