@@ -522,7 +522,9 @@ class Component extends ComponentBase implements IComponentBase implements IClon
             if (_children.remove(child)) {
                 child.parentComponent = null;
             }
-            invalidateLayout();
+            if (invalidate == true) {
+                invalidateLayout();
+            }
             if (dispose == true) {
                 child.onDestroy();
             }
