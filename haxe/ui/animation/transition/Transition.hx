@@ -35,7 +35,7 @@ class Transition {
         if (onComplete != null) {
             var total = inAnimations.length + outAnimations.length;
             var current = 0;
-            animationCallback = onComplete == null ? null : function() {
+            animationCallback = function() {
                 if (++current >= total) {
                     onComplete();
                 }
