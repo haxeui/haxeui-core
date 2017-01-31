@@ -132,15 +132,21 @@ class TabView extends Component implements IClonable<TabView> {
     }
 
     public function removeAllTabs() {
-        for (view in _views) {
-            removeComponent(view);
+        if (_views != null) {
+            for (view in _views) {
+                removeComponent(view);
+            }
+            _views = [];
         }
-        _views = [];
         _currentView = null;
         _pageIndex = -1;
-        _content.removeAllComponents();
-        _tabs.removeAllComponents();
-        _tabs.resetSelection();
+        if (_content != null) {
+            _content.removeAllComponents();
+        }
+        if (_tabs != null) {
+            _tabs.removeAllComponents();
+            _tabs.resetSelection();
+        }
     }
     
     //***********************************************************************************************************
