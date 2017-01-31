@@ -161,6 +161,13 @@ class ButtonBar extends InteractiveComponent implements IDataComponent {
     // Internals
     //***********************************************************************************************************
 
+    /**
+        This method can be overriden in a subclass
+    **/
+    private function createButton():Button {
+        return new Button();
+    }
+
     private function syncUI():Void {
         lockLayout();
 
@@ -171,7 +178,7 @@ class ButtonBar extends InteractiveComponent implements IDataComponent {
             var delta = size - itemCount;
             if (delta > 0) { // not enough items
                 for (n in 0...delta) {
-                    var button:Button = new Button();
+                    var button:Button = createButton();
                     button.addClass('buttonbar-button');
                     button.toggle = requireSelection;
                     button.registerEvent(MouseEvent.CLICK, onButtonClick);
