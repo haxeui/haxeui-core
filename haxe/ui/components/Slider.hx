@@ -25,6 +25,7 @@ class Slider extends InteractiveComponent implements IClonable<Slider> {
         super();
         allowFocus = false;
         addClass("slider");
+        _behaviourUpdateOrder = ["min", "max", "pos"];
     }
 
     //***********************************************************************************************************
@@ -126,7 +127,7 @@ class Slider extends InteractiveComponent implements IClonable<Slider> {
     @:dox(group = "Value related properties and methods")
     @bindable @clonable public var pos(get, set):Float;
     private function get_pos():Float {
-        return _pos;
+        return behaviourGet("pos");
     }
     private function set_pos(value:Float):Float {
         if (_ready) { // only enforce constraints when ready as xml attrs can come in in any order
@@ -141,6 +142,7 @@ class Slider extends InteractiveComponent implements IClonable<Slider> {
         if (value == _pos) {
             return value;
         }
+        
         _pos = value;
         behaviourSet("pos", value);
         var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
@@ -204,6 +206,7 @@ class Slider extends InteractiveComponent implements IClonable<Slider> {
 
         _max = value;
         behaviourSet("max", value);
+        behaviourSet("pos", _pos);
         return value;
     }
 
@@ -389,6 +392,10 @@ class SliderDefaultPosBehaviour extends Behaviour {
     public override function set(value:Variant) {
         var slider:Slider = cast _component;
         slider.invalidateLayout();
+    }
+    
+    public override function get():Variant {
+        return cast(_component, Slider)._pos;
     }
 }
 

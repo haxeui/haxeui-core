@@ -186,8 +186,17 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         }
     }
 
+    private var _behaviourUpdateOrder:Array<String> = [];
     private function behavioursUpdate() {
-        for (b in _behaviours) {
+        var order:Array<String> = _behaviourUpdateOrder.copy();
+        for (key in _behaviours.keys()) {
+            if (order.indexOf(key) == -1) {
+                order.push(key);
+            }
+        }
+        
+        for (key in order) {
+            var b = _behaviours.get(key);
             if (b != null) {
                 b.update();
             }
