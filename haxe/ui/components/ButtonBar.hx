@@ -212,6 +212,12 @@ class ButtonBar extends InteractiveComponent implements IDataComponent {
 
                         case "icon":
                             button.icon = Variant.fromDynamic(v);
+
+                        case "id":
+                            button.id = Variant.fromDynamic(v);
+
+                        case "styleNames":
+                            button.styleNames = Variant.fromDynamic(v);
                     }
                 }
             }
