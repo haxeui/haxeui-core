@@ -50,6 +50,21 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
         return value;
     }
 
+    private var _wrap:Bool;
+    @:clonable public var wrap(get, set):Bool;
+    private function get_wrap():Bool {
+        return behaviourGet("wrap");
+    }
+    private function set_wrap(value:Bool):Bool {
+        if (value == _wrap) {
+            return value;
+        }
+        
+        _wrap = value;        
+        behaviourSet("wrap", value);
+        return value;
+    }
+    
     //***********************************************************************************************************
     // Overrides
     //***********************************************************************************************************
@@ -83,7 +98,8 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
         super.createDefaults();
         defaultBehaviours([
             "text" => new TextAreaDefaultTextBehaviour(this),
-            "placeholder" => new TextAreaDefaultPlaceholderBehaviour(this)
+            "placeholder" => new TextAreaDefaultPlaceholderBehaviour(this),
+            "wrap" => new TextAreaDefaultWrapBehaviour(this)
         ]);
         _defaultLayout = new TextAreaLayout();
     }
@@ -98,6 +114,13 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
 
     private override function createChildren() {
         super.createChildren();
+        if (componentWidth == 0) {
+            componentWidth = 150;
+        }
+        if (componentHeight == 0) {
+            componentHeight = 100;
+        }
+        
         getTextInput().multiline = true;
 
         registerEvent(MouseEvent.MOUSE_WHEEL, _onMouseWheel);
@@ -239,7 +262,7 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
 // Default behaviours
 //***********************************************************************************************************
 @:dox(hide)
-@:access(haxe.ui.components.TextField)
+@:access(haxe.ui.components.TextArea)
 class TextAreaDefaultTextBehaviour extends Behaviour {
     public override function set(value:Variant) {
         if (value.isNull) {
@@ -271,6 +294,22 @@ class TextAreaDefaultPlaceholderBehaviour extends Behaviour {
         return textArea._placeholder;
     }
 }
+
+@:dox(hide)
+@:access(haxe.ui.components.TextArea)
+class TextAreaDefaultWrapBehaviour extends Behaviour {
+    public override function set(value:Variant) {
+        var textArea:TextArea = cast _component;
+        textArea.getTextInput().wordWrap = value;
+        textArea.checkScrolls();
+    }
+    
+    public override function get():Variant {
+        var textArea:TextArea = cast _component;
+        return textArea.getTextInput().wordWrap;
+    }
+}
+
 //***********************************************************************************************************
 // Custom layouts
 //***********************************************************************************************************
@@ -327,6 +366,7 @@ class TextAreaLayout extends DefaultLayout {
 
     private override function get_usableSize():Size {
         var size:Size = super.get_usableSize();
+        size.width -= 1;
         var hscroll:Component = component.findComponent("textarea-hscroll");
         var vscroll:Component = component.findComponent("textarea-vscroll");
         if (hscroll != null && hidden(hscroll) == false) {
