@@ -144,9 +144,14 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
     }
     private function set_dataSource(value:DataSource<Dynamic>):DataSource<Dynamic> {
         _dataSource = value;
-        _dataSource.transformer = new NativeTypeTransformer();
+
+        if (_dataSource != null) {
+            _dataSource.transformer = new NativeTypeTransformer();
+            _dataSource.onChange = onDataSourceChanged;
+        }
+
         syncUI();
-        _dataSource.onChange = onDataSourceChanged;
+
         return value;
     }
 
@@ -158,6 +163,7 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
 
     private function syncUI() {
         if (_itemRenderer == null || _dataSource == null) {
+            contents.removeAllComponents();
             return;
         }
 
