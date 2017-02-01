@@ -32,6 +32,9 @@ class Stack extends Box implements IClonable<Stack> {
     //******************************************************************************************
     public override function addComponent(child:Component):Component {
         super.addComponent(child);
+        if (_selectedIndex == -1 && childComponents.length == 1) {
+           selectedIndex = 0;
+        }
         child.hidden = (childComponents.length - 1 != _selectedIndex);
         child.includeInLayout = child.hidden == false;
         return child;
@@ -40,14 +43,18 @@ class Stack extends Box implements IClonable<Stack> {
     //TODO --> https://github.com/haxeui/haxeui-core/pull/93
     /*public override function addComponentAt(child:Component, index:Int):Component {
         super.addComponentAt(child, index);
+        if (_selectedIndex == -1 && childComponents.length == 1) {
+           selectedIndex = 0;
+        }
         child.hidden = (index != _selectedIndex);
         return child;
     }*/
 
     public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
         var index:Int = getComponentIndex(child);
-        if (index == _selectedIndex)
+        if (index == _selectedIndex) {
             selectedIndex = -1;
+        }
 
         return super.removeComponent(child);
     }
