@@ -136,13 +136,13 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
     private var _dataSource:DataSource<Dynamic>;
     public var dataSource(get, set):DataSource<Dynamic>;
     private function get_dataSource():DataSource<Dynamic> {
-        if (_dataSource == null) {
-            _dataSource = new ArrayDataSource(new NativeTypeTransformer());
-            _dataSource.onChange = onDataSourceChanged;
-        }
         return _dataSource;
     }
     private function set_dataSource(value:DataSource<Dynamic>):DataSource<Dynamic> {
+        if (_dataSource != null) {
+            _dataSource.onChange = null;
+        }
+
         _dataSource = value;
 
         if (_dataSource != null) {
