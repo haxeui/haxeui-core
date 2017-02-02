@@ -1,5 +1,6 @@
 package haxe.ui.containers;
 
+import haxe.ui.core.ScrollEvent;
 import haxe.ui.components.HScroll;
 import haxe.ui.components.VScroll;
 import haxe.ui.constants.ScrollMode;
@@ -336,11 +337,14 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         
         Screen.instance.registerEvent(MouseEvent.MOUSE_MOVE, _onMouseMove);
         Screen.instance.registerEvent(MouseEvent.MOUSE_UP, _onMouseUp);
+
+        dispatch(new ScrollEvent(ScrollEvent.START));
     }
     
     private function _onMouseMove(event:MouseEvent) {
         hscrollPos = _offsetX - event.screenX;
         vscrollPos = _offsetY - event.screenY;
+        dispatch(new ScrollEvent(ScrollEvent.CHANGE));
     }
     
     private function _onMouseUp(event:MouseEvent) {
@@ -394,8 +398,10 @@ class ScrollView extends Component implements IClonable<ScrollView> {
             if (vscrollPos == _inertialTargetY) {
                 _inertialAmplitudeY = 0;
             }
-            
-            _inertialTimer = new Timer(20, inertialScroll);
+
+            _inertialTimer = new Timer(0, inertialScroll); //TODO - Create ENTER_FRAME event in backends
+        } else {
+            dispatch(new ScrollEvent(ScrollEvent.STOP));
         }
     }
     
@@ -437,6 +443,8 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         if (finishedX == true && finishedY == true) {
             _inertialTimer.stop();
             _inertialTimer = null;
+
+            dispatch(new ScrollEvent(ScrollEvent.STOP));
         }
     }
     
