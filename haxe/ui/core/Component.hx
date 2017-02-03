@@ -931,6 +931,10 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         if (__events != null) {
             __events.invoke(event.type, event, this);
         }
+
+        if (event.bubble == true && event.canceled == false && parentComponent != null) {
+            parentComponent.dispatch(event);
+        }
     }
 
     private function _onMappedEvent(event:UIEvent) {

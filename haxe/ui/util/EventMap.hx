@@ -49,6 +49,7 @@ class EventMap  {
                 var c = event.clone();
                 c.target = target;
                 fn(c);
+                event.canceled = c.canceled;
             }
         }
     }
