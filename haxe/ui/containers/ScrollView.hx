@@ -399,7 +399,7 @@ class ScrollView extends Component implements IClonable<ScrollView> {
                 _inertialAmplitudeY = 0;
             }
 
-            _inertialTimer = new Timer(0, inertialScroll); //TODO - Create ENTER_FRAME event in backends
+            _inertialTimer = new Timer(10, inertialScroll); //TODO - FRAME event on demand
         } else {
             dispatch(new ScrollEvent(ScrollEvent.STOP));
         }
@@ -425,7 +425,7 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         }
         
         var finishedY = false;
-        if (_inertialAmplitudeY != 0) { 
+        if (_inertialAmplitudeY != 0) {
             var deltaY = -_inertialAmplitudeY * Math.exp(-elapsed / INERTIAL_TIME_CONSTANT);
             if (deltaY > 0.5 || deltaY < -0.5) {
                 if (_inertiaDirectionY == 0) {
