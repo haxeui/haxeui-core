@@ -404,7 +404,7 @@ class ScrollView extends Component implements IClonable<ScrollView> {
             dispatch(new ScrollEvent(ScrollEvent.STOP));
         }
     }
-    
+
     private function inertialScroll() {
         var elapsed = (haxe.Timer.stamp() - _inertialTimestamp) * 1000;
 
@@ -412,34 +412,38 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         if (_inertialAmplitudeX != 0) {
             var deltaX = -_inertialAmplitudeX * Math.exp(-elapsed / INERTIAL_TIME_CONSTANT);
             if (deltaX > 0.5 || deltaX < -0.5) {
+                var oldPos = hscrollPos;
                 if (_inertiaDirectionX == 0) {
                     hscrollPos = _inertialTargetX - deltaX;
                 } else {
                     hscrollPos = _inertialTargetX + deltaX;
                 }
+                finishedX = hscrollPos == oldPos;
             } else {
                 finishedX = true;
             }
         } else {
             finishedX = true;
         }
-        
+
         var finishedY = false;
         if (_inertialAmplitudeY != 0) {
             var deltaY = -_inertialAmplitudeY * Math.exp(-elapsed / INERTIAL_TIME_CONSTANT);
             if (deltaY > 0.5 || deltaY < -0.5) {
+                var oldPos = vscrollPos;
                 if (_inertiaDirectionY == 0) {
                     vscrollPos = _inertialTargetY - deltaY;
                 } else {
                     vscrollPos = _inertialTargetY + deltaY;
                 }
+                finishedY = vscrollPos == oldPos;
             } else {
                 finishedY = true;
             }
         } else {
-           finishedY = true; 
+            finishedY = true;
         }
-        
+
         if (finishedX == true && finishedY == true) {
             _inertialTimer.stop();
             _inertialTimer = null;
