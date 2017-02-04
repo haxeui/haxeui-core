@@ -259,6 +259,7 @@ class ScrollView extends Component implements IClonable<ScrollView> {
             } else if (event.delta < 0) {
                 _vscroll.pos += 50;
             }
+            dispatch(new ScrollEvent(ScrollEvent.CHANGE));
         }
     }
 
