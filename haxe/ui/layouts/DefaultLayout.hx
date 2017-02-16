@@ -43,7 +43,7 @@ class DefaultLayout extends Layout {
                 case "center":
                     xpos = ((component.componentWidth - child.componentWidth) / 2) + marginLeft(child) - marginRight(child);
                 case "right":
-                    xpos = component.componentWidth - (child.componentWidth + paddingRight + marginLeft(child));
+                    xpos = component.componentWidth - (child.componentWidth + paddingRight + marginRight(child));
                 default:    //left
                     xpos = paddingLeft + marginLeft(child);
             }
@@ -52,7 +52,7 @@ class DefaultLayout extends Layout {
                 case "center":
                     ypos = ((component.componentHeight - child.componentHeight) / 2) + marginTop(child) - marginBottom(child);
                 case "bottom":
-                    ypos = component.componentHeight - (child.componentHeight + paddingBottom + marginTop(child));
+                    ypos = component.componentHeight - (child.componentHeight + paddingBottom + marginBottom(child));
                 default:    //top
                     ypos = paddingTop + marginTop(child);
             }
