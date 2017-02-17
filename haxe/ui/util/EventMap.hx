@@ -46,6 +46,9 @@ class EventMap  {
         if (arr != null) {
             arr = arr.copy();
             for (fn in arr) {
+                if (event.canceled) {
+                    break;
+                }
                 var c = event.clone();
                 c.target = target;
                 fn(c);
