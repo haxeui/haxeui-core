@@ -186,7 +186,7 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
                 item = cast(contents.childComponents[n], ItemRenderer);
                 item.removeClass("even");
                 item.removeClass("odd");
-                trace(_itemRendererFunction(data).generator == Type.getClass(item), Std.is(item, _itemRendererFunction(data).generator));
+
                 if (_itemRendererFunction != null
                     && !Std.is(item, _itemRendererFunction(data).generator)) {
                     contents.removeComponent(item);
