@@ -27,4 +27,12 @@ class HaxeUIApp extends AppBase {
     public function addComponent(component:Component) {
         Screen.instance.addComponent(component);
     }
+
+    public function removeComponent(component:Component) {
+        Screen.instance.removeComponent(component);
+    }
+
+    public function setComponentIndex(child:Component, index:Int) {
+        Screen.instance.setComponentIndex(child, index);
+    }
 }

@@ -280,8 +280,8 @@ class ImageDefaultResourceBehaviour extends Behaviour {
                             if (image.autoSize() == true && image.parentComponent != null) {
                                 image.parentComponent.invalidateLayout();
                             }
+                            image.validateLayout();
                         }
-                        image.invalidateLayout();
                     }
                 });
             }

@@ -1,5 +1,6 @@
 package haxe.ui.components;
 
+import haxe.ui.validation.InvalidationFlags;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.IClonable;
@@ -35,14 +36,6 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
         _defaultLayout = new TextFieldLayout();
     }
 
-    private override function create() {
-        super.create();
-        if (_text == null) {
-            behaviourSet("text", "");
-        }
-        //behaviourSet("icon", _iconResource);
-    }
-
     private override function createChildren() {
         if (componentWidth == 0) {
             componentWidth = 150;
@@ -68,14 +61,14 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     //***********************************************************************************************************
     // Overrides
     //***********************************************************************************************************
-//    private override function get_text():String {
-//        return behaviourGet("text");
-//    }
 
     private override function set_text(value:String):String {
-        value = super.set_text(value);
-        _validateText();
+        if (value == _text) {
+            return value;
+        }
 
+        invalidate(InvalidationFlags.DATA);
+        value = super.set_text(value);
         return value;
     }
 
@@ -89,7 +82,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
             text = behaviourGet("text");
             behaviourSet("password", _password);
         } else {
-            _validateText();
+            invalidate(InvalidationFlags.DATA);
         }
 
         return value;
@@ -161,8 +154,8 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
         }
 
         behaviourSet("password", value);
+        invalidate(InvalidationFlags.DATA);
         _password = value;
-        _validateText();
         return value;
     }
     
@@ -180,9 +173,8 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
             return value;
         }
 
+        invalidate(InvalidationFlags.DATA);
         _maxChars = value;
-        _validateText();
-
         return value;
     }
 
@@ -255,7 +247,6 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
         }
 
         text = newText;
-        handleBindings(["text", "value"]);
     }
 
     private function _onMouseDown(event:MouseEvent) {
@@ -266,13 +257,25 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     //***********************************************************************************************************
     // Validation
     //***********************************************************************************************************
-    private function _validateText() {
+
+    private override function validateInternal():Void {
+        var dataInvalid = isInvalid(InvalidationFlags.DATA);
+
+        if (dataInvalid) {
+            validateData();
+        }
+
+        super.validateInternal();
+    }
+
+    private function validateData():Void {
         var text:String = _text != null ? _text : "";
         var placeholderVisible:Bool = empty;
 
         //Max chars
         if (_maxChars != -1 && text.length > _maxChars && placeholderVisible == false) {
             text = text.substr(0, _maxChars);
+            _text = text;
         }
 
         //Placeholder
@@ -291,6 +294,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
         }
 
         behaviourSet("text", text);
+        handleBindings(["text", "value"]);
     }
 
     //***********************************************************************************************************
@@ -386,7 +390,7 @@ class TextFieldDefaultPlaceholderBehaviour extends Behaviour {
     public override function set(value:Variant) {
         var textField:TextField = cast _component;
         textField._placeholder = value;
-        textField._validateText();
+        textField.invalidate(InvalidationFlags.DATA);
     }
     
     public override function get():Variant {

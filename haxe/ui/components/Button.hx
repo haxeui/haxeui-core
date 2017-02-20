@@ -1,5 +1,6 @@
 package haxe.ui.components;
 
+import haxe.ui.validation.InvalidationFlags;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.IClonable;
 import haxe.ui.core.InteractiveComponent;
@@ -36,12 +37,6 @@ class Button extends InteractiveComponent implements IClonable<Button> {
         _defaultLayout = new ButtonLayout();
     }
 
-    private override function create() {
-        super.create();
-        behaviourSet("text", _text);
-        behaviourSet("icon", _iconResource);
-    }
-
     private override function createChildren() {
         registerEvent(MouseEvent.MOUSE_OVER, _onMouseOver);
         registerEvent(MouseEvent.MOUSE_OUT, _onMouseOut);
@@ -73,7 +68,7 @@ class Button extends InteractiveComponent implements IClonable<Button> {
     //***********************************************************************************************************
     private override function set_text(value:String):String {
         value = super.set_text(value);
-        behaviourSet("text", value);
+        invalidate(InvalidationFlags.DATA);
         return value;
     }
 
@@ -84,7 +79,12 @@ class Button extends InteractiveComponent implements IClonable<Button> {
         }
 
         var label:Label = findComponent(Label);
-        if (label != null) {
+        if (label != null &&
+            (label.customStyle.color != style.color ||
+            label.customStyle.fontName != style.fontName ||
+            label.customStyle.fontSize != style.fontSize ||
+            label.customStyle.cursor != style.cursor)) {
+
             label.customStyle.color = style.color;
             label.customStyle.fontName = style.fontName;
             label.customStyle.fontSize = style.fontSize;
@@ -93,9 +93,33 @@ class Button extends InteractiveComponent implements IClonable<Button> {
         }
 
         var icon:Image = findComponent(Image);
-        if (icon != null) {
+        if (icon != null && (icon.customStyle.cursor != style.cursor)) {
             icon.customStyle.cursor = style.cursor;
             icon.invalidateStyle();
+        }
+    }
+
+    //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+
+    private override function validateInternal():Void {
+        var dataInvalid = isInvalid(InvalidationFlags.DATA);
+
+        if (dataInvalid) {
+            validateData();
+        }
+
+        super.validateInternal();
+    }
+
+    private function validateData():Void {
+        if (behaviourGet("text") != _text) {
+            behaviourSet("text", _text);
+        }
+
+        if (behaviourGet("icon") != _iconResource) {
+            behaviourSet("icon", _iconResource);
         }
     }
 
@@ -134,7 +158,7 @@ class Button extends InteractiveComponent implements IClonable<Button> {
         }
 
         _iconResource = value;
-        behaviourSet("icon", value);
+        invalidate(InvalidationFlags.DATA);
         return value;
     }
 
@@ -366,7 +390,7 @@ class ButtonLayout extends DefaultLayout {
 
     private var iconPosition(get, null):String;
     private function get_iconPosition():String {
-        if (component.style.iconPosition == null) {
+        if (component.style == null || component.style.iconPosition == null) {
             return "left";
         }
         return component.style.iconPosition;

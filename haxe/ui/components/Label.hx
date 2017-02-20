@@ -4,11 +4,12 @@ import haxe.ui.components.Label.LabelLayout;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.IClonable;
-import haxe.ui.core.InteractiveComponent;
+import haxe.ui.core.TextDisplay;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.styles.Style;
 import haxe.ui.util.Size;
 import haxe.ui.util.Variant;
+import haxe.ui.validation.InvalidationFlags;
 
 /**
  A general purpose component to display text
@@ -33,11 +34,6 @@ class Label extends Component implements IClonable<Label> {
         _defaultLayout = new LabelLayout();
     }
 
-    private override function create() {
-        super.create();
-        behaviourSet("text", _text);
-    }
-
     //***********************************************************************************************************
     // Overrides
     //***********************************************************************************************************
@@ -47,8 +43,7 @@ class Label extends Component implements IClonable<Label> {
         }
 
         value = super.set_text(value);
-        behaviourSet("text", value);
-        handleBindings(["text", "value"]);
+        invalidate(InvalidationFlags.DATA);
         invalidateLayout();
         return value;
     }
@@ -56,19 +51,39 @@ class Label extends Component implements IClonable<Label> {
     private override function applyStyle(style:Style) {
         super.applyStyle(style);
         if (hasTextDisplay() == true) {
+            var textDisplay:TextDisplay = getTextDisplay();
             if (style.color != null) {
-                getTextDisplay().color = style.color;
+                textDisplay.color = style.color;
             }
             if (style.fontName != null) {
-                getTextDisplay().fontName = style.fontName;
+                textDisplay.fontName = style.fontName;
             }
             if (style.fontSize != null) {
-                getTextDisplay().fontSize = style.fontSize;
+                textDisplay.fontSize = style.fontSize;
             }
             if (style.textAlign != null) {
-                getTextDisplay().textAlign = style.textAlign;
+                textDisplay.textAlign = style.textAlign;
             }
         }
+    }
+
+    //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+
+    private override function validateInternal():Void {
+        var dataInvalid = isInvalid(InvalidationFlags.DATA);
+
+        if (dataInvalid) {
+            validateData();
+        }
+
+        super.validateInternal();
+    }
+
+    private function validateData():Void {
+        behaviourSet("text", _text);
+        handleBindings(["text", "value"]);
     }
 }
 
@@ -128,6 +143,8 @@ class LabelDefaultTextBehaviour extends Behaviour {
 
         var label:Label = cast _component;
         label.getTextDisplay().text = value;
-        label.invalidateDisplay();
+        if (label.isInvalid(InvalidationFlags.DISPLAY) == false) {
+            label.invalidateDisplay();
+        }
     }
 }

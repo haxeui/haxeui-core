@@ -28,19 +28,6 @@ class Layout implements ILayout {
             _component.handlePreReposition();
             repositionChildren();
             _component.handlePostReposition();
-
-            if ((component.autoWidth == true || component.autoHeight == true)) {
-                var size:Size = calcAutoSize();
-                var calculatedWidth:Null<Float> = null;
-                var calculatedHeight:Null<Float> = null;
-                if (component.autoWidth == true) {
-                    calculatedWidth = size.width;
-                }
-                if (component.autoHeight == true) {
-                    calculatedHeight = size.height;
-                }
-                component.resizeComponent(calculatedWidth, calculatedHeight);
-            }
         }
     }
 

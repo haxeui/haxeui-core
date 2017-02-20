@@ -49,6 +49,7 @@ class Screen extends ScreenBase {
 
     public override function addComponent(component:Component) {
         super.addComponent(component);
+        component.depth = 0;
         component.ready();
         rootComponents.push(component);
         FocusManager.instance.pushView(component);
@@ -57,6 +58,7 @@ class Screen extends ScreenBase {
 
     public override function removeComponent(component:Component) {
         super.removeComponent(component);
+        component.depth = -1;
         rootComponents.remove(component);
         component.unregisterEvent(UIEvent.RESIZE, _onRootComponentResize);
     }
@@ -78,7 +80,8 @@ class Screen extends ScreenBase {
     @:access(haxe.ui.core.Component)
     private function _refreshStyleComponent(component:Component) {
         for (child in component.childComponents) {
-            child.applyStyle(child.style);
+//            child.applyStyle(child.style);
+            child.invalidateStyle();
             child.invalidateDisplay();
             _refreshStyleComponent(child);
         }

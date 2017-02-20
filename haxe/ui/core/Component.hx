@@ -1,5 +1,6 @@
 package haxe.ui.core;
 
+import haxe.ui.validation.IValidating;
 import haxe.ui.backend.ComponentBase;
 import haxe.ui.core.Component.DeferredBindingInfo;
 import haxe.ui.layouts.DefaultLayout;
@@ -15,6 +16,8 @@ import haxe.ui.util.Rectangle;
 import haxe.ui.util.Size;
 import haxe.ui.util.StringUtil;
 import haxe.ui.util.Variant;
+import haxe.ui.validation.ValidationManager;
+import haxe.ui.validation.InvalidationFlags;
 
 @:dox(hide)
 class BindingInfo {
@@ -46,23 +49,24 @@ class DeferredBindingInfo {
 @:autoBuild(haxe.ui.macros.Macros.buildBindings())
 @:build(haxe.ui.macros.Macros.addClonable())
 @:autoBuild(haxe.ui.macros.Macros.addClonable())
-class Component extends ComponentBase implements IComponentBase implements IClonable<Component> {
+class Component extends ComponentBase implements IComponentBase implements IValidating implements IClonable<Component> {
     public function new() {
         super();
 
         #if flash
-        addClass("flash");
+        addClass("flash", false);
         #end
         #if html5
-        addClass("html5");
+        addClass("html5", false);
         #end
-        addClass(Backend.id);
+        addClass(Backend.id, false);
 
         var parts:Array<String> = Type.getClassName(Type.getClass(this)).split(".");
         var className:String = parts[parts.length - 1].toLowerCase();
         addClass(className, false);
 
         // we dont want to actually apply the classes, just find out if native is there or not
+        //TODO - we could include the initialization in the validate method
         var s = Toolkit.styleSheet.applyClasses(this, false);
         if (s.native != null && hasNativeEntry == true) {
             native = s.native;
@@ -485,6 +489,8 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         }
 
         child.parentComponent = this;
+        child.depth = depth + 1;
+        child._isDisposed = false;
 
         if (_children == null) {
             _children = [];
@@ -530,11 +536,13 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         if (_children != null) {
             if (_children.remove(child)) {
                 child.parentComponent = null;
+                child.depth = -1;
             }
             if (invalidate == true) {
                 invalidateLayout();
             }
             if (dispose == true) {
+                child._isDisposed = true;
                 child.onDestroy();
             }
         }
@@ -1045,7 +1053,10 @@ class Component extends ComponentBase implements IComponentBase implements IClon
 
     private var _layoutLocked:Bool = false;
     public function lockLayout(recursive:Bool = false) {
-        _layoutReinvalidation = false;
+        if (_layoutLocked == true) {
+            return;
+        }
+
         _layoutLocked = true;
         if (recursive == true) {
             for (child in childComponents) {
@@ -1055,6 +1066,10 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     }
 
     public function unlockLayout(recursive:Bool = false) {
+        if (_layoutLocked == false) {
+            return;
+        }
+
         if (recursive == true) {
             for (child in childComponents) {
                 child.unlockLayout(recursive);
@@ -1062,10 +1077,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         }
 
         _layoutLocked = false;
-        if (_layoutReinvalidation == true) {
-            _layoutReinvalidation = false;
-            invalidateLayout();
-        }
+        invalidateLayout();
     }
 
     //***********************************************************************************************************
@@ -1087,8 +1099,6 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     **/
     public function ready() {
         if (_ready == false) {
-            invalidateStyle(false);
-
             _ready = true;
             handleReady();
 
@@ -1098,21 +1108,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
                 }
             }
 
-            if (autoWidth == true || autoHeight == true) {
-                var s:Size = layout.calcAutoSize();
-                var calculatedWidth:Null<Float> = null;
-                var calculatedHeight:Null<Float> = null;
-                if (autoWidth == true) {
-                    calculatedWidth = s.width;
-                }
-                if (autoHeight == true) {
-                    calculatedHeight = s.height;
-                }
-                resizeComponent(calculatedWidth, calculatedHeight);
-            } else {
-                invalidateDisplay();
-            }
-            invalidateLayout();
+            invalidate();
 
             onReady();
             dispatch(new UIEvent(UIEvent.READY));
@@ -1206,16 +1202,9 @@ class Component extends ComponentBase implements IComponentBase implements IClon
             invalidate = true;
         }
 
-        if (invalidate == true) {
+        if (invalidate == true && (isInvalid(InvalidationFlags.DISPLAY) == false || isInvalid(InvalidationFlags.LAYOUT) == false)) {
             invalidateDisplay();
             invalidateLayout();
-
-            if (parentComponent != null) {
-                parentComponent.invalidateLayout();
-            }
-
-            onResized();
-            dispatch(new UIEvent(UIEvent.RESIZE));
         }
     }
 
@@ -1477,11 +1466,8 @@ class Component extends ComponentBase implements IComponentBase implements IClon
             invalidate = true;
         }
 
-        if (invalidate == true) {
-            handlePosition(_left, _top, _style);
-
-            onMoved();
-            dispatch(new UIEvent(UIEvent.MOVE));
+        if (invalidate == true && isInvalid(InvalidationFlags.POSITION) == false) {
+            invalidatePosition();
         }
     }
 
@@ -1746,74 +1732,285 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     //***********************************************************************************************************
     // Invalidation
     //***********************************************************************************************************
-    private var _layoutInvalidating:Bool = false;
-    private var _layoutReinvalidation:Bool = false;
+
+    private var _invalidationFlags:Map<String, Bool> = new Map<String, Bool>();
+    private var _delayedInvalidationFlags:Map<String, Bool> = new Map<String, Bool>();
+    private var _isAllInvalid:Bool = false;
+    private var _isValidating:Bool = false;
+    private var _isDisposed:Bool = false;
+    private var _invalidateCount:Int = 0;
+
+    private var _depth:Int;
+    @:dox(hide)
+    public var depth(get, set):Int;
+    private function get_depth():Int {
+        return _depth;
+    }
+    private function set_depth(value:Int):Int {
+        if (_depth == value) {
+            return value;
+        }
+
+        _depth = value;
+
+        if (_children != null) {
+            var childDepth = (_depth != -1) ? _depth + 1 : -1;
+            for(c in _children) {
+                c.depth = childDepth;
+            }
+        }
+
+        return value;
+    }
+
+    /**
+     This method validates the tasks pending in the component.
+    **/
+    @:dox(group = "Invalidation related properties and methods")
+    public function validate():Void {
+        if(_ready == false
+            || _isDisposed == true      //we don't want to validate disposed components, but they may have been left in the queue.
+            ||_isValidating == true     //we were already validating, the existing validation will continue.
+            || isInvalid() == false) {  //if none is invalid, exit.
+            return;
+        }
+
+        _isValidating = true;
+
+        validateInternal();
+
+        for (flag in _invalidationFlags.keys()) {
+            _invalidationFlags.remove(flag);
+        }
+
+        _isAllInvalid = false;
+
+        for (flag in _delayedInvalidationFlags.keys()) {
+            if (flag == InvalidationFlags.ALL) {
+                _isAllInvalid = true;
+            } else {
+                _invalidationFlags.set(flag, true);
+            }
+            _delayedInvalidationFlags.remove(flag);
+        }
+        _isValidating = false;
+    }
+
+    private function validateInternal():Void {
+        var styleInvalid = isInvalid(InvalidationFlags.STYLE);
+        var positionInvalid = isInvalid(InvalidationFlags.POSITION);
+        var displayInvalid = isInvalid(InvalidationFlags.DISPLAY);
+        var layoutInvalid = isInvalid(InvalidationFlags.LAYOUT) && _layoutLocked == false;
+
+        if (styleInvalid) {
+            validateStyle();
+        }
+
+        if (hasTextDisplay()) {
+            getTextDisplay().validate();
+        }
+
+        if (hasTextInput()) {
+            getTextInput().validate();
+        }
+
+        //TODO
+        //if (hasImageDisplay()) {
+        //    getImageDisplay().validate();
+        //}
+
+        if (positionInvalid) {
+            validatePosition();
+
+            onMoved();
+            dispatch(new UIEvent(UIEvent.MOVE));
+        }
+
+        if (layoutInvalid) {
+            validateLayout();
+        }
+
+        if (displayInvalid || styleInvalid || layoutInvalid) {
+            var oldComponentWidth = _componentWidth;
+            var oldComponentHeight = _componentHeight;
+
+            if (layoutInvalid || styleInvalid) {
+                validateAutoSize();
+            }
+
+            validateDisplay();
+
+            if(displayInvalid || oldComponentWidth != _componentWidth || oldComponentHeight != _componentHeight) {
+                onResized();
+                dispatch(new UIEvent(UIEvent.RESIZE));
+            }
+        }
+    }
+
+    private function validateLayout():Void {
+        layout.refresh();
+    }
+
+    private function validateStyle():Void {
+        var s:Style = Toolkit.styleSheet.applyClasses(this, false);
+        if (_ready == false || _style == null || _style.equalTo(s) == false) { // lets not update if nothing has changed
+            _style = s;
+            applyStyle(_style);
+        }
+    }
+
+    private function validatePosition():Void {
+        handlePosition(_left, _top, _style);
+    }
+
+    private function validateDisplay():Void {
+        if (componentWidth == null || componentHeight == null || componentWidth <= 0 || componentHeight <= 0) {
+            return;
+        }
+
+        handleSize(componentWidth, componentHeight, _style);
+    }
+
+    private function validateAutoSize():Void {
+        if (autoWidth == true || autoHeight == true) {
+            var s:Size = layout.calcAutoSize();
+            var invalidate:Bool = false;
+            var calculatedWidth:Null<Float> = null;
+            var calculatedHeight:Null<Float> = null;
+            if (autoWidth == true) {
+                calculatedWidth = s.width;
+                if (calculatedWidth != _componentWidth) {
+                    _componentWidth = calculatedWidth;
+                    invalidate = true;
+                }
+            }
+            if (autoHeight == true) {
+                calculatedHeight = s.height;
+                if (calculatedHeight != _componentHeight) {
+                    _componentHeight = calculatedHeight;
+                    invalidate = true;
+                }
+            }
+
+            if (invalidate == true) {
+                validateLayout();   //TODO - could it be avoided? validateLayout is performed before validateAutoSize, but validateAutoSize requires the children positioned to work
+
+                if (parentComponent != null) {
+                    parentComponent.invalidateLayout();
+                }
+            }
+        }
+    }
+
+    /**
+     Check if the component is invalidated with some `flag`.
+    **/
+    @:dox(group = "Invalidation related properties and methods")
+    public function isInvalid(flag:String = InvalidationFlags.ALL):Bool {
+        if (_isAllInvalid == true) {
+            return true;
+        }
+
+        if (flag == InvalidationFlags.ALL) {
+            for (value in _invalidationFlags) {
+                return true;
+            }
+
+            return false;
+        }
+
+        return _invalidationFlags.exists(flag);
+    }
+
+    /**
+     Invalidate this components with the `InvalidationFlags` indicated. If it hasn't parameter then the component will be invalidated completely.
+    **/
+    @:dox(group = "Invalidation related properties and methods")
+    public function invalidate(flag:String = InvalidationFlags.ALL):Void {
+        if (_ready == false) {
+            return;     //it should be added into the queue later
+        }
+
+        var isAlreadyInvalid:Bool = isInvalid();
+        var isAlreadyDelayedInvalid:Bool = false;
+        if (_isValidating == true) {
+            for (value in _delayedInvalidationFlags) {
+                isAlreadyDelayedInvalid = true;
+                break;
+            }
+        }
+
+        if (flag == InvalidationFlags.ALL) {
+            if (_isValidating == true) {
+                _delayedInvalidationFlags.set(InvalidationFlags.ALL, true);
+            } else {
+                _isAllInvalid = true;
+            }
+        } else {
+            if (_isValidating == true) {
+                _delayedInvalidationFlags.set(flag, true);
+            } else if (flag != InvalidationFlags.ALL && !_invalidationFlags.exists(flag)) {
+                _invalidationFlags.set(flag, true);
+            }
+        }
+
+        if (_isValidating == true) {
+            //it is already in queue
+            if (isAlreadyDelayedInvalid == true) {
+                return;
+            }
+
+            _invalidateCount++;
+
+            //we track the invalidate count to check if we are in an infinite loop or serious bug because it affects performance
+            if (this._invalidateCount >= 10) {
+                throw 'The validation queue returned too many times during validation. This may be an infinite loop. Try to avoid doing anything that calls invalidate() during validation.';
+            }
+
+            ValidationManager.instance.add(this);
+            return;
+        } else if (isAlreadyInvalid == true) {
+            return;
+        }
+
+        _invalidateCount = 0;
+        ValidationManager.instance.add(this);
+    }
+
     /**
      Invalidate this components layout, may result in multiple calls to `invalidateDisplay` and `invalidateLayout` of its children
     **/
     @:dox(group = "Invalidation related properties and methods")
     public function invalidateLayout() {
-        if (_ready == false || _layout == null) {
+        if (_layout == null) {
             return;
         }
 
-        if ((_layoutInvalidating == true || _layoutLocked == true) && _layoutReinvalidation == false) {
-            // means that if a request to invalidate comes through and were busy
-            // (like async resources), we make note to invalidate when were done
-            _layoutReinvalidation = true;
-            return;
-        }
-
-        _layoutInvalidating = true;
-
-        layout.refresh();
-
-        _layoutInvalidating = false;
-
-        if (_layoutReinvalidation == true) {
-            _layoutReinvalidation = false;
-            invalidateLayout();
-        }
+        invalidate(InvalidationFlags.LAYOUT);
     }
 
-    private var _displayingInvalidating:Bool = false;
+    /**
+     Invalidate the position of this component
+    **/
+    @:dox(group = "Invalidation related properties and methods")
+    public function invalidatePosition() {
+        invalidate(InvalidationFlags.POSITION);
+    }
+
     /**
      Invalidate the visible aspect of this component
     **/
     @:dox(group = "Invalidation related properties and methods")
     public function invalidateDisplay() {
-        if (_ready == false) {
-            return;
-        }
-
-        if (_displayingInvalidating == true) {
-            return;
-        }
-
-        if (componentWidth == null || componentHeight == null || componentWidth <= 0 || componentHeight <= 0) {
-            return;
-        }
-
-        _displayingInvalidating = true;
-
-        handleSize(componentWidth, componentHeight, _style);
-
-        _displayingInvalidating = false;
+        invalidate(InvalidationFlags.DISPLAY);
     }
 
     /**
      Invalidate and recalculate this components style, may result in a call to `invalidateDisplay`
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public function invalidateStyle(invalidate:Bool = true) {
-        var s:Style = Toolkit.styleSheet.applyClasses(this, false);
-        if (_ready == false || _style == null || _style.equalTo(s) == false) { // lets not update if nothing has changed
-            _style = s;
-            applyStyle(_style);
-            if (invalidate == true) {
-                invalidateDisplay();
-            }
-        }
+    public function invalidateStyle() {
+        invalidate(InvalidationFlags.STYLE);
     }
 
     private override function applyStyle(style:Style) {
