@@ -1,5 +1,6 @@
 package haxe.ui.components;
 
+import haxe.ui.validation.InvalidationFlags;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.IClonable;
 import haxe.ui.core.InteractiveComponent;
@@ -28,12 +29,6 @@ class CheckBox extends InteractiveComponent implements IClonable<CheckBox> {
             "selected" => new CheckBoxDefaultSelectedBehaviour(this)
         ]);
         _defaultLayout = new HorizontalLayout();
-    }
-
-    private override function create() {
-        super.create();
-        behaviourSet("text", _text);
-        behaviourSet("selected", _selected);
     }
 
     private override function createChildren() {
@@ -86,13 +81,39 @@ class CheckBox extends InteractiveComponent implements IClonable<CheckBox> {
         super.applyStyle(style);
 
         var label:Label = findComponent(Label);
-        if (label != null) {
+        if (label != null &&
+            (label.customStyle.color != style.color
+            || label.customStyle.fontName != style.fontName
+            || label.customStyle.fontSize != style.fontSize
+            || label.customStyle.cursor != style.cursor)) {
+
             label.customStyle.color = style.color;
             label.customStyle.fontName = style.fontName;
             label.customStyle.fontSize = style.fontSize;
             label.customStyle.cursor = style.cursor;
             label.invalidateStyle();
         }
+    }
+
+    //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+
+    private override function validateInternal():Void {
+        var dataInvalid = isInvalid(InvalidationFlags.DATA);
+
+        if (dataInvalid) {
+            validateData();
+        }
+
+        super.validateInternal();
+    }
+
+    private function validateData():Void {
+        behaviourSet("selected", value);
+
+        var event:UIEvent = new UIEvent(UIEvent.CHANGE);
+        dispatch(event);
     }
 
     //***********************************************************************************************************
@@ -108,10 +129,8 @@ class CheckBox extends InteractiveComponent implements IClonable<CheckBox> {
         if (value == _selected) {
             return value;
         }
+        invalidate(InvalidationFlags.DATA);
         _selected = value;
-        behaviourSet("selected", value);
-        var event:UIEvent = new UIEvent(UIEvent.CHANGE);
-        dispatch(event);
         return value;
     }
 
@@ -128,8 +147,6 @@ class CheckBox extends InteractiveComponent implements IClonable<CheckBox> {
     //***********************************************************************************************************
     private function _onClick(event:MouseEvent) {
         toggleSelected();
-        var event:UIEvent = new UIEvent(UIEvent.CHANGE);
-        dispatch(event);
     }
 
     private function _onMouseOver(event:MouseEvent) {
