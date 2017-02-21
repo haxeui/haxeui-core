@@ -21,7 +21,7 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
 
     public function new() {
         super();
-        addClass("button"); // TODO: shouldnt have to do this
+        addClass("button", false); // TODO: shouldnt have to do this
         toggle = true;
         registerEvent(MouseEvent.CLICK, onMouseClick);
     }
