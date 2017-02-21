@@ -43,7 +43,7 @@ class Label extends Component implements IClonable<Label> {
         }
 
         value = super.set_text(value);
-        invalidate(InvalidationFlags.DATA);
+        invalidateData();
         invalidateLayout();
         return value;
     }
