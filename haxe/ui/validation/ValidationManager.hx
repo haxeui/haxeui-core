@@ -3,7 +3,7 @@ package haxe.ui.validation;
 import haxe.ui.core.ValidationEvent;
 import haxe.ui.core.UIEvent;
 import haxe.ui.util.EventMap;
-import haxe.Timer;
+import haxe.ui.util.Timer;
 
 class ValidationManager {
     static public var instance(get, null):ValidationManager;
@@ -17,12 +17,11 @@ class ValidationManager {
     public var isValidating(default, null):Bool;
 
     private var _queue:Array<IValidating> = [];
-    private var _isProcessPending:Bool;
+    private var _timer:Timer;
     private var _events:EventMap;
 
     private function new() {
         isValidating = false;
-        _isProcessPending = false;
     }
 
     public function registerEvent(type:String, listener:Dynamic->Void) {
@@ -46,8 +45,8 @@ class ValidationManager {
     }
 
     public function dispose():Void {
+        disposeTimer();
         isValidating = false;
-        _isProcessPending = false;
         _queue.splice(0, _queue.length);
     }
 
@@ -81,17 +80,18 @@ class ValidationManager {
         } else {
             this._queue[queueLength] = object;
 
-            if (_isProcessPending == false) {
-                _isProcessPending = true;
-                Timer.delay(process, 0);
+            if (_timer == null) {
+                _timer = new Timer(0, process);
             }
         }
     }
 
     private function process():Void {
-        if (isValidating == true || _isProcessPending == false) {
+        if (isValidating == true || _timer == null) {
             return;
         }
+
+        disposeTimer();
 
         var queueLength:Int = _queue.length;
         if (queueLength == 0) {
@@ -115,7 +115,6 @@ class ValidationManager {
         }
 
         isValidating = false;
-        _isProcessPending = false;
 
         dispatch(new ValidationEvent(ValidationEvent.STOP));
     }
@@ -131,5 +130,12 @@ class ValidationManager {
 //        return if(difference > 0)           -1;
 //        else if(difference < 0)     1;
 //        else                        0;
+    }
+
+    private function disposeTimer():Void {
+        if (_timer != null) {
+            _timer.stop();
+            _timer = null;
+        }
     }
 }
