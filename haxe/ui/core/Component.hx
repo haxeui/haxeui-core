@@ -1833,14 +1833,25 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         if (displayInvalid || styleInvalid || layoutInvalid) {
             var oldComponentWidth = _componentWidth;
             var oldComponentHeight = _componentHeight;
+            var layoutValidationRequiredAgain = false;
 
             if (layoutInvalid || styleInvalid) {
-                validateAutoSize();
+                layoutValidationRequiredAgain = validateAutoSize();
             }
 
             validateDisplay();
 
-            if(displayInvalid || oldComponentWidth != _componentWidth || oldComponentHeight != _componentHeight) {
+            if (layoutValidationRequiredAgain == true) {
+                validateLayout();
+            }
+
+            if (layoutValidationRequiredAgain == true || displayInvalid) {
+                if (parentComponent != null) {
+                    parentComponent.invalidateLayout();
+                }
+            }
+
+            if (displayInvalid || oldComponentWidth != _componentWidth || oldComponentHeight != _componentHeight) {
                 onResized();
                 dispatch(new UIEvent(UIEvent.RESIZE));
             }
@@ -1871,10 +1882,10 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         handleSize(componentWidth, componentHeight, _style);
     }
 
-    private function validateAutoSize():Void {
+    private function validateAutoSize():Bool {
+        var invalidate:Bool = false;
         if (autoWidth == true || autoHeight == true) {
             var s:Size = layout.calcAutoSize();
-            var invalidate:Bool = false;
             var calculatedWidth:Null<Float> = null;
             var calculatedHeight:Null<Float> = null;
             if (autoWidth == true) {
@@ -1891,15 +1902,9 @@ class Component extends ComponentBase implements IComponentBase implements IVali
                     invalidate = true;
                 }
             }
-
-            if (invalidate == true) {
-                validateLayout();   //TODO - could it be avoided? validateLayout is performed before validateAutoSize, but validateAutoSize requires the children positioned to work
-
-                if (parentComponent != null) {
-                    parentComponent.invalidateLayout();
-                }
-            }
         }
+
+        return invalidate;
     }
 
     /**
