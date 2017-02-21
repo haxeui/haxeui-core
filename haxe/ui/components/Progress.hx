@@ -221,9 +221,6 @@ class Progress extends InteractiveComponent implements IClonable<Progress> {
     private override function validateData():Void {
         var minValue:Float = behaviourGet("min");
         var maxValue:Float = behaviourGet("max");
-        var posValue:Float = behaviourGet("pos");
-        var rangeStartValue:Float = behaviourGet("rangeStart");
-        var rangeEndValue:Float = behaviourGet("rangeEnd");
         var indeterminateValue:Bool = behaviourGet("indeterminate");
 
         if (indeterminateValue != _indeterminate) {
@@ -238,19 +235,27 @@ class Progress extends InteractiveComponent implements IClonable<Progress> {
             behaviourSet("max", _max);
         }
 
-        if (rangeStartValue != _rangeStart) {
-            behaviourSet("rangeStart", _rangeStart);
-        }
+        if (_indeterminate == false) {
+            var posValue:Float = behaviourGet("pos");
 
-        if (rangeEndValue != _rangeEnd) {
-            behaviourSet("rangeEnd", _rangeEnd);
-        }
+            if (posValue != _pos) {
+                behaviourSet("pos", _pos);
+                var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
+                dispatch(changeEvent);
+                handleBindings(["value"]);
+            }
 
-        if (posValue != _pos && _indeterminate == false) {
-            behaviourSet("pos", _pos);
-            var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
-            dispatch(changeEvent);
-            handleBindings(["value"]);
+        } else {
+            var rangeStartValue:Float = behaviourGet("rangeStart");
+            var rangeEndValue:Float = behaviourGet("rangeEnd");
+
+            if (rangeStartValue != _rangeStart) {
+                behaviourSet("rangeStart", _rangeStart);
+            }
+
+            if (rangeEndValue != _rangeEnd) {
+                behaviourSet("rangeEnd", _rangeEnd);
+            }
         }
     }
 }
