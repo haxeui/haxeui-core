@@ -76,14 +76,8 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
             return value;
         }
 
+        invalidateData();
         super.set_focus(value);
-        if (empty == false) {
-            text = behaviourGet("text");
-            behaviourSet("password", _password);
-        } else {
-            invalidateData();
-        }
-
         return value;
     }
 
@@ -125,7 +119,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     **/
     @:clonable public var icon(get, set):String;
     private function get_icon():String {
-        return _iconResource; // TODO: temp
+        return _iconResource;
     }
 
     private function set_icon(value:String):String {
@@ -133,8 +127,8 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
             return value;
         }
 
+        invalidateData();
         _iconResource = value;
-        behaviourSet("icon", value);
         return value;
     }
 
@@ -152,7 +146,6 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
             return value;
         }
 
-        behaviourSet("password", value);
         invalidateData();
         _password = value;
         return value;
@@ -185,7 +178,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     **/
     @:clonable public var placeholder(get, set):String;
     private function get_placeholder():String {
-        return behaviourGet("placeholder");
+        return _placeholder;
     }
 
     private function set_placeholder(value:String):String {
@@ -193,8 +186,8 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
             return value;
         }
 
-        behaviourSet("placeholder", value);
-
+        invalidateData();
+        _placeholder = value;
         return value;
     }
 
@@ -258,6 +251,14 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     //***********************************************************************************************************
 
     private override function validateData():Void {
+        if (behaviourGet("icon") != _iconResource) {
+            behaviourSet("icon", _iconResource);
+        }
+
+        if (behaviourGet("placeholder") != _placeholder) {
+            behaviourSet("placeholder", _placeholder);
+        }
+
         var text:String = _text != null ? _text : "";
         var placeholderVisible:Bool = empty;
 
@@ -357,6 +358,15 @@ class TextFieldDefaultIconBehaviour extends Behaviour {
         }
         textField._icon.resource = value.toString();
     }
+
+    public override function get():Variant {
+        var textField:TextField = cast _component;
+        if (textField._icon == null) {
+            return null;
+        } else {
+            return textField._icon.resource;
+        }
+    }
 }
 
 @:dox(hide)
@@ -376,15 +386,18 @@ class TextFieldDefaultPasswordBehaviour extends Behaviour {
 @:dox(hide)
 @:access(haxe.ui.components.TextField)
 class TextFieldDefaultPlaceholderBehaviour extends Behaviour {
+    private var _value:String;  //TODO - maybe we can create a generic ValueBehaviour class
+
     public override function set(value:Variant) {
-        var textField:TextField = cast _component;
-        textField._placeholder = value;
-        textField.invalidateData();
+        if (_value == value) {
+           return;
+        }
+
+        _value = value;
     }
     
     public override function get():Variant {
-        var textField:TextField = cast _component;
-        return textField._placeholder;
+        return _value;
     }
 }
 
