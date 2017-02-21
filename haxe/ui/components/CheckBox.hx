@@ -99,17 +99,7 @@ class CheckBox extends InteractiveComponent implements IClonable<CheckBox> {
     // Validation
     //***********************************************************************************************************
 
-    private override function validateInternal():Void {
-        var dataInvalid = isInvalid(InvalidationFlags.DATA);
-
-        if (dataInvalid) {
-            validateData();
-        }
-
-        super.validateInternal();
-    }
-
-    private function validateData():Void {
+    private override function validateData():Void {
         behaviourSet("selected", value);
 
         var event:UIEvent = new UIEvent(UIEvent.CHANGE);
@@ -129,7 +119,7 @@ class CheckBox extends InteractiveComponent implements IClonable<CheckBox> {
         if (value == _selected) {
             return value;
         }
-        invalidate(InvalidationFlags.DATA);
+        invalidateData();
         _selected = value;
         return value;
     }

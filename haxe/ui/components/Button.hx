@@ -68,7 +68,7 @@ class Button extends InteractiveComponent implements IClonable<Button> {
     //***********************************************************************************************************
     private override function set_text(value:String):String {
         value = super.set_text(value);
-        invalidate(InvalidationFlags.DATA);
+        invalidateData();
         return value;
     }
 
@@ -103,17 +103,7 @@ class Button extends InteractiveComponent implements IClonable<Button> {
     // Validation
     //***********************************************************************************************************
 
-    private override function validateInternal():Void {
-        var dataInvalid = isInvalid(InvalidationFlags.DATA);
-
-        if (dataInvalid) {
-            validateData();
-        }
-
-        super.validateInternal();
-    }
-
-    private function validateData():Void {
+    private override function validateData():Void {
         if (behaviourGet("text") != _text) {
             behaviourSet("text", _text);
         }
@@ -158,7 +148,7 @@ class Button extends InteractiveComponent implements IClonable<Button> {
         }
 
         _iconResource = value;
-        invalidate(InvalidationFlags.DATA);
+        invalidateData();
         return value;
     }
 

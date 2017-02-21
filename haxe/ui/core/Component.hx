@@ -1797,10 +1797,15 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     }
 
     private function validateInternal():Void {
+        var dataInvalid = isInvalid(InvalidationFlags.DATA);
         var styleInvalid = isInvalid(InvalidationFlags.STYLE);
         var positionInvalid = isInvalid(InvalidationFlags.POSITION);
         var displayInvalid = isInvalid(InvalidationFlags.DISPLAY);
         var layoutInvalid = isInvalid(InvalidationFlags.LAYOUT) && _layoutLocked == false;
+
+        if (dataInvalid) {
+            validateData();
+        }
 
         if (styleInvalid) {
             validateStyle();
@@ -1856,6 +1861,10 @@ class Component extends ComponentBase implements IComponentBase implements IVali
                 dispatch(new UIEvent(UIEvent.RESIZE));
             }
         }
+    }
+
+    private function validateData():Void {
+        //To be overwritten
     }
 
     private function validateLayout():Void {
@@ -1980,6 +1989,14 @@ class Component extends ComponentBase implements IComponentBase implements IVali
 
         _invalidateCount = 0;
         ValidationManager.instance.add(this);
+    }
+
+    /**
+     Invalidate the data of this component
+    **/
+    @:dox(group = "Invalidation related properties and methods")
+    public function invalidateData() {
+        invalidate(InvalidationFlags.DATA);
     }
 
     /**

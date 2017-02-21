@@ -71,17 +71,7 @@ class Label extends Component implements IClonable<Label> {
     // Validation
     //***********************************************************************************************************
 
-    private override function validateInternal():Void {
-        var dataInvalid = isInvalid(InvalidationFlags.DATA);
-
-        if (dataInvalid) {
-            validateData();
-        }
-
-        super.validateInternal();
-    }
-
-    private function validateData():Void {
+    private override function validateData():Void {
         behaviourSet("text", _text);
         handleBindings(["text", "value"]);
     }

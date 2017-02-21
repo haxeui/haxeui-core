@@ -1,6 +1,5 @@
 package haxe.ui.components;
 
-import haxe.ui.validation.InvalidationFlags;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.IClonable;
@@ -67,7 +66,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
             return value;
         }
 
-        invalidate(InvalidationFlags.DATA);
+        invalidateData();
         value = super.set_text(value);
         return value;
     }
@@ -82,7 +81,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
             text = behaviourGet("text");
             behaviourSet("password", _password);
         } else {
-            invalidate(InvalidationFlags.DATA);
+            invalidateData();
         }
 
         return value;
@@ -154,7 +153,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
         }
 
         behaviourSet("password", value);
-        invalidate(InvalidationFlags.DATA);
+        invalidateData();
         _password = value;
         return value;
     }
@@ -173,7 +172,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
             return value;
         }
 
-        invalidate(InvalidationFlags.DATA);
+        invalidateData();
         _maxChars = value;
         return value;
     }
@@ -258,17 +257,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     // Validation
     //***********************************************************************************************************
 
-    private override function validateInternal():Void {
-        var dataInvalid = isInvalid(InvalidationFlags.DATA);
-
-        if (dataInvalid) {
-            validateData();
-        }
-
-        super.validateInternal();
-    }
-
-    private function validateData():Void {
+    private override function validateData():Void {
         var text:String = _text != null ? _text : "";
         var placeholderVisible:Bool = empty;
 
@@ -390,7 +379,7 @@ class TextFieldDefaultPlaceholderBehaviour extends Behaviour {
     public override function set(value:Variant) {
         var textField:TextField = cast _component;
         textField._placeholder = value;
-        textField.invalidate(InvalidationFlags.DATA);
+        textField.invalidateData();
     }
     
     public override function get():Variant {
