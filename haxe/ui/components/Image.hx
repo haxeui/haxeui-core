@@ -36,11 +36,6 @@ class Image extends Component implements IClonable<Image> {
         _defaultLayout = new ImageLayout();
     }
 
-    private override function create() {
-        super.create();
-        behaviourSet("resource", _resource);
-    }
-
     //***********************************************************************************************************
     // Overrides
     //***********************************************************************************************************
@@ -72,15 +67,8 @@ class Image extends Component implements IClonable<Image> {
             return value;
         }
 
-        if (value == null) {
-            _resource = null;
-            removeImageDisplay();
-            return value;
-        }
-
-        _resource = "" + value;
-        behaviourSet("resource", _resource);
         _resource = value;
+        invalidateData();
         return value;
     }
 
@@ -124,6 +112,17 @@ class Image extends Component implements IClonable<Image> {
         _imageVerticalAlign = value;
         invalidateLayout();
         return value;
+    }
+
+    //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+
+    private override function validateData():Void {
+        var resourceValue:Dynamic = behaviourGetDynamic("resource");
+        if (resourceValue != _resource) {
+            behaviourSet("resource", _resource);
+        }
     }
 }
 
@@ -258,7 +257,15 @@ class ImageLayout extends DefaultLayout {
 @:dox(hide)
 @:access(haxe.ui.components.Image)
 class ImageDefaultResourceBehaviour extends Behaviour {
+    private var _value:Dynamic;
+
     public override function set(value:Variant) {
+        if (_value == value) {
+            return;
+        }
+
+        _value = value;
+
         var image:Image = cast _component;
 
         if (value == null || value.isNull || value == "null") { // TODO: hack
@@ -287,5 +294,9 @@ class ImageDefaultResourceBehaviour extends Behaviour {
             }
 
         }
+    }
+
+    public override function getDynamic():Dynamic {
+        return _value;
     }
 }
