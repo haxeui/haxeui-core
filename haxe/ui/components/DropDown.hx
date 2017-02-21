@@ -60,17 +60,12 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
         return _dataSource;
     }
     private function set_dataSource(value:DataSource<Dynamic>):DataSource<Dynamic> {
+        if (_dataSource == value) {
+            return value;
+        }
+
+        invalidateData();
         _dataSource = value;
-        if (_listview != null) {
-            _listview.dataSource = value;
-        }
-        //behaviourSet("dataSource", Variant.fromDynamic(value));
-        behaviourSet("dataSource", value);
-
-        if(_requireSelection == true && _dataSource != null && _selectedIndex < 0) {
-            selectedIndex = 0;
-        }
-
         return value;
     }
 
@@ -88,21 +83,8 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
             return value;
         }
 
+        invalidateData();
         _selectedIndex = value;
-
-        if(_dataSource != null) {
-            if(_requireSelection == true && _selectedIndex < 0 && _dataSource.size > 0) {
-                _selectedIndex = 0;
-            }
-
-            if(_selectedIndex >= 0) {
-                text = _dataSource.get(_selectedIndex).value;
-            }
-        }
-        else {
-            text = null;
-        }
-
         return _selectedIndex;
     }
 
@@ -112,13 +94,12 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
         return _requireSelection;
     }
     private function set_requireSelection(value:Bool):Bool {
-        if(_requireSelection != value) {
-            _requireSelection = value;
-            if(_requireSelection == true && _dataSource != null && _selectedIndex < 0) {
-                selectedIndex = 0;
-            }
+        if(_requireSelection == value) {
+            return value;
         }
 
+        invalidateData();
+        _requireSelection = value;
         return value;
     }
 
@@ -253,6 +234,32 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
         }
         selected = !selected;
         onMouseClick(null);
+    }
+
+    //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+
+    private override function validateData():Void {
+        if (_listview != null) {
+            _listview.dataSource = _dataSource;
+        }
+
+        behaviourSet("dataSource", _dataSource);
+
+        if(_dataSource != null) {
+            if(_requireSelection == true && _selectedIndex < 0 && _dataSource.size > 0) {
+                _selectedIndex = 0;
+            }
+
+            if(_selectedIndex >= 0) {
+                _text = _dataSource.get(_selectedIndex).value;
+            }
+        } else {
+            _text = null;
+        }
+
+        super.validateData();
     }
 
     //***********************************************************************************************************
