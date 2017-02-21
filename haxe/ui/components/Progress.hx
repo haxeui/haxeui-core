@@ -1,5 +1,6 @@
 package haxe.ui.components;
 
+import haxe.ui.animation.Animation;
 import haxe.ui.animation.AnimationManager;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
@@ -364,6 +365,7 @@ class ProgressDefaultRangeEndBehaviour extends Behaviour {
 @:access(haxe.ui.components.Progress)
 class ProgressDefaultIndeterminateBehaviour extends Behaviour {
     private var _value:Bool = false;
+    private var _animation:Animation;
 
     public override function set(value:Variant) {
         if (_value == value) {
@@ -389,10 +391,13 @@ class ProgressDefaultIndeterminateBehaviour extends Behaviour {
         if (animationId == null) {
             return;
         }
-        AnimationManager.instance.loop(animationId, ["target" => progress]);
+        _animation = AnimationManager.instance.loop(animationId, ["target" => progress]);
     }
 
     private function stopIndeterminateAnimation(progress:Progress) {
-
+        if (_animation != null) {
+            _animation.stop();
+            _animation = null;
+        }
     }
 }
