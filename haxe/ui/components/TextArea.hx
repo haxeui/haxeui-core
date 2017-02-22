@@ -37,7 +37,7 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
     **/
     @:clonable public var placeholder(get, set):String;
     private function get_placeholder():String {
-        return behaviourGet("placeholder");
+        return _placeholder;
     }
 
     private function set_placeholder(value:String):String {
@@ -45,52 +45,47 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
             return value;
         }
 
-        behaviourSet("placeholder", value);
-
+        invalidateData();
+        _placeholder = value;
         return value;
     }
 
     private var _wrap:Bool;
     @:clonable public var wrap(get, set):Bool;
     private function get_wrap():Bool {
-        return behaviourGet("wrap");
+        return _wrap;
     }
     private function set_wrap(value:Bool):Bool {
         if (value == _wrap) {
             return value;
         }
-        
-        _wrap = value;        
-        behaviourSet("wrap", value);
+
+        invalidateData();
+        _wrap = value;
         return value;
     }
     
     //***********************************************************************************************************
     // Overrides
     //***********************************************************************************************************
+
     private override function set_text(value:String):String {
+        if (value == _text) {
+            return value;
+        }
+
+        invalidateData();
         value = super.set_text(value);
-        _validateText();
-        checkScrolls();
         return value;
     }
-
-//    private override function get_text():String {
-//        return behaviourGet("text");
-//    }
 
     private override function set_focus(value:Bool):Bool {
         if (_focus == value || allowFocus == false) {
             return value;
         }
 
+        invalidateData();
         super.set_focus(value);
-        if (empty == false) {
-            text = behaviourGet("text");
-        } else {
-            _validateText();
-        }
-
         return value;
     }
 
@@ -102,14 +97,6 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
             "wrap" => new TextAreaDefaultWrapBehaviour(this)
         ]);
         _defaultLayout = new TextAreaLayout();
-    }
-
-    private override function create() {
-        super.create();
-
-        if (_text == null) {
-            behaviourSet("text", "");
-        }
     }
 
     private override function createChildren() {
@@ -134,11 +121,6 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
         unregisterEvent(MouseEvent.MOUSE_WHEEL, _onMouseWheel);
         unregisterEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
         unregisterEvent(UIEvent.CHANGE, _onTextChanged);
-    }
-
-    private override function onReady() {
-        super.onReady();
-        checkScrolls();
     }
 
     private override function applyStyle(style:Style) {
@@ -215,9 +197,7 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
     }
 
     private function _onTextChanged(event:UIEvent) {
-        var newText:String = behaviourGet("text");
-        text = newText;
-        handleBindings(["text", "value"]);
+        text = behaviourGet("text");
     }
 
     private function _onScrollChange(e:UIEvent) {
@@ -237,7 +217,16 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
     //***********************************************************************************************************
     // Validation
     //***********************************************************************************************************
-    private function _validateText() {
+
+    private override function validateData():Void {
+        if (behaviourGet("placeholder") != _placeholder) {
+            behaviourSet("placeholder", _placeholder);
+        }
+
+        if (behaviourGet("wordWrap") != _wrap) {
+            behaviourSet("wordWrap", _wrap);
+        }
+
         var text:String = _text != null ? _text : "";
         var placeholderVisible:Bool = empty;
 
@@ -255,6 +244,7 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
         }
 
         behaviourSet("text", text);
+        handleBindings(["text", "value"]);
     }
 }
 
@@ -281,17 +271,20 @@ class TextAreaDefaultTextBehaviour extends Behaviour {
 }
 
 @:dox(hide)
-@:access(haxe.ui.components.TextArea)
+@:access(haxe.ui.components.TextField)
 class TextAreaDefaultPlaceholderBehaviour extends Behaviour {
+    private var _value:String;  //TODO - maybe we can create a generic ValueBehaviour class
+
     public override function set(value:Variant) {
-        var textArea:TextArea = cast _component;
-        textArea._placeholder = value;
-        textArea._validateText();
+        if (_value == value) {
+            return;
+        }
+
+        _value = value;
     }
-    
+
     public override function get():Variant {
-        var textArea:TextArea = cast _component;
-        return textArea._placeholder;
+        return _value;
     }
 }
 
@@ -301,7 +294,7 @@ class TextAreaDefaultWrapBehaviour extends Behaviour {
     public override function set(value:Variant) {
         var textArea:TextArea = cast _component;
         textArea.getTextInput().wordWrap = value;
-        textArea.checkScrolls();
+        textArea.invalidateDisplay();
     }
     
     public override function get():Variant {
