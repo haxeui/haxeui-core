@@ -1755,7 +1755,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
 
         if (_children != null) {
             var childDepth = (_depth != -1) ? _depth + 1 : -1;
-            for(c in _children) {
+            for (c in _children) {
                 c.depth = childDepth;
             }
         }
@@ -1768,10 +1768,10 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     **/
     @:dox(group = "Invalidation related properties and methods")
     public function validate() {
-        if(_ready == false
-            || _isDisposed == true      //we don't want to validate disposed components, but they may have been left in the queue.
-            ||_isValidating == true     //we were already validating, the existing validation will continue.
-            || isInvalid() == false) {  //if none is invalid, exit.
+        if (_ready == false ||
+            _isDisposed == true ||      //we don't want to validate disposed components, but they may have been left in the queue.
+            _isValidating == true ||    //we were already validating, the existing validation will continue.
+            isInvalid() == false) {     //if none is invalid, exit.
             return;
         }
 

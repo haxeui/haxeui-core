@@ -238,7 +238,6 @@ class TextDisplay extends TextDisplayBase {
     }
 
     public function invalidate(flag:String = InvalidationFlags.ALL) {
-        var isAlreadyInvalid:Bool = isInvalid();
         if (flag == InvalidationFlags.ALL) {
             _isAllInvalid = true;
         } else {
@@ -249,8 +248,8 @@ class TextDisplay extends TextDisplayBase {
     }
 
     public function validate() {
-        if (_isValidating == true     //we were already validating, the existing validation will continue.
-           || isInvalid() == false) {   //if none is invalid, exit.
+        if (_isValidating == true ||    //we were already validating, the existing validation will continue.
+            isInvalid() == false) {     //if none is invalid, exit.
             return;
         }
 
