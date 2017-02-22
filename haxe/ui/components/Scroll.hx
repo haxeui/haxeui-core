@@ -19,7 +19,7 @@ class Scroll extends InteractiveComponent implements IClonable<Scroll> {
 
     public function new() {
         super();
-        addClass("scroll");
+        addClass("scroll", false);
         allowFocus = false;
     }
 
@@ -34,15 +34,6 @@ class Scroll extends InteractiveComponent implements IClonable<Scroll> {
             "pos" => new ScrollDefaultPosBehaviour(this),
             "pageSize" => new ScrollDefaultPageSizeBehaviour(this)
         ]);
-    }
-
-    private override function create() {
-        super.create();
-
-        behaviourSet("min", _min);
-        behaviourSet("max", _max);
-        behaviourSet("pos", _pos);
-        behaviourSet("pageSize", _pageSize);
     }
 
     private override function createChildren() {
@@ -108,6 +99,32 @@ class Scroll extends InteractiveComponent implements IClonable<Scroll> {
     }
 
     //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+
+    private override function validateData():Void {
+        if (behaviourGet("min") != _min) {
+            behaviourSet("min", _min);
+        }
+
+        if (behaviourGet("max") != _max) {
+            behaviourSet("max", _max);
+        }
+
+        if (behaviourGet("pageSize") != _pageSize) {
+            behaviourSet("pageSize", _pageSize);
+        }
+
+        if (behaviourGet("pos") != _pos) {
+            behaviourSet("pos", _pos);
+
+            var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
+            dispatch(changeEvent);
+            handleBindings(["value"]);
+        }
+    }
+
+    //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
     private var _pos:Float = 0;
@@ -131,10 +148,7 @@ class Scroll extends InteractiveComponent implements IClonable<Scroll> {
 
         if (value != _pos) {
             _pos = value;
-            behaviourSet("pos", value);
-            var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
-            dispatch(changeEvent);
-            handleBindings(["value"]);
+            invalidateData();
         }
         return value;
     }
@@ -169,7 +183,8 @@ class Scroll extends InteractiveComponent implements IClonable<Scroll> {
             if (_pos < _min) {
                 _pos = _min;
             }
-            behaviourSet("min", value);
+
+            invalidateData();
         }
         return value;
     }
@@ -189,7 +204,8 @@ class Scroll extends InteractiveComponent implements IClonable<Scroll> {
             if (_pos > _max) {
                 _pos = _max;
             }
-            behaviourSet("max", value);
+
+            invalidateData();
         }
         return value;
     }
@@ -209,7 +225,7 @@ class Scroll extends InteractiveComponent implements IClonable<Scroll> {
         }
 
         _pageSize = value;
-        behaviourSet("pageSize", value);
+        invalidateData();
         return value;
     }
 
@@ -287,35 +303,79 @@ class Scroll extends InteractiveComponent implements IClonable<Scroll> {
 @:dox(hide)
 @:access(haxe.ui.components.Scroll)
 class ScrollDefaultMinBehaviour extends Behaviour {
+    private var _value:Float = 0;
+
     public override function set(value:Variant) {
+        if (_value == value) {
+            _value = value;
+        }
+        _value = value;
+
         var scroll:Scroll = cast _component;
         scroll.invalidateLayout();
+    }
+
+    public override function get():Variant {
+        return _value;
     }
 }
 
 @:dox(hide)
 @:access(haxe.ui.components.Scroll)
 class ScrollDefaultMaxBehaviour extends Behaviour {
+    private var _value:Float = 0;
+
     public override function set(value:Variant) {
+        if (_value == value) {
+            _value = value;
+        }
+        _value = value;
+
         var scroll:Scroll = cast _component;
         scroll.invalidateLayout();
+    }
+
+    public override function get():Variant {
+        return _value;
     }
 }
 
 @:dox(hide)
 @:access(haxe.ui.components.Scroll)
 class ScrollDefaultPosBehaviour extends Behaviour {
+    private var _value:Float = 0;
+
     public override function set(value:Variant) {
+        if (_value == value) {
+            _value = value;
+        }
+        _value = value;
+
         var scroll:Scroll = cast _component;
         scroll.invalidateLayout();
+    }
+
+    public override function get():Variant {
+        return _value;
     }
 }
 
 @:dox(hide)
 @:access(haxe.ui.components.Scroll)
 class ScrollDefaultPageSizeBehaviour extends Behaviour {
+    private var _value:Float = 0;
+
     public override function set(value:Variant) {
+        if (_value == value) {
+            _value = value;
+        }
+        _value = value;
+
         var scroll:Scroll = cast _component;
         scroll.invalidateLayout();
+    }
+
+    public override function get():Variant {
+        return _value;
     }
 }
