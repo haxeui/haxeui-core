@@ -1,5 +1,6 @@
 package haxe.ui.components;
 
+import haxe.ui.util.Variant;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.IClonable;
@@ -344,19 +345,22 @@ class TextFieldDefaultTextBehaviour extends Behaviour {
 @:access(haxe.ui.components.TextField)
 class TextFieldDefaultIconBehaviour extends Behaviour {
     public override function set(value:Variant) {
-        if (value == null || value.isNull || value == "null") { // TODO: hack
-            return;
-        }
-
         var textField:TextField = cast _component;
-        if (textField._icon == null) {
-            textField._icon = new Image();
-            textField._icon.id = "textfield-icon";
-            textField._icon.addClass("icon");
-            textField._icon.scriptAccess = false;
-            textField.addComponent(textField._icon);
+        if (value == null || value.isNull || value == "null") { // TODO: hack
+            if (textField._icon != null) {
+                textField.removeComponent(textField._icon);
+                textField._icon = null;
+            }
+        } else {
+            if (textField._icon == null) {
+                textField._icon = new Image();
+                textField._icon.id = "textfield-icon";
+                textField._icon.addClass("icon");
+                textField._icon.scriptAccess = false;
+                textField.addComponent(textField._icon);    //TODO use addComponentAt with index=0
+            }
+            textField._icon.resource = value.toString();
         }
-        textField._icon.resource = value.toString();
     }
 
     public override function get():Variant {
@@ -364,7 +368,7 @@ class TextFieldDefaultIconBehaviour extends Behaviour {
         if (textField._icon == null) {
             return null;
         } else {
-            return textField._icon.resource;
+            return Variant.fromDynamic(textField._icon.resource);
         }
     }
 }
