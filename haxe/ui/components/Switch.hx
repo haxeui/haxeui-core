@@ -30,10 +30,6 @@ class Switch extends InteractiveComponent implements IClonable<Switch> {
         _defaultLayout = new SwitchLayout();
     }
 
-    private override function create() {
-        super.create();
-    }
-
     private override function createChildren() {
         if (_button == null) {
             _label = new Label();
@@ -87,6 +83,25 @@ class Switch extends InteractiveComponent implements IClonable<Switch> {
     }
 
     //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+
+    private override function validateData():Void {
+        if (_selected == false) {
+            _label.text = _unselectedText;
+            _label.removeClass(":selected");
+            removeClass(":selected");
+        } else {
+            _label.text = _selectedText;
+            _label.addClass(":selected");
+            addClass(":selected");
+        }
+
+        var event:UIEvent = new UIEvent(UIEvent.CHANGE);
+        dispatch(event);
+    }
+
+    //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
 
@@ -100,22 +115,9 @@ class Switch extends InteractiveComponent implements IClonable<Switch> {
             return value;
         }
 
-        _selected = value;
-        if (_selected == false) {
-            _label.text = _unselectedText;
-            _label.removeClass(":selected");
-            removeClass(":selected");
-        } else {
-            _label.text = _selectedText;
-            _label.addClass(":selected");
-            addClass(":selected");
-        }
-
+        invalidateData();
         invalidateLayout();
-
-        var event:UIEvent = new UIEvent(UIEvent.CHANGE);
-        dispatch(event);
-
+        _selected = value;
         return value;
     }
 
