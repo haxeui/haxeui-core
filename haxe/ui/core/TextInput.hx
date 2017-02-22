@@ -236,6 +236,34 @@ class TextInput extends TextInputBase {
         return value;
     }
 
+    public var hscrollPos(get, set):Float;
+    private function get_hscrollPos():Float {
+        return _hscrollPos;
+    }
+    private function set_hscrollPos(value:Float):Float {
+        if (value == _hscrollPos) {
+            return value;
+        }
+
+        invalidate(InvalidationFlags.STYLE);
+        _hscrollPos = value;
+        return value;
+    }
+
+    public var vscrollPos(get, set):Float;
+    private function get_vscrollPos():Float {
+        return _vscrollPos;
+    }
+    private function set_vscrollPos(value:Float):Float {
+        if (value == _vscrollPos) {
+            return value;
+        }
+
+        invalidate(InvalidationFlags.STYLE);
+        _vscrollPos = value;
+        return value;
+    }
+
     public function isInvalid(flag:String = InvalidationFlags.ALL):Bool {
         if (_isAllInvalid == true) {
             return true;
