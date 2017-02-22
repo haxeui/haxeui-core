@@ -2003,7 +2003,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
      Invalidate this components layout, may result in multiple calls to `invalidateDisplay` and `invalidateLayout` of its children
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public function invalidateLayout() {
+    public inline function invalidateLayout() {
         if (_layout == null) {
             return;
         }
@@ -2015,7 +2015,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
      Invalidate the position of this component
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public function invalidatePosition() {
+    public inline function invalidatePosition() {
         invalidate(InvalidationFlags.POSITION);
     }
 
@@ -2023,7 +2023,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
      Invalidate the visible aspect of this component
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public function invalidateDisplay() {
+    public inline function invalidateDisplay() {
         invalidate(InvalidationFlags.DISPLAY);
     }
 
@@ -2031,7 +2031,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
      Invalidate and recalculate this components style, may result in a call to `invalidateDisplay`
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public function invalidateStyle() {
+    public inline function invalidateStyle() {
         invalidate(InvalidationFlags.STYLE);
     }
 
