@@ -218,7 +218,7 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
     // Validation
     //***********************************************************************************************************
 
-    private override function validateData():Void {
+    private override function validateData() {
         if (behaviourGet("placeholder") != _placeholder) {
             behaviourSet("placeholder", _placeholder);
         }

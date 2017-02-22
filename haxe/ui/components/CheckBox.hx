@@ -99,7 +99,7 @@ class CheckBox extends InteractiveComponent implements IClonable<CheckBox> {
     // Validation
     //***********************************************************************************************************
 
-    private override function validateData():Void {
+    private override function validateData() {
         behaviourSet("selected", value);
 
         var event:UIEvent = new UIEvent(UIEvent.CHANGE);

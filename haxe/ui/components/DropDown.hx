@@ -240,7 +240,7 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
     // Validation
     //***********************************************************************************************************
 
-    private override function validateData():Void {
+    private override function validateData() {
         if (_listview != null) {
             _listview.dataSource = _dataSource;
         }

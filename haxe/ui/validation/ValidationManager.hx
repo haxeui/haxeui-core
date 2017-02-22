@@ -44,13 +44,13 @@ class ValidationManager {
         }
     }
 
-    public function dispose():Void {
+    public function dispose() {
         disposeTimer();
         isValidating = false;
         _queue.splice(0, _queue.length);
     }
 
-    public function add(object:IValidating):Void {
+    public function add(object:IValidating) {
         if (_queue.indexOf(object) != -1) {
             return;
         }
@@ -86,7 +86,7 @@ class ValidationManager {
         }
     }
 
-    private function process():Void {
+    private function process() {
         if (isValidating == true || _timer == null) {
             return;
         }
@@ -132,7 +132,7 @@ class ValidationManager {
 //        else                        0;
     }
 
-    private function disposeTimer():Void {
+    private function disposeTimer() {
         if (_timer != null) {
             _timer.stop();
             _timer = null;

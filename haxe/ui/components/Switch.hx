@@ -86,7 +86,7 @@ class Switch extends InteractiveComponent implements IClonable<Switch> {
     // Validation
     //***********************************************************************************************************
 
-    private override function validateData():Void {
+    private override function validateData() {
         if (_selected == false) {
             _label.text = _unselectedText;
             _label.removeClass(":selected");

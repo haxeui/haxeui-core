@@ -102,7 +102,7 @@ class Scroll extends InteractiveComponent implements IClonable<Scroll> {
     // Validation
     //***********************************************************************************************************
 
-    private override function validateData():Void {
+    private override function validateData() {
         if (behaviourGet("min") != _min) {
             behaviourSet("min", _min);
         }

@@ -103,7 +103,7 @@ class Button extends InteractiveComponent implements IClonable<Button> {
     // Validation
     //***********************************************************************************************************
 
-    private override function validateData():Void {
+    private override function validateData() {
         if (behaviourGet("text") != _text) {
             behaviourSet("text", _text);
         }

@@ -118,7 +118,7 @@ class Image extends Component implements IClonable<Image> {
     // Validation
     //***********************************************************************************************************
 
-    private override function validateData():Void {
+    private override function validateData() {
         var resourceValue:Dynamic = behaviourGetDynamic("resource");
         if (resourceValue != _resource) {
             behaviourSet("resource", _resource);
@@ -231,7 +231,7 @@ class ImageLayout extends DefaultLayout {
         return size;
     }
 
-    private function updateClipRect(usz:Size):Void {
+    private function updateClipRect(usz:Size) {
         var imageDisplay:ImageDisplay = _component.getImageDisplay();
         var rc:Rectangle = imageDisplay.imageClipRect;
         if(rc == null)

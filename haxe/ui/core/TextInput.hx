@@ -252,7 +252,7 @@ class TextInput extends TextInputBase {
         return _invalidationFlags.exists(flag);
     }
 
-    public function invalidate(flag:String = InvalidationFlags.ALL):Void {
+    public function invalidate(flag:String = InvalidationFlags.ALL) {
         var isAlreadyInvalid:Bool = isInvalid();
         if (flag == InvalidationFlags.ALL) {
             _isAllInvalid = true;
@@ -263,7 +263,7 @@ class TextInput extends TextInputBase {
         }
     }
 
-    public function validate():Void {
+    public function validate() {
         if(_isValidating == true     //we were already validating, the existing validation will continue.
            || isInvalid() == false) {   //if none is invalid, exit.
             return;
@@ -281,7 +281,7 @@ class TextInput extends TextInputBase {
         _isValidating = false;
     }
 
-    private function handleValidate():Void {
+    private function handleValidate() {
         var dataInvalid = isInvalid(InvalidationFlags.DATA);
         var styleInvalid = isInvalid(InvalidationFlags.STYLE);
         var positionInvalid = isInvalid(InvalidationFlags.POSITION);

@@ -251,7 +251,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     // Validation
     //***********************************************************************************************************
 
-    private override function validateData():Void {
+    private override function validateData() {
         if (behaviourGet("icon") != _iconResource) {
             behaviourSet("icon", _iconResource);
         }

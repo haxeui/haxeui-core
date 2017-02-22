@@ -218,7 +218,7 @@ class Progress extends InteractiveComponent implements IClonable<Progress> {
     // Validation
     //***********************************************************************************************************
 
-    private override function validateData():Void {
+    private override function validateData() {
         var minValue:Float = behaviourGet("min");
         var maxValue:Float = behaviourGet("max");
         var indeterminateValue:Bool = behaviourGet("indeterminate");
