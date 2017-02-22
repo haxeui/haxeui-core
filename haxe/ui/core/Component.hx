@@ -1767,7 +1767,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
      This method validates the tasks pending in the component.
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public function validate():Void {
+    public function validate() {
         if(_ready == false
             || _isDisposed == true      //we don't want to validate disposed components, but they may have been left in the queue.
             ||_isValidating == true     //we were already validating, the existing validation will continue.
@@ -1796,7 +1796,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         _isValidating = false;
     }
 
-    private function validateInternal():Void {
+    private function validateInternal() {
         var dataInvalid = isInvalid(InvalidationFlags.DATA);
         var styleInvalid = isInvalid(InvalidationFlags.STYLE);
         var positionInvalid = isInvalid(InvalidationFlags.POSITION);
@@ -1863,15 +1863,15 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
     }
 
-    private function validateData():Void {
+    private function validateData() {
         //To be overwritten
     }
 
-    private function validateLayout():Void {
+    private function validateLayout() {
         layout.refresh();
     }
 
-    private function validateStyle():Void {
+    private function validateStyle() {
         var s:Style = Toolkit.styleSheet.applyClasses(this, false);
         if (_ready == false || _style == null || _style.equalTo(s) == false) { // lets not update if nothing has changed
             _style = s;
@@ -1879,11 +1879,11 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
     }
 
-    private function validatePosition():Void {
+    private function validatePosition() {
         handlePosition(_left, _top, _style);
     }
 
-    private function validateDisplay():Void {
+    private function validateDisplay() {
         if (componentWidth == null || componentHeight == null || componentWidth <= 0 || componentHeight <= 0) {
             return;
         }
@@ -1940,7 +1940,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
      Invalidate this components with the `InvalidationFlags` indicated. If it hasn't parameter then the component will be invalidated completely.
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public function invalidate(flag:String = InvalidationFlags.ALL):Void {
+    public function invalidate(flag:String = InvalidationFlags.ALL) {
         if (_ready == false) {
             return;     //it should be added into the queue later
         }
