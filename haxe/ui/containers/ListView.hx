@@ -44,7 +44,7 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
             _itemRenderer.hide();
             #end
             if (_dataSource != null) {
-                syncUI();
+                invalidateData();
             }
         } else {
             if (Std.is(child, ItemRenderer)) {
@@ -106,10 +106,10 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
 
     public var itemCount(get, null):Int;
     private function get_itemCount():Int {
-        if (contents == null) {
+        if (_dataSource == null) {
             return 0;
         }
-        return contents.childComponents.length;
+        return _dataSource.size;
     }
 
     public var itemHeight(get, null):Float;
@@ -117,20 +117,9 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
         if (itemCount == 0 || contents == null) {
             return 0;
         }
-        var n:Int = 0;
-        var cy:Float = contents.layout.paddingTop + contents.layout.paddingBottom;
-        var scy:Float = contents.layout.verticalSpacing;
-        for (child in contents.childComponents) {
-            cy += child.height + scy;
-            n++;
-            if (n > 100) {
-                break;
-            }
-        }
-        if (n > 0) {
-            cy -= scy;
-        }
-        return (cy / n);
+
+        validate();
+        return itemHeight;
     }
 
     private var _dataSource:DataSource<Dynamic>;
@@ -145,14 +134,14 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
     private function set_dataSource(value:DataSource<Dynamic>):DataSource<Dynamic> {
         _dataSource = value;
         _dataSource.transformer = new NativeTypeTransformer();
-        syncUI();
+        invalidateData();
         _dataSource.onChange = onDataSourceChanged;
         return value;
     }
 
     private function onDataSourceChanged() {
         if (_ready == true) {
-            syncUI();
+            invalidateData();
         }
     }
 
@@ -163,7 +152,8 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
 
         lockLayout();
 
-        var delta = _dataSource.size - itemCount;
+        var contentItemCount:Int = contents.childComponents.length;
+        var delta = _dataSource.size - contentItemCount;
         if (delta > 0) { // not enough items
             for (n in 0...delta) {
                 addComponent(_itemRenderer.cloneComponent());
@@ -182,6 +172,34 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
         }
 
         unlockLayout();
+    }
+
+    //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+
+    private override function validateData() {
+        syncUI();
+    }
+
+    private override function validateLayout() {
+        super.validateLayout();
+
+        //ItemHeight
+        var n:Int = 0;
+        var cy:Float = contents.layout.paddingTop + contents.layout.paddingBottom;
+        var scy:Float = contents.layout.verticalSpacing;
+        for (child in contents.childComponents) {
+            cy += child.height + scy;
+            n++;
+            if (n > 100) {
+                break;
+            }
+        }
+        if (n > 0) {
+            cy -= scy;
+        }
+        itemHeight = (cy / n);
     }
 
     //***********************************************************************************************************
