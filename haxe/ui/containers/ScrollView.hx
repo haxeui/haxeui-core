@@ -87,11 +87,6 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         }
     }
 
-    private override function onResized() {
-        checkScrolls();
-        updateScrollRect();
-    }
-
     @bindable public var vscrollPos(get, set):Float;
     private function get_vscrollPos():Float {
         if (_vscroll == null) {
@@ -238,16 +233,19 @@ class ScrollView extends Component implements IClonable<ScrollView> {
     }
 
     private override function validateInternal() {
+        super.validateInternal();
+
         var scrollInvalid = isInvalid(InvalidationFlags.SCROLL);
 
         if (scrollInvalid) {
             validateScroll();
         }
-
-        super.validateInternal();
     }
 
     private function validateScroll() {
+        checkScrolls();
+        updateScrollRect();
+
         handleBindings(["hscrollPos"]);
         handleBindings(["vscrollPos"]);
     }
@@ -423,8 +421,7 @@ class ScrollView extends Component implements IClonable<ScrollView> {
     }
     
     private function _onContentsResized(event:UIEvent) {
-        checkScrolls();
-        updateScrollRect();
+        invalidateScroll();
     }
 
     private var hscrollOffset(get, null):Float;
@@ -443,11 +440,12 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         checkHScroll();
         checkVScroll();
 
-        if (horizontalConstraint.componentWidth > layout.usableWidth) {
+        var usableSize:Size = layout.usableSize;
+        if (horizontalConstraint.componentWidth > usableSize.width) {
             if (_hscroll != null) {
                 _hscroll.hidden = false;
-                _hscroll.max = horizontalConstraint.componentWidth - layout.usableWidth - hscrollOffset; // _contents.layout.horizontalSpacing;
-                _hscroll.pageSize = (layout.usableWidth / horizontalConstraint.componentWidth) * _hscroll.max;
+                _hscroll.max = horizontalConstraint.componentWidth - usableSize.width - hscrollOffset; // _contents.layout.horizontalSpacing;
+                _hscroll.pageSize = (usableSize.width / horizontalConstraint.componentWidth) * _hscroll.max;
             }
         } else {
             if (_hscroll != null) {
@@ -455,11 +453,11 @@ class ScrollView extends Component implements IClonable<ScrollView> {
             }
         }
 
-        if (verticalConstraint.componentHeight > layout.usableHeight) {
+        if (verticalConstraint.componentHeight > usableSize.height) {
             if (_vscroll != null) {
                 _vscroll.hidden = false;
-                _vscroll.max = verticalConstraint.componentHeight - layout.usableHeight;
-                _vscroll.pageSize = (layout.usableHeight / verticalConstraint.componentHeight) * _vscroll.max;
+                _vscroll.max = verticalConstraint.componentHeight - usableSize.height;
+                _vscroll.pageSize = (usableSize.height / verticalConstraint.componentHeight) * _vscroll.max;
             }
         } else {
             if (_vscroll != null) {
@@ -467,7 +465,7 @@ class ScrollView extends Component implements IClonable<ScrollView> {
             }
         }
 
-        invalidateLayout();
+//        invalidateLayout();
     }
 
     private function checkHScroll() {
@@ -513,8 +511,7 @@ class ScrollView extends Component implements IClonable<ScrollView> {
     }
 
     private function _onScroll(event:UIEvent) {
-        updateScrollRect();
-        handleBindings(["vscrollPos"]);
+        invalidateScroll();
     }
 
     public function updateScrollRect() {
