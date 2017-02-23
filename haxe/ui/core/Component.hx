@@ -2004,7 +2004,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     **/
     @:dox(group = "Invalidation related properties and methods")
     public inline function invalidateLayout() {
-        if (_layout == null) {
+        if (_layout == null || _layoutLocked == true) {
             return;
         }
 
