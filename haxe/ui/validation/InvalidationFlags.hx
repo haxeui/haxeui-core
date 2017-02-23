@@ -8,5 +8,6 @@ abstract InvalidationFlags(String) from String to String {
     var INDEX = "index";
     var LAYOUT = "layout";
     var POSITION = "position";
+    var SCROLL = "scroll";
     var STYLE = "style";
 }

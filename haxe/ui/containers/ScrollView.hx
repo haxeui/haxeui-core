@@ -1,5 +1,6 @@
 package haxe.ui.containers;
 
+import haxe.ui.validation.InvalidationFlags;
 import haxe.ui.components.HScroll;
 import haxe.ui.components.VScroll;
 import haxe.ui.constants.ScrollMode;
@@ -26,22 +27,18 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         super();
     }
 
+    private override function create() {
+        super.create();
+
+        createContentContainer();
+    }
+
     private override function createLayout():Layout {
         return new ScrollViewLayout();
     }
 
     private override function createDefaults() {
         super.createDefaults();
-    }
-
-    private override function create() {
-        super.create();
-        if (native == true) {
-            updateScrollRect();
-        } else {
-            checkScrolls();
-            //updateScrollRect();
-        }
     }
 
     private var _layoutName:String = "vertical";
@@ -67,7 +64,6 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         if (_scrollMode == ScrollMode.DRAG || _scrollMode == ScrollMode.INERTIAL) {
             registerEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
         }
-        createContentContainer();
     }
 
     private function createContentContainer() {
@@ -91,12 +87,6 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         }
     }
 
-    private override function onReady() {
-        super.onReady();
-        checkScrolls();
-        updateScrollRect();
-    }
-
     private override function onResized() {
         checkScrolls();
         updateScrollRect();
@@ -113,8 +103,9 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         if (_vscroll == null) {
             return value;
         }
+
+        invalidateScroll();
         _vscroll.pos = value;
-        handleBindings(["vscrollPos"]);
         return value;
     }
 
@@ -129,73 +120,42 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         if (_hscroll == null) {
             return value;
         }
+
+        invalidateScroll();
         _hscroll.pos = value;
-        handleBindings(["hscrollPos"]);
         return value;
     }
 
     public var contentWidth(get, set):Null<Float>;
     private function get_contentWidth():Null<Float> {
-        createContentContainer();
-        if (_contents != null) {
-            return _contents.width;
-        }
-        return null;
+        return _contents.width;
     }
     private function set_contentWidth(value:Null<Float>):Null<Float> {
-        createContentContainer();
-        if (_contents != null) {
-            _contents.width = value;
-        }
-        return value;
+        return _contents.width = value;
     }
 
     public var contentHeight(get, set):Null<Float>;
     private function get_contentHeight():Null<Float> {
-        createContentContainer();
-        if (_contents != null) {
-            return _contents.height;
-        }
-        return null;
+        return _contents.height;
     }
     private function set_contentHeight(value:Null<Float>):Null<Float> {
-        createContentContainer();
-        if (_contents != null) {
-            _contents.height = value;
-        }
-        return value;
+        return _contents.height = value;
     }
 
     public var percentContentWidth(get, set):Null<Float>;
     private function get_percentContentWidth():Null<Float> {
-        createContentContainer();
-        if (_contents != null) {
-            return _contents.percentWidth;
-        }
-        return null;
+        return _contents.percentWidth;
     }
     private function set_percentContentWidth(value:Null<Float>):Null<Float> {
-        createContentContainer();
-        if (_contents != null) {
-            _contents.percentWidth = value;
-        }
-        return value;
+        return _contents.percentWidth = value;
     }
 
     public var percentContentHeight(get, set):Null<Float>;
     private function get_percentContentHeight():Null<Float> {
-        createContentContainer();
-        if (_contents != null) {
-            return _contents.percentHeight;
-        }
-        return null;
+        return _contents.percentHeight;
     }
     private function set_percentContentHeight(value:Null<Float>):Null<Float> {
-        createContentContainer();
-        if (_contents != null) {
-            _contents.percentHeight = value;
-        }
-        return value;
+        return _contents.percentHeight = value;
     }
 
     public override function addComponent(child:Component):Component {
@@ -203,7 +163,6 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         if (Std.is(child, HScroll) || Std.is(child, VScroll) || child == _contents) {
             v = super.addComponent(child);
         } else {
-            createContentContainer();
             v = _contents.addComponent(child);
         }
         return v;
@@ -250,17 +209,6 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         return _contents;
     }
 
-    private function _onMouseWheel(event:MouseEvent) {
-        if (_vscroll != null) {
-            if (event.delta > 0) {
-                _vscroll.pos -= 50; // TODO: calculate this
-                //_vscroll.animatePos(_vscroll.pos - 50);
-            } else if (event.delta < 0) {
-                _vscroll.pos += 50;
-            }
-        }
-    }
-
     private var _scrollMode:ScrollMode = ScrollMode.DRAG;
     public var scrollMode(get, set):ScrollMode;
     private function get_scrollMode():ScrollMode {
@@ -279,6 +227,29 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         }
         
         return value;
+    }
+
+    //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+
+    private inline function invalidateScroll() {
+        invalidate(InvalidationFlags.SCROLL);
+    }
+
+    private override function validateInternal() {
+        var scrollInvalid = isInvalid(InvalidationFlags.SCROLL);
+
+        if (scrollInvalid) {
+            validateScroll();
+        }
+
+        super.validateInternal();
+    }
+
+    private function validateScroll() {
+        handleBindings(["hscrollPos"]);
+        handleBindings(["vscrollPos"]);
     }
 
     // ********************************************************************************
@@ -300,7 +271,18 @@ class ScrollView extends Component implements IClonable<ScrollView> {
     private var _inertialAmplitudeY:Float = 0;
     private var _inertialTargetY:Float = 0;
     private var _inertiaDirectionY:Int;
-    
+
+    private function _onMouseWheel(event:MouseEvent) {
+        if (_vscroll != null) {
+            if (event.delta > 0) {
+                _vscroll.pos -= 50; // TODO: calculate this
+                //_vscroll.animatePos(_vscroll.pos - 50);
+            } else if (event.delta < 0) {
+                _vscroll.pos += 50;
+            }
+        }
+    }
+
     private function _onMouseDown(event:MouseEvent) {
         if ((_hscroll == null || _hscroll.hidden == true) && (_vscroll == null || _vscroll.hidden == true)) {
             return;
@@ -573,11 +555,6 @@ class ScrollViewLayout extends DefaultLayout {
     }
 
     private override function repositionChildren() {
-        var contents:Component = component.findComponent("scrollview-contents", null, false, "css");
-        if (contents == null) {
-            return;
-        }
-
         var hscroll:Component = component.findComponent("scrollview-hscroll");
         var vscroll:Component = component.findComponent("scrollview-vscroll");
 
@@ -594,8 +571,11 @@ class ScrollViewLayout extends DefaultLayout {
             vscroll.top = paddingTop;
         }
 
-        contents.left = paddingLeft;
-        contents.top = paddingTop;
+        var contents:Component = component.findComponent("scrollview-contents", null, false, "css");
+        if (contents != null) {
+            contents.left = paddingLeft;
+            contents.top = paddingTop;
+        }
     }
 
     private override function get_usableSize():Size {
