@@ -62,9 +62,10 @@ class ValidationManager {
             var min:Int = 0;
             var max:Int = queueLength;
             var i:Int = 0;
+            var otherDepth:Int = 0;
             while (max > min) {
                 i = (min + max) >>> 1;  // division 2 with unsigned int. avoid Std.int cast
-                var otherDepth:Int = _queue[i].depth;
+                otherDepth = _queue[i].depth;
                 if (otherDepth == depth) {
                     break;
                 } else if (otherDepth < depth) {
@@ -74,6 +75,10 @@ class ValidationManager {
                     min = i + 1;    //Down to top
                     //max = i;      //Top to down
                 }
+            }
+
+            if (otherDepth >= depth) {
+                i += 1;
             }
 
             this._queue.insert(i, object);
