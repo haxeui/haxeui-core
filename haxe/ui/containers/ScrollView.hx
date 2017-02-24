@@ -552,8 +552,8 @@ class ScrollViewLayout extends DefaultLayout {
     }
 
     private override function repositionChildren() {
-        var hscroll:Component = component.findComponent("scrollview-hscroll");
-        var vscroll:Component = component.findComponent("scrollview-vscroll");
+        var hscroll:Component = component.findComponent("scrollview-hscroll", false);
+        var vscroll:Component = component.findComponent("scrollview-vscroll", false);
 
         if (hscroll != null && hidden(hscroll) == false) {
             var ucy = innerHeight;
@@ -573,8 +573,8 @@ class ScrollViewLayout extends DefaultLayout {
 
     private override function get_usableSize():Size {
         var size:Size = super.get_usableSize();
-        var hscroll:Component = component.findComponent("scrollview-hscroll");
-        var vscroll:Component = component.findComponent("scrollview-vscroll");
+        var hscroll:Component = component.findComponent("scrollview-hscroll", false);
+        var vscroll:Component = component.findComponent("scrollview-vscroll", false);
         if (hscroll != null && hidden(hscroll) == false) {
             size.height -= hscroll.componentHeight;
         }
@@ -597,8 +597,8 @@ class ScrollViewLayout extends DefaultLayout {
     }
 
     public override function calcAutoSize(exclusions:Array<Component> = null):Size {
-        var hscroll:Component = component.findComponent("scrollview-hscroll");
-        var vscroll:Component = component.findComponent("scrollview-vscroll");
+        var hscroll:Component = component.findComponent("scrollview-hscroll", false);
+        var vscroll:Component = component.findComponent("scrollview-vscroll", false);
         var size:Size = super.calcAutoSize([hscroll, vscroll]);
         if (hscroll != null && hscroll.hidden == false) {
             size.height += hscroll.componentHeight;
