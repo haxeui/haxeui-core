@@ -150,8 +150,6 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
             return;
         }
 
-        lockLayout();
-
         var contentItemCount:Int = contents.childComponents.length;
         var delta = _dataSource.size - contentItemCount;
         if (delta > 0) { // not enough items
@@ -170,8 +168,6 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
             item.addClass(n % 2 == 0 ? "even" : "odd");
             item.data = _dataSource.get(n);
         }
-
-        unlockLayout();
     }
 
     //***********************************************************************************************************
