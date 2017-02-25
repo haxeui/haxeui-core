@@ -3,7 +3,6 @@ package haxe.ui.components;
 import haxe.ui.animation.AnimationManager;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
-import haxe.ui.core.IClonable;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.UIEvent;
 import haxe.ui.util.Variant;
@@ -12,7 +11,7 @@ import haxe.ui.util.Variant;
  Encapsulates shared functionality of both vertical and horizontal progressbar components
 **/
 @:dox(icon = "/icons/ui-progress-bar.png")
-class Progress extends InteractiveComponent implements IClonable<Progress> {
+class Progress extends InteractiveComponent {
     private var _value:Component;
 
     public function new() {

@@ -2,7 +2,6 @@ package haxe.ui.components;
 
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
-import haxe.ui.core.IClonable;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.UIEvent;
@@ -14,7 +13,7 @@ import haxe.ui.util.Size;
 import haxe.ui.util.Variant;
 
 @:dox(icon = "/icons/ui-text-field.png")
-class TextField extends InteractiveComponent implements IFocusable implements IClonable<TextField> {
+class TextField extends InteractiveComponent implements IFocusable {
     private var _icon:Image;
 
     public function new() {

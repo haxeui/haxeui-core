@@ -1,7 +1,6 @@
 package haxe.ui.components;
 
 import haxe.ui.core.Behaviour;
-import haxe.ui.core.IClonable;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.focus.FocusManager;
@@ -14,7 +13,7 @@ import haxe.ui.util.Variant;
  General purpose push button that supports both text and icon as well as repeat event dispatching
 **/
 @:dox(icon = "/icons/ui-button.png")
-class Button extends InteractiveComponent implements IClonable<Button> {
+class Button extends InteractiveComponent {
     private var _repeatTimer:Timer;
 
     public function new() {

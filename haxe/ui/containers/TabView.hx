@@ -3,13 +3,12 @@ package haxe.ui.containers;
 import haxe.ui.components.Button;
 import haxe.ui.components.TabBar;
 import haxe.ui.core.Component;
-import haxe.ui.core.IClonable;
 import haxe.ui.core.UIEvent;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.util.Size;
 
 @:dox(icon = "/icons/ui-tab-content.png")
-class TabView extends Component implements IClonable<TabView> {
+class TabView extends Component {
     private var _tabs:TabBar;
     private var _content:VBox;
     private var _views:Array<Component>;
