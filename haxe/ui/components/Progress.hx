@@ -121,11 +121,6 @@ class Progress extends InteractiveComponent implements IClonable<Progress> {
         return _min;
     }
     private function set_min(value:Float):Float {
-        if (_ready) {
-            if (value < _min) {
-                value = _min;
-            }
-        }
         if (value == _min) {
             return value;
         }
@@ -145,11 +140,6 @@ class Progress extends InteractiveComponent implements IClonable<Progress> {
         return _max;
     }
     private function set_max(value:Float):Float {
-        if (_ready) {
-            if (value > _max) {
-                value = _max;
-            }
-        }
         if (value == _max) {
             return value;
         }
