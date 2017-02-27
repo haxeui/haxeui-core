@@ -154,6 +154,10 @@ class Button extends InteractiveComponent implements IClonable<Button> {
 
     @:clonable public var iconPosition(get, set):String;
     private function get_iconPosition():String {
+        if (style == null) {
+            return null;
+        }
+
         return style.iconPosition;
     }
     private function set_iconPosition(value:String):String {
@@ -169,6 +173,10 @@ class Button extends InteractiveComponent implements IClonable<Button> {
 
     @:clonable public var fontSize(get, set):Float;
     private function get_fontSize():Float {
+        if (style == null) {
+            return 0;
+        }
+
         return style.fontSize;
     }
     private function set_fontSize(value:Float):Float {
@@ -184,6 +192,10 @@ class Button extends InteractiveComponent implements IClonable<Button> {
 
     @:clonable public var textAlign(get, set):String;
     private function get_textAlign():String {
+        if (style == null) {
+            return null;
+        }
+
         return style.textAlign;
     }
     private function set_textAlign(value:String):String {
