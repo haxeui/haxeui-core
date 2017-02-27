@@ -519,14 +519,13 @@ class ScrollView extends Component implements IClonable<ScrollView> {
             return;
         }
 
-        var ucx = layout.usableWidth;
-        var ucy = layout.usableHeight;
+        var usableSize = layout.usableSize;
 
-        var clipCX = ucx;
+        var clipCX = usableSize.width;
         if (clipCX > _contents.componentWidth) {
             clipCX = _contents.componentWidth;
         }
-        var clipCY = ucy;
+        var clipCY = usableSize.height;
         if (clipCY > _contents.componentHeight) {
             clipCY = _contents.componentHeight;
         }
