@@ -233,13 +233,13 @@ class ScrollView extends Component implements IClonable<ScrollView> {
     }
 
     private override function validateInternal() {
-        super.validateInternal();
-
         var scrollInvalid = isInvalid(InvalidationFlags.SCROLL);
 
         if (scrollInvalid) {
             validateScroll();
         }
+
+        super.validateInternal();
     }
 
     private function validateScroll() {
@@ -480,6 +480,8 @@ class ScrollView extends Component implements IClonable<ScrollView> {
                 _hscroll.id = "scrollview-hscroll";
                 _hscroll.registerEvent(UIEvent.CHANGE, _onScroll);
                 addComponent(_hscroll);
+
+                _hscroll.syncValidation();    //sync the scroll to avoid another pass
             }
         } else {
             if (_hscroll != null) {
@@ -501,6 +503,8 @@ class ScrollView extends Component implements IClonable<ScrollView> {
                 _vscroll.id = "scrollview-vscroll";
                 _vscroll.registerEvent(UIEvent.CHANGE, _onScroll);
                 addComponent(_vscroll);
+
+                _vscroll.syncValidation();    //sync the scroll to avoid another pass
             }
         } else {
             if (_vscroll != null) { // TODO: bug in luxe backend
