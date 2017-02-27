@@ -1764,6 +1764,19 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     }
 
     /**
+     Validate this component and its children on demand.
+    **/
+    @:dox(group = "Invalidation related properties and methods")
+    public function syncValidation() {
+        //Bottom-to-Top validation
+        for (child in childComponents) {
+            child.syncValidation();
+        }
+
+        validate();
+    }
+
+    /**
      This method validates the tasks pending in the component.
     **/
     @:dox(group = "Invalidation related properties and methods")
