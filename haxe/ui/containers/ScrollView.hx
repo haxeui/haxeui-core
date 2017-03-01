@@ -437,16 +437,21 @@ class ScrollView extends Component implements IClonable<ScrollView> {
             return;
         }
 
-        checkHScroll();
-        checkVScroll();
-
         var usableSize:Size = layout.usableSize;
         if (horizontalConstraint.componentWidth > usableSize.width) {
-            if (_hscroll != null) {
-                _hscroll.hidden = false;
-                _hscroll.max = horizontalConstraint.componentWidth - usableSize.width - hscrollOffset; // _contents.layout.horizontalSpacing;
-                _hscroll.pageSize = (usableSize.width / horizontalConstraint.componentWidth) * _hscroll.max;
+            if (_hscroll == null) {
+                _hscroll = new HScroll();
+                _hscroll.percentWidth = 100;
+                _hscroll.id = "scrollview-hscroll";
+                _hscroll.registerEvent(UIEvent.CHANGE, _onScroll);
+                addComponent(_hscroll);
             }
+
+            _hscroll.hidden = false;
+            _hscroll.max = horizontalConstraint.componentWidth - usableSize.width - hscrollOffset; // _contents.layout.horizontalSpacing;
+            _hscroll.pageSize = (usableSize.width / horizontalConstraint.componentWidth) * _hscroll.max;
+
+            _hscroll.syncValidation();    //avoid another pass
         } else {
             if (_hscroll != null) {
                 _hscroll.hidden = true;
@@ -454,62 +459,22 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         }
 
         if (verticalConstraint.componentHeight > usableSize.height) {
-            if (_vscroll != null) {
-                _vscroll.hidden = false;
-                _vscroll.max = verticalConstraint.componentHeight - usableSize.height;
-                _vscroll.pageSize = (usableSize.height / verticalConstraint.componentHeight) * _vscroll.max;
-            }
-        } else {
-            if (_vscroll != null) {
-                _vscroll.hidden = true;
-            }
-        }
-
-//        invalidateLayout();
-    }
-
-    private function checkHScroll() {
-        if (componentWidth <= 0 || horizontalConstraint == null) {
-            return;
-        }
-
-        if (horizontalConstraint.componentWidth > layout.usableWidth) {
-            if (_hscroll == null) {
-                _hscroll = new HScroll();
-                _hscroll.percentWidth = 100;
-                _hscroll.id = "scrollview-hscroll";
-                _hscroll.registerEvent(UIEvent.CHANGE, _onScroll);
-                addComponent(_hscroll);
-
-                _hscroll.syncValidation();    //sync the scroll to avoid another pass
-            }
-        } else {
-            if (_hscroll != null) {
-                removeComponent(_hscroll);
-                _hscroll = null;
-            }
-        }
-    }
-
-    private function checkVScroll() {
-        if (componentHeight <= 0 || verticalConstraint == null) {
-            return;
-        }
-
-        if (verticalConstraint.componentHeight > layout.usableHeight) {
             if (_vscroll == null) {
                 _vscroll = new VScroll();
                 _vscroll.percentHeight = 100;
                 _vscroll.id = "scrollview-vscroll";
                 _vscroll.registerEvent(UIEvent.CHANGE, _onScroll);
                 addComponent(_vscroll);
-
-                _vscroll.syncValidation();    //sync the scroll to avoid another pass
             }
+
+            _vscroll.hidden = false;
+            _vscroll.max = verticalConstraint.componentHeight - usableSize.height;
+            _vscroll.pageSize = (usableSize.height / verticalConstraint.componentHeight) * _vscroll.max;
+
+            _vscroll.syncValidation();    //avoid another pass
         } else {
-            if (_vscroll != null) { // TODO: bug in luxe backend
-                removeComponent(_vscroll);
-                _vscroll = null;
+            if (_vscroll != null) {
+                _vscroll.hidden = true;
             }
         }
     }
