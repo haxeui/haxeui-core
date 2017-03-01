@@ -9,7 +9,6 @@ import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.ItemRenderer;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.UIEvent;
-import haxe.ui.data.ArrayDataSource;
 import haxe.ui.data.DataSource;
 import haxe.ui.data.transformation.NativeTypeTransformer;
 
@@ -30,16 +29,9 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
         _contents.addClass("listview-contents");
     }
 
-    private override function onReady() {
-        super.onReady();
-        if (_itemRenderer == null) {
-            addComponent(new BasicItemRenderer());
-        }
-    }
-
     public override function addComponent(child:Component):Component {
         var r = null;
-        if (Std.is(child, ItemRenderer) && _itemRenderer == null) {
+        if (Std.is(child, ItemRenderer) && (_itemRenderer == null && _itemRendererFunction == null)) {
             _itemRenderer = cast(child, ItemRenderer);
             #if haxeui_luxe
             _itemRenderer.hide();
@@ -202,10 +194,8 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
             item.data = data;
         }
 
-        if (_dataSource.size < itemCount) {
-            while (_dataSource.size < itemCount) {
-                contents.removeComponent(contents.childComponents[contents.childComponents.length - 1]); // remove last
-            }
+        while (_dataSource.size < itemCount) {
+            contents.removeComponent(contents.childComponents[contents.childComponents.length - 1]); // remove last
         }
 
         unlockLayout();
@@ -216,6 +206,9 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
         if (_itemRendererFunction != null) {
             return _itemRendererFunction(data).newInstance();
         } else {
+            if (_itemRenderer == null) {
+                _itemRenderer = new BasicItemRenderer();
+            }
             return _itemRenderer.cloneComponent();
         }
     }
