@@ -3,7 +3,7 @@ package haxe.ui.components;
 class Column extends Button {
     public function new() {
         super();
-        addClass("button");
+        addClass("button", false);
     }
 
     public var sortable(get, set):Bool;
