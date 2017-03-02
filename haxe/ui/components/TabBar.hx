@@ -35,6 +35,16 @@ class TabBar extends Component implements IClonable<TabBar> {
     }
 
     //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+
+    private override function validateData() {
+        var event:UIEvent = new UIEvent(UIEvent.CHANGE);
+        event.target = this;
+        dispatch(event);
+    }
+
+    //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
     private var _selectedIndex:Int = -1;
@@ -46,13 +56,11 @@ class TabBar extends Component implements IClonable<TabBar> {
         return _selectedIndex;
     }
     private function set_selectedIndex(value:Int):Int {
-        if (value < 0) {
-            return value;
-        }
-        if (_selectedIndex == value) {
+        if (value < 0 || _selectedIndex == value) {
             return value;
         }
 
+        invalidateData();
         _selectedIndex = value;
 
         var button:Button = cast getComponentAt(_selectedIndex); // offset as 0 is background
@@ -63,10 +71,6 @@ class TabBar extends Component implements IClonable<TabBar> {
             _currentButton = button;
             _currentButton.addClass("tabbar-button-selected");
             invalidateLayout();
-
-            var event:UIEvent = new UIEvent(UIEvent.CHANGE);
-            event.target = this;
-            dispatch(event);
         }
         return value;
     }
