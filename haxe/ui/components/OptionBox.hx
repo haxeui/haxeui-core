@@ -41,13 +41,6 @@ class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
         _defaultLayout = new HorizontalLayout();
     }
 
-    private override function create() {
-        super.create();
-        behaviourSet("text", _text);
-        behaviourSet("group", _groupName);
-        behaviourSet("selected", selected);
-    }
-
     private override function createChildren() {
         if (_value == null) {
             _value = new OptionBoxValue();
@@ -85,8 +78,12 @@ class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
     }
 
     private override function set_text(value:String):String {
-        value = super.set_text(value);
-        behaviourSet("text", value);
+        if (_text == value) {
+            return value;
+        }
+
+        invalidateData();
+        _text = value;
         return value;
     }
 
@@ -98,6 +95,24 @@ class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
             _label.customStyle.fontSize = style.fontSize;
             _label.customStyle.cursor = style.cursor;
             _label.invalidateStyle();
+        }
+    }
+
+    //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+
+    private override function validateData() {
+        if (behaviourGet("text") != _text) {
+            behaviourSet("text", _text);
+        }
+
+        if (behaviourGet("selected") != _selected) {
+            behaviourSet("selected", _selected);
+        }
+
+        if (behaviourGet("group") != _groupName) {
+            behaviourSet("group", _groupName);
         }
     }
 
@@ -130,8 +145,8 @@ class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
             }
         }
 
+        invalidateData();
         _selected = value;
-        behaviourSet("selected", value);
 
         /*
         if (value == true) {
@@ -156,7 +171,7 @@ class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
     }
 
     private function get_selected():Bool {
-        return behaviourGet("selected");
+        return _selected;
     }
 
     private function toggleSelected():Bool {
@@ -180,8 +195,8 @@ class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
             }
         }
 
+        invalidateData();
         _groupName = value;
-        behaviourSet("group", value);
         var arr:Array<OptionBox> = _groups.get(value);
         if (arr == null) {
             arr = [];
@@ -261,8 +276,10 @@ class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
 @:dox(hide)
 @:access(haxe.ui.components.OptionBox)
 class OptionBoxDefaultTextBehaviour extends Behaviour {
+    private var _value:String;
+
     public override function set(value:Variant) {
-        if (value == null || value.isNull) {
+        if (value == null || value.isNull || value == _value) {
             return;
         }
 
@@ -280,12 +297,22 @@ class OptionBoxDefaultTextBehaviour extends Behaviour {
         }
         optionbox._label.text = value;
     }
+
+    public override function get():Variant {
+        return _value;
+    }
 }
 
 @:dox(hide)
 @:access(haxe.ui.components.OptionBox)
 class OptionBoxDefaultSelectedBehaviour extends Behaviour {
+    private var _value:Bool;
+
     public override function set(value:Variant) {
+        if (value == _value) {
+            return;
+        }
+
         var optionbox:OptionBox = cast _component;
         if (optionbox._value == null) {
             return;
@@ -299,8 +326,7 @@ class OptionBoxDefaultSelectedBehaviour extends Behaviour {
     }
 
     public override function get():Variant {
-        var optionbox:OptionBox = cast _component;
-        return optionbox._selected;
+        return _value;
     }
 }
 
