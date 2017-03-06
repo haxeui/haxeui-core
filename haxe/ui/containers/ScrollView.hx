@@ -64,6 +64,7 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         if (_scrollMode == ScrollMode.DRAG || _scrollMode == ScrollMode.INERTIAL) {
             registerEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
         }
+        createContentContainer();
     }
 
     private function createContentContainer() {

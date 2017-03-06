@@ -7,7 +7,7 @@ class BasicItemRenderer extends ItemRenderer {
     public function new() {
         super();
 
-        addClass("itemrenderer"); // TODO: shouldnt have to do this
+        addClass("itemrenderer", false); // TODO: shouldnt have to do this
         this.percentWidth = 100;
 
         var hbox:HBox = new HBox();
