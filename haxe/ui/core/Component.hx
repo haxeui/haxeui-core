@@ -1832,10 +1832,9 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             getTextInput().validate();
         }
 
-        //TODO
-        //if (hasImageDisplay()) {
-        //    getImageDisplay().validate();
-        //}
+        if (hasImageDisplay()) {
+            getImageDisplay().validate();
+        }
 
         if (positionInvalid) {
             validatePosition();
