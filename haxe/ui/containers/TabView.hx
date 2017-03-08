@@ -107,26 +107,9 @@ class TabView extends Component implements IClonable<TabView> {
             return value;
         }
 
+        invalidateData();
+        invalidateLayout();
         _pageIndex = value;
-
-        var view:Component = _views[_pageIndex];
-        if (view != null) {
-            if (_currentView != null) {
-                //_content.removeComponent(_currentView, false);
-                _currentView.hide();
-            }
-            if (_content.getComponentIndex(view) == -1) {
-                _content.addComponent(view);
-            } else {
-                view.show();
-            }
-
-            _currentView = view;
-
-            invalidateLayout();
-        }
-
-        dispatch(new UIEvent(UIEvent.CHANGE));
 
         return value;
     }
@@ -147,6 +130,29 @@ class TabView extends Component implements IClonable<TabView> {
             _tabs.removeAllComponents();
             _tabs.resetSelection();
         }
+    }
+
+    //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+
+    private override function validateData() {
+        var view:Component = _views[_pageIndex];
+        if (view != null) {
+            if (_currentView != null) {
+                //_content.removeComponent(_currentView, false);
+                _currentView.hide();
+            }
+            if (_content.getComponentIndex(view) == -1) {
+                _content.addComponent(view);
+            } else {
+                view.show();
+            }
+
+            _currentView = view;
+        }
+
+        dispatch(new UIEvent(UIEvent.CHANGE));
     }
     
     //***********************************************************************************************************
