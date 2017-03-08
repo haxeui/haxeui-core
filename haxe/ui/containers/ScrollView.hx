@@ -4,7 +4,6 @@ import haxe.ui.components.HScroll;
 import haxe.ui.components.VScroll;
 import haxe.ui.constants.ScrollMode;
 import haxe.ui.core.Component;
-import haxe.ui.core.IClonable;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.Platform;
 import haxe.ui.core.Screen;
@@ -17,7 +16,7 @@ import haxe.ui.util.Size;
 import haxe.ui.util.Timer;
 
 @:dox(icon = "/icons/ui-scroll-pane-both.png")
-class ScrollView extends Component implements IClonable<ScrollView> {
+class ScrollView extends Component {
     public var _contents:Box;
     private var _hscroll:HScroll;
     private var _vscroll:VScroll;

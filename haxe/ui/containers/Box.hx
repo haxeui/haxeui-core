@@ -1,6 +1,6 @@
 package haxe.ui.containers;
 
-import haxe.ui.core.IClonable;
+import haxe.ui.core.Component;
 import haxe.ui.layouts.DefaultLayout;
 
 /**
@@ -8,7 +8,7 @@ import haxe.ui.layouts.DefaultLayout;
  `haxe.ui.containers.TabView`
 **/
 @:dox(icon = "/icons/ui-panel.png")
-class Box extends haxe.ui.core.Component implements IClonable<Box> {
+class Box extends Component {
     public function new() {
         super();
         layout = new DefaultLayout();

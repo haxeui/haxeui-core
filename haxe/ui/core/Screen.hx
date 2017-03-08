@@ -49,7 +49,7 @@ class Screen extends ScreenBase {
 
     public override function addComponent(component:Component) {
         super.addComponent(component);
-        component.ready();
+        //component.ready();
         rootComponents.push(component);
         FocusManager.instance.pushView(component);
         component.registerEvent(UIEvent.RESIZE, _onRootComponentResize);    //refresh vh & vw

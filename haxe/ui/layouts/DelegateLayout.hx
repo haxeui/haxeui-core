@@ -35,6 +35,9 @@ class DelegateLayout extends DefaultLayout {
 }
 
 class DelegateLayoutSize {
+    public function new() {
+    }
+    
     public var component:Component;
     public var config:Map<String, String>;
 

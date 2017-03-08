@@ -5,7 +5,6 @@ import haxe.ui.components.VScroll;
 import haxe.ui.containers.TableView.TableViewRow;
 import haxe.ui.core.BasicItemRenderer;
 import haxe.ui.core.Component;
-import haxe.ui.core.IClonable;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.ItemRenderer;
 import haxe.ui.core.MouseEvent;
@@ -17,7 +16,7 @@ import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.util.Rectangle;
 import haxe.ui.util.Size;
 
-class TableView extends ScrollView implements IDataComponent implements IClonable<TableView> {
+class TableView extends ScrollView implements IDataComponent {
     private var _header:Header;
     private var _itemRenderers:Array<ItemRenderer> = [];
 

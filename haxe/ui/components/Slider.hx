@@ -4,7 +4,6 @@ import haxe.ui.animation.Animation;
 import haxe.ui.animation.AnimationManager;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
-import haxe.ui.core.IClonable;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.UIEvent;
@@ -14,7 +13,7 @@ import haxe.ui.util.Variant;
  Encapsulates shared functionality of both vertical and horizontal slider components
 **/
 @:dox(icon = "/icons/ui-slider-050.png")
-class Slider extends InteractiveComponent implements IClonable<Slider> {
+class Slider extends InteractiveComponent {
     private var _valueBackground:Component;
     private var _value:Component;
 
