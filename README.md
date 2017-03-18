@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://dl.dropboxusercontent.com/u/26678671/haxeui2-warning.png"/>
+  <img src="https://www.dropbox.com/s/qxxzgebmboaooye/haxeui2-warning.png?dl=0"/>
 </p>
 
 [![Build Status](https://travis-ci.org/haxeui/haxeui-core.svg?branch=master)](https://travis-ci.org/haxeui/haxeui-core)
