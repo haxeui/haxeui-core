@@ -282,6 +282,22 @@ class ScrollView extends Component {
         return value;
     }
 
+    private var __onScrollChange:ScrollEvent->Void;
+    /**
+     Utility property to add a single `ScrollEvent.CHANGE` event
+    **/
+    @:dox(group = "Event related properties and methods")
+    public var onScrollChange(null, set):UIEvent->Void;
+    private function set_onScrollChange(value:UIEvent->Void):UIEvent->Void {
+        if (__onScrollChange != null) {
+            unregisterEvent(ScrollEvent.CHANGE, __onScrollChange);
+            __onScrollChange = null;
+        }
+        registerEvent(ScrollEvent.CHANGE, value);
+        __onScrollChange = value;
+        return value;
+    }
+    
     // ********************************************************************************
     // Inertial and drag scroll functions
     // ********************************************************************************
@@ -545,6 +561,7 @@ class ScrollView extends Component {
     private function _onScroll(event:UIEvent) {
         updateScrollRect();
         handleBindings(["vscrollPos"]);
+        dispatch(new ScrollEvent(ScrollEvent.CHANGE));
     }
 
     public function updateScrollRect() {
