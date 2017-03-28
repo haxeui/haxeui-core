@@ -57,6 +57,12 @@ class DataSource<T> {
         return r;
     }
 
+    public function insert(item:T, index:Int):T {
+        var r = handleInsert(item, index);
+        handleChanged();
+        return r;
+    }
+
     public function remove(item:T):T {
         var r = handleRemoveItem(item);
         handleChanged();
@@ -91,6 +97,10 @@ class DataSource<T> {
     }
 
     private function handleAddItem(item:T):T {
+        return null;
+    }
+
+    private function handleInsert(item:T, index:Int):T {
         return null;
     }
 
