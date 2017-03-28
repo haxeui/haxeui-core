@@ -1759,13 +1759,19 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         return value;
     }
 
+    private var __onChange:UIEvent->Void;
     /**
      Utility property to add a single `UIEvent.CHANGE` event
     **/
     @:dox(group = "Event related properties and methods")
     public var onChange(null, set):UIEvent->Void;
     private function set_onChange(value:UIEvent->Void):UIEvent->Void {
+        if (__onChange != null) {
+            unregisterEvent(UIEvent.CHANGE, __onChange);
+            __onChange = null;
+        }
         registerEvent(UIEvent.CHANGE, value);
+        __onChange = value;
         return value;
     }
 
