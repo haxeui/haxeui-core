@@ -8,6 +8,7 @@ import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.ItemRenderer;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.UIEvent;
+import haxe.ui.data.ArrayDataSource;
 import haxe.ui.data.DataSource;
 import haxe.ui.data.transformation.NativeTypeTransformer;
 
