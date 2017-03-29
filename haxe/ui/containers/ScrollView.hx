@@ -1,5 +1,6 @@
 package haxe.ui.containers;
 
+import haxe.ui.core.Behaviour;
 import haxe.ui.core.ScrollEvent;
 import haxe.ui.components.HScroll;
 import haxe.ui.components.VScroll;
@@ -15,6 +16,7 @@ import haxe.ui.layouts.LayoutFactory;
 import haxe.ui.util.Rectangle;
 import haxe.ui.util.Size;
 import haxe.ui.util.Timer;
+import haxe.ui.util.Variant;
 
 @:dox(icon = "/icons/ui-scroll-pane-both.png")
 class ScrollView extends Component {
@@ -32,6 +34,10 @@ class ScrollView extends Component {
 
     private override function createDefaults() {
         super.createDefaults();
+        defaultBehaviours([
+            "vscrollPos" => new DefaultVScrollPosBehaviour(this),
+            "hscrollPos" => new DefaultHScrollPosBehaviour(this)
+        ]);
     }
 
     private override function create() {
@@ -104,32 +110,20 @@ class ScrollView extends Component {
 
     @bindable public var vscrollPos(get, set):Float;
     private function get_vscrollPos():Float {
-        if (_vscroll == null) {
-            return 0;
-        }
-        return _vscroll.pos;
+        return behaviourGet("vscrollPos");
     }
     private function set_vscrollPos(value:Float):Float {
-        if (_vscroll == null) {
-            return value;
-        }
-        _vscroll.pos = value;
+        behaviourSet("vscrollPos", value);
         handleBindings(["vscrollPos"]);
         return value;
     }
 
     @bindable public var hscrollPos(get, set):Float;
     private function get_hscrollPos():Float {
-        if (_hscroll == null) {
-            return 0;
-        }
-        return _hscroll.pos;
+        return behaviourGet("hscrollPos");
     }
     private function set_hscrollPos(value:Float):Float {
-        if (_hscroll == null) {
-            return value;
-        }
-        _hscroll.pos = value;
+        behaviourSet("hscrollPos", value);
         handleBindings(["hscrollPos"]);
         return value;
     }
@@ -595,6 +589,46 @@ class ScrollView extends Component {
     }
 }
 
+//***********************************************************************************************************
+// Default behaviours
+//***********************************************************************************************************
+class DefaultVScrollPosBehaviour extends Behaviour {
+    public override function get():Variant {
+        var vscroll:VScroll = _component.findComponent(VScroll);
+        if (vscroll == null) {
+            return 0;
+        }
+        return vscroll.pos;
+    }
+    
+    public override function set(value:Variant) {
+        var vscroll:VScroll = _component.findComponent(VScroll);
+        if (vscroll != null) {
+            vscroll.pos = value;
+        }
+    }
+}
+
+class DefaultHScrollPosBehaviour extends Behaviour {
+    public override function get():Variant {
+        var hscroll:HScroll = _component.findComponent(HScroll);
+        if (hscroll == null) {
+            return 0;
+        }
+        return hscroll.pos;
+    }
+    
+    public override function set(value:Variant) {
+        var hscroll:HScroll = _component.findComponent(HScroll);
+        if (hscroll != null) {
+            hscroll.pos = value;
+        }
+    }
+}
+
+//***********************************************************************************************************
+// Layout
+//***********************************************************************************************************
 @:dox(hide)
 class ScrollViewLayout extends DefaultLayout {
     public function new() {

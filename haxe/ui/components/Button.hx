@@ -357,6 +357,9 @@ class ButtonDefaultIconBehaviour extends Behaviour {
     }
 }
 
+//***********************************************************************************************************
+// Layout
+//***********************************************************************************************************
 @:dox(hide)
 class ButtonLayout extends DefaultLayout {
     public function new() {
