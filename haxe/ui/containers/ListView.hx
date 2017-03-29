@@ -29,6 +29,13 @@ class ListView extends ScrollView implements IDataComponent {
         _contents.addClass("listview-contents");
     }
 
+    private override function onReady() {
+        super.onReady();
+        if (_itemRenderer == null) {
+            addComponent(new BasicItemRenderer());
+        }
+    }
+    
     public override function addComponent(child:Component):Component {
         var r = null;
         if (Std.is(child, ItemRenderer) && (_itemRenderer == null && _itemRendererFunction == null)) {
