@@ -246,6 +246,7 @@ class ScrollView extends Component {
 
     private function _onMouseWheel(event:MouseEvent) {
         if (_vscroll != null) {
+            event.cancel();
             if (event.delta > 0) {
                 _vscroll.pos -= 50; // TODO: calculate this
                 //_vscroll.animatePos(_vscroll.pos - 50);
