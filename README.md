@@ -62,15 +62,18 @@ Once the toolkit has been initialised components can be added in one of two ways
 Using HaxeUI components in haxe code is simple and easy:
 
 ```haxe
-var main:VBox = new VBox();
+import haxe.ui.components.Button;
+import haxe.ui.containers.VBox;
 
-var button:Button = new Button();
-button.text = "Button 1";
+var main = new VBox();
+
+var button1 = new Button();
+button1.text = "Button 1";
 main.addComponent(button1);
 
-var button:Button = new Button();
-button.text = "Button 2";
-main.addComponent(button1);
+var button2 = new Button();
+button2.text = "Button 2";
+main.addComponent(button2);
 
 Screen.instance.addComponent(main);
 ```
