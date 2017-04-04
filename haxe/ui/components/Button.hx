@@ -263,7 +263,7 @@ class Button extends InteractiveComponent {
         }
 
         removeClass(":down");
-        if (hitTest(event.screenX, event.screenY)) {
+        if (event.touchEvent == false && hitTest(event.screenX, event.screenY)) {
             addClass(":hover");
         }
 
@@ -357,6 +357,9 @@ class ButtonDefaultIconBehaviour extends Behaviour {
     }
 }
 
+//***********************************************************************************************************
+// Layout
+//***********************************************************************************************************
 @:dox(hide)
 class ButtonLayout extends DefaultLayout {
     public function new() {

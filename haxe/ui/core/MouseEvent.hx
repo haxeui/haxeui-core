@@ -13,7 +13,8 @@ class MouseEvent extends UIEvent {
     public var screenY:Float;
     public var buttonDown:Bool;
     public var delta:Float;
-
+    public var touchEvent:Bool;
+    
     public function new(type:String) {
         super(type);
     }
@@ -26,6 +27,7 @@ class MouseEvent extends UIEvent {
         c.screenY = this.screenY;
         c.buttonDown = this.buttonDown;
         c.delta = this.delta;
+        c.touchEvent = this.touchEvent;
         postClone(c);
         return c;
     }
