@@ -28,13 +28,6 @@ class ListView extends ScrollView implements IDataComponent {
         _contents.percentWidth = 100;
         _contents.addClass("listview-contents");
     }
-
-    private override function onReady() {
-        super.onReady();
-        if (_itemRenderer == null) {
-            addComponent(new BasicItemRenderer());
-        }
-    }
     
     public override function addComponent(child:Component):Component {
         var r = null;
@@ -90,10 +83,6 @@ class ListView extends ScrollView implements IDataComponent {
     }
 
     public function addItem(data:Dynamic):ItemRenderer {
-        if (_itemRenderer == null && _itemRendererFunction == null) {
-            return null;
-        }
-
         var r = itemToRenderer(data);
         r.percentWidth = 100;
         var n = contents.childComponents.length;
