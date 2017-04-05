@@ -172,7 +172,7 @@ class ListView extends ScrollView implements IDataComponent {
     }
 
     private function syncUI() {
-        if ((_itemRenderer == null && _itemRendererFunction == null) || _dataSource == null) {
+        if (_dataSource == null) {
             return;
         }
 
