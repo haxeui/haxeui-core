@@ -120,7 +120,7 @@ class ListView extends ScrollView implements IDataComponent {
         if (_itemRendererFunction != value) {
             _itemRendererFunction = value;
 
-            syncUI();
+            invalidateData();
         }
 
         return value;
@@ -157,7 +157,7 @@ class ListView extends ScrollView implements IDataComponent {
         for (n in 0..._dataSource.size) {
             var data:Dynamic = _dataSource.get(n);
             var item:ItemRenderer = null;
-            if (n < itemCount) {
+            if (n < contents.childComponents.length) {
                 item = cast(contents.childComponents[n], ItemRenderer);
                 item.removeClass("even");
                 item.removeClass("odd");
@@ -177,7 +177,7 @@ class ListView extends ScrollView implements IDataComponent {
             item.data = data;
         }
 
-        while (_dataSource.size < itemCount) {
+        while (_dataSource.size < contents.childComponents.length) {
             contents.removeComponent(contents.childComponents[contents.childComponents.length - 1]); // remove last
         }
     }

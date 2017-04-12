@@ -484,7 +484,7 @@ class ScrollView extends Component {
                 _hscroll = new HScroll();
                 _hscroll.percentWidth = 100;
                 _hscroll.id = "scrollview-hscroll";
-                _hscroll.registerEvent(UIEvent.CHANGE, _onScroll);
+                _hscroll.registerEvent(UIEvent.CHANGE, _onHScroll);
                 addComponent(_hscroll);
             }
 
@@ -504,7 +504,7 @@ class ScrollView extends Component {
                 _vscroll = new VScroll();
                 _vscroll.percentHeight = 100;
                 _vscroll.id = "scrollview-vscroll";
-                _vscroll.registerEvent(UIEvent.CHANGE, _onScroll);
+                _vscroll.registerEvent(UIEvent.CHANGE, _onVScroll);
                 addComponent(_vscroll);
             }
 
@@ -520,8 +520,12 @@ class ScrollView extends Component {
         }
     }
 
-    private function _onScroll(event:UIEvent) {
-        invalidateScroll();
+    private function _onHScroll(event:UIEvent) {
+        hscrollPos = _hscroll.pos;
+    }
+
+    private function _onVScroll(event:UIEvent) {
+        vscrollPos = _vscroll.pos;
     }
 
     public function updateScrollRect() {
