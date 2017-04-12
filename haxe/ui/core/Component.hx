@@ -1892,6 +1892,8 @@ class Component extends ComponentBase implements IComponentBase implements IVali
 
             if (layoutValidationRequiredAgain == true) {
                 validateLayout();
+                if(validateAutoSize())  //TODO - Required in the KitchenSink example. Something is wrong with the autosize order in the first place if we need to do that twice. Revision required for performance.
+                    validateLayout();
             }
 
             if (layoutValidationRequiredAgain == true || displayInvalid) {
@@ -2051,7 +2053,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         if (_layout == null || _layoutLocked == true) {
             return;
         }
-
         invalidate(InvalidationFlags.LAYOUT);
     }
 
