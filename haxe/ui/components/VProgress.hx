@@ -1,14 +1,13 @@
 package haxe.ui.components;
 
 import haxe.ui.core.Component;
-import haxe.ui.core.IClonable;
 import haxe.ui.layouts.DefaultLayout;
 
 /**
  A vertical implementation of a `Progress`
 **/
 @:dox(icon = "/icons/ui-progress-bar-vertical.png")
-class VProgress extends Progress implements IClonable<VProgress> {
+class VProgress extends Progress {
     public function new() {
         super();
     }

@@ -1,8 +1,8 @@
 package haxe.ui.containers;
 
+import haxe.ui.core.ClassFactory;
 import haxe.ui.core.BasicItemRenderer;
 import haxe.ui.core.Component;
-import haxe.ui.core.IClonable;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.ItemRenderer;
@@ -12,7 +12,7 @@ import haxe.ui.data.ArrayDataSource;
 import haxe.ui.data.DataSource;
 import haxe.ui.data.transformation.NativeTypeTransformer;
 
-class ListView extends ScrollView implements IDataComponent implements IClonable<ListView> {
+class ListView extends ScrollView implements IDataComponent {
     private var _itemRenderer:ItemRenderer;
 
     public function new() {
@@ -29,16 +29,9 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
         _contents.addClass("listview-contents");
     }
 
-    private override function onReady() {
-        super.onReady();
-        if (_itemRenderer == null) {
-            addComponent(new BasicItemRenderer());
-        }
-    }
-
     public override function addComponent(child:Component):Component {
         var r = null;
-        if (Std.is(child, ItemRenderer) && _itemRenderer == null) {
+        if (Std.is(child, ItemRenderer) && (_itemRenderer == null && _itemRendererFunction == null)) {
             _itemRenderer = cast(child, ItemRenderer);
             #if haxeui_luxe
             _itemRenderer.hide();
@@ -90,11 +83,7 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
     }
 
     public function addItem(data:Dynamic):ItemRenderer {
-        if (_itemRenderer == null) {
-            return null;
-        }
-
-        var r = _itemRenderer.cloneComponent();
+        var r = itemToRenderer(data);
         r.percentWidth = 100;
         var n = contents.childComponents.length;
         var item:ItemRenderer = cast addComponent(r);
@@ -122,6 +111,21 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
         return itemHeight;
     }
 
+    private var _itemRendererFunction:ItemRendererFunction;
+    public var itemRendererFunction(get, set):ItemRendererFunction;
+    private function get_itemRendererFunction():ItemRendererFunction {
+        return _itemRendererFunction;
+    }
+    private function set_itemRendererFunction(value:ItemRendererFunction):ItemRendererFunction {
+        if (_itemRendererFunction != value) {
+            _itemRendererFunction = value;
+
+            syncUI();
+        }
+
+        return value;
+    }
+
     private var _dataSource:DataSource<Dynamic>;
     public var dataSource(get, set):DataSource<Dynamic>;
     private function get_dataSource():DataSource<Dynamic> {
@@ -146,27 +150,47 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
     }
 
     private function syncUI() {
-        if (_itemRenderer == null || _dataSource == null) {
+        if (_dataSource == null) {
             return;
         }
 
-        var contentItemCount:Int = contents.childComponents.length;
-        var delta = _dataSource.size - contentItemCount;
-        if (delta > 0) { // not enough items
-            for (n in 0...delta) {
-                addComponent(_itemRenderer.cloneComponent());
+        for (n in 0..._dataSource.size) {
+            var data:Dynamic = _dataSource.get(n);
+            var item:ItemRenderer = null;
+            if (n < itemCount) {
+                item = cast(contents.childComponents[n], ItemRenderer);
+                item.removeClass("even");
+                item.removeClass("odd");
+
+                if (_itemRendererFunction != null
+                    && !Std.is(item, _itemRendererFunction(data).generator)) {
+                    contents.removeComponent(item);
+                    item = cast addComponent(itemToRenderer(data));  //TODO - addComponentAt
+                    contents.setComponentIndex(item, n);
+                }
+            } else {
+                item = cast addComponent(itemToRenderer(data));      //TODO - addComponentAt
+                contents.setComponentIndex(item, n);
             }
-        } else if (delta < 0) { // too many items
-            while (delta < 0) {
-                contents.removeComponent(contents.childComponents[contents.childComponents.length - 1]); // remove last
-                delta++;
-            }
+
+            item.addClass(n % 2 == 0 ? "even" : "odd");
+            item.data = data;
         }
 
-        for (n in 0..._dataSource.size) {
-            var item:ItemRenderer = cast(contents.childComponents[n], ItemRenderer);
-            item.addClass(n % 2 == 0 ? "even" : "odd");
-            item.data = _dataSource.get(n);
+        while (_dataSource.size < itemCount) {
+            contents.removeComponent(contents.childComponents[contents.childComponents.length - 1]); // remove last
+        }
+    }
+
+    private function itemToRenderer(data:Dynamic):ItemRenderer
+    {
+        if (_itemRendererFunction != null) {
+            return _itemRendererFunction(data).newInstance();
+        } else {
+            if (_itemRenderer == null) {
+                _itemRenderer = new BasicItemRenderer();
+            }
+            return _itemRenderer.cloneComponent();
         }
     }
 
@@ -207,3 +231,5 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
         }
     }
 }
+
+typedef ItemRendererFunction = Dynamic->ClassFactory<ItemRenderer>;

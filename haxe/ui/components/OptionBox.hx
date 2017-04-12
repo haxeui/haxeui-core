@@ -2,7 +2,6 @@ package haxe.ui.components;
 
 import haxe.ds.StringMap;
 import haxe.ui.core.Behaviour;
-import haxe.ui.core.IClonable;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.UIEvent;
@@ -14,7 +13,7 @@ import haxe.ui.util.Variant;
  Optionbox component where only one option of a group may be selected at a single time
 **/
 @:dox(icon = "/icons/ui-radio-buttons.png")
-class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
+class OptionBox extends InteractiveComponent {
     private static var _groups:StringMap<Array<OptionBox>>;
 
     private var _value:OptionBoxValue;

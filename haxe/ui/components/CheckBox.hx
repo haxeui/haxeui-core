@@ -2,7 +2,6 @@ package haxe.ui.components;
 
 import haxe.ui.validation.InvalidationFlags;
 import haxe.ui.core.Behaviour;
-import haxe.ui.core.IClonable;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.UIEvent;
@@ -14,7 +13,7 @@ import haxe.ui.util.Variant;
  Checkbox component showing either a selected or unselected state including a text label
 **/
 @:dox(icon = "/icons/ui-check-boxes.png")
-class CheckBox extends InteractiveComponent implements IClonable<CheckBox> {
+class CheckBox extends InteractiveComponent {
     public function new() {
         super();
     }

@@ -4,6 +4,7 @@ import haxe.ui.backend.AppBase;
 import haxe.ui.core.Component;
 import haxe.ui.core.Screen;
 
+@:keep
 class HaxeUIApp extends AppBase {
     public function new() {
         super();

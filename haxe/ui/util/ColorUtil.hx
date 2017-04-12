@@ -41,19 +41,19 @@ class ColorUtil {
         return Std.parseInt("0xFF" + s);
     }
 
-    private static inline function color(r:Float, g:Float, b:Float):Int {
+    public static inline function color(r:Float, g:Float, b:Float):Int {
         return (Math.round(r) << 16) | (Math.round(g) << 8) | Math.round(b);
     }
 
-    private static inline function r(c:Int):Int {
+    public static inline function r(c:Int):Int {
         return c >> 16 & 0xFF;
     }
 
-    private static inline function g(c:Int):Int {
+    public static inline function g(c:Int):Int {
         return c >> 8 & 0xFF;
     }
 
-    private static inline function b(c:Int):Int {
+    public static inline function b(c:Int):Int {
         return c & 0xFF;
     }
 }

@@ -3,7 +3,7 @@ package haxe.ui.components;
 import haxe.ui.components.Label.LabelLayout;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
-import haxe.ui.core.IClonable;
+import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.TextDisplay;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.styles.Style;
@@ -15,7 +15,7 @@ import haxe.ui.validation.InvalidationFlags;
  A general purpose component to display text
 **/
 @:dox(icon = "/icons/ui-label.png")
-class Label extends Component implements IClonable<Label> {
+class Label extends Component {
     public function new() {
         super();
         #if (openfl && !flixel)
