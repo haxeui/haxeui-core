@@ -193,6 +193,7 @@ class DropDown extends Button implements IDataComponent {
                 if (n > _listview.itemCount) {
                     n = _listview.itemCount;
                 }
+                _listview.syncValidation();
                 listHeight = n * _listview.itemHeight + (_listview.layout.paddingTop + _listview.layout.paddingBottom);
             }
             _listview.height = listHeight;

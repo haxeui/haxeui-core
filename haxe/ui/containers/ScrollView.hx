@@ -254,11 +254,11 @@ class ScrollView extends Component {
     private override function validateInternal() {
         var scrollInvalid = isInvalid(InvalidationFlags.SCROLL);
 
+        super.validateInternal();
+
         if (scrollInvalid) {
             validateScroll();
         }
-
-        super.validateInternal();
     }
 
     private function validateScroll() {
