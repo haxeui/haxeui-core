@@ -149,7 +149,9 @@ class ListView extends ScrollView implements IDataComponent {
     private function set_dataSource(value:DataSource<Dynamic>):DataSource<Dynamic> {
         _dataSource = value;
         _dataSource.transformer = new NativeTypeTransformer();
-        syncUI();
+		if (_ready) {
+			syncUI();
+		}
         _dataSource.onChange = onDataSourceChanged;
         return value;
     }
