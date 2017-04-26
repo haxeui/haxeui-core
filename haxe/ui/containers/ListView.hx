@@ -62,11 +62,11 @@ class ListView extends ScrollView implements IDataComponent {
         }
         
         if (_currentSelection != null) {
-            _currentSelection.removeClass(":selected");
+            _currentSelection.removeClass(":selected", true, true);
         }
 
         _currentSelection = cast event.target;
-        _currentSelection.addClass(":selected");
+        _currentSelection.addClass(":selected", true, true);
         dispatch(new UIEvent(UIEvent.CHANGE));
     }
 
@@ -77,7 +77,7 @@ class ListView extends ScrollView implements IDataComponent {
 
     public function resetSelection() {
         if (_currentSelection != null) {
-            _currentSelection.removeClass(":selected");
+            _currentSelection.removeClass(":selected", true, true);
             _currentSelection = null;
         }
     }
