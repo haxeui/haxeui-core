@@ -13,8 +13,6 @@ import haxe.ui.data.DataSource;
 import haxe.ui.data.transformation.NativeTypeTransformer;
 
 class ListView extends ScrollView implements IDataComponent {
-    private var _itemRenderer:ItemRenderer;
-
     public function new() {
         super();
     }
@@ -137,6 +135,19 @@ class ListView extends ScrollView implements IDataComponent {
         return value;
     }
 
+    private var _itemRenderer:ItemRenderer;
+	public var itemRendererClass(get, set):Class<ItemRenderer>;
+	private function get_itemRendererClass():Class<ItemRenderer> {
+		return Type.getClass(_itemRenderer);
+	}
+	private function set_itemRendererClass(value:Class<ItemRenderer>):Class<ItemRenderer> {
+		_itemRenderer = Type.createInstance(value, []);
+		if (_ready) {
+			syncUI();
+		}
+		return value;
+	}
+	
     private var _dataSource:DataSource<Dynamic>;
     public var dataSource(get, set):DataSource<Dynamic>;
     private function get_dataSource():DataSource<Dynamic> {
