@@ -496,6 +496,9 @@ class Macros {
                 code += "if (customStyle." + name + " == value) return value;\n";
                 code += "customStyle." + name + " = value;\n";
                 code += "invalidateStyle();\n";
+                if (hasMeta(f, "relayout")) {
+                    code += "if (parentComponent != null) { parentComponent.invalidateLayout(); };";
+                }
             }
             code += "return value;\n";
             code += "}";
