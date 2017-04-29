@@ -204,20 +204,16 @@ class Macros {
             // add getter function
             if (hasMetaParam(getMeta(f, "style"), "writeonly") == false) {
                 var code = "function ():" + typeName + " {\n";
-                if (getClassNameFromType(Context.getLocalType()) != "haxe.ui.styles.Style") {
-                    var defaultValue:Dynamic = null;
-                    if (typeName == "Float" || typeName == "Int") {
-                        defaultValue = 0;
-                    } else if (typeName == "Bool") {
-                        defaultValue = false;
-                    }
-                    if (defaultValue != null || subType != null) {
-                        code += "if (style == null || style." + name + " == null) {\n return " + defaultValue + ";\n }\n";
-                    }
-                    code += "return style." + name + ";\n";
-                } else {
-                    code += "return " + f.name + ";\n";
+                var defaultValue:Dynamic = null;
+                if (typeName == "Float" || typeName == "Int") {
+                    defaultValue = 0;
+                } else if (typeName == "Bool") {
+                    defaultValue = false;
                 }
+                if (defaultValue != null || subType != null) {
+                    code += "if (style == null || style." + name + " == null) {\n return " + defaultValue + ";\n }\n";
+                }
+                code += "return style." + name + ";\n";
                 code += "}";
                 var fnGetter = switch (Context.parseInlineString(code, haxe.macro.Context.currentPos()) ).expr {
                     case EFunction(_, f): f;
@@ -236,17 +232,13 @@ class Macros {
             
             // add setter funtion
             var code = "function (value:" + typeName + "):" + typeName + " {\n";
-            if (getClassNameFromType(Context.getLocalType()) == "haxe.ui.styles.Style") {
-                code += "" + f.name + " = value;\n";
-            } else {
-                if (hasMetaParam(getMeta(f, "style"), "writeonly") == false) {
-                    code += "if (customStyle." + name + " == value) return value;\n";
-                }
-                code += "customStyle." + name + " = value;\n";
-                code += "invalidateStyle();\n";
-                if (hasMetaParam(getMeta(f, "style"), "relayout")) {
-                    code += "if (parentComponent != null) { parentComponent.invalidateLayout(); };";
-                }
+            if (hasMetaParam(getMeta(f, "style"), "writeonly") == false) {
+                code += "if (customStyle." + name + " == value) return value;\n";
+            }
+            code += "customStyle." + name + " = value;\n";
+            code += "invalidateStyle();\n";
+            if (hasMetaParam(getMeta(f, "style"), "relayout")) {
+                code += "if (parentComponent != null) { parentComponent.invalidateLayout(); };";
             }
             code += "return value;\n";
             code += "}";
