@@ -100,18 +100,7 @@ class TextField extends InteractiveComponent implements IFocusable {
             icon = style.icon;
         }
         if (hasTextInput() == true) {
-            if (style.color != null) {
-                getTextInput().color = style.color;
-            }
-            if (style.fontName != null) {
-                getTextInput().fontName = style.fontName;
-            }
-            if (style.fontSize != null) {
-                getTextInput().fontSize = style.fontSize;
-            }
-            if (style.textAlign != null) {
-                getTextInput().textAlign = style.textAlign;
-            }
+            getTextInput().applyStyle(style);
         }
     }
 
