@@ -185,52 +185,63 @@ class Macros {
             var params:Array<Expr> = [];
             params.push({expr: Context.parseInlineString('group="Style properties"', pos).expr, pos:pos});
             meta.push( { name: ":dox", pos: pos, params: params } );
+            
+            var kind = FProp("get", "set", type);
+            if (hasMetaParam(getMeta(f, "style"), "writeonly")) {
+                kind = FProp("null", "set", type);
+            }
+            
+
             fields.push({
                             name: name,
                             doc: null,
                             meta: meta,
                             access: [APublic],
-                            kind: FProp("get", "set", type),
+                            kind: kind,
                             pos: haxe.macro.Context.currentPos()
                         });
 
             // add getter function
-            var code = "function ():" + typeName + " {\n";
-            if (getClassNameFromType(Context.getLocalType()) != "haxe.ui.styles.Style") {
-                var defaultValue:Dynamic = null;
-                if (typeName == "Float" || typeName == "Int") {
-                    defaultValue = 0;
-                } else if (typeName == "Bool") {
-                    defaultValue = false;
+            if (hasMetaParam(getMeta(f, "style"), "writeonly") == false) {
+                var code = "function ():" + typeName + " {\n";
+                if (getClassNameFromType(Context.getLocalType()) != "haxe.ui.styles.Style") {
+                    var defaultValue:Dynamic = null;
+                    if (typeName == "Float" || typeName == "Int") {
+                        defaultValue = 0;
+                    } else if (typeName == "Bool") {
+                        defaultValue = false;
+                    }
+                    if (defaultValue != null || subType != null) {
+                        code += "if (style == null || style." + name + " == null) {\n return " + defaultValue + ";\n }\n";
+                    }
+                    code += "return style." + name + ";\n";
+                } else {
+                    code += "return " + f.name + ";\n";
                 }
-                if (defaultValue != null || subType != null) {
-                    code += "if (style == null || style." + name + " == null) {\n return " + defaultValue + ";\n }\n";
+                code += "}";
+                var fnGetter = switch (Context.parseInlineString(code, haxe.macro.Context.currentPos()) ).expr {
+                    case EFunction(_, f): f;
+                    case _: throw "false";
                 }
-                code += "return style." + name + ";\n";
-            } else {
-                code += "return " + f.name + ";\n";
-            }
-            code += "}";
-            var fnGetter = switch (Context.parseInlineString(code, haxe.macro.Context.currentPos()) ).expr {
-                case EFunction(_, f): f;
-                case _: throw "false";
-            }
-            fields.push({
-                            name: "get_" + name,
-                            doc: null,
-                            meta: [],
-                            access: [APrivate],
-                            kind: FFun(fnGetter),
-                            pos: haxe.macro.Context.currentPos()
+                fields.push({
+                                name: "get_" + name,
+                                doc: null,
+                                meta: [],
+                                access: [APrivate],
+                                kind: FFun(fnGetter),
+                                pos: haxe.macro.Context.currentPos()
 
-                        });
-
+                            });
+            }
+            
             // add setter funtion
             var code = "function (value:" + typeName + "):" + typeName + " {\n";
             if (getClassNameFromType(Context.getLocalType()) == "haxe.ui.styles.Style") {
                 code += "" + f.name + " = value;\n";
             } else {
-                code += "if (customStyle." + name + " == value) return value;\n";
+                if (hasMetaParam(getMeta(f, "style"), "writeonly") == false) {
+                    code += "if (customStyle." + name + " == value) return value;\n";
+                }
                 code += "customStyle." + name + " = value;\n";
                 code += "invalidateStyle();\n";
                 if (hasMetaParam(getMeta(f, "style"), "relayout")) {

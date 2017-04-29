@@ -1,4 +1,5 @@
 package haxe.ui.styles;
+
 import haxe.ui.util.Variant;
 import haxe.ui.util.MathUtil;
 
@@ -26,6 +27,11 @@ class Style {
     @style      public var paddingLeft:Variant;
     @style      public var paddingRight:Variant;
     @style      public var paddingBottom:Variant;
+    public var padding(null, set):Variant;
+    private function set_padding(value:Variant):Variant {
+        paddingTop = paddingLeft = paddingRight = paddingBottom = value;
+        return value;
+    }
 
     @style      public var marginTop:Variant;
     @style      public var marginLeft:Variant;
@@ -293,13 +299,6 @@ class Style {
         if (borderRightColor == MathUtil.MIN_INT) borderRightColor = null;
         if (filter != null && filter[0] == "none") filter = null;
         if (icon == "none") icon = null;
-    }
-
-    public function padding(v:Variant) {
-        this.paddingTop = v;
-        this.paddingLeft = v;
-        this.paddingRight = v;
-        this.paddingBottom = v;
     }
 
     public function margin(v:Variant) {
