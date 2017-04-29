@@ -496,7 +496,7 @@ class Macros {
                 code += "if (customStyle." + name + " == value) return value;\n";
                 code += "customStyle." + name + " = value;\n";
                 code += "invalidateStyle();\n";
-                if (hasMeta(f, "relayout")) {
+                if (hasMetaParam(getMeta(f, "style"), "relayout")) {
                     code += "if (parentComponent != null) { parentComponent.invalidateLayout(); };";
                 }
             }
@@ -574,16 +574,35 @@ class Macros {
     }
 
     private static function hasMeta(f:Field, meta:String):Bool {
-        var has:Bool = false;
+        return (getMeta(f, meta) != null);
+    }
+
+    private static function getMeta(f:Field, meta:String):MetadataEntry {
+        var entry:MetadataEntry = null;
         for (m in f.meta) {
             if (m.name == meta || m.name == ":" + meta) {
-                has = true;
+                entry = m;
                 break;
+            }
+        }
+        return entry;
+    }
+    
+    private static function hasMetaParam(meta:MetadataEntry, param:String):Bool {
+        var has:Bool = false;
+        for (p in meta.params) {
+            switch (p.expr) {
+                case EConst(CIdent(c)):
+                    if (c == param) {
+                        has = true;
+                        break;
+                    }
+                case _:
             }
         }
         return has;
     }
-
+    
     private static function hasInterface(t:haxe.macro.Type, interfaceRequired:String):Bool {
         var has:Bool = false;
         switch (t) {

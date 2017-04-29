@@ -1148,26 +1148,26 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     //***********************************************************************************************************
     // Styles
     //***********************************************************************************************************
-    @style              public var backgroundColor:Null<Int>;
-    @style              public var borderColor:Null<Int>;
-    @style              public var borderSize:Null<Float>;
-    @style              public var borderRadius:Null<Float>;
+    @:style             public var backgroundColor:Null<Int>;
+    @:style             public var borderColor:Null<Int>;
+    @:style             public var borderSize:Null<Float>;
+    @:style             public var borderRadius:Null<Float>;
 
-    @style              public var paddingLeft:Null<Float>;
-    @style              public var paddingRight:Null<Float>;
-    @style              public var paddingTop:Null<Float>;
-    @style              public var paddingBottom:Null<Float>;
+    @:style             public var paddingLeft:Null<Float>;
+    @:style             public var paddingRight:Null<Float>;
+    @:style             public var paddingTop:Null<Float>;
+    @:style             public var paddingBottom:Null<Float>;
 
-    @style              public var marginLeft:Null<Float>;
-    @style              public var marginRight:Null<Float>;
-    @style              public var marginTop:Null<Float>;
-    @style              public var marginBottom:Null<Float>;
-    @style              public var clip:Null<Bool>;
+    @:style             public var marginLeft:Null<Float>;
+    @:style             public var marginRight:Null<Float>;
+    @:style             public var marginTop:Null<Float>;
+    @:style             public var marginBottom:Null<Float>;
+    @:style             public var clip:Null<Bool>;
 
-    @style              public var opacity:Null<Float>;
+    @:style             public var opacity:Null<Float>;
 
-    @style @relayout    public var horizontalAlign:String;
-    @style @relayout    public var verticalAlign:String;
+    @:style(relayout)   public var horizontalAlign:String;
+    @:style(relayout)   public var verticalAlign:String;
     
     //***********************************************************************************************************
     // Size related
