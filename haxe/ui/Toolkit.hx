@@ -1,8 +1,6 @@
 package haxe.ui;
 
-import haxe.ui.components.Button;
-import haxe.ui.components.Image;
-import haxe.ui.components.TextField;
+import haxe.ui.containers.Box;
 import haxe.ui.core.Component;
 import haxe.ui.core.ComponentClassMap;
 import haxe.ui.core.IDataComponent;
@@ -139,13 +137,17 @@ class Toolkit {
         if (c.styleNames != null)       component.styleNames = c.styleNames;
         if (c.style != null)            component.styleString = c.style;
 
+        if (Std.is(component, Box)) {
+            var box:haxe.ui.containers.Box = cast(component, haxe.ui.containers.Box);
+            if (c.layoutName != null)               box.layoutName = c.layoutName;
+        }
+        
         if (Std.is(component, haxe.ui.containers.ScrollView)) { // special properties for scrollview and derived classes
             var scrollview:haxe.ui.containers.ScrollView = cast(component, haxe.ui.containers.ScrollView);
             if (c.contentWidth != null)             scrollview.contentWidth = c.contentWidth;
             if (c.contentHeight != null)            scrollview.contentHeight = c.contentHeight;
             if (c.percentContentWidth != null)      scrollview.percentContentWidth = c.percentContentWidth;
             if (c.percentContentHeight != null)     scrollview.percentContentHeight = c.percentContentHeight;
-            if (c.layoutName != null)               scrollview.layoutName = c.layoutName;
         }
 
         for (propName in c.properties.keys()) {
@@ -153,24 +155,13 @@ class Toolkit {
             if (StringTools.startsWith(propName, "on")) {
                 component.addScriptEvent(propName, propValue);
             } else {
-                if (Reflect.hasField(component, propName) == false) {
-                    if (Std.is(component, Image) && propName == "resource") {
-                        cast(component, Image).resource = propValue;
-                    } else if (Std.is(component, Button) && propName == "icon") {
-                        cast(component, Button).icon = propValue;
-                    } else if (Std.is(component, TextField) && propName == "password") {
-                        cast(component, TextField).password = propValue;
-                    }
-                    continue;
-                }
-
                 if (propValue == "true" || propValue == "yes" || propValue == "false" || propValue == "no") {
                     propValue = (propValue == "true" || propValue == "yes");
                 } else if (Std.parseInt(propValue) != null) {
                     propValue = Std.parseInt(propValue);
                 }
-
-                Reflect.setField(component, propName, propValue);
+                
+                Reflect.setProperty(component, propName, propValue);
             }
         }
 
