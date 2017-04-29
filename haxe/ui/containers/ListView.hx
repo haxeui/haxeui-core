@@ -68,20 +68,39 @@ class ListView extends ScrollView implements IDataComponent {
             }
         }
         
+        selectedItem = cast(event.target, ItemRenderer);
+    }
+
+    public var selectedIndex(get, set):Int;
+    private function get_selectedIndex():Int {
+        if (_currentSelection == null) {
+            return -1;
+        }
+        return contents.childComponents.indexOf(_currentSelection);
+    }
+    private function set_selectedIndex(value:Int):Int {
+        var item:ItemRenderer = cast(contents.childComponents[value], ItemRenderer);
+        selectedItem = item;
+        return value;
+    }
+    
+    public var selectedItem(get, set):ItemRenderer;
+    private function get_selectedItem():ItemRenderer {
+        return _currentSelection;
+    }
+    private function set_selectedItem(value:ItemRenderer):ItemRenderer {
         if (_currentSelection != null) {
             _currentSelection.removeClass(":selected");
         }
 
-        _currentSelection = cast event.target;
-        _currentSelection.addClass(":selected");
-        dispatch(new UIEvent(UIEvent.CHANGE));
+        _currentSelection = value;
+        if (_currentSelection != null) {
+            _currentSelection.addClass(":selected");
+            dispatch(new UIEvent(UIEvent.CHANGE));
+        }
+        return value;
     }
-
-    public var selectedItem(get, null):ItemRenderer;
-    private function get_selectedItem():ItemRenderer {
-        return _currentSelection;
-    }
-
+    
     public function resetSelection() {
         if (_currentSelection != null) {
             _currentSelection.removeClass(":selected");
