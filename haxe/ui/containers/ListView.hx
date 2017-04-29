@@ -13,8 +13,6 @@ import haxe.ui.data.DataSource;
 import haxe.ui.data.transformation.NativeTypeTransformer;
 
 class ListView extends ScrollView implements IDataComponent {
-    private var _itemRenderer:ItemRenderer;
-
     public function new() {
         super();
     }
@@ -27,13 +25,6 @@ class ListView extends ScrollView implements IDataComponent {
         super.createContentContainer();
         _contents.percentWidth = 100;
         _contents.addClass("listview-contents");
-    }
-
-    private override function onReady() {
-        super.onReady();
-        if (_itemRenderer == null) {
-            addComponent(new BasicItemRenderer());
-        }
     }
     
     public override function addComponent(child:Component):Component {
@@ -103,16 +94,12 @@ class ListView extends ScrollView implements IDataComponent {
     
     public function resetSelection() {
         if (_currentSelection != null) {
-            _currentSelection.removeClass(":selected");
+            _currentSelection.removeClass(":selected", true, true);
             _currentSelection = null;
         }
     }
 
     public function addItem(data:Dynamic):ItemRenderer {
-        if (_itemRenderer == null && _itemRendererFunction == null) {
-            return null;
-        }
-
         var r = itemToRenderer(data);
         r.percentWidth = 100;
         var n = contents.childComponents.length;
@@ -167,6 +154,19 @@ class ListView extends ScrollView implements IDataComponent {
         return value;
     }
 
+    private var _itemRenderer:ItemRenderer;
+	public var itemRendererClass(get, set):Class<ItemRenderer>;
+	private function get_itemRendererClass():Class<ItemRenderer> {
+		return Type.getClass(_itemRenderer);
+	}
+	private function set_itemRendererClass(value:Class<ItemRenderer>):Class<ItemRenderer> {
+		_itemRenderer = Type.createInstance(value, []);
+		if (_ready) {
+			syncUI();
+		}
+		return value;
+	}
+	
     private var _dataSource:DataSource<Dynamic>;
     public var dataSource(get, set):DataSource<Dynamic>;
     private function get_dataSource():DataSource<Dynamic> {
@@ -179,7 +179,9 @@ class ListView extends ScrollView implements IDataComponent {
     private function set_dataSource(value:DataSource<Dynamic>):DataSource<Dynamic> {
         _dataSource = value;
         _dataSource.transformer = new NativeTypeTransformer();
-        syncUI();
+		if (_ready) {
+			syncUI();
+		}
         _dataSource.onChange = onDataSourceChanged;
         return value;
     }
@@ -191,7 +193,7 @@ class ListView extends ScrollView implements IDataComponent {
     }
 
     private function syncUI() {
-        if ((_itemRenderer == null && _itemRendererFunction == null) || _dataSource == null) {
+        if (_dataSource == null) {
             return;
         }
 

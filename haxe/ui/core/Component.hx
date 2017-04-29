@@ -787,20 +787,26 @@ class Component extends ComponentBase implements IComponentBase implements IClon
      Adds a css style name to this component
     **/
     @:dox(group = "Style related properties and methods")
-    public function addClass(name:String, invalidate:Bool = true) {
+    public function addClass(name:String, invalidate:Bool = true, recursive:Bool = false) {
         if (classes.indexOf(name) == -1) {
             classes.push(name);
             if (invalidate == true) {
                 invalidateStyle();
             }
         }
+		
+		if (recursive == true) {
+			for (child in childComponents) {
+				child.addClass(name, invalidate, recursive);
+			}
+		}
     }
 
     /**
      Removes a css style name from this component
     **/
     @:dox(group = "Style related properties and methods")
-    public function removeClass(name:String, invalidate:Bool = true) {
+    public function removeClass(name:String, invalidate:Bool = true, recursive:Bool = false) {
         if (classes.indexOf(name) != -1) {
             classes.remove(name);
             if (invalidate == true) {
@@ -808,6 +814,11 @@ class Component extends ComponentBase implements IComponentBase implements IClon
             }
         }
 
+		if (recursive == true) {
+			for (child in childComponents) {
+				child.removeClass(name, invalidate, recursive);
+			}
+		}
     }
 
     /**
@@ -1155,7 +1166,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
 
     @style      public var opacity:Null<Float>;
 
-    public var horizontalAlign(get, set):String;
+    @clonable public var horizontalAlign(get, set):String;
     private function get_horizontalAlign():String {
         return customStyle.horizontalAlign;
     }
@@ -1168,7 +1179,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         return value;
     }
     
-    public var verticalAlign(get, set):String;
+    @clonable public var verticalAlign(get, set):String;
     private function get_verticalAlign():String {
         return customStyle.verticalAlign;
     }

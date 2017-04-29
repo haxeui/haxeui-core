@@ -115,7 +115,7 @@ class LabelDefaultTextBehaviour extends Behaviour {
         }
 
         var label:Label = cast _component;
-        label.getTextDisplay().text = value;
+        label.getTextDisplay().text = '${value}';
         label.invalidateDisplay();
     }
 }
