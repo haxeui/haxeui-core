@@ -2,6 +2,7 @@ package haxe.ui.containers;
 
 import haxe.ui.core.Component;
 import haxe.ui.layouts.DefaultLayout;
+import haxe.ui.layouts.LayoutFactory;
 
 /**
  Base `Layout` that allows a container to specify an `icon`. How that icon resource is used depends on subclasses, like
@@ -14,6 +15,22 @@ class Box extends Component {
         layout = new DefaultLayout();
     }
 
+
+    private var _layoutName:String;
+    public var layoutName(get, set):String;
+    private function get_layoutName():String {
+        return _layoutName;
+    }
+    private function set_layoutName(value:String):String {
+        if (_layoutName == value) {
+            return value;
+        }
+
+        _layoutName = value;
+        layout = LayoutFactory.createFromName(layoutName);
+        return value;
+    }
+    
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
