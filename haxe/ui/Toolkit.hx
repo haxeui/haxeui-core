@@ -81,7 +81,7 @@ class Toolkit {
         return componentFromString(data, null, new AssetResourceResolver(assetId));
     }
 
-    public static function componentFromString(data:String, type:String = null, resourceResolver:ResourceResolver = null):Component {
+    public static function componentFromString(data:String, type:String = null, resourceResolver:ResourceResolver = null, callback:Component->Void = null):Component {
         if (data == null || data.length == 0) {
             return null;
         }
@@ -99,7 +99,7 @@ class Toolkit {
         }
 
         var c:ComponentInfo = parser.parse(data, resourceResolver);
-        var component = buildComponentFromInfo(c);
+        var component = buildComponentFromInfo(c, callback);
 
         var fullScript = "";
         for (scriptString in c.scriptlets) {
@@ -111,7 +111,7 @@ class Toolkit {
         return component;
     }
 
-    private static function buildComponentFromInfo(c:ComponentInfo):Component {
+    private static function buildComponentFromInfo(c:ComponentInfo, callback:Component->Void):Component {
         if (c.condition != null && new ConditionEvaluator().evaluate(c.condition) == false) {
             return null;
         }
@@ -179,12 +179,16 @@ class Toolkit {
         }
 
         for (childInfo in c.children) {
-            var childComponent = buildComponentFromInfo(childInfo);
+            var childComponent = buildComponentFromInfo(childInfo, callback);
             if (childComponent != null) {
                 component.addComponent(childComponent);
             }
         }
 
+        if (callback != null) {
+            callback(component);
+        }
+        
         return component;
     }
 
