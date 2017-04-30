@@ -87,8 +87,12 @@ It is also possible for HaxeUI to take a user interface definition from a markup
 var main = ComponentMacros.buildComponent("assets/ui/demo/main.xml");
 Screen.instance.addComponent(main);
 ```
+If your xml isn't available at compile time you can use `Toolkit.componentFromString`:
 
-_Note: in the alpha release of haxeui-core there is currently no support for building a user interface from markup at runtime, however, this is **certainly** something that will be implemented._
+```haxe
+var main = Toolkit.componentFromString('<vbox><button text="Button" /></vbox>', "xml");
+Screen.instance.addComponent(main);
+```
 
 ## Additional resources
 * <a href="http://haxeui.github.io/haxeui-api/">haxeui-api</a> - The HaxeUI api docs.
