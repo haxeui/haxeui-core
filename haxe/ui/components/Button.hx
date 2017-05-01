@@ -137,51 +137,10 @@ class Button extends InteractiveComponent {
         return value;
     }
 
-    @:clonable public var iconPosition(get, set):String;
-    private function get_iconPosition():String {
-        return style.iconPosition;
-    }
-    private function set_iconPosition(value:String):String {
-        if (iconPosition == value) {
-            return value;
-        }
-
-        customStyle.iconPosition = value;
-        invalidateStyle();
-        invalidateLayout();
-        return value;
-    }
-
-    @:clonable public var fontSize(get, set):Float;
-    private function get_fontSize():Float {
-        return style.fontSize;
-    }
-    private function set_fontSize(value:Float):Float {
-        if (fontSize == value) {
-            return value;
-        }
-
-        customStyle.fontSize = value;
-        invalidateStyle();
-        invalidateLayout();
-        return value;
-    }
-
-    @:clonable public var textAlign(get, set):String;
-    private function get_textAlign():String {
-        return style.textAlign;
-    }
-    private function set_textAlign(value:String):String {
-        if (textAlign == value) {
-            return value;
-        }
-
-        customStyle.textAlign = value;
-        invalidateStyle();
-        invalidateLayout();
-        return value;
-    }
-
+    @:style(layout)   public var iconPosition:String;
+    @:style(layout)   public var fontSize:Float;
+    @:style(layout)   public var textAlign:String;
+    
     /**
      Whether this button should behave as a toggle button or not
     **/

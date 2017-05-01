@@ -237,6 +237,9 @@ class Macros {
             }
             code += "customStyle." + name + " = value;\n";
             code += "invalidateStyle();\n";
+            if (hasMetaParam(getMeta(f, "style"), "layout")) {
+                code += "invalidateLayout();\n";
+            }
             if (hasMetaParam(getMeta(f, "style"), "layoutparent")) {
                 code += "if (parentComponent != null) { parentComponent.invalidateLayout(); };";
             }
