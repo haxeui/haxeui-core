@@ -48,7 +48,25 @@ class ItemRenderer extends Component {
             var v = Reflect.field(_data, f);
             var c:Component = findComponent(f, null, true);
             if (c != null && v != null) {
-                c.value = Variant.fromDynamic(v);
+				if (Type.typeof(v) == TObject) {
+					for (propName in Reflect.fields(v)) {
+						var propValue:Dynamic = Reflect.field(v, propName);
+						
+						if (propValue == "true" || propValue == "yes" || propValue == "false" || propValue == "no") {
+							propValue = (propValue == "true" || propValue == "yes");
+						} else if (~/^[0-9]*$/i.match(propValue)) {
+							propValue = Std.parseInt(propValue);
+						}
+						
+						if (propName == "value") {
+							c.value = Variant.fromDynamic(propValue);
+						} else {
+							Reflect.setProperty(c, propName, propValue);
+						}
+					}
+				} else {
+					c.value = Variant.fromDynamic(v);
+				}
             }
         }
         return value;

@@ -94,7 +94,7 @@ class DropDown extends Button implements IDataComponent {
                 _selectedIndex = 0;
             }
 
-            if(_selectedIndex >= 0) {
+            if (_selectedIndex >= 0) {
                 text = _dataSource.get(_selectedIndex).value;
             }
         }

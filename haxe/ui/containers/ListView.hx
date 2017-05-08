@@ -13,8 +13,6 @@ import haxe.ui.data.DataSource;
 import haxe.ui.data.transformation.NativeTypeTransformer;
 
 class ListView extends ScrollView implements IDataComponent {
-    private var _itemRenderer:ItemRenderer;
-
     public function new() {
         super();
     }
@@ -27,6 +25,10 @@ class ListView extends ScrollView implements IDataComponent {
         super.createContentContainer();
         _contents.percentWidth = 100;
         _contents.addClass("listview-contents");
+    }
+    
+    private override function onReady() {
+        syncUI();
     }
     
     public override function addComponent(child:Component):Component {
@@ -61,23 +63,42 @@ class ListView extends ScrollView implements IDataComponent {
             }
         }
         
+        selectedItem = cast(event.target, ItemRenderer);
+    }
+
+    public var selectedIndex(get, set):Int;
+    private function get_selectedIndex():Int {
+        if (_currentSelection == null) {
+            return -1;
+        }
+        return contents.childComponents.indexOf(_currentSelection);
+    }
+    private function set_selectedIndex(value:Int):Int {
+        var item:ItemRenderer = cast(contents.childComponents[value], ItemRenderer);
+        selectedItem = item;
+        return value;
+    }
+    
+    public var selectedItem(get, set):ItemRenderer;
+    private function get_selectedItem():ItemRenderer {
+        return _currentSelection;
+    }
+    private function set_selectedItem(value:ItemRenderer):ItemRenderer {
         if (_currentSelection != null) {
             _currentSelection.removeClass(":selected");
         }
 
-        _currentSelection = cast event.target;
-        _currentSelection.addClass(":selected");
-        dispatch(new UIEvent(UIEvent.CHANGE));
+        _currentSelection = value;
+        if (_currentSelection != null) {
+            _currentSelection.addClass(":selected");
+            dispatch(new UIEvent(UIEvent.CHANGE));
+        }
+        return value;
     }
-
-    public var selectedItem(get, null):ItemRenderer;
-    private function get_selectedItem():ItemRenderer {
-        return _currentSelection;
-    }
-
+    
     public function resetSelection() {
         if (_currentSelection != null) {
-            _currentSelection.removeClass(":selected");
+            _currentSelection.removeClass(":selected", true, true);
             _currentSelection = null;
         }
     }
@@ -137,6 +158,19 @@ class ListView extends ScrollView implements IDataComponent {
         return value;
     }
 
+    private var _itemRenderer:ItemRenderer;
+	public var itemRendererClass(get, set):Class<ItemRenderer>;
+	private function get_itemRendererClass():Class<ItemRenderer> {
+		return Type.getClass(_itemRenderer);
+	}
+	private function set_itemRendererClass(value:Class<ItemRenderer>):Class<ItemRenderer> {
+		_itemRenderer = Type.createInstance(value, []);
+		if (_ready) {
+			syncUI();
+		}
+		return value;
+	}
+	
     private var _dataSource:DataSource<Dynamic>;
     public var dataSource(get, set):DataSource<Dynamic>;
     private function get_dataSource():DataSource<Dynamic> {
@@ -149,7 +183,9 @@ class ListView extends ScrollView implements IDataComponent {
     private function set_dataSource(value:DataSource<Dynamic>):DataSource<Dynamic> {
         _dataSource = value;
         _dataSource.transformer = new NativeTypeTransformer();
-        syncUI();
+		if (_ready) {
+			syncUI();
+		}
         _dataSource.onChange = onDataSourceChanged;
         return value;
     }

@@ -787,20 +787,26 @@ class Component extends ComponentBase implements IComponentBase implements IClon
      Adds a css style name to this component
     **/
     @:dox(group = "Style related properties and methods")
-    public function addClass(name:String, invalidate:Bool = true) {
+    public function addClass(name:String, invalidate:Bool = true, recursive:Bool = false) {
         if (classes.indexOf(name) == -1) {
             classes.push(name);
             if (invalidate == true) {
                 invalidateStyle();
             }
         }
+		
+		if (recursive == true) {
+			for (child in childComponents) {
+				child.addClass(name, invalidate, recursive);
+			}
+		}
     }
 
     /**
      Removes a css style name from this component
     **/
     @:dox(group = "Style related properties and methods")
-    public function removeClass(name:String, invalidate:Bool = true) {
+    public function removeClass(name:String, invalidate:Bool = true, recursive:Bool = false) {
         if (classes.indexOf(name) != -1) {
             classes.remove(name);
             if (invalidate == true) {
@@ -808,6 +814,11 @@ class Component extends ComponentBase implements IComponentBase implements IClon
             }
         }
 
+		if (recursive == true) {
+			for (child in childComponents) {
+				child.removeClass(name, invalidate, recursive);
+			}
+		}
     }
 
     /**
@@ -1137,49 +1148,27 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     //***********************************************************************************************************
     // Styles
     //***********************************************************************************************************
-    @style      public var backgroundColor:Null<Int>;
-    @style      public var borderColor:Null<Int>;
-    @style      public var borderSize:Null<Float>;
-    @style      public var borderRadius:Null<Float>;
+    @:style                 public var backgroundColor:Null<Int>;
+    @:style                 public var borderColor:Null<Int>;
+    @:style                 public var borderSize:Null<Float>;
+    @:style                 public var borderRadius:Null<Float>;
 
-    @style      public var paddingLeft:Null<Float>;
-    @style      public var paddingRight:Null<Float>;
-    @style      public var paddingTop:Null<Float>;
-    @style      public var paddingBottom:Null<Float>;
+    @:style(writeonly)      public var padding:Null<Float>;
+    @:style                 public var paddingLeft:Null<Float>;
+    @:style                 public var paddingRight:Null<Float>;
+    @:style                 public var paddingTop:Null<Float>;
+    @:style                 public var paddingBottom:Null<Float>;
 
-    @style      public var marginLeft:Null<Float>;
-    @style      public var marginRight:Null<Float>;
-    @style      public var marginTop:Null<Float>;
-    @style      public var marginBottom:Null<Float>;
-    @style      public var clip:Null<Bool>;
+    @:style                 public var marginLeft:Null<Float>;
+    @:style                 public var marginRight:Null<Float>;
+    @:style                 public var marginTop:Null<Float>;
+    @:style                 public var marginBottom:Null<Float>;
+    @:style                 public var clip:Null<Bool>;
 
-    @style      public var opacity:Null<Float>;
+    @:style                 public var opacity:Null<Float>;
 
-    public var horizontalAlign(get, set):String;
-    private function get_horizontalAlign():String {
-        return customStyle.horizontalAlign;
-    }
-    private function set_horizontalAlign(value:String):String {
-        customStyle.horizontalAlign = value;
-        invalidateStyle();
-        if (parentComponent != null) {
-            parentComponent.invalidateLayout();
-        }
-        return value;
-    }
-    
-    public var verticalAlign(get, set):String;
-    private function get_verticalAlign():String {
-        return customStyle.verticalAlign;
-    }
-    private function set_verticalAlign(value:String):String {
-        customStyle.verticalAlign = value;
-        invalidateStyle();
-        if (parentComponent != null) {
-            parentComponent.invalidateLayout();
-        }
-        return value;
-    }
+    @:style(layoutparent)   public var horizontalAlign:String;
+    @:style(layoutparent)   public var verticalAlign:String;
     
     //***********************************************************************************************************
     // Size related
