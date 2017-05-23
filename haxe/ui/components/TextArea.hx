@@ -50,6 +50,9 @@ class TextArea extends InteractiveComponent implements IFocusable {
     }
 
     private var _wrap:Bool;
+    /**
+     Whether to wrap the text or not. If set to false, an horizontal scroll bar will be shown.
+    **/
     @:clonable public var wrap(get, set):Bool;
     private function get_wrap():Bool {
         return behaviourGet("wrap");
@@ -58,12 +61,30 @@ class TextArea extends InteractiveComponent implements IFocusable {
         if (value == _wrap) {
             return value;
         }
-        
-        _wrap = value;        
+
+        _wrap = value;
         behaviourSet("wrap", value);
         return value;
     }
-    
+
+    /**
+     Whether to use this text area as a readonly area.
+    **/
+    private var _readOnly:Bool;
+    @:clonable public var readOnly(get, set):Bool;
+    private function get_readOnly():Bool {
+        return behaviourGet("readOnly");
+    }
+    private function set_readOnly(value:Bool):Bool {
+        if (value == _readOnly) {
+            return value;
+        }
+
+        _readOnly = value;
+        behaviourSet("readOnly", value);
+        return value;
+    }
+
     //***********************************************************************************************************
     // Overrides
     //***********************************************************************************************************
@@ -98,7 +119,8 @@ class TextArea extends InteractiveComponent implements IFocusable {
         defaultBehaviours([
             "text" => new TextAreaDefaultTextBehaviour(this),
             "placeholder" => new TextAreaDefaultPlaceholderBehaviour(this),
-            "wrap" => new TextAreaDefaultWrapBehaviour(this)
+            "wrap" => new TextAreaDefaultWrapBehaviour(this),
+            "readOnly" => new TextAreaDefaultReadOnlyBehaviour(this)
         ]);
         _defaultLayout = new TextAreaLayout();
     }
@@ -119,7 +141,7 @@ class TextArea extends InteractiveComponent implements IFocusable {
         if (componentHeight == 0) {
             componentHeight = 100;
         }
-        
+
         getTextInput().multiline = true;
 
         registerEvent(MouseEvent.MOUSE_WHEEL, _onMouseWheel);
@@ -171,7 +193,7 @@ class TextArea extends InteractiveComponent implements IFocusable {
                 _hscroll.hide();
             }
         }
-        
+
         if (getTextInput().textHeight > getTextInput().height) {
             if (_vscroll == null) {
                 _vscroll = new VScroll();
@@ -279,7 +301,7 @@ class TextAreaDefaultPlaceholderBehaviour extends Behaviour {
         textArea._placeholder = value;
         textArea._validateText();
     }
-    
+
     public override function get():Variant {
         var textArea:TextArea = cast _component;
         return textArea._placeholder;
@@ -294,10 +316,24 @@ class TextAreaDefaultWrapBehaviour extends Behaviour {
         textArea.getTextInput().wordWrap = value;
         textArea.checkScrolls();
     }
-    
+
     public override function get():Variant {
         var textArea:TextArea = cast _component;
         return textArea.getTextInput().wordWrap;
+    }
+}
+
+@:dox(hide)
+@:access(haxe.ui.components.TextArea)
+class TextAreaDefaultReadOnlyBehaviour extends Behaviour {
+    public override function set(value:Variant) {
+        var textArea:TextArea = cast _component;
+        textArea.getTextInput().readOnly = value;
+    }
+
+    public override function get():Variant {
+        var textArea:TextArea = cast _component;
+        return textArea.getTextInput().readOnly;
     }
 }
 
@@ -340,11 +376,11 @@ class TextAreaLayout extends DefaultLayout {
         if (hscroll != null && hidden(hscroll) == false) {
             hscroll.width = usableSize.width;
         }
-        
+
         if (vscroll != null && hidden(vscroll) == false) {
             vscroll.height = usableSize.height;
         }
-        
+
         if (component.hasTextInput() == true) {
             var size:Size = usableSize;
             #if !pixijs
@@ -369,7 +405,7 @@ class TextAreaLayout extends DefaultLayout {
 
         return size;
     }
-    
+
     /*
     public override function calcAutoSize(exclusions:Array<Component> = null):Size {
         var hscroll:Component = component.findComponent("textarea-hscroll");
