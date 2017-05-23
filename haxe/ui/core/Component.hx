@@ -1311,7 +1311,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
             return false;
         }
 
-        if (left > sx && left < sx + cx && top > sy && top < sy + cy) {
+        if (left >= sx && left < sx + cx && top >= sy && top < sy + cy) {
             b = true;
         }
 
