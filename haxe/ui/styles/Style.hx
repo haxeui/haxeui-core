@@ -1,5 +1,6 @@
 package haxe.ui.styles;
 
+import haxe.ui.util.Color;
 import haxe.ui.util.Variant;
 import haxe.ui.util.MathUtil;
 
@@ -33,10 +34,10 @@ class Style {
     public var marginRight:Variant;
     public var marginBottom:Variant;
 
-    public var color:Null<Int>;
+    public var color:Null<Color>;
 
-    public var backgroundColor:Null<Int>;
-    public var backgroundColorEnd:Null<Int>;
+    public var backgroundColor:Null<Color>;
+    public var backgroundColorEnd:Null<Color>;
     public var backgroundGradientStyle:Null<String>;
     public var backgroundOpacity:Null<Float>;
 
@@ -53,11 +54,11 @@ class Style {
     public var backgroundImageSliceBottom:Variant;
     public var backgroundImageSliceRight:Variant;
 
-    public var borderColor:Null<Int>;
-    public var borderTopColor:Null<Int>;
-    public var borderLeftColor:Null<Int>;
-    public var borderBottomColor:Null<Int>;
-    public var borderRightColor:Null<Int>;
+    public var borderColor:Null<Color>;
+    public var borderTopColor:Null<Color>;
+    public var borderLeftColor:Null<Color>;
+    public var borderBottomColor:Null<Color>;
+    public var borderRightColor:Null<Color>;
     public var borderSize:Variant;
     public var borderTopSize:Variant;
     public var borderLeftSize:Variant;

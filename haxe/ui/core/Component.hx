@@ -9,6 +9,7 @@ import haxe.ui.scripting.ScriptInterp;
 import haxe.ui.styles.Parser;
 import haxe.ui.styles.Style;
 import haxe.ui.util.CallStackHelper;
+import haxe.ui.util.Color;
 import haxe.ui.util.EventMap;
 import haxe.ui.util.FunctionArray;
 import haxe.ui.util.Rectangle;
@@ -1148,8 +1149,9 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     //***********************************************************************************************************
     // Styles
     //***********************************************************************************************************
-    @:style                 public var backgroundColor:Null<Int>;
-    @:style                 public var borderColor:Null<Int>;
+    @:style                 public var color:Null<Color>;
+    @:style                 public var backgroundColor:Null<Color>;
+    @:style                 public var borderColor:Null<Color>;
     @:style                 public var borderSize:Null<Float>;
     @:style                 public var borderRadius:Null<Float>;
 
