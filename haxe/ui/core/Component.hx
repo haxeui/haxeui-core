@@ -64,8 +64,12 @@ class Component extends ComponentBase implements IComponentBase implements IClon
             var css = Type.getClassName(c);
             var className:String = css.split(".").pop().toLowerCase();
             addClass(className, false);
+            if (className == "component") {
+                break;
+            }
             c = Type.getSuperClass(c);
         }        
+        invalidateStyle();
 
         // we dont want to actually apply the classes, just find out if native is there or not
         var s = Toolkit.styleSheet.applyClasses(this, false);
