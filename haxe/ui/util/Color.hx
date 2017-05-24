@@ -29,4 +29,8 @@ abstract Color(Int) from Int {
     @:to function toInt():Int {
         return this;
     }
+    
+    @:op(A | B) static inline function or(a:Color, b:Color):Int {
+        return a.toInt() | b.toInt();
+    }
 }
