@@ -59,9 +59,13 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         #end
         addClass(Backend.id);
 
-        var parts:Array<String> = Type.getClassName(Type.getClass(this)).split(".");
-        var className:String = parts[parts.length - 1].toLowerCase();
-        addClass(className, false);
+        var c:Class<Dynamic> = Type.getClass(this);
+        while (c != null) {
+            var css = Type.getClassName(c);
+            var className:String = css.split(".").pop().toLowerCase();
+            addClass(className, false);
+            c = Type.getSuperClass(c);
+        }        
 
         // we dont want to actually apply the classes, just find out if native is there or not
         var s = Toolkit.styleSheet.applyClasses(this, false);

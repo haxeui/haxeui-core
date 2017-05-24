@@ -23,7 +23,6 @@ class Slider extends InteractiveComponent {
     public function new() {
         super();
         allowFocus = false;
-        addClass("slider");
         _behaviourUpdateOrder = ["min", "max", "pos"];
     }
 
