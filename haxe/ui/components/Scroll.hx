@@ -18,7 +18,6 @@ class Scroll extends InteractiveComponent {
 
     public function new() {
         super();
-        addClass("scroll");
         allowFocus = false;
     }
 

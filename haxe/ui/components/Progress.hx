@@ -17,8 +17,6 @@ class Progress extends InteractiveComponent {
     public function new() {
         super();
         allowFocus = false;
-        addClass("progress");
-
     }
 
     //***********************************************************************************************************

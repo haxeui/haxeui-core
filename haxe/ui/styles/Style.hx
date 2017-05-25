@@ -1,5 +1,6 @@
 package haxe.ui.styles;
 
+import haxe.ui.util.Color;
 import haxe.ui.util.Variant;
 import haxe.ui.util.MathUtil;
 

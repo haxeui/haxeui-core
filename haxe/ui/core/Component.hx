@@ -9,6 +9,7 @@ import haxe.ui.scripting.ScriptInterp;
 import haxe.ui.styles.Parser;
 import haxe.ui.styles.Style;
 import haxe.ui.util.CallStackHelper;
+import haxe.ui.util.Color;
 import haxe.ui.util.EventMap;
 import haxe.ui.util.FunctionArray;
 import haxe.ui.util.Rectangle;
@@ -58,9 +59,17 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         #end
         addClass(Backend.id);
 
-        var parts:Array<String> = Type.getClassName(Type.getClass(this)).split(".");
-        var className:String = parts[parts.length - 1].toLowerCase();
-        addClass(className, false);
+        var c:Class<Dynamic> = Type.getClass(this);
+        while (c != null) {
+            var css = Type.getClassName(c);
+            var className:String = css.split(".").pop().toLowerCase();
+            addClass(className, false);
+            if (className == "component") {
+                break;
+            }
+            c = Type.getSuperClass(c);
+        }        
+        invalidateStyle();
 
         // we dont want to actually apply the classes, just find out if native is there or not
         var s = Toolkit.styleSheet.applyClasses(this, false);
@@ -1148,8 +1157,9 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     //***********************************************************************************************************
     // Styles
     //***********************************************************************************************************
-    @:style                 public var backgroundColor:Null<Int>;
-    @:style                 public var borderColor:Null<Int>;
+    @:style                 public var color:Null<Color>;
+    @:style                 public var backgroundColor:Null<Color>;
+    @:style                 public var borderColor:Null<Color>;
     @:style                 public var borderSize:Null<Float>;
     @:style                 public var borderRadius:Null<Float>;
 
@@ -1311,7 +1321,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
             return false;
         }
 
-        if (left > sx && left < sx + cx && top > sy && top < sy + cy) {
+        if (left >= sx && left < sx + cx && top >= sy && top < sy + cy) {
             b = true;
         }
 
