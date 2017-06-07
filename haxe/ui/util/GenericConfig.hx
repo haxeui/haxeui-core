@@ -4,6 +4,8 @@ class GenericConfig {
     public var values:Map<String, String>;
     public var sections:Map<String, Array<GenericConfig>>;
 
+    public static var cache:Map<String, String> = new Map<String, String>();
+    
     public function new() {
         values = new Map<String, String>();
         sections = new Map<String, Array<GenericConfig>>();
@@ -54,6 +56,10 @@ class GenericConfig {
     }
 
     public function query(q:String, defaultValue:String = null):String {
+        if (cache.exists(q)) {
+            return cache.get(q);
+        }
+        
         var regexp:EReg = new EReg("\\.(?![^\\[]*\\])", "g");
         var final:Array<String> = regexp.split(q);
         var ref:GenericConfig = this;
@@ -77,6 +83,7 @@ class GenericConfig {
              }
 
             if (ref == null) {
+                cache.set(q, defaultValue);
                 return defaultValue;
             }
         }
@@ -85,6 +92,7 @@ class GenericConfig {
             value = defaultValue;
         }
 
+        cache.set(q, value);
         return value;
     }
 
