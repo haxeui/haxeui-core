@@ -17,8 +17,12 @@ class TreeItemRenderer extends ItemRenderer {
         vbox.percentWidth = 100;
         button.percentWidth = 100;
         button.onClick = function (e:UIEvent) {
-            if (list.hidden) { list.show(); }
-            else { list.hide(); }
+            if (list.hidden) {
+                list.show();
+            }
+            else {
+                list.hide();
+            }
         }
 
         list.id = "value";
