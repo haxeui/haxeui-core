@@ -6,6 +6,7 @@ import haxe.ui.core.Component;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.ItemRenderer;
+import haxe.ui.core.TreeItemRenderer;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.UIEvent;
 import haxe.ui.data.ArrayDataSource;
@@ -26,11 +27,11 @@ class ListView extends ScrollView implements IDataComponent {
         _contents.percentWidth = 100;
         _contents.addClass("listview-contents");
     }
-    
+
     private override function onReady() {
         syncUI();
     }
-    
+
     public override function addComponent(child:Component):Component {
         var r = null;
         if (Std.is(child, ItemRenderer) && (_itemRenderer == null && _itemRendererFunction == null)) {
@@ -52,17 +53,16 @@ class ListView extends ScrollView implements IDataComponent {
 
     private var _currentSelection:ItemRenderer;
     private function onItemClick(event:MouseEvent) {
-        if (event.target == _currentSelection) {
+        if (event.target == _currentSelection || Std.is(event.target, TreeItemRenderer)) {
             return;
         }
-
         var arr = event.target.findComponentsUnderPoint(event.screenX, event.screenY);
         for (a in arr) {
             if (Std.is(a, InteractiveComponent)) {
                 return;
             }
         }
-        
+
         selectedItem = cast(event.target, ItemRenderer);
     }
 
@@ -78,7 +78,7 @@ class ListView extends ScrollView implements IDataComponent {
         selectedItem = item;
         return value;
     }
-    
+
     public var selectedItem(get, set):ItemRenderer;
     private function get_selectedItem():ItemRenderer {
         return _currentSelection;
@@ -86,8 +86,16 @@ class ListView extends ScrollView implements IDataComponent {
     private function set_selectedItem(value:ItemRenderer):ItemRenderer {
         if (_currentSelection != null) {
             _currentSelection.removeClass(":selected");
+            if (Std.is(_currentSelection, TreeItemRenderer)) {
+				var tree:TreeItemRenderer = cast _currentSelection;
+				tree.list.selectedItem = null;
+			}
         }
-
+		if (value != null && parentComponent != null && Std.is(parentComponent.parentComponent, TreeItemRenderer)) {
+			var list:ListView = cast parentComponent.parentComponent.parentComponent.parentComponent;
+			list.selectedItem = null;
+			list.selectedItem = cast parentComponent.parentComponent;
+		}
         _currentSelection = value;
         if (_currentSelection != null) {
             _currentSelection.addClass(":selected");
@@ -95,7 +103,7 @@ class ListView extends ScrollView implements IDataComponent {
         }
         return value;
     }
-    
+
     public function resetSelection() {
         if (_currentSelection != null) {
             _currentSelection.removeClass(":selected", true, true);
@@ -159,18 +167,18 @@ class ListView extends ScrollView implements IDataComponent {
     }
 
     private var _itemRenderer:ItemRenderer;
-	public var itemRendererClass(get, set):Class<ItemRenderer>;
-	private function get_itemRendererClass():Class<ItemRenderer> {
-		return Type.getClass(_itemRenderer);
-	}
-	private function set_itemRendererClass(value:Class<ItemRenderer>):Class<ItemRenderer> {
-		_itemRenderer = Type.createInstance(value, []);
-		if (_ready) {
-			syncUI();
-		}
-		return value;
-	}
-	
+    public var itemRendererClass(get, set):Class<ItemRenderer>;
+    private function get_itemRendererClass():Class<ItemRenderer> {
+        return Type.getClass(_itemRenderer);
+    }
+    private function set_itemRendererClass(value:Class<ItemRenderer>):Class<ItemRenderer> {
+        _itemRenderer = Type.createInstance(value, []);
+        if (_ready) {
+            syncUI();
+        }
+        return value;
+    }
+
     private var _dataSource:DataSource<Dynamic>;
     public var dataSource(get, set):DataSource<Dynamic>;
     private function get_dataSource():DataSource<Dynamic> {
@@ -183,9 +191,9 @@ class ListView extends ScrollView implements IDataComponent {
     private function set_dataSource(value:DataSource<Dynamic>):DataSource<Dynamic> {
         _dataSource = value;
         _dataSource.transformer = new NativeTypeTransformer();
-		if (_ready) {
-			syncUI();
-		}
+        if (_ready) {
+            syncUI();
+        }
         _dataSource.onChange = onDataSourceChanged;
         return value;
     }
