@@ -94,7 +94,7 @@ class TabView extends Component {
             for (view in _views) {
                 if (view.matchesSearch(criteria, type, searchType)) {
                     return cast view;
-			 } else {
+                } else {
                     match = view.findComponent(criteria, type, recursive, searchType);
                 }
                 if (match != null) {
