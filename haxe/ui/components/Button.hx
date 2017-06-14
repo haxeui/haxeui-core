@@ -138,7 +138,7 @@ class Button extends InteractiveComponent {
     }
 
     @:style(layout)   public var iconPosition:String;
-//    @:style(layout)   public var fontSize:Float;
+    @:style(layout)   public var fontSize:Null<Float>;
     @:style(layout)   public var textAlign:String;
     
     /**
