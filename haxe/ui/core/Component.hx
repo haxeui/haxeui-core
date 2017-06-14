@@ -1970,17 +1970,17 @@ class Component extends ComponentBase implements IComponentBase implements IClon
 
     private function getNativeConfigProperty(query:String, defaultValue:String = null):String {
         query = 'component[id=${className}]${query}';
-        return Toolkit.nativeConfig.query(query, defaultValue);
+        return Toolkit.nativeConfig.query(query, defaultValue, this);
     }
 
     private function getNativeConfigPropertyBool(query:String, defaultValue:Bool = false):Bool {
         query = 'component[id=${className}]${query}';
-        return Toolkit.nativeConfig.queryBool(query, defaultValue);
+        return Toolkit.nativeConfig.queryBool(query, defaultValue, this);
     }
 
     private function getNativeConfigProperties(query:String = ""):Map<String, String> {
         query = 'component[id=${className}]${query}';
-        return Toolkit.nativeConfig.queryValues(query);
+        return Toolkit.nativeConfig.queryValues(query, this);
     }
 
     public var className(get, null):String;
