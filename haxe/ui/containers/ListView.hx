@@ -1,5 +1,6 @@
 package haxe.ui.containers;
 
+import haxe.ui.core.Behaviour;
 import haxe.ui.core.ClassFactory;
 import haxe.ui.core.BasicItemRenderer;
 import haxe.ui.core.Component;
@@ -11,12 +12,21 @@ import haxe.ui.core.UIEvent;
 import haxe.ui.data.ArrayDataSource;
 import haxe.ui.data.DataSource;
 import haxe.ui.data.transformation.NativeTypeTransformer;
+import haxe.ui.util.Variant;
 
 class ListView extends ScrollView implements IDataComponent {
     public function new() {
         super();
     }
 
+    private override function createDefaults() {
+        super.createDefaults();
+        defaultBehaviours([
+            "dataSource" => new ListViewDefaultDataSourceBehaviour(this)
+        ]);
+    }
+
+    
     private override function createChildren() {
         super.createChildren();
     }
@@ -28,6 +38,7 @@ class ListView extends ScrollView implements IDataComponent {
     }
     
     private override function onReady() {
+        super.onReady();
         syncUI();
     }
     
@@ -176,17 +187,21 @@ class ListView extends ScrollView implements IDataComponent {
     private function get_dataSource():DataSource<Dynamic> {
         if (_dataSource == null) {
             _dataSource = new ArrayDataSource(new NativeTypeTransformer());
-            _dataSource.onChange = onDataSourceChanged;
+            //_dataSource.onChange = onDataSourceChanged;
+            behaviourGet("dataSource");
         }
         return _dataSource;
     }
     private function set_dataSource(value:DataSource<Dynamic>):DataSource<Dynamic> {
         _dataSource = value;
         _dataSource.transformer = new NativeTypeTransformer();
+        /*
 		if (_ready) {
 			syncUI();
 		}
         _dataSource.onChange = onDataSourceChanged;
+        */
+        behaviourSet("dataSource", value);
         return value;
     }
 
@@ -256,3 +271,25 @@ class ListView extends ScrollView implements IDataComponent {
 }
 
 typedef ItemRendererFunction = Dynamic->ClassFactory<ItemRenderer>;
+
+//***********************************************************************************************************
+// Default behaviours
+//***********************************************************************************************************
+
+@:dox(hide)
+@:access(haxe.ui.containers.ListView)
+class ListViewDefaultDataSourceBehaviour extends Behaviour {
+    public override function get():Variant {
+        var listView:ListView = cast(_component, ListView);
+        listView._dataSource.onChange = listView.onDataSourceChanged;
+        return listView._dataSource;
+    }
+    
+    public override function set(value:Variant) {
+        var listView:ListView = cast(_component, ListView);
+		if (listView._ready) {
+			listView.syncUI();
+		}
+        listView._dataSource.onChange = listView.onDataSourceChanged;
+    }
+}
