@@ -1,5 +1,6 @@
 package haxe.ui.core;
 
+import haxe.ui.components.Image;
 import haxe.ui.components.Label;
 import haxe.ui.containers.HBox;
 
@@ -11,6 +12,10 @@ class BasicItemRenderer extends ItemRenderer {
 
         var hbox:HBox = new HBox();
         hbox.percentWidth = 100;
+
+        var icon:Image = new Image();
+        icon.id = "icon";
+        hbox.addComponent(icon);
 
         var label:Label = new Label();
         label.id = "value";

@@ -109,9 +109,13 @@ class Component extends ComponentBase implements IComponentBase implements IClon
 
     }
 
+    private var _hasNativeEntry:Null<Bool>;
     private var hasNativeEntry(get, null):Bool;
     private function get_hasNativeEntry():Bool {
-        return getNativeConfigProperty(".@id") != null;
+        if (_hasNativeEntry == null) {
+            _hasNativeEntry = (getNativeConfigProperty(".@id") != null);
+        }
+        return _hasNativeEntry;
     }
 
     private var _defaultLayout:Layout;
@@ -218,6 +222,9 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     **/
     public var native(get, set):Null<Bool>;
     private function get_native():Null<Bool> {
+        if (_native == null) {
+            return false;
+        }
         if (hasNativeEntry == false) {
             return false;
         }
@@ -1963,17 +1970,17 @@ class Component extends ComponentBase implements IComponentBase implements IClon
 
     private function getNativeConfigProperty(query:String, defaultValue:String = null):String {
         query = 'component[id=${className}]${query}';
-        return Toolkit.nativeConfig.query(query, defaultValue);
+        return Toolkit.nativeConfig.query(query, defaultValue, this);
     }
 
     private function getNativeConfigPropertyBool(query:String, defaultValue:Bool = false):Bool {
         query = 'component[id=${className}]${query}';
-        return Toolkit.nativeConfig.queryBool(query, defaultValue);
+        return Toolkit.nativeConfig.queryBool(query, defaultValue, this);
     }
 
     private function getNativeConfigProperties(query:String = ""):Map<String, String> {
         query = 'component[id=${className}]${query}';
-        return Toolkit.nativeConfig.queryValues(query);
+        return Toolkit.nativeConfig.queryValues(query, this);
     }
 
     public var className(get, null):String;
