@@ -21,6 +21,8 @@ class Layout implements ILayout {
 
     @:access(haxe.ui.core.Component)
     public function refresh() {
+        trace('Layout::refresh - ${component.id}, autoWidth: ${component.autoWidth}, autoHeight: ${component.autoHeight}, layoutDirty: ${component.layoutDirty}, childrenLayedOut: ${component.childrenLayedOut} - ${Type.getClassName(Type.getClass(_component))}');
+        /*
         if (_component != null && _component.isReady == true) {
 
             resizeChildren();
@@ -42,6 +44,84 @@ class Layout implements ILayout {
                 component.resizeComponent(calculatedWidth, calculatedHeight);
             }
         }
+        */
+        
+        if (component.layoutDirty == false) {
+            trace('    skipping, layout not dirty');
+            return;
+        }
+
+        if (component.childrenLayedOut == false) {
+            trace('    skipping, children not layed out');
+            return;
+        }
+        
+        
+        var calculatedWidth:Null<Float> = null;
+        var calculatedHeight:Null<Float> = null;
+        
+        if (component.autoWidth == true || component.autoHeight == true) {
+            var size:Size = calcAutoSize();
+            if (component.autoWidth == true) {
+                calculatedWidth = size.width;
+            }
+            if (component.autoHeight == true) {
+                calculatedHeight = size.height;
+            }
+        }
+
+        if (component.percentWidth != null) {
+            if (component.parentComponent.percentWidth == null) {
+                var ucx = component.parentComponent.layout.usableSize.width;
+                calculatedWidth = (ucx * component.percentWidth) / 100;
+            }
+        }
+        
+        if (component.percentHeight != null) {
+            if (component.parentComponent.percentHeight == null) {
+                var ucy = component.parentComponent.layout.usableSize.height;
+                calculatedHeight = (ucy * component.percentHeight) / 100;
+            }
+        }
+        
+        if (component.autoWidth == false && component.percentWidth == null) {
+            calculatedWidth = component.width;
+        }
+        if (component.autoHeight == false && component.percentHeight == null) {
+            calculatedHeight = component.height;
+        }
+        
+        component.layoutDirty = false;
+        //if (component.parentComponent != null && (component.parentComponent.autoWidth == true || component.parentComponent.autoHeight == true)) {
+        if (component.parentComponent != null) {
+            component.parentComponent.layoutDirty = true;
+        }
+        if (calculatedWidth != component._componentWidth || calculatedHeight != component._componentHeight) {
+            //component.resize(calculatedWidth, calculatedHeight);
+        }
+        component.resizeComponent(calculatedWidth, calculatedHeight);
+        
+        //repositionChildren();
+        
+        for (child in component.childComponents) {
+            var ucx = component.layout.usableSize.width;// component.width - component.padding * 2 - ((component.children.length - 1) * component.spacing);
+            var ucy = component.layout.usableSize.height;// component.height - component.padding * 2;// - ((component.children.length - 1) * component.spacing);
+            calculatedWidth = null;
+            calculatedHeight = null;
+            if (child.percentWidth != null) {
+                calculatedWidth = (ucx * child.percentWidth) / 100;
+            }
+            if (child.percentHeight != null) {
+                calculatedHeight = (ucy * child.percentHeight) / 100;
+            }
+            
+            child.resizeComponent(calculatedWidth, calculatedHeight);
+            child.layout.repositionChildren();
+        }
+        
+        repositionChildren();
+        
+        trace('calculatedWidth: ${calculatedWidth}, calculatedWidth: ${calculatedHeight}');
     }
 
     public function autoSize():Bool {

@@ -1113,6 +1113,11 @@ class Component extends ComponentBase implements IComponentBase implements IClon
      _Note_: this is called internally by the framework
     **/
     public function ready() {
+        _ready = true;
+        invalidateStyle();
+        invalidateLayout();
+        
+        /*
         if (_ready == false) {
             invalidateStyle(false);
 
@@ -1144,6 +1149,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
             onReady();
             dispatch(new UIEvent(UIEvent.READY));
         }
+        */
     }
 
     private function onReady() {
@@ -1225,6 +1231,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     **/
     @:dox(group = "Size related properties and methods")
     public function resizeComponent(width:Null<Float>, height:Null<Float>) {
+        /*
         var invalidate:Bool = false;
         if (width != null && _componentWidth != width) {
             _componentWidth = width;
@@ -1249,6 +1256,50 @@ class Component extends ComponentBase implements IComponentBase implements IClon
             onResized();
             dispatch(new UIEvent(UIEvent.RESIZE));
         }
+        */
+        
+        trace('Component:resize - ${id}, width: ${width}, height: ${height}');
+        var invalidate = false;
+        if (width != null) {
+            _componentWidth = width;
+            //invalidate = true;
+        }
+        if (height != null) {
+            _componentHeight = height;
+            //invalidate = true;
+        }
+        
+        if (_componentWidth != null && _componentHeight != null) {
+            invalidate = true;
+        }
+        
+        //invalidate = true;
+        if (invalidate == true) {
+            //layoutDirty = false;
+            invalidateDisplay();
+            //invalidateLayout();
+        
+        /*    
+        if (resizeRefreshStats.exists(id) == false) {
+            resizeRefreshStats.set(id, 0);
+        }
+        resizeRefreshStats.set(id, resizeRefreshStats.get(id) + 1);
+          */
+        
+            /*
+            if (parentComponent != null && parentComponent.layoutDirty == true) {
+                trace('    refreshing parent layout');
+                parentComponent.invalidateLayout();
+            }
+            */
+        }
+        
+        if (parentComponent != null && parentComponent.layoutDirty == true) {
+            trace('    refreshing parent layout');
+            parentComponent.invalidateLayout();
+        }
+        
+        
     }
 
     /**
@@ -1350,7 +1401,9 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         return _componentWidth;
     }
     private function set_componentWidth(value:Null<Float>):Null<Float> {
-        resizeComponent(value, null);
+        _componentWidth = value;
+        //resizeComponent(value, null);
+        invalidateLayout();
         return value;
     }
 
@@ -1369,7 +1422,9 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         return _componentHeight;
     }
     private function set_componentHeight(value:Null<Float>):Null<Float> {
-        resizeComponent(null, value);
+        //resizeComponent(null, value);
+        _componentHeight = value;
+        invalidateLayout();
         return value;
     }
 
@@ -1784,13 +1839,30 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     //***********************************************************************************************************
     // Invalidation
     //***********************************************************************************************************
+    public var childrenLayedOut(get, null):Bool;
+    private function get_childrenLayedOut():Bool {
+        var layedOut = true;
+        if (_children != null) {
+            for (child in _children) {
+                if (child.layoutDirty == true) {
+                    layedOut = false;
+                    break;
+                }
+            }
+        }
+        return layedOut;
+    }
+    
+
     private var _layoutInvalidating:Bool = false;
     private var _layoutReinvalidation:Bool = false;
     /**
      Invalidate this components layout, may result in multiple calls to `invalidateDisplay` and `invalidateLayout` of its children
     **/
+     public var layoutDirty:Bool = true;
     @:dox(group = "Invalidation related properties and methods")
     public function invalidateLayout() {
+        /*
         if (_ready == false || _layout == null) {
             return;
         }
@@ -1812,6 +1884,13 @@ class Component extends ComponentBase implements IComponentBase implements IClon
             _layoutReinvalidation = false;
             invalidateLayout();
         }
+        */
+        if (isReady == false) {
+            return;
+        }
+        layoutDirty = true;
+        layout.refresh();
+        
     }
 
     private var _displayingInvalidating:Bool = false;
@@ -1820,6 +1899,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     **/
     @:dox(group = "Invalidation related properties and methods")
     public function invalidateDisplay() {
+        /*
         if (_ready == false) {
             return;
         }
@@ -1837,6 +1917,13 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         handleSize(componentWidth, componentHeight, _style);
 
         _displayingInvalidating = false;
+        */
+        if (_ready == false) {
+            return;
+        }
+        
+        trace("invlalidate display: " + componentWidth + ", " + componentHeight);
+        handleSize(componentWidth, componentHeight, _style);
     }
 
     /**
