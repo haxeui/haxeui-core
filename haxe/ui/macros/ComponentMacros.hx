@@ -149,6 +149,10 @@ class ComponentMacros {
         }
         add(macro var $componentVarName = new $typePath());
 
+        for (child in c.children) {
+            buildComponentCode(code, child, id + 1, namedComponents);
+        }
+
         if (c.id != null)                       assign("id", c.id);
         if (c.left != null)                     assign("left", c.left);
         if (c.top != null)                      assign("top", c.top);
@@ -193,10 +197,6 @@ class ComponentMacros {
 
         if (c.id != null && namedComponents != null) {
             namedComponents.set(c.id, className);
-        }
-
-        for (child in c.children) {
-            buildComponentCode(code, child, id + 1, namedComponents);
         }
 
         if (id != 0) {

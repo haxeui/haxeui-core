@@ -80,7 +80,7 @@ abstract Variant(VariantType) from VariantType {
         return Float(s);
     }
 
-    @:to function toFloat():Null<Float> {
+    @:to public function toFloat():Null<Float> {
         if (isNull) {
             return null;
         }

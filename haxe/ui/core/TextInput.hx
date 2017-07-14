@@ -32,9 +32,7 @@ class TextInput extends TextInputBase {
             return value;
         }
 
-        if (value.color != null) {
-            color = value.color;
-        }
+        applyStyle(value);
 
         return value;
     }

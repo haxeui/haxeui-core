@@ -44,7 +44,6 @@ Currently, HaxeUI supports the following `backends`. Please refer to each `backe
 | <a href="https://github.com/haxeui/haxeui-nme">haxeui-nme</a> | `NME` | <img src="http://haxeui.org/db/mobile.png" title="Mobile"> <img src="http://haxeui.org/db/desktop.png" title="Desktop"> <img src="http://haxeui.org/db/browser.png" title="Browser"> | <img src="http://haxeui.org/db/cross.png"> | [![Build Status](https://travis-ci.org/haxeui/haxeui-nme.svg?branch=master)](https://travis-ci.org/haxeui/haxeui-nme) |
 | <a href="https://github.com/haxeui/haxeui-luxe">haxeui-luxe</a> | `luxe` | <img src="http://haxeui.org/db/mobile.png" title="Mobile"> <img src="http://haxeui.org/db/desktop.png" title="Desktop"> <img src="http://haxeui.org/db/browser.png" title="Browser"> | <img src="http://haxeui.org/db/cross.png"> | [![Build Status](https://travis-ci.org/haxeui/haxeui-luxe.svg?branch=master)](https://travis-ci.org/haxeui/haxeui-luxe) |
 | <a href="https://github.com/haxeui/haxeui-hxwidgets">haxeui-hxwidgets</a> | `hxWidgets` / `wxWidgets` | <img src="http://haxeui.org/db/desktop.png" title="Desktop"> | <img src="http://haxeui.org/db/tick.png"> | [![Build Status](https://travis-ci.org/haxeui/haxeui-hxwidgets.svg?branch=master)](https://travis-ci.org/haxeui/haxeui-hxwidgets) |
-| <a href="https://github.com/haxeui/haxeui-xwt">haxeui-xwt</a> | `Xwt` | <img src="http://haxeui.org/db/desktop.png" title="Desktop"> | <img src="http://haxeui.org/db/tick.png"> | [![Build Status](https://travis-ci.org/haxeui/haxeui-xwt.svg?branch=master)](https://travis-ci.org/haxeui/haxeui-xwt) [![Build status](https://ci.appveyor.com/api/projects/status/2phv2o2wg8md1ygo/branch/master?svg=true)](https://ci.appveyor.com/project/ibilon/haxeui-xwt/branch/master) |
 
 
 ## Usage
@@ -87,8 +86,12 @@ It is also possible for HaxeUI to take a user interface definition from a markup
 var main = ComponentMacros.buildComponent("assets/ui/demo/main.xml");
 Screen.instance.addComponent(main);
 ```
+If your xml isn't available at compile time you can use `Toolkit.componentFromString`:
 
-_Note: in the alpha release of haxeui-core there is currently no support for building a user interface from markup at runtime, however, this is **certainly** something that will be implemented._
+```haxe
+var main = Toolkit.componentFromString('<vbox><button text="Button" /></vbox>', "xml");
+Screen.instance.addComponent(main);
+```
 
 ## Additional resources
 * <a href="http://haxeui.github.io/haxeui-api/">haxeui-api</a> - The HaxeUI api docs.

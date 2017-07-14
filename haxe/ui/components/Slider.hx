@@ -23,7 +23,6 @@ class Slider extends InteractiveComponent {
     public function new() {
         super();
         allowFocus = false;
-        addClass("slider");
         _behaviourUpdateOrder = ["min", "max", "pos"];
     }
 
@@ -242,6 +241,8 @@ class Slider extends InteractiveComponent {
 
             _rangeStart = value;
             invalidateLayout();
+            var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
+            dispatch(changeEvent);
             handleBindings(["value"]);
         }
 
@@ -284,6 +285,8 @@ class Slider extends InteractiveComponent {
         if (value != _rangeEnd) {
             _rangeEnd = value;
             invalidateLayout();
+            var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
+            dispatch(changeEvent);
             handleBindings(["value"]);
         }
         return value;

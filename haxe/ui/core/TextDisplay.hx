@@ -31,9 +31,7 @@ class TextDisplay extends TextDisplayBase {
             return value;
         }
 
-        if (value.color != null) {
-            color = value.color;
-        }
+        applyStyle(value);
 
         return value;
     }

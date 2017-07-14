@@ -23,7 +23,6 @@ class TableView extends ScrollView implements IDataComponent {
 
     public function new() {
         super();
-        addClass("scrollview", false);
     }
 
     private override function createDefaults() {
