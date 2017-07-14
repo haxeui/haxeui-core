@@ -18,7 +18,6 @@ class TextInput extends TextInputBase {
         _isAllInvalid = true;
     }
 
-    private var _textStyle:Style;
     /**
      The style to use for this text
     **/
@@ -32,8 +31,8 @@ class TextInput extends TextInputBase {
             return value;
         }
 
-        applyStyle(value);
-
+        invalidate(InvalidationFlags.STYLE);
+        _textStyle = value;
         return value;
     }
 
@@ -146,64 +145,6 @@ class TextInput extends TextInputBase {
             validate();
         }
         return _textHeight;
-    }
-
-    public var color(get, set):Int;
-    private function get_color():Int {
-        return _color;
-    }
-    private function set_color(value:Int):Int {
-        if (_color == value) {
-            return value;
-        }
-
-        invalidate(InvalidationFlags.STYLE);
-        _color = value;
-        return value;
-    }
-
-    private static var ADDED_FONTS:Map<String, String> = new Map<String, String>();
-
-    public var fontName(get, set):String;
-    private function get_fontName():String {
-        return _fontName;
-    }
-    private function set_fontName(value:String):String {
-        if (_fontName == value) {
-            return value;
-        }
-
-        invalidate(InvalidationFlags.STYLE);
-        _fontName = value;
-        return value;
-    }
-
-    public var fontSize(get, set):Null<Float>;
-    private function get_fontSize():Null<Float> {
-        return _fontSize;
-    }
-    private function set_fontSize(value:Null<Float>):Null<Float> {
-        if (_fontSize == value) {
-            return value;
-        }
-
-        invalidate(InvalidationFlags.STYLE);
-        _fontSize = value;
-        return value;
-    }
-
-    public var textAlign(get, set):Null<String>;
-    private function get_textAlign():Null<String> {
-        return _textAlign;
-    }
-    private function set_textAlign(value:Null<String>):Null<String> {
-        if (_textAlign == value) {
-            return value;
-        }
-
-        invalidate(InvalidationFlags.STYLE);
-        _textAlign = value;
-        return value;
     }
 
     public var multiline(get, set):Bool;

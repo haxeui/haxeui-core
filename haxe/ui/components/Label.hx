@@ -56,7 +56,7 @@ class Label extends Component {
     private override function applyStyle(style:Style) {
         super.applyStyle(style);
         if (hasTextDisplay() == true) {
-            getTextDisplay().applyStyle(style);
+            getTextDisplay().textStyle = style;
         }
     }
 

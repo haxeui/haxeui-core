@@ -125,7 +125,7 @@ class TextArea extends InteractiveComponent implements IFocusable {
     private override function applyStyle(style:Style) {
         super.applyStyle(style);
         if (hasTextInput() == true) {
-            getTextInput().applyStyle(style);
+            getTextInput().textStyle = style;
         }
     }
 
