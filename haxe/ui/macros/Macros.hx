@@ -210,9 +210,7 @@ class Macros {
                 } else if (typeName == "Bool") {
                     defaultValue = false;
                 }
-                if (defaultValue != null || subType != null) {
-                    code += "if (style == null || style." + name + " == null) {\n return " + defaultValue + ";\n }\n";
-                }
+                code += "if (style == null || style." + name + " == null) {\n return " + defaultValue + ";\n }\n";
                 code += "return style." + name + ";\n";
                 code += "}";
                 var fnGetter = switch (Context.parseInlineString(code, haxe.macro.Context.currentPos()) ).expr {
