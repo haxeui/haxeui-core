@@ -241,7 +241,6 @@ class ListView extends ScrollView implements IDataComponent {
 
     private override function validateData() {
         behaviourSet("dataSource", _dataSource);
-        syncUI();
     }
 
     private override function validateLayout() {
