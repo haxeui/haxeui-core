@@ -287,6 +287,7 @@ class ImageDefaultResourceBehaviour extends Behaviour {
                                 image.parentComponent.invalidateLayout();
                             }
                             image.validateLayout();
+                            display.validate();
                         }
                     }
                 });
