@@ -1882,36 +1882,30 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
 
         if (layoutInvalid) {
-            validateLayout();
-        }
-
-        if (displayInvalid || styleInvalid || layoutInvalid) {
             var oldComponentWidth = _componentWidth;
             var oldComponentHeight = _componentHeight;
-            var layoutValidationRequiredAgain = false;
 
-            if (layoutInvalid || styleInvalid) {
-                layoutValidationRequiredAgain = validateAutoSize();
+            validateLayout();
+
+            //TODO - Required. Something is wrong with the autosize order in the first place if we need to do that twice. Revision required for performance.
+            while(validateAutoSize()) {
+                validateLayout();
             }
 
+            if (parentComponent != null) {
+                parentComponent.invalidateLayout();
+            }
+
+            if (oldComponentWidth != _componentWidth || oldComponentHeight != _componentHeight) {
+                displayInvalid = true;
+            }
+        }
+
+        if (displayInvalid) {
             validateDisplay();
 
-            if (layoutValidationRequiredAgain == true) {
-                validateLayout();
-                if(validateAutoSize())  //TODO - Required in the KitchenSink example. Something is wrong with the autosize order in the first place if we need to do that twice. Revision required for performance.
-                    validateLayout();
-            }
-
-            if (layoutValidationRequiredAgain == true || displayInvalid) {
-                if (parentComponent != null) {
-                    parentComponent.invalidateLayout();
-                }
-            }
-
-            if (displayInvalid || oldComponentWidth != _componentWidth || oldComponentHeight != _componentHeight) {
-                onResized();
-                dispatch(new UIEvent(UIEvent.RESIZE));
-            }
+            onResized();
+            dispatch(new UIEvent(UIEvent.RESIZE));
         }
     }
 
