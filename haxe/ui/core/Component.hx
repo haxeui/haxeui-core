@@ -1901,7 +1901,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             }
         }
 
-        if (displayInvalid) {
+        if (displayInvalid || styleInvalid) {
             validateDisplay();
 
             onResized();
