@@ -1902,7 +1902,8 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
 
         if (displayInvalid || styleInvalid) {
-            validateDisplay();
+//            updateDisplay();
+            ValidationManager.instance.addDisplay(this);    //Update the display from all objects at the same time. Avoids UI flashes.
 
             onResized();
             dispatch(new UIEvent(UIEvent.RESIZE));
@@ -1929,7 +1930,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         handlePosition(_left, _top, _style);
     }
 
-    private function validateDisplay() {
+    public function updateDisplay() {
         if (componentWidth == null || componentHeight == null || componentWidth <= 0 || componentHeight <= 0) {
             return;
         }

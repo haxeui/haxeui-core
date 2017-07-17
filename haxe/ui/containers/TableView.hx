@@ -290,8 +290,8 @@ class TableView extends ScrollView implements IDataComponent {
         syncUI();
     }
 
-    private override function validateDisplay() {
-        super.validateDisplay();
+    public override function updateDisplay() {
+        super.updateDisplay();
 
         for (row in _contents.childComponents) {
             for (c in 0..._header.childComponents.length) {

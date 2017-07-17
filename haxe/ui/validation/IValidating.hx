@@ -24,4 +24,10 @@ interface IValidating
         changed at a time without requiring a full update every time.
     **/
     function validate():Void;
+
+    /**
+        Update the display of the object. All objects update the display at the
+        same time.
+    **/
+    function updateDisplay():Void;
 }

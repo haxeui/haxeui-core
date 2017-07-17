@@ -297,9 +297,7 @@ class ListViewDefaultDataSourceBehaviour extends Behaviour {
 
     public override function set(value:Variant) {
         var listView:ListView = cast(_component, ListView);
-		if (listView._ready) {
-			listView.syncUI();
-		}
+        listView.syncUI();
         listView._dataSource.onChange = listView.onDataSourceChanged;
     }
 }

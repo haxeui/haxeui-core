@@ -1,5 +1,6 @@
 package haxe.ui.validation;
 
+import haxe.ui.core.Component;
 import haxe.ui.core.ValidationEvent;
 import haxe.ui.core.UIEvent;
 import haxe.ui.util.EventMap;
@@ -17,6 +18,7 @@ class ValidationManager {
     public var isValidating(default, null):Bool;
 
     private var _queue:Array<IValidating> = [];
+    private var _displayQueue:Array<Component> = [];
     private var _timer:Timer;
     private var _events:EventMap;
 
@@ -91,6 +93,12 @@ class ValidationManager {
         }
     }
 
+    public function addDisplay(item:Component):Void {
+        if(_displayQueue.indexOf(item) == -1) {
+            _displayQueue.push(item);
+        }
+    }
+
     private function process() {
         if (isValidating == true || _timer == null) {
             return;
@@ -118,6 +126,12 @@ class ValidationManager {
             }
             item.validate();
         }
+
+        for (i in 0..._displayQueue.length) {
+            var item = _displayQueue[i];
+            item.updateDisplay();
+        }
+        _displayQueue.splice(0, _displayQueue.length);
 
         isValidating = false;
 
