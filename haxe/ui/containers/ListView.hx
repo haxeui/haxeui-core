@@ -263,13 +263,6 @@ class ListView extends ScrollView implements IDataComponent {
         itemHeight = (cy / n);
     }
 
-    override public function syncValidation() {
-        //We need to validate the data before the children
-        validate();
-
-        super.syncValidation();
-    }
-
     //***********************************************************************************************************
     // Clonable
     //***********************************************************************************************************

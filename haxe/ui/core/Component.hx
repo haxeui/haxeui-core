@@ -1805,12 +1805,18 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     **/
     @:dox(group = "Invalidation related properties and methods")
     public function syncValidation() {
-        //Bottom-to-Top validation
-        for (child in childComponents) {
-            child.syncValidation();
-        }
+        var count:Int = 0;
+        while(isInvalid()) {
+            validate();
 
-        validate();
+            for (child in childComponents) {
+                child.syncValidation();
+            }
+
+            if (++count >= 10) {
+                throw 'The syncValidation returned too many times during validation. This may be an infinite loop. Try to avoid doing anything that calls invalidate() during validation.';
+            }
+        }
     }
 
     /**
