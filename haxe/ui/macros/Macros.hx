@@ -77,13 +77,13 @@ class Macros {
             if (useSelf == false) {
                 code += "var c:" + className + " = cast super.cloneComponent();\n";
                 for (f in getFieldsWithMeta("clonable", fields)) {
-                    code += "c." + f.name + " = this." + f.name + ";\n";
+                    code += "if (this." + f.name + " != null) { c." + f.name + " = this." + f.name + "; }\n";
                 }
 
             } else {
                 code += "var c:" + className + " = self();\n";
                 for (f in getFieldsWithMeta("clonable", fields)) {
-                    code += "c." + f.name + " = this." + f.name + ";\n";
+                    code += "if (this." + f.name + " != null) { c." + f.name + " = this." + f.name + "; }\n";
                 }
 
                 code += "if (this.childComponents.length != c.childComponents.length) for (child in this.childComponents) c.addComponent(child.cloneComponent());\n";
@@ -110,7 +110,7 @@ class Macros {
             insertLine(currentCloneFn, Context.parseInlineString(code, pos), n++);
 
             for (f in getFieldsWithMeta("clonable", fields)) {
-                code = "c." + f.name + " = this." + f.name + "";
+                code = "if (this." + f.name + " != null) { c." + f.name + " = this." + f.name + "; }";
                 insertLine(currentCloneFn, Context.parseInlineString(code, pos), n++);
             }
 
