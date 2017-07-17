@@ -220,7 +220,7 @@ class TextDisplay extends TextDisplayBase {
             measureTextRequired = validateStyle();
         }
 
-        if (positionInvalid) {
+        if (positionInvalid || styleInvalid) {
             validatePosition();
         }
 
