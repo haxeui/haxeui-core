@@ -72,7 +72,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             }
             c = Type.getSuperClass(c);
         }        
-        invalidateStyle();
 
         // we dont want to actually apply the classes, just find out if native is there or not
         //TODO - we could include the initialization in the validate method
