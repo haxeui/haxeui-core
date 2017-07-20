@@ -5,7 +5,6 @@ import haxe.ui.animation.transition.TransitionManager;
 import haxe.ui.constants.TransitionMode;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
-import haxe.ui.core.IClonable;
 import haxe.ui.core.UIEvent;
 import haxe.ui.util.Rectangle;
 import haxe.ui.util.Variant;
@@ -14,7 +13,7 @@ import haxe.ui.util.Variant;
  A `Box` component where only one child is visible at a time
 **/
 @:dox(icon = "/icons/ui-layered-pane.png")
-class Stack extends Box implements IClonable<Stack> {
+class Stack extends Box {
     public function new() {
         super();
     }

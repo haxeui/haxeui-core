@@ -3,7 +3,6 @@ package haxe.ui.components;
 import haxe.ui.components.Label.LabelLayout;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
-import haxe.ui.core.IClonable;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.styles.Style;
@@ -14,7 +13,7 @@ import haxe.ui.util.Variant;
  A general purpose component to display text
 **/
 @:dox(icon = "/icons/ui-label.png")
-class Label extends Component implements IClonable<Label> {
+class Label extends Component {
     public function new() {
         super();
         #if (openfl && !flixel)
@@ -22,6 +21,11 @@ class Label extends Component implements IClonable<Label> {
         #end
     }
 
+    //***********************************************************************************************************
+    // Styles
+    //***********************************************************************************************************
+    @:style(layout)           public var textAlign:Null<String>;
+    
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************
@@ -56,18 +60,7 @@ class Label extends Component implements IClonable<Label> {
     private override function applyStyle(style:Style) {
         super.applyStyle(style);
         if (hasTextDisplay() == true) {
-            if (style.color != null) {
-                getTextDisplay().color = style.color;
-            }
-            if (style.fontName != null) {
-                getTextDisplay().fontName = style.fontName;
-            }
-            if (style.fontSize != null) {
-                getTextDisplay().fontSize = style.fontSize;
-            }
-            if (style.textAlign != null) {
-                getTextDisplay().textAlign = style.textAlign;
-            }
+            getTextDisplay().applyStyle(style);
         }
     }
 }
@@ -127,7 +120,7 @@ class LabelDefaultTextBehaviour extends Behaviour {
         }
 
         var label:Label = cast _component;
-        label.getTextDisplay().text = value;
+        label.getTextDisplay().text = '${value}';
         label.invalidateDisplay();
     }
 }
