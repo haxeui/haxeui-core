@@ -276,7 +276,7 @@ class ListViewDefaultDataSourceBehaviour extends Behaviour {
     public override function set(value:Variant) {
         var listView:ListView = cast(_component, ListView);
 
-        if (listView._dataSource == null) {
+        if (listView._dataSource != null) {
             listView._dataSource.onChange = null;
         }
 
