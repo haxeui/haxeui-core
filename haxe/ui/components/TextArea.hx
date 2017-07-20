@@ -3,7 +3,6 @@ package haxe.ui.components;
 import haxe.ui.focus.FocusManager;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
-import haxe.ui.core.IClonable;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.UIEvent;
@@ -13,7 +12,7 @@ import haxe.ui.styles.Style;
 import haxe.ui.util.Size;
 import haxe.ui.util.Variant;
 
-class TextArea extends InteractiveComponent implements IFocusable implements IClonable<TextArea> {
+class TextArea extends InteractiveComponent implements IFocusable {
     public function new() {
         super();
     }
@@ -144,15 +143,7 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
     private override function applyStyle(style:Style) {
         super.applyStyle(style);
         if (hasTextInput() == true) {
-            if (style.color != null) {
-                getTextInput().color = style.color;
-            }
-            if (style.fontName != null) {
-                getTextInput().fontName = style.fontName;
-            }
-            if (style.fontSize != null) {
-                getTextInput().fontSize = style.fontSize;
-            }
+            getTextInput().applyStyle(style);
         }
     }
 

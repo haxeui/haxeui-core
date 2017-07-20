@@ -1,7 +1,6 @@
 package haxe.ui.components;
 
 import haxe.ui.core.Component;
-import haxe.ui.core.IClonable;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.UIEvent;
 import haxe.ui.layouts.HorizontalLayout;
@@ -10,7 +9,7 @@ import haxe.ui.layouts.HorizontalLayout;
  A specially styled list of toggle buttons where one one can be selected at a time
 **/
 @:dox(icon = "/icons/ui-tab.png")
-class TabBar extends Component implements IClonable<TabBar> {
+class TabBar extends Component {
     private var _currentButton:Button;
 
     public function new() {

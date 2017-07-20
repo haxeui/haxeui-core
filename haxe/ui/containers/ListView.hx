@@ -1,8 +1,9 @@
 package haxe.ui.containers;
 
+import haxe.ui.core.Behaviour;
+import haxe.ui.core.ClassFactory;
 import haxe.ui.core.BasicItemRenderer;
 import haxe.ui.core.Component;
-import haxe.ui.core.IClonable;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.ItemRenderer;
@@ -11,13 +12,20 @@ import haxe.ui.core.UIEvent;
 import haxe.ui.data.ArrayDataSource;
 import haxe.ui.data.DataSource;
 import haxe.ui.data.transformation.NativeTypeTransformer;
+import haxe.ui.util.Variant;
 
-class ListView extends ScrollView implements IDataComponent implements IClonable<ListView> {
-    private var _itemRenderer:ItemRenderer;
-
+class ListView extends ScrollView implements IDataComponent {
     public function new() {
         super();
     }
+
+    private override function createDefaults() {
+        super.createDefaults();
+        defaultBehaviours([
+            "dataSource" => new ListViewDefaultDataSourceBehaviour(this)
+        ]);
+    }
+
 
     private override function createChildren() {
         super.createChildren();
@@ -31,14 +39,12 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
 
     private override function onReady() {
         super.onReady();
-        if (_itemRenderer == null) {
-            addComponent(new BasicItemRenderer());
-        }
+        syncUI();
     }
 
     public override function addComponent(child:Component):Component {
         var r = null;
-        if (Std.is(child, ItemRenderer) && _itemRenderer == null) {
+        if (Std.is(child, ItemRenderer) && (_itemRenderer == null && _itemRendererFunction == null)) {
             _itemRenderer = cast(child, ItemRenderer);
             #if haxeui_luxe
             _itemRenderer.hide();
@@ -68,33 +74,48 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
             }
         }
         
+        selectedItem = cast(event.target, ItemRenderer);
+    }
+
+    public var selectedIndex(get, set):Int;
+    private function get_selectedIndex():Int {
+        if (_currentSelection == null) {
+            return -1;
+        }
+        return contents.childComponents.indexOf(_currentSelection);
+    }
+    private function set_selectedIndex(value:Int):Int {
+        var item:ItemRenderer = cast(contents.childComponents[value], ItemRenderer);
+        selectedItem = item;
+        return value;
+    }
+
+    public var selectedItem(get, set):ItemRenderer;
+    private function get_selectedItem():ItemRenderer {
+        return _currentSelection;
+    }
+    private function set_selectedItem(value:ItemRenderer):ItemRenderer {
         if (_currentSelection != null) {
             _currentSelection.removeClass(":selected");
         }
 
-        _currentSelection = cast event.target;
-        _currentSelection.addClass(":selected");
-        dispatch(new UIEvent(UIEvent.CHANGE));
-    }
-
-    public var selectedItem(get, null):ItemRenderer;
-    private function get_selectedItem():ItemRenderer {
-        return _currentSelection;
+        _currentSelection = value;
+        if (_currentSelection != null) {
+            _currentSelection.addClass(":selected");
+            dispatch(new UIEvent(UIEvent.CHANGE));
+        }
+        return value;
     }
 
     public function resetSelection() {
         if (_currentSelection != null) {
-            _currentSelection.removeClass(":selected");
+            _currentSelection.removeClass(":selected", true, true);
             _currentSelection = null;
         }
     }
 
     public function addItem(data:Dynamic):ItemRenderer {
-        if (_itemRenderer == null) {
-            return null;
-        }
-
-        var r = _itemRenderer.cloneComponent();
+        var r = itemToRenderer(data);
         r.percentWidth = 100;
         var n = contents.childComponents.length;
         var item:ItemRenderer = cast addComponent(r);
@@ -133,25 +154,41 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
         return (cy / n);
     }
 
+    private var _itemRendererFunction:ItemRendererFunction;
+    public var itemRendererFunction(get, set):ItemRendererFunction;
+    private function get_itemRendererFunction():ItemRendererFunction {
+        return _itemRendererFunction;
+    }
+    private function set_itemRendererFunction(value:ItemRendererFunction):ItemRendererFunction {
+        if (_itemRendererFunction != value) {
+            _itemRendererFunction = value;
+
+            syncUI();
+        }
+
+        return value;
+    }
+
+    private var _itemRenderer:ItemRenderer;
+	public var itemRendererClass(get, set):Class<ItemRenderer>;
+	private function get_itemRendererClass():Class<ItemRenderer> {
+		return Type.getClass(_itemRenderer);
+	}
+	private function set_itemRendererClass(value:Class<ItemRenderer>):Class<ItemRenderer> {
+		_itemRenderer = Type.createInstance(value, []);
+		if (_ready) {
+			syncUI();
+		}
+		return value;
+	}
+
     private var _dataSource:DataSource<Dynamic>;
     public var dataSource(get, set):DataSource<Dynamic>;
     private function get_dataSource():DataSource<Dynamic> {
-        return _dataSource;
+        return behaviourGet("dataSource");
     }
     private function set_dataSource(value:DataSource<Dynamic>):DataSource<Dynamic> {
-        if (_dataSource != null) {
-            _dataSource.onChange = null;
-        }
-
-        _dataSource = value;
-
-        if (_dataSource != null) {
-            _dataSource.transformer = new NativeTypeTransformer();
-            _dataSource.onChange = onDataSourceChanged;
-        }
-
-        syncUI();
-
+        behaviourSet("dataSource", value);
         return value;
     }
 
@@ -162,32 +199,53 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
     }
 
     private function syncUI() {
-        if (_itemRenderer == null || _dataSource == null) {
+        if (_dataSource == null) {
             contents.removeAllComponents();
             return;
         }
 
         lockLayout();
 
-        var delta = _dataSource.size - itemCount;
-        if (delta > 0) { // not enough items
-            for (n in 0...delta) {
-                addComponent(_itemRenderer.cloneComponent());
+        for (n in 0..._dataSource.size) {
+            var data:Dynamic = _dataSource.get(n);
+            var item:ItemRenderer = null;
+            if (n < itemCount) {
+                item = cast(contents.childComponents[n], ItemRenderer);
+                item.removeClass("even");
+                item.removeClass("odd");
+
+                if (_itemRendererFunction != null
+                    && !Std.is(item, _itemRendererFunction(data).generator)) {
+                    contents.removeComponent(item);
+                    item = cast addComponent(itemToRenderer(data));  //TODO - addComponentAt
+                    contents.setComponentIndex(item, n);
+                }
+            } else {
+                item = cast addComponent(itemToRenderer(data));      //TODO - addComponentAt
+                contents.setComponentIndex(item, n);
             }
-        } else if (delta < 0) { // too many items
-            while (delta < 0) {
-                contents.removeComponent(contents.childComponents[contents.childComponents.length - 1]); // remove last
-                delta++;
-            }
+
+            item.addClass(n % 2 == 0 ? "even" : "odd");
+            item.data = data;
         }
 
-        for (n in 0..._dataSource.size) {
-            var item:ItemRenderer = cast(contents.childComponents[n], ItemRenderer);
-            item.addClass(n % 2 == 0 ? "even" : "odd");
-            item.data = _dataSource.get(n);
+        while (_dataSource.size < itemCount) {
+            contents.removeComponent(contents.childComponents[contents.childComponents.length - 1]); // remove last
         }
 
         unlockLayout();
+    }
+
+    private function itemToRenderer(data:Dynamic):ItemRenderer
+    {
+        if (_itemRendererFunction != null) {
+            return _itemRendererFunction(data).newInstance();
+        } else {
+            if (_itemRenderer == null) {
+                _itemRenderer = new BasicItemRenderer();
+            }
+            return _itemRenderer.cloneComponent();
+        }
     }
 
     //***********************************************************************************************************
@@ -197,5 +255,40 @@ class ListView extends ScrollView implements IDataComponent implements IClonable
         if (_dataSource != null) {
             c.dataSource = _dataSource.clone();
         }
+    }
+}
+
+typedef ItemRendererFunction = Dynamic->ClassFactory<ItemRenderer>;
+
+//***********************************************************************************************************
+// Default behaviours
+//***********************************************************************************************************
+
+@:dox(hide)
+@:access(haxe.ui.containers.ListView)
+class ListViewDefaultDataSourceBehaviour extends Behaviour {
+    public override function get():Variant {
+        var listView:ListView = cast(_component, ListView);
+        listView._dataSource.onChange = listView.onDataSourceChanged;
+        return listView._dataSource;
+    }
+
+    public override function set(value:Variant) {
+        var listView:ListView = cast(_component, ListView);
+
+        if (listView._dataSource == null) {
+            listView._dataSource.onChange = null;
+        }
+
+        listView._dataSource = value;
+
+        if (listView._dataSource != null) {
+            listView._dataSource.transformer = new NativeTypeTransformer();
+            listView._dataSource.onChange = listView.onDataSourceChanged;
+        }
+
+		if (listView._ready) {
+			listView.syncUI();
+		}
     }
 }
