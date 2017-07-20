@@ -1,6 +1,5 @@
 package haxe.ui.components;
 
-import haxe.ui.core.IClonable;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.layouts.DefaultLayout;
 
@@ -8,7 +7,7 @@ import haxe.ui.layouts.DefaultLayout;
  A vertical implementation of a `Scroll`
 **/
 @:dox(icon = "/icons/ui-scroll-bar.png")
-class VScroll extends Scroll implements IClonable<VScroll> {
+class VScroll extends Scroll {
     public function new() {
         super();
         layout = new VScrollLayout();

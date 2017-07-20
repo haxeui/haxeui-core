@@ -78,7 +78,7 @@ class Parser {
                 }
             default:
                 var i = getVariant(v);
-                if( i != null ) { s.padding(i); return true; }
+                if( i != null ) { s.padding = i; return true; }
             }
         case "padding-top":
             var i = getVariant(v);

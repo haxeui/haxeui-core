@@ -28,6 +28,11 @@ class ArrayDataSource<T> extends DataSource<T> {
         return item;
     }
 
+    private override function handleInsert(item:T, index:Int):T {
+        _array.insert(index, item);
+        return item;
+    }
+
     private override function handleRemoveItem(item:T):T {
         _array.remove(item);
         return item;

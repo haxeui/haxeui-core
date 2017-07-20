@@ -9,6 +9,7 @@ import haxe.ui.scripting.ScriptInterp;
 import haxe.ui.styles.Parser;
 import haxe.ui.styles.Style;
 import haxe.ui.util.CallStackHelper;
+import haxe.ui.util.Color;
 import haxe.ui.util.EventMap;
 import haxe.ui.util.FunctionArray;
 import haxe.ui.util.Rectangle;
@@ -58,9 +59,17 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         #end
         addClass(Backend.id);
 
-        var parts:Array<String> = Type.getClassName(Type.getClass(this)).split(".");
-        var className:String = parts[parts.length - 1].toLowerCase();
-        addClass(className, false);
+        var c:Class<Dynamic> = Type.getClass(this);
+        while (c != null) {
+            var css = Type.getClassName(c);
+            var className:String = css.split(".").pop().toLowerCase();
+            addClass(className, false);
+            if (className == "component") {
+                break;
+            }
+            c = Type.getSuperClass(c);
+        }        
+        invalidateStyle();
 
         // we dont want to actually apply the classes, just find out if native is there or not
         var s = Toolkit.styleSheet.applyClasses(this, false);
@@ -100,9 +109,13 @@ class Component extends ComponentBase implements IComponentBase implements IClon
 
     }
 
+    private var _hasNativeEntry:Null<Bool>;
     private var hasNativeEntry(get, null):Bool;
     private function get_hasNativeEntry():Bool {
-        return getNativeConfigProperty(".@id") != null;
+        if (_hasNativeEntry == null) {
+            _hasNativeEntry = (getNativeConfigProperty(".@id") != null);
+        }
+        return _hasNativeEntry;
     }
 
     private var _defaultLayout:Layout;
@@ -186,8 +199,17 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         }
     }
 
+    private var _behaviourUpdateOrder:Array<String> = [];
     private function behavioursUpdate() {
-        for (b in _behaviours) {
+        var order:Array<String> = _behaviourUpdateOrder.copy();
+        for (key in _behaviours.keys()) {
+            if (order.indexOf(key) == -1) {
+                order.push(key);
+            }
+        }
+        
+        for (key in order) {
+            var b = _behaviours.get(key);
             if (b != null) {
                 b.update();
             }
@@ -200,6 +222,9 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     **/
     public var native(get, set):Null<Bool>;
     private function get_native():Null<Bool> {
+        if (_native == null) {
+            return false;
+        }
         if (hasNativeEntry == false) {
             return false;
         }
@@ -522,7 +547,9 @@ class Component extends ComponentBase implements IComponentBase implements IClon
             if (_children.remove(child)) {
                 child.parentComponent = null;
             }
-            invalidateLayout();
+            if (invalidate == true) {
+                invalidateLayout();
+            }
             if (dispose == true) {
                 child.onDestroy();
             }
@@ -776,20 +803,26 @@ class Component extends ComponentBase implements IComponentBase implements IClon
      Adds a css style name to this component
     **/
     @:dox(group = "Style related properties and methods")
-    public function addClass(name:String, invalidate:Bool = true) {
+    public function addClass(name:String, invalidate:Bool = true, recursive:Bool = false) {
         if (classes.indexOf(name) == -1) {
             classes.push(name);
             if (invalidate == true) {
                 invalidateStyle();
             }
         }
+		
+		if (recursive == true) {
+			for (child in childComponents) {
+				child.addClass(name, invalidate, recursive);
+			}
+		}
     }
 
     /**
      Removes a css style name from this component
     **/
     @:dox(group = "Style related properties and methods")
-    public function removeClass(name:String, invalidate:Bool = true) {
+    public function removeClass(name:String, invalidate:Bool = true, recursive:Bool = false) {
         if (classes.indexOf(name) != -1) {
             classes.remove(name);
             if (invalidate == true) {
@@ -797,6 +830,11 @@ class Component extends ComponentBase implements IComponentBase implements IClon
             }
         }
 
+		if (recursive == true) {
+			for (child in childComponents) {
+				child.removeClass(name, invalidate, recursive);
+			}
+		}
     }
 
     /**
@@ -937,7 +975,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         return INTERACTIVE_EVENTS.indexOf(type) != -1;
     }
     
-    private function disableInteractivity(disable:Bool, styleName:String = ":disabled") {
+    private function disableInteractivity(disable:Bool, styleName:String = null) {
         if (disable == _disabled) {
             return;
         }
@@ -1126,24 +1164,29 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     //***********************************************************************************************************
     // Styles
     //***********************************************************************************************************
-    @style      public var backgroundColor:Null<Int>;
-    @style      public var borderColor:Null<Int>;
-    @style      public var borderSize:Null<Float>;
-    @style      public var borderRadius:Null<Float>;
+    @:style                 public var color:Null<Color>;
+    @:style                 public var backgroundColor:Null<Color>;
+    @:style                 public var borderColor:Null<Color>;
+    @:style                 public var borderSize:Null<Float>;
+    @:style                 public var borderRadius:Null<Float>;
 
-    @style      public var paddingLeft:Null<Float>;
-    @style      public var paddingRight:Null<Float>;
-    @style      public var paddingTop:Null<Float>;
-    @style      public var paddingBottom:Null<Float>;
+    @:style(writeonly)      public var padding:Null<Float>;
+    @:style                 public var paddingLeft:Null<Float>;
+    @:style                 public var paddingRight:Null<Float>;
+    @:style                 public var paddingTop:Null<Float>;
+    @:style                 public var paddingBottom:Null<Float>;
 
-    @style      public var marginLeft:Null<Float>;
-    @style      public var marginRight:Null<Float>;
-    @style      public var marginTop:Null<Float>;
-    @style      public var marginBottom:Null<Float>;
-    @style      public var clip:Null<Bool>;
+    @:style                 public var marginLeft:Null<Float>;
+    @:style                 public var marginRight:Null<Float>;
+    @:style                 public var marginTop:Null<Float>;
+    @:style                 public var marginBottom:Null<Float>;
+    @:style                 public var clip:Null<Bool>;
 
-    @style      public var opacity:Null<Float>;
+    @:style                 public var opacity:Null<Float>;
 
+    @:style(layoutparent)   public var horizontalAlign:String;
+    @:style(layoutparent)   public var verticalAlign:String;
+    
     //***********************************************************************************************************
     // Size related
     //***********************************************************************************************************
@@ -1285,7 +1328,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
             return false;
         }
 
-        if (left > sx && left < sx + cx && top > sy && top < sy + cy) {
+        if (left >= sx && left < sx + cx && top >= sy && top < sy + cy) {
             b = true;
         }
 
@@ -1722,13 +1765,19 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         return value;
     }
 
+    private var __onChange:UIEvent->Void;
     /**
      Utility property to add a single `UIEvent.CHANGE` event
     **/
     @:dox(group = "Event related properties and methods")
     public var onChange(null, set):UIEvent->Void;
     private function set_onChange(value:UIEvent->Void):UIEvent->Void {
+        if (__onChange != null) {
+            unregisterEvent(UIEvent.CHANGE, __onChange);
+            __onChange = null;
+        }
         registerEvent(UIEvent.CHANGE, value);
+        __onChange = value;
         return value;
     }
 
@@ -1921,17 +1970,17 @@ class Component extends ComponentBase implements IComponentBase implements IClon
 
     private function getNativeConfigProperty(query:String, defaultValue:String = null):String {
         query = 'component[id=${className}]${query}';
-        return Toolkit.nativeConfig.query(query, defaultValue);
+        return Toolkit.nativeConfig.query(query, defaultValue, this);
     }
 
     private function getNativeConfigPropertyBool(query:String, defaultValue:Bool = false):Bool {
         query = 'component[id=${className}]${query}';
-        return Toolkit.nativeConfig.queryBool(query, defaultValue);
+        return Toolkit.nativeConfig.queryBool(query, defaultValue, this);
     }
 
     private function getNativeConfigProperties(query:String = ""):Map<String, String> {
         query = 'component[id=${className}]${query}';
-        return Toolkit.nativeConfig.queryValues(query);
+        return Toolkit.nativeConfig.queryValues(query, this);
     }
 
     public var className(get, null):String;
@@ -1951,7 +2000,7 @@ class ComponentDefaultDisabledBehaviour extends Behaviour {
             return;
         }
 
-        _component.disableInteractivity(value);
+        _component.disableInteractivity(value, ":disabled");
     }
 
     public override function get():Variant {

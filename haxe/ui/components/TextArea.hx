@@ -3,7 +3,6 @@ package haxe.ui.components;
 import haxe.ui.focus.FocusManager;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
-import haxe.ui.core.IClonable;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.UIEvent;
@@ -13,7 +12,7 @@ import haxe.ui.styles.Style;
 import haxe.ui.util.Size;
 import haxe.ui.util.Variant;
 
-class TextArea extends InteractiveComponent implements IFocusable implements IClonable<TextArea> {
+class TextArea extends InteractiveComponent implements IFocusable {
     public function new() {
         super();
     }
@@ -50,6 +49,21 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
         return value;
     }
 
+    private var _wrap:Bool;
+    @:clonable public var wrap(get, set):Bool;
+    private function get_wrap():Bool {
+        return behaviourGet("wrap");
+    }
+    private function set_wrap(value:Bool):Bool {
+        if (value == _wrap) {
+            return value;
+        }
+        
+        _wrap = value;        
+        behaviourSet("wrap", value);
+        return value;
+    }
+    
     //***********************************************************************************************************
     // Overrides
     //***********************************************************************************************************
@@ -83,7 +97,8 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
         super.createDefaults();
         defaultBehaviours([
             "text" => new TextAreaDefaultTextBehaviour(this),
-            "placeholder" => new TextAreaDefaultPlaceholderBehaviour(this)
+            "placeholder" => new TextAreaDefaultPlaceholderBehaviour(this),
+            "wrap" => new TextAreaDefaultWrapBehaviour(this)
         ]);
         _defaultLayout = new TextAreaLayout();
     }
@@ -98,6 +113,13 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
 
     private override function createChildren() {
         super.createChildren();
+        if (componentWidth == 0) {
+            componentWidth = 150;
+        }
+        if (componentHeight == 0) {
+            componentHeight = 100;
+        }
+        
         getTextInput().multiline = true;
 
         registerEvent(MouseEvent.MOUSE_WHEEL, _onMouseWheel);
@@ -121,30 +143,41 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
     private override function applyStyle(style:Style) {
         super.applyStyle(style);
         if (hasTextInput() == true) {
-            if (style.color != null) {
-                getTextInput().color = style.color;
-            }
-            if (style.fontName != null) {
-                getTextInput().fontName = style.fontName;
-            }
-            if (style.fontSize != null) {
-                getTextInput().fontSize = style.fontSize;
-            }
+            getTextInput().applyStyle(style);
         }
     }
 
+    private var _hscroll:HScroll;
     private var _vscroll:VScroll;
     private function checkScrolls() {
         if (native == true) {
             return;
         }
 
+        if (getTextInput().textWidth > getTextInput().width) {
+            if (_hscroll == null) {
+                _hscroll = new HScroll();
+                _hscroll.id = "textarea-hscroll";
+                addComponent(_hscroll);
+                _hscroll.registerEvent(UIEvent.CHANGE, _onScrollChange);
+            }
+            _hscroll.max = getTextInput().textWidth - getTextInput().width;
+            _hscroll.pos = getTextInput().hscrollPos;
+
+            _hscroll.pageSize = (getTextInput().width * _hscroll.max) / getTextInput().textWidth;
+            _hscroll.show();
+        } else {
+            if (_hscroll != null) {
+                _hscroll.hide();
+            }
+        }
+        
         if (getTextInput().textHeight > getTextInput().height) {
             if (_vscroll == null) {
                 _vscroll = new VScroll();
                 _vscroll.id = "textarea-vscroll";
                 addComponent(_vscroll);
-                _vscroll.registerEvent(UIEvent.CHANGE, _onVScrollChange);
+                _vscroll.registerEvent(UIEvent.CHANGE, _onScrollChange);
             }
             _vscroll.max = getTextInput().textHeight - getTextInput().height;
             _vscroll.pos = getTextInput().vscrollPos;
@@ -178,8 +211,13 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
         handleBindings(["text", "value"]);
     }
 
-    private function _onVScrollChange(e:UIEvent) {
-        getTextInput().vscrollPos = _vscroll.pos;
+    private function _onScrollChange(e:UIEvent) {
+        if (_hscroll != null) {
+            getTextInput().hscrollPos = _hscroll.pos;
+        }
+        if (_vscroll != null) {
+            getTextInput().vscrollPos = _vscroll.pos;
+        }
     }
 
     public override function onResized() {
@@ -199,6 +237,8 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
             if (text == "") {
                 text = _placeholder;
                 addClass(":empty");
+            } else {
+                removeClass(":empty");
             }
         } else if (placeholderVisible == true){
             text = "";
@@ -213,7 +253,7 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
 // Default behaviours
 //***********************************************************************************************************
 @:dox(hide)
-@:access(haxe.ui.components.TextField)
+@:access(haxe.ui.components.TextArea)
 class TextAreaDefaultTextBehaviour extends Behaviour {
     public override function set(value:Variant) {
         if (value.isNull) {
@@ -245,11 +285,27 @@ class TextAreaDefaultPlaceholderBehaviour extends Behaviour {
         return textArea._placeholder;
     }
 }
+
+@:dox(hide)
+@:access(haxe.ui.components.TextArea)
+class TextAreaDefaultWrapBehaviour extends Behaviour {
+    public override function set(value:Variant) {
+        var textArea:TextArea = cast _component;
+        textArea.getTextInput().wordWrap = value;
+        textArea.checkScrolls();
+    }
+    
+    public override function get():Variant {
+        var textArea:TextArea = cast _component;
+        return textArea.getTextInput().wordWrap;
+    }
+}
+
 //***********************************************************************************************************
 // Custom layouts
 //***********************************************************************************************************
 @:dox(hide)
-@:access(haxe.ui.components.TextField)
+@:access(haxe.ui.components.TextArea)
 class TextAreaLayout extends DefaultLayout {
     private override function repositionChildren() {
         var hscroll:Component = component.findComponent("textarea-hscroll");
@@ -266,7 +322,6 @@ class TextAreaLayout extends DefaultLayout {
         if (vscroll != null && hidden(vscroll) == false) {
             vscroll.left = ucx - vscroll.componentWidth + paddingRight;
             vscroll.top = paddingTop;
-            vscroll.componentHeight = ucy;
         }
 
         if (component.hasTextInput() == true) {
@@ -278,6 +333,18 @@ class TextAreaLayout extends DefaultLayout {
     private override function resizeChildren() {
         super.resizeChildren();
 
+        var hscroll:Component = component.findComponent("textarea-hscroll");
+        var vscroll:Component = component.findComponent("textarea-vscroll");
+
+        var usableSize:Size = usableSize;
+        if (hscroll != null && hidden(hscroll) == false) {
+            hscroll.width = usableSize.width;
+        }
+        
+        if (vscroll != null && hidden(vscroll) == false) {
+            vscroll.height = usableSize.height;
+        }
+        
         if (component.hasTextInput() == true) {
             var size:Size = usableSize;
             #if !pixijs
@@ -290,6 +357,7 @@ class TextAreaLayout extends DefaultLayout {
 
     private override function get_usableSize():Size {
         var size:Size = super.get_usableSize();
+        size.width -= 1;
         var hscroll:Component = component.findComponent("textarea-hscroll");
         var vscroll:Component = component.findComponent("textarea-vscroll");
         if (hscroll != null && hidden(hscroll) == false) {
@@ -301,4 +369,19 @@ class TextAreaLayout extends DefaultLayout {
 
         return size;
     }
+    
+    /*
+    public override function calcAutoSize(exclusions:Array<Component> = null):Size {
+        var hscroll:Component = component.findComponent("textarea-hscroll");
+        var vscroll:Component = component.findComponent("textarea-vscroll");
+        var size:Size = super.calcAutoSize([hscroll, vscroll]);
+        if (hscroll != null && hscroll.hidden == false) {
+            size.height += hscroll.componentHeight;
+        }
+        if (vscroll != null && vscroll.hidden == false) {
+            size.width += vscroll.componentWidth;
+        }
+        return size;
+    }
+    */
 }

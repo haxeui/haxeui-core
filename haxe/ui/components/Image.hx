@@ -8,7 +8,6 @@ import haxe.ui.Toolkit;
 import haxe.ui.assets.ImageInfo;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
-import haxe.ui.core.IClonable;
 import haxe.ui.core.ImageDisplay;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.util.Size;
@@ -18,7 +17,7 @@ import haxe.ui.util.Variant;
  A general purpose component to display images
 **/
 @:dox(icon = "/icons/image-sunset.png")
-class Image extends Component implements IClonable<Image> {
+class Image extends Component {
     private var _originalSize:Size = new Size();
 
     public function new() {

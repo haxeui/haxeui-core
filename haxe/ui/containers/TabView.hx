@@ -3,13 +3,12 @@ package haxe.ui.containers;
 import haxe.ui.components.Button;
 import haxe.ui.components.TabBar;
 import haxe.ui.core.Component;
-import haxe.ui.core.IClonable;
 import haxe.ui.core.UIEvent;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.util.Size;
 
 @:dox(icon = "/icons/ui-tab-content.png")
-class TabView extends Component implements IClonable<TabView> {
+class TabView extends Component {
     private var _tabs:TabBar;
     private var _content:VBox;
     private var _views:Array<Component>;
@@ -89,6 +88,19 @@ class TabView extends Component implements IClonable<TabView> {
         return v;
     }
 
+    public override function findComponent<T>(criteria:String = null, type:Class<T> = null, recursive:Null<Bool> = null, searchType:String = "id"):Null<T> {
+        var match = super.findComponent(criteria, type, recursive, searchType);
+        if (match == null) {
+            for (view in _views) {
+                match = view.findComponent(criteria, type, recursive, searchType);
+                if (match != null) {
+                    break;
+                }
+            }
+        }
+        return cast match;
+    }
+
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
@@ -131,6 +143,24 @@ class TabView extends Component implements IClonable<TabView> {
         return value;
     }
 
+    public function removeAllTabs() {
+        if (_views != null) {
+            for (view in _views) {
+                removeComponent(view);
+            }
+            _views = [];
+        }
+        _currentView = null;
+        _pageIndex = -1;
+        if (_content != null) {
+            _content.removeAllComponents();
+        }
+        if (_tabs != null) {
+            _tabs.removeAllComponents();
+            _tabs.resetSelection();
+        }
+    }
+    
     //***********************************************************************************************************
     // Event Handlers
     //***********************************************************************************************************

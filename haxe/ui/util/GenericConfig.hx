@@ -1,9 +1,12 @@
 package haxe.ui.util;
+import haxe.ui.scripting.ScriptInterp;
 
 class GenericConfig {
     public var values:Map<String, String>;
     public var sections:Map<String, Array<GenericConfig>>;
 
+    public static var cache:Map<String, String> = new Map<String, String>();
+    
     public function new() {
         values = new Map<String, String>();
         sections = new Map<String, Array<GenericConfig>>();
@@ -45,15 +48,19 @@ class GenericConfig {
         return r;
     }
 
-    public function queryBool(q:String, defaultValue:Bool = false):Bool {
-        var r = query(q, null);
+    public function queryBool(q:String, defaultValue:Bool = false, conditionRef:Dynamic):Bool {
+        var r = query(q, null, conditionRef);
         if (r == null) {
             return defaultValue;
         }
         return (r == "true");
     }
 
-    public function query(q:String, defaultValue:String = null):String {
+    public function query(q:String, defaultValue:String = null, conditionRef:Dynamic):String {
+        if (cache.exists(q)) {
+            return cache.get(q);
+        }
+        
         var regexp:EReg = new EReg("\\.(?![^\\[]*\\])", "g");
         var final:Array<String> = regexp.split(q);
         var ref:GenericConfig = this;
@@ -77,19 +84,37 @@ class GenericConfig {
              }
 
             if (ref == null) {
+                cache.set(q, defaultValue);
                 return defaultValue;
             }
         }
 
+        if (conditionRef != null) {
+            var n = q.indexOf("]");
+            var nq = q.substring(0, n + 1) + ".@condition";
+            var condition = query(nq, null, null);
+            if (condition != null) {
+                var interp:ScriptInterp = new ScriptInterp();
+                var parser = new hscript.Parser();
+                var line = parser.parseString(condition);
+                interp.variables.set("this", conditionRef);
+                var r:Bool = interp.expr(line);
+                if (r == false) {
+                    return defaultValue;
+                }
+            }
+        }
+        
         if (value == null) {
             value = defaultValue;
         }
 
+        //cache.set(q, value);
         return value;
     }
 
     // TODO: duplication
-    public function queryValues(q:String):Map<String, String> {
+    public function queryValues(q:String, conditionRef:Dynamic):Map<String, String> {
         var regexp:EReg = new EReg("\\.(?![^\\[]*\\])", "g");
         var final:Array<String> = regexp.split(q);
         var ref:GenericConfig = this;
@@ -112,6 +137,22 @@ class GenericConfig {
             }
         }
 
+        if (conditionRef != null) {
+            var n = q.indexOf("]");
+            var nq = q.substring(0, n + 1) + ".@condition";
+            var condition = query(nq, null, null);
+            if (condition != null) {
+                var interp:ScriptInterp = new ScriptInterp();
+                var parser = new hscript.Parser();
+                var line = parser.parseString(condition);
+                interp.variables.set("this", conditionRef);
+                var r:Bool = interp.expr(line);
+                if (r == false) {
+                    return null;
+                }
+            }
+        }
+        
         return ref.values;
     }
 }

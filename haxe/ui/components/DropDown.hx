@@ -4,7 +4,6 @@ import haxe.ui.containers.ListView;
 import haxe.ui.core.BasicItemRenderer;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
-import haxe.ui.core.IClonable;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.ItemRenderer;
 import haxe.ui.core.MouseEvent;
@@ -13,7 +12,7 @@ import haxe.ui.core.UIEvent;
 import haxe.ui.data.DataSource;
 import haxe.ui.util.Variant;
 
-class DropDown extends Button implements IDataComponent implements IClonable<DropDown> {
+class DropDown extends Button implements IDataComponent {
     static private inline var NO_SELECTION:Int = -1;
 
     private var _listview:ListView;
@@ -21,7 +20,6 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
 
     public function new() {
         super();
-        addClass("button"); // TODO: shouldnt have to do this
         toggle = true;
         registerEvent(MouseEvent.CLICK, onMouseClick);
     }
@@ -95,7 +93,7 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
                 _selectedIndex = 0;
             }
 
-            if(_selectedIndex >= 0) {
+            if (_selectedIndex >= 0) {
                 text = _dataSource.get(_selectedIndex).value;
             }
         }

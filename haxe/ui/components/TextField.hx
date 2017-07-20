@@ -2,7 +2,6 @@ package haxe.ui.components;
 
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
-import haxe.ui.core.IClonable;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.UIEvent;
@@ -14,7 +13,7 @@ import haxe.ui.util.Size;
 import haxe.ui.util.Variant;
 
 @:dox(icon = "/icons/ui-text-field.png")
-class TextField extends InteractiveComponent implements IFocusable implements IClonable<TextField> {
+class TextField extends InteractiveComponent implements IFocusable {
     private var _icon:Image;
 
     public function new() {
@@ -101,18 +100,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
             icon = style.icon;
         }
         if (hasTextInput() == true) {
-            if (style.color != null) {
-                getTextInput().color = style.color;
-            }
-            if (style.fontName != null) {
-                getTextInput().fontName = style.fontName;
-            }
-            if (style.fontSize != null) {
-                getTextInput().fontSize = style.fontSize;
-            }
-            if (style.textAlign != null) {
-                getTextInput().textAlign = style.textAlign;
-            }
+            getTextInput().applyStyle(style);
         }
     }
 
@@ -276,11 +264,13 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
         }
 
         //Placeholder
-        if (focus == false) {
-            if (text == "" && _placeholder != null) {
+        if (focus == false && _placeholder != null) {
+            if (text == "") {
                 text = _placeholder;
                 behaviourSet("password", false);
                 addClass(":empty");
+            } else {
+                removeClass(":empty");
             }
         } else if (placeholderVisible == true){
             text = "";

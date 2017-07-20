@@ -1,4 +1,6 @@
 package haxe.ui.styles;
+
+import haxe.ui.util.Color;
 import haxe.ui.constants.VerticalAlign;
 import haxe.ui.constants.HorizontalAlign;
 import haxe.ui.constants.ScaleMode;
@@ -9,88 +11,88 @@ class Style {
     public function new() {
     }
 
-    @style      public var cursor:Null<String>;
-    @style      public var hidden:Null<Bool>;
+    public var cursor:Null<String>;
+    public var hidden:Null<Bool>;
 
-    @style      public var autoWidth:Null<Bool>;
-    @style      public var autoHeight:Null<Bool>;
-    @style      public var verticalSpacing:Variant;
-    @style      public var horizontalSpacing:Variant;
+    public var autoWidth:Null<Bool>;
+    public var autoHeight:Null<Bool>;
+    public var verticalSpacing:Variant;
+    public var horizontalSpacing:Variant;
 
-    @style      public var offsetLeft:Variant;
-    @style      public var offsetTop:Variant;
+    public var offsetLeft:Variant;
+    public var offsetTop:Variant;
 
-    @style      public var width:Variant;
-    @style      public var height:Variant;
-    @style      public var percentWidth:Null<Float>;
-    @style      public var percentHeight:Null<Float>;
+    public var width:Variant;
+    public var height:Variant;
+    public var percentWidth:Null<Float>;
+    public var percentHeight:Null<Float>;
 
-    @style      public var paddingTop:Variant;
-    @style      public var paddingLeft:Variant;
-    @style      public var paddingRight:Variant;
-    @style      public var paddingBottom:Variant;
+    public var paddingTop:Variant;
+    public var paddingLeft:Variant;
+    public var paddingRight:Variant;
+    public var paddingBottom:Variant;
 
-    @style      public var marginTop:Variant;
-    @style      public var marginLeft:Variant;
-    @style      public var marginRight:Variant;
-    @style      public var marginBottom:Variant;
+    public var marginTop:Variant;
+    public var marginLeft:Variant;
+    public var marginRight:Variant;
+    public var marginBottom:Variant;
 
-    @style      public var color:Null<Int>;
+    public var color:Null<Int>;
 
-    @style      public var backgroundColor:Null<Int>;
-    @style      public var backgroundColorEnd:Null<Int>;
-    @style      public var backgroundGradientStyle:Null<String>;
-    @style      public var backgroundOpacity:Null<Float>;
+    public var backgroundColor:Null<Int>;
+    public var backgroundColorEnd:Null<Int>;
+    public var backgroundGradientStyle:Null<String>;
+    public var backgroundOpacity:Null<Float>;
 
-    @style      public var backgroundImage:Null<String>;
-    @style      public var backgroundImageRepeat:Null<String>;
+    public var backgroundImage:Null<String>;
+    public var backgroundImageRepeat:Null<String>;
 
-    @style      public var backgroundImageClipTop:Variant;
-    @style      public var backgroundImageClipLeft:Variant;
-    @style      public var backgroundImageClipBottom:Variant;
-    @style      public var backgroundImageClipRight:Variant;
+    public var backgroundImageClipTop:Variant;
+    public var backgroundImageClipLeft:Variant;
+    public var backgroundImageClipBottom:Variant;
+    public var backgroundImageClipRight:Variant;
 
-    @style      public var backgroundImageSliceTop:Variant;
-    @style      public var backgroundImageSliceLeft:Variant;
-    @style      public var backgroundImageSliceBottom:Variant;
-    @style      public var backgroundImageSliceRight:Variant;
+    public var backgroundImageSliceTop:Variant;
+    public var backgroundImageSliceLeft:Variant;
+    public var backgroundImageSliceBottom:Variant;
+    public var backgroundImageSliceRight:Variant;
 
-    @style      public var borderColor:Null<Int>;
-    @style      public var borderTopColor:Null<Int>;
-    @style      public var borderLeftColor:Null<Int>;
-    @style      public var borderBottomColor:Null<Int>;
-    @style      public var borderRightColor:Null<Int>;
-    @style      public var borderSize:Variant;
-    @style      public var borderTopSize:Variant;
-    @style      public var borderLeftSize:Variant;
-    @style      public var borderBottomSize:Variant;
-    @style      public var borderRightSize:Variant;
-    @style      public var borderRadius:Variant;
-    @style      public var borderOpacity:Null<Float>;
+    public var borderColor:Null<Int>;
+    public var borderTopColor:Null<Int>;
+    public var borderLeftColor:Null<Int>;
+    public var borderBottomColor:Null<Int>;
+    public var borderRightColor:Null<Int>;
+    public var borderSize:Variant;
+    public var borderTopSize:Variant;
+    public var borderLeftSize:Variant;
+    public var borderBottomSize:Variant;
+    public var borderRightSize:Variant;
+    public var borderRadius:Variant;
+    public var borderOpacity:Null<Float>;
 
-    @style      public var filter:Array<Dynamic>;
+    public var filter:Array<Dynamic>;
 
-    @style      public var icon:Null<String>;
-    @style      public var iconPosition:Null<String>;
+    public var icon:Null<String>;
+    public var iconPosition:Null<String>;
 
-    @style      public var horizontalAlign:Null<String>;
-    @style      public var verticalAlign:Null<String>;
-    @style      public var textAlign:Null<String>;
+    public var horizontalAlign:Null<String>;
+    public var verticalAlign:Null<String>;
+    public var textAlign:Null<String>;
 
-    @style      public var opacity:Null<Float>;
+    public var opacity:Null<Float>;
 
-    @style      public var clip:Null<Bool>;
-    @style      public var native:Null<Bool>;
+    public var clip:Null<Bool>;
+    public var native:Null<Bool>;
 
-    @style      public var fontName:Null<String>;
-    @style      public var fontSize:Variant;
-    @style      public var fontBold:Null<Bool>;
-    @style      public var fontUnderline:Null<Bool>;
-    @style      public var fontItalic:Null<Bool>;
+    public var fontName:Null<String>;
+    public var fontSize:Variant;
+    public var fontBold:Null<Bool>;
+    public var fontUnderline:Null<Bool>;
+    public var fontItalic:Null<Bool>;
 
-    @style      public var scaleMode:Null<ScaleMode>;
-    @style      public var imageHorizontalAlign:Null<HorizontalAlign>;
-    @style      public var imageVerticalAlign:Null<VerticalAlign>;
+    public var scaleMode:Null<ScaleMode>;
+    public var imageHorizontalAlign:Null<HorizontalAlign>;
+    public var imageVerticalAlign:Null<VerticalAlign>;
 
 
     public function apply(s:Style) {
@@ -311,11 +313,10 @@ class Style {
         if (icon == "none") icon = null;
     }
 
-    public function padding(v:Variant) {
-        this.paddingTop = v;
-        this.paddingLeft = v;
-        this.paddingRight = v;
-        this.paddingBottom = v;
+    public var padding(null, set):Variant;
+    private function set_padding(value:Variant):Variant {
+        paddingTop = paddingLeft = paddingRight = paddingBottom = value;
+        return value;
     }
 
     public function margin(v:Variant) {
@@ -323,18 +324,5 @@ class Style {
         this.marginLeft = v;
         this.marginRight = v;
         this.marginBottom = v;
-    }
-
-    public function toString() {
-        var fields = [];
-        for( f in Type.getInstanceFields(Style) ) {
-            var v : Dynamic = Reflect.field(this, f);
-            if( v == null || Reflect.isFunction(v) || f == "toString" || f == "apply" )
-                continue;
-            if( f.toLowerCase().indexOf("color") >= 0 && Std.is(v,Int) )
-                v = "#" + StringTools.hex(v, 6);
-            fields.push(f + ": " + v);
-        }
-        return "{" + fields.join(", ") + "}";
     }
 }

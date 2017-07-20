@@ -10,6 +10,7 @@ class UIEvent extends EventBase {
 
     public var type(default, default):String;
     public var target(default, default):Component;
+    public var data(default, default):Dynamic;
 
     public function new(type:String) {
         super();
@@ -20,6 +21,7 @@ class UIEvent extends EventBase {
         var c:UIEvent = new UIEvent(this.type);
         c.type = this.type;
         c.target = this.target;
+        c.data = this.data;
         postClone(c);
         return c;
     }
