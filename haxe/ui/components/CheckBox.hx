@@ -127,8 +127,6 @@ class CheckBox extends InteractiveComponent {
     //***********************************************************************************************************
     private function _onClick(event:MouseEvent) {
         toggleSelected();
-        var event:UIEvent = new UIEvent(UIEvent.CHANGE);
-        dispatch(event);
     }
 
     private function _onMouseOver(event:MouseEvent) {
