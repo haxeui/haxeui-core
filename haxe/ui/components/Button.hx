@@ -1,7 +1,6 @@
 package haxe.ui.components;
 
 import haxe.ui.core.Behaviour;
-import haxe.ui.core.IClonable;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.focus.FocusManager;
@@ -14,7 +13,7 @@ import haxe.ui.util.Variant;
  General purpose push button that supports both text and icon as well as repeat event dispatching
 **/
 @:dox(icon = "/icons/ui-button.png")
-class Button extends InteractiveComponent implements IClonable<Button> {
+class Button extends InteractiveComponent {
     private var _repeatTimer:Timer;
 
     public function new() {
@@ -28,10 +27,11 @@ class Button extends InteractiveComponent implements IClonable<Button> {
     // Internals
     //***********************************************************************************************************
     private override function createDefaults() {
-        _defaultBehaviours = [
+        super.createDefaults();
+        defaultBehaviours([
             "text" => new ButtonDefaultTextBehaviour(this),
             "icon" => new ButtonDefaultIconBehaviour(this)
-        ];
+        ]);
         _defaultLayout = new ButtonLayout();
     }
 
@@ -137,36 +137,10 @@ class Button extends InteractiveComponent implements IClonable<Button> {
         return value;
     }
 
-    @:clonable public var iconPosition(get, set):String;
-    private function get_iconPosition():String {
-        return style.iconPosition;
-    }
-    private function set_iconPosition(value:String):String {
-        if (iconPosition == value) {
-            return value;
-        }
-
-        customStyle.iconPosition = value;
-        invalidateStyle();
-        invalidateLayout();
-        return value;
-    }
-
-    @:clonable public var textAlign(get, set):String;
-    private function get_textAlign():String {
-        return style.textAlign;
-    }
-    private function set_textAlign(value:String):String {
-        if (textAlign == value) {
-            return value;
-        }
-
-        customStyle.textAlign = value;
-        invalidateStyle();
-        invalidateLayout();
-        return value;
-    }
-
+    @:style(layout)   public var iconPosition:String;
+    @:style(layout)   public var fontSize:Null<Float>;
+    @:style(layout)   public var textAlign:String;
+    
     /**
      Whether this button should behave as a toggle button or not
     **/
@@ -208,7 +182,7 @@ class Button extends InteractiveComponent implements IClonable<Button> {
     }
 
     private function _onMouseOut(event:MouseEvent) {
-        if (_toggle == true && hasClass(":down")) {
+        if (_toggle == true && _selected == true) {
             return;
         }
 
@@ -219,7 +193,6 @@ class Button extends InteractiveComponent implements IClonable<Button> {
     }
 
     private function _onMouseDown(event:MouseEvent) {
-        event.cancel();
         if (FocusManager.instance.focusInfo != null && FocusManager.instance.focusInfo.currentFocus != null) {
             FocusManager.instance.focusInfo.currentFocus.focus = false;
         }
@@ -242,12 +215,14 @@ class Button extends InteractiveComponent implements IClonable<Button> {
     private function _onMouseUp(event:MouseEvent) {
         event.cancel();
         _down = false;
+        screen.unregisterEvent(MouseEvent.MOUSE_UP, _onMouseUp);
+
         if (_toggle == true) {
             return;
         }
 
         removeClass(":down");
-        if (hitTest(event.screenX, event.screenY)) {
+        if (event.touchEvent == false && hitTest(event.screenX, event.screenY)) {
             addClass(":hover");
         }
 
@@ -257,8 +232,6 @@ class Button extends InteractiveComponent implements IClonable<Button> {
             _repeatTimer = null;
             #end
         }
-
-        screen.unregisterEvent(MouseEvent.MOUSE_UP, _onMouseUp);
     }
 
     private function _onMouseClick(event:MouseEvent) {
@@ -343,6 +316,9 @@ class ButtonDefaultIconBehaviour extends Behaviour {
     }
 }
 
+//***********************************************************************************************************
+// Layout
+//***********************************************************************************************************
 @:dox(hide)
 class ButtonLayout extends DefaultLayout {
     public function new() {

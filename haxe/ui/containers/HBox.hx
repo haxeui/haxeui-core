@@ -1,6 +1,5 @@
 package haxe.ui.containers;
 
-import haxe.ui.core.IClonable;
 import haxe.ui.layouts.HorizontalContinuousLayout;
 import haxe.ui.layouts.HorizontalLayout;
 
@@ -8,7 +7,7 @@ import haxe.ui.layouts.HorizontalLayout;
  A `Box` component that lays its children out horizontally
 **/
 @:dox(icon = "/icons/ui-split-panel.png")
-class HBox extends Box implements IClonable<HBox> {
+class HBox extends Box {
     public function new() {
         super();
         layout = new HorizontalLayout();

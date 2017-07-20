@@ -2,7 +2,6 @@ package haxe.ui.components;
 
 import haxe.ui.animation.AnimationManager;
 import haxe.ui.core.Behaviour;
-import haxe.ui.core.IClonable;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.UIEvent;
@@ -12,14 +11,13 @@ import haxe.ui.util.Variant;
  Encapsulates shared functionality of both vertical and horizontal scrollbar components
 **/
 @:dox(icon = "/icons/ui-scroll-bar-horizontal.png")
-class Scroll extends InteractiveComponent implements IClonable<Scroll> {
+class Scroll extends InteractiveComponent {
     private var _incButton:Button;
     private var _deincButton:Button;
     private var _thumb:Button;
 
     public function new() {
         super();
-        addClass("scroll");
         allowFocus = false;
     }
 
@@ -27,12 +25,13 @@ class Scroll extends InteractiveComponent implements IClonable<Scroll> {
     // Internals
     //***********************************************************************************************************
     private override function createDefaults() {
-        _defaultBehaviours = [
+        super.createDefaults();
+        defaultBehaviours([
             "min" => new ScrollDefaultMinBehaviour(this),
             "max" => new ScrollDefaultMaxBehaviour(this),
             "pos" => new ScrollDefaultPosBehaviour(this),
             "pageSize" => new ScrollDefaultPageSizeBehaviour(this)
-        ];
+        ]);
     }
 
     private override function create() {

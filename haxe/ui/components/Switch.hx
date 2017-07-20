@@ -2,7 +2,6 @@ package haxe.ui.components;
 
 import haxe.ui.core.UIEvent;
 import haxe.ui.util.Variant;
-import haxe.ui.core.IClonable;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.focus.FocusManager;
@@ -14,7 +13,7 @@ import haxe.ui.util.MathUtil;
  A Switch is a two-state toggle switch component that can select between two options
 **/
 //@:dox(icon = "")  //TODO
-class Switch extends InteractiveComponent implements IClonable<Switch> {
+class Switch extends InteractiveComponent {
     private var _button:Button;
     private var _label:Label;
 
@@ -26,6 +25,7 @@ class Switch extends InteractiveComponent implements IClonable<Switch> {
     // Internals
     //***********************************************************************************************************
     private override function createDefaults() {
+        super.createDefaults();
         _defaultLayout = new SwitchLayout();
     }
 
@@ -200,6 +200,9 @@ class SwitchLayout extends DefaultLayout {
         var switchComp:Switch = cast _component;
         var button:Button = switchComp.findComponent("switch-button");
         var label:Label = switchComp.findComponent("switch-label");
+        if (button == null || label == null) {
+            return;
+        }
         
         button.top = paddingTop;
         label.top = (component.componentHeight / 2) - (label.componentHeight / 2);

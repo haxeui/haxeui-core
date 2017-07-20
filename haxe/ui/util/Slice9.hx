@@ -40,7 +40,7 @@ class Slice9 {
     public static function buildDstRects(w:Float, h:Float, srcRects:Array<Rectangle>):Array<Rectangle> {
         var dstRects:Array<Rectangle> = [];
 
-        dstRects.push(srcRects[0]);
+        dstRects.push(new Rectangle(0, 0, srcRects[0].width, srcRects[0].height));
         dstRects.push(new Rectangle(srcRects[0].width, 0, w - srcRects[0].width - srcRects[2].width, srcRects[1].height));
         dstRects.push(new Rectangle(w - srcRects[2].width, 0, srcRects[2].width, srcRects[2].height));
 

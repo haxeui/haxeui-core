@@ -78,7 +78,7 @@ class Parser {
                 }
             default:
                 var i = getVariant(v);
-                if( i != null ) { s.padding(i); return true; }
+                if( i != null ) { s.padding = i; return true; }
             }
         case "padding-top":
             var i = getVariant(v);
@@ -507,12 +507,10 @@ class Parser {
         case "cursor":
             var v = getIdent(v);
             if (v != null) {
-                if (v == "pointer" || v == "default") {
-                    s.cursor = v;
-                    return true;
-                }
-                return false;
+                s.cursor = v;
+                return true;
             }
+            return false;
         case "filter":
             var arr = getCall(v);
             if (arr != null) {
