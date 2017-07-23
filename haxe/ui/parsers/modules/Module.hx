@@ -6,6 +6,7 @@ class Module {
     public var componentEntries(default, default):Array<ModuleComponentEntry>;
     public var scriptletEntries(default, default):Array<ModuleScriptletEntry>;
     public var themeEntries(default, default):Map<String, ModuleThemeEntry>;
+    public var localeEntries(default, default):Array<ModuleLocaleEntry>;
     public var plugins(default, default):Array<ModulePluginEntry>;
     public var properties(default, default):Array<ModulePropertyEntry>;
     public var animations(default, default):Array<ModuleAnimationEntry>;
@@ -15,6 +16,7 @@ class Module {
         componentEntries = [];
         scriptletEntries = [];
         themeEntries = new Map<String, ModuleThemeEntry>();
+        localeEntries = [];
         plugins = [];
         properties = [];
         animations = [];
@@ -77,6 +79,14 @@ class ModulePluginEntry {
 class ModulePropertyEntry {
     public var name(default, default):String;
     public var value(default, default):String;
+
+    public function new() {
+    }
+}
+
+class ModuleLocaleEntry {
+    public var id(default, default):String;
+    public var resource(default, default):String;
 
     public function new() {
     }

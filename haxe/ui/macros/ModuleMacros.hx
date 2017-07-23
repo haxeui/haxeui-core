@@ -114,6 +114,15 @@ class ModuleMacros {
                 }
             }
 
+            // setup locales
+            for (t in m.localeEntries) {
+                if (t.id != null && t.resource != null) {
+                    code += 'var localeContent = haxe.ui.ToolkitAssets.instance.getText("${t.resource}");\n';
+                    code += 'var localeParser = haxe.ui.parsers.locale.LocaleParser.get("${t.resource}".split(".").pop());\n';
+                    code += 'haxe.ui.locale.LocaleManager.instance.registerLanguage("${t.id}", localeParser.parse(localeContent));\n';
+                }
+            }
+
             // handle plugins
             for (p in m.plugins) {
                 if (MacroHelpers.checkCondition(p.condition) == true) {

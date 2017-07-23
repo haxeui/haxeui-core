@@ -133,6 +133,8 @@ class ComponentMacros {
         }
 
         var numberEReg:EReg = ~/^\d+(\.(\d+))?$/;
+        var localeEReg = ~/^_\( *([\w'", \.]+) *\)$/;
+        var localeStringParamEReg = ~/['"](.+)['"]/;
         var type = Context.getModule(className)[0];
         //trace(className + " = " + MacroHelpers.hasInterface(type, "haxe.ui.core.IDataComponent"));
 
@@ -146,6 +148,72 @@ class ComponentMacros {
         }
         inline function assign(field:String, value:Dynamic) {
             add(macro $i{componentVarName}.$field = $v{value});
+        }
+        function assignText(field:String, value:String) {
+            if (localeEReg.match(value)) {
+                var localeMatched = localeEReg.matched(1);
+                var localeArr = localeMatched.split(",");
+                var localeID = localeArr[0];
+                if (!localeStringParamEReg.match(localeID)) {
+                    throw 'First parameter $localeID in locale function isn\'t a string.';
+                }
+
+                localeID = localeStringParamEReg.matched(1);
+                var localeParams = localeArr.slice(1, localeArr.length);
+
+                var onLocaleChangeCode:Array<Expr> = [];
+                var rootComponent:ComponentInfo = null;
+                if (localeParams != null && localeParams.length > 0) {
+                    onLocaleChangeCode.push(macro var params:Array<Any> = []);
+                    for (i in 0...localeParams.length) {
+                        var param = StringTools.trim(localeParams[i]);
+                        localeParams[i] = param;
+
+                        if (localeStringParamEReg.match(param)) {
+                            onLocaleChangeCode.push(macro params.push($v{localeStringParamEReg.matched(1)}));
+                        } else if (param.indexOf(".") != -1) {
+                            var sourceArr:Array<String> = param.split(".");
+                            var sourceId:String = sourceArr[0];
+                            var sourceProp:String = sourceArr[1];
+                            onLocaleChangeCode.push(macro var source = c0.findComponent($v{sourceId}, null, true));
+                            onLocaleChangeCode.push(macro params.push(Reflect.getProperty(source, $v{sourceProp})));
+
+                            //Binding
+                            var binding:ComponentBindingInfo = new ComponentBindingInfo();
+                            binding.source = sourceId;
+                            if (c.id == null) {
+                                c.id = @:privateAccess ComponentParser.nextId();
+                                assign("id", c.id);
+                            }
+                            binding.target = c.id;
+                            if (rootComponent == null) {
+                                rootComponent = c.findRootComponent();
+                            }
+                            binding.transform = "${" + '${binding.target}.${field} = LocaleManager.instance.get("${localeID}", ${localeParams.toString()})' + "}";
+                            rootComponent.bindings.push(binding);
+                        } else {
+                            onLocaleChangeCode.push(macro params.push(Std.string($v{param})));
+                        }
+                    }
+
+                    onLocaleChangeCode.push(macro $i{componentVarName}.$field = haxe.ui.locale.LocaleManager.instance.get($v{localeID}, params));
+                } else {
+                    onLocaleChangeCode.push(macro $i{componentVarName}.$field = haxe.ui.locale.LocaleManager.instance.get($v{localeID}));
+                }
+
+                add(macro {
+                    var _onLocaleChange = function() {
+                        $b{onLocaleChangeCode}
+                    };
+                    haxe.ui.locale.LocaleManager.instance.registerEvent(haxe.ui.core.UIEvent.CHANGE, function(_){
+                        _onLocaleChange();
+                    });
+                    _onLocaleChange();
+                });
+
+            } else {
+                assign(field, value);
+            }
         }
         add(macro var $componentVarName = new $typePath());
 
@@ -164,30 +232,34 @@ class ComponentMacros {
         if (c.contentHeight != null)            assign("contentHeight", c.contentHeight);
         if (c.percentContentWidth != null)      assign("percentContentWidth", c.percentContentWidth);
         if (c.percentContentHeight != null)     assign("percentContentHeight", c.percentContentHeight);
-        if (c.text != null)                     assign("text", c.text);
+        if (c.text != null)                     assignText("text", c.text);
         if (c.styleNames != null)               assign("styleNames", c.styleNames);
         if (c.style != null)                    assign("styleString", c.styleString);
         if (c.layoutName != null)               assign("layoutName", c.layoutName);
         for (propName in c.properties.keys()) {
             var propValue = c.properties.get(propName);
-            var propExpr = if (propValue == "true" || propValue == "yes" || propValue == "false" || propValue == "no") {
-                macro $v{propValue == "true" || propValue == "yes"};
+            if (localeEReg.match(propValue)) {
+                assignText(propName, propValue);
             } else {
-                if(numberEReg.match(propValue)) {
-                    if(numberEReg.matched(2) != null) {
-                        macro $v{Std.parseFloat(propValue)};
-                    } else {
-                        macro $v{Std.parseInt(propValue)};
-                    }
+                var propExpr = if (propValue == "true" || propValue == "yes" || propValue == "false" || propValue == "no") {
+                    macro $v{propValue == "true" || propValue == "yes"};
                 } else {
-                    macro $v{propValue};
+                    if(numberEReg.match(propValue)) {
+                        if(numberEReg.matched(2) != null) {
+                            macro $v{Std.parseFloat(propValue)};
+                        } else {
+                            macro $v{Std.parseInt(propValue)};
+                        }
+                    } else {
+                        macro $v{propValue};
+                    }
                 }
-            }
 
-            if (StringTools.startsWith(propName, "on")) {
-                add(macro $i{componentVarName}.addScriptEvent($v{propName}, $propExpr));
-            } else {
-                add(macro $i{componentVarName}.$propName = $propExpr);
+                if (StringTools.startsWith(propName, "on")) {
+                    add(macro $i{componentVarName}.addScriptEvent($v{propName}, $propExpr));
+                } else {
+                    add(macro $i{componentVarName}.$propName = $propExpr);
+                }
             }
         }
 

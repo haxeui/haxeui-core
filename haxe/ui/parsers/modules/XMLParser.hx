@@ -51,6 +51,13 @@ class XMLParser extends ModuleParser {
                     }
                     module.themeEntries.set(theme.name, theme);
                 }
+            } else if (nodeName == "locales") {
+                for (localeNode in el.elements()) {
+                    var locale:Module.ModuleLocaleEntry = new Module.ModuleLocaleEntry();
+                    locale.id = localeNode.get("id");
+                    locale.resource = localeNode.get("resource");
+                    module.localeEntries.push(locale);
+                }
             } else if (nodeName == "plugins") {
                 for (pluginNode in el.elementsNamed("plugin")) {
                     var plugin:Module.ModulePluginEntry = new Module.ModulePluginEntry();
