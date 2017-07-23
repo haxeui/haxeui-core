@@ -81,7 +81,7 @@ class LocaleManager {
     /**
       Get the locale string with optional `params` from the string `id`.
     **/
-    public function get(key:String, params:Array<Any> = null) {
+    public function get(key:String, params:Array<Any> = null):String {
         var content:String = null;
         if (_currentLocale != null) {
             content = _currentLocale.get(key);
@@ -89,7 +89,7 @@ class LocaleManager {
             if (content == null) {
                 trace('Invalid locale key ${key} with id ${_currentLocaleID}');
             } else if (params != null) {
-                for(i in 0...params.length) {
+                for (i in 0...params.length) {
                     content = content.replace('{${i}}', '${params[i]}');
                 }
             }

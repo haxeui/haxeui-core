@@ -178,7 +178,6 @@ class ComponentMacros {
                             onLocaleChangeCode.push(macro var source = c0.findComponent($v{sourceId}, null, true));
                             onLocaleChangeCode.push(macro params.push(Reflect.getProperty(source, $v{sourceProp})));
 
-                            //Binding
                             var binding:ComponentBindingInfo = new ComponentBindingInfo();
                             binding.source = sourceId;
                             if (c.id == null) {
