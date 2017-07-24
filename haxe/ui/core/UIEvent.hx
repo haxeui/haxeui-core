@@ -4,6 +4,7 @@ import haxe.ui.backend.EventBase;
 
 class UIEvent extends EventBase {
     public static inline var READY:String = "Ready";
+    public static inline var DESTROY:String = "Destroy";
     public static inline var RESIZE:String = "Resize";
     public static inline var CHANGE:String = "Change";
     public static inline var MOVE:String = "Move";

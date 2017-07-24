@@ -559,7 +559,10 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     }
 
     private function onDestroy() {
-
+        for (child in childComponents) {
+            child.onDestroy();
+        }
+        dispatch(new UIEvent(UIEvent.DESTROY));
     }
 
     /**

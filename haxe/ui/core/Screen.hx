@@ -55,9 +55,14 @@ class Screen extends ScreenBase {
         component.registerEvent(UIEvent.RESIZE, _onRootComponentResize);    //refresh vh & vw
     }
 
-    public override function removeComponent(component:Component) {
+    @:access(haxe.ui.core.Component)
+    public override function removeComponent(component:Component) {    //TODO - add param here & backends, dispose:Bool = true
         super.removeComponent(component);
-        rootComponents.remove(component);
+        if (rootComponents.remove(component) == true) {
+//            if (dispose == true) {
+                component.onDestroy();
+//            }
+        }
         component.unregisterEvent(UIEvent.RESIZE, _onRootComponentResize);
     }
 

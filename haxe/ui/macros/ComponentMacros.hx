@@ -201,13 +201,16 @@ class ComponentMacros {
                 }
 
                 add(macro {
-                    var _onLocaleChange = function() {
+                    var _onLocaleChange = function(_) {
                         $b{onLocaleChangeCode}
                     };
-                    haxe.ui.locale.LocaleManager.instance.registerEvent(haxe.ui.core.UIEvent.CHANGE, function(_){
-                        _onLocaleChange();
+                    $i{componentVarName}.registerEvent(haxe.ui.core.UIEvent.READY, function(_) {
+                        haxe.ui.locale.LocaleManager.instance.registerEvent(haxe.ui.core.UIEvent.CHANGE, _onLocaleChange);
+                        _onLocaleChange(null);
                     });
-                    _onLocaleChange();
+                    $i{componentVarName}.registerEvent(haxe.ui.core.UIEvent.DESTROY, function(_) {
+                        haxe.ui.locale.LocaleManager.instance.unregisterEvent(haxe.ui.core.UIEvent.CHANGE, _onLocaleChange);
+                    });
                 });
 
             } else {
