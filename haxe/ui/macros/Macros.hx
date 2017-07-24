@@ -52,6 +52,32 @@ class Macros {
             return fields;
         }
 
+        function getFieldCloneCode(field:Field):String {
+            var type:Null<ComplexType> = null;
+            switch (field.kind) {
+                case FProp(_, _, t, _):
+                    type = t;
+
+                case FVar(t, _):
+                    type = t;
+
+                default:
+            }
+
+            if (type != null) {
+                switch (type) { // almost certainly a better way to be doing this
+                    case TPath(typePath):
+                        if(typePath.name == "String" || typePath.name == "Null") {
+                            return "if (this." + field.name + " != null) { c." + field.name + " = this." + field.name + "; }\n";
+                        }
+
+                    default:
+                }
+            }
+
+            return "c." + field.name + " = this." + field.name;
+        }
+
         var currentCloneFn = getFunction("cloneComponent", fields);
         var t:haxe.macro.Type = Context.getLocalType();
         var className:String = getClassNameFromType(t);
@@ -77,13 +103,13 @@ class Macros {
             if (useSelf == false) {
                 code += "var c:" + className + " = cast super.cloneComponent();\n";
                 for (f in getFieldsWithMeta("clonable", fields)) {
-                    code += "if (this." + f.name + " != null) { c." + f.name + " = this." + f.name + "; }\n";
+                    code += getFieldCloneCode(f) + ";\n";
                 }
 
             } else {
                 code += "var c:" + className + " = self();\n";
                 for (f in getFieldsWithMeta("clonable", fields)) {
-                    code += "if (this." + f.name + " != null) { c." + f.name + " = this." + f.name + "; }\n";
+                    code += getFieldCloneCode(f) + ";\n";
                 }
 
                 code += "if (this.childComponents.length != c.childComponents.length) for (child in this.childComponents) c.addComponent(child.cloneComponent());\n";
@@ -110,7 +136,7 @@ class Macros {
             insertLine(currentCloneFn, Context.parseInlineString(code, pos), n++);
 
             for (f in getFieldsWithMeta("clonable", fields)) {
-                code = "if (this." + f.name + " != null) { c." + f.name + " = this." + f.name + "; }";
+                code = getFieldCloneCode(f);
                 insertLine(currentCloneFn, Context.parseInlineString(code, pos), n++);
             }
 
