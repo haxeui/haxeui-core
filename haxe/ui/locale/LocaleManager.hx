@@ -41,10 +41,13 @@ class LocaleManager {
       Register a new language in the system
     **/
     public function registerLanguage(id:String, content:Map<String, String>) {
-        id = id.toLowerCase();
-        _locales.set(id, content);
+        var values = _getLocaleValues(id);
+        for (value in values) {
+            _locales.set(value, content);
+        }
+
         if (_currentLocaleID == null) {
-            setLanguage(id);
+            setLanguage(values[0]);
         }
     }
 
@@ -52,8 +55,12 @@ class LocaleManager {
       Unregister a language in the system
     **/
     public function unregisterLanguage(id:String) {
-        id = id.toLowerCase();
-        _locales.remove(id);
+        var values = _getLocaleValues(id);
+        for (value in values) {
+            _locales.remove(value);
+        }
+
+        id = values[0];
         if (_currentLocaleID == id) {
             for (k in _locales.keys()) {
                 setLanguage(k);
@@ -81,8 +88,10 @@ class LocaleManager {
             }
         }
 
-        _currentLocale = new Map<String, String>();
-        _currentLocaleID = null;
+        if(_currentLocale == null) {    //Leave the previous language
+            _currentLocale = new Map<String, String>();
+            _currentLocaleID = null;
+        }
 
         return false;
     }
