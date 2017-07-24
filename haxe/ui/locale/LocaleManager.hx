@@ -31,7 +31,7 @@ class LocaleManager {
     public function getLocales():Array<String> {
         var result:Array<String> = [];
         for (k in _locales.keys()) {
-            result = result.concat(_getLocaleValues(k));
+            result.push(k);
         }
 
         return result;
