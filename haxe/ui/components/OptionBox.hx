@@ -276,6 +276,7 @@ class OptionBoxDefaultTextBehaviour extends Behaviour {
             optionbox._label.registerEvent(MouseEvent.MOUSE_OUT, optionbox._onMouseOut);
 
             optionbox.addComponent(optionbox._label);
+            optionbox.applyStyle(optionbox._style);
         }
         optionbox._label.text = value;
     }
