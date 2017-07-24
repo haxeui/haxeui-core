@@ -10,8 +10,7 @@ class PropertiesParser extends LocaleParser {
     public override function parse(data:String):Map<String, String> {
         var result:Map<String, String> = new Map<String, String>();
         var lines = data.split("\n");
-        for (line in lines)
-        {
+        for (line in lines) {
             line = line.trim();
             if (line.length == 0 || line.startsWith("#")) {
                 continue;
