@@ -29,6 +29,7 @@ class LocaleParser {
     private static function defaultParsers() {
         if (_parsers == null) {
             register("properties", PropertiesParser);
+            register("po", PoParser);
         }
     }
 
