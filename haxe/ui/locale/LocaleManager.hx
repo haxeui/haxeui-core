@@ -41,6 +41,7 @@ class LocaleManager {
       Register a new language in the system
     **/
     public function registerLanguage(id:String, content:Map<String, String>) {
+        id = id.toLowerCase();
         _locales.set(id, content);
         if (_currentLocaleID == null) {
             setLanguage(id);
@@ -51,6 +52,7 @@ class LocaleManager {
       Unregister a language in the system
     **/
     public function unregisterLanguage(id:String) {
+        id = id.toLowerCase();
         _locales.remove(id);
         if (_currentLocaleID == id) {
             for (k in _locales.keys()) {
@@ -68,13 +70,19 @@ class LocaleManager {
       Change the language in the system
     **/
     public function setLanguage(id:String) {
-        _currentLocale = _locales.get(id);
+        var values = _getLocaleValues(id);
+        for (value in values) {
+            _currentLocale = _locales.get(value);
+            if (_currentLocale != null) {
+                _currentLocaleID = value;
+                dispatch(new UIEvent(UIEvent.CHANGE));
+                break;
+            }
+        }
+
         if (_currentLocale == null) {
             _currentLocale = new Map<String, String>();
             _currentLocaleID = null;
-        } else {
-            _currentLocaleID = id;
-            dispatch(new UIEvent(UIEvent.CHANGE));
         }
     }
 
@@ -96,6 +104,23 @@ class LocaleManager {
         }
 
         return content;
+    }
+
+    private function _getLocaleValues(id:String):Array<String> {
+        id = id.toLowerCase();
+        var values:Array<String> = [id];
+        var localeEReg = ~/([a-zA-Z0-9]+)([-_]([a-zA-Z0-9]+))?/;
+        if (localeEReg.match(id)) {
+            var locale1 = localeEReg.matched(1);
+            var locale2 = localeEReg.matched(3);
+            if (locale2 == null) {
+                locale2 = locale1;
+            }
+
+            return ['${locale1}_${locale2}', '${locale1}-${locale2}', locale1];
+        } else {
+            return [id];
+        }
     }
 
     //***********************************************************************************************************
