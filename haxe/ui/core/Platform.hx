@@ -1,5 +1,6 @@
 package haxe.ui.core;
 
+import Reflect;
 import haxe.ui.backend.PlatformBase;
 
 class Platform extends PlatformBase {
@@ -18,7 +19,7 @@ class Platform extends PlatformBase {
 
     public static var systemLocale(get, null):String;
     private static function get_systemLocale():String {
-        return instance._systemLocale;
+        return Reflect.hasField(instance, "_systemLocale") ? Reflect.field(instance, "_systemLocale") : "en";
     }
 
     private static var _instance:Platform;
