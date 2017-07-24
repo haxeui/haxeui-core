@@ -5,8 +5,10 @@ import haxe.ui.core.Component;
 import haxe.ui.core.ComponentClassMap;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.KeyboardEvent;
+import haxe.ui.core.Platform;
 import haxe.ui.core.Screen;
 import haxe.ui.focus.FocusManager;
+import haxe.ui.locale.LocaleManager;
 import haxe.ui.macros.BackendMacros;
 import haxe.ui.macros.ModuleMacros;
 import haxe.ui.macros.NativeMacros;
@@ -19,6 +21,7 @@ import haxe.ui.styles.Engine;
 import haxe.ui.themes.ThemeManager;
 import haxe.ui.util.GenericConfig;
 import haxe.ui.util.Properties;
+import Reflect;
 
 class Toolkit {
     public static var styleSheet:Engine = new Engine();
@@ -44,8 +47,14 @@ class Toolkit {
         #end
     }
 
+    public static function setDefaultLanguage() {
+        var systemLocale:String = Platform.systemLocale;
+        LocaleManager.instance.setLanguage(systemLocale);
+    }
+
     public static function init(options:Dynamic = null) {
         build();
+        setDefaultLanguage();
         ThemeManager.instance.applyTheme(theme);
         if (options != null) {
             screen.options = options;

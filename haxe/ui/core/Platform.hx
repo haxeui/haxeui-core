@@ -16,6 +16,11 @@ class Platform extends PlatformBase {
         return instance.getMetric(METRIC_HSCROLL_HEIGHT);
     }
 
+    public static var systemLocale(get, null):String;
+    private static function get_systemLocale():String {
+        return instance._systemLocale;
+    }
+
     private static var _instance:Platform;
     public static var instance(get, null):Platform;
     private static function get_instance():Platform {

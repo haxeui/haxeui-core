@@ -31,7 +31,7 @@ class LocaleManager {
     public function getLocales():Array<String> {
         var result:Array<String> = [];
         for (k in _locales.keys()) {
-            result.push(k);
+            result = result.concat(_getLocaleValues(k));
         }
 
         return result;
@@ -69,21 +69,22 @@ class LocaleManager {
     /**
       Change the language in the system
     **/
-    public function setLanguage(id:String) {
+    public function setLanguage(id:String):Bool {
         var values = _getLocaleValues(id);
         for (value in values) {
             _currentLocale = _locales.get(value);
             if (_currentLocale != null) {
                 _currentLocaleID = value;
                 dispatch(new UIEvent(UIEvent.CHANGE));
-                break;
+
+                return true;
             }
         }
 
-        if (_currentLocale == null) {
-            _currentLocale = new Map<String, String>();
-            _currentLocaleID = null;
-        }
+        _currentLocale = new Map<String, String>();
+        _currentLocaleID = null;
+
+        return false;
     }
 
     /**
