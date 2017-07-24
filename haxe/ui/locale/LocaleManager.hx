@@ -109,7 +109,6 @@ class LocaleManager {
 
     private function _getLocaleValues(id:String):Array<String> {
         id = id.toLowerCase();
-        var values:Array<String> = [id];
         var localeEReg = ~/([a-zA-Z0-9]+)([-_]([a-zA-Z0-9]+))?/;
         if (localeEReg.match(id)) {
             var locale1 = localeEReg.matched(1);

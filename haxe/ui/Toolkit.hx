@@ -21,7 +21,6 @@ import haxe.ui.styles.Engine;
 import haxe.ui.themes.ThemeManager;
 import haxe.ui.util.GenericConfig;
 import haxe.ui.util.Properties;
-import Reflect;
 
 class Toolkit {
     public static var styleSheet:Engine = new Engine();
