@@ -2,7 +2,13 @@
 <module id="haxeui-core">
     <resources>
         <resource path="/haxe/ui/_module/styles" prefix="haxeui-core/styles" />
+        <resource path="/haxe/ui/_module/locale" prefix="haxeui-core/locale" />
     </resources>
+
+    <locales>
+        <locale id="en" resource="haxeui-core/locale/en.properties"/>
+        <locale id="es" resource="haxeui-core/locale/es.properties"/>
+    </locales>
 
     <components>
         <class name="haxe.ui.core.Component" />

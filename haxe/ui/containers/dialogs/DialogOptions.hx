@@ -1,5 +1,7 @@
 package haxe.ui.containers.dialogs;
 
+import haxe.ui.locale.LocaleManager;
+
 /**
  Holds options associated with instances of `Dialog`
 **/
@@ -59,37 +61,37 @@ class DialogOptions {
         switch (button) {
             case DialogButton.OK:
                 var b = new DialogButton();
-                b.text = "OK";
+                b.text = LocaleManager.instance.get("dialog.ok");
                 b.id = '${DialogButton.OK}';
                 b.styleNames = "dialog-button dialog-button-ok";
                 addButton(b);
             case DialogButton.CANCEL:
                 var b = new DialogButton();
-                b.text = "Cancel";
+                b.text = LocaleManager.instance.get("dialog.cancel");
                 b.id = '${DialogButton.CANCEL}';
                 b.styleNames = "dialog-button dialog-button-cancel";
                 addButton(b);
             case DialogButton.CLOSE:
                 var b = new DialogButton();
-                b.text = "Close";
+                b.text = LocaleManager.instance.get("dialog.close");
                 b.id = '${DialogButton.CLOSE}';
                 b.styleNames = "dialog-button dialog-button-close";
                 addButton(b);
             case DialogButton.CONFIRM:
                 var b = new DialogButton();
-                b.text = "Confirm";
+                b.text = LocaleManager.instance.get("dialog.confirm");
                 b.id = '${DialogButton.CONFIRM}';
                 b.styleNames = "dialog-button dialog-button-confirm";
                 addButton(b);
             case DialogButton.YES:
                 var b = new DialogButton();
-                b.text = "Yes";
+                b.text = LocaleManager.instance.get("dialog.yes");
                 b.id = '${DialogButton.YES}';
                 b.styleNames = "dialog-button dialog-button-yes";
                 addButton(b);
             case DialogButton.NO:
                 var b = new DialogButton();
-                b.text = "No";
+                b.text = LocaleManager.instance.get("dialog.no");
                 b.id = '${DialogButton.NO}';
                 b.styleNames = "dialog-button dialog-button-no";
                 addButton(b);
