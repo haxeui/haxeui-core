@@ -4,6 +4,11 @@ import haxe.ui.core.UIEvent;
 import haxe.ui.util.EventMap;
 using StringTools;
 
+typedef Locale = {
+    id:String,
+    content:Map<String, String>
+};
+
 class LocaleManager {
     private static var _instance:LocaleManager;
     public static var instance(get, never):LocaleManager;
@@ -17,9 +22,8 @@ class LocaleManager {
     //***********************************************************************************************************
     // Instance
     //***********************************************************************************************************
-    private var _locales:Map<String, Map<String, String>> = new Map<String, Map<String, String>>();
-    private var _currentLocale:Map<String, String>;
-    private var _currentLocaleID:String;
+    private var _locales:Map<String, Locale> = new Map<String, Locale>();
+    private var _currentLocales:Array<Locale>;
 
     public function new() {
 
@@ -41,13 +45,22 @@ class LocaleManager {
       Register a new language in the system
     **/
     public function registerLanguage(id:String, content:Map<String, String>) {
-        var values = _getLocaleValues(id);
-        for (value in values) {
-            _locales.set(value, content);
+        id = _normalizeLocaleID(id);
+
+        var locale:Locale = null;
+        if (_locales.exists(id)) {
+            locale = _locales.get(id);
+        } else {
+            locale = {id: id, content: new Map<String, String>()};
+            _locales.set(id, locale);
         }
 
-        if (_currentLocaleID == null) {
-            setLanguage(values[0]);
+        _copyMap(content, locale.content);
+
+        if (_currentLocales == null || _currentLocales.length == 0) {
+            setLanguage(id);
+        } else if (_getLocaleData(_currentLocales[0].id).language == _getLocaleData(id).language){
+            _currentLocales.push(locale);
         }
     }
 
@@ -55,20 +68,21 @@ class LocaleManager {
       Unregister a language in the system
     **/
     public function unregisterLanguage(id:String) {
-        var values = _getLocaleValues(id);
-        for (value in values) {
-            _locales.remove(value);
-        }
+        id = _normalizeLocaleID(id);
+        var localeRemoved = _locales.get(id);
+        _locales.remove(id);
 
-        id = values[0];
-        if (_currentLocaleID == id) {
-            for (k in _locales.keys()) {
-                setLanguage(k);
-                break;
+        if (_currentLocales.length > 0) {
+            var i:Int = _currentLocales.length;
+            while (--i >= 0) {
+                if(_currentLocales[i] == localeRemoved) {
+                    _currentLocales.splice(i, 1);
+                    break;
+                }
             }
 
-            if (_currentLocaleID == id) {
-                setLanguage(null);
+            if (_currentLocales.length == 0) {
+                _setFirstLanguage();
             }
         }
     }
@@ -77,58 +91,85 @@ class LocaleManager {
       Change the language in the system
     **/
     public function setLanguage(id:String):Bool {
-        var values = _getLocaleValues(id);
-        for (value in values) {
-            _currentLocale = _locales.get(value);
-            if (_currentLocale != null) {
-                _currentLocaleID = value;
-                dispatch(new UIEvent(UIEvent.CHANGE));
+        id = _normalizeLocaleID(id);
 
-                return true;
+        if (_currentLocales != null) {
+            for (locale in _currentLocales) {
+                if (locale.id == id) {
+                    return true;
+                }
             }
         }
 
-        if(_currentLocale == null) {    //Leave the previous language
-            _currentLocale = new Map<String, String>();
-            _currentLocaleID = null;
+        _currentLocales = [];
+        var localeData:LocaleData = _getLocaleData(id);
+        for (key in _locales.keys()) {
+            if (key.startsWith(localeData.language) || key == id) {
+                _currentLocales.push(_locales.get(key));
+            }
         }
 
-        return false;
+        if (_currentLocales.length > 0) {
+            dispatch(new UIEvent(UIEvent.CHANGE));
+        }
+
+        return _currentLocales.length > 0;
     }
 
     /**
       Get the locale string with optional `params` from the string `id`.
     **/
     public function get(key:String, params:Array<Any> = null):String {
-        var content:String = null;
-        if (_currentLocale != null) {
-            content = _currentLocale.get(key);
+        var localeString:String = null;
+        if (_currentLocales != null) {
+            for (locale in _currentLocales) {
+                localeString = locale.content.get(key);
+                if (localeString != null) {
+                    if (params != null) {
+                        for (i in 0...params.length) {
+                            localeString = localeString.replace('{${i}}', '${params[i]}');
+                        }
+                    }
 
-            if (content == null) {
-                trace('Invalid locale key ${key} with id ${_currentLocaleID}');
-            } else if (params != null) {
-                for (i in 0...params.length) {
-                    content = content.replace('{${i}}', '${params[i]}');
+                    break;
                 }
+            }
+
+            if (localeString == null) {
+                trace('Invalid locale key ${key}');
             }
         }
 
-        return content;
+        return localeString;
     }
 
-    private function _getLocaleValues(id:String):Array<String> {
-        id = id.toLowerCase();
-        var localeEReg = ~/([a-zA-Z0-9]+)([-_]([a-zA-Z0-9]+))?/;
-        if (localeEReg.match(id)) {
-            var locale1 = localeEReg.matched(1);
-            var locale2 = localeEReg.matched(3);
-            if (locale2 == null) {
-                locale2 = locale1;
-            }
+    private function _copyMap(fromMap:Map<String, String>, toMap:Map<String, String>) {
+        for (key in fromMap.keys()) {
+            toMap.set(key, fromMap.get(key));
+        }
+    }
 
-            return ['${locale1}_${locale2}', '${locale1}-${locale2}', locale1];
-        } else {
-            return [id];
+    private function _getLocaleData(id:String):LocaleData {
+        id = _normalizeLocaleID(id);
+        var localeEReg = ~/([a-zA-Z0-9]+)(_([a-zA-Z0-9]+))?/;
+        var language:String = null;
+        var country:String = null;
+        if (localeEReg.match(id)) {
+            language = localeEReg.matched(1);
+            country = localeEReg.matched(3);
+        }
+
+        return {language: language, country: country};
+    }
+
+    private inline function _normalizeLocaleID(id:String):String {
+        return id.toLowerCase().replace("-", "_");
+    }
+
+    private function _setFirstLanguage() {
+        for (k in _locales.keys()) {
+            setLanguage(k);
+            break;
         }
     }
 
@@ -168,4 +209,9 @@ class LocaleManager {
             __events.invoke(event.type, event);
         }
     }
+}
+
+private typedef LocaleData = {
+    language:String,
+    ?country:String
 }
