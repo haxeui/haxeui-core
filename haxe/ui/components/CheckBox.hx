@@ -42,11 +42,11 @@ class CheckBox extends InteractiveComponent {
             checkboxValue.id = "checkbox-value";
             checkboxValue.addClass("checkbox-value");
             addComponent(checkboxValue);
-
-            checkboxValue.registerEvent(MouseEvent.CLICK, _onClick);
-            checkboxValue.registerEvent(MouseEvent.MOUSE_OVER, _onMouseOver);
-            checkboxValue.registerEvent(MouseEvent.MOUSE_OUT, _onMouseOut);
         }
+
+        registerEvent(MouseEvent.CLICK, _onClick);
+        registerEvent(MouseEvent.MOUSE_OVER, _onMouseOver);
+        registerEvent(MouseEvent.MOUSE_OUT, _onMouseOut);
     }
 
     private override function destroyChildren() {
