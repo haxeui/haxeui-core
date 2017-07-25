@@ -167,6 +167,7 @@ class CheckBoxDefaultTextBehaviour extends Behaviour {
             label.registerEvent(MouseEvent.MOUSE_OUT, checkbox._onMouseOut);
 
             checkbox.addComponent(label);
+            checkbox.applyStyle(checkbox._style);
         }
         label.text = value;
     }
