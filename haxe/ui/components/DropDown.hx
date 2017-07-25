@@ -52,6 +52,10 @@ class DropDown extends Button implements IDataComponent {
         }
     }
 
+    private override function onDestroy() {
+        hideList();
+    }
+
     private var _dataSource:DataSource<Dynamic>;
     public var dataSource(get, set):DataSource<Dynamic>;
     private function get_dataSource():DataSource<Dynamic> {
@@ -179,52 +183,9 @@ class DropDown extends Button implements IDataComponent {
         }
 
         if (selected == true) {
-            if (_listview == null) {
-                _listview = new ListView();
-                if (_itemRenderer != null) {
-                    _listview.addComponent(_itemRenderer);
-                }
-                _listview.addClass("popup");
-                if (_listStyleNames != null) {
-                    for (s in _listStyleNames.split(" ")) {
-                        _listview.addClass(s);
-                    }
-                }
-                if (_dataSource != null) {
-                    _listview.dataSource = _dataSource;
-                }
-                _listview.registerEvent(UIEvent.CHANGE, onItemChange);
-            }
-            Screen.instance.addComponent(_listview);
-
-            _listview.left = this.screenLeft;
-            _listview.top = this.screenTop + this.componentHeight;
-            if (_listWidth == null) {
-                _listview.width = Math.ffloor(this.componentWidth);
-            } else {
-                _listview.width = _listWidth;
-            }
-
-            var listHeight = _listHeight;
-            if (_listHeight == null) {
-                var n:Int = _listSize;
-                if (n > _listview.itemCount) {
-                    n = _listview.itemCount;
-                }
-                listHeight = n * _listview.itemHeight + (_listview.layout.paddingTop + _listview.layout.paddingBottom);
-            }
-            _listview.height = listHeight;
-
-            if (_listview.screenTop + _listview.height > Screen.instance.height) {
-                _listview.top = this.screenTop - _listview.height;
-            }
-
-            Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
+            showList();
         } else {
-            if (_listview != null) {
-                Screen.instance.removeComponent(_listview);
-            }
-            Screen.instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
+            hideList();
         }
     }
 
@@ -251,6 +212,57 @@ class DropDown extends Button implements IDataComponent {
         }
         selected = !selected;
         onMouseClick(null);
+    }
+
+    private function showList() {
+        if (_listview == null) {
+            _listview = new ListView();
+            if (_itemRenderer != null) {
+                _listview.addComponent(_itemRenderer);
+            }
+            _listview.addClass("popup");
+            if (_listStyleNames != null) {
+                for (s in _listStyleNames.split(" ")) {
+                    _listview.addClass(s);
+                }
+            }
+            if (_dataSource != null) {
+                _listview.dataSource = _dataSource;
+            }
+            _listview.registerEvent(UIEvent.CHANGE, onItemChange);
+        }
+        Screen.instance.addComponent(_listview);
+
+        _listview.left = this.screenLeft;
+        _listview.top = this.screenTop + this.componentHeight;
+        if (_listWidth == null) {
+            _listview.width = Math.ffloor(this.componentWidth);
+        } else {
+            _listview.width = _listWidth;
+        }
+
+        var listHeight = _listHeight;
+        if (_listHeight == null) {
+            var n:Int = _listSize;
+            if (n > _listview.itemCount) {
+                n = _listview.itemCount;
+            }
+            listHeight = n * _listview.itemHeight + (_listview.layout.paddingTop + _listview.layout.paddingBottom);
+        }
+        _listview.height = listHeight;
+
+        if (_listview.screenTop + _listview.height > Screen.instance.height) {
+            _listview.top = this.screenTop - _listview.height;
+        }
+
+        Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
+    }
+
+    private function hideList() {
+        if (_listview != null) {
+            Screen.instance.removeComponent(_listview);
+        }
+        Screen.instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
     }
 
     //***********************************************************************************************************
