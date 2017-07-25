@@ -1119,6 +1119,8 @@ class Component extends ComponentBase implements IComponentBase implements IClon
             _ready = true;
             handleReady();
 
+            initScript();
+
             if (childComponents != null) {
                 for (child in childComponents) {
                     child.ready();
@@ -1150,7 +1152,6 @@ class Component extends ComponentBase implements IComponentBase implements IClon
         behavioursUpdate();
 
         handleBindings(["text", "value", "width", "height"]);
-        initScript();
     }
 
     private function onResized() {
@@ -1692,31 +1693,17 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     @:dox(group = "Script related properties and methods")
     public function addScriptEvent(event:String, script:String) {
         event = event.toLowerCase();
+        var eventName = StringTools.startsWith(event, "on") ? event.substring(2, event.length) : event;
         if (_scriptEvents == null) {
             _scriptEvents = new Map<String, String>();
         }
         _scriptEvents.set(event, script);
-        switch (event) {
-            case "onclick":
-                registerEvent(MouseEvent.CLICK, _onScriptClick);
-            case "onchange":
-                registerEvent(UIEvent.CHANGE, _onScriptChange);
-        }
+        registerEvent(eventName, _onScriptEvent.bind(event, _));
     }
 
-    private function _onScriptClick(event:MouseEvent) {
+    private function _onScriptEvent(eventId:String, event:UIEvent) {
         if (_scriptEvents != null) {
-            var script:String = _scriptEvents.get("onclick");
-            if (script != null) {
-                event.cancel();
-                executeScriptCall(script);
-            }
-        }
-    }
-
-    private function _onScriptChange(event:UIEvent) {
-        if (_scriptEvents != null) {
-            var script:String = _scriptEvents.get("onchange");
+            var script:String = _scriptEvents.get(eventId);
             if (script != null) {
                 event.cancel();
                 executeScriptCall(script);
