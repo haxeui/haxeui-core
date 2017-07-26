@@ -15,6 +15,8 @@ import haxe.ui.data.transformation.NativeTypeTransformer;
 import haxe.ui.util.Variant;
 
 class ListView extends ScrollView implements IDataComponent {
+    static private inline var NO_SELECTION:Int = -1;
+
     public function new() {
         super();
     }
@@ -72,41 +74,39 @@ class ListView extends ScrollView implements IDataComponent {
         selectedItem = cast(event.target, ItemRenderer);
     }
 
+    private var _selectedIndex:Int = NO_SELECTION;
     public var selectedIndex(get, set):Int;
     private function get_selectedIndex():Int {
-        if (_currentSelection == null) {
-            return -1;
-        }
-        return contents.childComponents.indexOf(_currentSelection);
+        return _selectedIndex;
     }
     private function set_selectedIndex(value:Int):Int {
-        var item:ItemRenderer = cast(contents.childComponents[value], ItemRenderer);
-        selectedItem = item;
+        if(_dataSource != null && value < _dataSource.size && _selectedIndex != value) {
+            invalidateData();
+            _selectedIndex = value;
+        }
+
         return value;
     }
 
     public var selectedItem(get, set):ItemRenderer;
     private function get_selectedItem():ItemRenderer {
-        return _currentSelection;
-    }
-    private function set_selectedItem(value:ItemRenderer):ItemRenderer {
-        if (_currentSelection != null) {
-            _currentSelection.removeClass(":selected");
+        if (contents == null || _selectedIndex == NO_SELECTION) {
+            return null;
         }
 
-        _currentSelection = value;
-        if (_currentSelection != null) {
-            _currentSelection.addClass(":selected");
-            dispatch(new UIEvent(UIEvent.CHANGE));
+        return cast(contents.childComponents[_selectedIndex], ItemRenderer);
+    }
+    private function set_selectedItem(value:ItemRenderer):ItemRenderer {
+        if (_dataSource != null && _contents != null)
+        {
+            selectedIndex = contents.childComponents.indexOf(value);
         }
+
         return value;
     }
 
     public function resetSelection() {
-        if (_currentSelection != null) {
-            _currentSelection.removeClass(":selected", true, true);
-            _currentSelection = null;
-        }
+        selectedIndex = NO_SELECTION;
     }
 
     public function addItem(data:Dynamic):ItemRenderer {
@@ -240,7 +240,22 @@ class ListView extends ScrollView implements IDataComponent {
     //***********************************************************************************************************
 
     private override function validateData() {
-        behaviourSet("dataSource", _dataSource);
+        behaviourSet("dataSource", _dataSource);    //TODO - if the index is the only change, the syncUI method is executed anyway
+
+        var selectedItem = this.selectedItem;
+        if(contents.childComponents.indexOf(_currentSelection) != _selectedIndex)
+        {
+            if (_currentSelection != null) {
+                _currentSelection.removeClass(":selected", true, true);
+            }
+
+            _currentSelection = cast contents.childComponents[_selectedIndex];
+
+            if (_currentSelection != null) {
+                _currentSelection.addClass(":selected", true, true);
+                dispatch(new UIEvent(UIEvent.CHANGE));
+            }
+        }
     }
 
     private override function validateLayout() {

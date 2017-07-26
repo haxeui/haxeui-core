@@ -244,7 +244,7 @@ class DropDown extends Button implements IDataComponent {
             _listview.dataSource = _dataSource;
         }
 
-        behaviourSet("dataSource", _dataSource);
+        behaviourSet("dataSource", _dataSource);    //TODO - if the index is the only change, the syncUI method is executed anyway
 
         if(_dataSource != null) {
             if(_requireSelection == true && _selectedIndex < 0 && _dataSource.size > 0) {
