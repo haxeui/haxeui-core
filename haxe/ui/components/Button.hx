@@ -293,7 +293,6 @@ class ButtonDefaultTextBehaviour extends Behaviour {
             label.id = "button-label";
             label.scriptAccess = false;
             button.addComponent(label);
-            button.applyStyle(button._style);
         }
         label.text = value;
     }
@@ -325,7 +324,6 @@ class ButtonDefaultIconBehaviour extends Behaviour {
             icon.id = "button-icon";
             icon.scriptAccess = false;
             button.addComponent(icon);
-            button.applyStyle(button._style);
         }
 
         icon.resource = value;
