@@ -57,11 +57,11 @@ class Image extends Component {
     /**
      The resource to use for this image, currently only assets are supported, later versions will also support things like HTTP, files, etc
     **/
-    @:clonable @:bindable public var resource(get, set):Dynamic;
-    private function get_resource():Dynamic {
+    @:clonable @:bindable public var resource(get, set):String;
+    private function get_resource():String {
         return _resource;
     }
-    private function set_resource(value:Dynamic):Dynamic {
+    private function set_resource(value:String):String {
         if (_resource == value) {
             return value;
         }

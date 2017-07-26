@@ -326,7 +326,7 @@ class ButtonDefaultIconBehaviour extends Behaviour {
             button.addComponent(icon);
         }
 
-        icon.resource = value.toString();
+        icon.resource = value;
     }
 }
 
