@@ -56,10 +56,18 @@ class ModuleScriptletEntry {
 class ModuleThemeEntry {
     public var name(default, default):String;
     public var parent(default, default):String;
-    public var styles(default, default):Array<String>;
+    public var styles(default, default):Array<ModuleThemeStyleEntry>;
 
     public function new() {
         styles = [];
+    }
+}
+
+class ModuleThemeStyleEntry {
+    public var resource:String;
+    public var condition:String;
+    
+    public function new() {
     }
 }
 
