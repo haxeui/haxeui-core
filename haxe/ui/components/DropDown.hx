@@ -247,31 +247,6 @@ class DropDown extends Button implements IDataComponent {
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
     }
 
-    public var selectedItem(get, null):Dynamic;
-    private function get_selectedItem():Dynamic {
-        return behaviourGetDynamic("selectedItem");
-    }
-
-    private function onItemChange(event:UIEvent) {
-        if (_listview.selectedItem.data.value != null) {
-            selectedIndex = _dataSource.indexOf(_listview.selectedItem.data);
-        }
-        selected = false;
-        onMouseClick(null);
-        dispatch(new UIEvent(UIEvent.CHANGE));
-    }
-
-    private function onScreenMouseDown(event:MouseEvent) {
-        if (hitTest(event.screenX, event.screenY) == true) {
-            return;
-        }
-        if (_listview != null && _listview.hitTest(event.screenX, event.screenY) == true) {
-            return;
-        }
-        selected = !selected;
-        onMouseClick(null);
-    }
-
     //***********************************************************************************************************
     // Validation
     //***********************************************************************************************************
