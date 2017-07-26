@@ -259,6 +259,8 @@ class Macros {
             if (hasMetaParam(getMeta(f, "style"), "writeonly") == false) {
                 code += "if (customStyle." + name + " == value) return value;\n";
             }
+            code += "if (_style == null) _style = new Style();\n";
+            code += "_style." + name + " = value;\n";
             code += "customStyle." + name + " = value;\n";
             code += "invalidateStyle();\n";
             if (hasMetaParam(getMeta(f, "style"), "layout")) {
