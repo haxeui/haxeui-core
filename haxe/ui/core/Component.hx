@@ -505,7 +505,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
 
         child.parentComponent = this;
         child.depth = depth + 1;
-        child._isDisposed = false;
 
         if (_children == null) {
             _children = [];
@@ -1134,11 +1133,22 @@ class Component extends ComponentBase implements IComponentBase implements IVali
                 }
             }
 
-            invalidate();
-
             onReady();
             dispatch(new UIEvent(UIEvent.READY));
         }
+
+        _isDisposed = false;
+        _isAllInvalid = false;
+        _isValidating = false;
+        for (flag in _invalidationFlags.keys()) {
+            _invalidationFlags.remove(flag);
+        }
+
+        for (flag in _delayedInvalidationFlags.keys()) {
+            _delayedInvalidationFlags.remove(flag);
+        }
+
+        invalidate();
     }
 
     private function onReady() {
