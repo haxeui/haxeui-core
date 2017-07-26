@@ -33,6 +33,10 @@ class Behaviour {
         return null;
     }
 
+    public function run() {
+        
+    }
+    
     /**
      Update this behaviour with its current value
     **/
