@@ -34,15 +34,18 @@ class ListView extends ScrollView implements IDataComponent {
     }
 
     private override function createContentContainer() {
-        super.createContentContainer();
-        _contents.percentWidth = 100;
-        _contents.addClass("listview-contents");
+        if ((_itemRenderer != null || _itemRendererFunction != null) && _contents == null) {
+            super.createContentContainer();
+            _contents.percentWidth = 100;
+            _contents.addClass("listview-contents");
+        }
     }
     
     public override function addComponent(child:Component):Component {
         var r = null;
         if (Std.is(child, ItemRenderer) && (_itemRenderer == null && _itemRendererFunction == null)) {
             _itemRenderer = cast(child, ItemRenderer);
+            createContentContainer();
             #if haxeui_luxe
             _itemRenderer.hide();
             #end
