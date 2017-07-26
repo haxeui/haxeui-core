@@ -243,19 +243,21 @@ class ListView extends ScrollView implements IDataComponent {
         behaviourSet("dataSource", _dataSource);    //TODO - if the index is the only change, the syncUI method is executed anyway
 
         var selectedItem = this.selectedItem;
-        if(contents.childComponents.indexOf(_currentSelection) != _selectedIndex)
+        if(_currentSelection != selectedItem)
         {
             if (_currentSelection != null) {
                 _currentSelection.removeClass(":selected", true, true);
             }
 
-            _currentSelection = cast contents.childComponents[_selectedIndex];
+            _currentSelection = selectedItem;
 
             if (_currentSelection != null) {
                 _currentSelection.addClass(":selected", true, true);
                 dispatch(new UIEvent(UIEvent.CHANGE));
             }
         }
+
+        super.validateData();
     }
 
     private override function validateLayout() {
