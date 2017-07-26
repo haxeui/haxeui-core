@@ -149,6 +149,10 @@ class TabView extends Component {
     //***********************************************************************************************************
 
     private override function validateData() {
+        if (native == true) {
+            return;
+        }
+        
         var view:Component = _views[_pageIndex];
         if (view != null) {
             if (_currentView != null) {

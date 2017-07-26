@@ -496,6 +496,8 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     **/
     @:dox(group = "Display tree related properties and methods")
     public function addComponent(child:Component):Component {
+        child.depth = depth + 1;
+        
         if (this.native == true) {
             var allowChildren:Bool = getNativeConfigPropertyBool('.@allowChildren', true);
             if (allowChildren == false) {
@@ -504,7 +506,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
 
         child.parentComponent = this;
-        child.depth = depth + 1;
 
         if (_children == null) {
             _children = [];
