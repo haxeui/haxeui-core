@@ -266,6 +266,8 @@ class ListView extends ScrollView implements IDataComponent {
     private override function validateLayout() {
         super.validateLayout();
 
+        createContentContainer();
+        
         //ItemHeight
         var n:Int = 0;
         var cy:Float = contents.layout.paddingTop + contents.layout.paddingBottom;
@@ -304,13 +306,17 @@ typedef ItemRendererFunction = Dynamic->ClassFactory<ItemRenderer>;
 class ListViewDefaultDataSourceBehaviour extends Behaviour {
     public override function get():Variant {
         var listView:ListView = cast(_component, ListView);
-        listView._dataSource.onChange = listView.onDataSourceChanged;
+        if (listView._dataSource != null) {
+            listView._dataSource.onChange = listView.onDataSourceChanged;
+        }
         return listView._dataSource;
     }
 
     public override function set(value:Variant) {
         var listView:ListView = cast(_component, ListView);
         listView.syncUI();
-        listView._dataSource.onChange = listView.onDataSourceChanged;
+        if (listView._dataSource != null) {
+            listView._dataSource.onChange = listView.onDataSourceChanged;
+        }
     }
 }
