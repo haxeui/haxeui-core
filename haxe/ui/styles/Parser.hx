@@ -520,7 +520,8 @@ class Parser {
                 var i = getIdent(v);
                 if (i != null) {
                     if (i == "none") {
-                        s.filter = ["none"];
+                        s.filter = null;
+                        //s.filter = ["none"];
                     } else {
                         s.filter = [i];
                     }
