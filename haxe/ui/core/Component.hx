@@ -202,6 +202,13 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
     }
 
+    private function behaviourRun(id:String) {
+        var b:Behaviour = getBehaviour(id);
+        if (b != null) {
+            b.run();
+        }
+    }
+
     private var _behaviourUpdateOrder:Array<String> = [];
     private function behavioursUpdate() {
         var order:Array<String> = _behaviourUpdateOrder.copy();

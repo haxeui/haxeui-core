@@ -76,6 +76,9 @@ class ItemRenderer extends Component {
 				} else {
 					c.value = Variant.fromDynamic(v);
 				}
+                c.show();
+            } else if (c != null) {
+                c.hide();
             }
         }
     }
