@@ -128,24 +128,8 @@ class Slider extends InteractiveComponent {
         return behaviourGet("pos");
     }
     private function set_pos(value:Float):Float {
-        if (_ready) { // only enforce constraints when ready as xml attrs can come in in any order
-            if (value < _min) {
-                value = _min;
-            }
-            if (value > _max) {
-                value = _max;
-            }
-        }
-
-        if (value == _pos) {
-            return value;
-        }
-        
         _pos = value;
-        behaviourSet("pos", value);
-        var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
-        dispatch(changeEvent);
-        handleBindings(["value"]);
+        invalidateData();
         return value;
     }
 
@@ -176,15 +160,11 @@ class Slider extends InteractiveComponent {
     @:dox(group = "Value related properties and methods")
     @bindable @clonable public var min(get, set):Float;
     private function get_min():Float {
-        return _min;
+        return behaviourGet("min");
     }
     private function set_min(value:Float):Float {
-        if (value == _min) {
-            return value;
-        }
-
         _min = value;
-        behaviourSet("min", value);
+        invalidateData();
         return value;
     }
 
@@ -195,16 +175,11 @@ class Slider extends InteractiveComponent {
     @:dox(group = "Value related properties and methods")
     @bindable @clonable public var max(get, set):Float;
     private function get_max():Float {
-        return _max;
+        return behaviourGet("max");
     }
     private function set_max(value:Float):Float {
-        if (value == _max) {
-            return value;
-        }
-
         _max = value;
-        behaviourSet("max", value);
-        behaviourSet("pos", _pos);
+        invalidateData();
         return value;
     }
 
@@ -322,6 +297,24 @@ class Slider extends InteractiveComponent {
         handleBindings(["value"]);
     }
 
+    //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+    private override function validateData() {
+        if (behaviourGet("min") != _min) {
+            behaviourSet("min", _min);
+        }
+        if (behaviourGet("max") != _max) {
+            behaviourSet("max", _max);
+        }
+        if (behaviourGet("pos") != _pos) {
+            behaviourSet("pos", _pos);
+            var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
+            dispatch(changeEvent);
+            handleBindings(["value"]);
+        }
+    }
+    
     //***********************************************************************************************************
     // Events
     //***********************************************************************************************************

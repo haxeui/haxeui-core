@@ -101,7 +101,6 @@ class Button extends InteractiveComponent {
     //***********************************************************************************************************
     // Validation
     //***********************************************************************************************************
-
     private override function validateData() {
         if (behaviourGet("text") != _text) {
             behaviourSet("text", _text);
