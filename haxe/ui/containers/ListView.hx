@@ -267,6 +267,9 @@ class ListView extends ScrollView implements IDataComponent {
         super.validateLayout();
 
         createContentContainer();
+        if (contents == null) {
+            return;
+        }
         
         //ItemHeight
         var n:Int = 0;
