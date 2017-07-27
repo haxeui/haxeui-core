@@ -299,6 +299,7 @@ class Screen extends ScreenBase {
     }
 
     public function centerDialog(dialog:Dialog) {
+        dialog.syncValidation();
         var x = (width / 2) - (dialog.componentWidth / 2);
         var y = (height / 2) - (dialog.componentHeight / 2);
         dialog.moveComponent(x, y);
