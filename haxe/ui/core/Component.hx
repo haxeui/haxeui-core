@@ -1382,6 +1382,20 @@ class Component extends ComponentBase implements IComponentBase implements IVali
 
     #if ((openfl || nme) && !flixel)
 
+    #if flash @:setter(x) #else override #end
+    public function set_x(value:Float): #if flash Void #else Float #end {
+        super.set_x(value);
+        left = value;
+        #if !flash return value; #end
+    }
+    
+    #if flash @:setter(y) #else override #end
+    public function set_y(value:Float): #if flash Void #else Float #end {
+        super.set_y(value);
+        top = value;
+        #if !flash return value; #end
+    }
+    
     private var _width:Null<Float>;
     #if flash @:setter(width) #else override #end
     public function set_width(value:Float): #if flash Void #else Float #end {
