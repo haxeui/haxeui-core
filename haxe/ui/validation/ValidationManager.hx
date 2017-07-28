@@ -16,10 +16,10 @@ class ValidationManager {
     }
 
     public var isValidating(default, null):Bool;
+    public var isPending(default, null):Bool;
 
     private var _queue:Array<IValidating> = [];
     private var _displayQueue:Array<Component> = [];
-    private var _timer:Timer;
     private var _events:EventMap;
 
     private function new() {
@@ -47,7 +47,6 @@ class ValidationManager {
     }
 
     public function dispose() {
-        disposeTimer();
         isValidating = false;
         _queue.splice(0, _queue.length);
     }
@@ -86,9 +85,9 @@ class ValidationManager {
             this._queue.insert(i, object);
         } else {
             this._queue[queueLength] = object;
-
-            if (_timer == null) {
-                _timer = new Timer(0, process);
+            if (isPending == false) {
+                isPending = true;
+                Toolkit.callLater(process);
             }
         }
     }
@@ -100,14 +99,13 @@ class ValidationManager {
     }
 
     private function process() {
-        if (isValidating == true || _timer == null) {
+        if (isValidating == true || isPending == false) {
             return;
         }
 
-        disposeTimer();
-
         var queueLength:Int = _queue.length;
         if (queueLength == 0) {
+            isPending = false;
             return;
         }
 
@@ -134,6 +132,7 @@ class ValidationManager {
         _displayQueue.splice(0, _displayQueue.length);
 
         isValidating = false;
+        isPending = false;
 
         dispatch(new ValidationEvent(ValidationEvent.STOP));
     }
@@ -149,12 +148,5 @@ class ValidationManager {
 //        return if(difference > 0)           -1;
 //        else if(difference < 0)     1;
 //        else                        0;
-    }
-
-    private function disposeTimer() {
-        if (_timer != null) {
-            _timer.stop();
-            _timer = null;
-        }
     }
 }
