@@ -24,6 +24,7 @@ class ValidationManager {
 
     private function new() {
         isValidating = false;
+        isPending = false;
     }
 
     public function registerEvent(type:String, listener:Dynamic->Void) {
