@@ -1,4 +1,5 @@
 package haxe.ui.parsers.modules;
+import haxe.ui.parsers.modules.Module.ModuleThemeStyleEntry;
 
 class ObjectParser extends ModuleParser {
     private function fromObject(obj:Dynamic):Module {
@@ -36,8 +37,10 @@ class ObjectParser extends ModuleParser {
                 if (t.styles != null) {
                     var styles:Array<Dynamic> = t.styles;
                     for (s in styles) {
-                        var styleResource:String = s.resource;
-                        theme.styles.push(styleResource);
+                        var styleEntry:ModuleThemeStyleEntry = new ModuleThemeStyleEntry();
+                        styleEntry.resource = s.resource;
+                        styleEntry.condition = s.condition;
+                        theme.styles.push(styleEntry);
                     }
                 }
                 module.themeEntries.set(theme.name, theme);

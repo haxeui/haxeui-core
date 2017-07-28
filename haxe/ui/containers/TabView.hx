@@ -6,6 +6,7 @@ import haxe.ui.core.Component;
 import haxe.ui.core.UIEvent;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.util.Size;
+import haxe.ui.core.Behaviour;
 
 @:dox(icon = "/icons/ui-tab-content.png")
 class TabView extends Component {
@@ -22,6 +23,9 @@ class TabView extends Component {
     //***********************************************************************************************************
     private override function createDefaults() {
         super.createDefaults();
+        defaultBehaviours([
+            "removeAllTabs" => new RemoveAllTabs(this)
+        ]);
         _defaultLayout = new TabViewLayout();
     }
 
@@ -144,21 +148,7 @@ class TabView extends Component {
     }
 
     public function removeAllTabs() {
-        if (_views != null) {
-            for (view in _views) {
-                removeComponent(view);
-            }
-            _views = [];
-        }
-        _currentView = null;
-        _pageIndex = -1;
-        if (_content != null) {
-            _content.removeAllComponents();
-        }
-        if (_tabs != null) {
-            _tabs.removeAllComponents();
-            _tabs.resetSelection();
-        }
+        behaviourRun("removeAllTabs");
     }
     
     //***********************************************************************************************************
@@ -216,5 +206,28 @@ class TabViewLayout extends DefaultLayout {
     public override function calcAutoSize(exclusions:Array<Component> = null):Size {
         var size:Size = super.calcAutoSize(exclusions);
         return size;
+    }
+}
+
+@:dox(hide)
+@:access(haxe.ui.containers.TabView)
+private class RemoveAllTabs extends Behaviour {
+    public override function run() {
+        var tabView:TabView = cast(_component, TabView);
+        if (tabView._views != null) {
+            for (view in tabView._views) {
+                tabView.removeComponent(view);
+            }
+            tabView._views = [];
+        }
+        tabView._currentView = null;
+        tabView._pageIndex = -1;
+        if (tabView._content != null) {
+            tabView._content.removeAllComponents();
+        }
+        if (tabView._tabs != null) {
+            tabView._tabs.removeAllComponents();
+            tabView._tabs.resetSelection();
+        }
     }
 }
