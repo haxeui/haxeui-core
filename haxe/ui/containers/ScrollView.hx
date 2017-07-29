@@ -15,7 +15,6 @@ import haxe.ui.layouts.Layout;
 import haxe.ui.layouts.LayoutFactory;
 import haxe.ui.util.Rectangle;
 import haxe.ui.util.Size;
-import haxe.ui.util.Timer;
 import haxe.ui.util.Variant;
 import haxe.ui.validation.InvalidationFlags;
 
@@ -285,7 +284,6 @@ class ScrollView extends Component {
     
     private var _inertialTimestamp:Float;
     private static inline var INERTIAL_TIME_CONSTANT = 325;
-    private var _inertialTimer:Timer;
 
     private var _offsetX:Float = 0;
     private var _screenOffsetX:Float;
@@ -333,11 +331,6 @@ class ScrollView extends Component {
             _inertialTargetY = vscrollPos;
             _inertialAmplitudeX = 0;
             _inertialAmplitudeY = 0;
-            
-            if (_inertialTimer != null) {
-                _inertialTimer.stop();
-                _inertialTimer = null;
-            }
             
             _screenOffsetX = event.screenX;
             _screenOffsetY = event.screenY;
@@ -409,7 +402,7 @@ class ScrollView extends Component {
                 _inertialAmplitudeY = 0;
             }
 
-            _inertialTimer = new Timer(10, inertialScroll); //TODO - FRAME event on demand
+            Toolkit.callLater(inertialScroll);
         } else {
             dispatch(new ScrollEvent(ScrollEvent.STOP));
         }
@@ -455,10 +448,9 @@ class ScrollView extends Component {
         }
 
         if (finishedX == true && finishedY == true) {
-            _inertialTimer.stop();
-            _inertialTimer = null;
-
             dispatch(new ScrollEvent(ScrollEvent.STOP));
+        } else {
+            Toolkit.callLater(inertialScroll);
         }
     }
     
