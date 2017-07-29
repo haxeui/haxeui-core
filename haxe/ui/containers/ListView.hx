@@ -263,12 +263,12 @@ class ListView extends ScrollView implements IDataComponent {
         super.validateData();
     }
 
-    private override function validateLayout() {
-        super.validateLayout();
+    private override function validateLayout():Bool {
+        var result = super.validateLayout();
 
         createContentContainer();
         if (contents == null) {
-            return;
+            return result;
         }
         
         //ItemHeight
@@ -286,6 +286,8 @@ class ListView extends ScrollView implements IDataComponent {
             cy -= scy;
         }
         itemHeight = (cy / n);
+
+        return result;
     }
 
     //***********************************************************************************************************

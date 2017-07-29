@@ -1900,37 +1900,14 @@ class Component extends ComponentBase implements IComponentBase implements IVali
 
         if (positionInvalid) {
             validatePosition();
-
-            onMoved();
-            dispatch(new UIEvent(UIEvent.MOVE));
         }
 
         if (layoutInvalid) {
-            var oldComponentWidth = _componentWidth;
-            var oldComponentHeight = _componentHeight;
-
-            validateLayout();
-
-            //TODO - Required. Something is wrong with the autosize order in the first place if we need to do that twice. Revision required for performance.
-            while(validateAutoSize()) {
-                validateLayout();
-            }
-
-            if (parentComponent != null) {
-                parentComponent.invalidateLayout();
-            }
-
-            if (oldComponentWidth != _componentWidth || oldComponentHeight != _componentHeight) {
-                displayInvalid = true;
-            }
+            displayInvalid = validateLayout() || displayInvalid;
         }
 
         if (displayInvalid || styleInvalid) {
-//            updateDisplay();
             ValidationManager.instance.addDisplay(this);    //Update the display from all objects at the same time. Avoids UI flashes.
-
-            onResized();
-            dispatch(new UIEvent(UIEvent.RESIZE));
         }
     }
 
@@ -1938,8 +1915,29 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         //To be overwritten
     }
 
-    private function validateLayout() {
+    private function validateLayout():Bool {
+        var oldComponentWidth = _componentWidth;
+        var oldComponentHeight = _componentHeight;
+
         layout.refresh();
+
+        //TODO - Required. Something is wrong with the autosize order in the first place if we need to do that twice. Revision required for performance.
+        while(validateAutoSize()) {
+            layout.refresh();
+        }
+
+        if (parentComponent != null) {
+            parentComponent.invalidateLayout();
+        }
+
+        if (oldComponentWidth != _componentWidth || oldComponentHeight != _componentHeight) {
+            onResized();
+            dispatch(new UIEvent(UIEvent.RESIZE));
+
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private function validateStyle() {
@@ -1952,6 +1950,9 @@ class Component extends ComponentBase implements IComponentBase implements IVali
 
     private function validatePosition() {
         handlePosition(_left, _top, _style);
+
+        onMoved();
+        dispatch(new UIEvent(UIEvent.MOVE));
     }
 
     public function updateDisplay() {
