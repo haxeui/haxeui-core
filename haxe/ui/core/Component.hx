@@ -2067,7 +2067,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
      Invalidate the data of this component
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public function invalidateData() {
+    public inline function invalidateData() {
         invalidate(InvalidationFlags.DATA);
     }
 
