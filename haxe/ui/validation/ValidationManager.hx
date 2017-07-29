@@ -4,7 +4,6 @@ import haxe.ui.core.Component;
 import haxe.ui.core.ValidationEvent;
 import haxe.ui.core.UIEvent;
 import haxe.ui.util.EventMap;
-import haxe.ui.util.Timer;
 
 class ValidationManager {
     static public var instance(get, null):ValidationManager;
