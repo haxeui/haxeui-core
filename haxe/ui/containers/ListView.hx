@@ -1,5 +1,7 @@
 package haxe.ui.containers;
 
+import haxe.ui.validation.ValidationManager;
+import haxe.ui.validation.InvalidationFlags;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.ClassFactory;
 import haxe.ui.core.BasicItemRenderer;
@@ -84,7 +86,7 @@ class ListView extends ScrollView implements IDataComponent {
     }
     private function set_selectedIndex(value:Int):Int {
         if(_dataSource != null && value < _dataSource.size && _selectedIndex != value) {
-            invalidateData();
+            invalidateIndex();
             _selectedIndex = value;
         }
 
@@ -242,9 +244,54 @@ class ListView extends ScrollView implements IDataComponent {
     // Validation
     //***********************************************************************************************************
 
+    /**
+     Invalidate the index of this component
+    **/
+    @:dox(group = "Invalidation related properties and methods")
+    public inline function invalidateIndex() {
+        invalidate(InvalidationFlags.INDEX);
+    }
+
+    private override function validateInternal() {
+        var dataInvalid = isInvalid(InvalidationFlags.DATA);
+        var indexInvalid = isInvalid(InvalidationFlags.INDEX);
+        var styleInvalid = isInvalid(InvalidationFlags.STYLE);
+        var positionInvalid = isInvalid(InvalidationFlags.POSITION);
+        var displayInvalid = isInvalid(InvalidationFlags.DISPLAY);
+        var layoutInvalid = isInvalid(InvalidationFlags.LAYOUT) && _layoutLocked == false;
+
+        if (dataInvalid) {
+            validateData();
+        }
+
+        if (indexInvalid) {
+            validateIndex();
+        }
+
+        if (styleInvalid) {
+            validateStyle();
+        }
+
+        if (positionInvalid) {
+            validatePosition();
+        }
+
+        if (layoutInvalid) {
+            displayInvalid = validateLayout() || displayInvalid;
+        }
+
+        if (displayInvalid || styleInvalid) {
+            ValidationManager.instance.addDisplay(this);    //Update the display from all objects at the same time. Avoids UI flashes.
+        }
+    }
+
     private override function validateData() {
         behaviourSet("dataSource", _dataSource);    //TODO - if the index is the only change, the syncUI method is executed anyway
 
+        super.validateData();
+    }
+
+    private function validateIndex() {
         var selectedItem = this.selectedItem;
         if(_currentSelection != selectedItem)
         {
@@ -259,8 +306,6 @@ class ListView extends ScrollView implements IDataComponent {
                 dispatch(new UIEvent(UIEvent.CHANGE));
             }
         }
-
-        super.validateData();
     }
 
     private override function validateLayout():Bool {
