@@ -325,7 +325,7 @@ class ScrollDefaultMaxBehaviour extends Behaviour {
 
     public override function set(value:Variant) {
         if (_value == value) {
-            _value = value;
+            return;
         }
         _value = value;
 
@@ -345,7 +345,7 @@ class ScrollDefaultPosBehaviour extends Behaviour {
 
     public override function set(value:Variant) {
         if (_value == value) {
-            _value = value;
+            return;
         }
         _value = value;
 
@@ -365,7 +365,7 @@ class ScrollDefaultPageSizeBehaviour extends Behaviour {
 
     public override function set(value:Variant) {
         if (_value == value) {
-            _value = value;
+            return;
         }
         _value = value;
 
