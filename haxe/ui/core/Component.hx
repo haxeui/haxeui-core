@@ -1147,16 +1147,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             dispatch(new UIEvent(UIEvent.READY));
         }
 
-        _isDisposed = false;
-        _isAllInvalid = false;
-        _isValidating = false;
-        for (flag in _invalidationFlags.keys()) {
-            _invalidationFlags.remove(flag);
-        }
-
-        for (flag in _delayedInvalidationFlags.keys()) {
-            _delayedInvalidationFlags.remove(flag);
-        }
+        clearValidationState(true);
 
         invalidate();
     }
@@ -2013,10 +2004,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     **/
     @:dox(group = "Invalidation related properties and methods")
     public function invalidate(flag:String = InvalidationFlags.ALL) {
-        if (_ready == false) {
-            return;     //it should be added into the queue later
-        }
-
         var isAlreadyInvalid:Bool = isInvalid();
         var isAlreadyDelayedInvalid:Bool = false;
         if (_isValidating == true) {
@@ -2038,6 +2025,10 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             } else if (flag != InvalidationFlags.ALL && !_invalidationFlags.exists(flag)) {
                 _invalidationFlags.set(flag, true);
             }
+        }
+
+        if (_ready == false) {
+            return;     //it should be added into the queue later
         }
 
         if (_isValidating == true) {
@@ -2104,6 +2095,25 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     @:dox(group = "Invalidation related properties and methods")
     public inline function invalidateStyle() {
         invalidate(InvalidationFlags.STYLE);
+    }
+
+    private function clearValidationState(recursive:Bool=false) {
+        _isDisposed = false;
+        _isAllInvalid = false;
+        _isValidating = false;
+        for (flag in _invalidationFlags.keys()) {
+            _invalidationFlags.remove(flag);
+        }
+
+        for (flag in _delayedInvalidationFlags.keys()) {
+            _delayedInvalidationFlags.remove(flag);
+        }
+
+        if (recursive == true && childComponents != null) {
+            for (child in childComponents) {
+                child.clearValidationState(recursive);
+            }
+        }
     }
 
     private override function applyStyle(style:Style) {
