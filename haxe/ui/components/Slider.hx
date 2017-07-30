@@ -40,14 +40,6 @@ class Slider extends InteractiveComponent {
         ]);
     }
 
-    private override function create() {
-        super.create();
-
-        behaviourSet("min", _min);
-        behaviourSet("max", _max);
-        behaviourSet("pos", _pos);
-    }
-
     private override function createChildren() {
         super.createChildren();
 
@@ -125,7 +117,7 @@ class Slider extends InteractiveComponent {
     @:dox(group = "Value related properties and methods")
     @bindable @clonable public var pos(get, set):Float;
     private function get_pos():Float {
-        return behaviourGet("pos");
+        return _pos;
     }
     private function set_pos(value:Float):Float {
         _pos = value;
@@ -160,7 +152,7 @@ class Slider extends InteractiveComponent {
     @:dox(group = "Value related properties and methods")
     @bindable @clonable public var min(get, set):Float;
     private function get_min():Float {
-        return behaviourGet("min");
+        return _min;
     }
     private function set_min(value:Float):Float {
         _min = value;
@@ -175,7 +167,7 @@ class Slider extends InteractiveComponent {
     @:dox(group = "Value related properties and methods")
     @bindable @clonable public var max(get, set):Float;
     private function get_max():Float {
-        return behaviourGet("max");
+        return _max;
     }
     private function set_max(value:Float):Float {
         _max = value;
@@ -215,10 +207,7 @@ class Slider extends InteractiveComponent {
             }
 
             _rangeStart = value;
-            invalidateLayout();
-            var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
-            dispatch(changeEvent);
-            handleBindings(["value"]);
+            invalidateData();
         }
 
         return value;
@@ -259,10 +248,7 @@ class Slider extends InteractiveComponent {
         }
         if (value != _rangeEnd) {
             _rangeEnd = value;
-            invalidateLayout();
-            var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
-            dispatch(changeEvent);
-            handleBindings(["value"]);
+            invalidateData();
         }
         return value;
     }
@@ -287,28 +273,46 @@ class Slider extends InteractiveComponent {
     **/
     @:dox(group = "Range related properties and methods")
     public function setRange(start:Float, end:Float) {
+        var invalidate:Bool = false;
         if (start != _rangeStart) {
             _rangeStart = start;
+            invalidate = true;
         }
         if (end != _rangeEnd) {
             _rangeEnd = end;
+            invalidate = true;
         }
-        invalidateLayout();
-        handleBindings(["value"]);
+        if (invalidate == true) {
+            invalidateData();
+        }
     }
 
     //***********************************************************************************************************
     // Validation
     //***********************************************************************************************************
     private override function validateData() {
+        var notifyChange:Bool = false;
+
         if (behaviourGet("min") != _min) {
             behaviourSet("min", _min);
         }
         if (behaviourGet("max") != _max) {
             behaviourSet("max", _max);
         }
+        if (behaviourGet("rangeEnd") != _rangeEnd) {
+            behaviourSet("rangeEnd", _rangeEnd);
+            notifyChange = true;
+        }
+        if (behaviourGet("rangeStart") != _rangeStart) {
+            behaviourSet("rangeStart", _rangeStart);
+            notifyChange = true;
+        }
         if (behaviourGet("pos") != _pos) {
             behaviourSet("pos", _pos);
+            notifyChange = true;
+        }
+
+        if (notifyChange == true) {
             var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
             dispatch(changeEvent);
             handleBindings(["value"]);
@@ -366,48 +370,104 @@ class Slider extends InteractiveComponent {
 @:dox(hide)
 @:access(haxe.ui.components.Slider)
 class SliderDefaultMinBehaviour extends Behaviour {
+    private var _value:Float = 0;
+
     public override function set(value:Variant) {
+        if (_value == value) {
+            return;
+        }
+
+        _value = value;
+
         var slider:Slider = cast _component;
         slider.invalidateLayout();
+    }
+
+    public override function get():Variant {
+        return _value;
     }
 }
 
 @:dox(hide)
 @:access(haxe.ui.components.Slider)
 class SliderDefaultMaxBehaviour extends Behaviour {
+    private var _value:Float = 0;
+
     public override function set(value:Variant) {
+        if (_value == value) {
+            return;
+        }
+
+        _value = value;
+
         var slider:Slider = cast _component;
         slider.invalidateLayout();
+    }
+
+    public override function get():Variant {
+        return _value;
     }
 }
 
 @:dox(hide)
 @:access(haxe.ui.components.Slider)
 class SliderDefaultPosBehaviour extends Behaviour {
+    private var _value:Float = 0;
+
     public override function set(value:Variant) {
+        if (_value == value) {
+            return;
+        }
+
+        _value = value;
+
         var slider:Slider = cast _component;
         slider.invalidateLayout();
     }
     
     public override function get():Variant {
-        return cast(_component, Slider)._pos;
+        return _value;
     }
 }
 
 @:dox(hide)
 @:access(haxe.ui.components.Slider)
 class SliderDefaultRangeStartBehaviour extends Behaviour {
+    private var _value:Float = 0;
+
     public override function set(value:Variant) {
+        if (_value == value) {
+            return;
+        }
+
+        _value = value;
+
         var slider:Slider = cast _component;
         slider.invalidateLayout();
+    }
+
+    public override function get():Variant {
+        return _value;
     }
 }
 
 @:dox(hide)
 @:access(haxe.ui.components.Slider)
 class SliderDefaultRangeEndBehaviour extends Behaviour {
+    private var _value:Float = 0;
+
     public override function set(value:Variant) {
+        if (_value == value) {
+            return;
+        }
+
+        _value = value;
+
         var slider:Slider = cast _component;
         slider.invalidateLayout();
+    }
+
+    public override function get():Variant {
+        return _value;
     }
 }
