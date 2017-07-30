@@ -264,7 +264,7 @@ class ListView extends ScrollView implements IDataComponent {
             validateData();
         }
 
-        if (indexInvalid) {
+        if (dataInvalid || indexInvalid) {
             validateIndex();
         }
 
