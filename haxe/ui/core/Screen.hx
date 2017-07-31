@@ -49,7 +49,6 @@ class Screen extends ScreenBase {
 
     public override function addComponent(component:Component) {
         super.addComponent(component);
-        component.depth = 0;
         component.ready();
         rootComponents.push(component);
         FocusManager.instance.pushView(component);

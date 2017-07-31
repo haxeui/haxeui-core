@@ -259,6 +259,7 @@ class ListView extends ScrollView implements IDataComponent {
         var positionInvalid = isInvalid(InvalidationFlags.POSITION);
         var displayInvalid = isInvalid(InvalidationFlags.DISPLAY);
         var layoutInvalid = isInvalid(InvalidationFlags.LAYOUT) && _layoutLocked == false;
+        var scrollInvalid = isInvalid(InvalidationFlags.SCROLL);
 
         if (dataInvalid) {
             validateData();
@@ -278,6 +279,10 @@ class ListView extends ScrollView implements IDataComponent {
 
         if (layoutInvalid) {
             displayInvalid = validateLayout() || displayInvalid;
+        }
+
+        if (scrollInvalid || layoutInvalid) {
+            validateScroll();
         }
 
         if (displayInvalid || styleInvalid) {

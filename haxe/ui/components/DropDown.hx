@@ -242,6 +242,7 @@ class DropDown extends Button implements IDataComponent {
 
     private function hideList() {
         if (_listview != null) {
+            _listview.selectedItem.removeClass(":hover");
             Screen.instance.removeComponent(_listview);
         }
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);

@@ -11,6 +11,7 @@ import haxe.ui.styles.Parser;
 import haxe.ui.styles.Style;
 import haxe.ui.util.CallStackHelper;
 import haxe.ui.util.Color;
+import haxe.ui.util.ComponentUtil;
 import haxe.ui.util.EventMap;
 import haxe.ui.util.FunctionArray;
 import haxe.ui.util.Rectangle;
@@ -503,8 +504,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     **/
     @:dox(group = "Display tree related properties and methods")
     public function addComponent(child:Component):Component {
-        child.depth = depth + 1;
-        
         if (this.native == true) {
             var allowChildren:Bool = getNativeConfigPropertyBool('.@allowChildren', true);
             if (allowChildren == false) {
@@ -513,6 +512,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
 
         child.parentComponent = this;
+        child._isDisposed = false;
 
         if (_children == null) {
             _children = [];
@@ -1131,6 +1131,8 @@ class Component extends ComponentBase implements IComponentBase implements IVali
      _Note_: this is called internally by the framework
     **/
     public function ready() {
+        depth = ComponentUtil.getDepth(this);
+
         if (_ready == false) {
             _ready = true;
             handleReady();
@@ -1143,13 +1145,11 @@ class Component extends ComponentBase implements IComponentBase implements IVali
                 }
             }
 
+            invalidate();
+
             onReady();
             dispatch(new UIEvent(UIEvent.READY));
         }
-
-        clearValidationState(true);
-
-        invalidate();
     }
 
     private function onReady() {
@@ -1800,13 +1800,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
 
         _depth = value;
 
-        if (_children != null) {
-            var childDepth = (_depth != -1) ? _depth + 1 : -1;
-            for (c in _children) {
-                c.depth = childDepth;
-            }
-        }
-
         return value;
     }
 
@@ -2004,6 +1997,10 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     **/
     @:dox(group = "Invalidation related properties and methods")
     public function invalidate(flag:String = InvalidationFlags.ALL) {
+        if (_ready == false) {
+            return;     //it should be added into the queue later
+        }
+
         var isAlreadyInvalid:Bool = isInvalid();
         var isAlreadyDelayedInvalid:Bool = false;
         if (_isValidating == true) {
@@ -2025,10 +2022,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             } else if (flag != InvalidationFlags.ALL && !_invalidationFlags.exists(flag)) {
                 _invalidationFlags.set(flag, true);
             }
-        }
-
-        if (_ready == false) {
-            return;     //it should be added into the queue later
         }
 
         if (_isValidating == true) {
@@ -2095,25 +2088,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     @:dox(group = "Invalidation related properties and methods")
     public inline function invalidateStyle() {
         invalidate(InvalidationFlags.STYLE);
-    }
-
-    private function clearValidationState(recursive:Bool=false) {
-        _isDisposed = false;
-        _isAllInvalid = false;
-        _isValidating = false;
-        for (flag in _invalidationFlags.keys()) {
-            _invalidationFlags.remove(flag);
-        }
-
-        for (flag in _delayedInvalidationFlags.keys()) {
-            _delayedInvalidationFlags.remove(flag);
-        }
-
-        if (recursive == true && childComponents != null) {
-            for (child in childComponents) {
-                child.clearValidationState(recursive);
-            }
-        }
     }
 
     private override function applyStyle(style:Style) {
