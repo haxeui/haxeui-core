@@ -499,7 +499,7 @@ class ScrollView extends Component {
         if (verticalConstraint.componentHeight > layout.usableHeight) {
             if (_vscroll != null) {
                 _vscroll.hidden = false;
-                _vscroll.max = verticalConstraint.componentHeight - layout.usableHeight;
+                _vscroll.max = verticalConstraint.componentHeight - layout.usableHeight;				
                 _vscroll.pageSize = (layout.usableHeight / verticalConstraint.componentHeight) * _vscroll.max;
             }
         } else {
@@ -507,7 +507,9 @@ class ScrollView extends Component {
                 _vscroll.hidden = true;
             }
         }
-
+		if (_vscroll!=null && layout!=null) {
+			_vscroll.height = layout.usableHeight;
+		}	
         invalidateLayout();
     }
 
