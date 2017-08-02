@@ -5,8 +5,7 @@ import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.LayoutFactory;
 
 /**
- Base `Layout` that allows a container to specify an `icon`. How that icon resource is used depends on subclasses, like
- `haxe.ui.containers.TabView`
+ Base `Layout` that allows a container to specify an `icon`. How that icon resource is used depends on subclasses, like `TabView`
 **/
 @:dox(icon = "/icons/ui-panel.png")
 class Box extends Component {
@@ -38,8 +37,8 @@ class Box extends Component {
     /**
      The icon associated with this box component
 
-     _Note: this class itself does nothing special with this property and simply here to allow subclasses to make use
-     of it should they want to_
+     *Note*: this class itself does nothing special with this property and simply here to allow subclasses to make use
+     of it should they want to
     **/
     @:clonable public var icon(get, set):String;
     private function get_icon():String {
