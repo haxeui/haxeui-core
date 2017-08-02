@@ -712,6 +712,7 @@
 .header {
     width: auto;
     height: auto;
+    spacing: 0;
 }
 
 .header .column {
