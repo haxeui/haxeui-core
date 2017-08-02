@@ -1385,7 +1385,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
 
     private var _width:Null<Float>;
     #if flash @:setter(width) #else override #end
-    public function set_width(value:Float): #if flash Void #else Float #end {
+    private function set_width(value:Float): #if flash Void #else Float #end {
         if (_width == value) {
             return #if !flash value #end;
         }
@@ -1395,14 +1395,14 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     }
 
     #if flash @:getter(width) #else override #end
-    public function get_width():Float {
+    private function get_width():Float {
         var f:Float = componentWidth;
         return f;
     }
 
     private var _height:Null<Float>;
     #if flash @:setter(height) #else override #end
-    public function set_height(value:Float): #if flash Void #else Float #end {
+    private function set_height(value:Float): #if flash Void #else Float #end {
         if (_height == value) {
             return #if !flash value #end;
         }
@@ -1412,7 +1412,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
     }
 
     #if flash @:getter(height) #else override #end
-    public function get_height():Float {
+    private function get_height():Float {
         var f:Float = componentHeight;
         return f;
     }
