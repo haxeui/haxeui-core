@@ -28,16 +28,13 @@ class ScrollView extends Component {
         super();
     }
 
-    private override function createLayout():Layout {
-        return new ScrollViewLayout();
-    }
-
     private override function createDefaults() {
         super.createDefaults();
         defaultBehaviours([
             "vscrollPos" => new DefaultVScrollPosBehaviour(this),
             "hscrollPos" => new DefaultHScrollPosBehaviour(this)
         ]);
+        _defaultLayout = new ScrollViewLayout();
     }
 
     private override function create() {
@@ -644,8 +641,8 @@ class ScrollViewLayout extends DefaultLayout {
             return;
         }
 
-        var hscroll:Component = component.findComponent("scrollview-hscroll");
-        var vscroll:Component = component.findComponent("scrollview-vscroll");
+        var hscroll:Component = component.findComponent(HScroll, false);
+        var vscroll:Component = component.findComponent(VScroll, false);
 
         var ucx = innerWidth;
         var ucy = innerHeight;
@@ -666,8 +663,8 @@ class ScrollViewLayout extends DefaultLayout {
 
     private override function get_usableSize():Size {
         var size:Size = super.get_usableSize();
-        var hscroll:Component = component.findComponent("scrollview-hscroll");
-        var vscroll:Component = component.findComponent("scrollview-vscroll");
+        var hscroll:Component = component.findComponent(HScroll, false);
+        var vscroll:Component = component.findComponent(VScroll, false);
         if (hscroll != null && hidden(hscroll) == false) {
             size.height -= hscroll.componentHeight;
         }
@@ -690,8 +687,8 @@ class ScrollViewLayout extends DefaultLayout {
     }
 
     public override function calcAutoSize(exclusions:Array<Component> = null):Size {
-        var hscroll:Component = component.findComponent("scrollview-hscroll");
-        var vscroll:Component = component.findComponent("scrollview-vscroll");
+        var hscroll:Component = component.findComponent(HScroll, false);
+        var vscroll:Component = component.findComponent(VScroll, false);
         var size:Size = super.calcAutoSize([hscroll, vscroll]);
         if (hscroll != null && hscroll.hidden == false) {
             size.height += hscroll.componentHeight;
