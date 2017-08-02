@@ -25,7 +25,7 @@ class Macros {
             code += "return super.getProperty(name);";
             code += "}\n";
 
-            var access:Array<Access> = [APublic, AOverride];
+            var access:Array<Access> = [APrivate, AOverride];
             addFunction("getProperty", Context.parseInlineString(code, pos), access, fields, pos);
 
             // build set property
@@ -38,7 +38,7 @@ class Macros {
             code += "}\n";
             code += "return super.setProperty(name, v);";
             code += "}\n";
-            var access:Array<Access> = [APublic, AOverride];
+            var access:Array<Access> = [APrivate, AOverride];
             addFunction("setProperty", Context.parseInlineString(code, pos), access, fields, pos);
         }
 
