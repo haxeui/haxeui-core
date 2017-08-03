@@ -310,7 +310,6 @@ class OptionBoxDefaultSelectedBehaviour extends Behaviour {
 /**
  Specialised `InteractiveComponent` used to contain the `OptionBox` icon and respond to style changes
 **/
-@:dox(hide)
 class OptionBoxValue extends InteractiveComponent {
     private var _icon:Image;
 

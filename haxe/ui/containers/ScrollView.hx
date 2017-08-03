@@ -590,7 +590,6 @@ class ScrollView extends Component {
 //***********************************************************************************************************
 // Default behaviours
 //***********************************************************************************************************
-@:dox(hide)
 class DefaultVScrollPosBehaviour extends Behaviour {
     public override function get():Variant {
         var vscroll:VScroll = _component.findComponent(VScroll);
@@ -608,7 +607,6 @@ class DefaultVScrollPosBehaviour extends Behaviour {
     }
 }
 
-@:dox(hide)
 class DefaultHScrollPosBehaviour extends Behaviour {
     public override function get():Variant {
         var hscroll:HScroll = _component.findComponent(HScroll);

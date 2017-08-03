@@ -604,7 +604,7 @@ class Component extends ComponentBase implements IComponentBase implements IClon
 
      - `type` - The component class you wish to cast the result to (defaults to *null*)
 
-     - `recursive` - Whether to search this components children and all its childrens children till it finds a match (the default depends on the `searchType` param. If `searchType` is `id` the default is *true* otherwise it is *false*)
+     - `recursive` - Whether to search this components children and all its childrens children till it finds a match (defaults to *false*)
 
      - `searchType` - Allows you specify how to consider a child a match (defaults to *id*), can be either:
 

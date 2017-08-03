@@ -195,7 +195,6 @@ class CheckBoxDefaultSelectedBehaviour extends Behaviour {
 /**
  Specialised `InteractiveComponent` used to contain the `CheckBox` icon and respond to style changes
 **/
-@:dox(hide)
 class CheckBoxValue extends InteractiveComponent {
     public function new() {
         super();

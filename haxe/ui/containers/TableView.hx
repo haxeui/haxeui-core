@@ -334,7 +334,6 @@ class TableView extends ScrollView implements IDataComponent {
     }
 }
 
-@:dox(hide)
 class TableViewLayout extends DefaultLayout {
     public function new() {
         super();
