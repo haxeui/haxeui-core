@@ -218,14 +218,6 @@ class Slider extends InteractiveComponent {
         return _rangeStart;
     }
     private function set_rangeStart(value:Float):Float {
-        if (_ready) {
-            if (value < _min) {
-                value = _min;
-            }
-            if (value >= _rangeEnd - 1) { // TODO: calc this
-                value = _rangeEnd - 1;
-            }
-        }
         if (value != _rangeStart) {
             if (_rangeStartThumb == null) {
                 _rangeStartThumb = new Button();
@@ -264,7 +256,7 @@ class Slider extends InteractiveComponent {
         AnimationManager.instance.run(animationId, ["target" => this], ["rangeStart" => value]);
     }
 
-    private var _rangeEnd:Float = 0;
+    private var _rangeEnd:Float = -1;
     /**
      The end of the sliders range value
     **/
@@ -274,14 +266,6 @@ class Slider extends InteractiveComponent {
         return _rangeEnd;
     }
     private function set_rangeEnd(value:Float):Float {
-        if (_ready) {
-            if (value > _max) {
-                value = _max;
-            }
-            if (value <= _rangeStart + 1) { // TODO: calc this
-                value = _rangeStart + 1;
-            }
-        }
         if (value != _rangeEnd) {
             _rangeEnd = value;
             invalidateLayout();
