@@ -20,7 +20,7 @@ import haxe.ui.util.Variant;
 
 @:dox(icon = "/icons/ui-scroll-pane-both.png")
 class ScrollView extends Component {
-    public var _contents:Box;
+    private var _contents:Box;
     private var _hscroll:HScroll;
     private var _vscroll:VScroll;
 
@@ -470,7 +470,7 @@ class ScrollView extends Component {
         return 0;
     }
 
-    public function checkScrolls() {
+    private function checkScrolls() {
         if (isReady == false ||
             horizontalConstraint == null || horizontalConstraint.childComponents.length == 0 ||
             verticalConstraint == null || verticalConstraint.childComponents.length == 0 ||
@@ -556,7 +556,7 @@ class ScrollView extends Component {
         dispatch(new ScrollEvent(ScrollEvent.CHANGE));
     }
 
-    public function updateScrollRect() {
+    private function updateScrollRect() {
         if (_contents == null) {
             return;
         }
