@@ -165,9 +165,7 @@ class ListView extends ScrollView implements IDataComponent {
 	}
 	private function set_itemRendererClass(value:Class<ItemRenderer>):Class<ItemRenderer> {
 		_itemRenderer = Type.createInstance(value, []);
-		if (_ready) {
-			syncUI();
-		}
+        invalidateData();
 		return value;
 	}
 
@@ -190,9 +188,7 @@ class ListView extends ScrollView implements IDataComponent {
     }
 
     private function onDataSourceChanged() {
-        if (_ready == true) {
-            invalidateData();
-        }
+        invalidateData();
     }
 
     private function syncUI() {
