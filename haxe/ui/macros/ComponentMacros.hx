@@ -176,7 +176,7 @@ class ComponentMacros {
                             var sourceId:String = sourceArr[0];
                             var sourceProp:String = sourceArr[1];
                             onLocaleChangeCode.push(macro var source = c0.findComponent($v{sourceId}, null, true));
-                            onLocaleChangeCode.push(macro params.push(Reflect.getProperty(source, $v{sourceProp})));
+                            onLocaleChangeCode.push(macro params.push(haxe.ui.util.Variant.toDynamic(Reflect.getProperty(source, $v{sourceProp}))));
 
                             var binding:ComponentBindingInfo = new ComponentBindingInfo();
                             binding.source = sourceId;
