@@ -10,6 +10,7 @@ import haxe.ui.core.MouseEvent;
 import haxe.ui.core.Screen;
 import haxe.ui.core.UIEvent;
 import haxe.ui.data.DataSource;
+import haxe.ui.locale.LocaleManager;
 import haxe.ui.util.Variant;
 
 class DropDown extends Button implements IDataComponent {
@@ -98,7 +99,7 @@ class DropDown extends Button implements IDataComponent {
             }
 
             if (_selectedIndex >= 0) {
-                text = _dataSource.get(_selectedIndex).value;
+                text = LocaleManager.instance.getText(_dataSource.get(_selectedIndex).value);
             }
         }
         else {

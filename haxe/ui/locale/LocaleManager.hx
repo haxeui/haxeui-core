@@ -22,11 +22,24 @@ class LocaleManager {
     //***********************************************************************************************************
     // Instance
     //***********************************************************************************************************
+    public var localePattern(default, null):EReg = ~/^_\( *'([\w\.]+)' *\)$/;
+
     private var _locales:Map<String, Locale> = new Map<String, Locale>();
     private var _currentLocales:Array<Locale>;
 
     public function new() {
 
+    }
+
+    /**
+     Return the locale text if it exists. Otherwise it returns the original text
+    **/
+    public function getText(value:String):String {
+        if (localePattern.match(value)) {
+            return get(localePattern.matched(1));
+        } else {
+            return value;
+        }
     }
 
     /**

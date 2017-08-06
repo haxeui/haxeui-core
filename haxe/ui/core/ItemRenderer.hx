@@ -1,5 +1,6 @@
 package haxe.ui.core;
 
+import haxe.ui.locale.LocaleManager;
 import haxe.ui.util.Variant;
 
 class ItemRenderer extends Component {
@@ -65,7 +66,7 @@ class ItemRenderer extends Component {
 						}
 					}
 				} else {
-					c.value = Variant.fromDynamic(v);
+					c.value = LocaleManager.instance.getText(Variant.fromDynamic(v));
 				}
             }
         }
