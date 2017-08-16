@@ -73,13 +73,13 @@ class Label extends Component {
 class LabelLayout extends DefaultLayout {
     private override function resizeChildren() {
         if (component.autoWidth == false) {
-			#if flixel
-			component.getTextDisplay().textField.multiline = true;
-			component.getTextDisplay().textField.wordWrap = true;
-			component.getTextDisplay().fieldWidth = component.componentWidth - paddingLeft - paddingRight;
+            #if flixel
+            component.getTextDisplay().textField.multiline = true;
+            component.getTextDisplay().textField.wordWrap = true;
+            component.getTextDisplay().fieldWidth = component.componentWidth - paddingLeft - paddingRight;
             #elseif !pixijs
             component.getTextDisplay().width = component.componentWidth - paddingLeft - paddingRight;
-			#if openfl // TODO: make not specific
+            #if openfl // TODO: make not specific
             component.getTextDisplay().multiline = true;
             component.getTextDisplay().wordWrap = true;
             #end
