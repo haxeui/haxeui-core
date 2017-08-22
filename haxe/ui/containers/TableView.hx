@@ -290,7 +290,7 @@ class TableView extends ScrollView implements IDataComponent {
         updateScrollRect();
     }
 
-    public override function updateScrollRect() {
+    private override function updateScrollRect() {
         var rc:Rectangle = null;
 
         var ucx = layout.usableWidth;
@@ -344,6 +344,7 @@ class TableView extends ScrollView implements IDataComponent {
     }
 }
 
+@:dox(hide)
 class TableViewLayout extends DefaultLayout {
     public function new() {
         super();

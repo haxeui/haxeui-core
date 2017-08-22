@@ -11,6 +11,32 @@ import haxe.ui.util.Variant;
 
 /**
  General purpose push button that supports both text and icon as well as repeat event dispatching
+ 
+ Composite children:
+    | Id             | Type    | Style Name   | Notes                                  |
+    | `button-label` | `Label` | `.label`     | The text of the button (if applicable) |
+    | `button-icon`  | `Image` | `.icon`      | The icon of the button (if applicable) |
+ 
+ Pseudo classes:
+    | Name      | Notes                                                                    |
+    | `:hover`  | The style to be applied when the cursor is over the button               |
+    | `:down`   | The style to be applied when a mouse button is pressed inside the button |
+    | `:active` | The style to be applied when the button has focus                        |
+    
+  XML example:
+    <button text="Button"
+            styleNames="myCustomButton"
+            style="font-size: 30px"
+            onClick="trace('hello world')" />
+    
+  Code example:
+    var button = new Button();
+    button.text = "Button";
+    button.styleNames = "myCustomButton";
+    button.fontSize = 30;
+    button.onClick = function(e) {
+        trace("hello world");
+    }
 **/
 @:dox(icon = "/icons/ui-button.png")
 class Button extends InteractiveComponent {
