@@ -593,7 +593,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     /**
      A list of this components children
 
-     _Note_: This function will return an empty array if the component has no children
+     *Note*: this function will return an empty array if the component has no children
     **/
     @:dox(group = "Display tree related properties and methods")
     public var childComponents(get, null):Array<Component>;
@@ -607,13 +607,13 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     /**
      Finds a specific child in this components display tree (recusively if desired) and can optionally cast the result
 
-     - `criteria` - The criteria by which to search, the interpretation of this is defined using `searchType` (the default search type is _id_)
+     - `criteria` - The criteria by which to search, the interpretation of this is defined using `searchType` (the default search type is *id*)
 
-     - `type` - The component class you wish to cast the result to (defaults to _null_)
+     - `type` - The component class you wish to cast the result to (defaults to *null*)
 
-     - `recursive` - Whether to search this components children and all its childrens children till it finds a match (defaults to _false_)
+     - `recursive` - Whether to search this components children and all its childrens children till it finds a match (the default depends on the `searchType` param. If `searchType` is `id` the default is *true* otherwise it is *false*)
 
-     - `searchType` - Allows you specify how to consider a child a match (defaults to _id_), can be either:
+     - `searchType` - Allows you specify how to consider a child a match (defaults to *id*), can be either:
 
             - `id` - The first component that has the id specified in `criteria` will be considered a match
 
@@ -658,11 +658,11 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     /**
      Finds a specific parent in this components display tree and can optionally cast the result
 
-     - `criteria` - The criteria by which to search, the interpretation of this is defined using `searchType` (the default search type is _id_)
+     - `criteria` - The criteria by which to search, the interpretation of this is defined using `searchType` (the default search type is *id*)
 
-     - `type` - The component class you wish to cast the result to (defaults to _null_)
+     - `type` - The component class you wish to cast the result to (defaults to *null*)
 
-     - `searchType` - Allows you specify how to consider a parent a match (defaults to _id_), can be either:
+     - `searchType` - Allows you specify how to consider a parent a match (defaults to *id*), can be either:
 
             - `id` - The first component that has the id specified in `criteria` will be considered a match
 
@@ -1045,7 +1045,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     /**
      Whether to use this component as part of its part layout
 
-     _Note_: Invisible components are not included in parent layouts
+     *Note*: invisible components are not included in parent layouts
     **/
     @:dox(group = "Layout related properties and methods")
     public var includeInLayout(get, set):Bool;
@@ -1128,7 +1128,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     /**
      Tells the framework this component is ready
 
-     _Note_: this is called internally by the framework
+     *Note*: this is called internally by the framework
     **/
     public function ready() {
         depth = ComponentUtil.getDepth(this);
@@ -1306,7 +1306,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     /**
      Whether or not a point is inside this components bounds
 
-     _Note_: `left` and `top` must be stage (screen) co-ords
+     *Note*: `left` and `top` must be stage (screen) co-ords
     **/
     @:dox(group = "Size related properties and methods")
     public function hitTest(left:Float, top:Float):Bool { // co-ords must be stage
@@ -1389,7 +1389,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     
     private var _width:Null<Float>;
     #if flash @:setter(width) #else override #end
-    public function set_width(value:Float): #if flash Void #else Float #end {
+    private function set_width(value:Float): #if flash Void #else Float #end {
         if (_width == value) {
             return #if !flash value #end;
         }
@@ -1399,14 +1399,14 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     }
 
     #if flash @:getter(width) #else override #end
-    public function get_width():Float {
+    private function get_width():Float {
         var f:Float = componentWidth;
         return f;
     }
 
     private var _height:Null<Float>;
     #if flash @:setter(height) #else override #end
-    public function set_height(value:Float): #if flash Void #else Float #end {
+    private function set_height(value:Float): #if flash Void #else Float #end {
         if (_height == value) {
             return #if !flash value #end;
         }
@@ -1416,7 +1416,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     }
 
     #if flash @:getter(height) #else override #end
-    public function get_height():Float {
+    private function get_height():Float {
         var f:Float = componentHeight;
         return f;
     }
@@ -1608,7 +1608,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     /**
      A script string to associate with this component
 
-     _Note_: Setting this to non-null will cause this component to create and maintain its own script interpreter during initialsation
+     *Note*: setting this to non-null will cause this component to create and maintain its own script interpreter during initialsation
     **/
     @:dox(group = "Script related properties and methods")
     public var script(null, set):String;
@@ -1620,7 +1620,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     /**
      Execute a script call
 
-     _Note_: This component will first attempt to use its own script interpreter if its avialable otherwise it will scan its parents until it finds one
+     *Note*: this component will first attempt to use its own script interpreter if its avialable otherwise it will scan its parents until it finds one
     **/
     @:dox(group = "Script related properties and methods")
     public function executeScriptCall(expr:String) {

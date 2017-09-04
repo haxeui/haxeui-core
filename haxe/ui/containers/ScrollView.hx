@@ -20,7 +20,7 @@ import haxe.ui.validation.InvalidationFlags;
 
 @:dox(icon = "/icons/ui-scroll-pane-both.png")
 class ScrollView extends Component {
-    public var _contents:Box;
+    private var _contents:Box;
     private var _hscroll:HScroll;
     private var _vscroll:VScroll;
 
@@ -44,6 +44,7 @@ class ScrollView extends Component {
             "vscrollPos" => new DefaultVScrollPosBehaviour(this),
             "hscrollPos" => new DefaultHScrollPosBehaviour(this)
         ]);
+        _defaultLayout = new ScrollViewLayout();
     }
 
     private var _layoutName:String = "vertical";
@@ -463,7 +464,7 @@ class ScrollView extends Component {
         return 0;
     }
 
-    public function checkScrolls() {
+    private function checkScrolls() {
         if (isReady == false ||
             horizontalConstraint == null || horizontalConstraint.childComponents.length == 0 ||
             verticalConstraint == null || verticalConstraint.childComponents.length == 0 ||
@@ -521,7 +522,7 @@ class ScrollView extends Component {
         vscrollPos = _vscroll.pos;
     }
 
-    public function updateScrollRect() {
+    private function updateScrollRect() {
         if (_contents == null) {
             return;
         }
@@ -554,6 +555,7 @@ class ScrollView extends Component {
 //***********************************************************************************************************
 // Default behaviours
 //***********************************************************************************************************
+@:dox(hide)
 class DefaultVScrollPosBehaviour extends Behaviour {
     public override function get():Variant {
         var vscroll:VScroll = _component.findComponent(VScroll);
@@ -571,6 +573,7 @@ class DefaultVScrollPosBehaviour extends Behaviour {
     }
 }
 
+@:dox(hide)
 class DefaultHScrollPosBehaviour extends Behaviour {
     public override function get():Variant {
         var hscroll:HScroll = _component.findComponent(HScroll);
@@ -598,8 +601,16 @@ class ScrollViewLayout extends DefaultLayout {
     }
 
     private override function repositionChildren() {
-        var hscroll:Component = component.findComponent(HScroll);
-        var vscroll:Component = component.findComponent(VScroll);
+        var contents:Component = component.findComponent("scrollview-contents", null, false, "css");
+        if (contents == null) {
+            return;
+        }
+
+        var hscroll:Component = component.findComponent(HScroll, false);
+        var vscroll:Component = component.findComponent(VScroll, false);
+
+        var ucx = innerWidth;
+        var ucy = innerHeight;
 
         if (hscroll != null && hidden(hscroll) == false) {
             var ucy = innerHeight;
@@ -619,8 +630,8 @@ class ScrollViewLayout extends DefaultLayout {
 
     private override function get_usableSize():Size {
         var size:Size = super.get_usableSize();
-        var hscroll:Component = component.findComponent(HScroll);
-        var vscroll:Component = component.findComponent(VScroll);
+        var hscroll:Component = component.findComponent(HScroll, false);
+        var vscroll:Component = component.findComponent(VScroll, false);
         if (hscroll != null && hidden(hscroll) == false) {
             size.height -= hscroll.componentHeight;
         }
@@ -643,8 +654,8 @@ class ScrollViewLayout extends DefaultLayout {
     }
 
     public override function calcAutoSize(exclusions:Array<Component> = null):Size {
-        var hscroll:Component = component.findComponent(HScroll);
-        var vscroll:Component = component.findComponent(VScroll);
+        var hscroll:Component = component.findComponent(HScroll, false);
+        var vscroll:Component = component.findComponent(VScroll, false);
         var size:Size = super.calcAutoSize([hscroll, vscroll]);
         if (hscroll != null && hscroll.hidden == false) {
             size.height += hscroll.componentHeight;

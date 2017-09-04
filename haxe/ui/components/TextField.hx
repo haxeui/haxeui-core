@@ -183,23 +183,21 @@ class TextField extends InteractiveComponent implements IFocusable {
     private var _restrictEReg:EReg;
     private var _restrictChars:String;
     /**
-     Indicates the set of characters that an user can enter into the textfield.
-     You can insert a range with the "-" character, or you can exclude with
-     the "^" character.
+     Indicates the set of characters that an user can enter into the textfield. You can insert a range with the "-" character, or you can exclude with the "^" character.
 
-     For example:
+     Examples include:
 
-     * "a-z" : Allowed lowercase letters.
+     - `a-z` : Allowed lowercase letters.
 
-     * "a-zA-Z" : Allowed any letter.
+     - `a-zA-Z` : Allowed any letter.
 
-     * "^Qq" : Allowed any char except "q" and "Q".
+     - `^Qq` : Allowed any char except `q` and `Q`.
 
-     * "a-z^q": Allowed lowercase letters except "q".
+     - `a-z^q`: Allowed lowercase letters except `q`.
 
-     * "0-9a-z": Allowed numbers and lowercase letters.
+     - `0-9a-z`: Allowed numbers and lowercase letters.
 
-     * "0-9^4-6": Allowed  numbers except 4, 5 and 6.
+     - `0-9^4-6`: Allowed  numbers except `4`, `5` and `6`.
     **/
     @:clonable public var restrictChars(get, set):String;
     private function get_restrictChars():String {

@@ -238,7 +238,7 @@ class TableView extends ScrollView implements IDataComponent {
         return _contents.childComponents.length;
     }
 
-    public override function updateScrollRect() {
+    private override function updateScrollRect() {
         var rc:Rectangle = null;
 
         var ucx = layout.usableWidth;
@@ -321,6 +321,7 @@ class TableView extends ScrollView implements IDataComponent {
     }
 }
 
+@:dox(hide)
 class TableViewLayout extends DefaultLayout {
     public function new() {
         super();
@@ -347,8 +348,8 @@ class TableViewLayout extends DefaultLayout {
             header.top = paddingTop + marginTop(header) - marginBottom(header);
         }
 
-        var hscroll:Component = component.findComponent(HScroll);
-        var vscroll:Component = component.findComponent(VScroll);
+        var hscroll:Component = component.findComponent(HScroll, false);
+        var vscroll:Component = component.findComponent(VScroll, false);
 
         var ucx = innerWidth;
         var ucy = innerHeight;
@@ -376,8 +377,8 @@ class TableViewLayout extends DefaultLayout {
 
     private override function get_usableSize():Size {
         var size:Size = super.get_usableSize();
-        var hscroll:Component = component.findComponent(HScroll);
-        var vscroll:Component = component.findComponent(VScroll);
+        var hscroll:Component = component.findComponent(HScroll, false);
+        var vscroll:Component = component.findComponent(VScroll, false);
         if (hscroll != null && hidden(hscroll) == false) {
             size.height -= hscroll.componentHeight;
         }
@@ -407,8 +408,8 @@ class TableViewLayout extends DefaultLayout {
 
     public override function calcAutoSize(exclusions:Array<Component> = null):Size {
         var size:Size = super.calcAutoSize(exclusions);
-        var hscroll:Component = component.findComponent(HScroll);
-        var vscroll:Component = component.findComponent(VScroll);
+        var hscroll:Component = component.findComponent(HScroll, false);
+        var vscroll:Component = component.findComponent(VScroll, false);
         if (hscroll != null && hscroll.hidden == false) {
             size.height += hscroll.componentHeight;
         }
@@ -422,7 +423,6 @@ class TableViewLayout extends DefaultLayout {
 class TableViewRow extends HBox {
     public function new() {
         super();
-        addClass("hbox", false);
         registerEvent(MouseEvent.MOUSE_OVER, _onMouseOver);
         registerEvent(MouseEvent.MOUSE_OUT, _onMouseOut);
     }
