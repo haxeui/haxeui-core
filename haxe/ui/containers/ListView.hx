@@ -36,7 +36,7 @@ class ListView extends ScrollView implements IDataComponent {
     }
 
     private override function createContentContainer() {
-        if ((_itemRenderer != null || _itemRendererFunction != null) && _contents == null) {
+        if (_contents == null) {
             super.createContentContainer();
             _contents.percentWidth = 100;
             _contents.addClass("listview-contents");
