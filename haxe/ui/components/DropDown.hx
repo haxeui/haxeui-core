@@ -242,7 +242,9 @@ class DropDown extends Button implements IDataComponent {
 
     private function hideList() {
         if (_listview != null) {
-            _listview.selectedItem.removeClass(":hover");
+            if (_listview.selectedItem != null) {
+                _listview.selectedItem.removeClass(":hover");
+            }
             Screen.instance.removeComponent(_listview);
         }
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
@@ -268,7 +270,7 @@ class DropDown extends Button implements IDataComponent {
                 _text = _dataSource.get(_selectedIndex).value;
             }
         } else {
-            _text = null;
+            //_text = null;
         }
 
         super.validateData();
