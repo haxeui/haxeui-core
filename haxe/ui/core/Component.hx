@@ -687,6 +687,8 @@ class Component extends ComponentBase implements IComponentBase implements IVali
                     break;
                 }
             }
+            
+            p = p.parentComponent;
         }
         return cast match;
     }
