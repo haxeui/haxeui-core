@@ -85,6 +85,7 @@ class TextDisplay extends TextDisplayBase {
 
         invalidate(InvalidationFlags.DISPLAY);
         _width = value;
+        validate();
         return value;
     }
 
@@ -100,6 +101,7 @@ class TextDisplay extends TextDisplayBase {
 
         invalidate(InvalidationFlags.DISPLAY);
         _height = value;
+        validate();
         return value;
     }
 
@@ -189,7 +191,7 @@ class TextDisplay extends TextDisplayBase {
     public function validate() {
         if (_isValidating == true ||    //we were already validating, the existing validation will continue.
             isInvalid() == false) {     //if none is invalid, exit.
-            return;
+                return;
         }
 
         _isValidating = true;
