@@ -1377,14 +1377,22 @@ class Component extends ComponentBase implements IComponentBase implements IVali
 
     #if flash @:setter(x) #else override #end
     public function set_x(value:Float): #if flash Void #else Float #end {
+        #if flash
+        super.x = value;
+        #else
         super.set_x(value);
+        #end
         left = value;
         #if !flash return value; #end
     }
     
     #if flash @:setter(y) #else override #end
     public function set_y(value:Float): #if flash Void #else Float #end {
+        #if flash
+        super.y = value;
+        #else
         super.set_y(value);
+        #end
         top = value;
         #if !flash return value; #end
     }
