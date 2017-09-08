@@ -95,7 +95,7 @@ class ListView extends ScrollView implements IDataComponent {
 
     public var selectedItem(get, set):ItemRenderer;
     private function get_selectedItem():ItemRenderer {
-        if (contents == null || _selectedIndex == NO_SELECTION) {
+        if (contents == null || _selectedIndex == NO_SELECTION || contents.childComponents[_selectedIndex] == null) {
             return null;
         }
 
