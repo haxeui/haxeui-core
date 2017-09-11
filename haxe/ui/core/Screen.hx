@@ -238,6 +238,7 @@ class Screen extends ScreenBase {
                 }
             } else {
                 var dialogButton:DialogButton = new DialogButton();
+                dialogButton.id = b.id;
                 dialogButton.text = b.text;
                 dialogButton.icon = b.icon;
                 if (b.closesDialog != null) {
