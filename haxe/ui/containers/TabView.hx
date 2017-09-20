@@ -130,6 +130,23 @@ class TabView extends Component {
         return value;
     }
 
+    public var selectedPage(get, null):Component;
+    private function get_selectedPage():Component {
+        if (_pageIndex < 0) {
+            return null;
+        }
+        return _views[_pageIndex];
+    }
+    
+    public var selectedButton(get, null):Button;
+    private function get_selectedButton():Button {
+        if (_pageIndex < 0) {
+            return null;
+        }
+        
+        return cast(_tabs.childComponents[_pageIndex], Button);
+    }
+    
     public function removeAllTabs() {
         behaviourRun("removeAllTabs");
     }
@@ -143,6 +160,7 @@ class TabView extends Component {
             return;
         }
         
+        _tabs.selectedIndex = _pageIndex;
         var view:Component = _views[_pageIndex];
         if (view != null) {
             if (_currentView != null) {
