@@ -78,7 +78,7 @@ class TabBar extends Component {
 
     private override function validateLayout() {
         var b = super.validateLayout();
-        if (native == true) {
+        if (native == true || _container == null) {
             return b;
         }
         
