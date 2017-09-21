@@ -85,7 +85,6 @@ class TextDisplay extends TextDisplayBase {
 
         invalidate(InvalidationFlags.DISPLAY);
         _width = value;
-        validate();
         return value;
     }
 
@@ -101,7 +100,6 @@ class TextDisplay extends TextDisplayBase {
 
         invalidate(InvalidationFlags.DISPLAY);
         _height = value;
-        validate();
         return value;
     }
 
