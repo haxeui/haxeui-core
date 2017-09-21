@@ -598,6 +598,7 @@
     background-color: white;
     border-bottom-width: 1px;
     border-bottom-color: #ABABAB;
+    clip: true;
 }
 
 /*

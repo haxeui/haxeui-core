@@ -14,7 +14,7 @@ class TabBar extends Component {
 
     public function new() {
         super();
-        layout = new HorizontalLayout(); // TabBarLayout();
+        layout = new HorizontalLayout();
     }
 
     //***********************************************************************************************************
@@ -23,13 +23,12 @@ class TabBar extends Component {
     public override function addComponent(child:Component):Component {
         var v = super.addComponent(child);
 
-        //if (child != _background) {
-            child.addClass("tabbar-button");
-            child.registerEvent(MouseEvent.MOUSE_DOWN, _onButtonMouseDown);
-            if (_selectedIndex == -1) {
-                selectedIndex = 0;
-            }
-        //}
+        child.addClass("tabbar-button");
+        child.registerEvent(MouseEvent.MOUSE_DOWN, _onButtonMouseDown);
+        if (_selectedIndex == -1) {
+            selectedIndex = 0;
+        }
+        
         return v;
     }
 
@@ -90,18 +89,4 @@ class TabBar extends Component {
         selectedIndex = getComponentIndex(event.target); // - 1;
     }
 
-}
-
-//***********************************************************************************************************
-// Custom layouts
-//***********************************************************************************************************
-@:dox(hide)
-class TabBarLayout extends HorizontalLayout {
-    public function new() {
-        super();
-    }
-
-    private override function resizeChildren() {
-        super.resizeChildren();
-    }
 }

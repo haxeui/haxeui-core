@@ -212,8 +212,11 @@ class TabViewLayout extends DefaultLayout {
             return;
         }
 
+        var usableSize = usableSize;
+        tabs.width = usableSize.width;
+        
         if (component.autoHeight == false) {
-            content.componentHeight = usableHeight;
+            content.componentHeight = usableSize.height;
         }
 
         if (component.autoWidth == false) {

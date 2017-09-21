@@ -94,7 +94,7 @@
 .vslider .slider-value{border:none;background:#6CAADB #216AAE horizontal;width:100%;border-radius:2px;cursor:pointer;}
 .vslider .slider-value:disabled{background:#BFBFBF #8C8C8C horizontal;cursor:default;}
 .vslider .slider-button{horizontal-align:center;height:14px;width:14px;border-radius:16px;}
-.tabbar{horizontal-spacing:5px;padding-left:5px;padding-right:5px;height:auto;width:auto;background-color:white;border-bottom-width:1px;border-bottom-color:#ABABAB;}
+.tabbar{horizontal-spacing:5px;padding-left:5px;padding-right:5px;height:auto;width:auto;background-color:white;border-bottom-width:1px;border-bottom-color:#ABABAB;clip:true;}
 .tabbar-button{border-radius:0px;background:#EDEDED #E6E6E6 vertical;padding:6px;vertical-align:bottom;}
 .tabbar-button:down{}
 .tabbar-button-selected,.tabbar-button-selected:hover,.tabbar-button-selected:down{border-radius:0px;border:1px solid #ABABAB;border-bottom-width:1px;border-bottom-color:white;background-color:white;}
