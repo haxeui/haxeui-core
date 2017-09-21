@@ -601,6 +601,12 @@
     clip: true;
 }
 
+.tabbar .tabbar-contents {
+    border: none;
+    border-bottom-width: 1px;
+    border-bottom-color: #ABABAB;
+}
+
 /*
 .tabbar .tabbar-background {
     background-color: white;
@@ -625,6 +631,16 @@
     border-bottom-width: 1px;
     border-bottom-color: white;
     background-color: white;
+}
+
+.tabbar-scroll-left {
+    icon: "haxeui-core/styles/default/left_arrow.png";
+    border-radius: 0;
+}
+
+.tabbar-scroll-right {
+    icon: "haxeui-core/styles/default/right_arrow.png";
+    border-radius: 0;
 }
 
 .tabbar-button-selected .label {
