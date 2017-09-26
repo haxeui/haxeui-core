@@ -199,6 +199,15 @@ class TabBar extends Component {
         return value;
     }
 
+    public var selectedButton(get, null):Button;
+    private function get_selectedButton():Button {
+        if (_selectedIndex < 0) {
+            return null;
+        }
+        
+        return cast(_container.childComponents[_selectedIndex], Button);
+    }
+    
     public function resetSelection() {
         _selectedIndex = -1;
         _currentButton = null;

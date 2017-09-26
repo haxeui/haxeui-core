@@ -140,11 +140,7 @@ class TabView extends Component {
     
     public var selectedButton(get, null):Button;
     private function get_selectedButton():Button {
-        if (_pageIndex < 0) {
-            return null;
-        }
-        
-        return cast(_tabs.childComponents[_pageIndex], Button);
+        return _tabs.selectedButton;
     }
     
     public function removeAllTabs() {
