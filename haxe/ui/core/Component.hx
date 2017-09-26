@@ -554,6 +554,10 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     **/
     @:dox(group = "Display tree related properties and methods")
     public function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
+        if (child == null) {
+            return null;
+        }
+        
         handleRemoveComponent(child, dispose);
         if (_children != null) {
             if (_children.remove(child)) {

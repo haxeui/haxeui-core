@@ -86,7 +86,7 @@ class TabBar extends Component {
             _containerPosition = layout.paddingLeft;
         }
         
-        if (_container.width > this.layout.usableWidth) {
+        if (_container.width > this.layout.usableWidth && this.layout.usableWidth > 0) {
             createScrollButtons();
             _container.left = _containerPosition;
         } else {
