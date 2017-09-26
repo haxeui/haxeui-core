@@ -1261,6 +1261,7 @@ class Parser {
         var last = null;
         while( true ) {
             var t = readToken();
+                
             if( last == null )
                 switch( t ) {
                 case TStar: def = true;
@@ -1284,6 +1285,8 @@ class Parser {
                     default: throw "assert";
                     }
                     last = null;
+                case TEof:
+                    break;
                 default:
                     unexpected(t);
                 }
