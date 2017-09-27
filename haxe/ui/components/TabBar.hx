@@ -4,6 +4,7 @@ import haxe.ui.containers.HBox;
 import haxe.ui.core.Component;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.UIEvent;
+import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.HorizontalLayout;
 
 /**
@@ -180,12 +181,16 @@ class TabBar extends Component {
         return _selectedIndex;
     }
     private function set_selectedIndex(value:Int):Int {
-        if (value < 0 || _selectedIndex == value) {
+        if (value < 0 || _selectedIndex == value || _container == null) {
             return value;
         }
 
-        invalidateData();
+        if (_selectedIndex != -1) {
+            dispatch(new UIEvent(UIEvent.BEFORE_CHANGE));
+        }
+        
         _selectedIndex = value;
+        invalidateData();
 
         var button:Button = cast(_container.getComponentAt(_selectedIndex), Button);
         if (button != null) {
@@ -230,7 +235,7 @@ class TabBar extends Component {
 // Layout
 //***********************************************************************************************************
 @:dox(hide)
-class TabBarLayout extends HorizontalLayout {
+class TabBarLayout extends DefaultLayout {
     private override function repositionChildren() {
         super.repositionChildren();
         

@@ -47,6 +47,7 @@ class TabView extends Component {
             _tabs = new TabBar();
             _tabs.id = "tabview-tabs";
             _tabs.addClass("tabview-tabs");
+            _tabs.registerEvent(UIEvent.BEFORE_CHANGE, onBeforeTabsChange);
             _tabs.registerEvent(UIEvent.CHANGE, _onTabsChange);
             addComponent(_tabs);
         }
@@ -147,6 +148,22 @@ class TabView extends Component {
         behaviourRun("removeAllTabs");
     }
 
+    private var __onBeforeChange:UIEvent->Void;
+    /**
+     Utility property to add a single `UIEvent.CHANGE` event
+    **/
+    @:dox(group = "Event related properties and methods")
+    public var onBeforeChange(null, set):UIEvent->Void;
+    private function set_onBeforeChange(value:UIEvent->Void):UIEvent->Void {
+        if (__onBeforeChange != null) {
+            unregisterEvent(UIEvent.BEFORE_CHANGE, __onBeforeChange);
+            __onBeforeChange = null;
+        }
+        registerEvent(UIEvent.BEFORE_CHANGE, value);
+        __onBeforeChange = value;
+        return value;
+    }
+    
     //***********************************************************************************************************
     // Validation
     //***********************************************************************************************************
@@ -178,6 +195,10 @@ class TabView extends Component {
     //***********************************************************************************************************
     // Event Handlers
     //***********************************************************************************************************
+    private function onBeforeTabsChange(event:UIEvent) {
+        dispatch(new UIEvent(UIEvent.BEFORE_CHANGE));
+    }
+    
     private function _onTabsChange(event:UIEvent) {
         pageIndex = _tabs.selectedIndex;
     }
