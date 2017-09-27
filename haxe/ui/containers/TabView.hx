@@ -139,6 +139,14 @@ class TabView extends Component {
         return _views[_pageIndex];
     }
     
+    public var pageCount(get, null):Int;
+    private function get_pageCount():Int {
+        if (_tabs == null) {
+            return 0;
+        }
+        return _tabs.buttonCount;
+    }
+    
     public var selectedButton(get, null):Button;
     private function get_selectedButton():Button {
         return _tabs.selectedButton;

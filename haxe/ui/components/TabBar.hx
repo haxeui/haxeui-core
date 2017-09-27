@@ -213,6 +213,15 @@ class TabBar extends Component {
         return cast(_container.childComponents[_selectedIndex], Button);
     }
     
+    public var buttonCount(get, null):Int;
+    private function get_buttonCount():Int {
+        if (_container == null) {
+            return 0;
+        }
+        
+        return _container.childComponents.length;
+    }
+    
     public function resetSelection() {
         _selectedIndex = -1;
         _currentButton = null;
