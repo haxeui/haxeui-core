@@ -1,5 +1,6 @@
 package haxe.ui.components;
 
+import haxe.ui.validation.InvalidationFlags;
 import haxe.ui.focus.FocusManager;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
@@ -201,20 +202,29 @@ class TextArea extends InteractiveComponent implements IFocusable {
             getTextInput().vscrollPos = _vscroll.pos;
         }
     }
-
-    public override function validateLayout():Bool {
-        var b = super.validateLayout();
-        
-        if (b == true) {
-            checkScrolls();
-        }
-        
-        return b;
-    }
     
     //***********************************************************************************************************
     // Validation
     //***********************************************************************************************************
+
+    private inline function invalidateScroll() {
+        invalidate(InvalidationFlags.SCROLL);
+    }
+
+    private override function validateInternal() {
+        var scrollInvalid = isInvalid(InvalidationFlags.SCROLL);
+        var layoutInvalid = isInvalid(InvalidationFlags.LAYOUT);
+
+        super.validateInternal();
+
+        if (scrollInvalid || layoutInvalid) {
+            validateScroll();
+        }
+    }
+
+    private function validateScroll() {
+        checkScrolls();
+    }
 
     private override function validateData() {
         if (behaviourGet("placeholder") != _placeholder) {

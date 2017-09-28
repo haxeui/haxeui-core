@@ -750,10 +750,12 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     **/
     @:dox(group = "Display tree related properties and methods")
     public function hide() {
-        handleVisibility(false);
-        _hidden = true;
-        if (parentComponent != null) {
-            parentComponent.invalidateLayout();
+        if (_hidden == false) {
+            handleVisibility(false);
+            _hidden = true;
+            if (parentComponent != null) {
+                parentComponent.invalidateLayout();
+            }
         }
     }
 
@@ -762,10 +764,12 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     **/
     @:dox(group = "Display tree related properties and methods")
     public function show() {
-        handleVisibility(true);
-        _hidden = false;
-        if (parentComponent != null) {
-            parentComponent.invalidateLayout();
+        if (_hidden == true) {
+            handleVisibility(true);
+            _hidden = false;
+            if (parentComponent != null) {
+                parentComponent.invalidateLayout();
+            }
         }
     }
 
