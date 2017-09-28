@@ -1,13 +1,15 @@
 package haxe.ui.core;
 
+import haxe.ui.validation.IValidating;
 import haxe.ui.validation.InvalidationFlags;
 import haxe.ui.backend.TextInputBase;
 import haxe.ui.styles.Style;
+import haxe.ui.validation.ValidationManager;
 
 /**
  Class that represents a framework specific method to display editable text inside a component
 **/
-class TextInput extends TextInputBase {
+class TextInput extends TextInputBase implements IValidating {
     private var _invalidationFlags:Map<String, Bool> = new Map<String, Bool>();
     private var _isAllInvalid:Bool = false;
     private var _isValidating:Bool = false;
@@ -31,8 +33,8 @@ class TextInput extends TextInputBase {
             return value;
         }
 
-        invalidate(InvalidationFlags.STYLE);
         _textStyle = value;
+        invalidate(InvalidationFlags.STYLE);
         return value;
     }
 
@@ -45,8 +47,8 @@ class TextInput extends TextInputBase {
             return value;
         }
 
-        invalidate(InvalidationFlags.DATA);
         _text = value;
+        invalidate(InvalidationFlags.DATA);
         return value;
     }
 
@@ -59,8 +61,8 @@ class TextInput extends TextInputBase {
             return value;
         }
 
-        invalidate(InvalidationFlags.STYLE);
         _password = value;
+        invalidate(InvalidationFlags.STYLE);
         return value;
     }
 
@@ -73,8 +75,8 @@ class TextInput extends TextInputBase {
             return value;
         }
 
-        invalidate(InvalidationFlags.POSITION);
         _left = value;
+        invalidate(InvalidationFlags.POSITION);
         return value;
     }
 
@@ -87,8 +89,8 @@ class TextInput extends TextInputBase {
             return value;
         }
 
-        invalidate(InvalidationFlags.POSITION);
         _top = value;
+        invalidate(InvalidationFlags.POSITION);
         return value;
     }
 
@@ -98,8 +100,8 @@ class TextInput extends TextInputBase {
             return value;
         }
 
-        invalidate(InvalidationFlags.DISPLAY);
         _width = value;
+        invalidate(InvalidationFlags.DISPLAY);
         return value;
     }
 
@@ -113,8 +115,8 @@ class TextInput extends TextInputBase {
             return value;
         }
 
-        invalidate(InvalidationFlags.DISPLAY);
         _height = value;
+        invalidate(InvalidationFlags.DISPLAY);
         return value;
     }
 
@@ -156,8 +158,8 @@ class TextInput extends TextInputBase {
             return value;
         }
 
-        invalidate(InvalidationFlags.STYLE);
         _multiline = value;
+        invalidate(InvalidationFlags.STYLE);
         return value;
     }
 
@@ -170,8 +172,8 @@ class TextInput extends TextInputBase {
             return value;
         }
 
-        invalidate(InvalidationFlags.STYLE);
         _wordWrap = value;
+        invalidate(InvalidationFlags.STYLE);
         return value;
     }
 
@@ -184,8 +186,8 @@ class TextInput extends TextInputBase {
             return value;
         }
 
-        invalidate(InvalidationFlags.STYLE);
         _hscrollPos = value;
+        invalidate(InvalidationFlags.STYLE);
         return value;
     }
 
@@ -198,8 +200,8 @@ class TextInput extends TextInputBase {
             return value;
         }
 
-        invalidate(InvalidationFlags.STYLE);
         _vscrollPos = value;
+        invalidate(InvalidationFlags.STYLE);
         return value;
     }
 
@@ -222,22 +224,43 @@ class TextInput extends TextInputBase {
     public function invalidate(flag:String = InvalidationFlags.ALL) {
         if (flag == InvalidationFlags.ALL) {
             _isAllInvalid = true;
+            ValidationManager.instance.add(this);
         } else {
             if (flag != InvalidationFlags.ALL && !_invalidationFlags.exists(flag)) {
                 _invalidationFlags.set(flag, true);
+                ValidationManager.instance.add(this);
             }
         }
     }
 
+    private var _depth:Int;
+    @:dox(hide)
+    public var depth(get, set):Int;
+    private function get_depth():Int {
+        return _depth;
+    }
+    private function set_depth(value:Int):Int {
+        if (_depth == value) {
+            return value;
+        }
+
+        _depth = value;
+
+        return value;
+    }
+
+    public function updateDisplay() {
+    }
+    
     public function validate() {
-        if (_isValidating == true ||     //we were already validating, the existing validation will continue.
+        if (_isValidating == true ||    //we were already validating, the existing validation will continue.
             isInvalid() == false) {     //if none is invalid, exit.
             return;
         }
 
         _isValidating = true;
 
-        handleValidate();
+        validateInternal();
 
         for (flag in _invalidationFlags.keys()) {
             _invalidationFlags.remove(flag);
@@ -246,8 +269,8 @@ class TextInput extends TextInputBase {
         _isAllInvalid = false;
         _isValidating = false;
     }
-
-    private function handleValidate() {
+    
+    private function validateInternal() {
         var dataInvalid = isInvalid(InvalidationFlags.DATA);
         var styleInvalid = isInvalid(InvalidationFlags.STYLE);
         var positionInvalid = isInvalid(InvalidationFlags.POSITION);

@@ -1,13 +1,15 @@
 package haxe.ui.core;
 
+import haxe.ui.validation.IValidating;
 import haxe.ui.validation.InvalidationFlags;
 import haxe.ui.backend.TextDisplayBase;
 import haxe.ui.styles.Style;
+import haxe.ui.validation.ValidationManager;
 
 /**
  Class that represents a framework specific method to display read-only text inside a component
 **/
-class TextDisplay extends TextDisplayBase {
+class TextDisplay extends TextDisplayBase implements IValidating {
 
     private var _invalidationFlags:Map<String, Bool> = new Map<String, Bool>();
     private var _isAllInvalid:Bool = false;
@@ -129,6 +131,7 @@ class TextDisplay extends TextDisplayBase {
         if (isInvalid() == true) {
             validate();
         }
+        
         return _textHeight;
     }
 
@@ -179,13 +182,34 @@ class TextDisplay extends TextDisplayBase {
     public function invalidate(flag:String = InvalidationFlags.ALL) {
         if (flag == InvalidationFlags.ALL) {
             _isAllInvalid = true;
+            ValidationManager.instance.add(this);
         } else {
             if (flag != InvalidationFlags.ALL && !_invalidationFlags.exists(flag)) {
                 _invalidationFlags.set(flag, true);
+                ValidationManager.instance.add(this);
             }
         }
     }
 
+    private var _depth:Int;
+    @:dox(hide)
+    public var depth(get, set):Int;
+    private function get_depth():Int {
+        return _depth;
+    }
+    private function set_depth(value:Int):Int {
+        if (_depth == value) {
+            return value;
+        }
+
+        _depth = value;
+
+        return value;
+    }
+
+    public function updateDisplay() {
+    }
+    
     public function validate() {
         if (_isValidating == true ||    //we were already validating, the existing validation will continue.
             isInvalid() == false) {     //if none is invalid, exit.
@@ -194,7 +218,7 @@ class TextDisplay extends TextDisplayBase {
 
         _isValidating = true;
 
-        handleValidate();
+        validateInternal();
 
         for (flag in _invalidationFlags.keys()) {
             _invalidationFlags.remove(flag);
@@ -204,7 +228,7 @@ class TextDisplay extends TextDisplayBase {
         _isValidating = false;
     }
 
-    private function handleValidate() {
+    private function validateInternal() {
         var dataInvalid = isInvalid(InvalidationFlags.DATA);
         var styleInvalid = isInvalid(InvalidationFlags.STYLE);
         var positionInvalid = isInvalid(InvalidationFlags.POSITION);

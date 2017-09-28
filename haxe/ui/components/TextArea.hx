@@ -100,12 +100,14 @@ class TextArea extends InteractiveComponent implements IFocusable {
 
     private override function createChildren() {
         super.createChildren();
+        /*
         if (componentWidth == 0) {
             componentWidth = 150;
         }
         if (componentHeight == 0) {
             componentHeight = 100;
         }
+        */
         
         getTextInput().multiline = true;
 
@@ -200,11 +202,16 @@ class TextArea extends InteractiveComponent implements IFocusable {
         }
     }
 
-    public override function onResized() {
-        super.onResized();
-        checkScrolls();
+    public override function validateLayout():Bool {
+        var b = super.validateLayout();
+        
+        if (b == true) {
+            checkScrolls();
+        }
+        
+        return b;
     }
-
+    
     //***********************************************************************************************************
     // Validation
     //***********************************************************************************************************
@@ -237,6 +244,7 @@ class TextArea extends InteractiveComponent implements IFocusable {
         behaviourSet("text", text);
         handleBindings(["text", "value"]);
     }
+    
 }
 
 //***********************************************************************************************************
@@ -251,8 +259,10 @@ class TextAreaDefaultTextBehaviour extends Behaviour {
         }
 
         var textArea:TextArea = cast _component;
-        textArea.getTextInput().text = value;
-        textArea.invalidateDisplay();
+        if (value != textArea.getTextInput().text) {
+            textArea.getTextInput().text = value;
+            textArea.invalidateDisplay();
+        }
     }
 
     public override function get():Variant {
