@@ -1,5 +1,6 @@
 package haxe.ui.components;
 
+import haxe.ui.core.TextInput;
 import haxe.ui.validation.InvalidationFlags;
 import haxe.ui.focus.FocusManager;
 import haxe.ui.core.Behaviour;
@@ -139,17 +140,18 @@ class TextArea extends InteractiveComponent implements IFocusable {
             return;
         }
 
-        if (getTextInput().textWidth > getTextInput().width) {
+        var textInput:TextInput = getTextInput();
+        if (textInput.textWidth > textInput.width) {
             if (_hscroll == null) {
                 _hscroll = new HScroll();
                 _hscroll.id = "textarea-hscroll";
                 addComponent(_hscroll);
                 _hscroll.registerEvent(UIEvent.CHANGE, _onScrollChange);
             }
-            _hscroll.max = getTextInput().textWidth - getTextInput().width;
-            _hscroll.pos = getTextInput().hscrollPos;
+            _hscroll.max = textInput.textWidth - getTextInput().width;
+            _hscroll.pos = textInput.hscrollPos;
 
-            _hscroll.pageSize = (getTextInput().width * _hscroll.max) / getTextInput().textWidth;
+            _hscroll.pageSize = (textInput.width * _hscroll.max) / textInput.textWidth;
             _hscroll.show();
         } else {
             if (_hscroll != null) {
@@ -157,17 +159,17 @@ class TextArea extends InteractiveComponent implements IFocusable {
             }
         }
         
-        if (getTextInput().textHeight > getTextInput().height) {
+        if (textInput.textHeight > textInput.height) {
             if (_vscroll == null) {
                 _vscroll = new VScroll();
                 _vscroll.id = "textarea-vscroll";
                 addComponent(_vscroll);
                 _vscroll.registerEvent(UIEvent.CHANGE, _onScrollChange);
             }
-            _vscroll.max = getTextInput().textHeight - getTextInput().height;
-            _vscroll.pos = getTextInput().vscrollPos;
+            _vscroll.max = textInput.textHeight - textInput.height;
+            _vscroll.pos = textInput.vscrollPos;
 
-            _vscroll.pageSize = (getTextInput().height * _vscroll.max) / getTextInput().textHeight;
+            _vscroll.pageSize = (textInput.height * _vscroll.max) / textInput.textHeight;
             _vscroll.show();
         } else {
             if (_vscroll != null) {
@@ -212,12 +214,13 @@ class TextArea extends InteractiveComponent implements IFocusable {
     }
 
     private override function validateInternal() {
+        var dataInvalid = isInvalid(InvalidationFlags.DATA);
         var scrollInvalid = isInvalid(InvalidationFlags.SCROLL);
         var layoutInvalid = isInvalid(InvalidationFlags.LAYOUT);
 
         super.validateInternal();
 
-        if (scrollInvalid || layoutInvalid) {
+        if (scrollInvalid || layoutInvalid || dataInvalid) {
             validateScroll();
         }
     }
@@ -269,10 +272,9 @@ class TextAreaDefaultTextBehaviour extends Behaviour {
         }
 
         var textArea:TextArea = cast _component;
-        if (value != textArea.getTextInput().text) {
-            textArea.getTextInput().text = value;
-            textArea.invalidateDisplay();
-        }
+        textArea.getTextInput().text = value;
+        textArea.getTextInput().invalidate(InvalidationFlags.MEASURE);
+        textArea.invalidateDisplay();
     }
 
     public override function get():Variant {

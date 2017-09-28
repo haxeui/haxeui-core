@@ -275,15 +275,14 @@ class TextInput extends TextInputBase implements IValidating {
         var styleInvalid = isInvalid(InvalidationFlags.STYLE);
         var positionInvalid = isInvalid(InvalidationFlags.POSITION);
         var displayInvalid = isInvalid(InvalidationFlags.DISPLAY);
-
-        var measureTextRequired:Bool = false;
+        var measureInvalid = isInvalid(InvalidationFlags.MEASURE);
 
         if (dataInvalid) {
             validateData();
         }
 
         if (styleInvalid) {
-            measureTextRequired = validateStyle();
+            measureInvalid = validateStyle() || measureInvalid;
         }
 
         if (positionInvalid) {
@@ -294,7 +293,7 @@ class TextInput extends TextInputBase implements IValidating {
             validateDisplay();
         }
 
-        if (dataInvalid || displayInvalid || measureTextRequired) {
+        if (dataInvalid || displayInvalid || measureInvalid) {
             measureText();
         }
     }
