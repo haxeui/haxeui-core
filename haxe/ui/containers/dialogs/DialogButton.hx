@@ -40,8 +40,9 @@ class DialogButton {
     **/
     public var closesDialog:Bool = true;
 
-    public function new(id:String = null, text:String = null) {
+    public function new(id:String = null, text:String = null, closesDialog:Bool = true) {
         this.id = id;
         this.text = text;
+        this.closesDialog = closesDialog;
     }
 }
