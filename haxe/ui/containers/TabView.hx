@@ -74,6 +74,7 @@ class TabView extends Component {
                 button.text = text;
                 button.icon = icon;
                 _tabs.addComponent(button);
+                invalidateData();
             } else {
                 super.addComponent(child);
             }
@@ -124,9 +125,9 @@ class TabView extends Component {
             return value;
         }
 
+        _pageIndex = value;
         invalidateData();
         invalidateLayout();
-        _pageIndex = value;
 
         return value;
     }

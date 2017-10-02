@@ -86,8 +86,8 @@ class ListView extends ScrollView implements IDataComponent {
     }
     private function set_selectedIndex(value:Int):Int {
         if(_dataSource != null && value < _dataSource.size && _selectedIndex != value) {
-            invalidateIndex();
             _selectedIndex = value;
+            invalidateIndex();
         }
 
         return value;
