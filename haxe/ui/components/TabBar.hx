@@ -92,6 +92,7 @@ class TabBar extends Component {
             _container.left = _containerPosition;
         } else {
             hideScrollButtons();
+            _containerPosition = null;
         }
         
         return b;
