@@ -88,37 +88,44 @@ class TabBar extends Component {
         }
         
         if (_container.width > this.layout.usableWidth && this.layout.usableWidth > 0) {
-            createScrollButtons();
+            showScrollButtons();
             _container.left = _containerPosition;
         } else {
-            destroyScrollButtons();
+            hideScrollButtons();
         }
         
         return b;
     }
     
-    private function createScrollButtons() {
-        if (findComponent("tabbar-scroll-left") == null) {
-            var button = new Button();
-            button.id = "tabbar-scroll-left";
-            button.addClass("tabbar-scroll-left");
-            button.includeInLayout = false;
-            button.repeater = true;
-            addComponent(button);
-            button.onClick = function(e) {
+    private var _scrollLeft:Button;
+    private var _scrollRight:Button;
+    private function showScrollButtons() {
+        if (_scrollLeft == null) {
+            _scrollLeft = new Button();
+            _scrollLeft.id = "tabbar-scroll-left";
+            _scrollLeft.addClass("tabbar-scroll-left");
+            _scrollLeft.includeInLayout = false;
+            _scrollLeft.repeater = true;
+            addComponent(_scrollLeft);
+            _scrollLeft.onClick = function(e) {
                 scrollLeft();
             }
+        } else {
+            _scrollLeft.show();
         }
-        if (findComponent("tabbar-scroll-right") == null) {
-            var button = new Button();
-            button.id = "tabbar-scroll-right";
-            button.addClass("tabbar-scroll-right");
-            button.includeInLayout = false;
-            button.repeater = true;
-            addComponent(button);
-            button.onClick = function(e) {
+        
+        if (_scrollRight == null) {
+            _scrollRight = new Button();
+            _scrollRight.id = "tabbar-scroll-right";
+            _scrollRight.addClass("tabbar-scroll-right");
+            _scrollRight.includeInLayout = false;
+            _scrollRight.repeater = true;
+            addComponent(_scrollRight);
+            _scrollRight.onClick = function(e) {
                 scrollRight();
             }
+        } else {
+            _scrollRight.show();
         }
     }
     
@@ -154,12 +161,12 @@ class TabBar extends Component {
         _container.left = x;
     }
     
-    private function destroyScrollButtons() {
-        if (findComponent("tabbar-scroll-left") == null) {
-            removeComponent(findComponent("tabbar-scroll-left"));
+    private function hideScrollButtons() {
+        if (_scrollLeft != null) {
+            _scrollLeft.hide();
         }
-        if (findComponent("tabbar-scroll-right") == null) {
-            removeComponent(findComponent("tabbar-scroll-right"));
+        if (_scrollRight != null) {
+            _scrollRight.hide();
         }
     }
     
