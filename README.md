@@ -63,6 +63,7 @@ Using HaxeUI components in haxe code is simple and easy:
 ```haxe
 import haxe.ui.components.Button;
 import haxe.ui.containers.VBox;
+import haxe.ui.core.Screen;
 
 var main = new VBox();
 
