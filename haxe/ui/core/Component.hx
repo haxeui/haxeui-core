@@ -1687,7 +1687,11 @@ class Component extends ComponentBase implements IComponentBase implements IClon
 
                 _interp.execute(program);
             } catch (e:Dynamic) {
+                #if neko
+                trace("Problem initializing script");
+                #else
                 trace("Problem initializing script: " + e);
+                #end
                 CallStackHelper.traceExceptionStack();
             }
         }
