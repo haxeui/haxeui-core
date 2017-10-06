@@ -15,6 +15,28 @@ class DialogButton {
     public static inline var YES_NO:Int = 0x000010 | 0x000020;
     public static inline var YES_NO_CANCEL:Int = 0x000010 | 0x000020 | 0x000002;
 
+    public static function fromData(data:DialogButtonData):DialogButton {
+        var dialogButton:DialogButton = new DialogButton();
+        dialogButton.text = data.text;
+        if (data.id != null) {
+            dialogButton.id = data.id;
+        }
+        if (data.icon != null) {
+            dialogButton.icon = data.icon;
+        }
+        if (data.styleNames != null) {
+            dialogButton.styleNames = data.styleNames;
+        }
+        if (data.style != null) {
+            dialogButton.style = data.style;
+        }
+        if (data.closesDialog != null) {
+            dialogButton.closesDialog = data.closesDialog;
+        }
+
+        return dialogButton;
+    }
+
     /**
      The string to use as the buttons text
     **/
