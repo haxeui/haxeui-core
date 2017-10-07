@@ -1253,8 +1253,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             invalidate = true;
         }
 
-        if (invalidate == true && (isInvalid(InvalidationFlags.DISPLAY) == false || isInvalid(InvalidationFlags.LAYOUT) == false)) {
-            invalidateDisplay();
+        if (invalidate == true && isInvalid(InvalidationFlags.LAYOUT) == false) {
             invalidateLayout();
         }
     }
@@ -1925,10 +1924,14 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     }
 
     private function validateLayout():Bool {
-        layout.refresh();
-
         //TODO - Required. Something is wrong with the autosize order in the first place if we need to do that twice. Revision required for performance.
+        var refreshed:Bool = false;
         while(validateAutoSize()) {
+            layout.refresh();
+            refreshed = true;
+        }
+
+        if (!refreshed) {
             layout.refresh();
         }
 
