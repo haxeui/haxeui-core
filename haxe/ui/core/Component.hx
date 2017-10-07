@@ -1521,6 +1521,9 @@ class Component extends ComponentBase implements IComponentBase implements IVali
 
     #end
 
+    private var _actualWidth:Null<Float>;
+    private var _actualHeight:Null<Float>;
+
     //***********************************************************************************************************
     // Position related
     //***********************************************************************************************************
@@ -1922,9 +1925,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     }
 
     private function validateLayout():Bool {
-        var oldComponentWidth = _componentWidth;
-        var oldComponentHeight = _componentHeight;
-
         layout.refresh();
 
         //TODO - Required. Something is wrong with the autosize order in the first place if we need to do that twice. Revision required for performance.
@@ -1932,11 +1932,14 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             layout.refresh();
         }
 
-        if (parentComponent != null) {
-            parentComponent.invalidateLayout();
-        }
+        if (_componentWidth != _actualWidth || _componentHeight != _actualHeight) {
+            _actualWidth = _componentWidth;
+            _actualHeight = _componentHeight;
 
-        if (oldComponentWidth != _componentWidth || oldComponentHeight != _componentHeight) {
+            if (parentComponent != null) {
+                parentComponent.invalidateLayout();
+            }
+
             onResized();
             dispatch(new UIEvent(UIEvent.RESIZE));
 
@@ -1973,19 +1976,15 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         var invalidate:Bool = false;
         if (autoWidth == true || autoHeight == true) {
             var s:Size = layout.calcAutoSize();
-            var calculatedWidth:Null<Float> = null;
-            var calculatedHeight:Null<Float> = null;
             if (autoWidth == true) {
-                calculatedWidth = s.width;
-                if (calculatedWidth != _componentWidth) {
-                    _componentWidth = calculatedWidth;
+                if (s.width != _componentWidth) {
+                    _componentWidth = s.width;
                     invalidate = true;
                 }
             }
             if (autoHeight == true) {
-                calculatedHeight = s.height;
-                if (calculatedHeight != _componentHeight) {
-                    _componentHeight = calculatedHeight;
+                if (s.height != _componentHeight) {
+                    _componentHeight = s.height;
                     invalidate = true;
                 }
             }
