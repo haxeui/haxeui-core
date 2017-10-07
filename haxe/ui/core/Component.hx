@@ -1811,7 +1811,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     private var _isDisposed:Bool = false;
     private var _invalidateCount:Int = 0;
 
-    private var _depth:Int;
+    private var _depth:Int = -1;
     @:dox(hide)
     public var depth(get, set):Int;
     private function get_depth():Int {
