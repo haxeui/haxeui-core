@@ -14,7 +14,9 @@ class HorizontalGridLayout extends Layout {
         }
 
         _rows = value;
-        refresh();
+        if (_component != null) {
+            _component.invalidateLayout();
+        }
         return value;
     }
 

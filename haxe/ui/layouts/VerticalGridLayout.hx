@@ -14,7 +14,9 @@ class VerticalGridLayout extends Layout {
         }
 
         _columns = value;
-        refresh();
+        if (_component != null) {
+            _component.invalidateLayout();
+        }
         return value;
     }
 
