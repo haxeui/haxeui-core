@@ -1923,6 +1923,9 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         //To be overwritten
     }
 
+    /**
+     Return true if the size has changed.
+    **/
     private function validateLayout():Bool {
         //TODO - Required. Something is wrong with the autosize order in the first place if we need to do that twice. Revision required for performance.
         var refreshed:Bool = false;
@@ -1975,6 +1978,9 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         handleSize(componentWidth, componentHeight, _style);
     }
 
+    /**
+     Return true if the size calculated has changed and the autosize is enabled.
+    **/
     private function validateAutoSize():Bool {
         var invalidate:Bool = false;
         if (autoWidth == true || autoHeight == true) {
