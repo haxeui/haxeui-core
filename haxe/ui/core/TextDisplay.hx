@@ -182,11 +182,11 @@ class TextDisplay extends TextDisplayBase implements IValidating {
     public function invalidate(flag:String = InvalidationFlags.ALL) {
         if (flag == InvalidationFlags.ALL) {
             _isAllInvalid = true;
-            ValidationManager.instance.add(this);
+            //ValidationManager.instance.add(this);     //Don't need. It is validated internally in the component in a sync way
         } else {
             if (flag != InvalidationFlags.ALL && !_invalidationFlags.exists(flag)) {
                 _invalidationFlags.set(flag, true);
-                ValidationManager.instance.add(this);
+                //ValidationManager.instance.add(this); //Don't need. It is validated internally in the component in a sync way
             }
         }
     }
