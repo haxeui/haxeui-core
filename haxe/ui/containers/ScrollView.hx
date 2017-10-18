@@ -28,12 +28,6 @@ class ScrollView extends Component {
         super();
     }
 
-    private override function create() {
-        super.create();
-
-        createContentContainer();
-    }
-
     private override function createLayout():Layout {
         return new ScrollViewLayout();
     }
