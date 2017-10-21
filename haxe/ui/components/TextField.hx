@@ -262,6 +262,7 @@ class TextField extends InteractiveComponent implements IFocusable {
                 behaviourSet("password", false);
                 addClass(":empty");
             } else {
+                behaviourSet("password", _password);
                 removeClass(":empty");
             }
         } else if (placeholderVisible == true){
