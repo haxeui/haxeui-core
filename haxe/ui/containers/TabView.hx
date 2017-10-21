@@ -139,6 +139,11 @@ class TabView extends Component {
         }
         return _views[_pageIndex];
     }
+
+    public var pages(get, null):Array<Component>;
+    private function get_pages():Array<Component> {
+        return _views;
+    }
     
     public var pageCount(get, null):Int;
     private function get_pageCount():Int {

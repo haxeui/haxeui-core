@@ -30,11 +30,6 @@ class ListView extends ScrollView implements IDataComponent {
         ]);
     }
 
-
-    private override function createChildren() {
-        super.createChildren();
-    }
-
     private override function createContentContainer() {
         if (_contents == null) {
             super.createContentContainer();
