@@ -1,0 +1,14 @@
+{
+    "name": "html5",
+    "type": "template",
+    "subProjects": [
+        "shared"
+    ],
+    "directories": [
+        "${target}/build/html5"
+    ],
+    "templates": [
+        { "src": "index.html", "dst": "${target}/build/html5/index.html"},
+        { "src": "html5.hxml", "dst": "${target}/html5.hxml"}
+    ]
+}

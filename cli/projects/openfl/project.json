@@ -1,0 +1,10 @@
+{
+    "name": "openfl",
+    "type": "template",
+    "subProjects": [
+        "shared"
+    ],
+    "templates": [
+        { "src": "application.xml", "dst": "${target}/application.xml"}
+    ]
+}
