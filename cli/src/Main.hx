@@ -48,10 +48,10 @@ class Main {
             
             var haxePath = Sys.getEnv("HAXEPATH");
             log('Copying alias to "${haxePath}"');
-            if (FileSystem.exists('${haxePath}/haxeui.exe')) {
+            if (FileSystem.exists('haxeui.exe')) {
                 File.copy('haxeui.exe', '${haxePath}/haxeui.exe');
             }
-            if (FileSystem.exists('${haxePath}/haxeui')) {
+            if (FileSystem.exists('haxeui')) {
                 File.copy('haxeui', '${haxePath}/haxeui');
             }
             
