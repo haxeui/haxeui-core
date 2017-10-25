@@ -1,0 +1,3 @@
+-main Alias
+-neko haxeui.n
+-cmd nekotools boot haxeui.n

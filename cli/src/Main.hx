@@ -1,6 +1,8 @@
 package;
 
 import projects.Project;
+import sys.FileSystem;
+import sys.io.File;
 
 class Main {
 	public static function main() {
@@ -32,6 +34,31 @@ class Main {
             log("ERROR: no command specified");
             return;
         }
+        
+        if (command == "setup") {
+            // almost certainly a much better way to be doing this!
+            var haxeLibPath = Sys.getCwd(); //HaxeLibHelper.getLibPath("haxeui-core");
+            
+            log('Setting up haxeui tools from "${haxeLibPath}"');
+            File.copy('${haxeLibPath}/cli/Alias.hx', 'Alias.hx');
+            File.copy('${haxeLibPath}/cli/alias.hxml', 'alias.hxml');
+            
+            log("Building haxeui alias");
+            Sys.command("haxe", ['alias.hxml']);
+            
+            var haxePath = Sys.getEnv("HAXEPATH");
+            log('Copying alias to "${haxePath}"');
+            File.copy('haxeui.exe', '${haxePath}/haxeui.exe');
+            
+            log('Cleaning up');
+            FileSystem.deleteFile("Alias.hx");
+            FileSystem.deleteFile("alias.hxml");
+            FileSystem.deleteFile("haxeui.n");
+            FileSystem.deleteFile("haxeui.exe");
+            return;
+        }
+        
+        
         if (backend == null) {
             log("ERROR: no backend specified");
             return;
@@ -88,7 +115,7 @@ class Main {
     }
     
     private static function isCommand(s):Bool {
-        return s == "create";
+        return s == "create" || s == "setup";
     }
     
     private static function isBackend(s):Bool {
