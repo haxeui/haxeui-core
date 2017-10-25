@@ -32,4 +32,8 @@ class HaxeLibHelper {
         
         return path;
     }
+    
+    public static function hasLib(lib:String):Bool {
+        return (getLibPath(lib) != null);
+    }
 }

@@ -1,0 +1,10 @@
+{
+    "name": "nme",
+    "type": "template",
+    "subProjects": [
+        "shared"
+    ],
+    "templates": [
+        { "src": "project.nmml", "dst": "${target}/project.nmml"}
+    ]
+}

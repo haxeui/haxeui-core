@@ -48,13 +48,23 @@ class Main {
             
             var haxePath = Sys.getEnv("HAXEPATH");
             log('Copying alias to "${haxePath}"');
-            File.copy('haxeui.exe', '${haxePath}/haxeui.exe');
+            if (FileSystem.exists('${haxePath}/haxeui.exe')) {
+                File.copy('haxeui.exe', '${haxePath}/haxeui.exe');
+            }
+            if (FileSystem.exists('${haxePath}/haxeui')) {
+                File.copy('haxeui', '${haxePath}/haxeui');
+            }
             
             log('Cleaning up');
             FileSystem.deleteFile("Alias.hx");
             FileSystem.deleteFile("alias.hxml");
             FileSystem.deleteFile("haxeui.n");
-            FileSystem.deleteFile("haxeui.exe");
+            if (FileSystem.exists('haxeui.exe')) {
+                FileSystem.deleteFile("haxeui.exe");
+            }
+            if (FileSystem.exists('haxeui')) {
+                FileSystem.deleteFile("haxeui");
+            }
             return;
         }
         
@@ -115,13 +125,14 @@ class Main {
     }
     
     private static function isCommand(s):Bool {
-        return s == "create" || s == "setup";
+        return s == "config" || s == "setup";
     }
     
     private static function isBackend(s):Bool {
         return s == "html5"
                || s == "hxwidgets"
                || s == "openfl"
+               || s == "nme"
                ;
     }
     
