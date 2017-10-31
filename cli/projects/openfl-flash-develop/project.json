@@ -2,10 +2,9 @@
     "name": "openfl-flash-develop",
     "type": "template",
     "subProjects": [
-        "shared"
+        "shared", "openfl-shared"
     ],
     "templates": [
-        { "src": "application.xml", "dst": "${target}/application.xml"},
         { "src": "openfl.hxproj", "dst": "${target}/openfl.hxproj"}
     ]
 }
