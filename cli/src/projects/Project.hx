@@ -46,7 +46,7 @@ class Project {
     private var _subProjects:Array<Project> = [];
     private function loadSubProjects() {
         for (s in subProjects) {
-            var subProject = Project.load("shared");
+            var subProject = Project.load(s);
             _subProjects.push(subProject);
         }
     }

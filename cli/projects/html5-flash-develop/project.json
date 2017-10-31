@@ -2,13 +2,9 @@
     "name": "html5-flash-develop",
     "type": "template",
     "subProjects": [
-        "shared"
-    ],
-    "directories": [
-        "${target}/build/html5"
+        "shared", "html5-shared"
     ],
     "templates": [
-        { "src": "index.html", "dst": "${target}/build/html5/index.html"},
         { "src": "html5.hxproj", "dst": "${target}/html5.hxproj"}
     ]
 }
