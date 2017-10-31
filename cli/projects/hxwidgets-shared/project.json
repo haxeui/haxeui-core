@@ -1,0 +1,7 @@
+{
+    "name": "hxwidgets-shared",
+    "type": "template",
+    "templates": [
+        { "src": "haxeui-hxwidgets.properties", "dst": "${target}/src/haxeui-hxwidgets.properties"}
+    ]
+}

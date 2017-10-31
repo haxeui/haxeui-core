@@ -2,10 +2,9 @@
     "name": "hxwidgets-flash-develop",
     "type": "template",
     "subProjects": [
-        "shared"
+        "shared", "hxwidgets-shared"
     ],
     "templates": [
-        { "src": "haxeui-hxwidgets.properties", "dst": "${target}/src/haxeui-hxwidgets.properties"},
         { "src": "hxwidgets.hxproj", "dst": "${target}/hxwidgets.hxproj"},
         { "src": "run-hxwidgets.bat", "dst": "${target}/run-hxwidgets.bat"}
     ]

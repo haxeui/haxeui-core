@@ -2,10 +2,9 @@
     "name": "hxwidgets",
     "type": "template",
     "subProjects": [
-        "shared"
+        "shared", "hxwidgets-shared"
     ],
     "templates": [
-        { "src": "haxeui-hxwidgets.properties", "dst": "${target}/src/haxeui-hxwidgets.properties"},
         { "src": "hxwidgets.hxml", "dst": "${target}/hxwidgets.hxml"}
     ]
 }
