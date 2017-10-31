@@ -4,13 +4,13 @@
   <output>
     <movie outputType="Application" />
     <movie input="" />
-    <movie path="..\run.n" />
+    <movie path="build\hxwidgets" />
     <movie fps="0" />
     <movie width="0" />
     <movie height="0" />
     <movie version="0" />
     <movie minorVersion="0" />
-    <movie platform="Neko" />
+    <movie platform="C++" />
     <movie background="#FFFFFF" />
   </output>
   <!-- Other classes to be compiled into your SWF -->
@@ -22,17 +22,20 @@
     <option directives="" />
     <option flashStrict="False" />
     <option noInlineOnDebug="False" />
-    <option mainClass="Main" />
+    <option mainClass="::fullMain::" />
     <option enabledebug="False" />
-    <option additional="-resource projects/shared/project.json@projects/shared/project.json&#xA;-resource projects/html5/project.json@projects/html5/project.json&#xA;-resource projects/html5-flash-develop/project.json@projects/html5-flash-develop/project.json&#xA;-resource projects/hxwidgets/project.json@projects/hxwidgets/project.json&#xA;-resource projects/hxwidgets-flash-develop/project.json@projects/hxwidgets-flash-develop/project.json&#xA;-resource projects/openfl/project.json@projects/openfl/project.json&#xA;-resource projects/nme/project.json@projects/nme/project.json" />
+    <option additional="-D ABI=-MD&#xA;-D WXSTATIC" />
   </build>
   <!-- haxelib libraries -->
   <haxelib>
-    <library name="json2object" />
+    <library name="hxWidgets" />
+    <library name="hscript" />
+    <library name="haxeui-core" />
+    <library name="haxeui-hxwidgets" />
   </haxelib>
   <!-- Class files to compile (other referenced classes will automatically be included) -->
   <compileTargets>
-    <compile path="src\Main.hx" />
+    <!-- example: <compile path="..." /> -->
   </compileTargets>
   <!-- Paths to exclude from the Project Explorer tree -->
   <hiddenPaths>
@@ -46,7 +49,7 @@
   <options>
     <option showHiddenPaths="False" />
     <option testMovie="Custom" />
-    <option testMovieCommand="run.bat" />
+    <option testMovieCommand="run-hxwidgets.bat $(BuildConfig)" />
   </options>
   <!-- Plugin storage -->
   <storage />
