@@ -1,13 +1,13 @@
-package builds.html5;
+package builds.pixijs;
 
 import builds.ProcessBuild;
 
-class Html5Build extends ProcessBuild {
+class PixiJsBuilder extends ProcessBuild {
     public function new() {
-        super("haxe", ["html5.hxml"]);
+        super("haxe", ["pixijs.hxml"]);
     }
     
     private override function args(params:Params):Array<String> {
-        return ["html5.hxml"];
+        return ["pixijs.hxml"];
     }
 }

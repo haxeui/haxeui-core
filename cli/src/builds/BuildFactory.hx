@@ -4,6 +4,7 @@ import builds.html5.Html5Build;
 import builds.hxwidgets.HxWidgetsBuild;
 import builds.nme.NmeBuild;
 import builds.openfl.OpenFLBuild;
+import builds.pixijs.PixiJsBuilder;
 
 class BuildFactory {
     public static function get(backend:String):Build {
@@ -18,6 +19,8 @@ class BuildFactory {
                 b = new NmeBuild();
             case "hxwidgets":
                 b = new HxWidgetsBuild();
+            case "pixijs":
+                b = new PixiJsBuilder();
             case _:    
         }
         
