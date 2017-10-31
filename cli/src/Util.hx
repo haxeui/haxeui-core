@@ -26,6 +26,7 @@ class Util {
                || s == "hxwidgets"
                || s == "openfl"
                || s == "nme"
+               || s == "pixijs"
                ;
     }
 }
