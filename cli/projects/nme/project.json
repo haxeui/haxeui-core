@@ -2,9 +2,8 @@
     "name": "nme",
     "type": "template",
     "subProjects": [
-        "shared"
+        "shared", "nme-shared"
     ],
     "templates": [
-        { "src": "project.nmml", "dst": "${target}/project.nmml"}
     ]
 }
