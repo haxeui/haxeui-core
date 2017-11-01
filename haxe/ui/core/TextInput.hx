@@ -33,8 +33,16 @@ class TextInput extends TextInputBase implements IValidating {
             return value;
         }
 
+        if ((value.fontName != null && _textStyle == null) || (value.fontName != _textStyle.fontName)) {
+            ToolkitAssets.instance.getFont(value.fontName, function(fontInfo) {
+                _fontInfo = fontInfo;
+                invalidate(InvalidationFlags.STYLE);
+            });
+        } else {
+            invalidate(InvalidationFlags.STYLE);
+        }
+        
         _textStyle = value;
-        invalidate(InvalidationFlags.STYLE);
         return value;
     }
 

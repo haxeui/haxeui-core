@@ -32,7 +32,16 @@ class TextDisplay extends TextDisplayBase implements IValidating {
             return value;
         }
 
-        invalidate(InvalidationFlags.STYLE);
+        if ((value.fontName != null && _textStyle == null) || (value.fontName != _textStyle.fontName)) {
+            ToolkitAssets.instance.getFont(value.fontName, function(fontInfo) {
+                _fontInfo = fontInfo;
+                invalidate(InvalidationFlags.STYLE);
+                parentComponent.invalidate(InvalidationFlags.STYLE);
+            });
+        } else {
+            invalidate(InvalidationFlags.STYLE);
+        }
+        
         _textStyle = value;
         return value;
     }
