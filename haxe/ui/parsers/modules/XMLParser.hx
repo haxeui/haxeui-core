@@ -111,6 +111,13 @@ class XMLParser extends ModuleParser {
 
                     module.animations.push(animation);
                 }
+            } else if (nodeName == "preload") {
+                for (propertyNode in el.elements()) {
+                    var entry:Module.ModulePreloadEntry = new Module.ModulePreloadEntry();
+                    entry.type = propertyNode.nodeName;
+                    entry.id = propertyNode.get("id");
+                    module.preload.push(entry);
+                }
             }
         }
 

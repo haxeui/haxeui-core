@@ -9,6 +9,7 @@ class Module {
     public var plugins(default, default):Array<ModulePluginEntry>;
     public var properties(default, default):Array<ModulePropertyEntry>;
     public var animations(default, default):Array<ModuleAnimationEntry>;
+    public var preload(default, default):Array<ModulePreloadEntry>;
 
     public function new() {
         resourceEntries = [];
@@ -18,6 +19,7 @@ class Module {
         plugins = [];
         properties = [];
         animations = [];
+        preload = [];
     }
 
     public function validate() {
@@ -117,5 +119,13 @@ class ModuleAnimationComponentRefEntry {
     public function new() {
         properties = new Map<String, Float>();
         vars  = new Map<String, String>();
+    }
+}
+
+class ModulePreloadEntry {
+    public var type(default, default):String;
+    public var id(default, default):String;
+    
+    public function new() {
     }
 }

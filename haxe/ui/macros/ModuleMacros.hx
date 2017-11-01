@@ -158,6 +158,10 @@ class ModuleMacros {
 
                 code += 'haxe.ui.animation.AnimationManager.instance.registerAnimation(a.id, a);\n';
             }
+            
+            for (p in m.preload) {
+                code += 'ToolkitAssets.instance.preloadList.push({type: "${p.type}", resourceId: "${p.id}"});\n';
+            }
         }
 
         populateClassMap();
