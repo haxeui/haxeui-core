@@ -232,6 +232,7 @@ class DropDown extends Button implements IDataComponent {
             listHeight = n * _listview.itemHeight + (_listview.layout.paddingTop + _listview.layout.paddingBottom);
         }
         _listview.height = listHeight;
+        _listview.syncValidation();     //avoid ui flash in some backends
 
         if (_listview.screenTop + _listview.height > Screen.instance.height) {
             _listview.top = this.screenTop - _listview.height;
