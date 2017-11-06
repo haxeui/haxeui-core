@@ -2,7 +2,7 @@ package builds.pixijs;
 
 import builds.ProcessBuild;
 
-class PixiJsBuilder extends ProcessBuild {
+class PixiJsBuild extends ProcessBuild {
     public function new() {
         super("haxe", ["pixijs.hxml"]);
     }

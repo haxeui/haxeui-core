@@ -1,7 +1,7 @@
 package commands;
 import projects.Project;
 
-class ConfigCommand extends Command {
+class CreateCommand extends Command {
     public function new() {
         super();
     }
@@ -14,11 +14,18 @@ class ConfigCommand extends Command {
         
         var force = Util.mapContains("force", params.additional, true);
         var flashDevelop = Util.mapContains("flash-develop", params.additional, true);
-        
+
         //////////////////////////////////////////////////////
         // handle name
         //////////////////////////////////////////////////////
-        var name:String = params.additional.shift();
+        var name:String = null;
+        for (a in params.additional) {
+            if (StringTools.startsWith(a, "--") == false) {
+                name = a;
+                break;
+            }
+        }
+
         var info:InfoFile = new InfoFile(params.target);
         if (name == null) {
             name = info.name;
@@ -60,5 +67,7 @@ class ConfigCommand extends Command {
         
         var project = Project.load(params.backend);
         project.execute(templateParams);
+        trace(params.additional);
+        project.executePost(params);
     }
 }

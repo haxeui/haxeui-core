@@ -7,8 +7,8 @@ class CommandFactory {
         switch (id) {
             case "setup":
                 c = new SetupCommand();
-            case "config":
-                c = new ConfigCommand();
+            case "create":
+                c = new CreateCommand();
             case "build":
                 c = new BuildCommand();
             case _:

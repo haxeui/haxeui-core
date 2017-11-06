@@ -2,9 +2,10 @@ package builds;
 
 import builds.html5.Html5Build;
 import builds.hxwidgets.HxWidgetsBuild;
+import builds.kha.KhaBuild;
 import builds.nme.NmeBuild;
 import builds.openfl.OpenFLBuild;
-import builds.pixijs.PixiJsBuilder;
+import builds.pixijs.PixiJsBuild;
 
 class BuildFactory {
     public static function get(backend:String):Build {
@@ -20,7 +21,9 @@ class BuildFactory {
             case "hxwidgets":
                 b = new HxWidgetsBuild();
             case "pixijs":
-                b = new PixiJsBuilder();
+                b = new PixiJsBuild();
+            case "kha":
+                b = new KhaBuild();
             case _:    
         }
         
