@@ -202,6 +202,10 @@ class DropDown extends Button implements IDataComponent {
                 _listview.addComponent(_itemRenderer);
             }
             _listview.addClass("popup");
+            if (id != null) {
+                _listview.id = id + "-popup";
+                _listview.addClass(id + "-popup");
+            }
             if (_listStyleNames != null) {
                 for (s in _listStyleNames.split(" ")) {
                     _listview.addClass(s);
