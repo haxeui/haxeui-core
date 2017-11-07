@@ -12,6 +12,8 @@ class ProcessHelper {
     public function run(command:String, args:Array<String>) {
         var p = new Process(command, args);
         
+        Util.log('running: ${command} ${args.join(" ")}');
+        
         var outThread = Thread.create(printStreamThread);
         outThread.sendMessage(p.stdout);
         

@@ -1,6 +1,6 @@
 let project = new Project('::fullMain::');
 
-project.addAssets('./assets/**');
+//project.addAssets('./assets/**');
 project.addSources('./src');
 
 project.addLibrary('haxeui-core');
