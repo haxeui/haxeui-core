@@ -32,7 +32,7 @@ class KhaBuild extends Build {
         
         if (target == "windows") {
             p.run("C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\Common7\\Tools\\vsvars32.bat", []);
-            p.run("msbuild", ['${params.target}/Build/kha/windows-build/Main.vcxproj']);
+            p.run("msbuild", ['${params.target}/Build/kha/windows-build/Main.vcxproj', '/m', '/p:Configuration=Release,Platform=Win32']);
         }
         
         Sys.setCwd(params.cwd);
