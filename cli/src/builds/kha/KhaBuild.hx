@@ -32,13 +32,11 @@ class KhaBuild extends Build {
         p.run('${params.target}/Kha/Tools/haxe/haxe', [hxmlFile]);
         
         if (target == "windows") {
-            var content = 'call "%VS140COMNTOOLS%\\vsvars32.bat"\n';
-            content += 'msbuild ${params.target}/Build/kha/windows-build/Main.vcxproj /m /p:Configuration=Release,Platform=Win32\n';
+            var content = '@echo off\n';
+            content += '@call "%VS140COMNTOOLS%\\vsvars32.bat"\n';
+            content += '@msbuild ${params.target}/Build/kha/windows-build/Main.vcxproj /m /p:Configuration=Release,Platform=Win32\n';
             File.saveContent('${params.target}/Build/kha/windows-build/release.bat', content);
             
-            //p.run('"C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\Common7\\Tools\\vsvars32.bat"', []);
-//            p.run('"%VS140COMNTOOLS%\\vsvars32.bat"', []);
-            //p.run("msbuild", ['${params.target}/Build/kha/windows-build/Main.vcxproj', '/m', '/p:Configuration=Release,Platform=Win32']);
             p.run('${params.target}/Build/kha/windows-build/release.bat', []);
         }
         
