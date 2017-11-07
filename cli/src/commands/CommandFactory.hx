@@ -11,6 +11,8 @@ class CommandFactory {
                 c = new CreateCommand();
             case "build":
                 c = new BuildCommand();
+            case "help":
+                c = new HelpCommand();
             case _:
         }
 

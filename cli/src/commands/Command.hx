@@ -6,4 +6,8 @@ class Command {
     
     public function execute(params:Params) {
     }
+    
+    public function displayHelp() {
+        
+    }
 }

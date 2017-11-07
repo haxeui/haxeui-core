@@ -4,7 +4,7 @@ import sys.io.File;
 
 class Util {
     public static function log(message:String) {
-        Sys.println(message);
+        Sys.println(" " + message);
     }
     
     public static function mapContains(name:String, params:Array<String>, remove:Bool = false):Bool {
@@ -25,6 +25,10 @@ class Util {
     
     public static function backends():Array<String> {
         return ["html5", "hxwidgets", "openfl", "nme", "pixijs", "kha"];
+    }
+    
+    public static function backendString(sep:String = ", "):String {
+        return backends().join(sep);
     }
     
     public static function isBackend(s):Bool {

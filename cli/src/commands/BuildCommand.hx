@@ -21,56 +21,26 @@ class BuildCommand extends Command {
         }
         
         build.execute(params);
-        
-        return;
-        
-        Sys.setCwd(params.target);
-        
-        Util.log('Building for haxeui-${params.backend}');
-        
-        if (FileSystem.exists('${params.backend}.hxml') == false) {
-            Util.log('ERROR: "${params.backend}.hxml" not found, run "config ${params.backend}" to create one');
-            return;
-        }
-        
-        var p = new Process("haxe", ['${params.backend}.hxml']);
-        var err = StringTools.trim(p.stderr.readAll().toString());
-        if (err.length > 0) {
-            Util.log("err: " + err);
-        }
-        var out = StringTools.trim(p.stdout.readAll().toString());
-        if (out.length > 0) {
-            Util.log("out: " + out);
-        }
-        p.close();
-        
-        //trace(output);
-        
-        //for (line in output.split("\n")) {
-         //   log(line);
-            /*
-            line = StringTools.trim(line);
-            if (line.length == 0 || StringTools.startsWith(line, lib) == false) {
-                continue;
-            }
-            
-            var versions = line.split(" ");
-            versions.shift();
-            for (v in versions) {
-                if (StringTools.startsWith(v, "[") && StringTools.endsWith(v, "]")) {
-                    path = v.substr(1, v.length - 2);
-                    if (StringTools.startsWith(path, "dev:")) {
-                        path = path.substr(4, path.length);
-                    }
-                    
-                    break;
-                }
-            }
-            */
-       // }
-        
-        
-        //Sys.command("haxe", ['html5.hxml']);
-        Sys.setCwd(params.cwd);
+    }
+    
+    public override function displayHelp() {
+        Util.log('Builds project for given backend\n');
+        Util.log('Usage : haxeui build <${Util.backendString(" | ")}> [options]\n');
+        Util.log('OpenFL Options : ');
+        Util.log('  --html : build html5 project (default)');
+        Util.log('  --windows : build windows project');
+        Util.log('  --neko : build neko project');
+        Util.log('  --flash : build flash project');
+        Util.log('  --android : build android project');
+        Util.log('');
+        Util.log('NME Options : ');
+        Util.log('  --windows : build windows project (default)');
+        Util.log('  --neko : build neko project');
+        Util.log('  --flash : build flash project');
+        Util.log('  --android : build android project');
+        Util.log('');
+        Util.log('Kha Options : ');
+        Util.log('  --html : build html5 project (default)');
+        Util.log('  --windows : build windows project');
     }
 }

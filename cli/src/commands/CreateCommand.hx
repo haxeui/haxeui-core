@@ -70,4 +70,16 @@ class CreateCommand extends Command {
         trace(params.additional);
         project.executePost(params);
     }
+    
+    public override function displayHelp() {
+        Util.log('Creates project files for given backend\n');
+        Util.log('Usage : haxeui create <${Util.backendString(" | ")}> [options]\n');
+        Util.log('Shared Options : ');
+        Util.log('  --flash-develop : generate flash develop project files');
+        Util.log('  --force : force overwriting of existing files');
+        Util.log('');
+        Util.log('Kha Options : ');
+        Util.log('  --html : generate html5 project (default)');
+        Util.log('  --windows : generate windows project');
+    }
 }
