@@ -6,7 +6,7 @@
     "description": "The core library of the HaxeUI framework",
     "version": "0.0.1",
     "releasenote": "Initial release",
-    "contributors": ["haxeui", "ianharrigan", "_ibilon"],
+    "contributors": ["haxeui", "ianharrigan", "_ibilon", "aW4KeNiNG"],
     "dependencies": {
         "hscript": ""
     }
