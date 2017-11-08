@@ -20,8 +20,6 @@ Travis::Repository.find('haxeui/haxeui-blank').branch("#{TRAVIS_BRANCH}").restar
 Travis::Repository.find('haxeui/haxeui-openfl').branch("#{TRAVIS_BRANCH}").restart
 Travis::Repository.find('haxeui/haxeui-html5').branch("#{TRAVIS_BRANCH}").restart
 Travis::Repository.find('haxeui/haxeui-pixijs').branch("#{TRAVIS_BRANCH}").restart
-Travis::Repository.find('haxeui/haxeui-flambe').branch("#{TRAVIS_BRANCH}").restart
 Travis::Repository.find('haxeui/haxeui-nme').branch("#{TRAVIS_BRANCH}").restart
 Travis::Repository.find('haxeui/haxeui-kha').branch("#{TRAVIS_BRANCH}").restart
-Travis::Repository.find('haxeui/haxeui-luxe').branch("#{TRAVIS_BRANCH}").restart
 Travis::Repository.find('haxeui/haxeui-hxwidgets').branch("#{TRAVIS_BRANCH}").restart
