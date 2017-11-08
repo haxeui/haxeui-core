@@ -1,4 +1,5 @@
 package commands;
+import commands.UpdateCommand;
 
 class CommandFactory {
     public static function get(id:String):Command {
@@ -11,6 +12,10 @@ class CommandFactory {
                 c = new CreateCommand();
             case "build":
                 c = new BuildCommand();
+            case "install":
+                c = new InstallCommand();
+            case "update":
+                c = new UpdateCommand();
             case "help":
                 c = new HelpCommand();
             case _:

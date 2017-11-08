@@ -14,6 +14,11 @@ class BuildCommand extends Command {
             return;
         }
         
+        if (Util.isBackend(params.backend) == false) {
+            Util.log('ERROR: backend "${params.backend}" not recognized');
+            return;
+        }
+        
         
         var build = BuildFactory.get(params.backend);
         if (build == null) {

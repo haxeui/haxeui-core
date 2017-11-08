@@ -44,6 +44,18 @@ class Main {
             return;
         }
         
+        #if !debug
+        
+        try {
+            command.execute(params);
+        } catch (e:Dynamic) {
+            Util.log(e);
+        }
+        
+        #else
+        
         command.execute(params);
+        
+        #end
     }
 }

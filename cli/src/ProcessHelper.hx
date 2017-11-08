@@ -9,7 +9,11 @@ class ProcessHelper {
     public function new() {
     }
     
-    public function run(command:String, args:Array<String>) {
+    public function run(command:String, args:Array<String> = null) {
+        if (args == null) {
+            args = [];
+        }
+        
         var p = new Process(command, args);
         
         Util.log('running: ${command} ${args.join(" ")}');

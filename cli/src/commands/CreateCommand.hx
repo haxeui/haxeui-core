@@ -12,6 +12,11 @@ class CreateCommand extends Command {
             return;
         }
         
+        if (Util.isBackend(params.backend) == false) {
+            Util.log('ERROR: backend "${params.backend}" not recognized');
+            return;
+        }
+        
         var force = Util.mapContains("force", params.additional, true);
         var flashDevelop = Util.mapContains("flash-develop", params.additional, true);
 
