@@ -1,5 +1,6 @@
 package projects.kha;
 
+import descriptors.HxmlFile;
 import projects.Post;
 import sys.io.File;
 
@@ -29,7 +30,8 @@ class ProjectGen extends Post {
             Util.copyDir("temp/kha/html5-resources", "build/kha/html5-resources");
             Util.removeDir("temp");
             
-            var hxml = new HxmlFile("kha-html5.hxml");
+            var hxml = new HxmlFile();
+            hxml.load("kha-html5.hxml");
             hxml.changeOutput("build/kha/html5");
         } else if (target == "windows") {
             Util.copyDir("assets", "build/kha/assets");
@@ -38,7 +40,8 @@ class ProjectGen extends Post {
             
             File.copy("build/kha/project-windows.hxml", "kha-windows.hxml");
             
-            var hxml = new HxmlFile("kha-windows.hxml");
+            var hxml = new HxmlFile();
+            hxml.load("kha-windows.hxml");
             hxml.changeOutput("build/kha/windows-build/Sources");
         }
         

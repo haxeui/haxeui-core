@@ -1,15 +1,18 @@
-package;
+package descriptors;
 
 import sys.FileSystem;
 import sys.io.File;
 
-class InfoFile {
+class InfoFile extends Descriptor {
     public var properties:Map<String, String> = new Map<String, String>();
     
     private var _dir:String;
-    public function new(dir:String) {
-        _dir = dir;
-        load();
+    public function new() {
+        super();
+    }
+    
+    private override function get_main():String {
+        return name;
     }
     
     public var name(get, set):String;
@@ -18,19 +21,24 @@ class InfoFile {
     }
     private function set_name(value:String):String {
         properties.set("name", value);
-        save();
+        save(null);
         return value;
     }
     
-    public var exists(get, null):Bool;
-    private function get_exists():Bool {
+    public override function find(path:String):Bool {
+        if (path == null) {
+            path = _dir;
+        }
+        
+        if (FileSystem.exists('${_dir}/.haxeui')) {
+            load(path);
+        }
+        
         return FileSystem.exists('${_dir}/.haxeui');
     }
     
-    public function load() {
-        if (exists == false) {
-            return;
-        }
+    public function load(dir:String) {
+        _dir = dir;
         
         var content = File.getContent('${_dir}/.haxeui');
         for (line in content.split("\n")) {
@@ -43,11 +51,17 @@ class InfoFile {
         }
     }
     
-    public function save() {
+    public function save(dir:String) {
+        if (dir == null) {
+            dir = _dir;
+        }
+        
         var content = '# generated file simply to hold info about projects created with "haxeui create ..."\n';
         for (k in properties.keys()) {
             content += '${k}=${properties.get(k)}\n';
         }
-        File.saveContent('${_dir}/.haxeui', content);
+        File.saveContent('${dir}/.haxeui', content);
+        
+        _dir = dir;
     }
 }

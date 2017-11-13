@@ -1,4 +1,6 @@
 package commands;
+import descriptors.DescriptorFactory;
+import descriptors.InfoFile;
 import projects.Project;
 
 class CreateCommand extends Command {
@@ -31,14 +33,20 @@ class CreateCommand extends Command {
             }
         }
 
-        var info:InfoFile = new InfoFile(params.target);
-        if (name == null) {
-            name = info.name;
+        var descriptor = DescriptorFactory.find(params.target);
+        if (descriptor != null) {
+            Util.log('Using name from descriptor "${Type.getClassName(Type.getClass(descriptor))}": "${descriptor.main}"');
+            name = descriptor.main;
         }
+        
         if (name == null) { // default
             name = "Main";
         }
+        
+        var info:InfoFile = new InfoFile();
+        info.save(params.target);
         info.name = name;
+        
         //////////////////////////////////////////////////////
         // handle pacakge / main
         //////////////////////////////////////////////////////
