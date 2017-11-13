@@ -1,14 +1,13 @@
 package haxe.ui.components;
 
 import haxe.ui.core.Component;
-import haxe.ui.core.IClonable;
 import haxe.ui.layouts.DefaultLayout;
 
 /**
  A horizontal implementation of a `Slider`
 **/
 @:dox(icon = "/icons/ui-progress-bar.png")
-class HProgress extends Progress implements IClonable<HProgress> {
+class HProgress extends Progress {
     public function new() {
         super();
     }
@@ -50,7 +49,7 @@ class HProgressLayout extends DefaultLayout {
             var ucx:Float = usableWidth;
 
             var cx:Float = 0;
-            if (progress.rangeStart == progress.rangeEnd) {
+            if (progress.indeterminate == false) {
                 cx = (progress.pos - progress.min) / (progress.max - progress.min) * ucx;
             } else {
                 cx = ((progress.rangeEnd - progress.rangeStart) - progress.min) / (progress.max - progress.min) * ucx;
@@ -78,7 +77,7 @@ class HProgressLayout extends DefaultLayout {
         var value:Component = component.findComponent("progress-value");
         var progress:Progress = cast component;
         if (value != null) {
-            if (progress.rangeStart != progress.rangeEnd) {
+            if (progress.indeterminate == true) {
                 var ucx:Float = usableWidth;
                 value.left = paddingLeft + (progress.rangeStart - progress.min) / (progress.max - progress.min) * ucx;
             }

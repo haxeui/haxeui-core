@@ -1,9 +1,10 @@
 package haxe.ui.components;
 
+import haxe.ui.core.TextInput;
+import haxe.ui.validation.InvalidationFlags;
 import haxe.ui.focus.FocusManager;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
-import haxe.ui.core.IClonable;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.UIEvent;
@@ -13,7 +14,7 @@ import haxe.ui.styles.Style;
 import haxe.ui.util.Size;
 import haxe.ui.util.Variant;
 
-class TextArea extends InteractiveComponent implements IFocusable implements IClonable<TextArea> {
+class TextArea extends InteractiveComponent implements IFocusable {
     public function new() {
         super();
     }
@@ -37,7 +38,7 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
     **/
     @:clonable public var placeholder(get, set):String;
     private function get_placeholder():String {
-        return behaviourGet("placeholder");
+        return _placeholder;
     }
 
     private function set_placeholder(value:String):String {
@@ -45,52 +46,47 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
             return value;
         }
 
-        behaviourSet("placeholder", value);
-
+        invalidateData();
+        _placeholder = value;
         return value;
     }
 
     private var _wrap:Bool;
     @:clonable public var wrap(get, set):Bool;
     private function get_wrap():Bool {
-        return behaviourGet("wrap");
+        return _wrap;
     }
     private function set_wrap(value:Bool):Bool {
         if (value == _wrap) {
             return value;
         }
-        
-        _wrap = value;        
-        behaviourSet("wrap", value);
+
+        invalidateData();
+        _wrap = value;
         return value;
     }
     
     //***********************************************************************************************************
     // Overrides
     //***********************************************************************************************************
+
     private override function set_text(value:String):String {
+        if (value == _text) {
+            return value;
+        }
+
+        invalidateData();
         value = super.set_text(value);
-        _validateText();
-        checkScrolls();
         return value;
     }
-
-//    private override function get_text():String {
-//        return behaviourGet("text");
-//    }
 
     private override function set_focus(value:Bool):Bool {
         if (_focus == value || allowFocus == false) {
             return value;
         }
 
+        invalidateData();
         super.set_focus(value);
-        if (empty == false) {
-            text = behaviourGet("text");
-        } else {
-            _validateText();
-        }
-
         return value;
     }
 
@@ -104,22 +100,16 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
         _defaultLayout = new TextAreaLayout();
     }
 
-    private override function create() {
-        super.create();
-
-        if (_text == null) {
-            behaviourSet("text", "");
-        }
-    }
-
     private override function createChildren() {
         super.createChildren();
+        /*
         if (componentWidth == 0) {
             componentWidth = 150;
         }
         if (componentHeight == 0) {
             componentHeight = 100;
         }
+        */
         
         getTextInput().multiline = true;
 
@@ -136,23 +126,10 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
         unregisterEvent(UIEvent.CHANGE, _onTextChanged);
     }
 
-    private override function onReady() {
-        super.onReady();
-        checkScrolls();
-    }
-
     private override function applyStyle(style:Style) {
         super.applyStyle(style);
         if (hasTextInput() == true) {
-            if (style.color != null) {
-                getTextInput().color = style.color;
-            }
-            if (style.fontName != null) {
-                getTextInput().fontName = style.fontName;
-            }
-            if (style.fontSize != null) {
-                getTextInput().fontSize = style.fontSize;
-            }
+            getTextInput().textStyle = style;
         }
     }
 
@@ -163,17 +140,18 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
             return;
         }
 
-        if (getTextInput().textWidth > getTextInput().width) {
+        var textInput:TextInput = getTextInput();
+        if (textInput.textWidth > textInput.width) {
             if (_hscroll == null) {
                 _hscroll = new HScroll();
                 _hscroll.id = "textarea-hscroll";
                 addComponent(_hscroll);
                 _hscroll.registerEvent(UIEvent.CHANGE, _onScrollChange);
             }
-            _hscroll.max = getTextInput().textWidth - getTextInput().width;
-            _hscroll.pos = getTextInput().hscrollPos;
+            _hscroll.max = textInput.textWidth - getTextInput().width;
+            _hscroll.pos = textInput.hscrollPos;
 
-            _hscroll.pageSize = (getTextInput().width * _hscroll.max) / getTextInput().textWidth;
+            _hscroll.pageSize = (textInput.width * _hscroll.max) / textInput.textWidth;
             _hscroll.show();
         } else {
             if (_hscroll != null) {
@@ -181,17 +159,17 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
             }
         }
         
-        if (getTextInput().textHeight > getTextInput().height) {
+        if (textInput.textHeight > textInput.height) {
             if (_vscroll == null) {
                 _vscroll = new VScroll();
                 _vscroll.id = "textarea-vscroll";
                 addComponent(_vscroll);
                 _vscroll.registerEvent(UIEvent.CHANGE, _onScrollChange);
             }
-            _vscroll.max = getTextInput().textHeight - getTextInput().height;
-            _vscroll.pos = getTextInput().vscrollPos;
+            _vscroll.max = textInput.textHeight - textInput.height;
+            _vscroll.pos = textInput.vscrollPos;
 
-            _vscroll.pageSize = (getTextInput().height * _vscroll.max) / getTextInput().textHeight;
+            _vscroll.pageSize = (textInput.height * _vscroll.max) / textInput.textHeight;
             _vscroll.show();
         } else {
             if (_vscroll != null) {
@@ -215,9 +193,7 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
     }
 
     private function _onTextChanged(event:UIEvent) {
-        var newText:String = behaviourGet("text");
-        text = newText;
-        handleBindings(["text", "value"]);
+        text = behaviourGet("text");
     }
 
     private function _onScrollChange(e:UIEvent) {
@@ -228,16 +204,40 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
             getTextInput().vscrollPos = _vscroll.pos;
         }
     }
-
-    public override function onResized() {
-        super.onResized();
-        checkScrolls();
-    }
-
+    
     //***********************************************************************************************************
     // Validation
     //***********************************************************************************************************
-    private function _validateText() {
+
+    private inline function invalidateScroll() {
+        invalidate(InvalidationFlags.SCROLL);
+    }
+
+    private override function validateInternal() {
+        var dataInvalid = isInvalid(InvalidationFlags.DATA);
+        var scrollInvalid = isInvalid(InvalidationFlags.SCROLL);
+        var layoutInvalid = isInvalid(InvalidationFlags.LAYOUT);
+
+        super.validateInternal();
+
+        if (scrollInvalid || layoutInvalid || dataInvalid) {
+            validateScroll();
+        }
+    }
+
+    private function validateScroll() {
+        checkScrolls();
+    }
+
+    private override function validateData() {
+        if (behaviourGet("placeholder") != _placeholder) {
+            behaviourSet("placeholder", _placeholder);
+        }
+
+        if (behaviourGet("wordWrap") != _wrap) {
+            behaviourSet("wordWrap", _wrap);
+        }
+
         var text:String = _text != null ? _text : "";
         var placeholderVisible:Bool = empty;
 
@@ -255,7 +255,9 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICl
         }
 
         behaviourSet("text", text);
+        handleBindings(["text", "value"]);
     }
+    
 }
 
 //***********************************************************************************************************
@@ -271,6 +273,7 @@ class TextAreaDefaultTextBehaviour extends Behaviour {
 
         var textArea:TextArea = cast _component;
         textArea.getTextInput().text = value;
+        textArea.getTextInput().invalidate(InvalidationFlags.MEASURE);
         textArea.invalidateDisplay();
     }
 
@@ -281,17 +284,20 @@ class TextAreaDefaultTextBehaviour extends Behaviour {
 }
 
 @:dox(hide)
-@:access(haxe.ui.components.TextArea)
+@:access(haxe.ui.components.TextField)
 class TextAreaDefaultPlaceholderBehaviour extends Behaviour {
+    private var _value:String;  //TODO - maybe we can create a generic ValueBehaviour class
+
     public override function set(value:Variant) {
-        var textArea:TextArea = cast _component;
-        textArea._placeholder = value;
-        textArea._validateText();
+        if (_value == value) {
+            return;
+        }
+
+        _value = value;
     }
-    
+
     public override function get():Variant {
-        var textArea:TextArea = cast _component;
-        return textArea._placeholder;
+        return _value;
     }
 }
 
@@ -301,7 +307,7 @@ class TextAreaDefaultWrapBehaviour extends Behaviour {
     public override function set(value:Variant) {
         var textArea:TextArea = cast _component;
         textArea.getTextInput().wordWrap = value;
-        textArea.checkScrolls();
+        textArea.invalidateDisplay();
     }
     
     public override function get():Variant {

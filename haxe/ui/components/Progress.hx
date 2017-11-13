@@ -1,9 +1,9 @@
 package haxe.ui.components;
 
+import haxe.ui.animation.Animation;
 import haxe.ui.animation.AnimationManager;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
-import haxe.ui.core.IClonable;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.UIEvent;
 import haxe.ui.util.Variant;
@@ -12,14 +12,12 @@ import haxe.ui.util.Variant;
  Encapsulates shared functionality of both vertical and horizontal progressbar components
 **/
 @:dox(icon = "/icons/ui-progress-bar.png")
-class Progress extends InteractiveComponent implements IClonable<Progress> {
+class Progress extends InteractiveComponent {
     private var _value:Component;
 
     public function new() {
         super();
         allowFocus = false;
-        addClass("progress");
-
     }
 
     //***********************************************************************************************************
@@ -37,20 +35,11 @@ class Progress extends InteractiveComponent implements IClonable<Progress> {
         ]);
     }
 
-    private override function create() {
-        super.create();
-
-        behaviourSet("min", _min);
-        behaviourSet("max", _max);
-        behaviourSet("pos", _pos);
-        behaviourSet("indeterminate", _indeterminate);
-    }
-
     private override function createChildren() {
         if (_value == null) {
             _value = new Component();
             _value.id = "progress-value";
-            _value.addClass("progress-value");
+            _value.addClass("progress-value", false);
             #if flambe
             _value.pixelSnapping = false;
             #end
@@ -103,11 +92,8 @@ class Progress extends InteractiveComponent implements IClonable<Progress> {
             return value;
         }
 
+        invalidateData();
         _pos = value;
-        behaviourSet("pos", value);
-        var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
-        dispatch(changeEvent);
-        handleBindings(["value"]);
         return value;
     }
 
@@ -121,11 +107,6 @@ class Progress extends InteractiveComponent implements IClonable<Progress> {
         return _min;
     }
     private function set_min(value:Float):Float {
-        if (_ready) {
-            if (value < _min) {
-                value = _min;
-            }
-        }
         if (value == _min) {
             return value;
         }
@@ -145,11 +126,6 @@ class Progress extends InteractiveComponent implements IClonable<Progress> {
         return _max;
     }
     private function set_max(value:Float):Float {
-        if (_ready) {
-            if (value > _max) {
-                value = _max;
-            }
-        }
         if (value == _max) {
             return value;
         }
@@ -179,7 +155,6 @@ class Progress extends InteractiveComponent implements IClonable<Progress> {
         }
 
         _rangeStart = value;
-        behaviourSet("rangeStart", value);
         return value;
     }
 
@@ -227,16 +202,49 @@ class Progress extends InteractiveComponent implements IClonable<Progress> {
         return value;
     }
 
-    private function startIndeterminateAnimation() {
-        var animationId:String = getClassProperty("animation.indeterminate");
-        if (animationId == null) {
-            return;
+    //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+
+    private override function validateData() {
+        var minValue:Float = behaviourGet("min");
+        var maxValue:Float = behaviourGet("max");
+        var indeterminateValue:Bool = behaviourGet("indeterminate");
+
+        if (indeterminateValue != _indeterminate) {
+            behaviourSet("indeterminate", _indeterminate);
         }
-        AnimationManager.instance.loop(animationId, ["target" => this]);
-    }
 
-    private function stopIndeterminateAnimation() {
+        if (minValue != _min) {
+            behaviourSet("min", _min);
+        }
 
+        if (maxValue != _max) {
+            behaviourSet("max", _max);
+        }
+
+        if (_indeterminate == false) {
+            var posValue:Float = behaviourGet("pos");
+
+            if (posValue != _pos) {
+                behaviourSet("pos", _pos);
+                var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
+                dispatch(changeEvent);
+                handleBindings(["value"]);
+            }
+
+        } else {
+            var rangeStartValue:Float = behaviourGet("rangeStart");
+            var rangeEndValue:Float = behaviourGet("rangeEnd");
+
+            if (rangeStartValue != _rangeStart) {
+                behaviourSet("rangeStart", _rangeStart);
+            }
+
+            if (rangeEndValue != _rangeEnd) {
+                behaviourSet("rangeEnd", _rangeEnd);
+            }
+        }
     }
 }
 
@@ -246,58 +254,143 @@ class Progress extends InteractiveComponent implements IClonable<Progress> {
 @:dox(hide)
 @:access(haxe.ui.components.Progress)
 class ProgressDefaultMinBehaviour extends Behaviour {
+    private var _value:Float = 0;
+
     public override function set(value:Variant) {
+        if (_value == value) {
+            return;
+        }
+
         var progress:Progress = cast _component;
         progress.invalidateLayout();
+    }
+
+    public override function get():Variant {
+        return _value;
     }
 }
 
 @:dox(hide)
 @:access(haxe.ui.components.Progress)
 class ProgressDefaultMaxBehaviour extends Behaviour {
+    private var _value:Float = 0;
+
     public override function set(value:Variant) {
+        if (_value == value) {
+            return;
+        }
+
+        _value = value;
+
         var progress:Progress = cast _component;
         progress.invalidateLayout();
+    }
+
+    public override function get():Variant {
+        return _value;
     }
 }
 
 @:dox(hide)
 @:access(haxe.ui.components.Progress)
 class ProgressDefaultPosBehaviour extends Behaviour {
+    private var _value:Float = 0;
+
     public override function set(value:Variant) {
+        if (_value == value) {
+            return;
+        }
+
+        _value = value;
+
         var progress:Progress = cast _component;
         progress.invalidateLayout();
+    }
+
+    public override function get():Variant {
+        return _value;
     }
 }
 
 @:dox(hide)
 @:access(haxe.ui.components.Progress)
 class ProgressDefaultRangeStartBehaviour extends Behaviour {
+    private var _value:Float = 0;
+
     public override function set(value:Variant) {
+        if (_value == value) {
+            return;
+        }
+
+        _value = value;
+
         var progress:Progress = cast _component;
         progress.invalidateLayout();
+    }
+
+    public override function get():Variant {
+        return _value;
     }
 }
 
 @:dox(hide)
 @:access(haxe.ui.components.Progress)
 class ProgressDefaultRangeEndBehaviour extends Behaviour {
+    private var _value:Float = 0;
+
     public override function set(value:Variant) {
+        if (_value == value) {
+            return;
+        }
+
+        _value = value;
+
         var progress:Progress = cast _component;
         progress.invalidateLayout();
+    }
+
+    public override function get():Variant {
+        return _value;
     }
 }
 
 @:dox(hide)
 @:access(haxe.ui.components.Progress)
 class ProgressDefaultIndeterminateBehaviour extends Behaviour {
+    private var _value:Bool = false;
+    private var _animation:Animation;
+
     public override function set(value:Variant) {
-        var progress:Progress = cast _component;
-        if (progress._indeterminate == true) {
-            progress.startIndeterminateAnimation();
-        } else {
-            progress.stopIndeterminateAnimation();
+        if (_value == value) {
+            return;
         }
 
+        _value = value;
+
+        var progress:Progress = cast _component;
+        if (value == true) {
+            startIndeterminateAnimation(progress);
+        } else {
+            stopIndeterminateAnimation(progress);
+        }
+    }
+
+    public override function get():Variant {
+        return _value;
+    }
+
+    private function startIndeterminateAnimation(progress:Progress) {
+        var animationId:String = progress.getClassProperty("animation.indeterminate");
+        if (animationId == null) {
+            return;
+        }
+        _animation = AnimationManager.instance.loop(animationId, ["target" => progress]);
+    }
+
+    private function stopIndeterminateAnimation(progress:Progress) {
+        if (_animation != null) {
+            _animation.stop();
+            _animation = null;
+        }
     }
 }

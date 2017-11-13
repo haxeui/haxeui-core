@@ -1,10 +1,11 @@
 package haxe.ui.containers;
 
+import haxe.ui.core.Behaviour;
+import haxe.ui.core.ScrollEvent;
 import haxe.ui.components.HScroll;
 import haxe.ui.components.VScroll;
 import haxe.ui.constants.ScrollMode;
 import haxe.ui.core.Component;
-import haxe.ui.core.IClonable;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.Platform;
 import haxe.ui.core.Screen;
@@ -14,11 +15,12 @@ import haxe.ui.layouts.Layout;
 import haxe.ui.layouts.LayoutFactory;
 import haxe.ui.util.Rectangle;
 import haxe.ui.util.Size;
-import haxe.ui.util.Timer;
+import haxe.ui.util.Variant;
+import haxe.ui.validation.InvalidationFlags;
 
 @:dox(icon = "/icons/ui-scroll-pane-both.png")
-class ScrollView extends Component implements IClonable<ScrollView> {
-    public var _contents:Box;
+class ScrollView extends Component {
+    private var _contents:Box;
     private var _hscroll:HScroll;
     private var _vscroll:VScroll;
 
@@ -32,16 +34,11 @@ class ScrollView extends Component implements IClonable<ScrollView> {
 
     private override function createDefaults() {
         super.createDefaults();
-    }
-
-    private override function create() {
-        super.create();
-        if (native == true) {
-            updateScrollRect();
-        } else {
-            checkScrolls();
-            //updateScrollRect();
-        }
+        defaultBehaviours([
+            "vscrollPos" => new DefaultVScrollPosBehaviour(this),
+            "hscrollPos" => new DefaultHScrollPosBehaviour(this)
+        ]);
+        _defaultLayout = new ScrollViewLayout();
     }
 
     private var _layoutName:String = "vertical";
@@ -91,111 +88,74 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         }
     }
 
-    private override function onReady() {
-        super.onReady();
-        checkScrolls();
-        updateScrollRect();
-    }
-
-    private override function onResized() {
-        checkScrolls();
-        updateScrollRect();
-    }
-
+    private var _vscrollPos:Float = 0;
     @bindable public var vscrollPos(get, set):Float;
     private function get_vscrollPos():Float {
-        if (_vscroll == null) {
-            return 0;
-        }
-        return _vscroll.pos;
+        return _vscrollPos;
     }
     private function set_vscrollPos(value:Float):Float {
-        if (_vscroll == null) {
+        if (_vscrollPos == value) {
             return value;
         }
-        _vscroll.pos = value;
-        handleBindings(["vscrollPos"]);
+
+        invalidateScroll();
+        _vscrollPos = value;
         return value;
     }
 
-    @bindable public var hscrollPos(get, set):Float;
-    private function get_hscrollPos():Float {
-        if (_hscroll == null) {
+    public var vscrollMax(get, null):Float;
+    private function get_vscrollMax():Float {
+        if (_vscroll == null) {
             return 0;
         }
-        return _hscroll.pos;
+        return _vscroll.max;
+    }
+    
+    private var _hscrollPos:Float = 0;
+    @bindable public var hscrollPos(get, set):Float;
+    private function get_hscrollPos():Float {
+        return _hscrollPos;
     }
     private function set_hscrollPos(value:Float):Float {
-        if (_hscroll == null) {
+        if (_hscrollPos == value) {
             return value;
         }
-        _hscroll.pos = value;
-        handleBindings(["hscrollPos"]);
+
+        invalidateScroll();
+        _hscrollPos = value;
         return value;
     }
 
     public var contentWidth(get, set):Null<Float>;
     private function get_contentWidth():Null<Float> {
-        createContentContainer();
-        if (_contents != null) {
-            return _contents.width;
-        }
-        return null;
+        return _contents.width;
     }
     private function set_contentWidth(value:Null<Float>):Null<Float> {
-        createContentContainer();
-        if (_contents != null) {
-            _contents.width = value;
-        }
-        return value;
+        return _contents.width = value;
     }
 
     public var contentHeight(get, set):Null<Float>;
     private function get_contentHeight():Null<Float> {
-        createContentContainer();
-        if (_contents != null) {
-            return _contents.height;
-        }
-        return null;
+        return _contents.height;
     }
     private function set_contentHeight(value:Null<Float>):Null<Float> {
-        createContentContainer();
-        if (_contents != null) {
-            _contents.height = value;
-        }
-        return value;
+        return _contents.height = value;
     }
 
     public var percentContentWidth(get, set):Null<Float>;
     private function get_percentContentWidth():Null<Float> {
-        createContentContainer();
-        if (_contents != null) {
-            return _contents.percentWidth;
-        }
-        return null;
+        return _contents.percentWidth;
     }
     private function set_percentContentWidth(value:Null<Float>):Null<Float> {
-        createContentContainer();
-        if (_contents != null) {
-            _contents.percentWidth = value;
-        }
-        return value;
+        return _contents.percentWidth = value;
     }
 
     public var percentContentHeight(get, set):Null<Float>;
     private function get_percentContentHeight():Null<Float> {
-        createContentContainer();
-        if (_contents != null) {
-            return _contents.percentHeight;
-        }
-        return null;
+        return _contents.percentHeight;
     }
     private function set_percentContentHeight(value:Null<Float>):Null<Float> {
-        createContentContainer();
-        if (_contents != null) {
-            _contents.percentHeight = value;
-        }
-        return value;
+        return _contents.percentHeight = value;
     }
 
     public override function addComponent(child:Component):Component {
@@ -203,7 +163,6 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         if (Std.is(child, HScroll) || Std.is(child, VScroll) || child == _contents) {
             v = super.addComponent(child);
         } else {
-            createContentContainer();
             v = _contents.addComponent(child);
         }
         return v;
@@ -250,17 +209,6 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         return _contents;
     }
 
-    private function _onMouseWheel(event:MouseEvent) {
-        if (_vscroll != null) {
-            if (event.delta > 0) {
-                _vscroll.pos -= 50; // TODO: calculate this
-                //_vscroll.animatePos(_vscroll.pos - 50);
-            } else if (event.delta < 0) {
-                _vscroll.pos += 50;
-            }
-        }
-    }
-
     private var _scrollMode:ScrollMode = ScrollMode.DRAG;
     public var scrollMode(get, set):ScrollMode;
     private function get_scrollMode():ScrollMode {
@@ -281,13 +229,64 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         return value;
     }
 
+    private var __onScrollChange:ScrollEvent->Void;
+    /**
+     Utility property to add a single `ScrollEvent.CHANGE` event
+    **/
+    @:dox(group = "Event related properties and methods")
+    public var onScrollChange(null, set):UIEvent->Void;
+    private function set_onScrollChange(value:UIEvent->Void):UIEvent->Void {
+        if (__onScrollChange != null) {
+            unregisterEvent(ScrollEvent.CHANGE, __onScrollChange);
+            __onScrollChange = null;
+        }
+        registerEvent(ScrollEvent.CHANGE, value);
+        __onScrollChange = value;
+        return value;
+    }
+
+    //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+
+    private inline function invalidateScroll() {
+        invalidate(InvalidationFlags.SCROLL);
+    }
+
+    private override function validateInternal() {
+        var scrollInvalid = isInvalid(InvalidationFlags.SCROLL);
+        var layoutInvalid = isInvalid(InvalidationFlags.LAYOUT);
+
+        super.validateInternal();
+
+        if (scrollInvalid || layoutInvalid) {
+            validateScroll();
+        }
+    }
+
+    private function validateScroll() {
+        if(behaviourGet("hscrollPos") != _hscrollPos)
+        {
+            behaviourSet("hscrollPos", _hscrollPos);
+            handleBindings(["hscrollPos"]);
+        }
+
+        if(behaviourGet("vscrollPos") != _vscrollPos)
+        {
+            behaviourSet("vscrollPos", _vscrollPos);
+            handleBindings(["vscrollPos"]);
+        }
+
+        checkScrolls();
+        updateScrollRect();
+    }
+
     // ********************************************************************************
     // Inertial and drag scroll functions
     // ********************************************************************************
     
     private var _inertialTimestamp:Float;
     private static inline var INERTIAL_TIME_CONSTANT = 325;
-    private var _inertialTimer:Timer;
 
     private var _offsetX:Float = 0;
     private var _screenOffsetX:Float;
@@ -300,7 +299,20 @@ class ScrollView extends Component implements IClonable<ScrollView> {
     private var _inertialAmplitudeY:Float = 0;
     private var _inertialTargetY:Float = 0;
     private var _inertiaDirectionY:Int;
-    
+
+    private function _onMouseWheel(event:MouseEvent) {
+        if (_vscroll != null) {
+            event.cancel();
+            if (event.delta > 0) {
+                _vscroll.pos -= 50; // TODO: calculate this
+                //_vscroll.animatePos(_vscroll.pos - 50);
+            } else if (event.delta < 0) {
+                _vscroll.pos += 50;
+            }
+            dispatch(new ScrollEvent(ScrollEvent.CHANGE));
+        }
+    }
+
     private function _onMouseDown(event:MouseEvent) {
         if ((_hscroll == null || _hscroll.hidden == true) && (_vscroll == null || _vscroll.hidden == true)) {
             return;
@@ -323,11 +335,6 @@ class ScrollView extends Component implements IClonable<ScrollView> {
             _inertialAmplitudeX = 0;
             _inertialAmplitudeY = 0;
             
-            if (_inertialTimer != null) {
-                _inertialTimer.stop();
-                _inertialTimer = null;
-            }
-            
             _screenOffsetX = event.screenX;
             _screenOffsetY = event.screenY;
             
@@ -336,11 +343,14 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         
         Screen.instance.registerEvent(MouseEvent.MOUSE_MOVE, _onMouseMove);
         Screen.instance.registerEvent(MouseEvent.MOUSE_UP, _onMouseUp);
+
+        dispatch(new ScrollEvent(ScrollEvent.START));
     }
     
     private function _onMouseMove(event:MouseEvent) {
         hscrollPos = _offsetX - event.screenX;
         vscrollPos = _offsetY - event.screenY;
+        dispatch(new ScrollEvent(ScrollEvent.CHANGE));
     }
     
     private function _onMouseUp(event:MouseEvent) {
@@ -394,11 +404,13 @@ class ScrollView extends Component implements IClonable<ScrollView> {
             if (vscrollPos == _inertialTargetY) {
                 _inertialAmplitudeY = 0;
             }
-            
-            _inertialTimer = new Timer(20, inertialScroll);
+
+            Toolkit.callLater(inertialScroll);
+        } else {
+            dispatch(new ScrollEvent(ScrollEvent.STOP));
         }
     }
-    
+
     private function inertialScroll() {
         var elapsed = (haxe.Timer.stamp() - _inertialTimestamp) * 1000;
 
@@ -406,43 +418,47 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         if (_inertialAmplitudeX != 0) {
             var deltaX = -_inertialAmplitudeX * Math.exp(-elapsed / INERTIAL_TIME_CONSTANT);
             if (deltaX > 0.5 || deltaX < -0.5) {
+                var oldPos = hscrollPos;
                 if (_inertiaDirectionX == 0) {
                     hscrollPos = _inertialTargetX - deltaX;
                 } else {
                     hscrollPos = _inertialTargetX + deltaX;
                 }
+                finishedX = hscrollPos == oldPos;
             } else {
                 finishedX = true;
             }
         } else {
             finishedX = true;
         }
-        
+
         var finishedY = false;
-        if (_inertialAmplitudeY != 0) { 
+        if (_inertialAmplitudeY != 0) {
             var deltaY = -_inertialAmplitudeY * Math.exp(-elapsed / INERTIAL_TIME_CONSTANT);
             if (deltaY > 0.5 || deltaY < -0.5) {
+                var oldPos = vscrollPos;
                 if (_inertiaDirectionY == 0) {
                     vscrollPos = _inertialTargetY - deltaY;
                 } else {
                     vscrollPos = _inertialTargetY + deltaY;
                 }
+                finishedY = vscrollPos == oldPos;
             } else {
                 finishedY = true;
             }
         } else {
-           finishedY = true; 
+            finishedY = true;
         }
-        
+
         if (finishedX == true && finishedY == true) {
-            _inertialTimer.stop();
-            _inertialTimer = null;
+            dispatch(new ScrollEvent(ScrollEvent.STOP));
+        } else {
+            Toolkit.callLater(inertialScroll);
         }
     }
     
     private function _onContentsResized(event:UIEvent) {
-        checkScrolls();
-        updateScrollRect();
+        invalidateScroll();
     }
 
     private var hscrollOffset(get, null):Float;
@@ -450,7 +466,7 @@ class ScrollView extends Component implements IClonable<ScrollView> {
         return 0;
     }
 
-    public function checkScrolls() {
+    private function checkScrolls() {
         if (isReady == false ||
             horizontalConstraint == null || horizontalConstraint.childComponents.length == 0 ||
             verticalConstraint == null || verticalConstraint.childComponents.length == 0 ||
@@ -458,96 +474,68 @@ class ScrollView extends Component implements IClonable<ScrollView> {
             return;
         }
 
-        checkHScroll();
-        checkVScroll();
-
-        if (horizontalConstraint.componentWidth > layout.usableWidth) {
-            if (_hscroll != null) {
-                _hscroll.hidden = false;
-                _hscroll.max = horizontalConstraint.componentWidth - layout.usableWidth - hscrollOffset; // _contents.layout.horizontalSpacing;
-                _hscroll.pageSize = (layout.usableWidth / horizontalConstraint.componentWidth) * _hscroll.max;
+        var usableSize:Size = layout.usableSize;
+        if (horizontalConstraint.componentWidth > usableSize.width) {
+            if (_hscroll == null) {
+                _hscroll = new HScroll();
+                _hscroll.percentWidth = 100;
+                _hscroll.id = "scrollview-hscroll";
+                _hscroll.registerEvent(UIEvent.CHANGE, _onHScroll);
+                addComponent(_hscroll);
             }
+
+            _hscroll.hidden = false;
+            _hscroll.max = horizontalConstraint.componentWidth - usableSize.width - hscrollOffset; // _contents.layout.horizontalSpacing;
+            _hscroll.pageSize = (usableSize.width / horizontalConstraint.componentWidth) * _hscroll.max;
+
+            _hscroll.syncValidation();    //avoid another pass
         } else {
             if (_hscroll != null) {
                 _hscroll.hidden = true;
             }
         }
 
-        if (verticalConstraint.componentHeight > layout.usableHeight) {
-            if (_vscroll != null) {
-                _vscroll.hidden = false;
-                _vscroll.max = verticalConstraint.componentHeight - layout.usableHeight;
-                _vscroll.pageSize = (layout.usableHeight / verticalConstraint.componentHeight) * _vscroll.max;
+        if (verticalConstraint.componentHeight > usableSize.height) {
+            if (_vscroll == null) {
+                _vscroll = new VScroll();
+                _vscroll.percentHeight = 100;
+                _vscroll.id = "scrollview-vscroll";
+                _vscroll.registerEvent(UIEvent.CHANGE, _onVScroll);
+                addComponent(_vscroll);
             }
+
+            _vscroll.hidden = false;
+            _vscroll.max = verticalConstraint.componentHeight - usableSize.height;
+            _vscroll.pageSize = (usableSize.height / verticalConstraint.componentHeight) * _vscroll.max;
+
+            _vscroll.syncValidation();    //avoid another pass
         } else {
             if (_vscroll != null) {
                 _vscroll.hidden = true;
             }
         }
-
-        invalidateLayout();
     }
 
-    private function checkHScroll() {
-        if (componentWidth <= 0 || horizontalConstraint == null) {
-            return;
-        }
-
-        if (horizontalConstraint.componentWidth > layout.usableWidth) {
-            if (_hscroll == null) {
-                _hscroll = new HScroll();
-                _hscroll.percentWidth = 100;
-                _hscroll.id = "scrollview-hscroll";
-                _hscroll.registerEvent(UIEvent.CHANGE, _onScroll);
-                addComponent(_hscroll);
-            }
-        } else {
-            if (_hscroll != null) {
-                removeComponent(_hscroll);
-                _hscroll = null;
-            }
-        }
+    private function _onHScroll(event:UIEvent) {
+        hscrollPos = _hscroll.pos;
     }
 
-    private function checkVScroll() {
-        if (componentHeight <= 0 || verticalConstraint == null) {
-            return;
-        }
-
-        if (verticalConstraint.componentHeight > layout.usableHeight) {
-            if (_vscroll == null) {
-                _vscroll = new VScroll();
-                _vscroll.percentHeight = 100;
-                _vscroll.id = "scrollview-vscroll";
-                _vscroll.registerEvent(UIEvent.CHANGE, _onScroll);
-                addComponent(_vscroll);
-            }
-        } else {
-            if (_vscroll != null) { // TODO: bug in luxe backend
-                removeComponent(_vscroll);
-                _vscroll = null;
-            }
-        }
+    private function _onVScroll(event:UIEvent) {
+        vscrollPos = _vscroll.pos;
     }
 
-    private function _onScroll(event:UIEvent) {
-        updateScrollRect();
-        handleBindings(["vscrollPos"]);
-    }
-
-    public function updateScrollRect() {
+    private function updateScrollRect() {
         if (_contents == null) {
             return;
         }
 
-        var ucx = layout.usableWidth;
-        var ucy = layout.usableHeight;
+        var usableSize = layout.usableSize;
 
-        var clipCX = ucx;
+        var clipCX = usableSize.width;
         if (clipCX > _contents.componentWidth) {
             clipCX = _contents.componentWidth;
         }
-        var clipCY = ucy;
+        var clipCY = usableSize.height;
         if (clipCY > _contents.componentHeight) {
             clipCY = _contents.componentHeight;
         }
@@ -566,6 +554,48 @@ class ScrollView extends Component implements IClonable<ScrollView> {
     }
 }
 
+//***********************************************************************************************************
+// Default behaviours
+//***********************************************************************************************************
+@:dox(hide)
+class DefaultVScrollPosBehaviour extends Behaviour {
+    public override function get():Variant {
+        var vscroll:VScroll = _component.findComponent(VScroll);
+        if (vscroll == null) {
+            return 0;
+        }
+        return vscroll.pos;
+    }
+
+    public override function set(value:Variant) {
+        var vscroll:VScroll = _component.findComponent(VScroll);
+        if (vscroll != null) {
+            vscroll.pos = value;
+        }
+    }
+}
+
+@:dox(hide)
+class DefaultHScrollPosBehaviour extends Behaviour {
+    public override function get():Variant {
+        var hscroll:HScroll = _component.findComponent(HScroll);
+        if (hscroll == null) {
+            return 0;
+        }
+        return hscroll.pos;
+    }
+
+    public override function set(value:Variant) {
+        var hscroll:HScroll = _component.findComponent(HScroll);
+        if (hscroll != null) {
+            hscroll.pos = value;
+        }
+    }
+}
+
+//***********************************************************************************************************
+// Layout
+//***********************************************************************************************************
 @:dox(hide)
 class ScrollViewLayout extends DefaultLayout {
     public function new() {
@@ -578,30 +608,32 @@ class ScrollViewLayout extends DefaultLayout {
             return;
         }
 
-        var hscroll:Component = component.findComponent("scrollview-hscroll");
-        var vscroll:Component = component.findComponent("scrollview-vscroll");
+        var hscroll:Component = component.findComponent(HScroll, false);
+        var vscroll:Component = component.findComponent(VScroll, false);
 
         var ucx = innerWidth;
         var ucy = innerHeight;
 
         if (hscroll != null && hidden(hscroll) == false) {
-            hscroll.left = paddingLeft;
-            hscroll.top = ucy - hscroll.componentHeight + paddingBottom;
+            var ucy = innerHeight;
+            hscroll.moveComponent(paddingLeft, ucy - hscroll.componentHeight + paddingBottom);
         }
 
         if (vscroll != null && hidden(vscroll) == false) {
-            vscroll.left = ucx - vscroll.componentWidth + paddingRight;
-            vscroll.top = paddingTop;
+            var ucx = innerWidth;
+            vscroll.moveComponent(ucx - vscroll.componentWidth + paddingRight, paddingTop);
         }
 
-        contents.left = paddingLeft;
-        contents.top = paddingTop;
+        var contents:Component = component.findComponent("scrollview-contents", null, false, "css");
+        if (contents != null) {
+            contents.moveComponent(paddingLeft, paddingTop);
+        }
     }
 
     private override function get_usableSize():Size {
         var size:Size = super.get_usableSize();
-        var hscroll:Component = component.findComponent("scrollview-hscroll");
-        var vscroll:Component = component.findComponent("scrollview-vscroll");
+        var hscroll:Component = component.findComponent(HScroll, false);
+        var vscroll:Component = component.findComponent(VScroll, false);
         if (hscroll != null && hidden(hscroll) == false) {
             size.height -= hscroll.componentHeight;
         }
@@ -624,8 +656,8 @@ class ScrollViewLayout extends DefaultLayout {
     }
 
     public override function calcAutoSize(exclusions:Array<Component> = null):Size {
-        var hscroll:Component = component.findComponent("scrollview-hscroll");
-        var vscroll:Component = component.findComponent("scrollview-vscroll");
+        var hscroll:Component = component.findComponent(HScroll, false);
+        var vscroll:Component = component.findComponent(VScroll, false);
         var size:Size = super.calcAutoSize([hscroll, vscroll]);
         if (hscroll != null && hscroll.hidden == false) {
             size.height += hscroll.componentHeight;

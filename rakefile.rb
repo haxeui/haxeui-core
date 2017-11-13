@@ -8,19 +8,18 @@ end
 # login has worked a few times, then started failing
 
 token = ENV['GH_TOKEN']
+TRAVIS_BRANCH = ENV['TRAVIS_BRANCH']
 
 # against the Travis namespace
 Travis.github_auth(token)
-puts "Using #{Travis::User.current.name}!"
+puts "User: #{Travis::User.current.name}!"
+puts "Branch: #{TRAVIS_BRANCH}!"
 
 
-Travis::Repository.find('haxeui/haxeui-blank').last_build.restart
-Travis::Repository.find('haxeui/haxeui-openfl').last_build.restart
-Travis::Repository.find('haxeui/haxeui-html5').last_build.restart
-Travis::Repository.find('haxeui/haxeui-pixijs').last_build.restart
-Travis::Repository.find('haxeui/haxeui-flambe').last_build.restart
-Travis::Repository.find('haxeui/haxeui-nme').last_build.restart
-Travis::Repository.find('haxeui/haxeui-kha').last_build.restart
-Travis::Repository.find('haxeui/haxeui-luxe').last_build.restart
-Travis::Repository.find('haxeui/haxeui-hxwidgets').last_build.restart
-Travis::Repository.find('haxeui/haxeui-xwt').last_build.restart
+Travis::Repository.find('haxeui/haxeui-blank').branch("#{TRAVIS_BRANCH}").restart
+Travis::Repository.find('haxeui/haxeui-openfl').branch("#{TRAVIS_BRANCH}").restart
+Travis::Repository.find('haxeui/haxeui-html5').branch("#{TRAVIS_BRANCH}").restart
+Travis::Repository.find('haxeui/haxeui-pixijs').branch("#{TRAVIS_BRANCH}").restart
+Travis::Repository.find('haxeui/haxeui-nme').branch("#{TRAVIS_BRANCH}").restart
+Travis::Repository.find('haxeui/haxeui-kha').branch("#{TRAVIS_BRANCH}").restart
+Travis::Repository.find('haxeui/haxeui-hxwidgets').branch("#{TRAVIS_BRANCH}").restart

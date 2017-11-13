@@ -1,11 +1,11 @@
 package haxe.ui.containers;
 
+import haxe.ui.layouts.Layout;
 import haxe.ui.components.HScroll;
 import haxe.ui.components.VScroll;
 import haxe.ui.containers.TableView.TableViewRow;
 import haxe.ui.core.BasicItemRenderer;
 import haxe.ui.core.Component;
-import haxe.ui.core.IClonable;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.ItemRenderer;
 import haxe.ui.core.MouseEvent;
@@ -17,28 +17,27 @@ import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.util.Rectangle;
 import haxe.ui.util.Size;
 
-class TableView extends ScrollView implements IDataComponent implements IClonable<TableView> {
+class TableView extends ScrollView implements IDataComponent {
     private var _header:Header;
     private var _itemRenderers:Array<ItemRenderer> = [];
 
     public function new() {
         super();
-        addClass("scrollview");
     }
 
     private override function createDefaults() {
         super.createDefaults();
-        _defaultLayout = new TableViewLayout();
+//        _defaultLayout = new TableViewLayout();   //TODO - don't work because ScrollView override createLayout method, so _defaultLayout isn't taken in count.
+    }
+
+    private override function createLayout():Layout {
+        return new TableViewLayout();
     }
 
     private override function createChildren() {
         super.createChildren();
         percentContentWidth = 100;
-        _contents.addClass("tableview-contents");
-    }
-
-    private override function create() {
-        super.create();
+        _contents.addClass("tableview-contents", false);
     }
 
     private override function onReady() {
@@ -50,13 +49,6 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
                 addComponent(new BasicItemRenderer());
             }
         }
-
-        syncUI();
-    }
-
-    private override function onResized() {
-        super.onResized();
-        sizeItems();
     }
 
     private override function _onContentsResized(event:UIEvent) {
@@ -85,7 +77,7 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
 
             v = addComponentToSuper(child);
             if (_dataSource != null) {
-                syncUI();
+                invalidateData();
             }
         } else if (Std.is(child, ItemRenderer)) {
             #if haxeui_luxe
@@ -104,11 +96,6 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
     }
 
     private function _onHeaderResized(event:UIEvent) {
-        /*
-        checkScrolls();
-        updateScrollRect();
-        */
-
         #if haxeui_html5 // TODO: this should be in the backend somehow
         updateNativeHeaderClip();
         #end
@@ -160,14 +147,14 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
     }
     private function set_dataSource(value:DataSource<Dynamic>):DataSource<Dynamic> {
         _dataSource = value;
-        syncUI();
+        invalidateData();
         _dataSource.onChange = onDataSourceChanged;
         return value;
     }
 
     private function onDataSourceChanged() {
         if (_ready == true) {
-            syncUI();
+            invalidateData();
         }
     }
 
@@ -175,8 +162,6 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
         if (_dataSource == null || _header == null || _contents == null || _itemRenderers.length < _header.childComponents.length) {
             return;
         }
-
-        //contents.lockLayout(true);
 
         var delta = _dataSource.size - itemCount;
         if (delta > 0) { // not enough items
@@ -204,24 +189,14 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
             for (c in 0..._header.childComponents.length) {
                 var item:ItemRenderer = cast(row.childComponents[c], ItemRenderer);
                 item.addClass(n % 2 == 0 ? "even" : "odd");
-                item.percentWidth = null;
-                item.componentWidth = _header.childComponents[c].componentWidth - 2;
                 var textData:String = Reflect.field(data, _header.childComponents[c].id);
-                var reset:Bool = false;
-                if (textData != null && data.text == null) {
-                    data.value = textData;
-                    reset = true;
-                }
-                item.data = data;
-                if (reset) {
-                    data.value = null;
+                if (textData != null) {
+                    item.data = {value: textData};
                 }
             }
         }
 
-        sizeItems();
-
-        //contents.unlockLayout(true);
+        invalidateDisplay();
     }
 
     public function resetSelection() {
@@ -255,21 +230,6 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
         dispatch(event);
     }
 
-    private function sizeItems() {
-        contents.lockLayout(true);
-
-        for (row in _contents.childComponents) {
-            for (c in 0..._header.childComponents.length) {
-                var item = row.childComponents[c];
-                item.percentWidth = null;
-                item.componentWidth = _header.childComponents[c].componentWidth - 2;
-                item.height = row.componentHeight;
-            }
-        }
-
-        contents.unlockLayout(true);
-    }
-
     public var itemCount(get, null):Int;
     private function get_itemCount():Int {
         if (_contents == null) {
@@ -278,11 +238,7 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
         return _contents.childComponents.length;
     }
 
-    private override function _onScroll(event:UIEvent) {
-        updateScrollRect();
-    }
-
-    public override function updateScrollRect() {
+    private override function updateScrollRect() {
         var rc:Rectangle = null;
 
         var ucx = layout.usableWidth;
@@ -327,6 +283,35 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
     }
 
     //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+
+    private override function validateData() {
+        syncUI();
+    }
+
+    public override function updateDisplay() {
+        super.updateDisplay();
+
+        for (row in _contents.childComponents) {
+            for (c in 0..._header.childComponents.length) {
+                var item = row.childComponents[c];
+                item.percentWidth = null;
+                item.componentWidth = _header.childComponents[c].componentWidth - 2;
+//                item.height = row.componentHeight;
+            }
+        }
+    }
+
+    private override function validateScroll() {
+        checkScrolls();
+        updateScrollRect();
+
+        handleBindings(["hscrollPos"]);
+        handleBindings(["vscrollPos"]);
+    }
+
+    //***********************************************************************************************************
     // Clonable
     //***********************************************************************************************************
     public override function cloneComponent():TableView {
@@ -336,6 +321,7 @@ class TableView extends ScrollView implements IDataComponent implements IClonabl
     }
 }
 
+@:dox(hide)
 class TableViewLayout extends DefaultLayout {
     public function new() {
         super();
@@ -362,8 +348,8 @@ class TableViewLayout extends DefaultLayout {
             header.top = paddingTop + marginTop(header) - marginBottom(header);
         }
 
-        var hscroll:Component = component.findComponent(HScroll);
-        var vscroll:Component = component.findComponent(VScroll);
+        var hscroll:Component = component.findComponent(HScroll, false);
+        var vscroll:Component = component.findComponent(VScroll, false);
 
         var ucx = innerWidth;
         var ucy = innerHeight;
@@ -391,8 +377,8 @@ class TableViewLayout extends DefaultLayout {
 
     private override function get_usableSize():Size {
         var size:Size = super.get_usableSize();
-        var hscroll:Component = component.findComponent(HScroll);
-        var vscroll:Component = component.findComponent(VScroll);
+        var hscroll:Component = component.findComponent(HScroll, false);
+        var vscroll:Component = component.findComponent(VScroll, false);
         if (hscroll != null && hidden(hscroll) == false) {
             size.height -= hscroll.componentHeight;
         }
@@ -422,8 +408,8 @@ class TableViewLayout extends DefaultLayout {
 
     public override function calcAutoSize(exclusions:Array<Component> = null):Size {
         var size:Size = super.calcAutoSize(exclusions);
-        var hscroll:Component = component.findComponent(HScroll);
-        var vscroll:Component = component.findComponent(VScroll);
+        var hscroll:Component = component.findComponent(HScroll, false);
+        var vscroll:Component = component.findComponent(VScroll, false);
         if (hscroll != null && hscroll.hidden == false) {
             size.height += hscroll.componentHeight;
         }
@@ -437,7 +423,6 @@ class TableViewLayout extends DefaultLayout {
 class TableViewRow extends HBox {
     public function new() {
         super();
-        addClass("hbox");
         registerEvent(MouseEvent.MOUSE_OVER, _onMouseOver);
         registerEvent(MouseEvent.MOUSE_OUT, _onMouseOut);
     }

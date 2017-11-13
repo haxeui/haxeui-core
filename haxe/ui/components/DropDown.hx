@@ -4,7 +4,6 @@ import haxe.ui.containers.ListView;
 import haxe.ui.core.BasicItemRenderer;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
-import haxe.ui.core.IClonable;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.ItemRenderer;
 import haxe.ui.core.MouseEvent;
@@ -13,7 +12,7 @@ import haxe.ui.core.UIEvent;
 import haxe.ui.data.DataSource;
 import haxe.ui.util.Variant;
 
-class DropDown extends Button implements IDataComponent implements IClonable<DropDown> {
+class DropDown extends Button implements IDataComponent {
     static private inline var NO_SELECTION:Int = -1;
 
     private var _listview:ListView;
@@ -21,7 +20,6 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
 
     public function new() {
         super();
-        addClass("button"); // TODO: shouldnt have to do this
         toggle = true;
         registerEvent(MouseEvent.CLICK, onMouseClick);
     }
@@ -54,23 +52,22 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
         }
     }
 
+    private override function onDestroy() {
+        hideList();
+    }
+
     private var _dataSource:DataSource<Dynamic>;
     public var dataSource(get, set):DataSource<Dynamic>;
     private function get_dataSource():DataSource<Dynamic> {
         return _dataSource;
     }
     private function set_dataSource(value:DataSource<Dynamic>):DataSource<Dynamic> {
+        if (_dataSource == value) {
+            return value;
+        }
+
+        invalidateData();
         _dataSource = value;
-        if (_listview != null) {
-            _listview.dataSource = value;
-        }
-        //behaviourSet("dataSource", Variant.fromDynamic(value));
-        behaviourSet("dataSource", value);
-
-        if(_requireSelection == true && _dataSource != null && _selectedIndex < 0) {
-            selectedIndex = 0;
-        }
-
         return value;
     }
 
@@ -88,21 +85,8 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
             return value;
         }
 
+        invalidateData();
         _selectedIndex = value;
-
-        if(_dataSource != null) {
-            if(_requireSelection == true && _selectedIndex < 0 && _dataSource.size > 0) {
-                _selectedIndex = 0;
-            }
-
-            if(_selectedIndex >= 0) {
-                text = _dataSource.get(_selectedIndex).value;
-            }
-        }
-        else {
-            text = null;
-        }
-
         return _selectedIndex;
     }
 
@@ -112,13 +96,12 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
         return _requireSelection;
     }
     private function set_requireSelection(value:Bool):Bool {
-        if(_requireSelection != value) {
-            _requireSelection = value;
-            if(_requireSelection == true && _dataSource != null && _selectedIndex < 0) {
-                selectedIndex = 0;
-            }
+        if(_requireSelection == value) {
+            return value;
         }
 
+        invalidateData();
+        _requireSelection = value;
         return value;
     }
 
@@ -181,52 +164,9 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
         }
 
         if (selected == true) {
-            if (_listview == null) {
-                _listview = new ListView();
-                if (_itemRenderer != null) {
-                    _listview.addComponent(_itemRenderer);
-                }
-                _listview.addClass("popup");
-                if (_listStyleNames != null) {
-                    for (s in _listStyleNames.split(" ")) {
-                        _listview.addClass(s);
-                    }
-                }
-                if (_dataSource != null) {
-                    _listview.dataSource = _dataSource;
-                }
-                _listview.registerEvent(UIEvent.CHANGE, onItemChange);
-            }
-            Screen.instance.addComponent(_listview);
-
-            _listview.left = this.screenLeft;
-            _listview.top = this.screenTop + this.componentHeight;
-            if (_listWidth == null) {
-                _listview.width = Math.ffloor(this.componentWidth);
-            } else {
-                _listview.width = _listWidth;
-            }
-
-            var listHeight = _listHeight;
-            if (_listHeight == null) {
-                var n:Int = _listSize;
-                if (n > _listview.itemCount) {
-                    n = _listview.itemCount;
-                }
-                listHeight = n * _listview.itemHeight + (_listview.layout.paddingTop + _listview.layout.paddingBottom);
-            }
-            _listview.height = listHeight;
-
-            if (_listview.screenTop + _listview.height > Screen.instance.height) {
-                _listview.top = this.screenTop - _listview.height;
-            }
-
-            Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
+            showList();
         } else {
-            if (_listview != null) {
-                Screen.instance.removeComponent(_listview);
-            }
-            Screen.instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
+            hideList();
         }
     }
 
@@ -253,6 +193,92 @@ class DropDown extends Button implements IDataComponent implements IClonable<Dro
         }
         selected = !selected;
         onMouseClick(null);
+    }
+
+    private function showList() {
+        if (_listview == null) {
+            _listview = new ListView();
+            if (_itemRenderer != null) {
+                _listview.addComponent(_itemRenderer);
+            }
+            _listview.addClass("popup");
+            if (id != null) {
+                _listview.id = id + "-popup";
+                _listview.addClass(id + "-popup");
+            }
+            if (_listStyleNames != null) {
+                for (s in _listStyleNames.split(" ")) {
+                    _listview.addClass(s);
+                }
+            }
+            if (_dataSource != null) {
+                _listview.dataSource = _dataSource;
+            }
+            _listview.registerEvent(UIEvent.CHANGE, onItemChange);
+        }
+        Screen.instance.addComponent(_listview);
+
+        _listview.left = this.screenLeft;
+        _listview.top = this.screenTop + this.componentHeight;
+        if (_listWidth == null) {
+            _listview.width = Math.ffloor(this.componentWidth);
+        } else {
+            _listview.width = _listWidth;
+        }
+
+        var listHeight = _listHeight;
+        if (_listHeight == null) {
+            var n:Int = _listSize;
+            if (n > _listview.itemCount) {
+                n = _listview.itemCount;
+            }
+            _listview.syncValidation();
+            listHeight = n * _listview.itemHeight + (_listview.layout.paddingTop + _listview.layout.paddingBottom);
+        }
+        _listview.height = listHeight;
+        _listview.syncValidation();     //avoid ui flash in some backends
+
+        if (_listview.screenTop + _listview.height > Screen.instance.height) {
+            _listview.top = this.screenTop - _listview.height;
+        }
+
+        Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
+    }
+
+    private function hideList() {
+        if (_listview != null) {
+            if (_listview.selectedItem != null) {
+                _listview.selectedItem.removeClass(":hover");
+            }
+            Screen.instance.removeComponent(_listview);
+        }
+        Screen.instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
+    }
+
+    //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+
+    private override function validateData() {
+        if (_listview != null) {
+            _listview.dataSource = _dataSource;
+        }
+
+        behaviourSet("dataSource", _dataSource);    //TODO - if the index is the only change, the syncUI method is executed anyway
+
+        if(_dataSource != null) {
+            if(_requireSelection == true && _selectedIndex < 0 && _dataSource.size > 0) {
+                _selectedIndex = 0;
+            }
+
+            if(_selectedIndex >= 0) {
+                _text = _dataSource.get(_selectedIndex).value;
+            }
+        } else {
+            //_text = null;
+        }
+
+        super.validateData();
     }
 
     //***********************************************************************************************************

@@ -1,0 +1,10 @@
+{
+    "name": "hxwidgets",
+    "type": "template",
+    "subProjects": [
+        "shared", "hxwidgets-shared"
+    ],
+    "templates": [
+        { "src": "hxwidgets.hxml", "dst": "${target}/hxwidgets.hxml"}
+    ]
+}

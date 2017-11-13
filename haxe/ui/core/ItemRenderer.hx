@@ -2,7 +2,7 @@ package haxe.ui.core;
 
 import haxe.ui.util.Variant;
 
-class ItemRenderer extends Component implements IClonable<ItemRenderer> {
+class ItemRenderer extends Component {
     public function new() {
         super();
         registerEvent(MouseEvent.MOUSE_OVER, _onItemMouseOver);
@@ -43,14 +43,43 @@ class ItemRenderer extends Component implements IClonable<ItemRenderer> {
         return _data;
     }
     private function set_data(value:Dynamic):Dynamic {
+        if (value == _data) {
+            return value;
+        }
+
+        invalidateData();
         _data = value;
+        return value;
+    }
+
+    private override function validateData() {
         for (f in Reflect.fields(_data)) {
             var v = Reflect.field(_data, f);
             var c:Component = findComponent(f, null, true);
             if (c != null && v != null) {
-                c.value = Variant.fromDynamic(v);
+				if (Type.typeof(v) == TObject) {
+					for (propName in Reflect.fields(v)) {
+						var propValue:Dynamic = Reflect.field(v, propName);
+						
+						if (propValue == "true" || propValue == "yes" || propValue == "false" || propValue == "no") {
+							propValue = (propValue == "true" || propValue == "yes");
+						} else if (~/^[0-9]*$/i.match(propValue)) {
+							propValue = Std.parseInt(propValue);
+						}
+						
+						if (propName == "value") {
+							c.value = Variant.fromDynamic(propValue);
+						} else {
+							Reflect.setProperty(c, propName, propValue);
+						}
+					}
+				} else {
+					c.value = Variant.fromDynamic(v);
+				}
+                c.show();
+            } else if (c != null) {
+                c.hide();
             }
         }
-        return value;
     }
 }

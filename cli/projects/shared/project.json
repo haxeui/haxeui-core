@@ -1,0 +1,12 @@
+{
+    "name": "shared",
+    "type": "template",
+    "directories": [
+        "${target}/src/${packagePath}",
+        "${target}/assets"
+    ],
+    "templates": [
+        { "src": "Main.hx", "dst": "${target}/src/${packagePath}/${main}.hx"},
+        { "src": "assets/main.xml", "dst": "${target}/assets/main.xml"}
+    ]
+}

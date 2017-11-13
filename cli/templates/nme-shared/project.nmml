@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+    <meta title="::name::" package="::package::" version="1.0.0" company="" />
+    <app main="::fullMain::" file="::name::" path="build/nme" />
+
+    <window background="#FFFFFF" fps="60" />
+    <window width="800" height="600" unless="mobile" />
+
+    <!-- classpath, haxe libs -->
+    <source path="src" />
+
+    <haxelib name="nme" />
+    <haxelib name="actuate" />
+    <haxelib name="hscript" />
+
+    <haxelib name="haxeui-core" />
+    <haxelib name="haxeui-nme" />
+</project>

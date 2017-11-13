@@ -334,7 +334,7 @@ class MacroHelpers {
                             subDir = path + subDir;
                         }
 
-                        if (sys.FileSystem.isDirectory(subDir)) {
+                        if (sys.FileSystem.isDirectory(subDir) && StringTools.endsWith(subDir, "/cli") == false) {
                             subDir = StringTools.replace(subDir, "\\", "/");
                             paths.insert(0, subDir);
                         } else {

@@ -78,7 +78,7 @@ class Parser {
                 }
             default:
                 var i = getVariant(v);
-                if( i != null ) { s.padding(i); return true; }
+                if( i != null ) { s.padding = i; return true; }
             }
         case "padding-top":
             var i = getVariant(v);
@@ -519,11 +519,7 @@ class Parser {
             } else {
                 var i = getIdent(v);
                 if (i != null) {
-                    if (i == "none") {
-                        s.filter = ["none"];
-                    } else {
-                        s.filter = [i];
-                    }
+                    s.filter = [i];
                     return true;
                 }
             }
@@ -1260,6 +1256,7 @@ class Parser {
         var last = null;
         while( true ) {
             var t = readToken();
+                
             if( last == null )
                 switch( t ) {
                 case TStar: def = true;
@@ -1283,6 +1280,8 @@ class Parser {
                     default: throw "assert";
                     }
                     last = null;
+                case TEof:
+                    break;
                 default:
                     unexpected(t);
                 }

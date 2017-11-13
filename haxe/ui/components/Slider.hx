@@ -4,7 +4,6 @@ import haxe.ui.animation.Animation;
 import haxe.ui.animation.AnimationManager;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
-import haxe.ui.core.IClonable;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.UIEvent;
@@ -14,7 +13,7 @@ import haxe.ui.util.Variant;
  Encapsulates shared functionality of both vertical and horizontal slider components
 **/
 @:dox(icon = "/icons/ui-slider-050.png")
-class Slider extends InteractiveComponent implements IClonable<Slider> {
+class Slider extends InteractiveComponent {
     private var _valueBackground:Component;
     private var _value:Component;
 
@@ -24,7 +23,6 @@ class Slider extends InteractiveComponent implements IClonable<Slider> {
     public function new() {
         super();
         allowFocus = false;
-        addClass("slider");
         _behaviourUpdateOrder = ["min", "max", "pos"];
     }
 
@@ -40,14 +38,6 @@ class Slider extends InteractiveComponent implements IClonable<Slider> {
             "rangeStart" => new SliderDefaultRangeStartBehaviour(this),
             "rangeEnd" => new SliderDefaultRangeEndBehaviour(this)
         ]);
-    }
-
-    private override function create() {
-        super.create();
-
-        behaviourSet("min", _min);
-        behaviourSet("max", _max);
-        behaviourSet("pos", _pos);
     }
 
     private override function createChildren() {
@@ -127,27 +117,11 @@ class Slider extends InteractiveComponent implements IClonable<Slider> {
     @:dox(group = "Value related properties and methods")
     @bindable @clonable public var pos(get, set):Float;
     private function get_pos():Float {
-        return behaviourGet("pos");
+        return _pos;
     }
     private function set_pos(value:Float):Float {
-        if (_ready) { // only enforce constraints when ready as xml attrs can come in in any order
-            if (value < _min) {
-                value = _min;
-            }
-            if (value > _max) {
-                value = _max;
-            }
-        }
-
-        if (value == _pos) {
-            return value;
-        }
-        
         _pos = value;
-        behaviourSet("pos", value);
-        var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
-        dispatch(changeEvent);
-        handleBindings(["value"]);
+        invalidateData();
         return value;
     }
 
@@ -181,12 +155,8 @@ class Slider extends InteractiveComponent implements IClonable<Slider> {
         return _min;
     }
     private function set_min(value:Float):Float {
-        if (value == _min) {
-            return value;
-        }
-
         _min = value;
-        behaviourSet("min", value);
+        invalidateData();
         return value;
     }
 
@@ -200,13 +170,8 @@ class Slider extends InteractiveComponent implements IClonable<Slider> {
         return _max;
     }
     private function set_max(value:Float):Float {
-        if (value == _max) {
-            return value;
-        }
-
         _max = value;
-        behaviourSet("max", value);
-        behaviourSet("pos", _pos);
+        invalidateData();
         return value;
     }
 
@@ -242,8 +207,7 @@ class Slider extends InteractiveComponent implements IClonable<Slider> {
             }
 
             _rangeStart = value;
-            invalidateLayout();
-            handleBindings(["value"]);
+            invalidateData();
         }
 
         return value;
@@ -284,8 +248,7 @@ class Slider extends InteractiveComponent implements IClonable<Slider> {
         }
         if (value != _rangeEnd) {
             _rangeEnd = value;
-            invalidateLayout();
-            handleBindings(["value"]);
+            invalidateData();
         }
         return value;
     }
@@ -310,16 +273,52 @@ class Slider extends InteractiveComponent implements IClonable<Slider> {
     **/
     @:dox(group = "Range related properties and methods")
     public function setRange(start:Float, end:Float) {
+        var invalidate:Bool = false;
         if (start != _rangeStart) {
             _rangeStart = start;
+            invalidate = true;
         }
         if (end != _rangeEnd) {
             _rangeEnd = end;
+            invalidate = true;
         }
-        invalidateLayout();
-        handleBindings(["value"]);
+        if (invalidate == true) {
+            invalidateData();
+        }
     }
 
+    //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+    private override function validateData() {
+        var notifyChange:Bool = false;
+
+        if (behaviourGet("min") != _min) {
+            behaviourSet("min", _min);
+        }
+        if (behaviourGet("max") != _max) {
+            behaviourSet("max", _max);
+        }
+        if (behaviourGet("rangeEnd") != _rangeEnd) {
+            behaviourSet("rangeEnd", _rangeEnd);
+            notifyChange = true;
+        }
+        if (behaviourGet("rangeStart") != _rangeStart) {
+            behaviourSet("rangeStart", _rangeStart);
+            notifyChange = true;
+        }
+        if (behaviourGet("pos") != _pos) {
+            behaviourSet("pos", _pos);
+            notifyChange = true;
+        }
+
+        if (notifyChange == true) {
+            var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
+            dispatch(changeEvent);
+            handleBindings(["value"]);
+        }
+    }
+    
     //***********************************************************************************************************
     // Events
     //***********************************************************************************************************
@@ -371,48 +370,104 @@ class Slider extends InteractiveComponent implements IClonable<Slider> {
 @:dox(hide)
 @:access(haxe.ui.components.Slider)
 class SliderDefaultMinBehaviour extends Behaviour {
+    private var _value:Float = 0;
+
     public override function set(value:Variant) {
+        if (_value == value) {
+            return;
+        }
+
+        _value = value;
+
         var slider:Slider = cast _component;
         slider.invalidateLayout();
+    }
+
+    public override function get():Variant {
+        return _value;
     }
 }
 
 @:dox(hide)
 @:access(haxe.ui.components.Slider)
 class SliderDefaultMaxBehaviour extends Behaviour {
+    private var _value:Float = 0;
+
     public override function set(value:Variant) {
+        if (_value == value) {
+            return;
+        }
+
+        _value = value;
+
         var slider:Slider = cast _component;
         slider.invalidateLayout();
+    }
+
+    public override function get():Variant {
+        return _value;
     }
 }
 
 @:dox(hide)
 @:access(haxe.ui.components.Slider)
 class SliderDefaultPosBehaviour extends Behaviour {
+    private var _value:Float = 0;
+
     public override function set(value:Variant) {
+        if (_value == value) {
+            return;
+        }
+
+        _value = value;
+
         var slider:Slider = cast _component;
         slider.invalidateLayout();
     }
     
     public override function get():Variant {
-        return cast(_component, Slider)._pos;
+        return _value;
     }
 }
 
 @:dox(hide)
 @:access(haxe.ui.components.Slider)
 class SliderDefaultRangeStartBehaviour extends Behaviour {
+    private var _value:Float = 0;
+
     public override function set(value:Variant) {
+        if (_value == value) {
+            return;
+        }
+
+        _value = value;
+
         var slider:Slider = cast _component;
         slider.invalidateLayout();
+    }
+
+    public override function get():Variant {
+        return _value;
     }
 }
 
 @:dox(hide)
 @:access(haxe.ui.components.Slider)
 class SliderDefaultRangeEndBehaviour extends Behaviour {
+    private var _value:Float = 0;
+
     public override function set(value:Variant) {
+        if (_value == value) {
+            return;
+        }
+
+        _value = value;
+
         var slider:Slider = cast _component;
         slider.invalidateLayout();
+    }
+
+    public override function get():Variant {
+        return _value;
     }
 }

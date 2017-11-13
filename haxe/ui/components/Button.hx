@@ -1,7 +1,7 @@
 package haxe.ui.components;
 
+import haxe.ui.validation.InvalidationFlags;
 import haxe.ui.core.Behaviour;
-import haxe.ui.core.IClonable;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.focus.FocusManager;
@@ -12,9 +12,35 @@ import haxe.ui.util.Variant;
 
 /**
  General purpose push button that supports both text and icon as well as repeat event dispatching
+ 
+ Composite children:
+    | Id             | Type    | Style Name   | Notes                                  |
+    | `button-label` | `Label` | `.label`     | The text of the button (if applicable) |
+    | `button-icon`  | `Image` | `.icon`      | The icon of the button (if applicable) |
+ 
+ Pseudo classes:
+    | Name      | Notes                                                                    |
+    | `:hover`  | The style to be applied when the cursor is over the button               |
+    | `:down`   | The style to be applied when a mouse button is pressed inside the button |
+    | `:active` | The style to be applied when the button has focus                        |
+    
+  XML example:
+    <button text="Button"
+            styleNames="myCustomButton"
+            style="font-size: 30px"
+            onClick="trace('hello world')" />
+    
+  Code example:
+    var button = new Button();
+    button.text = "Button";
+    button.styleNames = "myCustomButton";
+    button.fontSize = 30;
+    button.onClick = function(e) {
+        trace("hello world");
+    }
 **/
 @:dox(icon = "/icons/ui-button.png")
-class Button extends InteractiveComponent implements IClonable<Button> {
+class Button extends InteractiveComponent {
     private var _repeatTimer:Timer;
 
     public function new() {
@@ -34,12 +60,6 @@ class Button extends InteractiveComponent implements IClonable<Button> {
             "icon" => new ButtonDefaultIconBehaviour(this)
         ]);
         _defaultLayout = new ButtonLayout();
-    }
-
-    private override function create() {
-        super.create();
-        behaviourSet("text", _text);
-        behaviourSet("icon", _iconResource);
     }
 
     private override function createChildren() {
@@ -73,7 +93,7 @@ class Button extends InteractiveComponent implements IClonable<Button> {
     //***********************************************************************************************************
     private override function set_text(value:String):String {
         value = super.set_text(value);
-        behaviourSet("text", value);
+        invalidateData();
         return value;
     }
 
@@ -84,7 +104,12 @@ class Button extends InteractiveComponent implements IClonable<Button> {
         }
 
         var label:Label = findComponent(Label);
-        if (label != null) {
+        if (label != null &&
+            (label.customStyle.color != style.color ||
+            label.customStyle.fontName != style.fontName ||
+            label.customStyle.fontSize != style.fontSize ||
+            label.customStyle.cursor != style.cursor)) {
+
             label.customStyle.color = style.color;
             label.customStyle.fontName = style.fontName;
             label.customStyle.fontSize = style.fontSize;
@@ -93,9 +118,22 @@ class Button extends InteractiveComponent implements IClonable<Button> {
         }
 
         var icon:Image = findComponent(Image);
-        if (icon != null) {
+        if (icon != null && (icon.customStyle.cursor != style.cursor)) {
             icon.customStyle.cursor = style.cursor;
             icon.invalidateStyle();
+        }
+    }
+
+    //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+    private override function validateData() {
+        if (behaviourGet("text") != _text) {
+            behaviourSet("text", _text);
+        }
+
+        if (behaviourGet("icon") != _iconResource) {
+            behaviourSet("icon", _iconResource);
         }
     }
 
@@ -134,54 +172,13 @@ class Button extends InteractiveComponent implements IClonable<Button> {
         }
 
         _iconResource = value;
-        behaviourSet("icon", value);
+        invalidateData();
         return value;
     }
 
-    @:clonable public var iconPosition(get, set):String;
-    private function get_iconPosition():String {
-        return style.iconPosition;
-    }
-    private function set_iconPosition(value:String):String {
-        if (iconPosition == value) {
-            return value;
-        }
-
-        customStyle.iconPosition = value;
-        invalidateStyle();
-        invalidateLayout();
-        return value;
-    }
-
-    @:clonable public var fontSize(get, set):Float;
-    private function get_fontSize():Float {
-        return style.fontSize;
-    }
-    private function set_fontSize(value:Float):Float {
-        if (fontSize == value) {
-            return value;
-        }
-
-        customStyle.fontSize = value;
-        invalidateStyle();
-        invalidateLayout();
-        return value;
-    }
-
-    @:clonable public var textAlign(get, set):String;
-    private function get_textAlign():String {
-        return style.textAlign;
-    }
-    private function set_textAlign(value:String):String {
-        if (textAlign == value) {
-            return value;
-        }
-
-        customStyle.textAlign = value;
-        invalidateStyle();
-        invalidateLayout();
-        return value;
-    }
+    @:style(layout)   public var iconPosition:String;
+    @:style(layout)   public var fontSize:Null<Float>;
+    @:style(layout)   public var textAlign:String;
 
     /**
      Whether this button should behave as a toggle button or not
@@ -264,7 +261,7 @@ class Button extends InteractiveComponent implements IClonable<Button> {
         }
 
         removeClass(":down");
-        if (hitTest(event.screenX, event.screenY)) {
+        if (event.touchEvent == false && hitTest(event.screenX, event.screenY)) {
             addClass(":hover");
         }
 
@@ -354,10 +351,13 @@ class ButtonDefaultIconBehaviour extends Behaviour {
             button.addComponent(icon);
         }
 
-        icon.resource = value.toString();
+        icon.resource = value;
     }
 }
 
+//***********************************************************************************************************
+// Layout
+//***********************************************************************************************************
 @:dox(hide)
 class ButtonLayout extends DefaultLayout {
     public function new() {
@@ -366,7 +366,7 @@ class ButtonLayout extends DefaultLayout {
 
     private var iconPosition(get, null):String;
     private function get_iconPosition():String {
-        if (component.style.iconPosition == null) {
+        if (component.style == null || component.style.iconPosition == null) {
             return "left";
         }
         return component.style.iconPosition;
