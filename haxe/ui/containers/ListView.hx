@@ -1,5 +1,7 @@
 package haxe.ui.containers;
 
+import haxe.ui.validation.ValidationManager;
+import haxe.ui.validation.InvalidationFlags;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.ClassFactory;
 import haxe.ui.core.BasicItemRenderer;
@@ -15,6 +17,8 @@ import haxe.ui.data.transformation.NativeTypeTransformer;
 import haxe.ui.util.Variant;
 
 class ListView extends ScrollView implements IDataComponent {
+    static private inline var NO_SELECTION:Int = -1;
+
     public function new() {
         super();
     }
@@ -26,31 +30,24 @@ class ListView extends ScrollView implements IDataComponent {
         ]);
     }
 
-    
-    private override function createChildren() {
-        super.createChildren();
-    }
-
     private override function createContentContainer() {
-        super.createContentContainer();
-        _contents.percentWidth = 100;
-        _contents.addClass("listview-contents");
-    }
-    
-    private override function onReady() {
-        super.onReady();
-        syncUI();
+        if (_contents == null) {
+            super.createContentContainer();
+            _contents.percentWidth = 100;
+            _contents.addClass("listview-contents");
+        }
     }
     
     public override function addComponent(child:Component):Component {
         var r = null;
         if (Std.is(child, ItemRenderer) && (_itemRenderer == null && _itemRendererFunction == null)) {
             _itemRenderer = cast(child, ItemRenderer);
+            createContentContainer();
             #if haxeui_luxe
             _itemRenderer.hide();
             #end
             if (_dataSource != null) {
-                syncUI();
+                invalidateData();
             }
         } else {
             if (Std.is(child, ItemRenderer)) {
@@ -77,41 +74,39 @@ class ListView extends ScrollView implements IDataComponent {
         selectedItem = cast(event.target, ItemRenderer);
     }
 
+    private var _selectedIndex:Int = NO_SELECTION;
     public var selectedIndex(get, set):Int;
     private function get_selectedIndex():Int {
-        if (_currentSelection == null) {
-            return -1;
-        }
-        return contents.childComponents.indexOf(_currentSelection);
+        return _selectedIndex;
     }
     private function set_selectedIndex(value:Int):Int {
-        var item:ItemRenderer = cast(contents.childComponents[value], ItemRenderer);
-        selectedItem = item;
-        return value;
-    }
-    
-    public var selectedItem(get, set):ItemRenderer;
-    private function get_selectedItem():ItemRenderer {
-        return _currentSelection;
-    }
-    private function set_selectedItem(value:ItemRenderer):ItemRenderer {
-        if (_currentSelection != null) {
-            _currentSelection.removeClass(":selected");
+        if(_dataSource != null && value < _dataSource.size && _selectedIndex != value) {
+            _selectedIndex = value;
+            invalidateIndex();
         }
 
-        _currentSelection = value;
-        if (_currentSelection != null) {
-            _currentSelection.addClass(":selected");
-            dispatch(new UIEvent(UIEvent.CHANGE));
-        }
         return value;
     }
-    
-    public function resetSelection() {
-        if (_currentSelection != null) {
-            _currentSelection.removeClass(":selected", true, true);
-            _currentSelection = null;
+
+    public var selectedItem(get, set):ItemRenderer;
+    private function get_selectedItem():ItemRenderer {
+        if (contents == null || _selectedIndex == NO_SELECTION || contents.childComponents[_selectedIndex] == null) {
+            return null;
         }
+
+        return cast(contents.childComponents[_selectedIndex], ItemRenderer);
+    }
+    private function set_selectedItem(value:ItemRenderer):ItemRenderer {
+        if (_dataSource != null && _contents != null)
+        {
+            selectedIndex = contents.childComponents.indexOf(value);
+        }
+
+        return value;
+    }
+
+    public function resetSelection() {
+        selectedIndex = NO_SELECTION;
     }
 
     public function addItem(data:Dynamic):ItemRenderer {
@@ -127,10 +122,10 @@ class ListView extends ScrollView implements IDataComponent {
 
     public var itemCount(get, null):Int;
     private function get_itemCount():Int {
-        if (contents == null) {
+        if (_dataSource == null) {
             return 0;
         }
-        return contents.childComponents.length;
+        return _dataSource.size;
     }
 
     public var itemHeight(get, null):Float;
@@ -138,20 +133,9 @@ class ListView extends ScrollView implements IDataComponent {
         if (itemCount == 0 || contents == null) {
             return 0;
         }
-        var n:Int = 0;
-        var cy:Float = contents.layout.paddingTop + contents.layout.paddingBottom;
-        var scy:Float = contents.layout.verticalSpacing;
-        for (child in contents.childComponents) {
-            cy += child.height + scy;
-            n++;
-            if (n > 100) {
-                break;
-            }
-        }
-        if (n > 0) {
-            cy -= scy;
-        }
-        return (cy / n);
+
+        validate();
+        return itemHeight;
     }
 
     private var _itemRendererFunction:ItemRendererFunction;
@@ -163,7 +147,7 @@ class ListView extends ScrollView implements IDataComponent {
         if (_itemRendererFunction != value) {
             _itemRendererFunction = value;
 
-            syncUI();
+            invalidateData();
         }
 
         return value;
@@ -176,12 +160,10 @@ class ListView extends ScrollView implements IDataComponent {
 	}
 	private function set_itemRendererClass(value:Class<ItemRenderer>):Class<ItemRenderer> {
 		_itemRenderer = Type.createInstance(value, []);
-		if (_ready) {
-			syncUI();
-		}
+        invalidateData();
 		return value;
 	}
-	
+
     private var _dataSource:DataSource<Dynamic>;
     public var dataSource(get, set):DataSource<Dynamic>;
     private function get_dataSource():DataSource<Dynamic> {
@@ -195,20 +177,13 @@ class ListView extends ScrollView implements IDataComponent {
     private function set_dataSource(value:DataSource<Dynamic>):DataSource<Dynamic> {
         _dataSource = value;
         _dataSource.transformer = new NativeTypeTransformer();
-        /*
-		if (_ready) {
-			syncUI();
-		}
-        _dataSource.onChange = onDataSourceChanged;
-        */
-        behaviourSet("dataSource", value);
+        invalidateData();
+        //_dataSource.onChange = onDataSourceChanged;
         return value;
     }
 
     private function onDataSourceChanged() {
-        if (_ready == true) {
-            syncUI();
-        }
+        invalidateData();
     }
 
     private function syncUI() {
@@ -216,12 +191,10 @@ class ListView extends ScrollView implements IDataComponent {
             return;
         }
 
-        lockLayout();
-
         for (n in 0..._dataSource.size) {
             var data:Dynamic = _dataSource.get(n);
             var item:ItemRenderer = null;
-            if (n < itemCount) {
+            if (n < contents.childComponents.length) {
                 item = cast(contents.childComponents[n], ItemRenderer);
                 item.removeClass("even");
                 item.removeClass("odd");
@@ -241,11 +214,9 @@ class ListView extends ScrollView implements IDataComponent {
             item.data = data;
         }
 
-        while (_dataSource.size < itemCount) {
+        while (_dataSource.size < contents.childComponents.length) {
             contents.removeComponent(contents.childComponents[contents.childComponents.length - 1]); // remove last
         }
-
-        unlockLayout();
     }
 
     private function itemToRenderer(data:Dynamic):ItemRenderer
@@ -258,6 +229,106 @@ class ListView extends ScrollView implements IDataComponent {
             }
             return _itemRenderer.cloneComponent();
         }
+    }
+
+    //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+
+    /**
+     Invalidate the index of this component
+    **/
+    @:dox(group = "Invalidation related properties and methods")
+    public inline function invalidateIndex() {
+        invalidate(InvalidationFlags.INDEX);
+    }
+
+    private override function validateInternal() {
+        var dataInvalid = isInvalid(InvalidationFlags.DATA);
+        var indexInvalid = isInvalid(InvalidationFlags.INDEX);
+        var styleInvalid = isInvalid(InvalidationFlags.STYLE);
+        var positionInvalid = isInvalid(InvalidationFlags.POSITION);
+        var displayInvalid = isInvalid(InvalidationFlags.DISPLAY);
+        var layoutInvalid = isInvalid(InvalidationFlags.LAYOUT) && _layoutLocked == false;
+        var scrollInvalid = isInvalid(InvalidationFlags.SCROLL);
+
+        if (dataInvalid) {
+            validateData();
+        }
+
+        if (dataInvalid || indexInvalid) {
+            validateIndex();
+        }
+
+        if (styleInvalid) {
+            validateStyle();
+        }
+
+        if (positionInvalid) {
+            validatePosition();
+        }
+
+        if (layoutInvalid) {
+            displayInvalid = validateLayout() || displayInvalid;
+        }
+
+        if (scrollInvalid || layoutInvalid) {
+            validateScroll();
+        }
+
+        if (displayInvalid || styleInvalid) {
+            ValidationManager.instance.addDisplay(this);    //Update the display from all objects at the same time. Avoids UI flashes.
+        }
+    }
+
+    private override function validateData() {
+        behaviourSet("dataSource", _dataSource);    //TODO - if the index is the only change, the syncUI method is executed anyway
+
+        super.validateData();
+    }
+
+    private function validateIndex() {
+        var selectedItem = this.selectedItem;
+        if(_currentSelection != selectedItem)
+        {
+            if (_currentSelection != null) {
+                _currentSelection.removeClass(":selected", true, true);
+            }
+
+            _currentSelection = selectedItem;
+
+            if (_currentSelection != null) {
+                _currentSelection.addClass(":selected", true, true);
+                dispatch(new UIEvent(UIEvent.CHANGE));
+            }
+        }
+    }
+
+    private override function validateLayout():Bool {
+        var result = super.validateLayout();
+
+        createContentContainer();
+        if (contents == null) {
+            return result;
+        }
+        
+        //ItemHeight
+        var n:Int = 0;
+        var cy:Float = contents.layout.paddingTop + contents.layout.paddingBottom;
+        var scy:Float = contents.layout.verticalSpacing;
+        for (child in contents.childComponents) {
+            cy += child.height + scy;
+            n++;
+            if (n > 100) {
+                break;
+            }
+        }
+        if (n > 0) {
+            cy -= scy;
+        }
+        itemHeight = (cy / n);
+
+        return result;
     }
 
     //***********************************************************************************************************
@@ -281,15 +352,17 @@ typedef ItemRendererFunction = Dynamic->ClassFactory<ItemRenderer>;
 class ListViewDefaultDataSourceBehaviour extends Behaviour {
     public override function get():Variant {
         var listView:ListView = cast(_component, ListView);
-        listView._dataSource.onChange = listView.onDataSourceChanged;
+        if (listView._dataSource != null) {
+            listView._dataSource.onChange = listView.onDataSourceChanged;
+        }
         return listView._dataSource;
     }
-    
+
     public override function set(value:Variant) {
         var listView:ListView = cast(_component, ListView);
-		if (listView._ready) {
-			listView.syncUI();
-		}
-        listView._dataSource.onChange = listView.onDataSourceChanged;
+        listView.syncUI();
+        if (listView._dataSource != null) {
+            listView._dataSource.onChange = listView.onDataSourceChanged;
+        }
     }
 }

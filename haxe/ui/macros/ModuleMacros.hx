@@ -110,7 +110,9 @@ class ModuleMacros {
                     code += 'haxe.ui.themes.ThemeManager.instance.getTheme("${t.name}").parent = "${t.parent}";\n';
                 }
                 for (r in t.styles) {
-                    code += 'haxe.ui.themes.ThemeManager.instance.addStyleResource("${t.name}", "${r}");\n';
+                    if (MacroHelpers.checkCondition(r.condition) == true) {
+                        code += 'haxe.ui.themes.ThemeManager.instance.addStyleResource("${t.name}", "${r.resource}");\n';
+                    }
                 }
             }
 
@@ -164,6 +166,10 @@ class ModuleMacros {
                 }
 
                 code += 'haxe.ui.animation.AnimationManager.instance.registerAnimation(a.id, a);\n';
+            }
+            
+            for (p in m.preload) {
+                code += 'ToolkitAssets.instance.preloadList.push({type: "${p.type}", resourceId: "${p.id}"});\n';
             }
         }
 

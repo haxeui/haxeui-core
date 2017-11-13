@@ -2,6 +2,7 @@ package haxe.ui;
 
 import haxe.Resource;
 import haxe.io.Bytes;
+import haxe.ui.Preloader.PreloadItem;
 import haxe.ui.assets.AssetPlugin;
 import haxe.ui.assets.FontInfo;
 import haxe.ui.assets.ImageInfo;
@@ -21,6 +22,8 @@ class ToolkitAssets extends AssetsBase {
     //***********************************************************************************************************
     // Instance
     //***********************************************************************************************************
+    public var preloadList:Array<PreloadItem> = [];
+    
     public var options:Dynamic = null;
 
     private var _fontCache:Map<String, FontInfo>;

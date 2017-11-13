@@ -14,7 +14,7 @@ class DialogOptions {
     /**
      Array of button definitions in this `Dialog`
 
-     _Note: A button definition is different from a button instance_
+     *Note*: a button definition is different from a button instance
     **/
     public var buttons:Array<DialogButton> = [];
     /**

@@ -1,0 +1,8 @@
+-cp src
+-main ::fullMain::
+
+-lib haxeui-core
+-lib haxeui-html5
+-lib hscript
+
+-js build/html5/::output::.js

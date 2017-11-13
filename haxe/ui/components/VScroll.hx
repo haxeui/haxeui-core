@@ -10,7 +10,15 @@ import haxe.ui.layouts.DefaultLayout;
 class VScroll extends Scroll {
     public function new() {
         super();
-        layout = new VScrollLayout();
+    }
+
+    //***********************************************************************************************************
+    // Overrides
+    //***********************************************************************************************************
+
+    private override function createDefaults() {
+        super.createDefaults();
+        _defaultLayout = new VScrollLayout();
     }
 
     //***********************************************************************************************************

@@ -44,7 +44,16 @@ class ItemRenderer extends Component {
         return _data;
     }
     private function set_data(value:Dynamic):Dynamic {
+        if (value == _data) {
+            return value;
+        }
+
+        invalidateData();
         _data = value;
+        return value;
+    }
+
+    private override function validateData() {
         for (f in Reflect.fields(_data)) {
             var v = Reflect.field(_data, f);
             var c:Component = findComponent(f, null, true);
@@ -68,8 +77,10 @@ class ItemRenderer extends Component {
 				} else {
 					c.value = LocaleManager.instance.getText(Variant.fromDynamic(v));
 				}
+                c.show();
+            } else if (c != null) {
+                c.hide();
             }
         }
-        return value;
     }
 }

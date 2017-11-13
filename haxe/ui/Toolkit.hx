@@ -267,4 +267,8 @@ class Toolkit {
         scaleY = value;
         return value;
     }
+    
+    public static function callLater(fn:Void->Void) {
+        new CallLater(fn);
+    }
 }

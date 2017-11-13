@@ -1,9 +1,13 @@
 {
-  "name": "haxeui-core",
-  "url": "https://github.com/haxeui/haxeui-core",
-  "license": "MIT",
-  "description": "haxeui-core",
-  "version": "0.0.0",
-  "releasenote": "",
-  "contributors": ["ianharrigan"]
+    "name": "haxeui-core",
+    "url": "https://github.com/haxeui/haxeui-core",
+    "license": "MIT",
+    "tags": ["ui", "gui"],
+    "description": "The core library of the HaxeUI framework",
+    "version": "0.0.1",
+    "releasenote": "Initial release",
+    "contributors": ["haxeui", "ianharrigan", "_ibilon", "aW4KeNiNG"],
+    "dependencies": {
+        "hscript": ""
+    }
 }

@@ -1,0 +1,7 @@
+{
+    "name": "nme-shared",
+    "type": "template",
+    "templates": [
+        { "src": "project.nmml", "dst": "${target}/project.nmml"}
+    ]
+}

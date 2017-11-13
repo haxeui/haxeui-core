@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+    <meta title="::name::" package="::package::" version="1.0.0" company="" />
+    <app main="::fullMain::" file="::name::" path="build/openfl" />
+
+    <window background="#FFFFFF" fps="60" />
+    <window width="800" height="600" if="desktop" />
+    <window width="0" height="0" if="html5" />
+
+    <!-- classpath, haxe libs -->
+    <source path="src" />
+
+    <haxelib name="openfl" />
+    <haxelib name="actuate" />
+
+    <haxelib name="haxeui-core" />
+    <haxelib name="haxeui-openfl" />
+</project>

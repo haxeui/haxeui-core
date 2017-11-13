@@ -1,5 +1,6 @@
 package haxe.ui.components;
 
+import haxe.ui.validation.InvalidationFlags;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.MouseEvent;
@@ -27,12 +28,6 @@ class CheckBox extends InteractiveComponent {
             "selected" => new CheckBoxDefaultSelectedBehaviour(this)
         ]);
         _defaultLayout = new HorizontalLayout();
-    }
-
-    private override function create() {
-        super.create();
-        behaviourSet("text", _text);
-        behaviourSet("selected", _selected);
     }
 
     private override function createChildren() {
@@ -85,13 +80,29 @@ class CheckBox extends InteractiveComponent {
         super.applyStyle(style);
 
         var label:Label = findComponent(Label);
-        if (label != null) {
+        if (label != null &&
+            (label.customStyle.color != style.color
+            || label.customStyle.fontName != style.fontName
+            || label.customStyle.fontSize != style.fontSize
+            || label.customStyle.cursor != style.cursor)) {
+
             label.customStyle.color = style.color;
             label.customStyle.fontName = style.fontName;
             label.customStyle.fontSize = style.fontSize;
             label.customStyle.cursor = style.cursor;
             label.invalidateStyle();
         }
+    }
+
+    //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+
+    private override function validateData() {
+        behaviourSet("selected", value);
+
+        var event:UIEvent = new UIEvent(UIEvent.CHANGE);
+        dispatch(event);
     }
 
     //***********************************************************************************************************
@@ -107,10 +118,8 @@ class CheckBox extends InteractiveComponent {
         if (value == _selected) {
             return value;
         }
+        invalidateData();
         _selected = value;
-        behaviourSet("selected", value);
-        var event:UIEvent = new UIEvent(UIEvent.CHANGE);
-        dispatch(event);
         return value;
     }
 
@@ -165,7 +174,6 @@ class CheckBoxDefaultTextBehaviour extends Behaviour {
             label.registerEvent(MouseEvent.MOUSE_OUT, checkbox._onMouseOut);
 
             checkbox.addComponent(label);
-            checkbox.applyStyle(checkbox._style);
         }
         label.text = value;
     }
@@ -195,6 +203,7 @@ class CheckBoxDefaultSelectedBehaviour extends Behaviour {
 /**
  Specialised `InteractiveComponent` used to contain the `CheckBox` icon and respond to style changes
 **/
+@:dox(hide)
 class CheckBoxValue extends InteractiveComponent {
     public function new() {
         super();

@@ -25,7 +25,7 @@ class Macros {
             code += "return super.getProperty(name);";
             code += "}\n";
 
-            var access:Array<Access> = [APublic, AOverride];
+            var access:Array<Access> = [APrivate, AOverride];
             addFunction("getProperty", Context.parseInlineString(code, pos), access, fields, pos);
 
             // build set property
@@ -38,7 +38,7 @@ class Macros {
             code += "}\n";
             code += "return super.setProperty(name, v);";
             code += "}\n";
-            var access:Array<Access> = [APublic, AOverride];
+            var access:Array<Access> = [APrivate, AOverride];
             addFunction("setProperty", Context.parseInlineString(code, pos), access, fields, pos);
         }
 
@@ -50,6 +50,32 @@ class Macros {
         var fields = haxe.macro.Context.getBuildFields();
         if (hasInterface(Context.getLocalType(), "haxe.ui.core.IClonable") == false) {
             return fields;
+        }
+
+        function getFieldCloneCode(field:Field):String {
+            var type:Null<ComplexType> = null;
+            switch (field.kind) {
+                case FProp(_, _, t, _):
+                    type = t;
+
+                case FVar(t, _):
+                    type = t;
+
+                default:
+            }
+
+            if (type != null) {
+                switch (type) { // almost certainly a better way to be doing this
+                    case TPath(typePath):
+                        if(typePath.name == "String" || typePath.name == "Null") {
+                            return "if (this." + field.name + " != null) { c." + field.name + " = this." + field.name + "; }\n";
+                        }
+
+                    default:
+                }
+            }
+
+            return "c." + field.name + " = this." + field.name;
         }
 
         var currentCloneFn = getFunction("cloneComponent", fields);
@@ -77,13 +103,13 @@ class Macros {
             if (useSelf == false) {
                 code += "var c:" + className + " = cast super.cloneComponent();\n";
                 for (f in getFieldsWithMeta("clonable", fields)) {
-                    code += "c." + f.name + " = this." + f.name + ";\n";
+                    code += getFieldCloneCode(f) + ";\n";
                 }
 
             } else {
                 code += "var c:" + className + " = self();\n";
                 for (f in getFieldsWithMeta("clonable", fields)) {
-                    code += "c." + f.name + " = this." + f.name + ";\n";
+                    code += getFieldCloneCode(f) + ";\n";
                 }
 
                 code += "if (this.childComponents.length != c.childComponents.length) for (child in this.childComponents) c.addComponent(child.cloneComponent());\n";
@@ -110,7 +136,7 @@ class Macros {
             insertLine(currentCloneFn, Context.parseInlineString(code, pos), n++);
 
             for (f in getFieldsWithMeta("clonable", fields)) {
-                code = "c." + f.name + " = this." + f.name + "";
+                code = getFieldCloneCode(f);
                 insertLine(currentCloneFn, Context.parseInlineString(code, pos), n++);
             }
 
@@ -210,9 +236,7 @@ class Macros {
                 } else if (typeName == "Bool") {
                     defaultValue = false;
                 }
-                if (defaultValue != null || subType != null) {
-                    code += "if (style == null || style." + name + " == null) {\n return " + defaultValue + ";\n }\n";
-                }
+                code += "if (style == null || style." + name + " == null) {\n return " + defaultValue + ";\n }\n";
                 code += "return style." + name + ";\n";
                 code += "}";
                 var fnGetter = switch (Context.parseInlineString(code, haxe.macro.Context.currentPos()) ).expr {
@@ -235,6 +259,7 @@ class Macros {
             if (hasMetaParam(getMeta(f, "style"), "writeonly") == false) {
                 code += "if (customStyle." + name + " == value) return value;\n";
             }
+            code += "if (_style == null) _style = new Style();\n";
             code += "customStyle." + name + " = value;\n";
             code += "invalidateStyle();\n";
             if (hasMetaParam(getMeta(f, "style"), "layout")) {

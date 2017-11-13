@@ -6,6 +6,7 @@ import haxe.ui.core.Component;
 import haxe.ui.core.UIEvent;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.util.Size;
+import haxe.ui.core.Behaviour;
 
 @:dox(icon = "/icons/ui-tab-content.png")
 class TabView extends Component {
@@ -22,6 +23,9 @@ class TabView extends Component {
     //***********************************************************************************************************
     private override function createDefaults() {
         super.createDefaults();
+        defaultBehaviours([
+            "removeAllTabs" => new RemoveAllTabs(this)
+        ]);
         _defaultLayout = new TabViewLayout();
     }
 
@@ -43,6 +47,7 @@ class TabView extends Component {
             _tabs = new TabBar();
             _tabs.id = "tabview-tabs";
             _tabs.addClass("tabview-tabs");
+            _tabs.registerEvent(UIEvent.BEFORE_CHANGE, onBeforeTabsChange);
             _tabs.registerEvent(UIEvent.CHANGE, _onTabsChange);
             addComponent(_tabs);
         }
@@ -69,6 +74,7 @@ class TabView extends Component {
                 button.text = text;
                 button.icon = icon;
                 _tabs.addComponent(button);
+                invalidateData();
             } else {
                 super.addComponent(child);
             }
@@ -120,7 +126,68 @@ class TabView extends Component {
         }
 
         _pageIndex = value;
+        invalidateData();
+        invalidateLayout();
 
+        return value;
+    }
+
+    public var selectedPage(get, null):Component;
+    private function get_selectedPage():Component {
+        if (_pageIndex < 0) {
+            return null;
+        }
+        return _views[_pageIndex];
+    }
+
+    public var pages(get, null):Array<Component>;
+    private function get_pages():Array<Component> {
+        return _views;
+    }
+    
+    public var pageCount(get, null):Int;
+    private function get_pageCount():Int {
+        if (_tabs == null) {
+            return 0;
+        }
+        return _tabs.buttonCount;
+    }
+    
+    public var selectedButton(get, null):Button;
+    private function get_selectedButton():Button {
+        return _tabs.selectedButton;
+    }
+    
+    public function removeAllTabs() {
+        behaviourRun("removeAllTabs");
+    }
+
+    private var __onBeforeChange:UIEvent->Void;
+    /**
+     Utility property to add a single `UIEvent.CHANGE` event
+    **/
+    @:dox(group = "Event related properties and methods")
+    public var onBeforeChange(null, set):UIEvent->Void;
+    private function set_onBeforeChange(value:UIEvent->Void):UIEvent->Void {
+        if (__onBeforeChange != null) {
+            unregisterEvent(UIEvent.BEFORE_CHANGE, __onBeforeChange);
+            __onBeforeChange = null;
+        }
+        registerEvent(UIEvent.BEFORE_CHANGE, value);
+        __onBeforeChange = value;
+        return value;
+    }
+    
+    //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+
+    private override function validateData() {
+        if (native == true) {
+            return;
+        }
+        
+        _tabs.selectedIndex = _pageIndex;
         var view:Component = _views[_pageIndex];
         if (view != null) {
             if (_currentView != null) {
@@ -134,36 +201,18 @@ class TabView extends Component {
             }
 
             _currentView = view;
-
-            invalidateLayout();
         }
 
         dispatch(new UIEvent(UIEvent.CHANGE));
-
-        return value;
-    }
-
-    public function removeAllTabs() {
-        if (_views != null) {
-            for (view in _views) {
-                removeComponent(view);
-            }
-            _views = [];
-        }
-        _currentView = null;
-        _pageIndex = -1;
-        if (_content != null) {
-            _content.removeAllComponents();
-        }
-        if (_tabs != null) {
-            _tabs.removeAllComponents();
-            _tabs.resetSelection();
-        }
     }
     
     //***********************************************************************************************************
     // Event Handlers
     //***********************************************************************************************************
+    private function onBeforeTabsChange(event:UIEvent) {
+        dispatch(new UIEvent(UIEvent.BEFORE_CHANGE));
+    }
+    
     private function _onTabsChange(event:UIEvent) {
         pageIndex = _tabs.selectedIndex;
     }
@@ -194,8 +243,11 @@ class TabViewLayout extends DefaultLayout {
             return;
         }
 
+        var usableSize = usableSize;
+        tabs.width = usableSize.width;
+        
         if (component.autoHeight == false) {
-            content.componentHeight = usableHeight;
+            content.componentHeight = usableSize.height;
         }
 
         if (component.autoWidth == false) {
@@ -216,5 +268,28 @@ class TabViewLayout extends DefaultLayout {
     public override function calcAutoSize(exclusions:Array<Component> = null):Size {
         var size:Size = super.calcAutoSize(exclusions);
         return size;
+    }
+}
+
+@:dox(hide)
+@:access(haxe.ui.containers.TabView)
+private class RemoveAllTabs extends Behaviour {
+    public override function run() {
+        var tabView:TabView = cast(_component, TabView);
+        if (tabView._views != null) {
+            for (view in tabView._views) {
+                tabView.removeComponent(view);
+            }
+            tabView._views = [];
+        }
+        tabView._currentView = null;
+        tabView._pageIndex = -1;
+        if (tabView._content != null) {
+            tabView._content.removeAllComponents();
+        }
+        if (tabView._tabs != null) {
+            tabView._tabs.removeAllComponents();
+            tabView._tabs.resetSelection();
+        }
     }
 }

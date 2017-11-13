@@ -1,0 +1,11 @@
+{
+    "name": "hxwidgets-flash-develop",
+    "type": "template",
+    "subProjects": [
+        "shared", "hxwidgets-shared"
+    ],
+    "templates": [
+        { "src": "hxwidgets.hxproj", "dst": "${target}/hxwidgets.hxproj"},
+        { "src": "run-hxwidgets.bat", "dst": "${target}/run-hxwidgets.bat"}
+    ]
+}

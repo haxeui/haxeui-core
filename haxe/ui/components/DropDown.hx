@@ -63,17 +63,12 @@ class DropDown extends Button implements IDataComponent {
         return _dataSource;
     }
     private function set_dataSource(value:DataSource<Dynamic>):DataSource<Dynamic> {
+        if (_dataSource == value) {
+            return value;
+        }
+
+        invalidateData();
         _dataSource = value;
-        if (_listview != null) {
-            _listview.dataSource = value;
-        }
-        //behaviourSet("dataSource", Variant.fromDynamic(value));
-        behaviourSet("dataSource", value);
-
-        if(_requireSelection == true && _dataSource != null && _selectedIndex < 0) {
-            selectedIndex = 0;
-        }
-
         return value;
     }
 
@@ -91,21 +86,8 @@ class DropDown extends Button implements IDataComponent {
             return value;
         }
 
+        invalidateData();
         _selectedIndex = value;
-
-        if(_dataSource != null) {
-            if(_requireSelection == true && _selectedIndex < 0 && _dataSource.size > 0) {
-                _selectedIndex = 0;
-            }
-
-            if (_selectedIndex >= 0) {
-                text = LocaleManager.instance.getText(_dataSource.get(_selectedIndex).value);
-            }
-        }
-        else {
-            text = null;
-        }
-
         return _selectedIndex;
     }
 
@@ -115,13 +97,12 @@ class DropDown extends Button implements IDataComponent {
         return _requireSelection;
     }
     private function set_requireSelection(value:Bool):Bool {
-        if(_requireSelection != value) {
-            _requireSelection = value;
-            if(_requireSelection == true && _dataSource != null && _selectedIndex < 0) {
-                selectedIndex = 0;
-            }
+        if(_requireSelection == value) {
+            return value;
         }
 
+        invalidateData();
+        _requireSelection = value;
         return value;
     }
 
@@ -222,6 +203,10 @@ class DropDown extends Button implements IDataComponent {
                 _listview.addComponent(_itemRenderer);
             }
             _listview.addClass("popup");
+            if (id != null) {
+                _listview.id = id + "-popup";
+                _listview.addClass(id + "-popup");
+            }
             if (_listStyleNames != null) {
                 for (s in _listStyleNames.split(" ")) {
                     _listview.addClass(s);
@@ -248,9 +233,11 @@ class DropDown extends Button implements IDataComponent {
             if (n > _listview.itemCount) {
                 n = _listview.itemCount;
             }
+            _listview.syncValidation();
             listHeight = n * _listview.itemHeight + (_listview.layout.paddingTop + _listview.layout.paddingBottom);
         }
         _listview.height = listHeight;
+        _listview.syncValidation();     //avoid ui flash in some backends
 
         if (_listview.screenTop + _listview.height > Screen.instance.height) {
             _listview.top = this.screenTop - _listview.height;
@@ -261,9 +248,38 @@ class DropDown extends Button implements IDataComponent {
 
     private function hideList() {
         if (_listview != null) {
+            if (_listview.selectedItem != null) {
+                _listview.selectedItem.removeClass(":hover");
+            }
             Screen.instance.removeComponent(_listview);
         }
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
+    }
+
+    //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+
+    private override function validateData() {
+        if (_listview != null) {
+            _listview.dataSource = _dataSource;
+        }
+
+        behaviourSet("dataSource", _dataSource);    //TODO - if the index is the only change, the syncUI method is executed anyway
+
+        if(_dataSource != null) {
+            if(_requireSelection == true && _selectedIndex < 0 && _dataSource.size > 0) {
+                _selectedIndex = 0;
+            }
+
+            if(_selectedIndex >= 0) {
+                text = LocaleManager.instance.getText(_dataSource.get(_selectedIndex).value);
+            }
+        } else {
+            //_text = null;
+        }
+
+        super.validateData();
     }
 
     //***********************************************************************************************************

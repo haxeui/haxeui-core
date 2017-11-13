@@ -1,5 +1,6 @@
 package haxe.ui.components;
 
+import haxe.ui.validation.InvalidationFlags;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.MouseEvent;
@@ -11,6 +12,32 @@ import haxe.ui.util.Variant;
 
 /**
  General purpose push button that supports both text and icon as well as repeat event dispatching
+ 
+ Composite children:
+    | Id             | Type    | Style Name   | Notes                                  |
+    | `button-label` | `Label` | `.label`     | The text of the button (if applicable) |
+    | `button-icon`  | `Image` | `.icon`      | The icon of the button (if applicable) |
+ 
+ Pseudo classes:
+    | Name      | Notes                                                                    |
+    | `:hover`  | The style to be applied when the cursor is over the button               |
+    | `:down`   | The style to be applied when a mouse button is pressed inside the button |
+    | `:active` | The style to be applied when the button has focus                        |
+    
+  XML example:
+    <button text="Button"
+            styleNames="myCustomButton"
+            style="font-size: 30px"
+            onClick="trace('hello world')" />
+    
+  Code example:
+    var button = new Button();
+    button.text = "Button";
+    button.styleNames = "myCustomButton";
+    button.fontSize = 30;
+    button.onClick = function(e) {
+        trace("hello world");
+    }
 **/
 @:dox(icon = "/icons/ui-button.png")
 class Button extends InteractiveComponent {
@@ -33,12 +60,6 @@ class Button extends InteractiveComponent {
             "icon" => new ButtonDefaultIconBehaviour(this)
         ]);
         _defaultLayout = new ButtonLayout();
-    }
-
-    private override function create() {
-        super.create();
-        behaviourSet("text", _text);
-        behaviourSet("icon", _iconResource);
     }
 
     private override function createChildren() {
@@ -72,7 +93,7 @@ class Button extends InteractiveComponent {
     //***********************************************************************************************************
     private override function set_text(value:String):String {
         value = super.set_text(value);
-        behaviourSet("text", value);
+        invalidateData();
         return value;
     }
 
@@ -83,7 +104,12 @@ class Button extends InteractiveComponent {
         }
 
         var label:Label = findComponent(Label);
-        if (label != null) {
+        if (label != null &&
+            (label.customStyle.color != style.color ||
+            label.customStyle.fontName != style.fontName ||
+            label.customStyle.fontSize != style.fontSize ||
+            label.customStyle.cursor != style.cursor)) {
+
             label.customStyle.color = style.color;
             label.customStyle.fontName = style.fontName;
             label.customStyle.fontSize = style.fontSize;
@@ -92,9 +118,22 @@ class Button extends InteractiveComponent {
         }
 
         var icon:Image = findComponent(Image);
-        if (icon != null) {
+        if (icon != null && (icon.customStyle.cursor != style.cursor)) {
             icon.customStyle.cursor = style.cursor;
             icon.invalidateStyle();
+        }
+    }
+
+    //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+    private override function validateData() {
+        if (behaviourGet("text") != _text) {
+            behaviourSet("text", _text);
+        }
+
+        if (behaviourGet("icon") != _iconResource) {
+            behaviourSet("icon", _iconResource);
         }
     }
 
@@ -133,14 +172,14 @@ class Button extends InteractiveComponent {
         }
 
         _iconResource = value;
-        behaviourSet("icon", value);
+        invalidateData();
         return value;
     }
 
     @:style(layout)   public var iconPosition:String;
     @:style(layout)   public var fontSize:Null<Float>;
     @:style(layout)   public var textAlign:String;
-    
+
     /**
      Whether this button should behave as a toggle button or not
     **/
@@ -279,7 +318,6 @@ class ButtonDefaultTextBehaviour extends Behaviour {
             label.id = "button-label";
             label.scriptAccess = false;
             button.addComponent(label);
-            button.applyStyle(button._style);
         }
         label.text = value;
     }
@@ -311,10 +349,9 @@ class ButtonDefaultIconBehaviour extends Behaviour {
             icon.id = "button-icon";
             icon.scriptAccess = false;
             button.addComponent(icon);
-            button.applyStyle(button._style);
         }
 
-        icon.resource = value.toString();
+        icon.resource = value;
     }
 }
 
@@ -329,7 +366,7 @@ class ButtonLayout extends DefaultLayout {
 
     private var iconPosition(get, null):String;
     private function get_iconPosition():String {
-        if (component.style.iconPosition == null) {
+        if (component.style == null || component.style.iconPosition == null) {
             return "left";
         }
         return component.style.iconPosition;
