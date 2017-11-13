@@ -273,7 +273,7 @@ class DropDown extends Button implements IDataComponent {
             }
 
             if(_selectedIndex >= 0) {
-                text = LocaleManager.instance.getText(_dataSource.get(_selectedIndex).value);
+                _text = LocaleManager.instance.getText(_dataSource.get(_selectedIndex).value);
             }
         } else {
             //_text = null;
