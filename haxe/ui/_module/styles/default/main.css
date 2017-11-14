@@ -217,45 +217,45 @@
     filter: none;
 }
 
-.scroll .button.deinc {
+.scroll .deinc {
     height: 17px;
     width: 17px;
     opacity: 1;
 }
 
-.scroll .button.deinc:disabled {
+.scroll deinc:disabled {
     opacity: 0.5;
 }
 
-.scroll .button.deinc:down {
+.scroll deinc:down {
 }
 
-.scroll .button.inc {
+.scroll .inc {
     height: 17px;
     width: 17px;
     opacity: 1;
 }
 
-.scroll .button.inc:disabled {
+.scroll .inc:disabled {
     opacity: 0.5;
 }
 
-.scroll .button.inc:down {
+.scroll .inc:down {
 }
 
-.scroll .button.thumb {
+.scroll .thumb {
     background-color: #C6C6C6;
 }
 
-.scroll .button.thumb:hover {
+.scroll .thumb:hover {
     background-color: #AAAAAA;
 }
 
-.scroll .button.thumb:down {
+.scroll .thumb:down {
     background-color: #525252;
 }
 
-.scroll .button.thumb:disabled {
+.scroll .thumb:disabled {
     background-color: #DDDDDD;
 }
 
@@ -266,24 +266,24 @@
     width: 17px;
 }
 
-.vscroll .button.thumb {
+.vscroll .thumb {
     width: 17px;
     height: 17px;
 }
 
-.vscroll .button.deinc {
+.vscroll .deinc {
     icon: "haxeui-core/styles/default/up_arrow.png";
 }
 
-.vscroll .button.deinc:down {
+.vscroll .deinc:down {
     icon: "haxeui-core/styles/default/up_arrow_white.png";
 }
 
-.vscroll .button.inc {
+.vscroll .inc {
     icon: "haxeui-core/styles/default/down_arrow.png";
 }
 
-.vscroll .button.inc:down {
+.vscroll .inc:down {
     icon: "haxeui-core/styles/default/down_arrow_white.png";
 }
 
@@ -294,24 +294,24 @@
     height: 17px;
 }
 
-.hscroll .button.thumb {
+.hscroll .thumb {
     width: 17px;
     height: 17px;
 }
 
-.hscroll .button.deinc {
+.hscroll .deinc {
     icon: "haxeui-core/styles/default/left_arrow.png";
 }
 
-.hscroll .button.deinc:down {
+.hscroll .deinc:down {
     icon: "haxeui-core/styles/default/left_arrow_white.png";
 }
 
-.hscroll .button.inc {
+.hscroll .inc {
     icon: "haxeui-core/styles/default/right_arrow.png";
 }
 
-.hscroll .button.inc:down {
+.hscroll .inc:down {
     icon: "haxeui-core/styles/default/right_arrow_white.png";
 }
 
@@ -688,21 +688,21 @@
     padding: 5px;
 }
 
-.listview .itemrenderer.even {
+.listview .even {
     background-color: #FFFFFF;
     cursor: pointer;
 }
 
-.listview .itemrenderer.even:hover {
+.listview .even:hover {
     background-color: #ecf2f9;
 }
 
-.listview .itemrenderer.odd {
+.listview .odd {
     background-color: #F8F8F8;
     cursor: pointer;
 }
 
-.listview .itemrenderer.odd:hover {
+.listview .odd:hover {
     background-color: #ecf2f9;
 }
 
@@ -737,7 +737,7 @@
     icon-position: far-right;
 }
 
-.header .column.sortable {
+.header .sortable {
     icon: "haxeui-core/styles/default/up_down_arrows.png";
     icon-position: far-right;
 }
@@ -766,19 +766,19 @@
     margin-top: -1px;
 }
 
-.tableview .itemrenderer.even {
+.tableview .even {
     background-color: #FFFFFF;
 }
 
-.tableview .itemrenderer.even:hover {
+.tableview .even:hover {
     background-color: #F0F0F0;
 }
 
-.tableview .itemrenderer.odd {
+.tableview .odd {
     background-color: #F8F8F8;
 }
 
-.tableview .itemrenderer.odd:hover {
+.tableview .odd:hover {
     background-color: #F0F0F0;
 }
 

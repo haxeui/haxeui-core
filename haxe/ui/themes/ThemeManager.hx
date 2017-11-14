@@ -53,7 +53,7 @@ class ThemeManager {
         for (s in styles) {
             var css:String = Toolkit.assets.getText(s);
             if (css != null) {
-                Toolkit.styleSheet.addRules(css);
+                Toolkit.styleSheet.parse(css);
             } else {
                 #if debug
                 trace("WARNING: could not find " + s);

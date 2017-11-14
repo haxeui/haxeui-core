@@ -1,13 +1,11 @@
 package haxe.ui.util;
 
 import haxe.ui.core.Screen;
-import haxe.ui.styles.Defs.Unit in StyleUnit;
 import haxe.ui.data.DataSource;
 
 enum VariantType {
     Int(s:Int);
     Float(s:Float);
-    Unit(s:StyleUnit);
     String(s:String);
     Bool(s:Bool);
 //    Dynamic(s:Dynamic);
@@ -30,7 +28,6 @@ abstract Variant(VariantType) from VariantType {
             case String(s): s;
             case Int(s): Std.string(s);
             case Float(s): Std.string(s);
-            case Unit(s): Std.string(s);
             case Bool(s): Std.string(s);
             //case Dynamic(s): Std.string(s);
             case DataSource(s): Std.string(s);
@@ -57,13 +54,6 @@ abstract Variant(VariantType) from VariantType {
         return switch (this) {
             case Int(s): s;
             case Float(s): Std.int(s);
-            case Unit(s): switch (s) {
-                case Pix(v): Std.int(v);
-                case REM(v): Std.int(v * Toolkit.pixelsPerRem);
-                case VH(v): Std.int(v / 100 * Screen.instance.height);
-                case VW(v): Std.int(v / 100 * Screen.instance.width);
-                default: throw "Variant Type Error";
-            }
             default: throw "Variant Type Error";
         }
     }
@@ -86,13 +76,6 @@ abstract Variant(VariantType) from VariantType {
         }
         return switch (this) {
             case Float(s): s;
-            case Unit(s): switch (s) {
-                case Pix(v): v;
-                case REM(v): v * Toolkit.pixelsPerRem;
-                case VH(v): v / 100 * Screen.instance.height;
-                case VW(v): v / 100 * Screen.instance.width;
-                default: throw "Variant Typfe Error";
-            }
             default: throw "Variant Type Error";
         }
     }
@@ -103,46 +86,17 @@ abstract Variant(VariantType) from VariantType {
     }
 
     // ************************************************************************************************************
-    // UNITS
-    // ************************************************************************************************************
-
-    @:from static function fromUnit(s:StyleUnit):Variant {
-        return Unit(s);
-    }
-
-    @:to function toUnit():StyleUnit {
-        return switch (this) {
-            case Int(s): Pix(s);
-            case Float(s): Pix(s);
-            case Unit(s): s;
-            default: throw "Variant Type Error";
-        }
-    }
-
-    public var isUnit(get, never):Bool;
-    private inline function get_isUnit():Bool {
-        return this.match(Unit(_));
-    }
-
-    // ************************************************************************************************************
     // NUMBERS
     // ************************************************************************************************************
     public var isNumber(get, never):Bool;
     private inline function get_isNumber():Bool {
-        return this.match(Int(_) | Float(_) | Unit(_));
+        return this.match(Int(_) | Float(_));
     }
 
     function toNumber():Float {
         return switch (this) {
             case Int(s): s;
             case Float(s): s;
-            case Unit(s): switch (s) {
-                case Pix(v): v;
-                case REM(v): v * Toolkit.pixelsPerRem;
-                case VH(v): v / 100 * Screen.instance.height;
-                case VW(v): v / 100 * Screen.instance.width;
-                default: throw "Variant Type Error";
-            }
             default: throw "Variant Type Error";
         }
     }
@@ -232,18 +186,7 @@ abstract Variant(VariantType) from VariantType {
 
     @:op(A++)
     private inline function postInc():Variant {
-        return if (isUnit) {
-            switch (this) {
-                case Unit(s): switch (s) {
-                    case Pix(v): var old = this; this = Unit(Pix(v+1)); old;
-                    case REM(v): var old = this; this = Unit(REM(v+1)); old;
-                    case VH(v): var old = this; this = Unit(VH(v+1)); old;
-                    case VW(v): var old = this; this = Unit(VW(v+1)); old;
-                    default: throw "Variant Type Error";
-                }
-                default: throw "Variant Type Error";
-            }
-        } else if (isNumber) {
+        return if (isNumber) {
             var old = this;
             this = Float(toNumber()+1);
             old;
@@ -254,18 +197,7 @@ abstract Variant(VariantType) from VariantType {
 
     @:op(++A)
     private inline function preInc():Variant {
-        return if (isUnit) {
-            switch (this) {
-                case Unit(s): switch (s) {
-                    case Pix(v): this = Unit(Pix(v+1));
-                    case REM(v): this = Unit(REM(v+1));
-                    case VH(v): this = Unit(VH(v+1));
-                    case VW(v): this = Unit(VW(v+1));
-                    default: throw "Variant Type Error";
-                }
-                default: throw "Variant Type Error";
-            }
-        } else if (isNumber) {
+        return if (isNumber) {
             this = Float(toNumber()+1);
         } else {
             throw "Variant operation error";
@@ -285,18 +217,7 @@ abstract Variant(VariantType) from VariantType {
 
     @:op(A--)
     private inline function postDeinc():Variant {
-        return if (isUnit) {
-            switch (this) {
-                case Unit(s): switch (s) {
-                    case Pix(v): var old = this; this = Unit(Pix(v-1)); old;
-                    case REM(v): var old = this; this = Unit(REM(v-1)); old;
-                    case VH(v): var old = this; this = Unit(VH(v-1)); old;
-                    case VW(v): var old = this; this = Unit(VW(v-1)); old;
-                    default: throw "Variant Type Error";
-                }
-                default: throw "Variant Type Error";
-            }
-        } else if (isNumber) {
+        return if (isNumber) {
             var old = this;
             this = Float(toNumber()-1);
             old;
@@ -307,18 +228,7 @@ abstract Variant(VariantType) from VariantType {
 
     @:op(--A)
     private inline function preDeinc():Variant {
-        return if (isUnit) {
-            switch (this) {
-                case Unit(s): switch (s) {
-                    case Pix(v): this = Unit(Pix(v-1));
-                    case REM(v): this = Unit(REM(v-1));
-                    case VH(v): this = Unit(VH(v-1));
-                    case VW(v): this = Unit(VW(v-1));
-                    default: throw "Variant Type Error";
-                }
-                default: throw "Variant Type Error";
-            }
-        } else if (isNumber) {
+        return if (isNumber) {
             this = Float(toNumber()-1);
         } else {
             throw "Variant operation error";
@@ -429,8 +339,6 @@ abstract Variant(VariantType) from VariantType {
                 v = Std.string(r);
             } else if (Std.is(r, DataSource)) {
                 v =  cast r;
-            } else if (Std.is(r, StyleUnit)) {
-                v = r;
             } else {
                 v = Std.string(r);
             }
@@ -459,7 +367,6 @@ abstract Variant(VariantType) from VariantType {
             switch (v) {
                 case VariantType.Int(y):        d = y;
                 case VariantType.Float(y):      d = y;
-                case VariantType.Unit(y):       d = y;
                 case VariantType.String(y):     d = y;
                 case VariantType.Bool(y):       d = y;
                 //case VariantType.Dynamic(y):    d = y;

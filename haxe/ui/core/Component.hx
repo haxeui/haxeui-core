@@ -1,5 +1,6 @@
 package haxe.ui.core;
 
+import haxe.ui.styles.Parser;
 import haxe.ui.validation.IValidating;
 import haxe.ui.backend.ComponentBase;
 import haxe.ui.core.Component.DeferredBindingInfo;
@@ -7,7 +8,6 @@ import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.DelegateLayout;
 import haxe.ui.layouts.Layout;
 import haxe.ui.scripting.ScriptInterp;
-import haxe.ui.styles.Parser;
 import haxe.ui.styles.Style;
 import haxe.ui.util.CallStackHelper;
 import haxe.ui.util.Color;
@@ -76,7 +76,8 @@ class Component extends ComponentBase implements IComponentBase implements IVali
 
         // we dont want to actually apply the classes, just find out if native is there or not
         //TODO - we could include the initialization in the validate method
-        var s = Toolkit.styleSheet.applyClasses(this, false);
+        //var s = Toolkit.styleSheet.applyClasses(this, false);
+        var s = Toolkit.styleSheet.buildStyleFor(this);
         if (s.native != null && hasNativeEntry == true) {
             native = s.native;
         } else {
@@ -820,7 +821,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     @:dox(group = "Style related properties and methods")
     public var customStyle:Style = new Style();
     @:dox(group = "Style related properties and methods")
-    @:allow(haxe.ui.styles.Engine)
+    @:allow(haxe.ui.styles_old.Engine)
     private var classes:Array<String> = [];
 
     /**
@@ -898,7 +899,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         return _styleString;
     }
     private function set_styleString(value:String):String {
-        if (value == null) {
+        if (value == null || value == _styleString) {
             return value;
         }
         var cssString = StringTools.trim(value);
@@ -909,8 +910,9 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             cssString += ";";
         }
         cssString = "_ { " + cssString + "}";
-        var s = new Parser().parseRules(cssString)[0].s;
-        customStyle.apply(s);
+        var s = new Parser().parse(cssString);
+        customStyle.mergeDirectives(s.rules[0].directives);
+        
         _styleString = value;
         return value;
     }
@@ -1185,7 +1187,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     @:style                 public var borderSize:Null<Float>;
     @:style                 public var borderRadius:Null<Float>;
 
-    @:style(writeonly)      public var padding:Null<Float>;
     @:style                 public var paddingLeft:Null<Float>;
     @:style                 public var paddingRight:Null<Float>;
     @:style                 public var paddingTop:Null<Float>;
@@ -1952,11 +1953,17 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     }
 
     private function validateStyle() {
-        var s:Style = Toolkit.styleSheet.applyClasses(this, false);
-        if (_ready == false || _style == null || _style.equalTo(s) == false) { // lets not update if nothing has changed
-            _style = s;
-            applyStyle(_style);
+        var s:Style = Toolkit.styleSheet.buildStyleFor(this);
+        s.apply(customStyle);
+        if (_style == null) {
+            _style = new Style();
         }
+        
+        if (_style.equalTo(s) == false) { // lets not update if nothing has changed
+            _style = s;
+            applyStyle(s);
+        }
+        
     }
 
     private function validatePosition() {
