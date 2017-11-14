@@ -22,32 +22,36 @@ class RuleElement {
     }
     
     private static function ruleMatch( c : SelectorPart, d : Component ) {
-        if ( c.pseudoClass != null ) {
+        if (c.nodeName == "*") {
+            return true;
+        }
+        
+        if (c.pseudoClass != null) {
             var pc = ":" + c.pseudoClass;
             var found = false;
-            for ( cc in d.classes ) {
-                if ( cc == pc ) {
+            for (cc in d.classes ) {
+                if ( cc == pc) {
                     found = true;
                     break;
                 }
             }
-            if ( !found ) {
+            if (!found) {
                 return false;
             }
         }
         
-        if ( c.className != null ) {
-            if ( d.classes == null ) {
+        if (c.className != null) {
+            if (d.classes == null) {
                 return false;
             }
             var found = false;
-            for ( cc in d.classes ) {
-                if ( cc == c.className ) {
+            for (cc in d.classes) {
+                if (cc == c.className) {
                     found = true;
                     break;
                 }
             }
-            if ( !found ) {
+            if (!found) {
                 return false;
             }
         }
@@ -59,19 +63,19 @@ class RuleElement {
             }
         }
         
-        if ( c.id != null && c.id != d.id ) {
+        if (c.id != null && c.id != d.id) {
             return false;
         }
         
-        if ( c.parent != null ) {
+        if (c.parent != null) {
             var p = d.parentComponent;
-            while ( p != null ) {
-                if ( ruleMatch(c.parent, p) ) {
+            while (p != null) {
+                if (ruleMatch(c.parent, p)) {
                     break;
                 }
                 p = p.parentComponent;
             }
-            if ( p == null ) {
+            if (p == null) {
                 return false;
             }
         }
