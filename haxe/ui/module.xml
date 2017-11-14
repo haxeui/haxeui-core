@@ -39,10 +39,10 @@
 
     <themes>
         <global>
-            <style resource="haxeui-core/styles/global.css" />
+            <style resource="haxeui-core/styles/global.css" priority="-2" />
         </global>
         <default>
-            <style resource="haxeui-core/styles/default/main.css" />
+            <style resource="haxeui-core/styles/default/main.css" priority="-1" />
         </default>
         <test parent="default">
             <style resource="haxeui-core/styles/test/main.css" />

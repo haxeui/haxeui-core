@@ -49,6 +49,9 @@ class XMLParser extends ModuleParser {
                     for (styleNodes in themeNode.elementsNamed("style")) {
                         var styleEntry:ModuleThemeStyleEntry = new ModuleThemeStyleEntry();
                         styleEntry.resource = styleNodes.get("resource");
+                        if (styleNodes.get("priority") != null) {
+                            styleEntry.priority = Std.parseInt(styleNodes.get("priority"));
+                        }
                         styleEntry.condition = buildCondition(styleNodes, themeNode);
                         theme.styles.push(styleEntry);
                     }

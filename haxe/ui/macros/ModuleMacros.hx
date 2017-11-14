@@ -111,7 +111,7 @@ class ModuleMacros {
                 }
                 for (r in t.styles) {
                     if (MacroHelpers.checkCondition(r.condition) == true) {
-                        code += 'haxe.ui.themes.ThemeManager.instance.addStyleResource("${t.name}", "${r.resource}");\n';
+                        code += 'haxe.ui.themes.ThemeManager.instance.addStyleResource("${t.name}", "${r.resource}", ${r.priority});\n';
                     }
                 }
             }
