@@ -28,8 +28,8 @@ class StyleSheet {
         var r = _rules.copy();
         
         for (mq in _mediaQueries) {
-            if (mq.relevant()) {
-                r = r.concat(mq.styleSheet().rules);
+            if (mq.relevant) {
+                r = r.concat(mq.styleSheet.rules);
             }
         }
         
