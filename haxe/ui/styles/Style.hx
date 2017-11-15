@@ -174,13 +174,13 @@ class Style {
                 case "border-bottom-color":
                     borderBottomColor = ValueTools.int(v.value);
                     
-                case "border-top-size":
+                case "border-top-size" | "border-top-width":
                     borderTopSize = ValueTools.calcDimension(v.value);
-                case "border-left-size":
+                case "border-left-size" | "border-left-width":
                     borderLeftSize = ValueTools.calcDimension(v.value);
-                case "border-right-size":
+                case "border-right-size" | "border-right-width":
                     borderRightSize = ValueTools.calcDimension(v.value);
-                case "border-bottom-size":
+                case "border-bottom-size" | "border-bottom-width":
                     borderBottomSize = ValueTools.calcDimension(v.value);
                     
                 case "border-radius":
