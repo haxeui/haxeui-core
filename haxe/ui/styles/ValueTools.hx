@@ -7,15 +7,17 @@ class ValueTools {
     public static function parse(s:String):Value {
         var v = null;
         
-        if (StringTools.endsWith(s, "%") == true) {
+        var hasSpace = (s.indexOf(" ") != -1);
+        
+        if (StringTools.endsWith(s, "%") == true && hasSpace == false) {
             v = Value.VDimension(Dimension.PERCENT(Std.parseFloat(s)));
-        } else if (StringTools.endsWith(s, "px") == true) {
+        } else if (StringTools.endsWith(s, "px") == true && hasSpace == false) {
             v = Value.VDimension(Dimension.PX(Std.parseFloat(s)));
-        } else if (StringTools.endsWith(s, "vw") == true) {
+        } else if (StringTools.endsWith(s, "vw") == true && hasSpace == false) {
             v = Value.VDimension(Dimension.VW(Std.parseFloat(s)));
-        } else if (StringTools.endsWith(s, "vh") == true) {
+        } else if (StringTools.endsWith(s, "vh") == true && hasSpace == false) {
             v = Value.VDimension(Dimension.VH(Std.parseFloat(s)));
-        } else if (StringTools.endsWith(s, "rem") == true) {
+        } else if (StringTools.endsWith(s, "rem") == true && hasSpace == false) {
             v = Value.VDimension(Dimension.REM(Std.parseFloat(s)));
         } else if (validColor(s)) {
             v = parseColor(s);
@@ -58,6 +60,27 @@ class ValueTools {
         }
         
         return v;
+    }
+    
+    public static function compositeParts(value:Value):Int {
+        switch (value) {
+            case Value.VComposite(vl):
+                return vl.length;
+            case _:
+                return 0;
+        }
+    }
+    
+    public static function composite(value:Value):Array<Value> {
+        switch (value) {
+            case Value.VComposite(vl):
+                return vl;
+            case Value.VDimension(_) | Value.VNumber(_):
+                return [value];
+            case _:
+                return null;
+        }
+        
     }
     
     private static function isNum(s:String):Bool {

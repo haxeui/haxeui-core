@@ -86,9 +86,21 @@ class RuleElement {
     private function processDirective(d:Directive) {
         switch (d.directive) {
             case "padding":
-                processComposite(d, ["padding-top", "padding-left", "padding-right", "padding-bottom"]);
+                var vl = ValueTools.composite(d.value);
+                if (vl.length == 4 || vl.length == 1) {
+                    processComposite(d, ["padding-top", "padding-left", "padding-right", "padding-bottom"]);
+                } else if (vl.length == 2) {
+                    processComposite(new Directive("", vl[0]), ["padding-top", "padding-bottom"]);
+                    processComposite(new Directive("", vl[1]), ["padding-left", "padding-right"]);
+                }
             case "margin":
-                processComposite(d, ["margin-top", "margin-left", "margin-right", "margin-bottom"]);
+                var vl = ValueTools.composite(d.value);
+                if (vl.length == 4 || vl.length == 1) {
+                    processComposite(d, ["margin-top", "margin-left", "margin-right", "margin-bottom"]);
+                } else if (vl.length == 2) {
+                    processComposite(new Directive("", vl[0]), ["margin-top", "margin-bottom"]);
+                    processComposite(new Directive("", vl[1]), ["margin-left", "margin-right"]);
+                }
             case "spacing":
                 processComposite(d, ["horizontal-spacing", "vertical-spacing"]);
             case "background":
@@ -99,7 +111,7 @@ class RuleElement {
                 processComposite(d, ["border-top-size", "border-left-size", "border-right-size", "border-bottom-size"]);
             case "border-color": 
                 processComposite(d, ["border-top-color", "border-left-color", "border-right-color", "border-bottom-color"], true);
-            case "background-image-clip":    
+            case "background-image-clip": 
                 processComposite(d, ["background-image-clip-top", "background-image-clip-left", "background-image-clip-bottom", "background-image-clip-right"]);
             case "background-image-slice":    
                 processComposite(d, ["background-image-slice-top", "background-image-slice-left", "background-image-slice-bottom", "background-image-slice-right"]);
