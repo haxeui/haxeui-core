@@ -80,6 +80,8 @@ class Style {
     
     public var filter:Array<Dynamic>;
     
+    public var resource:String;
+    
     public function new() {
     }
     
@@ -234,6 +236,8 @@ class Style {
                             filter = null;
                         case _:
                     }
+                case "resource":
+                    resource = ValueTools.string(v.value);
             }
         }
     }
@@ -313,6 +317,7 @@ class Style {
         if (s.borderOpacity != null) borderOpacity = s.borderOpacity;
 
         if (s.filter != null) filter = s.filter.copy();
+        if (s.resource != null) resource = s.resource;
 
         if (s.icon != null) icon = s.icon;
         if (s.iconPosition != null) iconPosition = s.iconPosition;
@@ -393,6 +398,7 @@ class Style {
         if (s.borderOpacity != borderOpacity) return false;
 
         if (s.filter != filter) return false;
+        if (s.resource != resource) return false;
 
         if (s.icon != icon) return false;
         if (s.iconPosition != iconPosition) return false;
