@@ -1,6 +1,7 @@
 package haxe.ui.styles;
 
 import haxe.ui.styles.elements.Directive;
+import haxe.ui.util.filters.Filter;
 import haxe.ui.util.filters.FilterParser;
 
 class Style {
@@ -78,7 +79,7 @@ class Style {
     public var cursor:Null<String>;
     public var hidden:Null<Bool>;
     
-    public var filter:Array<Dynamic>;
+    public var filter:Array<Filter>;
     
     public var resource:String;
     
