@@ -45,7 +45,17 @@ class StyleSheet {
     }
     
     public function parse(css:String) {
-        merge(new Parser().parse(css));
+        var parser = new Parser();
+        var ss = parser.parse(css);
+        var f = new StyleSheet();
+        for (i in ss.imports) {
+            var importCss = ToolkitAssets.instance.getText(i.url);
+            var importStyleSheet = new Parser().parse(importCss);
+            f.merge(importStyleSheet);
+        }
+        
+        f.merge(ss);
+        merge(f);
     }
     
     public function merge(styleSheet:StyleSheet) {
@@ -65,16 +75,6 @@ class StyleSheet {
         
         var style:Style = new Style();
         for (r in relevantRules) {
-            /*
-            trace(r.selector);
-            for (sp in r.selector.parts) {
-                trace(sp + ", parent: " + sp.parent);
-            }
-            trace("");
-            for (d in r.directives) {
-                trace("    " + d.directive + " = " + d.value);
-            }
-            */
             style.mergeDirectives(r.directives);
         }
         

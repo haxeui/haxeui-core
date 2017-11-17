@@ -24,7 +24,13 @@ class Parser {
         var styleSheet = new StyleSheet();
         
         source = cssImportStatementRegex.map(source, function(e) {
-            styleSheet.addImport(new ImportElement(e.matched(0)));
+            var i = e.matched(0);
+            i = i.substr(7);
+            i = StringTools.replace(i, "\"", "");
+            i = StringTools.replace(i, "'", "");
+            i = StringTools.replace(i, ";", "");
+            i = StringTools.trim(i);
+            styleSheet.addImport(new ImportElement(i));
             return "";
         });
         
