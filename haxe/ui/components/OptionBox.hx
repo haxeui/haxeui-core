@@ -16,9 +16,6 @@ import haxe.ui.util.Variant;
 class OptionBox extends InteractiveComponent {
     private static var _groups:StringMap<Array<OptionBox>>;
 
-    private var _value:OptionBoxValue;
-    private var _label:Label;
-
     public function new() {
         super();
 
@@ -41,26 +38,30 @@ class OptionBox extends InteractiveComponent {
     }
 
     private override function createChildren() {
-        if (_value == null) {
-            _value = new OptionBoxValue();
-            _value.id = "optionbox-value";
-            _value.addClass("optionbox-value");
-            addComponent(_value);
+        var optionboxValue:OptionBoxValue = findComponent(OptionBoxValue);
+        if (optionboxValue == null) {
+            optionboxValue = new OptionBoxValue();
+            optionboxValue.id = "optionbox-value";
+            optionboxValue.addClass("optionbox-value");
+            addComponent(optionboxValue);
 
-            _value.registerEvent(MouseEvent.CLICK, _onClick);
-            _value.registerEvent(MouseEvent.MOUSE_OVER, _onMouseOver);
-            _value.registerEvent(MouseEvent.MOUSE_OUT, _onMouseOut);
+            optionboxValue.registerEvent(MouseEvent.CLICK, _onClick);
+            optionboxValue.registerEvent(MouseEvent.MOUSE_OVER, _onMouseOver);
+            optionboxValue.registerEvent(MouseEvent.MOUSE_OUT, _onMouseOut);
         }
     }
 
     private override function destroyChildren() {
-        if (_value != null) {
-            removeComponent(_value);
-            _value = null;
+        var value:OptionBoxValue = findComponent(OptionBoxValue);
+        if (value != null) {
+            removeComponent(value);
+            value = null;
         }
-        if (_label != null) {
-            removeComponent(_label);
-            _label = null;
+
+        var label:Label = findComponent(Label);
+        if (label != null) {
+            removeComponent(label);
+            label = null;
         }
     }
 
@@ -88,12 +89,19 @@ class OptionBox extends InteractiveComponent {
 
     private override function applyStyle(style:Style) {
         super.applyStyle(style);
-        if (_label != null) {
-            _label.customStyle.color = style.color;
-            _label.customStyle.fontName = style.fontName;
-            _label.customStyle.fontSize = style.fontSize;
-            _label.customStyle.cursor = style.cursor;
-            _label.invalidateStyle();
+
+        var label:Label = findComponent(Label);
+        if (label != null &&
+            (label.customStyle.color != style.color
+            || label.customStyle.fontName != style.fontName
+            || label.customStyle.fontSize != style.fontSize
+            || label.customStyle.cursor != style.cursor)) {
+
+            label.customStyle.color = style.color;
+            label.customStyle.fontName = style.fontName;
+            label.customStyle.fontSize = style.fontSize;
+            label.customStyle.cursor = style.cursor;
+            label.invalidateStyle();
         }
     }
 
@@ -238,12 +246,14 @@ class OptionBox extends InteractiveComponent {
 
     private function _onMouseOver(event:MouseEvent) {
         addClass(":hover");
-        _value.addClass(":hover");
+        var value:OptionBoxValue = findComponent(OptionBoxValue);
+        value.addClass(":hover");
     }
 
     private function _onMouseOut(event:MouseEvent) {
         removeClass(":hover");
-        _value.removeClass(":hover");
+        var value:OptionBoxValue = findComponent(OptionBoxValue);
+        value.removeClass(":hover");
     }
 
     //******************************************************************************************
@@ -275,57 +285,57 @@ class OptionBox extends InteractiveComponent {
 @:dox(hide)
 @:access(haxe.ui.components.OptionBox)
 class OptionBoxDefaultTextBehaviour extends Behaviour {
-    private var _value:String;
-
     public override function set(value:Variant) {
-        if (value == null || value.isNull || value == _value) {
-            return;
-        }
-
         var optionbox:OptionBox = cast _component;
-        if (optionbox._label == null) {
-            optionbox._label = new Label();
-            optionbox._label.id = "optionbox-label";
-            optionbox._label.addClass("optionbox-label");
+        var label:Label = optionbox.findComponent(Label);
+        if (label == null) {
+            label = new Label();
+            label.id = "optionbox-label";
+            label.addClass("optionbox-label");
 
-            optionbox._label.registerEvent(MouseEvent.CLICK, optionbox._onClick);
-            optionbox._label.registerEvent(MouseEvent.MOUSE_OVER, optionbox._onMouseOver);
-            optionbox._label.registerEvent(MouseEvent.MOUSE_OUT, optionbox._onMouseOut);
+            label.registerEvent(MouseEvent.CLICK, optionbox._onClick);
+            label.registerEvent(MouseEvent.MOUSE_OVER, optionbox._onMouseOver);
+            label.registerEvent(MouseEvent.MOUSE_OUT, optionbox._onMouseOut);
 
-            optionbox.addComponent(optionbox._label);
+            optionbox.addComponent(label);
         }
-        optionbox._label.text = value;
+        label.text = value;
     }
 
     public override function get():Variant {
-        return _value;
+        var optionbox:OptionBox = cast _component;
+        var label:Label = optionbox.findComponent(Label);
+        if (label == null) {
+            return null;
+        }
+        return label.text;
     }
 }
 
 @:dox(hide)
 @:access(haxe.ui.components.OptionBox)
 class OptionBoxDefaultSelectedBehaviour extends Behaviour {
-    private var _value:Bool;
-
     public override function set(value:Variant) {
-        if (value == _value) {
-            return;
-        }
-
         var optionbox:OptionBox = cast _component;
-        if (optionbox._value == null) {
+        var optionboxValue:OptionBoxValue = optionbox.findComponent(OptionBoxValue);
+        if (optionboxValue == null) {
             return;
         }
 
         if (value == true) {
-            optionbox._value.addClass(":selected");
+            optionboxValue.addClass(":selected");
         } else {
-            optionbox._value.removeClass(":selected");
+            optionboxValue.removeClass(":selected");
         }
     }
 
     public override function get():Variant {
-        return _value;
+        var optionbox:OptionBox = cast _component;
+        var optionboxValue:OptionBoxValue = optionbox.findComponent(OptionBoxValue);
+        if (optionboxValue == null) {
+            return false;
+        }
+        return optionboxValue.hasClass(":selected");
     }
 }
 
