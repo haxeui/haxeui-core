@@ -82,6 +82,7 @@ class Style {
     public var filter:Array<Filter>;
     
     public var resource:String;
+    public var animation:String;
     
     public function new() {
     }
@@ -237,8 +238,11 @@ class Style {
                             filter = null;
                         case _:
                     }
+                    
                 case "resource":
                     resource = ValueTools.string(v.value);
+                case "animation":
+                    animation = ValueTools.string(v.value);
             }
         }
     }
@@ -319,6 +323,7 @@ class Style {
 
         if (s.filter != null) filter = s.filter.copy();
         if (s.resource != null) resource = s.resource;
+        if (s.animation != null) animation = s.animation;
 
         if (s.icon != null) icon = s.icon;
         if (s.iconPosition != null) iconPosition = s.iconPosition;
@@ -400,6 +405,7 @@ class Style {
 
         if (s.filter != filter) return false;
         if (s.resource != resource) return false;
+        if (s.animation != animation) return false;
 
         if (s.icon != icon) return false;
         if (s.iconPosition != iconPosition) return false;

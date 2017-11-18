@@ -168,6 +168,8 @@ class ValueTools {
         switch (value) {
             case Value.VColor(v):
                 return v;
+            case Value.VNumber(v):
+                return Std.int(v);
             case Value.VNone:
                 return null;
             case _:

@@ -1,5 +1,7 @@
 package haxe.ui.styles;
 
+import haxe.ui.styles.elements.AnimationKeyFrames;
+import haxe.ui.styles.elements.AnimationKeyFrame;
 import haxe.ui.styles.elements.Directive;
 import haxe.ui.styles.elements.ImportElement;
 import haxe.ui.styles.elements.MediaQuery;
@@ -10,7 +12,7 @@ import haxe.ui.styles.elements.RuleElement;
 class Parser {
     var cssRegex = new EReg('([\\s\\S]*?){([\\s\\S]*?)}', 'gi');
     var cssMediaQueryRegex = '((@media [\\s\\S]*?){([\\s\\S]*?}\\s*?)})';
-    var cssKeyframeRegex = '((@.*?keyframes [\\s\\S]*?){([\\s\\S]*?}\\s*?)})';
+    var cssKeyframeRegex = new EReg('((@.*?keyframes [\\s\\S]*?){([\\s\\S]*?}\\s*?)})', 'gi');
     var combinedCSSRegex = '((\\s*?(?:\\/\\*[\\s\\S]*?\\*\\/)?\\s*?@media[\\s\\S]*?){([\\s\\S]*?)}\\s*?})|(([\\s\\S]*?){([\\s\\S]*?)})'; //to match css & media queries together
     var cssCommentsRegex = new EReg('(\\/\\*[\\s\\S]*?\\*\\/)', 'gi');
     var cssImportStatementRegex = new EReg('@import .*?;', 'gi');
@@ -31,6 +33,29 @@ class Parser {
             i = StringTools.replace(i, ";", "");
             i = StringTools.trim(i);
             styleSheet.addImport(new ImportElement(i));
+            return "";
+        });
+        
+        source = cssKeyframeRegex.map(source, function(e) {
+            var k = e.matched(0);
+            
+            var selector = StringTools.trim(StringTools.replace(extractSelector(k), "@keyframes", ""));
+            var data = extractDirectives(k);
+            
+            var keyframes = new Array<AnimationKeyFrame>();
+            var arr = data.split("\n");
+            for (a in arr) {
+                a = StringTools.trim(a);
+                var keyframe = new AnimationKeyFrame();
+                keyframe.time = ValueTools.parse(extractSelector(a));
+                keyframe.directives = parseDirectives(extractDirectives(a));
+                keyframes.push(keyframe);
+                trace(keyframe);
+            }
+            
+            var animation = new AnimationKeyFrames(selector, keyframes);
+            styleSheet.addAnimation(animation);
+            
             return "";
         });
         
@@ -111,5 +136,24 @@ class Parser {
         }
         
         return d;
+    }
+    
+    private function extractSelector(s:String):String {
+        var selector = null;
+ 
+        var n1 = s.indexOf("{");
+        selector = StringTools.trim(s.substr(0, n1));
+        
+        return selector;
+    }
+    
+    private function extractDirectives(s:String):String {
+        var directives = null;
+        
+        var n1 = s.indexOf("{");
+        var n2 = s.lastIndexOf("}");
+        directives = StringTools.trim(s.substr(n1 + 1, n2 - n1 - 1));
+        
+        return directives;
     }
 }

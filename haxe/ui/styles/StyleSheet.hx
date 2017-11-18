@@ -1,6 +1,8 @@
 package haxe.ui.styles;
 
 import haxe.ui.core.Component;
+import haxe.ui.styles.animation.Animation;
+import haxe.ui.styles.elements.AnimationKeyFrames;
 import haxe.ui.styles.elements.ImportElement;
 import haxe.ui.styles.elements.MediaQuery;
 import haxe.ui.styles.elements.RuleElement;
@@ -10,6 +12,7 @@ class StyleSheet {
     private var _rules:Array<RuleElement> = [];
     
     private var _mediaQueries:Array<MediaQuery> = [];
+    private var _animations:Map<String, AnimationKeyFrames> = new Map<String, AnimationKeyFrames>();
     
     public function new() {
     }
@@ -44,6 +47,10 @@ class StyleSheet {
         _mediaQueries.push(el);
     }
     
+    public function addAnimation(el:AnimationKeyFrames) {
+        _animations.set(el.id, el);
+    }
+    
     public function parse(css:String) {
         var parser = new Parser();
         var ss = parser.parse(css);
@@ -62,6 +69,9 @@ class StyleSheet {
         _imports = _imports.concat(styleSheet._imports);
         _rules = _rules.concat(styleSheet._rules);
         _mediaQueries = _mediaQueries.concat(styleSheet._mediaQueries);
+        for (k in styleSheet._animations.keys()) {
+            _animations.set(k, styleSheet._animations.get(k));
+        }
     }
     
     public function buildStyleFor(c:Component):Style {
@@ -78,6 +88,21 @@ class StyleSheet {
             style.mergeDirectives(r.directives);
         }
         
+        if (style.animation != null) {
+            var a = _animations.get(style.animation);
+            trace(style.animation);
+            trace(a);
+            runAnimation(c, a);
+        }
+        
         return style;
+    }
+    
+    private function runAnimation(c:Component, a:AnimationKeyFrames) {
+        var anim:Animation = new Animation(3);
+        for (kf in a.keyFrames) {
+            anim.configureKeyFrame(kf);
+        }
+        anim.run(c);
     }
 }
