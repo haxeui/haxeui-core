@@ -49,8 +49,6 @@ class OptionBox extends InteractiveComponent {
             optionboxValue.registerEvent(MouseEvent.MOUSE_OVER, _onMouseOver);
             optionboxValue.registerEvent(MouseEvent.MOUSE_OUT, _onMouseOut);
         }
-        
-        registerEvent(MouseEvent.CLICK, _onClick);
     }
 
     private override function destroyChildren() {
@@ -241,11 +239,7 @@ class OptionBox extends InteractiveComponent {
     // Events
     //***********************************************************************************************************
     private function _onClick(event:MouseEvent) {
-        return;
-        //toggleSelected();
-        trace("here!!!");
-        var event:UIEvent = new UIEvent(UIEvent.CHANGE);
-        dispatch(event);
+        toggleSelected();
     }
 
     private function _onMouseOver(event:MouseEvent) {
