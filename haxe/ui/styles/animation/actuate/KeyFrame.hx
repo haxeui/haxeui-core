@@ -1,4 +1,6 @@
 package haxe.ui.styles.animation.actuate;
+
+#if actuate
 import haxe.ui.core.Component;
 import haxe.ui.styles.elements.Directive;
 import motion.Actuate;
@@ -19,3 +21,4 @@ class KeyFrame {
         Actuate.tween(c, time, props, true).ease(Linear.easeNone).onComplete(cb);
     }
 }
+#end
