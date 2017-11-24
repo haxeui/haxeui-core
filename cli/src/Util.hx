@@ -65,4 +65,32 @@ class Util {
         
         FileSystem.deleteDirectory(path);
     }
+    
+    public static function prettyPrintXml(el:Xml, sb:StringBuf, indent:String = "" ) {
+        sb.add('${indent}<${el.nodeName}');
+        
+        var childCount = 0;
+        for (c in el.elements()) {
+            childCount ++;
+        }
+        
+        for (a in el.attributes()) {
+            var v = el.get(a);
+            sb.add(' ${a}="${v}"');
+        }
+        
+        if (childCount == 0) {
+            sb.add(' />\n');
+        } else {
+            sb.add('>\n');
+        }
+        
+        for (c in el.elements()) {
+            prettyPrintXml(c, sb, indent + "    ");
+        }
+        
+        if (childCount != 0) {
+            sb.add('${indent}</${el.nodeName}>\n');
+        }
+    }
 }

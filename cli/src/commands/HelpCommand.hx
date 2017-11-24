@@ -19,12 +19,12 @@ class HelpCommand extends Command {
     }
     
     public override function displayHelp() {
-        Util.log('Usage : haxeui <create | build> <${Util.backendString(" | ")}> [name] [options]\n');
+        Util.log('Usage : haxeui <create | custom-component | build> [${Util.backendString(" | ")}] [options]\n');
         Util.log('Options :');
-        Util.log('  create : creates project files for given backend');
-        Util.log('  build : build project for given backend');
-        Util.log('  name : name of main class (eg: foo.Bar), defaults to "Main"');
-        Util.log('  options : depends on command / backend\n');
+        Util.log('  create           : creates project files for given backend');
+        Util.log('  custom-component : creates files for a custom component');
+        Util.log('  build            : build project for given backend');
+        Util.log('  options          : depends on command / backend\n');
         Util.log('use "haxeui help <command>" for information about command');
     }
 }

@@ -1,0 +1,12 @@
+{
+    "name": "custom-component",
+    "type": "template",
+    "directories": [
+        "${target}/src/${packagePath}",
+        "${target}/assets/custom"
+    ],
+    "templates": [
+        { "src": "Custom.hx", "dst": "${target}/src/${packagePath}/${className}.hx"},
+        { "src": "assets/custom/custom.xml", "dst": "${target}/${xmlFile}"}
+    ]
+}

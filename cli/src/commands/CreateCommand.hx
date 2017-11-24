@@ -80,7 +80,6 @@ class CreateCommand extends Command {
         
         var project = Project.load(params.backend);
         project.execute(templateParams);
-        trace(params.additional);
         project.executePost(params);
     }
     
