@@ -644,12 +644,13 @@ class ScrollViewLayout extends DefaultLayout {
 
         if (cast(component, ScrollView).native == true) {
             var contents:Component = component.findComponent("scrollview-contents", null, false, "css");
-            if (contents != null && contents.componentHeight > size.height) {
-                size.width -= Platform.vscrollWidth;
-            }
-            var contents:Component = component.findComponent("scrollview-contents", null, false, "css");
-            if (contents != null && contents.componentWidth > size.width) {
-                size.height -= Platform.hscrollHeight;
+            if (contents != null) {
+                if (contents.componentWidth > size.width) {
+                    size.height -= Platform.hscrollHeight;
+                }
+                if (contents.componentHeight > size.height) {
+                    size.width -= Platform.vscrollWidth;
+                }
             }
         }
 
@@ -666,6 +667,19 @@ class ScrollViewLayout extends DefaultLayout {
         if (vscroll != null && vscroll.hidden == false) {
             size.width += vscroll.componentWidth;
         }
+        
+        if (cast(component, ScrollView).native == true) {
+            var contents:Component = component.findComponent("scrollview-contents", null, false, "css");
+            if (contents != null) {
+                if (contents.width > component.width) {
+                    size.height += Platform.hscrollHeight;
+                }
+                if (contents.height > component.height) {
+                    size.width += Platform.vscrollWidth;
+                }
+            }
+        }
+        
         return size;
     }
 }
