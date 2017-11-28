@@ -163,6 +163,7 @@ class ScrollView extends Component {
         if (Std.is(child, HScroll) || Std.is(child, VScroll) || child == _contents) {
             v = super.addComponent(child);
         } else {
+            createContentContainer();
             v = _contents.addComponent(child);
         }
         return v;
