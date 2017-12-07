@@ -11,13 +11,9 @@ import haxe.ui.styles.elements.RuleElement;
 
 class Parser {
     var cssRegex = new EReg('([\\s\\S]*?)\\{([\\s\\S]*?)\\}', 'gi');
-//    var cssRegex = new EReg('([\\s\\S]*?){([\\s\\S]*?)}', 'gi');
     var cssMediaQueryRegex = '((@media [\\s\\S]*?)\\{([\\s\\S]*?\\}\\s*?)\\})';
-//    var cssMediaQueryRegex = '((@media [\\s\\S]*?){([\\s\\S]*?}\\s*?)})';
     var cssKeyframeRegex = new EReg('((@.*?keyframes [\\s\\S]*?)\\{([\\s\\S]*?\\}\\s*?)\\})', 'gi');
-//    var cssKeyframeRegex = new EReg('((@.*?keyframes [\\s\\S]*?){([\\s\\S]*?}\\s*?)})', 'gi');
     var combinedCSSRegex = '((\\s*?(?:\\/\\*[\\s\\S]*?\\*\\/)?\\s*?@media[\\s\\S]*?)\\{([\\s\\S]*?)\\}\\s*?\\})|(([\\s\\S]*?)\\{([\\s\\S]*?)\\})'; //to match css & media queries together
-//    var combinedCSSRegex = '((\\s*?(?:\\/\\*[\\s\\S]*?\\*\\/)?\\s*?@media[\\s\\S]*?){([\\s\\S]*?)}\\s*?})|(([\\s\\S]*?){([\\s\\S]*?)})'; //to match css & media queries together
     var cssCommentsRegex = new EReg('(\\/\\*[\\s\\S]*?\\*\\/)', 'gi');
     var cssImportStatementRegex = new EReg('@import .*?;', 'gi');
     

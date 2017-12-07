@@ -88,9 +88,9 @@ class StyleSheet {
             style.mergeDirectives(r.directives);
         }
         
-        if (style.animation != null) {
-            var a = _animations.get(style.animation);
-            trace(style.animation);
+        if (style.animationName != null) {
+            var a = _animations.get(style.animationName);
+            trace(style.animationName);
             trace(a);
             runAnimation(c, a);
         }
@@ -99,6 +99,9 @@ class StyleSheet {
     }
     
     private function runAnimation(c:Component, a:AnimationKeyFrames) {
+        if (c == null || a == null) {
+            return;
+        }
         var anim:Animation = new Animation(3);
         for (kf in a.keyFrames) {
             anim.configureKeyFrame(kf);

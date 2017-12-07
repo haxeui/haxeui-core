@@ -32,7 +32,7 @@ class Animation {
                         kf.directives = keyFrame.directives;
                         
                         for (d in keyFrame.directives) {
-                            //trace(d);   
+                            trace(" >>> " + d.directive + " = " + d.value);   
                         }
                         _keyframes.push(kf);
                     case _:   
@@ -43,13 +43,10 @@ class Animation {
     
     public function run(c:Component) {
         if (_keyframes.length == 0) {
-            trace("animation finished");
             return;
         }
         var kf = _keyframes.shift();
-        trace("running key frame - " + kf.time);
         kf.run(c, function() {
-            trace("kf complete");
             run(c);
         });
     }
