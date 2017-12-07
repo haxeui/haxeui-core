@@ -62,7 +62,7 @@ class Image extends Component {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    private var _resource:String;
+    private var _resource:String = null;
     /**
      The resource to use for this image, currently only assets are supported, later versions will also support things like HTTP, files, etc
     **/

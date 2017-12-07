@@ -10,6 +10,8 @@ class CommandFactory {
                 c = new SetupCommand();
             case "create":
                 c = new CreateCommand();
+            case "custom-component":
+                c = new CustomComponentCommand();
             case "build":
                 c = new BuildCommand();
             case "install":

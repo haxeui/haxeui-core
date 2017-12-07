@@ -75,6 +75,10 @@ class TabView extends Component {
                 button.icon = icon;
                 _tabs.addComponent(button);
                 invalidateData();
+
+                if (_pageIndex == -1) {
+                    pageIndex = 0;
+                }
             } else {
                 super.addComponent(child);
             }
@@ -288,7 +292,7 @@ private class RemoveAllTabs extends Behaviour {
             tabView._content.removeAllComponents();
         }
         if (tabView._tabs != null) {
-            tabView._tabs.removeAllComponents();
+            tabView._tabs.removeAllButtons();
             tabView._tabs.resetSelection();
         }
     }

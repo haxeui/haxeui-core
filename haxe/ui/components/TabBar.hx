@@ -1,5 +1,6 @@
 package haxe.ui.components;
 
+import haxe.ui.validation.InvalidationFlags;
 import haxe.ui.containers.HBox;
 import haxe.ui.core.Component;
 import haxe.ui.core.MouseEvent;
@@ -71,6 +72,12 @@ class TabBar extends Component {
         }
         
         return v;
+    }
+
+    public function removeAllButtons():Void {
+        if (_container != null) {
+            _container.removeAllComponents();
+        }
     }
     
     //***********************************************************************************************************
@@ -170,11 +177,42 @@ class TabBar extends Component {
             _scrollRight.hide();
         }
     }
-    
+
+    /**
+     Invalidate the index of this component
+    **/
+    @:dox(group = "Invalidation related properties and methods")
+    public inline function invalidateIndex() {
+        invalidate(InvalidationFlags.INDEX);
+    }
+
+    private override function validateInternal() {
+        var dataInvalid = isInvalid(InvalidationFlags.DATA);
+        var indexInvalid = isInvalid(InvalidationFlags.INDEX);
+
+        if (dataInvalid || indexInvalid) {
+            validateIndex();
+        }
+
+        super.validateInternal();
+    }
+
     private override function validateData() {
         var event:UIEvent = new UIEvent(UIEvent.CHANGE);
         event.target = this;
         dispatch(event);
+    }
+
+    private function validateIndex() {
+        var button:Button = cast(_container.getComponentAt(_selectedIndex), Button);
+        if (button != null) {
+            if (_currentButton != null) {
+                _currentButton.removeClass("tabbar-button-selected");
+            }
+            _currentButton = button;
+            _currentButton.addClass("tabbar-button-selected");
+            invalidateLayout();
+        }
     }
 
     //***********************************************************************************************************
@@ -199,16 +237,7 @@ class TabBar extends Component {
         
         _selectedIndex = value;
         invalidateData();
-
-        var button:Button = cast(_container.getComponentAt(_selectedIndex), Button);
-        if (button != null) {
-            if (_currentButton != null) {
-                _currentButton.removeClass("tabbar-button-selected");
-            }
-            _currentButton = button;
-            _currentButton.addClass("tabbar-button-selected");
-            invalidateLayout();
-        }
+        invalidateIndex();
         return value;
     }
 
