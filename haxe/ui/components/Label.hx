@@ -83,6 +83,7 @@ class LabelLayout extends DefaultLayout {
              // TODO: make not specific - need to check all backends first
             #if (flixel)
             component.getTextDisplay().wordWrap = true;
+            component.getTextDisplay().tf.autoSize = false;
             #elseif (openfl)
             component.getTextDisplay().textField.autoSize = openfl.text.TextFieldAutoSize.NONE;
             component.getTextDisplay().multiline = true;
