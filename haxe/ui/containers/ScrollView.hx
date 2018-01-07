@@ -126,6 +126,14 @@ class ScrollView extends Component {
         return value;
     }
 
+    public var hscrollMax(get, null):Float;
+    private function get_hscrollMax():Float {
+        if (_hscroll == null) {
+            return 0;
+        }
+        return _hscroll.max;
+    }
+
     public var contentWidth(get, set):Null<Float>;
     private function get_contentWidth():Null<Float> {
         return _contents.width;
