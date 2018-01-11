@@ -135,8 +135,8 @@ class TextField extends InteractiveComponent implements IFocusable {
             return value;
         }
 
-        invalidateData();
         _password = value;
+        invalidateData();
         return value;
     }
     
@@ -229,7 +229,6 @@ class TextField extends InteractiveComponent implements IFocusable {
     }
 
     private function _onMouseDown(event:MouseEvent) {
-
         FocusManager.instance.focus = this;
     }
 
@@ -257,17 +256,23 @@ class TextField extends InteractiveComponent implements IFocusable {
 
         //Placeholder
         if (focus == false && _placeholder != null) {
-            if (text == "") {
-                text = _placeholder;
-                behaviourSet("password", false);
-                addClass(":empty");
-            } else {
-                behaviourSet("password", _password);
-                removeClass(":empty");
+            if (native == false) {
+                if (text == "") {
+                    text = _placeholder;
+                    behaviourSet("password", false);
+                    addClass(":empty");
+                } else {
+                    behaviourSet("password", _password);
+                    removeClass(":empty");
+                }
             }
-        } else if (placeholderVisible == true){
-            text = "";
-            removeClass(":empty");
+        } else if (placeholderVisible == true) {
+            if (native == false) { 
+                text = "";
+                removeClass(":empty");
+                behaviourSet("password", _password);
+            }
+        } else {
             behaviourSet("password", _password);
         }
 

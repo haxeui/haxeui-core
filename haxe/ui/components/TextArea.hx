@@ -51,7 +51,7 @@ class TextArea extends InteractiveComponent implements IFocusable {
         return value;
     }
 
-    private var _wrap:Bool;
+    private var _wrap:Bool = true;
     @:clonable public var wrap(get, set):Bool;
     private function get_wrap():Bool {
         return _wrap;
@@ -102,16 +102,16 @@ class TextArea extends InteractiveComponent implements IFocusable {
 
     private override function createChildren() {
         super.createChildren();
-        /*
-        if (componentWidth == 0) {
-            componentWidth = 150;
-        }
-        if (componentHeight == 0) {
-            componentHeight = 100;
-        }
-        */
         
         getTextInput().multiline = true;
+        getTextInput().data.onScrollCallback = function() {
+            if (_hscroll != null) {
+                _hscroll.pos = getTextInput().hscrollPos;
+            }
+            if (_vscroll != null) {
+                _vscroll.pos = getTextInput().vscrollPos;
+            }
+        }
 
         registerEvent(MouseEvent.MOUSE_WHEEL, _onMouseWheel);
         registerEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
@@ -121,6 +121,7 @@ class TextArea extends InteractiveComponent implements IFocusable {
     private override function destroyChildren() {
         super.destroyChildren();
 
+        getTextInput().data.onScrollCallback = null;
         unregisterEvent(MouseEvent.MOUSE_WHEEL, _onMouseWheel);
         unregisterEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
         unregisterEvent(UIEvent.CHANGE, _onTextChanged);
@@ -148,10 +149,11 @@ class TextArea extends InteractiveComponent implements IFocusable {
                 addComponent(_hscroll);
                 _hscroll.registerEvent(UIEvent.CHANGE, _onScrollChange);
             }
-            _hscroll.max = textInput.textWidth - getTextInput().width;
+            _hscroll.max = textInput.hscrollMax; // textInput.textWidth - getTextInput().width;
             _hscroll.pos = textInput.hscrollPos;
 
-            _hscroll.pageSize = (textInput.width * _hscroll.max) / textInput.textWidth;
+            _hscroll.pageSize = textInput.hscrollPageSize; //(textInput.width * _hscroll.max) / textInput.textWidth;
+           // _hscroll.pageSize = (textInput.width * _hscroll.max) / textInput.textWidth;
             _hscroll.show();
         } else {
             if (_hscroll != null) {
@@ -166,10 +168,10 @@ class TextArea extends InteractiveComponent implements IFocusable {
                 addComponent(_vscroll);
                 _vscroll.registerEvent(UIEvent.CHANGE, _onScrollChange);
             }
-            _vscroll.max = textInput.textHeight - textInput.height;
+            _vscroll.max = textInput.vscrollMax; //textInput.textHeight - textInput.height;
             _vscroll.pos = textInput.vscrollPos;
 
-            _vscroll.pageSize = (textInput.height * _vscroll.max) / textInput.textHeight;
+            _vscroll.pageSize = textInput.vscrollPageSize; // (textInput.height * _vscroll.max) / textInput.textHeight;
             _vscroll.show();
         } else {
             if (_vscroll != null) {
@@ -234,8 +236,8 @@ class TextArea extends InteractiveComponent implements IFocusable {
             behaviourSet("placeholder", _placeholder);
         }
 
-        if (behaviourGet("wordWrap") != _wrap) {
-            behaviourSet("wordWrap", _wrap);
+        if (behaviourGet("wrap") != _wrap) {
+            behaviourSet("wrap", _wrap);
         }
 
         var text:String = _text != null ? _text : "";

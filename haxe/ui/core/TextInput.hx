@@ -1,10 +1,26 @@
 package haxe.ui.core;
 
-import haxe.ui.validation.IValidating;
-import haxe.ui.validation.InvalidationFlags;
 import haxe.ui.backend.TextInputBase;
 import haxe.ui.styles.Style;
-import haxe.ui.validation.ValidationManager;
+import haxe.ui.validation.IValidating;
+import haxe.ui.validation.InvalidationFlags;
+
+class TextInputData {
+    public var password:Bool = false;
+    
+    public var hscrollPos:Float = 0;
+    public var hscrollMax:Float = 0;
+    public var hscrollPageSize:Float = 0;
+    
+    public var vscrollPos:Float = 0;
+    public var vscrollMax:Float = 0;
+    public var vscrollPageSize:Float = 0;
+    
+    public var onScrollCallback:Void->Void = null;
+    
+    public function new() {
+    }
+}
 
 /**
  Class that represents a framework specific method to display editable text inside a component
@@ -33,7 +49,7 @@ class TextInput extends TextInputBase implements IValidating {
             return value;
         }
 
-        if ((value.fontName != null && _textStyle == null) || (value.fontName != _textStyle.fontName)) {
+        if ((value.fontName != null && _textStyle == null) || (_textStyle != null && value.fontName != _textStyle.fontName)) {
             ToolkitAssets.instance.getFont(value.fontName, function(fontInfo) {
                 _fontInfo = fontInfo;
                 invalidate(InvalidationFlags.STYLE);
@@ -46,6 +62,11 @@ class TextInput extends TextInputBase implements IValidating {
         return value;
     }
 
+    public var data(get, null):TextInputData;
+    private function get_data():TextInputData {
+        return _inputData;
+    }
+    
     public var text(get, set):String;
     private function get_text():String {
         return _text;
@@ -62,14 +83,14 @@ class TextInput extends TextInputBase implements IValidating {
 
     public var password(get, set):Bool;
     private function get_password():Bool {
-        return _password;
+        return _inputData.password;
     }
     private function set_password(value:Bool):Bool {
-        if (value == _password) {
+        if (value == _inputData.password) {
             return value;
         }
 
-        _password = value;
+        _inputData.password = value;
         invalidate(InvalidationFlags.STYLE);
         return value;
     }
@@ -147,9 +168,9 @@ class TextInput extends TextInputBase implements IValidating {
 
     public var textHeight(get, null):Float;
     private function get_textHeight():Float {
-//        if (_text == null || _text.length == 0) {
-//            return 0;
-//        }
+        if (_text == null || _text.length == 0) {
+            return 0;
+        }
 
         if (isInvalid() == true) {
             validate();
@@ -159,60 +180,80 @@ class TextInput extends TextInputBase implements IValidating {
 
     public var multiline(get, set):Bool;
     private function get_multiline():Bool {
-        return _multiline;
+        return _displayData.multiline;
     }
     private function set_multiline(value:Bool):Bool {
-        if (value == _multiline) {
+        if (value == _displayData.multiline) {
             return value;
         }
 
-        _multiline = value;
+        _displayData.multiline = value;
         invalidate(InvalidationFlags.STYLE);
         return value;
     }
 
     public var wordWrap(get, set):Bool;
     private function get_wordWrap():Bool {
-        return _wordWrap;
+        return _displayData.wordWrap;
     }
     private function set_wordWrap(value:Bool):Bool {
-        if (value == _wordWrap) {
+        if (value == _displayData.wordWrap) {
             return value;
         }
 
-        _wordWrap = value;
+        _displayData.wordWrap = value;
         invalidate(InvalidationFlags.STYLE);
         return value;
     }
 
     public var hscrollPos(get, set):Float;
     private function get_hscrollPos():Float {
-        return _hscrollPos;
+        return _inputData.hscrollPos;
     }
     private function set_hscrollPos(value:Float):Float {
-        if (value == _hscrollPos) {
+        if (value == _inputData.hscrollPos) {
             return value;
         }
 
-        _hscrollPos = value;
-        invalidate(InvalidationFlags.STYLE);
+        _inputData.hscrollPos = value;
+        invalidate(InvalidationFlags.DATA);
         return value;
     }
 
+    public var hscrollMax(get, null):Float;
+    private function get_hscrollMax():Float {
+        return _inputData.hscrollMax;
+    }
+    
+    public var hscrollPageSize(get, null):Float;
+    private function get_hscrollPageSize():Float {
+        return _inputData.hscrollPageSize;
+    }
+    
     public var vscrollPos(get, set):Float;
     private function get_vscrollPos():Float {
-        return _vscrollPos;
+        return _inputData.vscrollPos;
     }
     private function set_vscrollPos(value:Float):Float {
-        if (value == _vscrollPos) {
+        if (value == _inputData.vscrollPos) {
             return value;
         }
 
-        _vscrollPos = value;
-        invalidate(InvalidationFlags.STYLE);
+        _inputData.vscrollPos = value;
+        invalidate(InvalidationFlags.DATA);
         return value;
     }
 
+    public var vscrollMax(get, null):Float;
+    private function get_vscrollMax():Float {
+        return _inputData.vscrollMax;
+    }
+    
+    public var vscrollPageSize(get, null):Float;
+    private function get_vscrollPageSize():Float {
+        return _inputData.vscrollPageSize;
+    }
+    
     public function isInvalid(flag:String = InvalidationFlags.ALL):Bool {
         if (_isAllInvalid == true) {
             return true;
@@ -233,10 +274,12 @@ class TextInput extends TextInputBase implements IValidating {
         if (flag == InvalidationFlags.ALL) {
             _isAllInvalid = true;
             //ValidationManager.instance.add(this);     //Don't need. It is validated internally in the component in a sync way
+            validate();
         } else {
             if (flag != InvalidationFlags.ALL && !_invalidationFlags.exists(flag)) {
                 _invalidationFlags.set(flag, true);
                 //ValidationManager.instance.add(this); //Don't need. It is validated internally in the component in a sync way
+                validate();
             }
         }
     }

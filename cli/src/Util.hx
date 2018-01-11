@@ -1,4 +1,5 @@
 package;
+import descriptors.DescriptorFactory;
 import sys.FileSystem;
 import sys.io.File;
 
@@ -21,6 +22,28 @@ class Util {
         }
         
         return b;
+    }
+    
+    public static function name(params:Params):String {
+        var name:String = null;
+        for (a in params.additional) {
+            if (StringTools.startsWith(a, "--") == false) {
+                name = a;
+                break;
+            }
+        }
+
+        var descriptor = DescriptorFactory.find(params.target);
+        if (descriptor != null) {
+            Util.log('Using name from descriptor "${Type.getClassName(Type.getClass(descriptor))}": "${descriptor.main}"');
+            name = descriptor.main;
+        }
+        
+        if (name == null) { // default
+            name = "Main";
+        }
+        
+        return name;
     }
     
     public static function backends():Array<String> {
