@@ -104,6 +104,12 @@ class TextArea extends InteractiveComponent implements IFocusable {
         super.createChildren();
         
         getTextInput().multiline = true;
+        getTextInput().data.onChangedCallback = function() {
+            if (getTextInput().text != _text && hasClass(":empty") == false) {
+                text = getTextInput().text;
+                
+            }
+        };
         getTextInput().data.onScrollCallback = function() {
             if (_hscroll != null) {
                 _hscroll.pos = getTextInput().hscrollPos;
@@ -121,6 +127,7 @@ class TextArea extends InteractiveComponent implements IFocusable {
     private override function destroyChildren() {
         super.destroyChildren();
 
+        getTextInput().data.onChangedCallback = null;
         getTextInput().data.onScrollCallback = null;
         unregisterEvent(MouseEvent.MOUSE_WHEEL, _onMouseWheel);
         unregisterEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
@@ -142,6 +149,7 @@ class TextArea extends InteractiveComponent implements IFocusable {
         }
 
         var textInput:TextInput = getTextInput();
+        
         if (textInput.textWidth > textInput.width) {
             if (_hscroll == null) {
                 _hscroll = new HScroll();

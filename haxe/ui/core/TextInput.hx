@@ -17,6 +17,7 @@ class TextInputData {
     public var vscrollPageSize:Float = 0;
     
     public var onScrollCallback:Void->Void = null;
+    public var onChangedCallback:Void->Void = null;
     
     public function new() {
     }
@@ -169,7 +170,7 @@ class TextInput extends TextInputBase implements IValidating {
     public var textHeight(get, null):Float;
     private function get_textHeight():Float {
         if (_text == null || _text.length == 0) {
-            return 0;
+            //return 0; // if text is zero length we still want a height
         }
 
         if (isInvalid() == true) {
@@ -217,6 +218,7 @@ class TextInput extends TextInputBase implements IValidating {
 
         _inputData.hscrollPos = value;
         invalidate(InvalidationFlags.DATA);
+        validateData(); // TODO: why is this needed??
         return value;
     }
 
@@ -241,6 +243,7 @@ class TextInput extends TextInputBase implements IValidating {
 
         _inputData.vscrollPos = value;
         invalidate(InvalidationFlags.DATA);
+        validateData(); // TODO: why is this needed??
         return value;
     }
 
@@ -274,12 +277,10 @@ class TextInput extends TextInputBase implements IValidating {
         if (flag == InvalidationFlags.ALL) {
             _isAllInvalid = true;
             //ValidationManager.instance.add(this);     //Don't need. It is validated internally in the component in a sync way
-            validate();
         } else {
             if (flag != InvalidationFlags.ALL && !_invalidationFlags.exists(flag)) {
                 _invalidationFlags.set(flag, true);
                 //ValidationManager.instance.add(this); //Don't need. It is validated internally in the component in a sync way
-                validate();
             }
         }
     }

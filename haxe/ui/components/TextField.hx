@@ -41,6 +41,11 @@ class TextField extends InteractiveComponent implements IFocusable {
         }
 
         getTextInput().multiline = false;
+        getTextInput().data.onChangedCallback = function() {
+            if (getTextInput().text != _text && hasClass(":empty") == false) {
+                text = getTextInput().text;
+            }
+        };
         registerEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
         registerEvent(UIEvent.CHANGE, _onTextChanged);
     }
@@ -48,6 +53,7 @@ class TextField extends InteractiveComponent implements IFocusable {
     private override function destroyChildren() {
         super.destroyChildren();
 
+        getTextInput().data.onChangedCallback = null;
         unregisterEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
         unregisterEvent(UIEvent.CHANGE, _onTextChanged);
 
@@ -429,7 +435,8 @@ class TextFieldLayout extends DefaultLayout {
 
         if (component.hasTextInput() == true) {
             component.getTextInput().left = xpos;
-            component.getTextInput().top = paddingTop;// (component.componentHeight / 2) - (component.getTextInput().textHeight / 2);
+            //component.getTextInput().top = paddingTop;// (component.componentHeight / 2) - (component.getTextInput().textHeight / 2);
+            component.getTextInput().top = (component.componentHeight / 2) - (component.getTextInput().textHeight / 2);
         }
     }
 
