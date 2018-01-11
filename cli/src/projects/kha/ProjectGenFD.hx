@@ -6,7 +6,7 @@ import sys.io.File;
 
 class ProjectGenFD extends ProjectGen {
     public function new() {
-        super(false);
+        super(true);
     }
     
     public override function execute(params:Params) {
