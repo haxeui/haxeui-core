@@ -20,6 +20,8 @@ class CommandFactory {
                 c = new UpdateCommand();
             case "run":
                 c = new RunCommand();
+            case "test":
+                c = new TestCommand();
             case "help":
                 c = new HelpCommand();
             case _:
