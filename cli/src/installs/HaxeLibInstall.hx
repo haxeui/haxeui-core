@@ -10,7 +10,10 @@ class HaxeLibInstall extends Install {
     
     public override function execute(params:Params) {
         for (h in _haxelibs) {
-            Util.log('TODO: install haxelibs when ready: ${h}');
+            Util.log('Updating haxelib: ${h}');
+            
+            var p = new ProcessHelper();
+            p.run("haxelib", ["install", h, "--always"]);
         }
     }
 }

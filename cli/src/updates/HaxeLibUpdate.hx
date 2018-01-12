@@ -10,7 +10,10 @@ class HaxeLibUpdate extends Update {
     
     public override function execute(params:Params) {
         for (h in _haxelibs) {
-            Util.log('TODO: update haxelibs when ready: ${h}');
+            Util.log('Updating haxelib: ${h}');
+            
+            var p = new ProcessHelper();
+            p.run("haxelib", ["update", h, "--always"]);
         }
     }
 }
