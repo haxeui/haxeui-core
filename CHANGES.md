@@ -1,5 +1,7 @@
 Change Log
 ---------
+* 0.0.3
+  * Added CLI build tool
 * 0.0.2
   * Optionbox/checkbox fixes
   * TabView tweaks and fixes

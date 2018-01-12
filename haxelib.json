@@ -4,8 +4,8 @@
     "license": "MIT",
     "tags": ["ui", "gui"],
     "description": "The core library of the HaxeUI framework",
-    "version": "0.0.2",
-    "releasenote": "Enhanced text input support",
+    "version": "0.0.3",
+    "releasenote": "Added CLI build tool",
     "contributors": ["haxeui", "ianharrigan", "_ibilon", "aW4KeNiNG"],
     "dependencies": {
         "hscript": ""
