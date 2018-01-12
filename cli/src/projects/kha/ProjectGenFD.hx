@@ -6,13 +6,15 @@ import sys.io.File;
 
 class ProjectGenFD extends ProjectGen {
     public function new() {
-        super(true);
+        super(false);
     }
     
     public override function execute(params:Params) {
         super.execute(params);
         
         Sys.setCwd(params.target);
+        
+        trace(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ");
         
         var target = "html5";
         if (Util.mapContains("windows", params.additional)) {
@@ -32,6 +34,8 @@ class ProjectGenFD extends ProjectGen {
         } else if (target == "windows") {
             
         }
+        
+        cleanUp(params);
         
         Sys.setCwd(params.cwd);
     }
