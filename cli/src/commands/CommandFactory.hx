@@ -18,6 +18,8 @@ class CommandFactory {
                 c = new InstallCommand();
             case "update":
                 c = new UpdateCommand();
+            case "run":
+                c = new RunCommand();
             case "help":
                 c = new HelpCommand();
             case _:
