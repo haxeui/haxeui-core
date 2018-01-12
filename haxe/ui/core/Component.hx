@@ -1179,7 +1179,9 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     //***********************************************************************************************************
     // Styles
     //***********************************************************************************************************
+    #if !flixel
     @:style                 public var color:Null<Color>;
+    #end
     @:style                 public var backgroundColor:Null<Color>;
     @:style                 public var borderColor:Null<Color>;
     @:style                 public var borderSize:Null<Float>;
