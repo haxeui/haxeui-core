@@ -7,6 +7,7 @@ import haxe.ui.assets.AssetPlugin;
 import haxe.ui.assets.FontInfo;
 import haxe.ui.assets.ImageInfo;
 import haxe.ui.backend.AssetsBase;
+import haxe.ui.backend.ToolkitOptions;
 import haxe.ui.util.CallbackMap;
 
 class ToolkitAssets extends AssetsBase {

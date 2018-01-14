@@ -1,5 +1,6 @@
 package haxe.ui;
 
+import haxe.ui.backend.ToolkitOptions;
 import haxe.ui.containers.Box;
 import haxe.ui.core.Component;
 import haxe.ui.core.ComponentClassMap;
