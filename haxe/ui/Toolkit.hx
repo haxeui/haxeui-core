@@ -44,7 +44,7 @@ class Toolkit {
         #end
     }
 
-    public static function init(options:Dynamic = null) {
+    public static function init(options:ToolkitOptions = null) {
         build();
         ThemeManager.instance.applyTheme(theme);
         if (options != null) {

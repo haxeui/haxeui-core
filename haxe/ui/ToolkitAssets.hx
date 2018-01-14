@@ -24,7 +24,7 @@ class ToolkitAssets extends AssetsBase {
     //***********************************************************************************************************
     public var preloadList:Array<PreloadItem> = [];
     
-    public var options:Dynamic = null;
+    public var options:ToolkitOptions = null;
 
     private var _fontCache:Map<String, FontInfo>;
     private var _fontCallbacks:CallbackMap<FontInfo>;
