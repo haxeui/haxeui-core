@@ -203,10 +203,10 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
     }
 
-    private function behaviourRun(id:String) {
+    private function behaviourRun(id:String, param:Variant = null) {
         var b:Behaviour = getBehaviour(id);
         if (b != null) {
-            b.run();
+            b.run(param);
         }
     }
 
@@ -550,6 +550,57 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     }
 
     /**
+     Adds a child component to this component instance
+    **/
+    @:dox(group = "Display tree related properties and methods")
+    public function addComponentAt(child:Component, index:Int):Component {
+        if (this.native == true) {
+            var allowChildren:Bool = getNativeConfigPropertyBool('.@allowChildren', true);
+            if (allowChildren == false) {
+                return child;
+            }
+        }
+
+        child.parentComponent = this;
+        child._isDisposed = false;
+
+        if (_children == null) {
+            _children = [];
+        }
+        _children.insert(index, child);
+
+        // TODO: duplication, but will be removed when new binding system comes into play
+        var deferredBindings:Array<DeferredBindingInfo> = getDefferedBindings();
+        if (deferredBindings != null) {
+            var itemsToRemove:Array<DeferredBindingInfo> = [];
+            for (binding in deferredBindings) {
+                var source = findComponent(binding.sourceId, null, true);
+                var target = findComponent(binding.targetId, null, true);
+                if (source != null && target != null) {
+                    source.addBinding(target, binding.transform, binding.targetProperty,  binding.sourceProperty);
+                    itemsToRemove.push(binding);
+                }
+            }
+
+            // remove found bindings
+            for (item in itemsToRemove) {
+                deferredBindings.remove(item);
+            }
+        }
+
+        handleAddComponentAt(child, index);
+        if (_ready) {
+            child.ready();
+        }
+
+        invalidateLayout();
+        if (_disabled == true) {
+            child.disabled = true;
+        }
+        return child;
+    }
+
+    /**
      Removes the specified child component from this component instance
     **/
     @:dox(group = "Display tree related properties and methods")
@@ -559,6 +610,38 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
         
         handleRemoveComponent(child, dispose);
+        if (_children != null) {
+            if (_children.remove(child)) {
+                child.parentComponent = null;
+                child.depth = -1;
+            }
+            if (invalidate == true) {
+                invalidateLayout();
+            }
+            if (dispose == true) {
+                child._isDisposed = true;
+                child.onDestroy();
+            }
+        }
+
+        return child;
+    }
+
+    /**
+     Removes the child component from this component instance
+    **/
+    @:dox(group = "Display tree related properties and methods")
+    public function removeComponentAt(index:Int, dispose:Bool = true, invalidate:Bool = true):Component {
+        if (_children == null) {
+            return null;
+        }
+        
+        if (index < 0 || index > _children.length - 1) {
+            return null;
+        }
+        
+        handleRemoveComponentAt(index, dispose);
+        var child = _children[index];
         if (_children != null) {
             if (_children.remove(child)) {
                 child.parentComponent = null;
@@ -1974,6 +2057,10 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
 
         handleSize(componentWidth, componentHeight, _style);
+        
+        if (style.clip != null && style.clip == true) {
+            handleClipRect(new Rectangle(0, 0, componentWidth, componentHeight));
+        }
     }
 
     /**
