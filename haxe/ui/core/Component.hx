@@ -2058,7 +2058,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
 
         handleSize(componentWidth, componentHeight, _style);
         
-        if (style.clip != null && style.clip == true) {
+        if (style != null && style.clip != null && style.clip == true) {
             handleClipRect(new Rectangle(0, 0, componentWidth, componentHeight));
         }
     }
