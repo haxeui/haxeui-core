@@ -28,7 +28,7 @@ class ModuleMacros {
 
             // add resources as haxe resources (plus prefix)
             for (r in m.resourceEntries) {
-                if (r.path != null && MacroHelpers.checkCondition(r.condition) == true) {
+                if (r.path != null) {
                     var resolvedPath = Context.resolvePath(r.path);
                     if (FileSystem.isDirectory(resolvedPath) && FileSystem.exists(resolvedPath)) {
                         addResources(resolvedPath, resolvedPath, r.prefix);
@@ -110,26 +110,22 @@ class ModuleMacros {
                     code += 'haxe.ui.themes.ThemeManager.instance.getTheme("${t.name}").parent = "${t.parent}";\n';
                 }
                 for (r in t.styles) {
-                    if (MacroHelpers.checkCondition(r.condition) == true) {
-                        code += 'haxe.ui.themes.ThemeManager.instance.addStyleResource("${t.name}", "${r.resource}");\n';
-                    }
+                    code += 'haxe.ui.themes.ThemeManager.instance.addStyleResource("${t.name}", "${r.resource}");\n';
                 }
             }
 
             // handle plugins
             for (p in m.plugins) {
-                if (MacroHelpers.checkCondition(p.condition) == true) {
-                    switch (p.type) {
-                        case "asset":
-                            code += 'var assetPlugin:${p.className} = new ${p.className}();\n';
-                            for (propName in p.config.keys()) {
-                                var propValue = p.config.get(propName);
-                                code += 'assetPlugin.setProperty("${propName}", "${propValue}");\n';
-                            }
-                            code += 'ToolkitAssets.instance.addPlugin(assetPlugin);\n';
-                        default:
-                            trace("WARNING: unknown plugin type: " + p.type);
-                    }
+                switch (p.type) {
+                    case "asset":
+                        code += 'var assetPlugin:${p.className} = new ${p.className}();\n';
+                        for (propName in p.config.keys()) {
+                            var propValue = p.config.get(propName);
+                            code += 'assetPlugin.setProperty("${propName}", "${propValue}");\n';
+                        }
+                        code += 'ToolkitAssets.instance.addPlugin(assetPlugin);\n';
+                    default:
+                        trace("WARNING: unknown plugin type: " + p.type);
                 }
             }
 
@@ -228,7 +224,7 @@ class ModuleMacros {
             var moduleParser = ModuleParser.get(MacroHelpers.extension(filePath));
             if (moduleParser != null) {
                 try {
-                    var module:Module = moduleParser.parse(File.getContent(filePath));
+                    var module:Module = moduleParser.parse(File.getContent(filePath), Context.getDefines());
                     module.validate();
                     _modules.push(module);
                     return true;

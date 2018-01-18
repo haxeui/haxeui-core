@@ -264,6 +264,7 @@ class MacroHelpers {
         return arr;
     }
 
+    /*
     public static function checkCondition(condition:String):Bool {
         var result:Bool = true;
         if (condition != null) {
@@ -286,6 +287,7 @@ class MacroHelpers {
         }
         return result;
     }
+    */
 
     public static function buildGenericConfigCode(c:GenericConfig, name:String, v:Int = 0):String {
         var code:String = "";

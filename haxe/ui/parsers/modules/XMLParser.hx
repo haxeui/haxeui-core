@@ -6,7 +6,7 @@ class XMLParser extends ModuleParser {
         super();
     }
 
-    public override function parse(data:String):Module {
+    public override function parse(data:String, defines:Map<String, String>):Module {
         var module:Module = new Module();
 
         var xml:Xml = Xml.parse(data).firstElement();
@@ -15,24 +15,32 @@ class XMLParser extends ModuleParser {
         for (el in xml.elements()) {
             var nodeName:String = el.nodeName;
 
-            if (nodeName == "resources") {
+            if (nodeName == "resources" && checkCondition(el, defines) == true) {
                 for (resourceNode in el.elementsNamed("resource")) {
+                    if (checkCondition(resourceNode, defines) == false) {
+                        continue;
+                    }
                     var resourceEntry:Module.ModuleResourceEntry = new Module.ModuleResourceEntry();
                     resourceEntry.path = resourceNode.get("path");
                     resourceEntry.prefix = resourceNode.get("prefix");
-                    resourceEntry.condition = buildCondition(el, resourceNode);
                     module.resourceEntries.push(resourceEntry);
                 }
-            } else if (nodeName == "components") {
+            } else if (nodeName == "components" && checkCondition(el, defines) == true) {
                 for (classNode in el.elementsNamed("class")) {
+                    if (checkCondition(classNode, defines) == false) {
+                        continue;
+                    }
                     var classEntry:Module.ModuleComponentEntry = new Module.ModuleComponentEntry();
                     classEntry.classPackage = classNode.get("package");
                     classEntry.className = classNode.get("name");
                     classEntry.classAlias = classNode.get("alias");
                     module.componentEntries.push(classEntry);
                 }
-            } else if (nodeName == "scriptlets") {
+            } else if (nodeName == "scriptlets" && checkCondition(el, defines) == true) {
                 for (classNode in el.elementsNamed("import")) {
+                    if (checkCondition(classNode, defines) == false) {
+                        continue;
+                    }
                     var scriptletEntry:Module.ModuleScriptletEntry = new Module.ModuleScriptletEntry();
                     scriptletEntry.classPackage = classNode.get("package");
                     scriptletEntry.className = classNode.get("class");
@@ -41,21 +49,29 @@ class XMLParser extends ModuleParser {
                     scriptletEntry.staticClass = (classNode.get("static") == "true");
                     module.scriptletEntries.push(scriptletEntry);
                 }
-            } else if (nodeName == "themes") {
+            } else if (nodeName == "themes" && checkCondition(el, defines) == true) {
                 for (themeNode in el.elements()) {
+                    if (checkCondition(themeNode, defines) == false) {
+                        continue;
+                    }
                     var theme:Module.ModuleThemeEntry = new Module.ModuleThemeEntry();
                     theme.name = themeNode.nodeName;
                     theme.parent = themeNode.get("parent");
                     for (styleNodes in themeNode.elementsNamed("style")) {
+                        if (checkCondition(styleNodes, defines) == false) {
+                            continue;
+                        }
                         var styleEntry:ModuleThemeStyleEntry = new ModuleThemeStyleEntry();
                         styleEntry.resource = styleNodes.get("resource");
-                        styleEntry.condition = buildCondition(styleNodes, themeNode);
                         theme.styles.push(styleEntry);
                     }
                     module.themeEntries.set(theme.name, theme);
                 }
-            } else if (nodeName == "plugins") {
+            } else if (nodeName == "plugins" && checkCondition(el, defines) == true) {
                 for (pluginNode in el.elementsNamed("plugin")) {
+                    if (checkCondition(pluginNode, defines) == false) {
+                        continue;
+                    }
                     var plugin:Module.ModulePluginEntry = new Module.ModulePluginEntry();
                     for (attr in pluginNode.attributes()) {
                         var value = pluginNode.get(attr);
@@ -68,18 +84,23 @@ class XMLParser extends ModuleParser {
                                 plugin.config.set(attr, value);
                         }
                     }
-                    plugin.condition = buildCondition(el, pluginNode);
                     module.plugins.push(plugin);
                 }
-            } else if (nodeName == "properties") {
+            } else if (nodeName == "properties" && checkCondition(el, defines) == true) {
                 for (propertyNode in el.elementsNamed("property")) {
+                    if (checkCondition(propertyNode, defines) == false) {
+                        continue;
+                    }
                     var property:Module.ModulePropertyEntry = new Module.ModulePropertyEntry();
                     property.name = propertyNode.get("name");
                     property.value = propertyNode.get("value");
                     module.properties.push(property);
                 }
-            } else if (nodeName == "animations") {
+            } else if (nodeName == "animations" && checkCondition(el, defines) == true) {
                 for (animationNode in el.elementsNamed("animation")) {
+                    if (checkCondition(animationNode, defines) == false) {
+                        continue;
+                    }
                     var animation:Module.ModuleAnimationEntry = new Module.ModuleAnimationEntry();
                     animation.id = animationNode.get("id");
                     animation.ease = animationNode.get("ease");
@@ -111,8 +132,11 @@ class XMLParser extends ModuleParser {
 
                     module.animations.push(animation);
                 }
-            } else if (nodeName == "preload") {
+            } else if (nodeName == "preload" && checkCondition(el, defines) == true) {
                 for (propertyNode in el.elements()) {
+                    if (checkCondition(propertyNode, defines) == false) {
+                        continue;
+                    }
                     var entry:Module.ModulePreloadEntry = new Module.ModulePreloadEntry();
                     entry.type = propertyNode.nodeName;
                     entry.id = propertyNode.get("id");
@@ -124,19 +148,12 @@ class XMLParser extends ModuleParser {
         return module;
     }
 
-    private function buildCondition(parentNode:Xml, node:Xml):String {
-        var condition:String = parentNode.get("condition");
-        if (parentNode.get("if") != null) {
-            condition = '${parentNode.get("if")}';
-        }
-
-        if (node.get("condition") != null) {
-            condition = node.get("condition");
-        }
+    private function checkCondition(node:Xml, defines:Map<String, String>):Bool {
         if (node.get("if") != null) {
-            condition = '${node.get("if")}';
+            var condition = "haxeui_" + node.get("if");
+            return defines.exists(condition);
         }
-
-        return condition;
+        
+        return true;
     }
 }
