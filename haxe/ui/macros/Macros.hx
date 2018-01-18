@@ -12,7 +12,7 @@ class Macros {
         var pos = Context.currentPos();
         var fields = Context.getBuildFields();
 
-        var bindableFields:Array<Field> = getFieldsWithMeta("bindable", fields);
+        var bindableFields:Array<Field> = MacroHelpers.getFieldsWithMeta("bindable", fields);
         if (bindableFields.length != 0) {
             // build get property
             var code:String = "";
@@ -26,7 +26,7 @@ class Macros {
             code += "}\n";
 
             var access:Array<Access> = [APrivate, AOverride];
-            addFunction("getProperty", Context.parseInlineString(code, pos), access, fields, pos);
+            MacroHelpers.addFunction("getProperty", Context.parseInlineString(code, pos), access, fields, pos);
 
             // build set property
             var code = "";
@@ -39,7 +39,7 @@ class Macros {
             code += "return super.setProperty(name, v);";
             code += "}\n";
             var access:Array<Access> = [APrivate, AOverride];
-            addFunction("setProperty", Context.parseInlineString(code, pos), access, fields, pos);
+            MacroHelpers.addFunction("setProperty", Context.parseInlineString(code, pos), access, fields, pos);
         }
 
         return fields;
@@ -48,7 +48,7 @@ class Macros {
     macro public static function addClonable():Array<Field> {
         var pos = haxe.macro.Context.currentPos();
         var fields = haxe.macro.Context.getBuildFields();
-        if (hasInterface(Context.getLocalType(), "haxe.ui.core.IClonable") == false) {
+        if (MacroHelpers.hasInterface(Context.getLocalType(), "haxe.ui.core.IClonable") == false) {
             return fields;
         }
 
@@ -78,9 +78,9 @@ class Macros {
             return "c." + field.name + " = this." + field.name;
         }
 
-        var currentCloneFn = getFunction("cloneComponent", fields);
+        var currentCloneFn = MacroHelpers.getFunction(fields, "cloneComponent");
         var t:haxe.macro.Type = Context.getLocalType();
-        var className:String = getClassNameFromType(t);
+        var className:String = MacroHelpers.getClassNameFromType(t);
         var filePath = StringTools.replace(className, ".", "/");
         filePath = "src/" + filePath + ".hx";
         pos = Context.makePosition( { min: 0, max:0, file: filePath});
@@ -102,13 +102,13 @@ class Macros {
 
             if (useSelf == false) {
                 code += "var c:" + className + " = cast super.cloneComponent();\n";
-                for (f in getFieldsWithMeta("clonable", fields)) {
+                for (f in MacroHelpers.getFieldsWithMeta("clonable", fields)) {
                     code += getFieldCloneCode(f) + ";\n";
                 }
 
             } else {
                 code += "var c:" + className + " = self();\n";
-                for (f in getFieldsWithMeta("clonable", fields)) {
+                for (f in MacroHelpers.getFieldsWithMeta("clonable", fields)) {
                     code += getFieldCloneCode(f) + ";\n";
                 }
 
@@ -123,7 +123,7 @@ class Macros {
             if (useSelf == false) {
                 access.push(AOverride);
             }
-            addFunction("cloneComponent", Context.parseInlineString(code, pos), access, fields, pos);
+            MacroHelpers.addFunction("cloneComponent", Context.parseInlineString(code, pos), access, fields, pos);
         } else {
             var n = 0;
             var code:String = "";
@@ -133,18 +133,18 @@ class Macros {
                 code += "var c:" + className + " = self()\n";
             }
 
-            insertLine(currentCloneFn, Context.parseInlineString(code, pos), n++);
+            MacroHelpers.insertLine(currentCloneFn, Context.parseInlineString(code, pos), n++);
 
-            for (f in getFieldsWithMeta("clonable", fields)) {
+            for (f in MacroHelpers.getFieldsWithMeta("clonable", fields)) {
                 code = getFieldCloneCode(f);
-                insertLine(currentCloneFn, Context.parseInlineString(code, pos), n++);
+                MacroHelpers.insertLine(currentCloneFn, Context.parseInlineString(code, pos), n++);
             }
 
             if (useSelf == true) {
-                insertLine(currentCloneFn, Context.parseInlineString("if (this.childComponents.length != c.childComponents.length) for (child in this.childComponents) c.addComponent(child.cloneComponent())", pos), n++);
+                MacroHelpers.insertLine(currentCloneFn, Context.parseInlineString("if (this.childComponents.length != c.childComponents.length) for (child in this.childComponents) c.addComponent(child.cloneComponent())", pos), n++);
             }
 
-            insertLine(currentCloneFn, Context.parseInlineString("return c", pos), -1);
+            MacroHelpers.insertLine(currentCloneFn, Context.parseInlineString("return c", pos), -1);
         }
 
         var code:String = "";
@@ -155,7 +155,7 @@ class Macros {
         if (useSelf == false) {
             access.push(AOverride);
         }
-        addFunction("self", Context.parseInlineString(code, pos), access, fields, pos);
+        MacroHelpers.addFunction("self", Context.parseInlineString(code, pos), access, fields, pos);
 
         return fields;
     }
@@ -164,7 +164,7 @@ class Macros {
         var pos = haxe.macro.Context.currentPos();
         var fields = haxe.macro.Context.getBuildFields();
 
-        for (f in getFieldsWithMeta("style", fields)) {
+        for (f in MacroHelpers.getFieldsWithMeta("style", fields)) {
             var name = f.name;
             f.name = "_" + name;
             f.access = [APrivate];
@@ -213,7 +213,7 @@ class Macros {
             meta.push( { name: ":dox", pos: pos, params: params } );
             
             var kind = FProp("get", "set", type);
-            if (hasMetaParam(getMeta(f, "style"), "writeonly")) {
+            if (MacroHelpers.hasMetaParam(MacroHelpers.getMeta(f, "style"), "writeonly")) {
                 kind = FProp("null", "set", type);
             }
             
@@ -228,7 +228,7 @@ class Macros {
                         });
 
             // add getter function
-            if (hasMetaParam(getMeta(f, "style"), "writeonly") == false) {
+            if (MacroHelpers.hasMetaParam(MacroHelpers.getMeta(f, "style"), "writeonly") == false) {
                 var code = "function ():" + typeName + " {\n";
                 var defaultValue:Dynamic = null;
                 if (typeName == "Float" || typeName == "Int") {
@@ -256,16 +256,16 @@ class Macros {
             
             // add setter funtion
             var code = "function (value:" + typeName + "):" + typeName + " {\n";
-            if (hasMetaParam(getMeta(f, "style"), "writeonly") == false) {
+            if (MacroHelpers.hasMetaParam(MacroHelpers.getMeta(f, "style"), "writeonly") == false) {
                 code += "if (customStyle." + name + " == value) return value;\n";
             }
             code += "if (_style == null) _style = new Style();\n";
             code += "customStyle." + name + " = value;\n";
             code += "invalidateStyle();\n";
-            if (hasMetaParam(getMeta(f, "style"), "layout")) {
+            if (MacroHelpers.hasMetaParam(MacroHelpers.getMeta(f, "style"), "layout")) {
                 code += "invalidateLayout();\n";
             }
-            if (hasMetaParam(getMeta(f, "style"), "layoutparent")) {
+            if (MacroHelpers.hasMetaParam(MacroHelpers.getMeta(f, "style"), "layoutparent")) {
                 code += "if (parentComponent != null) { parentComponent.invalidateLayout(); };";
             }
             code += "return value;\n";
@@ -289,158 +289,5 @@ class Macros {
         return fields;
     }
 
-    private static function insertLine(fn:{ expr : { pos : haxe.macro.Position, expr : haxe.macro.ExprDef } }, e:Expr, location:Int):Void {
-        fn.expr = switch (fn.expr.expr) {
-            case EBlock(el): macro $b{insertExpr(el, location, e)};
-            case _: macro $b { insertExpr([fn.expr], location, e) }
-        }
-    }
-
-    private static function insertExpr(arr:Array<Expr>, pos:Int, item:Expr):Array<Expr> {
-        if (pos == -1) {
-            arr.push(item);
-        } else {
-            arr.insert(pos, item);
-        }
-        return arr;
-    }
-
-    private static function addFunction(name:String, e:Expr, access:Array<Access>, fields:Array<Field>, pos:Position):Void {
-        var fn = switch (e).expr {
-            case EFunction(_, f): f;
-            case _: throw "false";
-        }
-        fields.push( { name : name, doc : null, meta : [], access : access, kind : FFun(fn), pos : pos } );
-    }
-
-    private static function getFunction(name:String, fields:Array<Field>) {
-        var fn = null;
-        for (f in fields) {
-            if (f.name == name) {
-                switch (f.kind) {
-                    case FFun(f):
-                            fn = f;
-                        break;
-                    default:
-                }
-                break;
-            }
-        }
-        return fn;
-    }
-
-    private static function getFieldsWithMeta(meta:String, fields:Array<Field>):Array<Field> {
-        var arr:Array<Field> = new Array<Field>();
-
-        for (f in fields) {
-            if (hasMeta(f, meta)) {
-                arr.push(f);
-            }
-        }
-
-        return arr;
-    }
-
-    private static function hasMeta(f:Field, meta:String):Bool {
-        return (getMeta(f, meta) != null);
-    }
-
-    private static function getMeta(f:Field, meta:String):MetadataEntry {
-        var entry:MetadataEntry = null;
-        for (m in f.meta) {
-            if (m.name == meta || m.name == ":" + meta) {
-                entry = m;
-                break;
-            }
-        }
-        return entry;
-    }
-    
-    private static function hasMetaParam(meta:MetadataEntry, param:String):Bool {
-        var has:Bool = false;
-        for (p in meta.params) {
-            switch (p.expr) {
-                case EConst(CIdent(c)):
-                    if (c == param) {
-                        has = true;
-                        break;
-                    }
-                case _:
-            }
-        }
-        return has;
-    }
-    
-    private static function hasInterface(t:haxe.macro.Type, interfaceRequired:String):Bool {
-        var has:Bool = false;
-        switch (t) {
-                case TInst(t, _): {
-                    while (t != null) {
-                        for (i in t.get().interfaces) {
-                            var interfaceName:String = i.t.toString();
-                            if (interfaceName == interfaceRequired) {
-                                has = true;
-                                break;
-                            }
-                        }
-
-                        if (has == false) {
-                            if (t.get().superClass != null) {
-                                t = t.get().superClass.t;
-                            } else {
-                                t = null;
-                            }
-                        } else {
-                            break;
-                        }
-                    }
-                }
-                case _:
-        }
-
-        return has;
-    }
-
-    static function mkPath(name:String):TypePath {
-        var parts = name.split('.');
-        return {
-            sub: null,
-            params: [],
-            name: parts.pop(),
-            pack: parts
-        }
-    }
-
-    static function mkType(s:String):ComplexType {
-        return TPath(mkPath(s));
-    }
-
-    private static function getSuperClass(t:haxe.macro.Type) {
-        var superClass = null;
-        switch (t) {
-                case TInst(t, _): {
-                    superClass = t.get().superClass;
-                }
-                case _:
-        }
-        return superClass;
-    }
-
-    private static function getClassNameFromType(t:haxe.macro.Type):String {
-        var className:String = "";
-        switch (t) {
-                case TAnonymous(t): className = t.toString();
-                case TMono(t): className = t.toString();
-                case TLazy(t): className = "";
-                case TFun(t, _): className = t.toString();
-                case TDynamic(t): className = "";
-                case TInst(t, _): className = t.toString();
-                case TEnum(t, _): className = t.toString();
-                case TType(t, _): className = t.toString();
-                case TAbstract(t, _): className = t.toString();
-        }
-        return className;
-    }
-    
     #end
 }

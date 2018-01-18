@@ -24,8 +24,6 @@ class ModuleMacros {
 
         loadModules();
         for (m in _modules) {
-            //trace("Processing module: " + m.id);
-
             // add resources as haxe resources (plus prefix)
             for (r in m.resourceEntries) {
                 if (r.path != null) {
@@ -74,35 +72,6 @@ class ModuleMacros {
                     }
                 }
             }
-
-            // load component classes from all modules
-            /* this has moved to its own function in order to be able to call it from other places like build macros
-            for (c in m.componentEntries) {
-                var types:Array<haxe.macro.Type> = null;
-                if (c.className != null) {
-                    types = Context.getModule(c.className);
-                } else if (c.classPackage != null) {
-                    types = MacroHelpers.typesFromPackage(c.classPackage);
-                }
-
-                if (types != null) {
-                    for (t in types) {
-                        if (MacroHelpers.hasSuperClass(t, "haxe.ui.core.Component") == true) {
-                            var resolvedClass:String = MacroHelpers.classNameFromType(t);
-                            if (c.className != null && resolvedClass != c.className) {
-                                continue;
-                            }
-                            var classAlias:String = c.classAlias;
-                            if (classAlias == null) {
-                                classAlias = resolvedClass.substr(resolvedClass.lastIndexOf(".") + 1, resolvedClass.length);
-                            }
-                            classAlias = classAlias.toLowerCase();
-                            ComponentClassMap.register(classAlias, resolvedClass);
-                        }
-                    }
-                }
-            }
-            */
 
             // setup themes
             for (t in m.themeEntries) {
@@ -255,7 +224,6 @@ class ModuleMacros {
                     resourceName = resourceName.substr(1, resourceName.length);
                 }
                 Context.addResource(resourceName, File.getBytes(file));
-                //trace("Added resource '" + resourceName + "' [" + file + "]");
             }
         }
     }
