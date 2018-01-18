@@ -1,8 +1,6 @@
 package haxe.ui.core;
 
-import haxe.ui.validation.IValidating;
 import haxe.ui.backend.ComponentBase;
-import haxe.ui.core.Component.DeferredBindingInfo;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.DelegateLayout;
 import haxe.ui.layouts.Layout;
@@ -18,8 +16,9 @@ import haxe.ui.util.Rectangle;
 import haxe.ui.util.Size;
 import haxe.ui.util.StringUtil;
 import haxe.ui.util.Variant;
-import haxe.ui.validation.ValidationManager;
+import haxe.ui.validation.IValidating;
 import haxe.ui.validation.InvalidationFlags;
+import haxe.ui.validation.ValidationManager;
 
 @:dox(hide)
 class BindingInfo {
