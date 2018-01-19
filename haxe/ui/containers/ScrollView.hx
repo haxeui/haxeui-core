@@ -136,33 +136,57 @@ class ScrollView extends Component {
 
     public var contentWidth(get, set):Null<Float>;
     private function get_contentWidth():Null<Float> {
+        if (_contents == null) {
+            return 0;
+        }
         return _contents.width;
     }
     private function set_contentWidth(value:Null<Float>):Null<Float> {
+        if (_contents == null) {
+            return value;
+        }
         return _contents.width = value;
     }
 
     public var contentHeight(get, set):Null<Float>;
     private function get_contentHeight():Null<Float> {
+        if (_contents == null) {
+            return 0;
+        }
         return _contents.height;
     }
     private function set_contentHeight(value:Null<Float>):Null<Float> {
+        if (_contents == null) {
+            return value;
+        }
         return _contents.height = value;
     }
 
     public var percentContentWidth(get, set):Null<Float>;
     private function get_percentContentWidth():Null<Float> {
+        if (_contents == null) {
+            return 0;
+        }
         return _contents.percentWidth;
     }
     private function set_percentContentWidth(value:Null<Float>):Null<Float> {
+        if (_contents == null) {
+            return value;
+        }
         return _contents.percentWidth = value;
     }
 
     public var percentContentHeight(get, set):Null<Float>;
     private function get_percentContentHeight():Null<Float> {
+        if (_contents == null) {
+            return 0;
+        }
         return _contents.percentHeight;
     }
     private function set_percentContentHeight(value:Null<Float>):Null<Float> {
+        if (_contents == null) {
+            return value;
+        }
         return _contents.percentHeight = value;
     }
 
