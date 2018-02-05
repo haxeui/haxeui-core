@@ -14,7 +14,7 @@ class MacroHelpers {
                                                       "/lib/yaml/",
                                                       "/lib/hscript/",
                                                       "/haxe/std/",
-                                                      "bin/"];
+                                                      "/.git"];
 
     #if macro
     public static function exprToMap(params:Expr):Map<String, Dynamic> {
