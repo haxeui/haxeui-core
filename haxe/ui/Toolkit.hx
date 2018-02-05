@@ -1,5 +1,6 @@
 package haxe.ui;
 
+import haxe.ui.backend.ToolkitOptions;
 import haxe.ui.containers.Box;
 import haxe.ui.core.Component;
 import haxe.ui.core.ComponentClassMap;
@@ -45,7 +46,7 @@ class Toolkit {
         #end
     }
 
-    public static function init(options:Dynamic = null) {
+    public static function init(options:ToolkitOptions = null) {
         build();
         ThemeManager.instance.applyTheme(theme);
         if (options != null) {

@@ -348,7 +348,7 @@ class ButtonDefaultIconBehaviour extends Behaviour {
             icon.addClass("icon");
             icon.id = "button-icon";
             icon.scriptAccess = false;
-            button.addComponent(icon);
+            button.addComponentAt(icon, 0);
         }
 
         icon.resource = value;

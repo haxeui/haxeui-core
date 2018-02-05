@@ -5,15 +5,16 @@ import projects.Post;
 import sys.io.File;
 
 class ProjectGen extends Post {
-    public function new() {
+    private var _cleanUp:Bool = true;
+    public function new(cleanUp:Bool = true) {
         super();
+        _cleanUp = cleanUp;
     }
     
     public override function execute(params:Params) {
         Sys.setCwd(params.target);
         
         var target = "html5";
-        trace(params.additional);
         if (Util.mapContains("windows", params.additional)) {
             target = "windows";
         }
@@ -28,7 +29,6 @@ class ProjectGen extends Post {
             File.copy("temp/kha/project-html5.hxml", "kha-html5.hxml");
             Util.copyDir("temp/kha/html5", "build/kha/html5");
             Util.copyDir("temp/kha/html5-resources", "build/kha/html5-resources");
-            Util.removeDir("temp");
             
             var hxml = new HxmlFile();
             hxml.load("kha-html5.hxml");
@@ -43,6 +43,27 @@ class ProjectGen extends Post {
             var hxml = new HxmlFile();
             hxml.load("kha-windows.hxml");
             hxml.changeOutput("build/kha/windows-build/Sources");
+        }
+        
+        Sys.setCwd(params.cwd);
+        
+        if (_cleanUp == true) {
+            cleanUp(params);
+        }
+    }
+    
+    private function cleanUp(params:Params) {
+        Sys.setCwd(params.target);
+        
+        var target = "html5";
+        if (Util.mapContains("windows", params.additional)) {
+            target = "windows";
+        }
+        
+        if (target == "html5") {
+            Util.removeDir("temp");
+        } else if (target == "windows") {
+            
         }
         
         Sys.setCwd(params.cwd);
