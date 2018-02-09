@@ -91,6 +91,8 @@ class LabelLayout extends DefaultLayout {
             #elseif (pixijs)
             component.getTextDisplay().textField.style.wordWrapWidth = component.getTextDisplay().width;
             component.getTextDisplay().wordWrap = true;
+            #else
+            component.getTextDisplay().wordWrap = true;
             #end
         }
         
