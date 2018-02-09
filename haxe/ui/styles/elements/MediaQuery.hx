@@ -1,4 +1,5 @@
 package haxe.ui.styles.elements;
+import haxe.ui.core.Platform;
 import haxe.ui.core.Screen;
 import haxe.ui.styles.StyleSheet;
 
@@ -41,6 +42,8 @@ class MediaQuery {
                     } else if (v == "portrait") {
                         b = b && (Screen.instance.height > Screen.instance.width);
                     }
+                case "backend":
+                    b = b && (Backend.id == ValueTools.string(d.value));
                 case _:
                     #if debug
                     trace('WARN: media query "${d.directive}" not recognized');
