@@ -43,9 +43,9 @@ class Parser {
             var data = extractDirectives(k);
             
             var keyframes = new Array<AnimationKeyFrame>();
-            var arr = data.split("\n");
+            var arr = data.split("}");
             for (a in arr) {
-                a = StringTools.trim(a);
+                a = StringTools.trim(a) + "}";
                 var keyframe = new AnimationKeyFrame();
                 keyframe.time = ValueTools.parse(extractSelector(a));
                 keyframe.directives = parseDirectives(extractDirectives(a));
