@@ -1,5 +1,6 @@
 package haxe.ui.parsers.ui.resolvers;
 
+import haxe.io.Path;
 import haxe.ui.util.StringUtil;
 
 #if (macro || sys)
@@ -24,7 +25,7 @@ class FileResourceResolver extends ResourceResolver {
 
     #if (macro || sys)
     public override function getResourceData(r:String):String {
-        var f:String = _rootDir + r;
+        var f:String = Path.normalize(_rootDir + "/" + r);
         var data:String = null;
         if (FileSystem.exists(f)) {
             data = StringUtil.replaceVars(File.getContent(f), _params);
