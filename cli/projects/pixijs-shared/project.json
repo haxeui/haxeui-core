@@ -1,0 +1,18 @@
+{
+    "name": "pixijs-shared",
+    "type": "template",
+    "directories": [
+        "${target}/build/pixijs",
+        "${target}/build/pixijs/libs"
+    ],
+    "templates": [
+        { "src": "libs/pixi.js", "dst": "${target}/build/pixijs/libs/pixi.js"},
+        { "src": "libs/pixi.js.map", "dst": "${target}/build/pixijs/libs/pixi.js.map"},
+        { "src": "libs/pixi.min.js", "dst": "${target}/build/pixijs/libs/pixi.min.js"},
+        { "src": "libs/pixi.min.js.map", "dst": "${target}/build/pixijs/libs/pixi.min.js.map"},
+        { "src": "libs/stats.js", "dst": "${target}/build/pixijs/libs/stats.js"},
+        { "src": "libs/stats.min.js", "dst": "${target}/build/pixijs/libs/stats.min.js"},
+    
+        { "src": "index.html", "dst": "${target}/build/pixijs/index.html"}
+    ]
+}

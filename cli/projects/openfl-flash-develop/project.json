@@ -1,0 +1,10 @@
+{
+    "name": "openfl-flash-develop",
+    "type": "template",
+    "subProjects": [
+        "shared", "openfl-shared"
+    ],
+    "templates": [
+        { "src": "openfl.hxproj", "dst": "${target}/openfl.hxproj"}
+    ]
+}

@@ -15,11 +15,15 @@ class BasicItemRenderer extends ItemRenderer {
 
         var icon:Image = new Image();
         icon.id = "icon";
+        icon.verticalAlign = "center";
+        icon.hide();
         hbox.addComponent(icon);
 
         var label:Label = new Label();
         label.id = "value";
         label.percentWidth = 100;
+        label.verticalAlign = "center";
+        label.hide();
         hbox.addComponent(label);
 
         addComponent(hbox);

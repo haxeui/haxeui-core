@@ -1,0 +1,9 @@
+{
+    "name": "nme",
+    "type": "template",
+    "subProjects": [
+        "shared", "nme-shared"
+    ],
+    "templates": [
+    ]
+}

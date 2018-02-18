@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project version="2">
+  <!-- Output SWF options -->
+  <output>
+    <movie outputType="CustomBuild" />
+    <movie input="" />
+    <movie path="application.xml" />
+    <movie fps="60" />
+    <movie width="800" />
+    <movie height="600" />
+    <movie version="0" />
+    <movie minorVersion="0" />
+    <movie platform="Lime" />
+    <movie background="FFFFFF" />
+  </output>
+  <!-- Other classes to be compiled into your SWF -->
+  <classpaths>
+    <class path="src" />
+  </classpaths>
+  <!-- Build options -->
+  <build>
+    <option directives="lime=5.4.0&#xA;openfl=6.1.0&#xA;actuate=1.8.7&#xA;haxeui-core=0.0.0&#xA;haxeui-openfl=0.0.0&#xA;tools=5.4.0&#xA;no-compilation&#xA;native&#xA;lime-native&#xA;lime-vorbis&#xA;openfl-native&#xA;lime-cffi&#xA;android&#xA;mobile&#xA;android&#xA;android-9&#xA;display" />
+    <option flashStrict="False" />
+    <option noInlineOnDebug="False" />
+    <option mainClass="ApplicationMain" />
+    <option enabledebug="False" />
+    <option additional="--macro lime.Lib.extraParams()&#xA;--macro openfl._internal.utils.ExtraParams.include()&#xA;--remap flash:openfl&#xA;#--macro keep(&quot;Main&quot;)" />
+  </build>
+  <!-- haxelib libraries -->
+  <haxelib>
+    <library name="hscript" />
+  </haxelib>
+  <!-- Class files to compile (other referenced classes will automatically be included) -->
+  <compileTargets>
+    <!-- example: <compile path="..." /> -->
+  </compileTargets>
+  <!-- Paths to exclude from the Project Explorer tree -->
+  <hiddenPaths>
+    <hidden path="obj" />
+  </hiddenPaths>
+  <!-- Executed before build -->
+  <preBuildCommand>"$(CompilerPath)/haxelib" run lime build "$(OutputFile)" $(TargetBuild) -$(BuildConfig) -Dfdb</preBuildCommand>
+  <!-- Executed after build -->
+  <postBuildCommand alwaysRun="False" />
+  <!-- Other project options -->
+  <options>
+    <option showHiddenPaths="False" />
+    <option testMovie="Custom" />
+    <option testMovieCommand="" />
+  </options>
+  <!-- Plugin storage -->
+  <storage />
+</project>

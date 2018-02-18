@@ -34,15 +34,6 @@ class Scroll extends InteractiveComponent {
         ]);
     }
 
-    private override function create() {
-        super.create();
-
-        behaviourSet("min", _min);
-        behaviourSet("max", _max);
-        behaviourSet("pos", _pos);
-        behaviourSet("pageSize", _pageSize);
-    }
-
     private override function createChildren() {
         if (componentWidth <= 0) {
             componentWidth = 100;
@@ -50,6 +41,8 @@ class Scroll extends InteractiveComponent {
         if (componentHeight <= 0) {
             componentHeight = 100;
         }
+
+        registerEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
 
         if (_deincButton == null) {
             _deincButton = new Button();
@@ -89,8 +82,6 @@ class Scroll extends InteractiveComponent {
             _thumb.registerEvent(MouseEvent.MOUSE_DOWN, _onThumbMouseDown);
             addComponent(_thumb);
         }
-
-        registerEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
     }
 
     //***********************************************************************************************************
@@ -103,6 +94,32 @@ class Scroll extends InteractiveComponent {
     private override function set_value(value:Variant):Variant {
         pos = value;
         return value;
+    }
+
+    //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+
+    private override function validateData() {
+        if (behaviourGet("min") != _min) {
+            behaviourSet("min", _min);
+        }
+
+        if (behaviourGet("max") != _max) {
+            behaviourSet("max", _max);
+        }
+
+        if (behaviourGet("pageSize") != _pageSize) {
+            behaviourSet("pageSize", _pageSize);
+        }
+
+        if (behaviourGet("pos") != _pos) {
+            behaviourSet("pos", _pos);
+
+            var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
+            dispatch(changeEvent);
+            handleBindings(["value"]);
+        }
     }
 
     //***********************************************************************************************************
@@ -129,10 +146,7 @@ class Scroll extends InteractiveComponent {
 
         if (value != _pos) {
             _pos = value;
-            behaviourSet("pos", value);
-            var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
-            dispatch(changeEvent);
-            handleBindings(["value"]);
+            invalidateData();
         }
         return value;
     }
@@ -167,7 +181,8 @@ class Scroll extends InteractiveComponent {
             if (_pos < _min) {
                 _pos = _min;
             }
-            behaviourSet("min", value);
+
+            invalidateData();
         }
         return value;
     }
@@ -187,7 +202,8 @@ class Scroll extends InteractiveComponent {
             if (_pos > _max) {
                 _pos = _max;
             }
-            behaviourSet("max", value);
+
+            invalidateData();
         }
         return value;
     }
@@ -207,7 +223,7 @@ class Scroll extends InteractiveComponent {
         }
 
         _pageSize = value;
-        behaviourSet("pageSize", value);
+        invalidateData();
         return value;
     }
 
@@ -285,35 +301,79 @@ class Scroll extends InteractiveComponent {
 @:dox(hide)
 @:access(haxe.ui.components.Scroll)
 class ScrollDefaultMinBehaviour extends Behaviour {
+    private var _value:Float = 0;
+
     public override function set(value:Variant) {
+        if (_value == value) {
+            _value = value;
+        }
+        _value = value;
+
         var scroll:Scroll = cast _component;
         scroll.invalidateLayout();
+    }
+
+    public override function get():Variant {
+        return _value;
     }
 }
 
 @:dox(hide)
 @:access(haxe.ui.components.Scroll)
 class ScrollDefaultMaxBehaviour extends Behaviour {
+    private var _value:Float = 0;
+
     public override function set(value:Variant) {
+        if (_value == value) {
+            return;
+        }
+        _value = value;
+
         var scroll:Scroll = cast _component;
         scroll.invalidateLayout();
+    }
+
+    public override function get():Variant {
+        return _value;
     }
 }
 
 @:dox(hide)
 @:access(haxe.ui.components.Scroll)
 class ScrollDefaultPosBehaviour extends Behaviour {
+    private var _value:Float = 0;
+
     public override function set(value:Variant) {
+        if (_value == value) {
+            return;
+        }
+        _value = value;
+
         var scroll:Scroll = cast _component;
         scroll.invalidateLayout();
+    }
+
+    public override function get():Variant {
+        return _value;
     }
 }
 
 @:dox(hide)
 @:access(haxe.ui.components.Scroll)
 class ScrollDefaultPageSizeBehaviour extends Behaviour {
+    private var _value:Float = 0;
+
     public override function set(value:Variant) {
+        if (_value == value) {
+            return;
+        }
+        _value = value;
+
         var scroll:Scroll = cast _component;
         scroll.invalidateLayout();
+    }
+
+    public override function get():Variant {
+        return _value;
     }
 }

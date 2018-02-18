@@ -1,5 +1,7 @@
 package haxe.ui.components;
 
+import haxe.ui.core.TextInput;
+import haxe.ui.validation.InvalidationFlags;
 import haxe.ui.focus.FocusManager;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
@@ -36,7 +38,7 @@ class TextArea extends InteractiveComponent implements IFocusable {
     **/
     @:clonable public var placeholder(get, set):String;
     private function get_placeholder():String {
-        return behaviourGet("placeholder");
+        return _placeholder;
     }
 
     private function set_placeholder(value:String):String {
@@ -44,52 +46,47 @@ class TextArea extends InteractiveComponent implements IFocusable {
             return value;
         }
 
-        behaviourSet("placeholder", value);
-
+        invalidateData();
+        _placeholder = value;
         return value;
     }
 
-    private var _wrap:Bool;
+    private var _wrap:Bool = true;
     @:clonable public var wrap(get, set):Bool;
     private function get_wrap():Bool {
-        return behaviourGet("wrap");
+        return _wrap;
     }
     private function set_wrap(value:Bool):Bool {
         if (value == _wrap) {
             return value;
         }
-        
-        _wrap = value;        
-        behaviourSet("wrap", value);
+
+        invalidateData();
+        _wrap = value;
         return value;
     }
     
     //***********************************************************************************************************
     // Overrides
     //***********************************************************************************************************
+
     private override function set_text(value:String):String {
+        if (value == _text) {
+            return value;
+        }
+
+        invalidateData();
         value = super.set_text(value);
-        _validateText();
-        checkScrolls();
         return value;
     }
-
-//    private override function get_text():String {
-//        return behaviourGet("text");
-//    }
 
     private override function set_focus(value:Bool):Bool {
         if (_focus == value || allowFocus == false) {
             return value;
         }
 
+        invalidateData();
         super.set_focus(value);
-        if (empty == false) {
-            text = behaviourGet("text");
-        } else {
-            _validateText();
-        }
-
         return value;
     }
 
@@ -103,24 +100,24 @@ class TextArea extends InteractiveComponent implements IFocusable {
         _defaultLayout = new TextAreaLayout();
     }
 
-    private override function create() {
-        super.create();
-
-        if (_text == null) {
-            behaviourSet("text", "");
-        }
-    }
-
     private override function createChildren() {
         super.createChildren();
-        if (componentWidth == 0) {
-            componentWidth = 150;
-        }
-        if (componentHeight == 0) {
-            componentHeight = 100;
-        }
         
         getTextInput().multiline = true;
+        getTextInput().data.onChangedCallback = function() {
+            if (getTextInput().text != _text && hasClass(":empty") == false) {
+                text = getTextInput().text;
+                
+            }
+        };
+        getTextInput().data.onScrollCallback = function() {
+            if (_hscroll != null) {
+                _hscroll.pos = getTextInput().hscrollPos;
+            }
+            if (_vscroll != null) {
+                _vscroll.pos = getTextInput().vscrollPos;
+            }
+        }
 
         registerEvent(MouseEvent.MOUSE_WHEEL, _onMouseWheel);
         registerEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
@@ -130,20 +127,17 @@ class TextArea extends InteractiveComponent implements IFocusable {
     private override function destroyChildren() {
         super.destroyChildren();
 
+        getTextInput().data.onChangedCallback = null;
+        getTextInput().data.onScrollCallback = null;
         unregisterEvent(MouseEvent.MOUSE_WHEEL, _onMouseWheel);
         unregisterEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
         unregisterEvent(UIEvent.CHANGE, _onTextChanged);
     }
 
-    private override function onReady() {
-        super.onReady();
-        checkScrolls();
-    }
-
     private override function applyStyle(style:Style) {
         super.applyStyle(style);
         if (hasTextInput() == true) {
-            getTextInput().applyStyle(style);
+            getTextInput().textStyle = style;
         }
     }
 
@@ -154,17 +148,20 @@ class TextArea extends InteractiveComponent implements IFocusable {
             return;
         }
 
-        if (getTextInput().textWidth > getTextInput().width) {
+        var textInput:TextInput = getTextInput();
+        
+        if (textInput.textWidth > textInput.width) {
             if (_hscroll == null) {
                 _hscroll = new HScroll();
                 _hscroll.id = "textarea-hscroll";
                 addComponent(_hscroll);
                 _hscroll.registerEvent(UIEvent.CHANGE, _onScrollChange);
             }
-            _hscroll.max = getTextInput().textWidth - getTextInput().width;
-            _hscroll.pos = getTextInput().hscrollPos;
+            _hscroll.max = textInput.hscrollMax; // textInput.textWidth - getTextInput().width;
+            _hscroll.pos = textInput.hscrollPos;
 
-            _hscroll.pageSize = (getTextInput().width * _hscroll.max) / getTextInput().textWidth;
+            _hscroll.pageSize = textInput.hscrollPageSize; //(textInput.width * _hscroll.max) / textInput.textWidth;
+           // _hscroll.pageSize = (textInput.width * _hscroll.max) / textInput.textWidth;
             _hscroll.show();
         } else {
             if (_hscroll != null) {
@@ -172,17 +169,17 @@ class TextArea extends InteractiveComponent implements IFocusable {
             }
         }
         
-        if (getTextInput().textHeight > getTextInput().height) {
+        if (textInput.textHeight > textInput.height) {
             if (_vscroll == null) {
                 _vscroll = new VScroll();
                 _vscroll.id = "textarea-vscroll";
                 addComponent(_vscroll);
                 _vscroll.registerEvent(UIEvent.CHANGE, _onScrollChange);
             }
-            _vscroll.max = getTextInput().textHeight - getTextInput().height;
-            _vscroll.pos = getTextInput().vscrollPos;
+            _vscroll.max = textInput.vscrollMax; //textInput.textHeight - textInput.height;
+            _vscroll.pos = textInput.vscrollPos;
 
-            _vscroll.pageSize = (getTextInput().height * _vscroll.max) / getTextInput().textHeight;
+            _vscroll.pageSize = textInput.vscrollPageSize; // (textInput.height * _vscroll.max) / textInput.textHeight;
             _vscroll.show();
         } else {
             if (_vscroll != null) {
@@ -206,9 +203,7 @@ class TextArea extends InteractiveComponent implements IFocusable {
     }
 
     private function _onTextChanged(event:UIEvent) {
-        var newText:String = behaviourGet("text");
-        text = newText;
-        handleBindings(["text", "value"]);
+        text = behaviourGet("text");
     }
 
     private function _onScrollChange(e:UIEvent) {
@@ -219,16 +214,40 @@ class TextArea extends InteractiveComponent implements IFocusable {
             getTextInput().vscrollPos = _vscroll.pos;
         }
     }
-
-    public override function onResized() {
-        super.onResized();
-        checkScrolls();
-    }
-
+    
     //***********************************************************************************************************
     // Validation
     //***********************************************************************************************************
-    private function _validateText() {
+
+    private inline function invalidateScroll() {
+        invalidate(InvalidationFlags.SCROLL);
+    }
+
+    private override function validateInternal() {
+        var dataInvalid = isInvalid(InvalidationFlags.DATA);
+        var scrollInvalid = isInvalid(InvalidationFlags.SCROLL);
+        var layoutInvalid = isInvalid(InvalidationFlags.LAYOUT);
+
+        super.validateInternal();
+
+        if (scrollInvalid || layoutInvalid || dataInvalid) {
+            validateScroll();
+        }
+    }
+
+    private function validateScroll() {
+        checkScrolls();
+    }
+
+    private override function validateData() {
+        if (behaviourGet("placeholder") != _placeholder) {
+            behaviourSet("placeholder", _placeholder);
+        }
+
+        if (behaviourGet("wrap") != _wrap) {
+            behaviourSet("wrap", _wrap);
+        }
+
         var text:String = _text != null ? _text : "";
         var placeholderVisible:Bool = empty;
 
@@ -246,7 +265,9 @@ class TextArea extends InteractiveComponent implements IFocusable {
         }
 
         behaviourSet("text", text);
+        handleBindings(["text", "value"]);
     }
+    
 }
 
 //***********************************************************************************************************
@@ -262,6 +283,7 @@ class TextAreaDefaultTextBehaviour extends Behaviour {
 
         var textArea:TextArea = cast _component;
         textArea.getTextInput().text = value;
+        textArea.getTextInput().invalidate(InvalidationFlags.MEASURE);
         textArea.invalidateDisplay();
     }
 
@@ -272,17 +294,20 @@ class TextAreaDefaultTextBehaviour extends Behaviour {
 }
 
 @:dox(hide)
-@:access(haxe.ui.components.TextArea)
+@:access(haxe.ui.components.TextField)
 class TextAreaDefaultPlaceholderBehaviour extends Behaviour {
+    private var _value:String;  //TODO - maybe we can create a generic ValueBehaviour class
+
     public override function set(value:Variant) {
-        var textArea:TextArea = cast _component;
-        textArea._placeholder = value;
-        textArea._validateText();
+        if (_value == value) {
+            return;
+        }
+
+        _value = value;
     }
-    
+
     public override function get():Variant {
-        var textArea:TextArea = cast _component;
-        return textArea._placeholder;
+        return _value;
     }
 }
 
@@ -292,7 +317,7 @@ class TextAreaDefaultWrapBehaviour extends Behaviour {
     public override function set(value:Variant) {
         var textArea:TextArea = cast _component;
         textArea.getTextInput().wordWrap = value;
-        textArea.checkScrolls();
+        textArea.invalidateDisplay();
     }
     
     public override function get():Variant {
