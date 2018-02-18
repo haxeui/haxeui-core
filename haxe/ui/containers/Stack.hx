@@ -6,14 +6,17 @@ import haxe.ui.constants.TransitionMode;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.UIEvent;
-import haxe.ui.util.Rectangle;
 import haxe.ui.util.Variant;
+import haxe.ui.validation.InvalidationFlags;
+import haxe.ui.validation.ValidationManager;
 
 /**
  A `Box` component where only one child is visible at a time
 **/
 @:dox(icon = "/icons/ui-layered-pane.png")
 class Stack extends Box {
+    private static inline var NO_SELECTION:Int = -1;
+
     public function new() {
         super();
     }
@@ -31,7 +34,7 @@ class Stack extends Box {
     //******************************************************************************************
     public override function addComponent(child:Component):Component {
         super.addComponent(child);
-        if (_selectedIndex == -1 && childComponents.length == 1) {
+        if (_selectedIndex == NO_SELECTION && childComponents.length == 1) {
            selectedIndex = 0;
         }
         child.hidden = (childComponents.length - 1 != _selectedIndex);
@@ -39,27 +42,35 @@ class Stack extends Box {
         return child;
     }
 
-    //TODO --> https://github.com/haxeui/haxeui-core/pull/93
-    /*public override function addComponentAt(child:Component, index:Int):Component {
+    public override function addComponentAt(child:Component, index:Int):Component {
         super.addComponentAt(child, index);
-        if (_selectedIndex == -1 && childComponents.length == 1) {
+        if (_selectedIndex == NO_SELECTION && childComponents.length == 1) {
            selectedIndex = 0;
         }
         child.hidden = (index != _selectedIndex);
+        child.includeInLayout = child.hidden == false;
         return child;
-    }*/
+    }
 
     public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
         var index:Int = getComponentIndex(child);
         if (index == _selectedIndex) {
-            selectedIndex = -1;
+            selectedIndex = NO_SELECTION;
         }
 
         return super.removeComponent(child);
     }
 
+    public override function removeComponentAt(index:Int, dispose:Bool = true, invalidate:Bool = true):Component {
+        if (index == _selectedIndex) {
+            selectedIndex = NO_SELECTION;
+        }
+
+        return super.removeComponentAt(index, dispose, invalidate);
+    }
+
     public override function removeAllComponents(dispose:Bool = true) {
-        selectedIndex = -1;
+        selectedIndex = NO_SELECTION;
 
         super.removeAllComponents(dispose);
     }
@@ -72,43 +83,40 @@ class Stack extends Box {
     // Public API
     //***********************************************************************************************************
 
-    private var _selectedIndex:Int = -1;
+    private var _selectedIndex:Int = NO_SELECTION;
     @:clonable public var selectedIndex(get, set):Int;
     private function get_selectedIndex():Int {
-        return _selectedIndex;
+        return behaviourGet("selectedIndex");
     }
     private function set_selectedIndex(value:Int):Int {
-        if (_selectedIndex == value) {
-            return value;
-        }
-
-        if(_selectedIndex != -1) {
-            _history.push(_selectedIndex);
-        }
-
         behaviourSet("selectedIndex", value);
-        _selectedIndex = value;
+        return value;
+    }
 
-        dispatch(new UIEvent(UIEvent.CHANGE));
+    public var selectedItem(get, set):Component;
+    private function get_selectedItem():Component {
+        if (_selectedIndex == NO_SELECTION) {
+            return null;
+        }
 
+        return getComponentAt(_selectedIndex);
+    }
+    private function set_selectedItem(value:Component):Component {
+        selectedIndex = getComponentIndex(value);
         return value;
     }
 
     private var _transitionMode:TransitionMode = TransitionMode.NONE;
     @:clonable public var transitionMode(get, set):TransitionMode;
     private function get_transitionMode():TransitionMode {
-        return _transitionMode;
+        return behaviourGet("transitionMode");
     }
     private function set_transitionMode(value:TransitionMode):TransitionMode {
-        if (_transitionMode == value) {
-            return value;
-        }
-
-        _transitionMode = value;
         behaviourSet("transitionMode", value);
-
         return value;
     }
+
+    private var _currentSelection:Component;
 
     private var _history : List<Int> = new List();
 
@@ -129,13 +137,74 @@ class Stack extends Box {
     }
 
     //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+
+    /**
+     Invalidate the index of this component
+    **/
+    @:dox(group = "Invalidation related properties and methods")
+    public inline function invalidateIndex() {
+        invalidate(InvalidationFlags.INDEX);
+    }
+
+    private override function validateInternal() {
+        var dataInvalid = isInvalid(InvalidationFlags.DATA);
+        var indexInvalid = isInvalid(InvalidationFlags.INDEX);
+        var styleInvalid = isInvalid(InvalidationFlags.STYLE);
+        var positionInvalid = isInvalid(InvalidationFlags.POSITION);
+        var displayInvalid = isInvalid(InvalidationFlags.DISPLAY);
+        var layoutInvalid = isInvalid(InvalidationFlags.LAYOUT) && _layoutLocked == false;
+
+        if (dataInvalid) {
+            validateData();
+        }
+
+        if (dataInvalid || indexInvalid) {
+            validateIndex();
+        }
+
+        if (styleInvalid) {
+            validateStyle();
+        }
+
+        if (positionInvalid) {
+            validatePosition();
+        }
+
+        if (layoutInvalid) {
+            displayInvalid = validateLayout() || displayInvalid;
+        }
+
+        if (displayInvalid || styleInvalid) {
+            ValidationManager.instance.addDisplay(this);    //Update the display from all objects at the same time. Avoids UI flashes.
+        }
+    }
+
+    private function validateIndex() {
+        var newSelectedItem:Component = selectedItem;
+        if(_currentSelection != newSelectedItem)
+        {
+            var oldIndex:Int = getComponentIndex(_currentSelection);
+            animateTo(oldIndex, _selectedIndex);
+
+            _currentSelection = newSelectedItem;
+            if(_selectedIndex != NO_SELECTION) {
+                _history.push(_selectedIndex);
+            }
+
+            dispatch(new UIEvent(UIEvent.CHANGE));
+        }
+    }
+
+    //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************
 
     private var _currentTransition:Transition;
     private function animateTo(fromIndex:Int, toIndex:Int) {
-        var inComponent:Component = (toIndex != -1) ? getComponentAt(toIndex) : null;
-        var outComponent:Component = (fromIndex != -1) ? getComponentAt(fromIndex) : null;
+        var inComponent:Component = (toIndex != NO_SELECTION) ? getComponentAt(toIndex) : null;
+        var outComponent:Component = (fromIndex != NO_SELECTION) ? getComponentAt(fromIndex) : null;
 
         var transitionId:String = null;
         var mode:TransitionMode = transitionMode;
@@ -296,16 +365,32 @@ class Stack extends Box {
 @:dox(hide)
 @:access(haxe.ui.containers.Stack)
 class StackDefaultTransitionModeBehaviour extends Behaviour {
-    public override function set(value:Variant) {
+    public override function get():Variant {
+        var stack:Stack = cast(_component, Stack);
+        return stack._transitionMode;
+    }
 
+    public override function set(value:Variant) {
+        var stack:Stack = cast(_component, Stack);
+        if (stack._transitionMode != value) {
+            stack._transitionMode = value;
+        }
     }
 }
 
 @:dox(hide)
 @:access(haxe.ui.containers.Stack)
 class StackDefaultSelectedIndexBehaviour extends Behaviour {
+    public override function get():Variant {
+        var stack:Stack = cast(_component, Stack);
+        return stack._selectedIndex;
+    }
+
     public override function set(value:Variant) {
-        var stack:Stack = cast _component;
-        stack.animateTo(stack._selectedIndex, value);
+        var stack:Stack = cast(_component, Stack);
+        if (stack._selectedIndex != value) {
+            stack._selectedIndex = value;
+            stack.invalidateIndex();
+        }
     }
 }
