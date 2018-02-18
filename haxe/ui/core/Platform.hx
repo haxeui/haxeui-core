@@ -1,6 +1,5 @@
 package haxe.ui.core;
 
-import Reflect;
 import haxe.ui.backend.PlatformBase;
 
 class Platform extends PlatformBase {

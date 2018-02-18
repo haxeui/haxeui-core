@@ -88,7 +88,7 @@ class LocaleManager {
         if (_currentLocales.length > 0) {
             var i:Int = _currentLocales.length;
             while (--i >= 0) {
-                if(_currentLocales[i] == localeRemoved) {
+                if (_currentLocales[i] == localeRemoved) {
                     _currentLocales.splice(i, 1);
                     break;
                 }
