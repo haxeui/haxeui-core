@@ -9,7 +9,7 @@ import haxe.ui.data.DataSource;
 import haxe.ui.util.Variant;
 
 class ButtonBar extends InteractiveComponent implements IDataComponent {
-    static public inline var NO_SELECTION:Int = -1;
+    public static inline var NO_SELECTION:Int = -1;
 
     public function new() {
         super();
