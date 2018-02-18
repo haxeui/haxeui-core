@@ -22,6 +22,9 @@ class TextDisplay extends TextDisplayBase implements IValidating {
     private var _isAllInvalid:Bool = false;
     private var _isValidating:Bool = false;
 
+    @:dox(hide)
+    public var componentCaller:Component;
+
     public function new() {
         super();
     }
@@ -198,12 +201,10 @@ class TextDisplay extends TextDisplayBase implements IValidating {
     public function invalidate(flag:String = InvalidationFlags.ALL) {
         if (flag == InvalidationFlags.ALL) {
             _isAllInvalid = true;
-            //ValidationManager.instance.add(this);     //Don't need. It is validated internally in the component in a sync way
-        } else {
-            if (flag != InvalidationFlags.ALL && !_invalidationFlags.exists(flag)) {
-                _invalidationFlags.set(flag, true);
-                //ValidationManager.instance.add(this); //Don't need. It is validated internally in the component in a sync way
-            }
+            componentCaller.invalidate(InvalidationFlags.TEXT_DISPLAY);
+        } else if (!_invalidationFlags.exists(flag)) {
+            _invalidationFlags.set(flag, true);
+            componentCaller.invalidate(InvalidationFlags.TEXT_DISPLAY);
         }
     }
 

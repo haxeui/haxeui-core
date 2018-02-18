@@ -14,6 +14,9 @@ class ImageDisplay extends ImageDisplayBase {
     private var _isAllInvalid:Bool = false;
     private var _isValidating:Bool = false;
 
+    @:dox(hide)
+    public var componentCaller:Component;
+
     public function new() {
         super();
     }
@@ -125,10 +128,10 @@ class ImageDisplay extends ImageDisplayBase {
     public function invalidate(flag:String = InvalidationFlags.ALL) {
         if (flag == InvalidationFlags.ALL) {
             _isAllInvalid = true;
-        } else {
-            if (flag != InvalidationFlags.ALL && !_invalidationFlags.exists(flag)) {
-                _invalidationFlags.set(flag, true);
-            }
+            componentCaller.invalidate(InvalidationFlags.IMAGE_DISPLAY);
+        } else if (!_invalidationFlags.exists(flag)) {
+            _invalidationFlags.set(flag, true);
+            componentCaller.invalidate(InvalidationFlags.IMAGE_DISPLAY);
         }
     }
 
