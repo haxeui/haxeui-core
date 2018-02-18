@@ -9,7 +9,7 @@ class ConfigParser {
 
     }
 
-    public function parse(data:String):GenericConfig {
+    public function parse(data:String, defines:Map<String, String>):GenericConfig {
         throw "Config parser not implemented!";
     }
 

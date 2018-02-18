@@ -1,0 +1,9 @@
+{
+    "name": "openfl",
+    "type": "template",
+    "subProjects": [
+        "shared", "openfl-shared"
+    ],
+    "templates": [
+    ]
+}

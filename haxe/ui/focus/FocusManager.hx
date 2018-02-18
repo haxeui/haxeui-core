@@ -63,6 +63,11 @@ class FocusManager {
         if (Std.is(value, IFocusable) == false) {
             throw "Component does not implement IFocusable";
         }
+        
+        if (focusInfo == null) { // TODO: just a patch for now, this all needs reworking
+            return value;
+        }
+        
         if (focusInfo.currentFocus != null && focusInfo.currentFocus != value) {
             focusInfo.currentFocus.focus = false;
             focusInfo.currentFocus = null;

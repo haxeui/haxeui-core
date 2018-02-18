@@ -1,0 +1,12 @@
+{
+    "name": "kha-flash-develop",
+    "type": "template",
+    "subProjects": [
+        "shared", "kha-shared"
+    ],
+    "templates": [
+    ],
+    "post": [
+        "projects.kha.ProjectGenFD"
+    ]
+}

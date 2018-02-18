@@ -1,0 +1,10 @@
+{
+    "name": "pixijs",
+    "type": "template",
+    "subProjects": [
+        "shared", "pixijs-shared"
+    ],
+    "templates": [
+        { "src": "pixijs.hxml", "dst": "${target}/pixijs.hxml"}
+    ]
+}

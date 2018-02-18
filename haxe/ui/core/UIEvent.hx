@@ -3,10 +3,11 @@ package haxe.ui.core;
 import haxe.ui.backend.EventBase;
 
 class UIEvent extends EventBase {
-    public static inline var READY:String = "Ready";
-    public static inline var RESIZE:String = "Resize";
-    public static inline var CHANGE:String = "Change";
-    public static inline var MOVE:String = "Move";
+    public static inline var READY:String = "ready";
+    public static inline var RESIZE:String = "resize";
+    public static inline var CHANGE:String = "change";
+    public static inline var BEFORE_CHANGE:String = "beforeChange";
+    public static inline var MOVE:String = "move";
 
     public var type(default, default):String;
     public var target(default, default):Component;

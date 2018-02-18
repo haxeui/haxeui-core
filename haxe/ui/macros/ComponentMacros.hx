@@ -1,7 +1,6 @@
 package haxe.ui.macros;
 
 import haxe.ui.core.ComponentClassMap;
-import haxe.ui.parsers.modules.Module;
 import haxe.ui.parsers.ui.ComponentInfo;
 import haxe.ui.parsers.ui.ComponentParser;
 import haxe.ui.parsers.ui.resolvers.FileResourceResolver;
@@ -11,7 +10,6 @@ import haxe.ui.util.StringUtil;
 #if macro
 import haxe.macro.Expr;
 import haxe.macro.Context;
-import haxe.rtti.Meta;
 import sys.FileSystem;
 import sys.io.File;
 #end

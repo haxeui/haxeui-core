@@ -9,6 +9,7 @@ class Module {
     public var plugins(default, default):Array<ModulePluginEntry>;
     public var properties(default, default):Array<ModulePropertyEntry>;
     public var animations(default, default):Array<ModuleAnimationEntry>;
+    public var preload(default, default):Array<ModulePreloadEntry>;
     public var transitions(default, default):Array<ModuleTransitionEntry>;
 
     public function new() {
@@ -19,6 +20,7 @@ class Module {
         plugins = [];
         properties = [];
         animations = [];
+        preload = [];
         transitions = [];
     }
 
@@ -29,7 +31,6 @@ class Module {
 class ModuleResourceEntry {
     public var path(default, default):String;
     public var prefix(default, default):String;
-    public var condition(default, default):String;
 
     public function new() {
     }
@@ -58,10 +59,17 @@ class ModuleScriptletEntry {
 class ModuleThemeEntry {
     public var name(default, default):String;
     public var parent(default, default):String;
-    public var styles(default, default):Array<String>;
+    public var styles(default, default):Array<ModuleThemeStyleEntry>;
 
     public function new() {
         styles = [];
+    }
+}
+
+class ModuleThemeStyleEntry {
+    public var resource:String;
+
+    public function new() {
     }
 }
 
@@ -69,7 +77,6 @@ class ModulePluginEntry {
     public var type(default, default):String;
     public var className(default, default):String;
     public var config(default, default):Map<String, String>;
-    public var condition(default, default):String;
 
     public function new() {
         config = new Map<String, String>();
@@ -111,6 +118,14 @@ class ModuleAnimationComponentRefEntry {
     public function new() {
         properties = new Map<String, Float>();
         vars  = new Map<String, String>();
+    }
+}
+
+class ModulePreloadEntry {
+    public var type(default, default):String;
+    public var id(default, default):String;
+
+    public function new() {
     }
 }
 

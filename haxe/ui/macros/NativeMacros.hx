@@ -41,7 +41,7 @@ class NativeMacros {
             var parser:ConfigParser = ConfigParser.get(MacroHelpers.extension(filePath));
             if (parser != null) {
                 try {
-                    var config:GenericConfig = parser.parse(File.getContent(filePath));
+                    var config:GenericConfig = parser.parse(File.getContent(filePath), Context.getDefines());
                     _nativeConfigs.push(config);
                     return true;
                 } catch (e:Dynamic) {

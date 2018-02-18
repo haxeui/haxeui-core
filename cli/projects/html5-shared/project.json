@@ -1,0 +1,10 @@
+{
+    "name": "html5-shared",
+    "type": "template",
+    "directories": [
+        "${target}/build/html5"
+    ],
+    "templates": [
+        { "src": "index.html", "dst": "${target}/build/html5/index.html"}
+    ]
+}

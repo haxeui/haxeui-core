@@ -24,11 +24,9 @@ class ModuleMacros {
 
         loadModules();
         for (m in _modules) {
-            //trace("Processing module: " + m.id);
-
             // add resources as haxe resources (plus prefix)
             for (r in m.resourceEntries) {
-                if (r.path != null && MacroHelpers.checkCondition(r.condition) == true) {
+                if (r.path != null) {
                     var resolvedPath = Context.resolvePath(r.path);
                     if (FileSystem.isDirectory(resolvedPath) && FileSystem.exists(resolvedPath)) {
                         addResources(resolvedPath, resolvedPath, r.prefix);
@@ -75,59 +73,28 @@ class ModuleMacros {
                 }
             }
 
-            // load component classes from all modules
-            /* this has moved to its own function in order to be able to call it from other places like build macros
-            for (c in m.componentEntries) {
-                var types:Array<haxe.macro.Type> = null;
-                if (c.className != null) {
-                    types = Context.getModule(c.className);
-                } else if (c.classPackage != null) {
-                    types = MacroHelpers.typesFromPackage(c.classPackage);
-                }
-
-                if (types != null) {
-                    for (t in types) {
-                        if (MacroHelpers.hasSuperClass(t, "haxe.ui.core.Component") == true) {
-                            var resolvedClass:String = MacroHelpers.classNameFromType(t);
-                            if (c.className != null && resolvedClass != c.className) {
-                                continue;
-                            }
-                            var classAlias:String = c.classAlias;
-                            if (classAlias == null) {
-                                classAlias = resolvedClass.substr(resolvedClass.lastIndexOf(".") + 1, resolvedClass.length);
-                            }
-                            classAlias = classAlias.toLowerCase();
-                            ComponentClassMap.register(classAlias, resolvedClass);
-                        }
-                    }
-                }
-            }
-            */
-
             // setup themes
             for (t in m.themeEntries) {
                 if (t.parent != null) {
                     code += 'haxe.ui.themes.ThemeManager.instance.getTheme("${t.name}").parent = "${t.parent}";\n';
                 }
                 for (r in t.styles) {
-                    code += 'haxe.ui.themes.ThemeManager.instance.addStyleResource("${t.name}", "${r}");\n';
+                    code += 'haxe.ui.themes.ThemeManager.instance.addStyleResource("${t.name}", "${r.resource}");\n';
                 }
             }
 
             // handle plugins
             for (p in m.plugins) {
-                if (MacroHelpers.checkCondition(p.condition) == true) {
-                    switch (p.type) {
-                        case "asset":
-                            code += 'var assetPlugin:${p.className} = new ${p.className}();\n';
-                            for (propName in p.config.keys()) {
-                                var propValue = p.config.get(propName);
-                                code += 'assetPlugin.setProperty("${propName}", "${propValue}");\n';
-                            }
-                            code += 'ToolkitAssets.instance.addPlugin(assetPlugin);\n';
-                        default:
-                            trace("WARNING: unknown plugin type: " + p.type);
-                    }
+                switch (p.type) {
+                    case "asset":
+                        code += 'var assetPlugin:${p.className} = new ${p.className}();\n';
+                        for (propName in p.config.keys()) {
+                            var propValue = p.config.get(propName);
+                            code += 'assetPlugin.setProperty("${propName}", "${propValue}");\n';
+                        }
+                        code += 'ToolkitAssets.instance.addPlugin(assetPlugin);\n';
+                    default:
+                        trace("WARNING: unknown plugin type: " + p.type);
                 }
             }
 
@@ -158,6 +125,10 @@ class ModuleMacros {
                 }
 
                 code += 'haxe.ui.animation.transition.TransitionManager.instance.registerTransition(t.id, t);\n';
+            }
+            
+            for (p in m.preload) {
+                code += 'ToolkitAssets.instance.preloadList.push({type: "${p.type}", resourceId: "${p.id}"});\n';
             }
         }
 
@@ -247,7 +218,7 @@ class ModuleMacros {
             var moduleParser = ModuleParser.get(MacroHelpers.extension(filePath));
             if (moduleParser != null) {
                 try {
-                    var module:Module = moduleParser.parse(File.getContent(filePath));
+                    var module:Module = moduleParser.parse(File.getContent(filePath), Context.getDefines());
                     module.validate();
                     _modules.push(module);
                     return true;
@@ -278,7 +249,6 @@ class ModuleMacros {
                     resourceName = resourceName.substr(1, resourceName.length);
                 }
                 Context.addResource(resourceName, File.getBytes(file));
-                //trace("Added resource '" + resourceName + "' [" + file + "]");
             }
         }
     }

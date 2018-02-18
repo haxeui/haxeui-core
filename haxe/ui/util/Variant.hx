@@ -23,6 +23,9 @@ abstract Variant(VariantType) from VariantType {
     }
 
     @:to public function toString():String {
+        if (this == null) {
+            return null;
+        }
         return switch (this) {
             case String(s): s;
             case Int(s): Std.string(s);
@@ -47,7 +50,7 @@ abstract Variant(VariantType) from VariantType {
         return Int(s);
     }
 
-    @:to function toInt():Null<Int> {
+    @:to public function toInt():Null<Int> {
         if (isNull) {
             return null;
         }

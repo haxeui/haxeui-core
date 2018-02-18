@@ -62,11 +62,11 @@ class GenericConfig {
         }
         
         var regexp:EReg = new EReg("\\.(?![^\\[]*\\])", "g");
-        var final:Array<String> = regexp.split(q);
+        var finalArray:Array<String> = regexp.split(q);
         var ref:GenericConfig = this;
 
         var value:String = null;
-        for (f in final) {
+        for (f in finalArray) {
             if (f.indexOf("[") == -1 && f.indexOf("@") == -1) {
                 ref = ref.findBy(f);
             } else if (f.indexOf("[") != -1) {
@@ -116,10 +116,10 @@ class GenericConfig {
     // TODO: duplication
     public function queryValues(q:String, conditionRef:Dynamic):Map<String, String> {
         var regexp:EReg = new EReg("\\.(?![^\\[]*\\])", "g");
-        var final:Array<String> = regexp.split(q);
+        var finalArray:Array<String> = regexp.split(q);
         var ref:GenericConfig = this;
 
-        for (f in final) {
+        for (f in finalArray) {
             if (f.indexOf("[") == -1 && f.indexOf("@") == -1) {
                 ref = ref.findBy(f);
             } else if (f.indexOf("[") != -1) {
