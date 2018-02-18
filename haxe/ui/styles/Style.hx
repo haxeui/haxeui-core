@@ -40,6 +40,7 @@ class Style {
     public var backgroundColorEnd:Null<Int>;
     public var backgroundGradientStyle:Null<String>;
     public var backgroundOpacity:Null<Float>;
+    public var backgroundOpacityEnd:Null<Float>;
 
     public var backgroundImage:Null<String>;
     public var backgroundImageRepeat:Null<String>;
@@ -135,6 +136,7 @@ class Style {
         if (s.backgroundColorEnd != null) backgroundColorEnd = s.backgroundColorEnd;
         if (s.backgroundGradientStyle != null) backgroundGradientStyle = s.backgroundGradientStyle;
         if (s.backgroundOpacity != null) backgroundOpacity = s.backgroundOpacity;
+        if (s.backgroundOpacityEnd != null) backgroundOpacityEnd = s.backgroundOpacityEnd;
 
         if (s.backgroundImage != null) backgroundImage = s.backgroundImage;
         if (s.backgroundImageRepeat != null) backgroundImageRepeat = s.backgroundImageRepeat;
@@ -220,6 +222,7 @@ class Style {
         if (s.backgroundColorEnd != backgroundColorEnd) return false;
         if (s.backgroundGradientStyle != backgroundGradientStyle) return false;
         if (s.backgroundOpacity != backgroundOpacity) return false;
+        if (s.backgroundOpacityEnd != backgroundOpacityEnd) return false;
 
         if (s.backgroundImage != backgroundImage) return false;
         if (s.backgroundImageRepeat != backgroundImageRepeat) return false;
