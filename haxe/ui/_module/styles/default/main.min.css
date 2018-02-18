@@ -94,10 +94,13 @@
 .vslider .slider-value{border:none;background:#6CAADB #216AAE horizontal;width:100%;border-radius:2px;cursor:pointer;}
 .vslider .slider-value:disabled{background:#BFBFBF #8C8C8C horizontal;cursor:default;}
 .vslider .slider-button{horizontal-align:center;height:14px;width:14px;border-radius:16px;}
-.tabbar{horizontal-spacing:5px;padding-left:5px;padding-right:5px;height:auto;width:auto;background-color:white;border-bottom-width:1px;border-bottom-color:#ABABAB;}
+.tabbar{horizontal-spacing:5px;padding-left:5px;padding-right:5px;height:auto;width:auto;background-color:white;border-bottom-width:1px;border-bottom-color:#ABABAB;clip:true;}
+.tabbar .tabbar-contents{border:none;border-bottom-width:1px;border-bottom-color:#ABABAB;}
 .tabbar-button{border-radius:0px;background:#EDEDED #E6E6E6 vertical;padding:6px;vertical-align:bottom;}
 .tabbar-button:down{}
 .tabbar-button-selected,.tabbar-button-selected:hover,.tabbar-button-selected:down{border-radius:0px;border:1px solid #ABABAB;border-bottom-width:1px;border-bottom-color:white;background-color:white;}
+.tabbar-scroll-left{icon:"haxeui-core/styles/default/left_arrow.png";border-radius:0;}
+.tabbar-scroll-right{icon:"haxeui-core/styles/default/right_arrow.png";border-radius:0;}
 .tabbar-button-selected .label{}
 .tabbar-button-selected .icon{}
 .tabview{border:none;width:auto;height:auto;}
@@ -113,7 +116,7 @@
 .listview .itemrenderer:selected{background-color:#a7c4e2;color:white;}
 .listview.popup{filter:drop-shadow(1,45,#000000,0.2,2,2,1,3,false);}
 .dropdown{icon:"haxeui-core/styles/default/up_down_arrows.png";icon-position:far-right;}
-.header{width:auto;height:auto;}
+.header{width:auto;height:auto;spacing:0;}
 .header .column{border-radius:0;icon-position:far-right;}
 .header .column.sortable{icon:"haxeui-core/styles/default/up_down_arrows.png";icon-position:far-right;}
 .column .label{width:92%;}

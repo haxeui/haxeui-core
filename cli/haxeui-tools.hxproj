@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project version="2">
+  <!-- Output SWF options -->
+  <output>
+    <movie outputType="Application" />
+    <movie input="" />
+    <movie path="..\run.n" />
+    <movie fps="0" />
+    <movie width="0" />
+    <movie height="0" />
+    <movie version="0" />
+    <movie minorVersion="0" />
+    <movie platform="Neko" />
+    <movie background="#FFFFFF" />
+  </output>
+  <!-- Other classes to be compiled into your SWF -->
+  <classpaths>
+    <class path="src" />
+  </classpaths>
+  <!-- Build options -->
+  <build>
+    <option directives="" />
+    <option flashStrict="False" />
+    <option noInlineOnDebug="False" />
+    <option mainClass="Main" />
+    <option enabledebug="False" />
+    <option additional="-dce std&#xA;-resource projects/shared/project.json@projects/shared/project.json&#xA;-resource projects/html5/project.json@projects/html5/project.json&#xA;-resource projects/html5-flash-develop/project.json@projects/html5-flash-develop/project.json&#xA;-resource projects/html5-shared/project.json@projects/html5-shared/project.json&#xA;-resource projects/hxwidgets/project.json@projects/hxwidgets/project.json&#xA;-resource projects/hxwidgets-flash-develop/project.json@projects/hxwidgets-flash-develop/project.json&#xA;-resource projects/hxwidgets-shared/project.json@projects/hxwidgets-shared/project.json&#xA;-resource projects/openfl/project.json@projects/openfl/project.json&#xA;-resource projects/openfl-shared/project.json@projects/openfl-shared/project.json&#xA;-resource projects/openfl-flash-develop/project.json@projects/openfl-flash-develop/project.json&#xA;-resource projects/nme/project.json@projects/nme/project.json&#xA;-resource projects/nme-flash-develop/project.json@projects/nme-flash-develop/project.json&#xA;-resource projects/nme-shared/project.json@projects/nme-shared/project.json&#xA;-resource projects/pixijs/project.json@projects/pixijs/project.json&#xA;-resource projects/pixijs-shared/project.json@projects/pixijs-shared/project.json&#xA;-resource projects/pixijs-flash-develop/project.json@projects/pixijs-flash-develop/project.json&#xA;-resource projects/kha-shared/project.json@projects/kha-shared/project.json&#xA;-resource projects/kha/project.json@projects/kha/project.json&#xA;-resource projects/kha-flash-develop/project.json@projects/kha-flash-develop/project.json&#xA;-resource projects/custom-component/project.json@projects/custom-component/project.json" />
+  </build>
+  <!-- haxelib libraries -->
+  <haxelib>
+    <library name="json2object" />
+  </haxelib>
+  <!-- Class files to compile (other referenced classes will automatically be included) -->
+  <compileTargets>
+    <compile path="src\Main.hx" />
+  </compileTargets>
+  <!-- Paths to exclude from the Project Explorer tree -->
+  <hiddenPaths>
+    <hidden path="obj" />
+  </hiddenPaths>
+  <!-- Executed before build -->
+  <preBuildCommand />
+  <!-- Executed after build -->
+  <postBuildCommand alwaysRun="False" />
+  <!-- Other project options -->
+  <options>
+    <option showHiddenPaths="False" />
+    <option testMovie="Custom" />
+    <option testMovieCommand="run.bat" />
+  </options>
+  <!-- Plugin storage -->
+  <storage />
+</project>

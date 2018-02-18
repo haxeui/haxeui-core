@@ -519,11 +519,7 @@ class Parser {
             } else {
                 var i = getIdent(v);
                 if (i != null) {
-                    if (i == "none") {
-                        s.filter = ["none"];
-                    } else {
-                        s.filter = [i];
-                    }
+                    s.filter = [i];
                     return true;
                 }
             }
@@ -1037,22 +1033,155 @@ class Parser {
             (v.length == 6) ? Std.parseInt("0x" + v) : ((v.length == 3) ? Std.parseInt("0x"+v.charAt(0)+v.charAt(0)+v.charAt(1)+v.charAt(1)+v.charAt(2)+v.charAt(2)) : null);
         case VIdent(i):
             switch( i ) {
-            case "black":   0x000000;
-            case "red":     0xFF0000;
-            case "lime":    0x00FF00;
-            case "blue":    0x0000FF;
-            case "white":   0xFFFFFF;
-            case "aqua":    0x00FFFF;
-            case "fuchsia": 0xFF00FF;
-            case "yellow":  0xFFFF00;
-            case "maroon":  0x800000;
-            case "green":   0x008000;
-            case "navy":    0x000080;
-            case "olive":   0x808000;
-            case "purple":  0x800080;
-            case "teal":    0x008080;
-            case "silver":  0xC0C0C0;
-            case "gray", "grey": 0x808080;
+            // (DK) everything from https://www.w3schools.com/colors/colors_names.asp
+            case "aliceblue": 0xf0f8ff;
+            case "antiquewhite": 0xfaebd7;
+            case "aqua": 0x00ffff;
+            case "aquamarine": 0x7fffd4;
+            case "azure": 0xf0ffff;
+            case "beige": 0xf5f5dc;
+            case "bisque": 0xffe4c4;
+            case "black": 0x000000;
+            case "blanchedalmond": 0xffebcd;
+            case "blue": 0x0000ff;
+            case "blueviolet": 0x8a2be2;
+            case "brown": 0xa52a2a;
+            case "burlywood": 0xdeb887;
+            case "cadetblue": 0x5f9ea0;
+            case "chartreuse": 0x7fff00;
+            case "chocolate": 0xd2691e;
+            case "coral": 0xff7f50;
+            case "cornflowerblue": 0x6495ed;
+            case "cornsilk": 0xfff8dc;
+            case "crimson": 0xdc143c;
+            case "cyan": 0x00ffff;
+            case "darkblue": 0x00008b;
+            case "darkcyan": 0x008b8b;
+            case "darkgoldenrod": 0xb8860b;
+            case "darkgray": 0xa9a9a9;
+            case "darkgrey": 0xa9a9a9;
+            case "darkgreen": 0x006400;
+            case "darkkhaki": 0xbdb76b;
+            case "darkmagenta": 0x8b008b;
+            case "darkolivegreen": 0x556b2f;
+            case "darkorange": 0xff8c00;
+            case "darkorchid": 0x9932cc;
+            case "darkred": 0x8b0000;
+            case "darksalmon": 0xe9967a;
+            case "darkseagreen": 0x8fbc8f;
+            case "darkslateblue": 0x483d8b;
+            case "darkslategray": 0x2f4f4f;
+            case "darkslategrey": 0x2f4f4f;
+            case "darkturquoise": 0x00ced1;
+            case "darkviolet": 0x9400d3;
+            case "deeppink": 0xff1493;
+            case "deepskyblue": 0x00bfff;
+            case "dimgray": 0x696969;
+            case "dimgrey": 0x696969;
+            case "dodgerblue": 0x1e90ff;
+            case "firebrick": 0xb22222;
+            case "floralwhite": 0xfffaf0;
+            case "forestgreen": 0x228b22;
+            case "fuchsia": 0xff00ff;
+            case "gainsboro": 0xdcdcdc;
+            case "ghostwhite": 0xf8f8ff;
+            case "gold": 0xffd700;
+            case "goldenrod": 0xdaa520;
+            case "gray": 0x808080;
+            case "grey": 0x808080;
+            case "green": 0x008000;
+            case "greenyellow": 0xadff2f;
+            case "honeydew": 0xf0fff0;
+            case "hotpink": 0xff69b4;
+            case "indianred": 0xcd5c5c;
+            case "indigo": 0x4b0082;
+            case "ivory": 0xfffff0;
+            case "khaki": 0xf0e68c;
+            case "lavender": 0xe6e6fa;
+            case "lavenderblush": 0xfff0f5;
+            case "lawngreen": 0x7cfc00;
+            case "lemonchiffon": 0xfffacd;
+            case "lightblue": 0xadd8e6;
+            case "lightcoral": 0xf08080;
+            case "lightcyan": 0xe0ffff;
+            case "lightgoldenrodyellow": 0xfafad2;
+            case "lightgray": 0xd3d3d3;
+            case "lightgrey": 0xd3d3d3;
+            case "lightgreen": 0x90ee90;
+            case "lightpink": 0xffb6c1;
+            case "lightsalmon": 0xffa07a;
+            case "lightseagreen": 0x20b2aa;
+            case "lightskyblue": 0x87cefa;
+            case "lightslategray": 0x778899;
+            case "lightslategrey": 0x778899;
+            case "lightsteelblue": 0xb0c4de;
+            case "lightyellow": 0xffffe0;
+            case "lime": 0x00ff00;
+            case "limegreen": 0x32cd32;
+            case "linen": 0xfaf0e6;
+            case "magenta": 0xff00ff;
+            case "maroon": 0x800000;
+            case "mediumaquamarine": 0x66cdaa;
+            case "mediumblue": 0x0000cd;
+            case "mediumorchid": 0xba55d3;
+            case "mediumpurple": 0x9370db;
+            case "mediumseagreen": 0x3cb371;
+            case "mediumslateblue": 0x7b68ee;
+            case "mediumspringgreen": 0x00fa9a;
+            case "mediumturquoise": 0x48d1cc;
+            case "mediumvioletred": 0xc71585;
+            case "midnightblue": 0x191970;
+            case "mintcream": 0xf5fffa;
+            case "mistyrose": 0xffe4e1;
+            case "moccasin": 0xffe4b5;
+            case "navajowhite": 0xffdead;
+            case "navy": 0x000080;
+            case "oldlace": 0xfdf5e6;
+            case "olive": 0x808000;
+            case "olivedrab": 0x6b8e23;
+            case "orange": 0xffa500;
+            case "orangered": 0xff4500;
+            case "orchid": 0xda70d6;
+            case "palegoldenrod": 0xeee8aa;
+            case "palegreen": 0x98fb98;
+            case "paleturquoise": 0xafeeee;
+            case "palevioletred": 0xdb7093;
+            case "papayawhip": 0xffefd5;
+            case "peachpuff": 0xffdab9;
+            case "peru": 0xcd853f;
+            case "pink": 0xffc0cb;
+            case "plum": 0xdda0dd;
+            case "powderblue": 0xb0e0e6;
+            case "purple": 0x800080;
+            case "rebeccapurple": 0x663399;
+            case "red": 0xff0000;
+            case "rosybrown": 0xbc8f8f;
+            case "royalblue": 0x4169e1;
+            case "saddlebrown": 0x8b4513;
+            case "salmon": 0xfa8072;
+            case "sandybrown": 0xf4a460;
+            case "seagreen": 0x2e8b57;
+            case "seashell": 0xfff5ee;
+            case "sienna": 0xa0522d;
+            case "silver": 0xc0c0c0;
+            case "skyblue": 0x87ceeb;
+            case "slateblue": 0x6a5acd;
+            case "slategray": 0x708090;
+            case "slategrey": 0x708090;
+            case "snow": 0xfffafa;
+            case "springgreen": 0x00ff7f;
+            case "steelblue": 0x4682b4;
+            case "tan": 0xd2b48c;
+            case "teal": 0x008080;
+            case "thistle": 0xd8bfd8;
+            case "tomato": 0xff6347;
+            case "turquoise": 0x40e0d0;
+            case "violet": 0xee82ee;
+            case "wheat": 0xf5deb3;
+            case "white": 0xffffff;
+            case "whitesmoke": 0xf5f5f5;
+            case "yellow": 0xffff00;
+            case "yellowgreen": 0x9acd32;
             default: null;
             }
         case VCall("rgba", [r, g, b, a]):
@@ -1260,6 +1389,7 @@ class Parser {
         var last = null;
         while( true ) {
             var t = readToken();
+
             if( last == null )
                 switch( t ) {
                 case TStar: def = true;
@@ -1283,6 +1413,8 @@ class Parser {
                     default: throw "assert";
                     }
                     last = null;
+                case TEof:
+                    break;
                 default:
                     unexpected(t);
                 }

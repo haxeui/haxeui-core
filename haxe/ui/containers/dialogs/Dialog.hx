@@ -93,8 +93,25 @@ class Dialog extends Component {
     /**
      Closes this dialog and removes it from the `Screen`
     **/
-    public function close() {
+    public function close(buttonId:String = null) {
         screen.hideDialog(this);
+        
+        var dialogButton = null;
+        
+        if (_buttons != null) {
+            var button = _buttons.findComponent(buttonId);
+            if (button != null) {
+                dialogButton = cast(button, DialogButton);
+            }
+        }
+        
+        if (dialogButton == null) {
+            dialogButton = new DialogButton(buttonId);
+        }
+        
+        if (callback != null) {
+            callback(dialogButton);
+        }
     }
 
     /**

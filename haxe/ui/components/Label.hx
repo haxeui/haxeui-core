@@ -4,10 +4,12 @@ import haxe.ui.components.Label.LabelLayout;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.InteractiveComponent;
+import haxe.ui.core.TextDisplay;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.styles.Style;
 import haxe.ui.util.Size;
 import haxe.ui.util.Variant;
+import haxe.ui.validation.InvalidationFlags;
 
 /**
  A general purpose component to display text
@@ -25,7 +27,7 @@ class Label extends Component {
     // Styles
     //***********************************************************************************************************
     @:style(layout)           public var textAlign:Null<String>;
-    
+
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************
@@ -37,11 +39,6 @@ class Label extends Component {
         _defaultLayout = new LabelLayout();
     }
 
-    private override function create() {
-        super.create();
-        behaviourSet("text", _text);
-    }
-
     //***********************************************************************************************************
     // Overrides
     //***********************************************************************************************************
@@ -51,8 +48,7 @@ class Label extends Component {
         }
 
         value = super.set_text(value);
-        behaviourSet("text", value);
-        handleBindings(["text", "value"]);
+        invalidateData();
         invalidateLayout();
         return value;
     }
@@ -60,8 +56,17 @@ class Label extends Component {
     private override function applyStyle(style:Style) {
         super.applyStyle(style);
         if (hasTextDisplay() == true) {
-            getTextDisplay().applyStyle(style);
+            getTextDisplay().textStyle = style;
         }
+    }
+
+    //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+
+    private override function validateData() {
+        behaviourSet("text", _text);
+        handleBindings(["text", "value"]);
     }
 }
 
@@ -73,14 +78,25 @@ class Label extends Component {
 class LabelLayout extends DefaultLayout {
     private override function resizeChildren() {
         if (component.autoWidth == false) {
-            #if !pixijs
             component.getTextDisplay().width = component.componentWidth - paddingLeft - paddingRight;
-            #end
 
-            #if (openfl && !flixel) // TODO: make not specific
+             // TODO: make not specific - need to check all backends first
+            #if (flixel)
+            component.getTextDisplay().wordWrap = true;
+            component.getTextDisplay().tf.autoSize = false;
+            #elseif (openfl)
+            component.getTextDisplay().textField.autoSize = openfl.text.TextFieldAutoSize.NONE;
             component.getTextDisplay().multiline = true;
             component.getTextDisplay().wordWrap = true;
+            #elseif (pixijs)
+            component.getTextDisplay().wordWrap = true;
             #end
+        }
+        
+        if (component.autoHeight == true) {
+            component.getTextDisplay().height = component.getTextDisplay().textHeight;
+        } else {
+            component.getTextDisplay().height = component.height;
         }
     }
 
@@ -121,6 +137,8 @@ class LabelDefaultTextBehaviour extends Behaviour {
 
         var label:Label = cast _component;
         label.getTextDisplay().text = '${value}';
-        label.invalidateDisplay();
+        if (label.isInvalid(InvalidationFlags.DISPLAY) == false) {
+            label.invalidateDisplay();
+        }
     }
 }

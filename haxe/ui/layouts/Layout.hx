@@ -15,7 +15,9 @@ class Layout implements ILayout {
     }
     private function set_component(value:Component):Component {
         _component = value;
-        refresh();
+        if (_component != null) {
+            _component.invalidateLayout();
+        }
         return value;
     }
 
@@ -28,19 +30,6 @@ class Layout implements ILayout {
             _component.handlePreReposition();
             repositionChildren();
             _component.handlePostReposition();
-
-            if ((component.autoWidth == true || component.autoHeight == true)) {
-                var size:Size = calcAutoSize();
-                var calculatedWidth:Null<Float> = null;
-                var calculatedHeight:Null<Float> = null;
-                if (component.autoWidth == true) {
-                    calculatedWidth = size.width;
-                }
-                if (component.autoHeight == true) {
-                    calculatedHeight = size.height;
-                }
-                component.resizeComponent(calculatedWidth, calculatedHeight);
-            }
         }
     }
 
@@ -191,10 +180,10 @@ class Layout implements ILayout {
             return 0;
         }
         var padding:Float = 0;
-        if (component.style.paddingTop != null) {
+        if (component.style != null && component.style.paddingTop != null) {
             padding = component.style.paddingTop + padding;
         }
-        if (component.style.paddingBottom != null) {
+        if (component.style != null && component.style.paddingBottom != null) {
             padding = component.style.paddingBottom + padding;
         }
         var icy:Float = component.componentHeight - padding;

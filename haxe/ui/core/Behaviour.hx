@@ -33,6 +33,10 @@ class Behaviour {
         return null;
     }
 
+    public function run(param:Variant = null) {
+        
+    }
+    
     /**
      Update this behaviour with its current value
     **/
