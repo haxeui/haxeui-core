@@ -2,11 +2,9 @@ package haxe.ui.components;
 
 import haxe.ui.core.Behaviour;
 import haxe.ui.components.HButtonBar.HButtonBarLayout;
-import haxe.ui.components.Button;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.MouseEvent;
-import haxe.ui.core.UIEvent;
 import haxe.ui.data.DataSource;
 import haxe.ui.util.Variant;
 
@@ -74,11 +72,11 @@ class ButtonBar extends InteractiveComponent implements IDataComponent {
         return _selectedIndex;
     }
     private function set_selectedIndex(value:Int):Int {
-        if(_dataSource == null || value >= _dataSource.size) {
+        if (_dataSource == null || value >= _dataSource.size) {
             return value;
         }
 
-        if(_selectedIndex == value) {
+        if (_selectedIndex == value) {
             return value;
         }
 
@@ -98,7 +96,7 @@ class ButtonBar extends InteractiveComponent implements IDataComponent {
         return _requireSelection;
     }
     private function set_requireSelection(value:Bool):Bool {
-        if(_requireSelection == value) {
+        if (_requireSelection == value) {
             return value;
         }
 
@@ -116,13 +114,12 @@ class ButtonBar extends InteractiveComponent implements IDataComponent {
     // Events
     //***********************************************************************************************************
 
-    private function onButtonClick(event:MouseEvent):Void {
+    private function onButtonClick(event:MouseEvent) {
         var button:Button = cast(event.target, Button);
         var index:Int = childComponents.indexOf(button);
-        if(selectedIndex == index && requireSelection && !button.selected) {  //Prevent deselect
+        if (selectedIndex == index && requireSelection && !button.selected) {  //Prevent deselect
             button.selected = true;
-        }
-        else {
+        } else {
             selectedIndex = index;
         }
     }
@@ -139,7 +136,7 @@ class ButtonBar extends InteractiveComponent implements IDataComponent {
             _selectedIndex = 0;
         }
 
-        behaviourSet("dataSource", _dataSource);    //TODO - if the index is the only change, the syncUI method is executed anyway
+        behaviourSet("dataSource", _dataSource);
     }
 
     //***********************************************************************************************************
@@ -153,7 +150,7 @@ class ButtonBar extends InteractiveComponent implements IDataComponent {
         return new Button();
     }
 
-    private function syncUI():Void {
+    private function syncUI() {
         lockLayout();
 
         if (_dataSource == null) {
@@ -180,7 +177,7 @@ class ButtonBar extends InteractiveComponent implements IDataComponent {
                 var button:Button = cast(childComponents[n], Button);
                 if (n == 0 && size > 1) {
                     button.addClass('buttonbar-button-first');
-                } else if (n == size-1 && size > 1) {
+                } else if (n == (size - 1) && size > 1) {
                     button.addClass('buttonbar-button-last');
                 } else {
                     button.addClass('buttonbar-button-middle');
