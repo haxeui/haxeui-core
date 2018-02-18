@@ -6,6 +6,7 @@ import haxe.ui.constants.TransitionMode;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.UIEvent;
+import haxe.ui.util.Rectangle;
 import haxe.ui.util.Variant;
 import haxe.ui.validation.InvalidationFlags;
 import haxe.ui.validation.ValidationManager;
