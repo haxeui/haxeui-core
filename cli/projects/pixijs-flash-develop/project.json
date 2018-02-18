@@ -1,0 +1,10 @@
+{
+    "name": "pixijs-flash-develop",
+    "type": "template",
+    "subProjects": [
+        "shared", "pixijs-shared"
+    ],
+    "templates": [
+        { "src": "pixijs.hxproj", "dst": "${target}/pixijs.hxproj"}
+    ]
+}

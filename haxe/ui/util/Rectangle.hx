@@ -36,6 +36,13 @@ class Rectangle {
         top -= dy; height += dy * 2;
     }
 
+    public function containsPoint(x:Float, y:Float):Bool {
+        if (x >= left && x < left + width && y >= top && y < top + height) {
+            return true;
+        }
+        return false;
+    }
+    
     public function toString():String {
         return "{left: " + left + ", top: " + top + ", bottom: " + bottom + ", right: " + right + ", width: " + width + ", height: " + height + "}";
     }

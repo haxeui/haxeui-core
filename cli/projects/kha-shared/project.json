@@ -1,0 +1,7 @@
+{
+    "name": "kha-shared",
+    "type": "template",
+    "templates": [
+        { "src": "khafile.js", "dst": "${target}/khafile.js"}
+    ]
+}

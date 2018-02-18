@@ -1,0 +1,12 @@
+-cp src
+-main ::fullMain::
+
+-lib haxeui-core
+-lib haxeui-hxwidgets
+-lib hxWidgets
+-lib hscript
+
+-D ABI=-MD
+-D WXSTATIC
+
+-cpp build/hxwidgets

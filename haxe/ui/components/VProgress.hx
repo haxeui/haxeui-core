@@ -1,14 +1,13 @@
 package haxe.ui.components;
 
 import haxe.ui.core.Component;
-import haxe.ui.core.IClonable;
 import haxe.ui.layouts.DefaultLayout;
 
 /**
  A vertical implementation of a `Progress`
 **/
 @:dox(icon = "/icons/ui-progress-bar-vertical.png")
-class VProgress extends Progress implements IClonable<VProgress> {
+class VProgress extends Progress {
     public function new() {
         super();
     }
@@ -50,7 +49,7 @@ class VProgressLayout extends DefaultLayout {
             var ucy:Float = usableHeight;
 
             var cy:Float = 0;
-            if (progress.rangeStart == progress.rangeEnd) {
+            if (progress.indeterminate == false) {
                 cy = (progress.pos - progress.min) / (progress.max - progress.min) * ucy;
             } else {
                 cy = ((progress.rangeEnd - progress.rangeStart) - progress.min) / (progress.max - progress.min) * ucy;
@@ -80,7 +79,7 @@ class VProgressLayout extends DefaultLayout {
         if (value != null) {
             var ucy:Float = usableHeight;
             var y:Float = ucy - value.componentHeight + paddingBottom;
-            if (progress.rangeStart != progress.rangeEnd) {
+            if (progress.indeterminate == true) {
                 y -= (progress.rangeStart - progress.min) / (progress.max - progress.min) * ucy;
             }
             value.top = y;

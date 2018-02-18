@@ -1,0 +1,10 @@
+{
+    "name": "html5-flash-develop",
+    "type": "template",
+    "subProjects": [
+        "shared", "html5-shared"
+    ],
+    "templates": [
+        { "src": "html5.hxproj", "dst": "${target}/html5.hxproj"}
+    ]
+}
