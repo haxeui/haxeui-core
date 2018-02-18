@@ -164,7 +164,7 @@ class ListView extends ScrollView implements IDataComponent {
     private var _dataSource:DataSource<Dynamic>;
     public var dataSource(get, set):DataSource<Dynamic>;
     private function get_dataSource():DataSource<Dynamic> {
-        return behaviourGet("dataSource");
+        return _dataSource;
     }
     private function set_dataSource(value:DataSource<Dynamic>):DataSource<Dynamic> {
         _dataSource = value;
@@ -180,7 +180,9 @@ class ListView extends ScrollView implements IDataComponent {
 
     private function syncUI() {
         if (_dataSource == null) {
-            contents.removeAllComponents();
+            if (contents != null) {
+                contents.removeAllComponents();
+            }
             return;
         }
 
