@@ -123,6 +123,35 @@ class Image extends Component {
             behaviourSet("resource", _resource);
         }
     }
+
+    private override function validateLayout():Bool {
+        var result:Bool = super.validateLayout();
+
+        updateClipRect();
+
+        return result;
+    }
+
+    private function updateClipRect() {
+        var usz:Size = layout.usableSize;
+        var imageDisplay:ImageDisplay = getImageDisplay();
+        var rc:Rectangle = imageDisplay.imageClipRect;
+
+        if (imageDisplay.imageWidth > usz.width
+           || imageDisplay.imageHeight > usz.height) {
+            if (rc == null)
+                rc = new Rectangle();
+
+            rc.top = layout.paddingLeft;
+            rc.left = layout.paddingTop;
+            rc.width = usz.width;
+            rc.height = usz.height;
+        } else {
+            rc = null;
+        }
+
+        imageDisplay.imageClipRect = rc;
+    }
 }
 
 //***********************************************************************************************************
@@ -185,8 +214,6 @@ class ImageLayout extends DefaultLayout {
                 imageDisplay.imageWidth = image._originalSize.width * scaleW;
                 imageDisplay.imageHeight = image._originalSize.height * scaleH;
             }
-
-            updateClipRect(usz);
         }
     }
 
@@ -216,8 +243,6 @@ class ImageLayout extends DefaultLayout {
                 case VerticalAlign.TOP:
                     imageDisplay.top = paddingTop;
             }
-
-            updateClipRect(usableSize);
         }
     }
 
@@ -228,25 +253,6 @@ class ImageLayout extends DefaultLayout {
             size.height += component.getImageDisplay().imageHeight;
         }
         return size;
-    }
-
-    private function updateClipRect(usz:Size) {
-        var imageDisplay:ImageDisplay = _component.getImageDisplay();
-        var rc:Rectangle = imageDisplay.imageClipRect;
-        if(rc == null)
-            rc = new Rectangle();
-
-        if(imageDisplay.imageWidth > usz.width
-           || imageDisplay.imageHeight > usz.height) {
-            rc.top = paddingLeft;
-            rc.left = paddingTop;
-            rc.width = usz.width;
-            rc.height = usz.height;
-        } else {
-            rc = null;
-        }
-
-        imageDisplay.imageClipRect = rc;
     }
 }
 
