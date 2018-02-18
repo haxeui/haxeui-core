@@ -1,4 +1,5 @@
 package;
+import descriptors.DescriptorFactory;
 import sys.FileSystem;
 import sys.io.File;
 
@@ -21,6 +22,28 @@ class Util {
         }
         
         return b;
+    }
+    
+    public static function name(params:Params):String {
+        var name:String = null;
+        for (a in params.additional) {
+            if (StringTools.startsWith(a, "--") == false) {
+                name = a;
+                break;
+            }
+        }
+
+        var descriptor = DescriptorFactory.find(params.target);
+        if (descriptor != null) {
+            Util.log('Using name from descriptor "${Type.getClassName(Type.getClass(descriptor))}": "${descriptor.main}"');
+            name = descriptor.main;
+        }
+        
+        if (name == null) { // default
+            name = "Main";
+        }
+        
+        return name;
     }
     
     public static function backends():Array<String> {
@@ -64,5 +87,33 @@ class Util {
         }
         
         FileSystem.deleteDirectory(path);
+    }
+    
+    public static function prettyPrintXml(el:Xml, sb:StringBuf, indent:String = "" ) {
+        sb.add('${indent}<${el.nodeName}');
+        
+        var childCount = 0;
+        for (c in el.elements()) {
+            childCount ++;
+        }
+        
+        for (a in el.attributes()) {
+            var v = el.get(a);
+            sb.add(' ${a}="${v}"');
+        }
+        
+        if (childCount == 0) {
+            sb.add(' />\n');
+        } else {
+            sb.add('>\n');
+        }
+        
+        for (c in el.elements()) {
+            prettyPrintXml(c, sb, indent + "    ");
+        }
+        
+        if (childCount != 0) {
+            sb.add('${indent}</${el.nodeName}>\n');
+        }
     }
 }

@@ -7,6 +7,7 @@ import haxe.ui.core.UIEvent;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.util.Size;
 import haxe.ui.core.Behaviour;
+import haxe.ui.util.Variant;
 
 @:dox(icon = "/icons/ui-tab-content.png")
 class TabView extends Component {
@@ -24,7 +25,9 @@ class TabView extends Component {
     private override function createDefaults() {
         super.createDefaults();
         defaultBehaviours([
-            "removeAllTabs" => new RemoveAllTabs(this)
+            "removeAllPages" => new RemoveAllPages(this),
+            "removePage" => new RemovePage(this),
+            "pageCount" => new PageCount(this)
         ]);
         _defaultLayout = new TabViewLayout();
     }
@@ -47,7 +50,7 @@ class TabView extends Component {
             _tabs = new TabBar();
             _tabs.id = "tabview-tabs";
             _tabs.addClass("tabview-tabs");
-            _tabs.registerEvent(UIEvent.BEFORE_CHANGE, onBeforeTabsChange);
+            _tabs.registerEvent(UIEvent.BEFORE_CHANGE, _onBeforeTabsChange);
             _tabs.registerEvent(UIEvent.CHANGE, _onTabsChange);
             addComponent(_tabs);
         }
@@ -75,6 +78,10 @@ class TabView extends Component {
                 button.icon = icon;
                 _tabs.addComponent(button);
                 invalidateData();
+
+                if (_pageIndex == -1) {
+                    pageIndex = 0;
+                }
             } else {
                 super.addComponent(child);
             }
@@ -89,7 +96,14 @@ class TabView extends Component {
             v = super.removeComponent(child, dispose);
         } else if (child == _content) {
             v = super.removeComponent(child, dispose);
-        } else {
+        } else if (_views != null) {
+            var index = _views.indexOf(child);
+            _views.remove(child);
+            _content.removeComponent(child);
+            _tabs.removeButton(index);
+            _pageIndex = _tabs.selectedIndex;
+            invalidateData();
+            invalidateLayout();
         }
         return v;
     }
@@ -147,21 +161,22 @@ class TabView extends Component {
     
     public var pageCount(get, null):Int;
     private function get_pageCount():Int {
-        if (_tabs == null) {
-            return 0;
-        }
-        return _tabs.buttonCount;
+        return behaviourGet("pageCount");
     }
-    
+
+    public function removePage(index:Int) {
+        behaviourRun("removePage", index);
+    }
+
+    public function removeAllPages() {
+        behaviourRun("removeAllPages");
+    }
+
     public var selectedButton(get, null):Button;
     private function get_selectedButton():Button {
         return _tabs.selectedButton;
     }
     
-    public function removeAllTabs() {
-        behaviourRun("removeAllTabs");
-    }
-
     private var __onBeforeChange:UIEvent->Void;
     /**
      Utility property to add a single `UIEvent.CHANGE` event
@@ -209,7 +224,7 @@ class TabView extends Component {
     //***********************************************************************************************************
     // Event Handlers
     //***********************************************************************************************************
-    private function onBeforeTabsChange(event:UIEvent) {
+    private function _onBeforeTabsChange(event:UIEvent) {
         dispatch(new UIEvent(UIEvent.BEFORE_CHANGE));
     }
     
@@ -273,8 +288,20 @@ class TabViewLayout extends DefaultLayout {
 
 @:dox(hide)
 @:access(haxe.ui.containers.TabView)
-private class RemoveAllTabs extends Behaviour {
-    public override function run() {
+private class RemovePage extends Behaviour {
+    public override function run(param:Variant = null) {
+        var tabView:TabView = cast(_component, TabView);
+        if (tabView._views != null) {
+            var view = tabView._views[param.toInt()];
+            tabView.removeComponent(view);
+        }
+    }
+}
+
+@:dox(hide)
+@:access(haxe.ui.containers.TabView)
+private class RemoveAllPages extends Behaviour {
+    public override function run(param:Variant = null) {
         var tabView:TabView = cast(_component, TabView);
         if (tabView._views != null) {
             for (view in tabView._views) {
@@ -288,8 +315,20 @@ private class RemoveAllTabs extends Behaviour {
             tabView._content.removeAllComponents();
         }
         if (tabView._tabs != null) {
-            tabView._tabs.removeAllComponents();
+            tabView._tabs.removeAllButtons();
             tabView._tabs.resetSelection();
         }
+    }
+}
+
+@:dox(hide)
+@:access(haxe.ui.containers.TabView)
+private class PageCount extends Behaviour {
+    public override function get():Variant {
+        var tabView:TabView = cast(_component, TabView);
+        if (tabView._tabs == null) {
+            return 0;
+        }
+        return tabView._tabs.buttonCount;
     }
 }

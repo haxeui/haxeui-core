@@ -1,10 +1,17 @@
 package haxe.ui.core;
 
-import haxe.ui.validation.IValidating;
-import haxe.ui.validation.InvalidationFlags;
 import haxe.ui.backend.TextDisplayBase;
 import haxe.ui.styles.Style;
-import haxe.ui.validation.ValidationManager;
+import haxe.ui.validation.IValidating;
+import haxe.ui.validation.InvalidationFlags;
+
+class TextDisplayData {
+    public var multiline:Bool = false;
+    public var wordWrap:Bool = false;
+    
+    public function new() {
+    }
+}
 
 /**
  Class that represents a framework specific method to display read-only text inside a component
@@ -32,7 +39,7 @@ class TextDisplay extends TextDisplayBase implements IValidating {
             return value;
         }
 
-        if ((value.fontName != null && _textStyle == null) || (value.fontName != _textStyle.fontName)) {
+        if ((value.fontName != null && _textStyle == null) || (_textStyle != null && value.fontName != _textStyle.fontName)) {
             ToolkitAssets.instance.getFont(value.fontName, function(fontInfo) {
                 _fontInfo = fontInfo;
                 invalidate(InvalidationFlags.STYLE);
@@ -146,29 +153,29 @@ class TextDisplay extends TextDisplayBase implements IValidating {
 
     public var multiline(get, set):Bool;
     private function get_multiline():Bool {
-        return _multiline;
+        return _displayData.multiline;
     }
     private function set_multiline(value:Bool):Bool {
-        if (value == _multiline) {
+        if (value == _displayData.multiline) {
             return value;
         }
 
         invalidate(InvalidationFlags.STYLE);
-        _multiline = value;
+        _displayData.multiline = value;
         return value;
     }
 
     public var wordWrap(get, set):Bool;
     private function get_wordWrap():Bool {
-        return _wordWrap;
+        return _displayData.wordWrap;
     }
     private function set_wordWrap(value:Bool):Bool {
-        if (value == _wordWrap) {
+        if (value == _displayData.wordWrap) {
             return value;
         }
 
         invalidate(InvalidationFlags.STYLE);
-        _wordWrap = value;
+        _displayData.wordWrap = value;
         return value;
     }
 

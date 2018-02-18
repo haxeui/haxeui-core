@@ -1,5 +1,6 @@
 package haxe.ui;
 
+import haxe.ui.backend.ToolkitOptions;
 import haxe.ui.containers.Box;
 import haxe.ui.core.Component;
 import haxe.ui.core.ComponentClassMap;
@@ -51,7 +52,7 @@ class Toolkit {
         LocaleManager.instance.setLanguage(systemLocale);
     }
 
-    public static function init(options:Dynamic = null) {
+    public static function init(options:ToolkitOptions = null) {
         build();
         setDefaultLanguage();
         ThemeManager.instance.applyTheme(theme);

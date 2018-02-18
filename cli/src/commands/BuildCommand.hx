@@ -1,7 +1,6 @@
 package commands;
+
 import builds.BuildFactory;
-import sys.FileSystem;
-import sys.io.Process;
 
 class BuildCommand extends Command {
     public function new() {

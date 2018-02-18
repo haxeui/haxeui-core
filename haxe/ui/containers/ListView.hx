@@ -26,7 +26,8 @@ class ListView extends ScrollView implements IDataComponent {
     private override function createDefaults() {
         super.createDefaults();
         defaultBehaviours([
-            "dataSource" => new ListViewDefaultDataSourceBehaviour(this)
+            "dataSource" => new ListViewDefaultDataSourceBehaviour(this),
+            "selectedIndex" => new DefaultSelectedIndexBehaviour(this)
         ]);
     }
 
@@ -77,14 +78,10 @@ class ListView extends ScrollView implements IDataComponent {
     private var _selectedIndex:Int = NO_SELECTION;
     public var selectedIndex(get, set):Int;
     private function get_selectedIndex():Int {
-        return _selectedIndex;
+        return behaviourGet("selectedIndex");
     }
     private function set_selectedIndex(value:Int):Int {
-        if(_dataSource != null && value < _dataSource.size && _selectedIndex != value) {
-            _selectedIndex = value;
-            invalidateIndex();
-        }
-
+        behaviourSet("selectedIndex", value);
         return value;
     }
 
@@ -363,6 +360,23 @@ class ListViewDefaultDataSourceBehaviour extends Behaviour {
         listView.syncUI();
         if (listView._dataSource != null) {
             listView._dataSource.onChange = listView.onDataSourceChanged;
+        }
+    }
+}
+
+@:dox(hide)
+@:access(haxe.ui.containers.ListView)
+class DefaultSelectedIndexBehaviour extends Behaviour {
+    public override function get():Variant {
+        var listView:ListView = cast(_component, ListView);
+        return listView._selectedIndex;
+    }
+
+    public override function set(value:Variant) {
+        var listView:ListView = cast(_component, ListView);
+        if(listView._dataSource != null && value < listView._dataSource.size && listView._selectedIndex != value) {
+            listView._selectedIndex = value;
+            listView.invalidateIndex();
         }
     }
 }
