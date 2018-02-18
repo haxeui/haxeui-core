@@ -59,23 +59,12 @@ class ButtonBar extends InteractiveComponent implements IDataComponent {
         return _dataSource;
     }
     private function set_dataSource(value:DataSource<Dynamic>):DataSource<Dynamic> {
-        if (_dataSource != null) {
-            _dataSource.onChange = null;
+        if (_dataSource == value) {
+            return value;
         }
 
         _dataSource = value;
-        behaviourSet("dataSource", value);
-
-        if (_dataSource != null) {
-            _dataSource.onChange = onDataSourceChanged;
-        }
-
-        syncUI();
-
-        if (_requireSelection == true && _dataSource != null && _selectedIndex < 0) {
-            selectedIndex = 0;
-        }
-
+        invalidateData();
         return value;
     }
 
@@ -85,28 +74,16 @@ class ButtonBar extends InteractiveComponent implements IDataComponent {
         return _selectedIndex;
     }
     private function set_selectedIndex(value:Int):Int {
-        if (_dataSource == null || value >= _dataSource.size) {
+        if(_dataSource == null || value >= _dataSource.size) {
             return value;
         }
 
-        if (_selectedIndex == value) {
+        if(_selectedIndex == value) {
             return value;
         }
 
         _selectedIndex = value;
-
-        if (_dataSource != null) {
-            if (_requireSelection == true && _selectedIndex < 0 && _dataSource.size > 0) {
-                _selectedIndex = 0;
-            }
-        } else {
-            this.value = null;
-        }
-
-        behaviourSet("selectedIndex", _selectedIndex);
-
-        dispatch(new UIEvent(UIEvent.CHANGE));
-
+        invalidateData();
         return _selectedIndex;
     }
 
@@ -121,13 +98,12 @@ class ButtonBar extends InteractiveComponent implements IDataComponent {
         return _requireSelection;
     }
     private function set_requireSelection(value:Bool):Bool {
-        if (_requireSelection != value) {
-            _requireSelection = value;
-            if (_requireSelection == true && _dataSource != null && _selectedIndex < 0) {
-                selectedIndex = 0;
-            }
+        if(_requireSelection == value) {
+            return value;
         }
 
+        _requireSelection = value;
+        invalidateData();
         return value;
     }
 
@@ -152,9 +128,18 @@ class ButtonBar extends InteractiveComponent implements IDataComponent {
     }
 
     private function onDataSourceChanged() {
-        if (_ready == true) {
-            syncUI();
+        invalidateData();
+    }
+
+    //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+    private override function validateData() {
+        if (_dataSource != null && _requireSelection == true && _selectedIndex < 0 && _dataSource.size > 0) {
+            _selectedIndex = 0;
         }
+
+        behaviourSet("dataSource", _dataSource);    //TODO - if the index is the only change, the syncUI method is executed anyway
     }
 
     //***********************************************************************************************************
@@ -233,8 +218,20 @@ class ButtonBar extends InteractiveComponent implements IDataComponent {
 @:dox(hide)
 @:access(haxe.ui.components.ButtonBar)
 class ButtonBarDefaultDataSourceBehaviour extends Behaviour {
-    public override function set(value:Variant) {
+    public override function get():Variant {
+        var buttonBar:ButtonBar = cast(_component, ButtonBar);
+        if (buttonBar._dataSource != null) {
+            buttonBar._dataSource.onChange = buttonBar.onDataSourceChanged;
+        }
+        return buttonBar._dataSource;
+    }
 
+    public override function set(value:Variant) {
+        var buttonBar:ButtonBar = cast(_component, ButtonBar);
+        buttonBar.syncUI();
+        if (buttonBar._dataSource != null) {
+            buttonBar._dataSource.onChange = buttonBar.onDataSourceChanged;
+        }
     }
 }
 
