@@ -67,8 +67,11 @@ class XMLParser extends ModuleParser {
                     }
                     module.themeEntries.set(theme.name, theme);
                 }
-            } else if (nodeName == "locales") {
+            } else if (nodeName == "locales" && checkCondition(el, defines) == true) {
                 for (localeNode in el.elements()) {
+                    if (checkCondition(localeNode, defines) == false) {
+                        continue;
+                    }
                     var locale:Module.ModuleLocaleEntry = new Module.ModuleLocaleEntry();
                     locale.id = localeNode.get("id");
                     locale.resource = localeNode.get("resource");
