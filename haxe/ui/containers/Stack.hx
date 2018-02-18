@@ -161,10 +161,6 @@ class Stack extends Box {
             validateData();
         }
 
-        if (dataInvalid || indexInvalid) {
-            validateIndex();
-        }
-
         if (styleInvalid) {
             validateStyle();
         }
@@ -173,8 +169,20 @@ class Stack extends Box {
             validatePosition();
         }
 
-        if (layoutInvalid) {
+        if (dataInvalid || indexInvalid) {
+            var newSelectedItem:Component = selectedItem;
+            if (newSelectedItem != null) {
+                newSelectedItem.hidden = false;
+                newSelectedItem.includeInLayout = true;
+            }
+        }
+
+        if (layoutInvalid || indexInvalid) {
             displayInvalid = validateLayout() || displayInvalid;
+        }
+
+        if (dataInvalid || indexInvalid) {
+            validateIndex();
         }
 
         if (displayInvalid || styleInvalid) {
@@ -231,7 +239,7 @@ class Stack extends Box {
         }
 
         if (inComponent != null) {
-            inComponent.includeInLayout = true;
+            inComponent.includeInLayout = false;    //Avoid that the layout can override the animation values
             inComponent.hidden = false;
         }
 
@@ -336,14 +344,22 @@ class Stack extends Box {
                 ["target" => outComponent], outVars,
                 function() {
                     _currentTransition = null;
-                    outComponent.includeInLayout = false;
-                    outComponent.hidden = true;
+
+                    if (inComponent != null) {
+                        inComponent.includeInLayout = true;
+                    }
+
+                    if (outComponent != null) {
+                        outComponent.includeInLayout = false;
+                        outComponent.hidden = true;
+                    }
                 });
 
         } else {
             if (inComponent != null) {
                 inComponent.left = layout.paddingLeft;
                 inComponent.top = layout.paddingTop;
+                inComponent.includeInLayout = true;
             }
 
             if (outComponent != null) {
