@@ -6,6 +6,7 @@ import sys.FileSystem;
 import sys.io.File;
 
 import projects.kha.ProjectGen;
+import projects.kha.ProjectGenFD;
 
 class Project {
     public var name:String;

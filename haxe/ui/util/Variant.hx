@@ -50,7 +50,7 @@ abstract Variant(VariantType) from VariantType {
         return Int(s);
     }
 
-    @:to function toInt():Null<Int> {
+    @:to public function toInt():Null<Int> {
         if (isNull) {
             return null;
         }

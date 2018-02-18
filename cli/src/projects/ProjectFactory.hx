@@ -7,6 +7,9 @@ class ProjectFactory {
         var p:Project = null;
         
         var jsonString = Resource.getString('projects/${name}/project.json');
+        if (jsonString == null) {
+            throw 'Could not read: projects/${name}/project.json';
+        }
         
         var tempParser = new json2object.JsonParser<Project>();
         tempParser.fromJson(jsonString, 'projects/${name}/project.json');

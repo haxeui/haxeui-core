@@ -37,11 +37,11 @@ class CheckBox extends InteractiveComponent {
             checkboxValue.id = "checkbox-value";
             checkboxValue.addClass("checkbox-value");
             addComponent(checkboxValue);
+            
+            checkboxValue.registerEvent(MouseEvent.CLICK, _onClick);
+            checkboxValue.registerEvent(MouseEvent.MOUSE_OVER, _onMouseOver);
+            checkboxValue.registerEvent(MouseEvent.MOUSE_OUT, _onMouseOut);
         }
-
-        registerEvent(MouseEvent.CLICK, _onClick);
-        registerEvent(MouseEvent.MOUSE_OVER, _onMouseOver);
-        registerEvent(MouseEvent.MOUSE_OUT, _onMouseOut);
     }
 
     private override function destroyChildren() {
@@ -71,8 +71,12 @@ class CheckBox extends InteractiveComponent {
     }
 
     private override function set_text(value:String):String {
-        value = super.set_text(value);
-        behaviourSet("text", value);
+        if (_text == value) {
+            return value;
+        }
+
+        invalidateData();
+        _text = value;
         return value;
     }
 
@@ -99,10 +103,16 @@ class CheckBox extends InteractiveComponent {
     //***********************************************************************************************************
 
     private override function validateData() {
-        behaviourSet("selected", value);
+        if (behaviourGet("text") != _text) {
+            behaviourSet("text", _text);
+        }
 
-        var event:UIEvent = new UIEvent(UIEvent.CHANGE);
-        dispatch(event);
+        if (behaviourGet("selected") != _selected) {
+            behaviourSet("selected", _selected);
+            
+            var event:UIEvent = new UIEvent(UIEvent.CHANGE);
+            dispatch(event);
+        }
     }
 
     //***********************************************************************************************************
@@ -136,18 +146,24 @@ class CheckBox extends InteractiveComponent {
     //***********************************************************************************************************
     private function _onClick(event:MouseEvent) {
         toggleSelected();
+        var event:UIEvent = new UIEvent(UIEvent.CHANGE);
+        dispatch(event);
     }
 
     private function _onMouseOver(event:MouseEvent) {
         addClass(":hover");
         var value:CheckBoxValue = findComponent(CheckBoxValue);
-        value.addClass(":hover");
+        if (value != null) {
+            value.addClass(":hover");
+        }
     }
 
     private function _onMouseOut(event:MouseEvent) {
         removeClass(":hover");
         var value:CheckBoxValue = findComponent(CheckBoxValue);
-        value.removeClass(":hover");
+        if (value != null) {
+            value.removeClass(":hover");
+        }
     }
 }
 
@@ -177,6 +193,15 @@ class CheckBoxDefaultTextBehaviour extends Behaviour {
         }
         label.text = value;
     }
+
+    public override function get():Variant {
+        var checkbox:CheckBox = cast _component;
+        var label:Label = checkbox.findComponent(Label);
+        if (label == null) {
+            return null;
+        }
+        return label.text;
+    }
 }
 
 @:dox(hide)
@@ -194,6 +219,15 @@ class CheckBoxDefaultSelectedBehaviour extends Behaviour {
         } else {
             checkboxValue.removeClass(":selected");
         }
+    }
+
+    public override function get():Variant {
+        var checkbox:CheckBox = cast _component;
+        var checkboxValue:CheckBoxValue = checkbox.findComponent(CheckBoxValue);
+        if (checkboxValue == null) {
+            return false;
+        }
+        return checkboxValue.hasClass(":selected");
     }
 }
 

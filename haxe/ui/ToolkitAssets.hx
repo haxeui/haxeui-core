@@ -7,6 +7,7 @@ import haxe.ui.assets.AssetPlugin;
 import haxe.ui.assets.FontInfo;
 import haxe.ui.assets.ImageInfo;
 import haxe.ui.backend.AssetsBase;
+import haxe.ui.backend.ToolkitOptions;
 import haxe.ui.util.CallbackMap;
 
 class ToolkitAssets extends AssetsBase {
@@ -24,7 +25,7 @@ class ToolkitAssets extends AssetsBase {
     //***********************************************************************************************************
     public var preloadList:Array<PreloadItem> = [];
     
-    public var options:Dynamic = null;
+    public var options:ToolkitOptions = null;
 
     private var _fontCache:Map<String, FontInfo>;
     private var _fontCallbacks:CallbackMap<FontInfo>;

@@ -14,6 +14,8 @@ class DescriptorFactory {
                 d = new KhaFile();
             case "haxeui":
                 d = new InfoFile();
+            case "hxproj":
+                d = new HxProj();
         }
         return d;
     }
@@ -22,7 +24,7 @@ class DescriptorFactory {
         var d = null;
         
         if (order == null) {
-            order = ["openfl", "nme", "kha", "hxml", "haxeui"];
+            order = ["openfl", "nme", "kha", "hxproj", "hxml", "haxeui"];
         }
         
         for (o in order) {

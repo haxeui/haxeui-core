@@ -126,35 +126,67 @@ class ScrollView extends Component {
         return value;
     }
 
+    public var hscrollMax(get, null):Float;
+    private function get_hscrollMax():Float {
+        if (_hscroll == null) {
+            return 0;
+        }
+        return _hscroll.max;
+    }
+
     public var contentWidth(get, set):Null<Float>;
     private function get_contentWidth():Null<Float> {
+        if (_contents == null) {
+            return 0;
+        }
         return _contents.width;
     }
     private function set_contentWidth(value:Null<Float>):Null<Float> {
+        if (_contents == null) {
+            return value;
+        }
         return _contents.width = value;
     }
 
     public var contentHeight(get, set):Null<Float>;
     private function get_contentHeight():Null<Float> {
+        if (_contents == null) {
+            return 0;
+        }
         return _contents.height;
     }
     private function set_contentHeight(value:Null<Float>):Null<Float> {
+        if (_contents == null) {
+            return value;
+        }
         return _contents.height = value;
     }
 
     public var percentContentWidth(get, set):Null<Float>;
     private function get_percentContentWidth():Null<Float> {
+        if (_contents == null) {
+            return 0;
+        }
         return _contents.percentWidth;
     }
     private function set_percentContentWidth(value:Null<Float>):Null<Float> {
+        if (_contents == null) {
+            return value;
+        }
         return _contents.percentWidth = value;
     }
 
     public var percentContentHeight(get, set):Null<Float>;
     private function get_percentContentHeight():Null<Float> {
+        if (_contents == null) {
+            return 0;
+        }
         return _contents.percentHeight;
     }
     private function set_percentContentHeight(value:Null<Float>):Null<Float> {
+        if (_contents == null) {
+            return value;
+        }
         return _contents.percentHeight = value;
     }
 
@@ -163,6 +195,7 @@ class ScrollView extends Component {
         if (Std.is(child, HScroll) || Std.is(child, VScroll) || child == _contents) {
             v = super.addComponent(child);
         } else {
+            createContentContainer();
             v = _contents.addComponent(child);
         }
         return v;
@@ -643,12 +676,13 @@ class ScrollViewLayout extends DefaultLayout {
 
         if (cast(component, ScrollView).native == true) {
             var contents:Component = component.findComponent("scrollview-contents", null, false, "css");
-            if (contents != null && contents.componentHeight > size.height) {
-                size.width -= Platform.vscrollWidth;
-            }
-            var contents:Component = component.findComponent("scrollview-contents", null, false, "css");
-            if (contents != null && contents.componentWidth > size.width) {
-                size.height -= Platform.hscrollHeight;
+            if (contents != null) {
+                if (contents.componentWidth > size.width) {
+                    size.height -= Platform.hscrollHeight;
+                }
+                if (contents.componentHeight > size.height) {
+                    size.width -= Platform.vscrollWidth;
+                }
             }
         }
 
@@ -665,6 +699,19 @@ class ScrollViewLayout extends DefaultLayout {
         if (vscroll != null && vscroll.hidden == false) {
             size.width += vscroll.componentWidth;
         }
+        
+        if (cast(component, ScrollView).native == true) {
+            var contents:Component = component.findComponent("scrollview-contents", null, false, "css");
+            if (contents != null) {
+                if (contents.width > component.width) {
+                    size.height += Platform.hscrollHeight;
+                }
+                if (contents.height > component.height) {
+                    size.width += Platform.vscrollWidth;
+                }
+            }
+        }
+        
         return size;
     }
 }

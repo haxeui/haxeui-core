@@ -29,7 +29,6 @@ class Module {
 class ModuleResourceEntry {
     public var path(default, default):String;
     public var prefix(default, default):String;
-    public var condition(default, default):String;
 
     public function new() {
     }
@@ -67,7 +66,6 @@ class ModuleThemeEntry {
 
 class ModuleThemeStyleEntry {
     public var resource:String;
-    public var condition:String;
     
     public function new() {
     }
@@ -77,7 +75,6 @@ class ModulePluginEntry {
     public var type(default, default):String;
     public var className(default, default):String;
     public var config(default, default):Map<String, String>;
-    public var condition(default, default):String;
 
     public function new() {
         config = new Map<String, String>();

@@ -42,6 +42,8 @@ class Scroll extends InteractiveComponent {
             componentHeight = 100;
         }
 
+        registerEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
+
         if (_deincButton == null) {
             _deincButton = new Button();
             _deincButton.scriptAccess = false;
@@ -80,8 +82,6 @@ class Scroll extends InteractiveComponent {
             _thumb.registerEvent(MouseEvent.MOUSE_DOWN, _onThumbMouseDown);
             addComponent(_thumb);
         }
-
-        registerEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
     }
 
     //***********************************************************************************************************
