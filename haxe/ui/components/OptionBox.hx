@@ -2,7 +2,6 @@ package haxe.ui.components;
 
 import haxe.ds.StringMap;
 import haxe.ui.core.Behaviour;
-import haxe.ui.core.IClonable;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.UIEvent;
@@ -14,11 +13,8 @@ import haxe.ui.util.Variant;
  Optionbox component where only one option of a group may be selected at a single time
 **/
 @:dox(icon = "/icons/ui-radio-buttons.png")
-class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
+class OptionBox extends InteractiveComponent {
     private static var _groups:StringMap<Array<OptionBox>>;
-
-    private var _value:OptionBoxValue;
-    private var _label:Label;
 
     public function new() {
         super();
@@ -41,34 +37,31 @@ class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
         _defaultLayout = new HorizontalLayout();
     }
 
-    private override function create() {
-        super.create();
-        behaviourSet("text", _text);
-        behaviourSet("group", _groupName);
-        behaviourSet("selected", selected);
-    }
-
     private override function createChildren() {
-        if (_value == null) {
-            _value = new OptionBoxValue();
-            _value.id = "optionbox-value";
-            _value.addClass("optionbox-value");
-            addComponent(_value);
+        var optionboxValue:OptionBoxValue = findComponent(OptionBoxValue);
+        if (optionboxValue == null) {
+            optionboxValue = new OptionBoxValue();
+            optionboxValue.id = "optionbox-value";
+            optionboxValue.addClass("optionbox-value");
+            addComponent(optionboxValue);
 
-            _value.registerEvent(MouseEvent.CLICK, _onClick);
-            _value.registerEvent(MouseEvent.MOUSE_OVER, _onMouseOver);
-            _value.registerEvent(MouseEvent.MOUSE_OUT, _onMouseOut);
+            optionboxValue.registerEvent(MouseEvent.CLICK, _onClick);
+            optionboxValue.registerEvent(MouseEvent.MOUSE_OVER, _onMouseOver);
+            optionboxValue.registerEvent(MouseEvent.MOUSE_OUT, _onMouseOut);
         }
     }
 
     private override function destroyChildren() {
-        if (_value != null) {
-            removeComponent(_value);
-            _value = null;
+        var value:OptionBoxValue = findComponent(OptionBoxValue);
+        if (value != null) {
+            removeComponent(value);
+            value = null;
         }
-        if (_label != null) {
-            removeComponent(_label);
-            _label = null;
+
+        var label:Label = findComponent(Label);
+        if (label != null) {
+            removeComponent(label);
+            label = null;
         }
     }
 
@@ -85,19 +78,48 @@ class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
     }
 
     private override function set_text(value:String):String {
-        value = super.set_text(value);
-        behaviourSet("text", value);
+        if (_text == value) {
+            return value;
+        }
+
+        invalidateData();
+        _text = value;
         return value;
     }
 
     private override function applyStyle(style:Style) {
         super.applyStyle(style);
-        if (_label != null) {
-            _label.customStyle.color = style.color;
-            _label.customStyle.fontName = style.fontName;
-            _label.customStyle.fontSize = style.fontSize;
-            _label.customStyle.cursor = style.cursor;
-            _label.invalidateStyle();
+
+        var label:Label = findComponent(Label);
+        if (label != null &&
+            (label.customStyle.color != style.color
+            || label.customStyle.fontName != style.fontName
+            || label.customStyle.fontSize != style.fontSize
+            || label.customStyle.cursor != style.cursor)) {
+
+            label.customStyle.color = style.color;
+            label.customStyle.fontName = style.fontName;
+            label.customStyle.fontSize = style.fontSize;
+            label.customStyle.cursor = style.cursor;
+            label.invalidateStyle();
+        }
+    }
+
+    //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+
+    private override function validateData() {
+        if (behaviourGet("text") != _text) {
+            behaviourSet("text", _text);
+        }
+
+        if (behaviourGet("selected") != _selected) {
+            behaviourSet("selected", _selected);
+        }
+
+        if (behaviourGet("group") != _groupName) {
+            behaviourSet("group", _groupName);
         }
     }
 
@@ -130,8 +152,8 @@ class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
             }
         }
 
+        invalidateData();
         _selected = value;
-        behaviourSet("selected", value);
 
         /*
         if (value == true) {
@@ -156,7 +178,7 @@ class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
     }
 
     private function get_selected():Bool {
-        return behaviourGet("selected");
+        return _selected;
     }
 
     private function toggleSelected():Bool {
@@ -180,8 +202,8 @@ class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
             }
         }
 
+        invalidateData();
         _groupName = value;
-        behaviourSet("group", value);
         var arr:Array<OptionBox> = _groups.get(value);
         if (arr == null) {
             arr = [];
@@ -210,7 +232,6 @@ class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
                 }
             }
         }
-
         return selectionOption;
     }
 
@@ -219,18 +240,22 @@ class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
     //***********************************************************************************************************
     private function _onClick(event:MouseEvent) {
         toggleSelected();
-        var event:UIEvent = new UIEvent(UIEvent.CHANGE);
-        dispatch(event);
     }
 
     private function _onMouseOver(event:MouseEvent) {
         addClass(":hover");
-        _value.addClass(":hover");
+        var value:OptionBoxValue = findComponent(OptionBoxValue);
+        if (value != null) {
+            value.addClass(":hover");
+        }
     }
 
     private function _onMouseOut(event:MouseEvent) {
         removeClass(":hover");
-        _value.removeClass(":hover");
+        var value:OptionBoxValue = findComponent(OptionBoxValue);
+        if (value != null) {
+            value.removeClass(":hover");
+        }
     }
 
     //******************************************************************************************
@@ -263,23 +288,29 @@ class OptionBox extends InteractiveComponent implements IClonable<OptionBox> {
 @:access(haxe.ui.components.OptionBox)
 class OptionBoxDefaultTextBehaviour extends Behaviour {
     public override function set(value:Variant) {
-        if (value == null || value.isNull) {
-            return;
-        }
-
         var optionbox:OptionBox = cast _component;
-        if (optionbox._label == null) {
-            optionbox._label = new Label();
-            optionbox._label.id = "optionbox-label";
-            optionbox._label.addClass("optionbox-label");
+        var label:Label = optionbox.findComponent(Label);
+        if (label == null) {
+            label = new Label();
+            label.id = "optionbox-label";
+            label.addClass("optionbox-label");
 
-            optionbox._label.registerEvent(MouseEvent.CLICK, optionbox._onClick);
-            optionbox._label.registerEvent(MouseEvent.MOUSE_OVER, optionbox._onMouseOver);
-            optionbox._label.registerEvent(MouseEvent.MOUSE_OUT, optionbox._onMouseOut);
+            label.registerEvent(MouseEvent.CLICK, optionbox._onClick);
+            label.registerEvent(MouseEvent.MOUSE_OVER, optionbox._onMouseOver);
+            label.registerEvent(MouseEvent.MOUSE_OUT, optionbox._onMouseOut);
 
-            optionbox.addComponent(optionbox._label);
+            optionbox.addComponent(label);
         }
-        optionbox._label.text = value;
+        label.text = value;
+    }
+
+    public override function get():Variant {
+        var optionbox:OptionBox = cast _component;
+        var label:Label = optionbox.findComponent(Label);
+        if (label == null) {
+            return null;
+        }
+        return label.text;
     }
 }
 
@@ -288,20 +319,25 @@ class OptionBoxDefaultTextBehaviour extends Behaviour {
 class OptionBoxDefaultSelectedBehaviour extends Behaviour {
     public override function set(value:Variant) {
         var optionbox:OptionBox = cast _component;
-        if (optionbox._value == null) {
+        var optionboxValue:OptionBoxValue = optionbox.findComponent(OptionBoxValue);
+        if (optionboxValue == null) {
             return;
         }
 
         if (value == true) {
-            optionbox._value.addClass(":selected");
+            optionboxValue.addClass(":selected");
         } else {
-            optionbox._value.removeClass(":selected");
+            optionboxValue.removeClass(":selected");
         }
     }
 
     public override function get():Variant {
         var optionbox:OptionBox = cast _component;
-        return optionbox._selected;
+        var optionboxValue:OptionBoxValue = optionbox.findComponent(OptionBoxValue);
+        if (optionboxValue == null) {
+            return false;
+        }
+        return optionboxValue.hasClass(":selected");
     }
 }
 
@@ -311,6 +347,7 @@ class OptionBoxDefaultSelectedBehaviour extends Behaviour {
 /**
  Specialised `InteractiveComponent` used to contain the `OptionBox` icon and respond to style changes
 **/
+@:dox(hide)
 class OptionBoxValue extends InteractiveComponent {
     private var _icon:Image;
 

@@ -5,7 +5,7 @@ import haxe.ui.focus.IFocusable;
 /**
  A component that can be interacted with and gain input focus via either mouse or keyboard
 **/
-class InteractiveComponent extends Component implements IFocusable implements IClonable<InteractiveComponent> {
+class InteractiveComponent extends Component implements IFocusable {
     public function new() {
         super();
     }
@@ -14,7 +14,7 @@ class InteractiveComponent extends Component implements IFocusable implements IC
     /**
      Whether this component currently has focus
 
-     _Note_: components that have focus will have an `:active` css psuedo class automatically added
+     *Note*: components that have focus will have an `:active` css psuedo class automatically added
     **/
     public var focus(get, set):Bool;
     private function get_focus():Bool {

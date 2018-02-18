@@ -88,7 +88,7 @@
 ** BUTTON
 *************************************************************************/
 .button {
-    background: #EDEDED #E6E6E6;
+    background: #EDEDED #E6E6E6 vertical;
     color: #222222;
     border: 1px solid #ABABAB;
     border-radius: 2px;
@@ -100,12 +100,12 @@
 }
 
 .button:hover {
-    background: #F5F5F5 #F1F1F1;
+    background: #F5F5F5 #F1F1F1 vertical;
     color: #000000;
 }
 
 .button:down {
-    background: #D2D2D2 #C2C2C2;
+    background: #D2D2D2 #C2C2C2 vertical;
     color: #000000;
     border-color: #7F7F7F;
 }
@@ -115,22 +115,22 @@
 }
 
 .button.emphasized {
-    background: #DAE4EE #D4DEE8;
+    background: #DAE4EE #D4DEE8 vertical;
     border-color: #6CA1D7;
 }
 
 .button.emphasized:hover {
-    background: #E2ECF6 #DEE8F2;
+    background: #E2ECF6 #DEE8F2 vertical;
     border-color: #6CA1D7;
 }
 
 .button.emphasized:down {
-    background: #C2CCD6 #B4BEC8;
+    background: #C2CCD6 #B4BEC8 vertical;
     border-color: #568CC1;
 }
 
 .button:disabled {
-    background: #D4D4D4 #CCCCCC;
+    background: #D4D4D4 #CCCCCC vertical;
     color: #909090;
     cursor: default;
 }
@@ -138,7 +138,7 @@
 ** TEXT FIELD
 *************************************************************************/
 .textfield {
-    background: #FFFFFF;
+    background-color: #FFFFFF;
     color: #444444;
     border: 1px solid #ABABAB;
     border-radius: 2px;
@@ -158,11 +158,10 @@
 }
 
 .textfield:disabled {
-    background: #D4D4D4 #CCCCCC;
+    background: #D4D4D4 #CCCCCC vertical;
 }
 
 .textarea {
-    background: #FFFFFF;
     color: #444444;
     border: 1px solid #ABABAB;
     border-radius: 2px;
@@ -171,7 +170,7 @@
     padding-bottom: 1px;
     padding-right: 0px;
     filter: drop-shadow(1, 45, #888888, 0.2, 1, 1, 1, 3, true);
-    height: auto;
+    background-color: white;
 }
 
 .textarea:active {
@@ -185,12 +184,11 @@
 /************************************************************************
 ** CONTAINERS
 *************************************************************************/
-.vbox, .hbox, .absolute, .continuoushbox, .hgrid, .vgrid, .grid {
-    spacing: 5px 5px;
+.box, .vbox, .hbox, .absolute, .continuoushbox, .hgrid, .vgrid, .grid {
     spacing: 5px 5px;
 }
 
-.vbox, .hbox, .box, .continuoushbox, .hgrid, .vgrid, .grid {
+.box, .vbox, .hbox, .continuoushbox, .hgrid, .vgrid, .grid {
     width: auto;
     height: auto;
 }
@@ -375,7 +373,7 @@
 }
 
 .checkbox-value:disabled {
-    background: #D4D4D4 #CCCCCC;
+    background: #D4D4D4 #CCCCCC vertical;
     cursor: default;
 }
 
@@ -436,7 +434,7 @@
 }
 
 .optionbox-value:disabled {
-    background: #D4D4D4 #CCCCCC;
+    background: #D4D4D4 #CCCCCC vertical;
     cursor: default;
 }
 
@@ -600,6 +598,13 @@
     background-color: white;
     border-bottom-width: 1px;
     border-bottom-color: #ABABAB;
+    clip: true;
+}
+
+.tabbar .tabbar-contents {
+    border: none;
+    border-bottom-width: 1px;
+    border-bottom-color: #ABABAB;
 }
 
 /*
@@ -611,7 +616,7 @@
 
 .tabbar-button {
     border-radius: 0px;
-    background: #EDEDED #E6E6E6;
+    background: #EDEDED #E6E6E6 vertical;
     padding: 6px;
     vertical-align: bottom;
 }
@@ -626,6 +631,16 @@
     border-bottom-width: 1px;
     border-bottom-color: white;
     background-color: white;
+}
+
+.tabbar-scroll-left {
+    icon: "haxeui-core/styles/default/left_arrow.png";
+    border-radius: 0;
+}
+
+.tabbar-scroll-right {
+    icon: "haxeui-core/styles/default/right_arrow.png";
+    border-radius: 0;
 }
 
 .tabbar-button-selected .label {
@@ -675,22 +690,25 @@
 
 .listview .itemrenderer.even {
     background-color: #FFFFFF;
+    cursor: pointer;
 }
 
 .listview .itemrenderer.even:hover {
-    background-color: #F0F0F0;
+    background-color: #ecf2f9;
 }
 
 .listview .itemrenderer.odd {
     background-color: #F8F8F8;
+    cursor: pointer;
 }
 
 .listview .itemrenderer.odd:hover {
-    background-color: #F0F0F0;
+    background-color: #ecf2f9;
 }
 
 .listview .itemrenderer:selected {
-    background-color: #CCCCCC;
+    background-color: #a7c4e2;
+    color: white;
 }
 
 /************************************************************************
@@ -711,6 +729,7 @@
 .header {
     width: auto;
     height: auto;
+    spacing: 0;
 }
 
 .header .column {
@@ -787,7 +806,7 @@
 }
 
 .switch:selected {
-    background: #98c4e6;
+    background-color: #98c4e6;
 }
 
 .switch .button {

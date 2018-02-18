@@ -1,11 +1,10 @@
 package haxe.ui.components;
 
 import haxe.ui.core.Component;
-import haxe.ui.core.IClonable;
 import haxe.ui.layouts.HorizontalGridLayout;
 
 //@:dox(icon="")  //TODO
-class HGrid extends Component implements IClonable<HGrid> {
+class HGrid extends Component {
     public function new() {
         super();
 

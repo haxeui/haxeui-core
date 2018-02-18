@@ -14,7 +14,9 @@ class HorizontalGridLayout extends Layout {
         }
 
         _rows = value;
-        refresh();
+        if (_component != null) {
+            _component.invalidateLayout();
+        }
         return value;
     }
 
@@ -51,7 +53,7 @@ class HorizontalGridLayout extends Layout {
         return size;
     }
 
-    private override function resizeChildren():Void {
+    private override function resizeChildren() {
         var size:Size = usableSize;
         var columnWidths:Array<Float> = calcColumnWidths(size, true);
         var rowHeights:Array<Float> = calcRowHeights(size, true);
@@ -101,7 +103,7 @@ class HorizontalGridLayout extends Layout {
         }
     }
 
-    private override function repositionChildren():Void {
+    private override function repositionChildren() {
         var size:Size = usableSize;
         var columnWidths:Array<Float> = calcColumnWidths(size, true);
         var rowHeights:Array<Float> = calcRowHeights(size, true);

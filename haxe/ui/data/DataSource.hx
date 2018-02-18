@@ -57,6 +57,12 @@ class DataSource<T> {
         return r;
     }
 
+    public function insert(item:T, index:Int):T {
+        var r = handleInsert(item, index);
+        handleChanged();
+        return r;
+    }
+
     public function remove(item:T):T {
         var r = handleRemoveItem(item);
         handleChanged();
@@ -69,6 +75,16 @@ class DataSource<T> {
         return r;
     }
 
+    public function clear() {
+        var o = _allowCallbacks;
+        _allowCallbacks = false;
+        while (size > 0) {
+            remove(get(0));
+        }
+        _allowCallbacks = o;
+        handleChanged();
+    }
+    
     private function handleChanged() {
         _changed = true;
         if (_allowCallbacks == true && onChange != null) {
@@ -91,6 +107,10 @@ class DataSource<T> {
     }
 
     private function handleAddItem(item:T):T {
+        return null;
+    }
+
+    private function handleInsert(item:T, index:Int):T {
         return null;
     }
 

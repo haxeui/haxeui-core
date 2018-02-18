@@ -1,8 +1,8 @@
 package haxe.ui.components;
 
+import haxe.ui.util.Variant;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
-import haxe.ui.core.IClonable;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.UIEvent;
@@ -14,7 +14,7 @@ import haxe.ui.util.Size;
 import haxe.ui.util.Variant;
 
 @:dox(icon = "/icons/ui-text-field.png")
-class TextField extends InteractiveComponent implements IFocusable implements IClonable<TextField> {
+class TextField extends InteractiveComponent implements IFocusable {
     private var _icon:Image;
 
     public function new() {
@@ -35,20 +35,17 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
         _defaultLayout = new TextFieldLayout();
     }
 
-    private override function create() {
-        super.create();
-        if (_text == null) {
-            behaviourSet("text", "");
-        }
-        //behaviourSet("icon", _iconResource);
-    }
-
     private override function createChildren() {
         if (componentWidth == 0) {
             componentWidth = 150;
         }
 
         getTextInput().multiline = false;
+        getTextInput().data.onChangedCallback = function() {
+            if (getTextInput().text != _text && hasClass(":empty") == false) {
+                text = getTextInput().text;
+            }
+        };
         registerEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
         registerEvent(UIEvent.CHANGE, _onTextChanged);
     }
@@ -56,6 +53,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     private override function destroyChildren() {
         super.destroyChildren();
 
+        getTextInput().data.onChangedCallback = null;
         unregisterEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
         unregisterEvent(UIEvent.CHANGE, _onTextChanged);
 
@@ -68,14 +66,14 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     //***********************************************************************************************************
     // Overrides
     //***********************************************************************************************************
-//    private override function get_text():String {
-//        return behaviourGet("text");
-//    }
 
     private override function set_text(value:String):String {
-        value = super.set_text(value);
-        _validateText();
+        if (value == _text) {
+            return value;
+        }
 
+        invalidateData();
+        value = super.set_text(value);
         return value;
     }
 
@@ -84,14 +82,8 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
             return value;
         }
 
+        invalidateData();
         super.set_focus(value);
-        if (empty == false) {
-            text = behaviourGet("text");
-            behaviourSet("password", _password);
-        } else {
-            _validateText();
-        }
-
         return value;
     }
 
@@ -101,18 +93,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
             icon = style.icon;
         }
         if (hasTextInput() == true) {
-            if (style.color != null) {
-                getTextInput().color = style.color;
-            }
-            if (style.fontName != null) {
-                getTextInput().fontName = style.fontName;
-            }
-            if (style.fontSize != null) {
-                getTextInput().fontSize = style.fontSize;
-            }
-            if (style.textAlign != null) {
-                getTextInput().textAlign = style.textAlign;
-            }
+            getTextInput().textStyle = style;
         }
     }
 
@@ -133,7 +114,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     **/
     @:clonable public var icon(get, set):String;
     private function get_icon():String {
-        return _iconResource; // TODO: temp
+        return _iconResource;
     }
 
     private function set_icon(value:String):String {
@@ -141,8 +122,8 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
             return value;
         }
 
+        invalidateData();
         _iconResource = value;
-        behaviourSet("icon", value);
         return value;
     }
 
@@ -160,9 +141,8 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
             return value;
         }
 
-        behaviourSet("password", value);
         _password = value;
-        _validateText();
+        invalidateData();
         return value;
     }
     
@@ -180,9 +160,8 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
             return value;
         }
 
+        invalidateData();
         _maxChars = value;
-        _validateText();
-
         return value;
     }
 
@@ -194,7 +173,7 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
     **/
     @:clonable public var placeholder(get, set):String;
     private function get_placeholder():String {
-        return behaviourGet("placeholder");
+        return _placeholder;
     }
 
     private function set_placeholder(value:String):String {
@@ -202,31 +181,29 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
             return value;
         }
 
-        behaviourSet("placeholder", value);
-
+        invalidateData();
+        _placeholder = value;
         return value;
     }
 
     private var _restrictEReg:EReg;
     private var _restrictChars:String;
     /**
-     Indicates the set of characters that an user can enter into the textfield.
-     You can insert a range with the "-" character, or you can exclude with
-     the "^" character.
+     Indicates the set of characters that an user can enter into the textfield. You can insert a range with the "-" character, or you can exclude with the "^" character.
 
-     For example:
+     Examples include:
 
-     * "a-z" : Allowed lowercase letters.
+     - `a-z` : Allowed lowercase letters.
 
-     * "a-zA-Z" : Allowed any letter.
+     - `a-zA-Z` : Allowed any letter.
 
-     * "^Qq" : Allowed any char except "q" and "Q".
+     - `^Qq` : Allowed any char except `q` and `Q`.
 
-     * "a-z^q": Allowed lowercase letters except "q".
+     - `a-z^q`: Allowed lowercase letters except `q`.
 
-     * "0-9a-z": Allowed numbers and lowercase letters.
+     - `0-9a-z`: Allowed numbers and lowercase letters.
 
-     * "0-9^4-6": Allowed  numbers except 4, 5 and 6.
+     - `0-9^4-6`: Allowed  numbers except `4`, `5` and `6`.
     **/
     @:clonable public var restrictChars(get, set):String;
     private function get_restrictChars():String {
@@ -255,42 +232,58 @@ class TextField extends InteractiveComponent implements IFocusable implements IC
         }
 
         text = newText;
-        handleBindings(["text", "value"]);
     }
 
     private function _onMouseDown(event:MouseEvent) {
-
         FocusManager.instance.focus = this;
     }
 
     //***********************************************************************************************************
     // Validation
     //***********************************************************************************************************
-    private function _validateText() {
+
+    private override function validateData() {
+        if (behaviourGet("icon") != _iconResource) {
+            behaviourSet("icon", _iconResource);
+        }
+
+        if (behaviourGet("placeholder") != _placeholder) {
+            behaviourSet("placeholder", _placeholder);
+        }
+
         var text:String = _text != null ? _text : "";
         var placeholderVisible:Bool = empty;
 
         //Max chars
         if (_maxChars != -1 && text.length > _maxChars && placeholderVisible == false) {
             text = text.substr(0, _maxChars);
+            _text = text;
         }
 
         //Placeholder
         if (focus == false && _placeholder != null) {
-            if (text == "") {
-                text = _placeholder;
-                behaviourSet("password", false);
-                addClass(":empty");
-            } else {
-                removeClass(":empty");
+            if (native == false) {
+                if (text == "") {
+                    text = _placeholder;
+                    behaviourSet("password", false);
+                    addClass(":empty");
+                } else {
+                    behaviourSet("password", _password);
+                    removeClass(":empty");
+                }
             }
-        } else if (placeholderVisible == true){
-            text = "";
-            removeClass(":empty");
+        } else if (placeholderVisible == true) {
+            if (native == false) { 
+                text = "";
+                removeClass(":empty");
+                behaviourSet("password", _password);
+            }
+        } else {
             behaviourSet("password", _password);
         }
 
         behaviourSet("text", text);
+        handleBindings(["text", "value"]);
     }
 
     //***********************************************************************************************************
@@ -350,19 +343,31 @@ class TextFieldDefaultTextBehaviour extends Behaviour {
 @:access(haxe.ui.components.TextField)
 class TextFieldDefaultIconBehaviour extends Behaviour {
     public override function set(value:Variant) {
+        var textField:TextField = cast _component;
         if (value == null || value.isNull || value == "null") { // TODO: hack
-            return;
+            if (textField._icon != null) {
+                textField.removeComponent(textField._icon);
+                textField._icon = null;
+            }
+        } else {
+            if (textField._icon == null) {
+                textField._icon = new Image();
+                textField._icon.id = "textfield-icon";
+                textField._icon.addClass("icon");
+                textField._icon.scriptAccess = false;
+                textField.addComponent(textField._icon);    //TODO use addComponentAt with index=0
+            }
+            textField._icon.resource = value.toString();
         }
+    }
 
+    public override function get():Variant {
         var textField:TextField = cast _component;
         if (textField._icon == null) {
-            textField._icon = new Image();
-            textField._icon.id = "textfield-icon";
-            textField._icon.addClass("icon");
-            textField._icon.scriptAccess = false;
-            textField.addComponent(textField._icon);
+            return null;
+        } else {
+            return Variant.fromDynamic(textField._icon.resource);
         }
-        textField._icon.resource = value.toString();
     }
 }
 
@@ -383,15 +388,18 @@ class TextFieldDefaultPasswordBehaviour extends Behaviour {
 @:dox(hide)
 @:access(haxe.ui.components.TextField)
 class TextFieldDefaultPlaceholderBehaviour extends Behaviour {
+    private var _value:String;  //TODO - maybe we can create a generic ValueBehaviour class
+
     public override function set(value:Variant) {
-        var textField:TextField = cast _component;
-        textField._placeholder = value;
-        textField._validateText();
+        if (_value == value) {
+           return;
+        }
+
+        _value = value;
     }
     
     public override function get():Variant {
-        var textField:TextField = cast _component;
-        return textField._placeholder;
+        return _value;
     }
 }
 
@@ -427,7 +435,8 @@ class TextFieldLayout extends DefaultLayout {
 
         if (component.hasTextInput() == true) {
             component.getTextInput().left = xpos;
-            component.getTextInput().top = paddingTop;// (component.componentHeight / 2) - (component.getTextInput().textHeight / 2);
+            //component.getTextInput().top = paddingTop;// (component.componentHeight / 2) - (component.getTextInput().textHeight / 2);
+            component.getTextInput().top = (component.componentHeight / 2) - (component.getTextInput().textHeight / 2);
         }
     }
 

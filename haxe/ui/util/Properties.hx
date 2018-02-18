@@ -14,7 +14,7 @@ class Properties {
     public function fromFile(filePath:String) {
         _props = new Map<String, String>();
         var content:String = File.getContent(filePath);
-        var lines:Array<String> = content.split("\r\n");
+        var lines:Array<String> = content.split("\n");
         for (line in lines) {
             line = StringTools.trim(line);
             if (line.length != 0) {

@@ -1,0 +1,10 @@
+{
+    "name": "html5",
+    "type": "template",
+    "subProjects": [
+        "shared", "html5-shared"
+    ],
+    "templates": [
+        { "src": "html5.hxml", "dst": "${target}/html5.hxml"}
+    ]
+}

@@ -2,10 +2,9 @@ package haxe.ui.components;
 
 import haxe.ui.layouts.VerticalGridLayout;
 import haxe.ui.core.Component;
-import haxe.ui.core.IClonable;
 
 //@:dox(icon="")  //TODO
-class VGrid extends Component implements IClonable<VGrid> {
+class VGrid extends Component {
     public function new() {
         super();
 

@@ -1,12 +1,11 @@
 package haxe.ui.containers;
 
-import haxe.ui.core.IClonable;
 import haxe.ui.layouts.VerticalGridLayout;
 
 /**
  A `Grid` component that lays its children out horizontally or vertically
 **/
-class Grid extends Box implements IClonable<Grid> {
+class Grid extends Box {
     public function new() {
         super();
         layout = new VerticalGridLayout();
