@@ -1,5 +1,8 @@
 package haxe.ui.components;
 
+import haxe.ui.core.UIEvent;
+import haxe.ui.validation.ValidationManager;
+import haxe.ui.validation.InvalidationFlags;
 import haxe.ui.core.Behaviour;
 import haxe.ui.components.HButtonBar.HButtonBarLayout;
 import haxe.ui.core.IDataComponent;
@@ -131,12 +134,65 @@ class ButtonBar extends InteractiveComponent implements IDataComponent {
     //***********************************************************************************************************
     // Validation
     //***********************************************************************************************************
+    private var _currentSelection:Dynamic;
+
+    /**
+     Invalidate the index of this component
+    **/
+    @:dox(group = "Invalidation related properties and methods")
+    public inline function invalidateIndex() {
+        invalidate(InvalidationFlags.INDEX);
+    }
+
+    private override function validateInternal() {
+        var dataInvalid = isInvalid(InvalidationFlags.DATA);
+        var indexInvalid = isInvalid(InvalidationFlags.INDEX);
+        var styleInvalid = isInvalid(InvalidationFlags.STYLE);
+        var positionInvalid = isInvalid(InvalidationFlags.POSITION);
+        var displayInvalid = isInvalid(InvalidationFlags.DISPLAY);
+        var layoutInvalid = isInvalid(InvalidationFlags.LAYOUT) && _layoutLocked == false;
+
+        if (dataInvalid) {
+            validateData();
+        }
+
+        if (dataInvalid || indexInvalid) {
+            validateIndex();
+        }
+
+        if (styleInvalid) {
+            validateStyle();
+        }
+
+        if (positionInvalid) {
+            validatePosition();
+        }
+
+        if (layoutInvalid) {
+            displayInvalid = validateLayout() || displayInvalid;
+        }
+
+        if (displayInvalid || styleInvalid) {
+            ValidationManager.instance.addDisplay(this);    //Update the display from all objects at the same time. Avoids UI flashes.
+        }
+    }
+
     private override function validateData() {
         if (_dataSource != null && _requireSelection == true && _selectedIndex < 0 && _dataSource.size > 0) {
-            _selectedIndex = 0;
+            selectedIndex = 0;
         }
 
         behaviourSet("dataSource", _dataSource);
+    }
+
+    private function validateIndex() {
+        var newSelectedItem:Dynamic = selectedItem;
+        if(_currentSelection != newSelectedItem)
+        {
+            _currentSelection = newSelectedItem;
+
+            dispatch(new UIEvent(UIEvent.CHANGE));
+        }
     }
 
     //***********************************************************************************************************
@@ -151,8 +207,6 @@ class ButtonBar extends InteractiveComponent implements IDataComponent {
     }
 
     private function syncUI() {
-        lockLayout();
-
         if (_dataSource == null) {
             removeAllComponents();
         } else {
@@ -204,8 +258,6 @@ class ButtonBar extends InteractiveComponent implements IDataComponent {
                 }
             }
         }
-
-        unlockLayout();
     }
 }
 
@@ -235,9 +287,17 @@ class ButtonBarDefaultDataSourceBehaviour extends Behaviour {
 @:dox(hide)
 @:access(haxe.ui.components.ButtonBar)
 class ButtonBarDefaultSelectedIndexBehaviour extends Behaviour {
+    public override function get():Variant {
+        var buttonBar:ButtonBar = cast(_component, ButtonBar);
+        return buttonBar._selectedIndex;
+    }
+
     public override function set(value:Variant) {
-        var buttonBar:ButtonBar = cast _component;
-        buttonBar.syncUI();
+        var buttonBar:ButtonBar = cast(_component, ButtonBar);
+        if(buttonBar._dataSource != null && value < buttonBar._dataSource.size && buttonBar._selectedIndex != value) {
+            buttonBar._selectedIndex = value;
+            buttonBar.invalidateIndex();
+        }
     }
 }
 
