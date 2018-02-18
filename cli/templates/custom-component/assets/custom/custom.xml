@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<hbox>
+    <textfield id="tf" text="0" />
+    <button text="-" onclick="tf.text = '' + (Std.parseInt(tf.text) - 1)" repeater="true" />
+    <button text="+" onclick="tf.text = '' + (Std.parseInt(tf.text) + 1)" repeater="true" />
+</hbox>

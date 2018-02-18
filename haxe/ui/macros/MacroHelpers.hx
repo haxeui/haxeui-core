@@ -14,7 +14,7 @@ class MacroHelpers {
                                                       "/lib/yaml/",
                                                       "/lib/hscript/",
                                                       "/haxe/std/",
-                                                      "bin/"];
+                                                      "/.git"];
 
     #if macro
     public static function exprToMap(params:Expr):Map<String, Dynamic> {
@@ -56,6 +56,143 @@ class MacroHelpers {
         return fn;
     }
 
+    public static function addFunction(name:String, e:Expr, access:Array<Access>, fields:Array<Field>, pos:Position):Void {
+        var fn = switch (e).expr {
+            case EFunction(_, f): f;
+            case _: throw "false";
+        }
+        fields.push( { name : name, doc : null, meta : [], access : access, kind : FFun(fn), pos : pos } );
+    }
+
+    public static function getFieldsWithMeta(meta:String, fields:Array<Field>):Array<Field> {
+        var arr:Array<Field> = new Array<Field>();
+
+        for (f in fields) {
+            if (hasMeta(f, meta)) {
+                arr.push(f);
+            }
+        }
+
+        return arr;
+    }
+
+    public static function hasMeta(f:Field, meta:String):Bool {
+        return (getMeta(f, meta) != null);
+    }
+
+    public static function getMeta(f:Field, meta:String):MetadataEntry {
+        var entry:MetadataEntry = null;
+        for (m in f.meta) {
+            if (m.name == meta || m.name == ":" + meta) {
+                entry = m;
+                break;
+            }
+        }
+        return entry;
+    }
+    
+    public static function hasMetaParam(meta:MetadataEntry, param:String):Bool {
+        var has:Bool = false;
+        for (p in meta.params) {
+            switch (p.expr) {
+                case EConst(CIdent(c)):
+                    if (c == param) {
+                        has = true;
+                        break;
+                    }
+                case _:
+            }
+        }
+        return has;
+    }
+    
+    public static function insertLine(fn:{ expr : { pos : haxe.macro.Position, expr : haxe.macro.ExprDef } }, e:Expr, location:Int):Void {
+        fn.expr = switch (fn.expr.expr) {
+            case EBlock(el): macro $b{insertExpr(el, location, e)};
+            case _: macro $b { insertExpr([fn.expr], location, e) }
+        }
+    }
+
+    public static function insertExpr(arr:Array<Expr>, pos:Int, item:Expr):Array<Expr> {
+        if (pos == -1) {
+            arr.push(item);
+        } else {
+            arr.insert(pos, item);
+        }
+        return arr;
+    }
+
+    public static function hasInterface(t:haxe.macro.Type, interfaceRequired:String):Bool {
+        var has:Bool = false;
+        switch (t) {
+                case TInst(t, _): {
+                    while (t != null) {
+                        for (i in t.get().interfaces) {
+                            var interfaceName:String = i.t.toString();
+                            if (interfaceName == interfaceRequired) {
+                                has = true;
+                                break;
+                            }
+                        }
+
+                        if (has == false) {
+                            if (t.get().superClass != null) {
+                                t = t.get().superClass.t;
+                            } else {
+                                t = null;
+                            }
+                        } else {
+                            break;
+                        }
+                    }
+                }
+                case _:
+        }
+
+        return has;
+    }
+
+    static function mkPath(name:String):TypePath {
+        var parts = name.split('.');
+        return {
+            sub: null,
+            params: [],
+            name: parts.pop(),
+            pack: parts
+        }
+    }
+
+    static function mkType(s:String):ComplexType {
+        return TPath(mkPath(s));
+    }
+
+    private static function getSuperClass(t:haxe.macro.Type) {
+        var superClass = null;
+        switch (t) {
+                case TInst(t, _): {
+                    superClass = t.get().superClass;
+                }
+                case _:
+        }
+        return superClass;
+    }
+
+    public static function getClassNameFromType(t:haxe.macro.Type):String {
+        var className:String = "";
+        switch (t) {
+                case TAnonymous(t): className = t.toString();
+                case TMono(t): className = t.toString();
+                case TLazy(t): className = "";
+                case TFun(t, _): className = t.toString();
+                case TDynamic(t): className = "";
+                case TInst(t, _): className = t.toString();
+                case TEnum(t, _): className = t.toString();
+                case TType(t, _): className = t.toString();
+                case TAbstract(t, _): className = t.toString();
+        }
+        return className;
+    }
+    
     public static function skipPath(path:String):Bool {
         var skip:Bool = false;
 
@@ -185,50 +322,6 @@ class MacroHelpers {
         return has;
     }
 
-    public static function hasInterface(t:haxe.macro.Type, interfaceRequired:String):Bool {
-        var has:Bool = false;
-        switch (t) {
-                case TInst(t, _): {
-                    while (t != null) {
-                        for (i in t.get().interfaces) {
-                            var interfaceName:String = i.t.toString();
-                            if (interfaceName == interfaceRequired) {
-                                has = true;
-                                break;
-                            }
-                        }
-
-                        if (has == false) {
-                            if (t.get().superClass != null) {
-                                t = t.get().superClass.t;
-                            } else {
-                                t = null;
-                            }
-                        } else {
-                            break;
-                        }
-                    }
-                }
-                case _:
-        }
-
-        return has;
-    }
-
-    public static function mkPath(name:String):TypePath {
-        var parts = name.split('.');
-        return {
-            sub: null,
-            params: [],
-            name: parts.pop(),
-            pack: parts
-        }
-    }
-
-    public static function mkType(s:String):ComplexType {
-        return TPath(mkPath(s));
-    }
-
     public static function extension(path:String):String {
         if (path.indexOf(".") == -1) {
             return null;
@@ -253,38 +346,6 @@ class MacroHelpers {
             fields : []
         }
         Context.defineType(c);
-    }
-
-    public static function insertExpr(arr:Array<Expr>, pos:Int, item:Expr):Array<Expr> {
-        if (pos == -1) {
-            arr.push(item);
-        } else {
-            arr.insert(pos, item);
-        }
-        return arr;
-    }
-
-    public static function checkCondition(condition:String):Bool {
-        var result:Bool = true;
-        if (condition != null) {
-            var parser = new hscript.Parser();
-            var program = parser.parseString(condition);
-            var interp = new hscript.Interp();
-
-            var defines:Map<String, String> = Context.getDefines();
-            for (key in defines.keys()) {
-                interp.variables.set(StringTools.replace(key, "-", "_"), defines.get(key));
-            }
-
-            try {
-                var r = interp.execute(program);
-                result = ("" + r == "true");
-            } catch (e:Dynamic) {
-                trace('WARNING: Problem checking condition "${condition}" in config file: ' + e + ' (excluding section!)');
-                result = false;
-            }
-        }
-        return result;
     }
 
     public static function buildGenericConfigCode(c:GenericConfig, name:String, v:Int = 0):String {
@@ -334,7 +395,7 @@ class MacroHelpers {
                             subDir = path + subDir;
                         }
 
-                        if (sys.FileSystem.isDirectory(subDir)) {
+                        if (sys.FileSystem.isDirectory(subDir) && StringTools.endsWith(subDir, "/cli") == false) {
                             subDir = StringTools.replace(subDir, "\\", "/");
                             paths.insert(0, subDir);
                         } else {

@@ -1,0 +1,10 @@
+{
+    "name": "nme-flash-develop",
+    "type": "template",
+    "subProjects": [
+        "shared", "nme-shared"
+    ],
+    "templates": [
+        { "src": "nme.hxproj", "dst": "${target}/nme.hxproj"}
+    ]
+}

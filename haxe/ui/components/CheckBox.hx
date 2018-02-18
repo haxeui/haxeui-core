@@ -1,5 +1,6 @@
 package haxe.ui.components;
 
+import haxe.ui.validation.InvalidationFlags;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.MouseEvent;
@@ -29,12 +30,6 @@ class CheckBox extends InteractiveComponent {
         _defaultLayout = new HorizontalLayout();
     }
 
-    private override function create() {
-        super.create();
-        behaviourSet("text", _text);
-        behaviourSet("selected", _selected);
-    }
-
     private override function createChildren() {
         var checkboxValue:CheckBoxValue = findComponent(CheckBoxValue);
         if (checkboxValue == null) {
@@ -42,7 +37,7 @@ class CheckBox extends InteractiveComponent {
             checkboxValue.id = "checkbox-value";
             checkboxValue.addClass("checkbox-value");
             addComponent(checkboxValue);
-
+            
             checkboxValue.registerEvent(MouseEvent.CLICK, _onClick);
             checkboxValue.registerEvent(MouseEvent.MOUSE_OVER, _onMouseOver);
             checkboxValue.registerEvent(MouseEvent.MOUSE_OUT, _onMouseOut);
@@ -76,8 +71,12 @@ class CheckBox extends InteractiveComponent {
     }
 
     private override function set_text(value:String):String {
-        value = super.set_text(value);
-        behaviourSet("text", value);
+        if (_text == value) {
+            return value;
+        }
+
+        invalidateData();
+        _text = value;
         return value;
     }
 
@@ -85,12 +84,34 @@ class CheckBox extends InteractiveComponent {
         super.applyStyle(style);
 
         var label:Label = findComponent(Label);
-        if (label != null) {
+        if (label != null &&
+            (label.customStyle.color != style.color
+            || label.customStyle.fontName != style.fontName
+            || label.customStyle.fontSize != style.fontSize
+            || label.customStyle.cursor != style.cursor)) {
+
             label.customStyle.color = style.color;
             label.customStyle.fontName = style.fontName;
             label.customStyle.fontSize = style.fontSize;
             label.customStyle.cursor = style.cursor;
             label.invalidateStyle();
+        }
+    }
+
+    //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+
+    private override function validateData() {
+        if (behaviourGet("text") != _text) {
+            behaviourSet("text", _text);
+        }
+
+        if (behaviourGet("selected") != _selected) {
+            behaviourSet("selected", _selected);
+            
+            var event:UIEvent = new UIEvent(UIEvent.CHANGE);
+            dispatch(event);
         }
     }
 
@@ -107,10 +128,8 @@ class CheckBox extends InteractiveComponent {
         if (value == _selected) {
             return value;
         }
+        invalidateData();
         _selected = value;
-        behaviourSet("selected", value);
-        var event:UIEvent = new UIEvent(UIEvent.CHANGE);
-        dispatch(event);
         return value;
     }
 
@@ -134,13 +153,17 @@ class CheckBox extends InteractiveComponent {
     private function _onMouseOver(event:MouseEvent) {
         addClass(":hover");
         var value:CheckBoxValue = findComponent(CheckBoxValue);
-        value.addClass(":hover");
+        if (value != null) {
+            value.addClass(":hover");
+        }
     }
 
     private function _onMouseOut(event:MouseEvent) {
         removeClass(":hover");
         var value:CheckBoxValue = findComponent(CheckBoxValue);
-        value.removeClass(":hover");
+        if (value != null) {
+            value.removeClass(":hover");
+        }
     }
 }
 
@@ -170,6 +193,15 @@ class CheckBoxDefaultTextBehaviour extends Behaviour {
         }
         label.text = value;
     }
+
+    public override function get():Variant {
+        var checkbox:CheckBox = cast _component;
+        var label:Label = checkbox.findComponent(Label);
+        if (label == null) {
+            return null;
+        }
+        return label.text;
+    }
 }
 
 @:dox(hide)
@@ -188,6 +220,15 @@ class CheckBoxDefaultSelectedBehaviour extends Behaviour {
             checkboxValue.removeClass(":selected");
         }
     }
+
+    public override function get():Variant {
+        var checkbox:CheckBox = cast _component;
+        var checkboxValue:CheckBoxValue = checkbox.findComponent(CheckBoxValue);
+        if (checkboxValue == null) {
+            return false;
+        }
+        return checkboxValue.hasClass(":selected");
+    }
 }
 
 //***********************************************************************************************************
@@ -196,6 +237,7 @@ class CheckBoxDefaultSelectedBehaviour extends Behaviour {
 /**
  Specialised `InteractiveComponent` used to contain the `CheckBox` icon and respond to style changes
 **/
+@:dox(hide)
 class CheckBoxValue extends InteractiveComponent {
     public function new() {
         super();

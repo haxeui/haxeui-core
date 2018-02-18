@@ -35,11 +35,6 @@ class Image extends Component {
         _defaultLayout = new ImageLayout();
     }
 
-    private override function create() {
-        super.create();
-        behaviourSet("resource", _resource);
-    }
-
     //***********************************************************************************************************
     // Overrides
     //***********************************************************************************************************
@@ -58,28 +53,21 @@ class Image extends Component {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    private var _resource:String;
+    private var _resource:String = null;
     /**
      The resource to use for this image, currently only assets are supported, later versions will also support things like HTTP, files, etc
     **/
-    @:clonable @:bindable public var resource(get, set):Dynamic;
-    private function get_resource():Dynamic {
+    @:clonable @:bindable public var resource(get, set):String;
+    private function get_resource():String {
         return _resource;
     }
-    private function set_resource(value:Dynamic):Dynamic {
+    private function set_resource(value:String):String {
         if (_resource == value) {
             return value;
         }
 
-        if (value == null) {
-            _resource = null;
-            removeImageDisplay();
-            return value;
-        }
-
-        _resource = "" + value;
-        behaviourSet("resource", _resource);
         _resource = value;
+        invalidateData();
         return value;
     }
 
@@ -123,6 +111,17 @@ class Image extends Component {
         _imageVerticalAlign = value;
         invalidateLayout();
         return value;
+    }
+
+    //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+
+    private override function validateData() {
+        var resourceValue:Dynamic = behaviourGetDynamic("resource");
+        if (resourceValue != _resource) {
+            behaviourSet("resource", _resource);
+        }
     }
 }
 
@@ -253,7 +252,7 @@ class ImageLayout extends DefaultLayout {
         return size;
     }
 
-    private function updateClipRect(usz:Size):Void {
+    private function updateClipRect(usz:Size) {
         var imageDisplay:ImageDisplay = _component.getImageDisplay();
         var rc:Rectangle = imageDisplay.imageClipRect;
         if(rc == null)
@@ -279,7 +278,15 @@ class ImageLayout extends DefaultLayout {
 @:dox(hide)
 @:access(haxe.ui.components.Image)
 class ImageDefaultResourceBehaviour extends Behaviour {
+    private var _value:Dynamic;
+
     public override function set(value:Variant) {
+        if (_value == value) {
+            return;
+        }
+
+        _value = value;
+
         var image:Image = cast _component;
 
         if (value == null || value.isNull || value == "null") { // TODO: hack
@@ -301,12 +308,17 @@ class ImageDefaultResourceBehaviour extends Behaviour {
                             if (image.autoSize() == true && image.parentComponent != null) {
                                 image.parentComponent.invalidateLayout();
                             }
+                            image.validateLayout();
+                            display.validate();
                         }
-                        image.invalidateLayout();
                     }
                 });
             }
 
         }
+    }
+
+    public override function getDynamic():Dynamic {
+        return _value;
     }
 }

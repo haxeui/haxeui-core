@@ -33,11 +33,6 @@ class ComponentParser {
     private static function defaultParsers() {
         if (_parsers == null) {
             register("xml", XMLParser);
-            register("json", JSONParser);
-            #if yaml
-            register("yaml", YAMLParser);
-            register("yml", YAMLParser);
-            #end
         }
     }
 

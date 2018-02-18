@@ -75,6 +75,16 @@ class DataSource<T> {
         return r;
     }
 
+    public function clear() {
+        var o = _allowCallbacks;
+        _allowCallbacks = false;
+        while (size > 0) {
+            remove(get(0));
+        }
+        _allowCallbacks = o;
+        handleChanged();
+    }
+    
     private function handleChanged() {
         _changed = true;
         if (_allowCallbacks == true && onChange != null) {

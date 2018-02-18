@@ -6,7 +6,7 @@ class ModuleParser {
     public function new() {
     }
 
-    public function parse(data:String):Module {
+    public function parse(data:String, defines:Map<String, String>):Module {
         throw "Module parser not implemented!";
     }
 
@@ -29,11 +29,6 @@ class ModuleParser {
     private static function defaultParsers() {
         if (_parsers == null) {
             register("xml", XMLParser);
-            register("json", JSONParser);
-            #if yaml
-            register("yaml", YAMLParser);
-            register("yml", YAMLParser);
-            #end
         }
     }
 
