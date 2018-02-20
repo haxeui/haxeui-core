@@ -28,14 +28,7 @@ class RuleElement {
         
         if (c.pseudoClass != null) {
             var pc = ":" + c.pseudoClass;
-            var found = false;
-            for (cc in d.classes ) {
-                if ( cc == pc) {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
+            if (d.classes.indexOf(pc) == -1) {
                 return false;
             }
         }
@@ -44,14 +37,7 @@ class RuleElement {
             if (d.classes == null) {
                 return false;
             }
-            var found = false;
-            for (cc in d.classes) {
-                if (cc == c.className) {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
+            if (d.classes.indexOf(c.className) == -1) {
                 return false;
             }
         }
