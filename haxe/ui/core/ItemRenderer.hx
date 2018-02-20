@@ -1,8 +1,9 @@
 package haxe.ui.core;
 
+import haxe.ui.containers.Box;
 import haxe.ui.util.Variant;
 
-class ItemRenderer extends Component {
+class ItemRenderer extends Box {
     public function new() {
         super();
         registerEvent(MouseEvent.MOUSE_OVER, _onItemMouseOver);
