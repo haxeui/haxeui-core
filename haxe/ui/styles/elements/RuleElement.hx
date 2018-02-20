@@ -34,9 +34,6 @@ class RuleElement {
         }
         
         if (c.className != null) {
-            if (d.classes == null) {
-                return false;
-            }
             if (d.classes.indexOf(c.className) == -1) {
                 return false;
             }
