@@ -25,23 +25,7 @@ class CreateCommand extends Command {
         //////////////////////////////////////////////////////
         // handle name
         //////////////////////////////////////////////////////
-        var name:String = null;
-        for (a in params.additional) {
-            if (StringTools.startsWith(a, "--") == false) {
-                name = a;
-                break;
-            }
-        }
-
-        var descriptor = DescriptorFactory.find(params.target);
-        if (descriptor != null) {
-            Util.log('Using name from descriptor "${Type.getClassName(Type.getClass(descriptor))}": "${descriptor.main}"');
-            name = descriptor.main;
-        }
-        
-        if (name == null) { // default
-            name = "Main";
-        }
+        var name:String = Util.name(params);
         
         var info:InfoFile = new InfoFile();
         info.save(params.target);

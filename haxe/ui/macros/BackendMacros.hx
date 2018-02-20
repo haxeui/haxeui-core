@@ -16,6 +16,9 @@ class BackendMacros {
         for (name in properties.names()) {
             code += 'Toolkit.backendProperties.setProp("${name}", "${properties.getProp(name)}");\n';
         }
+        if (Context.getDefines().exists("theme")) {
+            code += 'Toolkit.theme = "${Context.getDefines().get("theme")}";\n';
+        }
         code += "}()\n";
         return Context.parseInlineString(code, Context.currentPos());
     }

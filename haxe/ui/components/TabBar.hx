@@ -79,6 +79,21 @@ class TabBar extends Component {
             _container.removeAllComponents();
         }
     }
+
+    public function removeButton(index:Int):Void {
+        if (_container != null) {
+            var selection = selectedIndex;
+            resetSelection();
+            
+            _container.removeComponentAt(index);
+            
+            if (selection > _container.childComponents.length - 1) {
+                selection = _container.childComponents.length - 1;
+            }
+            
+            selectedIndex = selection;
+        }
+    }
     
     //***********************************************************************************************************
     // Validation

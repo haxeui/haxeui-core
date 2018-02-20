@@ -33,7 +33,7 @@ class Behaviour {
         return null;
     }
 
-    public function run() {
+    public function run(param:Variant = null) {
         
     }
     

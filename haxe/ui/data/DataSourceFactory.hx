@@ -5,7 +5,11 @@ class DataSourceFactory<T> {
     }
 
     public function create<T>(type:Class<DataSource<T>>):DataSource<T> {
+        #if haxeui_winforms
+        var ds = new ArrayDataSource<T>();
+        #else
         var ds:DataSource<T> = Type.createInstance(type, []);
+        #end
         return ds;
     }
 
