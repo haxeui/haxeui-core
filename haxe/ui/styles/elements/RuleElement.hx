@@ -41,7 +41,7 @@ class RuleElement {
         
         if (c.nodeName != null) {
             var className:String = Type.getClassName(Type.getClass(d)).split(".").pop();
-            if (c.nodeName.toLowerCase() != className.toLowerCase()) {
+            if (c.nodeName != className.toLowerCase()) {
                 return false;
             }
         }

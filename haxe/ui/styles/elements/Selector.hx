@@ -27,7 +27,7 @@ class Selector {
                 if (p2[0].charAt(0) == "#") {
                     current.id = p2[0].substring(1);
                 } else {
-                    current.nodeName = p2[0];
+                    current.nodeName = p2[0].toLowerCase();
                 }
                 current.className = p2[1];
             }
