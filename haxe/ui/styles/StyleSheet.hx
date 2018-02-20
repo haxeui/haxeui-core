@@ -12,7 +12,7 @@ class StyleSheet {
     private var _rules:Array<RuleElement> = [];
     
     private var _mediaQueries:Array<MediaQuery> = [];
-    private var _animations:Map<String, AnimationKeyFrames> = new Map<String, AnimationKeyFrames>();
+    public var _animations:Map<String, AnimationKeyFrames> = new Map<String, AnimationKeyFrames>();
     
     public function new() {
     }
@@ -82,30 +82,56 @@ class StyleSheet {
             }
             relevantRules.push(r);
         }
+
+        /*
+        if (_runningAnimations.exists(c)) {
+            _runningAnimations.get(c).stop();
+            _runningAnimations.remove(c);
+        }
+        */
         
         var style:Style = new Style();
         for (r in relevantRules) {
             style.mergeDirectives(r.directives);
         }
         
+        /*
         if (style.animationName != null) {
             var a = _animations.get(style.animationName);
-            trace(style.animationName);
-            trace(a);
             runAnimation(c, a);
+        } else if (_runningAnimations.exists(c)) {
+            _runningAnimations.get(c).stop();
+            _runningAnimations.remove(c);
         }
+        */
         
         return style;
     }
     
-    private function runAnimation(c:Component, a:AnimationKeyFrames) {
+    private var _runningAnimations:Map<Component, Animation> = new Map<Component, Animation>();
+    
+    public function runAnimation(c:Component, a:AnimationKeyFrames) {
         if (c == null || a == null) {
             return;
         }
-        var anim:Animation = new Animation(3);
+        
+        if (_runningAnimations.exists(c)) {
+            return;
+        }
+        
+        var anim:Animation = new Animation(.3);
         for (kf in a.keyFrames) {
             anim.configureKeyFrame(kf);
         }
-        anim.run(c);
+        _runningAnimations.set(c, anim);
+        anim.run(c, function() {
+            /*
+            c.animatedStyle = new Style();
+            cast(c, Component).validateStyle2();
+            */
+            //cast(target, Component).invalidateStyle();
+            cast(c, Component).invalidateDisplay();
+            _runningAnimations.remove(c);
+        });
     }
 }

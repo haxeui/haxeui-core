@@ -10,6 +10,10 @@ class KeyFrame {
     public function new() {
     }
     
+    public function stop() {
+        
+    }
+    
     public function run(c:Component, cb:Void->Void) {
         cb();
     }

@@ -426,6 +426,9 @@ class Style {
         if (s.fontUnderline != fontUnderline) return false;
         if (s.fontItalic != fontItalic) return false;
 
+        if (s.resource != resource) return false;
+        if (s.animationName != animationName) return false;
+        
         return true;
     }
 }
