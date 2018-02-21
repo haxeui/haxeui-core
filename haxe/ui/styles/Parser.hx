@@ -12,7 +12,7 @@ import haxe.ui.styles.elements.RuleElement;
 class Parser {
     var cssRegex = ~/([\s\S]*?)\{([\s\S]*?)\}/gi;
 //    var cssMediaQueryRegex = ~/((@media [\s\S]*?)\{([\s\S]*?\}\s*?)\})/gi;
-    var cssKeyframeRegex = ~/((@.*?keyframes [\s\S]*?)\{([\s\\S]*?\}\s*?)\})/gi;
+    var cssKeyframeRegex = ~/((@.*?keyframes [\s\S]*?)\{([\s\S]*?\}\s*?)\})/gi;
     var combinedCSSMediaRegex = ~/((\s*?(?:\/\*[\s\S]*?\*\/)?\s*?@media[\s\S]*?)\{([\s\S]*?)\}\s*?\})|(([\s\S]*?)\{([\s\S]*?)\})/gi; //to match css & media queries together
     var cssCommentsRegex = ~/(\/\*[\s\S]*?\*\/)/gi;
     var cssImportStatementRegex = ~/@import .*?;/gi;
