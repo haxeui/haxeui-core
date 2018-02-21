@@ -8,6 +8,8 @@ class Animation {
     
     private var _keyframes:Array<KeyFrame> = [];
     
+    public var name:String;
+    
     public function new(totalTime:Float) {
         _totalTime = totalTime;
     }
@@ -41,13 +43,23 @@ class Animation {
         }
     }
     
-    public function run(c:Component) {
+    public function stop() {
+        if (_currentKeyFrame != null) {
+            _currentKeyFrame.stop();
+        }
+        _keyframes = [];
+    }
+    
+    private var _currentKeyFrame:KeyFrame = null;
+    public function run(c:Component, onFinish:Void->Void) {
         if (_keyframes.length == 0) {
+            onFinish();
             return;
         }
         var kf = _keyframes.shift();
+        _currentKeyFrame = kf;
         kf.run(c, function() {
-            run(c);
+            run(c, onFinish);
         });
     }
 }
