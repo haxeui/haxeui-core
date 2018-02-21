@@ -10,12 +10,12 @@ import haxe.ui.styles.elements.RuleElement;
 // based on: https://github.com/jotform/css.js/blob/master/css.js
 
 class Parser {
-    var cssRegex = new EReg('([\\s\\S]*?)\\{([\\s\\S]*?)\\}', 'gi');
-    var cssMediaQueryRegex = '((@media [\\s\\S]*?)\\{([\\s\\S]*?\\}\\s*?)\\})';
-    var cssKeyframeRegex = new EReg('((@.*?keyframes [\\s\\S]*?)\\{([\\s\\S]*?\\}\\s*?)\\})', 'gi');
-    var combinedCSSRegex = '((\\s*?(?:\\/\\*[\\s\\S]*?\\*\\/)?\\s*?@media[\\s\\S]*?)\\{([\\s\\S]*?)\\}\\s*?\\})|(([\\s\\S]*?)\\{([\\s\\S]*?)\\})'; //to match css & media queries together
-    var cssCommentsRegex = new EReg('(\\/\\*[\\s\\S]*?\\*\\/)', 'gi');
-    var cssImportStatementRegex = new EReg('@import .*?;', 'gi');
+    var cssRegex = ~/([\s\S]*?)\{([\s\S]*?)\}/gi;
+//    var cssMediaQueryRegex = ~/((@media [\s\S]*?)\{([\s\S]*?\}\s*?)\})/gi;
+    var cssKeyframeRegex = ~/((@.*?keyframes [\s\S]*?)\{([\s\\S]*?\}\s*?)\})/gi;
+    var combinedCSSMediaRegex = ~/((\s*?(?:\/\*[\s\S]*?\*\/)?\s*?@media[\s\S]*?)\{([\s\S]*?)\}\s*?\})|(([\s\S]*?)\{([\s\S]*?)\})/gi; //to match css & media queries together
+    var cssCommentsRegex = ~/(\/\*[\s\S]*?\*\/)/gi;
+    var cssImportStatementRegex = ~/@import .*?;/gi;
     
     public function new() {
     }
@@ -28,9 +28,7 @@ class Parser {
         source = cssImportStatementRegex.map(source, function(e) {
             var i = e.matched(0);
             i = i.substr(7);
-            i = StringTools.replace(i, "\"", "");
-            i = StringTools.replace(i, "'", "");
-            i = StringTools.replace(i, ";", "");
+            i = ~/"|'|;/g.replace(i, "");
             i = StringTools.trim(i);
             styleSheet.addImport(new ImportElement(i));
             return "";
@@ -59,8 +57,7 @@ class Parser {
             return "";
         });
         
-        var unified = new EReg(combinedCSSRegex, 'gi');
-        unified.map(source, function(e) {
+        combinedCSSMediaRegex.map(source, function(e) {
             var selector = "";
             if (e.matched(2) == null) {
                 selector = StringTools.trim(e.matched(5).split("\r\n").join("\n"));
