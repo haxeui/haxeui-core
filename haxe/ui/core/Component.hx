@@ -2040,11 +2040,8 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     private function validateStyle() {
         var s:Style = Toolkit.styleSheet.buildStyleFor(this);
         s.apply(customStyle);
-        if (_style == null) {
-            _style = new Style();
-        }
-        
-        if (_style.equalTo(s) == false) { // lets not update if nothing has changed
+
+        if (_style == null || _style.equalTo(s) == false) { // lets not update if nothing has changed
             _style = s;
             applyStyle(s);
         }
