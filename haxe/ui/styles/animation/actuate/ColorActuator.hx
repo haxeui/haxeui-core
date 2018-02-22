@@ -67,7 +67,7 @@ class ColorActuator<T> extends SimpleActuator<T, ColorActuator<T>> {
         var s:String = "#" + StringTools.hex(((Std.int(red) << 16) | (Std.int(green) << 8) | Std.int(blue)), 6);
         trace(s);
         
-        //setField(target, "backgroundColor", ((Std.int(red) << 16) | (Std.int(green) << 8) | Std.int(blue)));
+        setField(target, "backgroundColor", ((Std.int(red) << 16) | (Std.int(green) << 8) | Std.int(blue)));
         //setField(target, "styleString", "background-color: " + s);
         
         //cast(target, Component).backgroundColor = ((Std.int(red) << 16) | (Std.int(green) << 8) | Std.int(blue));

@@ -1,7 +1,6 @@
 package haxe.ui.styles;
 
 import haxe.ui.core.Component;
-import haxe.ui.styles.animation.Animation;
 import haxe.ui.styles.elements.AnimationKeyFrames;
 import haxe.ui.styles.elements.ImportElement;
 import haxe.ui.styles.elements.MediaQuery;
@@ -82,56 +81,16 @@ class StyleSheet {
             }
             relevantRules.push(r);
         }
-
-        /*
-        if (_runningAnimations.exists(c)) {
-            _runningAnimations.get(c).stop();
-            _runningAnimations.remove(c);
-        }
-        */
         
         var style:Style = new Style();
         for (r in relevantRules) {
             style.mergeDirectives(r.directives);
         }
-        
-        /*
+
         if (style.animationName != null) {
-            var a = _animations.get(style.animationName);
-            runAnimation(c, a);
-        } else if (_runningAnimations.exists(c)) {
-            _runningAnimations.get(c).stop();
-            _runningAnimations.remove(c);
+            style.animationKeyFrames = _animations.get(style.animationName);
         }
-        */
         
         return style;
-    }
-    
-    private var _runningAnimations:Map<Component, Animation> = new Map<Component, Animation>();
-    
-    public function runAnimation(c:Component, a:AnimationKeyFrames) {
-        if (c == null || a == null) {
-            return;
-        }
-        
-        if (_runningAnimations.exists(c)) {
-            return;
-        }
-        
-        var anim:Animation = new Animation(.3);
-        for (kf in a.keyFrames) {
-            anim.configureKeyFrame(kf);
-        }
-        _runningAnimations.set(c, anim);
-        anim.run(c, function() {
-            /*
-            c.animatedStyle = new Style();
-            cast(c, Component).validateStyle2();
-            */
-            //cast(target, Component).invalidateStyle();
-            cast(c, Component).invalidateDisplay();
-            _runningAnimations.remove(c);
-        });
     }
 }

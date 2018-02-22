@@ -1,5 +1,7 @@
 package haxe.ui.core;
 
+import haxe.ui.styles.animation.Animation;
+import haxe.ui.styles.elements.AnimationKeyFrames;
 import haxe.ui.styles.Parser;
 import haxe.ui.validation.IValidating;
 import haxe.ui.backend.ComponentBase;
@@ -278,7 +280,40 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         return _animatable;
     }
     private function set_animatable(value:Bool):Bool {
+        if (_animatable != value) {
+            if (value == false && _animations != null) {
+                for (animation in _animations) {
+                    animation.stop();
+                }
+
+                _animations = null;
+            }
+
+            _animatable = value;
+        }
         _animatable = value;
+        return value;
+    }
+
+    private var _animations:Array<Animation>;
+    /**
+     Current animations running
+    **/
+    public var animations(get, set):Array<Animation>;
+    private function get_animations():Array<Animation> {
+        return _animations;
+    }
+    private function set_animations(value:Array<Animation>):Array<Animation> {
+        if (_animations != value && _animatable == true) {
+            if (_animations != null) {
+                for (animation in _animations) {
+                    animation.stop();
+                }
+            }
+
+            _animations = value;
+        }
+
         return value;
     }
 
@@ -2233,6 +2268,10 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             hidden = style.hidden;
         }
 
+        if (style.animationKeyFrames != null) {
+            applyAnimationKeyFrame(style.animationKeyFrames);
+        }
+
         /*
         if (style.clip != null) {
             clipContent = style.clip;
@@ -2254,6 +2293,34 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             native = false;
         }
         */
+    }
+
+    private function applyAnimationKeyFrame(animationKeyFrames:AnimationKeyFrames, duration:Float=0.5):Void {
+        if (_animatable == false) {
+            return;
+        }
+
+        if (_animations == null) {
+            _animations = [];
+        } else if (animationKeyFrames.id != null) {
+            for (animation in _animations) {
+                if (animation.name == animationKeyFrames.id) {
+                    return;
+                }
+            }
+        }
+
+        var animation:Animation = new Animation(duration);
+        _animations.push(animation);
+        animation.configureWithKeyFrames(animationKeyFrames);
+        animation.run(this, function() {
+            if (_animations != null) {
+                var index = _animations.indexOf(animation);
+                if (index != -1) {
+                    _animations.splice(index, 1);
+                }
+            }
+        });
     }
 
     //***********************************************************************************************************
