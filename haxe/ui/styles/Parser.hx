@@ -645,6 +645,8 @@ class Parser {
             var x = getIdent(v);
             if (x == "bold") {
                 s.fontBold = true;
+            } else if (x == "italic") {
+                s.fontItalic = true;
             }
             return true;
         /*
