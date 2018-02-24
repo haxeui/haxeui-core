@@ -1,7 +1,7 @@
 package haxe.ui.styles.animation;
 
-import haxe.ui.styles.elements.AnimationKeyFrames;
 import haxe.ui.core.Component;
+import haxe.ui.styles.elements.AnimationKeyFrames;
 
 class Animation {
     private var _totalTime:Float = 0;
@@ -50,6 +50,7 @@ class Animation {
     public function stop() {
         if (_currentKeyFrame != null) {
             _currentKeyFrame.stop();
+            _currentKeyFrame = null;
         }
         _keyframes = [];
     }
@@ -62,8 +63,6 @@ class Animation {
         }
         var kf = _keyframes.shift();
         _currentKeyFrame = kf;
-        kf.run(c, function() {
-            run(c, onFinish);
-        });
+        kf.run(c, run.bind(c, onFinish));
     }
 }
