@@ -9,5 +9,6 @@ enum Value {
     VCall(f:String, vl:Array<Value>);
     VConstant(v:String);
     VComposite(vl:Array<Value>);
+    VTime(v:Float, unit:String);
     VNone();
 }

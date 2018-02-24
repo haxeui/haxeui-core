@@ -2269,7 +2269,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
 
         if (style.animationKeyFrames != null) {
-            applyAnimationKeyFrame(style.animationKeyFrames);
+            applyAnimationKeyFrame(style.animationKeyFrames, style.animationDuration);
         }
 
         /*
@@ -2295,7 +2295,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         */
     }
 
-    private function applyAnimationKeyFrame(animationKeyFrames:AnimationKeyFrames, duration:Float=0.5):Void {
+    private function applyAnimationKeyFrame(animationKeyFrames:AnimationKeyFrames, duration:Float=0):Void {
         if (_animatable == false) {
             return;
         }

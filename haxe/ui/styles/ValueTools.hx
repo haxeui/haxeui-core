@@ -1,9 +1,10 @@
 package haxe.ui.styles;
 
 import haxe.ui.core.Screen;
-import haxe.ui.util.MathUtil;
 
 class ValueTools {
+    private static var timeEReg:EReg = ~/(\d+(?:\.\d+)?)(s|ms)/gi;
+
     public static function parse(s:String):Value {
         var v = null;
         
@@ -21,7 +22,9 @@ class ValueTools {
             v = Value.VDimension(Dimension.REM(Std.parseFloat(s)));
         } else if (validColor(s)) {
             v = parseColor(s);
-        } else if (s == "none") {    
+        } else if (timeEReg.match(s)) {
+            v = Value.VTime(Std.parseFloat(timeEReg.matched(1)), timeEReg.matched(2));
+        } else if (s == "none") {
             v = Value.VNone;
         } else if (s.indexOf("(") != -1 && StringTools.endsWith(s, ")")) {    
             var n = s.indexOf("(");
@@ -144,6 +147,22 @@ class ValueTools {
         } */
         
         return false;
+    }
+
+    public static function time(value:Value):Float {
+        switch (value) {
+            case Value.VTime(v, unit):
+                switch (unit) {
+                    case "s":
+                        return v;
+                    case "ms":
+                        return v / 1000;
+                    case _:
+                        return null;
+                }
+            case _:
+                return null;
+        }
     }
     
     public static function string(value:Value):String {
