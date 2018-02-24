@@ -1,5 +1,6 @@
 package haxe.ui.styles;
 
+import haxe.ui.constants.UnitTime;
 import haxe.ui.core.Screen;
 
 class ValueTools {
@@ -153,9 +154,9 @@ class ValueTools {
         switch (value) {
             case Value.VTime(v, unit):
                 switch (unit) {
-                    case "s":
+                    case UnitTime.SECONDS:
                         return v;
-                    case "ms":
+                    case UnitTime.MILLISECONDS:
                         return v / 1000;
                     case _:
                         return null;
