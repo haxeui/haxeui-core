@@ -2296,7 +2296,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     }
 
     private function applyAnimationKeyFrame(animationKeyFrames:AnimationKeyFrames, duration:Float=0):Void {
-        if (_animatable == false) {
+        if (_animatable == false || duration == 0) {
             return;
         }
 
