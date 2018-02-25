@@ -10,4 +10,13 @@ class StyleUtil
             return re.matched(1).toUpperCase();
         });
     }
+
+    /**
+    *   Example: "backgroundColor" to "background-color"
+    **/
+    static public function componentProperty2StyleProperty(property:String):String {
+        return ~/([A-Z])/g.map(property, function(re:EReg):String{
+            return '-${re.matched(1).toLowerCase()}' ;
+        });
+    }
 }
