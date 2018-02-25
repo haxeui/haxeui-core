@@ -10,6 +10,11 @@ class ValueActuator<T> extends SimpleActuator<T, Dynamic> {
 
     public function new(target : T, duration : Float, properties : Dynamic) {
         super(target, duration, properties);
+
+        //Exeucte the animation directly if duration == 0, because Actuate won't execute it
+        if (duration == 0) {
+            update(0);
+        }
     }
 
     override private function initialize() : Void {
