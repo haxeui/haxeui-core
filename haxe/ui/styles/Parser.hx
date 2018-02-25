@@ -45,7 +45,12 @@ class Parser {
             for (a in arr) {
                 a = StringTools.trim(a) + "}";
                 var keyframe = new AnimationKeyFrame();
-                keyframe.time = ValueTools.parse(extractSelector(a));
+                var selector:String = extractSelector(a);
+                if(selector == "from")
+                    selector = "0%";
+                else if(selector == "to")
+                    selector = "100%";
+                keyframe.time = ValueTools.parse(selector);
                 keyframe.directives = parseDirectives(extractDirectives(a));
                 keyframes.push(keyframe);
                 trace(keyframe);
