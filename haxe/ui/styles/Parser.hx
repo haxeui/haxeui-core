@@ -12,7 +12,8 @@ import haxe.ui.styles.elements.RuleElement;
 class Parser {
     var cssRegex = ~/([\s\S]*?)\{([\s\S]*?)\}/gi;
 //    var cssMediaQueryRegex = ~/((@media [\s\S]*?)\{([\s\S]*?\}\s*?)\})/gi;
-    var cssKeyframeRegex = ~/((@.*?keyframes [\s\S]*?)\{([\s\S]*?\}\s*?)\})/gi;
+    var cssKeyframesRegex = ~/@keyframes\s*(\w+?)\s*\{([\s\S]*?\}\s*?)\}/gi;
+    var cssKeyframeSelectorRegex = ~/([\w%]+)\s*\{\s*(.*)\s*\}/gi;
     var combinedCSSMediaRegex = ~/((\s*?(?:\/\*[\s\S]*?\*\/)?\s*?@media[\s\S]*?)\{([\s\S]*?)\}\s*?\})|(([\s\S]*?)\{([\s\S]*?)\})/gi; //to match css & media queries together
     var cssCommentsRegex = ~/(\/\*[\s\S]*?\*\/)/gi;
     var cssImportStatementRegex = ~/@import .*?;/gi;
@@ -34,29 +35,28 @@ class Parser {
             return "";
         });
         
-        source = cssKeyframeRegex.map(source, function(e) {
-            var k = e.matched(0);
-            
-            var selector = StringTools.trim(StringTools.replace(extractSelector(k), "@keyframes", ""));
-            var data = extractDirectives(k);
-            
+        source = cssKeyframesRegex.map(source, function(e) {
+            var id:String = e.matched(1);
+            var data = e.matched(2);
+
             var keyframes = new Array<AnimationKeyFrame>();
-            var arr = data.split("}");
-            for (a in arr) {
-                a = StringTools.trim(a) + "}";
-                var keyframe = new AnimationKeyFrame();
-                var selector:String = extractSelector(a);
+            cssKeyframeSelectorRegex.map(data, function(e) {
+                var selector:String = e.matched(1);
+                var directives:String = e.matched(2);
                 if(selector == "from")
                     selector = "0%";
                 else if(selector == "to")
                     selector = "100%";
+
+                var keyframe = new AnimationKeyFrame();
                 keyframe.time = ValueTools.parse(selector);
-                keyframe.directives = parseDirectives(extractDirectives(a));
+                keyframe.directives = parseDirectives(directives);
                 keyframes.push(keyframe);
-                trace(keyframe);
-            }
+
+                return null;
+            });
             
-            var animation = new AnimationKeyFrames(selector, keyframes);
+            var animation = new AnimationKeyFrames(id, keyframes);
             styleSheet.addAnimation(animation);
             
             return "";
@@ -138,24 +138,5 @@ class Parser {
         }
         
         return d;
-    }
-    
-    private function extractSelector(s:String):String {
-        var selector = null;
- 
-        var n1 = s.indexOf("{");
-        selector = StringTools.trim(s.substr(0, n1));
-        
-        return selector;
-    }
-    
-    private function extractDirectives(s:String):String {
-        var directives = null;
-        
-        var n1 = s.indexOf("{");
-        var n2 = s.lastIndexOf("}");
-        directives = StringTools.trim(s.substr(n1 + 1, n2 - n1 - 1));
-        
-        return directives;
     }
 }
