@@ -24,8 +24,6 @@ class ValueTools {
             v = Value.VDimension(Dimension.REM(Std.parseFloat(s)));
         } else if (validColor(s)) {
             v = parseColor(s);
-        } else if (timeEReg.match(s)) {
-            v = Value.VTime(Std.parseFloat(timeEReg.matched(1)), timeEReg.matched(2));
         } else if (s == "none") {
             v = Value.VNone;
         } else if (s.indexOf("(") != -1 && StringTools.endsWith(s, ")")) {    
@@ -50,6 +48,8 @@ class ValueTools {
             v = Value.VNumber(Std.parseFloat(s));
         } else if (s == "true" || s == "false") {
             v = Value.VBool(s == "true");
+        } else if (timeEReg.match(s)) {
+            v = Value.VTime(Std.parseFloat(timeEReg.matched(1)), timeEReg.matched(2));
         } else {
             var arr = s.split(" ");
             if (arr.length == 1) {
