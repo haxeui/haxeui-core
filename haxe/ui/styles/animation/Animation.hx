@@ -24,21 +24,14 @@ class Animation {
                 case Value.VDimension(v):
                     switch (v) {
                         case Dimension.PERCENT(p):
-                            trace(p);
                             var t = _totalTime * p / 100;
                             kf.time = t;
                             var lastTime:Float = 0;
                             for (a in _keyframes) {
                                 lastTime += a.time;
                             }
-                            trace("last time: " + lastTime + ", this time: " + t);
                             kf.time -= lastTime;
-
                             kf.directives = keyFrame.directives;
-
-                            for (d in keyFrame.directives) {
-                                trace(" >>> " + d.directive + " = " + d.value);
-                            }
                             _keyframes.push(kf);
                         case _:
                     }

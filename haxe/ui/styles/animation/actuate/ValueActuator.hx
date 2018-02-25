@@ -32,8 +32,6 @@ class ValueActuator<T> extends SimpleActuator<T, Dynamic> {
                 case Value.VColor(v):
                     var startColor:Color = cast(start, Color);
                     var endColor:Color = v;
-trace("start", startColor.r, startColor.g, startColor.b);
-trace("end", endColor.r, endColor.g, endColor.b);
                     var details:ColorPropertyDetails<Dynamic> = new ColorPropertyDetails (cast target,
                         componentProperty,
                         startColor,
