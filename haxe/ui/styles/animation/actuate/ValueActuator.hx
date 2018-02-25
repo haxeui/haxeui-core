@@ -13,7 +13,8 @@ class ValueActuator<T> extends SimpleActuator<T, Dynamic> {
 
         //Exeucte the animation directly if duration == 0, because Actuate won't execute it
         if (duration == 0) {
-            update(0);
+            timeOffset = 0;
+            update(0.0001);
         }
     }
 
@@ -31,7 +32,8 @@ class ValueActuator<T> extends SimpleActuator<T, Dynamic> {
                 case Value.VColor(v):
                     var startColor:Color = cast(start, Color);
                     var endColor:Color = v;
-
+trace("start", startColor.r, startColor.g, startColor.b);
+trace("end", endColor.r, endColor.g, endColor.b);
                     var details:ColorPropertyDetails<Dynamic> = new ColorPropertyDetails (cast target,
                         componentProperty,
                         startColor,
