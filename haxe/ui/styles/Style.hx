@@ -87,6 +87,7 @@ class Style {
     
     public var animationName:String;
     public var animationDuration:Float;
+    public var animationTimingFunction:EasingFunction;
 
     public var animationKeyFrames:AnimationKeyFrames;
     
@@ -251,10 +252,12 @@ class Style {
                     animationName = ValueTools.string(v.value);
                 case "animation-duration":
                     animationDuration = ValueTools.time(v.value);
+                case "animation-timing-function":
+                    animationTimingFunction = ValueTools.calcEasing(v.value);
             }
         }
     }
-    
+
     public function apply(s:Style) {
         if (s.cursor != null) cursor = s.cursor;
         if (s.hidden != null) hidden = s.hidden;
@@ -333,6 +336,7 @@ class Style {
         if (s.resource != null) resource = s.resource;
         if (s.animationName != null) animationName = s.animationName;
         if (s.animationDuration != null) animationDuration = s.animationDuration;
+        if (s.animationTimingFunction != null) animationTimingFunction = s.animationTimingFunction;
         if (s.animationKeyFrames != null) animationKeyFrames = s.animationKeyFrames;
 
         if (s.icon != null) icon = s.icon;
@@ -438,6 +442,7 @@ class Style {
         if (s.resource != resource) return false;
         if (s.animationName != animationName) return false;
         if (s.animationDuration != animationDuration) return false;
+        if (s.animationTimingFunction != animationTimingFunction) return false;
         if (s.animationKeyFrames != animationKeyFrames) return false;
         
         return true;

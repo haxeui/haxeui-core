@@ -1,5 +1,6 @@
 package haxe.ui.styles;
 
+import haxe.ui.styles.EasingFunction;
 import haxe.ui.constants.UnitTime;
 import haxe.ui.core.Screen;
 
@@ -280,6 +281,28 @@ class ValueTools {
                 return call(f, vl);
             case Value.VNone:
                 return null;
+            case _:
+                return null;
+        }
+    }
+
+    public static function calcEasing(value:Value):Null<EasingFunction> {
+        switch (value) {
+            case Value.VString(v), Value.VConstant(v):
+                switch (v) {
+                    case "linear":
+                        return EasingFunction.LINEAR;
+                    case "ease":
+                        return EasingFunction.EASE;
+                    case "ease-in":
+                        return EasingFunction.EASE_IN;
+                    case "ease-out":
+                        return EasingFunction.EASE_OUT;
+                    case "ease-in-out":
+                        return EasingFunction.EASE_IN_OUT;
+                    case _:
+                        return null;
+                }
             case _:
                 return null;
         }

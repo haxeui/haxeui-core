@@ -1,17 +1,20 @@
 package haxe.ui.styles.animation;
 
 import haxe.ui.core.Component;
+import haxe.ui.styles.EasingFunction;
 import haxe.ui.styles.elements.AnimationKeyFrames;
 
 class Animation {
-    private var _totalTime:Float = 0;
+    private var _totalTime:Float;
+    private var _easingFunction:EasingFunction;
     
     private var _keyframes:Array<KeyFrame> = [];
     
     public var name:String;
     
-    public function new(totalTime:Float) {
+    public function new(totalTime:Float = 0, easingFunction:EasingFunction = null) {
         _totalTime = totalTime;
+        _easingFunction = easingFunction;
     }
 
     public function configureWithKeyFrames(animationKeyFrames:AnimationKeyFrames) {
@@ -31,6 +34,7 @@ class Animation {
                                 lastTime += a.time;
                             }
                             kf.time -= lastTime;
+                            kf.easingFunction = _easingFunction;
                             kf.directives = keyFrame.directives;
                             _keyframes.push(kf);
                         case _:

@@ -3,6 +3,7 @@ package haxe.ui.core;
 import haxe.ui.styles.animation.Animation;
 import haxe.ui.styles.elements.AnimationKeyFrames;
 import haxe.ui.styles.Parser;
+import haxe.ui.styles.EasingFunction;
 import haxe.ui.validation.IValidating;
 import haxe.ui.backend.ComponentBase;
 import haxe.ui.layouts.DefaultLayout;
@@ -2269,7 +2270,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
 
         if (style.animationKeyFrames != null) {
-            applyAnimationKeyFrame(style.animationKeyFrames, style.animationDuration);
+            applyAnimationKeyFrame(style.animationKeyFrames, style.animationTimingFunction, style.animationDuration);
         }
 
         /*
@@ -2295,9 +2296,13 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         */
     }
 
-    private function applyAnimationKeyFrame(animationKeyFrames:AnimationKeyFrames, duration:Float=0):Void {
+    private function applyAnimationKeyFrame(animationKeyFrames:AnimationKeyFrames, easingFunction:EasingFunction=null, duration:Float=0):Void {
         if (_animatable == false || duration == 0) {
             return;
+        }
+
+        if (easingFunction == null) {
+            easingFunction = EasingFunction.EASE;
         }
 
         if (_animations == null) {
@@ -2310,7 +2315,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             }
         }
 
-        var animation:Animation = new Animation(duration);
+        var animation:Animation = new Animation(duration, easingFunction);
         _animations.push(animation);
         animation.configureWithKeyFrames(animationKeyFrames);
         animation.run(this, function() {
