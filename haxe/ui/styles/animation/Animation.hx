@@ -1,12 +1,11 @@
 package haxe.ui.styles.animation;
 
 import haxe.ui.util.StyleUtil;
-import haxe.ui.core.Component;
 import haxe.ui.styles.EasingFunction;
 import haxe.ui.styles.elements.AnimationKeyFrames;
 
 class Animation {
-    private var _component:Component;
+    private var _target:Dynamic;
     private var _totalTime:Float;
     private var _easingFunction:EasingFunction;
 
@@ -24,8 +23,8 @@ class Animation {
 
     public var running(default, null):Bool;
     
-    public function new(component:Component, totalTime:Float = 0, easingFunction:EasingFunction = null) {
-        _component = component;
+    public function new(target:Dynamic, totalTime:Float = 0, easingFunction:EasingFunction = null) {
+        _target = target;
         _totalTime = totalTime;
         _easingFunction = easingFunction;
     }
@@ -97,7 +96,7 @@ class Animation {
         }
 
         _currentKeyFrame = _keyframes.shift();
-        _currentKeyFrame.run(_component, runNextKeyframe.bind(onFinish));
+        _currentKeyFrame.run(_target, runNextKeyframe.bind(onFinish));
     }
 
     private function saveState() {
@@ -109,7 +108,7 @@ class Animation {
             for (directive in keyframe.directives) {
                 var property:String = StyleUtil.styleProperty2ComponentProperty(directive.directive);
                 if (!_initialState.exists(property)) {
-                    _initialState.set(property, Reflect.getProperty(_component, property));
+                    _initialState.set(property, Reflect.getProperty(_target, property));
                 }
             }
         }
@@ -118,7 +117,7 @@ class Animation {
     private function restoreState() {
         if (_initialState != null) {
             for (property in _initialState.keys()) {
-                Reflect.setProperty(_component, property, _initialState.get(property));
+                Reflect.setProperty(_target, property, _initialState.get(property));
             }
 
             _initialState = null;
