@@ -2315,10 +2315,10 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             }
         }
 
-        var animation:Animation = new Animation(duration, easingFunction);
+        var animation:Animation = new Animation(this, duration, easingFunction);
         _animations.push(animation);
         animation.configureWithKeyFrames(animationKeyFrames);
-        animation.run(this, function() {
+        animation.run(function() {
             if (_animations != null) {
                 var index = _animations.indexOf(animation);
                 if (index != -1) {
