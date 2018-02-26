@@ -54,8 +54,6 @@ class ValueActuator<T> extends SimpleActuator<T, Dynamic> {
 
     override private function update(currentTime : Float) : Void {
         if (!paused) {
-            super.update(currentTime);
-
             if (colorPropertyDetails != null) {
                 var tweenPosition:Float = (currentTime - timeOffset) / duration;
                 if (tweenPosition > 1) {
@@ -79,6 +77,8 @@ class ValueActuator<T> extends SimpleActuator<T, Dynamic> {
                     Reflect.setProperty (details.target, details.propertyName, currentColor);
                 }
             }
+
+            super.update(currentTime);
         }
     }
 }
