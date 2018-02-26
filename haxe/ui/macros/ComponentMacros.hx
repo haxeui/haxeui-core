@@ -132,7 +132,20 @@ class ComponentMacros {
 
         var numberEReg:EReg = ~/^\d+(\.(\d+))?$/;
         var type = Context.getModule(className)[0];
-        //trace(className + " = " + MacroHelpers.hasInterface(type, "haxe.ui.core.IDataComponent"));
+        if (MacroHelpers.hasDirectInterface(type, "haxe.ui.core.IDirectionalComponent")) {
+            var direction = c.direction;
+            if (direction == null) {
+                direction = "horizontal"; // default to horizontal
+            }
+            var directionalClassName = ComponentClassMap.get(direction + c.type.toLowerCase());
+            if (directionalClassName == null) {
+                trace("WARNING: no direction class found for component: " + c.type + " (" + (direction + c.type.toLowerCase()) + ")");
+                return;
+            }
+            
+            className = directionalClassName;
+            type = Context.getModule(className)[0];
+        }
 
         var componentVarName = 'c${id}';
         var typePath = {

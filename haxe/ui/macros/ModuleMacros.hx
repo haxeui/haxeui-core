@@ -168,11 +168,22 @@ class ModuleMacros {
                             if (c.className != null && resolvedClass != c.className) {
                                 continue;
                             }
+                            
+                            var resolvedClassName = resolvedClass.substr(resolvedClass.lastIndexOf(".") + 1, resolvedClass.length);
                             var classAlias:String = c.classAlias;
                             if (classAlias == null) {
-                                classAlias = resolvedClass.substr(resolvedClass.lastIndexOf(".") + 1, resolvedClass.length);
+                                classAlias = resolvedClassName;
                             }
                             classAlias = classAlias.toLowerCase();
+                            
+                            if (MacroHelpers.hasInterface(t, "haxe.ui.core.IDirectionalComponent")) {
+                                var pkg = MacroHelpers.getPackage(resolvedClass);
+                                if (StringTools.startsWith(resolvedClassName, "Horizontal")) { // alias HorizontalComponent with hcomponent
+                                    var x = "h" + StringTools.replace(resolvedClassName, "Horizontal", "").toLowerCase();
+                                    ComponentClassMap.register("h" + StringTools.replace(resolvedClassName, "Horizontal", "").toLowerCase(), resolvedClass);
+                                }
+                            }
+                            
                             ComponentClassMap.register(classAlias, resolvedClass);
                         }
                     }

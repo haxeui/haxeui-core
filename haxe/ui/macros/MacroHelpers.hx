@@ -152,6 +152,24 @@ class MacroHelpers {
         return has;
     }
 
+    public static function hasDirectInterface(t:haxe.macro.Type, interfaceRequired:String):Bool {
+        var has:Bool = false;
+        switch (t) {
+                case TInst(t, _): {
+                    for (i in t.get().interfaces) {
+                        var interfaceName:String = i.t.toString();
+                        if (interfaceName == interfaceRequired) {
+                            has = true;
+                            break;
+                        }
+                    }
+                }
+                case _:
+        }
+        
+        return has;
+    }
+    
     static function mkPath(name:String):TypePath {
         var parts = name.split('.');
         return {
@@ -322,6 +340,22 @@ class MacroHelpers {
         return has;
     }
 
+    public static function getPackage(className:String) {
+        var parts = className.split(".");
+        parts.pop();
+        return parts.join(".");
+    }
+    
+    
+    public static function hasType(type:String):Bool {
+        try {
+            Context.getType(type);
+            return true;
+        } catch (e:Dynamic) {
+        }
+        return false;
+    }
+    
     public static function extension(path:String):String {
         if (path.indexOf(".") == -1) {
             return null;

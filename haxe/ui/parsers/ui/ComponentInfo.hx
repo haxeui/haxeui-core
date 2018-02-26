@@ -18,6 +18,7 @@ class ComponentInfo {
     public var styleNames:Null<String>;
     public var composite:Null<Bool>;
     public var layoutName:Null<String>;
+    public var direction:Null<String>;
 
     public var properties:Map<String, String>;
     public var parent:ComponentInfo;

@@ -154,7 +154,7 @@ abstract Variant(VariantType) from VariantType {
         return Bool(s);
     }
 
-    @:to function toBool():Bool {
+    @:to public function toBool():Bool {
         if (this == null) {
             return false;
         }

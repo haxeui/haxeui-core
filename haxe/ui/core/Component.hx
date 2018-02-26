@@ -2337,6 +2337,11 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     private function get_className():String {
         return Type.getClassName(Type.getClass(this));
     }
+
+    private var cssName(get, null):String;
+    private function get_cssName():String {
+        return Type.getClassName(Type.getClass(this)).split(".").pop().toLowerCase();
+    }
 }
 
 //***********************************************************************************************************

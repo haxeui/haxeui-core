@@ -209,6 +209,8 @@ class XMLParser extends ComponentParser {
                     component.composite = (attrValue == "true");
                 case "layout":
                     component.layoutName = attrValue;
+                case "direction":
+                    component.direction = attrValue;
                 case "bindTo" | "bindTransform": // do nothing
                 default:
                     if (attrName == "group") {
