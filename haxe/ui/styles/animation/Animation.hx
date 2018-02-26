@@ -11,11 +11,18 @@ class Animation {
     private var _easingFunction:EasingFunction;
 
     private var _currentKeyFrame:KeyFrame = null;
-    private var _keyframes:Array<KeyFrame> = [];
+    private var _keyframes:Array<KeyFrame>;
 
     private var _initialState:Map<String, Dynamic>;
     
     public var name:String;
+
+    public var keyframeCount(get, never):Int;
+    private function get_keyframeCount():Int {
+        return _keyframes == null ? 0 : _keyframes.length;
+    }
+
+    public var running(default, null):Bool;
     
     public function new(component:Component, totalTime:Float = 0, easingFunction:EasingFunction = null) {
         _component = component;
@@ -25,6 +32,10 @@ class Animation {
 
     public function configureWithKeyFrames(animationKeyFrames:AnimationKeyFrames) {
         name = animationKeyFrames.id;
+
+        if (_keyframes == null) {
+            _keyframes = [];
+        }
 
         for (keyFrame in animationKeyFrames.keyFrames) {
             var kf = new KeyFrame();
@@ -51,30 +62,42 @@ class Animation {
     }
     
     public function stop() {
+        if (!running) {
+            return;
+        }
+
         if (_currentKeyFrame != null) {
             _currentKeyFrame.stop();
             _currentKeyFrame = null;
         }
-        _keyframes = [];
+
+        _keyframes = null;
 
         restoreState();
+        running = false;
     }
     
     public function run(onFinish:Void->Void) {
+        if (keyframeCount == 0 || running) {
+            return;
+        }
+
+        running = true;
         saveState();
         runNextKeyframe(onFinish);
     }
 
     private function runNextKeyframe(onFinish:Void->Void) {
-        if (_keyframes.length == 0) {
+        if (keyframeCount == 0) {
             _currentKeyFrame = null;
             restoreState();
+            running = false;
             onFinish();
             return;
         }
 
         _currentKeyFrame = _keyframes.shift();
-        _currentKeyFrame.run(_component, run.bind(onFinish));
+        _currentKeyFrame.run(_component, runNextKeyframe.bind(onFinish));
     }
 
     private function saveState() {
@@ -97,6 +120,8 @@ class Animation {
             for (property in _initialState.keys()) {
                 Reflect.setProperty(_component, property, _initialState.get(property));
             }
+
+            _initialState = null;
         }
     }
 }
