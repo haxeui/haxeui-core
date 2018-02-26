@@ -110,6 +110,21 @@ class Slider extends InteractiveComponent {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
+    private var _round:Bool = false;
+    /**
+     Wether to round the position(s) of the slider to the nearest integer
+    **/
+    @:dox(group = "Value related properties and methods")
+    @bindable @clonable public var round(get, set):Bool;
+    private function get_round():Bool {
+        return _round;
+    }
+    private function set_round(value:Bool):Bool {
+        _round = value;
+        return value;
+    }
+    
+    
     private var _pos:Float = 0;
     /**
      The current value of the slider
@@ -117,6 +132,9 @@ class Slider extends InteractiveComponent {
     @:dox(group = "Value related properties and methods")
     @bindable @clonable public var pos(get, set):Float;
     private function get_pos():Float {
+        if (_round == true) {
+            return Math.fround(_pos);
+        }
         return _pos;
     }
     private function set_pos(value:Float):Float {
@@ -182,6 +200,9 @@ class Slider extends InteractiveComponent {
     @:dox(group = "Range related properties and methods")
     @bindable @clonable public var rangeStart(get, set):Float;
     private function get_rangeStart():Float {
+        if (_round == true) {
+            return Math.fround(_rangeStart);
+        }
         return _rangeStart;
     }
     private function set_rangeStart(value:Float):Float {
@@ -235,6 +256,9 @@ class Slider extends InteractiveComponent {
     @:dox(group = "Range related properties and methods")
     @bindable @clonable public var rangeEnd(get, set):Float;
     private function get_rangeEnd():Float {
+        if (_round == true) {
+            return Math.fround(_rangeEnd);
+        }
         return _rangeEnd;
     }
     private function set_rangeEnd(value:Float):Float {
