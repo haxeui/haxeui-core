@@ -98,6 +98,8 @@ class RuleElement {
                 processComposite(d, ["background-image-clip-top", "background-image-clip-left", "background-image-clip-bottom", "background-image-clip-right"]);
             case "background-image-slice":    
                 processComposite(d, ["background-image-slice-top", "background-image-slice-left", "background-image-slice-bottom", "background-image-slice-right"]);
+            case "animation":
+                processComposite(d, ["animation-name", "animation-duration"]);
             case _:
                 directives.set(d.directive, d);
         }
