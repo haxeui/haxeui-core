@@ -282,12 +282,9 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     }
     private function set_animatable(value:Bool):Bool {
         if (_animatable != value) {
-            if (value == false && _animations != null) {
-                for (animation in _animations) {
-                    animation.stop();
-                }
-
-                _animations = null;
+            if (value == false && _animation != null) {
+                _animation.stop();
+                _animation = null;
             }
 
             _animatable = value;
@@ -296,23 +293,25 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         return value;
     }
 
-    private var _animations:Array<Animation>;
+    private var _animation:Animation;
     /**
-     Current animations running
+     Current animation running
     **/
-    public var animations(get, set):Array<Animation>;
-    private function get_animations():Array<Animation> {
-        return _animations;
+    public var animation(get, set):Animation;
+    private function get_animation():Animation {
+        return _animation;
     }
-    private function set_animations(value:Array<Animation>):Array<Animation> {
-        if (_animations != value && _animatable == true) {
-            if (_animations != null) {
-                for (animation in _animations) {
-                    animation.stop();
+    private function set_animation(value:Animation):Animation {
+        if (_animation != value && _animatable == true) {
+            if (_animation != null) {
+                if (value != null && _animation.name == value.name) {
+                    return value;
                 }
+
+                _animation.stop();
             }
 
-            _animations = value;
+            _animation = value;
         }
 
         return value;
@@ -2272,6 +2271,8 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         if (style.animationName != null) {
             var animationKeyFrames:AnimationKeyFrames = Toolkit.styleSheet.animations.get(style.animationName);
             applyAnimationKeyFrame(animationKeyFrames, style.animationDuration, style.animationTimingFunction);
+        } else if (animation != null) {
+            animation = null;
         }
 
         /*
@@ -2302,7 +2303,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     //***********************************************************************************************************
 
     private function applyAnimationKeyFrame(animationKeyFrames:AnimationKeyFrames, duration:Float=0, easingFunction:EasingFunction=null):Void {
-        if (_animatable == false || duration == 0) {
+        if (_animatable == false || duration == 0 || (_animation != null && _animation.name == animationKeyFrames.id)) {
             return;
         }
 
@@ -2310,33 +2311,10 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             easingFunction = EasingFunction.EASE;
         }
 
-        if (_animations == null) {
-            _animations = [];
-        } else if (animationKeyFrames.id != null) {
-            for (animation in _animations) {
-                if (animation.name == animationKeyFrames.id) {
-                    return;
-                }
-            }
-        }
-
-        //TODO - 1 animation supported. We need to think how the current animations should be overriden
-        while (_animations.length > 0) {
-            var animation:Animation = _animations.shift();
-            animation.stop();
-        }
-
-        var animation:Animation = new Animation(this, duration, easingFunction);
-        _animations.push(animation);
-        animation.configureWithKeyFrames(animationKeyFrames);
-        animation.run(function() {
-            if (_animations != null) {
-                var index = _animations.indexOf(animation);
-                if (index != -1) {
-                    _animations.splice(index, 1);
-                }
-            }
-        });
+        var newAnimation:Animation = new Animation(this, duration, easingFunction);
+        newAnimation.configureWithKeyFrames(animationKeyFrames);
+        animation = newAnimation;
+        newAnimation.run();
     }
 
     //***********************************************************************************************************
