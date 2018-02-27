@@ -160,6 +160,151 @@ class Macros {
         return fields;
     }
 
+    public static function buildBehaviours():Array<Field> {
+        var pos = haxe.macro.Context.currentPos();
+        var fields = haxe.macro.Context.getBuildFields();
+        
+        var behaviours:Array<Dynamic> = [];
+        
+        for (f in MacroHelpers.getFieldsWithMeta("behaviour", fields)) {
+            fields.remove(f);
+            
+            var type:ComplexType = null;
+            switch (f.kind) {
+                case FVar(f, _): {
+                    type = f;
+                }
+                case _:
+            }
+            var typeName:String = null;
+            var subType:String = null;
+            switch (type) { // almost certainly a better way to be doing this
+                case TPath(type): {
+                    typeName = "";
+                    if (type.pack.length > 0) {
+                        typeName += type.pack.join(".") + ".";
+                    }
+                    if (type.params != null && type.params.length == 1) {
+                        switch (type.params[0]) {
+                            case TPType(p):
+                                switch (p) {
+                                    case TPath(tp):
+                                        subType = tp.name;
+                                    case _:
+                                }
+                            case _:
+                        }
+                    }
+                    if (subType == null) {
+                        typeName += type.name;
+                    } else {
+                        typeName += type.name + '<${subType}>';
+                    }
+                }
+                case _:
+            }
+            
+            var kind = FProp("get", "set", type);
+            
+            // add getter/setter property
+            var meta = [];
+            meta.push( { name: ":behaviour", pos: pos, params: [] } );
+            
+            fields.push({
+                name: f.name,
+                doc: null,
+                meta: meta,
+                access: [APublic],
+                kind: kind,
+                pos: haxe.macro.Context.currentPos()
+            });
+            
+            // add getter function
+            var code = "function ():" + typeName + " {\n";
+            code += "return behaviourGet('" + f.name + "');\n";
+            code += "}";
+            var fnGetter = switch (Context.parseInlineString(code, haxe.macro.Context.currentPos()) ).expr {
+                case EFunction(_, f): f;
+                case _: throw "false";
+            }
+            fields.push({
+                name: "get_" + f.name,
+                doc: null,
+                meta: [],
+                access: [APrivate],
+                kind: FFun(fnGetter),
+                pos: haxe.macro.Context.currentPos()
+            });
+                 
+            // add setter funtion
+            var code = "function (value:" + typeName + "):" + typeName + " {\n";
+            code += "behaviourSet('" + f.name + "', value);\n";
+            code += "return value;\n";
+            code += "}";
+
+            var fnSetter = switch (Context.parseInlineString(code, haxe.macro.Context.currentPos()) ).expr {
+                case EFunction(_, f): f;
+                case _: throw "false";
+            }
+            fields.push({
+                name: "set_" + f.name,
+                doc: null,
+                meta: [],
+                access: [APrivate],
+                kind: FFun(fnSetter),
+                pos: haxe.macro.Context.currentPos()
+
+            });
+            
+            
+            // lets dump info into an array and we'll modify the createDefaults at the end            
+            var orginalMeta = MacroHelpers.getMeta(f, "behaviour");
+            var btype = null;
+            switch (orginalMeta.params[0].expr) {
+                case EConst(CIdent(c)):
+                    btype = '${c}';
+                case _:
+            }
+            
+            var bparam = null;
+            switch (orginalMeta.params[1].expr) {
+                case EConst(CInt(c)) | EConst(CFloat(c)):
+                    bparam = '${c}';
+                case _:
+            }
+            
+            behaviours.push({
+               name: f.name,
+               btype: btype,
+               bparam: bparam
+            });
+        }
+        
+        if (behaviours.length > 0) {
+            // lets modify the createDefaults function
+            
+            var parts = [];
+            for (b in behaviours) {
+                parts.push('"${b.name}" => new ${b.btype}(this, ${b.bparam})');
+            }
+            
+            var line = 'defaultBehaviours([${parts.join(",")}])';
+            
+            var createDefaultsFn = MacroHelpers.getFunction(fields, "createDefaults");
+            if (createDefaultsFn == null) {
+                var code = "function() {\n";
+                code += 'super.createDefaults();\n';
+                code += '${line};\n';
+                code += "}\n";
+                MacroHelpers.addFunction("createDefaults", Context.parseInlineString(code, pos), [APrivate, AOverride], fields, pos);
+            } else {
+                MacroHelpers.insertLine(createDefaultsFn, Context.parseInlineString('${line}', pos), -1);    
+            }
+        }
+        
+        return fields;
+    }
+    
     public static function buildStyles():Array<Field> {
         var pos = haxe.macro.Context.currentPos();
         var fields = haxe.macro.Context.getBuildFields();

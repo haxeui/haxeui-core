@@ -48,6 +48,7 @@ class DeferredBindingInfo {
 @:build(haxe.ui.macros.Macros.buildStyles())
 @:autoBuild(haxe.ui.macros.Macros.buildStyles())
 @:autoBuild(haxe.ui.macros.Macros.buildBindings())
+@:autoBuild(haxe.ui.macros.Macros.buildBehaviours())
 @:build(haxe.ui.macros.Macros.addClonable())
 @:autoBuild(haxe.ui.macros.Macros.addClonable())
 class Component extends ComponentBase implements IComponentBase implements IValidating implements IClonable<Component> {

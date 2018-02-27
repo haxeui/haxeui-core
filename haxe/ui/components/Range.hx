@@ -7,23 +7,18 @@ import haxe.ui.core.UIEvent;
 import haxe.ui.core.ValueBehaviour;
 
 class Range extends InteractiveComponent implements IDirectionalComponent {
-    public function new() {
-        super();
-    }
+    
+    //***********************************************************************************************************
+    // Public API
+    //***********************************************************************************************************
+    @:behaviour(ValueBehaviour, 0.)   public var start:Float;
+    @:behaviour(ValueBehaviour, 100.) public var end:Float;
+    @:behaviour(ValueBehaviour, 0.)   public var min:Float;
+    @:behaviour(ValueBehaviour, 100.) public var max:Float;
     
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************
-    private override function createDefaults() {
-        super.createDefaults();
-        defaultBehaviours([
-            "start" => new ValueBehaviour(this, 0.),
-            "end" => new ValueBehaviour(this, 100.),
-            "min" => new ValueBehaviour(this, 0.),
-            "max" => new ValueBehaviour(this, 100.)
-        ]);
-    }
-    
     private override function createChildren() {
         if (findComponent("value") == null) {
             var v = new Component();
@@ -35,45 +30,6 @@ class Range extends InteractiveComponent implements IDirectionalComponent {
     
     private override function get_cssName():String {
         return "range";
-    }
-    
-    //***********************************************************************************************************
-    // Public API
-    //***********************************************************************************************************
-    public var start(get, set):Float;
-    private function get_start():Float {
-        return behaviourGet("start");
-    }
-    private function set_start(value:Float):Float {
-        behaviourSet("start", value);
-        return value;
-    }
-    
-    public var end(get, set):Float;
-    private function get_end():Float {
-        return behaviourGet("end");
-    }
-    private function set_end(value:Float):Float {
-        behaviourSet("end", value);
-        return value;
-    }
-
-    public var min(get, set):Float;
-    private function get_min():Float {
-        return behaviourGet("min");
-    }
-    private function set_min(value:Float):Float {
-        behaviourSet("min", value);
-        return value;
-    }
-    
-    public var max(get, set):Float;
-    private function get_max():Float {
-        return behaviourGet("max");
-    }
-    private function set_max(value:Float):Float {
-        behaviourSet("max", value);
-        return value;
     }
     
     //***********************************************************************************************************
