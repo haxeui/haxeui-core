@@ -11,8 +11,13 @@ class StyleSheet {
     private var _rules:Array<RuleElement> = [];
     
     private var _mediaQueries:Array<MediaQuery> = [];
-    public var _animations:Map<String, AnimationKeyFrames> = new Map<String, AnimationKeyFrames>();
-    
+
+    private var _animations:Map<String, AnimationKeyFrames> = new Map<String, AnimationKeyFrames>();
+    public var animations(get, never):Map<String, AnimationKeyFrames>;
+    private function get_animations():Map<String, AnimationKeyFrames> {
+        return _animations;
+    }
+
     public function new() {
     }
     
@@ -85,10 +90,6 @@ class StyleSheet {
         var style:Style = new Style();
         for (r in relevantRules) {
             style.mergeDirectives(r.directives);
-        }
-
-        if (style.animationName != null) {
-            style.animationKeyFrames = _animations.get(style.animationName);
         }
         
         return style;

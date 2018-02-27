@@ -1,7 +1,5 @@
 package haxe.ui.styles;
 
-import haxe.ui.styles.elements.AnimationKeyFrames;
-import haxe.ui.styles.animation.Animation;
 import haxe.ui.styles.elements.Directive;
 import haxe.ui.util.filters.Filter;
 import haxe.ui.util.filters.FilterParser;
@@ -89,8 +87,6 @@ class Style {
     public var animationDuration:Float;
     public var animationTimingFunction:EasingFunction;
 
-    public var animationKeyFrames:AnimationKeyFrames;
-    
     public function new() {
     }
     
@@ -337,7 +333,6 @@ class Style {
         if (s.animationName != null) animationName = s.animationName;
         if (s.animationDuration != null) animationDuration = s.animationDuration;
         if (s.animationTimingFunction != null) animationTimingFunction = s.animationTimingFunction;
-        if (s.animationKeyFrames != null) animationKeyFrames = s.animationKeyFrames;
 
         if (s.icon != null) icon = s.icon;
         if (s.iconPosition != null) iconPosition = s.iconPosition;
@@ -443,8 +438,7 @@ class Style {
         if (s.animationName != animationName) return false;
         if (s.animationDuration != animationDuration) return false;
         if (s.animationTimingFunction != animationTimingFunction) return false;
-        if (s.animationKeyFrames != animationKeyFrames) return false;
-        
+
         return true;
     }
 }

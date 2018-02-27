@@ -61,9 +61,11 @@ class Animation {
     }
     
     public function stop() {
-        if (!running) {
+        if (running == false) {
             return;
         }
+
+        running = false;
 
         if (_currentKeyFrame != null) {
             _currentKeyFrame.stop();
@@ -73,7 +75,6 @@ class Animation {
         _keyframes = null;
 
         restoreState();
-        running = false;
     }
     
     public function run(onFinish:Void->Void) {
@@ -87,6 +88,10 @@ class Animation {
     }
 
     private function runNextKeyframe(onFinish:Void->Void) {
+        if (running == false) {
+            return;
+        }
+
         if (keyframeCount == 0) {
             _currentKeyFrame = null;
             restoreState();

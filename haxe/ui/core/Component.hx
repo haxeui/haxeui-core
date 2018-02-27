@@ -2269,8 +2269,9 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             hidden = style.hidden;
         }
 
-        if (style.animationKeyFrames != null) {
-            applyAnimationKeyFrame(style.animationKeyFrames, style.animationTimingFunction, style.animationDuration);
+        if (style.animationName != null) {
+            var animationKeyFrames:AnimationKeyFrames = Toolkit.styleSheet.animations.get(style.animationName);
+            applyAnimationKeyFrame(animationKeyFrames, style.animationDuration, style.animationTimingFunction);
         }
 
         /*
@@ -2296,7 +2297,11 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         */
     }
 
-    private function applyAnimationKeyFrame(animationKeyFrames:AnimationKeyFrames, easingFunction:EasingFunction=null, duration:Float=0):Void {
+    //***********************************************************************************************************
+    // Animation
+    //***********************************************************************************************************
+
+    private function applyAnimationKeyFrame(animationKeyFrames:AnimationKeyFrames, duration:Float=0, easingFunction:EasingFunction=null):Void {
         if (_animatable == false || duration == 0) {
             return;
         }
@@ -2313,6 +2318,12 @@ class Component extends ComponentBase implements IComponentBase implements IVali
                     return;
                 }
             }
+        }
+
+        //TODO - 1 animation supported. We need to think how the current animations should be overriden
+        while (_animations.length > 0) {
+            var animation:Animation = _animations.shift();
+            animation.stop();
         }
 
         var animation:Animation = new Animation(this, duration, easingFunction);
