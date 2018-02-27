@@ -7,6 +7,10 @@ import haxe.ui.core.UIEvent;
 import haxe.ui.core.ValueBehaviour;
 
 class Range extends InteractiveComponent implements IDirectionalComponent {
+    public function new() {
+        super();
+        _behaviourUpdateOrder = ["min", "max", "start", "end"];
+    }
     
     //***********************************************************************************************************
     // Public API
@@ -40,27 +44,36 @@ class Range extends InteractiveComponent implements IDirectionalComponent {
         var endValue = behaviourGet("end");
         var minValue = behaviourGet("min");
         var maxValue = behaviourGet("max");
-
-        if (startValue < minValue) {
+        
+        if (startValue != null && minValue != null && startValue < minValue) {
             startValue = minValue;
         }
         
-        if (endValue < minValue) {
+        if (endValue != null && minValue != null && endValue < minValue) {
             endValue = minValue;
         }
         
-        if (startValue > maxValue) {
+        if (startValue != null && maxValue != null && startValue > maxValue) {
             startValue = maxValue;
         }
         
-        if (endValue > maxValue) {
+        if (endValue != null && maxValue != null && endValue > maxValue) {
             endValue = maxValue;
         }
+
+        var changed = false;
+        if (startValue != null) {
+            start = startValue;
+            changed = true;
+        }
+        if (endValue != null) {
+            end = endValue;
+            changed = true;
+        }
         
-        start = startValue;
-        end = endValue;
-        
-        var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
-        dispatch(changeEvent);
+        if (changed == true) {
+            var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
+            dispatch(changeEvent);
+        }
     }
 }
