@@ -179,7 +179,6 @@ class ModuleMacros {
                             if (MacroHelpers.hasInterface(t, "haxe.ui.core.IDirectionalComponent")) {
                                 var pkg = MacroHelpers.getPackage(resolvedClass);
                                 if (StringTools.startsWith(resolvedClassName, "Horizontal")) { // alias HorizontalComponent with hcomponent
-                                    var x = "h" + StringTools.replace(resolvedClassName, "Horizontal", "").toLowerCase();
                                     ComponentClassMap.register("h" + StringTools.replace(resolvedClassName, "Horizontal", "").toLowerCase(), resolvedClass);
                                 }
                             }

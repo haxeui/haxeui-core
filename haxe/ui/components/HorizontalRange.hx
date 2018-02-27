@@ -11,7 +11,6 @@ class HorizontalRange extends Range {
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************
-    
     private override function createDefaults() {
         super.createDefaults();
         _defaultLayout = new Layout();

@@ -1,12 +1,10 @@
 package haxe.ui.components;
 
-import haxe.macro.Expr.Var;
-import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.IDirectionalComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.UIEvent;
-import haxe.ui.util.Variant;
+import haxe.ui.core.ValueBehaviour;
 
 class Range extends InteractiveComponent implements IDirectionalComponent {
     public function new() {
@@ -31,7 +29,6 @@ class Range extends InteractiveComponent implements IDirectionalComponent {
             var v = new Component();
             v.id = '${cssName}-value';
             v.addClass('${cssName}-value', false);
-            trace('${cssName}-value');
             addComponent(v);
         }
     }
@@ -109,43 +106,5 @@ class Range extends InteractiveComponent implements IDirectionalComponent {
         
         var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
         dispatch(changeEvent);
-    }
-}
-
-//***********************************************************************************************************
-// Default behaviours
-//***********************************************************************************************************
-
-@:dox(hide) @:noCompletion
-private class ValueBehaviour extends Behaviour {
-    private var _value:Variant;
-    
-    public function new(component:Component, defaultValue:Variant = null) {
-        super(component);
-        if (defaultValue != null) {
-            _value = defaultValue;
-        }
-    }
-    
-    public override function get():Variant {
-        return _value;
-    }
-    public override function set(value:Variant) {
-        if (!value.isNull && !_value.isNull) {
-            if (value.isFloat && _value.toFloat() == value.toFloat()) {
-                return;
-            }
-            if (value.isInt && _value.toInt() == value.toInt()) {
-                return;
-            }
-            if (value.isString && _value.toString() == value.toString()) {
-                return;
-            }
-            if (value.isBool && _value.toBool() == value.toBool()) {
-                return;
-            }
-        }
-        _value = value;
-        _component.invalidateData();
     }
 }
