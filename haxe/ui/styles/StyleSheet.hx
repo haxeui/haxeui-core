@@ -79,16 +79,12 @@ class StyleSheet {
     }
     
     public function buildStyleFor(c:Component):Style {
-        var relevantRules:Array<RuleElement> = [];
+        var style:Style = new Style();
         for (r in rules) {
             if (!r.match(c)) {
                 continue;
             }
-            relevantRules.push(r);
-        }
-        
-        var style:Style = new Style();
-        for (r in relevantRules) {
+
             style.mergeDirectives(r.directives);
         }
         
