@@ -406,6 +406,36 @@ abstract Variant(VariantType) from VariantType {
         throw "Variant operation error";
     }
 
+    @:op(A == B)
+    private function eq(rhs:Variant):Bool {
+        if (isNull && rhs.isNull) {
+            return true;
+        }
+
+        if (isNull && !rhs.isNull) {
+            return false;
+        }
+        
+        if (!isNull && rhs.isNull) {
+            return false;
+        }
+        
+        if (isNumber && rhs.isNumber) {
+            return toNumber() == rhs.toNumber();
+        } else if (isBool && rhs.isBool) {
+            return toBool() == rhs.toBool();
+        } else if (isString && rhs.isString) {
+            return toString() == rhs.toString();
+        }
+        
+        return false;
+    }
+
+    @:op(A != B)
+    private function neq(rhs:Variant):Bool {
+        return !eq(rhs);
+    }
+    
     // ************************************************************************************************************
     // HELPERS
     // ************************************************************************************************************
