@@ -67,6 +67,8 @@
         <property name="haxe.ui.components.hscroll.animation.pos" value="haxe.ui.components.animation.pos" />
 
         <property name="haxe.ui.components.vscroll.animation.pos" value="haxe.ui.components.animation.pos" />
+        
+        <property name="haxe.ui.components.horizontalprogress2.animation.indeterminate" value="haxe.ui.components.animation.indeterminate2" />
     </properties>
 
     <animations>
@@ -100,6 +102,18 @@
             </keyframe>
             <keyframe time="1000">
                 <target rangeStart="0" rangeEnd="25" />
+            </keyframe>
+        </animation>
+
+        <animation id="haxe.ui.components.animation.indeterminate2" ease="Back.easeIn">
+            <keyframe time="0">
+                <target start="0" end="25" />
+            </keyframe>
+            <keyframe time="500">
+                <target start="75" end="100" />
+            </keyframe>
+            <keyframe time="1000">
+                <target start="0" end="25" />
             </keyframe>
         </animation>
 

@@ -267,10 +267,12 @@ class Macros {
             }
             
             var bparam = null;
-            switch (orginalMeta.params[1].expr) {
-                case EConst(CInt(c)) | EConst(CFloat(c)):
-                    bparam = '${c}';
-                case _:
+            if (orginalMeta.params.length > 1) {
+                switch (orginalMeta.params[1].expr) {
+                    case EConst(CInt(c)) | EConst(CFloat(c)):
+                        bparam = '${c}';
+                    case _:
+                }
             }
             
             behaviours.push({
@@ -285,7 +287,11 @@ class Macros {
             
             var parts = [];
             for (b in behaviours) {
-                parts.push('"${b.name}" => new ${b.btype}(this, ${b.bparam})');
+                if (b.bparam == null) {
+                    parts.push('"${b.name}" => new ${b.btype}(this)');
+                } else {
+                    parts.push('"${b.name}" => new ${b.btype}(this, ${b.bparam})');
+                }
             }
             
             var line = 'defaultBehaviours([${parts.join(",")}])';

@@ -21,7 +21,7 @@ class HorizontalRange extends Range {
 // Custom layouts
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
-private class Layout extends DefaultLayout {
+class Layout extends DefaultLayout {
     public function new() {
         super();
     }

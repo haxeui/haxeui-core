@@ -3,6 +3,7 @@ package haxe.ui.components;
 import haxe.ui.core.Component;
 import haxe.ui.core.IDirectionalComponent;
 import haxe.ui.core.InteractiveComponent;
+import haxe.ui.core.InvalidatingBehaviour;
 import haxe.ui.core.UIEvent;
 import haxe.ui.core.ValueBehaviour;
 
@@ -15,19 +16,22 @@ class Range extends InteractiveComponent implements IDirectionalComponent {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:behaviour(ValueBehaviour, 0.)   public var start:Float;
-    @:behaviour(ValueBehaviour, 100.) public var end:Float;
-    @:behaviour(ValueBehaviour, 0.)   public var min:Float;
-    @:behaviour(ValueBehaviour, 100.) public var max:Float;
+    @:behaviour(InvalidatingBehaviour, 0.)   public var start:Float;
+    @:behaviour(InvalidatingBehaviour, 100.) public var end:Float;
+    @:behaviour(InvalidatingBehaviour, 0.)   public var min:Float;
+    @:behaviour(InvalidatingBehaviour, 100.) public var max:Float;
     
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************
     private override function createChildren() {
+        super.createChildren();
         if (findComponent("value") == null) {
+            trace("creating");
             var v = new Component();
             v.id = '${cssName}-value';
             v.addClass('${cssName}-value', false);
+            trace('${cssName}-value');
             addComponent(v);
         }
     }
