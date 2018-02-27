@@ -3,7 +3,6 @@ package haxe.ui.styles.animation.actuate;
 #if actuate
 
 import haxe.ui.styles.EasingFunction;
-import haxe.ui.core.Component;
 import haxe.ui.styles.elements.Directive;
 import motion.Actuate;
 import motion.easing.Cubic;
@@ -14,25 +13,25 @@ class KeyFrame {
     public var directives:Array<Directive> = [];
     public var time:Float;
     public var easingFunction:EasingFunction;
-    
+
+    private var _target:Dynamic;
+
     public function new() {
     }
-    
-    private var _c:Component;
-    
-    public function run(c:Component, cb:Void->Void) {
-        _c = c;
+
+    public function run(target:Dynamic, cb:Void->Void) {
+        _target = target;
         var props:Dynamic = { };
 
         for (d in directives) {
             Reflect.setField(props, d.directive, d.value);
         }
 
-        Actuate.tween(c, time, props, true, ValueActuator).ease(getEasing()).onComplete(cb);
+        Actuate.tween(target, time, props, true, ValueActuator).ease(getEasing()).onComplete(cb);
     }
     
     public function stop() {
-        Actuate.stop(_c);
+        Actuate.stop(_target);
     }
 
     private function getEasing():IEasing {

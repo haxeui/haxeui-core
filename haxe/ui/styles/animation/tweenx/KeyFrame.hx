@@ -4,7 +4,6 @@ import tweenx909.TweenX;
 #if tweenx
 
 import haxe.ui.styles.EasingFunction;
-import haxe.ui.core.Component;
 import haxe.ui.styles.elements.Directive;
 
 class KeyFrame {
@@ -15,11 +14,11 @@ class KeyFrame {
     public function new() {
     }
     
-    public function run(c:Component, cb:Void->Void) {
+    public function run(target:Dynamic, cb:Void->Void) {
         var props = {
             left: ValueTools.int(directives[0].value)
         };
-        var t = TweenX.to(c, props);
+        var t = TweenX.to(target, props);
         t.time(time);
         t.onFinish(cb);
     }

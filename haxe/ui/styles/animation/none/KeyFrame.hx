@@ -1,7 +1,6 @@
 package haxe.ui.styles.animation.none;
 
 import haxe.ui.styles.EasingFunction;
-import haxe.ui.core.Component;
 import haxe.ui.styles.elements.Directive;
 
 class KeyFrame {
@@ -16,7 +15,7 @@ class KeyFrame {
         
     }
     
-    public function run(c:Component, cb:Void->Void) {
+    public function run(target:Dynamic, cb:Void->Void) {
         cb();
     }
 }
