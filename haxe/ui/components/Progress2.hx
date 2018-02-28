@@ -31,6 +31,10 @@ class Progress2 extends Range implements IDirectionalComponent {
     //***********************************************************************************************************
     // Overrides
     //***********************************************************************************************************
+    private override function get_cssName():String {
+        return "progress";
+    }
+    
     private override function set_min(value:Float):Float {
         super.set_min(value);
         start = value;

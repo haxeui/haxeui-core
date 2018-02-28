@@ -5,7 +5,6 @@ import haxe.ui.core.IDirectionalComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.InvalidatingBehaviour;
 import haxe.ui.core.UIEvent;
-import haxe.ui.core.ValueBehaviour;
 
 class Range extends InteractiveComponent implements IDirectionalComponent {
     public function new() {
@@ -34,6 +33,9 @@ class Range extends InteractiveComponent implements IDirectionalComponent {
         }
     }
     
+    //***********************************************************************************************************
+    // Overrides
+    //***********************************************************************************************************
     private override function get_cssName():String {
         return "range";
     }

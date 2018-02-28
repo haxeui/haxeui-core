@@ -31,7 +31,7 @@ class HorizontalRangeLayout extends DefaultLayout {
         super.resizeChildren();
         
         var range:Range = cast(component, Range);
-        var value:Component = findComponent('range-value');
+        var value:Component = findComponent('${range.cssName}-value');
         
         var ucx:Float = usableWidth;
         var cx:Float = ((range.end - range.start) - range.min) / (range.max - range.min) * ucx;
@@ -55,7 +55,7 @@ class HorizontalRangeLayout extends DefaultLayout {
         super.repositionChildren();
         
         var range:Range = cast(component, Range);
-        var value:Component = findComponent('range-value');
+        var value:Component = findComponent('${range.cssName}-value');
         
         var ucx:Float = usableWidth;
         var x = (range.start - range.min) / (range.max - range.min) * ucx;

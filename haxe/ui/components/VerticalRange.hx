@@ -30,7 +30,7 @@ class VerticalRangeLayout extends DefaultLayout {
         super.resizeChildren();
         
         var range:Range = cast(component, Range);
-        var value:Component = findComponent('range-value');
+        var value:Component = findComponent('${range.cssName}-value');
         if (value != null) {
             var ucy:Float = usableHeight;
             var cy:Float = ((range.end - range.start) - range.min) / (range.max - range.min) * ucy;
@@ -55,7 +55,7 @@ class VerticalRangeLayout extends DefaultLayout {
         super.repositionChildren();
         
         var range:Range = cast(component, Range);
-        var value:Component = findComponent('range-value');
+        var value:Component = findComponent('${range.cssName}-value');
         
         var ucy:Float = usableHeight;
         var y = (ucy - value.height) - (range.start - range.min) / (range.max - range.min) * ucy;
