@@ -31,7 +31,7 @@ class KeyFrame {
     }
     
     public function stop() {
-        Actuate.stop(_target);
+        Actuate.stop(_target, null, false, false);
     }
 
     private function getEasing():IEasing {
