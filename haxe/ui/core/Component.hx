@@ -2307,10 +2307,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             return;
         }
 
-        if (easingFunction == null) {
-            easingFunction = EasingFunction.EASE;
-        }
-
         var newAnimation:Animation = new Animation(this, duration, easingFunction);
         newAnimation.configureWithKeyFrames(animationKeyFrames);
         animation = newAnimation;

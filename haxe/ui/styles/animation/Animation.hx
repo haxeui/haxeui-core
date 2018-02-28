@@ -6,7 +6,7 @@ import haxe.ui.styles.elements.AnimationKeyFrames;
 
 class Animation {
     private var _target:Dynamic;
-    private var _totalTime:Float;
+    private var _duration:Float;
     private var _easingFunction:EasingFunction;
 
     private var _currentKeyFrame:KeyFrame = null;
@@ -23,10 +23,10 @@ class Animation {
 
     public var running(default, null):Bool;
     
-    public function new(target:Dynamic, totalTime:Float = 0, easingFunction:EasingFunction = null) {
+    public function new(target:Dynamic, duration:Float = 0, easingFunction:EasingFunction = null) {
         _target = target;
-        _totalTime = totalTime;
-        _easingFunction = easingFunction;
+        _duration = duration;
+        _easingFunction = easingFunction != null ? easingFunction : EasingFunction.EASE;
     }
 
     public function configureWithKeyFrames(animationKeyFrames:AnimationKeyFrames) {
@@ -43,7 +43,7 @@ class Animation {
                 case Value.VDimension(v):
                     switch (v) {
                         case Dimension.PERCENT(p):
-                            var t = _totalTime * p / 100;
+                            var t = _duration * p / 100;
                             kf.time = t;
                             var lastTime:Float = 0;
                             for (a in _keyframes) {

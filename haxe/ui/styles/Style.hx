@@ -83,9 +83,9 @@ class Style {
     
     public var resource:String;
     
-    public var animationName:String;
-    public var animationDuration:Float;
-    public var animationTimingFunction:EasingFunction;
+    public var animationName:Null<String>;
+    public var animationDuration:Null<Float>;
+    public var animationTimingFunction:Null<EasingFunction>;
 
     public function new() {
     }
