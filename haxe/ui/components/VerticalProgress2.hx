@@ -1,6 +1,6 @@
 package haxe.ui.components;
 
-class HorizontalProgress2 extends Progress2 {
+class VerticalProgress2 extends Progress2 {
     public function new() {
         super();
     }
@@ -10,6 +10,6 @@ class HorizontalProgress2 extends Progress2 {
     //***********************************************************************************************************
     private override function createDefaults() {
         super.createDefaults();
-        _defaultLayout = new HorizontalRange.HorizontalRangeLayout();
+        _defaultLayout = new VerticalRange.VerticalRangeLayout();
     }
 }

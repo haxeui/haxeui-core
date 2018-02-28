@@ -180,6 +180,8 @@ class ModuleMacros {
                                 var pkg = MacroHelpers.getPackage(resolvedClass);
                                 if (StringTools.startsWith(resolvedClassName, "Horizontal")) { // alias HorizontalComponent with hcomponent
                                     ComponentClassMap.register("h" + StringTools.replace(resolvedClassName, "Horizontal", "").toLowerCase(), resolvedClass);
+                                } else if (StringTools.startsWith(resolvedClassName, "Vertical")) { // alias VerticalComponent with vcomponent
+                                    ComponentClassMap.register("v" + StringTools.replace(resolvedClassName, "Vertical", "").toLowerCase(), resolvedClass);
                                 }
                             }
                             

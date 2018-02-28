@@ -27,11 +27,9 @@ class Range extends InteractiveComponent implements IDirectionalComponent {
     private override function createChildren() {
         super.createChildren();
         if (findComponent("value") == null) {
-            trace("creating");
             var v = new Component();
             v.id = '${cssName}-value';
             v.addClass('${cssName}-value', false);
-            trace('${cssName}-value');
             addComponent(v);
         }
     }

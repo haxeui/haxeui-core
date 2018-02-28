@@ -69,6 +69,7 @@
         <property name="haxe.ui.components.vscroll.animation.pos" value="haxe.ui.components.animation.pos" />
         
         <property name="haxe.ui.components.horizontalprogress2.animation.indeterminate" value="haxe.ui.components.animation.indeterminate2" />
+        <property name="haxe.ui.components.verticalprogress2.animation.indeterminate" value="haxe.ui.components.animation.indeterminate2" />
     </properties>
 
     <animations>

@@ -3,7 +3,7 @@ package haxe.ui.components;
 import haxe.ui.core.Component;
 import haxe.ui.layouts.DefaultLayout;
 
-class HorizontalRange extends Range {
+class VerticalRange extends Range {
     public function new() {
         super();
     }
@@ -13,7 +13,7 @@ class HorizontalRange extends Range {
     //***********************************************************************************************************
     private override function createDefaults() {
         super.createDefaults();
-        _defaultLayout = new HorizontalRangeLayout();
+        _defaultLayout = new VerticalRangeLayout();
     }
 }
 
@@ -21,8 +21,7 @@ class HorizontalRange extends Range {
 // Custom layouts
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
-@:allow(haxe.ui.components.HorizontalProgress2)
-class HorizontalRangeLayout extends DefaultLayout {
+class VerticalRangeLayout extends DefaultLayout {
     public function new() {
         super();
     }
@@ -32,22 +31,23 @@ class HorizontalRangeLayout extends DefaultLayout {
         
         var range:Range = cast(component, Range);
         var value:Component = findComponent('range-value');
-        
-        var ucx:Float = usableWidth;
-        var cx:Float = ((range.end - range.start) - range.min) / (range.max - range.min) * ucx;
+        if (value != null) {
+            var ucy:Float = usableHeight;
+            var cy:Float = ((range.end - range.start) - range.min) / (range.max - range.min) * ucy;
 
-        if (cx < 0) {
-            cx = 0;
-        } else if (cx > ucx) {
-            cx = ucx;
-        }
+            if (cy < 0) {
+                cy = 0;
+            } else if (cy > ucy) {
+                cy = ucy;
+            }
 
-        if (cx == 0) {
-            value.width = 0;
-            value.hidden = true;
-        } else {
-            value.width = cx;
-            value.hidden = false;
+            if (cy == 0) {
+                value.height = 0;
+                value.hidden = true;
+            } else {
+                value.height = cy;
+                value.hidden = false;
+            }
         }
     }
 
@@ -57,10 +57,9 @@ class HorizontalRangeLayout extends DefaultLayout {
         var range:Range = cast(component, Range);
         var value:Component = findComponent('range-value');
         
-        var ucx:Float = usableWidth;
-        var x = (range.start - range.min) / (range.max - range.min) * ucx;
+        var ucy:Float = usableHeight;
+        var y = (ucy - value.height) - (range.start - range.min) / (range.max - range.min) * ucy;
 
-        value.left = paddingLeft + x;
+        value.top = paddingTop + y;
     }    
 }
-
