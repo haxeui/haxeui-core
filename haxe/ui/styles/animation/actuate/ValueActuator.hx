@@ -25,10 +25,6 @@ class ValueActuator<T> extends SimpleActuator<T, Dynamic> {
             var value:Dynamic = Reflect.getProperty(properties, p);
 
             switch (value) {
-                case Value.VNumber(v):
-                    var details:PropertyDetails<Dynamic> = new PropertyDetails (cast target, componentProperty, start, v - start, false);
-                    propertyDetails.push (details);
-
                 case Value.VColor(v):
                     var startColor:Color = cast(start, Color);
                     var endColor:Color = v;
@@ -45,6 +41,11 @@ class ValueActuator<T> extends SimpleActuator<T, Dynamic> {
                     }
                     colorPropertyDetails.push (details);
                 case _:
+                    var val:Null<Float> = ValueTools.calcDimension(value);
+                    if (val != null) {
+                        var details:PropertyDetails<Dynamic> = new PropertyDetails (cast target, componentProperty, start, val - start, false);
+                        propertyDetails.push (details);
+                    }
             }
         }
 
@@ -54,6 +55,10 @@ class ValueActuator<T> extends SimpleActuator<T, Dynamic> {
 
     override private function update(currentTime : Float) : Void {
         if (!paused) {
+            if (!initialized) {
+                initialize ();
+            }
+
             if (colorPropertyDetails != null) {
                 var tweenPosition:Float = (currentTime - timeOffset) / duration;
                 if (tweenPosition > 1) {
