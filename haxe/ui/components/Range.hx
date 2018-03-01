@@ -24,6 +24,7 @@ class Range extends InteractiveComponent implements IDirectionalComponent {
     @:behaviour(InvalidatingBehaviour, 0.)   public var min:Float;
     @:behaviour(InvalidatingBehaviour, 100.) public var max:Float;
     @:behaviour(InvalidatingBehaviour, 0)    public var precision:Int;
+    @:behaviour(InvalidatingBehaviour, -1)   public var step:Float;
     
     private var _events:Events = null;
     public var interactive(get, set):Bool;
@@ -164,6 +165,9 @@ private class Events {
     
     private function applyPos(pos:Float) {
         pos = MathUtil.round(pos, _range.precision);
+        if (_range.step > 0) {
+            pos = Math.ceil(pos / _range.step) * _range.step;
+        }
         
         if (Std.is(_range, Progress2)) {
             cast(_range, Progress2).pos = pos;
