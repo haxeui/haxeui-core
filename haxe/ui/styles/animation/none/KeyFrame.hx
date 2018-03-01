@@ -5,7 +5,8 @@ import haxe.ui.styles.elements.Directive;
 
 class KeyFrame {
     public var directives:Array<Directive> = [];
-    public var time:Float;
+    public var time:Float = 0;
+    public var delay:Float = 0;
     public var easingFunction:EasingFunction;
 
     public function new() {

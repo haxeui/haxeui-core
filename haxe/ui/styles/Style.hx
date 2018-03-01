@@ -86,6 +86,7 @@ class Style {
     public var animationName:Null<String>;
     public var animationDuration:Null<Float>;
     public var animationTimingFunction:Null<EasingFunction>;
+    public var animationDelay:Null<Float>;
     public var animationIterationCount:Null<Int>;
 
     public function new() {
@@ -251,6 +252,8 @@ class Style {
                     animationDuration = ValueTools.time(v.value);
                 case "animation-timing-function":
                     animationTimingFunction = ValueTools.calcEasing(v.value);
+                case "animation-delay":
+                    animationDelay = ValueTools.time(v.value);
                 case "animation-iteration-count":
                     animationIterationCount = switch (v.value) {
                         case Value.VConstant(val):
@@ -341,6 +344,7 @@ class Style {
         if (s.animationName != null) animationName = s.animationName;
         if (s.animationDuration != null) animationDuration = s.animationDuration;
         if (s.animationTimingFunction != null) animationTimingFunction = s.animationTimingFunction;
+        if (s.animationDelay != null) animationDelay = s.animationDelay;
         if (s.animationIterationCount != null) animationIterationCount = s.animationIterationCount;
 
         if (s.icon != null) icon = s.icon;
@@ -446,6 +450,7 @@ class Style {
         if (s.resource != resource) return false;
         if (s.animationName != animationName) return false;
         if (s.animationDuration != animationDuration) return false;
+        if (s.animationDelay != animationDelay) return false;
         if (s.animationTimingFunction != animationTimingFunction) return false;
         if (s.animationIterationCount != animationIterationCount) return false;
 

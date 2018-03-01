@@ -5,7 +5,7 @@ import haxe.ui.constants.UnitTime;
 import haxe.ui.core.Screen;
 
 class ValueTools {
-    private static var timeEReg:EReg = ~/^(\d+(?:\.\d+)?)(s|ms)$/gi;
+    private static var timeEReg:EReg = ~/^(-?\d+(?:\.\d+)?)(s|ms)$/gi;
 
     public static function parse(s:String):Value {
         var v = null;

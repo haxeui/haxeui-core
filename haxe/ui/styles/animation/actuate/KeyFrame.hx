@@ -11,7 +11,8 @@ import motion.easing.Linear;
 
 class KeyFrame {
     public var directives:Array<Directive> = [];
-    public var time:Float;
+    public var time:Float = 0;
+    public var delay:Float = 0;
     public var easingFunction:EasingFunction;
 
     private var _target:Dynamic;
@@ -27,7 +28,7 @@ class KeyFrame {
             Reflect.setField(props, d.directive, d.value);
         }
 
-        Actuate.tween(target, time, props, true, ValueActuator).ease(getEasing()).onComplete(cb);
+        Actuate.tween(target, time, props, true, ValueActuator).ease(getEasing()).delay(delay).onComplete(cb);
     }
     
     public function stop() {

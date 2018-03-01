@@ -8,14 +8,16 @@ class Animation {
     private var _target:Dynamic;
     private var _duration:Float;
     private var _easingFunction:EasingFunction;
+    private var _delay:Float;
     private var _iterationCount:Int;
 
-    private var _currentKeyFrameIndex:Int;
-    private var _currentIterationCount:Int;
+    private var _currentKeyFrameIndex:Int = -1;
+    private var _currentIterationCount:Int = -1;
     private var _keyframes:Array<KeyFrame>;
 
     private var _initialState:Map<String, Dynamic>;
-    
+    private var _initialized:Bool = false;
+
     public var name:String;
 
     public var keyframeCount(get, never):Int;
@@ -30,10 +32,11 @@ class Animation {
 
     public var running(default, null):Bool;
     
-    public function new(target:Dynamic, duration:Float = 0, easingFunction:EasingFunction = null, iterationCount:Int = 1) {
+    public function new(target:Dynamic, duration:Float = 0, easingFunction:EasingFunction = null, delay:Float = 0, iterationCount:Int = 1) {
         _target = target;
         _duration = duration;
         _easingFunction = easingFunction != null ? easingFunction : EasingFunction.EASE;
+        _delay = delay;
         _iterationCount = iterationCount;
         _currentKeyFrameIndex = -1;
     }
@@ -92,6 +95,10 @@ class Animation {
             return;
         }
 
+        if (!_initialized) {
+            initialize();
+        }
+
         _currentKeyFrameIndex = -1;
         _currentIterationCount = 0;
         running = true;
@@ -119,6 +126,29 @@ class Animation {
         } else {
             currentKeyFrame.run(_target, runNextKeyframe.bind(onFinish));
         }
+    }
+
+    private function initialize() {
+        if (_delay > 0) {
+            var keyframe:KeyFrame = new KeyFrame();
+            keyframe.time = _delay;
+            keyframe.easingFunction = _easingFunction;
+            _keyframes.unshift(keyframe);
+        } else if (_delay < 0) {
+            var currentTime:Float = 0;
+            for (i in 0..._keyframes.length) {
+                var keyframe:KeyFrame = _keyframes[i];
+                currentTime -= keyframe.time;
+                if(currentTime > _delay) {
+                    _keyframes.splice(i, 1);
+                } else {
+                    keyframe.delay = currentTime + keyframe.time + _delay;
+                    break;
+                }
+            }
+        }
+
+        _initialized = true;
     }
 
     private function saveState() {
