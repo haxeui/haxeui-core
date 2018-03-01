@@ -14,6 +14,16 @@ class VerticalRange extends Range {
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************
+    private override function createChildren() { // TODO: this should be min-width / min-height in theme css when the new css engine is done
+        super.createChildren();
+        if (width <= 0) {
+            width = 20;
+        }
+        if (height <= 0) {
+            height = 150;
+        }
+    }
+    
     private override function createDefaults() {
         super.createDefaults();
         _defaultLayout = new VerticalRangeLayout();
@@ -80,14 +90,13 @@ class VerticalRangeLayout extends DefaultLayout {
     }
 
     public override function repositionChildren() {
-        super.repositionChildren();
-        
         var range:Range = cast(component, Range);
         var value:Component = findComponent('${range.cssName}-value');
         
         var ucy:Float = usableHeight;
         var y = (ucy - value.height) - (range.start - range.min) / (range.max - range.min) * ucy;
 
+        value.left = paddingLeft;
         value.top = paddingTop + y;
     }    
 }

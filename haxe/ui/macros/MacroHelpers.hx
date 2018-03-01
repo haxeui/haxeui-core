@@ -14,7 +14,24 @@ class MacroHelpers {
                                                       "/lib/yaml/",
                                                       "/lib/hscript/",
                                                       "/haxe/std/",
-                                                      "/.git"];
+                                                      "/.git",
+                                                      "/_module",
+                                                      "/haxeui-core/haxe/ui/validation",
+                                                      "/haxeui-core/haxe/ui/util",
+                                                      "/haxeui-core/haxe/ui/themes",
+                                                      "/haxeui-core/haxe/ui/styles",
+                                                      "/haxeui-core/haxe/ui/scripting",
+                                                      "/haxeui-core/haxe/ui/parsers",
+                                                      "/haxeui-core/haxe/ui/macros",
+                                                      "/haxeui-core/haxe/ui/layouts",
+                                                      "/haxeui-core/haxe/ui/focus",
+                                                      "/haxeui-core/haxe/ui/data",
+                                                      "/haxeui-core/haxe/ui/core",
+                                                      "/haxeui-core/haxe/ui/containers",
+                                                      "/haxeui-core/haxe/ui/components",
+                                                      "/haxeui-core/haxe/ui/assets",
+                                                      "/haxeui-html5/haxe/ui/backend/html5",
+                                                      ];
 
     #if macro
     public static function exprToMap(params:Expr):Map<String, Dynamic> {
@@ -403,6 +420,7 @@ class MacroHelpers {
     public static function scanClassPath(processFileFn:String->Bool, searchCriteria:Array<String> = null, skipHidden:Bool = true) {
         var paths:Array<String> = Context.getClassPath();
         var processedFiles:Array<String> = new Array<String>();
+
         while (paths.length != 0) {
             var path:String = paths[0];
             paths.remove(path);
@@ -416,7 +434,6 @@ class MacroHelpers {
             if (StringTools.startsWith(lastPath, ".") && skipHidden == true) {
                 continue;
             }
-
             if (sys.FileSystem.exists(path)) {
                 if (sys.FileSystem.isDirectory(path)) {
                     var subDirs:Array<String> = sys.FileSystem.readDirectory(path);

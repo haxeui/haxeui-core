@@ -57,7 +57,7 @@ class Range extends InteractiveComponent implements IDirectionalComponent {
     //***********************************************************************************************************
     private override function createChildren() {
         super.createChildren();
-        if (findComponent("value") == null) {
+        if (findComponent("${cssName}-value") == null) {
             var v = new Component();
             v.id = '${cssName}-value';
             v.addClass('${cssName}-value', false);
@@ -166,7 +166,7 @@ private class Events {
     private function applyPos(pos:Float) {
         pos = MathUtil.round(pos, _range.precision);
         if (_range.step > 0) {
-            pos = Math.ceil(pos / _range.step) * _range.step;
+            pos = Math.fceil(pos / _range.step) * _range.step;
         }
         
         if (Std.is(_range, Progress2)) {

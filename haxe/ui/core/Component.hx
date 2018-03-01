@@ -1054,6 +1054,17 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     }
 
     /**
+     Returns if this component has a certain event and listener
+    **/
+    @:dox(group = "Event related properties and methods")
+    public function hasEvent(type:String, listener:Dynamic->Void):Bool {
+        if (__events == null) {
+            return false;
+        }
+        return __events.contains(type, listener);
+    }
+
+    /**
      Unregister a listener for a certain `UIEvent`
     **/
     @:dox(group = "Event related properties and methods")

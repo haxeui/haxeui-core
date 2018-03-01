@@ -14,6 +14,16 @@ class HorizontalRange extends Range {
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************
+    private override function createChildren() { // TODO: this should be min-width / min-height in theme css when the new css engine is done
+        super.createChildren();
+        if (width <= 0) {
+            width = 150;
+        }
+        if (height <= 0) {
+            height = 20;
+        }
+    }
+    
     private override function createDefaults() {
         super.createDefaults();
         _defaultLayout = new HorizontalRangeLayout();
@@ -79,8 +89,6 @@ class HorizontalRangeLayout extends DefaultLayout {
     }
 
     public override function repositionChildren() {
-        super.repositionChildren();
-        
         var range:Range = cast(component, Range);
         var value:Component = findComponent('${range.cssName}-value');
         
@@ -88,6 +96,7 @@ class HorizontalRangeLayout extends DefaultLayout {
         var x = (range.start - range.min) / (range.max - range.min) * ucx;
 
         value.left = paddingLeft + x;
+        value.top = paddingTop;
     }    
 }
 
