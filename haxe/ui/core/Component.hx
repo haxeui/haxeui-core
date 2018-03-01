@@ -2270,7 +2270,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
 
         if (style.animationName != null) {
             var animationKeyFrames:AnimationKeyFrames = Toolkit.styleSheet.animations.get(style.animationName);
-            applyAnimationKeyFrame(animationKeyFrames, style.animationDuration, style.animationTimingFunction);
+            applyAnimationKeyFrame(animationKeyFrames, style.animationDuration, style.animationTimingFunction, style.animationIterationCount);
         } else if (animation != null) {
             animation = null;
         }
@@ -2302,12 +2302,12 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     // Animation
     //***********************************************************************************************************
 
-    private function applyAnimationKeyFrame(animationKeyFrames:AnimationKeyFrames, duration:Float=0, easingFunction:EasingFunction=null):Void {
+    private function applyAnimationKeyFrame(animationKeyFrames:AnimationKeyFrames, duration:Float=0, easingFunction:EasingFunction=null, iterationCount:Int=1):Void {
         if (_animatable == false || duration == 0 || (_animation != null && _animation.name == animationKeyFrames.id)) {
             return;
         }
 
-        var newAnimation:Animation = new Animation(this, duration, easingFunction);
+        var newAnimation:Animation = new Animation(this, duration, easingFunction, iterationCount);
         newAnimation.configureWithKeyFrames(animationKeyFrames);
         animation = newAnimation;
         newAnimation.run();

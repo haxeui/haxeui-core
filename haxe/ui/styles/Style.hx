@@ -86,6 +86,7 @@ class Style {
     public var animationName:Null<String>;
     public var animationDuration:Null<Float>;
     public var animationTimingFunction:Null<EasingFunction>;
+    public var animationIterationCount:Null<Int>;
 
     public function new() {
     }
@@ -250,6 +251,13 @@ class Style {
                     animationDuration = ValueTools.time(v.value);
                 case "animation-timing-function":
                     animationTimingFunction = ValueTools.calcEasing(v.value);
+                case "animation-iteration-count":
+                    animationIterationCount = switch (v.value) {
+                        case Value.VConstant(val):
+                            (val == "infinite") ? -1 : 0;
+                        case _:
+                            ValueTools.int(v.value);
+                    };
             }
         }
     }
@@ -333,6 +341,7 @@ class Style {
         if (s.animationName != null) animationName = s.animationName;
         if (s.animationDuration != null) animationDuration = s.animationDuration;
         if (s.animationTimingFunction != null) animationTimingFunction = s.animationTimingFunction;
+        if (s.animationIterationCount != null) animationIterationCount = s.animationIterationCount;
 
         if (s.icon != null) icon = s.icon;
         if (s.iconPosition != null) iconPosition = s.iconPosition;
@@ -438,6 +447,7 @@ class Style {
         if (s.animationName != animationName) return false;
         if (s.animationDuration != animationDuration) return false;
         if (s.animationTimingFunction != animationTimingFunction) return false;
+        if (s.animationIterationCount != animationIterationCount) return false;
 
         return true;
     }

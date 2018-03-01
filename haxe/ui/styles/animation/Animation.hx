@@ -8,8 +8,10 @@ class Animation {
     private var _target:Dynamic;
     private var _duration:Float;
     private var _easingFunction:EasingFunction;
+    private var _iterationCount:Int;
 
-    private var _currentKeyFrame:KeyFrame = null;
+    private var _currentKeyFrameIndex:Int;
+    private var _currentIterationCount:Int;
     private var _keyframes:Array<KeyFrame>;
 
     private var _initialState:Map<String, Dynamic>;
@@ -21,12 +23,19 @@ class Animation {
         return _keyframes == null ? 0 : _keyframes.length;
     }
 
+    public var currentKeyFrame(get, never):KeyFrame;
+    private function get_currentKeyFrame():KeyFrame {
+        return _currentKeyFrameIndex >= 0 ? _keyframes[_currentKeyFrameIndex] : null;
+    }
+
     public var running(default, null):Bool;
     
-    public function new(target:Dynamic, duration:Float = 0, easingFunction:EasingFunction = null) {
+    public function new(target:Dynamic, duration:Float = 0, easingFunction:EasingFunction = null, iterationCount:Int = 1) {
         _target = target;
         _duration = duration;
         _easingFunction = easingFunction != null ? easingFunction : EasingFunction.EASE;
+        _iterationCount = iterationCount;
+        _currentKeyFrameIndex = -1;
     }
 
     public function configureWithKeyFrames(animationKeyFrames:AnimationKeyFrames) {
@@ -67,9 +76,10 @@ class Animation {
 
         running = false;
 
-        if (_currentKeyFrame != null) {
-            _currentKeyFrame.stop();
-            _currentKeyFrame = null;
+        var currentKF:KeyFrame = currentKeyFrame;
+        if (currentKF != null) {
+            currentKF.stop();
+            _currentKeyFrameIndex = -1;
         }
 
         _keyframes = null;
@@ -82,6 +92,8 @@ class Animation {
             return;
         }
 
+        _currentKeyFrameIndex = -1;
+        _currentIterationCount = 0;
         running = true;
         saveState();
         runNextKeyframe(onFinish);
@@ -92,18 +104,21 @@ class Animation {
             return;
         }
 
-        if (keyframeCount == 0) {
-            _currentKeyFrame = null;
+        if (++_currentKeyFrameIndex >= _keyframes.length) {
+            _currentKeyFrameIndex = -1;
             restoreState();
-            running = false;
-            if (onFinish != null) {
+
+            if (_iterationCount == -1 || ++_currentIterationCount < _iterationCount) {
+                saveState();
+                runNextKeyframe(onFinish);
+            } else if (onFinish != null) {
+                running = false;
                 onFinish();
             }
             return;
+        } else {
+            currentKeyFrame.run(_target, runNextKeyframe.bind(onFinish));
         }
-
-        _currentKeyFrame = _keyframes.shift();
-        _currentKeyFrame.run(_target, runNextKeyframe.bind(onFinish));
     }
 
     private function saveState() {
