@@ -289,19 +289,21 @@ class TabViewLayout extends DefaultLayout {
 @:dox(hide)
 @:access(haxe.ui.containers.TabView)
 private class RemovePage extends Behaviour {
-    public override function run(param:Variant = null) {
+    public override function run(param:Variant = null):Variant {
         var tabView:TabView = cast(_component, TabView);
         if (tabView._views != null) {
             var view = tabView._views[param.toInt()];
             tabView.removeComponent(view);
         }
+        
+        return null;
     }
 }
 
 @:dox(hide)
 @:access(haxe.ui.containers.TabView)
 private class RemoveAllPages extends Behaviour {
-    public override function run(param:Variant = null) {
+    public override function run(param:Variant = null):Variant {
         var tabView:TabView = cast(_component, TabView);
         if (tabView._views != null) {
             for (view in tabView._views) {
@@ -318,6 +320,8 @@ private class RemoveAllPages extends Behaviour {
             tabView._tabs.removeAllButtons();
             tabView._tabs.resetSelection();
         }
+        
+        return null;
     }
 }
 

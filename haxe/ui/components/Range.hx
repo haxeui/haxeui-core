@@ -4,7 +4,11 @@ import haxe.ui.core.Component;
 import haxe.ui.core.IDirectionalComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.InvalidatingBehaviour;
+import haxe.ui.core.MouseEvent;
+import haxe.ui.core.Screen;
 import haxe.ui.core.UIEvent;
+import haxe.ui.util.Point;
+import haxe.ui.util.Variant;
 
 class Range extends InteractiveComponent implements IDirectionalComponent {
     public function new() {
@@ -20,6 +24,32 @@ class Range extends InteractiveComponent implements IDirectionalComponent {
     @:behaviour(InvalidatingBehaviour, 0.)   public var min:Float;
     @:behaviour(InvalidatingBehaviour, 100.) public var max:Float;
     
+    private var _events:Events = null;
+    public var interactive(get, set):Bool;
+    private function get_interactive():Bool {
+        return (_events != null);
+    }
+    private function set_interactive(value:Bool):Bool {
+        if (value == interactive || native == true) {
+            return value;
+        }
+        
+        if (value == true) {
+            _events = new Events(this);
+        } else {
+            _events = null;
+        }
+        
+        return value;
+    }
+    
+    //***********************************************************************************************************
+    // Private API
+    //***********************************************************************************************************
+    private function posFromCoord(coord:Point):Float {
+        return behaviourCall("posFromCoord", coord); 
+    }
+    
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************
@@ -30,6 +60,14 @@ class Range extends InteractiveComponent implements IDirectionalComponent {
             v.id = '${cssName}-value';
             v.addClass('${cssName}-value', false);
             addComponent(v);
+        }
+    }
+    
+    private override function destroyChildren() {
+        super.destroyChildren();
+        if (_events != null) {
+            _events.unregister();
+            _events = null;
         }
     }
     
@@ -78,6 +116,68 @@ class Range extends InteractiveComponent implements IDirectionalComponent {
         if (changed == true) {
             var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
             dispatch(changeEvent);
+        }
+    }
+}
+
+//***********************************************************************************************************
+// Events
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.components.Range)
+private class Events {
+    private var _range:Range;
+    
+    public function new(range:Range) {
+        _range = range;
+        register();
+    }
+    
+    public function register() {
+        _range.registerEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
+    }
+    
+    public function unregister() {
+        _range.unregisterEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
+    }
+    
+    private function onMouseDown(e:MouseEvent) {
+        var pt:Point = new Point(e.localX, e.localY);
+        var pos = _range.posFromCoord(pt);
+        applyPos(pos);        
+        
+        Screen.instance.registerEvent(MouseEvent.MOUSE_UP, onScreenMouseUp);
+        Screen.instance.registerEvent(MouseEvent.MOUSE_MOVE, onScreenMouseMove);
+    }
+    
+    private function onScreenMouseUp(e:MouseEvent) {
+        Screen.instance.unregisterEvent(MouseEvent.MOUSE_UP, onScreenMouseUp);
+        Screen.instance.unregisterEvent(MouseEvent.MOUSE_MOVE, onScreenMouseMove);
+    }
+    
+    private function onScreenMouseMove(e:MouseEvent) {
+        var pt:Point = new Point(e.screenX - _range.left, e.screenY - _range.top);
+        var pos:Float = _range.posFromCoord(pt);
+        applyPos(pos);
+    }
+    
+    private function applyPos(pos:Float) {
+        if (Std.is(_range, Progress2)) {
+            cast(_range, Progress2).pos = pos;
+            return;
+        }
+        
+        var d1 = _range.end - _range.start;
+        var d2 = pos - _range.start;
+
+        if (d2 < d1 / 2) {
+            _range.start = pos;
+        } else if (d2 >= d1 / 2) {
+            _range.end = pos;
+        } else if (pos > _range.start) {
+            _range.end = pos;
+        } else if (pos < _range.end) {
+            _range.start = pos;
         }
     }
 }

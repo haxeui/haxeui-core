@@ -1,7 +1,10 @@
 package haxe.ui.components;
 
+import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.layouts.DefaultLayout;
+import haxe.ui.util.Point;
+import haxe.ui.util.Variant;
 
 class HorizontalRange extends Range {
     public function new() {
@@ -14,6 +17,31 @@ class HorizontalRange extends Range {
     private override function createDefaults() {
         super.createDefaults();
         _defaultLayout = new HorizontalRangeLayout();
+        defaultBehaviour("posFromCoord", new HorizontalRangePosFromCoord(this));
+    }
+}
+
+//***********************************************************************************************************
+// Behaviours
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+class HorizontalRangePosFromCoord extends Behaviour {
+    public override function call(pos:Any = null):Variant {
+        var range = cast(_component, Range);
+        var p = cast(pos, Point);
+        var xpos = p.x - range.layout.paddingLeft;
+        
+        var ucx = range.layout.usableWidth;
+
+        if (xpos >= ucx) {
+            xpos = ucx;
+        }
+        
+        var m:Float = range.max - range.min;
+        var v:Float = xpos;
+        var p:Float = range.min + ((v / ucx) * m);
+
+        return p;
     }
 }
 
@@ -21,7 +49,6 @@ class HorizontalRange extends Range {
 // Custom layouts
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
-@:allow(haxe.ui.components.HorizontalProgress2)
 class HorizontalRangeLayout extends DefaultLayout {
     public function new() {
         super();

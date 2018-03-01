@@ -10,7 +10,6 @@ enum VariantType {
     Unit(s:StyleUnit);
     String(s:String);
     Bool(s:Bool);
-//    Dynamic(s:Dynamic);
     DataSource(s:DataSource<Dynamic>);
 }
 
@@ -44,6 +43,35 @@ abstract Variant(VariantType) from VariantType {
     }
 
     // ************************************************************************************************************
+    // FLOATS
+    // ************************************************************************************************************
+    @:from static function fromFloat(s:Float):Variant {
+        return Float(s);
+    }
+
+    @:to public function toFloat():Null<Float> {
+        if (isNull) {
+            return null;
+        }
+        return switch (this) {
+            case Float(s): s;
+            case Unit(s): switch (s) {
+                case Pix(v): v;
+                case REM(v): v * Toolkit.pixelsPerRem;
+                case VH(v): v / 100 * Screen.instance.height;
+                case VW(v): v / 100 * Screen.instance.width;
+                default: throw "Variant Typfe Error";
+            }
+            default: throw "Variant Type Error";
+        }
+    }
+
+    public var isFloat(get, never):Bool;
+    private inline function get_isFloat():Bool {
+        return this.match(Float(_));
+    }
+
+    // ************************************************************************************************************
     // INTS
     // ************************************************************************************************************
     @:from static function fromInt(s:Int):Variant {
@@ -71,35 +99,6 @@ abstract Variant(VariantType) from VariantType {
     public var isInt(get, never):Bool;
     private inline function get_isInt():Bool {
         return this.match(Int(_));
-    }
-
-    // ************************************************************************************************************
-    // FLOATS
-    // ************************************************************************************************************
-    @:from static function fromFloat(s:Float):Variant {
-        return Float(s);
-    }
-
-    @:to public function toFloat():Null<Float> {
-        if (isNull) {
-            return null;
-        }
-        return switch (this) {
-            case Float(s): s;
-            case Unit(s): switch (s) {
-                case Pix(v): v;
-                case REM(v): v * Toolkit.pixelsPerRem;
-                case VH(v): v / 100 * Screen.instance.height;
-                case VW(v): v / 100 * Screen.instance.width;
-                default: throw "Variant Typfe Error";
-            }
-            default: throw "Variant Type Error";
-        }
-    }
-
-    public var isFloat(get, never):Bool;
-    private inline function get_isFloat():Bool {
-        return this.match(Float(_));
     }
 
     // ************************************************************************************************************

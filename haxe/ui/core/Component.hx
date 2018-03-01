@@ -66,9 +66,10 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         var c:Class<Dynamic> = Type.getClass(this);
         while (c != null) {
             var css = Type.getClassName(c);
-            var className:String = css.split(".").pop().toLowerCase();
-            addClass(className, false);
-            if (className == "component") {
+            var className:String = css.split(".").pop();
+            addClass(className.toLowerCase(), false);
+            addClass(StringUtil.toDashes(className), false);
+            if (className.toLowerCase() == "component") {
                 break;
             }
             c = Type.getSuperClass(c);
@@ -203,11 +204,22 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
     }
 
-    private function behaviourRun(id:String, param:Variant = null) {
+    private function behaviourCall(id:String, param:Any = null):Variant {
+        var r:Variant = null;
         var b:Behaviour = getBehaviour(id);
         if (b != null) {
-            b.run(param);
+            r = b.call(param);
         }
+        return r;
+    }
+    
+    private function behaviourRun(id:String, param:Variant = null):Variant {
+        var r = null;
+        var b:Behaviour = getBehaviour(id);
+        if (b != null) {
+            r = b.run(param);
+        }
+        return r;
     }
 
     private var _behaviourUpdateOrder:Array<String> = [];

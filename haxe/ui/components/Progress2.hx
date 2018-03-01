@@ -12,6 +12,7 @@ import haxe.ui.util.Variant;
 class Progress2 extends Range implements IDirectionalComponent {
     public function new() {
         super();
+         _behaviourUpdateOrder = ["min", "max", "pos"];
     }
     
     //***********************************************************************************************************

@@ -18,6 +18,18 @@ class StringUtil {
         return r;
     }
 
+    public static function toDashes(s:String, toLower:Bool = true) {
+        var s = ~/([a-zA-Z])(?=[A-Z])/g.map(s, function(re:EReg):String {
+            return '${re.matched(1)}-' ;
+        });
+        
+        if (toLower == true) {
+            s = s.toLowerCase();
+        }
+        
+        return s;
+    }
+    
     public static function replaceVars(s:String, params:Map<String, Dynamic>):String {
         if (params != null) {
             for (k in params.keys()) {

@@ -33,8 +33,8 @@ class Behaviour {
         return null;
     }
 
-    public function run(param:Variant = null) {
-        
+    public function run(param:Variant = null):Variant {
+        return null;
     }
     
     /**
@@ -47,7 +47,7 @@ class Behaviour {
     /**
      Make a specific call to an operation
     **/
-    public function call(id:String):Variant {
+    public function call(param:Any = null):Variant {
         return null;
     }
 

@@ -214,7 +214,7 @@ class Macros {
                 name: f.name,
                 doc: null,
                 meta: meta,
-                access: [APublic],
+                access: f.access,
                 kind: kind,
                 pos: haxe.macro.Context.currentPos()
             });

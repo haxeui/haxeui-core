@@ -19,6 +19,24 @@ class MouseEvent extends UIEvent {
         super(type);
     }
 
+    public var localX(get, null):Null<Float>;
+    private function get_localX():Null<Float> {
+        if (target == null) {
+            return null;
+        }
+        
+        return screenX - target.screenLeft;
+    }
+    
+    public var localY(get, null):Null<Float>;
+    private function get_localY():Null<Float> {
+        if (target == null) {
+            return null;
+        }
+        
+        return screenY - target.screenTop;
+    }
+    
     public override function clone():MouseEvent {
         var c:MouseEvent = new MouseEvent(this.type);
         c.type = this.type;

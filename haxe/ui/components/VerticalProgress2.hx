@@ -11,5 +11,6 @@ class VerticalProgress2 extends Progress2 {
     private override function createDefaults() {
         super.createDefaults();
         _defaultLayout = new VerticalRange.VerticalRangeLayout();
+        defaultBehaviour("posFromCoord", new VerticalRange.VerticalRangePosFromCoord(this));
     }
 }

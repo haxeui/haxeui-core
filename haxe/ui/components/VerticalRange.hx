@@ -1,7 +1,10 @@
 package haxe.ui.components;
 
+import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.layouts.DefaultLayout;
+import haxe.ui.util.Point;
+import haxe.ui.util.Variant;
 
 class VerticalRange extends Range {
     public function new() {
@@ -14,6 +17,31 @@ class VerticalRange extends Range {
     private override function createDefaults() {
         super.createDefaults();
         _defaultLayout = new VerticalRangeLayout();
+        defaultBehaviour("posFromCoord", new VerticalRangePosFromCoord(this));
+    }
+}
+
+//***********************************************************************************************************
+// Behaviours
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+class VerticalRangePosFromCoord extends Behaviour {
+    public override function call(pos:Any = null):Variant {
+        var range = cast(_component, Range);
+        var p = cast(pos, Point);
+        var ypos = p.y - range.layout.paddingTop;
+        
+        var ucy = range.layout.usableHeight;
+
+        if (ypos >= ucy) {
+            ypos = ucy;
+        }
+        
+        var m:Float = range.max - range.min;
+        var v:Float = ypos;
+        var p:Float = range.min + ((v / ucy) * m);
+
+        return (range.max - p);
     }
 }
 
