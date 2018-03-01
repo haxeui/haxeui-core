@@ -7,8 +7,8 @@ import haxe.ui.core.InvalidatingBehaviour;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.Screen;
 import haxe.ui.core.UIEvent;
+import haxe.ui.util.MathUtil;
 import haxe.ui.util.Point;
-import haxe.ui.util.Variant;
 
 class Range extends InteractiveComponent implements IDirectionalComponent {
     public function new() {
@@ -23,6 +23,7 @@ class Range extends InteractiveComponent implements IDirectionalComponent {
     @:behaviour(InvalidatingBehaviour, 100.) public var end:Float;
     @:behaviour(InvalidatingBehaviour, 0.)   public var min:Float;
     @:behaviour(InvalidatingBehaviour, 100.) public var max:Float;
+    @:behaviour(InvalidatingBehaviour, 0)    public var precision:Int;
     
     private var _events:Events = null;
     public var interactive(get, set):Bool;
@@ -162,6 +163,8 @@ private class Events {
     }
     
     private function applyPos(pos:Float) {
+        pos = MathUtil.round(pos, _range.precision);
+        
         if (Std.is(_range, Progress2)) {
             cast(_range, Progress2).pos = pos;
             return;
