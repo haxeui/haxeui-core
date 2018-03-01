@@ -15,9 +15,6 @@ class HorizontalSlider2 extends Slider2 {
         if (width <= 0) {
             width = 250;
         }
-        if (height <= 0) {
-            height = 30;
-        }
     }
     
     private override function createDefaults() {
@@ -56,11 +53,11 @@ class HorizontalSliderLayout extends DefaultLayout {
         var endThumb:Button = findComponent("end-thumb");
         
         if (startThumb != null) {
-            startThumb.left =  rangeValue.left + (endThumb.height / 2) - range.layout.paddingLeft;
-            startThumb.top = (rangeValue.screenTop - _component.screenTop) - (endThumb.width / 2) + (rangeValue.screenTop - range.screenTop);
+            startThumb.left =  (range.left + rangeValue.left) - (startThumb.width / 2);
+            startThumb.top = (rangeValue.screenTop - _component.screenTop) - (startThumb.width / 2) + (rangeValue.screenTop - range.screenTop);
         }
 
-        endThumb.left =  (rangeValue.left + rangeValue.width) + range.layout.paddingLeft;
+        endThumb.left =  (range.left + rangeValue.left + rangeValue.width) - (endThumb.width / 2);
         endThumb.top = (rangeValue.screenTop - _component.screenTop) - (endThumb.width / 2) + (rangeValue.screenTop - range.screenTop);
     }
 }

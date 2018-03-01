@@ -69,7 +69,7 @@ class Slider2 extends InteractiveComponent implements IDirectionalComponent {
         b.scriptAccess = false;
         b.id = id;
         b.addClass(id);
-        b.includeInLayout = false;
+        //b.includeInLayout = false;
         b.remainPressed = true;
         addComponent(b);
         
@@ -178,8 +178,8 @@ private class Events {
         var r:Range = _slider.findComponent(Range);
         
         var coord:Point = new Point();
-        coord.x = (e.screenX - _slider.screenLeft - _offset.x) + (r.layout.paddingLeft + r.layout.paddingRight) - (_activeThumb.width / 2);
-        coord.y = (e.screenY - _slider.screenTop - _offset.y) + (r.layout.paddingTop + r.layout.paddingBottom) - (_activeThumb.height / 2);
+        coord.x = (e.screenX - _slider.screenLeft - _offset.x) - _slider.paddingLeft +  (_activeThumb.width / 2);
+        coord.y = (e.screenY - _slider.screenTop - _offset.y) - _slider.paddingTop +  (_activeThumb.height / 2);
         var pos:Float = _slider.posFromCoord(coord);
         
         if (_activeThumb == _startThumb) {
