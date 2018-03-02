@@ -9,10 +9,6 @@ import haxe.ui.util.Point;
 import haxe.ui.util.Variant;
 
 class Slider2 extends InteractiveComponent implements IDirectionalComponent {
-    public function new() {
-        super();
-    }
-    
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************

@@ -7,10 +7,6 @@ import haxe.ui.util.Point;
 import haxe.ui.util.Variant;
 
 class HorizontalRange extends Range {
-    public function new() {
-        super();
-    }
-    
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************
@@ -60,10 +56,6 @@ class HorizontalRangePosFromCoord extends Behaviour {
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
 class HorizontalRangeLayout extends DefaultLayout {
-    public function new() {
-        super();
-    }
-    
     public override function resizeChildren() {
         super.resizeChildren();
         
