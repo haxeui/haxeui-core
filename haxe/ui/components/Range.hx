@@ -158,7 +158,7 @@ private class Events {
     }
     
     private function onScreenMouseMove(e:MouseEvent) {
-        var pt:Point = new Point(e.screenX - _range.left, e.screenY - _range.top);
+        var pt:Point = new Point(e.screenX - _range.screenLeft, e.screenY - _range.screenTop);
         var pos:Float = _range.posFromCoord(pt);
         applyPos(pos);
     }
