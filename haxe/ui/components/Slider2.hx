@@ -69,7 +69,6 @@ class Slider2 extends InteractiveComponent implements IDirectionalComponent {
         b.scriptAccess = false;
         b.id = id;
         b.addClass(id);
-        //b.includeInLayout = false;
         b.remainPressed = true;
         addComponent(b);
         
@@ -128,13 +127,16 @@ private class EndBehaviour extends ValueBehaviour {
 @:access(haxe.ui.components.Slider2)
 private class Events {
     private var _slider:Slider2;
+    
     private var _endThumb:Button;
     private var _startThumb:Button;
+    private var _range:Range;
     
     private var _activeThumb:Button;
     
     public function new(slider:Slider2) {
         _slider = slider;
+        _range = slider.findComponent(Range);
     }
     
     public function register() {
@@ -147,6 +149,10 @@ private class Events {
         if (_endThumb != null && _endThumb.hasEvent(MouseEvent.MOUSE_DOWN, onThumbMouseDown) == false) {
             _endThumb.registerEvent(MouseEvent.MOUSE_DOWN, onThumbMouseDown);
         }
+        
+        if (_range.hasEvent(MouseEvent.MOUSE_DOWN, onRangeMouseDown) == false) {
+            _range.registerEvent(MouseEvent.MOUSE_DOWN, onRangeMouseDown);
+        }
     }
     
     public function unregister() {
@@ -158,12 +164,52 @@ private class Events {
             _endThumb.unregisterEvent(MouseEvent.MOUSE_DOWN, onThumbMouseDown);
         }
     }
+
+    private function onRangeMouseDown(e:MouseEvent) {
+        if (_startThumb != null && _startThumb.hitTest(e.screenX, e.screenY) == true) {
+            return;
+        }
+        if (_endThumb != null && _endThumb.hitTest(e.screenX, e.screenY) == true) {
+            return;
+        }
+        
+        var coord:Point = new Point();
+        coord.x = (e.screenX - _slider.screenLeft) - _slider.paddingLeft;
+        coord.y = (e.screenY - _slider.screenTop) - _slider.paddingTop;
+        var pos:Float = _slider.posFromCoord(coord);
+        
+        if (_startThumb == null) {
+            _slider.pos = pos;
+            startDrag(_endThumb, (_endThumb.width / 2), (_endThumb.height / 2));
+            return;
+        }
+        
+        var d1 = _slider.end - _slider.start;
+        var d2 = pos - _slider.start;
+
+        if (d2 < d1 / 2) {
+            _slider.start = pos;
+            startDrag(_startThumb, (_startThumb.width / 2), (_startThumb.height / 2));
+        } else if (d2 >= d1 / 2) {
+            _slider.end = pos;
+            startDrag(_endThumb, (_endThumb.width / 2), (_endThumb.height / 2));
+        } else if (pos > _slider.start) {
+            _slider.end = pos;
+            startDrag(_endThumb, (_endThumb.width / 2), (_endThumb.height / 2));
+        } else if (pos < _slider.end) {
+            _slider.start = pos;
+            startDrag(_startThumb, (_startThumb.width / 2), (_startThumb.height / 2));
+        }
+    }
     
     private var _offset:Point = null;
     private function onThumbMouseDown(e:MouseEvent) {
-        _offset = new Point(e.localX, e.localY);
-        _activeThumb = cast(e.target, Button);
-
+        startDrag(cast(e.target, Button), e.localX, e.localX);
+    }
+    
+    private function startDrag(thumb:Button, offsetX:Float, offsetY:Float) {
+        _offset = new Point(offsetX, offsetY);
+        _activeThumb = thumb;
         Screen.instance.registerEvent(MouseEvent.MOUSE_MOVE, onScreenMouseMove);
         Screen.instance.registerEvent(MouseEvent.MOUSE_UP, onScreenMouseUp);
     }
@@ -188,5 +234,4 @@ private class Events {
              _slider.end = pos;
         }
     }
-    
 }
