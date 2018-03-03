@@ -9,9 +9,9 @@ class Animation {
     //***********************************************************************************************************
     // Helpers
     //***********************************************************************************************************
-    public static function createWithKeyFrames(animationKeyFrames:AnimationKeyFrames, target:Dynamic, duration:Float = 0,
-                    easingFunction:EasingFunction = null, delay:Float = 0,
-                    iterationCount:Int = 1, direction:AnimationDirection = null):Animation {
+    public static function createWithKeyFrames(animationKeyFrames:AnimationKeyFrames, target:Dynamic, ?duration:Float,
+                                               ?easingFunction:EasingFunction, ?delay:Float,
+                                               ?iterationCount:Int, ?direction:AnimationDirection):Animation {
         var animation:Animation = new Animation(target, duration, easingFunction, delay, iterationCount, direction);
         animation.name = animationKeyFrames.id;
 
@@ -43,24 +43,24 @@ class Animation {
     // Public API
     //***********************************************************************************************************
     public var currentKeyFrame(get, never):KeyFrame;
-    public var delay(default, null):Float;
-    public var direction(default, null):AnimationDirection;
-    public var duration(default, null):Float;
-    public var easingFunction(default, null):EasingFunction;
-    public var iterationCount(default, null):Int;
+    public var delay(default, null):Float = 0;
+    public var direction(default, null):AnimationDirection = AnimationDirection.NORMAL;
+    public var duration(default, null):Float = 0;
+    public var easingFunction(default, null):EasingFunction = EasingFunction.EASE;
+    public var iterationCount(default, null):Int = 1;
     public var keyframeCount(get, never):Int;
     public var name:String;
     public var running(default, null):Bool;
     public var target(default, null):Dynamic;
 
-    public function new(target:Dynamic, duration:Float = 0, easingFunction:EasingFunction = null, delay:Float = 0,
-                        iterationCount:Int = 1, direction:AnimationDirection = AnimationDirection.NORMAL) {
+    public function new(target:Dynamic, ?duration:Float, ?easingFunction:EasingFunction, ?delay:Float,
+                        ?iterationCount:Int, ?direction:AnimationDirection) {
         this.target = target;
-        this.duration = duration;
-        this.easingFunction = (easingFunction != null) ? easingFunction : EasingFunction.EASE;
-        this.delay = delay;
-        this.iterationCount = iterationCount;
-        this.direction = direction;
+        if (duration != null)           this.duration = duration;
+        if (easingFunction != null)     this.easingFunction = easingFunction;
+        if (delay != null)              this.delay = delay;
+        if (iterationCount != null)     this.iterationCount = iterationCount;
+        if (direction != null)          this.direction = direction;
     }
     
     public function run(onFinish:Void->Void = null) {
