@@ -131,11 +131,11 @@ class Animation {
             case AnimationDirection.NORMAL:
                 //Nothing
             case AnimationDirection.REVERSE:
-                _keyframes.reverse();
+                reverseCurrentKeyframes();
             case AnimationDirection.ALTERNATE:
                 addAlternateKeyframes();
             case AnimationDirection.ALTERNATE_REVERSE:
-                _keyframes.reverse();
+                reverseCurrentKeyframes();
                 addAlternateKeyframes();
         }
 
@@ -180,9 +180,25 @@ class Animation {
             var keyframe:KeyFrame = _keyframes[i];
             var newKeyframe:KeyFrame = new KeyFrame();
             newKeyframe.time = 1 - keyframe.time;
-            newKeyframe.easingFunction = keyframe.easingFunction;
+            newKeyframe.easingFunction = getReverseEasingFunction(keyframe.easingFunction);
             newKeyframe.directives = keyframe.directives;
             _keyframes.push(newKeyframe);
+        }
+    }
+
+    private function reverseCurrentKeyframes() {
+        _keyframes.reverse();
+        var func = getReverseEasingFunction(_easingFunction);
+        for(keyframe in _keyframes) {
+            keyframe.easingFunction = func;
+        }
+    }
+
+    private function getReverseEasingFunction(easingFunction:EasingFunction) {
+        return switch(easingFunction) {
+            case EasingFunction.EASE_OUT:   EasingFunction.EASE_IN;
+            case EasingFunction.EASE_IN:    EasingFunction.EASE_OUT;
+            case _:                         easingFunction;
         }
     }
 
