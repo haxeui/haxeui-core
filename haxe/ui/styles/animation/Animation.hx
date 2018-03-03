@@ -6,6 +6,36 @@ import haxe.ui.styles.EasingFunction;
 import haxe.ui.styles.elements.AnimationKeyFrames;
 
 class Animation {
+    public static function createWithKeyFrames(animationKeyFrames:AnimationKeyFrames, target:Dynamic, duration:Float = 0,
+                    easingFunction:EasingFunction = null, delay:Float = 0,
+                    iterationCount:Int = 1, direction:AnimationDirection = null):Animation {
+        var animation:Animation = new Animation(target, duration, easingFunction, delay, iterationCount, direction);
+        animation.name = animationKeyFrames.id;
+
+        if (animation._keyframes == null) {
+            animation._keyframes = [];
+        }
+
+        for (keyFrame in animationKeyFrames.keyFrames) {
+            var kf = new KeyFrame();
+
+            switch (keyFrame.time) {
+                case Value.VDimension(v):
+                    switch (v) {
+                        case Dimension.PERCENT(p):
+                            kf.time = p / 100;
+                            kf.easingFunction = animation._easingFunction;
+                            kf.directives = keyFrame.directives;
+                            animation._keyframes.push(kf);
+                        case _:
+                    }
+                case _:
+            }
+        }
+
+        return animation;
+    }
+
     private var _target:Dynamic;
     private var _duration:Float;
     private var _easingFunction:EasingFunction;
@@ -46,28 +76,7 @@ class Animation {
     }
 
     public function configureWithKeyFrames(animationKeyFrames:AnimationKeyFrames) {
-        name = animationKeyFrames.id;
 
-        if (_keyframes == null) {
-            _keyframes = [];
-        }
-
-        for (keyFrame in animationKeyFrames.keyFrames) {
-            var kf = new KeyFrame();
-
-            switch (keyFrame.time) {
-                case Value.VDimension(v):
-                    switch (v) {
-                        case Dimension.PERCENT(p):
-                            kf.time = p / 100;
-                            kf.easingFunction = _easingFunction;
-                            kf.directives = keyFrame.directives;
-                            _keyframes.push(kf);
-                        case _:
-                    }
-                case _:
-            }
-        }
     }
     
     public function stop() {

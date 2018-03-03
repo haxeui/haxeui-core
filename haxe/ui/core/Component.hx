@@ -2310,10 +2310,8 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             return;
         }
 
-        var newAnimation:Animation = new Animation(this, duration, easingFunction, delay, iterationCount, direction);
-        newAnimation.configureWithKeyFrames(animationKeyFrames);
-        animation = newAnimation;
-        newAnimation.run();
+        animation = Animation.createWithKeyFrames(animationKeyFrames, this, duration, easingFunction, delay, iterationCount, direction);
+        animation.run();
     }
 
     //***********************************************************************************************************
