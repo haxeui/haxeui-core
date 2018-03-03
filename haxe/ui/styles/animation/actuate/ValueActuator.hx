@@ -10,11 +10,19 @@ class ValueActuator<T> extends SimpleActuator<T, Dynamic> {
 
     public function new(target : T, duration : Float, properties : Dynamic) {
         super(target, duration, properties);
+    }
 
-        //Exeucte the animation directly if duration == 0, because Actuate won't execute it
-        if (duration == 0) {
-            timeOffset = 0;
-            update(0.0001);
+    override private function apply ():Void {
+        for (p in Reflect.fields (properties)) {
+            var value:Dynamic = Reflect.getProperty(properties, p);
+            switch (value) {
+                case Value.VColor(v):
+                    value = v;
+                case _:
+                    value = ValueTools.calcDimension(value);
+            }
+
+            Reflect.setProperty (target, p, value);
         }
     }
 
