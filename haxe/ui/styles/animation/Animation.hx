@@ -6,6 +6,9 @@ import haxe.ui.styles.EasingFunction;
 import haxe.ui.styles.elements.AnimationKeyFrames;
 
 class Animation {
+    //***********************************************************************************************************
+    // Helpers
+    //***********************************************************************************************************
     public static function createWithKeyFrames(animationKeyFrames:AnimationKeyFrames, target:Dynamic, duration:Float = 0,
                     easingFunction:EasingFunction = null, delay:Float = 0,
                     iterationCount:Int = 1, direction:AnimationDirection = null):Animation {
@@ -24,7 +27,7 @@ class Animation {
                     switch (v) {
                         case Dimension.PERCENT(p):
                             kf.time = p / 100;
-                            kf.easingFunction = animation._easingFunction;
+                            kf.easingFunction = animation.easingFunction;
                             kf.directives = keyFrame.directives;
                             animation._keyframes.push(kf);
                         case _:
@@ -36,49 +39,46 @@ class Animation {
         return animation;
     }
 
-    private var _target:Dynamic;
-    private var _duration:Float;
-    private var _easingFunction:EasingFunction;
-    private var _delay:Float;
-    private var _iterationCount:Int;
-    private var _direction:AnimationDirection;
-
-    private var _currentKeyFrameIndex:Int = -1;
-    private var _currentIterationCount:Int = -1;
-    private var _keyframes:Array<KeyFrame>;
-
-    private var _initialState:Map<String, Dynamic>;
-    private var _initialized:Bool = false;
-
-    public var name:String;
-
-    public var keyframeCount(get, never):Int;
-    private function get_keyframeCount():Int {
-        return _keyframes == null ? 0 : _keyframes.length;
-    }
-
+    //***********************************************************************************************************
+    // Public API
+    //***********************************************************************************************************
     public var currentKeyFrame(get, never):KeyFrame;
-    private function get_currentKeyFrame():KeyFrame {
-        return _currentKeyFrameIndex >= 0 ? _keyframes[_currentKeyFrameIndex] : null;
-    }
-
+    public var delay(default, null):Float;
+    public var direction(default, null):AnimationDirection;
+    public var duration(default, null):Float;
+    public var easingFunction(default, null):EasingFunction;
+    public var iterationCount(default, null):Int;
+    public var keyframeCount(get, never):Int;
+    public var name:String;
     public var running(default, null):Bool;
-    
+    public var target(default, null):Dynamic;
+
     public function new(target:Dynamic, duration:Float = 0, easingFunction:EasingFunction = null, delay:Float = 0,
-                        iterationCount:Int = 1, direction:AnimationDirection = null) {
-        _target = target;
-        _duration = duration;
-        _easingFunction = (easingFunction != null) ? easingFunction : EasingFunction.EASE;
-        _delay = delay;
-        _iterationCount = iterationCount;
-        _direction = (direction != null) ? direction : AnimationDirection.NORMAL;
-        _currentKeyFrameIndex = -1;
-    }
-
-    public function configureWithKeyFrames(animationKeyFrames:AnimationKeyFrames) {
-
+                        iterationCount:Int = 1, direction:AnimationDirection = AnimationDirection.NORMAL) {
+        this.target = target;
+        this.duration = duration;
+        this.easingFunction = (easingFunction != null) ? easingFunction : EasingFunction.EASE;
+        this.delay = delay;
+        this.iterationCount = iterationCount;
+        this.direction = direction;
     }
     
+    public function run(onFinish:Void->Void = null) {
+        if (keyframeCount == 0 || running) {
+            return;
+        }
+
+        if (!_initialized) {
+            _initialize();
+        }
+
+        _currentKeyFrameIndex = -1;
+        _currentIterationCount = 0;
+        running = true;
+        _saveState();
+        _runNextKeyframe(onFinish);
+    }
+
     public function stop() {
         if (running == false) {
             return;
@@ -94,87 +94,65 @@ class Animation {
 
         _keyframes = null;
 
-        restoreState();
-    }
-    
-    public function run(onFinish:Void->Void = null) {
-        if (keyframeCount == 0 || running) {
-            return;
-        }
-
-        if (!_initialized) {
-            initialize();
-        }
-
-        _currentKeyFrameIndex = -1;
-        _currentIterationCount = 0;
-        running = true;
-        saveState();
-        runNextKeyframe(onFinish);
+        _restoreState();
     }
 
-    private function runNextKeyframe(onFinish:Void->Void = null) {
-        if (running == false) {
-            return;
-        }
+    //***********************************************************************************************************
+    // Private API
+    //***********************************************************************************************************
+    private var _currentKeyFrameIndex:Int = -1;
+    private var _currentIterationCount:Int = -1;
+    private var _initialState:Map<String, Dynamic>;
+    private var _initialized:Bool = false;
+    private var _keyframes:Array<KeyFrame>;
 
-        if (++_currentKeyFrameIndex >= _keyframes.length) {
-            _currentKeyFrameIndex = -1;
-            restoreState();
-
-            if (_iterationCount == -1 || ++_currentIterationCount < _iterationCount) {
-                saveState();
-                runNextKeyframe(onFinish);
-            } else if (onFinish != null) {
-                running = false;
-                onFinish();
-            }
-            return;
-        } else {
-            currentKeyFrame.run(_target, runNextKeyframe.bind(onFinish));
-        }
+    private function get_keyframeCount():Int {
+        return _keyframes == null ? 0 : _keyframes.length;
+    }
+    private function get_currentKeyFrame():KeyFrame {
+        return _currentKeyFrameIndex >= 0 ? _keyframes[_currentKeyFrameIndex] : null;
     }
 
-    private function initialize() {
-        switch (_direction) {
+    private function _initialize() {
+        switch (direction) {
             case AnimationDirection.NORMAL:
                 //Nothing
             case AnimationDirection.REVERSE:
-                reverseCurrentKeyframes();
+                _reverseCurrentKeyframes();
             case AnimationDirection.ALTERNATE:
-                addAlternateKeyframes();
+                _addAlternateKeyframes();
             case AnimationDirection.ALTERNATE_REVERSE:
-                reverseCurrentKeyframes();
-                addAlternateKeyframes();
+                _reverseCurrentKeyframes();
+                _addAlternateKeyframes();
         }
 
         var currentTime:Float = 0;
         for (keyframe in _keyframes) {
-            switch (_direction) {
+            switch (direction) {
                 case AnimationDirection.NORMAL, AnimationDirection.ALTERNATE:
                     //Nothing
                 case AnimationDirection.REVERSE, AnimationDirection.ALTERNATE_REVERSE:
                     keyframe.time = 1 - keyframe.time;
             }
 
-            keyframe.time = _duration * keyframe.time - currentTime;
+            keyframe.time = duration * keyframe.time - currentTime;
             currentTime += keyframe.time;
         }
 
-        if (_delay > 0) {
+        if (delay > 0) {
             var keyframe:KeyFrame = new KeyFrame();
-            keyframe.time = _delay;
-            keyframe.easingFunction = _easingFunction;
+            keyframe.time = delay;
+            keyframe.easingFunction = easingFunction;
             _keyframes.unshift(keyframe);
-        } else if (_delay < 0) {
+        } else if (delay < 0) {
             var currentTime:Float = 0;
             for (i in 0..._keyframes.length) {
                 var keyframe:KeyFrame = _keyframes[i];
                 currentTime -= keyframe.time;
-                if(currentTime > _delay) {
+                if(currentTime > delay) {
                     _keyframes.splice(i, 1);
                 } else {
-                    keyframe.delay = currentTime + keyframe.time + _delay;
+                    keyframe.delay = currentTime + keyframe.time + delay;
                     break;
                 }
             }
@@ -183,27 +161,49 @@ class Animation {
         _initialized = true;
     }
 
-    private function addAlternateKeyframes() {
+    private function _runNextKeyframe(onFinish:Void->Void = null) {
+        if (running == false) {
+            return;
+        }
+
+        if (++_currentKeyFrameIndex >= _keyframes.length) {
+            _currentKeyFrameIndex = -1;
+            _restoreState();
+
+            if (iterationCount == -1 || ++_currentIterationCount < iterationCount) {
+                _saveState();
+                _runNextKeyframe(onFinish);
+            } else if (onFinish != null) {
+                running = false;
+                onFinish();
+            }
+            return;
+        } else {
+            currentKeyFrame.run(target, _runNextKeyframe.bind(onFinish));
+        }
+    }
+
+    private function _addAlternateKeyframes() {
         var i:Int = _keyframes.length;
         while(--i >= 0) {
             var keyframe:KeyFrame = _keyframes[i];
             var newKeyframe:KeyFrame = new KeyFrame();
             newKeyframe.time = 1 - keyframe.time;
-            newKeyframe.easingFunction = getReverseEasingFunction(keyframe.easingFunction);
+            newKeyframe.easingFunction = _getReverseEasingFunction(keyframe.easingFunction);
             newKeyframe.directives = keyframe.directives;
             _keyframes.push(newKeyframe);
         }
     }
 
-    private function reverseCurrentKeyframes() {
+    private function _reverseCurrentKeyframes() {
         _keyframes.reverse();
-        var func = getReverseEasingFunction(_easingFunction);
+        var func = _getReverseEasingFunction(easingFunction);
         for(keyframe in _keyframes) {
             keyframe.easingFunction = func;
         }
     }
 
-    private function getReverseEasingFunction(easingFunction:EasingFunction) {
+    private function _getReverseEasingFunction(easingFunction:EasingFunction) {
         return switch(easingFunction) {
             case EasingFunction.EASE_OUT:   EasingFunction.EASE_IN;
             case EasingFunction.EASE_IN:    EasingFunction.EASE_OUT;
@@ -211,7 +211,7 @@ class Animation {
         }
     }
 
-    private function saveState() {
+    private function _saveState() {
         if (_initialState == null) {
             _initialState = new Map<String, Dynamic>();
         }
@@ -220,16 +220,16 @@ class Animation {
             for (directive in keyframe.directives) {
                 var property:String = StyleUtil.styleProperty2ComponentProperty(directive.directive);
                 if (!_initialState.exists(property)) {
-                    _initialState.set(property, Reflect.getProperty(_target, property));
+                    _initialState.set(property, Reflect.getProperty(target, property));
                 }
             }
         }
     }
 
-    private function restoreState() {
+    private function _restoreState() {
         if (_initialState != null) {
             for (property in _initialState.keys()) {
-                Reflect.setProperty(_target, property, _initialState.get(property));
+                Reflect.setProperty(target, property, _initialState.get(property));
             }
 
             _initialState = null;
