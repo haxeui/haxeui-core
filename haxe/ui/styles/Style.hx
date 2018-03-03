@@ -1,5 +1,6 @@
 package haxe.ui.styles;
 
+import haxe.ui.constants.AnimationDirection;
 import haxe.ui.styles.elements.Directive;
 import haxe.ui.util.filters.Filter;
 import haxe.ui.util.filters.FilterParser;
@@ -88,6 +89,7 @@ class Style {
     public var animationTimingFunction:Null<EasingFunction>;
     public var animationDelay:Null<Float>;
     public var animationIterationCount:Null<Int>;
+    public var animationDirection:Null<AnimationDirection>;
 
     public function new() {
     }
@@ -261,6 +263,8 @@ class Style {
                         case _:
                             ValueTools.int(v.value);
                     };
+                case "animation-direction":
+                    animationDirection = ValueTools.string(v.value);
             }
         }
     }
@@ -346,6 +350,7 @@ class Style {
         if (s.animationTimingFunction != null) animationTimingFunction = s.animationTimingFunction;
         if (s.animationDelay != null) animationDelay = s.animationDelay;
         if (s.animationIterationCount != null) animationIterationCount = s.animationIterationCount;
+        if (s.animationDirection != null) animationDirection = s.animationDirection;
 
         if (s.icon != null) icon = s.icon;
         if (s.iconPosition != null) iconPosition = s.iconPosition;
@@ -453,6 +458,7 @@ class Style {
         if (s.animationDelay != animationDelay) return false;
         if (s.animationTimingFunction != animationTimingFunction) return false;
         if (s.animationIterationCount != animationIterationCount) return false;
+        if (s.animationDirection != animationDirection) return false;
 
         return true;
     }

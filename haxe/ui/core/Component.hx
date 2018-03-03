@@ -6,6 +6,7 @@ import haxe.ui.styles.Parser;
 import haxe.ui.styles.EasingFunction;
 import haxe.ui.validation.IValidating;
 import haxe.ui.backend.ComponentBase;
+import haxe.ui.constants.AnimationDirection;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.DelegateLayout;
 import haxe.ui.layouts.Layout;
@@ -2270,7 +2271,8 @@ class Component extends ComponentBase implements IComponentBase implements IVali
 
         if (style.animationName != null) {
             var animationKeyFrames:AnimationKeyFrames = Toolkit.styleSheet.animations.get(style.animationName);
-            applyAnimationKeyFrame(animationKeyFrames, style.animationDuration, style.animationTimingFunction, style.animationDelay, style.animationIterationCount);
+            applyAnimationKeyFrame(animationKeyFrames, style.animationDuration, style.animationTimingFunction, style.animationDelay,
+                                style.animationIterationCount, style.animationDirection);
         } else if (animation != null) {
             animation = null;
         }
@@ -2302,12 +2304,13 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     // Animation
     //***********************************************************************************************************
 
-    private function applyAnimationKeyFrame(animationKeyFrames:AnimationKeyFrames, duration:Float=0, easingFunction:EasingFunction=null, delay:Float=0, iterationCount:Int=1):Void {
+    private function applyAnimationKeyFrame(animationKeyFrames:AnimationKeyFrames, duration:Float=0,
+        easingFunction:EasingFunction=null, delay:Float=0, iterationCount:Int=1, direction:AnimationDirection=null):Void {
         if (_animatable == false || duration == 0 || (_animation != null && _animation.name == animationKeyFrames.id)) {
             return;
         }
 
-        var newAnimation:Animation = new Animation(this, duration, easingFunction, delay, iterationCount);
+        var newAnimation:Animation = new Animation(this, duration, easingFunction, delay, iterationCount, direction);
         newAnimation.configureWithKeyFrames(animationKeyFrames);
         animation = newAnimation;
         newAnimation.run();

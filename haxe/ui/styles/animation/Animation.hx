@@ -1,5 +1,6 @@
 package haxe.ui.styles.animation;
 
+import haxe.ui.constants.AnimationDirection;
 import haxe.ui.util.StyleUtil;
 import haxe.ui.styles.EasingFunction;
 import haxe.ui.styles.elements.AnimationKeyFrames;
@@ -10,6 +11,7 @@ class Animation {
     private var _easingFunction:EasingFunction;
     private var _delay:Float;
     private var _iterationCount:Int;
+    private var _direction:AnimationDirection;
 
     private var _currentKeyFrameIndex:Int = -1;
     private var _currentIterationCount:Int = -1;
@@ -32,12 +34,14 @@ class Animation {
 
     public var running(default, null):Bool;
     
-    public function new(target:Dynamic, duration:Float = 0, easingFunction:EasingFunction = null, delay:Float = 0, iterationCount:Int = 1) {
+    public function new(target:Dynamic, duration:Float = 0, easingFunction:EasingFunction = null, delay:Float = 0,
+                        iterationCount:Int = 1, direction:AnimationDirection = null) {
         _target = target;
         _duration = duration;
-        _easingFunction = easingFunction != null ? easingFunction : EasingFunction.EASE;
+        _easingFunction = (easingFunction != null) ? easingFunction : EasingFunction.EASE;
         _delay = delay;
         _iterationCount = iterationCount;
+        _direction = (direction != null) ? direction : AnimationDirection.NORMAL;
         _currentKeyFrameIndex = -1;
     }
 
@@ -55,13 +59,7 @@ class Animation {
                 case Value.VDimension(v):
                     switch (v) {
                         case Dimension.PERCENT(p):
-                            var t = _duration * p / 100;
-                            kf.time = t;
-                            var lastTime:Float = 0;
-                            for (a in _keyframes) {
-                                lastTime += a.time;
-                            }
-                            kf.time -= lastTime;
+                            kf.time = p / 100;
                             kf.easingFunction = _easingFunction;
                             kf.directives = keyFrame.directives;
                             _keyframes.push(kf);
@@ -129,6 +127,31 @@ class Animation {
     }
 
     private function initialize() {
+        switch (_direction) {
+            case AnimationDirection.NORMAL:
+                //Nothing
+            case AnimationDirection.REVERSE:
+                _keyframes.reverse();
+            case AnimationDirection.ALTERNATE:
+                addAlternateKeyframes();
+            case AnimationDirection.ALTERNATE_REVERSE:
+                _keyframes.reverse();
+                addAlternateKeyframes();
+        }
+
+        var currentTime:Float = 0;
+        for (keyframe in _keyframes) {
+            switch (_direction) {
+                case AnimationDirection.NORMAL, AnimationDirection.ALTERNATE:
+                    //Nothing
+                case AnimationDirection.REVERSE, AnimationDirection.ALTERNATE_REVERSE:
+                    keyframe.time = 1 - keyframe.time;
+            }
+
+            keyframe.time = _duration * keyframe.time - currentTime;
+            currentTime += keyframe.time;
+        }
+
         if (_delay > 0) {
             var keyframe:KeyFrame = new KeyFrame();
             keyframe.time = _delay;
@@ -149,6 +172,18 @@ class Animation {
         }
 
         _initialized = true;
+    }
+
+    private function addAlternateKeyframes() {
+        var i:Int = _keyframes.length;
+        while(--i >= 0) {
+            var keyframe:KeyFrame = _keyframes[i];
+            var newKeyframe:KeyFrame = new KeyFrame();
+            newKeyframe.time = 1 - keyframe.time;
+            newKeyframe.easingFunction = keyframe.easingFunction;
+            newKeyframe.directives = keyframe.directives;
+            _keyframes.push(newKeyframe);
+        }
     }
 
     private function saveState() {
