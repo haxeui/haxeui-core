@@ -2304,8 +2304,8 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     // Animation
     //***********************************************************************************************************
 
-    private function applyAnimationKeyFrame(animationKeyFrames:AnimationKeyFrames, duration:Float=0,
-        easingFunction:EasingFunction=null, delay:Float=0, iterationCount:Int=1, direction:AnimationDirection=null):Void {
+    private function applyAnimationKeyFrame(animationKeyFrames:AnimationKeyFrames, ?duration:Float,
+        ?easingFunction:EasingFunction, ?delay:Float, ?iterationCount:Int, ?direction:AnimationDirection):Void {
         if (_animatable == false || duration == 0 || (_animation != null && _animation.name == animationKeyFrames.id)) {
             return;
         }
