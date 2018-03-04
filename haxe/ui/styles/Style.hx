@@ -349,13 +349,6 @@ class Style {
 
         if (s.filter != null) filter = s.filter.copy();
         if (s.resource != null) resource = s.resource;
-        if (s.animationName != null) animationName = s.animationName;
-        if (s.animationDuration != null) animationDuration = s.animationDuration;
-        if (s.animationTimingFunction != null) animationTimingFunction = s.animationTimingFunction;
-        if (s.animationDelay != null) animationDelay = s.animationDelay;
-        if (s.animationIterationCount != null) animationIterationCount = s.animationIterationCount;
-        if (s.animationDirection != null) animationDirection = s.animationDirection;
-        if (s.animationFillMode != null) animationFillMode = s.animationFillMode;
 
         if (s.icon != null) icon = s.icon;
         if (s.iconPosition != null) iconPosition = s.iconPosition;
@@ -374,6 +367,14 @@ class Style {
         if (s.fontBold != null) fontBold = s.fontBold;
         if (s.fontUnderline != null) fontUnderline = s.fontUnderline;
         if (s.fontItalic != null) fontItalic = s.fontItalic;
+
+        if (s.animationName != null) animationName = s.animationName;
+        if (s.animationDuration != null) animationDuration = s.animationDuration;
+        if (s.animationTimingFunction != null) animationTimingFunction = s.animationTimingFunction;
+        if (s.animationDelay != null) animationDelay = s.animationDelay;
+        if (s.animationIterationCount != null) animationIterationCount = s.animationIterationCount;
+        if (s.animationDirection != null) animationDirection = s.animationDirection;
+        if (s.animationFillMode != null) animationFillMode = s.animationFillMode;
     }
 
     public function equalTo(s:Style):Bool {
