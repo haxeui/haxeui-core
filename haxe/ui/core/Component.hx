@@ -7,6 +7,7 @@ import haxe.ui.styles.EasingFunction;
 import haxe.ui.validation.IValidating;
 import haxe.ui.backend.ComponentBase;
 import haxe.ui.constants.AnimationDirection;
+import haxe.ui.constants.AnimationFillMode;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.DelegateLayout;
 import haxe.ui.layouts.Layout;
@@ -2272,7 +2273,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         if (style.animationName != null) {
             var animationKeyFrames:AnimationKeyFrames = Toolkit.styleSheet.animations.get(style.animationName);
             applyAnimationKeyFrame(animationKeyFrames, style.animationDuration, style.animationTimingFunction, style.animationDelay,
-                                style.animationIterationCount, style.animationDirection);
+                                style.animationIterationCount, style.animationDirection, style.animationFillMode);
         } else if (animation != null) {
             animation = null;
         }
@@ -2305,12 +2306,12 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     //***********************************************************************************************************
 
     private function applyAnimationKeyFrame(animationKeyFrames:AnimationKeyFrames, ?duration:Float,
-        ?easingFunction:EasingFunction, ?delay:Float, ?iterationCount:Int, ?direction:AnimationDirection):Void {
+        ?easingFunction:EasingFunction, ?delay:Float, ?iterationCount:Int, ?direction:AnimationDirection, ?fillMode:AnimationFillMode):Void {
         if (_animatable == false || duration == 0 || (_animation != null && _animation.name == animationKeyFrames.id)) {
             return;
         }
 
-        animation = Animation.createWithKeyFrames(animationKeyFrames, this, duration, easingFunction, delay, iterationCount, direction);
+        animation = Animation.createWithKeyFrames(animationKeyFrames, this, duration, easingFunction, delay, iterationCount, direction, fillMode);
         animation.run();
     }
 

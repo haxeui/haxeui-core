@@ -1,5 +1,6 @@
 package haxe.ui.styles.animation;
 
+import haxe.ui.constants.AnimationFillMode;
 import haxe.ui.constants.AnimationDirection;
 import haxe.ui.util.StyleUtil;
 import haxe.ui.styles.EasingFunction;
@@ -11,8 +12,8 @@ class Animation {
     //***********************************************************************************************************
     public static function createWithKeyFrames(animationKeyFrames:AnimationKeyFrames, target:Dynamic, ?duration:Float,
                                                ?easingFunction:EasingFunction, ?delay:Float,
-                                               ?iterationCount:Int, ?direction:AnimationDirection):Animation {
-        var animation:Animation = new Animation(target, duration, easingFunction, delay, iterationCount, direction);
+                                               ?iterationCount:Int, ?direction:AnimationDirection, ?fillMode:AnimationFillMode):Animation {
+        var animation:Animation = new Animation(target, duration, easingFunction, delay, iterationCount, direction, fillMode);
         animation.name = animationKeyFrames.id;
 
         if (animation._keyframes == null) {
@@ -47,6 +48,7 @@ class Animation {
     public var direction(default, null):AnimationDirection = AnimationDirection.NORMAL;
     public var duration(default, null):Float = 0;
     public var easingFunction(default, null):EasingFunction = EasingFunction.EASE;
+    public var fillMode(default, null):AnimationFillMode = AnimationFillMode.NONE;
     public var iterationCount(default, null):Int = 1;
     public var keyframeCount(get, never):Int;
     public var name:String;
@@ -54,13 +56,14 @@ class Animation {
     public var target(default, null):Dynamic;
 
     public function new(target:Dynamic, ?duration:Float, ?easingFunction:EasingFunction, ?delay:Float,
-                        ?iterationCount:Int, ?direction:AnimationDirection) {
+                        ?iterationCount:Int, ?direction:AnimationDirection, ?fillMode:AnimationFillMode) {
         this.target = target;
         if (duration != null)           this.duration = duration;
         if (easingFunction != null)     this.easingFunction = easingFunction;
         if (delay != null)              this.delay = delay;
         if (iterationCount != null)     this.iterationCount = iterationCount;
         if (direction != null)          this.direction = direction;
+        if (fillMode != null)           this.fillMode = fillMode;
     }
     
     public function run(onFinish:Void->Void = null) {
@@ -212,6 +215,10 @@ class Animation {
     }
 
     private function _saveState() {
+        if (!_shouldRestoreState()) {
+            return;
+        }
+
         if (_initialState == null) {
             _initialState = new Map<String, Dynamic>();
         }
@@ -227,6 +234,10 @@ class Animation {
     }
 
     private function _restoreState() {
+        if (!_shouldRestoreState()) {
+            return;
+        }
+
         if (_initialState != null) {
             for (property in _initialState.keys()) {
                 Reflect.setProperty(target, property, _initialState.get(property));
@@ -234,5 +245,12 @@ class Animation {
 
             _initialState = null;
         }
+    }
+
+    private function _shouldRestoreState():Bool {
+        return fillMode == AnimationFillMode.NONE ||
+               fillMode != AnimationFillMode.BOTH ||
+               (fillMode == AnimationFillMode.FORWARDS && direction != AnimationDirection.NORMAL && direction != AnimationDirection.ALTERNATE) ||
+               (fillMode == AnimationFillMode.BACKWARDS && direction != AnimationDirection.REVERSE && direction != AnimationDirection.ALTERNATE_REVERSE);
     }
 }
