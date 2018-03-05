@@ -455,6 +455,28 @@
     opacity: 0.5;
 }
 /************************************************************************
+** PROGRESS
+*************************************************************************/
+@keyframes progressIndeterminate {
+    0% {
+        rangeStart: 0;
+        rangeEnd: 25;
+    }
+    50% {
+        rangeStart: 75;
+        rangeEnd: 100;
+    }
+    100% {
+        rangeStart: 0;
+        rangeEnd: 25;
+    }
+}
+
+.progress:indeterminate {
+    animation: progressIndeterminate 1s ease 0s infinite;
+}
+
+/************************************************************************
 ** HPROGRESS
 *************************************************************************/
 .hprogress {

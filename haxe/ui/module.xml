@@ -91,19 +91,6 @@
             </keyframe>
         </animation>
 
-        <animation id="haxe.ui.components.animation.indeterminate" ease="Back.easeIn">
-            <keyframe time="0">
-                <target rangeStart="0" rangeEnd="25" />
-            </keyframe>
-            <keyframe time="500">
-                <target rangeStart="75" rangeEnd="100" />
-            </keyframe>
-            <keyframe time="1000">
-                <target rangeStart="0" rangeEnd="25" />
-            </keyframe>
-        </animation>
-
-
         <animation id="haxe.ui.components.animation.dialog.show" ease="Linear.easeNone">
             <keyframe time="0">
                 <target top="{startTop}" left="{startLeft}" opacity="0" />
