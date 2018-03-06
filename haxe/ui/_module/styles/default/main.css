@@ -905,6 +905,25 @@
 /************************************************************************
 ** PROGRESS
 *************************************************************************/
+@keyframes indeterminate {
+    0% {
+        start: 0;
+        end: 25;
+    }
+    50% {
+        start: 75;
+        end: 100;
+    }
+    100% {
+        start: 0;
+        end: 25;
+    }
+}
+
+.progress2:indeterminate {
+    animation: indeterminate 1s ease 0s infinite;
+}
+
 .progress-value {
     border: none;
     border-radius: 2px;
