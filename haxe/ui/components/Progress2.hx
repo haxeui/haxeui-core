@@ -72,30 +72,16 @@ private class IndeterminateBehaviour extends ValueBehaviour {
         
         super.set(value);
         
-        if (value == true) {
-            startIndeterminateAnimation();
+        if (value == false) {
+            _component.removeClass(":indeterminate");
         } else {
-            stopIndeterminateAnimation();
+            _component.addClass(":indeterminate");
         }
+        
     }
     
     public override function detatch() {
         super.detatch();
-        stopIndeterminateAnimation();
-    }
-    
-    private function startIndeterminateAnimation() {
-        var animationId:String = _component.getClassProperty("animation.indeterminate");
-        if (animationId == null) {
-            return;
-        }
-        _animation = AnimationManager.instance.loop(animationId, ["target" => _component]);
-    }
-
-    private function stopIndeterminateAnimation() {
-        if (_animation != null) {
-            _animation.stop();
-            _animation = null;
-        }
+        _component.removeClass(":indeterminate");
     }
 }

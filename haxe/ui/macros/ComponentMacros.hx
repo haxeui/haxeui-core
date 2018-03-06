@@ -103,7 +103,7 @@ class ComponentMacros {
         //trace(c);
 
         for (styleString in c.styles) {
-            code.push(macro haxe.ui.Toolkit.styleSheet.addRules($v{styleString}));
+            code.push(macro haxe.ui.Toolkit.styleSheet.parse($v{styleString}));
         }
 
         buildComponentCode(code, c, 0, namedComponents);

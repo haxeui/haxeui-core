@@ -1,5 +1,6 @@
 package haxe.ui.components;
 
+import haxe.ui.styles.Style;
 import haxe.ui.util.Rectangle;
 import haxe.ui.constants.VerticalAlign;
 import haxe.ui.constants.HorizontalAlign;
@@ -48,6 +49,14 @@ class Image extends Component {
         }
         resource = value.toString();
         return value;
+    }
+
+    private override function applyStyle(style:Style) {
+        super.applyStyle(style);
+        
+        if (style.resource != null) {
+            resource = style.resource;
+        }
     }
 
     //***********************************************************************************************************

@@ -79,7 +79,7 @@ class ModuleMacros {
                     code += 'haxe.ui.themes.ThemeManager.instance.getTheme("${t.name}").parent = "${t.parent}";\n';
                 }
                 for (r in t.styles) {
-                    code += 'haxe.ui.themes.ThemeManager.instance.addStyleResource("${t.name}", "${r.resource}");\n';
+                    code += 'haxe.ui.themes.ThemeManager.instance.addStyleResource("${t.name}", "${r.resource}", ${r.priority});\n';
                 }
             }
 

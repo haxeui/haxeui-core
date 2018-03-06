@@ -49,7 +49,9 @@ class Screen extends ScreenBase {
 
     public override function addComponent(component:Component) {
         super.addComponent(component);
+        #if !haxeui_android
         component.ready();
+        #end
         rootComponents.push(component);
         FocusManager.instance.pushView(component);
         component.registerEvent(UIEvent.RESIZE, _onRootComponentResize);    //refresh vh & vw

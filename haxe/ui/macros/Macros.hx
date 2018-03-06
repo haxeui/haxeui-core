@@ -387,6 +387,7 @@ class Macros {
                 } else if (typeName == "Bool") {
                     defaultValue = false;
                 }
+                code += "if (customStyle." + name + " != " + defaultValue + ") return customStyle." + name + ";\n";
                 code += "if (style == null || style." + name + " == null) {\n return " + defaultValue + ";\n }\n";
                 code += "return style." + name + ";\n";
                 code += "}";

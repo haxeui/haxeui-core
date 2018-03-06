@@ -1,7 +1,5 @@
 package haxe.ui.components;
 
-import haxe.ui.animation.Animation;
-import haxe.ui.animation.AnimationManager;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.InteractiveComponent;
@@ -197,6 +195,11 @@ class Progress extends InteractiveComponent {
         }
 
         _indeterminate = value;
+        if (_indeterminate == false) {
+            removeClass(":indeterminate");
+        } else {
+            addClass(":indeterminate");
+        }
         behaviourSet("indeterminate", value);
 
         return value;
@@ -358,7 +361,6 @@ class ProgressDefaultRangeEndBehaviour extends Behaviour {
 @:access(haxe.ui.components.Progress)
 class ProgressDefaultIndeterminateBehaviour extends Behaviour {
     private var _value:Bool = false;
-    private var _animation:Animation;
 
     public override function set(value:Variant) {
         if (_value == value) {
@@ -366,31 +368,9 @@ class ProgressDefaultIndeterminateBehaviour extends Behaviour {
         }
 
         _value = value;
-
-        var progress:Progress = cast _component;
-        if (value == true) {
-            startIndeterminateAnimation(progress);
-        } else {
-            stopIndeterminateAnimation(progress);
-        }
     }
 
     public override function get():Variant {
         return _value;
-    }
-
-    private function startIndeterminateAnimation(progress:Progress) {
-        var animationId:String = progress.getClassProperty("animation.indeterminate");
-        if (animationId == null) {
-            return;
-        }
-        _animation = AnimationManager.instance.loop(animationId, ["target" => progress]);
-    }
-
-    private function stopIndeterminateAnimation(progress:Progress) {
-        if (_animation != null) {
-            _animation.stop();
-            _animation = null;
-        }
     }
 }

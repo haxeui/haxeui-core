@@ -7,6 +7,7 @@ import haxe.ui.core.ComponentClassMap;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.KeyboardEvent;
 import haxe.ui.core.Screen;
+import haxe.ui.styles.StyleSheet;
 import haxe.ui.focus.FocusManager;
 import haxe.ui.macros.BackendMacros;
 import haxe.ui.macros.ModuleMacros;
@@ -16,13 +17,13 @@ import haxe.ui.parsers.ui.ComponentParser;
 import haxe.ui.parsers.ui.resolvers.AssetResourceResolver;
 import haxe.ui.parsers.ui.resolvers.ResourceResolver;
 import haxe.ui.scripting.ConditionEvaluator;
-import haxe.ui.styles.Engine;
 import haxe.ui.themes.ThemeManager;
 import haxe.ui.util.GenericConfig;
 import haxe.ui.util.Properties;
 
 class Toolkit {
-    public static var styleSheet:Engine = new Engine();
+    public static var styleSheet:StyleSheet = new StyleSheet();
+    
     public static var theme:String = "default";
 
     public static var properties:Map<String, String> = new Map<String, String>();

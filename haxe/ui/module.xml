@@ -39,10 +39,10 @@
 
     <themes>
         <global>
-            <style resource="haxeui-core/styles/global.css" />
+            <style resource="haxeui-core/styles/global.css" priority="-2" />
         </global>
         <default>
-            <style resource="haxeui-core/styles/default/main.css" />
+            <style resource="haxeui-core/styles/default/main.css" priority="-1" />
         </default>
         <test parent="default">
             <style resource="haxeui-core/styles/test/main.css" />
@@ -93,31 +93,6 @@
                 <target rangeEnd="{rangeEnd}" />
             </keyframe>
         </animation>
-
-        <animation id="haxe.ui.components.animation.indeterminate" ease="Back.easeIn">
-            <keyframe time="0">
-                <target rangeStart="0" rangeEnd="25" />
-            </keyframe>
-            <keyframe time="500">
-                <target rangeStart="75" rangeEnd="100" />
-            </keyframe>
-            <keyframe time="1000">
-                <target rangeStart="0" rangeEnd="25" />
-            </keyframe>
-        </animation>
-
-        <animation id="haxe.ui.components.animation.indeterminate2" ease="Back.easeIn">
-            <keyframe time="0">
-                <target start="0" end="25" />
-            </keyframe>
-            <keyframe time="500">
-                <target start="75" end="100" />
-            </keyframe>
-            <keyframe time="1000">
-                <target start="0" end="25" />
-            </keyframe>
-        </animation>
-
 
         <animation id="haxe.ui.components.animation.dialog.show" ease="Linear.easeNone">
             <keyframe time="0">
