@@ -53,9 +53,6 @@
     </themes>
 
     <properties>
-        <property name="haxe.ui.components.hprogress.animation.indeterminate" value="haxe.ui.components.animation.indeterminate" />
-        <property name="haxe.ui.components.vprogress.animation.indeterminate" value="haxe.ui.components.animation.indeterminate" />
-
         <property name="haxe.ui.components.hslider.animation.pos" value="haxe.ui.components.animation.pos" />
         <property name="haxe.ui.components.hslider.animation.rangeStart" value="haxe.ui.components.animation.rangeStart" />
         <property name="haxe.ui.components.hslider.animation.rangeEnd" value="haxe.ui.components.animation.rangeEnd" />
@@ -67,9 +64,6 @@
         <property name="haxe.ui.components.hscroll.animation.pos" value="haxe.ui.components.animation.pos" />
 
         <property name="haxe.ui.components.vscroll.animation.pos" value="haxe.ui.components.animation.pos" />
-        
-        <property name="haxe.ui.components.horizontalprogress2.animation.indeterminate" value="haxe.ui.components.animation.indeterminate2" />
-        <property name="haxe.ui.components.verticalprogress2.animation.indeterminate" value="haxe.ui.components.animation.indeterminate2" />
     </properties>
 
     <animations>

@@ -1,7 +1,6 @@
 package haxe.ui.components;
 
 import haxe.ui.animation.Animation;
-import haxe.ui.animation.AnimationManager;
 import haxe.ui.components.Range;
 import haxe.ui.core.Component;
 import haxe.ui.core.IDirectionalComponent;
