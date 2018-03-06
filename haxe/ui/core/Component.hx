@@ -52,9 +52,13 @@ class DeferredBindingInfo {
 @:build(haxe.ui.macros.Macros.addClonable())
 @:autoBuild(haxe.ui.macros.Macros.addClonable())
 class Component extends ComponentBase implements IComponentBase implements IValidating implements IClonable<Component> {
+    private var behaviours:Behaviours;
+    
     public function new() {
         super();
 
+        behaviours = new Behaviours(this);
+        
         #if flash
         addClass("flash", false);
         #end
@@ -89,9 +93,9 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     // Construction
     //***********************************************************************************************************
     private function create() {
+        destroyChildren();
         createDefaults();
         handleCreate(native);
-        destroyChildren();
 
         layout = createLayout();
         if (native == false || native == null) {
@@ -149,44 +153,23 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         return l;
     }
 
-    private var _defaultBehaviours:Map<String, Behaviour> = new Map<String, Behaviour>();
+    
+    
+    
+    // TODO: these functions should be removed and components should use behaviours.get/set/call/defaults direction
     private function defaultBehaviour(name:String, behaviour:Behaviour) {
-        _defaultBehaviours.set(name, behaviour);
+        this.behaviours.defaults([name => behaviour]);
     }
     private function defaultBehaviours(behaviours:Map<String, Behaviour>) {
-        for (name in behaviours.keys()) {
-            defaultBehaviour(name, behaviours.get(name));
-        }
+        this.behaviours.defaults(behaviours);
     }
     
-    private var _behaviours:Map<String, Behaviour> = new Map<String, Behaviour>();
     private function getBehaviour(id:String):Behaviour {
-        var b:Behaviour = _behaviours.get(id);
-        if (b != null) {
-            return b;
-        }
-
-        if (native == true) {
-            var nativeProps = getNativeConfigProperties('.behaviour[id=${id}]');
-            if (nativeProps != null && nativeProps.exists("class")) {
-                b = Type.createInstance(Type.resolveClass(nativeProps.get("class")), [this]);
-                b.config = nativeProps;
-            }
-        }
-
-        if (b == null) {
-            b = _defaultBehaviours.get(id);
-        }
-        _behaviours.set(id, b);
-        return b;
+        return behaviours.getBehaviour(id);
     }
 
     private function behaviourGet(id:String):Variant {
-        var b:Behaviour = getBehaviour(id);
-        if (b != null) {
-            return b.get();
-        }
-        return null;
+        return behaviours.get(id);
     }
 
     private function behaviourGetDynamic(id:String):Dynamic {
@@ -198,19 +181,11 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     }
 
     private function behaviourSet(id:String, value:Variant) {
-        var b:Behaviour = getBehaviour(id);
-        if (b != null) {
-            b.set(value);
-        }
+        behaviours.set(id, value);
     }
 
     private function behaviourCall(id:String, param:Any = null):Variant {
-        var r:Variant = null;
-        var b:Behaviour = getBehaviour(id);
-        if (b != null) {
-            r = b.call(param);
-        }
-        return r;
+        return behaviours.call(id, param);
     }
     
     private function behaviourRun(id:String, param:Variant = null):Variant {
@@ -224,21 +199,9 @@ class Component extends ComponentBase implements IComponentBase implements IVali
 
     private var _behaviourUpdateOrder:Array<String> = [];
     private function behavioursUpdate() {
-        var order:Array<String> = _behaviourUpdateOrder.copy();
-        for (key in _behaviours.keys()) {
-            if (order.indexOf(key) == -1) {
-                order.push(key);
-            }
-        }
-        
-        for (key in order) {
-            var b = _behaviours.get(key);
-            if (b != null) {
-                b.update();
-            }
-        }
+        behaviours.update();
     }
-
+    
     private var _native:Null<Bool> = null;
     /**
      Whether to try to use a native version of this component
@@ -261,10 +224,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             return value;
         }
 
-        if (_ready == false) {
-            //return value;
-        }
-
         _native = value;
         if (_native == true && hasNativeEntry) {
             addClass(":native");
@@ -272,8 +231,11 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             removeClass(":native");
         }
 
-        _behaviours  = new Map<String, Behaviour>();
+        behaviours.cache(); // behaviours will most likely lead to different classes now, so lets cache the current ones to get their values
+        behaviours.detatch();
         create();
+        behaviours.restore();
+        
         return value;
     }
 

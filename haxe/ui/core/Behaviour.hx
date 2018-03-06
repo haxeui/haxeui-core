@@ -10,7 +10,8 @@ class Behaviour {
     private var config:Map<String, String> = null;
 
     private var _component:Component;
-
+    public var id:String; // for debug   
+    
     public function new(component:Component) {
         _component = component;
     }
@@ -22,6 +23,13 @@ class Behaviour {
 
     }
 
+    /**
+     Called when behaviour is no longer needed
+    **/
+    public function detatch() {
+        
+    }
+    
     /**
      Called when a component property getter is called
     **/

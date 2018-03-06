@@ -11,7 +11,7 @@ import haxe.ui.util.Variant;
 class Progress2 extends Range implements IDirectionalComponent {
     public function new() {
         super();
-         _behaviourUpdateOrder = ["min", "max", "pos"];
+         _behaviourUpdateOrder = ["min", "max", "pos", "indeterminate"];
     }
     
     //***********************************************************************************************************
@@ -70,11 +70,18 @@ private class IndeterminateBehaviour extends ValueBehaviour {
             return;
         }
         
+        super.set(value);
+        
         if (value == true) {
             startIndeterminateAnimation();
         } else {
             stopIndeterminateAnimation();
         }
+    }
+    
+    public override function detatch() {
+        super.detatch();
+        stopIndeterminateAnimation();
     }
     
     private function startIndeterminateAnimation() {
