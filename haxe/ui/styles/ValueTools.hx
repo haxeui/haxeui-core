@@ -151,7 +151,7 @@ class ValueTools {
         return false;
     }
 
-    public static function time(value:Value):Float {
+    public static function time(value:Value):Null<Float> {
         switch (value) {
             case Value.VTime(v, unit):
                 switch (unit) {
