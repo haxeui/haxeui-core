@@ -100,10 +100,9 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     // Construction
     //***********************************************************************************************************
     private function create() {
-        destroyChildren();
         createDefaults();
         handleCreate(native);
-
+        destroyChildren();
         layout = createLayout();
         if (native == false || native == null) {
             createChildren();

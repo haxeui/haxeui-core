@@ -9,8 +9,8 @@ class VerticalSlider2 extends Slider2 {
     //***********************************************************************************************************
     private override function createChildren() { // TODO: this should be min-width / min-height in theme css when the new css engine is done
         super.createChildren();
-        if (height <= 0) {
-            height = 150;
+        if (componentHeight <= 0) {
+            componentHeight = 150;
         }
     }
     

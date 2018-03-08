@@ -9,8 +9,8 @@ class HorizontalSlider2 extends Slider2 {
     //***********************************************************************************************************
     private override function createChildren() { // TODO: this should be min-width / min-height in theme css when the new css engine is done
         super.createChildren();
-        if (width <= 0) {
-            width = 150;
+        if (componentWidth <= 0) {
+            componentWidth = 150;
         }
     }
     
