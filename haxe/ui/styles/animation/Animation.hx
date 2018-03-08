@@ -43,16 +43,66 @@ class Animation {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
+    /**
+     Returns the current key frame running in the animation.
+    **/
     public var currentKeyFrame(get, never):KeyFrame;
+
+    /**
+     Specifies a delay for the start of an animation in seconds. If using negative values, the animation will start as if it
+     had already been playing for N seconds.
+    **/
     public var delay(default, null):Float = 0;
+
+    /**
+     Specifies whether an animation should be played forwards, backwards or in alternate cycles.
+
+     @see `haxe.ui.constants.AnimationDirection`
+    **/
     public var direction(default, null):AnimationDirection = AnimationDirection.NORMAL;
+
+    /**
+     Defines how long time an animation should take to complete.
+    **/
     public var duration(default, null):Float = 0;
+
+    /**
+     Specifies the speed curve of the animation.
+
+     @see `haxe.ui.styles.EasingFunction`
+    **/
     public var easingFunction(default, null):EasingFunction = EasingFunction.EASE;
+
+    /**
+     Specifies a style for the target when the animation is not playing (befores it starts, after it ends, or both).
+
+     @see `haxe.ui.constants.AnimationFillMode`
+    **/
     public var fillMode(default, null):AnimationFillMode = AnimationFillMode.NONE;
+
+    /**
+     Specifies the number of times an animation should run before it stops. For an infinite loop set to -1.
+    **/
     public var iterationCount(default, null):Int = 1;
+
+    /**
+     Specifies the total keyframes count in the animation.
+    **/
     public var keyframeCount(get, never):Int;
+
+    /**
+     The name of the animation.
+    **/
     public var name:String;
+
+    /**
+     Returns if the animation is running.
+    **/
     public var running(default, null):Bool;
+
+    /**
+     Specifies the target to apply the animation.
+    **/
     public var target(default, null):Dynamic;
 
     public function new(target:Dynamic, ?duration:Float, ?easingFunction:EasingFunction, ?delay:Float,
@@ -65,7 +115,10 @@ class Animation {
         if (direction != null)          this.direction = direction;
         if (fillMode != null)           this.fillMode = fillMode;
     }
-    
+
+    /**
+     Starts to run the animation.
+    **/
     public function run(onFinish:Void->Void = null) {
         if (keyframeCount == 0 || running) {
             return;
@@ -82,6 +135,9 @@ class Animation {
         _runNextKeyframe(onFinish);
     }
 
+    /**
+     Stops the animation if it is running.
+    **/
     public function stop() {
         if (running == false) {
             return;
