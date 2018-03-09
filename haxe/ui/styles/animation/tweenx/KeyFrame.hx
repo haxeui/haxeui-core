@@ -1,10 +1,11 @@
 package haxe.ui.styles.animation.tweenx;
-import tweenx909.TweenX;
 
 #if tweenx
 
 import haxe.ui.styles.EasingFunction;
 import haxe.ui.styles.elements.Directive;
+
+import tweenx909.TweenX;
 
 class KeyFrame {
     public var directives:Array<Directive> = [];
