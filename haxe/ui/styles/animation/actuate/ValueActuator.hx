@@ -1,5 +1,6 @@
 package haxe.ui.styles.animation.actuate;
 
+#if actuate
 import haxe.ui.util.StyleUtil;
 import motion.actuators.PropertyDetails;
 import haxe.ui.util.Color;
@@ -115,3 +116,5 @@ private class ColorPropertyDetails<T> {
         this.changeA = changeA;
     }
 }
+
+#end
