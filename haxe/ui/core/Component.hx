@@ -1723,6 +1723,30 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     }
 
     //***********************************************************************************************************
+    // Text related
+    //***********************************************************************************************************
+    override public function createTextDisplay(text:String = null):TextDisplay {
+        super.createTextDisplay();
+        _textDisplay.parentComponent = this;
+        return _textDisplay;
+    }
+
+    override public function createTextInput(text:String = null):TextInput {
+        super.createTextInput();
+        _textInput.parentComponent = this;
+        return _textInput;
+    }
+
+    //***********************************************************************************************************
+    // Image related
+    //***********************************************************************************************************
+    override public function createImageDisplay():ImageDisplay {
+        super.createImageDisplay();
+        _imageDisplay.parentComponent = this;
+        return _imageDisplay;
+    }
+
+    //***********************************************************************************************************
     // Script related
     //***********************************************************************************************************
     /**
@@ -1990,6 +2014,9 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     private function validateInternal() {
         var dataInvalid = isInvalid(InvalidationFlags.DATA);
         var styleInvalid = isInvalid(InvalidationFlags.STYLE);
+        var textDisplayInvalid = isInvalid(InvalidationFlags.TEXT_DISPLAY) && hasTextDisplay();
+        var textInputInvalid = isInvalid(InvalidationFlags.TEXT_INPUT) && hasTextInput();
+        var imageDisplayInvalid = isInvalid(InvalidationFlags.IMAGE_DISPLAY) && hasImageDisplay();
         var positionInvalid = isInvalid(InvalidationFlags.POSITION);
         var displayInvalid = isInvalid(InvalidationFlags.DISPLAY);
         var layoutInvalid = isInvalid(InvalidationFlags.LAYOUT) && _layoutLocked == false;
@@ -2002,15 +2029,15 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             validateStyle();
         }
 
-        if (hasTextDisplay()) {
+        if (textDisplayInvalid) {
             getTextDisplay().validate();
         }
 
-        if (hasTextInput()) {
+        if (textInputInvalid) {
             getTextInput().validate();
         }
 
-        if (hasImageDisplay()) {
+        if (imageDisplayInvalid) {
             getImageDisplay().validate();
         }
 

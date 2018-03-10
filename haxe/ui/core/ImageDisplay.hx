@@ -125,10 +125,10 @@ class ImageDisplay extends ImageDisplayBase {
     public function invalidate(flag:String = InvalidationFlags.ALL) {
         if (flag == InvalidationFlags.ALL) {
             _isAllInvalid = true;
-        } else {
-            if (flag != InvalidationFlags.ALL && !_invalidationFlags.exists(flag)) {
-                _invalidationFlags.set(flag, true);
-            }
+            parentComponent.invalidate(InvalidationFlags.IMAGE_DISPLAY);
+        } else if (!_invalidationFlags.exists(flag)) {
+            _invalidationFlags.set(flag, true);
+            parentComponent.invalidate(InvalidationFlags.IMAGE_DISPLAY);
         }
     }
 

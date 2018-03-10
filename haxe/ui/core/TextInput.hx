@@ -218,7 +218,6 @@ class TextInput extends TextInputBase implements IValidating {
 
         _inputData.hscrollPos = value;
         invalidate(InvalidationFlags.DATA);
-        validateData(); // TODO: why is this needed??
         return value;
     }
 
@@ -243,7 +242,6 @@ class TextInput extends TextInputBase implements IValidating {
 
         _inputData.vscrollPos = value;
         invalidate(InvalidationFlags.DATA);
-        validateData(); // TODO: why is this needed??
         return value;
     }
 
@@ -276,12 +274,10 @@ class TextInput extends TextInputBase implements IValidating {
     public function invalidate(flag:String = InvalidationFlags.ALL) {
         if (flag == InvalidationFlags.ALL) {
             _isAllInvalid = true;
-            //ValidationManager.instance.add(this);     //Don't need. It is validated internally in the component in a sync way
-        } else {
-            if (flag != InvalidationFlags.ALL && !_invalidationFlags.exists(flag)) {
-                _invalidationFlags.set(flag, true);
-                //ValidationManager.instance.add(this); //Don't need. It is validated internally in the component in a sync way
-            }
+            parentComponent.invalidate(InvalidationFlags.TEXT_INPUT);
+        } else if (!_invalidationFlags.exists(flag)) {
+            _invalidationFlags.set(flag, true);
+            parentComponent.invalidate(InvalidationFlags.TEXT_INPUT);
         }
     }
 
