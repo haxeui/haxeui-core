@@ -1703,13 +1703,13 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     //***********************************************************************************************************
     override public function createTextDisplay(text:String = null):TextDisplay {
         super.createTextDisplay();
-        _textDisplay.componentCaller = this;
+        _textDisplay.parentComponent = this;
         return _textDisplay;
     }
 
     override public function createTextInput(text:String = null):TextInput {
         super.createTextInput();
-        _textInput.componentCaller = this;
+        _textInput.parentComponent = this;
         return _textInput;
     }
 
@@ -1718,7 +1718,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     //***********************************************************************************************************
     override public function createImageDisplay():ImageDisplay {
         super.createImageDisplay();
-        _imageDisplay.componentCaller = this;
+        _imageDisplay.parentComponent = this;
         return _imageDisplay;
     }
 

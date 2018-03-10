@@ -31,9 +31,6 @@ class TextInput extends TextInputBase implements IValidating {
     private var _isAllInvalid:Bool = false;
     private var _isValidating:Bool = false;
 
-    @:dox(hide)
-    public var componentCaller:Component;
-
     public function new() {
         super();
 
@@ -277,10 +274,10 @@ class TextInput extends TextInputBase implements IValidating {
     public function invalidate(flag:String = InvalidationFlags.ALL) {
         if (flag == InvalidationFlags.ALL) {
             _isAllInvalid = true;
-            componentCaller.invalidate(InvalidationFlags.TEXT_INPUT);
+            parentComponent.invalidate(InvalidationFlags.TEXT_INPUT);
         } else if (!_invalidationFlags.exists(flag)) {
             _invalidationFlags.set(flag, true);
-            componentCaller.invalidate(InvalidationFlags.TEXT_INPUT);
+            parentComponent.invalidate(InvalidationFlags.TEXT_INPUT);
         }
     }
 
