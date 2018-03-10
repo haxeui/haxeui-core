@@ -4,6 +4,7 @@ import haxe.ui.core.IDirectionalComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.Screen;
+import haxe.ui.core.UIEvent;
 import haxe.ui.core.ValueBehaviour;
 import haxe.ui.util.Point;
 import haxe.ui.util.Variant;
@@ -149,6 +150,9 @@ private class Events {
         if (_range.hasEvent(MouseEvent.MOUSE_DOWN, onRangeMouseDown) == false) {
             _range.registerEvent(MouseEvent.MOUSE_DOWN, onRangeMouseDown);
         }
+        if (_range.hasEvent(UIEvent.CHANGE, onRangeChange) == false) {
+            _range.registerEvent(UIEvent.CHANGE, onRangeChange);
+        }
     }
     
     public function unregister() {
@@ -159,8 +163,15 @@ private class Events {
         if (_endThumb != null) {
             _endThumb.unregisterEvent(MouseEvent.MOUSE_DOWN, onThumbMouseDown);
         }
+        
+        _range.unregisterEvent(MouseEvent.MOUSE_DOWN, onRangeMouseDown);
+        _range.unregisterEvent(UIEvent.CHANGE, onRangeChange);
     }
 
+    private function onRangeChange(e:UIEvent) {
+        _slider.dispatch(new UIEvent(UIEvent.CHANGE));
+    }
+    
     private function onRangeMouseDown(e:MouseEvent) {
         if (_startThumb != null && _startThumb.hitTest(e.screenX, e.screenY) == true) {
             return;
