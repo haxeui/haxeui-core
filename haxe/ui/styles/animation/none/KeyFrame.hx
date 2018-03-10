@@ -17,6 +17,6 @@ class KeyFrame {
     }
     
     public function run(target:Dynamic, cb:Void->Void) {
-        cb();
+        haxe.Timer.delay(cb, 0);
     }
 }
