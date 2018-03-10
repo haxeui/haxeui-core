@@ -3,27 +3,27 @@ package haxe.ui.components;
 import haxe.ui.core.Component;
 import haxe.ui.layouts.DefaultLayout;
 
-class HorizontalSlider2 extends Slider2 {
+class VerticalSlider extends Slider {
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************
     private override function createChildren() { // TODO: this should be min-width / min-height in theme css when the new css engine is done
         super.createChildren();
-        if (componentWidth <= 0) {
-            componentWidth = 150;
+        if (componentHeight <= 0) {
+            componentHeight = 150;
         }
     }
     
     private override function createDefaults() {
         super.createDefaults();
-        _defaultLayout = new HorizontalSliderLayout();
+        _defaultLayout = new VerticalSliderLayout();
     }
     
     //***********************************************************************************************************
     // Overrides
     //***********************************************************************************************************
     private override function createValueComponent():Range {
-        return new HorizontalRange();
+        return new VerticalRange();
     }
 }
 
@@ -31,7 +31,7 @@ class HorizontalSlider2 extends Slider2 {
 // Custom layouts
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
-class HorizontalSliderLayout extends DefaultLayout {
+class VerticalSliderLayout extends DefaultLayout {
     public override function repositionChildren() {
         super.repositionChildren();
         
@@ -40,13 +40,13 @@ class HorizontalSliderLayout extends DefaultLayout {
         
         var startThumb:Button = findComponent("start-thumb");
         var endThumb:Button = findComponent("end-thumb");
-        
+
         if (startThumb != null) {
-            startThumb.left =  (range.left + rangeValue.left) - (startThumb.width / 2);
-            startThumb.top = (rangeValue.screenTop - _component.screenTop) - (startThumb.width / 2) + (rangeValue.screenTop - range.screenTop);
+            startThumb.left =  (rangeValue.screenLeft - _component.screenLeft) - (startThumb.height / 2) + (rangeValue.screenLeft - range.screenLeft);
+            startThumb.top = (range.top + rangeValue.top + rangeValue.height) - (startThumb.height / 2);
         }
 
-        endThumb.left =  (range.left + rangeValue.left + rangeValue.width) - (endThumb.width / 2);
-        endThumb.top = (rangeValue.screenTop - _component.screenTop) - (endThumb.width / 2) + (rangeValue.screenTop - range.screenTop);
+        endThumb.left =  (rangeValue.screenLeft - _component.screenLeft) - (endThumb.height / 2) + (rangeValue.screenLeft - range.screenLeft);
+        endThumb.top = (range.top + rangeValue.top) - (endThumb.height / 2);
     }
 }

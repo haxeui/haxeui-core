@@ -920,7 +920,7 @@
     }
 }
 
-.progress2:indeterminate {
+.progress:indeterminate {
     animation: indeterminate 1s ease 0s infinite;
 }
 
@@ -929,20 +929,20 @@
     border-radius: 2px;
 }
 
-.horizontal-progress2 {
+.horizontal-progress {
     background: #F1F1F1 #FFFFFF vertical;
 }
 
-.horizontal-progress2 .progress-value {
+.horizontal-progress .progress-value {
     background: #6CAADB #216AAE vertical;
     height: 100%;
 }
 
-.vertical-progress2 {
+.vertical-progress {
     background: #F1F1F1 #FFFFFF horizontal;
 }
 
-.vertical-progress2 .progress-value {
+.vertical-progress .progress-value {
     background: #6CAADB #216AAE horizontal;
     width: 100%;
 }
@@ -950,7 +950,7 @@
 /************************************************************************
 ** SLIDERS
 *************************************************************************/
-.horizontal-slider2 {
+.horizontal-slider {
     padding-left: 5px;
     padding-right: 5px;
     padding-top: 1px;
@@ -958,7 +958,7 @@
     height: auto;
 }
 
-.horizontal-slider2 .slider-value {
+.horizontal-slider .slider-value {
     width: 100%;
     height: 8px;
     border-radius: 4px;
@@ -966,14 +966,14 @@
     cursor: pointer;
 }
 
-.horizontal-slider2 .button {
+.horizontal-slider .button {
     width: 14px;
     height: 14px;
     border-radius: 16px;
     vertical-align: center;
 }
     
-.vertical-slider2 {
+.vertical-slider {
     padding-top: 5px;
     padding-bottom: 5px;
     padding-left: 1px;
@@ -981,7 +981,7 @@
     width: auto;
 }
 
-.vertical-slider2 .slider-value {
+.vertical-slider .slider-value {
     height: 100%;
     width: 8px;
     border-radius: 4px;
@@ -989,7 +989,7 @@
     cursor: pointer;
 }
 
-.vertical-slider2 .button {
+.vertical-slider .button {
     width: 14px;
     height: 14px;
     border-radius: 16px;

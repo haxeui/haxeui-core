@@ -169,8 +169,8 @@ private class Events {
             pos = Math.fceil(pos / _range.step) * _range.step;
         }
         
-        if (Std.is(_range, Progress2)) {
-            cast(_range, Progress2).pos = pos;
+        if (Std.is(_range, Progress)) {
+            cast(_range, Progress).pos = pos;
             return;
         }
         

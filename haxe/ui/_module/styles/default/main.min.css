@@ -143,16 +143,16 @@
 .vertical-range{background:#F1F1F1 #FFFFFF horizontal;}
 .vertical-range .range-value{background:#6CAADB #216AAE horizontal;width:100%;}
 @keyframes indeterminate{0%{start:0;end:25;} 50%{start:75;end:100;} 100%{start:0;end:25;}}
-.progress2:indeterminate{animation:indeterminate 1s ease 0s infinite;}
+.progress:indeterminate{animation:indeterminate 1s ease 0s infinite;}
 .progress-value{border:none;border-radius:2px;}
-.horizontal-progress2{background:#F1F1F1 #FFFFFF vertical;}
-.horizontal-progress2 .progress-value{background:#6CAADB #216AAE vertical;height:100%;}
-.vertical-progress2{background:#F1F1F1 #FFFFFF horizontal;}
-.vertical-progress2 .progress-value{background:#6CAADB #216AAE horizontal;width:100%;}
-.horizontal-slider2{padding-left:5px;padding-right:5px;padding-top:1px;padding-bottom:1px;height:auto;}
-.horizontal-slider2 .slider-value{width:100%;height:8px;border-radius:4px;vertical-align:center;cursor:pointer;}
-.horizontal-slider2 .button{width:14px;height:14px;border-radius:16px;vertical-align:center;}
-.vertical-slider2{padding-top:5px;padding-bottom:5px;padding-left:1px;padding-right:1px;width:auto;}
-.vertical-slider2 .slider-value{height:100%;width:8px;border-radius:4px;horizontal-align:center;cursor:pointer;}
-.vertical-slider2 .button{width:14px;height:14px;border-radius:16px;horizontal-align:center;}
+.horizontal-progress{background:#F1F1F1 #FFFFFF vertical;}
+.horizontal-progress .progress-value{background:#6CAADB #216AAE vertical;height:100%;}
+.vertical-progress{background:#F1F1F1 #FFFFFF horizontal;}
+.vertical-progress .progress-value{background:#6CAADB #216AAE horizontal;width:100%;}
+.horizontal-slider{padding-left:5px;padding-right:5px;padding-top:1px;padding-bottom:1px;height:auto;}
+.horizontal-slider .slider-value{width:100%;height:8px;border-radius:4px;vertical-align:center;cursor:pointer;}
+.horizontal-slider .button{width:14px;height:14px;border-radius:16px;vertical-align:center;}
+.vertical-slider{padding-top:5px;padding-bottom:5px;padding-left:1px;padding-right:1px;width:auto;}
+.vertical-slider .slider-value{height:100%;width:8px;border-radius:4px;horizontal-align:center;cursor:pointer;}
+.vertical-slider .button{width:14px;height:14px;border-radius:16px;horizontal-align:center;}
 
