@@ -11,12 +11,13 @@ class KeyFrame {
     public var directives:Array<Directive> = [];
     public var time:Float = 0;
     public var delay:Float = 0;                 //TODO - to be implemented
-    public var easingFunction:EasingFunction;   //TODO - to be implemented
+    public var easingFunction:EasingFunction;
 
     private var _callback:Void->Void;
     private var _currentTime:Float;
     private var _stopped:Bool;
     private var _target:Dynamic;
+    private var _easeFunc:Float->Float;
     private var _propertyDetails:Array<PropertyDetails<Dynamic>>;
     private var _colorPropertyDetails:Array<ColorPropertyDetails<Dynamic>>;
 
@@ -64,6 +65,7 @@ class KeyFrame {
             }
         }
 
+        _easeFunc = Ease.get(easingFunction);
         if (time == 0) {
             _apply(1);
             _finish();
@@ -96,6 +98,7 @@ class KeyFrame {
     }
 
     private function _apply(position:Float) {
+        position = _easeFunc(position);
         for (details in _propertyDetails) {
             Reflect.setProperty (_target, details.propertyName, details.start + (details.change * position));
         }
@@ -116,5 +119,36 @@ class KeyFrame {
         if (_callback != null) {
             new CallLater(_callback);
         }
+    }
+}
+
+private class Ease {
+    public static function get(easingFunction:EasingFunction):Float->Float {
+        return switch(easingFunction) {
+            case EasingFunction.LINEAR:
+                linear;
+            case EasingFunction.EASE, EasingFunction.EASE_IN_OUT:
+                easeInOut;
+            case EasingFunction.EASE_IN:
+                easeIn;
+            case EasingFunction.EASE_OUT:
+                easeOut;
+        }
+    }
+
+    public static function linear(k:Float):Float {
+        return k;
+    }
+
+    public static function easeIn(k:Float):Float {
+        return k * k * k;
+    }
+
+    public static function easeOut(k:Float):Float {
+        return --k * k * k + 1;
+    }
+
+    public static function easeInOut(k:Float):Float {
+        return ((k /= 1 / 2) < 1) ? 0.5 * k * k * k : 0.5 * ((k -= 2) * k * k + 2);
     }
 }
