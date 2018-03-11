@@ -10,7 +10,7 @@ import haxe.ui.styles.elements.Directive;
 class KeyFrame {
     public var directives:Array<Directive> = [];
     public var time:Float = 0;
-    public var delay:Float = 0;                 //TODO - to be implemented
+    public var delay:Float = 0;
     public var easingFunction:EasingFunction;
 
     private var _callback:Void->Void;
@@ -72,7 +72,11 @@ class KeyFrame {
         } else {
             _currentTime = Timer.stamp();
 
-            new CallLater(_nextFrame);
+            if (delay > 0) {
+                haxe.ui.util.Timer.delay(_nextFrame, Std.int(delay*1000));
+            } else {
+                new CallLater(_nextFrame);
+            }
         }
     }
 
@@ -83,6 +87,9 @@ class KeyFrame {
 
         var currentTime:Float = Timer.stamp();
         var delta:Float = currentTime - _currentTime;
+        if (delay < 0) {
+            delta += -delay;
+        }
         var tweenPosition:Float = delta / time;
         if (tweenPosition > 1) {
             tweenPosition = 1;
