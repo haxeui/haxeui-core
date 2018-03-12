@@ -22,7 +22,7 @@ class Actuator<T> {
     }
 
     public var target(default, null):T;
-    public var properties(default, null):Map<String, Dynamic>;
+    public var properties(default, null):Dynamic;
     public var duration(default, null):Float = 0;
     public var delay(default, null):Float = 0;
 
