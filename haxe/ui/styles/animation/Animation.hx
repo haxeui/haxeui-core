@@ -204,14 +204,21 @@ class Animation {
             keyframe.easingFunction = easingFunction;
             _keyframes.unshift(keyframe);
         } else if (delay < 0) {
-            var currentTime:Float = 0;
-            for (i in 0..._keyframes.length) {
-                var keyframe:KeyFrame = _keyframes[i];
+            //Remove all frames until delay is reached. For the last keyframe, we apply a negative delay to play the animation in the exact time.
+            currentTime = 0;
+            var lastKeyframe:KeyFrame = null;
+            while (_keyframes.length > 0) {
+                var keyframe:KeyFrame = _keyframes[0];
                 currentTime -= keyframe.time;
-                if(currentTime > delay) {
-                    _keyframes.splice(i, 1);
+                if(currentTime >= delay) {
+                    lastKeyframe = keyframe;
+                    _keyframes.splice(0, 1);
                 } else {
-                    keyframe.delay = currentTime + keyframe.time + delay;
+                    keyframe.delay = -(currentTime - delay + keyframe.time);
+                    if(lastKeyframe != null) {
+                        lastKeyframe.time = 0;
+                        _keyframes.unshift(lastKeyframe);
+                    }
                     break;
                 }
             }
