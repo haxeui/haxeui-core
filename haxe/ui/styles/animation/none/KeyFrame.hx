@@ -35,7 +35,10 @@ class KeyFrame {
         _actuator = new Actuator(target, properties, time, {
             delay: delay,
             easingFunction: easingFunction,
-            onComplete: cb
+            onComplete: function() {
+                _actuator = null;
+                cb();
+            }
         });
         _actuator.run();
     }
