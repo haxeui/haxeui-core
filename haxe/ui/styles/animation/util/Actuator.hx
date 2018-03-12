@@ -15,25 +15,38 @@ class ActuatorOptions {
 }
 
 class Actuator<T> {
+    //***********************************************************************************************************
+    // Helpers
+    //***********************************************************************************************************
     public static function tween<T>(target:T, properties:Dynamic, duration:Float, ?options:ActuatorOptions):Actuator<T> {
         var actuator = new Actuator<T>(target, properties, duration, options);
         actuator.run();
         return actuator;
     }
 
+    //***********************************************************************************************************
+    // Public API
+    //***********************************************************************************************************
+    /**
+     The object to apply the tween.
+    **/
     public var target(default, null):T;
+
+    /**
+     End values to apply to the target.
+    **/
     public var properties(default, null):Dynamic;
+
+    /**
+     Defines how long time an animation should take to complete.
+    **/
     public var duration(default, null):Float = 0;
+
+    /**
+     Specifies a delay for the start of an animation in seconds. If using negative values, the animation will start as if it
+     had already been playing for N seconds.
+    **/
     public var delay(default, null):Float = 0;
-
-    private var _currentTime:Float;
-    private var _easeFunc:Float->Float;
-    private var _onComplete:Void->Void;
-    private var _onUpdate:Float->Void;
-    private var _stopped:Bool;
-
-    private var _propertyDetails:Array<PropertyDetails<Dynamic>>;
-    private var _colorPropertyDetails:Array<ColorPropertyDetails<Dynamic>>;
 
     public function new(target:T, properties:Dynamic, duration:Float, ?options:ActuatorOptions) {
         this.target = target;
@@ -48,11 +61,17 @@ class Actuator<T> {
             if (options.onUpdate != null)       _onUpdate = options.onUpdate;
         }
     }
-    
+
+    /**
+     Stops the tween if it is running.
+    **/
     public function stop() {
         _stopped = true;
     }
-    
+
+    /**
+     Starts to run the tween.
+    **/
     public function run() {
         _initialize();
 
@@ -71,6 +90,18 @@ class Actuator<T> {
             }
         }
     }
+
+    //***********************************************************************************************************
+    // Private API
+    //***********************************************************************************************************
+    private var _currentTime:Float;
+    private var _easeFunc:Float->Float;
+    private var _onComplete:Void->Void;
+    private var _onUpdate:Float->Void;
+    private var _stopped:Bool;
+
+    private var _propertyDetails:Array<PropertyDetails<Dynamic>>;
+    private var _colorPropertyDetails:Array<ColorPropertyDetails<Dynamic>>;
 
     private function _initialize() {
         _propertyDetails = [];
