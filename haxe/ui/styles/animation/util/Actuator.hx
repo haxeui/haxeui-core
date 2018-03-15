@@ -100,8 +100,8 @@ class Actuator<T> {
     private var _onUpdate:Float->Void;
     private var _stopped:Bool;
 
-    private var _propertyDetails:Array<PropertyDetails<Dynamic>>;
-    private var _colorPropertyDetails:Array<ColorPropertyDetails<Dynamic>>;
+    private var _propertyDetails:Array<PropertyDetails<T>>;
+    private var _colorPropertyDetails:Array<ColorPropertyDetails<T>>;
 
     private function _initialize() {
         _propertyDetails = [];
@@ -116,7 +116,7 @@ class Actuator<T> {
                 case Value.VColor(v):
                     var startColor:Color = cast(start, Color);
                     var endColor:Color = v;
-                    var details:ColorPropertyDetails<Dynamic> = new ColorPropertyDetails (cast target,
+                    var details:ColorPropertyDetails<T> = new ColorPropertyDetails(target,
                     componentProperty,
                     startColor,
                     endColor.r - startColor.r,
@@ -131,7 +131,7 @@ class Actuator<T> {
                 case _:
                     var val:Null<Float> = ValueTools.calcDimension(end);
                     if (val != null) {
-                        var details:PropertyDetails<Dynamic> = new PropertyDetails (target, componentProperty, start, val - start);
+                        var details:PropertyDetails<T> = new PropertyDetails(target, componentProperty, start, val - start);
                         _propertyDetails.push (details);
                     }
             }
