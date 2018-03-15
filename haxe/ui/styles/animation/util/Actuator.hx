@@ -8,7 +8,7 @@ import haxe.ui.util.StyleUtil;
 
 @:structInit
 class ActuatorOptions {
-    @:optional public var delay:Float;
+    @:optional public var delay:Null<Float>;
     @:optional public var easingFunction:EasingFunction;
     @:optional public var onComplete:Void->Void;
     @:optional public var onUpdate:Float->Void;
