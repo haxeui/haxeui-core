@@ -23,8 +23,10 @@ class RunFactory {
                 r = new WebServerRun("build/pixijs");
             case "hxwidgets":
                 var main = Util.name(params);
-                trace(main);
                 r = new ProcessRun(['build/hxwidgets/${main}']);
+            case "winforms":
+                var main = Util.name(params);
+                r = new ProcessRun(['build/winforms/bin/${main}']);
             case "nme":
                 r = new ProcessRun(["nme", "run"]);
         }
