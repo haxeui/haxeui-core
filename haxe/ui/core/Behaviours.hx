@@ -125,6 +125,15 @@ class Behaviours {
         var b:Behaviour = getBehaviour(id);
         if (b != null) {
             b.set(value);
+            
+            var autoDispatch = b.getConfigValue("autoDispatch", null);
+            if (autoDispatch != null) {
+                var arr = autoDispatch.split(".");
+                var eventName = arr.pop().toLowerCase();
+                var cls = arr.join(".");
+                var event = Type.createInstance(Type.resolveClass(cls), [eventName]);
+                b._component.dispatch(event);
+            }
         }
     }
     
