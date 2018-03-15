@@ -116,12 +116,29 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         layout = new DefaultLayout();       //TODO - it should be avoided. For each component it creates the object and possibly overwritten with a custom layout, so it is useless. Create in case it is needed
     }
 
+    private var _eventsClass:Class<Events> = null;
+    private var _internalEvents:Events = null;
+    private function registerInternalEvents() {
+        if (_internalEvents != null || _eventsClass == null) {
+            return;
+        }
+        _internalEvents = Type.createInstance(_eventsClass, [this]);
+        _internalEvents.register();
+    }
+    private function unregisterInternalEvents() {
+        if (_internalEvents == null) {
+            return;
+        }
+        _internalEvents.unregister();
+        _internalEvents = null;
+    }
+    
     private function createChildren() {
 
     }
 
     private function destroyChildren() {
-
+        unregisterInternalEvents();
     }
 
     private var _hasNativeEntry:Null<Bool>;

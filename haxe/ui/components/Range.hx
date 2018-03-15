@@ -13,6 +13,7 @@ import haxe.ui.util.Point;
 class Range extends InteractiveComponent implements IDirectionalComponent {
     public function new() {
         super();
+        _eventsClass = Events;
         _behaviourUpdateOrder = ["min", "max", "start", "end"];
     }
     
@@ -26,20 +27,19 @@ class Range extends InteractiveComponent implements IDirectionalComponent {
     @:behaviour(InvalidatingBehaviour, 0)    public var precision:Int;
     @:behaviour(InvalidatingBehaviour, -1)   public var step:Float;
     
-    private var _events:Events = null;
-    public var interactive(get, set):Bool;
-    private function get_interactive():Bool {
-        return (_events != null);
+    public var interactive2(get, set):Bool;
+    private function get_interactive2():Bool {
+        return (_internalEvents != null);
     }
-    private function set_interactive(value:Bool):Bool {
-        if (value == interactive || native == true) {
+    private function set_interactive2(value:Bool):Bool {
+        if (value == interactive2 || native == true) {
             return value;
         }
         
         if (value == true) {
-            _events = new Events(this);
+            registerInternalEvents();
         } else {
-            _events = null;
+            unregisterInternalEvents();
         }
         
         return value;
@@ -62,14 +62,6 @@ class Range extends InteractiveComponent implements IDirectionalComponent {
             v.id = '${cssName}-value';
             v.addClass('${cssName}-value', false);
             addComponent(v);
-        }
-    }
-    
-    private override function destroyChildren() {
-        super.destroyChildren();
-        if (_events != null) {
-            _events.unregister();
-            _events = null;
         }
     }
     
@@ -127,19 +119,20 @@ class Range extends InteractiveComponent implements IDirectionalComponent {
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.components.Range)
-private class Events {
+private class Events extends haxe.ui.core.Events {
     private var _range:Range;
     
     public function new(range:Range) {
+        super(range);
         _range = range;
         register();
     }
     
-    public function register() {
+    public override function register() {
         _range.registerEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
     }
     
-    public function unregister() {
+    public override function unregister() {
         _range.unregisterEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
     }
     
