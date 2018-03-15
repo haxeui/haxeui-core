@@ -1,0 +1,10 @@
+{
+    "name": "winforms",
+    "type": "template",
+    "subProjects": [
+        "shared", "winforms-shared"
+    ],
+    "templates": [
+        { "src": "winforms.hxml", "dst": "${target}/winforms.hxml"}
+    ]
+}

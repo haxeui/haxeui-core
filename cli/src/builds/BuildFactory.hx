@@ -6,6 +6,7 @@ import builds.kha.KhaBuild;
 import builds.nme.NmeBuild;
 import builds.openfl.OpenFLBuild;
 import builds.pixijs.PixiJsBuild;
+import builds.winforms.WinFormsBuild;
 
 class BuildFactory {
     public static function get(backend:String):Build {
@@ -24,6 +25,8 @@ class BuildFactory {
                 b = new PixiJsBuild();
             case "kha":
                 b = new KhaBuild();
+            case "winforms":
+                b = new WinFormsBuild();
             case _:    
         }
         

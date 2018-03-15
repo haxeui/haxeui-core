@@ -1,12 +1,7 @@
 package projects;
 
-import haxe.Resource;
 import haxe.io.Path;
 import sys.FileSystem;
-import sys.io.File;
-
-import projects.kha.ProjectGen;
-import projects.kha.ProjectGenFD;
 
 class Project {
     public var name:String;
@@ -73,6 +68,16 @@ class Project {
     
     public static function load(name:String):Project {
         var project:Project = ProjectFactory.get(name);
+        project._subProjects = [];
+        if (project.subProjects == null) {
+            project.subProjects = [];
+        }
+        if (project.directories == null) {
+            project.directories = [];
+        }
+        if (project.post == null) {
+            project.post = [];
+        }
         
         if (project != null) {
             project.loadSubProjects();

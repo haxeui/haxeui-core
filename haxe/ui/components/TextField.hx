@@ -77,6 +77,10 @@ class TextField extends InteractiveComponent implements IFocusable {
         return value;
     }
 
+    private override function get_text():String {
+        return behaviourGet("text");
+    }
+    
     private override function set_focus(value:Bool):Bool {
         if (_focus == value || allowFocus == false) {
             return value;
