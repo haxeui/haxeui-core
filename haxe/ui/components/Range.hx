@@ -27,12 +27,12 @@ class Range extends InteractiveComponent implements IDirectionalComponent {
     @:behaviour(InvalidatingBehaviour, 0)    public var precision:Int;
     @:behaviour(InvalidatingBehaviour, -1)   public var step:Float;
     
-    public var interactive2(get, set):Bool;
-    private function get_interactive2():Bool {
+    public var allowInteraction(get, set):Bool;
+    private function get_allowInteraction():Bool {
         return (_internalEvents != null);
     }
-    private function set_interactive2(value:Bool):Bool {
-        if (value == interactive2 || native == true) {
+    private function set_allowInteraction(value:Bool):Bool {
+        if (value == allowInteraction || native == true) {
             return value;
         }
         
