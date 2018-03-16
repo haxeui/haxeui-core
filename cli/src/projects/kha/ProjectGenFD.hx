@@ -14,8 +14,6 @@ class ProjectGenFD extends ProjectGen {
         
         Sys.setCwd(params.target);
         
-        trace(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ");
-        
         var target = "html5";
         if (Util.mapContains("windows", params.additional)) {
             target = "windows";
