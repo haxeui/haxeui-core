@@ -10,6 +10,11 @@ import haxe.ui.util.Point;
 import haxe.ui.util.Variant;
 
 class Slider extends InteractiveComponent implements IDirectionalComponent {
+    public function new() {
+        super();
+        _eventsClass = Events;
+    }
+    
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
@@ -31,7 +36,7 @@ class Slider extends InteractiveComponent implements IDirectionalComponent {
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************
-    private var _events:Events = null;
+    //private var _events:Events = null;
     private override function createChildren() {
         super.createChildren();
         if (findComponent("range") == null) {
@@ -44,14 +49,6 @@ class Slider extends InteractiveComponent implements IDirectionalComponent {
         }
         
         createThumb("end-thumb");
-    }
-    
-    private override function destroyChildren() {
-        super.destroyChildren();
-        if (_events != null) {
-            _events.unregister();
-            _events = null;
-        }
     }
     
     //***********************************************************************************************************
@@ -69,10 +66,7 @@ class Slider extends InteractiveComponent implements IDirectionalComponent {
         b.remainPressed = true;
         addComponent(b);
         
-        if (_events == null) {
-            _events = new Events(this);
-        }
-        _events.register();
+        registerInternalEvents();
     }
 }
 
@@ -122,7 +116,7 @@ private class EndBehaviour extends ValueBehaviour {
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.components.Slider)
-private class Events {
+private class Events extends haxe.ui.core.Events  {
     private var _slider:Slider;
     
     private var _endThumb:Button;
@@ -132,11 +126,12 @@ private class Events {
     private var _activeThumb:Button;
     
     public function new(slider:Slider) {
+        super(slider);
         _slider = slider;
         _range = slider.findComponent(Range);
     }
     
-    public function register() {
+    public override function register() {
         _startThumb = _slider.findComponent("start-thumb");
         if (_startThumb != null && _startThumb.hasEvent(MouseEvent.MOUSE_DOWN, onThumbMouseDown) == false) {
             _startThumb.registerEvent(MouseEvent.MOUSE_DOWN, onThumbMouseDown);
@@ -155,7 +150,7 @@ private class Events {
         }
     }
     
-    public function unregister() {
+    public override function unregister() {
         if (_startThumb != null) {
             _startThumb.unregisterEvent(MouseEvent.MOUSE_DOWN, onThumbMouseDown);
         }
