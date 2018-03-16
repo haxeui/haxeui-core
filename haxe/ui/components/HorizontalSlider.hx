@@ -4,6 +4,10 @@ import haxe.ui.core.Component;
 import haxe.ui.layouts.DefaultLayout;
 
 class HorizontalSlider extends Slider {
+    public function new() {
+        super();
+    }
+    
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************

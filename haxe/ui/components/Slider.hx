@@ -12,7 +12,6 @@ import haxe.ui.util.Variant;
 class Slider extends InteractiveComponent implements IDirectionalComponent {
     public function new() {
         super();
-        _eventsClass = Events;
     }
     
     //***********************************************************************************************************
@@ -36,9 +35,9 @@ class Slider extends InteractiveComponent implements IDirectionalComponent {
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************
-    //private var _events:Events = null;
     private override function createChildren() {
         super.createChildren();
+        
         if (findComponent("range") == null) {
             var v = createValueComponent();
             v.scriptAccess = false;
@@ -65,8 +64,8 @@ class Slider extends InteractiveComponent implements IDirectionalComponent {
         b.addClass(id);
         b.remainPressed = true;
         addComponent(b);
-        
-        registerInternalEvents();
+
+        registerInternalEvents(Events, true); // call .register again as we might have a new thumb! 
     }
 }
 
@@ -223,8 +222,6 @@ private class Events extends haxe.ui.core.Events  {
     }
    
     private function onScreenMouseMove(e:MouseEvent) {
-        var r:Range = _slider.findComponent(Range);
-        
         var coord:Point = new Point();
         coord.x = (e.screenX - _slider.screenLeft - _offset.x) - _slider.paddingLeft +  (_activeThumb.width / 2);
         coord.y = (e.screenY - _slider.screenTop - _offset.y) - _slider.paddingTop +  (_activeThumb.height / 2);

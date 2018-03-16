@@ -13,7 +13,6 @@ import haxe.ui.util.Point;
 class Range extends InteractiveComponent implements IDirectionalComponent {
     public function new() {
         super();
-        _eventsClass = Events;
         _behaviourUpdateOrder = ["min", "max", "start", "end"];
     }
     
@@ -37,7 +36,7 @@ class Range extends InteractiveComponent implements IDirectionalComponent {
         }
         
         if (value == true) {
-            registerInternalEvents();
+            registerInternalEvents(Events);
         } else {
             unregisterInternalEvents();
         }
