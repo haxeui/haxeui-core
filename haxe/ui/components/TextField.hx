@@ -24,6 +24,12 @@ class TextField extends InteractiveComponent implements IFocusable {
     //***********************************************************************************************************
     // Overrides
     //***********************************************************************************************************
+    private override function registerBehaviours() {  // TODO: temp
+        super.registerBehaviours();
+        behaviours.register("text", TextFieldDefaultTextBehaviour);
+        _defaultLayout = new TextFieldLayout();
+    }
+    
     private override function createDefaults() {
         super.createDefaults();
         defaultBehaviours([

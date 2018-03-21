@@ -10,6 +10,11 @@ class VerticalRange extends Range {
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************
+    private override function registerBehaviours() {
+        super.registerBehaviours();
+        behaviours.register("posFromCoord", VerticalRangePosFromCoord);
+    }
+    
     private override function createChildren() { // TODO: this should be min-width / min-height in theme css when the new css engine is done
         super.createChildren();
         if (width <= 0) {
@@ -23,7 +28,6 @@ class VerticalRange extends Range {
     private override function createDefaults() {
         super.createDefaults();
         _defaultLayout = new VerticalRangeLayout();
-        defaultBehaviour("posFromCoord", new VerticalRangePosFromCoord(this));
     }
 }
 

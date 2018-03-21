@@ -1,7 +1,9 @@
 package haxe.ui.components;
 
+import haxe.ui.core.Behaviour;
 import haxe.ui.core.IDirectionalComponent;
 import haxe.ui.core.InteractiveComponent;
+import haxe.ui.core.InvalidatingBehaviour;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.Screen;
 import haxe.ui.core.UIEvent;
@@ -10,16 +12,14 @@ import haxe.ui.util.Point;
 import haxe.ui.util.Variant;
 
 class Slider extends InteractiveComponent implements IDirectionalComponent {
-    public function new() {
-        super();
-    }
-    
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:behaviour(StartBehaviour) public var start:Float;
-    @:behaviour(EndBehaviour)   public var end:Float;
-    @:behaviour(EndBehaviour)   public var pos:Float;
+    @:behaviour(InvalidatingBehaviour, 0)   public var min:Float;
+    @:behaviour(InvalidatingBehaviour, 100) public var max:Float;
+    @:behaviour(StartBehaviour)             public var start:Float;
+    @:behaviour(EndBehaviour)               public var end:Float;
+    @:behaviour(EndBehaviour)               public var pos:Float;
     
     //***********************************************************************************************************
     // Private API

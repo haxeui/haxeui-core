@@ -283,28 +283,30 @@ class Macros {
         }
         
         if (behaviours.length > 0) {
-            // lets modify the createDefaults function
+            // lets modify the registerBehaviours function
             
             var parts = [];
             for (b in behaviours) {
                 if (b.bparam == null) {
-                    parts.push('"${b.name}" => new ${b.btype}(this)');
+                    parts.push('behaviours.register("${b.name}", ${b.btype})');
                 } else {
-                    parts.push('"${b.name}" => new ${b.btype}(this, ${b.bparam})');
+                    parts.push('behaviours.register("${b.name}", ${b.btype}, ${b.bparam})');
                 }
             }
             
-            var line = 'defaultBehaviours([${parts.join(",")}])';
-            
-            var createDefaultsFn = MacroHelpers.getFunction(fields, "createDefaults");
-            if (createDefaultsFn == null) {
+            var registerBehavioursFn = MacroHelpers.getFunction(fields, "registerBehaviours");
+            if (registerBehavioursFn == null) {
                 var code = "function() {\n";
-                code += 'super.createDefaults();\n';
-                code += '${line};\n';
+                code += 'super.registerBehaviours();\n';
+                for (line in parts) {
+                    code += '${line};\n';
+                }
                 code += "}\n";
-                MacroHelpers.addFunction("createDefaults", Context.parseInlineString(code, pos), [APrivate, AOverride], fields, pos);
+                MacroHelpers.addFunction("registerBehaviours", Context.parseInlineString(code, pos), [APrivate, AOverride], fields, pos);
             } else {
-                MacroHelpers.insertLine(createDefaultsFn, Context.parseInlineString('${line}', pos), -1);    
+                for (line in parts) {
+                    MacroHelpers.insertLine(registerBehavioursFn, Context.parseInlineString('${line}', pos), -1);    
+                }
             }
         }
         

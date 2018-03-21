@@ -53,6 +53,13 @@ class Button extends InteractiveComponent {
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************
+    private override function registerBehaviours() {  // TODO: temp
+        super.registerBehaviours();
+        behaviours.register("text", ButtonDefaultTextBehaviour);
+        _defaultLayout = new ButtonLayout();
+    }
+    
+    
     private override function createDefaults() {
         super.createDefaults();
         defaultBehaviours([

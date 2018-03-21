@@ -85,6 +85,8 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             c = Type.getSuperClass(c);
         }        
 
+        registerBehaviours();
+        
         // we dont want to actually apply the classes, just find out if native is there or not
         //TODO - we could include the initialization in the validate method
         //var s = Toolkit.styleSheet.applyClasses(this, false);
@@ -94,6 +96,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         } else {
             create();
         }
+        
     }
 
     //***********************************************************************************************************
@@ -103,12 +106,17 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         createDefaults();
         handleCreate(native);
         destroyChildren();
+        behaviours.replaceNative();
         layout = createLayout();
         if (native == false || native == null) {
             createChildren();
         }
+        behaviours.applyDefaults();
     }
 
+    private function registerBehaviours() {
+    }
+    
     private function createDefaults() {
         defaultBehaviours([
             "disabled" =>  new ComponentDefaultDisabledBehaviour(this)
@@ -181,25 +189,28 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     
     // TODO: these functions should be removed and components should use behaviours.get/set/call/defaults direction
     private function defaultBehaviour(name:String, behaviour:Behaviour) {
-        this.behaviours.defaults([name => behaviour]);
     }
     private function defaultBehaviours(behaviours:Map<String, Behaviour>) {
-        this.behaviours.defaults(behaviours);
     }
     
     private function getBehaviour(id:String):Behaviour {
-        return behaviours.getBehaviour(id);
+        //return behaviours.getBehaviour(id);
+        return behaviours.find(id);
     }
 
     private function behaviourGet(id:String):Variant {
+        //return behaviours.get(id);
         return behaviours.get(id);
     }
 
     private function behaviourGetDynamic(id:String):Dynamic {
+        /*
         var b:Behaviour = getBehaviour(id);
         if (b != null) {
             return b.getDynamic();
         }
+        return null;
+        */
         return null;
     }
 
@@ -212,17 +223,21 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     }
     
     private function behaviourRun(id:String, param:Variant = null):Variant {
+        /*
         var r = null;
         var b:Behaviour = getBehaviour(id);
         if (b != null) {
             r = b.run(param);
         }
         return r;
+        */
+        return null;
     }
 
     private var _behaviourUpdateOrder:Array<String> = [];
     private function behavioursUpdate() {
-        behaviours.update();
+//        behaviours.update();
+       behaviours.update();
     }
     
     private var _native:Null<Bool> = null;
@@ -254,8 +269,11 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             removeClass(":native");
         }
 
-        behaviours.cache(); // behaviours will most likely lead to different classes now, so lets cache the current ones to get their values
+        //behaviours2.cache();
+        behaviours.cache();
         behaviours.detatch();
+        //behaviours.cache(); // behaviours will most likely lead to different classes now, so lets cache the current ones to get their values
+        //behaviours.detatch();
         create();
         behaviours.restore();
         

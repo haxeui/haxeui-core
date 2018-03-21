@@ -31,6 +31,12 @@ class Label extends Component {
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************
+    private override function registerBehaviours() {  // TODO: temp
+        super.registerBehaviours();
+        behaviours.register("text", LabelDefaultTextBehaviour);
+        _defaultLayout = new LabelLayout();
+    }
+    
     private override function createDefaults() {
         super.createDefaults();
         defaultBehaviours([

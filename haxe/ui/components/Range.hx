@@ -11,20 +11,15 @@ import haxe.ui.util.MathUtil;
 import haxe.ui.util.Point;
 
 class Range extends InteractiveComponent implements IDirectionalComponent {
-    public function new() {
-        super();
-        _behaviourUpdateOrder = ["min", "max", "start", "end"];
-    }
-    
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:behaviour(InvalidatingBehaviour, 0.)   public var start:Float;
-    @:behaviour(InvalidatingBehaviour, 100.) public var end:Float;
-    @:behaviour(InvalidatingBehaviour, 0.)   public var min:Float;
-    @:behaviour(InvalidatingBehaviour, 100.) public var max:Float;
-    @:behaviour(InvalidatingBehaviour, 0)    public var precision:Int;
-    @:behaviour(InvalidatingBehaviour, -1)   public var step:Float;
+    @:behaviour(InvalidatingBehaviour, 0)   public var min:Float;
+    @:behaviour(InvalidatingBehaviour, 100) public var max:Float;
+    @:behaviour(InvalidatingBehaviour)      public var start:Float;
+    @:behaviour(InvalidatingBehaviour)      public var end:Float;
+    @:behaviour(InvalidatingBehaviour)      public var precision:Int;
+    @:behaviour(InvalidatingBehaviour)      public var step:Float;
     
     public var allowInteraction(get, set):Bool;
     private function get_allowInteraction():Bool {
