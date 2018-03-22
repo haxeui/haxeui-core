@@ -35,6 +35,13 @@ class Label extends Component {
             getTextDisplay().textStyle = style;
         }
     }
+
+    //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+    private override function validateData() {
+        handleBindings(["text", "value"]);
+    }
 }
 
 //***********************************************************************************************************
@@ -102,18 +109,20 @@ class TextBehaviour extends Behaviour {
         if (_component.hasTextDisplay() == false) {
             return "";
         }
-        
+
         return _component.getTextDisplay().text;
     }
-    
+
     public override function set(value:Variant) {
         if (value == null) {
             value = "";
         }
 
-        _component.getTextDisplay().text = '${value}';
-        if (_component.isInvalid(InvalidationFlags.DISPLAY) == false) {
-            _component.invalidateDisplay();
+        if (get() == value) {
+            return;
         }
+
+        _component.getTextDisplay().text = '${value}';
+        _component.invalidateData();
     }
 }

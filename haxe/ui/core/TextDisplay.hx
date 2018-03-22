@@ -266,7 +266,13 @@ class TextDisplay extends TextDisplayBase implements IValidating {
         }
 
         if (dataInvalid || displayInvalid || measureInvalid) {
+            var oldTextWidth:Float = textWidth;
+            var oldTextHeight:Float = textHeight;
             measureText();
+
+            if (textWidth != oldTextWidth || textHeight != oldTextHeight) {
+                parentComponent.invalidate(InvalidationFlags.LAYOUT);
+            }
         }
     }
 }
