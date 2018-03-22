@@ -57,7 +57,7 @@ private class IndeterminateBehaviour extends ValueBehaviour {
     private var _animation:Animation;
     
     public function new(component:Component) {
-        super(component, false);
+        super(component);
     }
     
     public override function get():Variant {

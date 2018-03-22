@@ -6,11 +6,8 @@ import haxe.ui.util.Variant;
 class ValueBehaviour extends Behaviour {
     private var _value:Variant;
     
-    public function new(component:Component, defaultValue:Variant = null) {
+    public function new(component:Component) {
         super(component);
-        if (defaultValue != null) {
-            _value = defaultValue;
-        }
     }
     
     public override function get():Variant {

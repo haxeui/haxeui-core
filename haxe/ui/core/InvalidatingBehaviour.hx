@@ -4,8 +4,8 @@ import haxe.ui.util.Variant;
 
 @:dox(hide) @:noCompletion
 class InvalidatingBehaviour extends ValueBehaviour {
-    public function new(component:Component, defaultValue:Variant = null) {
-        super(component, defaultValue);
+    public function new(component:Component) {
+        super(component);
     }
     
     public override function get():Variant {
