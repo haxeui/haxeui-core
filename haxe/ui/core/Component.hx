@@ -54,6 +54,7 @@ class DeferredBindingInfo {
 @:build(haxe.ui.macros.Macros.buildStyles())
 @:autoBuild(haxe.ui.macros.Macros.buildStyles())
 @:autoBuild(haxe.ui.macros.Macros.buildBindings())
+@:build(haxe.ui.macros.Macros.buildBehaviours())
 @:autoBuild(haxe.ui.macros.Macros.buildBehaviours())
 @:build(haxe.ui.macros.Macros.addClonable())
 @:autoBuild(haxe.ui.macros.Macros.addClonable())
@@ -353,10 +354,14 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         return _id;
     }
 
+    
+    @:behaviour(Behaviour)  public var text:String;
+    
     private var _text:String = null;
     /**
      The text of this component (not used in all sub classes)
     **/
+     /*
     @clonable public var text(get, set):String;
     private function get_text():String {
         return _text;
@@ -367,6 +372,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
         return _text;
     }
+    */
 
     /**
      The value of this component. This can mean different things depending on the component.
@@ -375,10 +381,10 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     **/
     @clonable public var value(get, set):Variant;
     private function get_value():Variant {
-        return text;
+        return null;
     }
     private function set_value(value:Variant):Variant {
-        text = value;
+        //text = value;
         return value;
     }
 

@@ -1,5 +1,7 @@
 package haxe.ui.macros;
 
+import haxe.macro.Type.ClassType;
+import haxe.macro.Type.Ref;
 import haxe.ui.util.GenericConfig;
 
 #if macro
@@ -73,6 +75,25 @@ class MacroHelpers {
         return fn;
     }
 
+    public static function hasVar(fields:Array<Field>, name:String) {
+        return getVar(fields, name) != null;
+    }
+    
+    public static function getVar(fields:Array<Field>, name:String) {
+        var v = null;
+        for (f in fields) {
+            if (f.name == name) {
+                switch (f.kind) {
+                    case FVar(f):
+                            v = f;
+                        break;
+                    default:
+                }
+            }
+        }
+        return v;
+    }
+    
     public static function addFunction(name:String, e:Expr, access:Array<Access>, fields:Array<Field>, pos:Position):Void {
         var fn = switch (e).expr {
             case EFunction(_, f): f;
@@ -168,7 +189,7 @@ class MacroHelpers {
 
         return has;
     }
-
+    
     public static function hasDirectInterface(t:haxe.macro.Type, interfaceRequired:String):Bool {
         var has:Bool = false;
         switch (t) {

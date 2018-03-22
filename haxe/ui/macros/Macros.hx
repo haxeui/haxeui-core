@@ -166,6 +166,8 @@ class Macros {
         
         var behaviours:Array<Dynamic> = [];
         
+        var exceptions = ["text"]; // TODO: this is an awful hack, cant work out a better way, seems abstracts cause issues with iterating over superClass fields
+        
         for (f in MacroHelpers.getFieldsWithMeta("behaviour", fields)) {
             fields.remove(f);
             
@@ -204,57 +206,58 @@ class Macros {
                 case _:
             }
             
-            var kind = FProp("get", "set", type);
-            
-            // add getter/setter property
-            var meta = [];
-            meta.push( { name: ":behaviour", pos: pos, params: [] } );
-            
-            fields.push({
-                name: f.name,
-                doc: null,
-                meta: meta,
-                access: f.access,
-                kind: kind,
-                pos: haxe.macro.Context.currentPos()
-            });
-            
-            // add getter function
-            var code = "function ():" + typeName + " {\n";
-            code += "return behaviourGet('" + f.name + "');\n";
-            code += "}";
-            var fnGetter = switch (Context.parseInlineString(code, haxe.macro.Context.currentPos()) ).expr {
-                case EFunction(_, f): f;
-                case _: throw "false";
-            }
-            fields.push({
-                name: "get_" + f.name,
-                doc: null,
-                meta: [],
-                access: [APrivate],
-                kind: FFun(fnGetter),
-                pos: haxe.macro.Context.currentPos()
-            });
-                 
-            // add setter funtion
-            var code = "function (value:" + typeName + "):" + typeName + " {\n";
-            code += "behaviourSet('" + f.name + "', value);\n";
-            code += "return value;\n";
-            code += "}";
+            if (exceptions.indexOf(f.name) == -1 || Context.getLocalClass().toString() == "haxe.ui.core.Component") {
+                var kind = FProp("get", "set", type);
+                
+                // add getter/setter property
+                var meta = [];
+                meta.push( { name: ":behaviour", pos: pos, params: [] } );
+                
+                fields.push({
+                    name: f.name,
+                    doc: null,
+                    meta: meta,
+                    access: f.access,
+                    kind: kind,
+                    pos: haxe.macro.Context.currentPos()
+                });
+                
+                // add getter function
+                var code = "function ():" + typeName + " {\n";
+                code += "return behaviourGet('" + f.name + "');\n";
+                code += "}";
+                var fnGetter = switch (Context.parseInlineString(code, haxe.macro.Context.currentPos()) ).expr {
+                    case EFunction(_, f): f;
+                    case _: throw "false";
+                }
+                fields.push({
+                    name: "get_" + f.name,
+                    doc: null,
+                    meta: [],
+                    access: [APrivate],
+                    kind: FFun(fnGetter),
+                    pos: haxe.macro.Context.currentPos()
+                });
+                     
+                // add setter funtion
+                var code = "function (value:" + typeName + "):" + typeName + " {\n";
+                code += "behaviourSet('" + f.name + "', value);\n";
+                code += "return value;\n";
+                code += "}";
 
-            var fnSetter = switch (Context.parseInlineString(code, haxe.macro.Context.currentPos()) ).expr {
-                case EFunction(_, f): f;
-                case _: throw "false";
+                var fnSetter = switch (Context.parseInlineString(code, haxe.macro.Context.currentPos()) ).expr {
+                    case EFunction(_, f): f;
+                    case _: throw "false";
+                }
+                fields.push({
+                    name: "set_" + f.name,
+                    doc: null,
+                    meta: [],
+                    access: [APrivate],
+                    kind: FFun(fnSetter),
+                    pos: haxe.macro.Context.currentPos()
+                });
             }
-            fields.push({
-                name: "set_" + f.name,
-                doc: null,
-                meta: [],
-                access: [APrivate],
-                kind: FFun(fnSetter),
-                pos: haxe.macro.Context.currentPos()
-
-            });
             
             
             // lets dump info into an array and we'll modify the createDefaults at the end            
@@ -413,7 +416,7 @@ class Macros {
             if (MacroHelpers.hasMetaParam(MacroHelpers.getMeta(f, "style"), "writeonly") == false) {
                 code += "if (customStyle." + name + " == value) return value;\n";
             }
-            code += "if (_style == null) _style = new Style();\n";
+            code += "if (_style == null) _style = new haxe.ui.styles.Style();\n";
             code += "customStyle." + name + " = value;\n";
             code += "invalidateStyle();\n";
             if (MacroHelpers.hasMetaParam(MacroHelpers.getMeta(f, "style"), "layout")) {
