@@ -15,6 +15,8 @@ class DefaultBehaviour extends Behaviour {
             return;
         }
 
+        _value = value;
+        
         super.set(value);
     }
 }

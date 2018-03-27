@@ -1,9 +1,5 @@
 package haxe.ui.components;
 
-import haxe.Http;
-import haxe.Utf8;
-import haxe.io.Bytes;
-import haxe.ui.assets.ImageInfo;
 import haxe.ui.constants.HorizontalAlign;
 import haxe.ui.constants.ScaleMode;
 import haxe.ui.constants.VerticalAlign;
@@ -21,12 +17,12 @@ class Image2 extends Component {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:behaviour(ResourceBehaviour)        public var resource:String;
-    @:behaviour(InvalidatingBehaviour)  public var scaleMode:ScaleMode;
-    @:behaviour(InvalidatingBehaviour)  public var imageHorizontalAlign:HorizontalAlign;
-    @:behaviour(InvalidatingBehaviour)  public var imageVerticalAlign:VerticalAlign;
-    @:behaviour(DefaultBehaviour)       public var originalWidth:Float;
-    @:behaviour(DefaultBehaviour)       public var originalHeight:Float;
+    @:behaviour(ResourceBehaviour)                              public var resource:String;
+    @:behaviour(InvalidatingBehaviour, ScaleMode.FILL)          public var scaleMode:ScaleMode;
+    @:behaviour(InvalidatingBehaviour, HorizontalAlign.CENTER)  public var imageHorizontalAlign:HorizontalAlign;
+    @:behaviour(InvalidatingBehaviour, VerticalAlign.CENTER)    public var imageVerticalAlign:VerticalAlign;
+    @:behaviour(DefaultBehaviour)                               public var originalWidth:Float;
+    @:behaviour(DefaultBehaviour)                               public var originalHeight:Float;
     
     //***********************************************************************************************************
     // Internals
@@ -64,7 +60,6 @@ private class ImageLayout extends DefaultLayout {
 
     private override function resizeChildren() {
         if (component.hasImageDisplay()) {
-            var usz = usableSize;
             var image:Image2 = cast _component;
             var imageDisplay = image.getImageDisplay();
             var maxWidth:Float = usableSize.width;
@@ -80,7 +75,7 @@ private class ImageLayout extends DefaultLayout {
             var scaleW:Float = maxWidth != -1 ? maxWidth / image.originalWidth : 1;
             var scaleH:Float = maxHeight != -1 ? maxHeight / image.originalHeight : 1;
 
-            if(imageScaleMode != ScaleMode.FILL) {
+            if (imageScaleMode != ScaleMode.FILL) {
                 var scale:Float;
                 switch(imageScaleMode) {
                     case ScaleMode.FIT_INSIDE:

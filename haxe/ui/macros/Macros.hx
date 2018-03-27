@@ -1,4 +1,5 @@
 package haxe.ui.macros;
+import haxe.macro.ExprTools;
 
 #if macro
 import haxe.macro.Expr;
@@ -262,20 +263,10 @@ class Macros {
             
             // lets dump info into an array and we'll modify the createDefaults at the end            
             var orginalMeta = MacroHelpers.getMeta(f, "behaviour");
-            var btype = null;
-            switch (orginalMeta.params[0].expr) {
-                case EConst(CIdent(c)):
-                    btype = '${c}';
-                case _:
-            }
-            
+            var btype = ExprTools.toString(orginalMeta.params[0]);
             var bparam = null;
             if (orginalMeta.params.length > 1) {
-                switch (orginalMeta.params[1].expr) {
-                    case EConst(CInt(c)) | EConst(CFloat(c)):
-                        bparam = '${c}';
-                    case _:
-                }
+                bparam = ExprTools.toString(orginalMeta.params[1]);
             }
             
             behaviours.push({
