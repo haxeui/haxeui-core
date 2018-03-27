@@ -25,7 +25,8 @@ class ImageLoader {
         
         var request = new js.html.XMLHttpRequest();
         request.open("GET", url);
-        request.overrideMimeType('text/plain; charset=x-user-defined');
+        request.responseType = js.html.XMLHttpRequestResponseType.ARRAYBUFFER;
+        
         request.onreadystatechange = function(_) {
             if (request.readyState != 4) {
                 return;
@@ -37,11 +38,7 @@ class ImageLoader {
             }
             
             if (s != null && s >= 200 && s < 400) {
-                var bytes = haxe.io.Bytes.alloc(request.responseText.length);
-                for (i in 0...request.responseText.length) {
-                     bytes.set(i, StringTools.fastCodeAt(request.responseText, i) & 0xFF);
-                }
-                Toolkit.assets.imageFromBytes(bytes, callback);
+                Toolkit.assets.imageFromBytes(Bytes.ofData(request.response), callback);
             } else if (s == null) {
                 callback(null);
             } else {
