@@ -3,7 +3,9 @@ package haxe.ui.core;
 import haxe.ui.util.Variant;
 
 @:dox(hide) @:noCompletion
-class InvalidatingBehaviour extends ValueBehaviour {
+class DefaultBehaviour extends Behaviour {
+    private var _value:Variant;
+    
     public override function get():Variant {
         return _value;
     }
@@ -14,6 +16,5 @@ class InvalidatingBehaviour extends ValueBehaviour {
         }
 
         super.set(value);
-        _component.invalidateLayout();
     }
 }
