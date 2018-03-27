@@ -21,7 +21,7 @@ class ImageLoader {
     }
     
     private function loadFromHttp(url:String, callback:ImageInfo->Void) {
-        #if js // cant use haxe.Http because we need overrideMimeType
+        #if js // cant use haxe.Http because we need responseType
         
         var request = new js.html.XMLHttpRequest();
         request.open("GET", url);
@@ -62,23 +62,18 @@ class ImageLoader {
         }
         request.send();
         
-        #elseif cs // similarily hxcs bytes are wrong in haxe.Http
+        #elseif cs // hxcs bytes are wrong in haxe.Http
         
         var request = cs.system.net.WebRequest.Create(url);
-        var response = request.GetResponse();
-        var stream = response.GetResponseStream();
-        var b = new cs.NativeArray<cs.types.UInt8>(32768);
-        var r:Int = 0;
-        var bytes = haxe.io.Bytes.alloc(response.ContentLength.low);
-        var p = 0;
-        while ((r = stream.Read(b, 0, b.Length)) > 0) {
-            for (i in 0...r) {
-                bytes.set(p, b[i]);
-                p++;
-            }
+        var buffer = new cs.NativeArray<cs.types.UInt8>(32768);
+        var reader = new cs.system.io.StreamReader(request.GetResponse().GetResponseStream());
+        var memStream = new cs.system.io.MemoryStream();
+        var bytesRead = 0;
+        while ((bytesRead = reader.BaseStream.Read(buffer, 0, buffer.Length)) > 0) {
+            memStream.Write(buffer, 0, bytesRead);
         }
-        
-        Toolkit.assets.imageFromBytes(bytes, callback);
+        reader.Close();
+        Toolkit.assets.imageFromBytes(Bytes.ofData(memStream.ToArray()), callback);
         
         #else
         
