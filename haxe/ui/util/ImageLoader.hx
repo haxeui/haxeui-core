@@ -21,7 +21,7 @@ class ImageLoader {
     }
     
     private function loadFromHttp(url:String, callback:ImageInfo->Void) {
-        #if js
+        #if js // cant use haxe.Http because we need overrideMimeType
         
         var request = new js.html.XMLHttpRequest();
         request.open("GET", url);
@@ -65,6 +65,24 @@ class ImageLoader {
         }
         request.send();
         
+        #elseif cs // similarily hxcs bytes are wrong in haxe.Http
+        
+        var request = cs.system.net.WebRequest.Create(url);
+        var response = request.GetResponse();
+        var stream = response.GetResponseStream();
+        var b = new cs.NativeArray<cs.types.UInt8>(32768);
+        var r:Int = 0;
+        var bytes = haxe.io.Bytes.alloc(response.ContentLength.low);
+        var p = 0;
+        while ((r = stream.Read(b, 0, b.Length)) > 0) {
+            for (i in 0...r) {
+                bytes.set(p, b[i]);
+                p++;
+            }
+        }
+        
+        Toolkit.assets.imageFromBytes(bytes, callback);
+        
         #else
         
         var http:haxe.Http = new haxe.Http(url);
@@ -86,7 +104,12 @@ class ImageLoader {
                 callback(null);
             }
             
-            Toolkit.assets.imageFromBytes(sys.io.File.getBytes(filename), callback);
+            try {
+                Toolkit.assets.imageFromBytes(sys.io.File.getBytes(filename), callback);
+            } catch (e:Dynamic) {
+                trace("Problem loading image file: " + e);
+                callback(null);
+            }
         #else
             trace('WARNING: cant load from file system on non-sys targets [${filename}]');
             callback(null);
