@@ -60,7 +60,7 @@ private class ImageLayout extends DefaultLayout {
 
     private override function resizeChildren() {
         if (component.hasImageDisplay()) {
-            var image:Image2 = cast _component;
+            var image:Image2 = cast(_component, Image2);
             var imageDisplay = image.getImageDisplay();
             var maxWidth:Float = usableSize.width;
             var maxHeight:Float = usableSize.height;
@@ -101,7 +101,7 @@ private class ImageLayout extends DefaultLayout {
 
     private override function repositionChildren() {
         if (component.hasImageDisplay()) {
-            var image:Image = cast _component;
+            var image:Image2 = cast(_component, Image2);
             var imageDisplay:ImageDisplay = _component.getImageDisplay();
 
             switch(image.imageHorizontalAlign) {
