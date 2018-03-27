@@ -25,7 +25,7 @@ class VerticalRange extends Range {
         }
     }
     
-    private override function createDefaults() {
+    private override function createDefaults() { // TODO: remove this eventually, @:layout(...) or something
         super.createDefaults();
         _defaultLayout = new VerticalRangeLayout();
     }
@@ -56,7 +56,7 @@ class VerticalRangePosFromCoord extends Behaviour {
 }
 
 //***********************************************************************************************************
-// Custom layouts
+// Composite Layout
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
 class VerticalRangeLayout extends DefaultLayout {

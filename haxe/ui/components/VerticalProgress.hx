@@ -14,7 +14,7 @@ class VerticalProgress extends Progress {
         }
     }
     
-    private override function createDefaults() {
+    private override function createDefaults() { // TODO: remove this eventually, @:layout(...) or something
         super.createDefaults();
         _defaultLayout = new VerticalRange.VerticalRangeLayout();
         defaultBehaviour("posFromCoord", new VerticalRange.VerticalRangePosFromCoord(this));

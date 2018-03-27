@@ -14,7 +14,7 @@ class VerticalSlider extends Slider {
         }
     }
     
-    private override function createDefaults() {
+    private override function createDefaults() { // TODO: remove this eventually, @:layout(...) or something
         super.createDefaults();
         _defaultLayout = new VerticalSliderLayout();
     }
@@ -28,7 +28,7 @@ class VerticalSlider extends Slider {
 }
 
 //***********************************************************************************************************
-// Custom layouts
+// Composite Layout
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
 class VerticalSliderLayout extends DefaultLayout {

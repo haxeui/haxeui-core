@@ -25,7 +25,7 @@ class HorizontalRange extends Range {
         }
     }
     
-    private override function createDefaults() {
+    private override function createDefaults() {  // TODO: remove this eventually, @:layout(...) or something
         super.createDefaults();
         _defaultLayout = new HorizontalRangeLayout();
     }
@@ -56,7 +56,7 @@ class HorizontalRangePosFromCoord extends Behaviour {
 }
 
 //***********************************************************************************************************
-// Custom layouts
+// Composite Layout
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
 class HorizontalRangeLayout extends DefaultLayout {

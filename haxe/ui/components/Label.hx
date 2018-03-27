@@ -6,7 +6,6 @@ import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.styles.Style;
 import haxe.ui.util.Size;
 import haxe.ui.util.Variant;
-import haxe.ui.validation.InvalidationFlags;
 
 class Label extends Component {
     //***********************************************************************************************************
@@ -22,7 +21,8 @@ class Label extends Component {
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************
-    private override function createDefaults() { // TODO: remove this eventually, @:layout(LabelLayout) or something
+    private override function createDefaults() { // TODO: remove this eventually, @:layout(...) or something
+        super.createDefaults();
         _defaultLayout = new LabelLayout();
     }
     
@@ -45,7 +45,7 @@ class Label extends Component {
 }
 
 //***********************************************************************************************************
-// Custom layouts
+// Composite Layout
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
 private class LabelLayout extends DefaultLayout {
