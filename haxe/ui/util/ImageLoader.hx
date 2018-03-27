@@ -39,7 +39,7 @@ class ImageLoader {
             if (s != null && s >= 200 && s < 400) {
                 var bytes = haxe.io.Bytes.alloc(request.responseText.length);
                 for (i in 0...request.responseText.length) {
-                     bytes.set(i, request.responseText.charCodeAt(i) & 0xFF);
+                     bytes.set(i, StringTools.fastCodeAt(request.responseText, i) & 0xFF);
                 }
                 Toolkit.assets.imageFromBytes(bytes, callback);
             } else if (s == null) {
