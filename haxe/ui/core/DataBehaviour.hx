@@ -5,6 +5,7 @@ import haxe.ui.util.Variant;
 
 class DataBehaviour extends Behaviour {
     private var _value:Variant;
+    private var _dataInvalid:Bool;
     
     public override function get():Variant {
         return _value;
@@ -17,8 +18,16 @@ class DataBehaviour extends Behaviour {
         
         _value = value;
         _component.invalidateData();
+        _dataInvalid = true;
+    }
+
+    public function validate() {
+        if (_dataInvalid) {
+            _dataInvalid = false;
+            validateData();
+        }
     }
     
-    public function validateData() {
+    private function validateData() {
     }
 }

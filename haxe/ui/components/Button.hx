@@ -190,7 +190,7 @@ private class ButtonLayout extends DefaultLayout {
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
 private class TextBehaviour extends DataBehaviour {
-    public override function validateData() {
+    private override function validateData() {
         var label:Label = _component.findComponent(Label, false);
         if (label == null) {
             label = new Label();
@@ -205,7 +205,7 @@ private class TextBehaviour extends DataBehaviour {
 
 @:dox(hide) @:noCompletion
 private class IconBehaviour extends DataBehaviour {
-    public override function validateData() {
+    private override function validateData() {
         var icon:Image = _component.findComponent(Image);
         if (icon == null) {
             icon = new Image();

@@ -9,7 +9,9 @@ import haxe.ui.core.DefaultBehaviour;
 import haxe.ui.core.ImageDisplay;
 import haxe.ui.core.InvalidatingBehaviour;
 import haxe.ui.layouts.DefaultLayout;
+import haxe.ui.styles.Style;
 import haxe.ui.util.ImageLoader;
+import haxe.ui.util.Rectangle;
 import haxe.ui.util.Size;
 
 class Image extends Component {
@@ -29,6 +31,17 @@ class Image extends Component {
     private override function createDefaults() {  // TODO: remove this eventually, @:layout(...) or something
         super.createDefaults();
         _defaultLayout = new ImageLayout();
+    }
+
+    //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+    private override function applyStyle(style:Style) {
+        super.applyStyle(style);
+
+        if (style.resource != null) {
+            resource = style.resource;
+        }
     }
 }
 
@@ -130,6 +143,33 @@ private class ImageLayout extends DefaultLayout {
         }
         return size;
     }
+
+    public override function refresh() {
+        super.refresh();
+
+        updateClipRect();
+    }
+
+    private function updateClipRect() {
+        var usz:Size = usableSize;
+        var imageDisplay:ImageDisplay = component.getImageDisplay();
+        var rc:Rectangle = imageDisplay.imageClipRect;
+
+        if (imageDisplay.imageWidth > usz.width
+            || imageDisplay.imageHeight > usz.height) {
+            if (rc == null)
+                rc = new Rectangle();
+
+            rc.top = paddingLeft;
+            rc.left = paddingTop;
+            rc.width = usz.width;
+            rc.height = usz.height;
+        } else {
+            rc = null;
+        }
+
+        imageDisplay.imageClipRect = rc;
+    }
 }
 //***********************************************************************************************************
 // Behaviours
@@ -137,7 +177,7 @@ private class ImageLayout extends DefaultLayout {
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.components.Image)
 private class ResourceBehaviour extends DataBehaviour {
-    public override function validateData() {
+    private override function validateData() {
         if (_value == null) {
             _component.removeImageDisplay();
             return;
