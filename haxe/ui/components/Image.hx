@@ -3,15 +3,14 @@ package haxe.ui.components;
 import haxe.ui.constants.HorizontalAlign;
 import haxe.ui.constants.ScaleMode;
 import haxe.ui.constants.VerticalAlign;
-import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
+import haxe.ui.core.DataBehaviour;
 import haxe.ui.core.DefaultBehaviour;
 import haxe.ui.core.ImageDisplay;
 import haxe.ui.core.InvalidatingBehaviour;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.util.ImageLoader;
 import haxe.ui.util.Size;
-import haxe.ui.util.Variant;
 
 class Image extends Component {
     //***********************************************************************************************************
@@ -31,11 +30,6 @@ class Image extends Component {
         super.createDefaults();
         _defaultLayout = new ImageLayout();
     }
-
-    //***********************************************************************************************************
-    // Overrides
-    //***********************************************************************************************************
-    
 }
 
 //***********************************************************************************************************
@@ -142,25 +136,14 @@ private class ImageLayout extends DefaultLayout {
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.components.Image)
-private class ResourceBehaviour extends Behaviour {
-    private var _value:String = null;
-    
-    public override function get():Variant {
-        return _value;
-    }
-    
-    public override function set(value:Variant) {
-        if (_value == value) {
-            return;
-        }
-       
-        _value = value;
-        if (value == null) {
+private class ResourceBehaviour extends DataBehaviour {
+    public override function validateData() {
+        if (_value == null) {
             _component.removeImageDisplay();
             return;
         }
 
-        var imageLoader = new ImageLoader(value);
+        var imageLoader = new ImageLoader(_value);
         imageLoader.load(function(imageInfo) {
             if (imageInfo != null) {
                 var image:Image = cast(_component, Image);
