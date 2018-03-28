@@ -1,6 +1,5 @@
 package haxe.ui.components;
 
-import haxe.ui.core.Behaviour;
 import haxe.ui.core.IDirectionalComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.InvalidatingBehaviour;
