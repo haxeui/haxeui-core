@@ -9,6 +9,7 @@ import haxe.ui.core.DefaultBehaviour;
 import haxe.ui.core.ImageDisplay;
 import haxe.ui.core.InvalidatingBehaviour;
 import haxe.ui.layouts.DefaultLayout;
+import haxe.ui.styles.Style;
 import haxe.ui.util.ImageLoader;
 import haxe.ui.util.Rectangle;
 import haxe.ui.util.Size;
@@ -30,6 +31,17 @@ class Image extends Component {
     private override function createDefaults() {  // TODO: remove this eventually, @:layout(...) or something
         super.createDefaults();
         _defaultLayout = new ImageLayout();
+    }
+
+    //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+    private override function applyStyle(style:Style) {
+        super.applyStyle(style);
+
+        if (style.resource != null) {
+            resource = style.resource;
+        }
     }
 }
 
