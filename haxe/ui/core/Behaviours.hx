@@ -58,6 +58,22 @@ class Behaviours {
         }
     }
     
+    public function list():Array<Behaviour> {
+        var order:Array<String> = _updateOrder.copy();
+        for (key in _instances.keys()) {
+            if (order.indexOf(key) == -1) {
+                order.push(key);
+            }
+        }
+        
+        var list:Array<Behaviour> = [];
+        for (key in order) {
+            var b = _instances.get(key);
+            list.push(b);
+        }
+        return list;
+    }
+    
     private var _updateOrder:Array<String> = [];
     public var updateOrder(get, set):Array<String>;
     private function get_updateOrder():Array<String> {

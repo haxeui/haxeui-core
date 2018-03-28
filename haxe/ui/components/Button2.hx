@@ -1,6 +1,7 @@
 package haxe.ui.components;
 
 import haxe.ui.core.Behaviour;
+import haxe.ui.core.DataBehaviour;
 import haxe.ui.core.DefaultBehaviour;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.MouseEvent;
@@ -188,7 +189,7 @@ private class ButtonLayout extends DefaultLayout {
 // Behaviours
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
-private class TextBehaviour extends Behaviour {
+private class TextBehaviour extends DataBehaviour {
     public override function get():Variant {
         var label:Label = _component.findComponent(Label);
         if (label == null) {
@@ -197,11 +198,7 @@ private class TextBehaviour extends Behaviour {
         return label.text;
     }
     
-    public override function set(value:Variant) {
-        if (value == null) {
-            return;
-        }
-        
+    public override function validateData() {
         var label:Label = _component.findComponent(Label);
         if (label == null) {
             label = new Label();
@@ -210,9 +207,7 @@ private class TextBehaviour extends Behaviour {
             _component.addComponent(label);
         }
         
-        if (label.text != value) {
-            label.text = value;
-        }
+        label.text = _value;
     }
 }
 
