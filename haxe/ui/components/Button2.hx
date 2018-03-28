@@ -204,20 +204,8 @@ private class TextBehaviour extends DataBehaviour {
 }
 
 @:dox(hide) @:noCompletion
-private class IconBehaviour extends Behaviour {
-    public override function get():Variant {
-        var icon:Image = _component.findComponent(Image);
-        if (icon == null) {
-            return null;
-        }
-        return icon.resource;
-    }
-    
-    public override function set(value:Variant) {
-        if (value == null) {
-            return;
-        }
-        
+private class IconBehaviour extends DataBehaviour {
+    public override function validateData() {
         var icon:Image = _component.findComponent(Image);
         if (icon == null) {
             icon = new Image();
@@ -227,9 +215,7 @@ private class IconBehaviour extends Behaviour {
             _component.addComponentAt(icon, 0);
         }
         
-        if (icon.resource != value) {
-            icon.resource = value;
-        }
+        icon.resource = _value;
     }
 }
 
