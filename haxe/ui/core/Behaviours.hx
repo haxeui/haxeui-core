@@ -63,7 +63,7 @@ class Behaviours {
         for (key in actualUpdateOrder) {
             var b = _instances.get(key);
             if (Std.is(b, DataBehaviour)) {
-                cast(b, DataBehaviour).validateData();
+                cast(b, DataBehaviour).validate();
             }
         }
     }

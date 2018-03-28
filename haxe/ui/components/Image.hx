@@ -137,7 +137,7 @@ private class ImageLayout extends DefaultLayout {
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.components.Image)
 private class ResourceBehaviour extends DataBehaviour {
-    public override function validateData() {
+    private override function validateData() {
         if (_value == null) {
             _component.removeImageDisplay();
             return;
