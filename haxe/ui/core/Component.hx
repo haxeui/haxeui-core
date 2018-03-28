@@ -2096,11 +2096,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     }
 
     private function validateData() {
-        for (b in behaviours.list()) {
-            if (Std.is(b, DataBehaviour)) {
-                cast(b, DataBehaviour).validateData();
-            }
-        }
+        behaviours.validateData();
     }
 
     /**

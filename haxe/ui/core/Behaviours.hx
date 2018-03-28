@@ -58,20 +58,13 @@ class Behaviours {
         }
     }
     
-    public function list():Array<Behaviour> {
-        var order:Array<String> = _updateOrder.copy();
-        for (key in _instances.keys()) {
-            if (order.indexOf(key) == -1) {
-                order.push(key);
+    public function validateData() {
+        for (key in actualUpdateOrder) {
+            var b = _instances.get(key);
+            if (Std.is(b, DataBehaviour)) {
+                cast(b, DataBehaviour).validateData();
             }
         }
-        
-        var list:Array<Behaviour> = [];
-        for (key in order) {
-            var b = _instances.get(key);
-            list.push(b);
-        }
-        return list;
     }
     
     private var _updateOrder:Array<String> = [];
@@ -84,15 +77,22 @@ class Behaviours {
         return value;
     }
     
-    public function update() {
-        var order:Array<String> = _updateOrder.copy();
-        for (key in _instances.keys()) {
-            if (order.indexOf(key) == -1) {
-                order.push(key);
+    private var _actualUpdateOrder:Array<String> = null;
+    private var actualUpdateOrder(get, null):Array<String>;
+    private function get_actualUpdateOrder():Array<String> {
+        if (_actualUpdateOrder == null) {
+            _actualUpdateOrder = _updateOrder.copy();
+            for (key in _instances.keys()) {
+                if (_actualUpdateOrder.indexOf(key) == -1) {
+                    _actualUpdateOrder.push(key);
+                }
             }
         }
-        
-        for (key in order) {
+        return _actualUpdateOrder;
+    }
+    
+    public function update() {
+        for (key in actualUpdateOrder) {
             var b = _instances.get(key);
             if (b != null) {
                 b.update();
@@ -147,14 +147,7 @@ class Behaviours {
             return;
         }
         
-        var order:Array<String> = _updateOrder.copy();
-        for (key in _cache.keys()) {
-            if (order.indexOf(key) == -1) {
-                order.push(key);
-            }
-        }
-
-        for (key in order) {
+        for (key in actualUpdateOrder) {
             var v = _cache.get(key);
             if (v != null) {
                 set(key, v);
@@ -194,7 +187,7 @@ class Behaviours {
             }
         }
         
-        for (key in order) {
+        for (key in actualUpdateOrder) {
             var r = _registry.get(key);
             if (r.defaultValue != null) {
                 set(key, r.defaultValue);

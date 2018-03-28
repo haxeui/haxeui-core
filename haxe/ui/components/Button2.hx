@@ -190,16 +190,8 @@ private class ButtonLayout extends DefaultLayout {
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
 private class TextBehaviour extends DataBehaviour {
-    public override function get():Variant {
-        var label:Label = _component.findComponent(Label);
-        if (label == null) {
-            return null;
-        }
-        return label.text;
-    }
-    
     public override function validateData() {
-        var label:Label = _component.findComponent(Label);
+        var label:Label = _component.findComponent(Label, false);
         if (label == null) {
             label = new Label();
             label.id = "button-label";
