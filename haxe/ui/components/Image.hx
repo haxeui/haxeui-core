@@ -10,6 +10,7 @@ import haxe.ui.core.ImageDisplay;
 import haxe.ui.core.InvalidatingBehaviour;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.util.ImageLoader;
+import haxe.ui.util.Rectangle;
 import haxe.ui.util.Size;
 
 class Image extends Component {
@@ -129,6 +130,33 @@ private class ImageLayout extends DefaultLayout {
             size.height += component.getImageDisplay().imageHeight;
         }
         return size;
+    }
+
+    public override function refresh() {
+        super.refresh();
+
+        updateClipRect();
+    }
+
+    private function updateClipRect() {
+        var usz:Size = usableSize;
+        var imageDisplay:ImageDisplay = component.getImageDisplay();
+        var rc:Rectangle = imageDisplay.imageClipRect;
+
+        if (imageDisplay.imageWidth > usz.width
+            || imageDisplay.imageHeight > usz.height) {
+            if (rc == null)
+                rc = new Rectangle();
+
+            rc.top = paddingLeft;
+            rc.left = paddingTop;
+            rc.width = usz.width;
+            rc.height = usz.height;
+        } else {
+            rc = null;
+        }
+
+        imageDisplay.imageClipRect = rc;
     }
 }
 //***********************************************************************************************************
