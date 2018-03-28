@@ -1,7 +1,8 @@
 package haxe.ui.components;
 
-import haxe.ui.validation.InvalidationFlags;
 import haxe.ui.core.Behaviour;
+import haxe.ui.core.DataBehaviour;
+import haxe.ui.core.DefaultBehaviour;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.focus.FocusManager;
@@ -10,100 +11,42 @@ import haxe.ui.styles.Style;
 import haxe.ui.util.Timer;
 import haxe.ui.util.Variant;
 
-/**
- General purpose push button that supports both text and icon as well as repeat event dispatching
- 
- Composite children:
-    | Id             | Type    | Style Name   | Notes                                  |
-    | `button-label` | `Label` | `.label`     | The text of the button (if applicable) |
-    | `button-icon`  | `Image` | `.icon`      | The icon of the button (if applicable) |
- 
- Pseudo classes:
-    | Name      | Notes                                                                    |
-    | `:hover`  | The style to be applied when the cursor is over the button               |
-    | `:down`   | The style to be applied when a mouse button is pressed inside the button |
-    | `:active` | The style to be applied when the button has focus                        |
-    
-  XML example:
-    <button text="Button"
-            styleNames="myCustomButton"
-            style="font-size: 30px"
-            onClick="trace('hello world')" />
-    
-  Code example:
-    var button = new Button();
-    button.text = "Button";
-    button.styleNames = "myCustomButton";
-    button.fontSize = 30;
-    button.onClick = function(e) {
-        trace("hello world");
-    }
-**/
-@:dox(icon = "/icons/ui-button.png")
 class Button extends InteractiveComponent {
-    private var _repeatTimer:Timer;
-
-    public function new() {
-        super();
-        #if openfl
-        //mouseChildren = false;
-        #end
-    }
-
+    //***********************************************************************************************************
+    // Styles
+    //***********************************************************************************************************
+    @:style(layout)                         public var iconPosition:String;
+    @:style(layout)                         public var fontSize:Null<Float>;
+    @:style(layout)                         public var textAlign:String;
+    
+    //***********************************************************************************************************
+    // Public API
+    //***********************************************************************************************************
+    @:behaviour(DefaultBehaviour, false)    public var repeater:Bool;
+    @:behaviour(DefaultBehaviour, 50)       public var repeatInterval:Int;
+    @:behaviour(DefaultBehaviour, false)    public var remainPressed:Bool;
+    @:behaviour(ToggleBehaviour)            public var toggle:Bool;
+    @:behaviour(SelectedBehaviour)          public var selected:Bool;
+    @:behaviour(TextBehaviour)              public var text:String;
+    @:behaviour(IconBehaviour)              public var icon:String;
+    
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************
-    private override function registerBehaviours() {  // TODO: temp
-        super.registerBehaviours();
-        behaviours.register("text", ButtonDefaultTextBehaviour);
-        _defaultLayout = new ButtonLayout();
-    }
-    
-    
-    private override function createDefaults() {
+    private override function createDefaults() {  // TODO: remove this eventually, @:layout(...) or something
         super.createDefaults();
-        defaultBehaviours([
-            "text" => new ButtonDefaultTextBehaviour(this),
-            "icon" => new ButtonDefaultIconBehaviour(this)
-        ]);
         _defaultLayout = new ButtonLayout();
     }
-
+    
     private override function createChildren() {
-        registerEvent(MouseEvent.MOUSE_OVER, _onMouseOver);
-        registerEvent(MouseEvent.MOUSE_OUT, _onMouseOut);
-        registerEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
+        super.createChildren();
+        
+        registerInternalEvents(Events);
     }
-
-    private override function destroyChildren() {
-        super.destroyChildren();
-
-        unregisterEvent(MouseEvent.MOUSE_OVER, _onMouseOver);
-        unregisterEvent(MouseEvent.MOUSE_OUT, _onMouseOut);
-        unregisterEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
-
-        var label:Label = findComponent(Label);
-        if (label != null) {
-            removeComponent(label);
-            label = null;
-        }
-
-        var icon:Image = findComponent(Image);
-        if (icon != null) {
-            removeComponent(icon);
-            icon = null;
-        }
-    }
-
+    
     //***********************************************************************************************************
     // Overrides
     //***********************************************************************************************************
-    private override function set_text(value:String):String {
-        value = super.set_text(value);
-        invalidateData();
-        return value;
-    }
-
     private override function applyStyle(style:Style) {
         super.applyStyle(style);
         if (style.icon != null) {
@@ -130,247 +73,13 @@ class Button extends InteractiveComponent {
             icon.invalidateStyle();
         }
     }
-
-    //***********************************************************************************************************
-    // Validation
-    //***********************************************************************************************************
-    private override function validateData() {
-        if (behaviourGet("text") != _text) {
-            behaviourSet("text", _text);
-        }
-
-        if (behaviourGet("icon") != _iconResource) {
-            behaviourSet("icon", _iconResource);
-        }
-    }
-
-    //***********************************************************************************************************
-    // Public API
-    //***********************************************************************************************************
-    /**
-     Whether the buttons state should remain pressed even when the mouse has left its bounds
-    **/
-    @:clonable public var remainPressed(default, default):Bool = false;
-
-    /**
-     Whether this button will dispatch multiple click events while the the mouse is pressed within it
-    **/
-    @:dox(group = "Repeater related properties")
-    @:clonable public var repeater(default, default):Bool = false;
-
-    /**
-     How often this button will dispatch multiple click events while the the mouse is pressed within it
-    **/
-    @:dox(group = "Repeater related properties")
-    @:clonable public var repeatInterval(default, default):Int = 50;
-
-    private var _iconResource:String;
-    /**
-     The image resource to use as the buttons icon
-    **/
-    @:clonable public var icon(get, set):String;
-    private function get_icon():String {
-        return _iconResource; // TODO: temp
-    }
-
-    private function set_icon(value:String):String {
-        if (_iconResource == value) {
-            return value;
-        }
-
-        _iconResource = value;
-        invalidateData();
-        return value;
-    }
-
-    @:style(layout)   public var iconPosition:String;
-    @:style(layout)   public var fontSize:Null<Float>;
-    @:style(layout)   public var textAlign:String;
-
-    /**
-     Whether this button should behave as a toggle button or not
-    **/
-    private var _toggle:Bool;
-    @:clonable public var toggle(get, set):Bool;
-    private function get_toggle():Bool {
-        return _toggle;
-    }
-    private function set_toggle(value:Bool):Bool {
-        if (value == _toggle) {
-            return value;
-        }
-
-        if (value == false) {
-            unregisterEvent(MouseEvent.CLICK, _onMouseClick);
-            selected = false;
-        } else {
-            registerEvent(MouseEvent.CLICK, _onMouseClick);
-        }
-
-        _toggle = value;
-        return value;
-    }
-
-    //***********************************************************************************************************
-    // Events
-    //***********************************************************************************************************
-    private var _down:Bool = false;
-    private function _onMouseOver(event:MouseEvent) {
-        if (_toggle == true && hasClass(":down")) {
-            return;
-        }
-
-        if (event.buttonDown == false || _down == false) {
-            addClass(":hover");
-        } else {
-            addClass(":down");
-        }
-    }
-
-    private function _onMouseOut(event:MouseEvent) {
-        if (_toggle == true && _selected == true) {
-            return;
-        }
-
-        if (remainPressed == false) {
-            removeClass(":down");
-        }
-        removeClass(":hover");
-    }
-
-    private function _onMouseDown(event:MouseEvent) {
-        if (FocusManager.instance.focusInfo != null && FocusManager.instance.focusInfo.currentFocus != null) {
-            FocusManager.instance.focusInfo.currentFocus.focus = false;
-        }
-        _down = true;
-        addClass(":down");
-        screen.registerEvent(MouseEvent.MOUSE_UP, _onMouseUp);
-
-        if (repeater == true) {
-            _repeatTimer = new Timer(repeatInterval, _onRepeatTimer);
-        }
-    }
-
-    private function _onRepeatTimer() {
-        if (hasClass(":hover") && _down == true) {
-            var event:MouseEvent = new MouseEvent(MouseEvent.CLICK);
-            dispatch(event);
-        }
-    }
-
-    private function _onMouseUp(event:MouseEvent) {
-        event.cancel();
-        _down = false;
-        screen.unregisterEvent(MouseEvent.MOUSE_UP, _onMouseUp);
-
-        if (_toggle == true) {
-            return;
-        }
-
-        removeClass(":down");
-        if (event.touchEvent == false && hitTest(event.screenX, event.screenY)) {
-            addClass(":hover");
-        }
-
-        if (_repeatTimer != null) {
-            #if !(cpp || neko)
-            _repeatTimer.stop();
-            _repeatTimer = null;
-            #end
-        }
-    }
-
-    private function _onMouseClick(event:MouseEvent) {
-        _selected = !_selected;
-        if (_selected == false) {
-            removeClass(":down");
-        }
-    }
-
-    private var _selected:Bool = false;
-    public var selected(get, set):Bool;
-    private function get_selected():Bool {
-        return _selected;
-    }
-    private function set_selected(value:Bool):Bool {
-        if (value == _selected || _toggle == false) {
-            return value;
-        }
-        _selected = value;
-        if (_selected == false) {
-            removeClass(":down");
-        } else {
-            addClass(":down");
-        }
-        removeClass(":hover");
-        return value;
-    }
 }
 
 //***********************************************************************************************************
-// Default behaviours
+// Composite Layout
 //***********************************************************************************************************
-@:dox(hide)
-@:access(haxe.ui.components.Button)
-class ButtonDefaultTextBehaviour extends Behaviour {
-    public override function set(value:Variant) {
-        if (value.isNull) {
-            return;
-        }
-
-        var button:Button = cast _component;
-        var label:Label = button.findComponent(Label);
-        if (label == null) {
-            label = new Label();
-            label.id = "button-label";
-            label.scriptAccess = false;
-            button.addComponent(label);
-        }
-        label.text = value;
-    }
-}
-
-@:dox(hide)
-@:access(haxe.ui.components.Button)
-class ButtonDefaultIconBehaviour extends Behaviour {
-    public override function get():Variant {
-        var button:Button = cast _component;
-        var icon:Image = button.findComponent(Image);
-        if (icon == null) {
-            return null;
-        }
-
-        return icon.resource;
-    }
-
-    public override function set(value:Variant) {
-        if (value.isNull) {
-            return;
-        }
-
-        var button:Button = cast _component;
-        var icon:Image = button.findComponent(Image);
-        if (icon == null) {
-            icon = new Image();
-            icon.addClass("icon");
-            icon.id = "button-icon";
-            icon.scriptAccess = false;
-            button.addComponentAt(icon, 0);
-        }
-
-        icon.resource = value;
-    }
-}
-
-//***********************************************************************************************************
-// Layout
-//***********************************************************************************************************
-@:dox(hide)
-class ButtonLayout extends DefaultLayout {
-    public function new() {
-        super();
-    }
-
+@:dox(hide) @:noCompletion
+private class ButtonLayout extends DefaultLayout {
     private var iconPosition(get, null):String;
     private function get_iconPosition():String {
         if (component.style == null || component.style.iconPosition == null) {
@@ -382,8 +91,8 @@ class ButtonLayout extends DefaultLayout {
     private override function repositionChildren() {
         super.repositionChildren();
 
-        var label:Label = component.findComponent("button-label");
-        var icon:Image = component.findComponent("button-icon");
+        var label:Label = component.findComponent(Label);
+        var icon:Image = component.findComponent(Image);
 
         switch (iconPosition) {
             case "far-right":
@@ -472,6 +181,197 @@ class ButtonLayout extends DefaultLayout {
                 return usableWidth - label.componentWidth - marginRight(label) - paddingRight;
             default:
                 return Std.int((usableWidth / 2) - (label.componentWidth / 2)) + marginLeft(label) - marginRight(label);
+        }
+    }
+}
+
+//***********************************************************************************************************
+// Behaviours
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+private class TextBehaviour extends DataBehaviour {
+    public override function validateData() {
+        var label:Label = _component.findComponent(Label, false);
+        if (label == null) {
+            label = new Label();
+            label.id = "button-label";
+            label.scriptAccess = false;
+            _component.addComponent(label);
+        }
+        
+        label.text = _value;
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class IconBehaviour extends DataBehaviour {
+    public override function validateData() {
+        var icon:Image = _component.findComponent(Image);
+        if (icon == null) {
+            icon = new Image();
+            icon.addClass("icon");
+            icon.id = "button-icon";
+            icon.scriptAccess = false;
+            _component.addComponentAt(icon, 0);
+        }
+        
+        icon.resource = _value;
+    }
+}
+
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.components.Button)
+private class ToggleBehaviour extends Behaviour {
+    private var _value:Variant;
+    
+    public override function get():Variant {
+        return _value;
+    }
+    
+    public override function set(value:Variant) {
+        if (_value == value) {
+            return;
+        }
+        
+        _value = value;
+        var button:Button = cast(_component, Button);
+        if (value == false) {
+            button.selected = false;
+        }
+        button.registerInternalEvents(Events, true);
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class SelectedBehaviour extends Behaviour {
+    private var _value:Variant;
+    
+    public override function get():Variant {
+        return _value;
+    }
+    
+    public override function set(value:Variant) {
+        var button:Button = cast(_component, Button);
+        if (_value == value || button.toggle == false) {
+            return;
+        }
+        
+        _value = value;
+        if (value == false) {
+            button.removeClass(":down");
+        } else {
+            button.addClass(":down");
+        }
+        button.removeClass(":hover");
+    }
+}
+
+//***********************************************************************************************************
+// Events
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+private class Events extends haxe.ui.core.Events  {
+    private var _button:Button;
+    private var _down:Bool = false;
+    private var _repeatTimer:Timer;
+    
+    public function new(button:Button) {
+        super(button);
+        _button = button;
+    }
+    
+    public override function register() {
+        if (_button.hasEvent(MouseEvent.MOUSE_OVER, onMouseOver) == false) {
+            _button.registerEvent(MouseEvent.MOUSE_OVER, onMouseOver);
+        }
+        if (_button.hasEvent(MouseEvent.MOUSE_OUT, onMouseOut) == false) {
+            _button.registerEvent(MouseEvent.MOUSE_OUT, onMouseOut);
+        }
+        if (_button.hasEvent(MouseEvent.MOUSE_DOWN, onMouseDown) == false) {
+            _button.registerEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
+        }
+        
+        if (_button.toggle == true && _button.hasEvent(MouseEvent.CLICK, onMouseClick) == false) {
+            _button.registerEvent(MouseEvent.CLICK, onMouseClick);
+        } else {
+            _button.unregisterEvent(MouseEvent.CLICK, onMouseClick);
+        }
+    }
+    
+    public override function unregister() {
+        _button.unregisterEvent(MouseEvent.MOUSE_OVER, onMouseOver);
+        _button.unregisterEvent(MouseEvent.MOUSE_OUT, onMouseOut);
+        _button.unregisterEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
+    }
+    
+    private function onMouseOver(event:MouseEvent) {
+        if (_button.toggle == true && _button.hasClass(":down")) {
+            return;
+        }
+
+        if (event.buttonDown == false || _down == false) {
+            _button.addClass(":hover");
+        } else {
+            _button.addClass(":down");
+        }
+    }
+    
+    private function onMouseOut(event:MouseEvent) {
+        if (_button.toggle == true && _button.selected == true) {
+            return;
+        }
+
+        if (_button.remainPressed == false) {
+            _button.removeClass(":down");
+        }
+        _button.removeClass(":hover");
+    }
+    
+    private function onMouseDown(event:MouseEvent) {
+        if (FocusManager.instance.focusInfo != null && FocusManager.instance.focusInfo.currentFocus != null) {
+            FocusManager.instance.focusInfo.currentFocus.focus = false;
+        }
+        _down = true;
+        _button.addClass(":down");
+        _button.screen.registerEvent(MouseEvent.MOUSE_UP, onMouseUp);
+
+        if (_button.repeater == true) {
+            _repeatTimer = new Timer(_button.repeatInterval, onRepeatTimer);
+        }
+    }
+    
+    private function onMouseUp(event:MouseEvent) {
+        event.cancel();
+        _down = false;
+        _button.screen.unregisterEvent(MouseEvent.MOUSE_UP, onMouseUp);
+
+        if (_button.toggle == true) {
+            return;
+        }
+
+        _button.removeClass(":down");
+        if (event.touchEvent == false && _button.hitTest(event.screenX, event.screenY)) {
+            _button.addClass(":hover");
+        }
+
+        if (_repeatTimer != null) {
+            _repeatTimer.stop();
+            _repeatTimer = null;
+        }
+    }
+    
+    private function onRepeatTimer() {
+        if (_button.hasClass(":hover") && _down == true) {
+            var event:MouseEvent = new MouseEvent(MouseEvent.CLICK);
+            _button.dispatch(event);
+        }
+    }
+    
+    private function onMouseClick(event:MouseEvent) {
+        _button.selected = !_button.selected;
+        if (_button.selected == false) {
+            _button.removeClass(":down");
         }
     }
 }
