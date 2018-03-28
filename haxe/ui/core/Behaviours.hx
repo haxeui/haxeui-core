@@ -31,6 +31,7 @@ class Behaviours {
         _registry.set(id, info);
         if (_updateOrder.indexOf(id) == -1) {
             _updateOrder.push(id);
+            _actualUpdateOrder = null;
         }
     }
     
@@ -74,6 +75,7 @@ class Behaviours {
     }
     private function set_updateOrder(value:Array<String>):Array<String> {
         _updateOrder = value;
+        _actualUpdateOrder = null;
         return value;
     }
     
@@ -109,6 +111,7 @@ class Behaviours {
                 b.config = info.config;
                 b.id = id;
                 _instances.set(id, b);
+                _actualUpdateOrder = null;
             }
         }
 
@@ -187,7 +190,7 @@ class Behaviours {
             }
         }
         
-        for (key in actualUpdateOrder) {
+        for (key in order) {
             var r = _registry.get(key);
             if (r.defaultValue != null) {
                 set(key, r.defaultValue);
