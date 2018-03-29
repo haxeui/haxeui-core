@@ -1,7 +1,9 @@
 package haxe.ui.macros;
-import haxe.macro.ExprTools;
+
 
 #if macro
+import haxe.macro.TypeTools;
+import haxe.macro.ExprTools;
 import haxe.macro.Expr;
 import haxe.macro.Context;
 #end
@@ -169,8 +171,6 @@ class Macros {
         
         var behaviours:Array<Dynamic> = [];
         
-        var exceptions = ["text"]; // TODO: this is an awful hack, cant work out a better way, seems abstracts cause issues with iterating over superClass fields
-        
         for (f in MacroHelpers.getFieldsWithMeta("behaviour", fields)) {
             fields.remove(f);
             
@@ -209,7 +209,7 @@ class Macros {
                 case _:
             }
             
-            if (exceptions.indexOf(f.name) == -1 || Context.getLocalClass().toString() == "haxe.ui.core.Component") {
+            if (TypeTools.findField(Context.getLocalClass().get(), f.name) == null) {
                 var kind = FProp("get", "set", type);
                 
                 // add getter/setter property
