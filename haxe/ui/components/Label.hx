@@ -97,7 +97,7 @@ private class LabelLayout extends DefaultLayout {
 // Behaviours
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
-class TextBehaviour extends Behaviour {
+private class TextBehaviour extends Behaviour {
     public override function get():Variant {
         if (_component.hasTextDisplay() == false) {
             return "";
