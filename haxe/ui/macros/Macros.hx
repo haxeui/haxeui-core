@@ -97,6 +97,8 @@ class Macros {
             className = className.substr(0, n1) + className.substr(n2 + 1, className.length);
         }
 
+        className = className.split(".").pop(); // TODO: ensure this works as expected and clean up if it does, pretty sure it does
+        
         if (currentCloneFn == null) {
             var code:String = "";
             code += "function():" + className + " {\n";
