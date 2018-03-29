@@ -233,6 +233,15 @@ class MacroHelpers {
         return superClass;
     }
 
+    public static function isPrivate(t:haxe.macro.Type):Bool {
+        return switch (t) { 
+            case TInst(c, _): 
+                c.get().isPrivate; 
+            case _: 
+                false; 
+        } 
+    }
+    
     public static function getClassNameFromType(t:haxe.macro.Type):String {
         var className:String = "";
         switch (t) {
