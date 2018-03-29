@@ -46,6 +46,10 @@ class ModuleMacros {
 
                 if (types != null) {
                     for (t in types) {
+                        if (MacroHelpers.isPrivate(t) == true) {
+                            continue;
+                        }
+                        
                         var skipRest = false;
                         var resolvedClass:String = MacroHelpers.classNameFromType(t);
                         var classAlias:String = s.classAlias;
@@ -163,6 +167,10 @@ class ModuleMacros {
 
                 if (types != null) {
                     for (t in types) {
+                        if (MacroHelpers.isPrivate(t) == true) {
+                            continue;
+                        }
+                        
                         if (MacroHelpers.hasSuperClass(t, "haxe.ui.core.Component") == true) {
                             var resolvedClass:String = MacroHelpers.classNameFromType(t);
                             if (c.className != null && resolvedClass != c.className) {
