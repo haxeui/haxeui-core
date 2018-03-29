@@ -178,7 +178,7 @@ private class ImageLayout extends DefaultLayout {
 @:access(haxe.ui.components.Image)
 private class ResourceBehaviour extends DataBehaviour {
     private override function validateData() {
-        if (_value == null) {
+        if (_value == null || _value.isNull) {
             _component.removeImageDisplay();
             return;
         }

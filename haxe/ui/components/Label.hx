@@ -29,7 +29,7 @@ class Label extends Component {
     //***********************************************************************************************************
     // Overrides
     //***********************************************************************************************************
-    private override function applyStyle(style:Style) {
+    private override function applyStyle(style:Style) {  // TODO: remove this eventually, @:styleApplier(...) or something
         super.applyStyle(style);
         if (hasTextDisplay() == true) {
             getTextDisplay().textStyle = style;

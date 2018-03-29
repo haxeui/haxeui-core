@@ -47,7 +47,7 @@ class Button extends InteractiveComponent {
     //***********************************************************************************************************
     // Overrides
     //***********************************************************************************************************
-    private override function applyStyle(style:Style) {
+    private override function applyStyle(style:Style) {  // TODO: remove this eventually, @:styleApplier(...) or something
         super.applyStyle(style);
         if (style.icon != null) {
             icon = style.icon;
@@ -282,27 +282,27 @@ private class Events extends haxe.ui.core.Events  {
     }
     
     public override function register() {
-        if (_button.hasEvent(MouseEvent.MOUSE_OVER, onMouseOver) == false) {
-            _button.registerEvent(MouseEvent.MOUSE_OVER, onMouseOver);
+        if (hasEvent(MouseEvent.MOUSE_OVER, onMouseOver) == false) {
+            registerEvent(MouseEvent.MOUSE_OVER, onMouseOver);
         }
-        if (_button.hasEvent(MouseEvent.MOUSE_OUT, onMouseOut) == false) {
-            _button.registerEvent(MouseEvent.MOUSE_OUT, onMouseOut);
+        if (hasEvent(MouseEvent.MOUSE_OUT, onMouseOut) == false) {
+            registerEvent(MouseEvent.MOUSE_OUT, onMouseOut);
         }
-        if (_button.hasEvent(MouseEvent.MOUSE_DOWN, onMouseDown) == false) {
-            _button.registerEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
+        if (hasEvent(MouseEvent.MOUSE_DOWN, onMouseDown) == false) {
+            registerEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
         }
         
-        if (_button.toggle == true && _button.hasEvent(MouseEvent.CLICK, onMouseClick) == false) {
-            _button.registerEvent(MouseEvent.CLICK, onMouseClick);
+        if (_button.toggle == true && hasEvent(MouseEvent.CLICK, onMouseClick) == false) {
+            registerEvent(MouseEvent.CLICK, onMouseClick);
         } else {
-            _button.unregisterEvent(MouseEvent.CLICK, onMouseClick);
+            unregisterEvent(MouseEvent.CLICK, onMouseClick);
         }
     }
     
     public override function unregister() {
-        _button.unregisterEvent(MouseEvent.MOUSE_OVER, onMouseOver);
-        _button.unregisterEvent(MouseEvent.MOUSE_OUT, onMouseOut);
-        _button.unregisterEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
+        unregisterEvent(MouseEvent.MOUSE_OVER, onMouseOver);
+        unregisterEvent(MouseEvent.MOUSE_OUT, onMouseOut);
+        unregisterEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
     }
     
     private function onMouseOver(event:MouseEvent) {
