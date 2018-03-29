@@ -35,9 +35,7 @@ private class GroupBehaviour extends DataBehaviour {
             arr.push(optionbox);
         }
         Groups.instance.set(_value, arr);
-        
     }
-    
 }
 
 @:dox(hide) @:noCompletion
