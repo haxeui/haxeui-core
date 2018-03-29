@@ -4,6 +4,7 @@ import haxe.ui.core.Component;
 import haxe.ui.core.DataBehaviour;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.MouseEvent;
+import haxe.ui.core.UIEvent;
 import haxe.ui.layouts.HorizontalLayout;
 import haxe.ui.styles.Style;
 
@@ -116,6 +117,8 @@ private class SelectedBehaviour extends DataBehaviour {
         } else {
             valueComponent.removeClass(":selected");
         }
+        
+        _component.dispatch(new UIEvent(UIEvent.CHANGE));
     }
 }
 
