@@ -55,6 +55,7 @@ private class SelectedBehaviour extends DataBehaviour {
                 }
             }
             if (hasSelection == false) {
+                _value = true;
                 return;
             }
         }
