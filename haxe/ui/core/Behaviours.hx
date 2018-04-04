@@ -29,10 +29,9 @@ class Behaviours {
         }
         
         _registry.set(id, info);
-        if (_updateOrder.indexOf(id) == -1) {
-            _updateOrder.push(id);
-            _actualUpdateOrder = null;
-        }
+        _updateOrder.remove(id);
+        _updateOrder.push(id);
+        _actualUpdateOrder = null;
     }
     
     public function isRegistered(id:String):Bool {
