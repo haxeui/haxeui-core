@@ -200,7 +200,12 @@ class Style {
                     borderOpacity = ValueTools.float(v.value);
                     
                 case "icon":
-                    icon = ValueTools.string(v.value);
+                    switch (v.value) {
+                        case Value.VNone:
+                            icon = null;
+                        case _:
+                            icon = ValueTools.string(v.value);
+                    }
                 case "icon-position":
                     iconPosition = ValueTools.string(v.value);
                     
