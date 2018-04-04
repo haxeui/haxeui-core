@@ -1,6 +1,6 @@
 package haxe.ui.util;
 
-import haxe.ui.core.Screen;
+import haxe.ui.core.Component;
 import haxe.ui.data.DataSource;
 
 enum VariantType {
@@ -9,6 +9,7 @@ enum VariantType {
     String(s:String);
     Bool(s:Bool);
     DataSource(s:DataSource<Dynamic>);
+    Component(s:Component);
 }
 
 abstract Variant(VariantType) from VariantType {
@@ -28,7 +29,7 @@ abstract Variant(VariantType) from VariantType {
             case Int(s): Std.string(s);
             case Float(s): Std.string(s);
             case Bool(s): Std.string(s);
-            //case Dynamic(s): Std.string(s);
+            case Component(s): Std.string(s);
             case DataSource(s): Std.string(s);
             default: throw "Variant Type Error";
         }
@@ -124,11 +125,34 @@ abstract Variant(VariantType) from VariantType {
             case Bool(_): return true;
             default:
         }
-        return false; // this.match(Bool(_));
+        return false;
     }
 
     // ************************************************************************************************************
-    // BOOLS
+    // COMPONENT
+    // ************************************************************************************************************
+    @:from static function fromComponent(s:Component):Variant {
+        return Component(s);
+    }
+
+    @:to function toComponent():Component {
+        return switch (this) {
+            case Component(s): s;
+            default: throw "Variant Type Error";
+        }
+    }
+
+    public var isComponent(get, never):Bool;
+    private function get_isComponent():Bool {
+        switch (this) {
+            case Component(_): return true;
+            default:
+        }
+        return false;
+    }
+
+    // ************************************************************************************************************
+    // DATA SOURCE
     // ************************************************************************************************************
     @:from static function fromDataSource(s:DataSource<Dynamic>):Variant {
         return DataSource(s);
@@ -367,6 +391,8 @@ abstract Variant(VariantType) from VariantType {
                 v = (("" + r) == "true");
             } else if (Std.is(r, String)) {
                 v = Std.string(r);
+            } else if (Std.is(r, Component)) {
+                v =  cast r;
             } else if (Std.is(r, DataSource)) {
                 v =  cast r;
             } else {
@@ -395,12 +421,12 @@ abstract Variant(VariantType) from VariantType {
         var d:Dynamic = null;
         if (v != null) {
             switch (v) {
-                case VariantType.Int(y):        d = y;
-                case VariantType.Float(y):      d = y;
-                case VariantType.String(y):     d = y;
-                case VariantType.Bool(y):       d = y;
-                //case VariantType.Dynamic(y):    d = y;
-                case VariantType.DataSource(y):       d = y;
+                case VariantType.Int(y):            d = y;
+                case VariantType.Float(y):          d = y;
+                case VariantType.String(y):         d = y;
+                case VariantType.Bool(y):           d = y;
+                case VariantType.Component(y):      d = y;
+                case VariantType.DataSource(y):     d = y;
             }
         }
         return d;
