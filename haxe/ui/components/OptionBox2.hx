@@ -20,23 +20,7 @@ class OptionBox2 extends CheckBox2 {
 @:dox(hide) @:noCompletion
 private class GroupBehaviour extends DataBehaviour {
     public override function validateData() {
-        var optionbox:OptionBox2 = cast(_component, OptionBox2);
-        if (_value != null) {
-            var arr:Array<OptionBox2> = Groups.instance.get(_value);
-            if (arr != null) {
-                arr.remove(optionbox);
-            }
-        }
-        
-        var arr:Array<OptionBox2> = Groups.instance.get(_value);
-        if (arr == null) {
-            arr = [];
-        }
-        
-        if (arr.indexOf(optionbox) == -1) {
-            arr.push(optionbox);
-        }
-        Groups.instance.set(_value, arr);
+        OptionBoxGroups.instance.add(_value, cast _component);
     }
 }
 
@@ -46,7 +30,7 @@ private class SelectedBehaviour extends DataBehaviour {
     public override function validateData() {
         var optionbox:OptionBox2 = cast(_component, OptionBox2);
         if (optionbox.group != null && _value == false) { // dont allow false if no other group selection
-            var arr:Array<OptionBox2> = Groups.instance.get(optionbox.group);
+            var arr:Array<OptionBox2> = OptionBoxGroups.instance.get(optionbox.group);
             var hasSelection:Bool = false;
             if (arr != null) {
                 for (option in arr) {
@@ -63,7 +47,7 @@ private class SelectedBehaviour extends DataBehaviour {
         }
         
         if (optionbox.group != null && _value == true) { // set all the others in group
-            var arr:Array<OptionBox2> = Groups.instance.get(optionbox.group);
+            var arr:Array<OptionBox2> = OptionBoxGroups.instance.get(optionbox.group);
             if (arr != null) {
                 for (option in arr) {
                     if (option != _component) {
@@ -89,7 +73,7 @@ private class SelectedBehaviour extends DataBehaviour {
 private class SelectedOptionBehaviour extends DataBehaviour {
     public override function get():Variant {
         var optionbox:OptionBox2 = cast(_component, OptionBox2);
-        var arr:Array<OptionBox2> = Groups.instance.get(optionbox.group);
+        var arr:Array<OptionBox2> = OptionBoxGroups.instance.get(optionbox.group);
         var selectionOption:OptionBox2 = null;
         if (arr != null) {
             for (test in arr) {
@@ -106,12 +90,13 @@ private class SelectedOptionBehaviour extends DataBehaviour {
 //***********************************************************************************************************
 // Util classes
 //***********************************************************************************************************
-private class Groups { // singleton
-    private static var _instance:Groups;
-    public static var instance(get, null):Groups;
+@:dox(hide) @:noCompletion
+class OptionBoxGroups { // singleton
+    private static var _instance:OptionBoxGroups;
+    public static var instance(get, null):OptionBoxGroups;
     private static function get_instance() {
         if (_instance == null) {
-            _instance = new Groups();
+            _instance = new OptionBoxGroups();
         }
         return _instance;
     }
@@ -127,5 +112,24 @@ private class Groups { // singleton
     
     public function set(name:String, options:Array<OptionBox2>) {
         _groups.set(name, options);
+    }
+    
+    public function add(name:String, optionbox:OptionBox2) {
+        if (name != null) {
+            var arr:Array<OptionBox2> = get(name);
+            if (arr != null) {
+                arr.remove(optionbox);
+            }
+        }
+        
+        var arr:Array<OptionBox2> = get(name);
+        if (arr == null) {
+            arr = [];
+        }
+        
+        if (arr.indexOf(optionbox) == -1) {
+            arr.push(optionbox);
+        }
+        set(name, arr);
     }
 }
