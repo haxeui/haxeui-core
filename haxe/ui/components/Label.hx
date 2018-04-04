@@ -2,6 +2,7 @@ package haxe.ui.components;
 
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
+import haxe.ui.core.DataBehaviour;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.styles.Style;
 import haxe.ui.util.Size;
@@ -97,25 +98,8 @@ private class LabelLayout extends DefaultLayout {
 // Behaviours
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
-private class TextBehaviour extends Behaviour {
-    public override function get():Variant {
-        if (_component.hasTextDisplay() == false) {
-            return "";
-        }
-
-        return _component.getTextDisplay().text;
-    }
-
-    public override function set(value:Variant) {
-        if (value == null) {
-            value = "";
-        }
-
-        if (get() == value) {
-            return;
-        }
-
-        _component.getTextDisplay().text = '${value}';
-        _component.invalidateData();
+private class TextBehaviour extends DataBehaviour {
+    public override function validateData() {
+        _component.getTextDisplay().text = '${_value}';
     }
 }
