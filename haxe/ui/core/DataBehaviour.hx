@@ -17,8 +17,8 @@ class DataBehaviour extends Behaviour {
         }
         
         _value = value;
-        _component.invalidateData();
         _dataInvalid = true;
+        _component.invalidateData();
     }
 
     public function validate() {
