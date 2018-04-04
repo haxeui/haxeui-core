@@ -43,7 +43,11 @@ class Behaviours {
             return;
         }
         
-        for (id in _registry.keys()) {
+        var ids = [];
+        for (id in _registry.keys()) { // make a copy of ids as we might end up modifying the iterator
+            ids.push(id);
+        } 
+        for (id in ids) {
             var nativeProps = _component.getNativeConfigProperties('.behaviour[id=${id}]');
             if (nativeProps != null && nativeProps.exists("class")) {
                 var registered = _registry.get(id);

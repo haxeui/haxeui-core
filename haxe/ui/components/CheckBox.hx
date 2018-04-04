@@ -1,6 +1,5 @@
 package haxe.ui.components;
 
-import haxe.ui.core.Component;
 import haxe.ui.core.DataBehaviour;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.MouseEvent;

@@ -1,4 +1,5 @@
 package haxe.ui.components;
+
 import haxe.ds.StringMap;
 import haxe.ui.core.Component;
 import haxe.ui.core.DataBehaviour;
