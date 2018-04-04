@@ -3,6 +3,7 @@ import haxe.ds.StringMap;
 import haxe.ui.core.Component;
 import haxe.ui.core.DataBehaviour;
 import haxe.ui.core.UIEvent;
+import haxe.ui.util.Variant;
 
 class OptionBox2 extends CheckBox2 {
     //***********************************************************************************************************
@@ -10,6 +11,7 @@ class OptionBox2 extends CheckBox2 {
     //***********************************************************************************************************
     @:behaviour(GroupBehaviour, "defaultGroup")     public var group:String;
     @:behaviour(SelectedBehaviour)                  public var selected:Bool;
+    @:behaviour(SelectedOptionBehaviour)            public var selectedOption:Component;
 }
 
 //***********************************************************************************************************
@@ -75,11 +77,29 @@ private class SelectedBehaviour extends DataBehaviour {
         var valueComponent:Component = _component.findComponent("optionbox2-value");
         if (_value == true) {
             valueComponent.addClass(":selected");
+            _component.dispatch(new UIEvent(UIEvent.CHANGE));
         } else {
             valueComponent.removeClass(":selected");
         }
         
-        _component.dispatch(new UIEvent(UIEvent.CHANGE));
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class SelectedOptionBehaviour extends DataBehaviour {
+    public override function get():Variant {
+        var optionbox:OptionBox2 = cast(_component, OptionBox2);
+        var arr:Array<OptionBox2> = Groups.instance.get(optionbox.group);
+        var selectionOption:OptionBox2 = null;
+        if (arr != null) {
+            for (test in arr) {
+                if (test.selected == true) {
+                    selectionOption = test;
+                    break;
+                }
+            }
+        }
+        return selectionOption;
     }
 }
 
