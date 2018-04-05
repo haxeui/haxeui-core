@@ -138,11 +138,11 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     }
 
     private var _internalEvents:Events = null;
-    private function registerInternalEvents(eventsClass:Class<Events>, reregister:Bool = false) {
-        if (_internalEvents == null) {
+    private function registerInternalEvents(eventsClass:Class<Events> = null, reregister:Bool = false) {
+        if (_internalEvents == null && eventsClass != null) {
             _internalEvents = Type.createInstance(eventsClass, [this]);
             _internalEvents.register();
-        } else if (reregister == true) {
+        } if (reregister == true) {
             _internalEvents.register();
         }
     }

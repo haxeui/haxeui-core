@@ -12,6 +12,7 @@ import haxe.ui.util.Rectangle;
 import haxe.ui.util.Size;
 import haxe.ui.validation.InvalidationFlags;
 
+@:composite(ScrollViewLayout, Events, Builder) // TODO: this would be nice to implement to remove alot of boilerplate
 class ScrollView2 extends Component {
     //***********************************************************************************************************
     // Public API
@@ -67,18 +68,48 @@ class ScrollView2 extends Component {
 //***********************************************************************************************************
 // Events
 //***********************************************************************************************************
-
+private class Events extends haxe.ui.core.Events {
+    private var _scrollview:ScrollView2;
+    
+    public function new(scrollview:ScrollView2) {
+        super(scrollview);
+        _scrollview = scrollview;
+    }
+    
+    public override function register() {
+        var hscroll:HorizontalScroll2 = _scrollview.findComponent(HorizontalScroll2, false);
+        var vscroll:VerticalScroll2 = _scrollview.findComponent(VerticalScroll2, false);
+        
+        if (vscroll != null && vscroll.hasEvent(UIEvent.CHANGE, onVScroll) == false) {
+            vscroll.registerEvent(UIEvent.CHANGE, onVScroll);
+        }
+    }
+    
+    public override function unregister() {
+        var hscroll:HorizontalScroll2 = _scrollview.findComponent(HorizontalScroll2, false);
+        var vscroll:VerticalScroll2 = _scrollview.findComponent(VerticalScroll2, false);
+        
+        if (vscroll != null && vscroll.hasEvent(UIEvent.CHANGE, onVScroll) == true) {
+            vscroll.unregisterEvent(UIEvent.CHANGE, onVScroll);
+        }
+    }
+    
+    private function onVScroll(event:UIEvent) {
+        _scrollview.invalidate(InvalidationFlags.SCROLL);
+    }
+}
 //***********************************************************************************************************
 // Composite Builder
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
 @:allow(haxe.ui.containers.ScrollView2)
+@:access(haxe.ui.core.Component)
 private class Builder extends CompositeBuilder {
     private var _contents:Box;
     
     public override function create() {
-        trace("create");
         createContentContainer();
+        _component.registerInternalEvents(Events);
     }
     
     public override function destroy() {
@@ -131,11 +162,8 @@ private class Builder extends CompositeBuilder {
                 vscroll = new VerticalScroll2();
                 vscroll.percentHeight = 100;
                 vscroll.id = "scrollview-vscroll";
-                vscroll.registerEvent(UIEvent.CHANGE, function(e) {
-                    trace("vscroll");
-                    _component.invalidate(InvalidationFlags.SCROLL);
-                });
                 _component.addComponent(vscroll);
+                _component.registerInternalEvents(true);
             }
 
             vscroll.hidden = false;
@@ -178,8 +206,7 @@ private class Builder extends CompositeBuilder {
             ypos = vscroll.pos;
         }
         
-
-        var rc:Rectangle = new Rectangle(Std.int(xpos), Std.int(ypos), clipCX, clipCY);
+        var rc:Rectangle = new Rectangle(xpos, ypos, clipCX, clipCY);
         _contents.componentClipRect = rc;
     }
 }
@@ -190,7 +217,7 @@ private class Builder extends CompositeBuilder {
 @:dox(hide) @:noCompletion
 private class ScrollViewLayout extends DefaultLayout {
     private override function repositionChildren() {
-        var contents:Component = component.findComponent("scrollview-contents", null, false, "css");
+        var contents:Component = component.findComponent("scrollview-contents", false, "css");
         if (contents == null) {
             return;
         }
@@ -211,7 +238,7 @@ private class ScrollViewLayout extends DefaultLayout {
             vscroll.moveComponent(ucx - vscroll.componentWidth + paddingRight, paddingTop);
         }
 
-        var contents:Component = component.findComponent("scrollview-contents", null, false, "css");
+        var contents:Component = component.findComponent("scrollview-contents", false, "css");
         if (contents != null) {
             contents.moveComponent(paddingLeft, paddingTop);
         }
@@ -229,7 +256,7 @@ private class ScrollViewLayout extends DefaultLayout {
         }
 
         if (cast(component, ScrollView2).native == true) {
-            var contents:Component = component.findComponent("scrollview-contents", null, false, "css");
+            var contents:Component = component.findComponent("scrollview-contents", false, "css");
             if (contents != null) {
                 if (contents.componentWidth > size.width) {
                     size.height -= Platform.hscrollHeight;
@@ -255,7 +282,7 @@ private class ScrollViewLayout extends DefaultLayout {
         }
         
         if (cast(component, ScrollView2).native == true) {
-            var contents:Component = component.findComponent("scrollview-contents", null, false, "css");
+            var contents:Component = component.findComponent("scrollview-contents", false, "css");
             if (contents != null) {
                 if (contents.width > component.width) {
                     size.height += Platform.hscrollHeight;
