@@ -87,6 +87,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }        
 
         registerBehaviours();
+        registerComposite();
         
         // we dont want to actually apply the classes, just find out if native is there or not
         //TODO - we could include the initialization in the validate method
@@ -110,12 +111,23 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         behaviours.replaceNative();
         layout = createLayout();
         if (native == false || native == null) {
+            if (_compositeBuilderClass != null) {
+                if (_compositeBuilder == null) {
+                   _compositeBuilder = Type.createInstance(_compositeBuilderClass, [this]); 
+                }
+                _compositeBuilder.create();
+            }
             createChildren();
         }
         behaviours.applyDefaults();
     }
 
     private function registerBehaviours() {
+    }
+
+    private var _compositeBuilderClass:Class<CompositeBuilder>;
+    private var _compositeBuilder:CompositeBuilder;
+    private function registerComposite() {
     }
     
     private function createDefaults() {
