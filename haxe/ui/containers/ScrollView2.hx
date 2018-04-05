@@ -4,6 +4,7 @@ import haxe.ui.components.HorizontalScroll2;
 import haxe.ui.components.VerticalScroll2;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
+import haxe.ui.core.DefaultBehaviour;
 import haxe.ui.core.Platform;
 import haxe.ui.core.UIEvent;
 import haxe.ui.layouts.DefaultLayout;
@@ -17,6 +18,10 @@ class ScrollView2 extends Component {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
+    @:behaviour(DefaultBehaviour)   public var virtual:Bool;
+    @:behaviour(DefaultBehaviour)   public var vscrollPos:Float;
+    @:behaviour(DefaultBehaviour)   public var vscrollMax:Float;
+    @:behaviour(DefaultBehaviour)   public var vscrollPageSize:Float;
     
     //***********************************************************************************************************
     // Internals
