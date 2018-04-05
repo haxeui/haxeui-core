@@ -1,0 +1,158 @@
+package haxe.ui.components;
+
+import haxe.ui.core.DataBehaviour;
+import haxe.ui.core.DefaultBehaviour;
+import haxe.ui.core.IDirectionalComponent;
+import haxe.ui.core.InteractiveComponent;
+import haxe.ui.core.LayoutBehaviour;
+import haxe.ui.core.MouseEvent;
+import haxe.ui.core.ValueBehaviour;
+import haxe.ui.util.Point;
+
+class Scroll2 extends InteractiveComponent implements IDirectionalComponent {
+    //***********************************************************************************************************
+    // Public API
+    //***********************************************************************************************************
+    @:behaviour(LayoutBehaviour, 0)     public var min:Float;
+    @:behaviour(LayoutBehaviour, 100)   public var max:Float;
+    @:behaviour(LayoutBehaviour)        public var pageSize:Float;
+    @:behaviour(LayoutBehaviour)        public var pos:Float;
+    @:behaviour(DefaultBehaviour, 20)   public var increment:Float;
+    
+    //***********************************************************************************************************
+    // Private API
+    //***********************************************************************************************************
+    private function posFromCoord(coord:Point):Float {
+        return behaviours.call("posFromCoord", coord); 
+    }
+    
+    private function applyPageFromCoord(coord:Point):Float {
+        return behaviours.call("applyPageFromCoord", coord); 
+    }
+    
+    //***********************************************************************************************************
+    // Internals
+    //***********************************************************************************************************
+    private override function createChildren() {
+        createButton("deinc").repeater = true;
+        createButton("inc").repeater = true;
+        createButton("thumb").remainPressed = true;
+        
+        registerInternalEvents(Events);
+    }
+    
+    //***********************************************************************************************************
+    // Validation
+    //***********************************************************************************************************
+    private override function validateData() {
+        super.validateData();
+        
+        if (pos < min) {
+            pos = min;
+        } else  if (pos > max) {
+            pos = max;
+        }
+    }
+    
+    //***********************************************************************************************************
+    // Helpers
+    //***********************************************************************************************************
+    private function createButton(type:String):Button {
+        var b = findComponent('scroll-${type}-button', Button);
+        if (b == null) {
+            b = new Button();
+            b.scriptAccess = false;
+            b.customStyle.native = false;
+            b.id = 'scroll-${type}-button';
+            b.addClass(type);
+            b.allowFocus = false;
+            addComponent(b);
+        }
+        return b;
+    }
+}
+
+//***********************************************************************************************************
+// Events
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.components.Scroll2)
+private class Events extends haxe.ui.core.Events  {
+    private var _scroll:Scroll2;
+    private var _deincButton:Button;
+    private var _incButton:Button;
+    private var _thumb:Button;
+    
+    public function new(scroll:Scroll2) {
+        super(scroll);
+        _scroll = scroll;
+        _deincButton = _scroll.findComponent("scroll-deinc-button");
+        _incButton = _scroll.findComponent("scroll-inc-button");
+        _thumb = _scroll.findComponent("scroll-thumb-button");
+    }
+    
+    public override function register() {
+        if (hasEvent(MouseEvent.MOUSE_DOWN, onMouseDown) == false) {
+            registerEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
+        }
+        if (_deincButton != null && _deincButton.hasEvent(MouseEvent.CLICK, onDeinc) == false) {
+            _deincButton.registerEvent(MouseEvent.CLICK, onDeinc);
+        }
+        if (_incButton != null && _incButton.hasEvent(MouseEvent.CLICK, onInc) == false) {
+            _incButton.registerEvent(MouseEvent.CLICK, onInc);
+        }
+        if (_thumb != null && _thumb.hasEvent(MouseEvent.MOUSE_DOWN, onThumbMouseDown) == false) {
+            _thumb.registerEvent(MouseEvent.MOUSE_DOWN, onThumbMouseDown);
+        }
+    }
+    
+    public override function unregister() {
+        unregisterEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
+        if (_deincButton != null) {
+            _deincButton.unregisterEvent(MouseEvent.CLICK, onDeinc);
+        }
+        if (_incButton != null) {
+            _incButton.unregisterEvent(MouseEvent.CLICK, onInc);
+        }
+        if (_thumb != null) {
+            _thumb.unregisterEvent(MouseEvent.MOUSE_DOWN, onThumbMouseDown);
+        }
+    }
+    
+    private function onMouseDown(event:MouseEvent) {
+        _scroll.applyPageFromCoord(new Point(event.screenX, event.screenY));
+    }
+    
+    private function onDeinc(event:MouseEvent) {
+        _scroll.pos -= _scroll.increment;
+    }
+    
+    private function onInc(event:MouseEvent) {
+        _scroll.pos += _scroll.increment;
+    }
+    
+    private var _mouseDownOffset:Point;
+    private function onThumbMouseDown(event:MouseEvent) {
+        _mouseDownOffset = new Point();
+        _mouseDownOffset.x = event.screenX - _thumb.left + _scroll.layout.paddingLeft;
+        _mouseDownOffset.y = event.screenY - _thumb.top + _scroll.layout.paddingTop;
+        
+        _scroll.screen.registerEvent(MouseEvent.MOUSE_UP, onScreenMouseUp);
+        _scroll.screen.registerEvent(MouseEvent.MOUSE_MOVE, onScreenMouseMove);
+    }
+    
+    private function onScreenMouseUp(event:MouseEvent) {
+        _mouseDownOffset = null;
+        _scroll.screen.unregisterEvent(MouseEvent.MOUSE_UP, onScreenMouseUp);
+        _scroll.screen.unregisterEvent(MouseEvent.MOUSE_MOVE, onScreenMouseMove);
+    }
+    
+    private function onScreenMouseMove(event:MouseEvent) {
+        if (_mouseDownOffset == null) {
+            return;
+        }
+        
+        var coord = new Point(event.screenX - _mouseDownOffset.x, event.screenY - _mouseDownOffset.y);
+        _scroll.pos = _scroll.posFromCoord(coord);
+    }
+}
