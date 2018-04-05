@@ -6,6 +6,7 @@ import haxe.ui.core.IDirectionalComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.LayoutBehaviour;
 import haxe.ui.core.MouseEvent;
+import haxe.ui.core.UIEvent;
 import haxe.ui.core.ValueBehaviour;
 import haxe.ui.util.Point;
 
@@ -52,6 +53,9 @@ class Scroll2 extends InteractiveComponent implements IDirectionalComponent {
         } else  if (pos > max) {
             pos = max;
         }
+        
+        var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
+        dispatch(changeEvent);
     }
     
     //***********************************************************************************************************
