@@ -20,12 +20,12 @@ class ScrollView2 extends Component {
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************
-    private override function createDefaults() {
+    private override function createDefaults() { // TODO: remove this eventually, @:layout(...) or something
         super.createDefaults();
         _defaultLayout = new ScrollViewLayout();
     }
     
-    private override function registerComposite() {
+    private override function registerComposite() { // TODO: remove this eventually, @:composite(...) or something
        super.registerComposite();
        _compositeBuilderClass = Builder;
     }
