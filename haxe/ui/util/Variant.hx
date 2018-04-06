@@ -53,7 +53,7 @@ abstract Variant(VariantType) from VariantType {
         }
         return switch (this) {
             case Int(s): s;
-            case Float(s): Std.int(s);
+            case Float(s): s;
             default: throw "Variant Type Error";
         }
     }
