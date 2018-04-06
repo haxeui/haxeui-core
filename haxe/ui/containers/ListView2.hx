@@ -5,6 +5,7 @@ import haxe.ui.components.Label;
 import haxe.ui.containers.ScrollView2;
 import haxe.ui.core.Component;
 import haxe.ui.core.IDataComponent;
+import haxe.ui.core.ScrollEvent;
 import haxe.ui.data.ArrayDataSource;
 import haxe.ui.data.DataSource;
 import haxe.ui.data.transformation.NativeTypeTransformer;
@@ -15,7 +16,7 @@ class ListView2 extends ScrollView2 implements IDataComponent {
     private function get_dataSource():DataSource<Dynamic> {
         if (_dataSource == null) {
             _dataSource = new ArrayDataSource(new NativeTypeTransformer());
-            //_dataSource.onChange = onDataSourceChanged;
+            _dataSource.onChange = onDataSourceChanged;
             //behaviourGet("dataSource");
         }
         return _dataSource;
@@ -34,9 +35,21 @@ class ListView2 extends ScrollView2 implements IDataComponent {
         invalidateData();
     }
     
+    public function new() { // TEMP!
+        super();
+        registerEvent(ScrollEvent.CHANGE, function(e) {
+            trace("scroll");
+            invalidateData();
+        });
+    }
+    
     private override function validateData() {
         super.validateData();
 
+        if (_dataSource == null) {
+            return;
+        }
+        
         trace("validate data - " + _dataSource.size);
         
         
@@ -70,6 +83,44 @@ class ListView2 extends ScrollView2 implements IDataComponent {
                 contents.removeComponent(contents.childComponents[contents.childComponents.length - 1]); // remove last
             }
         } else {
+            
+            var start = Std.int(vscrollPos); // based on vscroll pos
+            var max = 5; // todo calc
+            var end = start + max + 1;
+            var i = 0;
+            
+            //start = Std.int(vscrollPos);
+            
+            trace("start = " + start + ", vscrollPos = " + vscrollPos);
+            
+            for (n in start...end) {
+                if (n < _dataSource.size) {
+                    var data:Dynamic = _dataSource.get(n);
+                    trace(" l = " +contents.childComponents.length);
+                    var item = null;
+                    if (contents.childComponents.length <= i) {
+                        trace("create item");
+                        var cls = itemClass(n, data);
+                        item = Type.createInstance(cls, []);
+                        addComponent(item);
+                    } else {
+                        item = contents.childComponents[i];
+                    }
+                    
+                    apply(item, data);
+                    
+                    i++;
+                }
+            }
+            
+            
+            if (_dataSource.size > max) {
+                trace("scroll");
+                vscrollMax = _dataSource.size - max;
+                //vscrollPageSize = max;
+            }
+            
+            
             
         }
         

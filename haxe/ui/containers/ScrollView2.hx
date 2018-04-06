@@ -8,11 +8,13 @@ import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.DataBehaviour;
 import haxe.ui.core.DefaultBehaviour;
 import haxe.ui.core.Platform;
+import haxe.ui.core.ScrollEvent;
 import haxe.ui.core.UIEvent;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.LayoutFactory;
 import haxe.ui.util.Rectangle;
 import haxe.ui.util.Size;
+import haxe.ui.util.Variant;
 import haxe.ui.validation.InvalidationFlags;
 
 @:composite(ScrollViewLayout, Events, Builder) // TODO: this would be nice to implement to remove alot of boilerplate
@@ -99,6 +101,14 @@ private class VScrollPos extends DataBehaviour {
     public function new(scrollview:ScrollView2) {
         super(scrollview);
         _scrollview = scrollview;
+    }
+    
+    public override function get():Variant {
+        var vscroll = _scrollview.findComponent(VerticalScroll2, false);
+        if (vscroll == null) {
+            return 0;
+        }
+        return vscroll.pos;
     }
     
     public override function validateData() { // TODO: feels a bit ugly!
@@ -199,6 +209,7 @@ private class Events extends haxe.ui.core.Events {
     
     private function onVScroll(event:UIEvent) {
         _scrollview.invalidate(InvalidationFlags.SCROLL);
+        _target.dispatch(new ScrollEvent(ScrollEvent.CHANGE));
     }
 }
 
