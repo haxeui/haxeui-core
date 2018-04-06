@@ -18,7 +18,7 @@ class Scroll2 extends InteractiveComponent implements IDirectionalComponent {
     @:behaviour(LayoutBehaviour, 100)   public var max:Float;
     @:behaviour(LayoutBehaviour)        public var pageSize:Float;
     @:behaviour(LayoutBehaviour)        public var pos:Float;
-    @:behaviour(DefaultBehaviour, 20)   public var increment:Float;
+    @:behaviour(DefaultBehaviour, 20)   public var increment:Float; // TODO: should calc, 20 is too high if there are, say, 30 items
     
     //***********************************************************************************************************
     // Private API
