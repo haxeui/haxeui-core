@@ -66,6 +66,27 @@ class ScrollView2 extends Component {
         }
         return v;
     }
+    
+    public override function addComponentAt(child:Component, index:Int):Component { // TODO: would be nice to move this
+        var v = null;
+        if (Std.is(child, HorizontalScroll2) || Std.is(child, VerticalScroll2) || child.hasClass("scrollview-contents")) {
+            v = super.addComponentAt(child, index);
+        } else {
+            cast(_compositeBuilder, Builder).createContentContainer(); // TODO: would be nice to not have this
+            v = cast(_compositeBuilder, Builder)._contents.addComponentAt(child, index); // TODO: or this
+        }
+        return v;
+    }
+    
+    public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component { // TODO: would be nice to move this
+        var v = null;
+        if (Std.is(child, HorizontalScroll2) || Std.is(child, VerticalScroll2) || child.hasClass("scrollview-contents")) {
+            v = super.removeComponent(child, dispose, invalidate);
+        } else {
+            v = cast(_compositeBuilder, Builder)._contents.removeComponent(child, dispose, invalidate); // TODO: or this
+        }
+        return v;
+    }
 }
 
 //***********************************************************************************************************
@@ -146,21 +167,34 @@ private class Events extends haxe.ui.core.Events {
     }
     
     public override function register() {
+        var contents:Component = _scrollview.findComponent("scrollview-contents", false, "css");
+        if (contents != null && contents.hasEvent(UIEvent.RESIZE, onContentsResized) == false) {
+            contents.registerEvent(UIEvent.RESIZE, onContentsResized);
+        }
+        
         var hscroll:HorizontalScroll2 = _scrollview.findComponent(HorizontalScroll2, false);
         var vscroll:VerticalScroll2 = _scrollview.findComponent(VerticalScroll2, false);
-        
         if (vscroll != null && vscroll.hasEvent(UIEvent.CHANGE, onVScroll) == false) {
             vscroll.registerEvent(UIEvent.CHANGE, onVScroll);
         }
+        
     }
     
     public override function unregister() {
+        var contents:Component = _scrollview.findComponent("scrollview-contents", false, "css");
+        if (contents != null) {
+            contents.unregisterEvent(UIEvent.RESIZE, onContentsResized);
+        }
+        
         var hscroll:HorizontalScroll2 = _scrollview.findComponent(HorizontalScroll2, false);
         var vscroll:VerticalScroll2 = _scrollview.findComponent(VerticalScroll2, false);
-        
-        if (vscroll != null && vscroll.hasEvent(UIEvent.CHANGE, onVScroll) == true) {
+        if (vscroll != null) {
             vscroll.unregisterEvent(UIEvent.CHANGE, onVScroll);
         }
+    }
+    
+    private function onContentsResized(event:UIEvent) {
+        _scrollview.invalidate(InvalidationFlags.SCROLL);
     }
     
     private function onVScroll(event:UIEvent) {
@@ -196,7 +230,6 @@ private class Builder extends CompositeBuilder {
             _contents = new Box();
             _contents.addClass("scrollview-contents");
             _contents.id = "temp";
-            //_contents.registerEvent(UIEvent.RESIZE, _onContentsResized);
             _contents.layout = LayoutFactory.createFromName("vertical"); // TODO: temp
             _component.addComponent(_contents);
         }
