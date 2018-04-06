@@ -117,7 +117,7 @@ class ListView2 extends ScrollView2 implements IDataComponent {
             if (_dataSource.size > max) {
                 trace("scroll");
                 vscrollMax = _dataSource.size - max;
-                //vscrollPageSize = max;
+                vscrollPageSize = (max / _dataSource.size) * (_dataSource.size - max);
             }
             
             
