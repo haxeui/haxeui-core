@@ -57,8 +57,8 @@ class DataSource<T> {
         return r;
     }
 
-    public function insert(item:T, index:Int):T {
-        var r = handleInsert(item, index);
+    public function insert(index:Int, item:T):T {
+        var r = handleInsert(index, item);
         handleChanged();
         return r;
     }
@@ -110,7 +110,7 @@ class DataSource<T> {
         return null;
     }
 
-    private function handleInsert(item:T, index:Int):T {
+    private function handleInsert(index:Int, item:T):T {
         return null;
     }
 

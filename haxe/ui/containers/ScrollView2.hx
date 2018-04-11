@@ -17,7 +17,7 @@ import haxe.ui.util.Size;
 import haxe.ui.util.Variant;
 import haxe.ui.validation.InvalidationFlags;
 
-@:composite(ScrollViewLayout, Events, Builder) // TODO: this would be nice to implement to remove alot of boilerplate
+@:composite(ScrollViewLayout, Events, ScrollViewBuilder) // TODO: this would be nice to implement to remove alot of boilerplate
 class ScrollView2 extends Component {
     //***********************************************************************************************************
     // Public API
@@ -37,7 +37,7 @@ class ScrollView2 extends Component {
     
     private override function registerComposite() { // TODO: remove this eventually, @:composite(...) or something
        super.registerComposite();
-       _compositeBuilderClass = Builder;
+       _compositeBuilderClass = ScrollViewBuilder;
     }
     
     //***********************************************************************************************************
@@ -50,8 +50,8 @@ class ScrollView2 extends Component {
         super.validateInternal();
 
         if (scrollInvalid || layoutInvalid) {
-            cast(_compositeBuilder, Builder).checkScrolls(); // TODO: would be nice to not have this
-            cast(_compositeBuilder, Builder).updateScrollRect(); // TODO: or this
+            cast(_compositeBuilder, ScrollViewBuilder).checkScrolls(); // TODO: would be nice to not have this
+            cast(_compositeBuilder, ScrollViewBuilder).updateScrollRect(); // TODO: or this
         }
     }
     
@@ -63,8 +63,8 @@ class ScrollView2 extends Component {
         if (Std.is(child, HorizontalScroll2) || Std.is(child, VerticalScroll2) || child.hasClass("scrollview-contents")) {
             v = super.addComponent(child);
         } else {
-            cast(_compositeBuilder, Builder).createContentContainer(); // TODO: would be nice to not have this
-            v = cast(_compositeBuilder, Builder)._contents.addComponent(child); // TODO: or this
+            cast(_compositeBuilder, ScrollViewBuilder).createContentContainer(); // TODO: would be nice to not have this
+            v = cast(_compositeBuilder, ScrollViewBuilder)._contents.addComponent(child); // TODO: or this
         }
         return v;
     }
@@ -74,8 +74,8 @@ class ScrollView2 extends Component {
         if (Std.is(child, HorizontalScroll2) || Std.is(child, VerticalScroll2) || child.hasClass("scrollview-contents")) {
             v = super.addComponentAt(child, index);
         } else {
-            cast(_compositeBuilder, Builder).createContentContainer(); // TODO: would be nice to not have this
-            v = cast(_compositeBuilder, Builder)._contents.addComponentAt(child, index); // TODO: or this
+            cast(_compositeBuilder, ScrollViewBuilder).createContentContainer(); // TODO: would be nice to not have this
+            v = cast(_compositeBuilder, ScrollViewBuilder)._contents.addComponentAt(child, index); // TODO: or this
         }
         return v;
     }
@@ -85,7 +85,7 @@ class ScrollView2 extends Component {
         if (Std.is(child, HorizontalScroll2) || Std.is(child, VerticalScroll2) || child.hasClass("scrollview-contents")) {
             v = super.removeComponent(child, dispose, invalidate);
         } else {
-            v = cast(_compositeBuilder, Builder)._contents.removeComponent(child, dispose, invalidate); // TODO: or this
+            v = cast(_compositeBuilder, ScrollViewBuilder)._contents.removeComponent(child, dispose, invalidate); // TODO: or this
         }
         return v;
     }
@@ -115,7 +115,7 @@ private class VScrollPos extends DataBehaviour {
         var vscroll = _scrollview.findComponent(VerticalScroll2, false);
         if (_scrollview.virtual == true) {
             if (vscroll == null) {
-                vscroll = cast(_scrollview._compositeBuilder, Builder).createVScroll();
+                vscroll = cast(_scrollview._compositeBuilder, ScrollViewBuilder).createVScroll();
             }
             vscroll.pos = _value;
             
@@ -138,7 +138,7 @@ private class VScrollMax extends DataBehaviour {
         if (_scrollview.virtual == true) {
             var vscroll = _scrollview.findComponent(VerticalScroll2, false);
             if (vscroll == null) {
-                vscroll = cast(_scrollview._compositeBuilder, Builder).createVScroll();
+                vscroll = cast(_scrollview._compositeBuilder, ScrollViewBuilder).createVScroll();
             }
             vscroll.max = _value;
         }
@@ -158,7 +158,7 @@ private class VScrollPageSize extends DataBehaviour {
         if (_scrollview.virtual == true) {
             var vscroll = _scrollview.findComponent(VerticalScroll2, false);
             if (vscroll == null) {
-                vscroll = cast(_scrollview._compositeBuilder, Builder).createVScroll();
+                vscroll = cast(_scrollview._compositeBuilder, ScrollViewBuilder).createVScroll();
             }
             vscroll.pageSize = _value;
         }
@@ -219,7 +219,7 @@ private class Events extends haxe.ui.core.Events {
 @:dox(hide) @:noCompletion
 @:allow(haxe.ui.containers.ScrollView2)
 @:access(haxe.ui.core.Component)
-private class Builder extends CompositeBuilder {
+class ScrollViewBuilder extends CompositeBuilder {
     private var _scrollview:ScrollView2;
     private var _contents:Box;
     
@@ -338,9 +338,13 @@ private class Builder extends CompositeBuilder {
             }
         }
         
+        ypos += testOffset;
+        
         var rc:Rectangle = new Rectangle(xpos, ypos, clipCX, clipCY);
         _contents.componentClipRect = rc;
     }
+    
+    public var testOffset:Float = 0;
 }
 
 //***********************************************************************************************************
