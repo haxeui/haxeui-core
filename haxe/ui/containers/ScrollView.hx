@@ -413,14 +413,18 @@ class ScrollView extends Component {
             
             _inertialTimestamp = haxe.Timer.stamp();
 
-            _inertialAmplitudeX = 0.8 * velocityX;
+            if (_hscroll != null) {
+                _inertialAmplitudeX = 0.8 * velocityX;
+            }
             if (_inertiaDirectionX == 0) {
                 _inertialTargetX = Math.round(hscrollPos - _inertialAmplitudeX);
             } else {
                 _inertialTargetX = Math.round(hscrollPos + _inertialAmplitudeX);
             }
             
-            _inertialAmplitudeY = 0.8 * velocityY;
+            if (_vscroll != null) {
+                _inertialAmplitudeY = 0.8 * velocityY;
+            }
             if (_inertiaDirectionY == 0) {
                 _inertialTargetY = Math.round(vscrollPos - _inertialAmplitudeY);
             } else {
@@ -447,18 +451,28 @@ class ScrollView extends Component {
     private function inertialScroll() {
         var elapsed = (haxe.Timer.stamp() - _inertialTimestamp) * 1000;
 
+        
         var finishedX = false;
         if (_inertialAmplitudeX != 0) {
             var deltaX = -_inertialAmplitudeX * Math.exp(-elapsed / INERTIAL_TIME_CONSTANT);
             if (deltaX > 0.5 || deltaX < -0.5) {
                 var oldPos = hscrollPos;
+                var newPos:Float = 0;
                 if (_inertiaDirectionX == 0) {
-                    hscrollPos = _inertialTargetX - deltaX;
+                    //hscrollPos = _inertialTargetX - deltaX;
+                    newPos = _inertialTargetX - deltaX;
                 } else {
-                    hscrollPos = _inertialTargetX + deltaX;
+                    //hscrollPos = _inertialTargetX + deltaX;
+                    newPos = _inertialTargetX + deltaX;
                 }
-                finishedX = hscrollPos == oldPos;
-            } else {
+                if (newPos < 0) {
+                    newPos = 0;
+                } else if (newPos > hscrollMax) {
+                    newPos = hscrollMax;
+                }
+                hscrollPos = newPos;
+                finishedX = (hscrollPos == oldPos || newPos == 0 || newPos == hscrollMax);
+            } else {    
                 finishedX = true;
             }
         } else {
@@ -470,12 +484,19 @@ class ScrollView extends Component {
             var deltaY = -_inertialAmplitudeY * Math.exp(-elapsed / INERTIAL_TIME_CONSTANT);
             if (deltaY > 0.5 || deltaY < -0.5) {
                 var oldPos = vscrollPos;
+                var newPos:Float = 0;
                 if (_inertiaDirectionY == 0) {
-                    vscrollPos = _inertialTargetY - deltaY;
+                    newPos = _inertialTargetY - deltaY;
                 } else {
-                    vscrollPos = _inertialTargetY + deltaY;
+                    newPos = _inertialTargetY + deltaY;
                 }
-                finishedY = vscrollPos == oldPos;
+                if (newPos < 0) {
+                    newPos = 0;
+                } else if (newPos > vscrollMax) {
+                    newPos = vscrollMax;
+                }
+                vscrollPos = newPos;
+                finishedY = (vscrollPos == oldPos || newPos == 0 || newPos == vscrollMax);
             } else {
                 finishedY = true;
             }

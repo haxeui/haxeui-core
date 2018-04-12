@@ -339,7 +339,7 @@ class Slider extends InteractiveComponent {
         if (notifyChange == true) {
             var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
             dispatch(changeEvent);
-            handleBindings(["value"]);
+            handleBindings(["value", "pos"]);
         }
     }
     
