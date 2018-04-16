@@ -14,7 +14,7 @@ class EventMap  {
         return _map.keys();
     }
     
-    public function add(type:String,  listener:UIEvent->Void):Bool { // returns true if a new FunctionArray was created
+    public function add(type:String, listener:UIEvent->Void):Bool { // returns true if a new FunctionArray was created
         var b:Bool = false;
         var arr:FunctionArray<UIEvent->Void> = _map.get(type);
         if (arr == null) {
