@@ -266,15 +266,25 @@ private class ScrollModeBehaviour extends DataBehaviour {
         _component.registerInternalEvents(true);
     }
 }
+
 //***********************************************************************************************************
 // Events
 //***********************************************************************************************************
+typedef Intertia = {
+    var screen:Point;
+    var target:Point;
+    var amplitude:Point;
+    var direction:Point;
+    var timestamp:Float;
+}
+
 private class Events extends haxe.ui.core.Events {
     private var _scrollview:ScrollView2;
     
     public function new(scrollview:ScrollView2) {
         super(scrollview);
         _scrollview = scrollview;
+        
     }
     
     public override function register() {
@@ -320,22 +330,9 @@ private class Events extends haxe.ui.core.Events {
         _target.dispatch(new ScrollEvent(ScrollEvent.CHANGE));
     }
     
-    private var _inertialTimestamp:Float;
-    private static inline var INERTIAL_TIME_CONSTANT = 325;
-
-    //private var _offsetX:Float = 0;
-    private var _screenOffsetX:Float;
-    private var _inertialAmplitudeX:Float = 0;
-    private var _inertialTargetX:Float = 0;
-    private var _inertiaDirectionX:Int;
-    
-    //private var _offsetY:Float = 0;
-    private var _screenOffsetY:Float;
-    private var _inertialAmplitudeY:Float = 0;
-    private var _inertialTargetY:Float = 0;
-    private var _inertiaDirectionY:Int;
-    
     private var _offset:Point;
+    private static inline var INERTIAL_TIME_CONSTANT = 325;
+    private var _inertia:Intertia = null;
     private function onMouseDown(event:MouseEvent) {
         var hscroll:HorizontalScroll2 = _scrollview.findComponent(HorizontalScroll2, false);
         var vscroll:VerticalScroll2 = _scrollview.findComponent(VerticalScroll2, false);
@@ -362,15 +359,25 @@ private class Events extends haxe.ui.core.Events {
         
         
         if (_scrollview.scrollMode == ScrollMode.INERTIAL) {
-            _inertialTargetX = _scrollview.hscrollPos;
-            _inertialTargetY = _scrollview.vscrollPos;
-            _inertialAmplitudeX = 0;
-            _inertialAmplitudeY = 0;
+            if (_inertia == null) {
+                _inertia = {
+                    screen: new Point(),
+                    target: new Point(),
+                    amplitude: new Point(),
+                    direction: new Point(),
+                    timestamp: 0
+                }
+            }
             
-            _screenOffsetX = event.screenX;
-            _screenOffsetY = event.screenY;
+            _inertia.target.x = _scrollview.hscrollPos;
+            _inertia.target.y = _scrollview.vscrollPos;
+            _inertia.amplitude.x = 0;
+            _inertia.amplitude.y = 0;
             
-            _inertialTimestamp = haxe.Timer.stamp();
+            _inertia.screen.x = event.screenX;
+            _inertia.screen.y = event.screenY;
+            
+            _inertia.timestamp = haxe.Timer.stamp();
         }
         
         
@@ -379,8 +386,6 @@ private class Events extends haxe.ui.core.Events {
     }
     
     private function onMouseMove(event:MouseEvent) {
-        var contents:Component = _scrollview.findComponent("scrollview-contents", false, "css");
-        
         var hscroll:HorizontalScroll2 = _scrollview.findComponent(HorizontalScroll2, false);
         if (hscroll != null) {
             hscroll.pos = _offset.x - event.screenX;
@@ -397,17 +402,17 @@ private class Events extends haxe.ui.core.Events {
         
         if (_scrollview.scrollMode == ScrollMode.INERTIAL) {
             var now = haxe.Timer.stamp();
-            var elapsed = (now - _inertialTimestamp) * 1000;
+            var elapsed = (now - _inertia.timestamp) * 1000;
             
-            var deltaX = Math.abs(_screenOffsetX - event.screenX);
-            var deltaY = Math.abs(_screenOffsetY - event.screenY);
+            var deltaX = Math.abs(_inertia.screen.x - event.screenX);
+            var deltaY = Math.abs(_inertia.screen.y - event.screenY);
 
-            _inertiaDirectionX = (_screenOffsetX - event.screenX) < 0 ? 0 : 1;
+            _inertia.direction.x = (_inertia.screen.x - event.screenX) < 0 ? 0 : 1;
             var velocityX = deltaX / elapsed;
             var v = 1000 * deltaX / (1 + elapsed);
             velocityX = 0.8 * v + 0.2 * velocityX;
             
-            _inertiaDirectionY = (_screenOffsetY - event.screenY) < 0 ? 0 : 1;
+            _inertia.direction.y = (_inertia.screen.y - event.screenY) < 0 ? 0 : 1;
             var velocityY = deltaY / elapsed;
             var v = 1000 * deltaY / (1 + elapsed);
             velocityY = 0.8 * v + 0.2 * velocityY;
@@ -416,37 +421,37 @@ private class Events extends haxe.ui.core.Events {
                 return;
             }
             
-            _inertialTimestamp = haxe.Timer.stamp();
+            _inertia.timestamp = haxe.Timer.stamp();
 
             var hscroll:HorizontalScroll2 = _scrollview.findComponent(HorizontalScroll2, false);
             if (hscroll != null) {
-                _inertialAmplitudeX = 0.8 * velocityX;
+                _inertia.amplitude.x = 0.8 * velocityX;
             }
-            if (_inertiaDirectionX == 0) {
-                _inertialTargetX = Math.round(_scrollview.hscrollPos - _inertialAmplitudeX);
+            if (_inertia.direction.x == 0) {
+                _inertia.target.x = Math.round(_scrollview.hscrollPos - _inertia.amplitude.x);
             } else {
-                _inertialTargetX = Math.round(_scrollview.hscrollPos + _inertialAmplitudeX);
+                _inertia.target.x = Math.round(_scrollview.hscrollPos + _inertia.amplitude.x);
             }
             
             var vscroll:VerticalScroll2 = _scrollview.findComponent(VerticalScroll2, false);
             if (vscroll != null) {
-                _inertialAmplitudeY = 0.8 * velocityY;
+                _inertia.amplitude.y = 0.8 * velocityY;
             }
-            if (_inertiaDirectionY == 0) {
-                _inertialTargetY = Math.round(_scrollview.vscrollPos - _inertialAmplitudeY);
+            if (_inertia.direction.y == 0) {
+                _inertia.target.y = Math.round(_scrollview.vscrollPos - _inertia.amplitude.y);
             } else {
-                _inertialTargetY = Math.round(_scrollview.vscrollPos + _inertialAmplitudeY);
+                _inertia.target.y = Math.round(_scrollview.vscrollPos + _inertia.amplitude.y);
             }
             
-            if (_scrollview.hscrollPos == _inertialTargetX && _scrollview.vscrollPos == _inertialTargetY) {
+            if (_scrollview.hscrollPos == _inertia.target.x && _scrollview.vscrollPos == _inertia.target.y) {
                 return;
             }
 
-            if (_scrollview.hscrollPos == _inertialTargetX) {
-                _inertialAmplitudeX = 0;
+            if (_scrollview.hscrollPos == _inertia.target.x) {
+                _inertia.amplitude.x = 0;
             }
-            if (_scrollview.vscrollPos == _inertialTargetY) {
-                _inertialAmplitudeY = 0;
+            if (_scrollview.vscrollPos == _inertia.target.y) {
+                _inertia.amplitude.y = 0;
             }
 
             Toolkit.callLater(inertialScroll);
@@ -456,20 +461,18 @@ private class Events extends haxe.ui.core.Events {
     }
     
     private function inertialScroll() {
-        var elapsed = (haxe.Timer.stamp() - _inertialTimestamp) * 1000;
+        var elapsed = (haxe.Timer.stamp() - _inertia.timestamp) * 1000;
 
         var finishedX = false;
-        if (_inertialAmplitudeX != 0) {
-            var deltaX = -_inertialAmplitudeX * Math.exp(-elapsed / INERTIAL_TIME_CONSTANT);
+        if (_inertia.amplitude.x != 0) {
+            var deltaX = -_inertia.amplitude.x * Math.exp(-elapsed / INERTIAL_TIME_CONSTANT);
             if (deltaX > 0.5 || deltaX < -0.5) {
                 var oldPos = _scrollview.hscrollPos;
                 var newPos:Float = 0;
-                if (_inertiaDirectionX == 0) {
-                    //hscrollPos = _inertialTargetX - deltaX;
-                    newPos = _inertialTargetX - deltaX;
+                if (_inertia.direction.x == 0) {
+                    newPos = _inertia.target.x - deltaX;
                 } else {
-                    //hscrollPos = _inertialTargetX + deltaX;
-                    newPos = _inertialTargetX + deltaX;
+                    newPos = _inertia.target.x + deltaX;
                 }
                 if (newPos < 0) {
                     newPos = 0;
@@ -486,15 +489,15 @@ private class Events extends haxe.ui.core.Events {
         }
 
         var finishedY = false;
-        if (_inertialAmplitudeY != 0) {
-            var deltaY = -_inertialAmplitudeY * Math.exp(-elapsed / INERTIAL_TIME_CONSTANT);
+        if (_inertia.amplitude.y != 0) {
+            var deltaY = -_inertia.amplitude.y * Math.exp(-elapsed / INERTIAL_TIME_CONSTANT);
             if (deltaY > 0.5 || deltaY < -0.5) {
                 var oldPos = _scrollview.vscrollPos;
                 var newPos:Float = 0;
-                if (_inertiaDirectionY == 0) {
-                    newPos = _inertialTargetY - deltaY;
+                if (_inertia.direction.y == 0) {
+                    newPos = _inertia.target.y - deltaY;
                 } else {
-                    newPos = _inertialTargetY + deltaY;
+                    newPos = _inertia.target.y + deltaY;
                 }
                 if (newPos < 0) {
                     newPos = 0;
@@ -566,14 +569,9 @@ class ScrollViewBuilder extends CompositeBuilder {
         
         if (horizontalConstraint.width > usableSize.width) {
             if (hscroll == null) {
-                hscroll = new HorizontalScroll2();
-                hscroll.percentWidth = 100;
-                hscroll.id = "scrollview-hscroll";
-                //hscroll.registerEvent(UIEvent.CHANGE, _onHScroll);
-                _component.addComponent(hscroll);
+                hscroll = createHScroll();
             }
 
-            hscroll.hidden = false;
             hscroll.max = horizontalConstraint.width - usableSize.width - hscrollOffset; // _contents.layout.horizontalSpacing;
             hscroll.pageSize = (usableSize.width / horizontalConstraint.width) * hscroll.max;
 
@@ -591,7 +589,6 @@ class ScrollViewBuilder extends CompositeBuilder {
                 vscroll = createVScroll();
             }
 
-            vscroll.hidden = false;
             vscroll.max = verticalConstraint.height - usableSize.height;
             vscroll.pageSize = (usableSize.height / verticalConstraint.height) * vscroll.max;
 
@@ -652,13 +649,9 @@ class ScrollViewBuilder extends CompositeBuilder {
             }
         }
         
-        ypos += testOffset;
-        
         var rc:Rectangle = new Rectangle(xpos, ypos, clipCX, clipCY);
         _contents.componentClipRect = rc;
     }
-    
-    public var testOffset:Float = 0;
 }
 
 //***********************************************************************************************************
