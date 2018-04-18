@@ -1,5 +1,6 @@
 package haxe.ui.containers;
 
+import haxe.macro.Expr.Var;
 import haxe.ui.components.HorizontalScroll2;
 import haxe.ui.components.VScroll;
 import haxe.ui.components.VerticalScroll2;
@@ -27,12 +28,16 @@ class ScrollView2 extends Component {
     // Public API
     //***********************************************************************************************************
     @:behaviour(DefaultBehaviour)                       public var virtual:Bool;
-    @:behaviour(VScrollPos)                             public var vscrollPos:Float;
-    @:behaviour(VScrollMax)                             public var vscrollMax:Float;
-    @:behaviour(VScrollPageSize)                        public var vscrollPageSize:Float;
+    @:behaviour(ContentWidth)                           public var contentWidth:Float;
+    @:behaviour(PercentContentWidth)                    public var percentContentWidth:Float;
+    @:behaviour(ContentHeight)                          public var contentHeight:Float;
+    @:behaviour(PercentContentHeight)                   public var percentContentHeight:Float;
     @:behaviour(HScrollPos)                             public var hscrollPos:Float;
     @:behaviour(HScrollMax)                             public var hscrollMax:Float;
     @:behaviour(HScrollPageSize)                        public var hscrollPageSize:Float;
+    @:behaviour(VScrollPos)                             public var vscrollPos:Float;
+    @:behaviour(VScrollMax)                             public var vscrollMax:Float;
+    @:behaviour(VScrollPageSize)                        public var vscrollPageSize:Float;
     @:behaviour(ScrollModeBehaviour, ScrollMode.DRAG)   public var scrollMode:ScrollMode;
     
     //***********************************************************************************************************
@@ -102,6 +107,54 @@ class ScrollView2 extends Component {
 //***********************************************************************************************************
 // Behaviours
 //***********************************************************************************************************
+private class ContentWidth extends DataBehaviour {
+    public override function get():Variant {
+        var contents:Component = _component.findComponent("scrollview-contents", false, "css");
+        return contents.width;
+    }
+    
+    public override function set(value:Variant) {
+        var contents:Component = _component.findComponent("scrollview-contents", false, "css");
+        contents.width = value;
+    }
+}
+
+private class PercentContentWidth extends DataBehaviour {
+    public override function get():Variant {
+        var contents:Component = _component.findComponent("scrollview-contents", false, "css");
+        return contents.percentWidth;
+    }
+    
+    public override function set(value:Variant) {
+        var contents:Component = _component.findComponent("scrollview-contents", false, "css");
+        contents.percentWidth = value;
+    }
+}
+
+private class ContentHeight extends DataBehaviour {
+    public override function get():Variant {
+        var contents:Component = _component.findComponent("scrollview-contents", false, "css");
+        return contents.height;
+    }
+    
+    public override function set(value:Variant) {
+        var contents:Component = _component.findComponent("scrollview-contents", false, "css");
+        contents.height = value;
+    }
+}
+
+private class PercentContentHeight extends DataBehaviour {
+    public override function get():Variant {
+        var contents:Component = _component.findComponent("scrollview-contents", false, "css");
+        return contents.percentHeight;
+    }
+    
+    public override function set(value:Variant) {
+        var contents:Component = _component.findComponent("scrollview-contents", false, "css");
+        contents.percentHeight = value;
+    }
+}
+
 @:access(haxe.ui.core.Component)
 private class HScrollPos extends DataBehaviour {
     private var _scrollview:ScrollView2;
@@ -294,6 +347,10 @@ private class Events extends haxe.ui.core.Events {
         }
         
         var hscroll:HorizontalScroll2 = _scrollview.findComponent(HorizontalScroll2, false);
+        if (hscroll != null && hscroll.hasEvent(UIEvent.CHANGE, onHScroll) == false) {
+            hscroll.registerEvent(UIEvent.CHANGE, onHScroll);
+        }
+        
         var vscroll:VerticalScroll2 = _scrollview.findComponent(VerticalScroll2, false);
         if (vscroll != null && vscroll.hasEvent(UIEvent.CHANGE, onVScroll) == false) {
             vscroll.registerEvent(UIEvent.CHANGE, onVScroll);
@@ -313,6 +370,10 @@ private class Events extends haxe.ui.core.Events {
         }
         
         var hscroll:HorizontalScroll2 = _scrollview.findComponent(HorizontalScroll2, false);
+        if (hscroll != null) {
+            hscroll.unregisterEvent(UIEvent.CHANGE, onHScroll);
+        }
+        
         var vscroll:VerticalScroll2 = _scrollview.findComponent(VerticalScroll2, false);
         if (vscroll != null) {
             vscroll.unregisterEvent(UIEvent.CHANGE, onVScroll);
@@ -323,6 +384,11 @@ private class Events extends haxe.ui.core.Events {
     
     private function onContentsResized(event:UIEvent) {
         _scrollview.invalidate(InvalidationFlags.SCROLL);
+    }
+    
+    private function onHScroll(event:UIEvent) {
+        _scrollview.invalidate(InvalidationFlags.SCROLL);
+        _target.dispatch(new ScrollEvent(ScrollEvent.CHANGE));
     }
     
     private function onVScroll(event:UIEvent) {
