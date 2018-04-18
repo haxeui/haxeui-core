@@ -10,6 +10,7 @@ import haxe.ui.data.ArrayDataSource;
 import haxe.ui.data.DataSource;
 import haxe.ui.data.ListDataSource;
 import haxe.ui.data.transformation.NativeTypeTransformer;
+import haxe.ui.layouts.LayoutFactory;
 
 class ListView2 extends ScrollView2 implements IDataComponent {
     private var _dataSource:DataSource<Dynamic>;
@@ -32,13 +33,14 @@ class ListView2 extends ScrollView2 implements IDataComponent {
     }
 
     private function onDataSourceChanged() {
+        //var contents:Component = findComponent("scrollview-contents", false, "css");
+        //contents.height = _dataSource.size * itemHeight + ((_dataSource.size - 1) * 5);
         invalidateData();
     }
     
     public function new() { // TEMP!
         super();
         registerEvent(ScrollEvent.CHANGE, function(e) {
-            //trace("scroll");
             invalidateData();
         });
     }
@@ -49,9 +51,6 @@ class ListView2 extends ScrollView2 implements IDataComponent {
         if (_dataSource == null) {
             return;
         }
-        
-        //trace("validate data - " + _dataSource.size);
-        
         
         var contents:Component = findComponent("scrollview-contents", false, "css");
         contents.lockLayout();
@@ -83,71 +82,63 @@ class ListView2 extends ScrollView2 implements IDataComponent {
                 contents.removeComponent(contents.childComponents[contents.childComponents.length - 1]); // remove last
             }
         } else {
+            if (Std.is(layout, Absolute) == false) {
+                contents.layout = LayoutFactory.createFromName("absolute");
+            }
             
-            var start = Std.int(vscrollPos); // based on vscroll pos
-            var max = 5; // todo calc
-            var end = start + max + 1;
-            var i = 0;
-            
-            
-            //start = Std.int(vscrollPos);
-            
-            //trace("start: " + start + ", max: " + max + ", end: " + end + ", vscrollPos: " + vscrollPos + ", vscrollMax: " + vscrollMax);
+            var dataSize:Int = _dataSource.size;
+            var verticalSpacing = contents.layout.verticalSpacing;
+            vscrollMax = (dataSize * itemHeight + ((dataSize - 1) * verticalSpacing)) - layout.usableHeight;
 
-            if (vscrollPos == vscrollMax) {
-                //trace("special!");
-                i = 1;
-                end--;
-                var r = contents.componentClipRect;
-                //r.top = 10;
-                //trace(contents.height);
-                //trace(">>>>>>>>>>>>> " + layout.innerHeight);
-                cast(this._compositeBuilder, ScrollViewBuilder).testOffset = (contents.height - layout.innerHeight);
-                //contents.componentClipRect = r;
-                //trace(contents.componentClipRect.top -= 20);
-            } else {
-                cast(this._compositeBuilder, ScrollViewBuilder).testOffset = 0;
+            // TODO: temp
+            contents.height = layout.usableHeight;
+            contents.width = layout.usableWidth;
+            
+            var start = Std.int(vscrollPos / (itemHeight + verticalSpacing));
+            if (start < 0) {
+                start = 0;
+            }
+            var viewSize = Math.ceil(contents.height / (itemHeight + verticalSpacing));
+            var end = start + viewSize + 1;
+            if (end > dataSize) {
+                end = dataSize;
             }
             
+            var i = 0;
             for (n in start...end) {
-                if (n < _dataSource.size) {
-                    //trace(n);
-                    var data:Dynamic = _dataSource.get(n);
-                    //trace(" l = " +contents.childComponents.length);
-                    var item = null;
-                    if (contents.childComponents.length <= i) {
-                        //trace("create item");
-                        var cls = itemClass(n, data);
-                        item = Type.createInstance(cls, []);
-                        addComponent(item);
-                    } else {
-                        item = contents.childComponents[i];
-                    }
-                    
+                var data:Dynamic = _dataSource.get(n);
+                
+                var item = null;
+                if (contents.childComponents.length <= i) {
                     var cls = itemClass(n, data);
-                    if (Std.is(item, cls)) {
-                        apply(item, data);
-                    } else {
-                        //trace("REMOVINGª!");
-                        removeComponent(item);
-                        var item = Type.createInstance(cls, []);
-                        apply(item, data);
-                        addComponentAt(item, i);
-                    }
-                    
-                    i++;
+                    item = Type.createInstance(cls, []);
+                    addComponent(item);
+                } else {
+                    item = contents.childComponents[i];
+                    item.removeClass("even");
+                    item.removeClass("odd");
                 }
+                
+                var cls = itemClass(n, data);
+                if (Std.is(item, cls)) {
+                    apply(item, data);
+                } else {
+                    removeComponent(item);
+                    var item = Type.createInstance(cls, []);
+                    apply(item, data);
+                    addComponentAt(item, i);
+                }
+                
+                
+                item.top = (n * (itemHeight + verticalSpacing)) - vscrollPos;
+                item.addClass(n % 2 == 0 ? "even" : "odd");
+                
+                i++;
             }
             
-            
-            if (_dataSource.size > max) {
-                //trace("scroll");
-                vscrollMax = _dataSource.size - max;
-                vscrollPageSize = (max / _dataSource.size) * (_dataSource.size - max);
+            while (contents.childComponents.length > i) {
+                contents.removeComponent(contents.childComponents[contents.childComponents.length - 1]); // remove last
             }
-            
-            
-            
         }
         
         contents.unlockLayout();
@@ -164,6 +155,7 @@ class ListView2 extends ScrollView2 implements IDataComponent {
     public var special:Bool = false;
     
     private function itemClass(index:Int, data:Dynamic):Class<Component> { // all temp
+        return Renderer1;
         if (index == 3) {
             //return Renderer3;
         }
