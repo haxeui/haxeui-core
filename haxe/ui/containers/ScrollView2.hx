@@ -30,6 +30,9 @@ class ScrollView2 extends Component {
     @:behaviour(VScrollPos)                             public var vscrollPos:Float;
     @:behaviour(VScrollMax)                             public var vscrollMax:Float;
     @:behaviour(VScrollPageSize)                        public var vscrollPageSize:Float;
+    @:behaviour(HScrollPos)                             public var hscrollPos:Float;
+    @:behaviour(HScrollMax)                             public var hscrollMax:Float;
+    @:behaviour(HScrollPageSize)                        public var hscrollPageSize:Float;
     @:behaviour(ScrollModeBehaviour, ScrollMode.DRAG)   public var scrollMode:ScrollMode;
     
     //***********************************************************************************************************
@@ -100,6 +103,37 @@ class ScrollView2 extends Component {
 // Behaviours
 //***********************************************************************************************************
 @:access(haxe.ui.core.Component)
+private class HScrollPos extends DataBehaviour {
+    private var _scrollview:ScrollView2;
+    
+    public function new(scrollview:ScrollView2) {
+        super(scrollview);
+        _scrollview = scrollview;
+    }
+    
+    public override function get():Variant {
+        var hscroll = _scrollview.findComponent(HorizontalScroll2, false);
+        if (hscroll == null) {
+            return 0;
+        }
+        return hscroll.pos;
+    }
+    
+    public override function validateData() { // TODO: feels a bit ugly!
+        var hscroll = _scrollview.findComponent(HorizontalScroll2, false);
+        if (_scrollview.virtual == true) {
+            if (hscroll == null) {
+                hscroll = cast(_scrollview._compositeBuilder, ScrollViewBuilder).createHScroll();
+            }
+            hscroll.pos = _value;
+            
+        } else if (hscroll != null) {
+            hscroll.pos = _value;
+        }
+    }
+}
+
+@:access(haxe.ui.core.Component)
 private class VScrollPos extends DataBehaviour {
     private var _scrollview:ScrollView2;
     
@@ -131,6 +165,34 @@ private class VScrollPos extends DataBehaviour {
 }
 
 @:access(haxe.ui.core.Component)
+private class HScrollMax extends DataBehaviour {
+    private var _scrollview:ScrollView2;
+    
+    public function new(scrollview:ScrollView2) {
+        super(scrollview);
+        _scrollview = scrollview;
+    }
+    
+    public override function get():Variant {
+        var hscroll = _scrollview.findComponent(HorizontalScroll2, false);
+        if (hscroll == null) {
+            return 0;
+        }
+        return hscroll.max;
+    }
+    
+    public override function validateData() { // TODO: feels a bit ugly!
+        if (_scrollview.virtual == true) {
+            var hscroll = _scrollview.findComponent(HorizontalScroll2, false);
+            if (hscroll == null) {
+                hscroll = cast(_scrollview._compositeBuilder, ScrollViewBuilder).createHScroll();
+            }
+            hscroll.max = _value;
+        }
+    }
+}
+
+@:access(haxe.ui.core.Component)
 private class VScrollMax extends DataBehaviour {
     private var _scrollview:ScrollView2;
     
@@ -154,6 +216,26 @@ private class VScrollMax extends DataBehaviour {
                 vscroll = cast(_scrollview._compositeBuilder, ScrollViewBuilder).createVScroll();
             }
             vscroll.max = _value;
+        }
+    }
+}
+
+@:access(haxe.ui.core.Component)
+private class HScrollPageSize extends DataBehaviour {
+    private var _scrollview:ScrollView2;
+    
+    public function new(scrollview:ScrollView2) {
+        super(scrollview);
+        _scrollview = scrollview;
+    }
+    
+    public override function validateData() { // TODO: feels a bit ugly!
+        if (_scrollview.virtual == true) {
+            var hscroll = _scrollview.findComponent(HorizontalScroll2, false);
+            if (hscroll == null) {
+                hscroll = cast(_scrollview._compositeBuilder, ScrollViewBuilder).createHScroll();
+            }
+            hscroll.pageSize = _value;
         }
     }
 }
@@ -238,6 +320,21 @@ private class Events extends haxe.ui.core.Events {
         _target.dispatch(new ScrollEvent(ScrollEvent.CHANGE));
     }
     
+    private var _inertialTimestamp:Float;
+    private static inline var INERTIAL_TIME_CONSTANT = 325;
+
+    //private var _offsetX:Float = 0;
+    private var _screenOffsetX:Float;
+    private var _inertialAmplitudeX:Float = 0;
+    private var _inertialTargetX:Float = 0;
+    private var _inertiaDirectionX:Int;
+    
+    //private var _offsetY:Float = 0;
+    private var _screenOffsetY:Float;
+    private var _inertialAmplitudeY:Float = 0;
+    private var _inertialTargetY:Float = 0;
+    private var _inertiaDirectionY:Int;
+    
     private var _offset:Point;
     private function onMouseDown(event:MouseEvent) {
         var hscroll:HorizontalScroll2 = _scrollview.findComponent(HorizontalScroll2, false);
@@ -263,6 +360,20 @@ private class Events extends haxe.ui.core.Events {
             _offset.y = vscroll.pos + event.screenY;
         }
         
+        
+        if (_scrollview.scrollMode == ScrollMode.INERTIAL) {
+            _inertialTargetX = _scrollview.hscrollPos;
+            _inertialTargetY = _scrollview.vscrollPos;
+            _inertialAmplitudeX = 0;
+            _inertialAmplitudeY = 0;
+            
+            _screenOffsetX = event.screenX;
+            _screenOffsetY = event.screenY;
+            
+            _inertialTimestamp = haxe.Timer.stamp();
+        }
+        
+        
         Screen.instance.registerEvent(MouseEvent.MOUSE_MOVE, onMouseMove);
         Screen.instance.registerEvent(MouseEvent.MOUSE_UP, onMouseUp);
     }
@@ -283,6 +394,127 @@ private class Events extends haxe.ui.core.Events {
     private function onMouseUp(event:MouseEvent) {
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_MOVE, onMouseMove);
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_UP, onMouseUp);
+        
+        if (_scrollview.scrollMode == ScrollMode.INERTIAL) {
+            var now = haxe.Timer.stamp();
+            var elapsed = (now - _inertialTimestamp) * 1000;
+            
+            var deltaX = Math.abs(_screenOffsetX - event.screenX);
+            var deltaY = Math.abs(_screenOffsetY - event.screenY);
+
+            _inertiaDirectionX = (_screenOffsetX - event.screenX) < 0 ? 0 : 1;
+            var velocityX = deltaX / elapsed;
+            var v = 1000 * deltaX / (1 + elapsed);
+            velocityX = 0.8 * v + 0.2 * velocityX;
+            
+            _inertiaDirectionY = (_screenOffsetY - event.screenY) < 0 ? 0 : 1;
+            var velocityY = deltaY / elapsed;
+            var v = 1000 * deltaY / (1 + elapsed);
+            velocityY = 0.8 * v + 0.2 * velocityY;
+
+            if (velocityX <= 75 && velocityY <= 75) {
+                return;
+            }
+            
+            _inertialTimestamp = haxe.Timer.stamp();
+
+            var hscroll:HorizontalScroll2 = _scrollview.findComponent(HorizontalScroll2, false);
+            if (hscroll != null) {
+                _inertialAmplitudeX = 0.8 * velocityX;
+            }
+            if (_inertiaDirectionX == 0) {
+                _inertialTargetX = Math.round(_scrollview.hscrollPos - _inertialAmplitudeX);
+            } else {
+                _inertialTargetX = Math.round(_scrollview.hscrollPos + _inertialAmplitudeX);
+            }
+            
+            var vscroll:VerticalScroll2 = _scrollview.findComponent(VerticalScroll2, false);
+            if (vscroll != null) {
+                _inertialAmplitudeY = 0.8 * velocityY;
+            }
+            if (_inertiaDirectionY == 0) {
+                _inertialTargetY = Math.round(_scrollview.vscrollPos - _inertialAmplitudeY);
+            } else {
+                _inertialTargetY = Math.round(_scrollview.vscrollPos + _inertialAmplitudeY);
+            }
+            
+            if (_scrollview.hscrollPos == _inertialTargetX && _scrollview.vscrollPos == _inertialTargetY) {
+                return;
+            }
+
+            if (_scrollview.hscrollPos == _inertialTargetX) {
+                _inertialAmplitudeX = 0;
+            }
+            if (_scrollview.vscrollPos == _inertialTargetY) {
+                _inertialAmplitudeY = 0;
+            }
+
+            Toolkit.callLater(inertialScroll);
+        } else {
+            dispatch(new ScrollEvent(ScrollEvent.STOP));
+        }
+    }
+    
+    private function inertialScroll() {
+        var elapsed = (haxe.Timer.stamp() - _inertialTimestamp) * 1000;
+
+        var finishedX = false;
+        if (_inertialAmplitudeX != 0) {
+            var deltaX = -_inertialAmplitudeX * Math.exp(-elapsed / INERTIAL_TIME_CONSTANT);
+            if (deltaX > 0.5 || deltaX < -0.5) {
+                var oldPos = _scrollview.hscrollPos;
+                var newPos:Float = 0;
+                if (_inertiaDirectionX == 0) {
+                    //hscrollPos = _inertialTargetX - deltaX;
+                    newPos = _inertialTargetX - deltaX;
+                } else {
+                    //hscrollPos = _inertialTargetX + deltaX;
+                    newPos = _inertialTargetX + deltaX;
+                }
+                if (newPos < 0) {
+                    newPos = 0;
+                } else if (newPos > _scrollview.hscrollMax) {
+                    newPos = _scrollview.hscrollMax;
+                }
+                _scrollview.hscrollPos = newPos;
+                finishedX = (newPos == oldPos || newPos == 0 || newPos == _scrollview.hscrollMax);
+            } else {    
+                finishedX = true;
+            }
+        } else {
+            finishedX = true;
+        }
+
+        var finishedY = false;
+        if (_inertialAmplitudeY != 0) {
+            var deltaY = -_inertialAmplitudeY * Math.exp(-elapsed / INERTIAL_TIME_CONSTANT);
+            if (deltaY > 0.5 || deltaY < -0.5) {
+                var oldPos = _scrollview.vscrollPos;
+                var newPos:Float = 0;
+                if (_inertiaDirectionY == 0) {
+                    newPos = _inertialTargetY - deltaY;
+                } else {
+                    newPos = _inertialTargetY + deltaY;
+                }
+                if (newPos < 0) {
+                    newPos = 0;
+                } else if (newPos > _scrollview.vscrollMax) {
+                    newPos = _scrollview.vscrollMax;
+                }
+                _scrollview.vscrollPos = newPos;
+                finishedY = (newPos == oldPos || newPos == 0 || newPos == _scrollview.vscrollMax);
+            } else {
+                finishedY = true;
+            }
+        } else {
+            finishedY = true;
+        }
+
+        if (finishedX == true && finishedY == true) {
+            dispatch(new ScrollEvent(ScrollEvent.STOP));
+        } else {
+            Toolkit.callLater(inertialScroll);
+        }
     }
 }
 
@@ -369,6 +601,15 @@ class ScrollViewBuilder extends CompositeBuilder {
                 _component.removeComponent(vscroll);
             }
         }
+    }
+
+    public function createHScroll():HorizontalScroll2 {
+        var hscroll = new HorizontalScroll2();
+        hscroll.percentWidth = 100;
+        hscroll.id = "scrollview-hscroll";
+        _component.addComponent(hscroll);
+        _component.registerInternalEvents(true);
+        return hscroll;
     }
     
     public function createVScroll():VerticalScroll2 {
