@@ -85,10 +85,13 @@ class ListView2 extends ScrollView2 implements IDataComponent {
             if (Std.is(layout, Absolute) == false) {
                 contents.layout = LayoutFactory.createFromName("absolute");
             }
-            
+
             var dataSize:Int = _dataSource.size;
             var verticalSpacing = contents.layout.verticalSpacing;
+            var viewSize = Math.ceil(contents.height / (itemHeight + verticalSpacing));
+            
             vscrollMax = (dataSize * itemHeight + ((dataSize - 1) * verticalSpacing)) - layout.usableHeight;
+            vscrollPageSize = (layout.usableHeight / (vscrollMax + layout.usableHeight)) * vscrollMax;
 
             // TODO: temp
             contents.height = layout.usableHeight;
@@ -98,7 +101,6 @@ class ListView2 extends ScrollView2 implements IDataComponent {
             if (start < 0) {
                 start = 0;
             }
-            var viewSize = Math.ceil(contents.height / (itemHeight + verticalSpacing));
             var end = start + viewSize + 1;
             if (end > dataSize) {
                 end = dataSize;

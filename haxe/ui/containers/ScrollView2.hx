@@ -380,7 +380,6 @@ private class Events extends haxe.ui.core.Events {
             _inertia.timestamp = haxe.Timer.stamp();
         }
         
-        
         Screen.instance.registerEvent(MouseEvent.MOUSE_MOVE, onMouseMove);
         Screen.instance.registerEvent(MouseEvent.MOUSE_UP, onMouseUp);
     }
