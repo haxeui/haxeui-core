@@ -92,6 +92,15 @@ class ScrollView2 extends Component {
         }
         return v;
     }
+
+    public override function setComponentIndex(child:Component, index:Int) { // TODO: would be nice to move this
+        if (Std.is(child, HorizontalScroll2) || Std.is(child, VerticalScroll2) || child.hasClass("scrollview-contents")) {
+            super.setComponentIndex(child, index);
+        } else {
+            cast(_compositeBuilder, ScrollViewBuilder).createContentContainer(); // TODO: would be nice to not have this
+            cast(_compositeBuilder, ScrollViewBuilder)._contents.setComponentIndex(child, index); // TODO: or this
+        }
+    }
     
     public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component { // TODO: would be nice to move this
         var v = null;
