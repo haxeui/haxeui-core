@@ -53,6 +53,8 @@ class ItemRenderer extends Box {
         return value;
     }
 
+    public var itemIndex:Int = -1;
+
     private override function validateData() {
         for (f in Reflect.fields(_data)) {
             var v = Reflect.getProperty(_data, f);
