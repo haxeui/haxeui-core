@@ -1,11 +1,10 @@
 package haxe.ui.components;
 
-import haxe.ui.util.Variant;
-import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
+import haxe.ui.core.DataBehaviour;
+import haxe.ui.core.FocusEvent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.MouseEvent;
-import haxe.ui.core.UIEvent;
 import haxe.ui.focus.FocusManager;
 import haxe.ui.focus.IFocusable;
 import haxe.ui.layouts.DefaultLayout;
@@ -13,412 +12,57 @@ import haxe.ui.styles.Style;
 import haxe.ui.util.Size;
 import haxe.ui.util.Variant;
 
-@:dox(icon = "/icons/ui-text-field.png")
-class TextField extends InteractiveComponent implements IFocusable {
-    private var _icon:Image;
-
-    public function new() {
-        super();
-    }
-
+class TextField extends InteractiveComponent {
     //***********************************************************************************************************
-    // Overrides
+    // Styles
     //***********************************************************************************************************
-    private override function registerBehaviours() {  // TODO: temp
-        super.registerBehaviours();
-        behaviours.register("text", TextFieldDefaultTextBehaviour);
-        _defaultLayout = new TextFieldLayout();
-    }
     
-    private override function createDefaults() {
+    //***********************************************************************************************************
+    // Public API
+    //***********************************************************************************************************
+    @:behaviour(PasswordBehaviour)          public var password:Bool;
+    @:behaviour(MaxCharsBehaviour, -1)      public var maxChars:Int;
+    @:behaviour(RestrictCharsBehaviour)     public var restrictChars:String;
+    @:behaviour(PlaceholderBehaviour)       public var placeholder:String;
+    @:behaviour(TextBehaviour)              public var text:String;
+    @:behaviour(IconBehaviour)              public var icon:String;
+    
+    //***********************************************************************************************************
+    // Internals
+    //***********************************************************************************************************
+    private override function createDefaults() {  // TODO: remove this eventually, @:layout(...) or something
         super.createDefaults();
-        defaultBehaviours([
-            "text" => new TextFieldDefaultTextBehaviour(this),
-            "icon" => new TextFieldDefaultIconBehaviour(this),
-            "password" => new TextFieldDefaultPasswordBehaviour(this),
-            "placeholder" => new TextFieldDefaultPlaceholderBehaviour(this)
-        ]);
         _defaultLayout = new TextFieldLayout();
     }
-
-    private override function createChildren() {
-        if (componentWidth == 0) {
-            componentWidth = 150;
+    
+    private override function createChildren() { // TODO: this should be min-width / min-height in theme css when the new css engine is done
+        super.createChildren();
+        if (width <= 0) {
+            width = 150;
         }
-
-        getTextInput().multiline = false;
-        getTextInput().data.onChangedCallback = function() {
-            if (getTextInput().text != _text && hasClass(":empty") == false) {
-                text = getTextInput().text;
-            }
-        };
-        registerEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
-        registerEvent(UIEvent.CHANGE, _onTextChanged);
+        
+        registerInternalEvents(Events);
     }
-
-    private override function destroyChildren() {
-        super.destroyChildren();
-
-        getTextInput().data.onChangedCallback = null;
-        unregisterEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
-        unregisterEvent(UIEvent.CHANGE, _onTextChanged);
-
-        if (_icon != null) {
-            removeComponent(_icon);
-            _icon = null;
-        }
-    }
-
+    
     //***********************************************************************************************************
     // Overrides
     //***********************************************************************************************************
-
-    private override function set_text(value:String):String {
-        if (value == _text) {
-            return value;
-        }
-
-        invalidateData();
-        value = super.set_text(value);
-        return value;
-    }
-
-    private override function get_text():String {
-        return behaviourGet("text");
-    }
-    
-    private override function set_focus(value:Bool):Bool {
-        if (_focus == value || allowFocus == false) {
-            return value;
-        }
-
-        invalidateData();
-        super.set_focus(value);
-        return value;
-    }
-
-    private override function applyStyle(style:Style) {
+    private override function applyStyle(style:Style) { // TODO: remove this eventually, @:styleApplier(...) or something
         super.applyStyle(style);
         if (style.icon != null) {
-            icon = style.icon;
+            //icon = style.icon;
         }
         if (hasTextInput() == true) {
             getTextInput().textStyle = style;
         }
     }
-
-    //***********************************************************************************************************
-    // Public API
-    //***********************************************************************************************************
-    /**
-     Return if the textfield is empty.
-    **/
-    public var empty(get, never):Bool;
-    private function get_empty():Bool {
-        return _text == null || _text.length == 0;
-    }
-
-    private var _iconResource:String;
-    /**
-     The image resource to use as the textfields icon
-    **/
-    @:clonable public var icon(get, set):String;
-    private function get_icon():String {
-        return _iconResource;
-    }
-
-    private function set_icon(value:String):String {
-        if (_iconResource == value) {
-            return value;
-        }
-
-        invalidateData();
-        _iconResource = value;
-        return value;
-    }
-
-    private var _password:Bool = false;
-    /**
-     Whether to use this text field as a password text field
-    **/
-    @:clonable public var password(get, set):Bool;
-    private function get_password():Bool {
-        return _password;
-    }
-
-    private function set_password(value:Bool):Bool {
-        if (_password == value) {
-            return value;
-        }
-
-        _password = value;
-        invalidateData();
-        return value;
-    }
-    
-    private var _maxChars:Int = -1;
-    /**
-     Maximum number of characters allowed in the textfield. By default -1 (unlimited chars).
-    **/
-    @:clonable public var maxChars(get, set):Int;
-    private function get_maxChars():Int {
-        return _maxChars;
-    }
-
-    private function set_maxChars(value:Int):Int {
-        if (_maxChars == value) {
-            return value;
-        }
-
-        invalidateData();
-        _maxChars = value;
-        return value;
-    }
-
-    private var _placeholder:String;
-    /**
-     A short hint that describes the expected value.
-     The short hint is displayed in the textfield before the user enters a value.
-     Use ":empty" css class to change the style.
-    **/
-    @:clonable public var placeholder(get, set):String;
-    private function get_placeholder():String {
-        return _placeholder;
-    }
-
-    private function set_placeholder(value:String):String {
-        if (_placeholder == value) {
-            return value;
-        }
-
-        invalidateData();
-        _placeholder = value;
-        return value;
-    }
-
-    private var _restrictEReg:EReg;
-    private var _restrictChars:String;
-    /**
-     Indicates the set of characters that an user can enter into the textfield. You can insert a range with the "-" character, or you can exclude with the "^" character.
-
-     Examples include:
-
-     - `a-z` : Allowed lowercase letters.
-
-     - `a-zA-Z` : Allowed any letter.
-
-     - `^Qq` : Allowed any char except `q` and `Q`.
-
-     - `a-z^q`: Allowed lowercase letters except `q`.
-
-     - `0-9a-z`: Allowed numbers and lowercase letters.
-
-     - `0-9^4-6`: Allowed  numbers except `4`, `5` and `6`.
-    **/
-    @:clonable public var restrictChars(get, set):String;
-    private function get_restrictChars():String {
-        return _restrictChars;
-    }
-
-    private function set_restrictChars(value:String):String {
-        if (_restrictChars == value) {
-            return value;
-        }
-
-        _restrictChars = value;
-        _restrictEReg = _generateRestrictEReg();
-
-        return _restrictChars;
-    }
-
-    //***********************************************************************************************************
-    // Events
-    //***********************************************************************************************************
-    private function _onTextChanged(event:UIEvent) {
-        var newText:String = behaviourGet("text");
-        if (_restrictEReg != null && newText != "" && !_restrictEReg.match(newText)) {
-            behaviourSet("text", _text != null ? _text : "");
-            return;
-        }
-
-        text = newText;
-    }
-
-    private function _onMouseDown(event:MouseEvent) {
-        FocusManager.instance.focus = this;
-    }
-
-    //***********************************************************************************************************
-    // Validation
-    //***********************************************************************************************************
-
-    private override function validateData() {
-        if (behaviourGet("icon") != _iconResource) {
-            behaviourSet("icon", _iconResource);
-        }
-
-        if (behaviourGet("placeholder") != _placeholder) {
-            behaviourSet("placeholder", _placeholder);
-        }
-
-        var text:String = _text != null ? _text : "";
-        var placeholderVisible:Bool = empty;
-
-        //Max chars
-        if (_maxChars != -1 && text.length > _maxChars && placeholderVisible == false) {
-            text = text.substr(0, _maxChars);
-            _text = text;
-        }
-
-        //Placeholder
-        if (focus == false && _placeholder != null) {
-            if (native == false) {
-                if (text == "") {
-                    text = _placeholder;
-                    behaviourSet("password", false);
-                    addClass(":empty");
-                } else {
-                    behaviourSet("password", _password);
-                    removeClass(":empty");
-                }
-            }
-        } else if (placeholderVisible == true) {
-            if (native == false) { 
-                text = "";
-                removeClass(":empty");
-                behaviourSet("password", _password);
-            }
-        } else {
-            behaviourSet("password", _password);
-        }
-
-        behaviourSet("text", text);
-        handleBindings(["text", "value"]);
-    }
-
-    //***********************************************************************************************************
-    // Others
-    //***********************************************************************************************************
-
-    private function _generateRestrictEReg():EReg {
-        if (_restrictChars == null) {
-            return null;
-        }
-
-        var excludeEReg:EReg = ~/\^(.+)/g;
-        var excludeChars:String = null;
-        var includeChars:String = null;
-        if (excludeEReg.match(_restrictChars)) {
-            includeChars = excludeEReg.matchedLeft();
-            excludeChars = excludeEReg.matched(1);
-        } else {
-            includeChars = _restrictChars;
-        }
-
-        includeChars = (includeChars.length == 0) ? '.' : '[$includeChars]';    //Any character if it is empty
-
-        if (excludeChars != null && excludeChars.length > 0) {
-            return new EReg('^((?=[^${excludeChars}])${includeChars})+$', "");
-        } else {
-            return new EReg('^${includeChars}+$', "");
-        }
-    }
 }
 
 //***********************************************************************************************************
-// Default behaviours
+// Composite Layout
 //***********************************************************************************************************
-@:dox(hide)
-@:access(haxe.ui.components.TextField)
-class TextFieldDefaultTextBehaviour extends Behaviour {
-    public override function set(value:Variant) {
-        if (value.isNull) {
-            return;
-        }
-
-        var textField:TextField = cast _component;
-        if (value != textField.getTextInput().text) {
-            textField.getTextInput().text = value;
-            textField.invalidateDisplay();
-        }
-    }
-
-    public override function get():Variant {
-        var textField:TextField = cast _component;
-        return textField.getTextInput().text;
-    }
-}
-
-@:dox(hide)
-@:access(haxe.ui.components.TextField)
-class TextFieldDefaultIconBehaviour extends Behaviour {
-    public override function set(value:Variant) {
-        var textField:TextField = cast _component;
-        if (value == null || value.isNull || value == "null") { // TODO: hack
-            if (textField._icon != null) {
-                textField.removeComponent(textField._icon);
-                textField._icon = null;
-            }
-        } else {
-            if (textField._icon == null) {
-                textField._icon = new Image();
-                textField._icon.id = "textfield-icon";
-                textField._icon.addClass("icon");
-                textField._icon.scriptAccess = false;
-                textField.addComponent(textField._icon);    //TODO use addComponentAt with index=0
-            }
-            textField._icon.resource = value.toString();
-        }
-    }
-
-    public override function get():Variant {
-        var textField:TextField = cast _component;
-        if (textField._icon == null) {
-            return null;
-        } else {
-            return Variant.fromDynamic(textField._icon.resource);
-        }
-    }
-}
-
-@:dox(hide)
-@:access(haxe.ui.components.TextField)
-class TextFieldDefaultPasswordBehaviour extends Behaviour {
-    public override function set(value:Variant) {
-        var textField:TextField = cast _component;
-        textField.getTextInput().password = value;
-    }
-    
-    public override function get():Variant {
-        var textField:TextField = cast _component;
-        return textField.getTextInput().password;
-    }
-}
-
-@:dox(hide)
-@:access(haxe.ui.components.TextField)
-class TextFieldDefaultPlaceholderBehaviour extends Behaviour {
-    private var _value:String;  //TODO - maybe we can create a generic ValueBehaviour class
-
-    public override function set(value:Variant) {
-        if (_value == value) {
-           return;
-        }
-
-        _value = value;
-    }
-    
-    public override function get():Variant {
-        return _value;
-    }
-}
-
-//***********************************************************************************************************
-// Custom layouts
-//***********************************************************************************************************
-@:dox(hide)
-@:access(haxe.ui.components.TextField)
-class TextFieldLayout extends DefaultLayout {
+@:dox(hide) @:noCompletion
+private class TextFieldLayout extends DefaultLayout {
     private var iconPosition(get, null):String;
     private function get_iconPosition():String {
         if (component.style.iconPosition == null) {
@@ -428,8 +72,7 @@ class TextFieldLayout extends DefaultLayout {
     }
 
     private override function repositionChildren() {
-        //super.repositionChildren();
-        var icon:Image = component.findComponent("textfield-icon");
+        var icon:Image = component.findComponent(Image, false);
         var xpos:Float = paddingLeft;
         if (icon != null) {
             switch (iconPosition) {
@@ -445,8 +88,7 @@ class TextFieldLayout extends DefaultLayout {
 
         if (component.hasTextInput() == true) {
             component.getTextInput().left = xpos;
-            //component.getTextInput().top = paddingTop;// (component.componentHeight / 2) - (component.getTextInput().textHeight / 2);
-            component.getTextInput().top = (component.componentHeight / 2) - (component.getTextInput().textHeight / 2);
+            component.getTextInput().top = paddingTop + (component.componentHeight / 2) - ((component.getTextInput().height + paddingTop + paddingBottom) / 2);
         }
     }
 
@@ -479,10 +121,191 @@ class TextFieldLayout extends DefaultLayout {
 
     private override function get_usableSize():Size {
         var size:Size = super.get_usableSize();
-        var icon:Image = component.findComponent("textfield-icon");
+        var icon:Image = component.findComponent(Image, false);
         if (icon != null) {
             size.width -= icon.componentWidth + horizontalSpacing;
         }
+        
         return size;
+    }
+}
+
+//***********************************************************************************************************
+// Behaviours
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+private class PasswordBehaviour extends DataBehaviour {
+    public var originalValue:Variant;
+    
+    public override function validateData() {
+        if (originalValue == null) { // TODO: seems like a crappy way to handle placeholder / password
+            originalValue = _value;
+        }
+        var textfield:TextField = cast(_component, TextField);
+        textfield.getTextInput().password = _value;
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class MaxCharsBehaviour extends DataBehaviour {
+    public override function validateData() {
+        var textfield:TextField = cast(_component, TextField);
+        TextFieldHelper.validateText(textfield, textfield.text);
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class RestrictCharsBehaviour extends DataBehaviour {
+    public var regexp:EReg;
+    
+    public override function validateData() {
+        var excludeEReg:EReg = ~/\^(.+)/g;
+        var excludeChars:String = null;
+        var includeChars:String = null;
+        if (excludeEReg.match(_value)) {
+            includeChars = excludeEReg.matchedLeft();
+            excludeChars = excludeEReg.matched(1);
+        } else {
+            includeChars = _value;
+        }
+
+        if (includeChars != null && includeChars.length > 0) {
+            includeChars = '[^${includeChars}]';
+        } else {
+            includeChars = '[.]';
+        }
+        
+        if (excludeChars != null && excludeChars.length > 0) {
+            excludeChars = '[${excludeChars}]';
+        } else {
+            excludeChars = '[.]';
+        }
+        
+        regexp = new EReg('${excludeChars}|${includeChars}', "g");
+        
+        var textfield:TextField = cast(_component, TextField);
+        TextFieldHelper.validateText(textfield, textfield.text);
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class PlaceholderBehaviour extends DataBehaviour {
+    public override function validateData() {
+        var textfield:TextField = cast(_component, TextField);
+        TextFieldHelper.validateText(textfield, textfield.text);
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class TextBehaviour extends DataBehaviour {
+    public override function validateData() {
+        var textfield:TextField = cast(_component, TextField);
+        var text:String = _value != null ? _value : "";
+        TextFieldHelper.validateText(textfield, text);
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class IconBehaviour extends DataBehaviour {
+    public override function validateData() {
+        var textfield:TextField = cast(_component, TextField);
+        var icon:Image = textfield.findComponent(Image, false);
+        if ((_value == null || _value.isNull) && icon != null) {
+            textfield.removeComponent(icon);
+        } else {
+            if (icon == null) {
+                icon = new Image();
+                icon.id = "textfield-icon";
+                icon.addClass("icon");
+                icon.scriptAccess = false;
+                textfield.addComponentAt(icon, 0);
+            }
+            icon.resource = _value.toString();
+        }
+    }
+}
+//***********************************************************************************************************
+// Helpers
+//***********************************************************************************************************
+@:access(haxe.ui.core.Component)
+private class TextFieldHelper {
+    public static function validateText(textfield:TextField, text:String) {
+        var placeholderVisible:Bool = (text == null || text.length == 0);
+        
+        if (text == null) {
+           text = ""; 
+        }
+        
+        var password:Variant = cast(textfield.behaviours.find("password"), PasswordBehaviour).originalValue;  // TODO: seems like a crappy way to handle placeholder / password
+        var regexp:EReg = cast(textfield.behaviours.find("restrictChars"), RestrictCharsBehaviour).regexp;  // TODO: seems like a crappy way to handle restrict chars
+
+        if (textfield.maxChars > 0 && text.length > textfield.maxChars && placeholderVisible == false) {
+            text = text.substr(0, textfield.maxChars);
+        }
+        
+        if (regexp != null) {
+            text = regexp.replace(text, "");
+        }
+        
+        if (textfield.focus == false && textfield.placeholder != null) {
+            if (text == "") {
+                text = textfield.placeholder;
+                textfield.password = false;
+                textfield.addClass(":empty");
+            } else {
+                textfield.password = password;
+                textfield.removeClass(":empty");
+            }
+        } else if (placeholderVisible == true) {
+            textfield.password = password;
+            textfield.removeClass(":empty");
+        } else {
+            textfield.password = password;
+            textfield.removeClass(":empty");
+        }
+        
+        textfield.getTextInput().text = '${text}';
+    }
+}
+
+//***********************************************************************************************************
+// Events
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+private class Events extends haxe.ui.core.Events {
+    private var _textfield:TextField;
+    
+    public function new(textfield:TextField) {
+        super(textfield);
+        _textfield = textfield;
+    }
+    
+    public override function register() {
+        if (_textfield.getTextInput().data.onChangedCallback == null) {
+            _textfield.getTextInput().multiline = false;
+            _textfield.getTextInput().data.onChangedCallback = function() {
+                if (_textfield.hasClass(":empty") == false) {
+                    _textfield.text = _textfield.getTextInput().text;
+                }
+            };
+        }
+        
+        registerEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
+        registerEvent(FocusEvent.FOCUS_IN, onFocusChange);
+        registerEvent(FocusEvent.FOCUS_OUT, onFocusChange);
+    }
+    
+    public override function unregister() {
+        unregisterEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
+        unregisterEvent(FocusEvent.FOCUS_IN, onFocusChange);
+        unregisterEvent(FocusEvent.FOCUS_OUT, onFocusChange);
+    }
+    
+    private function onMouseDown(event:MouseEvent) { // TODO: this should happen automatically as part of InteractiveComponent (?)
+        FocusManager.instance.focus = cast(_target, IFocusable);
+    }
+    
+    private function onFocusChange(event:MouseEvent) {
+        TextFieldHelper.validateText(_textfield, _textfield.text);
     }
 }
