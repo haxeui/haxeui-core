@@ -26,11 +26,16 @@ class InteractiveComponent extends Component implements IFocusable {
         }
 
         _focus = value;
+        var eventType = null;
         if (_focus == true) {
             addClass(":active");
+            eventType = FocusEvent.FOCUS_IN;
         } else {
             removeClass(":active");
+            eventType = FocusEvent.FOCUS_OUT;
         }
+        invalidateData();
+        dispatch(new FocusEvent(eventType));
         return value;
     }
 

@@ -91,8 +91,8 @@ private class ButtonLayout extends DefaultLayout {
     private override function repositionChildren() {
         super.repositionChildren();
 
-        var label:Label = component.findComponent(Label);
-        var icon:Image = component.findComponent(Image);
+        var label:Label = component.findComponent(Label, false);
+        var icon:Image = component.findComponent(Image, false);
 
         switch (iconPosition) {
             case "far-right":
@@ -206,7 +206,7 @@ private class TextBehaviour extends DataBehaviour {
 @:dox(hide) @:noCompletion
 private class IconBehaviour extends DataBehaviour {
     private override function validateData() {
-        var icon:Image = _component.findComponent(Image);
+        var icon:Image = _component.findComponent(Image, false);
         if (icon == null) {
             icon = new Image();
             icon.addClass("icon");
@@ -271,7 +271,7 @@ private class SelectedBehaviour extends Behaviour {
 // Events
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
-private class Events extends haxe.ui.core.Events  {
+private class Events extends haxe.ui.core.Events {
     private var _button:Button;
     private var _down:Bool = false;
     private var _repeatTimer:Timer;

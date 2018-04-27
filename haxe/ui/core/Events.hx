@@ -16,7 +16,9 @@ class Events {
     }
     
     private function registerEvent(type:String, listener:Dynamic->Void) {
-        _target.registerEvent(type, listener);
+        if (hasEvent(type, listener) == false) {
+            _target.registerEvent(type, listener);
+        }
     }
     
     private function hasEvent(type:String, listener:Dynamic->Void):Bool {
