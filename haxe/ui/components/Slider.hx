@@ -139,7 +139,7 @@ class Slider extends InteractiveComponent {
     }
     private function set_pos(value:Float):Float {
         _pos = value;
-        invalidateData();
+        invalidateComponentData();
         return value;
     }
 
@@ -174,7 +174,7 @@ class Slider extends InteractiveComponent {
     }
     private function set_min(value:Float):Float {
         _min = value;
-        invalidateData();
+        invalidateComponentData();
         return value;
     }
 
@@ -189,7 +189,7 @@ class Slider extends InteractiveComponent {
     }
     private function set_max(value:Float):Float {
         _max = value;
-        invalidateData();
+        invalidateComponentData();
         return value;
     }
 
@@ -228,7 +228,7 @@ class Slider extends InteractiveComponent {
             }
 
             _rangeStart = value;
-            invalidateData();
+            invalidateComponentData();
         }
 
         return value;
@@ -272,7 +272,7 @@ class Slider extends InteractiveComponent {
         }
         if (value != _rangeEnd) {
             _rangeEnd = value;
-            invalidateData();
+            invalidateComponentData();
         }
         return value;
     }
@@ -307,7 +307,7 @@ class Slider extends InteractiveComponent {
             invalidate = true;
         }
         if (invalidate == true) {
-            invalidateData();
+            invalidateComponentData();
         }
     }
 
@@ -404,7 +404,7 @@ class SliderDefaultMinBehaviour extends Behaviour {
         _value = value;
 
         var slider:Slider = cast _component;
-        slider.invalidateLayout();
+        slider.invalidateComponentLayout();
     }
 
     public override function get():Variant {
@@ -425,7 +425,7 @@ class SliderDefaultMaxBehaviour extends Behaviour {
         _value = value;
 
         var slider:Slider = cast _component;
-        slider.invalidateLayout();
+        slider.invalidateComponentLayout();
     }
 
     public override function get():Variant {
@@ -446,7 +446,7 @@ class SliderDefaultPosBehaviour extends Behaviour {
         _value = value;
 
         var slider:Slider = cast _component;
-        slider.invalidateLayout();
+        slider.invalidateComponentLayout();
     }
     
     public override function get():Variant {
@@ -467,7 +467,7 @@ class SliderDefaultRangeStartBehaviour extends Behaviour {
         _value = value;
 
         var slider:Slider = cast _component;
-        slider.invalidateLayout();
+        slider.invalidateComponentLayout();
     }
 
     public override function get():Variant {
@@ -488,7 +488,7 @@ class SliderDefaultRangeEndBehaviour extends Behaviour {
         _value = value;
 
         var slider:Slider = cast _component;
-        slider.invalidateLayout();
+        slider.invalidateComponentLayout();
     }
 
     public override function get():Variant {

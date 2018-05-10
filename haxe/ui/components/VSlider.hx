@@ -188,13 +188,13 @@ class VSliderLayout extends DefaultLayout {
                 value.componentHeight = cy;
                 if (value.hidden == false) {
                     value.hidden = true;
-                    value.invalidateStyle();
+                    value.invalidateComponentStyle();
                 }
             } else {
                 value.componentHeight = cy;
                 if (value.hidden == true) {
                     value.hidden = false;
-                    value.invalidateStyle();
+                    value.invalidateComponentStyle();
                 }
             }
         }

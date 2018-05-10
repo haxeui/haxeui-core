@@ -66,7 +66,7 @@ class DropDown extends Button implements IDataComponent {
             return value;
         }
 
-        invalidateData();
+        invalidateComponentData();
         _dataSource = value;
         return value;
     }
@@ -85,7 +85,7 @@ class DropDown extends Button implements IDataComponent {
             return value;
         }
 
-        invalidateData();
+        invalidateComponentData();
         _selectedIndex = value;
         return _selectedIndex;
     }
@@ -100,7 +100,7 @@ class DropDown extends Button implements IDataComponent {
             return value;
         }
 
-        invalidateData();
+        invalidateComponentData();
         _requireSelection = value;
         return value;
     }

@@ -34,7 +34,7 @@ class HGrid extends Component {
             _rows = value;
 
             cast(layout, HorizontalGridLayout).rows = value;
-            invalidateLayout();
+            invalidateComponentLayout();
         }
         return value;
     }

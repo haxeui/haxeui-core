@@ -72,7 +72,7 @@ class TextField extends InteractiveComponent implements IFocusable {
             return value;
         }
 
-        invalidateData();
+        invalidateComponentData();
         value = super.set_text(value);
         return value;
     }
@@ -82,7 +82,7 @@ class TextField extends InteractiveComponent implements IFocusable {
             return value;
         }
 
-        invalidateData();
+        invalidateComponentData();
         super.set_focus(value);
         return value;
     }
@@ -122,7 +122,7 @@ class TextField extends InteractiveComponent implements IFocusable {
             return value;
         }
 
-        invalidateData();
+        invalidateComponentData();
         _iconResource = value;
         return value;
     }
@@ -142,7 +142,7 @@ class TextField extends InteractiveComponent implements IFocusable {
         }
 
         _password = value;
-        invalidateData();
+        invalidateComponentData();
         return value;
     }
     
@@ -160,7 +160,7 @@ class TextField extends InteractiveComponent implements IFocusable {
             return value;
         }
 
-        invalidateData();
+        invalidateComponentData();
         _maxChars = value;
         return value;
     }
@@ -181,7 +181,7 @@ class TextField extends InteractiveComponent implements IFocusable {
             return value;
         }
 
-        invalidateData();
+        invalidateComponentData();
         _placeholder = value;
         return value;
     }
@@ -329,7 +329,7 @@ class TextFieldDefaultTextBehaviour extends Behaviour {
         var textField:TextField = cast _component;
         if (value != textField.getTextInput().text) {
             textField.getTextInput().text = value;
-            textField.invalidateDisplay();
+            textField.invalidateComponentDisplay();
         }
     }
 

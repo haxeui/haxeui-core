@@ -67,7 +67,7 @@ class Image extends Component {
         }
 
         _resource = value;
-        invalidateData();
+        invalidateComponentData();
         return value;
     }
 
@@ -81,7 +81,7 @@ class Image extends Component {
             return value;
         }
         _scaleMode = value;
-        invalidateLayout();
+        invalidateComponentLayout();
         return value;
     }
 
@@ -95,7 +95,7 @@ class Image extends Component {
             return value;
         }
         _imageHorizontalAlign = value;
-        invalidateLayout();
+        invalidateComponentLayout();
         return value;
     }
 
@@ -109,7 +109,7 @@ class Image extends Component {
             return value;
         }
         _imageVerticalAlign = value;
-        invalidateLayout();
+        invalidateComponentLayout();
         return value;
     }
 
@@ -284,7 +284,7 @@ class ImageDefaultResourceBehaviour extends Behaviour {
                             display.imageInfo = imageInfo;
                             image._originalSize = new Size(imageInfo.width, imageInfo.height);
                             if (image.autoSize() == true && image.parentComponent != null) {
-                                image.parentComponent.invalidateLayout();
+                                image.parentComponent.invalidateComponentLayout();
                             }
                             image.validateLayout();
                             display.validate();

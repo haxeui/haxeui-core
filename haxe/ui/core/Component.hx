@@ -541,7 +541,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             child.ready();
         }
 
-        invalidateLayout();
+        invalidateComponentLayout();
         if (_disabled == true) {
             child.disabled = true;
         }
@@ -592,7 +592,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             child.ready();
         }
 
-        invalidateLayout();
+        invalidateComponentLayout();
         if (_disabled == true) {
             child.disabled = true;
         }
@@ -615,7 +615,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
                 child.depth = -1;
             }
             if (invalidate == true) {
-                invalidateLayout();
+                invalidateComponentLayout();
             }
             if (dispose == true) {
                 child._isDisposed = true;
@@ -647,7 +647,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
                 child.depth = -1;
             }
             if (invalidate == true) {
-                invalidateLayout();
+                invalidateComponentLayout();
             }
             if (dispose == true) {
                 child._isDisposed = true;
@@ -672,7 +672,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
                 _children[0].removeAllComponents(dispose);
                 removeComponent(_children[0], dispose, false);
             }
-            invalidateLayout();
+            invalidateComponentLayout();
         }
     }
 
@@ -812,7 +812,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             handleSetComponentIndex(child, index);
             _children.remove(child);
             _children.insert(index, child);
-            invalidateLayout();
+            invalidateComponentLayout();
         }
     }
 
@@ -836,7 +836,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             handleVisibility(false);
             _hidden = true;
             if (parentComponent != null) {
-                parentComponent.invalidateLayout();
+                parentComponent.invalidateComponentLayout();
             }
         }
     }
@@ -850,7 +850,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             handleVisibility(true);
             _hidden = false;
             if (parentComponent != null) {
-                parentComponent.invalidateLayout();
+                parentComponent.invalidateComponentLayout();
             }
         }
     }
@@ -913,7 +913,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         if (classes.indexOf(name) == -1) {
             classes.push(name);
             if (invalidate == true) {
-                invalidateStyle();
+                invalidateComponentStyle();
             }
         }
 		
@@ -932,7 +932,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         if (classes.indexOf(name) != -1) {
             classes.remove(name);
             if (invalidate == true) {
-                invalidateStyle();
+                invalidateComponentStyle();
             }
         }
 
@@ -1202,7 +1202,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
 
         _layoutLocked = false;
-        invalidateLayout();
+        invalidateComponentLayout();
     }
 
     //***********************************************************************************************************
@@ -1237,7 +1237,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
                 }
             }
 
-            invalidate();
+            invalidateComponent();
 
             onReady();
             dispatch(new UIEvent(UIEvent.READY));
@@ -1338,7 +1338,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
 
         if (invalidate == true && isInvalid(InvalidationFlags.LAYOUT) == false) {
-            invalidateLayout();
+            invalidateComponentLayout();
         }
     }
 
@@ -1370,7 +1370,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         _percentWidth = value;
 
         if (parentComponent != null) {
-            parentComponent.invalidateLayout();
+            parentComponent.invalidateComponentLayout();
         }
         return value;
     }
@@ -1391,7 +1391,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         _percentHeight = value;
 
         if (parentComponent != null) {
-            parentComponent.invalidateLayout();
+            parentComponent.invalidateComponentLayout();
         }
         return value;
     }
@@ -1626,7 +1626,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
 
         if (invalidate == true && isInvalid(InvalidationFlags.POSITION) == false) {
-            invalidatePosition();
+            invalidateComponentPosition();
         }
     }
 
@@ -2023,7 +2023,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             _actualHeight = _componentHeight;
 
             if (parentComponent != null) {
-                parentComponent.invalidateLayout();
+                parentComponent.invalidateComponentLayout();
             }
 
             onResized();
@@ -2110,7 +2110,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
      Invalidate this components with the `InvalidationFlags` indicated. If it hasn't parameter then the component will be invalidated completely.
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public function invalidate(flag:String = InvalidationFlags.ALL) {
+    public function invalidateComponent(flag:String = InvalidationFlags.ALL) {
         if (_ready == false) {
             return;     //it should be added into the queue later
         }
@@ -2165,43 +2165,43 @@ class Component extends ComponentBase implements IComponentBase implements IVali
      Invalidate the data of this component
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public inline function invalidateData() {
-        invalidate(InvalidationFlags.DATA);
+    public inline function invalidateComponentData() {
+        invalidateComponent(InvalidationFlags.DATA);
     }
 
     /**
      Invalidate this components layout, may result in multiple calls to `invalidateDisplay` and `invalidateLayout` of its children
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public inline function invalidateLayout() {
+    public inline function invalidateComponentLayout() {
         if (_layout == null || _layoutLocked == true) {
             return;
         }
-        invalidate(InvalidationFlags.LAYOUT);
+        invalidateComponent(InvalidationFlags.LAYOUT);
     }
 
     /**
      Invalidate the position of this component
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public inline function invalidatePosition() {
-        invalidate(InvalidationFlags.POSITION);
+    public inline function invalidateComponentPosition() {
+        invalidateComponent(InvalidationFlags.POSITION);
     }
 
     /**
      Invalidate the visible aspect of this component
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public inline function invalidateDisplay() {
-        invalidate(InvalidationFlags.DISPLAY);
+    public inline function invalidateComponentDisplay() {
+        invalidateComponent(InvalidationFlags.DISPLAY);
     }
 
     /**
      Invalidate and recalculate this components style, may result in a call to `invalidateDisplay`
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public inline function invalidateStyle() {
-        invalidate(InvalidationFlags.STYLE);
+    public inline function invalidateComponentStyle() {
+        invalidateComponent(InvalidationFlags.STYLE);
     }
 
     private override function applyStyle(style:Style) {

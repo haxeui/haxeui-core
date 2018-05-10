@@ -98,7 +98,7 @@ class ScrollView extends Component {
             return value;
         }
 
-        invalidateScroll();
+        invalidateComponentScroll();
         _vscrollPos = value;
         return value;
     }
@@ -121,7 +121,7 @@ class ScrollView extends Component {
             return value;
         }
 
-        invalidateScroll();
+        invalidateComponentScroll();
         _hscrollPos = value;
         return value;
     }
@@ -282,8 +282,8 @@ class ScrollView extends Component {
     // Validation
     //***********************************************************************************************************
 
-    private inline function invalidateScroll() {
-        invalidate(InvalidationFlags.SCROLL);
+    private inline function invalidateComponentScroll() {
+        invalidateComponent(InvalidationFlags.SCROLL);
     }
 
     private override function validateInternal() {
@@ -512,7 +512,7 @@ class ScrollView extends Component {
     }
     
     private function _onContentsResized(event:UIEvent) {
-        invalidateScroll();
+        invalidateComponentScroll();
     }
 
     private var hscrollOffset(get, null):Float;

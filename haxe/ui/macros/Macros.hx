@@ -261,12 +261,12 @@ class Macros {
             }
             code += "if (_style == null) _style = new Style();\n";
             code += "customStyle." + name + " = value;\n";
-            code += "invalidateStyle();\n";
+            code += "invalidateComponentStyle();\n";
             if (MacroHelpers.hasMetaParam(MacroHelpers.getMeta(f, "style"), "layout")) {
-                code += "invalidateLayout();\n";
+                code += "invalidateComponentLayout();\n";
             }
             if (MacroHelpers.hasMetaParam(MacroHelpers.getMeta(f, "style"), "layoutparent")) {
-                code += "if (parentComponent != null) { parentComponent.invalidateLayout(); };";
+                code += "if (parentComponent != null) { parentComponent.invalidateComponentLayout(); };";
             }
             code += "return value;\n";
             code += "}";

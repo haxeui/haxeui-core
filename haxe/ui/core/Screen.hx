@@ -80,8 +80,8 @@ class Screen extends ScreenBase {
     private function _refreshStyleComponent(component:Component) {
         for (child in component.childComponents) {
 //            child.applyStyle(child.style);
-            child.invalidateStyle();
-            child.invalidateDisplay();
+            child.invalidateComponentStyle();
+            child.invalidateComponentDisplay();
             _refreshStyleComponent(child);
         }
     }

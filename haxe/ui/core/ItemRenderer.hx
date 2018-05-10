@@ -48,7 +48,7 @@ class ItemRenderer extends Box {
             return value;
         }
 
-        invalidateData();
+        invalidateComponentData();
         _data = value;
         return value;
     }

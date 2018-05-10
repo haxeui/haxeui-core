@@ -48,8 +48,8 @@ class Label extends Component {
         }
 
         value = super.set_text(value);
-        invalidateData();
-        invalidateLayout();
+        invalidateComponentData();
+        invalidateComponentLayout();
         return value;
     }
 
@@ -141,7 +141,7 @@ class LabelDefaultTextBehaviour extends Behaviour {
         var label:Label = cast _component;
         label.getTextDisplay().text = '${value}';
         if (label.isInvalid(InvalidationFlags.DISPLAY) == false) {
-            label.invalidateDisplay();
+            label.invalidateComponentDisplay();
         }
     }
 }

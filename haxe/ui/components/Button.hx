@@ -93,7 +93,7 @@ class Button extends InteractiveComponent {
     //***********************************************************************************************************
     private override function set_text(value:String):String {
         value = super.set_text(value);
-        invalidateData();
+        invalidateComponentData();
         return value;
     }
 
@@ -114,13 +114,13 @@ class Button extends InteractiveComponent {
             label.customStyle.fontName = style.fontName;
             label.customStyle.fontSize = style.fontSize;
             label.customStyle.cursor = style.cursor;
-            label.invalidateStyle();
+            label.invalidateComponentStyle();
         }
 
         var icon:Image = findComponent(Image);
         if (icon != null && (icon.customStyle.cursor != style.cursor)) {
             icon.customStyle.cursor = style.cursor;
-            icon.invalidateStyle();
+            icon.invalidateComponentStyle();
         }
     }
 
@@ -172,7 +172,7 @@ class Button extends InteractiveComponent {
         }
 
         _iconResource = value;
-        invalidateData();
+        invalidateComponentData();
         return value;
     }
 
