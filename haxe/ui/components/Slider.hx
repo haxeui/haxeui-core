@@ -88,7 +88,7 @@ private class StartBehaviour extends ValueBehaviour {
         }
         
         _component.findComponent(Range).start = value;
-        _component.invalidateLayout();
+        _component.invalidateComponentLayout();
     }
 }
 
@@ -105,7 +105,7 @@ private class EndBehaviour extends ValueBehaviour {
         }
         
         _component.findComponent(Range).end = value;
-        _component.invalidateLayout();
+        _component.invalidateComponentLayout();
     }
 }
 

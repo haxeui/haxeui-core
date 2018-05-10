@@ -22,8 +22,8 @@ class Preloader extends Component {
         addComponent(label);
     }
     
-    private override function validateLayout():Bool {
-        var b = super.validateLayout();
+    private override function validateComponentLayout():Bool {
+        var b = super.validateComponentLayout();
         if (width > 0 && height > 0) {
             left = (Screen.instance.width / 2) - (width / 2);
             top = (Screen.instance.height / 2) - (height / 2);

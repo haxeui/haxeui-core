@@ -98,7 +98,7 @@ class ScrollView extends Component {
             return value;
         }
 
-        invalidateScroll();
+        invalidateComponentScroll();
         _vscrollPos = value;
         return value;
     }
@@ -121,7 +121,7 @@ class ScrollView extends Component {
             return value;
         }
 
-        invalidateScroll();
+        invalidateComponentScroll();
         _hscrollPos = value;
         return value;
     }
@@ -282,22 +282,22 @@ class ScrollView extends Component {
     // Validation
     //***********************************************************************************************************
 
-    private inline function invalidateScroll() {
-        invalidate(InvalidationFlags.SCROLL);
+    private inline function invalidateComponentScroll() {
+        invalidateComponent(InvalidationFlags.SCROLL);
     }
 
-    private override function validateInternal() {
-        var scrollInvalid = isInvalid(InvalidationFlags.SCROLL);
-        var layoutInvalid = isInvalid(InvalidationFlags.LAYOUT);
+    private override function validateComponentInternal() {
+        var scrollInvalid = isComponentInvalid(InvalidationFlags.SCROLL);
+        var layoutInvalid = isComponentInvalid(InvalidationFlags.LAYOUT);
 
-        super.validateInternal();
+        super.validateComponentInternal();
 
         if (scrollInvalid || layoutInvalid) {
-            validateScroll();
+            validateComponentScroll();
         }
     }
 
-    private function validateScroll() {
+    private function validateComponentScroll() {
         if(behaviourGet("hscrollPos") != _hscrollPos)
         {
             behaviourSet("hscrollPos", _hscrollPos);
@@ -512,7 +512,7 @@ class ScrollView extends Component {
     }
     
     private function _onContentsResized(event:UIEvent) {
-        invalidateScroll();
+        invalidateComponentScroll();
     }
 
     private var hscrollOffset(get, null):Float;
@@ -541,7 +541,7 @@ class ScrollView extends Component {
             _hscroll.max = horizontalConstraint.componentWidth - usableSize.width - hscrollOffset; // _contents.layout.horizontalSpacing;
             _hscroll.pageSize = (usableSize.width / horizontalConstraint.componentWidth) * _hscroll.max;
 
-            _hscroll.syncValidation();    //avoid another pass
+            _hscroll.syncComponentValidation();    //avoid another pass
         } else {
             if (_hscroll != null) {
                 _hscroll.unregisterEvent(UIEvent.CHANGE, _onHScroll);
@@ -562,7 +562,7 @@ class ScrollView extends Component {
             _vscroll.max = verticalConstraint.componentHeight - usableSize.height;
             _vscroll.pageSize = (usableSize.height / verticalConstraint.componentHeight) * _vscroll.max;
 
-            _vscroll.syncValidation();    //avoid another pass
+            _vscroll.syncComponentValidation();    //avoid another pass
         } else {
             if (_vscroll != null) {
                 _vscroll.unregisterEvent(UIEvent.CHANGE, _onVScroll);

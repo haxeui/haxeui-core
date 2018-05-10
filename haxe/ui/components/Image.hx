@@ -193,10 +193,10 @@ private class ResourceBehaviour extends DataBehaviour {
                     image.originalWidth = imageInfo.width;
                     image.originalHeight = imageInfo.height;
                     if (image.autoSize() == true && image.parentComponent != null) {
-                        image.parentComponent.invalidateLayout();
+                        image.parentComponent.invalidateComponentLayout();
                     }
-                    image.validateLayout();
-                    display.validate();
+                    image.validateComponentLayout();
+                    display.validateComponent();
                 }
             }
         });

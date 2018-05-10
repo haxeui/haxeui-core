@@ -66,7 +66,7 @@ class DropDown extends Button implements IDataComponent {
             return value;
         }
 
-        invalidateData();
+        invalidateComponentData();
         _dataSource = value;
         return value;
     }
@@ -85,7 +85,7 @@ class DropDown extends Button implements IDataComponent {
             return value;
         }
 
-        invalidateData();
+        invalidateComponentData();
         _selectedIndex = value;
         return _selectedIndex;
     }
@@ -100,7 +100,7 @@ class DropDown extends Button implements IDataComponent {
             return value;
         }
 
-        invalidateData();
+        invalidateComponentData();
         _requireSelection = value;
         return value;
     }
@@ -232,11 +232,11 @@ class DropDown extends Button implements IDataComponent {
             if (n > _listview.itemCount) {
                 n = _listview.itemCount;
             }
-            _listview.syncValidation();
+            _listview.syncComponentValidation();
             listHeight = n * _listview.itemHeight + (_listview.layout.paddingTop + _listview.layout.paddingBottom);
         }
         _listview.height = listHeight;
-        _listview.syncValidation();     //avoid ui flash in some backends
+        _listview.syncComponentValidation();     //avoid ui flash in some backends
 
         if (_listview.screenTop + _listview.height > Screen.instance.height) {
             _listview.top = this.screenTop - _listview.height;
@@ -259,7 +259,7 @@ class DropDown extends Button implements IDataComponent {
     // Validation
     //***********************************************************************************************************
 
-    private override function validateData() {
+    private override function validateComponentData() {
         if (_listview != null) {
             _listview.dataSource = _dataSource;
         }
@@ -278,7 +278,7 @@ class DropDown extends Button implements IDataComponent {
             //_text = null;
         }
 
-        super.validateData();
+        super.validateComponentData();
     }
 
     //***********************************************************************************************************

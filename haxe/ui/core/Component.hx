@@ -537,7 +537,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     }
     private function set_componentClipRect(value:Rectangle):Rectangle {
         _componentClipRect = value;
-        invalidateDisplay();
+        invalidateComponentDisplay();
         return value;
     }
 
@@ -607,7 +607,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             child.ready();
         }
 
-        invalidateLayout();
+        invalidateComponentLayout();
         if (_disabled == true) {
             child.disabled = true;
         }
@@ -658,7 +658,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             child.ready();
         }
 
-        invalidateLayout();
+        invalidateComponentLayout();
         if (_disabled == true) {
             child.disabled = true;
         }
@@ -681,7 +681,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
                 child.depth = -1;
             }
             if (invalidate == true) {
-                invalidateLayout();
+                invalidateComponentLayout();
             }
             if (dispose == true) {
                 child._isDisposed = true;
@@ -714,7 +714,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
                 child.depth = -1;
             }
             if (invalidate == true) {
-                invalidateLayout();
+                invalidateComponentLayout();
             }
             if (dispose == true) {
                 child._isDisposed = true;
@@ -753,7 +753,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
                 _children[0].removeAllComponents(dispose);
                 removeComponent(_children[0], dispose, false);
             }
-            invalidateLayout();
+            invalidateComponentLayout();
         }
     }
 
@@ -893,7 +893,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             handleSetComponentIndex(child, index);
             _children.remove(child);
             _children.insert(index, child);
-            invalidateLayout();
+            invalidateComponentLayout();
         }
     }
 
@@ -917,7 +917,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             handleVisibility(false);
             _hidden = true;
             if (parentComponent != null) {
-                parentComponent.invalidateLayout();
+                parentComponent.invalidateComponentLayout();
             }
         }
     }
@@ -931,7 +931,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             handleVisibility(true);
             _hidden = false;
             if (parentComponent != null) {
-                parentComponent.invalidateLayout();
+                parentComponent.invalidateComponentLayout();
             }
         }
     }
@@ -994,7 +994,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         if (classes.indexOf(name) == -1) {
             classes.push(name);
             if (invalidate == true) {
-                invalidateStyle();
+                invalidateComponentStyle();
             }
         }
 		
@@ -1013,7 +1013,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         if (classes.indexOf(name) != -1) {
             classes.remove(name);
             if (invalidate == true) {
-                invalidateStyle();
+                invalidateComponentStyle();
             }
         }
 
@@ -1295,7 +1295,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
 
         _layoutLocked = false;
-        invalidateLayout();
+        invalidateComponentLayout();
     }
 
     //***********************************************************************************************************
@@ -1330,7 +1330,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
                 }
             }
 
-            invalidate();
+            invalidateComponent();
 
             onReady();
             dispatch(new UIEvent(UIEvent.READY));
@@ -1429,8 +1429,8 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             invalidate = true;
         }
 
-        if (invalidate == true && isInvalid(InvalidationFlags.LAYOUT) == false) {
-            invalidateLayout();
+        if (invalidate == true && isComponentInvalid(InvalidationFlags.LAYOUT) == false) {
+            invalidateComponentLayout();
         }
     }
 
@@ -1462,7 +1462,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         _percentWidth = value;
 
         if (parentComponent != null) {
-            parentComponent.invalidateLayout();
+            parentComponent.invalidateComponentLayout();
         }
         return value;
     }
@@ -1483,7 +1483,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         _percentHeight = value;
 
         if (parentComponent != null) {
-            parentComponent.invalidateLayout();
+            parentComponent.invalidateComponentLayout();
         }
         return value;
     }
@@ -1717,8 +1717,8 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             invalidate = true;
         }
 
-        if (invalidate == true && isInvalid(InvalidationFlags.POSITION) == false) {
-            invalidatePosition();
+        if (invalidate == true && isComponentInvalid(InvalidationFlags.POSITION) == false) {
+            invalidateComponentPosition();
         }
     }
 
@@ -2031,13 +2031,13 @@ class Component extends ComponentBase implements IComponentBase implements IVali
      Validate this component and its children on demand.
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public function syncValidation() {
+    public function syncComponentValidation() {
         var count:Int = 0;
-        while(isInvalid()) {
-            validate();
+        while(isComponentInvalid()) {
+            validateComponent();
 
             for (child in childComponents) {
-                child.syncValidation();
+                child.syncComponentValidation();
             }
 
             if (++count >= 10) {
@@ -2050,17 +2050,17 @@ class Component extends ComponentBase implements IComponentBase implements IVali
      This method validates the tasks pending in the component.
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public function validate() {
+    public function validateComponent() {
         if (_ready == false ||
             _isDisposed == true ||      //we don't want to validate disposed components, but they may have been left in the queue.
             _isValidating == true ||    //we were already validating, the existing validation will continue.
-            isInvalid() == false) {     //if none is invalid, exit.
+            isComponentInvalid() == false) {     //if none is invalid, exit.
             return;
         }
 
         _isValidating = true;
 
-        validateInternal();
+        validateComponentInternal();
 
         for (flag in _invalidationFlags.keys()) {
             _invalidationFlags.remove(flag);
@@ -2079,42 +2079,42 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         _isValidating = false;
     }
 
-    private function validateInternal() {
-        var dataInvalid = isInvalid(InvalidationFlags.DATA);
-        var styleInvalid = isInvalid(InvalidationFlags.STYLE);
-        var textDisplayInvalid = isInvalid(InvalidationFlags.TEXT_DISPLAY) && hasTextDisplay();
-        var textInputInvalid = isInvalid(InvalidationFlags.TEXT_INPUT) && hasTextInput();
-        var imageDisplayInvalid = isInvalid(InvalidationFlags.IMAGE_DISPLAY) && hasImageDisplay();
-        var positionInvalid = isInvalid(InvalidationFlags.POSITION);
-        var displayInvalid = isInvalid(InvalidationFlags.DISPLAY);
-        var layoutInvalid = isInvalid(InvalidationFlags.LAYOUT) && _layoutLocked == false;
+    private function validateComponentInternal() {
+        var dataInvalid = isComponentInvalid(InvalidationFlags.DATA);
+        var styleInvalid = isComponentInvalid(InvalidationFlags.STYLE);
+        var textDisplayInvalid = isComponentInvalid(InvalidationFlags.TEXT_DISPLAY) && hasTextDisplay();
+        var textInputInvalid = isComponentInvalid(InvalidationFlags.TEXT_INPUT) && hasTextInput();
+        var imageDisplayInvalid = isComponentInvalid(InvalidationFlags.IMAGE_DISPLAY) && hasImageDisplay();
+        var positionInvalid = isComponentInvalid(InvalidationFlags.POSITION);
+        var displayInvalid = isComponentInvalid(InvalidationFlags.DISPLAY);
+        var layoutInvalid = isComponentInvalid(InvalidationFlags.LAYOUT) && _layoutLocked == false;
 
         if (dataInvalid) {
-            validateData();
+            validateComponentData();
         }
 
         if (styleInvalid) {
-            validateStyle();
+            validateComponentStyle();
         }
 
         if (textDisplayInvalid) {
-            getTextDisplay().validate();
+            getTextDisplay().validateComponent();
         }
 
         if (textInputInvalid) {
-            getTextInput().validate();
+            getTextInput().validateComponent();
         }
 
         if (imageDisplayInvalid) {
-            getImageDisplay().validate();
+            getImageDisplay().validateComponent();
         }
 
         if (positionInvalid) {
-            validatePosition();
+            validateComponentPosition();
         }
 
         if (layoutInvalid) {
-            displayInvalid = validateLayout() || displayInvalid;
+            displayInvalid = validateComponentLayout() || displayInvalid;
         }
 
         if (displayInvalid || styleInvalid) {
@@ -2122,18 +2122,18 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
     }
 
-    private function validateData() {
+    private function validateComponentData() {
         behaviours.validateData();
     }
 
     /**
      Return true if the size has changed.
     **/
-    private function validateLayout():Bool {
+    private function validateComponentLayout():Bool {
         layout.refresh();
 
         //TODO - Required. Something is wrong with the autosize order in the first place if we need to do that twice. Revision required for performance.
-        while(validateAutoSize()) {
+        while(validateComponentAutoSize()) {
             layout.refresh();
         }
 
@@ -2142,7 +2142,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             _actualHeight = _componentHeight;
 
             if (parentComponent != null) {
-                parentComponent.invalidateLayout();
+                parentComponent.invalidateComponentLayout();
             }
 
             onResized();
@@ -2154,7 +2154,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
     }
 
-    private function validateStyle() {
+    private function validateComponentStyle() {
         var s:Style = Toolkit.styleSheet.buildStyleFor(this);
         s.apply(customStyle);
 
@@ -2165,14 +2165,14 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         
     }
 
-    private function validatePosition() {
+    private function validateComponentPosition() {
         handlePosition(_left, _top, _style);
 
         onMoved();
         dispatch(new UIEvent(UIEvent.MOVE));
     }
 
-    public function updateDisplay() {
+    public function updateComponentDisplay() {
         if (componentWidth == null || componentHeight == null || componentWidth <= 0 || componentHeight <= 0) {
             return;
         }
@@ -2188,7 +2188,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     /**
      Return true if the size calculated has changed and the autosize is enabled.
     **/
-    private function validateAutoSize():Bool {
+    private function validateComponentAutoSize():Bool {
         var invalidate:Bool = false;
         if (autoWidth == true || autoHeight == true) {
             var s:Size = layout.calcAutoSize();
@@ -2213,7 +2213,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
      Check if the component is invalidated with some `flag`.
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public function isInvalid(flag:String = InvalidationFlags.ALL):Bool {
+    public function isComponentInvalid(flag:String = InvalidationFlags.ALL):Bool {
         if (_isAllInvalid == true) {
             return true;
         }
@@ -2233,12 +2233,12 @@ class Component extends ComponentBase implements IComponentBase implements IVali
      Invalidate this components with the `InvalidationFlags` indicated. If it hasn't parameter then the component will be invalidated completely.
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public function invalidate(flag:String = InvalidationFlags.ALL) {
+    public function invalidateComponent(flag:String = InvalidationFlags.ALL) {
         if (_ready == false) {
             return;     //it should be added into the queue later
         }
 
-        var isAlreadyInvalid:Bool = isInvalid();
+        var isAlreadyInvalid:Bool = isComponentInvalid();
         var isAlreadyDelayedInvalid:Bool = false;
         if (_isValidating == true) {
             for (value in _delayedInvalidationFlags) {
@@ -2288,43 +2288,43 @@ class Component extends ComponentBase implements IComponentBase implements IVali
      Invalidate the data of this component
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public inline function invalidateData() {
-        invalidate(InvalidationFlags.DATA);
+    public inline function invalidateComponentData() {
+        invalidateComponent(InvalidationFlags.DATA);
     }
 
     /**
      Invalidate this components layout, may result in multiple calls to `invalidateDisplay` and `invalidateLayout` of its children
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public inline function invalidateLayout() {
+    public inline function invalidateComponentLayout() {
         if (_layout == null || _layoutLocked == true) {
             return;
         }
-        invalidate(InvalidationFlags.LAYOUT);
+        invalidateComponent(InvalidationFlags.LAYOUT);
     }
 
     /**
      Invalidate the position of this component
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public inline function invalidatePosition() {
-        invalidate(InvalidationFlags.POSITION);
+    public inline function invalidateComponentPosition() {
+        invalidateComponent(InvalidationFlags.POSITION);
     }
 
     /**
      Invalidate the visible aspect of this component
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public inline function invalidateDisplay() {
-        invalidate(InvalidationFlags.DISPLAY);
+    public inline function invalidateComponentDisplay() {
+        invalidateComponent(InvalidationFlags.DISPLAY);
     }
 
     /**
      Invalidate and recalculate this components style, may result in a call to `invalidateDisplay`
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public inline function invalidateStyle() {
-        invalidate(InvalidationFlags.STYLE);
+    public inline function invalidateComponentStyle() {
+        invalidateComponent(InvalidationFlags.STYLE);
     }
 
     private override function applyStyle(style:Style) {

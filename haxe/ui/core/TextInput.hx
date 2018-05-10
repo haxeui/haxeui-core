@@ -53,10 +53,10 @@ class TextInput extends TextInputBase implements IValidating {
         if ((value.fontName != null && _textStyle == null) || (_textStyle != null && value.fontName != _textStyle.fontName)) {
             ToolkitAssets.instance.getFont(value.fontName, function(fontInfo) {
                 _fontInfo = fontInfo;
-                invalidate(InvalidationFlags.STYLE);
+                invalidateComponent(InvalidationFlags.STYLE);
             });
         } else {
-            invalidate(InvalidationFlags.STYLE);
+            invalidateComponent(InvalidationFlags.STYLE);
         }
         
         _textStyle = value;
@@ -78,7 +78,7 @@ class TextInput extends TextInputBase implements IValidating {
         }
 
         _text = value;
-        invalidate(InvalidationFlags.DATA);
+        invalidateComponent(InvalidationFlags.DATA);
         return value;
     }
 
@@ -92,7 +92,7 @@ class TextInput extends TextInputBase implements IValidating {
         }
 
         _inputData.password = value;
-        invalidate(InvalidationFlags.STYLE);
+        invalidateComponent(InvalidationFlags.STYLE);
         return value;
     }
 
@@ -106,7 +106,7 @@ class TextInput extends TextInputBase implements IValidating {
         }
 
         _left = value;
-        invalidate(InvalidationFlags.POSITION);
+        invalidateComponent(InvalidationFlags.POSITION);
         return value;
     }
 
@@ -120,7 +120,7 @@ class TextInput extends TextInputBase implements IValidating {
         }
 
         _top = value;
-        invalidate(InvalidationFlags.POSITION);
+        invalidateComponent(InvalidationFlags.POSITION);
         return value;
     }
 
@@ -131,7 +131,7 @@ class TextInput extends TextInputBase implements IValidating {
         }
 
         _width = value;
-        invalidate(InvalidationFlags.DISPLAY);
+        invalidateComponent(InvalidationFlags.DISPLAY);
         return value;
     }
 
@@ -146,7 +146,7 @@ class TextInput extends TextInputBase implements IValidating {
         }
 
         _height = value;
-        invalidate(InvalidationFlags.DISPLAY);
+        invalidateComponent(InvalidationFlags.DISPLAY);
         return value;
     }
 
@@ -160,8 +160,8 @@ class TextInput extends TextInputBase implements IValidating {
             return 0;
         }
 
-        if (isInvalid() == true) {
-            validate();
+        if (isComponentInvalid() == true) {
+            validateComponent();
         }
 
         return _textWidth;
@@ -173,8 +173,8 @@ class TextInput extends TextInputBase implements IValidating {
             //return 0; // if text is zero length we still want a height
         }
 
-        if (isInvalid() == true) {
-            validate();
+        if (isComponentInvalid() == true) {
+            validateComponent();
         }
         return _textHeight;
     }
@@ -189,7 +189,7 @@ class TextInput extends TextInputBase implements IValidating {
         }
 
         _displayData.multiline = value;
-        invalidate(InvalidationFlags.STYLE);
+        invalidateComponent(InvalidationFlags.STYLE);
         return value;
     }
 
@@ -203,7 +203,7 @@ class TextInput extends TextInputBase implements IValidating {
         }
 
         _displayData.wordWrap = value;
-        invalidate(InvalidationFlags.STYLE);
+        invalidateComponent(InvalidationFlags.STYLE);
         return value;
     }
 
@@ -217,7 +217,7 @@ class TextInput extends TextInputBase implements IValidating {
         }
 
         _inputData.hscrollPos = value;
-        invalidate(InvalidationFlags.DATA);
+        invalidateComponent(InvalidationFlags.DATA);
         return value;
     }
 
@@ -241,7 +241,7 @@ class TextInput extends TextInputBase implements IValidating {
         }
 
         _inputData.vscrollPos = value;
-        invalidate(InvalidationFlags.DATA);
+        invalidateComponent(InvalidationFlags.DATA);
         return value;
     }
 
@@ -255,7 +255,7 @@ class TextInput extends TextInputBase implements IValidating {
         return _inputData.vscrollPageSize;
     }
     
-    public function isInvalid(flag:String = InvalidationFlags.ALL):Bool {
+    public function isComponentInvalid(flag:String = InvalidationFlags.ALL):Bool {
         if (_isAllInvalid == true) {
             return true;
         }
@@ -271,13 +271,13 @@ class TextInput extends TextInputBase implements IValidating {
         return _invalidationFlags.exists(flag);
     }
 
-    public function invalidate(flag:String = InvalidationFlags.ALL) {
+    public function invalidateComponent(flag:String = InvalidationFlags.ALL) {
         if (flag == InvalidationFlags.ALL) {
             _isAllInvalid = true;
-            parentComponent.invalidate(InvalidationFlags.TEXT_INPUT);
+            parentComponent.invalidateComponent(InvalidationFlags.TEXT_INPUT);
         } else if (!_invalidationFlags.exists(flag)) {
             _invalidationFlags.set(flag, true);
-            parentComponent.invalidate(InvalidationFlags.TEXT_INPUT);
+            parentComponent.invalidateComponent(InvalidationFlags.TEXT_INPUT);
         }
     }
 
@@ -297,18 +297,18 @@ class TextInput extends TextInputBase implements IValidating {
         return value;
     }
 
-    public function updateDisplay() {
+    public function updateComponentDisplay() {
     }
     
-    public function validate() {
+    public function validateComponent() {
         if (_isValidating == true ||    //we were already validating, the existing validation will continue.
-            isInvalid() == false) {     //if none is invalid, exit.
+            isComponentInvalid() == false) {     //if none is invalid, exit.
             return;
         }
 
         _isValidating = true;
 
-        validateInternal();
+        validateComponentInternal();
 
         for (flag in _invalidationFlags.keys()) {
             _invalidationFlags.remove(flag);
@@ -318,12 +318,12 @@ class TextInput extends TextInputBase implements IValidating {
         _isValidating = false;
     }
     
-    private function validateInternal() {
-        var dataInvalid = isInvalid(InvalidationFlags.DATA);
-        var styleInvalid = isInvalid(InvalidationFlags.STYLE);
-        var positionInvalid = isInvalid(InvalidationFlags.POSITION);
-        var displayInvalid = isInvalid(InvalidationFlags.DISPLAY);
-        var measureInvalid = isInvalid(InvalidationFlags.MEASURE);
+    private function validateComponentInternal() {
+        var dataInvalid = isComponentInvalid(InvalidationFlags.DATA);
+        var styleInvalid = isComponentInvalid(InvalidationFlags.STYLE);
+        var positionInvalid = isComponentInvalid(InvalidationFlags.POSITION);
+        var displayInvalid = isComponentInvalid(InvalidationFlags.DISPLAY);
+        var measureInvalid = isComponentInvalid(InvalidationFlags.MEASURE);
 
         if (dataInvalid) {
             validateData();

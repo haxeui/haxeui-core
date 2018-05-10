@@ -122,12 +122,12 @@ class ValidationManager {
             if(item.depth < 0) {
                 continue;   //no longer on the display list
             }
-            item.validate();
+            item.validateComponent();
         }
 
         for (i in 0..._displayQueue.length) {
             var item = _displayQueue[i];
-            item.updateDisplay();
+            item.updateComponentDisplay();
         }
         _displayQueue.splice(0, _displayQueue.length);
 

@@ -6,7 +6,7 @@ class LayoutBehaviour extends DataBehaviour { // TODO: this should replace Inval
    public override function set(value:Variant) {
         if (value != get()) {
             super.set(value);
-            _component.invalidateLayout();
+            _component.invalidateComponentLayout();
         }
     }
 }

@@ -34,7 +34,7 @@ class InteractiveComponent extends Component implements IFocusable {
             removeClass(":active");
             eventType = FocusEvent.FOCUS_OUT;
         }
-        invalidateData();
+        invalidateComponentData();
         dispatch(new FocusEvent(eventType));
         return value;
     }

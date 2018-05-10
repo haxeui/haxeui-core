@@ -20,6 +20,6 @@ class ValueBehaviour extends Behaviour {
         }
 
         _value = value;
-        _component.invalidateData();
+        _component.invalidateComponentData();
     }
 }

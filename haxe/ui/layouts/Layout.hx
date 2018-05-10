@@ -16,7 +16,7 @@ class Layout implements ILayout {
     private function set_component(value:Component):Component {
         _component = value;
         if (_component != null) {
-            _component.invalidateLayout();
+            _component.invalidateComponentLayout();
         }
         return value;
     }

@@ -69,8 +69,8 @@ class Range extends InteractiveComponent implements IDirectionalComponent {
     //***********************************************************************************************************
     // Validation
     //***********************************************************************************************************
-    private override function validateData() {
-        super.validateData();
+    private override function validateComponentData() {
+        super.validateComponentData();
         
         var startValue = behaviourGet("start");
         var endValue = behaviourGet("end");

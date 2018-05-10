@@ -64,13 +64,13 @@ class Button extends InteractiveComponent {
             label.customStyle.fontName = style.fontName;
             label.customStyle.fontSize = style.fontSize;
             label.customStyle.cursor = style.cursor;
-            label.invalidateStyle();
+            label.invalidateComponentStyle();
         }
 
         var icon:Image = findComponent(Image);
         if (icon != null && (icon.customStyle.cursor != style.cursor)) {
             icon.customStyle.cursor = style.cursor;
-            icon.invalidateStyle();
+            icon.invalidateComponentStyle();
         }
     }
 }

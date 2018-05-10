@@ -100,7 +100,7 @@ class Scroll extends InteractiveComponent {
     // Validation
     //***********************************************************************************************************
 
-    private override function validateData() {
+    private override function validateComponentData() {
         if (behaviourGet("min") != _min) {
             behaviourSet("min", _min);
         }
@@ -146,7 +146,7 @@ class Scroll extends InteractiveComponent {
 
         if (value != _pos) {
             _pos = value;
-            invalidateData();
+            invalidateComponentData();
         }
         return value;
     }
@@ -182,7 +182,7 @@ class Scroll extends InteractiveComponent {
                 _pos = _min;
             }
 
-            invalidateData();
+            invalidateComponentData();
         }
         return value;
     }
@@ -203,7 +203,7 @@ class Scroll extends InteractiveComponent {
                 _pos = _max;
             }
 
-            invalidateData();
+            invalidateComponentData();
         }
         return value;
     }
@@ -223,7 +223,7 @@ class Scroll extends InteractiveComponent {
         }
 
         _pageSize = value;
-        invalidateData();
+        invalidateComponentData();
         return value;
     }
 
@@ -310,7 +310,7 @@ class ScrollDefaultMinBehaviour extends Behaviour {
         _value = value;
 
         var scroll:Scroll = cast _component;
-        scroll.invalidateLayout();
+        scroll.invalidateComponentLayout();
     }
 
     public override function get():Variant {
@@ -330,7 +330,7 @@ class ScrollDefaultMaxBehaviour extends Behaviour {
         _value = value;
 
         var scroll:Scroll = cast _component;
-        scroll.invalidateLayout();
+        scroll.invalidateComponentLayout();
     }
 
     public override function get():Variant {
@@ -350,7 +350,7 @@ class ScrollDefaultPosBehaviour extends Behaviour {
         _value = value;
 
         var scroll:Scroll = cast _component;
-        scroll.invalidateLayout();
+        scroll.invalidateComponentLayout();
     }
 
     public override function get():Variant {
@@ -370,7 +370,7 @@ class ScrollDefaultPageSizeBehaviour extends Behaviour {
         _value = value;
 
         var scroll:Scroll = cast _component;
-        scroll.invalidateLayout();
+        scroll.invalidateComponentLayout();
     }
 
     public override function get():Variant {

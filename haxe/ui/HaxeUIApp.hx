@@ -35,7 +35,7 @@ class HaxeUIApp extends AppBase {
             preloader = new Preloader();
             preloader.progress(0, preloadList.length);
             addComponent(preloader);
-            preloader.validate();
+            preloader.validateComponent();
         }
         
         #end

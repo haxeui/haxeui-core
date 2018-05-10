@@ -48,7 +48,7 @@ class ListView extends ScrollView implements IDataComponent {
             _itemRenderer.hide();
             #end
             if (_dataSource != null) {
-                invalidateData();
+                invalidateComponentData();
             }
         } else {
             if (Std.is(child, ItemRenderer)) {
@@ -131,7 +131,7 @@ class ListView extends ScrollView implements IDataComponent {
             return 0;
         }
 
-        validate();
+        validateComponent();
         return itemHeight;
     }
 
@@ -144,7 +144,7 @@ class ListView extends ScrollView implements IDataComponent {
         if (_itemRendererFunction != value) {
             _itemRendererFunction = value;
 
-            invalidateData();
+            invalidateComponentData();
         }
 
         return value;
@@ -157,7 +157,7 @@ class ListView extends ScrollView implements IDataComponent {
 	}
 	private function set_itemRendererClass(value:Class<ItemRenderer>):Class<ItemRenderer> {
 		_itemRenderer = Type.createInstance(value, []);
-        invalidateData();
+        invalidateComponentData();
 		return value;
 	}
 
@@ -174,13 +174,13 @@ class ListView extends ScrollView implements IDataComponent {
     private function set_dataSource(value:DataSource<Dynamic>):DataSource<Dynamic> {
         _dataSource = value;
         _dataSource.transformer = new NativeTypeTransformer();
-        invalidateData();
+        invalidateComponentData();
         //_dataSource.onChange = onDataSourceChanged;
         return value;
     }
 
     private function onDataSourceChanged() {
-        invalidateData();
+        invalidateComponentData();
     }
 
     private function syncUI() {
@@ -236,21 +236,21 @@ class ListView extends ScrollView implements IDataComponent {
      Invalidate the index of this component
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public inline function invalidateIndex() {
-        invalidate(InvalidationFlags.INDEX);
+    public inline function invalidateComponentIndex() {
+        invalidateComponent(InvalidationFlags.INDEX);
     }
 
-    private override function validateInternal() {
-        var dataInvalid = isInvalid(InvalidationFlags.DATA);
-        var indexInvalid = isInvalid(InvalidationFlags.INDEX);
-        var styleInvalid = isInvalid(InvalidationFlags.STYLE);
-        var positionInvalid = isInvalid(InvalidationFlags.POSITION);
-        var displayInvalid = isInvalid(InvalidationFlags.DISPLAY);
-        var layoutInvalid = isInvalid(InvalidationFlags.LAYOUT) && _layoutLocked == false;
-        var scrollInvalid = isInvalid(InvalidationFlags.SCROLL);
+    private override function validateComponentInternal() {
+        var dataInvalid = isComponentInvalid(InvalidationFlags.DATA);
+        var indexInvalid = isComponentInvalid(InvalidationFlags.INDEX);
+        var styleInvalid = isComponentInvalid(InvalidationFlags.STYLE);
+        var positionInvalid = isComponentInvalid(InvalidationFlags.POSITION);
+        var displayInvalid = isComponentInvalid(InvalidationFlags.DISPLAY);
+        var layoutInvalid = isComponentInvalid(InvalidationFlags.LAYOUT) && _layoutLocked == false;
+        var scrollInvalid = isComponentInvalid(InvalidationFlags.SCROLL);
 
         if (dataInvalid) {
-            validateData();
+            validateComponentData();
         }
 
         if (dataInvalid || indexInvalid) {
@@ -258,19 +258,19 @@ class ListView extends ScrollView implements IDataComponent {
         }
 
         if (styleInvalid) {
-            validateStyle();
+            validateComponentStyle();
         }
 
         if (positionInvalid) {
-            validatePosition();
+            validateComponentPosition();
         }
 
         if (layoutInvalid) {
-            displayInvalid = validateLayout() || displayInvalid;
+            displayInvalid = validateComponentLayout() || displayInvalid;
         }
 
         if (scrollInvalid || layoutInvalid) {
-            validateScroll();
+            validateComponentScroll();
         }
 
         if (displayInvalid || styleInvalid) {
@@ -278,10 +278,10 @@ class ListView extends ScrollView implements IDataComponent {
         }
     }
 
-    private override function validateData() {
+    private override function validateComponentData() {
         behaviourSet("dataSource", _dataSource);    //TODO - if the index is the only change, the syncUI method is executed anyway
 
-        super.validateData();
+        super.validateComponentData();
     }
 
     private function validateIndex() {
@@ -301,8 +301,8 @@ class ListView extends ScrollView implements IDataComponent {
         }
     }
 
-    private override function validateLayout():Bool {
-        var result = super.validateLayout();
+    private override function validateComponentLayout():Bool {
+        var result = super.validateComponentLayout();
 
         createContentContainer();
         if (contents == null) {
@@ -376,7 +376,7 @@ class DefaultSelectedIndexBehaviour extends Behaviour {
         var listView:ListView = cast(_component, ListView);
         if(listView._dataSource != null && value < listView._dataSource.size && listView._selectedIndex != value) {
             listView._selectedIndex = value;
-            listView.invalidateIndex();
+            listView.invalidateComponentIndex();
         }
     }
 }

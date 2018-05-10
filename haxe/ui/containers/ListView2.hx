@@ -39,12 +39,12 @@ class ListView2 extends ScrollView2 implements IDataComponent {
         super();
 
         registerEvent(ScrollEvent.CHANGE, function(e) {
-            invalidateLayout();
+            invalidateComponentLayout();
         }); //TODO;
     }
 
-    private override function validateData() {
-        super.validateData();
+    private override function validateComponentData() {
+        super.validateComponentData();
 
         // TODO: temp
         var contents:Component = findComponent("scrollview-contents", false, "css");
@@ -321,7 +321,7 @@ private class DataSourceBehaviour extends DataBehaviour {
         var dataSource:DataSource<Dynamic> = _value;
         if (dataSource != null) {
             dataSource.transformer = new NativeTypeTransformer();
-            dataSource.onChange = _component.invalidateData;
+            dataSource.onChange = _component.invalidateComponentData;
         }
     }
 }
@@ -335,8 +335,8 @@ private class RendererTest extends ItemRenderer {   // TODO: temp
         componentHeight = 30;
     }
 
-    override private function validateData() {
-        super.validateData();
+    override private function validateComponentData() {
+        super.validateComponentData();
 
         if (data != null) {
             findComponent(Label, true).text = data.text;
@@ -344,8 +344,8 @@ private class RendererTest extends ItemRenderer {   // TODO: temp
         }
     }
 
-    override private function validateLayout():Bool {
-        return super.validateLayout();
+    override private function validateComponentLayout():Bool {
+        return super.validateComponentLayout();
     }
 
 }

@@ -85,7 +85,7 @@ class Switch extends InteractiveComponent {
     // Validation
     //***********************************************************************************************************
 
-    private override function validateData() {
+    private override function validateComponentData() {
         if (_selected == false) {
             _label.text = _unselectedText;
             _label.removeClass(":selected");
@@ -114,8 +114,8 @@ class Switch extends InteractiveComponent {
             return value;
         }
 
-        invalidateData();
-        invalidateLayout();
+        invalidateComponentData();
+        invalidateComponentLayout();
         _selected = value;
         return value;
     }

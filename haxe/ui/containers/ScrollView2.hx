@@ -53,11 +53,11 @@ class ScrollView2 extends Component {
     //***********************************************************************************************************
     // Validation
     //***********************************************************************************************************
-    private override function validateInternal() {
-        var scrollInvalid = isInvalid(InvalidationFlags.SCROLL);
-        var layoutInvalid = isInvalid(InvalidationFlags.LAYOUT);
+    private override function validateComponentInternal() {
+        var scrollInvalid = isComponentInvalid(InvalidationFlags.SCROLL);
+        var layoutInvalid = isComponentInvalid(InvalidationFlags.LAYOUT);
 
-        super.validateInternal();
+        super.validateComponentInternal();
 
         if (scrollInvalid || layoutInvalid) {
             cast(_compositeBuilder, ScrollViewBuilder).checkScrolls(); // TODO: would be nice to not have this
@@ -389,16 +389,16 @@ private class Events extends haxe.ui.core.Events {
     }
     
     private function onContentsResized(event:UIEvent) {
-        _scrollview.invalidate(InvalidationFlags.SCROLL);
+        _scrollview.invalidateComponent(InvalidationFlags.SCROLL);
     }
     
     private function onHScroll(event:UIEvent) {
-        _scrollview.invalidate(InvalidationFlags.SCROLL);
+        _scrollview.invalidateComponent(InvalidationFlags.SCROLL);
         _target.dispatch(new ScrollEvent(ScrollEvent.CHANGE));
     }
     
     private function onVScroll(event:UIEvent) {
-        _scrollview.invalidate(InvalidationFlags.SCROLL);
+        _scrollview.invalidateComponent(InvalidationFlags.SCROLL);
         _target.dispatch(new ScrollEvent(ScrollEvent.CHANGE));
     }
     
@@ -646,7 +646,7 @@ class ScrollViewBuilder extends CompositeBuilder {
             hscroll.max = horizontalConstraint.width - usableSize.width - hscrollOffset; // _contents.layout.horizontalSpacing;
             hscroll.pageSize = (usableSize.width / horizontalConstraint.width) * hscroll.max;
 
-            hscroll.syncValidation();    //avoid another pass
+            hscroll.syncComponentValidation();    //avoid another pass
         } else {
             if (hscroll != null) {
                 _component.removeComponent(hscroll);
@@ -663,7 +663,7 @@ class ScrollViewBuilder extends CompositeBuilder {
             vscroll.max = verticalConstraint.height - usableSize.height;
             vscroll.pageSize = (usableSize.height / verticalConstraint.height) * vscroll.max;
 
-            vscroll.syncValidation();    //avoid another pass
+            vscroll.syncComponentValidation();    //avoid another pass
         } else {
             if (vscroll != null) {
                 _component.removeComponent(vscroll);

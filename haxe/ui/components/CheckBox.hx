@@ -52,7 +52,7 @@ class CheckBox extends InteractiveComponent {
             label.customStyle.fontName = style.fontName;
             label.customStyle.fontSize = style.fontSize;
             label.customStyle.cursor = style.cursor;
-            label.invalidateStyle();
+            label.invalidateComponentStyle();
         }
     }
 }

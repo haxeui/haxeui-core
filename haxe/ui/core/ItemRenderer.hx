@@ -48,14 +48,14 @@ class ItemRenderer extends Box {
             return value;
         }
 
-        invalidateData();
+        invalidateComponentData();
         _data = value;
         return value;
     }
 
     public var itemIndex:Int = -1;
 
-    private override function validateData() {
+    private override function validateComponentData() {
         for (f in Reflect.fields(_data)) {
             var v = Reflect.getProperty(_data, f);
             var c:Component = findComponent(f, null, true);

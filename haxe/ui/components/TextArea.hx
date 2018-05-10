@@ -46,7 +46,7 @@ class TextArea extends InteractiveComponent implements IFocusable {
             return value;
         }
 
-        invalidateData();
+        invalidateComponentData();
         _placeholder = value;
         return value;
     }
@@ -61,7 +61,7 @@ class TextArea extends InteractiveComponent implements IFocusable {
             return value;
         }
 
-        invalidateData();
+        invalidateComponentData();
         _wrap = value;
         return value;
     }
@@ -75,7 +75,7 @@ class TextArea extends InteractiveComponent implements IFocusable {
             return value;
         }
 
-        invalidateData();
+        invalidateComponentData();
         value = super.set_text(value);
         return value;
     }
@@ -85,7 +85,7 @@ class TextArea extends InteractiveComponent implements IFocusable {
             return value;
         }
 
-        invalidateData();
+        invalidateComponentData();
         super.set_focus(value);
         return value;
     }
@@ -219,16 +219,16 @@ class TextArea extends InteractiveComponent implements IFocusable {
     // Validation
     //***********************************************************************************************************
 
-    private inline function invalidateScroll() {
-        invalidate(InvalidationFlags.SCROLL);
+    private inline function invalidateComponentScroll() {
+        invalidateComponent(InvalidationFlags.SCROLL);
     }
 
-    private override function validateInternal() {
-        var dataInvalid = isInvalid(InvalidationFlags.DATA);
-        var scrollInvalid = isInvalid(InvalidationFlags.SCROLL);
-        var layoutInvalid = isInvalid(InvalidationFlags.LAYOUT);
+    private override function validateComponentInternal() {
+        var dataInvalid = isComponentInvalid(InvalidationFlags.DATA);
+        var scrollInvalid = isComponentInvalid(InvalidationFlags.SCROLL);
+        var layoutInvalid = isComponentInvalid(InvalidationFlags.LAYOUT);
 
-        super.validateInternal();
+        super.validateComponentInternal();
 
         if (scrollInvalid || layoutInvalid || dataInvalid) {
             validateScroll();
@@ -239,7 +239,7 @@ class TextArea extends InteractiveComponent implements IFocusable {
         checkScrolls();
     }
 
-    private override function validateData() {
+    private override function validateComponentData() {
         if (behaviourGet("placeholder") != _placeholder) {
             behaviourSet("placeholder", _placeholder);
         }
@@ -283,8 +283,8 @@ class TextAreaDefaultTextBehaviour extends Behaviour {
 
         var textArea:TextArea = cast _component;
         textArea.getTextInput().text = value;
-        textArea.getTextInput().invalidate(InvalidationFlags.MEASURE);
-        textArea.invalidateDisplay();
+        textArea.getTextInput().invalidateComponent(InvalidationFlags.MEASURE);
+        textArea.invalidateComponentDisplay();
     }
 
     public override function get():Variant {
@@ -317,7 +317,7 @@ class TextAreaDefaultWrapBehaviour extends Behaviour {
     public override function set(value:Variant) {
         var textArea:TextArea = cast _component;
         textArea.getTextInput().wordWrap = value;
-        textArea.invalidateDisplay();
+        textArea.invalidateComponentDisplay();
     }
     
     public override function get():Variant {

@@ -82,8 +82,8 @@ class Screen extends ScreenBase {
     private function _refreshStyleComponent(component:Component) {
         for (child in component.childComponents) {
 //            child.applyStyle(child.style);
-            child.invalidateStyle();
-            child.invalidateDisplay();
+            child.invalidateComponentStyle();
+            child.invalidateComponentDisplay();
             _refreshStyleComponent(child);
         }
     }
@@ -301,7 +301,7 @@ class Screen extends ScreenBase {
     }
 
     public function centerDialog(dialog:Dialog) {
-        dialog.syncValidation();
+        dialog.syncComponentValidation();
         var x = (width / 2) - (dialog.componentWidth / 2);
         var y = (height / 2) - (dialog.componentHeight / 2);
         dialog.moveComponent(x, y);

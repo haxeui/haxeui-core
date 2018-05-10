@@ -45,8 +45,8 @@ class Scroll2 extends InteractiveComponent implements IDirectionalComponent {
     //***********************************************************************************************************
     // Validation
     //***********************************************************************************************************
-    private override function validateData() {
-        super.validateData();
+    private override function validateComponentData() {
+        super.validateComponentData();
         
         if (pos < min) {
             pos = min;
