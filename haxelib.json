@@ -4,8 +4,8 @@
     "license": "MIT",
     "tags": ["ui", "gui"],
     "description": "The core library of the HaxeUI framework",
-    "version": "0.0.3",
-    "releasenote": "Added CLI build tool",
+    "version": "0.0.4",
+    "releasenote": "change invalidate -> invalidateComponent (openfl 8 conflict)",
     "contributors": ["haxeui", "ianharrigan", "_ibilon", "aW4KeNiNG"],
     "dependencies": {
         "hscript": ""
