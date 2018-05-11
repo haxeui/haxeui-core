@@ -195,13 +195,13 @@ class HSliderLayout extends DefaultLayout {
                 value.componentWidth = cx;
                 if (value.hidden == false) {
                     value.hidden = true;
-                    value.invalidateStyle();
+                    value.invalidateComponentStyle();
                 }
             } else {
                 value.componentWidth = cx;
                 if (value.hidden == true) {
                     value.hidden = false;
-                    value.invalidateStyle();
+                    value.invalidateComponentStyle();
                 }
             }
         }

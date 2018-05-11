@@ -114,8 +114,8 @@ class Switch extends InteractiveComponent {
             return value;
         }
 
-        invalidateData();
-        invalidateLayout();
+        invalidateComponentData();
+        invalidateComponentLayout();
         _selected = value;
         return value;
     }

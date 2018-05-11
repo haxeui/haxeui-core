@@ -75,7 +75,7 @@ class CheckBox extends InteractiveComponent {
             return value;
         }
 
-        invalidateData();
+        invalidateComponentData();
         _text = value;
         return value;
     }
@@ -94,7 +94,7 @@ class CheckBox extends InteractiveComponent {
             label.customStyle.fontName = style.fontName;
             label.customStyle.fontSize = style.fontSize;
             label.customStyle.cursor = style.cursor;
-            label.invalidateStyle();
+            label.invalidateComponentStyle();
         }
     }
 
@@ -128,7 +128,7 @@ class CheckBox extends InteractiveComponent {
         if (value == _selected) {
             return value;
         }
-        invalidateData();
+        invalidateComponentData();
         _selected = value;
         return value;
     }

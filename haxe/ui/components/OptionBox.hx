@@ -82,7 +82,7 @@ class OptionBox extends InteractiveComponent {
             return value;
         }
 
-        invalidateData();
+        invalidateComponentData();
         _text = value;
         return value;
     }
@@ -101,7 +101,7 @@ class OptionBox extends InteractiveComponent {
             label.customStyle.fontName = style.fontName;
             label.customStyle.fontSize = style.fontSize;
             label.customStyle.cursor = style.cursor;
-            label.invalidateStyle();
+            label.invalidateComponentStyle();
         }
     }
 
@@ -152,7 +152,7 @@ class OptionBox extends InteractiveComponent {
             }
         }
 
-        invalidateData();
+        invalidateComponentData();
         _selected = value;
 
         /*
@@ -202,7 +202,7 @@ class OptionBox extends InteractiveComponent {
             }
         }
 
-        invalidateData();
+        invalidateComponentData();
         _groupName = value;
         var arr:Array<OptionBox> = _groups.get(value);
         if (arr == null) {

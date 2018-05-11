@@ -43,7 +43,7 @@ class TextDisplay extends TextDisplayBase implements IValidating {
             ToolkitAssets.instance.getFont(value.fontName, function(fontInfo) {
                 _fontInfo = fontInfo;
                 invalidate(InvalidationFlags.STYLE);
-                parentComponent.invalidate(InvalidationFlags.STYLE);
+                parentComponent.invalidateComponent(InvalidationFlags.STYLE);
             });
         } else {
             invalidate(InvalidationFlags.STYLE);
@@ -198,10 +198,10 @@ class TextDisplay extends TextDisplayBase implements IValidating {
     public function invalidate(flag:String = InvalidationFlags.ALL) {
         if (flag == InvalidationFlags.ALL) {
             _isAllInvalid = true;
-            parentComponent.invalidate(InvalidationFlags.TEXT_DISPLAY);
+            parentComponent.invalidateComponent(InvalidationFlags.TEXT_DISPLAY);
         } else if (!_invalidationFlags.exists(flag)) {
             _invalidationFlags.set(flag, true);
-            parentComponent.invalidate(InvalidationFlags.TEXT_DISPLAY);
+            parentComponent.invalidateComponent(InvalidationFlags.TEXT_DISPLAY);
         }
     }
 
@@ -271,7 +271,7 @@ class TextDisplay extends TextDisplayBase implements IValidating {
             measureText();
 
             if (textWidth != oldTextWidth || textHeight != oldTextHeight) {
-                parentComponent.invalidate(InvalidationFlags.LAYOUT);
+                parentComponent.invalidateComponent(InvalidationFlags.LAYOUT);
             }
         }
     }

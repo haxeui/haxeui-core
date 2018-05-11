@@ -34,7 +34,7 @@ class VGrid extends Component {
             _columns = value;
 
             cast(layout, VerticalGridLayout).columns = value;
-            invalidateLayout();
+            invalidateComponentLayout();
         }
         return value;
     }

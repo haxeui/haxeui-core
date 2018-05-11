@@ -98,7 +98,7 @@ class ScrollView extends Component {
             return value;
         }
 
-        invalidateScroll();
+        invalidateComponentScroll();
         _vscrollPos = value;
         return value;
     }
@@ -121,7 +121,7 @@ class ScrollView extends Component {
             return value;
         }
 
-        invalidateScroll();
+        invalidateComponentScroll();
         _hscrollPos = value;
         return value;
     }
@@ -282,8 +282,8 @@ class ScrollView extends Component {
     // Validation
     //***********************************************************************************************************
 
-    private inline function invalidateScroll() {
-        invalidate(InvalidationFlags.SCROLL);
+    private inline function invalidateComponentScroll() {
+        invalidateComponent(InvalidationFlags.SCROLL);
     }
 
     private override function validateInternal() {
@@ -347,15 +347,15 @@ class ScrollView extends Component {
     }
 
     private function _onMouseDown(event:MouseEvent) {
-        if ((_hscroll == null || _hscroll.hidden == true) && (_vscroll == null || _vscroll.hidden == true)) {
+        if (_hscroll == null && _vscroll == null) {
             return;
         }
         
         event.cancel();
-        if (_hscroll != null && _hscroll.hidden == false && _hscroll.hitTest(event.screenX, event.screenY) == true) {
+        if (_hscroll != null && _hscroll.hitTest(event.screenX, event.screenY) == true) {
             return;
         }
-        if (_vscroll != null && _vscroll.hidden == false && _vscroll.hitTest(event.screenX, event.screenY) == true) {
+        if (_vscroll != null && _vscroll.hitTest(event.screenX, event.screenY) == true) {
             return;
         }
 
@@ -512,7 +512,7 @@ class ScrollView extends Component {
     }
     
     private function _onContentsResized(event:UIEvent) {
-        invalidateScroll();
+        invalidateComponentScroll();
     }
 
     private var hscrollOffset(get, null):Float;
@@ -538,14 +538,15 @@ class ScrollView extends Component {
                 addComponent(_hscroll);
             }
 
-            _hscroll.hidden = false;
             _hscroll.max = horizontalConstraint.componentWidth - usableSize.width - hscrollOffset; // _contents.layout.horizontalSpacing;
             _hscroll.pageSize = (usableSize.width / horizontalConstraint.componentWidth) * _hscroll.max;
 
             _hscroll.syncValidation();    //avoid another pass
         } else {
             if (_hscroll != null) {
-                _hscroll.hidden = true;
+                _hscroll.unregisterEvent(UIEvent.CHANGE, _onHScroll);
+                removeComponent(_hscroll);
+                _hscroll = null;
             }
         }
 
@@ -558,14 +559,15 @@ class ScrollView extends Component {
                 addComponent(_vscroll);
             }
 
-            _vscroll.hidden = false;
             _vscroll.max = verticalConstraint.componentHeight - usableSize.height;
             _vscroll.pageSize = (usableSize.height / verticalConstraint.componentHeight) * _vscroll.max;
 
             _vscroll.syncValidation();    //avoid another pass
         } else {
             if (_vscroll != null) {
-                _vscroll.hidden = true;
+                _vscroll.unregisterEvent(UIEvent.CHANGE, _onVScroll);
+                removeComponent(_vscroll);
+                _vscroll = null;
             }
         }
     }

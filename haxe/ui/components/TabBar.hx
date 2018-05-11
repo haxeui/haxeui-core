@@ -197,8 +197,8 @@ class TabBar extends Component {
      Invalidate the index of this component
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public inline function invalidateIndex() {
-        invalidate(InvalidationFlags.INDEX);
+    public inline function invalidateComponentIndex() {
+        invalidateComponent(InvalidationFlags.INDEX);
     }
 
     private override function validateInternal() {
@@ -226,7 +226,7 @@ class TabBar extends Component {
             }
             _currentButton = button;
             _currentButton.addClass("tabbar-button-selected");
-            invalidateLayout();
+            invalidateComponentLayout();
         }
     }
 
@@ -251,8 +251,8 @@ class TabBar extends Component {
         }
         
         _selectedIndex = value;
-        invalidateData();
-        invalidateIndex();
+        invalidateComponentData();
+        invalidateComponentIndex();
         return value;
     }
 

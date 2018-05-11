@@ -92,7 +92,7 @@ class Progress extends InteractiveComponent {
             return value;
         }
 
-        invalidateData();
+        invalidateComponentData();
         _pos = value;
         return value;
     }
@@ -262,7 +262,7 @@ class ProgressDefaultMinBehaviour extends Behaviour {
         }
 
         var progress:Progress = cast _component;
-        progress.invalidateLayout();
+        progress.invalidateComponentLayout();
     }
 
     public override function get():Variant {
@@ -283,7 +283,7 @@ class ProgressDefaultMaxBehaviour extends Behaviour {
         _value = value;
 
         var progress:Progress = cast _component;
-        progress.invalidateLayout();
+        progress.invalidateComponentLayout();
     }
 
     public override function get():Variant {
@@ -304,7 +304,7 @@ class ProgressDefaultPosBehaviour extends Behaviour {
         _value = value;
 
         var progress:Progress = cast _component;
-        progress.invalidateLayout();
+        progress.invalidateComponentLayout();
     }
 
     public override function get():Variant {
@@ -325,7 +325,7 @@ class ProgressDefaultRangeStartBehaviour extends Behaviour {
         _value = value;
 
         var progress:Progress = cast _component;
-        progress.invalidateLayout();
+        progress.invalidateComponentLayout();
     }
 
     public override function get():Variant {
@@ -346,7 +346,7 @@ class ProgressDefaultRangeEndBehaviour extends Behaviour {
         _value = value;
 
         var progress:Progress = cast _component;
-        progress.invalidateLayout();
+        progress.invalidateComponentLayout();
     }
 
     public override function get():Variant {

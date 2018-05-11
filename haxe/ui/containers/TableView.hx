@@ -77,7 +77,7 @@ class TableView extends ScrollView implements IDataComponent {
 
             v = addComponentToSuper(child);
             if (_dataSource != null) {
-                invalidateData();
+                invalidateComponentData();
             }
         } else if (Std.is(child, ItemRenderer)) {
             #if haxeui_luxe
@@ -147,14 +147,14 @@ class TableView extends ScrollView implements IDataComponent {
     }
     private function set_dataSource(value:DataSource<Dynamic>):DataSource<Dynamic> {
         _dataSource = value;
-        invalidateData();
+        invalidateComponentData();
         _dataSource.onChange = onDataSourceChanged;
         return value;
     }
 
     private function onDataSourceChanged() {
         if (_ready == true) {
-            invalidateData();
+            invalidateComponentData();
         }
     }
 
@@ -196,7 +196,7 @@ class TableView extends ScrollView implements IDataComponent {
             }
         }
 
-        invalidateDisplay();
+        invalidateComponentDisplay();
     }
 
     public function resetSelection() {
