@@ -1006,14 +1006,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     }
 
     /**
-     Checks if the css style name exists in the component
-    **/
-    @:dox(group = "Style related properties and methods")
-    public function hasClass(name:String):Bool {
-        return classes.indexOf(name) != -1;
-    }
-
-    /**
      Removes a css style name from this component
     **/
     @:dox(group = "Style related properties and methods")
