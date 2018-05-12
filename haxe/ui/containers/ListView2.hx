@@ -159,12 +159,13 @@ class VirtualLayout extends ScrollViewLayout {
                     _component.addComponentAt(item, i);
                 } else if (item.itemIndex != n) {
                     _component.setComponentIndex(item, i);
-                    var className:String = n % 2 == 0 ? "even" : "odd";
-                    if (!item.hasClass(className)) {
-                        var inverseClassName = n % 2 == 0 ? "odd" : "even";
-                        item.removeClass(inverseClassName);
-                        item.addClass(className);
-                    }
+                }
+
+                var className:String = n % 2 == 0 ? "even" : "odd";
+                if (!item.hasClass(className)) {
+                    var inverseClassName = n % 2 == 0 ? "odd" : "even";
+                    item.removeClass(inverseClassName);
+                    item.addClass(className);
                 }
             }
 
