@@ -3,11 +3,15 @@ package haxe.ui.containers;
 import haxe.ui.components.Button;
 import haxe.ui.components.Label;
 import haxe.ui.containers.ScrollView2;
+import haxe.ui.core.Behaviour;
+import haxe.ui.core.ClassFactory;
 import haxe.ui.core.Component;
 import haxe.ui.core.DataBehaviour;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.ItemRenderer;
+import haxe.ui.core.LayoutBehaviour;
 import haxe.ui.core.ScrollEvent;
+import haxe.ui.core.UIEvent;
 import haxe.ui.data.DataSource;
 import haxe.ui.data.transformation.NativeTypeTransformer;
 import haxe.ui.layouts.LayoutFactory;
@@ -18,14 +22,14 @@ class ListView2 extends ScrollView2 implements IDataComponent {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:behaviour(DataSourceBehaviour)                       public var dataSource:DataSource<Dynamic>;
-    //TODO - itemWidth?
-    //TODO - itemHeight?
-    //TODO - variableItemSize?
-    //TODO - itemRenderer?
-    //TODO - itemRendererFunction?
-    //TODO - selectedIndex?
-    //TODO - selectedItem?
+    @:behaviour(DataSourceBehaviour)                    public var dataSource:DataSource<Dynamic>;
+    @:behaviour(LayoutBehaviour, 30)                    public var itemWidth:Float;
+    @:behaviour(LayoutBehaviour, 30)                    public var itemHeight:Float;
+    @:behaviour(LayoutBehaviour, false)                 public var variableItemSize:Bool;
+//    @:behaviour(ItemRendererClassBehaviour)             public var itemRendererClass:Class<ItemRenderer>;
+//    @:behaviour(ItemRendererFunctionBehaviour)          public var itemRendererFunction:ItemRendererFunction2;
+    @:behaviour(SelectedIndexBehaviour, -1)             public var selectedIndex:Int;
+    @:behaviour(SelectedItemBehaviour)                  public var selectedItem:Component;  //TODO :ItemRenderer - Variant error
 
     //***********************************************************************************************************
     // Internals
@@ -54,14 +58,12 @@ class ListView2 extends ScrollView2 implements IDataComponent {
     }
 }
 
+typedef ItemRendererFunction2 = Dynamic->Int->ClassFactory<ItemRenderer>;    //(data, index):ClassFactory<ItemRenderer>
+
 @:dox(hide) @:noCompletion
 class VirtualLayout extends ScrollViewLayout {
     private var _firstIndex:Int = -1;
     private var _lastIndex:Int = -1;
-    private var _variableItemSize:Bool = false;
-    private var _itemWidth:Int;
-    private var _itemHeight:Int = 30;
-
     private var _rendererPool:Array<ItemRenderer> = [];
     private var _sizeCache:Array<Int> = [];
 
@@ -91,8 +93,8 @@ class VirtualLayout extends ScrollViewLayout {
             return;
         }
 
-        var scrollView:ScrollView2 = cast(_component, ScrollView2);
-        if (scrollView.virtual == false) {
+        var comp:ScrollView2 = cast(_component, ScrollView2);
+        if (comp.virtual == false) {
             refreshNonVirtualData();
         } else {
             refreshVirtualData();
@@ -254,21 +256,22 @@ class VerticalVirtualLayout extends VirtualLayout {
     private override function repositionChildren() {
         super.repositionChildren();
 
-        var scrollView:ScrollView2 = cast(_component, ScrollView2);
-        if (scrollView.virtual == true) {
+        var comp:ListView2 = cast(_component, ListView2);   //TODO - interface
+        if (comp.virtual == true) {
             var usableSize = this.usableSize;
             var contents:Component = findComponent("scrollview-contents", false, "css");
             var verticalSpacing = contents.layout.verticalSpacing;
+            var itemHeight = comp.itemHeight;
             var n:Int = _firstIndex;
 
-            if (_variableItemSize == true) {
+            if (comp.variableItemSize == true) {
                 for (child in contents.childComponents) {
                     //TODO
                     ++n;
                 }
             } else {
                 for (child in contents.childComponents) {
-                    child.top = (n * (_itemHeight + verticalSpacing)) - scrollView.vscrollPos;
+                    child.top = (n * (itemHeight + verticalSpacing)) - comp.vscrollPos;
                     ++n;
                 }
             }
@@ -276,15 +279,16 @@ class VerticalVirtualLayout extends VirtualLayout {
     }
 
     private override function calculateRangeVisible() {
-        var scrollView:ScrollView2 = cast(_component, ScrollView2);
+        var comp:ListView2 = cast(_component, ListView2);   //TODO - interface
         var verticalSpacing = contents.layout.verticalSpacing;
+        var itemHeight = comp.itemHeight;
         var visibleItemsCount:Int = 0;
 
-        if (_variableItemSize == true) {
+        if (comp.variableItemSize == true) {
             //TODO
         } else {
-            visibleItemsCount = Math.ceil(contents.height / (_itemHeight + verticalSpacing));
-            _firstIndex = Std.int(scrollView.vscrollPos / (_itemHeight + verticalSpacing));
+            visibleItemsCount = Math.ceil(contents.height / (itemHeight + verticalSpacing));
+            _firstIndex = Std.int(comp.vscrollPos / (itemHeight + verticalSpacing));
         }
 
         if (_firstIndex < 0) {
@@ -298,24 +302,25 @@ class VerticalVirtualLayout extends VirtualLayout {
     }
 
     private override function updateScroll() {
-        var scrollView:ScrollView2 = cast(_component, ScrollView2);
+        var comp:ListView2 = cast(_component, ListView2);   //TODO - interface
         var usableSize = this.usableSize;
         var dataSize:Int = dataSource.size;
         var verticalSpacing = contents.layout.verticalSpacing;
+        var itemHeight = comp.itemHeight;
         var scrollMax:Float = 0;
 
-        if (_variableItemSize == true) {
+        if (comp.variableItemSize == true) {
             //TODO
         } else {
-            scrollMax = (dataSize * _itemHeight + ((dataSize - 1) * verticalSpacing)) - usableSize.height;
+            scrollMax = (dataSize * itemHeight + ((dataSize - 1) * verticalSpacing)) - usableSize.height;
         }
 
         if (scrollMax < 0) {
             scrollMax = 0;
         }
 
-        scrollView.vscrollMax = scrollMax;
-        scrollView.vscrollPageSize = (usableSize.height / (scrollMax + usableSize.height)) * scrollMax;
+        comp.vscrollMax = scrollMax;
+        comp.vscrollPageSize = (usableSize.height / (scrollMax + usableSize.height)) * scrollMax;
     }
 }
 
@@ -385,7 +390,7 @@ private class Renderer2 extends RendererTest { // TODO: temp
         percentWidth = 100;
         componentHeight = 30;
         //backgroundColor = 0xCCFFCC;
-//        backgroundColor = 0xecf2f9;
+        backgroundColor = 0xecf2f9;
 
         var hbox = new HBox();
         hbox.percentWidth = 100;
@@ -426,5 +431,54 @@ private class Renderer3 extends RendererTest { // TODO: temp
         hbox.addComponent(button);
 
         addComponent(hbox);
+    }
+}
+
+//***********************************************************************************************************
+// Behaviours
+//***********************************************************************************************************
+
+private class SelectedIndexBehaviour extends DataBehaviour {
+    private var _currentSelection:ItemRenderer;
+
+    private override function validateData() {
+        var listView:ListView2 = cast(_component, ListView2);
+        var selectedItem:ItemRenderer = cast listView.selectedItem;
+        if(_currentSelection != selectedItem)
+        {
+            if (_currentSelection != null) {
+                _currentSelection.removeClass(":selected", true, true);
+            }
+
+            _currentSelection = selectedItem;
+
+            if (_currentSelection != null) {
+                _currentSelection.addClass(":selected", true, true);
+                _component.dispatch(new UIEvent(UIEvent.CHANGE));
+            }
+        }
+    }
+}
+
+//***********************************************************************************************************
+// Behaviours
+//***********************************************************************************************************
+private class SelectedItemBehaviour extends Behaviour {
+    public override function get():Variant {
+        var listView:ListView2 = cast(_component, ListView2);
+        var contents:Component = _component.findComponent("scrollview-contents", false, "css");
+        if (contents != null && listView.selectedIndex != -1 && listView.selectedIndex < contents.childComponents.length) {
+            return cast(contents.childComponents[listView.selectedIndex], ItemRenderer);
+        } else {
+            return null;
+        }
+    }
+
+    public override function set(value:Variant) {
+        var listView:ListView2 = cast(_component, ListView2);
+        var contents:Component = _component.findComponent("scrollview-contents", false, "css");
+        if (listView.dataSource != null && contents != null) {
+            listView.selectedIndex = contents.childComponents.indexOf(value);
+        }
     }
 }

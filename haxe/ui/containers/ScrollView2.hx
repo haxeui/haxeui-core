@@ -1,5 +1,6 @@
 package haxe.ui.containers;
 
+import haxe.ui.core.Behaviour;
 import haxe.ui.components.HorizontalScroll2;
 import haxe.ui.components.VerticalScroll2;
 import haxe.ui.constants.ScrollMode;
@@ -113,7 +114,7 @@ class ScrollView2 extends Component {
 //***********************************************************************************************************
 // Behaviours
 //***********************************************************************************************************
-private class ContentWidth extends DataBehaviour {
+private class ContentWidth extends Behaviour {
     public override function get():Variant {
         var contents:Component = _component.findComponent("scrollview-contents", false, "css");
         return contents.width;
@@ -125,7 +126,7 @@ private class ContentWidth extends DataBehaviour {
     }
 }
 
-private class PercentContentWidth extends DataBehaviour {
+private class PercentContentWidth extends Behaviour {
     public override function get():Variant {
         var contents:Component = _component.findComponent("scrollview-contents", false, "css");
         return contents.percentWidth;
@@ -137,7 +138,7 @@ private class PercentContentWidth extends DataBehaviour {
     }
 }
 
-private class ContentHeight extends DataBehaviour {
+private class ContentHeight extends Behaviour {
     public override function get():Variant {
         var contents:Component = _component.findComponent("scrollview-contents", false, "css");
         return contents.height;
@@ -149,7 +150,7 @@ private class ContentHeight extends DataBehaviour {
     }
 }
 
-private class PercentContentHeight extends DataBehaviour {
+private class PercentContentHeight extends Behaviour {
     public override function get():Variant {
         var contents:Component = _component.findComponent("scrollview-contents", false, "css");
         return contents.percentHeight;

@@ -136,6 +136,9 @@ abstract Variant(VariantType) from VariantType {
     }
 
     @:to function toComponent():Component {
+        if (this == null) {
+            return null;
+        }
         return switch (this) {
             case Component(s): s;
             default: throw "Variant Type Error";
@@ -159,6 +162,10 @@ abstract Variant(VariantType) from VariantType {
     }
 
     @:to function toDataSource():DataSource<Dynamic> {
+        if (this == null) {
+            return null;
+        }
+
         return switch (this) {
             case DataSource(s): s;
             default: throw "Variant Type Error";
