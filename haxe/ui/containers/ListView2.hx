@@ -152,8 +152,6 @@ class VirtualLayout extends ScrollViewLayout {
                 _component.addComponent(item);
             } else {
                 item = cast contents.childComponents[i];
-                item.removeClass("even");   //TODO - avoid if it isn't needed
-                item.removeClass("odd");    //TODO - avoid if it isn't needed
 
                 //Renderers are always ordered
                 if (!Std.is(item, cls)) {
@@ -162,11 +160,17 @@ class VirtualLayout extends ScrollViewLayout {
                 } else if (item.itemIndex != n) {
                     _component.setComponentIndex(item, i);
                 }
+
+                var className:String = n % 2 == 0 ? "even" : "odd";
+                if (!item.hasClass(className)) {
+                    var inverseClassName = n % 2 == 0 ? "odd" : "even";
+                    item.removeClass(inverseClassName);
+                    item.addClass(className);
+                }
             }
 
             item.data = data;
             item.itemIndex = n;
-            item.addClass(n % 2 == 0 ? "even" : "odd");     //TODO - avoid if it isn't needed
 
             i++;
         }
@@ -187,7 +191,7 @@ class VirtualLayout extends ScrollViewLayout {
     private function itemClass(index:Int, data:Dynamic):Class<Component> { // all temp
 //        return Renderer1;
         if (index == 3) {
-            //return Renderer3;
+//            return Renderer3;
         }
 
         if (index % 2 == 0) {
@@ -381,7 +385,7 @@ private class Renderer2 extends RendererTest { // TODO: temp
         percentWidth = 100;
         componentHeight = 30;
         //backgroundColor = 0xCCFFCC;
-        backgroundColor = 0xecf2f9;
+//        backgroundColor = 0xecf2f9;
 
         var hbox = new HBox();
         hbox.percentWidth = 100;
