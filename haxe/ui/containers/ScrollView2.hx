@@ -599,7 +599,7 @@ private class Events extends haxe.ui.core.Events {
 @:dox(hide) @:noCompletion
 @:allow(haxe.ui.containers.ScrollView2)
 @:access(haxe.ui.core.Component)
-class ScrollViewBuilder extends CompositeBuilder {
+private class ScrollViewBuilder extends CompositeBuilder {
     private var _scrollview:ScrollView2;
     private var _contents:Box;
     
@@ -637,14 +637,12 @@ class ScrollViewBuilder extends CompositeBuilder {
         var verticalConstraint = _contents;
         
         var hscroll:HorizontalScroll2 = _component.findComponent(HorizontalScroll2, false);
-        var hscrollOffset = 0;
-        
         if (horizontalConstraint.width > usableSize.width) {
             if (hscroll == null) {
                 hscroll = createHScroll();
             }
 
-            hscroll.max = horizontalConstraint.width - usableSize.width - hscrollOffset; // _contents.layout.horizontalSpacing;
+            hscroll.max = horizontalConstraint.width - usableSize.width;
             hscroll.pageSize = (usableSize.width / horizontalConstraint.width) * hscroll.max;
 
             hscroll.syncComponentValidation();    //avoid another pass
@@ -655,7 +653,6 @@ class ScrollViewBuilder extends CompositeBuilder {
         }
 
         var vscroll:VerticalScroll2 = _component.findComponent(VerticalScroll2, false);
-        
         if (verticalConstraint.height > usableSize.height) {
             if (vscroll == null) {
                 vscroll = createVScroll();

@@ -727,14 +727,16 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     }
 
     private function unregisterEvents() {
-        var copy:Array<String> = [];
-        for (eventType in __events.keys()) {
-            copy.push(eventType);
-        }
-        for (eventType in copy) {
-            var listeners = __events.listeners(eventType);
-            for (listener in listeners) {
-                __events.remove(eventType, listener);
+        if (__events != null) {
+            var copy:Array<String> = [];
+            for (eventType in __events.keys()) {
+                copy.push(eventType);
+            }
+            for (eventType in copy) {
+                var listeners = __events.listeners(eventType);
+                for (listener in listeners) {
+                    __events.remove(eventType, listener);
+                }
             }
         }
     }

@@ -294,6 +294,7 @@ private class Events extends haxe.ui.core.Events {
     }
     
     public override function unregister() {
+        _textfield.getTextInput().data.onChangedCallback = null;
         unregisterEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
         unregisterEvent(FocusEvent.FOCUS_IN, onFocusChange);
         unregisterEvent(FocusEvent.FOCUS_OUT, onFocusChange);
