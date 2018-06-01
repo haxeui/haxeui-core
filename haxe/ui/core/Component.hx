@@ -1126,7 +1126,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
      Returns if this component has a certain event and listener
     **/
     @:dox(group = "Event related properties and methods")
-    public function hasEvent(type:String, listener:Dynamic->Void):Bool {
+    public function hasEvent(type:String, listener:Dynamic->Void = null):Bool {
         if (__events == null) {
             return false;
         }
