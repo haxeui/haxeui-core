@@ -11,6 +11,7 @@ import haxe.ui.core.UIEvent;
 import haxe.ui.focus.FocusManager;
 import haxe.ui.focus.IFocusable;
 import haxe.ui.layouts.DefaultLayout;
+import haxe.ui.styles.Style;
 import haxe.ui.util.Size;
 import haxe.ui.util.Variant;
 import haxe.ui.validation.InvalidationFlags;
@@ -52,6 +53,12 @@ class TextArea2 extends InteractiveComponent implements IFocusable {
     //***********************************************************************************************************
     // Overrides
     //***********************************************************************************************************
+    private override function applyStyle(style:Style) { // TODO: remove this eventually, @:styleApplier(...) or something
+        super.applyStyle(style);
+        if (hasTextInput() == true) {
+            getTextInput().textStyle = style;
+        }
+    }
     
     //***********************************************************************************************************
     // Validation
