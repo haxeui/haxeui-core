@@ -1,10 +1,10 @@
 package haxe.ui.containers;
 
+import haxe.ui.core.BasicItemRenderer;
 import haxe.ui.components.Button;
 import haxe.ui.components.Label;
 import haxe.ui.containers.ScrollView2;
 import haxe.ui.core.Behaviour;
-import haxe.ui.core.ClassFactory;
 import haxe.ui.core.Component;
 import haxe.ui.core.DataBehaviour;
 import haxe.ui.core.IDataComponent;
@@ -25,11 +25,38 @@ class ListView2 extends ScrollView2 implements IDataComponent {
     @:behaviour(DataSourceBehaviour)                    public var dataSource:DataSource<Dynamic>;
     @:behaviour(LayoutBehaviour, 30)                    public var itemWidth:Float;
     @:behaviour(LayoutBehaviour, 30)                    public var itemHeight:Float;
-    @:behaviour(LayoutBehaviour, false)                 public var variableItemSize:Bool;
-//    @:behaviour(ItemRendererClassBehaviour)             public var itemRendererClass:Class<ItemRenderer>;
-//    @:behaviour(ItemRendererFunctionBehaviour)          public var itemRendererFunction:ItemRendererFunction2;
+    @:behaviour(LayoutBehaviour, true)                 public var variableItemSize:Bool;
     @:behaviour(SelectedIndexBehaviour, -1)             public var selectedIndex:Int;
-    @:behaviour(SelectedItemBehaviour)                  public var selectedItem:Component;  //TODO :ItemRenderer - Variant error
+    @:behaviour(SelectedItemBehaviour)                  public var selectedItem:Component;  //TODO :ItemRenderer - Error -> Variant should be ItemRenderer
+
+    //TODO - error with Behaviour
+    private var _itemRendererFunction:ItemRendererFunction2;
+    public var itemRendererFunction(get, set):ItemRendererFunction2;
+    private function get_itemRendererFunction():ItemRendererFunction2 {
+        return _itemRendererFunction;
+    }
+    private function set_itemRendererFunction(value:ItemRendererFunction2):ItemRendererFunction2 {
+        if (_itemRendererFunction != value) {
+            _itemRendererFunction = value;
+            invalidateComponentLayout();
+        }
+
+        return value;
+    }
+
+    private var _itemRendererClass:Class<ItemRenderer>;
+    public var itemRendererClass(get, set):Class<ItemRenderer>;
+    private function get_itemRendererClass():Class<ItemRenderer> {
+        return _itemRendererClass;
+    }
+    private function set_itemRendererClass(value:Class<ItemRenderer>):Class<ItemRenderer> {
+        if (_itemRendererClass != value) {
+            _itemRendererClass = value;
+            invalidateComponentLayout();
+        }
+
+        return value;
+    }
 
     //***********************************************************************************************************
     // Internals
@@ -58,14 +85,14 @@ class ListView2 extends ScrollView2 implements IDataComponent {
     }
 }
 
-typedef ItemRendererFunction2 = Dynamic->Int->ClassFactory<ItemRenderer>;    //(data, index):ClassFactory<ItemRenderer>
+typedef ItemRendererFunction2 = Dynamic->Int->Class<ItemRenderer>;    //(data, index):Class<ItemRenderer>
 
 @:dox(hide) @:noCompletion
 class VirtualLayout extends ScrollViewLayout {
     private var _firstIndex:Int = -1;
     private var _lastIndex:Int = -1;
     private var _rendererPool:Array<ItemRenderer> = [];
-    private var _sizeCache:Array<Int> = [];
+    private var _sizeCache:Array<Float> = [];
 
     private var _contents:Component;
     private var contents(get, null):Component;
@@ -190,10 +217,9 @@ class VirtualLayout extends ScrollViewLayout {
 
     }
 
-    private function itemClass(index:Int, data:Dynamic):Class<Component> { // all temp
-//        return Renderer1;
-        if (index == 3) {
-//            return Renderer3;
+    private function itemClass(index:Int, data:Dynamic):Class<ItemRenderer> {
+        if (index == 3 || index == 11) {
+            return Renderer3;
         }
 
         if (index % 2 == 0) {
@@ -202,10 +228,17 @@ class VirtualLayout extends ScrollViewLayout {
             return Renderer2;
         }
 
-        return null;
+        var comp:ListView2 = cast(_component, ListView2);   //TODO - interface
+        if (comp.itemRendererFunction != null) {
+            return comp.itemRendererFunction(data, index);
+        } else if (comp.itemRendererClass != null) {
+            return comp.itemRendererClass;
+        } else {
+            return BasicItemRenderer;
+        }
     }
 
-    private function getRenderer(cls:Class<Component>):ItemRenderer {
+    private function getRenderer(cls:Class<ItemRenderer>):ItemRenderer {
         for (i in 0..._rendererPool.length) {
             var renderer = _rendererPool[i];
             if (Std.is(renderer, cls)) {
@@ -217,6 +250,10 @@ class VirtualLayout extends ScrollViewLayout {
         var instance = Type.createInstance(cls, []);
         if(!Std.is(instance, ItemRenderer))
             throw 'Renderer isn\'t a ItemRenderer class';
+
+        if (_component.hasEvent(UIEvent.RENDERER_CREATED)) {
+            _component.dispatch(new UIEvent(UIEvent.RENDERER_CREATED, instance));
+        }
 
         return cast(instance, ItemRenderer);
     }
@@ -250,6 +287,10 @@ class VirtualLayout extends ScrollViewLayout {
         renderer.left < _component.componentWidth &&
         renderer.left + renderer.componentWidth >= 0;
     }
+
+    private inline function isIndexVisible(index:Int):Bool {
+        return index >= _firstIndex && index <=_lastIndex;
+    }
 }
 
 class VerticalVirtualLayout extends VirtualLayout {
@@ -265,9 +306,15 @@ class VerticalVirtualLayout extends VirtualLayout {
             var n:Int = _firstIndex;
 
             if (comp.variableItemSize == true) {
-                for (child in contents.childComponents) {
-                    //TODO
-                    ++n;
+                var pos:Float = -comp.vscrollPos;
+                for (i in 0..._lastIndex) {
+                    if (i >= _firstIndex) {
+                        var c:Component = contents.getComponentAt(i - _firstIndex);
+                        c.top = pos;
+                    }
+
+                    var size:Null<Float> = _sizeCache[i];
+                    pos += (size != null && size != 0 ? size : itemHeight) + verticalSpacing;
                 }
             } else {
                 for (child in contents.childComponents) {
@@ -285,7 +332,55 @@ class VerticalVirtualLayout extends VirtualLayout {
         var visibleItemsCount:Int = 0;
 
         if (comp.variableItemSize == true) {
-            //TODO
+            var totalSize:Float = 0;
+            var requireInvalidation:Bool = false;
+            var newFirstIndex:Int = -1;
+            for (i in 0...dataSource.size) {
+                var size:Null<Float> = _sizeCache[i];
+
+                //Extract the itemrenderer size from the cache or child component
+                if (size == null || size == 0) {
+                    if (isIndexVisible(i)) {
+                        var c:Component = contents.getComponentAt(i - _firstIndex);
+                        if (c != null && c.componentHeight > 0) {
+                            _sizeCache[i] = c.componentHeight;
+                            size = c.componentHeight;
+                        } else {
+                            requireInvalidation = true;
+                            size = itemHeight;
+                        }
+                    } else {
+                        requireInvalidation = true;
+                        size = itemHeight;
+                    }
+                }
+
+                size += verticalSpacing;
+
+                //Check limits
+                if (newFirstIndex == -1) {      //Stage 1 - find the first index
+                    if (totalSize + size > comp.vscrollPos) {
+                        newFirstIndex = i;
+                        totalSize += size - comp.vscrollPos;
+                        ++visibleItemsCount;
+                    } else {
+                        totalSize += size;
+                    }
+                } else {                        //Stage 2 - find the visible items count
+                    if (totalSize + size > contents.height) {
+                        break;
+                    } else {
+                        ++visibleItemsCount;
+                        totalSize += size;
+                    }
+                }
+            }
+
+            if (requireInvalidation == true) {
+                _component.invalidateComponentLayout();
+            }
+
+            _firstIndex = newFirstIndex;
         } else {
             visibleItemsCount = Math.ceil(contents.height / (itemHeight + verticalSpacing));
             _firstIndex = Std.int(comp.vscrollPos / (itemHeight + verticalSpacing));
@@ -310,7 +405,15 @@ class VerticalVirtualLayout extends VirtualLayout {
         var scrollMax:Float = 0;
 
         if (comp.variableItemSize == true) {
-            //TODO
+            scrollMax = -usableSize.height;
+            for (i in 0...dataSource.size) {
+                var size:Null<Float> = _sizeCache[i];
+                if (size == null || size == 0) {
+                    size = itemHeight;
+                }
+
+                scrollMax += size + verticalSpacing;
+            }
         } else {
             scrollMax = (dataSize * itemHeight + ((dataSize - 1) * verticalSpacing)) - usableSize.height;
         }
@@ -365,7 +468,7 @@ private class Renderer1 extends RendererTest { // TODO: temp
 
         percentWidth = 100;
         componentHeight = 30;
-        //backgroundColor = 0xecf2f9;
+        backgroundColor = 0xff0000;
 
         var hbox = new HBox();
         hbox.percentWidth = 100;

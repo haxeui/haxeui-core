@@ -1,5 +1,6 @@
 package haxe.ui.components;
 
+import haxe.ui.util.Variant;
 import haxe.ui.core.Component;
 import haxe.ui.core.DataBehaviour;
 import haxe.ui.layouts.DefaultLayout;
@@ -28,6 +29,14 @@ class Label extends Component {
     //***********************************************************************************************************
     // Overrides
     //***********************************************************************************************************
+    private override function get_value():Variant {
+        return text;
+    }
+    private override function set_value(value:Variant):Variant {
+        text = value;
+        return value;
+    }
+
     private override function applyStyle(style:Style) {  // TODO: remove this eventually, @:styleApplier(...) or something
         super.applyStyle(style);
         if (hasTextDisplay() == true) {

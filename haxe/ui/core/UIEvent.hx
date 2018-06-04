@@ -9,13 +9,16 @@ class UIEvent extends EventBase {
     public static inline var BEFORE_CHANGE:String = "beforeChange";
     public static inline var MOVE:String = "move";
 
+    public static inline var RENDERER_CREATED:String = "rendererCreated";
+
     public var type(default, default):String;
     public var target(default, default):Component;
     public var data(default, default):Dynamic;
 
-    public function new(type:String) {
+    public function new(type:String, data:Dynamic = null) {
         super();
         this.type = type;
+        this.data = data;
     }
 
     public function clone():UIEvent {
