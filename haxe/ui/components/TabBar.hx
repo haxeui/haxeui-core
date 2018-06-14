@@ -219,6 +219,9 @@ class TabBar extends Component {
     }
 
     private function validateIndex() {
+        if (_container == null) {
+            return;
+        }
         var button:Button = cast(_container.getComponentAt(_selectedIndex), Button);
         if (button != null) {
             if (_currentButton != null) {
@@ -226,6 +229,30 @@ class TabBar extends Component {
             }
             _currentButton = button;
             _currentButton.addClass("tabbar-button-selected");
+
+            var rangeMin = Math.abs(_container.left);
+            var rangeMax = rangeMin + width;
+            if (_currentButton.left < rangeMin || (_currentButton.left + _currentButton.width) > rangeMax) {
+                var max = -(_container.width - this.width);
+                var x = -_currentButton.left + layout.paddingLeft;
+                var left:Button = findComponent("tabbar-scroll-left", Button);
+                var right:Button = findComponent("tabbar-scroll-right", Button);
+                if (left != null && left.hidden == false) {
+                    max -= left.width;
+                    max -= layout.horizontalSpacing;
+                }
+                if (right != null && right.hidden == false) {
+                    max -= right.width;
+                }
+                
+                if (x < max) {
+                    x = max;
+                }
+
+                _containerPosition = x;
+                _container.left = x;
+            }
+            
             invalidateComponentLayout();
         }
     }
