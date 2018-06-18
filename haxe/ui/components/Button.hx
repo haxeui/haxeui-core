@@ -266,10 +266,8 @@ class Button extends InteractiveComponent {
         }
 
         if (_repeatTimer != null) {
-            #if !(cpp || neko)
             _repeatTimer.stop();
             _repeatTimer = null;
-            #end
         }
     }
 
