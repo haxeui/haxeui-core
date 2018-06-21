@@ -197,8 +197,11 @@ private class PlaceholderBehaviour extends DataBehaviour {
 private class TextBehaviour extends DataBehaviour {
     public override function validateData() {
         var textfield:TextField = cast(_component, TextField);
-        var text:String = _value != null ? _value : "";
-        TextFieldHelper.validateText(textfield, text);
+        TextFieldHelper.validateText(textfield, _value);
+
+        if (_value != null && _value != "") {
+            _value = textfield.getTextInput().text;
+        }
     }
 }
 
@@ -228,12 +231,11 @@ private class IconBehaviour extends DataBehaviour {
 @:access(haxe.ui.core.Component)
 private class TextFieldHelper {
     public static function validateText(textfield:TextField, text:String) {
-        var placeholderVisible:Bool = (text == null || text.length == 0);
-        
         if (text == null) {
            text = ""; 
         }
-        
+
+        var placeholderVisible:Bool = text.length == 0;
         var password:Variant = cast(textfield.behaviours.find("password"), PasswordBehaviour).originalValue;  // TODO: seems like a crappy way to handle placeholder / password
         var regexp:EReg = cast(textfield.behaviours.find("restrictChars"), RestrictCharsBehaviour).regexp;  // TODO: seems like a crappy way to handle restrict chars
 
@@ -246,7 +248,7 @@ private class TextFieldHelper {
         }
         
         if (textfield.focus == false && textfield.placeholder != null) {
-            if (text == "") {
+            if (text.length == 0) {
                 text = textfield.placeholder;
                 textfield.password = false;
                 textfield.addClass(":empty");
@@ -254,12 +256,12 @@ private class TextFieldHelper {
                 textfield.password = password;
                 textfield.removeClass(":empty");
             }
-        } else if (placeholderVisible == true) {
-            textfield.password = password;
-            textfield.removeClass(":empty");
         } else {
             textfield.password = password;
-            textfield.removeClass(":empty");
+
+            if (placeholderVisible == true) {
+                textfield.removeClass(":empty");
+            }
         }
         
         textfield.getTextInput().text = '${text}';
