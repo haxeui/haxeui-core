@@ -161,10 +161,6 @@ private class PlaceholderBehaviour extends DataBehaviour {
 
 @:dox(hide) @:noCompletion
 private class TextBehaviour extends DataBehaviour {
-    public override function get():Variant {
-        return _component.getTextInput().text;
-    }
-    
     public override function validateData() {
         var textarea:TextArea2 = cast(_component, TextArea2);
         var text:String = _value != null ? _value : "";
@@ -187,12 +183,10 @@ private class WrapBehaviour extends DataBehaviour {
 @:access(haxe.ui.core.Component)
 private class TextAreaHelper {
     public static function validateText(textarea:TextArea2, text:String) {
-        var placeholderVisible:Bool = (text == null || text.length == 0);
-        
         if (text == null) {
            text = ""; 
         }
-        
+
         if (textarea.focus == false && textarea.placeholder != null) {
             if (text == "") {
                 text = textarea.placeholder;
@@ -200,10 +194,12 @@ private class TextAreaHelper {
             } else {
                 textarea.removeClass(":empty");
             }
-        } else if (placeholderVisible == true) {
-            textarea.removeClass(":empty");
         } else {
-            textarea.removeClass(":empty");
+            var placeholderVisible:Bool = text.length == 0;
+            if (placeholderVisible == true) {
+                text = "";
+                textarea.removeClass(":empty");
+            }
         }
         
         textarea.getTextInput().text = '${text}';
