@@ -11,21 +11,32 @@ class UIEvent extends EventBase {
 
     public static inline var RENDERER_CREATED:String = "rendererCreated";
 
+    public var bubble(default, default):Bool; 
     public var type(default, default):String;
     public var target(default, default):Component;
     public var data(default, default):Dynamic;
+    public var canceled(default, default):Bool; 
 
-    public function new(type:String, data:Dynamic = null) {
+    public function new(type:String, bubble:Bool = false, data:Dynamic = null) {
         super();
         this.type = type;
+        this.bubble = bubble; 
         this.data = data;
+        this.canceled = false; 
     }
 
+    public override function cancel() {
+        super.cancel(); 
+        canceled = true; 
+    }
+    
     public function clone():UIEvent {
         var c:UIEvent = new UIEvent(this.type);
         c.type = this.type;
+        c.bubble = this.bubble; 
         c.target = this.target;
         c.data = this.data;
+        c.canceled = this.canceled;
         postClone(c);
         return c;
     }
