@@ -42,6 +42,10 @@ class EventMap  {
     }
 
     public function invoke(type:String, event:UIEvent, target:Component = null) {
+        if (event.bubble && event.target == null) {
+            event.target = target;
+        }
+
         var arr:FunctionArray<UIEvent->Void> = _map.get(type);
         if (arr != null) {
             arr = arr.copy();
@@ -50,7 +54,9 @@ class EventMap  {
                     break;
                 }
                 var c = event.clone();
-                c.target = target;
+                if (c.target == null) {
+                    c.target = target;
+                }
                 fn(c);
                 event.canceled = c.canceled;
             }
