@@ -342,7 +342,7 @@ private class Events extends haxe.ui.core.Events {
     }
     
     private function onMouseUp(event:MouseEvent) {
-        event.cancel();
+        //event.cancel();
         _down = false;
         _button.screen.unregisterEvent(MouseEvent.MOUSE_UP, onMouseUp);
 
