@@ -1664,9 +1664,9 @@ class Component extends ComponentBase implements IComponentBase implements IVali
      The width of this component
     **/
     @:dox(group = "Size related properties and methods")
-    @bindable public var width(get, set):Float;
+    @bindable public var width(get, set):Null<Float>;
     private var _width:Null<Float>;
-    private function set_width(value:Float):Float {
+    private function set_width(value:Null<Float>):Null<Float> {
         if (_width == value) {
             return value;
         }
@@ -1675,7 +1675,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         return value;
     }
 
-    private function get_width():Float {
+    private function get_width():Null<Float> {
         var f:Float = componentWidth;
         return f;
     }
@@ -1684,9 +1684,9 @@ class Component extends ComponentBase implements IComponentBase implements IVali
      The height of this component
     **/
     @:dox(group = "Size related properties and methods")
-    @bindable public var height(get, set):Float;
+    @bindable public var height(get, set):Null<Float>;
     private var _height:Null<Float>;
-    private function set_height(value:Float):Float {
+    private function set_height(value:Null<Float>):Null<Float> {
         if (_height == value) {
             return value;
         }
@@ -1695,7 +1695,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         return value;
     }
 
-    private function get_height():Float {
+    private function get_height():Null<Float> {
         var f:Float = componentHeight;
         return f;
     }
