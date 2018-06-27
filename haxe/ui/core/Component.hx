@@ -1592,8 +1592,13 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         if (_width == value) {
             return #if !flash value #end;
         }
-        _width = value;
-        componentWidth = value;
+        if (value == haxe.ui.util.MathUtil.MIN_INT) {
+            _width = null;
+            componentWidth = null;
+        } else {
+            _width = value;
+            componentWidth = value;
+        }
         #if !flash return value; #end
     }
 
@@ -1609,8 +1614,13 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         if (_height == value) {
             return #if !flash value #end;
         }
-        _height = value;
-        componentHeight = value;
+        if (value == haxe.ui.util.MathUtil.MIN_INT) {
+            _height = null;
+            componentHeight = null;
+        } else {
+            _height = value;
+            componentHeight = value;
+        }
         #if !flash return value; #end
     }
 
