@@ -367,7 +367,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     }
 
     
-    @:behaviour(Behaviour)  public var text:String;
+    @:behaviour(DefaultBehaviour)  public var text:String;
     
     private var _text:String = null;
     /**
