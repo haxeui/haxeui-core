@@ -146,13 +146,11 @@ private class Events extends haxe.ui.core.Events {
     
     private function onMouseWheel(event:MouseEvent) {
         var builder:TabBarBuilder = cast(_tabbar._compositeBuilder, TabBarBuilder);
-        registerEvent(MouseEvent.MOUSE_WHEEL, function(e:MouseEvent) {
-            if (e.delta < 0) {
-               builder.scrollLeft();
-            } else {
-               builder.scrollRight();
-            }
-        }); 
+        if (event.delta < 0) {
+           builder.scrollLeft();
+        } else {
+           builder.scrollRight();
+        }
     }
     
     private function onTabMouseDown(event:MouseEvent) {
