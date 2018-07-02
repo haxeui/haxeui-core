@@ -281,6 +281,10 @@ private class TabBarBuilder extends CompositeBuilder {
     private var _containerPosition:Null<Float>;
     private static inline var SCROLL_INCREMENT:Int = 20; // todo: calc based on button width?
     private function scrollLeft() {
+        if (_scrollLeft == null || _scrollLeft.hidden == true) {
+            return;
+        }
+        
         var x = _container.left + SCROLL_INCREMENT; 
         if (x > _tabbar.layout.paddingLeft) {
             x = _tabbar.layout.paddingLeft;
@@ -290,6 +294,10 @@ private class TabBarBuilder extends CompositeBuilder {
     }
     
     private function scrollRight() {
+        if (_scrollLeft == null || _scrollLeft.hidden == true) {
+            return;
+        }
+        
         var x = _container.left - SCROLL_INCREMENT;
         var max = -(_container.width - _tabbar.width);
         
