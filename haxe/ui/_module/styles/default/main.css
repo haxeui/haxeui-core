@@ -626,13 +626,6 @@
     border-bottom-color: #ABABAB;
 }
 
-/*
-.tabbar .tabbar-background {
-    background-color: white;
-    border: none;
-}
-*/
-
 .tabbar-button {
     border-radius: 0px;
     background: #EDEDED #E6E6E6 vertical;
@@ -640,15 +633,32 @@
     vertical-align: bottom;
 }
 
+.tabbar-button:bottom {
+    vertical-align: top;
+}
+
+.tabbar-button:hover {
+    background: #F5F5F5 #F1F1F1 vertical;
+}
+
 .tabbar-button:down {
 }
 
-.tabbar-button-selected, .tabbar-button-selected:hover, .tabbar-button-selected:down {
+.tabbar-button-selected {
     border-radius: 0px;
 
     border: 1px solid #ABABAB;
     border-bottom-width: 1px;
     border-bottom-color: white;
+    background-color: white;
+}
+
+.tabbar-button-selected:bottom {
+    border-radius: 0px;
+
+    border: 1px solid #ABABAB;
+    border-top-width: 1px;
+    border-top-color: white;
     background-color: white;
 }
 
@@ -1140,3 +1150,56 @@
     icon: "haxeui-core/styles/default/right_arrow_white.png";
 }
 
+
+
+
+
+
+
+
+
+
+
+
+.tabbar2 {
+    horizontal-spacing: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+    height: auto;
+    width: auto;
+    background-color: white;
+    border-bottom-width: 1px;
+    border-bottom-color: #ABABAB;
+    border-top-width: 0px;
+    clip: true;
+}
+
+
+.tabbar2:bottom {
+    horizontal-spacing: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+    height: auto;
+    width: auto;
+    background-color: white;
+    border-bottom-width: 0px;
+    border-top-width: 1px;
+    border-top-color: #ABABAB;
+    clip: true;
+}
+
+
+
+
+.tabbar2 .tabbar-contents {
+    border: none;
+    border-bottom-width: 1px;
+    border-bottom-color: #ABABAB;
+}
+
+.tabbar2:bottom .tabbar-contents {
+    border: none;
+    border-bottom-width: 0px;
+    border-top-width: 1px;
+    border-top-color: #ABABAB;
+}
