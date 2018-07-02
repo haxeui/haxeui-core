@@ -1203,3 +1203,27 @@
     border-top-width: 1px;
     border-top-color: #ABABAB;
 }
+
+
+
+
+
+
+
+
+
+.tabview2 {
+    border: none;
+    width: auto;
+    height: auto;
+}
+
+.tabview2 .tabview-tabs {
+}
+
+.tabview2 .tabview-content {
+    border: 1px solid #ABABAB;
+    padding: 5px;
+    width: 100%;
+    height: 100%;
+}

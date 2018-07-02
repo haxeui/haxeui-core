@@ -188,4 +188,7 @@
 .tabbar2:bottom{horizontal-spacing:5px;padding-left:5px;padding-right:5px;height:auto;width:auto;background-color:white;border-bottom-width:0px;border-top-width:1px;border-top-color:#ABABAB;clip:true;}
 .tabbar2 .tabbar-contents{border:none;border-bottom-width:1px;border-bottom-color:#ABABAB;}
 .tabbar2:bottom .tabbar-contents{border:none;border-bottom-width:0px;border-top-width:1px;border-top-color:#ABABAB;}
+.tabview2{border:none;width:auto;height:auto;}
+.tabview2 .tabview-tabs{}
+.tabview2 .tabview-content{border:1px solid #ABABAB;padding:5px;width:100%;height:100%;}
 
