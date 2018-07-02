@@ -55,7 +55,7 @@ private class TabBarLayout extends DefaultLayout {
             if (right != null) {
                 x -= right.width;
             }
-            left.left = x;
+            left.left = x + 1;
             left.top = (_component.height / 2) - (left.height / 2);
         }
         
@@ -75,6 +75,12 @@ private class TabBarLayout extends DefaultLayout {
 private class SelectedIndexBehaviour extends DataBehaviour {
     private override function validateData() {
         var builder:TabBarBuilder = cast(_component._compositeBuilder, TabBarBuilder);
+        if (builder._container == null) {
+            return;
+        }
+        if (_value < 0 || _value > builder._container.childComponents.length - 1) {
+            return;
+        }
         var tab:Component = cast(builder._container.getComponentAt(_value), Button);
         if (tab != null) {
             var selectedTab:Component = cast(_component, TabBar2).selectedTab;
