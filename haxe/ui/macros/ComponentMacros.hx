@@ -106,7 +106,7 @@ class ComponentMacros {
             code.push(macro haxe.ui.Toolkit.styleSheet.parse($v{styleString}));
         }
 
-        buildComponentCode(code, c, 0, namedComponents);
+        buildComponentCode(code, c, 0, namedComponents, Context.makePosition( { file: filePath, min: 0, max: 0 } ));
         assignBindings(code, c.bindings);
 
         var fullScript = "";
@@ -119,14 +119,17 @@ class ComponentMacros {
         return macro @:pos(Context.currentPos()) $b{code};
     }
 
-    private static function buildComponentCode(code:Array<Expr>, c:ComponentInfo, id:Int, namedComponents:Map<String, String>) {
+    private static function buildComponentCode(code:Array<Expr>, c:ComponentInfo, id:Int, namedComponents:Map<String, String>, pos:Position = null) {
         if (c.condition != null && new ConditionEvaluator().evaluate(c.condition) == false) {
             return;
         }
 
         var className:String = ComponentClassMap.get(c.type.toLowerCase());
         if (className == null) {
-            trace("WARNING: no class found for component: " + c.type);
+            if (pos == null) {
+                pos = Context.currentPos();
+            }
+            Context.warning("no class found for component: " + c.type, pos);
             return;
         }
 
@@ -161,7 +164,7 @@ class ComponentMacros {
         add(macro var $componentVarName = new $typePath());
 
         for (child in c.children) {
-            buildComponentCode(code, child, id + 1, namedComponents);
+            buildComponentCode(code, child, id + 1, namedComponents, pos);
         }
 
         if (c.id != null)                       assign("id", c.id);
