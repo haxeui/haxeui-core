@@ -46,7 +46,9 @@ class TableView extends ScrollView implements IDataComponent {
         if (_header != null && _itemRenderers.length < _header.childComponents.length) {
             var delta:Int = _header.childComponents.length - _itemRenderers.length;
             for (n in 0...delta) {
-                addComponent(new BasicItemRenderer());
+                var item = new BasicItemRenderer();
+                item.width = 1; // TODO: hack!
+                addComponent(item);
             }
         }
     }
@@ -160,6 +162,7 @@ class TableView extends ScrollView implements IDataComponent {
 
     private function syncUI() {
         if (_dataSource == null || _header == null || _contents == null || _itemRenderers.length < _header.childComponents.length) {
+            trace("here");
             return;
         }
 
