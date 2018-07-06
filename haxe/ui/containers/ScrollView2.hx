@@ -74,7 +74,7 @@ class ScrollView2 extends Component {
         if (Std.is(child, HorizontalScroll2) || Std.is(child, VerticalScroll2) || child.hasClass("scrollview-contents")) {
             v = super.addComponent(child);
         } else {
-//            cast(_compositeBuilder, ScrollViewBuilder).createContentContainer(); // TODO: would be nice to not have this
+//            cast(_compositeBuilder, ScrollViewBuilder).createContentContainer("vertical"); // TODO: would be nice to not have this
             v = cast(_compositeBuilder, ScrollViewBuilder)._contents.addComponent(child); // TODO: or this
         }
         return v;
@@ -85,7 +85,7 @@ class ScrollView2 extends Component {
         if (Std.is(child, HorizontalScroll2) || Std.is(child, VerticalScroll2) || child.hasClass("scrollview-contents")) {
             v = super.addComponentAt(child, index);
         } else {
-//            cast(_compositeBuilder, ScrollViewBuilder).createContentContainer(); // TODO: would be nice to not have this
+//            cast(_compositeBuilder, ScrollViewBuilder).createContentContainer("vertical"); // TODO: would be nice to not have this
             v = cast(_compositeBuilder, ScrollViewBuilder)._contents.addComponentAt(child, index); // TODO: or this
         }
         return v;
@@ -96,7 +96,7 @@ class ScrollView2 extends Component {
         if (Std.is(child, HorizontalScroll2) || Std.is(child, VerticalScroll2) || child.hasClass("scrollview-contents")) {
             v = super.setComponentIndex(child, index);
         } else {
-//            cast(_compositeBuilder, ScrollViewBuilder).createContentContainer(); // TODO: would be nice to not have this
+//            cast(_compositeBuilder, ScrollViewBuilder).createContentContainer("vertical"); // TODO: would be nice to not have this
             v = cast(_compositeBuilder, ScrollViewBuilder)._contents.setComponentIndex(child, index); // TODO: or this
         }
         return v;
