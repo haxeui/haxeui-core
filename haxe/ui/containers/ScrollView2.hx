@@ -20,7 +20,7 @@ import haxe.ui.util.Size;
 import haxe.ui.util.Variant;
 import haxe.ui.validation.InvalidationFlags;
 
-@:composite(ScrollViewLayout, Events, ScrollViewBuilder) // TODO: this would be nice to implement to remove alot of boilerplate
+@:composite(ScrollViewLayout, ScrollViewEvents, ScrollViewBuilder) // TODO: this would be nice to implement to remove alot of boilerplate
 class ScrollView2 extends Component {
     //***********************************************************************************************************
     // Public API
@@ -74,7 +74,7 @@ class ScrollView2 extends Component {
         if (Std.is(child, HorizontalScroll2) || Std.is(child, VerticalScroll2) || child.hasClass("scrollview-contents")) {
             v = super.addComponent(child);
         } else {
-            cast(_compositeBuilder, ScrollViewBuilder).createContentContainer(); // TODO: would be nice to not have this
+//            cast(_compositeBuilder, ScrollViewBuilder).createContentContainer(); // TODO: would be nice to not have this
             v = cast(_compositeBuilder, ScrollViewBuilder)._contents.addComponent(child); // TODO: or this
         }
         return v;
@@ -85,7 +85,7 @@ class ScrollView2 extends Component {
         if (Std.is(child, HorizontalScroll2) || Std.is(child, VerticalScroll2) || child.hasClass("scrollview-contents")) {
             v = super.addComponentAt(child, index);
         } else {
-            cast(_compositeBuilder, ScrollViewBuilder).createContentContainer(); // TODO: would be nice to not have this
+//            cast(_compositeBuilder, ScrollViewBuilder).createContentContainer(); // TODO: would be nice to not have this
             v = cast(_compositeBuilder, ScrollViewBuilder)._contents.addComponentAt(child, index); // TODO: or this
         }
         return v;
@@ -95,7 +95,7 @@ class ScrollView2 extends Component {
         if (Std.is(child, HorizontalScroll2) || Std.is(child, VerticalScroll2) || child.hasClass("scrollview-contents")) {
             super.setComponentIndex(child, index);
         } else {
-            cast(_compositeBuilder, ScrollViewBuilder).createContentContainer(); // TODO: would be nice to not have this
+//            cast(_compositeBuilder, ScrollViewBuilder).createContentContainer(); // TODO: would be nice to not have this
             cast(_compositeBuilder, ScrollViewBuilder)._contents.setComponentIndex(child, index); // TODO: or this
         }
     }
@@ -330,7 +330,7 @@ private class ScrollModeBehaviour extends DataBehaviour {
 //***********************************************************************************************************
 // Events
 //***********************************************************************************************************
-typedef Intertia = {
+typedef Inertia = {
     var screen:Point;
     var target:Point;
     var amplitude:Point;
@@ -338,7 +338,8 @@ typedef Intertia = {
     var timestamp:Float;
 }
 
-private class Events extends haxe.ui.core.Events {
+@:dox(hide) @:noCompletion
+class ScrollViewEvents extends haxe.ui.core.Events {
     private var _scrollview:ScrollView2;
     
     public function new(scrollview:ScrollView2) {
@@ -405,7 +406,7 @@ private class Events extends haxe.ui.core.Events {
     
     private var _offset:Point;
     private static inline var INERTIAL_TIME_CONSTANT = 325;
-    private var _inertia:Intertia = null;
+    private var _inertia:Inertia = null;
     private function onMouseDown(event:MouseEvent) {
         var hscroll:HorizontalScroll2 = _scrollview.findComponent(HorizontalScroll2, false);
         var vscroll:VerticalScroll2 = _scrollview.findComponent(VerticalScroll2, false);
@@ -599,7 +600,7 @@ private class Events extends haxe.ui.core.Events {
 @:dox(hide) @:noCompletion
 @:allow(haxe.ui.containers.ScrollView2)
 @:access(haxe.ui.core.Component)
-private class ScrollViewBuilder extends CompositeBuilder {
+class ScrollViewBuilder extends CompositeBuilder {
     private var _scrollview:ScrollView2;
     private var _contents:Box;
     
@@ -609,19 +610,19 @@ private class ScrollViewBuilder extends CompositeBuilder {
     }
     
     public override function create() {
-        createContentContainer();
-        _component.registerInternalEvents(Events);
+        createContentContainer("vertical");
+        _component.registerInternalEvents(ScrollViewEvents);
     }
     
     public override function destroy() {
     }
     
-    private function createContentContainer() {
+    private function createContentContainer(layoutName:String) {
         if (_contents == null) {
             _contents = new Box();
             _contents.addClass("scrollview-contents");
             _contents.id = "temp";
-            _contents.layout = LayoutFactory.createFromName("vertical"); // TODO: temp
+            _contents.layout = LayoutFactory.createFromName(layoutName); // TODO: temp
             _component.addComponent(_contents);
         }
     }
