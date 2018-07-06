@@ -569,6 +569,13 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     **/
     @:dox(group = "Display tree related properties and methods")
     public function addComponent(child:Component):Component {
+        if (_compositeBuilder != null) {
+            var v = _compositeBuilder.addComponent(child);
+            if (v != null) {
+                return v;
+            }
+        }
+        
         if (this.native == true) {
             var allowChildren:Bool = getNativeConfigPropertyBool('.@allowChildren', true);
             if (allowChildren == false) {
@@ -619,6 +626,13 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     **/
     @:dox(group = "Display tree related properties and methods")
     public function addComponentAt(child:Component, index:Int):Component {
+        if (_compositeBuilder != null) {
+            var v = _compositeBuilder.addComponentAt(child, index);
+            if (v != null) {
+                return v;
+            }
+        }
+        
         if (this.native == true) {
             var allowChildren:Bool = getNativeConfigPropertyBool('.@allowChildren', true);
             if (allowChildren == false) {
@@ -672,6 +686,13 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     public function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
         if (child == null) {
             return null;
+        }
+        
+        if (_compositeBuilder != null) {
+            var v = _compositeBuilder.removeComponent(child, dispose, invalidate);
+            if (v != null) {
+                return v;
+            }
         }
         
         handleRemoveComponent(child, dispose);
@@ -890,13 +911,21 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         return index;
     }
 
-    public function setComponentIndex(child:Component, index:Int) {
+    public function setComponentIndex(child:Component, index:Int):Component {
+        if (_compositeBuilder != null) {
+            var v = _compositeBuilder.setComponentIndex(child, index);
+            if (v != null) {
+                return v;
+            }
+        }
+        
         if (index >= 0 && index <= _children.length && child.parentComponent == this) {
             handleSetComponentIndex(child, index);
             _children.remove(child);
             _children.insert(index, child);
             invalidateComponentLayout();
         }
+        return child;
     }
 
     /**
@@ -2153,6 +2182,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             layout.refresh();
         }
 
+        var sizeChanged = false;
         if (_componentWidth != _actualWidth || _componentHeight != _actualHeight) {
             _actualWidth = _componentWidth;
             _actualHeight = _componentHeight;
@@ -2164,10 +2194,14 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             onResized();
             dispatch(new UIEvent(UIEvent.RESIZE));
 
-            return true;
-        } else {
-            return false;
+            sizeChanged = true;
         }
+        
+        if (_compositeBuilder != null) {
+            sizeChanged = _compositeBuilder.validateComponentLayout() || sizeChanged;
+        }
+        
+        return sizeChanged;
     }
 
     private function validateComponentStyle() {

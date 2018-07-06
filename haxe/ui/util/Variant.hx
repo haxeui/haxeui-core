@@ -131,7 +131,7 @@ abstract Variant(VariantType) from VariantType {
     // ************************************************************************************************************
     // COMPONENT
     // ************************************************************************************************************
-    @:from static function fromComponent(s:Component):Variant {
+    @:from public static function fromComponent(s:Component):Variant {
         return Component(s);
     }
 

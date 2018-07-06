@@ -103,6 +103,9 @@ class OptionBoxGroups { // singleton
         return _instance;
     }
     
+    //***********************************************************************************************************
+    // Instance methods
+    //***********************************************************************************************************
     private var _groups:StringMap<Array<OptionBox>> = new StringMap<Array<OptionBox>>();
     private function new () {
         
