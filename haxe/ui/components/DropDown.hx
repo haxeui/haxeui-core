@@ -214,7 +214,7 @@ class DropDown extends Button implements IDataComponent {
             if (_dataSource != null) {
                 _listview.dataSource = _dataSource;
             }
-            _listview.registerEvent(UIEvent.CHANGE, onItemChange);
+            _listview.registerEvent(MouseEvent.CLICK, onItemChange);
         }
         Screen.instance.addComponent(_listview);
 
@@ -236,6 +236,7 @@ class DropDown extends Button implements IDataComponent {
             listHeight = n * _listview.itemHeight + (_listview.layout.paddingTop + _listview.layout.paddingBottom);
         }
         _listview.height = listHeight;
+        _listview.selectedIndex = _selectedIndex;
         _listview.syncValidation();     //avoid ui flash in some backends
 
         if (_listview.screenTop + _listview.height > Screen.instance.height) {
