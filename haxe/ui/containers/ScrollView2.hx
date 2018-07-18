@@ -623,7 +623,7 @@ class ScrollViewBuilder extends CompositeBuilder {
         if (_contents == null) {
             _contents = new Box();
             _contents.addClass("scrollview-contents");
-            _contents.id = "temp";
+            _contents.id = "scrollview-contents";
             _contents.layout = LayoutFactory.createFromName(layoutName); // TODO: temp
             _component.addComponent(_contents);
         }
