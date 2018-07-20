@@ -1242,6 +1242,11 @@
     background-color: #FFFFFF;
 }
 
+.listview2 .listview-contents {
+    spacing: 0;
+    width: 100%;
+    padding: 1px;
+}
 
 .listview2 .even {
     background-color: #FFFFFF;
@@ -1259,4 +1264,9 @@
 
 .listview2 .odd:hover {
     background-color: #cfdeef;
+}
+
+.listview2 .itemrenderer:selected {
+    background-color: #a7c4e2;
+    color: white;
 }

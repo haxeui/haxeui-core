@@ -8,11 +8,11 @@ class VerticalVirtualLayout extends VirtualLayout {
         super.repositionChildren();
 
         var comp:IVirtualContainer = cast(_component, IVirtualContainer);
+        var usableSize = this.usableSize;
+        var contents:Component = this.contents;
+        var verticalSpacing = contents.layout.verticalSpacing;
+        var itemHeight = comp.itemHeight;
         if (comp.virtual == true) {
-            var usableSize = this.usableSize;
-            var contents:Component = this.contents;
-            var verticalSpacing = contents.layout.verticalSpacing;
-            var itemHeight = comp.itemHeight;
             var n:Int = _firstIndex;
 
             if (comp.variableItemSize == true) {
@@ -32,6 +32,12 @@ class VerticalVirtualLayout extends VirtualLayout {
                     ++n;
                 }
             }
+        } else {
+            var n:Int = 0;
+            for (child in contents.childComponents) {
+                child.top = (n * (itemHeight + verticalSpacing));
+                ++n;
+            }
         }
     }
 
@@ -40,6 +46,10 @@ class VerticalVirtualLayout extends VirtualLayout {
         var verticalSpacing = contents.layout.verticalSpacing;
         var itemHeight = comp.itemHeight;
         var visibleItemsCount:Int = 0;
+        var contentsHeight:Float = contents.height;
+        if (contentsHeight > _component.height) {
+            contentsHeight = _component.height;
+        }
 
         if (comp.variableItemSize == true) {
             var totalSize:Float = 0;
@@ -77,7 +87,7 @@ class VerticalVirtualLayout extends VirtualLayout {
                         totalSize += size;
                     }
                 } else {                        //Stage 2 - find the visible items count
-                    if (totalSize + size > contents.height) {
+                    if (totalSize + size > contentsHeight) {
                         break;
                     } else {
                         ++visibleItemsCount;
@@ -92,7 +102,7 @@ class VerticalVirtualLayout extends VirtualLayout {
 
             _firstIndex = newFirstIndex;
         } else {
-            visibleItemsCount = Math.ceil(contents.height / (itemHeight + verticalSpacing));
+            visibleItemsCount = Math.ceil(contentsHeight / (itemHeight + verticalSpacing));
             _firstIndex = Std.int(comp.vscrollPos / (itemHeight + verticalSpacing));
         }
 

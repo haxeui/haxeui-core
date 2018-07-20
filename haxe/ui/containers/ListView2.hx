@@ -107,7 +107,8 @@ private class ListViewBuilder extends ScrollViewBuilder {
     private override function createContentContainer(layoutName:String) {
         if (_contents == null) {
             super.createContentContainer(layoutName);
-            _contents.percentWidth = 100;   //TODO - would be nice to remove this. Defined in the css, but it doesn't work.
+//            _contents.percentWidth = 100;   //TODO - would be nice to remove this. Defined in the css, but it doesn't work.
+//            _contents.percentHeight = 100;   //TODO - would be nice to remove this. Defined in the css, but it doesn't work.
             _contents.addClass("listview-contents");
         }
     }
