@@ -27,7 +27,12 @@ class ModuleMacros {
             // add resources as haxe resources (plus prefix)
             for (r in m.resourceEntries) {
                 if (r.path != null) {
-                    var resolvedPath = Context.resolvePath(r.path);
+                    var resolvedPath = null; 
+                    try { 
+                        resolvedPath = Context.resolvePath(r.path); 
+                    } catch (e:Dynamic) { 
+                        resolvedPath = haxe.io.Path.join([Sys.getCwd(), r.path]); 
+                    } 
                     if (FileSystem.isDirectory(resolvedPath) && FileSystem.exists(resolvedPath)) {
                         addResources(resolvedPath, resolvedPath, r.prefix);
                     } else {
