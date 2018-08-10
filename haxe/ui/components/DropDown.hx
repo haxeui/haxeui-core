@@ -176,7 +176,7 @@ class DropDown extends Button implements IDataComponent {
     }
 
     private function onItemChange(event:UIEvent) {
-        if (_listview.selectedItem.data.value != null) {
+        if (_listview.selectedItem != null && _listview.selectedItem.data != null) {
             selectedIndex = _dataSource.indexOf(_listview.selectedItem.data);
         }
         selected = false;
@@ -191,6 +191,7 @@ class DropDown extends Button implements IDataComponent {
         if (_listview != null && _listview.hitTest(event.screenX, event.screenY) == true) {
             return;
         }
+        
         selected = !selected;
         onMouseClick(null);
     }
@@ -214,7 +215,7 @@ class DropDown extends Button implements IDataComponent {
             if (_dataSource != null) {
                 _listview.dataSource = _dataSource;
             }
-            _listview.registerEvent(MouseEvent.CLICK, onItemChange);
+            _listview.registerEvent(UIEvent.CHANGE, onItemChange);
         }
         Screen.instance.addComponent(_listview);
 

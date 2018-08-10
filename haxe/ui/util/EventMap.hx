@@ -50,9 +50,11 @@ class EventMap  {
         if (arr != null) {
             arr = arr.copy();
             for (fn in arr) {
+                #if !kha // TODO - causes undesirable behaviour with scrollbars on kha (button cancels screen event, scroll thus never gets event and always thinks its "down")
                 if (event.canceled) {
                     break;
                 }
+                #end
                 var c = event.clone();
                 if (c.target == null) {
                     c.target = target;
