@@ -53,10 +53,12 @@ class Animation {
         return componentMap.get(id);
     }
 
+    private var _runVersion:Int = 0; // Provides a way to disambiguate two different Animation runs
     private var _currentTime:Int = 0;
     private var _currentFrameIndex:Int = 0;
     private var _complete:Void->Void;
     public function start(complete:Void->Void = null) {
+        _runVersion += 1;
         _complete = complete;
         _stopped = false;
         _currentTime = 0;
@@ -69,9 +71,12 @@ class Animation {
         var f:AnimationKeyFrame = keyFrames[index];
         _currentKeyFrame = f;
         var duration:Float = f.time - _currentTime;
+        var runVersion = _runVersion;
         f.run(duration, function() {
-            _currentTime = f.time;
-            nextFrame();
+            if (_runVersion == runVersion) {  // We should not apply the callback of a previous frame if a new run has been initiated.
+                _currentTime = f.time;
+                nextFrame();
+            }
         });
     }
 
