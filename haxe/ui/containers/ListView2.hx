@@ -162,8 +162,9 @@ private class SelectedIndexBehaviour extends DataBehaviour {
     private override function validateData() {
         var listView:ListView2 = cast(_component, ListView2);
         var selectedItem:ItemRenderer = cast listView.selectedItem;
-        if(_currentSelection != selectedItem)
-        {
+        if (selectedItem == null && _value < listView.dataSource.size) {    //Check if the contents have been created.
+            invalidateData();
+        } else if (_currentSelection != selectedItem) {
             if (_currentSelection != null) {
                 _currentSelection.removeClass(":selected", true, true);
             }
