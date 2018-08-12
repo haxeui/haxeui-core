@@ -20,7 +20,6 @@ import haxe.ui.util.Size;
 import haxe.ui.util.Variant;
 import haxe.ui.validation.InvalidationFlags;
 
-@:composite(ScrollViewLayout, ScrollViewEvents, ScrollViewBuilder) // TODO: this would be nice to implement to remove alot of boilerplate
 class ScrollView2 extends Component {
     //***********************************************************************************************************
     // Public API

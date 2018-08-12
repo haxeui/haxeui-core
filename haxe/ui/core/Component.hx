@@ -51,6 +51,7 @@ class DeferredBindingInfo {
  Base class of all HaxeUI controls
 **/
 @:allow(haxe.ui.backend.ComponentBase)
+@:autoBuild(haxe.ui.macros.Macros.buildComposite())
 @:build(haxe.ui.macros.Macros.buildStyles())
 @:autoBuild(haxe.ui.macros.Macros.buildStyles())
 @:autoBuild(haxe.ui.macros.Macros.buildBindings())
@@ -104,8 +105,12 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     //***********************************************************************************************************
     // Construction
     //***********************************************************************************************************
+    private var _layoutClass:Class<Layout> = null;
     private function create() {
         createDefaults();
+        if (_layoutClass != null && _defaultLayout == null) {
+            _defaultLayout = Type.createInstance(_layoutClass, []);
+        }
         handleCreate(native);
         destroyChildren();
         behaviours.replaceNative();
@@ -118,6 +123,9 @@ class Component extends ComponentBase implements IComponentBase implements IVali
                 _compositeBuilder.create();
             }
             createChildren();
+            if (_internalEventsClass != null && _internalEvents == null) {
+                registerInternalEvents(_internalEventsClass);
+            }
         }
         behaviours.applyDefaults();
     }
@@ -138,6 +146,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     }
 
     private var _internalEvents:Events = null;
+    private var _internalEventsClass:Class<Events> = null;
     private function registerInternalEvents(eventsClass:Class<Events> = null, reregister:Bool = false) {
         if (_internalEvents == null && eventsClass != null) {
             _internalEvents = Type.createInstance(eventsClass, [this]);

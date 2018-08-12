@@ -2,6 +2,9 @@ package haxe.ui.macros;
 
 
 #if macro
+import haxe.macro.Type;
+import haxe.macro.Type.ClassType;
+import haxe.macro.Type.Ref;
 import haxe.macro.TypeTools;
 import haxe.macro.ExprTools;
 import haxe.macro.Expr;
@@ -10,6 +13,69 @@ import haxe.macro.Context;
 
 class Macros {
     #if macro
+    
+    macro public static function buildComposite():Array<Field> {
+        var pos = Context.currentPos();
+        var fields = Context.getBuildFields();
+
+        if (Context.getLocalClass().get().meta.has(":composite") == false && Context.getLocalClass().get().meta.has("composite") == false) {
+            return fields;
+        }
+        
+        var meta = null;
+        if (Context.getLocalClass().get().meta.has(":composite") == true) {
+            meta = Context.getLocalClass().get().meta.extract(":composite");
+        } else if (Context.getLocalClass().get().meta.has("composite") == true) {
+            meta = Context.getLocalClass().get().meta.extract("composite");
+        }
+        
+        var m = null;
+        for (t in meta) {
+            if (t.name == "composite" || t.name == ":composite") {
+                m = t;
+                break;
+            }
+        }
+        
+        var currentRegisterCompositeFn = MacroHelpers.getFunction(fields, "registerComposite");
+        if (currentRegisterCompositeFn != null) {
+            for (p in m.params) {
+                var s = ExprTools.toString(p);
+                
+                // probably a better way to do this
+                if (s.indexOf("Event") != -1) {
+                    MacroHelpers.appendLine(currentRegisterCompositeFn, Context.parseInlineString('_internalEventsClass = ${ExprTools.toString(p)}', pos));
+                } else if (s.indexOf("Builder") != -1) {
+                    MacroHelpers.appendLine(currentRegisterCompositeFn, Context.parseInlineString('_compositeBuilderClass = ${ExprTools.toString(p)}', pos));
+                } else if (s.indexOf("Layout") != -1) {
+                    MacroHelpers.appendLine(currentRegisterCompositeFn, Context.parseInlineString('_layoutClass = ${ExprTools.toString(p)}', pos));
+                }
+            }
+        } else {
+            var code:String = "";
+            code += "function() {\n";
+            code += "super.registerComposite();\n";
+
+            for (p in m.params) {
+                var s = ExprTools.toString(p);
+                
+                // probably a better way to do this
+                if (s.indexOf("Event") != -1) {
+                    code += '_internalEventsClass = ${ExprTools.toString(p)};\n';
+                } else if (s.indexOf("Builder") != -1) {
+                    code += '_compositeBuilderClass = ${ExprTools.toString(p)};\n';
+                } else if (s.indexOf("Layout") != -1) {
+                    code += '_layoutClass = ${ExprTools.toString(p)};\n';
+                }
+            }
+            
+            code += "}";
+            
+            var access:Array<Access> = [APrivate, AOverride];
+            MacroHelpers.addFunction("registerComposite", Context.parseInlineString(code, pos), access, fields, pos);
+        }
+        return fields;
+    }
     
     macro public static function buildBindings():Array<Field> {
         var pos = Context.currentPos();

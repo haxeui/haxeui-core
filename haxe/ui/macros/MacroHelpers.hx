@@ -1,10 +1,10 @@
 package haxe.ui.macros;
 
-import haxe.macro.Type.ClassType;
-import haxe.macro.Type.Ref;
 import haxe.ui.util.GenericConfig;
 
 #if macro
+import haxe.macro.Type.ClassType;
+import haxe.macro.Type.Ref;
 import haxe.macro.Expr;
 import haxe.macro.Context;
 #end
@@ -144,6 +144,13 @@ class MacroHelpers {
         return has;
     }
     
+    public static function appendLine(fn:{ expr : { pos : haxe.macro.Position, expr : haxe.macro.ExprDef } }, e:Expr):Void {
+        fn.expr = switch (fn.expr.expr) {
+            case EBlock(el): macro $b{insertExpr(el, -1, e)};
+            case _: macro $b { insertExpr([fn.expr], -1, e) }
+        }
+    }
+
     public static function insertLine(fn:{ expr : { pos : haxe.macro.Position, expr : haxe.macro.ExprDef } }, e:Expr, location:Int):Void {
         fn.expr = switch (fn.expr.expr) {
             case EBlock(el): macro $b{insertExpr(el, location, e)};

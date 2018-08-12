@@ -1,6 +1,7 @@
 package haxe.ui.components;
 
 import haxe.ui.core.Behaviour;
+import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.DataBehaviour;
 import haxe.ui.core.DefaultBehaviour;
 import haxe.ui.core.InteractiveComponent;
@@ -11,6 +12,7 @@ import haxe.ui.styles.Style;
 import haxe.ui.util.Timer;
 import haxe.ui.util.Variant;
 
+@:composite(ButtonEvents, ButtonLayout)
 class Button extends InteractiveComponent {
     //***********************************************************************************************************
     // Styles
@@ -29,20 +31,6 @@ class Button extends InteractiveComponent {
     @:behaviour(SelectedBehaviour)          public var selected:Bool;
     @:behaviour(TextBehaviour)              public var text:String;
     @:behaviour(IconBehaviour)              public var icon:String;
-    
-    //***********************************************************************************************************
-    // Internals
-    //***********************************************************************************************************
-    private override function createDefaults() {  // TODO: remove this eventually, @:layout(...) or something
-        super.createDefaults();
-        _defaultLayout = new ButtonLayout();
-    }
-    
-    private override function createChildren() {
-        super.createChildren();
-        
-        registerInternalEvents(Events);
-    }
     
     //***********************************************************************************************************
     // Overrides
@@ -93,7 +81,6 @@ private class ButtonLayout extends DefaultLayout {
 
         var label:Label = component.findComponent(Label, false);
         var icon:Image = component.findComponent(Image, false);
-
         switch (iconPosition) {
             case "far-right":
                 if (label != null && icon != null) {
@@ -221,7 +208,7 @@ private class IconBehaviour extends DataBehaviour {
 
 
 @:dox(hide) @:noCompletion
-@:access(haxe.ui.components.Button)
+@:access(haxe.ui.core.Component)
 private class ToggleBehaviour extends Behaviour {
     private var _value:Variant;
     
@@ -239,7 +226,7 @@ private class ToggleBehaviour extends Behaviour {
         if (value == false) {
             button.selected = false;
         }
-        button.registerInternalEvents(Events, true);
+        button.registerInternalEvents(button._internalEventsClass, true);
     }
 }
 
@@ -271,7 +258,7 @@ private class SelectedBehaviour extends Behaviour {
 // Events
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
-private class Events extends haxe.ui.core.Events {
+class ButtonEvents extends haxe.ui.core.Events {
     private var _button:Button;
     private var _down:Bool = false;
     private var _repeatTimer:Timer;
