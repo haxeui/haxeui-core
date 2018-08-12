@@ -97,7 +97,7 @@ class ListViewEvents extends ScrollViewEvents {
     private function onRendererCreated(e:UIEvent):Void {
         var instance:ItemRenderer = cast(e.data, ItemRenderer);
         instance.registerEvent(MouseEvent.CLICK, onRendererClick);
-        if(instance == _listview.selectedItem) {
+        if(_listview.selectedIndex != -1 && instance.itemIndex == _listview.selectedIndex) {
             instance.addClass(":selected", true, true);
         }
     }
@@ -105,7 +105,7 @@ class ListViewEvents extends ScrollViewEvents {
     private function onRendererDestroyed(e:UIEvent) {
         var instance:ItemRenderer = cast(e.data, ItemRenderer);
         instance.unregisterEvent(MouseEvent.CLICK, onRendererClick);
-        if(instance == _listview.selectedItem) {
+        if(_listview.selectedIndex != -1 && instance.itemIndex == _listview.selectedIndex) {
             instance.removeClass(":selected", true, true);
         }
     }

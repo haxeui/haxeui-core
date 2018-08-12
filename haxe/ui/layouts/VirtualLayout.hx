@@ -63,19 +63,14 @@ class VirtualLayout extends ScrollViewLayout {
                 if (Std.is(item, cls)) {
                 } else {
                     removeRenderer(item);
-                    item = getRenderer(cls);
+                    item = getRenderer(cls, n);
                     _component.addComponentAt(item, n);
                 }
-
-                item.data = data;
             } else {
                 var cls = itemClass(n, data);
-                item = getRenderer(cls);
-                item.data = data;
+                item = getRenderer(cls, n);
                 _component.addComponent(item);
             }
-
-            item.itemIndex = n;
 
             var className:String = n % 2 == 0 ? "even" : "odd";
             if (!item.hasClass(className)) {
@@ -83,6 +78,8 @@ class VirtualLayout extends ScrollViewLayout {
                 item.removeClass(inverseClassName);
                 item.addClass(className);
             }
+
+            item.data = data;
         }
 
         while (dataSource.size < contents.childComponents.length) {
@@ -104,35 +101,36 @@ class VirtualLayout extends ScrollViewLayout {
             var item:ItemRenderer = null;
             var cls = itemClass(n, data);
             if (contents.childComponents.length <= i) {
-                item = getRenderer(cls);
+                item = getRenderer(cls, n);
                 _component.addComponent(item);
             } else {
                 item = cast contents.childComponents[i];
 
                 //Renderers are always ordered
                 if (!Std.is(item, cls)) {
-                    item = getRenderer(cls);
+                    item = getRenderer(cls, n);
                     _component.addComponentAt(item, i);
                 } else if (item.itemIndex != n) {
-                    _component.setComponentIndex(item, i);
-                }
-
-                var className:String = n % 2 == 0 ? "even" : "odd";
-                if (!item.hasClass(className)) {
-                    var inverseClassName = n % 2 == 0 ? "odd" : "even";
-                    item.removeClass(inverseClassName);
-                    item.addClass(className);
+                    removeRenderer(item, false);
+                    item = getRenderer(cls, n);
+                    _component.addComponentAt(item, i);
                 }
             }
 
+            var className:String = n % 2 == 0 ? "even" : "odd";
+            if (!item.hasClass(className)) {
+                var inverseClassName = n % 2 == 0 ? "odd" : "even";
+                item.removeClass(inverseClassName);
+                item.addClass(className);
+            }
+
             item.data = data;
-            item.itemIndex = n;
 
             i++;
         }
 
         while (contents.childComponents.length > i) {
-            removeRenderer(cast contents.childComponents[contents.childComponents.length - 1]);    // remove last
+            removeRenderer(cast contents.childComponents[contents.childComponents.length - 1], false);    // remove last
         }
     }
 
@@ -155,7 +153,7 @@ class VirtualLayout extends ScrollViewLayout {
         }
     }
 
-    private function getRenderer(cls:Class<ItemRenderer>):ItemRenderer {
+    private function getRenderer(cls:Class<ItemRenderer>, index:Int):ItemRenderer {
         var instance:ItemRenderer = null;
         var comp:IVirtualContainer = cast(_component, IVirtualContainer);
         if (comp.virtual == true) {
@@ -173,6 +171,7 @@ class VirtualLayout extends ScrollViewLayout {
             instance = Type.createInstance(cls, []);
         }
 
+        instance.itemIndex = index;
         if (_component.hasEvent(UIEvent.RENDERER_CREATED)) {
             _component.dispatch(new UIEvent(UIEvent.RENDERER_CREATED, instance));
         }
@@ -182,7 +181,6 @@ class VirtualLayout extends ScrollViewLayout {
 
     private function removeRenderer(renderer:ItemRenderer, dispose:Bool = true) {
         _component.removeComponent(renderer, dispose);
-        renderer.itemIndex = -1;
 
         var comp:IVirtualContainer = cast(_component, IVirtualContainer);
         if (comp.virtual == true) {
@@ -192,6 +190,8 @@ class VirtualLayout extends ScrollViewLayout {
         if (_component.hasEvent(UIEvent.RENDERER_DESTROYED)) {
             _component.dispatch(new UIEvent(UIEvent.RENDERER_DESTROYED, renderer));
         }
+
+        renderer.itemIndex = -1;
     }
 
     private function removeInvisibleRenderers() {
