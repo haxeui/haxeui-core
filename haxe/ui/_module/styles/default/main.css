@@ -1262,12 +1262,12 @@
 }
 
 .listview2 .odd {
-    background-color: #ecf2f9;
+    background-color: #f8f8f8;
     __cursor: pointer;
 }
 
 .listview2 .odd:hover {
-    background-color: #cfdeef;
+    background-color: #ecf2f9;
 }
 
 .listview2 .itemrenderer:selected {
