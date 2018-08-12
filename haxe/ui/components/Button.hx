@@ -292,10 +292,8 @@ private class Events extends haxe.ui.core.Events {
             registerEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
         }
         
-        if (_button.toggle == true && hasEvent(MouseEvent.CLICK, onMouseClick) == false) {
+        if (_button.toggle == true) {
             registerEvent(MouseEvent.CLICK, onMouseClick);
-        } else {
-            unregisterEvent(MouseEvent.CLICK, onMouseClick);
         }
     }
     
@@ -303,6 +301,7 @@ private class Events extends haxe.ui.core.Events {
         unregisterEvent(MouseEvent.MOUSE_OVER, onMouseOver);
         unregisterEvent(MouseEvent.MOUSE_OUT, onMouseOut);
         unregisterEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
+        unregisterEvent(MouseEvent.CLICK, onMouseClick);
     }
     
     private function onMouseOver(event:MouseEvent) {
