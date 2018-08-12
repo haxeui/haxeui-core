@@ -24,7 +24,7 @@ class ListView2 extends ScrollView2 implements IDataComponent implements IVirtua
     //***********************************************************************************************************
     @:behaviour(DataSourceBehaviour)                    public var dataSource:DataSource<Dynamic>;
     @:behaviour(LayoutBehaviour, 30)                    public var itemWidth:Float;
-    @:behaviour(LayoutBehaviour, 30)                    public var itemHeight:Float;
+    @:behaviour(LayoutBehaviour, -1)                    public var itemHeight:Float;
     @:behaviour(LayoutBehaviour, false)                 public var variableItemSize:Bool;
     @:behaviour(SelectedIndexBehaviour, -1)             public var selectedIndex:Int;
     @:behaviour(SelectedItemBehaviour)                  public var selectedItem:Component;  //TODO :ItemRenderer - Error -> Variant should be ItemRenderer
