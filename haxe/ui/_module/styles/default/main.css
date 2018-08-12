@@ -1248,6 +1248,10 @@
     padding: 0px;
 }
 
+.listview2 .itemrenderer {
+    cursor: pointer;    
+}
+
 .listview2 .itemrenderer .label {
     color: black;
 }

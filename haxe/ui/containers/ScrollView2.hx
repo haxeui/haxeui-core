@@ -733,7 +733,6 @@ class ScrollViewBuilder extends CompositeBuilder {
         var xpos:Float = 0;
         var ypos:Float = 0;
 
-        
         if (_scrollview.virtual == false) {
             var hscroll = _component.findComponent(HorizontalScroll2, false);
             if (hscroll != null) {

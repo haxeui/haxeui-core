@@ -193,6 +193,7 @@
 .tabview2 .tabview-content{border:1px solid #ABABAB;padding:5px;width:100%;height:100%;}
 .listview2{border:1px solid #ABABAB;border-radius:1px;padding:1px;width:auto;height:auto;background-color:#FFFFFF;}
 .listview2 .listview-contents{spacing:0;width:100%;padding:0px;}
+.listview2 .itemrenderer{cursor:pointer;}
 .listview2 .itemrenderer .label{color:black;}
 .listview2 .even{background-color:#FFFFFF;__cursor:pointer;}
 .listview2 .even:hover{background-color:#ecf2f9;}
