@@ -52,26 +52,31 @@ class VirtualLayout extends ScrollViewLayout {
         var contents:Component = this.contents;
         for (n in 0...dataSource.size) {
             var data:Dynamic = dataSource.get(n);
-
             var item:ItemRenderer = null;
             if (n < contents.childComponents.length) {
-                var cls = itemClass(n, data);
                 item = cast contents.childComponents[n];
+                if (item.data == data) {
+                    continue;
+                }
+
+                var cls = itemClass(n, data);
                 if (Std.is(item, cls)) {
                 } else {
-                    _component.removeComponent(item);
-                    var item = Type.createInstance(cls, []);
+                    removeRenderer(item);
+                    item = getRenderer(cls);
                     _component.addComponentAt(item, n);
                 }
 
                 item.data = data;
             } else {
                 var cls = itemClass(n, data);
-                item = cast Type.createInstance(cls, []);
+                item = getRenderer(cls);
                 item.data = data;
                 _component.addComponent(item);
             }
-            
+
+            item.itemIndex = n;
+
             var className:String = n % 2 == 0 ? "even" : "odd";
             if (!item.hasClass(className)) {
                 var inverseClassName = n % 2 == 0 ? "odd" : "even";
@@ -81,7 +86,8 @@ class VirtualLayout extends ScrollViewLayout {
         }
 
         while (dataSource.size < contents.childComponents.length) {
-            contents.removeComponent(contents.childComponents[contents.childComponents.length - 1]); // remove last
+            var item:ItemRenderer = cast contents.childComponents[contents.childComponents.length - 1];
+            removeRenderer(item);    // remove last
         }
     }
 
@@ -150,17 +156,22 @@ class VirtualLayout extends ScrollViewLayout {
     }
 
     private function getRenderer(cls:Class<ItemRenderer>):ItemRenderer {
-        for (i in 0..._rendererPool.length) {
-            var renderer = _rendererPool[i];
-            if (Std.is(renderer, cls)) {
-                _rendererPool.splice(i, 1);
-                return renderer;
+        var instance:ItemRenderer = null;
+        var comp:IVirtualContainer = cast(_component, IVirtualContainer);
+        if (comp.virtual == true) {
+            for (i in 0..._rendererPool.length) {
+                var renderer = _rendererPool[i];
+                if (Std.is(renderer, cls)) {
+                    _rendererPool.splice(i, 1);
+                    instance = renderer;
+                    break;
+                }
             }
         }
 
-        var instance = Type.createInstance(cls, []);
-        if(!Std.is(instance, ItemRenderer))
-            throw 'Renderer isn\'t a ItemRenderer class';
+        if (instance == null) {
+            instance = Type.createInstance(cls, []);
+        }
 
         if (_component.hasEvent(UIEvent.RENDERER_CREATED)) {
             _component.dispatch(new UIEvent(UIEvent.RENDERER_CREATED, instance));
@@ -172,7 +183,11 @@ class VirtualLayout extends ScrollViewLayout {
     private function removeRenderer(renderer:ItemRenderer) {
         _component.removeComponent(renderer);
         renderer.itemIndex = -1;
-        _rendererPool.push(cast(renderer, ItemRenderer));
+
+        var comp:IVirtualContainer = cast(_component, IVirtualContainer);
+        if (comp.virtual == true) {
+            _rendererPool.push(cast(renderer, ItemRenderer));
+        }
 
         if (_component.hasEvent(UIEvent.RENDERER_DESTROYED)) {
             _component.dispatch(new UIEvent(UIEvent.RENDERER_DESTROYED, renderer));

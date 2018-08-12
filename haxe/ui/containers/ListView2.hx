@@ -5,7 +5,6 @@ import haxe.ui.core.MouseEvent;
 import haxe.ui.core.ScrollEvent;
 import haxe.ui.containers.ScrollView2.ScrollViewBuilder;
 import haxe.ui.containers.ScrollView2;
-import haxe.ui.containers.ScrollView2.ScrollViewBuilder;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.DataBehaviour;
@@ -86,23 +85,32 @@ class ListViewEvents extends ScrollViewEvents {
         super(listview);
         _listview = listview;
 
-        listview.registerEvent(ScrollEvent.CHANGE, function(e) {
-            listview.invalidateComponentLayout();
-        });
-
-        listview.registerEvent(UIEvent.RENDERER_CREATED, function(e:UIEvent) {
-            var instance:ItemRenderer = cast(e.data, ItemRenderer);
-            instance.registerEvent(MouseEvent.CLICK, onRendererClick);
-        });
-
-        listview.registerEvent(UIEvent.RENDERER_DESTROYED, function(e:UIEvent) {
-            var instance:ItemRenderer = cast(e.data, ItemRenderer);
-            instance.unregisterEvent(MouseEvent.CLICK, onRendererClick);
-        });
+        listview.registerEvent(ScrollEvent.CHANGE, onScrollChange);
+        listview.registerEvent(UIEvent.RENDERER_CREATED, onRendererCreated);
+        listview.registerEvent(UIEvent.RENDERER_DESTROYED, onRendererDestroyed);
     }
 
-    private function onRendererClick(e:MouseEvent):Void
-    {
+    private function onScrollChange(e:ScrollEvent):Void {
+        _listview.invalidateComponentLayout();
+    }
+
+    private function onRendererCreated(e:UIEvent):Void {
+        var instance:ItemRenderer = cast(e.data, ItemRenderer);
+        instance.registerEvent(MouseEvent.CLICK, onRendererClick);
+        if(instance == _listview.selectedItem) {
+            instance.addClass(":selected", true, true);
+        }
+    }
+
+    private function onRendererDestroyed(e:UIEvent) {
+        var instance:ItemRenderer = cast(e.data, ItemRenderer);
+        instance.unregisterEvent(MouseEvent.CLICK, onRendererClick);
+        if(instance == _listview.selectedItem) {
+            instance.removeClass(":selected", true, true);
+        }
+    }
+
+    private function onRendererClick(e:MouseEvent):Void {
         var components = e.target.findComponentsUnderPoint(e.screenX, e.screenY);
         for (component in components) {
             if (Std.is(component, InteractiveComponent)) {
@@ -168,7 +176,7 @@ private class SelectedIndexBehaviour extends DataBehaviour {
     private override function validateData() {
         var listView:ListView2 = cast(_component, ListView2);
         var selectedItem:ItemRenderer = cast listView.selectedItem;
-        if (selectedItem == null && _value < listView.dataSource.size) {    //Check if the contents have been created.
+        if (selectedItem == null && _value >= 0 && _value < listView.dataSource.size) {    //Check if the contents have been created.
             invalidateData();
         } else if (_currentSelection != selectedItem) {
             if (_currentSelection != null) {
