@@ -180,8 +180,8 @@ class VirtualLayout extends ScrollViewLayout {
         return cast(instance, ItemRenderer);
     }
 
-    private function removeRenderer(renderer:ItemRenderer) {
-        _component.removeComponent(renderer);
+    private function removeRenderer(renderer:ItemRenderer, dispose:Bool = true) {
+        _component.removeComponent(renderer, dispose);
         renderer.itemIndex = -1;
 
         var comp:IVirtualContainer = cast(_component, IVirtualContainer);
@@ -198,14 +198,14 @@ class VirtualLayout extends ScrollViewLayout {
         var contents:Component = this.contents;
         if (_firstIndex >= 0) {
             while (contents.childComponents.length > 0 && !isRendererVisible(contents.childComponents[0])) {
-                removeRenderer(cast contents.childComponents[0]);
+                removeRenderer(cast contents.childComponents[0], false);
                 ++_firstIndex;
             }
         }
 
         if (_lastIndex >= 0) {
             while (contents.childComponents.length > 0 && !isRendererVisible(contents.childComponents[contents.childComponents.length - 1])) {
-                removeRenderer(cast contents.childComponents[contents.childComponents.length - 1]);
+                removeRenderer(cast contents.childComponents[contents.childComponents.length - 1], false);
                 --_lastIndex;
             }
         }
