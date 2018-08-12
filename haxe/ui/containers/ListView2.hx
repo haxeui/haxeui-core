@@ -1,14 +1,14 @@
 package haxe.ui.containers;
 
-import haxe.ui.core.ScrollEvent;
-import haxe.ui.containers.ScrollView2.ScrollViewBuilder;
 import haxe.ui.containers.ScrollView2;
+import haxe.ui.containers.ScrollView2.ScrollViewBuilder;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.DataBehaviour;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.ItemRenderer;
 import haxe.ui.core.LayoutBehaviour;
+import haxe.ui.core.ScrollEvent;
 import haxe.ui.core.UIEvent;
 import haxe.ui.data.DataSource;
 import haxe.ui.data.transformation.NativeTypeTransformer;
@@ -100,7 +100,7 @@ private class ListViewBuilder extends ScrollViewBuilder {
     }
 
     public override function create() {
-        createContentContainer("absolute");
+        createContentContainer(_listview.virtual ? "absolute" : "vertical");
         _component.registerInternalEvents(ListViewEvents);
     }
 
@@ -111,6 +111,10 @@ private class ListViewBuilder extends ScrollViewBuilder {
 //            _contents.percentHeight = 100;   //TODO - would be nice to remove this. Defined in the css, but it doesn't work.
             _contents.addClass("listview-contents");
         }
+    }
+    
+    public override function onVirtualChanged() {
+        _contents.layoutName = _listview.virtual ? "absolute" : "vertical";
     }
 }
 

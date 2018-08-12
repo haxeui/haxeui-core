@@ -53,9 +53,10 @@ class VirtualLayout extends ScrollViewLayout {
         for (n in 0...dataSource.size) {
             var data:Dynamic = dataSource.get(n);
 
+            var item:ItemRenderer = null;
             if (n < contents.childComponents.length) {
                 var cls = itemClass(n, data);
-                var item:ItemRenderer = cast contents.childComponents[n];
+                item = cast contents.childComponents[n];
                 if (Std.is(item, cls)) {
                 } else {
                     _component.removeComponent(item);
@@ -66,9 +67,16 @@ class VirtualLayout extends ScrollViewLayout {
                 item.data = data;
             } else {
                 var cls = itemClass(n, data);
-                var item:ItemRenderer = cast Type.createInstance(cls, []);
+                item = cast Type.createInstance(cls, []);
                 item.data = data;
                 _component.addComponent(item);
+            }
+            
+            var className:String = n % 2 == 0 ? "even" : "odd";
+            if (!item.hasClass(className)) {
+                var inverseClassName = n % 2 == 0 ? "odd" : "even";
+                item.removeClass(inverseClassName);
+                item.addClass(className);
             }
         }
 

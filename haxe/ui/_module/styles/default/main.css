@@ -1245,7 +1245,7 @@
 .listview2 .listview-contents {
     spacing: 0;
     width: 100%;
-    padding: 1px;
+    padding: 0px;
 }
 
 .listview2 .even {

@@ -14,7 +14,6 @@ class VerticalVirtualLayout extends VirtualLayout {
         var itemHeight = comp.itemHeight;
         if (comp.virtual == true) {
             var n:Int = _firstIndex;
-
             if (comp.variableItemSize == true) {
                 var pos:Float = -comp.vscrollPos;
                 for (i in 0..._lastIndex) {
@@ -33,11 +32,20 @@ class VerticalVirtualLayout extends VirtualLayout {
                 }
             }
         } else {
+            /* VBOX CAN DO THIS
             var n:Int = 0;
+            var y:Float = 0;
             for (child in contents.childComponents) {
-                child.top = (n * (itemHeight + verticalSpacing));
+                itemHeight = child.height;
+                if (itemHeight == 0) { // TODO: is this a good idea??
+                    child.syncComponentValidation();
+                    itemHeight = child.height;
+                }
+                child.top = y;
+                y += itemHeight + verticalSpacing;
                 ++n;
             }
+            */
         }
     }
 

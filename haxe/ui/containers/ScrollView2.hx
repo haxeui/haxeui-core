@@ -25,7 +25,7 @@ class ScrollView2 extends Component {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:behaviour(DefaultBehaviour)                       public var virtual:Bool;
+    @:behaviour(Virtual)                                public var virtual:Bool;
     @:behaviour(ContentWidth)                           public var contentWidth:Float;
     @:behaviour(PercentContentWidth)                    public var percentContentWidth:Float;
     @:behaviour(ContentHeight)                          public var contentHeight:Float;
@@ -116,6 +116,15 @@ class ScrollView2 extends Component {
 //***********************************************************************************************************
 // Behaviours
 //***********************************************************************************************************
+@:access(haxe.ui.core.Component)
+private class Virtual extends DefaultBehaviour {
+    public override function set(value:Variant) {
+        super.set(value);
+        
+        cast(_component._compositeBuilder, ScrollViewBuilder).onVirtualChanged();
+    }
+}
+
 private class ContentWidth extends Behaviour {
     public override function get():Variant {
         var contents:Component = _component.findComponent("scrollview-contents", false, "css");
@@ -709,6 +718,7 @@ class ScrollViewBuilder extends CompositeBuilder {
         var xpos:Float = 0;
         var ypos:Float = 0;
 
+        
         if (_scrollview.virtual == false) {
             var hscroll = _component.findComponent(HorizontalScroll2, false);
             if (hscroll != null) {
@@ -720,8 +730,12 @@ class ScrollViewBuilder extends CompositeBuilder {
                 ypos = vscroll.pos;
             }
         }
-        
+
         var rc:Rectangle = new Rectangle(xpos, ypos, clipCX, clipCY);
         _contents.componentClipRect = rc;
+    }
+    
+    public function onVirtualChanged() {
+        
     }
 }
