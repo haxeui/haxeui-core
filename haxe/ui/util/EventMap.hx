@@ -44,8 +44,8 @@ class EventMap  {
     public function contains(type:String, listener:UIEvent->Void=null):Bool {
         var b:Bool = false;
         var arr:FunctionArray<UIEvent->Void> = _map.get(type);
-        if (arr != null && listener != null) {
-            b = arr.contains(listener);
+        if (arr != null) {
+            b = (listener != null) ? arr.contains(listener) : true;
         }
         return b;
     }
