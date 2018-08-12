@@ -380,6 +380,8 @@ class ScrollViewEvents extends haxe.ui.core.Events {
         } else if (hasEvent(MouseEvent.MOUSE_DOWN, onMouseDown) == false) {
             unregisterEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
         }
+        
+        registerEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
     }
     
     public override function unregister() {
@@ -399,6 +401,7 @@ class ScrollViewEvents extends haxe.ui.core.Events {
         }
         
         unregisterEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
+        unregisterEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
     }
     
     private function onContentsResized(event:UIEvent) {
@@ -601,6 +604,18 @@ class ScrollViewEvents extends haxe.ui.core.Events {
             dispatch(new ScrollEvent(ScrollEvent.STOP));
         } else {
             Toolkit.callLater(inertialScroll);
+        }
+    }
+    
+    private function onMouseWheel(event:MouseEvent) {
+        var vscroll:VerticalScroll2 = _scrollview.findComponent(VerticalScroll2, false);
+        if (vscroll != null) {
+            event.cancel();
+            if (event.delta > 0) {
+                vscroll.pos -= 50; // TODO: calculate this
+            } else if (event.delta < 0) {
+                vscroll.pos += 50;
+            }
         }
     }
 }
