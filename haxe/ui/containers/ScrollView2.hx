@@ -356,7 +356,6 @@ class ScrollViewEvents extends haxe.ui.core.Events {
     public function new(scrollview:ScrollView2) {
         super(scrollview);
         _scrollview = scrollview;
-        
     }
     
     public override function register() {

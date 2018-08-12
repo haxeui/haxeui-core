@@ -84,12 +84,22 @@ class ListViewEvents extends ScrollViewEvents {
     public function new(listview:ListView2) {
         super(listview);
         _listview = listview;
-
-        listview.registerEvent(ScrollEvent.CHANGE, onScrollChange);
-        listview.registerEvent(UIEvent.RENDERER_CREATED, onRendererCreated);
-        listview.registerEvent(UIEvent.RENDERER_DESTROYED, onRendererDestroyed);
     }
 
+    public override function register() {
+        super.register();
+        registerEvent(ScrollEvent.CHANGE, onScrollChange);
+        registerEvent(UIEvent.RENDERER_CREATED, onRendererCreated);
+        registerEvent(UIEvent.RENDERER_DESTROYED, onRendererDestroyed);
+    }
+    
+    public override function unregister() {
+        super.unregister();
+        unregisterEvent(ScrollEvent.CHANGE, onScrollChange);
+        unregisterEvent(UIEvent.RENDERER_CREATED, onRendererCreated);
+        unregisterEvent(UIEvent.RENDERER_DESTROYED, onRendererDestroyed);
+    }
+    
     private function onScrollChange(e:ScrollEvent):Void {
         _listview.invalidateComponentLayout();
     }
@@ -158,7 +168,6 @@ private class ListViewBuilder extends ScrollViewBuilder {
 //***********************************************************************************************************
 // Behaviours
 //***********************************************************************************************************
-
 private class DataSourceBehaviour extends DataBehaviour {
     public override function set(value:Variant) {
         super.set(value);
