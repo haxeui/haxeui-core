@@ -10,6 +10,7 @@ class UIEvent extends EventBase {
     public static inline var MOVE:String = "move";
 
     public static inline var RENDERER_CREATED:String = "rendererCreated";
+    public static inline var RENDERER_DESTROYED:String = "rendererDestroyed";
 
     public var bubble(default, default):Bool; 
     public var type(default, default):String;

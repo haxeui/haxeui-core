@@ -17,8 +17,7 @@ class DataBehaviour extends Behaviour {
         }
         
         _value = value;
-        _dataInvalid = true;
-        _component.invalidateComponentData();
+        invalidateData();
     }
 
     public function validate() {
@@ -26,6 +25,11 @@ class DataBehaviour extends Behaviour {
             _dataInvalid = false;
             validateData();
         }
+    }
+
+    private function invalidateData() {
+        _dataInvalid = true;
+        _component.invalidateComponentData();
     }
     
     private function validateData() {

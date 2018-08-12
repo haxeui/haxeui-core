@@ -173,6 +173,10 @@ class VirtualLayout extends ScrollViewLayout {
         _component.removeComponent(renderer);
         renderer.itemIndex = -1;
         _rendererPool.push(cast(renderer, ItemRenderer));
+
+        if (_component.hasEvent(UIEvent.RENDERER_DESTROYED)) {
+            _component.dispatch(new UIEvent(UIEvent.RENDERER_DESTROYED, renderer));
+        }
     }
 
     private function removeInvisibleRenderers() {
