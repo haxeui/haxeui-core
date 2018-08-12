@@ -1282,3 +1282,14 @@
 .listview2 .itemrenderer:selected .label {
     color: white;
 }
+
+
+
+
+
+.dropdown2 {
+    icon: "haxeui-core/styles/default/up_down_arrows.png";
+    icon-position: far-right;
+}
+
+
