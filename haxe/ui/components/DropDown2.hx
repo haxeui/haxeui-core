@@ -1,6 +1,7 @@
 package haxe.ui.components;
 
 import haxe.ui.components.Button.ButtonEvents;
+import haxe.ui.containers.CalendarView;
 import haxe.ui.containers.ListView2;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
@@ -17,6 +18,7 @@ class DropDown2 extends Button implements IDataComponent {
     // Public API
     //***********************************************************************************************************
     @:behaviour(DefaultBehaviour)                    public var dataSource:DataSource<Dynamic>;
+    @:behaviour(DefaultBehaviour, "list")            public var type:String;
     
     //***********************************************************************************************************
     // Internals
@@ -29,6 +31,7 @@ class DropDown2 extends Button implements IDataComponent {
 interface IDropDownHandler {
     function show():Void;
     function hide():Void;
+    var component(get, null):Component;
 }
 
 class DropDownHandler implements IDropDownHandler {
@@ -36,6 +39,11 @@ class DropDownHandler implements IDropDownHandler {
     
     public function new(dropdown:DropDown2) {
         _dropdown = dropdown;
+    }
+
+    public var component(get, null):Component;
+    private function get_component():Component {
+        return null;
     }
     
     public function show() {
@@ -45,8 +53,13 @@ class DropDownHandler implements IDropDownHandler {
     }
 }
 
+@:access(haxe.ui.core.Component)
 class ListDropDownHandler extends DropDownHandler {
     private var _listview:ListView2;
+    
+    private override function get_component():Component {
+        return _listview;
+    }
     
     private var _first:Bool = true;
     public override function show() {
@@ -63,25 +76,8 @@ class ListDropDownHandler extends DropDownHandler {
             _first = false;
         }
         
-        _listview.left = _dropdown.screenLeft;
-        _listview.top = _dropdown.screenTop + _dropdown.height;
         _listview.width = _dropdown.width;
         _listview.height = (calcItemHeight() * listSize()) + _listview.style.paddingTop + _listview.style.paddingBottom;
-        
-        if (_listview.screenTop + _listview.height > Screen.instance.height) {
-            _listview.top = _dropdown.screenTop - _listview.height;
-        }
-        
-        Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
-    }
-    
-    public override function hide() {
-        if (_listview == null) {
-            return;
-        }
-        
-        Screen.instance.removeComponent(_listview);
-        Screen.instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
     }
     
     private function onListChange(event:UIEvent) {
@@ -91,19 +87,7 @@ class ListDropDownHandler extends DropDownHandler {
             text = label.text;
         }
         _dropdown.text = text;
-        hide();
-        _dropdown.selected = false;
-    }
-    
-    private function onScreenMouseDown(event:MouseEvent) {
-        if (_listview.hitTest(event.screenX, event.screenY) == true) {
-            return;
-        }
-        if (_dropdown.hitTest(event.screenX, event.screenY) == true) {
-            return;
-        }
-        hide();
-        _dropdown.selected = false;
+        cast(_dropdown._internalEvents, DropDownEvents).hideDropDown();
     }
     
     private function calcItemHeight():Float {
@@ -118,12 +102,29 @@ class ListDropDownHandler extends DropDownHandler {
     }
     
     private function listSize():Int {  // TODO: get from dropdown, not sure about prop name... "listsize" doesnt make sense as might not always be a list (ie, colour selector, data selector, etc)
-        var contents:Component = _listview.findComponent("listview-contents", false, "css");
         var n = 4;
+        var contents:Component = _listview.findComponent("listview-contents", false, "css");
         if (n > contents.childComponents.length) {
             n = contents.childComponents.length;
         }
         return n;
+    }
+}
+
+class CalendarDropDownHandler extends DropDownHandler {
+    private var _calendar:CalendarView;
+    
+    private override function get_component():Component {
+        return _calendar;
+    }
+    
+    public override function show() {
+        if (_calendar == null) {
+            _calendar = new CalendarView();
+            _calendar.addClass("popup");
+        }    
+        
+        Screen.instance.addComponent(_calendar);
     }
 }
 
@@ -158,20 +159,44 @@ class DropDownEvents extends ButtonEvents {
         }
     }
     
-    private function showDropDown() {
+    public function showDropDown() {
         if (_handler == null) {
-            _handler = new ListDropDownHandler(_dropdown); // TODO: make this an option
+            var handlerClass:String = DropDownBuilder.HANDLER_MAP.get(_dropdown.type);
+            _handler = Type.createInstance(Type.resolveClass(handlerClass), [_dropdown]);
         }
         
         _handler.show();
+        _handler.component.left = _dropdown.screenLeft;
+        _handler.component.top = _dropdown.screenTop + _dropdown.height - 1;
+        
+        if (_handler.component.screenTop + _handler.component.height > Screen.instance.height) {
+            _handler.component.top = _dropdown.screenTop - _handler.component.height;
+        }
+        
+        Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
     }
     
-    private function hideDropDown() {
+    public function hideDropDown() {
         if (_handler == null) {
             return;
         }
         
+        _dropdown.selected = false;
         _handler.hide();
+        Screen.instance.removeComponent(_handler.component);
+        Screen.instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
+        
+    }
+    
+    private function onScreenMouseDown(event:MouseEvent) {
+        if (_handler.component.hitTest(event.screenX, event.screenY) == true) {
+            return;
+        }
+        if (_dropdown.hitTest(event.screenX, event.screenY) == true) {
+            return;
+        }
+        
+        hideDropDown();
     }
 }
 
@@ -181,11 +206,16 @@ class DropDownEvents extends ButtonEvents {
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 private class DropDownBuilder extends CompositeBuilder {
+    public static var HANDLER_MAP:Map<String, String> = new Map<String, String>();
+    
     private var _dropdown:DropDown2;
 
     public function new(dropdown:DropDown2) {
         super(dropdown);
         _dropdown = dropdown;
+        
+        HANDLER_MAP.set("list", Type.getClassName(ListDropDownHandler));
+        HANDLER_MAP.set("date", Type.getClassName(CalendarDropDownHandler));
     }
     
     public override function create() {

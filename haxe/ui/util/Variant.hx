@@ -10,6 +10,7 @@ enum VariantType {
     Bool(s:Bool);
     DataSource(s:DataSource<Dynamic>);
     Component(s:Component);
+    Dt(s:Date);
 }
 
 abstract Variant(VariantType) from VariantType {
@@ -31,6 +32,7 @@ abstract Variant(VariantType) from VariantType {
             case Bool(s): Std.string(s);
             case Component(s): Std.string(s);
             case DataSource(s): Std.string(s);
+            case Dt(s): Std.string(s);
             default: throw "Variant Type Error";
         }
     }
@@ -128,6 +130,32 @@ abstract Variant(VariantType) from VariantType {
         return false;
     }
 
+    // ************************************************************************************************************
+    // DATES
+    // ************************************************************************************************************
+    @:from static function fromDate(s:Date):Variant {
+        return Dt(s);
+    }
+
+    @:to public function toDate():Date {
+        if (this == null) {
+            return null;
+        }
+        return switch (this) {
+            case Dt(s): s;
+            default: throw "Variant Type Error";
+        }
+    }
+    
+    public var isDate(get, never):Bool;
+    private function get_isDate():Bool {
+        switch (this) {
+            case Dt(_): return true;
+            default:
+        }
+        return false;
+    }
+    
     // ************************************************************************************************************
     // COMPONENT
     // ************************************************************************************************************
@@ -434,6 +462,7 @@ abstract Variant(VariantType) from VariantType {
                 case VariantType.Bool(y):           d = y;
                 case VariantType.Component(y):      d = y;
                 case VariantType.DataSource(y):     d = y;
+                case VariantType.Dt(y):             d = y;
             }
         }
         return d;
