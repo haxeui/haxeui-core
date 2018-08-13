@@ -90,6 +90,7 @@ private class DateBehaviour extends DataBehaviour {
             child.removeClass("calendar-off-day");
             child.removeClass("calendar-day");
             child.removeClass("calendar-day-selected");
+            child.removeClass(":hover"); // bit of a hack, kinda, when use in a dropdown, it never gets the mouseout as the calendar is removed
         }
         
         var prevMonth = DateUtils.previousMonth(date);
