@@ -170,6 +170,9 @@ class DropDownEvents extends ButtonEvents {
     public function showDropDown() {
         if (_handler == null) {
             var handlerClass:String = DropDownBuilder.HANDLER_MAP.get(_dropdown.type);
+            if (handlerClass == null) {
+                handlerClass = _dropdown.type;
+            }
             _handler = Type.createInstance(Type.resolveClass(handlerClass), [_dropdown]);
         }
         

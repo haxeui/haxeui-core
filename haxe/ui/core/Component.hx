@@ -143,7 +143,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             "disabled" =>  new ComponentDefaultDisabledBehaviour(this)
         ]);
         if (_layout == null) {
-            //layout = new DefaultLayout();       //TODO - it should be avoided. For each component it creates the object and possibly overwritten with a custom layout, so it is useless. Create in case it is needed
+            layout = new DefaultLayout();       //TODO - it should be avoided. For each component it creates the object and possibly overwritten with a custom layout, so it is useless. Create in case it is needed
         }
     }
 
