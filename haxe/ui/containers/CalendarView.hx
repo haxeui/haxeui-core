@@ -49,7 +49,7 @@ private class Events extends haxe.ui.core.Events {
         }
         
         if (_target.findComponent(Calendar).hasEvent(UIEvent.CHANGE, onCalendarChange) == false) {
-            _target.findComponent(Calendar).registerEvent(CalendarEvent.MONTH_CHANGE, onCalendarChange);
+            _target.findComponent(Calendar).registerEvent(UIEvent.CHANGE, onCalendarChange);
         }
     }
     

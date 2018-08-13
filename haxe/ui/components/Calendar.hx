@@ -68,7 +68,6 @@ private class SelectedDateBehaviour extends DefaultBehaviour {
         var calendar = cast(_component, Calendar);
         calendar.date = calendar.date; // TODO: this is wrong, works, but its wrong... need to split up the code into util classes, one to build the month, another to select it
         
-        trace("change");
         _component.dispatch(new UIEvent(UIEvent.CHANGE));
     }
 }
@@ -195,6 +194,7 @@ private class DateUtils {
 //***********************************************************************************************************
 private class Events extends haxe.ui.core.Events {
     public override function register() {
+        unregister();
         for (child in _target.childComponents) {
             if (child.hasEvent(MouseEvent.CLICK, onDayClicked) == false && child.hasClass("calendar-day")) {
                 child.registerEvent(MouseEvent.CLICK, onDayClicked);
