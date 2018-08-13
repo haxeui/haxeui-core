@@ -5,6 +5,8 @@ import haxe.ui.containers.Grid;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.DataBehaviour;
+import haxe.ui.core.DefaultBehaviour;
+import haxe.ui.core.MouseEvent;
 import haxe.ui.core.UIEvent;
 import haxe.ui.layouts.VerticalGridLayout;
 import haxe.ui.util.Variant;
@@ -25,8 +27,8 @@ class Calendar extends Grid {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:behaviour(DateBehaviour)                    public var date:Date;
-    @:behaviour(DataBehaviour)                    public var selectedDate:Date;
+    @:behaviour(DateBehaviour)                  public var date:Date;
+    @:behaviour(SelectedDateBehaviour)          public var selectedDate:Date;
     
     public function previousMonth() { // TODO: work out a way to use meta data with callable behaviours
         behaviourCall("previousMonth");
@@ -56,6 +58,22 @@ private class NextMonthBehaviour extends Behaviour {
     }
 }
 
+private class SelectedDateBehaviour extends DefaultBehaviour {
+    public override function set(value:Variant) {
+        super.set(value);
+        
+        var date:Date = value;
+        _component.invalidateComponentData();
+        
+        var calendar = cast(_component, Calendar);
+        calendar.date = calendar.date; // TODO: this is wrong, works, but its wrong... need to split up the code into util classes, one to build the month, another to select it
+        
+        trace("change");
+        _component.dispatch(new UIEvent(UIEvent.CHANGE));
+    }
+}
+
+@:access(haxe.ui.core.Component)
 private class DateBehaviour extends DataBehaviour {
     private override function validateData() {
         var date:Date = _value;
@@ -86,7 +104,10 @@ private class DateBehaviour extends DataBehaviour {
             last--;
         }
         
-        var selectedDate:Date = Date.now();
+        var selectedDate:Date = cast(_component, Calendar).selectedDate;
+        if (selectedDate == null) {
+            selectedDate = Date.now();
+        }
         for (i in 0...endDay) {
             var item = _component.childComponents[i + startDay];
             item.addClass("calendar-day");
@@ -109,9 +130,10 @@ private class DateBehaviour extends DataBehaviour {
             n++;
         }
         
+        _component.registerInternalEvents(true);
+        
         _component.dispatch(new CalendarEvent(CalendarEvent.MONTH_CHANGE));
     }
-    
 }
 
 //***********************************************************************************************************
@@ -171,7 +193,27 @@ private class DateUtils {
 // Events
 //***********************************************************************************************************
 private class Events extends haxe.ui.core.Events {
+    public override function register() {
+        for (child in _target.childComponents) {
+            if (child.hasEvent(MouseEvent.CLICK, onDayClicked) == false && child.hasClass("calendar-day")) {
+                child.registerEvent(MouseEvent.CLICK, onDayClicked);
+            }
+        }
+    }
     
+    public override function unregister() {
+        for (child in _target.childComponents) {
+            child.unregisterEvent(MouseEvent.CLICK, onDayClicked);
+        }
+    }
+    
+    private function onDayClicked(event:MouseEvent) {
+        var calendar:Calendar = cast(_target, Calendar);
+        var day:Int = Std.parseInt(event.target.text);
+        var month = calendar.date.getMonth();
+        var year = calendar.date.getFullYear();
+        calendar.selectedDate = new Date(year, month, day, 0, 0, 0);
+    }
 }
 
 //***********************************************************************************************************

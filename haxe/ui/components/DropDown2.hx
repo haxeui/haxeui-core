@@ -29,9 +29,8 @@ class DropDown2 extends Button implements IDataComponent {
 // Dropdown Handlers
 //***********************************************************************************************************
 interface IDropDownHandler {
-    function show():Void;
-    function hide():Void;
     var component(get, null):Component;
+    function show():Void;
 }
 
 class DropDownHandler implements IDropDownHandler {
@@ -47,9 +46,6 @@ class DropDownHandler implements IDropDownHandler {
     }
     
     public function show() {
-    }
-    
-    public function hide() {
     }
 }
 
@@ -111,6 +107,7 @@ class ListDropDownHandler extends DropDownHandler {
     }
 }
 
+@:access(haxe.ui.core.Component)
 class CalendarDropDownHandler extends DropDownHandler {
     private var _calendar:CalendarView;
     
@@ -122,9 +119,20 @@ class CalendarDropDownHandler extends DropDownHandler {
         if (_calendar == null) {
             _calendar = new CalendarView();
             _calendar.addClass("popup");
+            
+            _calendar.registerEvent(UIEvent.CHANGE, onCalendarChange);
         }    
         
         Screen.instance.addComponent(_calendar);
+    }
+    
+    public function onCalendarChange(event:UIEvent) {
+        if (_calendar.selectedDate == null) {
+            return;
+        }
+        var dateFormat:String = "%d/%m/%Y";
+        _dropdown.text = DateTools.format(_calendar.selectedDate, dateFormat);
+        cast(_dropdown._internalEvents, DropDownEvents).hideDropDown();
     }
 }
 
@@ -182,7 +190,6 @@ class DropDownEvents extends ButtonEvents {
         }
         
         _dropdown.selected = false;
-        _handler.hide();
         Screen.instance.removeComponent(_handler.component);
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
         
