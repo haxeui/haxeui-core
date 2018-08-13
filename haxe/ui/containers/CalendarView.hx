@@ -51,6 +51,8 @@ private class Events extends haxe.ui.core.Events {
         if (_target.findComponent(Calendar).hasEvent(UIEvent.CHANGE, onCalendarChange) == false) {
             _target.findComponent(Calendar).registerEvent(UIEvent.CHANGE, onCalendarChange);
         }
+        
+        registerEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
     }
     
     private function onPrevMonth(event:MouseEvent) {
@@ -69,6 +71,14 @@ private class Events extends haxe.ui.core.Events {
     
     private function onCalendarChange(event:CalendarEvent) {
         _target.dispatch(new UIEvent(UIEvent.CHANGE));
+    }
+    
+    private function onMouseWheel(event:MouseEvent) {
+        if (event.delta >= 1) {
+            _target.findComponent(Calendar).nextMonth();
+        } else {
+            _target.findComponent(Calendar).previousMonth();
+        }
     }
 }
 
