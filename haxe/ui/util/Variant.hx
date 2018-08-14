@@ -8,6 +8,7 @@ enum VariantType {
     Float(s:Float);
     String(s:String);
     Bool(s:Bool);
+    Array(s:Array<Dynamic>);
     DataSource(s:DataSource<Dynamic>);
     Component(s:Component);
     Dt(s:Date);
@@ -30,6 +31,7 @@ abstract Variant(VariantType) from VariantType {
             case Int(s): Std.string(s);
             case Float(s): Std.string(s);
             case Bool(s): Std.string(s);
+            case Array(s): Std.string(s);
             case Component(s): Std.string(s);
             case DataSource(s): Std.string(s);
             case Dt(s): Std.string(s);
@@ -131,6 +133,32 @@ abstract Variant(VariantType) from VariantType {
     }
 
     // ************************************************************************************************************
+    // ARRAYS
+    // ************************************************************************************************************
+    @:from static function fromArray<T>(s:Array<T>):Variant {
+        return Array(s);
+    }
+
+    @:to public function toArray<T>():Array<T> {
+        if (this == null) {
+            return null;
+        }
+        return switch (this) {
+            case Array(s): cast s;
+            default: throw "Variant Type Error";
+        }
+    }
+
+    public var isArray(get, never):Bool;
+    private function get_isArray():Bool {
+        switch (this) {
+            case Array(_): return true;
+            default:
+        }
+        return false;
+    }
+
+    // ************************************************************************************************************
     // DATES
     // ************************************************************************************************************
     @:from static function fromDate(s:Date):Variant {
@@ -185,17 +213,17 @@ abstract Variant(VariantType) from VariantType {
     // ************************************************************************************************************
     // DATA SOURCE
     // ************************************************************************************************************
-    @:from static function fromDataSource(s:DataSource<Dynamic>):Variant {
+    @:from static function fromDataSource<T>(s:DataSource<T>):Variant {
         return DataSource(s);
     }
 
-    @:to function toDataSource():DataSource<Dynamic> {
+    @:to function toDataSource<T>():DataSource<T> {
         if (this == null) {
             return null;
         }
 
         return switch (this) {
-            case DataSource(s): s;
+            case DataSource(s): cast s;
             default: throw "Variant Type Error";
         }
     }
@@ -460,6 +488,7 @@ abstract Variant(VariantType) from VariantType {
                 case VariantType.Float(y):          d = y;
                 case VariantType.String(y):         d = y;
                 case VariantType.Bool(y):           d = y;
+                case VariantType.Array(y):          d = y;
                 case VariantType.Component(y):      d = y;
                 case VariantType.DataSource(y):     d = y;
                 case VariantType.Dt(y):             d = y;

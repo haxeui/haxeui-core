@@ -1,16 +1,17 @@
 package haxe.ui.containers;
 
-import haxe.ui.core.InteractiveComponent;
-import haxe.ui.core.MouseEvent;
-import haxe.ui.core.ScrollEvent;
+import haxe.ui.core.DefaultBehaviour;
+import haxe.ui.constants.SelectionMode;
 import haxe.ui.containers.ScrollView2.ScrollViewBuilder;
 import haxe.ui.containers.ScrollView2;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.DataBehaviour;
 import haxe.ui.core.IDataComponent;
+import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.ItemRenderer;
 import haxe.ui.core.LayoutBehaviour;
+import haxe.ui.core.MouseEvent;
 import haxe.ui.core.ScrollEvent;
 import haxe.ui.core.UIEvent;
 import haxe.ui.data.DataSource;
@@ -22,12 +23,16 @@ class ListView2 extends ScrollView2 implements IDataComponent implements IVirtua
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:behaviour(DataSourceBehaviour)                    public var dataSource:DataSource<Dynamic>;
-    @:behaviour(LayoutBehaviour, 30)                    public var itemWidth:Float;
-    @:behaviour(LayoutBehaviour, -1)                    public var itemHeight:Float;
-    @:behaviour(LayoutBehaviour, false)                 public var variableItemSize:Bool;
-    @:behaviour(SelectedIndexBehaviour, -1)             public var selectedIndex:Int;
-    @:behaviour(SelectedItemBehaviour)                  public var selectedItem:Component;  //TODO :ItemRenderer - Error -> Variant should be ItemRenderer
+    @:behaviour(DataSourceBehaviour)                            public var dataSource:DataSource<Dynamic>;
+    @:behaviour(LayoutBehaviour, 30)                            public var itemWidth:Float;
+    @:behaviour(LayoutBehaviour, -1)                            public var itemHeight:Float;
+    @:behaviour(LayoutBehaviour, false)                         public var variableItemSize:Bool;
+    @:behaviour(SelectedIndexBehaviour, -1)                     public var selectedIndex:Int;
+    @:behaviour(SelectedItemBehaviour)                          public var selectedItem:Dynamic;
+    @:behaviour(SelectedIndicesBehaviour)                       public var selectedIndices:Array<Int>;
+    @:behaviour(SelectedItemsBehaviour)                         public var selectedItems:Array<Dynamic>;
+    @:behaviour(SelectionModeBehaviour, SelectionMode.ONE_ITEM) public var selectionMode:SelectionMode;
+    @:behaviour(DefaultBehaviour, 500)                          public var longPressSelectionTime:Int;  //ms
 
     //TODO - error with Behaviour
     private var _itemRendererFunction:ItemRendererFunction2;
@@ -107,7 +112,7 @@ class ListViewEvents extends ScrollViewEvents {
     private function onRendererCreated(e:UIEvent):Void {
         var instance:ItemRenderer = cast(e.data, ItemRenderer);
         instance.registerEvent(MouseEvent.CLICK, onRendererClick);
-        if(_listview.selectedIndex != -1 && instance.itemIndex == _listview.selectedIndex) {
+        if(_listview.selectedIndices.indexOf(instance.itemIndex) != -1) {
             instance.addClass(":selected", true, true);
         }
     }
@@ -115,7 +120,7 @@ class ListViewEvents extends ScrollViewEvents {
     private function onRendererDestroyed(e:UIEvent) {
         var instance:ItemRenderer = cast(e.data, ItemRenderer);
         instance.unregisterEvent(MouseEvent.CLICK, onRendererClick);
-        if(_listview.selectedIndex != -1 && instance.itemIndex == _listview.selectedIndex) {
+        if(_listview.selectedIndices.indexOf(instance.itemIndex) != -1) {
             instance.removeClass(":selected", true, true);
         }
     }
@@ -128,7 +133,44 @@ class ListViewEvents extends ScrollViewEvents {
             }
         }
 
-        _listview.selectedItem = cast(e.target, ItemRenderer);
+        var renderer:ItemRenderer = cast(e.target, ItemRenderer);
+        switch(_listview.selectionMode) {
+            case SelectionMode.DISABLED:
+
+            case SelectionMode.ONE_ITEM:
+                _listview.selectedIndex = renderer.itemIndex;
+
+            case SelectionMode.ONE_ITEM_REPEATED:
+                _listview.selectedIndices = [renderer.itemIndex];
+
+            case SelectionMode.MULTIPLE_CTRL:
+                if (e.ctrlKey == true) {
+                    toggleSelection(renderer);
+                }
+
+            case SelectionMode.MULTIPLE_SHIFT:
+                if (e.shiftKey == true) {
+                    toggleSelection(renderer);
+                }
+            case SelectionMode.MULTIPLE_LONG_PRESS:
+                //TODO
+
+        }
+    }
+
+    private function toggleSelection(renderer:ItemRenderer) {
+        var itemIndex:Int = renderer.itemIndex;
+        var selectedIndices = _listview.selectedIndices.copy();
+        var index:Int;
+        if((index = selectedIndices.indexOf(itemIndex)) == -1)
+        {
+            selectedIndices.push(itemIndex);
+        }
+        else
+        {
+            selectedIndices.splice(index, 1);
+        }
+        _listview.selectedIndices = selectedIndices;
     }
 }
 
@@ -179,45 +221,111 @@ private class DataSourceBehaviour extends DataBehaviour {
     }
 }
 
-private class SelectedIndexBehaviour extends DataBehaviour {
-    private var _currentSelection:ItemRenderer;
-
-    private override function validateData() {
+private class SelectedIndexBehaviour extends Behaviour {
+    public override function get():Variant {
         var listView:ListView2 = cast(_component, ListView2);
-        var selectedItem:ItemRenderer = cast listView.selectedItem;
-        if (selectedItem == null && _value >= 0 && _value < listView.dataSource.size) {    //Check if the contents have been created.
-            invalidateData();
-        } else if (_currentSelection != selectedItem) {
-            if (_currentSelection != null) {
-                _currentSelection.removeClass(":selected", true, true);
-            }
+        var selectedIndices:Array<Int> = listView.selectedIndices;
+        return selectedIndices != null && selectedIndices.length > 0 ? selectedIndices[selectedIndices.length-1] : -1;
+    }
 
-            _currentSelection = selectedItem;
-
-            if (_currentSelection != null) {
-                _currentSelection.addClass(":selected", true, true);
-                _component.dispatch(new UIEvent(UIEvent.CHANGE));
-            }
-        }
+    public override function set(value:Variant) {
+        var listView:ListView2 = cast(_component, ListView2);
+        listView.selectedIndices = [value];
     }
 }
 
 private class SelectedItemBehaviour extends Behaviour {
     public override function get():Variant {
         var listView:ListView2 = cast(_component, ListView2);
+        var selectedIndices:Array<Int> = listView.selectedIndices;
+        return selectedIndices.length > 0 ? listView.dataSource.get(selectedIndices[selectedIndices.length-1]) : null;
+    }
+
+    public override function set(value:Variant) {
+        var listView:ListView2 = cast(_component, ListView2);
+        var index:Int = listView.dataSource.indexOf(value);
+        if (index != -1 && listView.selectedIndices.indexOf(index) == -1)
+        {
+            listView.selectedIndices = [index];
+        }
+    }
+}
+
+private class SelectedIndicesBehaviour extends DataBehaviour {
+    public override function get():Variant {
+        return _value.isNull ? [] : _value;
+    }
+
+    private override function validateData() {
+        var listView:ListView2 = cast(_component, ListView2);
+        var selectedIndices:Array<Int> = listView.selectedIndices;
         var contents:Component = _component.findComponent("scrollview-contents", false, "css");
-        if (contents != null && listView.selectedIndex != -1 && listView.selectedIndex < contents.childComponents.length) {
-            return cast(contents.childComponents[listView.selectedIndex], ItemRenderer);
+        for (child in contents.childComponents) {
+            if (selectedIndices.indexOf(cast(child, ItemRenderer).itemIndex) != -1) {
+                child.addClass(":selected", true, true);
+            } else {
+                child.removeClass(":selected", true, true);
+            }
+        }
+
+        _component.dispatch(new UIEvent(UIEvent.CHANGE));
+    }
+}
+
+private class SelectedItemsBehaviour extends Behaviour {
+    public override function get():Variant {
+        var listView:ListView2 = cast(_component, ListView2);
+        var selectedIndices:Array<Int> = listView.selectedIndices;
+        if (selectedIndices != null && selectedIndices.length > 0) {
+            var selectedItems:Array<Dynamic> = [];
+            for (i in 0...listView.dataSource.size) {
+                var data:Dynamic = listView.dataSource.get(i);
+                selectedItems.push(data);
+            }
+
+            return selectedItems;
         } else {
-            return null;
+            return [];
         }
     }
 
     public override function set(value:Variant) {
         var listView:ListView2 = cast(_component, ListView2);
-        var contents:Component = _component.findComponent("scrollview-contents", false, "css");
-        if (listView.dataSource != null && contents != null) {
-            listView.selectedIndex = contents.childComponents.indexOf(value);
+        var selectedItems:Array<Dynamic> = value;
+        if (selectedItems != null && selectedItems.length > 0) {
+            var selectedIndices:Array<Int> = [];
+            var index:Int;
+            for (item in selectedItems) {
+                if((index = listView.dataSource.indexOf(item)) != -1) {
+                    selectedIndices.push(index);
+                }
+            }
+
+            listView.selectedIndices = selectedIndices;
+        } else {
+            listView.selectedIndices = [];
+        }
+    }
+}
+
+private class SelectionModeBehaviour extends DataBehaviour {
+    private override function validateData() {
+        var listView:ListView2 = cast(_component, ListView2);
+        var selectedIndices:Array<Int> = listView.selectedIndices;
+        if(selectedIndices.length == 0)
+            return;
+
+        var selectionMode:SelectionMode = cast _value;
+        switch(selectionMode) {
+            case SelectionMode.DISABLED:
+                listView.selectedIndices = null;
+
+            case SelectionMode.ONE_ITEM:
+                if (selectedIndices.length > 1) {
+                    listView.selectedIndices = [selectedIndices[0]];
+                }
+
+            default:
         }
     }
 }

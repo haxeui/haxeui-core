@@ -7,6 +7,7 @@ class KeyboardEvent extends UIEvent {
     public static inline var KEY_UP:String = "keyup";
 
     public var keyCode:Int;
+    public var ctrlKey:Bool;
     public var shiftKey:Bool;
 
     public function new(type:String) {
@@ -18,6 +19,7 @@ class KeyboardEvent extends UIEvent {
         c.type = this.type;
         c.target = this.target;
         c.keyCode = this.keyCode;
+        c.ctrlKey = this.ctrlKey;
         c.shiftKey = this.shiftKey;
         return c;
     }

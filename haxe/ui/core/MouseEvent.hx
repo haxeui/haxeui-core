@@ -14,7 +14,9 @@ class MouseEvent extends UIEvent {
     public var buttonDown:Bool;
     public var delta:Float;
     public var touchEvent:Bool;
-    
+    public var ctrlKey:Bool;
+    public var shiftKey:Bool;
+
     public function new(type:String) {
         super(type);
     }
@@ -46,6 +48,8 @@ class MouseEvent extends UIEvent {
         c.buttonDown = this.buttonDown;
         c.delta = this.delta;
         c.touchEvent = this.touchEvent;
+        c.ctrlKey = this.ctrlKey;
+        c.shiftKey = this.shiftKey;
         postClone(c);
         return c;
     }
