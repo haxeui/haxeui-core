@@ -1,7 +1,6 @@
 package haxe.ui.components;
 
 import haxe.ui.core.Behaviour;
-import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.DataBehaviour;
 import haxe.ui.core.DefaultBehaviour;
 import haxe.ui.core.InteractiveComponent;
@@ -24,13 +23,14 @@ class Button extends InteractiveComponent {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:behaviour(DefaultBehaviour, false)    public var repeater:Bool;
-    @:behaviour(DefaultBehaviour, 50)       public var repeatInterval:Int;
-    @:behaviour(DefaultBehaviour, false)    public var remainPressed:Bool;
-    @:behaviour(ToggleBehaviour)            public var toggle:Bool;
-    @:behaviour(SelectedBehaviour)          public var selected:Bool;
-    @:behaviour(TextBehaviour)              public var text:String;
-    @:behaviour(IconBehaviour)              public var icon:String;
+    @:clonable @:behaviour(DefaultBehaviour, false)    public var repeater:Bool;
+    @:clonable @:behaviour(DefaultBehaviour, 50)       public var repeatInterval:Int;
+    @:clonable @:behaviour(DefaultBehaviour, false)    public var remainPressed:Bool;
+    @:clonable @:behaviour(ToggleBehaviour)            public var toggle:Bool;
+    @:clonable @:behaviour(SelectedBehaviour)          public var selected:Bool;
+    @:clonable @:behaviour(TextBehaviour)              public var text:String;
+    @:clonable @:behaviour(TextBehaviour)              public var value:Variant;
+    @:clonable @:behaviour(IconBehaviour)              public var icon:String;
     
     //***********************************************************************************************************
     // Overrides
@@ -205,7 +205,6 @@ private class IconBehaviour extends DataBehaviour {
         icon.resource = _value;
     }
 }
-
 
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
