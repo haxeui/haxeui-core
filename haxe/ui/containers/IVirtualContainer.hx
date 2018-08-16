@@ -16,6 +16,7 @@ interface IVirtualContainer {
     public var vscrollMax(get, set):Float;
     public var vscrollPageSize(get, set):Float;
 
+    public var itemRenderer(get, set):ItemRenderer;
     public var itemRendererFunction(get, set):ItemRendererFunction2;
     public var itemRendererClass(get, set):Class<ItemRenderer>;
 }

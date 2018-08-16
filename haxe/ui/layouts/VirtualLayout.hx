@@ -168,7 +168,12 @@ class VirtualLayout extends ScrollViewLayout {
         }
 
         if (instance == null) {
-            instance = Type.createInstance(cls, []);
+            var comp:IVirtualContainer = cast(_component, IVirtualContainer);
+            if (comp.itemRenderer != null) {
+                instance = comp.itemRenderer.cloneComponent();
+            } else {
+                instance = Type.createInstance(cls, []);
+            }
         }
 
         instance.itemIndex = index;

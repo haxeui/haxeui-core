@@ -402,6 +402,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
 
      For example a buttons value is its text, and sliders value is its slider position.
     **/
+     /*
     @clonable public var value(get, set):Variant;
     private function get_value():Variant {
         return null;
@@ -410,6 +411,8 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         //text = value;
         return value;
     }
+    */
+    @:behaviour(DefaultBehaviour)  public var value:Variant;
 
     /**
      Reference to the `Screen` object this component is displayed on

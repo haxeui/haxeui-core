@@ -63,6 +63,33 @@ class ListView2 extends ScrollView2 implements IDataComponent implements IVirtua
         return value;
     }
 
+    private var _itemRenderer:ItemRenderer;
+    public var itemRenderer(get, set):ItemRenderer;
+    private function get_itemRenderer():ItemRenderer {
+        return _itemRenderer;
+    }
+    private function set_itemRenderer(value:ItemRenderer):ItemRenderer {
+        if (_itemRenderer != value) {
+            _itemRenderer = value;
+            invalidateComponentLayout();
+        }
+
+        return value;
+    }
+
+    //***********************************************************************************************************
+    // Overrides
+    //***********************************************************************************************************
+    public override function addComponent(child:Component):Component {
+        var r = null;
+        if (Std.is(child, ItemRenderer) && (_itemRenderer == null && _itemRendererFunction == null && _itemRendererClass == null)) {
+            itemRenderer = cast(child, ItemRenderer);
+        } else {
+            r = super.addComponent(child);
+        }
+        return null;
+    }
+    
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************
@@ -196,8 +223,6 @@ private class ListViewBuilder extends ScrollViewBuilder {
     private override function createContentContainer(layoutName:String) {
         if (_contents == null) {
             super.createContentContainer(layoutName);
-//            _contents.percentWidth = 100;   //TODO - would be nice to remove this. Defined in the css, but it doesn't work.
-//            _contents.percentHeight = 100;   //TODO - would be nice to remove this. Defined in the css, but it doesn't work.
             _contents.addClass("listview-contents");
         }
     }
