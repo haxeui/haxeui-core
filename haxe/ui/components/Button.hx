@@ -8,6 +8,7 @@ import haxe.ui.core.MouseEvent;
 import haxe.ui.focus.FocusManager;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.styles.Style;
+import haxe.ui.util.Size;
 import haxe.ui.util.Timer;
 import haxe.ui.util.Variant;
 
@@ -46,12 +47,14 @@ class Button extends InteractiveComponent {
             (label.customStyle.color != style.color ||
             label.customStyle.fontName != style.fontName ||
             label.customStyle.fontSize != style.fontSize ||
-            label.customStyle.cursor != style.cursor)) {
+            label.customStyle.cursor != style.cursor ||
+            label.customStyle.textAlign != style.textAlign)) {
 
             label.customStyle.color = style.color;
             label.customStyle.fontName = style.fontName;
             label.customStyle.fontSize = style.fontSize;
             label.customStyle.cursor = style.cursor;
+            label.customStyle.textAlign = style.textAlign;
             label.invalidateComponentStyle();
         }
 
@@ -76,6 +79,23 @@ private class ButtonLayout extends DefaultLayout {
         return component.style.iconPosition;
     }
 
+    private override function resizeChildren() {
+        super.resizeChildren();
+        
+        var label:Label = component.findComponent(Label, false);
+        var icon:Image = component.findComponent(Image, false);
+        if (_component.autoWidth == false) {
+            var ucx:Size = usableSize;
+            if (label != null) {
+                var cx = ucx.width;
+                if (icon != null && (iconPosition == "far-right" || iconPosition == "left" || iconPosition == "right")) {
+                    cx -= icon.width + verticalSpacing;
+                }
+                label.width = cx;
+            }
+        }
+    }
+    
     private override function repositionChildren() {
         super.repositionChildren();
 
@@ -97,7 +117,6 @@ private class ButtonLayout extends DefaultLayout {
                             x += horizontalSpacing + label.componentWidth;
                             icon.left = x + marginLeft(icon) - marginRight(icon);
                         }
-
                     }
 
                     label.top = Std.int((component.componentHeight / 2) - (label.componentHeight / 2)) + marginTop(label) - marginBottom(label);

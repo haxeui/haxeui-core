@@ -11,7 +11,7 @@
 .message-dialog-message{vertical-align:center;}
 .label{width:auto;height:auto;}
 .image{width:auto;height:auto;}
-.button{background:#EDEDED #E6E6E6 vertical;color:#222222;border:1px solid #ABABAB;border-radius:2px;padding:5px 5px;cursor:pointer;width:auto;height:auto;spacing:5px 5px;}
+.button{background:#EDEDED #E6E6E6 vertical;color:#222222;border:1px solid #ABABAB;border-radius:2px;padding:5px 5px;cursor:pointer;width:auto;height:auto;spacing:5px 5px;text-align:center;}
 .button:hover{background:#F5F5F5 #F1F1F1 vertical;color:#000000;}
 .button:down{background:#D2D2D2 #C2C2C2 vertical;color:#000000;border-color:#7F7F7F;}
 .button:active{border:2px solid #77C6FF;}
@@ -201,7 +201,7 @@
 .listview2 .odd:hover{background-color:#ecf2f9;}
 .listview2 .itemrenderer:selected{background-color:#a7c4e2;color:white;}
 .listview2 .itemrenderer:selected .label{color:white;}
-.dropdown2{icon:"haxeui-core/styles/default/up_down_arrows.png";icon-position:far-right;}
+.dropdown2{icon:"haxeui-core/styles/default/up_down_arrows.png";icon-position:far-right;text-align:left;}
 .calendar{background-color:#FFFFFF;padding:5px;border:1px solid #ABABAB;border-radius:1px;}
 .calendar .calendar-off-day{border:none;background-color:white;}
 .calendar .calendar-day{border:none;background-color:#ecf2f9;}

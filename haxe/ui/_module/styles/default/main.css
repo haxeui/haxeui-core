@@ -97,6 +97,7 @@
     width: auto;
     height: auto;
     spacing: 5px 5px;
+    text-align: center;
 }
 
 .button:hover {
@@ -1290,6 +1291,7 @@
 .dropdown2 {
     icon: "haxeui-core/styles/default/up_down_arrows.png";
     icon-position: far-right;
+    text-align: left;
 }
 
 
