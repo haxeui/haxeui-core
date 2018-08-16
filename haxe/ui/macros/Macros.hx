@@ -137,7 +137,7 @@ class Macros {
                 switch (type) { // almost certainly a better way to be doing this
                     case TPath(typePath):
                         if(typePath.name == "String" || typePath.name == "Null") {
-                            return "if (this." + field.name + " != null) { c." + field.name + " = this." + field.name + "; }\n";
+                            return "if (this." + field.name + " != null) { c." + field.name + " = this." + field.name + "; }";
                         }
 
                     default:
@@ -281,6 +281,11 @@ class Macros {
                 // add getter/setter property
                 var meta = [];
                 meta.push( { name: ":behaviour", pos: pos, params: [] } );
+                for (m in f.meta) {
+                    if (m.name != ":behaviour" && m.name != "behaviour" ) {
+                        meta.push(m);
+                    }
+                }
                 
                 fields.push({
                     name: f.name,
