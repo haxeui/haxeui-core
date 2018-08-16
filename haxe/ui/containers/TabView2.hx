@@ -57,7 +57,7 @@ private class TabViewLayout extends DefaultLayout {
             content.top = paddingTop;
             
             tabs.left = paddingLeft;
-            if (tabs.height != null) {
+            if (tabs.height != 0) {
                 tabs.top = component.height - tabs.height - paddingBottom;
             }
         } else {
@@ -65,7 +65,7 @@ private class TabViewLayout extends DefaultLayout {
             tabs.top = paddingTop;
 
             content.left = paddingLeft;
-            if (tabs.height != null) {
+            if (tabs.height != 0) {
                 content.top = tabs.top + tabs.height - 1;
             }
         }
