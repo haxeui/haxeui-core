@@ -159,6 +159,8 @@
 
 .textfield:disabled {
     background: #D4D4D4 #CCCCCC vertical;
+    color: #909090;
+    cursor: default;
 }
 
 .textarea {
