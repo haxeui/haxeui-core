@@ -57,7 +57,6 @@ class ListDropDownHandler extends DropDownHandler {
     public override function show() {
         if (_listview == null) {
             _listview = new ListView2();
-            _listview.addClass("popup");
             _listview.dataSource = _dropdown.dataSource;
             _listview.registerEvent(UIEvent.CHANGE, onListChange);
         }
@@ -113,8 +112,6 @@ class CalendarDropDownHandler extends DropDownHandler {
     public override function show() {
         if (_calendar == null) {
             _calendar = new CalendarView();
-            _calendar.addClass("popup");
-            
             _calendar.registerEvent(UIEvent.CHANGE, onCalendarChange);
         }    
         
@@ -172,6 +169,7 @@ class DropDownEvents extends ButtonEvents {
         }
         
         _handler.show();
+        _handler.component.addClass("popup");
         _handler.component.left = _dropdown.screenLeft;
         _handler.component.top = _dropdown.screenTop + _dropdown.height - 1;
         
