@@ -246,14 +246,13 @@ private class SelectedItemBehaviour extends Behaviour {
     public override function get():Variant {
         var listView:ListView2 = cast(_component, ListView2);
         var selectedIndices:Array<Int> = listView.selectedIndices;
-        return selectedIndices.length > 0 ? listView.dataSource.get(selectedIndices[selectedIndices.length-1]) : null;
+        return selectedIndices.length > 0 ? listView.dataSource.get(selectedIndices[selectedIndices.length - 1]) : null;
     }
 
     public override function set(value:Variant) {
         var listView:ListView2 = cast(_component, ListView2);
         var index:Int = listView.dataSource.indexOf(value);
-        if (index != -1 && listView.selectedIndices.indexOf(index) == -1)
-        {
+        if (index != -1 && listView.selectedIndices.indexOf(index) == -1) {
             listView.selectedIndices = [index];
         }
     }
@@ -306,7 +305,7 @@ private class SelectedItemsBehaviour extends Behaviour {
             var selectedIndices:Array<Int> = [];
             var index:Int;
             for (item in selectedItems) {
-                if((index = listView.dataSource.indexOf(item)) != -1) {
+                if ((index = listView.dataSource.indexOf(item)) != -1) {
                     selectedIndices.push(index);
                 }
             }
@@ -323,8 +322,9 @@ private class SelectionModeBehaviour extends DataBehaviour {
     private override function validateData() {
         var listView:ListView2 = cast(_component, ListView2);
         var selectedIndices:Array<Int> = listView.selectedIndices;
-        if(selectedIndices.length == 0)
+        if (selectedIndices.length == 0) {
             return;
+        }
 
         var selectionMode:SelectionMode = cast _value;
         switch(selectionMode) {

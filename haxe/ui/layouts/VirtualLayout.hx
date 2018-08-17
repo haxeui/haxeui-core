@@ -79,6 +79,7 @@ class VirtualLayout extends ScrollViewLayout {
                 item.addClass(className);
             }
 
+            item.itemIndex = n;
             item.data = data;
         }
 

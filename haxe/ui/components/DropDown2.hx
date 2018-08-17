@@ -19,10 +19,6 @@ class DropDown2 extends Button implements IDataComponent {
     //***********************************************************************************************************
     @:behaviour(DefaultBehaviour)                    public var dataSource:DataSource<Dynamic>;
     @:behaviour(DefaultBehaviour, "list")            public var type:String;
-    
-    //***********************************************************************************************************
-    // Internals
-    //***********************************************************************************************************
 }
 
 //***********************************************************************************************************
@@ -77,11 +73,10 @@ class ListDropDownHandler extends DropDownHandler {
     }
     
     private function onListChange(event:UIEvent) {
-        var label = _listview.selectedItem.findComponent(Label, true);
-        var text = null;
-        if (label != null) {
-            text = label.text;
+        if (_listview.selectedItem == null) {
+            return;
         }
+        var text = _listview.selectedItem.value;
         _dropdown.text = text;
         cast(_dropdown._internalEvents, DropDownEvents).hideDropDown();
     }
