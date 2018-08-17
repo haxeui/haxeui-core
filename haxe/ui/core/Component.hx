@@ -378,7 +378,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     }
 
     
-    @:behaviour(DefaultBehaviour)  public var text:String;
+    @:clonable @:behaviour(DefaultBehaviour)  public var text:String;
     
     private var _text:String = null;
     /**
@@ -412,7 +412,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         return value;
     }
     */
-    @:behaviour(DefaultBehaviour)  public var value:Variant;
+    @:clonable @:behaviour(DefaultBehaviour)  public var value:Variant;
 
     /**
      Reference to the `Screen` object this component is displayed on
