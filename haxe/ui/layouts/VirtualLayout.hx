@@ -201,6 +201,8 @@ class VirtualLayout extends ScrollViewLayout {
             return comp.itemRendererFunction(data, index);
         } else if (comp.itemRendererClass != null) {
             return comp.itemRendererClass;
+        } else if (comp.itemRenderer != null) {
+            return Type.getClass(comp.itemRenderer);
         } else {
             return BasicItemRenderer;
         }
