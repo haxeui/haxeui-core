@@ -9,6 +9,7 @@ class VerticalVirtualLayout extends VirtualLayout {
 
         var comp:IVirtualContainer = cast(_component, IVirtualContainer);
         var usableSize = this.usableSize;
+        var itemHeight:Float = this.itemHeight;
         var contents:Component = this.contents;
         var verticalSpacing = contents.layout.verticalSpacing;
         if (comp.virtual == true) {
@@ -51,6 +52,7 @@ class VerticalVirtualLayout extends VirtualLayout {
     private override function calculateRangeVisible() {
         var comp:IVirtualContainer = cast(_component, IVirtualContainer);
         var verticalSpacing = contents.layout.verticalSpacing;
+        var itemHeight:Float = this.itemHeight;
         var visibleItemsCount:Int = 0;
         var contentsHeight:Float = contents.height;
         if (contentsHeight > _component.height) {
@@ -128,6 +130,7 @@ class VerticalVirtualLayout extends VirtualLayout {
         var dataSize:Int = dataSource.size;
         var verticalSpacing = contents.layout.verticalSpacing;
         var scrollMax:Float = 0;
+        var itemHeight:Float = this.itemHeight;
 
         if (comp.variableItemSize == true) {
             scrollMax = -usableSize.height;
@@ -150,25 +153,4 @@ class VerticalVirtualLayout extends VirtualLayout {
         comp.vscrollMax = scrollMax;
         comp.vscrollPageSize = (usableSize.height / (scrollMax + usableSize.height)) * scrollMax;
     }
-    
-    private var _itemHeight:Null<Float> = null;
-    private var itemHeight(get, null):Float;
-    private function get_itemHeight():Float {
-        if (_itemHeight != null) {
-            //return _itemHeight;
-        }
-        var comp:IVirtualContainer = cast(_component, IVirtualContainer);
-        var cy:Float = comp.itemHeight;
-        var childComponents = contents.childComponents;
-        if (cy < 0 && childComponents.length > 0) {
-            cy = childComponents[0].height;
-            if (cy == 0) { // TODO: is this a good idea??
-                childComponents[0].syncComponentValidation();
-                cy = childComponents[0].height;
-            }
-        }
-        
-        _itemHeight = cy;
-        return _itemHeight;
-   }
 }

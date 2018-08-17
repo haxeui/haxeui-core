@@ -28,6 +28,58 @@ class VirtualLayout extends ScrollViewLayout {
         return cast(_component, IDataComponent).dataSource;
     }
 
+    private var itemWidth(get, null):Float;
+    private function get_itemWidth():Float {
+        var comp:IVirtualContainer = cast(_component, IVirtualContainer);
+        if (comp.itemWidth > 0) {
+            return comp.itemWidth;
+        }
+
+        var childComponents = contents.childComponents;
+        var result:Float = 0;
+        if (childComponents.length > 0) {
+            result = childComponents[0].width;
+            if (result <= 0) {
+                childComponents[0].syncComponentValidation();
+                result = childComponents[0].width;
+            }
+        }
+
+        if (result > 0) {
+            comp.itemWidth = result;
+        } else {
+            result = 1; //Min value to render items
+        }
+
+        return result;
+    }
+
+    private var itemHeight(get, null):Float;
+    private function get_itemHeight():Float {
+        var comp:IVirtualContainer = cast(_component, IVirtualContainer);
+        if (comp.itemHeight > 0) {
+            return comp.itemHeight;
+        }
+
+        var childComponents = contents.childComponents;
+        var result:Float = 0;
+        if (childComponents.length > 0) {
+            result = childComponents[0].height;
+            if (result <= 0) {
+                childComponents[0].syncComponentValidation();
+                result = childComponents[0].height;
+            }
+        }
+
+        if (result > 0) {
+            comp.itemHeight = result;
+        } else {
+            result = 1; //Min value to render items
+        }
+
+        return result;
+    }
+
     public override function refresh() {
         refreshData();
 

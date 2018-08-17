@@ -222,8 +222,9 @@ private class DataSourceBehaviour extends DataBehaviour {
         var dataSource:DataSource<Dynamic> = _value;
         if (dataSource != null) {
             dataSource.transformer = new NativeTypeTransformer();
-            dataSource.onChange = _component.invalidateComponentData;
+            dataSource.onChange = _component.invalidateComponentLayout;
         }
+        _component.invalidateComponentLayout();
     }
 }
 
