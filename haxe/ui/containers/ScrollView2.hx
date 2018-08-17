@@ -382,7 +382,7 @@ class ScrollViewEvents extends haxe.ui.core.Events {
             return;
         }
         
-        event.cancel();
+        //event.cancel();
         if (hscroll != null && hscroll.hitTest(event.screenX, event.screenY) == true) {
             return;
         }
