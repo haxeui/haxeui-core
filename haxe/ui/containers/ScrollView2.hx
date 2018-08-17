@@ -1,9 +1,9 @@
 package haxe.ui.containers;
 
-import haxe.ui.core.Behaviour;
 import haxe.ui.components.HorizontalScroll2;
 import haxe.ui.components.VerticalScroll2;
 import haxe.ui.constants.ScrollMode;
+import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.DataBehaviour;
@@ -20,6 +20,7 @@ import haxe.ui.util.Size;
 import haxe.ui.util.Variant;
 import haxe.ui.validation.InvalidationFlags;
 
+@:composite(ScrollViewEvents, ScrollViewBuilder, ScrollViewLayout)
 class ScrollView2 extends Component {
     //***********************************************************************************************************
     // Public API
@@ -38,22 +39,9 @@ class ScrollView2 extends Component {
     @:behaviour(ScrollModeBehaviour, ScrollMode.DRAG)   public var scrollMode:ScrollMode;
     
     //***********************************************************************************************************
-    // Internals
-    //***********************************************************************************************************
-    private override function createDefaults() { // TODO: remove this eventually, @:layout(...) or something
-        super.createDefaults();
-        _defaultLayout = new ScrollViewLayout();
-    }
-    
-    private override function registerComposite() { // TODO: remove this eventually, @:composite(...) or something
-       super.registerComposite();
-       _compositeBuilderClass = ScrollViewBuilder;
-    }
-    
-    //***********************************************************************************************************
     // Validation
     //***********************************************************************************************************
-    private override function validateComponentInternal() {
+    private override function validateComponentInternal() { // TODO: can this be moved to CompositeBuilder? Like validateComponentLayout?
         var scrollInvalid = isComponentInvalid(InvalidationFlags.SCROLL);
         var layoutInvalid = isComponentInvalid(InvalidationFlags.LAYOUT);
 
@@ -64,57 +52,12 @@ class ScrollView2 extends Component {
             cast(_compositeBuilder, ScrollViewBuilder).updateScrollRect(); // TODO: or this
         }
     }
-    
-    //***********************************************************************************************************
-    // Overrides
-    //***********************************************************************************************************
-    public override function addComponent(child:Component):Component { // TODO: would be nice to move this
-        var v = null;
-        if (Std.is(child, HorizontalScroll2) || Std.is(child, VerticalScroll2) || child.hasClass("scrollview-contents")) {
-            v = super.addComponent(child);
-        } else {
-//            cast(_compositeBuilder, ScrollViewBuilder).createContentContainer("vertical"); // TODO: would be nice to not have this
-            v = cast(_compositeBuilder, ScrollViewBuilder)._contents.addComponent(child); // TODO: or this
-        }
-        return v;
-    }
-    
-    public override function addComponentAt(child:Component, index:Int):Component { // TODO: would be nice to move this
-        var v = null;
-        if (Std.is(child, HorizontalScroll2) || Std.is(child, VerticalScroll2) || child.hasClass("scrollview-contents")) {
-            v = super.addComponentAt(child, index);
-        } else {
-//            cast(_compositeBuilder, ScrollViewBuilder).createContentContainer("vertical"); // TODO: would be nice to not have this
-            v = cast(_compositeBuilder, ScrollViewBuilder)._contents.addComponentAt(child, index); // TODO: or this
-        }
-        return v;
-    }
-
-    public override function setComponentIndex(child:Component, index:Int):Component { // TODO: would be nice to move this
-        var v = null;
-        if (Std.is(child, HorizontalScroll2) || Std.is(child, VerticalScroll2) || child.hasClass("scrollview-contents")) {
-            v = super.setComponentIndex(child, index);
-        } else {
-//            cast(_compositeBuilder, ScrollViewBuilder).createContentContainer("vertical"); // TODO: would be nice to not have this
-            v = cast(_compositeBuilder, ScrollViewBuilder)._contents.setComponentIndex(child, index); // TODO: or this
-        }
-        return v;
-    }
-    
-    public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component { // TODO: would be nice to move this
-        var v = null;
-        if (Std.is(child, HorizontalScroll2) || Std.is(child, VerticalScroll2) || child.hasClass("scrollview-contents")) {
-            v = super.removeComponent(child, dispose, invalidate);
-        } else {
-            v = cast(_compositeBuilder, ScrollViewBuilder)._contents.removeComponent(child, dispose, invalidate); // TODO: or this
-        }
-        return v;
-    }
 }
 
 //***********************************************************************************************************
 // Behaviours
 //***********************************************************************************************************
+@:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 private class Virtual extends DefaultBehaviour {
     public override function set(value:Variant) {
@@ -124,6 +67,7 @@ private class Virtual extends DefaultBehaviour {
     }
 }
 
+@:dox(hide) @:noCompletion
 private class ContentWidth extends Behaviour {
     public override function get():Variant {
         var contents:Component = _component.findComponent("scrollview-contents", false, "css");
@@ -136,6 +80,7 @@ private class ContentWidth extends Behaviour {
     }
 }
 
+@:dox(hide) @:noCompletion
 private class PercentContentWidth extends Behaviour {
     public override function get():Variant {
         var contents:Component = _component.findComponent("scrollview-contents", false, "css");
@@ -148,6 +93,7 @@ private class PercentContentWidth extends Behaviour {
     }
 }
 
+@:dox(hide) @:noCompletion
 private class ContentHeight extends Behaviour {
     public override function get():Variant {
         var contents:Component = _component.findComponent("scrollview-contents", false, "css");
@@ -160,6 +106,7 @@ private class ContentHeight extends Behaviour {
     }
 }
 
+@:dox(hide) @:noCompletion
 private class PercentContentHeight extends Behaviour {
     public override function get():Variant {
         var contents:Component = _component.findComponent("scrollview-contents", false, "css");
@@ -172,6 +119,7 @@ private class PercentContentHeight extends Behaviour {
     }
 }
 
+@:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 private class HScrollPos extends DataBehaviour {
     private var _scrollview:ScrollView2;
@@ -203,6 +151,7 @@ private class HScrollPos extends DataBehaviour {
     }
 }
 
+@:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 private class VScrollPos extends DataBehaviour {
     private var _scrollview:ScrollView2;
@@ -234,6 +183,7 @@ private class VScrollPos extends DataBehaviour {
     }
 }
 
+@:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 private class HScrollMax extends DataBehaviour {
     private var _scrollview:ScrollView2;
@@ -262,6 +212,7 @@ private class HScrollMax extends DataBehaviour {
     }
 }
 
+@:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 private class VScrollMax extends DataBehaviour {
     private var _scrollview:ScrollView2;
@@ -290,6 +241,7 @@ private class VScrollMax extends DataBehaviour {
     }
 }
 
+@:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 private class HScrollPageSize extends DataBehaviour {
     private var _scrollview:ScrollView2;
@@ -310,6 +262,7 @@ private class HScrollPageSize extends DataBehaviour {
     }
 }
 
+@:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 private class VScrollPageSize extends DataBehaviour {
     private var _scrollview:ScrollView2;
@@ -330,6 +283,7 @@ private class VScrollPageSize extends DataBehaviour {
     }
 }
 
+@:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 private class ScrollModeBehaviour extends DataBehaviour {
     public override function validateData() {
@@ -340,6 +294,7 @@ private class ScrollModeBehaviour extends DataBehaviour {
 //***********************************************************************************************************
 // Events
 //***********************************************************************************************************
+@:dox(hide) @:noCompletion
 typedef Inertia = {
     var screen:Point;
     var target:Point;
@@ -635,10 +590,37 @@ class ScrollViewBuilder extends CompositeBuilder {
     
     public override function create() {
         createContentContainer("vertical");
-        _component.registerInternalEvents(ScrollViewEvents);
     }
     
     public override function destroy() {
+    }
+    
+    public override function addComponent(child:Component):Component {
+        if (Std.is(child, HorizontalScroll2) == false && Std.is(child, VerticalScroll2) == false && child.hasClass("scrollview-contents") == false) {
+            return _contents.addComponent(child);
+        }
+        return null;
+    }
+    
+    public override function addComponentAt(child:Component, index:Int):Component {
+        if (Std.is(child, HorizontalScroll2) == false && Std.is(child, VerticalScroll2) == false && child.hasClass("scrollview-contents") == false) {
+            return _contents.addComponentAt(child, index);
+        }
+        return null;
+    }
+    
+    public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
+        if (Std.is(child, HorizontalScroll2) == false && Std.is(child, VerticalScroll2) == false && child.hasClass("scrollview-contents") == false) {
+            return _contents.removeComponent(child, dispose, invalidate);
+        }
+        return null;
+    }
+    
+    public override function setComponentIndex(child:Component, index:Int):Component {
+        if (Std.is(child, HorizontalScroll2) == false && Std.is(child, VerticalScroll2) == false && child.hasClass("scrollview-contents") == false) {
+            return _contents.setComponentIndex(child, index);
+        }
+        return null;
     }
     
     private function createContentContainer(layoutName:String) {

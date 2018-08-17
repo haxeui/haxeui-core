@@ -1,12 +1,12 @@
 package haxe.ui.containers;
 
-import haxe.ui.core.DefaultBehaviour;
 import haxe.ui.constants.SelectionMode;
-import haxe.ui.containers.ScrollView2.ScrollViewBuilder;
 import haxe.ui.containers.ScrollView2;
+import haxe.ui.containers.ScrollView2.ScrollViewBuilder;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.DataBehaviour;
+import haxe.ui.core.DefaultBehaviour;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.ItemRenderer;
@@ -19,6 +19,7 @@ import haxe.ui.data.transformation.NativeTypeTransformer;
 import haxe.ui.layouts.VerticalVirtualLayout;
 import haxe.ui.util.Variant;
 
+@:composite(ListViewEvents, ListViewBuilder, VerticalVirtualLayout)
 class ListView2 extends ScrollView2 implements IDataComponent implements IVirtualContainer {
     //***********************************************************************************************************
     // Public API
@@ -75,32 +76,6 @@ class ListView2 extends ScrollView2 implements IDataComponent implements IVirtua
         }
 
         return value;
-    }
-
-    //***********************************************************************************************************
-    // Overrides
-    //***********************************************************************************************************
-    public override function addComponent(child:Component):Component {
-        var r = null;
-        if (Std.is(child, ItemRenderer) && (_itemRenderer == null && _itemRendererFunction == null && _itemRendererClass == null)) {
-            itemRenderer = cast(child, ItemRenderer);
-        } else {
-            r = super.addComponent(child);
-        }
-        return null;
-    }
-    
-    //***********************************************************************************************************
-    // Internals
-    //***********************************************************************************************************
-    private override function createDefaults() { // TODO: remove this eventually, @:layout(...) or something
-        super.createDefaults();
-        _defaultLayout = new VerticalVirtualLayout();
-    }
-
-    private override function registerComposite() { // TODO: remove this eventually, @:composite(...) or something
-        super.registerComposite();
-        _compositeBuilderClass = ListViewBuilder;
     }
 }
 
@@ -189,12 +164,9 @@ class ListViewEvents extends ScrollViewEvents {
         var itemIndex:Int = renderer.itemIndex;
         var selectedIndices = _listview.selectedIndices.copy();
         var index:Int;
-        if((index = selectedIndices.indexOf(itemIndex)) == -1)
-        {
+        if ((index = selectedIndices.indexOf(itemIndex)) == -1) {
             selectedIndices.push(itemIndex);
-        }
-        else
-        {
+        } else {
             selectedIndices.splice(index, 1);
         }
         _listview.selectedIndices = selectedIndices;
@@ -205,8 +177,6 @@ class ListViewEvents extends ScrollViewEvents {
 // Composite Builder
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
-@:allow(haxe.ui.containers.ListView2)
-@:access(haxe.ui.core.Component)
 private class ListViewBuilder extends ScrollViewBuilder {
     private var _listview:ListView2;
 
@@ -217,7 +187,6 @@ private class ListViewBuilder extends ScrollViewBuilder {
 
     public override function create() {
         createContentContainer(_listview.virtual ? "absolute" : "vertical");
-        _component.registerInternalEvents(ListViewEvents);
     }
 
     private override function createContentContainer(layoutName:String) {
@@ -225,6 +194,17 @@ private class ListViewBuilder extends ScrollViewBuilder {
             super.createContentContainer(layoutName);
             _contents.addClass("listview-contents");
         }
+    }
+    
+    public override function addComponent(child:Component):Component {
+        var r = null;
+        if (Std.is(child, ItemRenderer) && (_listview.itemRenderer == null && _listview.itemRendererFunction == null && _listview.itemRendererClass == null)) {
+            _listview.itemRenderer = cast(child, ItemRenderer);
+            r = child;
+        } else {
+            r = super.addComponent(child);
+        }
+        return r;
     }
     
     public override function onVirtualChanged() {
@@ -235,6 +215,7 @@ private class ListViewBuilder extends ScrollViewBuilder {
 //***********************************************************************************************************
 // Behaviours
 //***********************************************************************************************************
+@:dox(hide) @:noCompletion
 private class DataSourceBehaviour extends DataBehaviour {
     public override function set(value:Variant) {
         super.set(value);
@@ -246,6 +227,7 @@ private class DataSourceBehaviour extends DataBehaviour {
     }
 }
 
+@:dox(hide) @:noCompletion
 private class SelectedIndexBehaviour extends Behaviour {
     public override function get():Variant {
         var listView:ListView2 = cast(_component, ListView2);
@@ -259,6 +241,7 @@ private class SelectedIndexBehaviour extends Behaviour {
     }
 }
 
+@:dox(hide) @:noCompletion
 private class SelectedItemBehaviour extends Behaviour {
     public override function get():Variant {
         var listView:ListView2 = cast(_component, ListView2);
@@ -276,6 +259,7 @@ private class SelectedItemBehaviour extends Behaviour {
     }
 }
 
+@:dox(hide) @:noCompletion
 private class SelectedIndicesBehaviour extends DataBehaviour {
     public override function get():Variant {
         return _value.isNull ? [] : _value;
@@ -297,6 +281,7 @@ private class SelectedIndicesBehaviour extends DataBehaviour {
     }
 }
 
+@:dox(hide) @:noCompletion
 private class SelectedItemsBehaviour extends Behaviour {
     public override function get():Variant {
         var listView:ListView2 = cast(_component, ListView2);
@@ -333,6 +318,7 @@ private class SelectedItemsBehaviour extends Behaviour {
     }
 }
 
+@:dox(hide) @:noCompletion
 private class SelectionModeBehaviour extends DataBehaviour {
     private override function validateData() {
         var listView:ListView2 = cast(_component, ListView2);
