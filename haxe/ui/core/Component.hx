@@ -628,6 +628,9 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             child.ready();
         }
 
+        if (_style != null) {
+            applyStyle(_style); // TODO: this doesnt feel right
+        }
         invalidateComponentLayout();
         if (_disabled == true) {
             child.disabled = true;

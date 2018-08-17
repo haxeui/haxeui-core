@@ -195,7 +195,6 @@ private class ButtonLayout extends DefaultLayout {
 // Behaviours
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
-@:access(haxe.ui.core.Component)
 private class TextBehaviour extends DataBehaviour {
     private override function validateData() {
         var label:Label = _component.findComponent(Label, false);
@@ -204,7 +203,6 @@ private class TextBehaviour extends DataBehaviour {
             label.id = "button-label";
             label.scriptAccess = false;
             _component.addComponent(label);
-            _component.applyStyle(_component._style); // TODO: this is NOT the right way to do this
         }
         
         label.text = _value;
