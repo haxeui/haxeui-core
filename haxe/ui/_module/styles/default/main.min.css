@@ -203,7 +203,7 @@
 .listview2 .itemrenderer:selected .label{color:white;}
 .dropdown2{icon:"haxeui-core/styles/default/up_down_arrows.png";icon-position:far-right;text-align:left;}
 .calendar{background-color:#FFFFFF;padding:5px;border:1px solid #ABABAB;border-radius:1px;}
-.calendar .calendar-off-day{border:none;background-color:white;}
+.calendar .calendar-off-day{border:none;background-color:white;cursor:default;}
 .calendar .calendar-day{border:none;background-color:#ecf2f9;}
 .calendar .calendar-day:hover{border:none;background-color:#a7c4e2;}
 .calendar .calendar-day-selected{border:none;background-color:#a7c4e2;color:white;}
