@@ -25,7 +25,7 @@ class ListView2 extends ScrollView2 implements IDataComponent implements IVirtua
     // Public API
     //***********************************************************************************************************
     @:behaviour(DataSourceBehaviour)                            public var dataSource:DataSource<Dynamic>;
-    @:behaviour(LayoutBehaviour, 30)                            public var itemWidth:Float;
+    @:behaviour(LayoutBehaviour, -1)                            public var itemWidth:Float;
     @:behaviour(LayoutBehaviour, -1)                            public var itemHeight:Float;
     @:behaviour(LayoutBehaviour, false)                         public var variableItemSize:Bool;
     @:behaviour(SelectedIndexBehaviour, -1)                     public var selectedIndex:Int;
