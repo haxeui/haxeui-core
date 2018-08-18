@@ -132,7 +132,10 @@ class VirtualLayout extends ScrollViewLayout {
             }
 
             item.itemIndex = n;
-            item.data = data;
+            if (item.data != data) {
+                item.data = data;
+                item.syncComponentValidation(); // TODO: this doesnt feel right
+            }
         }
 
         while (dataSource.size < contents.childComponents.length) {
