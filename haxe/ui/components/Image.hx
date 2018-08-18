@@ -18,12 +18,12 @@ class Image extends Component {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:behaviour(ResourceBehaviour)                              public var resource:String;
-    @:behaviour(InvalidatingBehaviour, ScaleMode.FILL)          public var scaleMode:ScaleMode;
-    @:behaviour(InvalidatingBehaviour, HorizontalAlign.CENTER)  public var imageHorizontalAlign:HorizontalAlign;
-    @:behaviour(InvalidatingBehaviour, VerticalAlign.CENTER)    public var imageVerticalAlign:VerticalAlign;
-    @:behaviour(DefaultBehaviour)                               public var originalWidth:Float;
-    @:behaviour(DefaultBehaviour)                               public var originalHeight:Float;
+    @:clonable @:behaviour(ResourceBehaviour)                              public var resource:String;
+    @:clonable @:behaviour(InvalidatingBehaviour, ScaleMode.FILL)          public var scaleMode:ScaleMode;
+    @:clonable @:behaviour(InvalidatingBehaviour, HorizontalAlign.CENTER)  public var imageHorizontalAlign:HorizontalAlign;
+    @:clonable @:behaviour(InvalidatingBehaviour, VerticalAlign.CENTER)    public var imageVerticalAlign:VerticalAlign;
+    @:clonable @:behaviour(DefaultBehaviour)                               public var originalWidth:Float;
+    @:clonable @:behaviour(DefaultBehaviour)                               public var originalHeight:Float;
     
     //***********************************************************************************************************
     // Internals
