@@ -131,11 +131,7 @@ class VirtualLayout extends ScrollViewLayout {
                 item.addClass(className);
             }
 
-            item.itemIndex = n;
-            if (item.data != data) {
-                item.data = data;
-                item.syncComponentValidation(); // TODO: this doesnt feel right
-            }
+            item.data = data;
         }
 
         while (dataSource.size < contents.childComponents.length) {
@@ -180,11 +176,7 @@ class VirtualLayout extends ScrollViewLayout {
                 item.addClass(className);
             }
 
-            item.itemIndex = n;
-            if (item.data != data) {
-                item.data = data;
-                item.syncComponentValidation(); // TODO: this doesnt feel right
-            }
+            item.data = data;
 
             i++;
         }
@@ -230,7 +222,6 @@ class VirtualLayout extends ScrollViewLayout {
         }
 
         if (instance == null) {
-            var comp:IVirtualContainer = cast(_component, IVirtualContainer);
             if (comp.itemRenderer != null) {
                 instance = comp.itemRenderer.cloneComponent();
             } else {

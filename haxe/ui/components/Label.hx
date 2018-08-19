@@ -107,6 +107,9 @@ private class LabelLayout extends DefaultLayout {
 @:dox(hide) @:noCompletion
 private class TextBehaviour extends DataBehaviour {
     public override function validateData() {
+        if (_component.getTextDisplay().textStyle != _component.style) {
+            _component.invalidateComponentStyle(true);
+        }
         _component.getTextDisplay().text = '${_value}';
     }
 }
