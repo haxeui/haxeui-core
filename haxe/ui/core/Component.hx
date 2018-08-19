@@ -628,9 +628,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             child.ready();
         }
 
-        if (_style != null) {
-            applyStyle(_style); // TODO: this doesnt feel right
-        }
         invalidateComponentLayout();
         if (_disabled == true) {
             child.disabled = true;
@@ -2229,7 +2226,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             _style = s;
             applyStyle(s);
         }
-        
     }
 
     private function validateComponentPosition() {
@@ -2390,8 +2386,11 @@ class Component extends ComponentBase implements IComponentBase implements IVali
      Invalidate and recalculate this components style, may result in a call to `invalidateDisplay`
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public inline function invalidateComponentStyle() {
+    public inline function invalidateComponentStyle(force:Bool = false) {
         invalidateComponent(InvalidationFlags.STYLE);
+        if (force == true) {
+            _style = null;
+        }
     }
 
     private override function applyStyle(style:Style) {

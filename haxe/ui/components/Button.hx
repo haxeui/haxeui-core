@@ -203,6 +203,7 @@ private class TextBehaviour extends DataBehaviour {
             label.id = "button-label";
             label.scriptAccess = false;
             _component.addComponent(label);
+            _component.invalidateComponentStyle(true);
         }
         
         label.text = _value;
@@ -219,6 +220,7 @@ private class IconBehaviour extends DataBehaviour {
             icon.id = "button-icon";
             icon.scriptAccess = false;
             _component.addComponentAt(icon, 0);
+            _component.invalidateComponentStyle(true);
         }
         
         icon.resource = _value;

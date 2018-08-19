@@ -101,6 +101,7 @@ private class TextBehaviour extends DataBehaviour {
             label.addClass('${_component.cssName}-label');
             label.scriptAccess = false;
             _component.addComponent(label);
+            _component.invalidateComponentStyle(true);
         }
         
         label.text = _value;
