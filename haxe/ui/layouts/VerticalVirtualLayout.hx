@@ -54,9 +54,16 @@ class VerticalVirtualLayout extends VirtualLayout {
         var verticalSpacing = contents.layout.verticalSpacing;
         var itemHeight:Float = this.itemHeight;
         var visibleItemsCount:Int = 0;
-        var contentsHeight:Float = contents.height;
-        if (contentsHeight > _component.height) {
-            contentsHeight = _component.height;
+        var contentsHeight:Float = 0;
+
+        if (contents.autoHeight == true) {
+            contentsHeight = _component.autoHeight == true ? 4 * itemHeight : _component.height;    //Avoids to render all items
+        } else {
+            contentsHeight = contents.height;
+
+            if (contentsHeight > _component.height) {
+                contentsHeight = _component.height;
+            }
         }
 
         if (comp.variableItemSize == true) {
