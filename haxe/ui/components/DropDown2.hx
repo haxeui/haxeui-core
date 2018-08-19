@@ -19,6 +19,7 @@ class DropDown2 extends Button implements IDataComponent {
     //***********************************************************************************************************
     @:behaviour(DefaultBehaviour)                    public var dataSource:DataSource<Dynamic>;
     @:behaviour(DefaultBehaviour, "list")            public var type:String;
+    @:behaviour(DefaultBehaviour, false)             public var virtual:Bool;
 }
 
 //***********************************************************************************************************
@@ -57,6 +58,7 @@ class ListDropDownHandler extends DropDownHandler {
     public override function show() {
         if (_listview == null) {
             _listview = new ListView2();
+            _listview.virtual = _dropdown.virtual;
             _listview.dataSource = _dropdown.dataSource;
             _listview.registerEvent(UIEvent.CHANGE, onListChange);
         }
