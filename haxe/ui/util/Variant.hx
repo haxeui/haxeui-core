@@ -136,7 +136,7 @@ abstract Variant(VariantType) from VariantType {
     // ARRAYS
     // ************************************************************************************************************
     @:from static function fromArray<T>(s:Array<T>):Variant {
-        return Array(s);
+        return s == null ? null : Array(s);
     }
 
     @:to public function toArray<T>():Array<T> {
