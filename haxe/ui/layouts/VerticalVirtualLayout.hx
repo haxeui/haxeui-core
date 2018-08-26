@@ -2,6 +2,7 @@ package haxe.ui.layouts;
 
 import haxe.ui.containers.IVirtualContainer;
 import haxe.ui.core.Component;
+import haxe.ui.util.Size;
 
 class VerticalVirtualLayout extends VirtualLayout {
     private override function repositionChildren() {
@@ -57,7 +58,7 @@ class VerticalVirtualLayout extends VirtualLayout {
         var contentsHeight:Float = 0;
 
         if (contents.autoHeight == true) {
-            contentsHeight = _component.autoHeight == true ? 4 * itemHeight : _component.height;    //Avoids to render all items
+            contentsHeight = _component.autoHeight == true ? itemCount * itemHeight : _component.height;    //Avoids to render all items
         } else {
             contentsHeight = contents.height;
 
@@ -159,5 +160,15 @@ class VerticalVirtualLayout extends VirtualLayout {
 
         comp.vscrollMax = scrollMax;
         comp.vscrollPageSize = (usableSize.height / (scrollMax + usableSize.height)) * scrollMax;
+    }
+
+    override public function calcAutoSize(exclusions:Array<Component> = null):Size {
+        var size:Size = super.calcAutoSize(exclusions);
+        var comp:IVirtualContainer = cast(_component, IVirtualContainer);
+        if (comp.itemCount > 0) {
+            size.height = (itemHeight * comp.itemCount) + paddingTop + paddingBottom;
+        }
+
+        return size;
     }
 }

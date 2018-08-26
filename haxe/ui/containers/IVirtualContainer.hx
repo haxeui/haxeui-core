@@ -6,6 +6,7 @@ import haxe.ui.core.ItemRenderer;
 interface IVirtualContainer {
     public var itemWidth(get, set):Float;
     public var itemHeight(get, set):Float;
+    public var itemCount(get, set):Int;
     public var variableItemSize(get, set):Bool;
     public var virtual(get, set):Bool;
 

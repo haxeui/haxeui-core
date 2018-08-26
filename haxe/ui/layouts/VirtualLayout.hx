@@ -80,6 +80,16 @@ class VirtualLayout extends ScrollViewLayout {
         return result;
     }
 
+    private var itemCount(get, null):Int;
+    private function get_itemCount():Int {
+        var comp:IVirtualContainer = cast(_component, IVirtualContainer);
+        if (comp.itemCount >= 0) {
+            return comp.itemCount;
+        } else {
+            return 4;
+        }
+    }
+
     public override function refresh() {
         refreshData();
 

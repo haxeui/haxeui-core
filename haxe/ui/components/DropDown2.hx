@@ -54,23 +54,18 @@ class ListDropDownHandler extends DropDownHandler {
         return _listview;
     }
     
-    private var _first:Bool = true;
     public override function show() {
         if (_listview == null) {
             _listview = new ListView2();
+            _listview.itemCount = 4;    //TODO - the user could customize it
             _listview.virtual = _dropdown.virtual;
             _listview.dataSource = _dropdown.dataSource;
             _listview.registerEvent(UIEvent.CHANGE, onListChange);
         }
 
-        Screen.instance.addComponent(_listview);
-        if (_first == true) {
-            _listview.syncComponentValidation(); // need this so we can get correct padding value
-            _first = false;
-        }
-        
         _listview.width = _dropdown.width;
-        _listview.height = (calcItemHeight() * listSize()) + _listview.style.paddingTop + _listview.style.paddingBottom;
+
+        Screen.instance.addComponent(_listview);
     }
     
     private function onListChange(event:UIEvent) {
@@ -80,26 +75,6 @@ class ListDropDownHandler extends DropDownHandler {
         var text = _listview.selectedItem.value;
         _dropdown.text = text;
         cast(_dropdown._internalEvents, DropDownEvents).hideDropDown();
-    }
-    
-    private function calcItemHeight():Float {
-        var contents:Component = _listview.findComponent("listview-contents", false, "css");
-        var items = contents.childComponents;
-        var size = listSize();
-        var total:Float = 0;
-        for (n in 0...size) {
-            total += items[n].height;
-        }
-        return total / size; // might be a nicer way to do this
-    }
-    
-    private function listSize():Int {  // TODO: get from dropdown, not sure about prop name... "listsize" doesnt make sense as might not always be a list (ie, colour selector, data selector, etc)
-        var n = 4;
-        var contents:Component = _listview.findComponent("listview-contents", false, "css");
-        if (n > contents.childComponents.length) {
-            n = contents.childComponents.length;
-        }
-        return n;
     }
 }
 
