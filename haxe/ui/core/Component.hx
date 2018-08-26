@@ -1367,6 +1367,12 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     public function ready() {
         depth = ComponentUtil.getDepth(this);
 
+        if(isComponentInvalid())
+        {
+            _invalidateCount = 0;
+            ValidationManager.instance.add(this);
+        }
+
         if (_ready == false) {
             _ready = true;
             handleReady();
