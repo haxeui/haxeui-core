@@ -146,18 +146,34 @@ class ListViewEvents extends ScrollViewEvents {
             case SelectionMode.ONE_ITEM_REPEATED:
                 _listview.selectedIndices = [renderer.itemIndex];
 
-            case SelectionMode.MULTIPLE_CTRL:
+            case SelectionMode.MULTIPLE_MODIFIER_KEY, SelectionMode.MULTIPLE_CLICK_MODIFIER_KEY:
                 if (e.ctrlKey == true) {
                     toggleSelection(renderer);
-                }
+                } else if (e.shiftKey == true) {
+                    var selectedIndices:Array<Int> = _listview.selectedIndices;
+                    var fromIndex:Int = selectedIndices.length > 0 ? selectedIndices[selectedIndices.length-1]: 0;
+                    var toIndex:Int = renderer.itemIndex;
+                    if (fromIndex < toIndex)
+                    {
+                        for (i in selectedIndices) {
+                            if (i < fromIndex) {
+                                fromIndex = i;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var tmp:Int = fromIndex;
+                        fromIndex = toIndex;
+                        toIndex = tmp;
+                    }
 
-            case SelectionMode.MULTIPLE_SHIFT:
-                if (e.shiftKey == true) {
-                    toggleSelection(renderer);
+                    selectRange(fromIndex, toIndex);
+                } else if (_listview.selectionMode == SelectionMode.MULTIPLE_CLICK_MODIFIER_KEY) {
+                    _listview.selectedIndex = renderer.itemIndex;
                 }
             case SelectionMode.MULTIPLE_LONG_PRESS:
                 //TODO
-
         }
     }
 
@@ -171,6 +187,10 @@ class ListViewEvents extends ScrollViewEvents {
             selectedIndices.splice(index, 1);
         }
         _listview.selectedIndices = selectedIndices;
+    }
+
+    private function selectRange(fromIndex:Int, toIndex:Int) {
+        _listview.selectedIndices = [for (i in fromIndex...toIndex+1) i];
     }
 }
 
