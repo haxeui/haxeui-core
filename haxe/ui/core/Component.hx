@@ -1148,21 +1148,21 @@ class Component extends ComponentBase implements IComponentBase implements IVali
      Register a listener for a certain `UIEvent`
     **/
     @:dox(group = "Event related properties and methods")
-    public function registerEvent(type:String, listener:Dynamic->Void) {
+    public function registerEvent(type:String, listener:Dynamic->Void, priority:Int = 0) {
         if (_disabled == true && isInteractiveEvent(type) == true) {
             trace("its disabled");
             if (_disabledEvents == null) {
                 _disabledEvents = new EventMap();
             }
             trace("adding to disabled: " + type);
-            _disabledEvents.add(type, listener);
+            _disabledEvents.add(type, listener, priority);
             return;
         }
         
         if (__events == null) {
             __events = new EventMap();
         }
-        if (__events.add(type, listener) == true) {
+        if (__events.add(type, listener, priority) == true) {
             mapEvent(type, _onMappedEvent);
         }
     }

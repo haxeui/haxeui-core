@@ -15,9 +15,9 @@ class Events {
         
     }
     
-    private function registerEvent(type:String, listener:Dynamic->Void) {
+    private function registerEvent(type:String, listener:Dynamic->Void, priority:Int = 0) {
         if (hasEvent(type, listener) == false) {
-            _target.registerEvent(type, listener);
+            _target.registerEvent(type, listener, priority);
         }
     }
     

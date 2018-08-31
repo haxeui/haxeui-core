@@ -7,7 +7,7 @@ class CallbackMap<T> {
         _map = new Map<String, FunctionArray<T->Void>>();
     }
 
-    public function add(key:String, callback:T->Void):Bool { // returns true if a new FunctionArray was created
+    public function add(key:String, callback:T->Void, priority:Int = 0):Bool { // returns true if a new FunctionArray was created
         if (callback == null) {
             return false;
         }
@@ -15,11 +15,11 @@ class CallbackMap<T> {
         var arr:FunctionArray<T->Void> = _map.get(key);
         if (arr == null) {
             arr = new FunctionArray<T->Void>();
-            arr.push(callback);
+            arr.push(callback, priority);
             _map.set(key, arr);
             b = true;
         } else if (arr.contains(callback) == false) {
-            arr.push(callback);
+            arr.push(callback, priority);
         }
         return b;
     }
@@ -51,8 +51,8 @@ class CallbackMap<T> {
         var arr:FunctionArray<T->Void> = _map.get(key);
         if (arr != null) {
             arr = arr.copy();
-            for (fn in arr) {
-                fn(param);
+            for (listener in arr) {
+                listener.callback(param);
             }
         }
     }
@@ -62,8 +62,8 @@ class CallbackMap<T> {
         if (arr != null) {
             arr = arr.copy();
             removeAll(key);
-            for (fn in arr) {
-                fn(param);
+            for (listener in arr) {
+                listener.callback(param);
             }
         }
     }

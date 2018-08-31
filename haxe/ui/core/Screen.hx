@@ -310,9 +310,9 @@ class Screen extends ScreenBase {
     //***********************************************************************************************************
     // Events
     //***********************************************************************************************************
-    public function registerEvent(type:String, listener:Dynamic->Void) {
+    public function registerEvent(type:String, listener:Dynamic->Void, priority:Int = 0) {
         if (supportsEvent(type) == true) {
-            if (_eventMap.add(type, listener) == true) {
+            if (_eventMap.add(type, listener, priority) == true) {
                 mapEvent(type, _onMappedEvent);
             }
         } else {

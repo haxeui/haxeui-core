@@ -14,16 +14,16 @@ class EventMap  {
         return _map.keys();
     }
     
-    public function add(type:String, listener:UIEvent->Void):Bool { // returns true if a new FunctionArray was created
+    public function add(type:String, listener:UIEvent->Void, priority:Int = 0):Bool { // returns true if a new FunctionArray was created
         var b:Bool = false;
         var arr:FunctionArray<UIEvent->Void> = _map.get(type);
         if (arr == null) {
             arr = new FunctionArray<UIEvent->Void>();
-            arr.push(listener);
+            arr.push(listener, priority);
             _map.set(type, arr);
             b = true;
         } else if (arr.contains(listener) == false) {
-            arr.push(listener);
+            arr.push(listener, priority);
         }
         return b;
     }
@@ -58,7 +58,7 @@ class EventMap  {
         var arr:FunctionArray<UIEvent->Void> = _map.get(type);
         if (arr != null) {
             arr = arr.copy();
-            for (fn in arr) {
+            for (listener in arr) {
                 if (event.canceled) { 
                     break; 
                 } 
@@ -67,7 +67,7 @@ class EventMap  {
                 if (c.target == null) {
                     c.target = target; 
                 }
-                fn(c);
+                listener.callback(c);
                 event.canceled = c.canceled; 
             }
         }

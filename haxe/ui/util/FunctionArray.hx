@@ -1,9 +1,9 @@
 package haxe.ui.util;
 
 class FunctionArray<T> {
-    private var _array:Array<T>;
+    private var _array:Array<Listener<T>>;
 
-    public function new(array:Array<T> = null) {
+    public function new(array:Array<Listener<T>> = null) {
         if (array == null) {
             _array = [];
         } else {
@@ -12,7 +12,7 @@ class FunctionArray<T> {
     }
 
     public function get(index:Int):T {
-        return _array[index];
+        return _array[index].callback;
     }
 
     public var length(get, null):Int;
@@ -20,12 +20,20 @@ class FunctionArray<T> {
         return _array.length;
     }
 
-    public function push(x:T):Int {
-        return _array.push(x);
+    public function push(x:T, priority:Int = 0):Int {
+        var listener:Listener<T> = new Listener(x, priority);
+        for(i in 0..._array.length) {
+            if (_array[i].priority < priority) {
+                _array.insert(i, listener);
+                return i;
+            }
+        }
+
+        return _array.push(listener);
     }
 
     public function pop():Null<T> {
-        return _array.pop();
+        return _array.pop().callback;
     }
 
     public function indexOf(x:T, fromIndex:Int = 0):Int {
@@ -33,45 +41,37 @@ class FunctionArray<T> {
         if (Reflect.isFunction(x) == false) {
             return _array.indexOf(x);
         } else {
-            var index:Int = -1;
-            var n:Int = 0;
-            for (t in _array) {
-                if (Reflect.compareMethods(t, x) == true) {
-                    index = n;
-                    break;
+            for (i in fromIndex..._array.length) {
+                if (Reflect.compareMethods(_array[i].callback, x) == true) {
+                    return i;
                 }
-                n++;
             }
-            return index;
+            return -1;
         }
         #else
-        return _array.indexOf(x, fromIndex);
+        for (i in fromIndex..._array.length) {
+            if (_array[i].callback == x) {
+                return i;
+            }
+        }
+        return -1;
         #end
     }
 
     public function remove(x:T):Bool {
-        #if neko
-        var b = false;
-        if (Reflect.isFunction(x) == false) {
-            b = _array.remove(x);
-        } else {
-            var index = indexOf(x);
-            if (index != -1) {
-                _array.splice(index, 1);
-                b = true;
-            }
+        var index:Int = indexOf(x);
+        if (index != -1) {
+            _array.splice(index, 1);
         }
-        return b;
-        #else
-        return _array.remove(x);
-        #end
+
+        return index != -1;
     }
 
     public function contains(x:T):Bool {
         return indexOf(x) != -1;
     }
 
-    public function iterator():Iterator<T> {
+    public function iterator():Iterator<Listener<T>> {
         return _array.iterator();
     }
 
