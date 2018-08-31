@@ -1,8 +1,8 @@
 package haxe.ui.containers;
 
 import haxe.ui.constants.SelectionMode;
-import haxe.ui.containers.ScrollView2;
 import haxe.ui.containers.ScrollView2.ScrollViewBuilder;
+import haxe.ui.containers.ScrollView2;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.DataBehaviour;
@@ -17,6 +17,7 @@ import haxe.ui.core.UIEvent;
 import haxe.ui.data.DataSource;
 import haxe.ui.data.transformation.NativeTypeTransformer;
 import haxe.ui.layouts.VerticalVirtualLayout;
+import haxe.ui.util.MathUtil;
 import haxe.ui.util.Variant;
 
 @:composite(ListViewEvents, ListViewBuilder, VerticalVirtualLayout)
@@ -114,6 +115,7 @@ class ListViewEvents extends ScrollViewEvents {
 
     private function onRendererCreated(e:UIEvent):Void {
         var instance:ItemRenderer = cast(e.data, ItemRenderer);
+        instance.registerEvent(MouseEvent.MOUSE_DOWN, onRendererMouseDown);
         instance.registerEvent(MouseEvent.CLICK, onRendererClick);
         if(_listview.selectedIndices.indexOf(instance.itemIndex) != -1) {
             instance.addClass(":selected", true, true);
@@ -122,10 +124,66 @@ class ListViewEvents extends ScrollViewEvents {
 
     private function onRendererDestroyed(e:UIEvent) {
         var instance:ItemRenderer = cast(e.data, ItemRenderer);
+        instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onRendererMouseDown);
         instance.unregisterEvent(MouseEvent.CLICK, onRendererClick);
         if(_listview.selectedIndices.indexOf(instance.itemIndex) != -1) {
             instance.removeClass(":selected", true, true);
         }
+    }
+
+    private function onRendererMouseDown(e:MouseEvent) {
+        switch(_listview.selectionMode) {
+            case SelectionMode.MULTIPLE_LONG_PRESS:
+                if (_listview.selectedIndices.length == 0) {
+                    startLongPressSelection(e);
+                }
+
+            default:
+                //Nothing
+        }
+    }
+
+    private function startLongPressSelection(e:MouseEvent) {
+        var timerClick:Timer = null;
+        var currentMouseX:Float = e.screenX, currentMouseY:Float = e.screenY;
+        var renderer:ItemRenderer = cast(e.target, ItemRenderer);
+        var __onMouseMove:MouseEvent->Void = null, __onMouseUp:MouseEvent->Void, __onMouseClick:MouseEvent->Void;
+
+        __onMouseMove = function (_e:MouseEvent) {
+            currentMouseX = _e.screenX;
+            currentMouseY = _e.screenY;
+        }
+
+        __onMouseUp = function (_e:MouseEvent) {
+            if (timerClick != null) {
+                timerClick.stop();
+                timerClick = null;
+            }
+
+            renderer.screen.unregisterEvent(MouseEvent.MOUSE_MOVE, __onMouseMove);
+            renderer.screen.unregisterEvent(MouseEvent.MOUSE_UP, __onMouseUp);
+        }
+
+        __onMouseClick = function(_e:MouseEvent) {
+            _e.cancel();    //Avoid toggleSelection onRendererClick method
+
+            renderer.unregisterEvent(MouseEvent.CLICK, __onMouseClick);
+        }
+
+        renderer.screen.registerEvent(MouseEvent.MOUSE_MOVE, __onMouseMove);
+        renderer.screen.registerEvent(MouseEvent.MOUSE_UP, __onMouseUp);
+
+        timerClick = Timer.delay(function(){
+            if (timerClick != null) {
+                timerClick = null;
+
+                if (renderer.hitTest(currentMouseX, currentMouseY) &&
+                    MathUtil.distance(e.screenX, e.screenY, currentMouseX, currentMouseY) < 2 * Toolkit.pixelsPerRem) {
+                    toggleSelection(renderer);
+                    renderer.registerEvent(MouseEvent.CLICK, __onMouseClick, 1);
+                }
+            }
+        }, 500);   //TODO - configurable
     }
 
     private function onRendererClick(e:MouseEvent):Void {
@@ -172,8 +230,15 @@ class ListViewEvents extends ScrollViewEvents {
                 } else if (_listview.selectionMode == SelectionMode.MULTIPLE_CLICK_MODIFIER_KEY) {
                     _listview.selectedIndex = renderer.itemIndex;
                 }
+
             case SelectionMode.MULTIPLE_LONG_PRESS:
-                //TODO
+                var selectedIndices:Array<Int> = _listview.selectedIndices;
+                if (selectedIndices.length > 0) {
+                    toggleSelection(renderer);
+                }
+
+            default:
+                //Nothing
         }
     }
 
@@ -259,7 +324,7 @@ private class SelectedIndexBehaviour extends Behaviour {
 
     public override function set(value:Variant) {
         var listView:ListView2 = cast(_component, ListView2);
-        listView.selectedIndices = [value];
+        listView.selectedIndices = value != -1 ? [value] : null;
     }
 }
 
