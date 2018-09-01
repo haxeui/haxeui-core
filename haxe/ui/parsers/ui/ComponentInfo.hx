@@ -24,6 +24,7 @@ class ComponentInfo {
     public var parent:ComponentInfo;
     public var children:Array<ComponentInfo>;
     public var bindings:Array<ComponentBindingInfo>;
+    public var layout:LayoutInfo;
 
     public var scriptlets:Array<String>;
     public var styles:Array<String>;

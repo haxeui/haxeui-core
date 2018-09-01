@@ -1,7 +1,9 @@
 package haxe.ui.macros;
 
 import haxe.ui.core.ComponentClassMap;
+import haxe.ui.core.LayoutClassMap;
 import haxe.ui.parsers.ui.ComponentInfo;
+import haxe.ui.parsers.ui.LayoutInfo;
 import haxe.ui.parsers.ui.ComponentParser;
 import haxe.ui.parsers.ui.resolvers.FileResourceResolver;
 import haxe.ui.scripting.ConditionEvaluator;
@@ -182,6 +184,11 @@ class ComponentMacros {
         if (c.styleNames != null)               assign("styleNames", c.styleNames);
         if (c.style != null)                    assign("styleString", c.styleString);
         if (c.layoutName != null)               assign("layoutName", c.layoutName);
+
+        if (c.layout != null) {
+            buildLayoutCode(code, c.layout, id, namedComponents, pos);
+        }
+
         for (propName in c.properties.keys()) {
             var propValue = c.properties.get(propName);
             var propExpr = if (propValue == "true" || propValue == "yes" || propValue == "false" || propValue == "no") {
@@ -215,6 +222,56 @@ class ComponentMacros {
 
         if (id != 0) {
             add(macro $i{"c" + (id - 1)}.addComponent($i{"c" + id}));
+        }
+    }
+
+    private static function buildLayoutCode(code:Array<Expr>, l:LayoutInfo, id:Int, namedComponents:Map<String, String>, pos:Position = null) {
+        var className:String = LayoutClassMap.get(l.type.toLowerCase());
+        if (className == null) {
+            if (pos == null) {
+                pos = Context.currentPos();
+            }
+            Context.warning("no class found for layout: " + l.type, pos);
+            return;
+        }
+
+        var numberEReg:EReg = ~/^\d+(\.(\d+))?$/;
+        var type = Context.getModule(className)[0];
+
+        var layoutVarName = 'l${id}';
+        var typePath = {
+            var split = className.split(".");
+            { name: split.pop(), pack: split }
+        };
+        inline function add(e:Expr) {
+            code.push(e);
+        }
+        inline function assign(field:String, value:Dynamic) {
+            add(macro $i{layoutVarName}.$field = $v{value});
+        }
+        add(macro var $layoutVarName = new $typePath());
+
+        for (propName in l.properties.keys()) {
+            var propValue = l.properties.get(propName);
+            var propExpr = if (propValue == "true" || propValue == "yes" || propValue == "false" || propValue == "no") {
+                macro $v{propValue == "true" || propValue == "yes"};
+            } else {
+                if(numberEReg.match(propValue)) {
+                    if(numberEReg.matched(2) != null) {
+                        macro $v{Std.parseFloat(propValue)};
+                    } else {
+                        macro $v{Std.parseInt(propValue)};
+                    }
+                } else {
+                    macro $v{propValue};
+                }
+            }
+
+            add(macro $i{layoutVarName}.$propName = $propExpr);
+        }
+
+        if (id != 0) {
+            add(macro $i{"c" + (id)}.layout = $i{"l" + id});
         }
     }
 

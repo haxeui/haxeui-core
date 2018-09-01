@@ -4,6 +4,7 @@ class Module {
     public var id(default, default):String;
     public var resourceEntries(default, default):Array<ModuleResourceEntry>;
     public var componentEntries(default, default):Array<ModuleComponentEntry>;
+    public var layoutEntries(default, default):Array<ModuleLayoutEntry>;
     public var scriptletEntries(default, default):Array<ModuleScriptletEntry>;
     public var themeEntries(default, default):Map<String, ModuleThemeEntry>;
     public var plugins(default, default):Array<ModulePluginEntry>;
@@ -14,6 +15,7 @@ class Module {
     public function new() {
         resourceEntries = [];
         componentEntries = [];
+        layoutEntries = [];
         scriptletEntries = [];
         themeEntries = new Map<String, ModuleThemeEntry>();
         plugins = [];
@@ -34,7 +36,7 @@ class ModuleResourceEntry {
     }
 }
 
-class ModuleComponentEntry {
+class ModuleClassEntry {
     public var classPackage(default, default):String;
     public var className(default, default):String;
     public var classAlias(default, default):String;
@@ -43,15 +45,15 @@ class ModuleComponentEntry {
     }
 }
 
-class ModuleScriptletEntry {
-    public var classPackage(default, default):String;
-    public var className(default, default):String;
-    public var classAlias(default, default):String;
+class ModuleComponentEntry extends ModuleClassEntry {
+}
+
+class ModuleLayoutEntry extends ModuleClassEntry{
+}
+
+class ModuleScriptletEntry extends ModuleClassEntry {
     public var keep(default, default):Bool;
     public var staticClass(default, default):Bool;
-
-    public function new() {
-    }
 }
 
 class ModuleThemeEntry {

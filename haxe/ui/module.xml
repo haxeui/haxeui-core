@@ -14,6 +14,10 @@
         <class name="haxe.ui.components.Label" alias="text" />
     </components>
 
+    <layouts>
+        <class package="haxe.ui.layouts" />
+    </layouts>
+
     <scriptlets>
         <import class="haxe.ui.core.Component" keep="true" />
         <import package="haxe.ui.components" keep="true" /> <!-- TODO: remove this eventually -->

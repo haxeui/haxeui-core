@@ -1,5 +1,6 @@
 package haxe.ui.macros;
 
+import haxe.ui.core.LayoutClassMap;
 import haxe.ui.core.ComponentClassMap;
 import haxe.ui.parsers.modules.Module;
 import haxe.ui.parsers.modules.ModuleParser;
@@ -144,6 +145,11 @@ class ModuleMacros {
             code += 'haxe.ui.core.ComponentClassMap.register("${alias}", "${className}");\n';
         }
 
+        for (alias in LayoutClassMap.list()) {
+            var className:String = LayoutClassMap.get(alias);
+            code += 'haxe.ui.core.LayoutClassMap.register("${alias}", "${className}");\n';
+        }
+
         code += "}()\n";
         //trace(code);
 
@@ -199,6 +205,40 @@ class ModuleMacros {
                             }
                             
                             ComponentClassMap.register(classAlias, resolvedClass);
+                        }
+                    }
+                }
+            }
+
+            // load layout classes from all modules
+            for (c in m.layoutEntries) {
+                var types:Array<haxe.macro.Type> = null;
+                if (c.className != null) {
+                    types = Context.getModule(c.className);
+                } else if (c.classPackage != null) {
+                    types = MacroHelpers.typesFromPackage(c.classPackage);
+                }
+
+                if (types != null) {
+                    for (t in types) {
+                        if (MacroHelpers.isPrivate(t) == true) {
+                            continue;
+                        }
+
+                        if (MacroHelpers.hasSuperClass(t, "haxe.ui.layouts.Layout") == true) {
+                            var resolvedClass:String = MacroHelpers.classNameFromType(t);
+                            if (c.className != null && resolvedClass != c.className) {
+                                continue;
+                            }
+
+                            var resolvedClassName = resolvedClass.substr(resolvedClass.lastIndexOf(".") + 1, resolvedClass.length);
+                            var classAlias:String = c.classAlias;
+                            if (classAlias == null) {
+                                classAlias = resolvedClassName;
+                            }
+                            classAlias = classAlias.toLowerCase();
+
+                            LayoutClassMap.register(classAlias, resolvedClass);
                         }
                     }
                 }

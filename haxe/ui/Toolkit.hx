@@ -1,5 +1,9 @@
 package haxe.ui;
 
+import haxe.ui.core.LayoutClassMap;
+import haxe.ui.util.Variant;
+import haxe.ui.layouts.Layout;
+import haxe.ui.parsers.ui.LayoutInfo;
 import haxe.ui.backend.ToolkitOptions;
 import haxe.ui.containers.Box;
 import haxe.ui.core.Component;
@@ -143,6 +147,11 @@ class Toolkit {
             var box:haxe.ui.containers.Box = cast(component, haxe.ui.containers.Box);
             if (c.layoutName != null)               box.layoutName = c.layoutName;
         }
+
+        if (c.layout != null) {
+            var layout:Layout = buildLayoutFromInfo(c.layout);
+            component.layout = layout;
+        }
         
         if (Std.is(component, haxe.ui.containers.ScrollView)) { // special properties for scrollview and derived classes
             var scrollview:haxe.ui.containers.ScrollView = cast(component, haxe.ui.containers.ScrollView);
@@ -183,6 +192,27 @@ class Toolkit {
         }
         
         return component;
+    }
+
+    private static function buildLayoutFromInfo(l:LayoutInfo):Layout {
+        var className:String = LayoutClassMap.get(l.type.toLowerCase());
+        if (className == null) {
+            trace("WARNING: no class found for layout: " + l.type);
+            return null;
+        }
+
+        var layout:Layout = Type.createInstance(Type.resolveClass(className), []);
+        if (layout == null) {
+            trace("WARNING: could not create class instance: " + className);
+            return null;
+        }
+
+        for (propName in l.properties.keys()) {
+            var propValue:Dynamic = l.properties.get(propName);
+            Reflect.setProperty(layout, propName, Variant.fromDynamic(propValue));
+        }
+
+        return layout;
     }
 
     public static var pixelsPerRem(default, set):Int = 16;
