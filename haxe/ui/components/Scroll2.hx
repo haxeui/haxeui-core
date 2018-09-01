@@ -1,5 +1,6 @@
 package haxe.ui.components;
 
+import haxe.ui.util.Variant;
 import haxe.ui.core.DataBehaviour;
 import haxe.ui.core.DefaultBehaviour;
 import haxe.ui.core.IDirectionalComponent;
@@ -7,18 +8,17 @@ import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.LayoutBehaviour;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.UIEvent;
-import haxe.ui.core.ValueBehaviour;
 import haxe.ui.util.Point;
 
 class Scroll2 extends InteractiveComponent implements IDirectionalComponent {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:behaviour(LayoutBehaviour, 0)     public var min:Float;
-    @:behaviour(LayoutBehaviour, 100)   public var max:Float;
-    @:behaviour(LayoutBehaviour)        public var pageSize:Float;
-    @:behaviour(LayoutBehaviour)        public var pos:Float;
-    @:behaviour(DefaultBehaviour, 20)   public var increment:Float; // TODO: should calc, 20 is too high if there are, say, 30 items
+    @:behaviour(ScrollValueBehaviour, 0)        public var min:Float;
+    @:behaviour(ScrollValueBehaviour, 100)      public var max:Float;
+    @:behaviour(LayoutBehaviour)                public var pageSize:Float;
+    @:behaviour(ScrollValueBehaviour)           public var pos:Float;
+    @:behaviour(DefaultBehaviour, 20)           public var increment:Float; // TODO: should calc, 20 is too high if there are, say, 30 items
     
     //***********************************************************************************************************
     // Private API
@@ -40,22 +40,6 @@ class Scroll2 extends InteractiveComponent implements IDirectionalComponent {
         createButton("thumb").remainPressed = true;
         
         registerInternalEvents(Events);
-    }
-    
-    //***********************************************************************************************************
-    // Validation
-    //***********************************************************************************************************
-    private override function validateComponentData() {
-        super.validateComponentData();
-        
-        if (pos < min) {
-            pos = min;
-        } else  if (pos > max) {
-            pos = max;
-        }
-        
-        var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
-        dispatch(changeEvent);
     }
     
     //***********************************************************************************************************
@@ -158,5 +142,32 @@ private class Events extends haxe.ui.core.Events  {
         
         var coord = new Point(event.screenX - _mouseDownOffset.x, event.screenY - _mouseDownOffset.y);
         _scroll.pos = _scroll.posFromCoord(coord);
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class ScrollValueBehaviour extends DataBehaviour {
+    public override function set(value:Variant) {
+        if (value == get()) {
+            return;
+        }
+
+        super.set(value);
+        _component.invalidateComponentLayout();
+    }
+
+    private override function validateData() {
+        var scroll:Scroll2 = cast(_component, Scroll2);
+        var pos:Float = scroll.pos;
+        var min:Float = scroll.min;
+        var max:Float = scroll.max;
+        if (pos < min) {
+            scroll.pos = min;
+        } else  if (pos > max) {
+            scroll.pos = max;
+        }
+
+        var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
+        scroll.dispatch(changeEvent);
     }
 }
