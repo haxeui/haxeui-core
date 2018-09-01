@@ -376,11 +376,10 @@ class MacroHelpers {
                     } else {
                         while (t != null) {
                             if (t.get().superClass != null) {
+                                t = t.get().superClass.t;
                                 if (t.toString() == classRequired) {
                                     has = true;
                                     break;
-                                } else {
-                                    t = t.get().superClass.t;
                                 }
                             } else {
                                 t = null;
