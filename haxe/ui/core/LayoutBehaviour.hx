@@ -2,11 +2,14 @@ package haxe.ui.core;
 
 import haxe.ui.util.Variant;
 
-class LayoutBehaviour extends DataBehaviour { // TODO: this should replace InvalidatingBehaviour
+@:dox(hide) @:noCompletion
+class LayoutBehaviour extends ValueBehaviour {
    public override function set(value:Variant) {
-        if (value != get()) {
-            super.set(value);
-            _component.invalidateComponentLayout();
-        }
+       if (value == get()) {
+           return;
+       }
+
+       _value = value;
+       _component.invalidateComponentLayout();
     }
 }

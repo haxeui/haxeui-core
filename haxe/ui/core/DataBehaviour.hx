@@ -1,16 +1,11 @@
 package haxe.ui.core;
 
-import haxe.ui.core.Behaviour;
 import haxe.ui.util.Variant;
 
-class DataBehaviour extends Behaviour {
-    private var _value:Variant;
+@:dox(hide) @:noCompletion
+class DataBehaviour extends ValueBehaviour {
     private var _dataInvalid:Bool;
-    
-    public override function get():Variant {
-        return _value;
-    }
-    
+
     public override function set(value:Variant) {
         if (value == get()) {
             return;
