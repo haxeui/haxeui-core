@@ -26,7 +26,7 @@ class TabBar2 extends Component {
     //***********************************************************************************************************
     private override function createDefaults() {  // TODO: remove this eventually, @:layout(...) or something
         super.createDefaults();
-        _defaultLayout = new TabBarLayout();
+        _defaultLayoutClass = TabBarLayout;
     }
     
     private override function createChildren() {

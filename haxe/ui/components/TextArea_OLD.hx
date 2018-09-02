@@ -97,7 +97,7 @@ class TextArea_OLD extends InteractiveComponent implements IFocusable {
             "placeholder" => new TextAreaDefaultPlaceholderBehaviour(this),
             "wrap" => new TextAreaDefaultWrapBehaviour(this)
         ]);
-        _defaultLayout = new TextAreaLayout();
+        _defaultLayoutClass = TextAreaLayout;
     }
 
     private override function createChildren() {

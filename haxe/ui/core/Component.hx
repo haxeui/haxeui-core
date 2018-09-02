@@ -105,16 +105,13 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     //***********************************************************************************************************
     // Construction
     //***********************************************************************************************************
-    private var _layoutClass:Class<Layout> = null;
+    private var _defaultLayoutClass:Class<Layout> = null;
     private function create() {
         createDefaults();
-        if (_layoutClass != null && _defaultLayout == null) {
-            _defaultLayout = Type.createInstance(_layoutClass, []);
-        }
         handleCreate(native);
         destroyChildren();
         behaviours.replaceNative();
-        layout = createLayout();
+
         if (native == false || native == null) {
             if (_compositeBuilderClass != null) {
                 if (_compositeBuilder == null) {
@@ -142,9 +139,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         defaultBehaviours([
             "disabled" =>  new ComponentDefaultDisabledBehaviour(this)
         ]);
-        if (_layout == null) {
-            layout = new DefaultLayout();       //TODO - it should be avoided. For each component it creates the object and possibly overwritten with a custom layout, so it is useless. Create in case it is needed
-        }
     }
 
     private var _internalEvents:Events = null;
@@ -182,7 +176,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         return _hasNativeEntry;
     }
 
-    private var _defaultLayout:Layout;
     private function createLayout():Layout {
         var l:Layout = null;
         if (native == true) {
@@ -200,11 +193,13 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
 
         if (l == null) {
-            l = _defaultLayout;
+            if (_defaultLayoutClass != null) {
+                l = Type.createInstance(_defaultLayoutClass, []);
+            } else {
+                l = new DefaultLayout();
+            }
         }
-        if (l == null) {
-            return layout;
-        }
+
         return l;
     }
 
@@ -1397,6 +1392,10 @@ class Component extends ComponentBase implements IComponentBase implements IVali
 
         handleBindings(["text", "value", "width", "height"]);
     }
+    
+    private function onInitialize() {
+
+    }
 
     private function onResized() {
 
@@ -2073,6 +2072,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     private var _delayedInvalidationFlags:Map<String, Bool> = new Map<String, Bool>();
     private var _isAllInvalid:Bool = false;
     private var _isValidating:Bool = false;
+    private var _isInitialized:Bool = false;
     private var _isDisposed:Bool = false;
     private var _invalidateCount:Int = 0;
 
@@ -2123,6 +2123,10 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             return;
         }
 
+        if (_isInitialized == false) {
+            initializeComponent();
+        }
+
         _isValidating = true;
 
         validateComponentInternal();
@@ -2142,6 +2146,24 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             _delayedInvalidationFlags.remove(flag);
         }
         _isValidating = false;
+    }
+
+    private function initializeComponent() {
+        if (_isInitialized == true) {
+            return;
+        }
+
+        onInitialize();
+
+        if (_layout == null) {
+            layout = createLayout();
+        }
+
+        _isInitialized = true;
+
+        if (hasEvent(UIEvent.INITIALIZE)) {
+            dispatch(new UIEvent(UIEvent.INITIALIZE));
+        }
     }
 
     private function validateComponentInternal() {

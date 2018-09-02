@@ -24,7 +24,7 @@ class HorizontalScroll2 extends Scroll2 {
     
     private override function createDefaults() { // TODO: remove this eventually, @:layout(...) or something
         super.createDefaults();
-        _defaultLayout = new HorizontalScrollLayout();
+        _defaultLayoutClass = HorizontalScrollLayout;
     }
 }
 

@@ -33,7 +33,7 @@ class TextArea extends InteractiveComponent implements IFocusable {
     //***********************************************************************************************************
     private override function createDefaults() {  // TODO: remove this eventually, @:layout(...) or something
         super.createDefaults();
-        _defaultLayout = new TextAreaLayout();
+        _defaultLayoutClass = TextAreaLayout;
     }
     
     private override function createChildren() { // TODO: this should be min-width / min-height in theme css when the new css engine is done

@@ -8,6 +8,7 @@ class UIEvent extends EventBase {
     public static inline var CHANGE:String = "change";
     public static inline var BEFORE_CHANGE:String = "beforeChange";
     public static inline var MOVE:String = "move";
+    public static inline var INITIALIZE:String = "initialize";
 
     public static inline var RENDERER_CREATED:String = "rendererCreated";
     public static inline var RENDERER_DESTROYED:String = "rendererDestroyed";

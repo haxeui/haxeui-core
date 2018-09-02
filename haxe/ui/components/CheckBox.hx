@@ -19,7 +19,7 @@ class CheckBox extends InteractiveComponent {
     //***********************************************************************************************************
     private override function createDefaults() {  // TODO: remove this eventually, @:layout(...) or something
         super.createDefaults();
-        _defaultLayout = new HorizontalLayout();
+        _defaultLayoutClass = HorizontalLayout;
     }
 
     private override function createChildren() {

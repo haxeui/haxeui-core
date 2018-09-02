@@ -48,7 +48,7 @@ class Macros {
                 } else if (s.indexOf("Builder") != -1) {
                     MacroHelpers.appendLine(currentRegisterCompositeFn, Context.parseInlineString('_compositeBuilderClass = ${ExprTools.toString(p)}', pos));
                 } else if (s.indexOf("Layout") != -1) {
-                    MacroHelpers.appendLine(currentRegisterCompositeFn, Context.parseInlineString('_layoutClass = ${ExprTools.toString(p)}', pos));
+                    MacroHelpers.appendLine(currentRegisterCompositeFn, Context.parseInlineString('_defaultLayoutClass = ${ExprTools.toString(p)}', pos));
                 }
             }
         } else {
@@ -65,7 +65,7 @@ class Macros {
                 } else if (s.indexOf("Builder") != -1) {
                     code += '_compositeBuilderClass = ${ExprTools.toString(p)};\n';
                 } else if (s.indexOf("Layout") != -1) {
-                    code += '_layoutClass = ${ExprTools.toString(p)};\n';
+                    code += '_defaultLayoutClass = ${ExprTools.toString(p)};\n';
                 }
             }
             

@@ -26,7 +26,7 @@ class TabView2 extends Component {
     //***********************************************************************************************************
     private override function createDefaults() {  // TODO: remove this eventually, @:layout(...) or something
         super.createDefaults();
-        _defaultLayout = new TabViewLayout();
+        _defaultLayoutClass = TabViewLayout;
     }
     
     private override function createChildren() {

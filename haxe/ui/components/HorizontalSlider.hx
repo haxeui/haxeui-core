@@ -20,7 +20,7 @@ class HorizontalSlider extends Slider {
     
     private override function createDefaults() { // TODO: remove this eventually, @:layout(...) or something
         super.createDefaults();
-        _defaultLayout = new HorizontalSliderLayout();
+        _defaultLayoutClass = HorizontalSliderLayout;
     }
     
     //***********************************************************************************************************

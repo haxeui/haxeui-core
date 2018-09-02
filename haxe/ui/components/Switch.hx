@@ -26,7 +26,7 @@ class Switch extends InteractiveComponent {
     //***********************************************************************************************************
     private override function createDefaults() {
         super.createDefaults();
-        _defaultLayout = new SwitchLayout();
+        _defaultLayoutClass = SwitchLayout;
     }
 
     private override function createChildren() {

@@ -30,7 +30,7 @@ class Image extends Component {
     //***********************************************************************************************************
     private override function createDefaults() {  // TODO: remove this eventually, @:layout(...) or something
         super.createDefaults();
-        _defaultLayout = new ImageLayout();
+        _defaultLayoutClass = ImageLayout;
     }
 
     //***********************************************************************************************************

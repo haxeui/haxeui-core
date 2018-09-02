@@ -16,7 +16,7 @@ class HorizontalProgress extends Progress {
     
     private override function createDefaults() { // TODO: remove this eventually, @:layout(...) or something
         super.createDefaults();
-        _defaultLayout = new HorizontalRange.HorizontalRangeLayout();
+        _defaultLayoutClass = HorizontalRange.HorizontalRangeLayout;
         defaultBehaviour("posFromCoord", new HorizontalRange.HorizontalRangePosFromCoord(this));
     }
 }

@@ -41,7 +41,7 @@ class TabBar extends Component {
     
     private override function createDefaults() {
         super.createDefaults();
-        _defaultLayout = new TabBarLayout();
+        _defaultLayoutClass = TabBarLayout;
     }
     
     public override function addComponent(child:Component):Component {

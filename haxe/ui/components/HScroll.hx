@@ -17,7 +17,7 @@ class HScroll extends Scroll {
     //***********************************************************************************************************
     private override function createDefaults() {
         super.createDefaults();
-        _defaultLayout = new HScrollLayout();
+        _defaultLayoutClass = HScrollLayout;
     }
 
     //***********************************************************************************************************

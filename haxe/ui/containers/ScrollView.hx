@@ -38,7 +38,7 @@ class ScrollView extends Component {
             "vscrollPos" => new DefaultVScrollPosBehaviour(this),
             "hscrollPos" => new DefaultHScrollPosBehaviour(this)
         ]);
-        _defaultLayout = new ScrollViewLayout();
+        _defaultLayoutClass = ScrollViewLayout;
     }
 
     private var _layoutName:String = "vertical";

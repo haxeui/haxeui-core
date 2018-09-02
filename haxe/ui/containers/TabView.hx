@@ -29,7 +29,7 @@ class TabView extends Component {
             "removePage" => new RemovePage(this),
             "pageCount" => new PageCount(this)
         ]);
-        _defaultLayout = new TabViewLayout();
+        _defaultLayoutClass = TabViewLayout;
     }
 
     private override function createChildren() {
