@@ -20,7 +20,10 @@ enum Token {
     TSemicolon;
     TBrOpen;
     TBrClose;
+    TABr;
     TDot;
+    TPlus;
+    TTilde;
     TSpaces;
     TSlash;
     TStar;
@@ -1358,7 +1361,7 @@ class Parser {
         var classes = [];
         while( true ) {
             spacesTokens = true;
-            isToken(TSpaces); // skip
+            isToken(TSpaces) || isToken(TABr); // skip
             var c = readClass(null);
             spacesTokens = false;
             if( c == null ) break;
@@ -1384,9 +1387,10 @@ class Parser {
         if( c.parent != null ) updateClass(c.parent);
     }
 
-    function readClass( parent ) : CssClass {
+    function readClass( parent, ?after ) : CssClass {
         var c = new CssClass();
         c.parent = parent;
+        c.after = after;
         var def = false;
         var last = null;
         while( true ) {
@@ -1397,8 +1401,10 @@ class Parser {
                 case TStar: def = true;
                 case TDot, TSharp, TDblDot: last = t;
                 case TIdent(i): c.node = i; def = true;
-                case TSpaces:
+                case TSpaces, TABr:
                     return def ? readClass(c) : null;
+                case TPlus, TTilde:
+                    return def ? readClass(null,c) : null;
                 case TBrOpen, TComma, TEof:
                     push(t);
                     break;
@@ -1629,7 +1635,7 @@ class Parser {
 
                 continue;
             }
-            if( isNum(c) || c == '-'.code ) {
+            if( isNum(c) || c == '-'.code || (c == '.'.code && isNum(StringTools.fastCodeAt(css, pos))) ) {
                 var i = 0, neg = false;
                 if( c == '-'.code ) { c = "0".code; neg = true; }
                 do {
@@ -1666,7 +1672,10 @@ class Parser {
             case ".".code: return TDot;
             case "{".code: return TBrOpen;
             case "}".code: return TBrClose;
+            case ">".code: return TABr;
             case ",".code: return TComma;
+            case "+".code: return TPlus;
+            case "~".code: return TTilde;
             case "*".code: return TStar;
             case "/".code:
                 if( (c = next()) != '*'.code ) {
