@@ -40,10 +40,12 @@ enum TextAlign {
 class CssClass {
     public var parent : Null<CssClass>;
     public var after : Null<CssClass>;
+    public var not : Null<CssClass>;
     public var node : Null<String>;
     public var className : Null<String>;
     public var pseudoClass : Null<String>;
     public var id : Null<String>;
+    public var attributes : Null<Map<String, String>>;
     public function new() {
     }
 }

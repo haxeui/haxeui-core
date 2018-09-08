@@ -20,6 +20,8 @@ enum Token {
     TSemicolon;
     TBrOpen;
     TBrClose;
+    TSBrOpen;
+    TSBrClose;
     TABr;
     TDot;
     TPlus;
@@ -27,6 +29,9 @@ enum Token {
     TSpaces;
     TSlash;
     TStar;
+    TDolar;
+    TPipe:
+    TEqual;
 }
 
 enum Value {
@@ -1399,7 +1404,7 @@ class Parser {
             if( last == null )
                 switch( t ) {
                 case TStar: def = true;
-                case TDot, TSharp, TDblDot: last = t;
+                case TDot, TSharp, TDblDot, TSBrOpen: last = t;
                 case TIdent(i): c.node = i; def = true;
                 case TSpaces, TABr:
                     return def ? readClass(c) : null;
@@ -1407,6 +1412,8 @@ class Parser {
                     return def ? readClass(null,c) : null;
                 case TBrOpen, TComma, TEof:
                     push(t);
+                    break;
+                case TPClose:
                     break;
                 default:
                     unexpected(t);
@@ -1417,7 +1424,41 @@ class Parser {
                     switch( last ) {
                     case TDot: c.className = i; def = true;
                     case TSharp: c.id = i; def = true;
-                    case TDblDot: c.pseudoClass = i; def = true;
+                    case TDblDot: 
+                        switch(i) {
+                        case 'not':
+                            var nt = readToken();
+                            switch(nt) {
+                            case TPOpen:
+                                c.not = readClass();
+                                def = true;
+                            default:
+                                unexpected(nt);
+                            }
+                        default:
+                            c.pseudoClass = i;
+                            def = true;
+                        }
+                    case TSBrOpen:
+                        if(c.attributes != null) c.attributes = new Map();
+                        c.attributes[i] = '';
+
+                        while(true) {
+                            switch(readToken()) {
+                                case TTilde, TStar, TDolar, TPipe:
+                                    //Todo: implement
+                                    #if debug
+                                        trace("WARNING: Not implemented atributte selector operator different than =");
+                                    #end
+                                case TEqual:
+                                    continue;
+                                case TIdent(i2):
+                                    c.attributes[i] = i2;
+                                case TSBrClose:
+                                    break;
+                                default: throw "attribute";
+                            }
+                        }
                     default: throw "assert";
                     }
                     last = null;
@@ -1674,12 +1715,17 @@ class Parser {
             case ";".code: return TSemicolon;
             case ".".code: return TDot;
             case "{".code: return TBrOpen;
-            case "}".code: return TBrClose;
+            case "}".code: return TSBrClose;
+            case "[".code: return TSBrOpen;
+            case "]".code: return TBrClose;
             case ">".code: return TABr;
             case ",".code: return TComma;
             case "+".code: return TPlus;
             case "~".code: return TTilde;
             case "*".code: return TStar;
+            case "$".code: return TDolar;
+            case "|".code: return TPipe;
+            case "=".code: return TEqual;
             case "/".code:
                 if( (c = next()) != '*'.code ) {
                     pos--;
