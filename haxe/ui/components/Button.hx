@@ -108,12 +108,13 @@ class Button extends InteractiveComponent {
             (label.customStyle.color != style.color ||
             label.customStyle.fontName != style.fontName ||
             label.customStyle.fontSize != style.fontSize ||
-            label.customStyle.cursor != style.cursor)) {
+            label.customStyle.cursor != style.cursor || label.customStyle.textAlign != style.textAlign)) {
 
             label.customStyle.color = style.color;
             label.customStyle.fontName = style.fontName;
             label.customStyle.fontSize = style.fontSize;
             label.customStyle.cursor = style.cursor;
+            label.customStyle.textAlign = style.textAlign;
             label.invalidateComponentStyle();
         }
 
@@ -398,7 +399,7 @@ class ButtonLayout extends DefaultLayout {
                     label.top = Std.int((component.componentHeight / 2) - (label.componentHeight / 2)) + marginTop(label) - marginBottom(label);
                     icon.top = Std.int((component.componentHeight / 2) - (icon.componentHeight / 2)) + marginTop(icon) - marginBottom(icon);
                 } else if (label != null) {
-                    label.left = paddingLeft;
+                    label.left = getTextAlignPos(label, component.componentWidth);
                     label.top = Std.int((component.componentHeight / 2) - (label.componentHeight / 2)) + marginTop(label) - marginBottom(label);
                 } else if (icon != null) {
                     icon.left = Std.int((component.componentWidth / 2) - (icon.componentWidth / 2)); // + marginLeft(icon) - marginRight(icon);
@@ -425,7 +426,7 @@ class ButtonLayout extends DefaultLayout {
                     label.left = getTextAlignPos(label, component.componentWidth);
                     label.top = Std.int((component.componentHeight / 2) - (label.componentHeight / 2)) + marginTop(label) - marginBottom(label);
                 } else if (icon != null) {
-                    icon.left = Std.int((component.componentWidth / 2) - (icon.componentWidth / 2)); // + marginLeft(icon) - marginRight(icon);
+                    icon.left = Std.int((component.componentWidth / 2) - (icon.componentWidth / 2)) + marginLeft(icon) - marginRight(icon);
                     icon.top = Std.int((component.componentHeight / 2) - (icon.componentHeight / 2)) + marginTop(icon) - marginBottom(icon);
                 }
             case "top" | "bottom":
@@ -446,7 +447,7 @@ class ButtonLayout extends DefaultLayout {
                     label.left = getTextAlignPos(label, component.componentWidth);
                     icon.left = Std.int((component.componentWidth / 2) - (icon.componentWidth / 2)) + marginLeft(icon) - marginRight(icon);
                 } else if (label != null) {
-                    label.left = Std.int((component.componentWidth / 2) - (label.componentWidth / 2)) + marginLeft(label) - marginRight(label);
+                    label.left = getTextAlignPos(label, component.componentWidth);
                     label.top = Std.int((component.componentHeight / 2) - (label.componentHeight / 2)) + marginTop(label) - marginBottom(label);
                 } else if (icon != null) {
                     icon.left = Std.int((component.componentWidth / 2) - (icon.componentWidth / 2)) + marginLeft(icon) - marginRight(icon);
