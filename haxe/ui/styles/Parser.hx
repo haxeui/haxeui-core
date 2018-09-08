@@ -370,7 +370,7 @@ class Parser {
                 return true;
             }
         case "border-top":
-            if( applyComposite(["border-top-width", "border-top-color"], v, s) )
+            if( applyComposite(["border-top-width", "border-style", "border-top-color"], v, s) )
                 return true;
             if (getIdent(v) == "none" ) {
                 s.borderTopSize = MathUtil.MIN_INT;
@@ -378,7 +378,7 @@ class Parser {
                 return true;
             }
         case "border-left":
-            if( applyComposite(["border-left-width", "border-left-color"], v, s) )
+            if( applyComposite(["border-left-width", "border-style", "border-left-color"], v, s) )
                 return true;
             if (getIdent(v) == "none" ) {
                 s.borderLeftSize = MathUtil.MIN_INT;
@@ -386,7 +386,7 @@ class Parser {
                 return true;
             }
         case "border-bottom":
-            if( applyComposite(["border-bottom-width", "border-bottom-color"], v, s) )
+            if( applyComposite(["border-bottom-width", "border-style", "border-bottom-color"], v, s) )
                 return true;
             if (getIdent(v) == "none" ) {
                 s.borderBottomSize = MathUtil.MIN_INT;
@@ -394,7 +394,7 @@ class Parser {
                 return true;
             }
         case "border-right":
-            if( applyComposite(["border-right-width", "border-right-color"], v, s) )
+            if( applyComposite(["border-right-width", "border-style", "border-right-color"], v, s) )
                 return true;
             if (getIdent(v) == "none" ) {
                 s.borderRightSize = MathUtil.MIN_INT;
@@ -1638,10 +1638,13 @@ class Parser {
             if( isNum(c) || c == '-'.code || (c == '.'.code && isNum(StringTools.fastCodeAt(css, pos))) ) {
                 var i = 0, neg = false;
                 if( c == '-'.code ) { c = "0".code; neg = true; }
-                do {
+                if(c != '.'.code) {
+                    do {
                     i = i * 10 + (c - "0".code);
                     c = next();
-                } while( isNum(c) );
+                    } while( isNum(c) );
+                }
+                
                 if( c == ".".code ) {
                     var f : Float = i;
                     var k = 0.1;
