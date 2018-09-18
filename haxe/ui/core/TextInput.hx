@@ -132,6 +132,7 @@ class TextInput extends TextInputBase implements IValidating {
 
         _width = value;
         invalidate(InvalidationFlags.DISPLAY);
+        validateDisplay(); // TODO: why is this needed??
         return value;
     }
 
@@ -147,6 +148,7 @@ class TextInput extends TextInputBase implements IValidating {
 
         _height = value;
         invalidate(InvalidationFlags.DISPLAY);
+        validateDisplay(); // TODO: why is this needed??
         return value;
     }
 
