@@ -57,12 +57,16 @@ class ListDropDownHandler extends DropDownHandler {
     public override function show() {
         if (_listview == null) {
             _listview = new ListView2();
-            _listview.itemCount = 4;    //TODO - the user could customize it
             _listview.virtual = _dropdown.virtual;
             _listview.dataSource = _dropdown.dataSource;
             _listview.registerEvent(UIEvent.CHANGE, onListChange);
         }
 
+        var itemCount = 4; //TODO - the user could customize it
+        if (_listview.dataSource.size < itemCount) {
+            itemCount = _listview.dataSource.size;
+        }
+        _listview.itemCount = itemCount;    
         _listview.width = _dropdown.width;
 
         Screen.instance.addComponent(_listview);
