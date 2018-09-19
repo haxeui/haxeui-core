@@ -202,6 +202,7 @@ class DropDownEvents extends ButtonEvents {
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
+@:access(haxe.ui.components.DropDownEvents)
 private class DropDownBuilder extends CompositeBuilder {
     public static var HANDLER_MAP:Map<String, String> = new Map<String, String>();
     
@@ -217,6 +218,14 @@ private class DropDownBuilder extends CompositeBuilder {
     
     public override function create() {
         _dropdown.toggle = true;
+    }
+    
+    public override function destroy() {
+        var events:DropDownEvents = cast(_dropdown._internalEvents, DropDownEvents);
+        events.hideDropDown();
+        if (events._handler != null && events._handler.component != null) {
+            events._handler.component.destroyComponent();
+        }
     }
 }
 

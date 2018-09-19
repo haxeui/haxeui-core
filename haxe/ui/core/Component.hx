@@ -716,7 +716,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             if (dispose == true) {
                 child._isDisposed = true;
                 child.unregisterEvents();
-                child.onDestroy();
+                child.destroyComponent();
             }
         }
 
@@ -749,7 +749,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             if (dispose == true) {
                 child._isDisposed = true;
                 child.unregisterEvents();
-                child.onDestroy();
+                child.destroyComponent();
             }
         }
 
@@ -769,6 +769,13 @@ class Component extends ComponentBase implements IComponentBase implements IVali
                 }
             }
         }
+    }
+    
+    private function destroyComponent() {
+        if (_compositeBuilder != null) {
+            _compositeBuilder.destroy();
+        }
+        onDestroy();
     }
     
     private function onDestroy() {
