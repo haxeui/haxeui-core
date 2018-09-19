@@ -20,6 +20,7 @@ class DropDown2 extends Button implements IDataComponent {
     @:behaviour(DefaultBehaviour)                    public var dataSource:DataSource<Dynamic>;
     @:behaviour(DefaultBehaviour, "list")            public var type:String;
     @:behaviour(DefaultBehaviour, false)             public var virtual:Bool;
+    @:behaviour(DefaultBehaviour)                    public var dropDownWidth:Null<Float>;
 }
 
 //***********************************************************************************************************
@@ -66,8 +67,12 @@ class ListDropDownHandler extends DropDownHandler {
         if (_listview.dataSource.size < itemCount) {
             itemCount = _listview.dataSource.size;
         }
-        _listview.itemCount = itemCount;    
-        _listview.width = _dropdown.width;
+        _listview.itemCount = itemCount; 
+        if (_dropdown.dropDownWidth == null) {
+            _listview.width = _dropdown.width;
+        } else {
+            _listview.width = _dropdown.dropDownWidth;
+        }
 
         Screen.instance.addComponent(_listview);
     }
@@ -99,6 +104,10 @@ class CalendarDropDownHandler extends DropDownHandler {
             _calendar = new CalendarView();
             _calendar.registerEvent(UIEvent.CHANGE, onCalendarChange);
         }    
+        
+        if (_dropdown.dropDownWidth != null) {
+            _calendar.width = _dropdown.dropDownWidth;
+        }
         
         Screen.instance.addComponent(_calendar);
     }
