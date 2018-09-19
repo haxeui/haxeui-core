@@ -166,7 +166,10 @@ class DropDownEvents extends ButtonEvents {
         _handler.component.addClass("popup");
         _handler.component.left = _dropdown.screenLeft;
         _handler.component.top = _dropdown.screenTop + _dropdown.height - 1;
-        
+
+        if (_handler.component.screenLeft + _handler.component.width > Screen.instance.width) {
+            _handler.component.left = _handler.component.screenLeft - _handler.component.width + _dropdown.width;
+        }
         if (_handler.component.screenTop + _handler.component.height > Screen.instance.height) {
             _handler.component.top = _dropdown.screenTop - _handler.component.height;
         }
