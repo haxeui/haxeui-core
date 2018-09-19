@@ -1476,17 +1476,35 @@ class Component extends ComponentBase implements IComponentBase implements IVali
      Resize this components width and height in one call
     **/
     @:dox(group = "Size related properties and methods")
-    public function resizeComponent(width:Null<Float>, height:Null<Float>) {
+    public function resizeComponent(w:Null<Float>, h:Null<Float>) {
         var invalidate:Bool = false;
-        if (width != null && _componentWidth != width) {
-            _componentWidth = width;
-
+        
+        if (style != null) {
+            if (w != null) {
+                if (style.minWidth != null && w < style.minWidth) {
+                    w = style.minWidth;
+                } else if (style.maxWidth != null && w > style.maxWidth) {
+                    w = style.maxWidth;
+                }
+            }
+            
+            if (h != null) {
+                if (style.minHeight != null && h < style.minHeight) {
+                    h = style.minHeight;
+                } else if (style.maxHeight != null && h > style.maxHeight) {
+                    h = style.maxHeight;
+                }
+            }
+        }
+        
+        
+        if (w != null && _componentWidth != w) {
+            _componentWidth = w;
             invalidate = true;
         }
 
-        if (height != null && _componentHeight != height) {
-            _componentHeight = height;
-
+        if (h != null && _componentHeight != h) {
+            _componentHeight = h;
             invalidate = true;
         }
 
