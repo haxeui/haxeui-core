@@ -54,6 +54,7 @@ class XMLParser extends ComponentParser {
                 }
             }
 
+            component.validate();
             isComponent = true;
         }
         return isComponent;

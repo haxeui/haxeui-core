@@ -142,12 +142,6 @@ class Toolkit {
         if (c.text != null)             component.text = c.text;
         if (c.styleNames != null)       component.styleNames = c.styleNames;
         if (c.style != null)            component.styleString = c.style;
-
-        if (Std.is(component, Box)) {
-            var box:haxe.ui.containers.Box = cast(component, haxe.ui.containers.Box);
-            if (c.layoutName != null)               box.layoutName = c.layoutName;
-        }
-
         if (c.layout != null) {
             var layout:Layout = buildLayoutFromInfo(c.layout);
             component.layout = layout;

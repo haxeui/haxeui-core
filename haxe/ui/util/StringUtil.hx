@@ -1,6 +1,11 @@
 package haxe.ui.util;
 
 class StringUtil {
+    public static function uncapitalizeFirstLetter(s:String):String {
+        s = s.substr(0, 1).toLowerCase() + s.substr(1, s.length);
+        return s;
+    }
+
     public static function capitalizeFirstLetter(s:String):String {
         s = s.substr(0, 1).toUpperCase() + s.substr(1, s.length);
         return s;

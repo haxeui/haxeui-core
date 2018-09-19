@@ -3,8 +3,8 @@ package haxe.ui.macros;
 import haxe.ui.core.ComponentClassMap;
 import haxe.ui.core.LayoutClassMap;
 import haxe.ui.parsers.ui.ComponentInfo;
-import haxe.ui.parsers.ui.LayoutInfo;
 import haxe.ui.parsers.ui.ComponentParser;
+import haxe.ui.parsers.ui.LayoutInfo;
 import haxe.ui.parsers.ui.resolvers.FileResourceResolver;
 import haxe.ui.scripting.ConditionEvaluator;
 import haxe.ui.util.StringUtil;
@@ -183,8 +183,6 @@ class ComponentMacros {
         if (c.text != null)                     assign("text", c.text);
         if (c.styleNames != null)               assign("styleNames", c.styleNames);
         if (c.style != null)                    assign("styleString", c.styleString);
-        if (c.layoutName != null)               assign("layoutName", c.layoutName);
-
         if (c.layout != null) {
             buildLayoutCode(code, c.layout, id, namedComponents, pos);
         }

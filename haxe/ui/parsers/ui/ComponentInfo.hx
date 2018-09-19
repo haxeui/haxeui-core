@@ -1,4 +1,5 @@
 package haxe.ui.parsers.ui;
+import haxe.ui.util.StringUtil;
 
 class ComponentInfo {
     public var type:Null<String>;
@@ -66,7 +67,24 @@ class ComponentInfo {
     }
 
     public function validate() {
-
+        var propsToRemove = [];
+        if (layoutName != null && layout == null) {
+            layout = new LayoutInfo();
+            layout.type = layoutName;
+            for (propName in properties.keys()) {
+                if (StringTools.startsWith(propName, "layout")) {
+                    var propValue = properties.get(propName);
+                    propsToRemove.push(propName);
+                    propName = StringTools.replace(propName, "layout", "");
+                    propName = StringUtil.uncapitalizeFirstLetter(propName);
+                    layout.properties.set(propName, propValue);
+                }
+            }
+        }
+        
+        for (propName in propsToRemove) {
+            properties.remove(propName);
+        }
     }
 }
 

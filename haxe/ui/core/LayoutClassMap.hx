@@ -15,6 +15,7 @@ class LayoutClassMap {
     }
 
     public static function register(alias:String, className:String) {
+        instance.registerClassName(StringTools.replace(alias, "layout", ""), className);
         instance.registerClassName(alias, className);
     }
 
