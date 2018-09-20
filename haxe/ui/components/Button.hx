@@ -1,6 +1,7 @@
 package haxe.ui.components;
 
 import haxe.ui.core.Behaviour;
+import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.DataBehaviour;
 import haxe.ui.core.DefaultBehaviour;
 import haxe.ui.core.InteractiveComponent;
@@ -12,58 +13,88 @@ import haxe.ui.util.Size;
 import haxe.ui.util.Timer;
 import haxe.ui.util.Variant;
 
-@:composite(ButtonEvents, ButtonLayout)
+/**
+ General purpose push button that supports both text and icon as well as repeat event dispatching
+ 
+ Composite children:
+    | Id             | Type    | Style Name   | Notes                                  |
+    | `button-label` | `Label` | `.label`     | The text of the button (if applicable) |
+    | `button-icon`  | `Image` | `.icon`      | The icon of the button (if applicable) |
+ 
+ Pseudo classes:
+    | Name      | Notes                                                                    |
+    | `:hover`  | The style to be applied when the cursor is over the button               |
+    | `:down`   | The style to be applied when a mouse button is pressed inside the button |
+    | `:active` | The style to be applied when the button has focus                        |
+    
+  XML example:
+    <button text="Button"
+            styleNames="myCustomButton"
+            style="font-size: 30px"
+            onClick="trace('hello world')" />
+    
+  Code example:
+    var button = new Button();
+    button.text = "Button";
+    button.styleNames = "myCustomButton";
+    button.fontSize = 30;
+    button.onClick = function(e) {
+        trace("hello world");
+    }
+**/
+    
+@:dox(icon = "ui-button.png")
+@:composite(ButtonEvents, ButtonBuilder, ButtonLayout)
 class Button extends InteractiveComponent {
     //***********************************************************************************************************
     // Styles
     //***********************************************************************************************************
-    @:style(layout)                         public var iconPosition:String;
-    @:style(layout)                         public var fontSize:Null<Float>;
-    @:style(layout)                         public var textAlign:String;
+    @:style(layout)                                     public var iconPosition:String;
+    @:style(layout)                                     public var fontSize:Null<Float>;
+    @:style(layout)                                     public var textAlign:String;
     
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
+    /**
+     Whether this button will dispatch multiple click events while the the mouse is pressed within it
+    **/
     @:clonable @:behaviour(DefaultBehaviour, false)    public var repeater:Bool;
-    @:clonable @:behaviour(DefaultBehaviour, 50)       public var repeatInterval:Int;
-    @:clonable @:behaviour(DefaultBehaviour, false)    public var remainPressed:Bool;
-    @:clonable @:behaviour(ToggleBehaviour)            public var toggle:Bool;
-    @:clonable @:behaviour(SelectedBehaviour)          public var selected:Bool;
-    @:clonable @:behaviour(TextBehaviour)              public var text:String;
-    @:clonable @:behaviour(TextBehaviour)              public var value:Variant;
-    @:clonable @:behaviour(IconBehaviour)              public var icon:String;
     
-    //***********************************************************************************************************
-    // Overrides
-    //***********************************************************************************************************
-    private override function applyStyle(style:Style) {  // TODO: remove this eventually, @:styleApplier(...) or something
-        super.applyStyle(style);
-        if (style.icon != null) {
-            icon = style.icon;
-        }
-
-        var label:Label = findComponent(Label);
-        if (label != null &&
-            (label.customStyle.color != style.color ||
-            label.customStyle.fontName != style.fontName ||
-            label.customStyle.fontSize != style.fontSize ||
-            label.customStyle.cursor != style.cursor ||
-            label.customStyle.textAlign != style.textAlign)) {
-
-            label.customStyle.color = style.color;
-            label.customStyle.fontName = style.fontName;
-            label.customStyle.fontSize = style.fontSize;
-            label.customStyle.cursor = style.cursor;
-            label.customStyle.textAlign = style.textAlign;
-            label.invalidateComponentStyle();
-        }
-
-        var icon:Image = findComponent(Image);
-        if (icon != null && (icon.customStyle.cursor != style.cursor)) {
-            icon.customStyle.cursor = style.cursor;
-            icon.invalidateComponentStyle();
-        }
-    }
+    /**
+     How often this button will dispatch multiple click events while the the mouse is pressed within it
+    **/
+    @:clonable @:behaviour(DefaultBehaviour, 50)       public var repeatInterval:Int;
+    
+    /**
+     Whether the buttons state should remain pressed even when the mouse has left its bounds
+    **/
+    @:clonable @:behaviour(DefaultBehaviour, false)    public var remainPressed:Bool;
+    
+    /**
+     Whether this button should behave as a toggle button or not
+    **/
+    @:clonable @:behaviour(ToggleBehaviour)            public var toggle:Bool;
+    
+    /**
+     Whether this button is toggled or not (only relavant if toggle = true)
+    **/
+    @:clonable @:behaviour(SelectedBehaviour)          public var selected:Bool;
+    
+    /**
+     The text (label) of this button
+    **/
+    @:clonable @:behaviour(TextBehaviour)              public var text:String;
+    
+    /**
+     The value of this button, which is equivelant to its text
+    **/
+    @:clonable @:behaviour(TextBehaviour)              public var value:Variant;
+    
+    /**
+     The image resource to use as the buttons icon
+    **/
+    @:clonable @:behaviour(IconBehaviour)              public var icon:String;
 }
 
 //***********************************************************************************************************
@@ -378,6 +409,49 @@ class ButtonEvents extends haxe.ui.core.Events {
         _button.selected = !_button.selected;
         if (_button.selected == false) {
             _button.removeClass(":down");
+        }
+    }
+}
+
+//***********************************************************************************************************
+// Composite Builder
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+class ButtonBuilder extends CompositeBuilder {
+    private var _button:Button;
+    
+    public function new(button:Button) {
+        super(button);
+        _button = button;
+    }
+    
+    public override function applyStyle(style:Style) {  // TODO: remove this eventually, @:styleApplier(...) or something
+        super.applyStyle(style);
+        if (style.icon != null) {
+            _button.icon = style.icon;
+        }
+
+        var label:Label = _button.findComponent(Label);
+        if (label != null &&
+            (label.customStyle.color != style.color ||
+            label.customStyle.fontName != style.fontName ||
+            label.customStyle.fontSize != style.fontSize ||
+            label.customStyle.cursor != style.cursor ||
+            label.customStyle.textAlign != style.textAlign)) {
+
+            label.customStyle.color = style.color;
+            label.customStyle.fontName = style.fontName;
+            label.customStyle.fontSize = style.fontSize;
+            label.customStyle.cursor = style.cursor;
+            label.customStyle.textAlign = style.textAlign;
+            label.invalidateComponentStyle();
+        }
+
+        var icon:Image = _button.findComponent(Image);
+        if (icon != null && (icon.customStyle.cursor != style.cursor)) {
+            icon.customStyle.cursor = style.cursor;
+            icon.invalidateComponentStyle();
         }
     }
 }

@@ -1,5 +1,6 @@
 package haxe.ui.components;
 
+import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.DataBehaviour;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.MouseEvent;
@@ -7,34 +8,13 @@ import haxe.ui.core.UIEvent;
 import haxe.ui.layouts.HorizontalLayout;
 import haxe.ui.styles.Style;
 
+@:composite(Events, Builder, HorizontalLayout)
 class CheckBox extends InteractiveComponent {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
     @:behaviour(TextBehaviour)              public var text:String;
     @:behaviour(SelectedBehaviour)          public var selected:Bool;
-
-    //***********************************************************************************************************
-    // Internals
-    //***********************************************************************************************************
-    private override function createDefaults() {  // TODO: remove this eventually, @:layout(...) or something
-        super.createDefaults();
-        _defaultLayoutClass = HorizontalLayout;
-    }
-
-    private override function createChildren() {
-        super.createChildren();
-        
-        if (findComponent(Value) == null) {
-            var value = new Value();
-            value.id = '${cssName}-value';
-            value.addClass('${cssName}-value');
-            value.scriptAccess = false;
-            addComponent(value);
-        }
-        
-        registerInternalEvents(Events);
-    }
     
     //***********************************************************************************************************
     // Overrides
@@ -163,5 +143,27 @@ private class Events extends haxe.ui.core.Events  {
     
     private function onClick(event:MouseEvent) {
         _checkbox.selected = !_checkbox.selected;
+    }
+}
+
+//***********************************************************************************************************
+// Composite Builder
+//***********************************************************************************************************
+private class Builder extends CompositeBuilder {
+    private var _checkbox:CheckBox;
+    
+    public function new(checkbox:CheckBox) {
+        super(checkbox);
+        _checkbox = checkbox;
+    }
+    
+    public override function create() {
+        if (_checkbox.findComponent(Value) == null) {
+            var value = new Value();
+            value.id = '${_checkbox.cssName}-value';
+            value.addClass('${_checkbox.cssName}-value');
+            value.scriptAccess = false;
+            _checkbox.addComponent(value);
+        }
     }
 }

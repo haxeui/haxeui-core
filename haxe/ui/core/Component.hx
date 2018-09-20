@@ -2148,7 +2148,8 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             return;
         }
 
-        if (_isInitialized == false) {
+        var isInitialized = _isInitialized;
+        if (isInitialized == false) {
             initializeComponent();
         }
 
@@ -2156,6 +2157,24 @@ class Component extends ComponentBase implements IComponentBase implements IVali
 
         validateComponentInternal();
 
+        if (isInitialized == false) {
+            if ((_style.initialWidth != null || _style.initialPercentWidth != null) && width <= 0) {
+                if (_style.initialWidth != null) {
+                    width = _style.initialWidth;
+                } else  if (_style.initialPercentWidth != null) {
+                    percentWidth = _style.initialPercentWidth;
+                }
+            }
+            
+            if ((_style.initialHeight != null || _style.initialPercentHeight != null) && height <= 0) {
+                if (_style.initialHeight != null) {
+                    height = _style.initialHeight;
+                } else  if (_style.initialPercentHeight != null) {
+                    percentHeight = _style.initialPercentHeight;
+                }
+            }
+        }
+        
         for (flag in _invalidationFlags.keys()) {
             _invalidationFlags.remove(flag);
         }
@@ -2499,6 +2518,10 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             native = false;
         }
         */
+        
+        if (_compositeBuilder != null) {
+            _compositeBuilder.applyStyle(style);
+        }
     }
 
     //***********************************************************************************************************

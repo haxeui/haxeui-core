@@ -1,4 +1,5 @@
 package haxe.ui.core;
+import haxe.ui.styles.Style;
 
 class CompositeBuilder {
     private var _component:Component;
@@ -31,5 +32,9 @@ class CompositeBuilder {
     
     public function validateComponentLayout():Bool {
         return false;
+    }
+    
+    public function applyStyle(style:Style) {
+        
     }
 }

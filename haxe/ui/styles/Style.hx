@@ -10,12 +10,16 @@ class Style {
     public var autoWidth:Null<Bool>;
     public var width:Null<Float>;
     public var percentWidth:Null<Float>;
+    public var initialWidth:Null<Float>;
+    public var initialPercentWidth:Null<Float>;
     public var minWidth:Null<Float>;
     public var maxWidth:Null<Float>;
     
     public var autoHeight:Null<Bool>;
     public var height:Null<Float>;
     public var percentHeight:Null<Float>;
+    public var initialHeight:Null<Float>;
+    public var initialPercentHeight:Null<Float>;
     public var minHeight:Null<Float>;
     public var maxHeight:Null<Float>;
     
@@ -109,6 +113,9 @@ class Style {
                     autoWidth = ValueTools.constant(v.value, "auto");
                     width = ValueTools.calcDimension(v.value);
                     percentWidth = ValueTools.percent(v.value);
+                case "initial-width":
+                    initialWidth = ValueTools.calcDimension(v.value);
+                    initialPercentWidth = ValueTools.percent(v.value);
                 case "min-width":
                     minWidth = ValueTools.calcDimension(v.value);
                 case "max-width":
@@ -118,6 +125,9 @@ class Style {
                     autoHeight = ValueTools.constant(v.value, "auto");
                     height = ValueTools.calcDimension(v.value);
                     percentHeight = ValueTools.percent(v.value);
+                case "initial-height":
+                    initialHeight = ValueTools.calcDimension(v.value);
+                    initialPercentHeight = ValueTools.calcDimension(v.value);
                 case "min-height":
                     minHeight = ValueTools.calcDimension(v.value);
                 case "max-height":
@@ -303,6 +313,8 @@ class Style {
             width = s.width;
             autoWidth = false;
         }
+        if (s.initialWidth != null) initialWidth = s.initialWidth;
+        if (s.initialPercentWidth != null) initialPercentWidth = s.initialPercentWidth;
         if (s.minWidth != null) minWidth = s.minWidth;
         if (s.maxWidth != null) maxWidth = s.maxWidth;
         
@@ -310,6 +322,8 @@ class Style {
             height = s.height;
             autoHeight = false;
         }
+        if (s.initialHeight != null) initialHeight = s.initialHeight;
+        if (s.initialPercentHeight != null) initialPercentHeight = s.initialPercentHeight;
         if (s.minHeight != null) minHeight = s.minHeight;
         if (s.maxHeight != null) maxHeight = s.maxHeight;
         
@@ -410,10 +424,14 @@ class Style {
         if (s.horizontalSpacing != horizontalSpacing) return false;
 
         if (s.width != width) return false;
+        if (s.initialWidth != initialWidth) return false;
+        if (s.initialPercentWidth != initialPercentWidth) return false;
         if (s.minWidth != minWidth) return false;
         if (s.maxWidth != maxWidth) return false;
         
         if (s.height != height) return false;
+        if (s.initialHeight != initialHeight) return false;
+        if (s.initialPercentHeight != initialPercentHeight) return false;
         if (s.minHeight != minHeight) return false;
         if (s.maxHeight != maxHeight) return false;
         

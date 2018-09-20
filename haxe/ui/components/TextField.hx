@@ -12,6 +12,8 @@ import haxe.ui.styles.Style;
 import haxe.ui.util.Size;
 import haxe.ui.util.Variant;
 
+
+@:composite(Events, TextFieldLayout)
 class TextField extends InteractiveComponent {
     //***********************************************************************************************************
     // Styles
@@ -28,29 +30,12 @@ class TextField extends InteractiveComponent {
     @:behaviour(IconBehaviour)              public var icon:String;
     
     //***********************************************************************************************************
-    // Internals
-    //***********************************************************************************************************
-    private override function createDefaults() {  // TODO: remove this eventually, @:layout(...) or something
-        super.createDefaults();
-        _defaultLayoutClass = TextFieldLayout;
-    }
-    
-    private override function createChildren() { // TODO: this should be min-width / min-height in theme css when the new css engine is done
-        super.createChildren();
-        if (width <= 0) {
-            width = 150;
-        }
-        
-        registerInternalEvents(Events);
-    }
-    
-    //***********************************************************************************************************
     // Overrides
     //***********************************************************************************************************
     private override function applyStyle(style:Style) { // TODO: remove this eventually, @:styleApplier(...) or something
         super.applyStyle(style);
         if (style.icon != null) {
-            //icon = style.icon;
+            icon = style.icon;
         }
         if (hasTextInput() == true) {
             getTextInput().textStyle = style;

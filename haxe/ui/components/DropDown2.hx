@@ -1,5 +1,6 @@
 package haxe.ui.components;
 
+import haxe.ui.components.Button.ButtonBuilder;
 import haxe.ui.components.Button.ButtonEvents;
 import haxe.ui.containers.CalendarView;
 import haxe.ui.containers.ListView2;
@@ -206,7 +207,7 @@ class DropDownEvents extends ButtonEvents {
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 @:access(haxe.ui.components.DropDownEvents)
-private class DropDownBuilder extends CompositeBuilder {
+private class DropDownBuilder extends ButtonBuilder {
     public static var HANDLER_MAP:Map<String, String> = new Map<String, String>();
     
     private var _dropdown:DropDown2;
