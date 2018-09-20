@@ -349,6 +349,48 @@ class Macros {
             });
         }
         
+        for (f in MacroHelpers.getFieldsWithMeta("call", fields)) {
+            var fn = MacroHelpers.getFunction(fields, f.name);
+            var arg0 = "null";
+            var void = true;
+            switch (f.kind) {
+                case FFun(f):
+                    if (f.args.length > 0) {
+                        arg0 = f.args[0].name;
+                    }
+                    switch (f.ret) {
+                        case TPath(p):
+                            void = (p.name == "Void");
+                        case _:   
+                    }
+                case _:
+            }
+            
+            if (void == true) {
+                fn.expr = macro {
+                    behaviourCall($v{f.name}, $i{arg0});
+                };
+            } else {
+                fn.expr = macro {
+                    return behaviourCall($v{f.name}, $i{arg0});
+                };
+            }
+            
+            // lets dump info into an array and we'll modify the createDefaults at the end            
+            var orginalMeta = MacroHelpers.getMeta(f, "call");
+            var btype = ExprTools.toString(orginalMeta.params[0]);
+            var bparam = null;
+            if (orginalMeta.params.length > 1) {
+                bparam = ExprTools.toString(orginalMeta.params[1]);
+            }
+
+            behaviours.push({
+               name: f.name,
+               btype: btype,
+               bparam: bparam
+            });
+        }
+        
         if (behaviours.length > 0) {
             // lets modify the registerBehaviours function
             
