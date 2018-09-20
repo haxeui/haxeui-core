@@ -2,6 +2,7 @@ package haxe.ui.containers;
 
 import haxe.ui.components.Button;
 import haxe.ui.components.TabBar2;
+import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.DataBehaviour;
@@ -9,17 +10,16 @@ import haxe.ui.core.UIEvent;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.LayoutFactory;
 import haxe.ui.util.Size;
+import haxe.ui.util.Variant;
 
 class TabView2 extends Component {
     //***********************************************************************************************************
-    // Styles
-    //***********************************************************************************************************
-    
-    //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:behaviour(PageIndexBehaviour)         public var pageIndex:Int;
-    @:behaviour(TabPositionBehaviour)       public var tabPosition:String;
+    @:behaviour(PageIndex)      public var pageIndex:Int;
+    @:behaviour(TabPosition)    public var tabPosition:String;
+    @:behaviour(PageCount)      public var pageCount:Int;
+    @:call(RemovePage)          public function removePage(index:Int):Void;
     
     //***********************************************************************************************************
     // Internals
@@ -106,7 +106,7 @@ private class TabViewLayout extends DefaultLayout {
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 @:access(haxe.ui.containers.TabViewBuilder)
-private class PageIndexBehaviour extends DataBehaviour {
+private class PageIndex extends DataBehaviour {
     public override function validateData() {
         if (_component.native == true) {
             return;
@@ -135,7 +135,7 @@ private class PageIndexBehaviour extends DataBehaviour {
 }
 
 @:dox(hide) @:noCompletion
-private class TabPositionBehaviour extends DataBehaviour {
+private class TabPosition extends DataBehaviour {
     public override function validateData() {
         if (_value == "bottom") {
             _component.addClass(":bottom");
@@ -143,6 +143,33 @@ private class TabPositionBehaviour extends DataBehaviour {
             _component.removeClass(":bottom");
         }
         _component.findComponent(TabBar2, false).tabPosition = _value;
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+@:access(haxe.ui.containers.TabViewBuilder)
+private class PageCount extends Behaviour {
+    public override function get():Variant {
+        var builder:TabViewBuilder = cast(_component._compositeBuilder, TabViewBuilder);
+        return builder._tabs.tabCount;
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+@:access(haxe.ui.containers.TabViewBuilder)
+private class RemovePage extends Behaviour {
+    public override function call(param:Any = null):Variant {
+        var builder:TabViewBuilder = cast(_component._compositeBuilder, TabViewBuilder);
+        var index:Int = param;
+        if (index < builder._views.length) {
+            var view = builder._views[index];
+            builder._views.remove(view);
+            builder._content.removeComponent(view);
+            builder._tabs.removeTab(index);
+        }
+        return null;
     }
 }
 
@@ -166,7 +193,6 @@ private class Events extends haxe.ui.core.Events {
             tabs.registerEvent(UIEvent.CHANGE, onTabChanged);
         }
     }
-    
     
     public override function unregister() {
         var tabs:TabBar2 = _tabview.findComponent(TabBar2, false);
