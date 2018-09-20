@@ -190,7 +190,7 @@ private class ResourceBehaviour extends DataBehaviour {
 // Composite Builder
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
-class Builder extends CompositeBuilder {
+private class Builder extends CompositeBuilder {
     private var _image:Image;
     
     public function new(image:Image) {

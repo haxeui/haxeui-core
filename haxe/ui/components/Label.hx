@@ -1,48 +1,25 @@
 package haxe.ui.components;
 
-import haxe.ui.util.Variant;
 import haxe.ui.core.Component;
+import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.DataBehaviour;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.styles.Style;
 import haxe.ui.util.Size;
+import haxe.ui.util.Variant;
 
+@:composite(Builder, LabelLayout)
 class Label extends Component {
     //***********************************************************************************************************
     // Styles
     //***********************************************************************************************************
-    @:style(layout)           public var textAlign:Null<String>;
+    @:style(layout)                         public var textAlign:Null<String>;
     
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:behaviour(TextBehaviour)  public var text:String;
-    
-    //***********************************************************************************************************
-    // Internals
-    //***********************************************************************************************************
-    private override function createDefaults() { // TODO: remove this eventually, @:layout(...) or something
-        super.createDefaults();
-        _defaultLayoutClass = LabelLayout;
-    }
-    
-    //***********************************************************************************************************
-    // Overrides
-    //***********************************************************************************************************
-    private override function get_value():Variant {
-        return text;
-    }
-    private override function set_value(value:Variant):Variant {
-        text = value;
-        return value;
-    }
-
-    private override function applyStyle(style:Style) {  // TODO: remove this eventually, @:styleApplier(...) or something
-        super.applyStyle(style);
-        if (hasTextDisplay() == true) {
-            getTextDisplay().textStyle = style;
-        }
-    }
+    @:clonable @:behaviour(TextBehaviour)   public var text:String;
+    @:clonable @:behaviour(TextBehaviour)   public var value:Variant;
 }
 
 //***********************************************************************************************************
@@ -111,5 +88,24 @@ private class TextBehaviour extends DataBehaviour {
             _component.invalidateComponentStyle(true);
         }
         _component.getTextDisplay().text = '${_value}';
+    }
+}
+
+//***********************************************************************************************************
+// Composite Builder
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+private class Builder extends CompositeBuilder {
+    private var _label:Label;
+    
+    public function new(label:Label) {
+        super(label);
+        _label = label;
+    }
+    
+    public override function applyStyle(style:Style) {
+        if (_label.hasTextDisplay() == true) {
+            _label.getTextDisplay().textStyle = style;
+        }
     }
 }
