@@ -13,8 +13,8 @@ class CheckBox extends InteractiveComponent {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:behaviour(TextBehaviour)              public var text:String;
-    @:behaviour(SelectedBehaviour)          public var selected:Bool;
+    @:clonable @:behaviour(TextBehaviour)              public var text:String;
+    @:clonable @:behaviour(SelectedBehaviour)          public var selected:Bool;
 }
 
 //***********************************************************************************************************

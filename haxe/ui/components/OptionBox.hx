@@ -10,9 +10,9 @@ class OptionBox extends CheckBox {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:behaviour(GroupBehaviour, "defaultGroup")     public var group:String;
-    @:behaviour(SelectedBehaviour)                  public var selected:Bool;
-    @:behaviour(SelectedOptionBehaviour)            public var selectedOption:Component;
+    @:clonable @:behaviour(GroupBehaviour, "defaultGroup")     public var group:String;
+    @:clonable @:behaviour(SelectedBehaviour)                  public var selected:Bool;
+    @:clonable @:behaviour(SelectedOptionBehaviour)            public var selectedOption:Component;
 }
 
 //***********************************************************************************************************

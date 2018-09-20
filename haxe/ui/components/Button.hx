@@ -427,7 +427,6 @@ class ButtonBuilder extends CompositeBuilder {
     }
     
     public override function applyStyle(style:Style) {
-        super.applyStyle(style);
         if (style.icon != null) {
             _button.icon = style.icon;
         }

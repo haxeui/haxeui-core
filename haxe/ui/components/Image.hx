@@ -4,6 +4,7 @@ import haxe.ui.constants.HorizontalAlign;
 import haxe.ui.constants.ScaleMode;
 import haxe.ui.constants.VerticalAlign;
 import haxe.ui.core.Component;
+import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.DataBehaviour;
 import haxe.ui.core.DefaultBehaviour;
 import haxe.ui.core.ImageDisplay;
@@ -14,6 +15,7 @@ import haxe.ui.util.ImageLoader;
 import haxe.ui.util.Rectangle;
 import haxe.ui.util.Size;
 
+@:composite(ImageLayout, Builder)
 class Image extends Component {
     //***********************************************************************************************************
     // Public API
@@ -24,25 +26,6 @@ class Image extends Component {
     @:clonable @:behaviour(InvalidatingBehaviour, VerticalAlign.CENTER)    public var imageVerticalAlign:VerticalAlign;
     @:clonable @:behaviour(DefaultBehaviour)                               public var originalWidth:Float;
     @:clonable @:behaviour(DefaultBehaviour)                               public var originalHeight:Float;
-    
-    //***********************************************************************************************************
-    // Internals
-    //***********************************************************************************************************
-    private override function createDefaults() {  // TODO: remove this eventually, @:layout(...) or something
-        super.createDefaults();
-        _defaultLayoutClass = ImageLayout;
-    }
-
-    //***********************************************************************************************************
-    // Validation
-    //***********************************************************************************************************
-    private override function applyStyle(style:Style) {
-        super.applyStyle(style);
-
-        if (style.resource != null) {
-            resource = style.resource;
-        }
-    }
 }
 
 //***********************************************************************************************************
@@ -200,5 +183,24 @@ private class ResourceBehaviour extends DataBehaviour {
                 }
             }
         });
+    }
+}
+
+//***********************************************************************************************************
+// Composite Builder
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+class Builder extends CompositeBuilder {
+    private var _image:Image;
+    
+    public function new(image:Image) {
+        super(image);
+        _image = image;
+    }
+    
+    public override function applyStyle(style:Style) {
+        if (style.resource != null) {
+            _image.resource = style.resource;
+        }
     }
 }
