@@ -15,26 +15,6 @@ class CheckBox extends InteractiveComponent {
     //***********************************************************************************************************
     @:behaviour(TextBehaviour)              public var text:String;
     @:behaviour(SelectedBehaviour)          public var selected:Bool;
-    
-    //***********************************************************************************************************
-    // Overrides
-    //***********************************************************************************************************
-    private override function applyStyle(style:Style) {  // TODO: remove this eventually, @:styleApplier(...) or something
-        super.applyStyle(style);
-        var label:Label = findComponent(Label);
-        if (label != null &&
-            (label.customStyle.color != style.color ||
-            label.customStyle.fontName != style.fontName ||
-            label.customStyle.fontSize != style.fontSize ||
-            label.customStyle.cursor != style.cursor)) {
-
-            label.customStyle.color = style.color;
-            label.customStyle.fontName = style.fontName;
-            label.customStyle.fontSize = style.fontSize;
-            label.customStyle.cursor = style.cursor;
-            label.invalidateComponentStyle();
-        }
-    }
 }
 
 //***********************************************************************************************************
@@ -164,6 +144,22 @@ private class Builder extends CompositeBuilder {
             value.addClass('${_checkbox.cssName}-value');
             value.scriptAccess = false;
             _checkbox.addComponent(value);
+        }
+    }
+    
+    public override function applyStyle(style:Style) {
+        var label:Label = _checkbox.findComponent(Label);
+        if (label != null &&
+            (label.customStyle.color != style.color ||
+            label.customStyle.fontName != style.fontName ||
+            label.customStyle.fontSize != style.fontSize ||
+            label.customStyle.cursor != style.cursor)) {
+
+            label.customStyle.color = style.color;
+            label.customStyle.fontName = style.fontName;
+            label.customStyle.fontSize = style.fontSize;
+            label.customStyle.cursor = style.cursor;
+            label.invalidateComponentStyle();
         }
     }
 }
