@@ -11,6 +11,7 @@ import haxe.ui.core.UIEvent;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.util.Variant;
 
+@:composite(Builder, Events, Layout)
 class TabBar2 extends Component {
     //***********************************************************************************************************
     // Public API
@@ -20,31 +21,13 @@ class TabBar2 extends Component {
     @:behaviour(TabPosition)            public var tabPosition:String;
     @:behaviour(TabCount)               public var tabCount:Int;
     @:call(RemoveTab)                   public function removeTab(index:Int):Void;
-    
-    //***********************************************************************************************************
-    // Internals
-    //***********************************************************************************************************
-    private override function createDefaults() {  // TODO: remove this eventually, @:layout(...) or something
-        super.createDefaults();
-        _defaultLayoutClass = TabBarLayout;
-    }
-    
-    private override function createChildren() {
-        super.createChildren();
-        registerInternalEvents(Events);
-    }
-    
-    private override function registerComposite() { // TODO: remove this eventually, @:composite(...) or something
-       super.registerComposite();
-       _compositeBuilderClass = TabBarBuilder;
-    }
 }
 
 //***********************************************************************************************************
 // Composite Layout
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
-private class TabBarLayout extends DefaultLayout {
+private class Layout extends DefaultLayout {
     private override function repositionChildren() {
         super.repositionChildren();
         
@@ -71,14 +54,19 @@ private class TabBarLayout extends DefaultLayout {
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
-@:access(haxe.ui.components.TabBarBuilder)
+@:access(haxe.ui.components.Builder)
 private class SelectedIndex extends DataBehaviour {
     private override function validateData() {
-        var builder:TabBarBuilder = cast(_component._compositeBuilder, TabBarBuilder);
+        var builder:Builder = cast(_component._compositeBuilder, Builder);
         if (builder._container == null) {
             return;
         }
-        if (_value < 0 || _value > builder._container.childComponents.length - 1) {
+        if (_value < 0) {
+            _value = 0;
+            return;
+        }
+        if (_value > builder._container.childComponents.length - 1) {
+            _value = builder._container.childComponents.length - 1;
             return;
         }
 
@@ -89,6 +77,40 @@ private class SelectedIndex extends DataBehaviour {
                 selectedTab.removeClass("tabbar-button-selected");
             }
             tab.addClass("tabbar-button-selected");
+            
+            var rangeMin = Math.abs(builder._container.left);
+            var rangeMax = rangeMin + _component.width;
+
+            var left:Button = _component.findComponent("tabbar-scroll-left", Button);
+            var right:Button = _component.findComponent("tabbar-scroll-right", Button);
+            if (left != null && left.hidden == false) {
+                rangeMax -= left.width;
+                rangeMax -= _component.layout.horizontalSpacing;
+            }
+            if (right != null && right.hidden == false) {
+                rangeMax -= right.width;
+            }
+            
+            if (tab.left < rangeMin || (tab.left + tab.width) > rangeMax) {
+                var max = -(builder._container.width - _component.width);
+                var x = -tab.left + _component.layout.paddingLeft;
+                if (left != null && left.hidden == false) {
+                    max -= left.width;
+                    max -= _component.layout.horizontalSpacing;
+                }
+                if (right != null && right.hidden == false) {
+                    max -= right.width;
+                }
+                
+                if (x < max) {
+                    x = max;
+                }
+                
+                builder._containerPosition = x;
+                builder._container.left = x;
+            }
+            
+            _component.invalidateComponentLayout();
             _component.dispatch(new UIEvent(UIEvent.CHANGE));
         }
     }
@@ -96,20 +118,20 @@ private class SelectedIndex extends DataBehaviour {
 
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
-@:access(haxe.ui.components.TabBarBuilder)
+@:access(haxe.ui.components.Builder)
 private class SelectedTab extends DataBehaviour {
     public override function get():Variant {
-        var builder:TabBarBuilder = cast(_component._compositeBuilder, TabBarBuilder);
+        var builder:Builder = cast(_component._compositeBuilder, Builder);
         return Variant.fromComponent(builder._container.findComponent("tabbar-button-selected", false, "css")); // TODO: didnt happen automatically
     }
 }
 
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
-@:access(haxe.ui.components.TabBarBuilder)
+@:access(haxe.ui.components.Builder)
 private class TabPosition extends DataBehaviour {
     public override function validateData() {
-        var builder:TabBarBuilder = cast(_component._compositeBuilder, TabBarBuilder);
+        var builder:Builder = cast(_component._compositeBuilder, Builder);
         if (_value == "bottom") {
             _component.addClass(":bottom");
             for (child in builder._container.childComponents) {
@@ -126,20 +148,20 @@ private class TabPosition extends DataBehaviour {
 
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
-@:access(haxe.ui.components.TabBarBuilder)
+@:access(haxe.ui.components.Builder)
 private class TabCount extends Behaviour {
     public override function get():Variant {
-        var builder:TabBarBuilder = cast(_component._compositeBuilder, TabBarBuilder);
+        var builder:Builder = cast(_component._compositeBuilder, Builder);
         return builder._container.childComponents.length;
     }
 }
 
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
-@:access(haxe.ui.components.TabBarBuilder)
+@:access(haxe.ui.components.Builder)
 private class RemoveTab extends Behaviour {
     public override function call(param:Any = null):Variant {
-        var builder:TabBarBuilder = cast(_component._compositeBuilder, TabBarBuilder);
+        var builder:Builder = cast(_component._compositeBuilder, Builder);
         var index:Int = param;
         if (index < builder._container.childComponents.length) {
             builder._container.removeComponentAt(index);
@@ -152,7 +174,7 @@ private class RemoveTab extends Behaviour {
 // Events
 //***********************************************************************************************************
 @:access(haxe.ui.core.Component)
-@:access(haxe.ui.components.TabBarBuilder)
+@:access(haxe.ui.components.Builder)
 private class Events extends haxe.ui.core.Events {
     private var _tabbar:TabBar2;
     
@@ -162,7 +184,7 @@ private class Events extends haxe.ui.core.Events {
     }
     
     public override function register() {
-        var builder:TabBarBuilder = cast(_tabbar._compositeBuilder, TabBarBuilder);
+        var builder:Builder = cast(_tabbar._compositeBuilder, Builder);
         for (t in builder._container.childComponents) {
             if (t.hasEvent(MouseEvent.MOUSE_DOWN, onTabMouseDown) == false) {
                 t.registerEvent(MouseEvent.MOUSE_DOWN, onTabMouseDown);
@@ -176,7 +198,7 @@ private class Events extends haxe.ui.core.Events {
     }
     
     private function onMouseWheel(event:MouseEvent) {
-        var builder:TabBarBuilder = cast(_tabbar._compositeBuilder, TabBarBuilder);
+        var builder:Builder = cast(_tabbar._compositeBuilder, Builder);
         if (event.delta < 0) {
            builder.scrollLeft();
         } else {
@@ -185,7 +207,7 @@ private class Events extends haxe.ui.core.Events {
     }
     
     private function onTabMouseDown(event:MouseEvent) {
-        var builder:TabBarBuilder = cast(_tabbar._compositeBuilder, TabBarBuilder);
+        var builder:Builder = cast(_tabbar._compositeBuilder, Builder);
         _tabbar.selectedIndex = builder._container.getComponentIndex(event.target);
     }
 }
@@ -196,7 +218,7 @@ private class Events extends haxe.ui.core.Events {
 @:dox(hide) @:noCompletion
 @:allow(haxe.ui.components.TabBar2)
 @:access(haxe.ui.core.Component)
-private class TabBarBuilder extends CompositeBuilder {
+private class Builder extends CompositeBuilder {
     private var _tabbar:TabBar2;
     private var _container:HBox;
     

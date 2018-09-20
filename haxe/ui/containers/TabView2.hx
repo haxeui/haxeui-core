@@ -12,6 +12,7 @@ import haxe.ui.layouts.LayoutFactory;
 import haxe.ui.util.Size;
 import haxe.ui.util.Variant;
 
+@:composite(Builder, Events, Layout)
 class TabView2 extends Component {
     //***********************************************************************************************************
     // Public API
@@ -20,31 +21,13 @@ class TabView2 extends Component {
     @:behaviour(TabPosition)    public var tabPosition:String;
     @:behaviour(PageCount)      public var pageCount:Int;
     @:call(RemovePage)          public function removePage(index:Int):Void;
-    
-    //***********************************************************************************************************
-    // Internals
-    //***********************************************************************************************************
-    private override function createDefaults() {  // TODO: remove this eventually, @:layout(...) or something
-        super.createDefaults();
-        _defaultLayoutClass = TabViewLayout;
-    }
-    
-    private override function createChildren() {
-        super.createChildren();
-        registerInternalEvents(Events);
-    }
-    
-    private override function registerComposite() { // TODO: remove this eventually, @:composite(...) or something
-       super.registerComposite();
-       _compositeBuilderClass = TabViewBuilder;
-    }
 }
 
 //***********************************************************************************************************
 // Composite Layout
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
-private class TabViewLayout extends DefaultLayout {
+private class Layout extends DefaultLayout {
     private override function repositionChildren() {
         var tabs:TabBar2 = component.findComponent(TabBar2, false);
         var content:Box = component.findComponent(Box, false);
@@ -105,14 +88,24 @@ private class TabViewLayout extends DefaultLayout {
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
-@:access(haxe.ui.containers.TabViewBuilder)
+@:access(haxe.ui.containers.Builder)
 private class PageIndex extends DataBehaviour {
     public override function validateData() {
         if (_component.native == true) {
             return;
         }
+
+        var builder:Builder = cast(_component._compositeBuilder, Builder);
         
-        var builder:TabViewBuilder = cast(_component._compositeBuilder, TabViewBuilder);
+        if (_value < 0) {
+            _value = 0;
+            return;
+        }
+        if (_value > builder._views.length - 1) {
+            _value = builder._views.length - 1;
+            return;
+        }
+        
         builder._tabs.selectedIndex = _value;
         var view:Component = builder._views[_value.toInt()];
         if (view != null) {
@@ -148,20 +141,20 @@ private class TabPosition extends DataBehaviour {
 
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
-@:access(haxe.ui.containers.TabViewBuilder)
+@:access(haxe.ui.containers.Builder)
 private class PageCount extends Behaviour {
     public override function get():Variant {
-        var builder:TabViewBuilder = cast(_component._compositeBuilder, TabViewBuilder);
+        var builder:Builder = cast(_component._compositeBuilder, Builder);
         return builder._tabs.tabCount;
     }
 }
 
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
-@:access(haxe.ui.containers.TabViewBuilder)
+@:access(haxe.ui.containers.Builder)
 private class RemovePage extends Behaviour {
     public override function call(param:Any = null):Variant {
-        var builder:TabViewBuilder = cast(_component._compositeBuilder, TabViewBuilder);
+        var builder:Builder = cast(_component._compositeBuilder, Builder);
         var index:Int = param;
         if (index < builder._views.length) {
             var view = builder._views[index];
@@ -211,7 +204,7 @@ private class Events extends haxe.ui.core.Events {
 @:dox(hide) @:noCompletion
 @:allow(haxe.ui.components.TabBar2)
 @:access(haxe.ui.core.Component)
-private class TabViewBuilder extends CompositeBuilder {
+private class Builder extends CompositeBuilder {
     private var _tabview:TabView2;
     
     private var _tabs:TabBar2;
