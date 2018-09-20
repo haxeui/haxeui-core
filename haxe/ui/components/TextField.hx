@@ -23,7 +23,7 @@ class TextField extends InteractiveComponent {
     @:clonable @:behaviour(RestrictCharsBehaviour)     public var restrictChars:String;
     @:clonable @:behaviour(PlaceholderBehaviour)       public var placeholder:String;
     @:clonable @:behaviour(TextBehaviour)              public var text:String;
-    @:clonable @:behaviour(TextBehaviour)              public var value:Variant;
+    //@:clonable @:behaviour(TextBehaviour)              public var value:Variant;
     @:clonable @:behaviour(IconBehaviour)              public var icon:String;
 }
 
@@ -164,6 +164,11 @@ private class PlaceholderBehaviour extends DataBehaviour {
 
 @:dox(hide) @:noCompletion
 private class TextBehaviour extends DataBehaviour {
+    public override function get():Variant {
+        var textfield:TextField = cast(_component, TextField);
+        return textfield.getTextInput().text;
+    }
+
     public override function validateData() {
         var textfield:TextField = cast(_component, TextField);
         TextFieldHelper.validateText(textfield, _value);
