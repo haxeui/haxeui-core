@@ -25,8 +25,8 @@ class Calendar extends Grid {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:behaviour(DateBehaviour)                  public var date:Date;
-    @:behaviour(SelectedDateBehaviour)          public var selectedDate:Date;
+    @:clonable @:behaviour(DateBehaviour)                  public var date:Date;
+    @:clonable @:behaviour(SelectedDateBehaviour)          public var selectedDate:Date;
     
     public function previousMonth() { // TODO: work out a way to use meta data with callable behaviours
         behaviourCall("previousMonth");
