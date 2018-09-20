@@ -1,6 +1,7 @@
 package haxe.ui.components;
 
 import haxe.ui.core.Component;
+import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.DataBehaviour;
 import haxe.ui.core.FocusEvent;
 import haxe.ui.core.InteractiveComponent;
@@ -12,35 +13,18 @@ import haxe.ui.styles.Style;
 import haxe.ui.util.Size;
 import haxe.ui.util.Variant;
 
-
-@:composite(Events, TextFieldLayout)
+@:composite(Events, Builder, TextFieldLayout)
 class TextField extends InteractiveComponent {
-    //***********************************************************************************************************
-    // Styles
-    //***********************************************************************************************************
-    
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:behaviour(PasswordBehaviour)          public var password:Bool;
-    @:behaviour(MaxCharsBehaviour, -1)      public var maxChars:Int;
-    @:behaviour(RestrictCharsBehaviour)     public var restrictChars:String;
-    @:behaviour(PlaceholderBehaviour)       public var placeholder:String;
-    @:behaviour(TextBehaviour)              public var text:String;
-    @:behaviour(IconBehaviour)              public var icon:String;
-    
-    //***********************************************************************************************************
-    // Overrides
-    //***********************************************************************************************************
-    private override function applyStyle(style:Style) { // TODO: remove this eventually, @:styleApplier(...) or something
-        super.applyStyle(style);
-        if (style.icon != null) {
-            icon = style.icon;
-        }
-        if (hasTextInput() == true) {
-            getTextInput().textStyle = style;
-        }
-    }
+    @:clonable @:behaviour(PasswordBehaviour)          public var password:Bool;
+    @:clonable @:behaviour(MaxCharsBehaviour, -1)      public var maxChars:Int;
+    @:clonable @:behaviour(RestrictCharsBehaviour)     public var restrictChars:String;
+    @:clonable @:behaviour(PlaceholderBehaviour)       public var placeholder:String;
+    @:clonable @:behaviour(TextBehaviour)              public var text:String;
+    @:clonable @:behaviour(TextBehaviour)              public var value:Variant;
+    @:clonable @:behaviour(IconBehaviour)              public var icon:String;
 }
 
 //***********************************************************************************************************
@@ -293,5 +277,27 @@ private class Events extends haxe.ui.core.Events {
     
     private function onFocusChange(event:MouseEvent) {
         TextFieldHelper.validateText(_textfield, _textfield.text);
+    }
+}
+
+//***********************************************************************************************************
+// Composite Builder
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+private class Builder extends CompositeBuilder {
+    private var _textfield:TextField;
+    
+    public function new(textfield:TextField) {
+        super(textfield);
+        _textfield = textfield;
+    }
+    
+    public override function applyStyle(style:Style) {
+        if (style.icon != null) {
+            _textfield.icon = style.icon;
+        }
+        if (_textfield.hasTextInput() == true) {
+            _textfield.getTextInput().textStyle = style;
+        }
     }
 }
