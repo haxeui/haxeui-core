@@ -5,7 +5,6 @@ import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.DataBehaviour;
-import haxe.ui.core.DefaultBehaviour;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.UIEvent;
 import haxe.ui.layouts.DefaultLayout;
