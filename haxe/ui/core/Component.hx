@@ -2157,7 +2157,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
 
         validateComponentInternal();
 
-        if (isInitialized == false) {
+        if (isInitialized == false && _style != null) {
             if ((_style.initialWidth != null || _style.initialPercentWidth != null) && width <= 0) {
                 if (_style.initialWidth != null) {
                     width = _style.initialWidth;

@@ -95,6 +95,16 @@ class Button extends InteractiveComponent {
      The image resource to use as the buttons icon
     **/
     @:clonable @:behaviour(IconBehaviour)              public var icon:String;
+    
+    //***********************************************************************************************************
+    // Overrides
+    //***********************************************************************************************************
+    private override function applyStyle(style:Style) { // TODO: is this the only one? Is it really worth a macro??
+        super.applyStyle(style);
+        if (style.icon != null) {
+            icon = style.icon;
+        }
+    }
 }
 
 //***********************************************************************************************************
@@ -425,12 +435,8 @@ class ButtonBuilder extends CompositeBuilder {
         super(button);
         _button = button;
     }
-    
-    public override function applyStyle(style:Style) {
-        if (style.icon != null) {
-            _button.icon = style.icon;
-        }
 
+    public override function applyStyle(style:Style) {
         var label:Label = _button.findComponent(Label);
         if (label != null &&
             (label.customStyle.color != style.color ||

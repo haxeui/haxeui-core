@@ -65,7 +65,7 @@ class ListDropDownHandler extends DropDownHandler {
         }
 
         var itemCount = 4; //TODO - the user could customize it
-        if (_listview.dataSource.size < itemCount) {
+        if (_listview.dataSource != null && _listview.dataSource.size < itemCount) {
             itemCount = _listview.dataSource.size;
         }
         _listview.itemCount = itemCount; 
