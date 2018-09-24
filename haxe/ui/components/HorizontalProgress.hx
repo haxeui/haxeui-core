@@ -1,12 +1,11 @@
 package haxe.ui.components;
 
+import haxe.ui.util.Point;
+
 @:composite(HorizontalRange.HorizontalRangeLayout)
 class HorizontalProgress extends Progress {
     //***********************************************************************************************************
-    // Internals
+    // Private API
     //***********************************************************************************************************
-    private override function createDefaults() { // TODO: remove this eventually, @:layout(...) or something
-        super.createDefaults();
-        defaultBehaviour("posFromCoord", new HorizontalRange.HorizontalRangePosFromCoord(this));
-    }
+    @:call(HorizontalRange.HorizontalRangePosFromCoord)     private override function posFromCoord(coord:Point):Float;
 }

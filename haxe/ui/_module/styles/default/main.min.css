@@ -143,14 +143,14 @@
 .range-value{border:none;border-radius:2px;}
 .horizontal-range{background:#F1F1F1 #FFFFFF vertical;initial-width:150px;initial-height:20px;}
 .horizontal-range .range-value{background:#6CAADB #216AAE vertical;height:100%;}
-.vertical-range{background:#F1F1F1 #FFFFFF horizontal;}
+.vertical-range{background:#F1F1F1 #FFFFFF horizontal;initial-width:20px;initial-height:150px;}
 .vertical-range .range-value{background:#6CAADB #216AAE horizontal;width:100%;}
 @keyframes indeterminate{0%{start:0;end:25;} 50%{start:75;end:100;} 100%{start:0;end:25;}}
 .progress:indeterminate{animation:indeterminate 1s ease 0s infinite;}
 .progress-value{border:none;border-radius:2px;}
 .horizontal-progress{background:#F1F1F1 #FFFFFF vertical;initial-width:150px;initial-height:20px;}
 .horizontal-progress .progress-value{background:#6CAADB #216AAE vertical;height:100%;}
-.vertical-progress{background:#F1F1F1 #FFFFFF horizontal;}
+.vertical-progress{background:#F1F1F1 #FFFFFF horizontal;initial-width:20px;initial-height:150px;}
 .vertical-progress .progress-value{background:#6CAADB #216AAE horizontal;width:100%;}
 .horizontal-slider{padding-left:5px;padding-right:5px;padding-top:1px;padding-bottom:1px;height:auto;}
 .horizontal-slider .slider-value{width:100%;height:8px;border-radius:4px;vertical-align:center;cursor:pointer;}

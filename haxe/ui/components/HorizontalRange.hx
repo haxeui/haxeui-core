@@ -9,12 +9,9 @@ import haxe.ui.util.Variant;
 @:composite(HorizontalRangeLayout)
 class HorizontalRange extends Range {
     //***********************************************************************************************************
-    // Internals
+    // Private API
     //***********************************************************************************************************
-    private override function registerBehaviours() {
-        super.registerBehaviours();
-        behaviours.register("posFromCoord", HorizontalRangePosFromCoord);
-    }
+    @:call(HorizontalRangePosFromCoord)         private override function posFromCoord(coord:Point):Float;
 }
 
 //***********************************************************************************************************
@@ -81,4 +78,3 @@ class HorizontalRangeLayout extends DefaultLayout {
         value.top = paddingTop;
     }    
 }
-

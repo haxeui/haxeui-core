@@ -6,29 +6,12 @@ import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.util.Point;
 import haxe.ui.util.Variant;
 
+@:composite(VerticalRangeLayout)
 class VerticalRange extends Range {
     //***********************************************************************************************************
-    // Internals
+    // Private API
     //***********************************************************************************************************
-    private override function registerBehaviours() {
-        super.registerBehaviours();
-        behaviours.register("posFromCoord", VerticalRangePosFromCoord);
-    }
-    
-    private override function createChildren() { // TODO: this should be min-width / min-height in theme css when the new css engine is done
-        super.createChildren();
-        if (width <= 0) {
-            width = 20;
-        }
-        if (height <= 0) {
-            height = 150;
-        }
-    }
-    
-    private override function createDefaults() { // TODO: remove this eventually, @:layout(...) or something
-        super.createDefaults();
-        _defaultLayoutClass = VerticalRangeLayout;
-    }
+    @:call(VerticalRangePosFromCoord)         private override function posFromCoord(coord:Point):Float;
 }
 
 //***********************************************************************************************************

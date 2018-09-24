@@ -3,6 +3,7 @@ package haxe.ui.components;
 import haxe.ui.animation.Animation;
 import haxe.ui.components.Range;
 import haxe.ui.core.Component;
+import haxe.ui.core.DefaultBehaviour;
 import haxe.ui.core.IDirectionalComponent;
 import haxe.ui.core.ValueBehaviour;
 import haxe.ui.util.Variant;
@@ -16,16 +17,10 @@ class Progress extends Range implements IDirectionalComponent {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:behaviour(IndeterminateBehaviour)   public var indeterminate:Bool;
-    
-    public var pos(get, set):Float;
-    private function get_pos():Float {
-        return end;
-    }
-    private function set_pos(value:Float):Float {
-        end = value;
-        return value;
-    }
+    @:clonable @:behaviour(Indeterminate)      public var indeterminate:Bool;
+    @:clonable @:behaviour(Pos)                public var pos:Float;
+    @:clonable @:behaviour(Min)                public var min:Float;
+    @:clonable @:behaviour(Pos)                public var value:Variant;
     
     //***********************************************************************************************************
     // Overrides
@@ -33,27 +28,35 @@ class Progress extends Range implements IDirectionalComponent {
     private override function get_cssName():String {
         return "progress";
     }
-    
-    private override function set_min(value:Float):Float {
-        super.set_min(value);
-        start = value;
-        return value;
-    }
-    
-    private override function get_value():Variant {
-        return end;
-    }
-    
-    private override function set_value(value:Variant):Variant {
-        end = value;
-        return value;
-    }
 }
 
 //***********************************************************************************************************
 // Default Behaviours
 //***********************************************************************************************************
-private class IndeterminateBehaviour extends ValueBehaviour {
+@:dox(hide) @:noCompletion
+private class Pos extends DefaultBehaviour {
+    public override function get():Variant {
+        var progress = cast(_component, Progress);
+        return progress.end;
+    }
+    
+    public override function set(value:Variant) {
+        var progress = cast(_component, Progress);
+        progress.end = value;
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class Min extends DefaultBehaviour {
+    public override function set(value:Variant) {
+        var progress = cast(_component, Progress);
+        progress.min = value;
+        progress.start = value;
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class Indeterminate extends ValueBehaviour {
     private var _animation:Animation;
     
     public function new(component:Component) {

@@ -906,6 +906,8 @@
 
 .vertical-range {
     background: #F1F1F1 #FFFFFF horizontal;
+    initial-width: 20px;
+    initial-height: 150px;
 }
 
 .vertical-range .range-value {
@@ -953,6 +955,8 @@
 
 .vertical-progress {
     background: #F1F1F1 #FFFFFF horizontal;
+    initial-width: 20px;
+    initial-height: 150px;
 }
 
 .vertical-progress .progress-value {

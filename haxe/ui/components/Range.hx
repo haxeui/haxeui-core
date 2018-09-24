@@ -1,6 +1,9 @@
 package haxe.ui.components;
 
 import haxe.ui.core.Component;
+import haxe.ui.core.CompositeBuilder;
+import haxe.ui.core.DataBehaviour;
+import haxe.ui.core.DefaultBehaviour;
 import haxe.ui.core.IDirectionalComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.InvalidatingBehaviour;
@@ -9,55 +12,25 @@ import haxe.ui.core.Screen;
 import haxe.ui.core.UIEvent;
 import haxe.ui.util.MathUtil;
 import haxe.ui.util.Point;
+import haxe.ui.util.Variant;
 
+@:composite(Builder)
 class Range extends InteractiveComponent implements IDirectionalComponent {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:behaviour(InvalidatingBehaviour, 0)   public var min:Float;
-    @:behaviour(InvalidatingBehaviour, 100) public var max:Float;
-    @:behaviour(InvalidatingBehaviour)      public var start:Float;
-    @:behaviour(InvalidatingBehaviour)      public var end:Float;
-    @:behaviour(InvalidatingBehaviour)      public var precision:Int;
-    @:behaviour(InvalidatingBehaviour)      public var step:Float;
-    
-    public var allowInteraction(get, set):Bool;
-    private function get_allowInteraction():Bool {
-        return (_internalEvents != null);
-    }
-    private function set_allowInteraction(value:Bool):Bool {
-        if (value == allowInteraction || native == true) {
-            return value;
-        }
-        
-        if (value == true) {
-            registerInternalEvents(Events);
-        } else {
-            unregisterInternalEvents();
-        }
-        
-        return value;
-    }
+    @:clonable @:behaviour(RangeValue, 0)           public var min:Float;
+    @:clonable @:behaviour(RangeValue, 100)         public var max:Float;
+    @:clonable @:behaviour(RangeValue)              public var start:Float;
+    @:clonable @:behaviour(RangeValue)              public var end:Float;
+    @:clonable @:behaviour(InvalidatingBehaviour)   public var precision:Int;
+    @:clonable @:behaviour(InvalidatingBehaviour)   public var step:Float;
+    @:clonable @:behaviour(AllowInteraction)        public var allowInteraction:Bool;
     
     //***********************************************************************************************************
     // Private API
     //***********************************************************************************************************
-    private function posFromCoord(coord:Point):Float {
-        return behaviourCall("posFromCoord", coord); 
-    }
-    
-    //***********************************************************************************************************
-    // Internals
-    //***********************************************************************************************************
-    private override function createChildren() {
-        super.createChildren();
-        if (findComponent("${cssName}-value") == null) {
-            var v = new Component();
-            v.id = '${cssName}-value';
-            v.addClass('${cssName}-value', false);
-            addComponent(v);
-        }
-    }
+    @:call(DefaultBehaviour)                        private function posFromCoord(coord:Point):Float;
     
     //***********************************************************************************************************
     // Overrides
@@ -65,47 +38,44 @@ class Range extends InteractiveComponent implements IDirectionalComponent {
     private override function get_cssName():String {
         return "range";
     }
-    
-    //***********************************************************************************************************
-    // Validation
-    //***********************************************************************************************************
-    private override function validateComponentData() {
-        super.validateComponentData();
-        
-        var startValue = behaviourGet("start");
-        var endValue = behaviourGet("end");
-        var minValue = behaviourGet("min");
-        var maxValue = behaviourGet("max");
-        
-        if (startValue != null && minValue != null && startValue < minValue) {
-            startValue = minValue;
-        }
-        
-        if (endValue != null && minValue != null && endValue < minValue) {
-            endValue = minValue;
-        }
-        
-        if (startValue != null && maxValue != null && startValue > maxValue) {
-            startValue = maxValue;
-        }
-        
-        if (endValue != null && maxValue != null && endValue > maxValue) {
-            endValue = maxValue;
-        }
+}
 
-        var changed = false;
-        if (startValue != null) {
-            start = startValue;
-            changed = true;
+//***********************************************************************************************************
+// Behaviours
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+private class RangeValue extends DataBehaviour {
+    public override function validateData() {
+        var range:Range = cast(_component, Range);
+        if (_value != null && range.min != null && _value < range.min) {
+            _value = range.min;
         }
-        if (endValue != null) {
-            end = endValue;
-            changed = true;
+        if (_value != null && range.max != null && _value > range.max) {
+            _value = range.max;
+        }
+        _component.invalidateComponentLayout();
+        
+        var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
+        _component.dispatch(changeEvent);
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class AllowInteraction extends DefaultBehaviour {
+    public override function get():Variant {
+        return (_component._internalEvents != null);
+    }
+    
+    public override function set(value:Variant) {
+        if (_component.native == true) {
+            return;
         }
         
-        if (changed == true) {
-            var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
-            dispatch(changeEvent);
+        if (value == true) {
+            _component.registerInternalEvents(Events);
+        } else {
+            _component.unregisterInternalEvents();
         }
     }
 }
@@ -174,6 +144,22 @@ private class Events extends haxe.ui.core.Events {
             _range.end = pos;
         } else if (pos < _range.end) {
             _range.start = pos;
+        }
+    }
+}
+
+//***********************************************************************************************************
+// Composite Builder
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+private class Builder extends CompositeBuilder {
+    public override function create() {
+        super.create();
+        if (_component.findComponent("${_component.cssName}-value") == null) {
+            var v = new Component();
+            v.id = '${_component.cssName}-value';
+            v.addClass('${_component.cssName}-value', false);
+            _component.addComponent(v);
         }
     }
 }
