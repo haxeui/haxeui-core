@@ -973,6 +973,7 @@
     padding-top: 1px;
     padding-bottom: 1px;
     height: auto;
+    initial-width: 150px;
 }
 
 .horizontal-slider .slider-value {
@@ -996,6 +997,7 @@
     padding-left: 1px;
     padding-right: 1px;
     width: auto;
+    initial-height: 150px;
 }
 
 .vertical-slider .slider-value {

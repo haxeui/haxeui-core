@@ -152,10 +152,10 @@
 .horizontal-progress .progress-value{background:#6CAADB #216AAE vertical;height:100%;}
 .vertical-progress{background:#F1F1F1 #FFFFFF horizontal;initial-width:20px;initial-height:150px;}
 .vertical-progress .progress-value{background:#6CAADB #216AAE horizontal;width:100%;}
-.horizontal-slider{padding-left:5px;padding-right:5px;padding-top:1px;padding-bottom:1px;height:auto;}
+.horizontal-slider{padding-left:5px;padding-right:5px;padding-top:1px;padding-bottom:1px;height:auto;initial-width:150px;}
 .horizontal-slider .slider-value{width:100%;height:8px;border-radius:4px;vertical-align:center;cursor:pointer;}
 .horizontal-slider .button{width:14px;height:14px;border-radius:16px;vertical-align:center;}
-.vertical-slider{padding-top:5px;padding-bottom:5px;padding-left:1px;padding-right:1px;width:auto;}
+.vertical-slider{padding-top:5px;padding-bottom:5px;padding-left:1px;padding-right:1px;width:auto;initial-height:150px;}
 .vertical-slider .slider-value{height:100%;width:8px;border-radius:4px;horizontal-align:center;cursor:pointer;}
 .vertical-slider .button{width:14px;height:14px;border-radius:16px;horizontal-align:center;}
 .scroll2{background-color:#E9E9E9;}

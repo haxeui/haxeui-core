@@ -1,34 +1,11 @@
 package haxe.ui.components;
 
+import haxe.ui.components.Slider.SliderBuilder;
 import haxe.ui.core.Component;
 import haxe.ui.layouts.DefaultLayout;
 
+@:composite(HorizontalSliderLayout, Builder)
 class HorizontalSlider extends Slider {
-    public function new() {
-        super();
-    }
-    
-    //***********************************************************************************************************
-    // Internals
-    //***********************************************************************************************************
-    private override function createChildren() { // TODO: this should be min-width / min-height in theme css when the new css engine is done
-        super.createChildren();
-        if (componentWidth <= 0) {
-            componentWidth = 150;
-        }
-    }
-    
-    private override function createDefaults() { // TODO: remove this eventually, @:layout(...) or something
-        super.createDefaults();
-        _defaultLayoutClass = HorizontalSliderLayout;
-    }
-    
-    //***********************************************************************************************************
-    // Overrides
-    //***********************************************************************************************************
-    private override function createValueComponent():Range {
-        return new HorizontalRange();
-    }
 }
 
 //***********************************************************************************************************
@@ -52,5 +29,14 @@ class HorizontalSliderLayout extends DefaultLayout {
 
         endThumb.left =  (range.left + rangeValue.left + rangeValue.width) - (endThumb.width / 2);
         endThumb.top = (rangeValue.screenTop - _component.screenTop) - (endThumb.width / 2) + (rangeValue.screenTop - range.screenTop);
+    }
+}
+
+//***********************************************************************************************************
+// Composite Builder
+//***********************************************************************************************************
+private class Builder extends SliderBuilder {
+    private override function createValueComponent():Range {
+        return new HorizontalRange();
     }
 }

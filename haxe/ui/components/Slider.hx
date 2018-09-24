@@ -1,5 +1,7 @@
 package haxe.ui.components;
 
+import haxe.ui.core.Behaviour;
+import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.IDirectionalComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.InvalidatingBehaviour;
@@ -10,62 +12,21 @@ import haxe.ui.core.ValueBehaviour;
 import haxe.ui.util.Point;
 import haxe.ui.util.Variant;
 
+@:composite(SliderBuilder)
 class Slider extends InteractiveComponent implements IDirectionalComponent {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:behaviour(InvalidatingBehaviour, 0)   public var min:Float;
-    @:behaviour(InvalidatingBehaviour, 100) public var max:Float;
-    @:behaviour(StartBehaviour)             public var start:Float;
-    @:behaviour(EndBehaviour)               public var end:Float;
-    @:behaviour(EndBehaviour)               public var pos:Float;
-    
+    @:clonable @:behaviour(InvalidatingBehaviour, 0)   public var min:Float;
+    @:clonable @:behaviour(InvalidatingBehaviour, 100) public var max:Float;
+    @:clonable @:behaviour(StartBehaviour)             public var start:Float;
+    @:clonable @:behaviour(EndBehaviour)               public var end:Float;
+    @:clonable @:behaviour(EndBehaviour)               public var pos:Float;
+
     //***********************************************************************************************************
     // Private API
     //***********************************************************************************************************
-    private function createValueComponent():Range {
-        return null;
-    }
-    
-    private function posFromCoord(coord:Point):Float {
-        return findComponent(Range).behaviourCall("posFromCoord", coord);
-    }
-    
-    //***********************************************************************************************************
-    // Internals
-    //***********************************************************************************************************
-    private override function createChildren() {
-        super.createChildren();
-        
-        if (findComponent("range") == null) {
-            var v = createValueComponent();
-            v.scriptAccess = false;
-            v.id = "range";
-            v.addClass("slider-value");
-            v.start = v.end = 0;
-            addComponent(v);
-        }
-        
-        createThumb("end-thumb");
-    }
-    
-    //***********************************************************************************************************
-    // Helpers
-    //***********************************************************************************************************
-    private function createThumb(id:String) {
-        if (findComponent(id) != null) {
-            return;
-        }
-        
-        var b = new Button();
-        b.scriptAccess = false;
-        b.id = id;
-        b.addClass(id);
-        b.remainPressed = true;
-        addComponent(b);
-
-        registerInternalEvents(Events, true); // call .register again as we might have a new thumb! 
-    }
+    @:call(PosFromCoord)                               private function posFromCoord(coord:Point):Float;
 }
 
 //***********************************************************************************************************
@@ -73,6 +34,7 @@ class Slider extends InteractiveComponent implements IDirectionalComponent {
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.components.Slider)
+@:access(haxe.ui.core.Component)
 private class StartBehaviour extends ValueBehaviour {
     public override function get():Variant {
         return _component.findComponent(Range).start;
@@ -83,8 +45,10 @@ private class StartBehaviour extends ValueBehaviour {
             return;
         }
         
+        var builder:SliderBuilder = cast(_component._compositeBuilder, SliderBuilder);
+        
         if (_component.findComponent("start-thumb") == null) {
-            cast(_component, Slider).createThumb("start-thumb");
+            builder.createThumb("start-thumb");
         }
         
         _component.findComponent(Range).start = value;
@@ -106,6 +70,15 @@ private class EndBehaviour extends ValueBehaviour {
         
         _component.findComponent(Range).end = value;
         _component.invalidateComponentLayout();
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.components.Range)
+private class PosFromCoord extends Behaviour {
+    public override function call(coord:Any = null):Variant {
+        var range:Range = _component.findComponent(Range);
+        return range.posFromCoord(coord);
     }
 }
 
@@ -231,5 +204,44 @@ private class Events extends haxe.ui.core.Events  {
         } else if (_activeThumb == _endThumb) {
              _slider.end = pos;
         }
+    }
+}
+
+//***********************************************************************************************************
+// Composite Builder
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+class SliderBuilder extends CompositeBuilder {
+    public override function create() {
+         if (_component.findComponent("range") == null) {
+            var v = createValueComponent();
+            v.scriptAccess = false;
+            v.id = "range";
+            v.addClass("slider-value");
+            v.start = v.end = 0;
+            _component.addComponent(v);
+        }
+        
+        createThumb("end-thumb");
+   }
+   
+    private function createValueComponent():Range {
+        return null;
+    }
+    
+    public function createThumb(id:String) {
+        if (_component.findComponent(id) != null) {
+            return;
+        }
+        
+        var b = new Button();
+        b.scriptAccess = false;
+        b.id = id;
+        b.addClass(id);
+        b.remainPressed = true;
+        _component.addComponent(b);
+
+        _component.registerInternalEvents(Events, true); // call .register again as we might have a new thumb! 
     }
 }
