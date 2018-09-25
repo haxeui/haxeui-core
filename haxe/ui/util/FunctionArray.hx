@@ -3,12 +3,8 @@ package haxe.ui.util;
 class FunctionArray<T> {
     private var _array:Array<Listener<T>>;
 
-    public function new(array:Array<Listener<T>> = null) {
-        if (array == null) {
-            _array = [];
-        } else {
-            _array = array;
-        }
+    public function new() {
+        _array = [];
     }
 
     public function get(index:Int):T {
@@ -76,7 +72,9 @@ class FunctionArray<T> {
     }
 
     public function copy():FunctionArray<T> {
-        return new FunctionArray<T>(_array.copy());
+        var fa = new FunctionArray<T>();
+        fa._array = _array.copy();
+        return fa;
     }
 
     public function toString():String {

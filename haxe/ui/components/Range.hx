@@ -47,10 +47,10 @@ class Range extends InteractiveComponent implements IDirectionalComponent {
 private class RangeValue extends DataBehaviour {
     public override function validateData() {
         var range:Range = cast(_component, Range);
-        if (_value != null && range.min != null && _value < range.min) {
+        if (_value != null && _value < range.min) {
             _value = range.min;
         }
-        if (_value != null && range.max != null && _value > range.max) {
+        if (_value != null && _value > range.max) {
             _value = range.max;
         }
         _component.invalidateComponentLayout();

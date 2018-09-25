@@ -4,14 +4,14 @@ import haxe.ui.core.Component;
 import haxe.ui.data.DataSource;
 
 enum VariantType {
-    Int(s:Int);
-    Float(s:Float);
-    String(s:String);
-    Bool(s:Bool);
-    Array(s:Array<Dynamic>);
-    DataSource(s:DataSource<Dynamic>);
-    Component(s:Component);
-    Dt(s:Date);
+    VT_Int(s:Int);
+    VT_Float(s:Float);
+    VT_String(s:String);
+    VT_Bool(s:Bool);
+    VT_Array(s:Array<Dynamic>);
+    VT_DataSource(s:DataSource<Dynamic>);
+    VT_Component(s:Component);
+    VT_Date(s:Date);
 }
 
 abstract Variant(VariantType) from VariantType {
@@ -19,7 +19,7 @@ abstract Variant(VariantType) from VariantType {
     // STRINGS
     // ************************************************************************************************************
     @:from static function fromString(s:String):Variant {
-        return String(s);
+        return VT_String(s);
     }
 
     @:to public function toString():String {
@@ -27,28 +27,28 @@ abstract Variant(VariantType) from VariantType {
             return null;
         }
         return switch (this) {
-            case String(s): s;
-            case Int(s): Std.string(s);
-            case Float(s): Std.string(s);
-            case Bool(s): Std.string(s);
-            case Array(s): Std.string(s);
-            case Component(s): Std.string(s);
-            case DataSource(s): Std.string(s);
-            case Dt(s): Std.string(s);
+            case VT_String(s): s;
+            case VT_Int(s): Std.string(s);
+            case VT_Float(s): Std.string(s);
+            case VT_Bool(s): Std.string(s);
+            case VT_Array(s): Std.string(s);
+            case VT_Component(s): Std.string(s);
+            case VT_DataSource(s): Std.string(s);
+            case VT_Date(s): Std.string(s);
             default: throw "Variant Type Error";
         }
     }
 
     public var isString(get, never):Bool;
     private function get_isString():Bool {
-        return this.match(String(_));
+        return this.match(VT_String(_));
     }
 
     // ************************************************************************************************************
     // FLOATS
     // ************************************************************************************************************
     @:from static function fromFloat(s:Float):Variant {
-        return Float(s);
+        return VT_Float(s);
     }
 
     @:to public function toFloat():Null<Float> {
@@ -56,22 +56,22 @@ abstract Variant(VariantType) from VariantType {
             return null;
         }
         return switch (this) {
-            case Int(s): s;
-            case Float(s): s;
+            case VT_Int(s): s;
+            case VT_Float(s): s;
             default: throw "Variant Type Error";
         }
     }
 
     public var isFloat(get, never):Bool;
     private inline function get_isFloat():Bool {
-        return this.match(Float(_));
+        return this.match(VT_Float(_));
     }
 
     // ************************************************************************************************************
     // INTS
     // ************************************************************************************************************
     @:from static function fromInt(s:Int):Variant {
-        return Int(s);
+        return VT_Int(s);
     }
 
     @:to public function toInt():Null<Int> {
@@ -79,15 +79,15 @@ abstract Variant(VariantType) from VariantType {
             return null;
         }
         return switch (this) {
-            case Int(s): s;
-            case Float(s): Std.int(s);
+            case VT_Int(s): s;
+            case VT_Float(s): Std.int(s);
             default: throw "Variant Type Error";
         }
     }
 
     public var isInt(get, never):Bool;
     private inline function get_isInt():Bool {
-        return this.match(Int(_));
+        return this.match(VT_Int(_));
     }
 
     // ************************************************************************************************************
@@ -95,13 +95,13 @@ abstract Variant(VariantType) from VariantType {
     // ************************************************************************************************************
     public var isNumber(get, never):Bool;
     private inline function get_isNumber():Bool {
-        return this.match(Int(_) | Float(_));
+        return this.match(VT_Int(_) | VT_Float(_));
     }
 
     function toNumber():Float {
         return switch (this) {
-            case Int(s): s;
-            case Float(s): s;
+            case VT_Int(s): s;
+            case VT_Float(s): s;
             default: throw "Variant Type Error";
         }
     }
@@ -110,7 +110,7 @@ abstract Variant(VariantType) from VariantType {
     // BOOLS
     // ************************************************************************************************************
     @:from static function fromBool(s:Bool):Variant {
-        return Bool(s);
+        return VT_Bool(s);
     }
 
     @:to public function toBool():Bool {
@@ -118,7 +118,7 @@ abstract Variant(VariantType) from VariantType {
             return false;
         }
         return switch (this) {
-            case Bool(s): s;
+            case VT_Bool(s): s;
             default: throw "Variant Type Error";
         }
     }
@@ -126,7 +126,7 @@ abstract Variant(VariantType) from VariantType {
     public var isBool(get, never):Bool;
     private function get_isBool():Bool {
         switch (this) {
-            case Bool(_): return true;
+            case VT_Bool(_): return true;
             default:
         }
         return false;
@@ -136,7 +136,7 @@ abstract Variant(VariantType) from VariantType {
     // ARRAYS
     // ************************************************************************************************************
     @:from static function fromArray<T>(s:Array<T>):Variant {
-        return s == null ? null : Array(s);
+        return s == null ? null : VT_Array(s);
     }
 
     @:to public function toArray<T>():Array<T> {
@@ -144,7 +144,7 @@ abstract Variant(VariantType) from VariantType {
             return null;
         }
         return switch (this) {
-            case Array(s): cast s;
+            case VT_Array(s): cast s;
             default: throw "Variant Type Error";
         }
     }
@@ -152,7 +152,7 @@ abstract Variant(VariantType) from VariantType {
     public var isArray(get, never):Bool;
     private function get_isArray():Bool {
         switch (this) {
-            case Array(_): return true;
+            case VT_Array(_): return true;
             default:
         }
         return false;
@@ -162,7 +162,7 @@ abstract Variant(VariantType) from VariantType {
     // DATES
     // ************************************************************************************************************
     @:from static function fromDate(s:Date):Variant {
-        return Dt(s);
+        return VT_Date(s);
     }
 
     @:to public function toDate():Date {
@@ -170,7 +170,7 @@ abstract Variant(VariantType) from VariantType {
             return null;
         }
         return switch (this) {
-            case Dt(s): s;
+            case VT_Date(s): s;
             default: throw "Variant Type Error";
         }
     }
@@ -178,7 +178,7 @@ abstract Variant(VariantType) from VariantType {
     public var isDate(get, never):Bool;
     private function get_isDate():Bool {
         switch (this) {
-            case Dt(_): return true;
+            case VT_Date(_): return true;
             default:
         }
         return false;
@@ -188,7 +188,7 @@ abstract Variant(VariantType) from VariantType {
     // COMPONENT
     // ************************************************************************************************************
     @:from public static function fromComponent(s:Component):Variant {
-        return Component(s);
+        return VT_Component(s);
     }
 
     @:to function toComponent():Component {
@@ -196,7 +196,7 @@ abstract Variant(VariantType) from VariantType {
             return null;
         }
         return switch (this) {
-            case Component(s): s;
+            case VT_Component(s): s;
             default: throw "Variant Type Error";
         }
     }
@@ -204,7 +204,7 @@ abstract Variant(VariantType) from VariantType {
     public var isComponent(get, never):Bool;
     private function get_isComponent():Bool {
         switch (this) {
-            case Component(_): return true;
+            case VT_Component(_): return true;
             default:
         }
         return false;
@@ -214,7 +214,7 @@ abstract Variant(VariantType) from VariantType {
     // DATA SOURCE
     // ************************************************************************************************************
     @:from static function fromDataSource<T>(s:DataSource<T>):Variant {
-        return DataSource(s);
+        return VT_DataSource(s);
     }
 
     @:to function toDataSource<T>():DataSource<T> {
@@ -223,7 +223,7 @@ abstract Variant(VariantType) from VariantType {
         }
 
         return switch (this) {
-            case DataSource(s): cast s;
+            case VT_DataSource(s): cast s;
             default: throw "Variant Type Error";
         }
     }
@@ -231,7 +231,7 @@ abstract Variant(VariantType) from VariantType {
     public var isDataSource(get, never):Bool;
     private function get_isDataSource():Bool {
         switch (this) {
-            case DataSource(_): return true;
+            case VT_DataSource(_): return true;
             default:
         }
         return false; // this.match(Bool(_));
@@ -275,7 +275,7 @@ abstract Variant(VariantType) from VariantType {
     private inline function postInc():Variant {
         return if (isNumber) {
             var old = this;
-            this = Float(toNumber()+1);
+            this = VT_Float(toNumber()+1);
             old;
         } else {
             throw "Variant operation error";
@@ -285,7 +285,7 @@ abstract Variant(VariantType) from VariantType {
     @:op(++A)
     private inline function preInc():Variant {
         return if (isNumber) {
-            this = Float(toNumber()+1);
+            this = VT_Float(toNumber()+1);
         } else {
             throw "Variant operation error";
         }
@@ -306,7 +306,7 @@ abstract Variant(VariantType) from VariantType {
     private inline function postDeinc():Variant {
         return if (isNumber) {
             var old = this;
-            this = Float(toNumber()-1);
+            this = VT_Float(toNumber()-1);
             old;
         } else {
             throw "Variant operation error";
@@ -316,7 +316,7 @@ abstract Variant(VariantType) from VariantType {
     @:op(--A)
     private inline function preDeinc():Variant {
         return if (isNumber) {
-            this = Float(toNumber()-1);
+            this = VT_Float(toNumber()-1);
         } else {
             throw "Variant operation error";
         }
@@ -484,14 +484,14 @@ abstract Variant(VariantType) from VariantType {
         var d:Dynamic = null;
         if (v != null) {
             switch (v) {
-                case VariantType.Int(y):            d = y;
-                case VariantType.Float(y):          d = y;
-                case VariantType.String(y):         d = y;
-                case VariantType.Bool(y):           d = y;
-                case VariantType.Array(y):          d = y;
-                case VariantType.Component(y):      d = y;
-                case VariantType.DataSource(y):     d = y;
-                case VariantType.Dt(y):             d = y;
+                case VariantType.VT_Int(y):            d = y;
+                case VariantType.VT_Float(y):          d = y;
+                case VariantType.VT_String(y):         d = y;
+                case VariantType.VT_Bool(y):           d = y;
+                case VariantType.VT_Array(y):          d = y;
+                case VariantType.VT_Component(y):      d = y;
+                case VariantType.VT_DataSource(y):     d = y;
+                case VariantType.VT_Date(y):             d = y;
             }
         }
         return d;
