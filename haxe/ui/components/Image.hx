@@ -14,6 +14,7 @@ import haxe.ui.styles.Style;
 import haxe.ui.util.ImageLoader;
 import haxe.ui.util.Rectangle;
 import haxe.ui.util.Size;
+import haxe.ui.util.Variant;
 
 @:composite(ImageLayout, Builder)
 class Image extends Component {
@@ -21,6 +22,7 @@ class Image extends Component {
     // Public API
     //***********************************************************************************************************
     @:clonable @:behaviour(ResourceBehaviour)                              public var resource:String;
+    @:clonable @:behaviour(ResourceBehaviour)                              public var value:Variant;
     @:clonable @:behaviour(InvalidatingBehaviour, ScaleMode.FILL)          public var scaleMode:ScaleMode;
     @:clonable @:behaviour(InvalidatingBehaviour, HorizontalAlign.CENTER)  public var imageHorizontalAlign:HorizontalAlign;
     @:clonable @:behaviour(InvalidatingBehaviour, VerticalAlign.CENTER)    public var imageVerticalAlign:VerticalAlign;
