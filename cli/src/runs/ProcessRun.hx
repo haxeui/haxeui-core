@@ -13,7 +13,9 @@ class ProcessRun extends Run {
         
         Sys.setCwd(params.target);
         var c = _args.shift();
-        Sys.command(c, _args);
+        //Sys.command(c, _args);
+        var p = new ProcessHelper();
+        p.run(c, _args);
         Sys.setCwd(params.cwd);
     }
 }

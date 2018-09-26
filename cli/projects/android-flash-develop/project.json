@@ -1,0 +1,9 @@
+{
+    "name": "android-flash-develop",
+    "type": "template",
+    "subProjects": [
+        "shared", "android-shared"
+    ],
+    "templates": [
+    ]
+}

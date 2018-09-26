@@ -1,0 +1,19 @@
+-cp src
+
+::fullMain::
+
+--macro include('haxe.ui.backend.android')
+
+-dce no
+-D no-compilation
+-java-lib ::ANDROID_HOME::\platforms\android-21\android.jar
+
+-java build/android/app/src/main/java
+
+-cmd cd build/android
+# so this is annoying - hxJava seems to always add "src/" infront of path names
+-cmd xcopy app\src\main\java\src app\src\main\java /s /e /y
+-cmd del app\src\main\java\src\* /q /s
+-cmd rmdir app\src\main\java\src /q /s
+
+-cmd gradlew build -x lint

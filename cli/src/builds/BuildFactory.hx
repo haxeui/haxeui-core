@@ -1,5 +1,6 @@
 package builds;
 
+import builds.android.AndroidBuild;
 import builds.html5.Html5Build;
 import builds.hxwidgets.HxWidgetsBuild;
 import builds.kha.KhaBuild;
@@ -13,6 +14,8 @@ class BuildFactory {
         var b:Build = null;
         
         switch (backend) {
+            case "android":
+                b = new AndroidBuild();
             case "html5":
                 b = new Html5Build();
             case "openfl":

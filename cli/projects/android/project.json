@@ -1,0 +1,19 @@
+{
+    "name": "android",
+    "type": "template",
+    "subProjects": [
+        "shared", "android-shared"
+    ],
+    "directories": [
+        "${target}/src",
+        "${target}/src/haxe",
+        "${target}/src/haxe/ui",
+        "${target}/src/haxe/ui/backend/",
+        "${target}/src/haxe/ui/backend/android"
+    ],
+    "templates": [
+        { "src": "haxe/ui/backend/android/MainActivity.hx", "dst": "${target}/src/haxe/ui/backend/android/MainActivity.hx"},
+        { "src": "Main.hx", "dst": "${target}/src/${packagePath}/${main}.hx"},
+        { "src": "android.hxml", "dst": "${target}/android.hxml"}
+    ]
+}
