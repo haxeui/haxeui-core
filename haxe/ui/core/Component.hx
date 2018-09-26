@@ -147,7 +147,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         if (_internalEvents == null && eventsClass != null) {
             _internalEvents = Type.createInstance(eventsClass, [this]);
             _internalEvents.register();
-        } if (reregister == true) {
+        } if (reregister == true && _internalEvents != null) {
             _internalEvents.register();
         }
     }
@@ -1369,8 +1369,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     public function ready() {
         depth = ComponentUtil.getDepth(this);
 
-        if(isComponentInvalid())
-        {
+        if (isComponentInvalid()) {
             _invalidateCount = 0;
             ValidationManager.instance.add(this);
         }
