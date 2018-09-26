@@ -1,8 +1,9 @@
 -cp src
 
-::fullMain::
+-main ::fullMain::
 
 --macro include('haxe.ui.backend.android')
+--macro haxe.ui.backend.android.BuilderHelper.build()
 
 -dce no
 -D no-compilation

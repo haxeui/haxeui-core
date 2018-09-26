@@ -5,7 +5,7 @@ class Build {
         
     }
     
-    public function execute(params:Params) {
-        
+    public function execute(params:Params):Int {
+        return 0;
     }
 }

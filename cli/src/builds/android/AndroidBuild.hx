@@ -9,8 +9,11 @@ class AndroidBuild extends ProcessBuild {
         return ["android.hxml"];
     }
     
-    public override function execute(params:Params) {
-        super.execute(params);
+    public override function execute(params:Params):Int {
+        var n = super.execute(params);
+        if (n != 0) {
+            throw "Problem building android";
+        }
         
         Sys.setCwd(params.target + "/build/android");
         trace(Sys.getCwd());
@@ -19,5 +22,7 @@ class AndroidBuild extends ProcessBuild {
         process.run('gradlew.bat', ["build", "-x", "lint"]);
         
         Sys.setCwd(params.cwd);
+        
+        return 0;
     }
 }

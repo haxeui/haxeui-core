@@ -8,7 +8,7 @@ class KhaBuild extends Build {
         super();
     }
     
-    public override function execute(params:Params) {
+    public override function execute(params:Params):Int {
         super.execute(params);
         
         Sys.setCwd(params.target);
@@ -41,5 +41,7 @@ class KhaBuild extends Build {
         }
         
         Sys.setCwd(params.cwd);
+        
+        return 0;
     }
 }

@@ -15,7 +15,7 @@ class ProcessBuild extends Build {
         _requiredFiles = requiredFiles;
     }
     
-    public override function execute(params:Params) {
+    public override function execute(params:Params):Int {
         Sys.setCwd(params.target);
         
         if (_requiredFiles != null) {
@@ -23,7 +23,7 @@ class ProcessBuild extends Build {
                 if (FileSystem.exists(f) == false) {
                     Util.log('ERROR: required file "${f}" not found, running "haxeui config ${params.backend}" may fix this');
                     Sys.setCwd(params.cwd);
-                    return;
+                    return 1;
                 }
             }
         }
@@ -38,10 +38,12 @@ class ProcessBuild extends Build {
         var errThread = Thread.create(printStreamThread);
         errThread.sendMessage(p.stderr);
         
-        p.exitCode(true);
+        var code = p.exitCode(true);
         p.close();
         
         Sys.setCwd(params.cwd);
+        
+        return code;
     }
     
     private function args(params:Params):Array<String> {
