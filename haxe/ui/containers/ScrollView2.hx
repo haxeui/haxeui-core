@@ -42,6 +42,10 @@ class ScrollView2 extends Component {
     // Validation
     //***********************************************************************************************************
     private override function validateComponentInternal() { // TODO: can this be moved to CompositeBuilder? Like validateComponentLayout?
+        if (native == true) { // TODO:  teeeeeemp! This should _absolutely_ be part of CompositeBuilder as native components try to call it and things like checkScrolls dont make sense
+            super.validateComponentInternal();
+            return;
+        }
         var scrollInvalid = isComponentInvalid(InvalidationFlags.SCROLL);
         var layoutInvalid = isComponentInvalid(InvalidationFlags.LAYOUT);
 
@@ -71,12 +75,17 @@ private class Virtual extends DefaultBehaviour {
 private class ContentWidth extends Behaviour {
     public override function get():Variant {
         var contents:Component = _component.findComponent("scrollview-contents", false, "css");
+        if (contents == null) {
+            return null;
+        }
         return contents.width;
     }
     
     public override function set(value:Variant) {
         var contents:Component = _component.findComponent("scrollview-contents", false, "css");
-        contents.width = value;
+        if (contents != null) {
+            contents.width = value;
+        }
     }
 }
 
@@ -84,12 +93,17 @@ private class ContentWidth extends Behaviour {
 private class PercentContentWidth extends Behaviour {
     public override function get():Variant {
         var contents:Component = _component.findComponent("scrollview-contents", false, "css");
+        if (contents == null) {
+            return null;
+        }
         return contents.percentWidth;
     }
     
     public override function set(value:Variant) {
         var contents:Component = _component.findComponent("scrollview-contents", false, "css");
-        contents.percentWidth = value;
+        if (contents != null) {
+            contents.percentWidth = value;
+        }
     }
 }
 
@@ -97,12 +111,17 @@ private class PercentContentWidth extends Behaviour {
 private class ContentHeight extends Behaviour {
     public override function get():Variant {
         var contents:Component = _component.findComponent("scrollview-contents", false, "css");
+        if (contents == null) {
+            return null;
+        }
         return contents.height;
     }
     
     public override function set(value:Variant) {
         var contents:Component = _component.findComponent("scrollview-contents", false, "css");
-        contents.height = value;
+        if (contents != null) {
+            contents.height = value;
+        }
     }
 }
 
@@ -110,12 +129,17 @@ private class ContentHeight extends Behaviour {
 private class PercentContentHeight extends Behaviour {
     public override function get():Variant {
         var contents:Component = _component.findComponent("scrollview-contents", false, "css");
+        if (contents == null) {
+            return null;
+        }
         return contents.percentHeight;
     }
     
     public override function set(value:Variant) {
         var contents:Component = _component.findComponent("scrollview-contents", false, "css");
-        contents.percentHeight = value;
+        if (contents != null) {
+            contents.percentHeight = value;
+        }
     }
 }
 
