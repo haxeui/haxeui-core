@@ -5,5 +5,7 @@
         "shared", "android-shared"
     ],
     "templates": [
+        { "src": "android.hxproj", "dst": "${target}/android.hxproj"},
+        { "src": "run-android.bat", "dst": "${target}/run-android.bat"}
     ]
 }
