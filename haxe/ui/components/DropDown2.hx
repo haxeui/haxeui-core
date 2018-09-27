@@ -82,7 +82,7 @@ class ListDropDownHandler extends DropDownHandler {
         if (_listview.selectedItem == null) {
             return;
         }
-        var currentHover = _listview.findComponent(":hover", null, true, "css");
+        var currentHover:Component = _listview.findComponent(":hover", null, true, "css");
         if (currentHover != null) { // since the dropdown list dissapears it does recvieve a mouse out (sometimes)
             currentHover.removeClass(":hover");
         }

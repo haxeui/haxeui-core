@@ -21,7 +21,7 @@ class Layout implements ILayout {
         return value;
     }
 
-    private function findComponent<T>(criteria:String = null, type:Class<T> = null, recursive:Null<Bool> = null, searchType:String = "id"):Null<T> {
+    private function findComponent<T:Component>(criteria:String = null, type:Class<T> = null, recursive:Null<Bool> = null, searchType:String = "id"):Null<T> {
         if (_component == null) {
             return null;
         }
