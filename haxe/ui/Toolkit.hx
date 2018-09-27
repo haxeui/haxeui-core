@@ -32,15 +32,21 @@ class Toolkit {
 
     public static var properties:Map<String, String> = new Map<String, String>();
 
-    public static var backendProperties:Properties = new Properties();
     public static var nativeConfig:GenericConfig = new GenericConfig();
 
+    private static var _backendProperties:Properties = new Properties();
+    public static var backendProperties(get, null):Properties;
+    private static function get_backendProperties():Properties {
+        buildBackend();
+        return _backendProperties;
+    }
+    
     private static var _built:Bool = false;
     public static function build() {
         if (_built == true) {
             return;
         }
-        BackendMacros.processBackend();
+        buildBackend();
         ModuleMacros.processModules();
         NativeMacros.processNative();
         _built = true;
@@ -50,6 +56,15 @@ class Toolkit {
         #end
     }
 
+    private static var _backendBuilt:Bool = false;
+    private static function buildBackend() {
+        if (_backendBuilt == true) {
+            return;
+        }
+        BackendMacros.processBackend();
+        _backendBuilt = true;
+    }
+    
     public static function init(options:ToolkitOptions = null) {
         build();
         ThemeManager.instance.applyTheme(theme);

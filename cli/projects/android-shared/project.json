@@ -17,6 +17,8 @@
         "${target}/build/android/gradle/wrapper"
     ],
     "templates": [
+        { "src": "haxeui-android.properties", "dst": "${target}/src/haxeui-android.properties"},
+        
         { "src": "build.gradle", "dst": "${target}/build/android/build.gradle"},
         { "src": "gradle.properties", "dst": "${target}/build/android/gradle.properties"},
         { "src": "gradlew", "dst": "${target}/build/android/gradlew"},
