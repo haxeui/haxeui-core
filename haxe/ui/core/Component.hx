@@ -522,8 +522,8 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         if (deferredBindings != null) {
             var itemsToRemove:Array<DeferredBindingInfo> = [];
             for (binding in deferredBindings) {
-                var source = findComponent(binding.sourceId, null, true);
-                var target = findComponent(binding.targetId, null, true);
+                var source: Component = findComponent(binding.sourceId, null, true);
+                var target: Component = findComponent(binding.targetId, null, true);
                 if (source != null && target != null) {
                     source.addBinding(target, binding.transform, binding.targetProperty,  binding.sourceProperty);
                     itemsToRemove.push(binding);
@@ -573,8 +573,8 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         if (deferredBindings != null) {
             var itemsToRemove:Array<DeferredBindingInfo> = [];
             for (binding in deferredBindings) {
-                var source = findComponent(binding.sourceId, null, true);
-                var target = findComponent(binding.targetId, null, true);
+                var source: Component = findComponent(binding.sourceId, null, true);
+                var target: Component = findComponent(binding.targetId, null, true);
                 if (source != null && target != null) {
                     source.addBinding(target, binding.transform, binding.targetProperty,  binding.sourceProperty);
                     itemsToRemove.push(binding);
@@ -706,7 +706,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             - `css` - The first component that contains a style name specified by `criteria` will be considered a match
     **/
     @:dox(group = "Display tree related properties and methods")
-    public function findComponent<T>(criteria:String = null, type:Class<T> = null, recursive:Null<Bool> = null, searchType:String = "id"):Null<T> {
+    public function findComponent<T: Component>(criteria:String = null, type:Class<T> = null, recursive:Null<Bool> = null, searchType:String = "id"):Null<T> {
         if (recursive == null && criteria != null && searchType == "id") {
             recursive = true;
         }
@@ -755,7 +755,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             - `css` - The first component that contains a style name specified by `criteria` will be considered a match
     **/
     @:dox(group = "Display tree related properties and methods")
-    public function findAncestor<T>(criteria:String = null, type:Class<T> = null, searchType:String = "id"):Null<T> {
+    public function findAncestor<T: Component>(criteria:String = null, type:Class<T> = null, searchType:String = "id"):Null<T> {
         var match:Component = null;
         var p = this.parentComponent;
         while (p != null) {
