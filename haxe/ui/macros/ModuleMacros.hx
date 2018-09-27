@@ -20,7 +20,7 @@ class ModuleMacros {
             return macro null;
         }
 
-        var code:String = "function() {\n";
+        var code:String = "(function() {\n";
 
         loadModules();
         for (m in _modules) {
@@ -140,7 +140,7 @@ class ModuleMacros {
             code += 'haxe.ui.core.ComponentClassMap.register("${alias}", "${className}");\n';
         }
 
-        code += "}()\n";
+        code += "})()\n";
         //trace(code);
 
         _modulesProcessed = true;
