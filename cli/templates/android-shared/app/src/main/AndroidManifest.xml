@@ -5,6 +5,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="::name::">
         <activity
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:name=".MainActivity"
             android:label="::name::">
             <intent-filter>
