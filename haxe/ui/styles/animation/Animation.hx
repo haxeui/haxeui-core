@@ -311,6 +311,9 @@ class Animation {
     }
 
     private function _shouldRestoreState():Bool {
+        if (fillMode == "once") { // TODO: clearly not the way to do this!
+            return false;
+        }
         return fillMode == AnimationFillMode.NONE ||
                fillMode != AnimationFillMode.BOTH ||
                (fillMode == AnimationFillMode.FORWARDS && direction != AnimationDirection.NORMAL && direction != AnimationDirection.ALTERNATE) ||

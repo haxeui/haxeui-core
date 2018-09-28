@@ -1380,3 +1380,79 @@
     text-align: center;
     vertical-align: center;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.switch2 {
+    width: auto;
+    height: auto;
+    horizontal-spacing: 5px;
+}
+
+.switch-button-sub {
+    background-color: #FFFFFF;
+    border: 1px solid #ABABAB;
+    border-radius: 2px;
+    cursor: pointer;
+    padding: 0px;
+    initial-width: 60px;
+    initial-height: 20px;
+    filter: drop-shadow(1, 45, #888888, 0.3, 1, 1, 1, 3, true);
+}
+
+.switch-button-sub .button {
+    height: 100%;
+    width: 50%;
+}
+
+.switch-label {
+    color: black;
+    vertical-align: center;
+}
+
+@keyframes switchAnimateSelected {
+    0% {
+        pos: 0;
+        background-color: #FFFFFF;
+    }
+    100% {
+        pos: 100;
+        background-color: #98c4e6;
+    }
+}
+
+.switch-button-sub:selected {
+    animation: switchAnimateSelected 0.3s ease 0s 1;
+    animation-fill-mode: once;
+}
+
+@keyframes switchAnimateUnselected {
+    0% {
+        pos: 100;
+        background-color: #98c4e6;
+    }
+    100% {
+        pos: 0;
+        background-color: #FFFFFF;
+    }
+}
+
+.switch-button-sub:unselected {
+    animation: switchAnimateUnselected 0.3s ease 0s 1;
+    animation-fill-mode: once;
+}
