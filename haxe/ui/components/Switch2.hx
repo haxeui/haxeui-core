@@ -78,6 +78,8 @@ private class Builder extends CompositeBuilder {
         if (_button == null) {
             _button = new SwitchButtonSub();
             _component.addComponent(_button);
+            
+            _component.addClass("alt2");
         }
     }
 }
@@ -109,6 +111,10 @@ private class SwitchButtonSub extends InteractiveComponent {
             onClick = function(e) {
                 selected = !selected;
             }
+            
+            var component:Component = new Component();
+            component.addClass("switch-button-sub-extra");
+            addComponentAt(component, 0);
         }
     }
 
@@ -132,13 +138,13 @@ private class SwitchButtonSub extends InteractiveComponent {
         if (_selected == false) {
             _label.text = _unselectedText;
             _label.removeClass(":selected");
-            removeClass(":selected");
-            addClass(":unselected");
+            removeClass(":selected", true, true);
+            addClass(":unselected", true, true);
         } else {
             _label.text = _selectedText;
             _label.addClass(":selected");
-            removeClass(":unselected");
-            addClass(":selected");
+            removeClass(":unselected", true, true);
+            addClass(":selected", true, true);
         }
 
         var event:UIEvent = new UIEvent(UIEvent.CHANGE);
@@ -218,5 +224,12 @@ private class SwitchButtonLayout extends DefaultLayout {
         var x = (switchComp.pos - min) / (max - min) * ucx;
 
         button.left = paddingLeft + x;
+        
+        
+        var extra:Component = switchComp.findComponent("switch-button-sub-extra", "css");
+        if (extra != null) {
+            extra.top = (_component.height / 2) - (extra.height / 2);
+        }
+        
     }
 }
