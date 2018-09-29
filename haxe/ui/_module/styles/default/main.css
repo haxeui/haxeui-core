@@ -1236,8 +1236,8 @@
 .tabview2 .tabview-content {
     border: 1px solid #ABABAB;
     padding: 5px;
-    width: 100%;
-    height: 100%;
+    __width: 100%;
+    __height: 100%;
 }
 
 
