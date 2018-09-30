@@ -143,7 +143,7 @@ class MacroHelpers {
         }
         return has;
     }
-    
+
     public static function appendLine(fn:{ expr : { pos : haxe.macro.Position, expr : haxe.macro.ExprDef } }, e:Expr):Void {
         fn.expr = switch (fn.expr.expr) {
             case EBlock(el): macro $b{insertExpr(el, -1, e)};

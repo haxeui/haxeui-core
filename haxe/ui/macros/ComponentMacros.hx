@@ -37,7 +37,7 @@ class ComponentMacros {
         ModuleMacros.populateClassMap();
 
         var namedComponents:Map<String, String> = new Map<String, String>();
-        var code:Expr = buildComponentSource([], resourcePath, namedComponents, MacroHelpers.exprToMap(params));
+        var code:Expr = buildComponentFromFile([], resourcePath, namedComponents, MacroHelpers.exprToMap(params));
         var e:Expr = macro addComponent($code);
         //code += "this.addClass('custom-component');";
         //trace(code);
@@ -88,13 +88,13 @@ class ComponentMacros {
     }
 
     macro public static function buildComponent(filePath:String, params:Expr = null):Expr {
-        ModuleMacros.populateClassMap();
-
-        return buildComponentSource([], filePath, null, MacroHelpers.exprToMap(params));
+        return buildComponentFromFile([], filePath, null, MacroHelpers.exprToMap(params));
     }
 
     #if macro
-    public static function buildComponentSource(code:Array<Expr>, filePath:String, namedComponents:Map<String, String> = null, params:Map<String, Dynamic> = null):Expr {
+    public static function buildComponentFromFile(code:Array<Expr>, filePath:String, namedComponents:Map<String, String> = null, params:Map<String, Dynamic> = null):Expr {
+        ModuleMacros.populateClassMap();
+        
         var f = MacroHelpers.resolveFile(filePath);
         if (f == null) {
             throw "Could not resolve: " + filePath;
@@ -102,13 +102,25 @@ class ComponentMacros {
 
         var fileContent:String = StringUtil.replaceVars(File.getContent(f), params);
         var c:ComponentInfo = ComponentParser.get(MacroHelpers.extension(f)).parse(fileContent, new FileResourceResolver(f, params));
+        return buildComponentSource(code, c, namedComponents, params);
+    }
+    
+    public static function buildComponentFromString(code:Array<Expr>, source:String, namedComponents:Map<String, String> = null, params:Map<String, Dynamic> = null):Expr {
+        ModuleMacros.populateClassMap();
+        
+        source = StringUtil.replaceVars(source, params);
+        var c:ComponentInfo = ComponentParser.get("xml").parse(source);
+        return buildComponentSource(code, c, namedComponents, params);
+    }
+    
+    public static function buildComponentSource(code:Array<Expr>, c:ComponentInfo, namedComponents:Map<String, String> = null, params:Map<String, Dynamic> = null):Expr {
         //trace(c);
 
         for (styleString in c.styles) {
             code.push(macro haxe.ui.Toolkit.styleSheet.parse($v{styleString}));
         }
 
-        buildComponentCode(code, c, 0, namedComponents, Context.makePosition( { file: filePath, min: 0, max: 0 } ));
+        buildComponentCode(code, c, 0, namedComponents, Context.currentPos());
         assignBindings(code, c.bindings);
 
         var fullScript = "";

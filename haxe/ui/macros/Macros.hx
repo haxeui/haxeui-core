@@ -18,9 +18,54 @@ class Macros {
         var pos = Context.currentPos();
         var fields = Context.getBuildFields();
 
-        if (Context.getLocalClass().get().meta.has(":composite") == false && Context.getLocalClass().get().meta.has("composite") == false) {
+        if ((Context.getLocalClass().get().meta.has(":composite") == false && Context.getLocalClass().get().meta.has("composite") == false)
+            && (Context.getLocalClass().get().meta.has(":xml") == false && Context.getLocalClass().get().meta.has("xml") == false)) {
             return fields;
         }
+        
+        var meta = null;
+        if (Context.getLocalClass().get().meta.has(":xml") == true) {
+            meta = Context.getLocalClass().get().meta.extract(":xml");
+        } else if (Context.getLocalClass().get().meta.has("xml") == true) {
+            meta = Context.getLocalClass().get().meta.extract("xml");
+        }
+        if (meta != null) {
+            var m = null;
+            for (t in meta) {
+                if (t.name == "xml" || t.name == ":xml") {
+                    m = t;
+                    break;
+                }
+            }
+            
+            var xml = ExprTools.toString(m.params[0]);
+            xml = StringTools.trim(xml.substring(1, xml.length - 2));
+            xml = StringTools.replace(xml, "\\n", "");
+            xml = StringTools.replace(xml, "\\r", "");
+            xml = StringTools.replace(xml, "\\\"", "\"");
+            xml = StringTools.replace(xml, "\\'", "'");
+
+            var expr = ComponentMacros.buildComponentFromString([], xml, null, null);
+            switch (expr.expr) {
+                case EBlock(el): el.push(Context.parseInlineString("addComponent(c0)", pos));
+                case _: 
+            }
+            
+            var currentCreateChildrenFn = MacroHelpers.getFunction(fields, "createChildren");
+            if (currentCreateChildrenFn != null) {
+                MacroHelpers.appendLine(currentCreateChildrenFn, expr);
+            } else {
+                var code:String = "";
+                code += "function() {\n";
+                code += "super.createChildren();\n";
+                code += ExprTools.toString(expr);
+                code += "}";
+                
+                var access:Array<Access> = [APrivate, AOverride];
+                MacroHelpers.addFunction("createChildren", Context.parseInlineString(code, pos), access, fields, pos);
+            }
+        }
+        
         
         var meta = null;
         if (Context.getLocalClass().get().meta.has(":composite") == true) {
@@ -29,50 +74,52 @@ class Macros {
             meta = Context.getLocalClass().get().meta.extract("composite");
         }
         
-        var m = null;
-        for (t in meta) {
-            if (t.name == "composite" || t.name == ":composite") {
-                m = t;
-                break;
-            }
-        }
-        
-        var currentRegisterCompositeFn = MacroHelpers.getFunction(fields, "registerComposite");
-        if (currentRegisterCompositeFn != null) {
-            for (p in m.params) {
-                var s = ExprTools.toString(p);
-                
-                // probably a better way to do this
-                if (s.indexOf("Event") != -1) {
-                    MacroHelpers.appendLine(currentRegisterCompositeFn, Context.parseInlineString('_internalEventsClass = ${ExprTools.toString(p)}', pos));
-                } else if (s.indexOf("Builder") != -1) {
-                    MacroHelpers.appendLine(currentRegisterCompositeFn, Context.parseInlineString('_compositeBuilderClass = ${ExprTools.toString(p)}', pos));
-                } else if (s.indexOf("Layout") != -1) {
-                    MacroHelpers.appendLine(currentRegisterCompositeFn, Context.parseInlineString('_defaultLayoutClass = ${ExprTools.toString(p)}', pos));
+        if (meta != null) {
+            var m = null;
+            for (t in meta) {
+                if (t.name == "composite" || t.name == ":composite") {
+                    m = t;
+                    break;
                 }
             }
-        } else {
-            var code:String = "";
-            code += "function() {\n";
-            code += "super.registerComposite();\n";
+            
+            var currentRegisterCompositeFn = MacroHelpers.getFunction(fields, "registerComposite");
+            if (currentRegisterCompositeFn != null) {
+                for (p in m.params) {
+                    var s = ExprTools.toString(p);
+                    
+                    // probably a better way to do this
+                    if (s.indexOf("Event") != -1) {
+                        MacroHelpers.appendLine(currentRegisterCompositeFn, Context.parseInlineString('_internalEventsClass = ${ExprTools.toString(p)}', pos));
+                    } else if (s.indexOf("Builder") != -1) {
+                        MacroHelpers.appendLine(currentRegisterCompositeFn, Context.parseInlineString('_compositeBuilderClass = ${ExprTools.toString(p)}', pos));
+                    } else if (s.indexOf("Layout") != -1) {
+                        MacroHelpers.appendLine(currentRegisterCompositeFn, Context.parseInlineString('_defaultLayoutClass = ${ExprTools.toString(p)}', pos));
+                    }
+                }
+            } else {
+                var code:String = "";
+                code += "function() {\n";
+                code += "super.registerComposite();\n";
 
-            for (p in m.params) {
-                var s = ExprTools.toString(p);
-                
-                // probably a better way to do this
-                if (s.indexOf("Event") != -1) {
-                    code += '_internalEventsClass = ${ExprTools.toString(p)};\n';
-                } else if (s.indexOf("Builder") != -1) {
-                    code += '_compositeBuilderClass = ${ExprTools.toString(p)};\n';
-                } else if (s.indexOf("Layout") != -1) {
-                    code += '_defaultLayoutClass = ${ExprTools.toString(p)};\n';
+                for (p in m.params) {
+                    var s = ExprTools.toString(p);
+                    
+                    // probably a better way to do this
+                    if (s.indexOf("Event") != -1) {
+                        code += '_internalEventsClass = ${ExprTools.toString(p)};\n';
+                    } else if (s.indexOf("Builder") != -1) {
+                        code += '_compositeBuilderClass = ${ExprTools.toString(p)};\n';
+                    } else if (s.indexOf("Layout") != -1) {
+                        code += '_defaultLayoutClass = ${ExprTools.toString(p)};\n';
+                    }
                 }
+                
+                code += "}";
+                
+                var access:Array<Access> = [APrivate, AOverride];
+                MacroHelpers.addFunction("registerComposite", Context.parseInlineString(code, pos), access, fields, pos);
             }
-            
-            code += "}";
-            
-            var access:Array<Access> = [APrivate, AOverride];
-            MacroHelpers.addFunction("registerComposite", Context.parseInlineString(code, pos), access, fields, pos);
         }
         return fields;
     }
