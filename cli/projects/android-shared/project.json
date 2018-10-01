@@ -18,6 +18,7 @@
     ],
     "templates": [
         { "src": "haxeui-android.properties", "dst": "${target}/src/haxeui-android.properties"},
+        { "src": "run-android.bat", "dst": "${target}/run-android.bat"},
         
         { "src": "build.gradle", "dst": "${target}/build/android/build.gradle"},
         { "src": "gradle.properties", "dst": "${target}/build/android/gradle.properties"},
