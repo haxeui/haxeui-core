@@ -1438,7 +1438,7 @@
 
 .switch-button-sub:selected {
     animation: switchAnimateSelected 0.2s ease 0s 1;
-    animation-fill-mode: once;
+    animation-fill-mode: forwards;
 }
 
 @keyframes switchAnimateUnselected {
@@ -1454,7 +1454,7 @@
 
 .switch-button-sub:unselected {
     animation: switchAnimateUnselected 0.2s ease 0s 1;
-    animation-fill-mode: once;
+    animation-fill-mode: forwards;
 }
 
 
@@ -1489,7 +1489,7 @@ SOME ALTERNATE SWITCH STYLES - defaulting to alt2 for now, not sure if its the "
 
 .alt2 .switch-button-sub:selected {
     animation: switchAnimateSelectedAlt2 0.2s ease 0s 1;
-    animation-fill-mode: once;
+    animation-fill-mode: forwards;
 }
 
 @keyframes switchAnimateUnselectedAlt2 {
@@ -1503,7 +1503,7 @@ SOME ALTERNATE SWITCH STYLES - defaulting to alt2 for now, not sure if its the "
  
 .alt2 .switch-button-sub:unselected {
     animation: switchAnimateUnselectedAlt2 0.2s ease 0s 1;
-    animation-fill-mode: once;
+    animation-fill-mode: forwards;
 }
 
 
@@ -1518,7 +1518,7 @@ SOME ALTERNATE SWITCH STYLES - defaulting to alt2 for now, not sure if its the "
 
 .alt2 .switch-button-sub-extra:selected {
     animation: switchAnimateExtraSelected 0.2s ease 0s 1;
-    animation-fill-mode: once;
+    animation-fill-mode: forwards;
 }
 
 @keyframes switchAnimateExtraUnselected {
@@ -1532,7 +1532,7 @@ SOME ALTERNATE SWITCH STYLES - defaulting to alt2 for now, not sure if its the "
         
 .alt2 .switch-button-sub-extra:unselected {
     animation: switchAnimateExtraUnselected 0.2s ease 0s 1;
-    animation-fill-mode: once;
+    animation-fill-mode: forwards;
 }
 
 .alt2 .switch-button-sub {

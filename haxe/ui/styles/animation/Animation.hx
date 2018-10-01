@@ -78,7 +78,7 @@ class Animation {
 
      @see `haxe.ui.constants.AnimationFillMode`
     **/
-    public var fillMode(default, null):AnimationFillMode = AnimationFillMode.NONE;
+    public var fillMode(default, null):AnimationFillMode = AnimationFillMode.FORWARDS;
 
     /**
      Specifies the number of times an animation should run before it stops. For an infinite loop set to -1.
@@ -311,11 +311,7 @@ class Animation {
     }
 
     private function _shouldRestoreState():Bool {
-        if (fillMode == "once") { // TODO: clearly not the way to do this!
-            return false;
-        }
         return fillMode == AnimationFillMode.NONE ||
-               fillMode != AnimationFillMode.BOTH ||
                (fillMode == AnimationFillMode.FORWARDS && direction != AnimationDirection.NORMAL && direction != AnimationDirection.ALTERNATE) ||
                (fillMode == AnimationFillMode.BACKWARDS && direction != AnimationDirection.REVERSE && direction != AnimationDirection.ALTERNATE_REVERSE);
     }
