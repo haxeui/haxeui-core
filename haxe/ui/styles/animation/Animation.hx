@@ -6,14 +6,49 @@ import haxe.ui.util.StyleUtil;
 import haxe.ui.styles.EasingFunction;
 import haxe.ui.styles.elements.AnimationKeyFrames;
 
+@:structInit
+class AnimationOptions {
+    static private inline var DEFAULT_DURATION:Float = 0;
+    static private inline var DEFAULT_DELAY:Float = 0;
+    static private inline var DEFAULT_ITERATION_COUNT:Int = 1;
+    static private var DEFAULT_EASING_FUNCTION:EasingFunction = EasingFunction.EASE;
+    static private inline var DEFAULT_DIRECTION:AnimationDirection = AnimationDirection.NORMAL;
+    static private inline var DEFAULT_FILL_MODE:AnimationFillMode = AnimationFillMode.FORWARDS;
+
+    @:optional public var duration:Null<Float>;
+    @:optional public var delay:Null<Float>;
+    @:optional public var iterationCount:Null<Int>;
+    @:optional public var easingFunction:EasingFunction;
+    @:optional public var direction:AnimationDirection;
+    @:optional public var fillMode:AnimationFillMode;
+
+    public function compareTo(op:AnimationOptions):Bool {
+        return op != null &&
+            op.duration == duration &&
+            op.delay == delay &&
+            op.iterationCount == iterationCount &&
+            op.easingFunction == easingFunction &&
+            op.direction == direction &&
+            op.fillMode == fillMode;
+    }
+
+    public function compareToAnimation(anim:Animation):Bool {
+        return ((duration == null && anim.duration == DEFAULT_DURATION)  || (duration != null && anim.duration == duration)) &&
+            ((delay == null && anim.delay == DEFAULT_DELAY)  || (delay != null && anim.delay == delay)) &&
+            ((iterationCount == null && anim.iterationCount == DEFAULT_ITERATION_COUNT)  || (iterationCount != null && anim.iterationCount == iterationCount)) &&
+            ((easingFunction == null && anim.easingFunction == DEFAULT_EASING_FUNCTION)  || (easingFunction != null && anim.easingFunction == easingFunction)) &&
+            ((direction == null && anim.direction == DEFAULT_DIRECTION)  || (direction != null && anim.direction == direction)) &&
+            ((fillMode == null && anim.fillMode == DEFAULT_FILL_MODE)  || (fillMode != null && anim.fillMode == fillMode));
+    }
+}
+
+@:access(haxe.ui.styles.animation.AnimationOptions)
 class Animation {
     //***********************************************************************************************************
     // Helpers
     //***********************************************************************************************************
-    public static function createWithKeyFrames(animationKeyFrames:AnimationKeyFrames, target:Dynamic, ?duration:Float,
-                                               ?easingFunction:EasingFunction, ?delay:Float,
-                                               ?iterationCount:Int, ?direction:AnimationDirection, ?fillMode:AnimationFillMode):Animation {
-        var animation:Animation = new Animation(target, duration, easingFunction, delay, iterationCount, direction, fillMode);
+    public static function createWithKeyFrames(animationKeyFrames:AnimationKeyFrames, target:Dynamic, ?options:AnimationOptions):Animation {
+        var animation:Animation = new Animation(target, options);
         animation.name = animationKeyFrames.id;
 
         if (animation._keyframes == null) {
@@ -52,33 +87,33 @@ class Animation {
      Specifies a delay for the start of an animation in seconds. If using negative values, the animation will start as if it
      had already been playing for N seconds.
     **/
-    public var delay(default, null):Float = 0;
+    public var delay(default, null):Float = AnimationOptions.DEFAULT_DELAY;
 
     /**
      Specifies whether an animation should be played forwards, backwards or in alternate cycles.
 
      @see `haxe.ui.constants.AnimationDirection`
     **/
-    public var direction(default, null):AnimationDirection = AnimationDirection.NORMAL;
+    public var direction(default, null):AnimationDirection = AnimationOptions.DEFAULT_DIRECTION;
 
     /**
      Defines how long time an animation should take to complete.
     **/
-    public var duration(default, null):Float = 0;
+    public var duration(default, null):Float = AnimationOptions.DEFAULT_DURATION;
 
     /**
      Specifies the speed curve of the animation.
 
      @see `haxe.ui.styles.EasingFunction`
     **/
-    public var easingFunction(default, null):EasingFunction = EasingFunction.EASE;
+    public var easingFunction(default, null):EasingFunction = AnimationOptions.DEFAULT_EASING_FUNCTION;
 
     /**
      Specifies a style for the target when the animation is not playing (befores it starts, after it ends, or both).
 
      @see `haxe.ui.constants.AnimationFillMode`
     **/
-    public var fillMode(default, null):AnimationFillMode = AnimationFillMode.FORWARDS;
+    public var fillMode(default, null):AnimationFillMode = AnimationOptions.DEFAULT_FILL_MODE;
 
     /**
      Specifies the number of times an animation should run before it stops. For an infinite loop set to -1.
@@ -105,15 +140,17 @@ class Animation {
     **/
     public var target(default, null):Dynamic;
 
-    public function new(target:Dynamic, ?duration:Float, ?easingFunction:EasingFunction, ?delay:Float,
-                        ?iterationCount:Int, ?direction:AnimationDirection, ?fillMode:AnimationFillMode) {
+    public function new(target:Dynamic, ?options:AnimationOptions) {
         this.target = target;
-        if (duration != null)           this.duration = duration;
-        if (easingFunction != null)     this.easingFunction = easingFunction;
-        if (delay != null)              this.delay = delay;
-        if (iterationCount != null)     this.iterationCount = iterationCount;
-        if (direction != null)          this.direction = direction;
-        if (fillMode != null)           this.fillMode = fillMode;
+
+        if (options != null) {
+            if (options.duration != null)           this.duration = options.duration;
+            if (options.easingFunction != null)     this.easingFunction = options.easingFunction;
+            if (options.delay != null)              this.delay = options.delay;
+            if (options.iterationCount != null)     this.iterationCount = options.iterationCount;
+            if (options.direction != null)          this.direction = options.direction;
+            if (options.fillMode != null)           this.fillMode = options.fillMode;
+        }
     }
 
     /**
@@ -239,9 +276,11 @@ class Animation {
             if (iterationCount == -1 || ++_currentIterationCount < iterationCount) {
                 _saveState();
                 _runNextKeyframe(onFinish);
-            } else if (onFinish != null) {
+            } else {
                 running = false;
-                onFinish();
+                if (onFinish != null) {
+                    onFinish();
+                }
             }
             return;
         } else {

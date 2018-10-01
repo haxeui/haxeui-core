@@ -334,10 +334,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     private function set_animation(value:Animation):Animation {
         if (_animation != value && _animatable == true) {
             if (_animation != null) {
-                if (value != null && _animation.name == value.name) {
-                    return value;
-                }
-
                 _animation.stop();
             }
 
@@ -2490,8 +2486,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
 
         if (style.animationName != null) {
             var animationKeyFrames:AnimationKeyFrames = Toolkit.styleSheet.animations.get(style.animationName);
-            applyAnimationKeyFrame(animationKeyFrames, style.animationDuration, style.animationTimingFunction, style.animationDelay,
-                                style.animationIterationCount, style.animationDirection, style.animationFillMode);
+            applyAnimationKeyFrame(animationKeyFrames, style.animationOptions);
         } else if (animation != null) {
             animation = null;
         }
@@ -2527,13 +2522,13 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     // Animation
     //***********************************************************************************************************
 
-    private function applyAnimationKeyFrame(animationKeyFrames:AnimationKeyFrames, ?duration:Float,
-        ?easingFunction:EasingFunction, ?delay:Float, ?iterationCount:Int, ?direction:AnimationDirection, ?fillMode:AnimationFillMode):Void {
-        if (_animatable == false || duration == 0 || (_animation != null && _animation.name == animationKeyFrames.id)) {
+    private function applyAnimationKeyFrame(animationKeyFrames:AnimationKeyFrames, options:AnimationOptions):Void {
+        if (_animatable == false || options == null || options.duration == 0 ||
+            (_animation != null && options.compareToAnimation(_animation) == true)) {
             return;
         }
 
-        animation = Animation.createWithKeyFrames(animationKeyFrames, this, duration, easingFunction, delay, iterationCount, direction, fillMode);
+        animation = Animation.createWithKeyFrames(animationKeyFrames, this, options);
         animation.run();
     }
 

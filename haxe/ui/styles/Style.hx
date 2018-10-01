@@ -1,5 +1,6 @@
 package haxe.ui.styles;
 
+import haxe.ui.styles.animation.Animation.AnimationOptions;
 import haxe.ui.constants.AnimationFillMode;
 import haxe.ui.constants.AnimationDirection;
 import haxe.ui.styles.elements.Directive;
@@ -94,12 +95,7 @@ class Style {
     public var resource:String;
     
     public var animationName:Null<String>;
-    public var animationDuration:Null<Float>;
-    public var animationTimingFunction:Null<EasingFunction>;
-    public var animationDelay:Null<Float>;
-    public var animationIterationCount:Null<Int>;
-    public var animationDirection:Null<AnimationDirection>;
-    public var animationFillMode:Null<AnimationFillMode>;
+    public var animationOptions:AnimationOptions;
 
     public function new() {
     }
@@ -280,22 +276,28 @@ class Style {
                 case "animation-name":
                     animationName = ValueTools.string(v.value);
                 case "animation-duration":
-                    animationDuration = ValueTools.time(v.value);
+                    createAnimationOptions();
+                    animationOptions.duration = ValueTools.time(v.value);
                 case "animation-timing-function":
-                    animationTimingFunction = ValueTools.calcEasing(v.value);
+                    createAnimationOptions();
+                    animationOptions.easingFunction = ValueTools.calcEasing(v.value);
                 case "animation-delay":
-                    animationDelay = ValueTools.time(v.value);
+                    createAnimationOptions();
+                    animationOptions.delay = ValueTools.time(v.value);
                 case "animation-iteration-count":
-                    animationIterationCount = switch (v.value) {
+                    createAnimationOptions();
+                    animationOptions.iterationCount = switch (v.value) {
                         case Value.VConstant(val):
                             (val == "infinite") ? -1 : 0;
                         case _:
                             ValueTools.int(v.value);
                     };
                 case "animation-direction":
-                    animationDirection = ValueTools.string(v.value);
+                    createAnimationOptions();
+                    animationOptions.direction = ValueTools.string(v.value);
                 case "animation-fill-mode":
-                    animationFillMode = ValueTools.string(v.value);
+                    createAnimationOptions();
+                    animationOptions.fillMode = ValueTools.string(v.value);
             }
         }
     }
@@ -406,12 +408,15 @@ class Style {
         if (s.fontItalic != null) fontItalic = s.fontItalic;
 
         if (s.animationName != null) animationName = s.animationName;
-        if (s.animationDuration != null) animationDuration = s.animationDuration;
-        if (s.animationTimingFunction != null) animationTimingFunction = s.animationTimingFunction;
-        if (s.animationDelay != null) animationDelay = s.animationDelay;
-        if (s.animationIterationCount != null) animationIterationCount = s.animationIterationCount;
-        if (s.animationDirection != null) animationDirection = s.animationDirection;
-        if (s.animationFillMode != null) animationFillMode = s.animationFillMode;
+        if (s.animationOptions != null) {
+            createAnimationOptions();
+            if(s.animationOptions.duration != null) animationOptions.duration = s.animationOptions.duration;
+            if(s.animationOptions.delay != null) animationOptions.delay = s.animationOptions.delay;
+            if(s.animationOptions.iterationCount != null) animationOptions.iterationCount = s.animationOptions.iterationCount;
+            if(s.animationOptions.easingFunction != null) animationOptions.easingFunction = s.animationOptions.easingFunction;
+            if(s.animationOptions.direction != null) animationOptions.direction = s.animationOptions.direction;
+            if(s.animationOptions.fillMode != null) animationOptions.fillMode = s.animationOptions.fillMode;
+        }
     }
 
     public function equalTo(s:Style):Bool {
@@ -485,7 +490,6 @@ class Style {
 
         if (s.filter != filter) return false;
         if (s.resource != resource) return false;
-        if (s.animationName != animationName) return false;
 
         if (s.icon != icon) return false;
         if (s.iconPosition != iconPosition) return false;
@@ -507,13 +511,12 @@ class Style {
 
         if (s.resource != resource) return false;
         if (s.animationName != animationName) return false;
-        if (s.animationDuration != animationDuration) return false;
-        if (s.animationDelay != animationDelay) return false;
-        if (s.animationTimingFunction != animationTimingFunction) return false;
-        if (s.animationIterationCount != animationIterationCount) return false;
-        if (s.animationDirection != animationDirection) return false;
-        if (s.animationFillMode != animationFillMode) return false;
+        if (animationOptions != null && animationOptions.compareTo(s.animationOptions) == false) return false;
 
         return true;
+    }
+
+    private inline function createAnimationOptions() {
+        if (animationOptions == null) animationOptions = {};
     }
 }
