@@ -1438,23 +1438,10 @@
 
 .switch-button-sub:selected {
     animation: switchAnimateSelected 0.2s ease 0s 1;
-    animation-fill-mode: forwards;
-}
-
-@keyframes switchAnimateUnselected {
-    0% {
-        pos: 100;
-        background-color: #98c4e6;
-    }
-    100% {
-        pos: 0;
-        background-color: #FFFFFF;
-    }
 }
 
 .switch-button-sub:unselected {
-    animation: switchAnimateUnselected 0.2s ease 0s 1;
-    animation-fill-mode: forwards;
+    animation: switchAnimateSelected 0.2s ease 0s 1 reverse backwards;
 }
 
 
@@ -1489,21 +1476,10 @@ SOME ALTERNATE SWITCH STYLES - defaulting to alt2 for now, not sure if its the "
 
 .alt2 .switch-button-sub:selected {
     animation: switchAnimateSelectedAlt2 0.2s ease 0s 1;
-    animation-fill-mode: forwards;
-}
-
-@keyframes switchAnimateUnselectedAlt2 {
-    0% {
-        pos: 100;
-    }
-    100% {
-        pos: 0;
-    }
 }
  
 .alt2 .switch-button-sub:unselected {
-    animation: switchAnimateUnselectedAlt2 0.2s ease 0s 1;
-    animation-fill-mode: forwards;
+    animation: switchAnimateSelectedAlt2 0.2s ease 0s 1 reverse backwards;
 }
 
 
@@ -1518,21 +1494,10 @@ SOME ALTERNATE SWITCH STYLES - defaulting to alt2 for now, not sure if its the "
 
 .alt2 .switch-button-sub-extra:selected {
     animation: switchAnimateExtraSelected 0.2s ease 0s 1;
-    animation-fill-mode: forwards;
 }
 
-@keyframes switchAnimateExtraUnselected {
-    0% {
-        background-color: #98c4e6;
-    }
-    100% {
-        background-color: #FFFFFF;
-    }
-}
-        
 .alt2 .switch-button-sub-extra:unselected {
-    animation: switchAnimateExtraUnselected 0.2s ease 0s 1;
-    animation-fill-mode: forwards;
+    animation: switchAnimateExtraSelected 0.2s ease 0s 1 reverse backwards;
 }
 
 .alt2 .switch-button-sub {

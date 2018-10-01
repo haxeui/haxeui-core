@@ -217,9 +217,8 @@
 .switch-button-sub .button{height:100%;width:50%;}
 .switch-label{color:black;vertical-align:center;}
 @keyframes switchAnimateSelected{0%{pos:0;background-color:#FFFFFF;} 100%{pos:100;background-color:#98c4e6;}}
-.switch-button-sub:selected{animation:switchAnimateSelected 0.2s ease 0s 1;animation-fill-mode:forwards;}
-@keyframes switchAnimateUnselected{0%{pos:100;background-color:#98c4e6;} 100%{pos:0;background-color:#FFFFFF;}}
-.switch-button-sub:unselected{animation:switchAnimateUnselected 0.2s ease 0s 1;animation-fill-mode:forwards;}
+.switch-button-sub:selected{animation:switchAnimateSelected 0.2s ease 0s 1;}
+.switch-button-sub:unselected{animation:switchAnimateSelected 0.2s ease 0s 1 reverse backwards;}
 .alt1 .switch-button-sub{border-radius:50px;initial-width:40px;padding:3px;}
 .alt1 .switch-button-sub .button{border-radius:50px;width:14px;height:14px;}
 @keyframes switchAnimateSelectedAlt2{0%{pos:0;} 100%{pos:100;}}
