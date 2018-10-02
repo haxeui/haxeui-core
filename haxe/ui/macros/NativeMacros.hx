@@ -16,14 +16,14 @@ class NativeMacros {
             return macro null;
         }
 
-        var code:String = "function() {\n";
+        var code:String = "(function() {\n";
 
         var nativeConfigs:Array<GenericConfig> = loadNativeConfig();
         for (config in nativeConfigs) {
             code += MacroHelpers.buildGenericConfigCode(config, "nativeConfig");
         }
 
-        code += "}()\n";
+        code += "})()\n";
 
         _nativeProcessed = true;
         return Context.parseInlineString(code, Context.currentPos());
