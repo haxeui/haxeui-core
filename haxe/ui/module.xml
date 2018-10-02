@@ -23,7 +23,6 @@
         <import package="haxe.ui.components" keep="true" /> <!-- TODO: remove this eventually -->
         <import package="haxe.ui.containers" />
         <import package="haxe.ui.containers.dialogs" />
-        <import package="haxe.ui.animation" keep="true" />
         <import class="Std" keep="true" static="true" />
         <!--
         TODO: Under neko & haxe 3.3 importing 'Math' like this causes this error: Class<Math> has no field MathImpl
@@ -38,7 +37,6 @@
         <import class="haxe.ui.containers.dialogs.Dialog" keep="true" static="true" />
         <import class="haxe.ui.containers.dialogs.DialogOptions" keep="true" static="true" />
         <import class="haxe.ui.containers.dialogs.DialogButton" keep="true" static="true" />
-        <import class="haxe.ui.animation.AnimationManager" static="true" />
     </scriptlets>
 
     <themes>
@@ -69,45 +67,4 @@
 
         <property name="haxe.ui.components.vscroll.animation.pos" value="haxe.ui.components.animation.pos" />
     </properties>
-
-    <animations>
-        <!--
-        <animation id="haxe.ui.components.animation.pos" ease="Bounce.easeOut">
-        <animation id="haxe.ui.components.animation.pos" ease="Linear.easeNone">
-        <animation id="haxe.ui.components.animation.pos" ease="Linear.easeNone">
-        -->
-        <animation id="haxe.ui.components.animation.pos" ease="Bounce.easeNone">
-            <keyframe time="300">
-                <target pos="{pos}" />
-            </keyframe>
-        </animation>
-        <animation id="haxe.ui.components.animation.rangeStart" ease="Bounce.easeOut">
-            <keyframe time="300">
-                <target rangeStart="{rangeStart}" />
-            </keyframe>
-        </animation>
-        <animation id="haxe.ui.components.animation.rangeEnd" ease="Bounce.easeOut">
-            <keyframe time="300">
-                <target rangeEnd="{rangeEnd}" />
-            </keyframe>
-        </animation>
-
-        <animation id="haxe.ui.components.animation.dialog.show" ease="Linear.easeNone">
-            <keyframe time="0">
-                <target top="{startTop}" left="{startLeft}" opacity="0" />
-            </keyframe>
-            <keyframe time="300">
-                <target top="{endTop}" left="{endLeft}" opacity="1" />
-            </keyframe>
-        </animation>
-
-        <animation id="haxe.ui.components.animation.dialog.hide" ease="Linear.easeNone">
-            <keyframe time="0">
-                <target top="{startTop}" left="{startLeft}" opacity="1" />
-            </keyframe>
-            <keyframe time="300">
-                <target top="{endTop}" left="{endLeft}" opacity="0" />
-            </keyframe>
-        </animation>
-    </animations>
 </module>

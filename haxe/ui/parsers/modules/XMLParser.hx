@@ -110,42 +110,6 @@ class XMLParser extends ModuleParser {
                     property.value = propertyNode.get("value");
                     module.properties.push(property);
                 }
-            } else if (nodeName == "animations" && checkCondition(el, defines) == true) {
-                for (animationNode in el.elementsNamed("animation")) {
-                    if (checkCondition(animationNode, defines) == false) {
-                        continue;
-                    }
-                    var animation:Module.ModuleAnimationEntry = new Module.ModuleAnimationEntry();
-                    animation.id = animationNode.get("id");
-                    animation.ease = animationNode.get("ease");
-
-                    for (keyFrameNode in animationNode.elementsNamed("keyframe")) {
-                        var keyFrame:Module.ModuleAnimationKeyFrameEntry = new Module.ModuleAnimationKeyFrameEntry();
-                        if (keyFrameNode.get("time") != null) {
-                            keyFrame.time = Std.parseInt(keyFrameNode.get("time"));
-                        }
-
-                        for (componentRefNode in keyFrameNode.elements()) {
-                            var componentRef:Module.ModuleAnimationComponentRefEntry = new Module.ModuleAnimationComponentRefEntry();
-                            componentRef.id = componentRefNode.nodeName;
-                            for (attrName in componentRefNode.attributes()) {
-                                var attrValue = componentRefNode.get(attrName);
-                                if (StringTools.startsWith(attrValue, "{") && StringTools.endsWith(attrValue, "}")) {
-                                    attrValue = attrValue.substring(1, attrValue.length - 1);
-                                    componentRef.vars.set(attrName, attrValue);
-                                } else {
-                                    componentRef.properties.set(attrName, Std.parseFloat(attrValue));
-                                }
-                            }
-
-                            keyFrame.componentRefs.set(componentRef.id, componentRef);
-                        }
-
-                        animation.keyFrames.push(keyFrame);
-                    }
-
-                    module.animations.push(animation);
-                }
             } else if (nodeName == "preload" && checkCondition(el, defines) == true) {
                 for (propertyNode in el.elements()) {
                     if (checkCondition(propertyNode, defines) == false) {

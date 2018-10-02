@@ -1,6 +1,5 @@
 package haxe.ui.components;
 
-import haxe.ui.animation.Animation;
 import haxe.ui.components.Range;
 import haxe.ui.core.Component;
 import haxe.ui.core.DefaultBehaviour;
@@ -57,8 +56,6 @@ private class Min extends DefaultBehaviour {
 
 @:dox(hide) @:noCompletion
 private class Indeterminate extends ValueBehaviour {
-    private var _animation:Animation;
-    
     public function new(component:Component) {
         super(component);
     }

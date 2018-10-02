@@ -1,6 +1,5 @@
 package haxe.ui.core;
 
-import haxe.ui.animation.AnimationManager;
 import haxe.ui.backend.ScreenBase;
 import haxe.ui.components.Label;
 import haxe.ui.containers.HBox;
@@ -172,8 +171,10 @@ class Screen extends ScreenBase {
             "endLeft" => x,
             "endTop" => y
         ];
+        /* TODO: need to move this to new animation system
         AnimationManager.instance.run("haxe.ui.components.animation.dialog.show", ["target" => dialog], vars);
         //animation.r
+        */
 
         var entry:DialogEntry = new DialogEntry();
         entry.overlay = overlay;
@@ -285,6 +286,8 @@ class Screen extends ScreenBase {
             "endLeft" => x,
             "endTop" => dialog.top - 20
         ];
+        
+        /* TODO: need to move this to new animation system
         AnimationManager.instance.run("haxe.ui.components.animation.dialog.hide", ["target" => dialog], vars, function() {
             Screen.instance.removeComponent(entry.dialog);
             Screen.instance.removeComponent(entry.overlay);
@@ -296,6 +299,7 @@ class Screen extends ScreenBase {
                 }
             }
         });
+        */
 
         return true;
     }

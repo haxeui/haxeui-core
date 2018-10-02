@@ -1,6 +1,5 @@
 package haxe.ui.components;
 
-import haxe.ui.animation.AnimationManager;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.MouseEvent;
@@ -163,7 +162,7 @@ class Scroll extends InteractiveComponent {
             return;
         }
 
-        AnimationManager.instance.run(animationId, ["target" => this], ["pos" => value]);
+        //AnimationManager.instance.run(animationId, ["target" => this], ["pos" => value]);
     }
 
     private var _min:Float = 0;
