@@ -19,7 +19,7 @@ class UIEvent extends EventBase {
     public var data(default, default):Dynamic;
     public var canceled(default, default):Bool; 
 
-    public function new(type:String, bubble:Bool = false, data:Dynamic = null) {
+    public function new(type:String, bubble:Null<Bool> = false, data:Dynamic = null) {
         super();
         this.type = type;
         this.bubble = bubble; 

@@ -113,27 +113,6 @@ class ModuleMacros {
                 code += 'Toolkit.properties.set("${p.name}", "${p.value}");\n';
             }
 
-            // load animations
-            for (a in m.animations) {
-                code += 'var a:haxe.ui.animation.Animation = new haxe.ui.animation.Animation();\n';
-                code += 'a.id = "${a.id}";\n';
-                code += 'a.easing = haxe.ui.animation.Animation.easingFromString("${a.ease}");\n';
-                for (kf in a.keyFrames) {
-                    code += 'var kf:haxe.ui.animation.AnimationKeyFrame = a.addKeyFrame(${kf.time});\n';
-                    for (r in kf.componentRefs) {
-                        code += 'var ref:haxe.ui.animation.AnimationComponentRef = kf.addComponentRef("${r.id}");\n';
-                        for (p in r.properties.keys()) {
-                            code += 'ref.addProperty("${p}", ${r.properties.get(p)});\n';
-                        }
-                        for (v in r.vars.keys()) {
-                            code += 'ref.addVar("${v}", "${r.vars.get(v)}");\n';
-                        }
-                    }
-                }
-
-                code += 'haxe.ui.animation.AnimationManager.instance.registerAnimation(a.id, a);\n';
-            }
-            
             for (p in m.preload) {
                 code += 'ToolkitAssets.instance.preloadList.push({type: "${p.type}", resourceId: "${p.id}"});\n';
             }
@@ -151,7 +130,6 @@ class ModuleMacros {
         }
 
         code += "})()\n";
-        //trace(code);
 
         _modulesProcessed = true;
 
