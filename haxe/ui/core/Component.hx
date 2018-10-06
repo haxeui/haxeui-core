@@ -2528,8 +2528,16 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             return;
         }
 
+        if (hasEvent(AnimationEvent.START)) {
+            dispatch(new AnimationEvent(AnimationEvent.START));
+        }
+
         animation = Animation.createWithKeyFrames(animationKeyFrames, this, options);
-        animation.run();
+        animation.run(function(){
+            if (hasEvent(AnimationEvent.END)) {
+                dispatch(new AnimationEvent(AnimationEvent.END));
+            }
+        });
     }
 
     //***********************************************************************************************************
