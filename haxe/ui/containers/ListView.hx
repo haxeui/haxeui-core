@@ -11,7 +11,6 @@ import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.ItemRenderer;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.UIEvent;
-import haxe.ui.data.ArrayDataSource;
 import haxe.ui.data.DataSource;
 import haxe.ui.data.transformation.NativeTypeTransformer;
 import haxe.ui.util.Variant;
@@ -101,7 +100,7 @@ class ListView extends ScrollView implements IDataComponent {
 
         return value;
     }
-
+    
     public function resetSelection() {
         selectedIndex = NO_SELECTION;
     }
@@ -164,11 +163,6 @@ class ListView extends ScrollView implements IDataComponent {
     private var _dataSource:DataSource<Dynamic>;
     public var dataSource(get, set):DataSource<Dynamic>;
     private function get_dataSource():DataSource<Dynamic> {
-        if (_dataSource == null) {
-            _dataSource = new ArrayDataSource(new NativeTypeTransformer());
-            //_dataSource.onChange = onDataSourceChanged;
-            behaviourGet("dataSource");
-        }
         return _dataSource;
     }
     private function set_dataSource(value:DataSource<Dynamic>):DataSource<Dynamic> {
@@ -185,6 +179,9 @@ class ListView extends ScrollView implements IDataComponent {
 
     private function syncUI() {
         if (_dataSource == null) {
+            if (contents != null) {
+                contents.removeAllComponents();
+            }
             return;
         }
 
@@ -308,7 +305,7 @@ class ListView extends ScrollView implements IDataComponent {
         if (contents == null) {
             return result;
         }
-        
+
         //ItemHeight
         var n:Int = 0;
         var cy:Float = contents.layout.paddingTop + contents.layout.paddingBottom;
