@@ -63,6 +63,9 @@ class XMLParser extends ComponentParser {
     private static function parseImportNode(component:ComponentInfo, xml:Xml, resourceResolver:ResourceResolver) {
         if (xml.get("source") != null) {
             var source:String = xml.get("source");
+            if (source == null) {
+                source = xml.get("resource");
+            }
             var sourceData:String = resourceResolver.getResourceData(source);
             if (sourceData != null) {
                 var extension:String = resourceResolver.extension(source);
