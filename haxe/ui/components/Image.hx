@@ -136,24 +136,26 @@ private class ImageLayout extends DefaultLayout {
     }
 
     private function updateClipRect() {
-        var usz:Size = usableSize;
-        var imageDisplay:ImageDisplay = component.getImageDisplay();
-        var rc:Rectangle = imageDisplay.imageClipRect;
+        if (component.hasImageDisplay()) {
+            var usz:Size = usableSize;
+            var imageDisplay:ImageDisplay = component.getImageDisplay();
+            var rc:Rectangle = imageDisplay.imageClipRect;
 
-        if (imageDisplay.imageWidth > usz.width
+            if (imageDisplay.imageWidth > usz.width
             || imageDisplay.imageHeight > usz.height) {
-            if (rc == null)
-                rc = new Rectangle();
+                if (rc == null)
+                    rc = new Rectangle();
 
-            rc.top = paddingLeft;
-            rc.left = paddingTop;
-            rc.width = usz.width;
-            rc.height = usz.height;
-        } else {
-            rc = null;
+                rc.top = paddingLeft;
+                rc.left = paddingTop;
+                rc.width = usz.width;
+                rc.height = usz.height;
+            } else {
+                rc = null;
+            }
+
+            imageDisplay.imageClipRect = rc;
         }
-
-        imageDisplay.imageClipRect = rc;
     }
 }
 //***********************************************************************************************************
