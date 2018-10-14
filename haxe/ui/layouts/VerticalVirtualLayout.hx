@@ -165,8 +165,8 @@ class VerticalVirtualLayout extends VirtualLayout {
     override public function calcAutoSize(exclusions:Array<Component> = null):Size {
         var size:Size = super.calcAutoSize(exclusions);
         var comp:IVirtualContainer = cast(_component, IVirtualContainer);
-        if (comp.itemCount > 0) {
-            size.height = (itemHeight * comp.itemCount) + paddingTop + paddingBottom;
+        if (comp.itemCount > 0 || _component.autoHeight == true) {
+            size.height = (itemHeight * itemCount) + paddingTop + paddingBottom;
         }
 
         return size;
