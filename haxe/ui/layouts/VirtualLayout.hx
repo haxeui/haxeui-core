@@ -126,12 +126,12 @@ class VirtualLayout extends ScrollViewLayout {
                 } else {
                     removeRenderer(item);
                     item = getRenderer(cls, n);
-                    _component.addComponentAt(item, n);
+                    contents.addComponentAt(item, n);
                 }
             } else {
                 var cls = itemClass(n, data);
                 item = getRenderer(cls, n);
-                _component.addComponent(item);
+                contents.addComponent(item);
             }
 
             var className:String = n % 2 == 0 ? "even" : "odd";
@@ -165,14 +165,14 @@ class VirtualLayout extends ScrollViewLayout {
             var cls = itemClass(n, data);
             if (contents.childComponents.length <= i) {
                 item = getRenderer(cls, n);
-                _component.addComponent(item);
+                contents.addComponent(item);
             } else {
                 item = cast contents.childComponents[i];
 
                 //Renderers are always ordered
                 if (!Std.is(item, cls)) {
                     item = getRenderer(cls, n);
-                    _component.addComponentAt(item, i);
+                    contents.addComponentAt(item, i);
                 } else if (item.itemIndex != n) {
                     if (_component.hasEvent(UIEvent.RENDERER_DESTROYED)) {
                         _component.dispatch(new UIEvent(UIEvent.RENDERER_DESTROYED, item));
@@ -240,7 +240,7 @@ class VirtualLayout extends ScrollViewLayout {
         }
 
         if (instance == null) {
-            if (comp.itemRenderer != null) {
+            if (comp.itemRenderer != null && Type.getClass(comp.itemRenderer) == cls) {
                 instance = comp.itemRenderer.cloneComponent();
             } else {
                 instance = Type.createInstance(cls, []);
