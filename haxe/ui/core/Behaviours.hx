@@ -181,6 +181,10 @@ class Behaviours {
         return find(id).get();
     }
     
+    public function getDynamic(id):Dynamic {
+        return find(id).getDynamic();
+    }
+    
     public function call(id, param:Any = null):Variant {
         return find(id).call(param);
     }

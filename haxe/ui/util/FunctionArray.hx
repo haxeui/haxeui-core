@@ -35,7 +35,7 @@ class FunctionArray<T> {
     public function indexOf(x:T, fromIndex:Int = 0):Int {
         #if neko
         if (Reflect.isFunction(x) == false) {
-            return _array.indexOf(x);
+            return _array.indexOf(cast x);
         } else {
             for (i in fromIndex..._array.length) {
                 if (Reflect.compareMethods(_array[i].callback, x) == true) {

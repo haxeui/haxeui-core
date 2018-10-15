@@ -137,8 +137,10 @@ class ListDropDownHandler extends DropDownHandler {
         if (_listview != null) {
             _listview.selectedIndex = value;
         }
-        var data = _dropdown.dataSource.get(value);
-        _dropdown.text = data.value;
+        if (value > 0 && value < _dropdown.dataSource.size - 1) {
+            var data = _dropdown.dataSource.get(value);
+            _dropdown.text = data.value;
+        }
         return value;
     }
     

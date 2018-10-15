@@ -230,7 +230,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
         return null;
         */
-        return null;
+        return behaviours.getDynamic(id);
     }
 
     private function behaviourSet(id:String, value:Variant) {

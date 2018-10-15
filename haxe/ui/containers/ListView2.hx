@@ -330,7 +330,7 @@ private class SelectedIndexBehaviour extends Behaviour {
 
 @:dox(hide) @:noCompletion
 private class SelectedItemBehaviour extends Behaviour {
-    public override function get():Variant {
+    public override function getDynamic():Dynamic {
         var listView:ListView2 = cast(_component, ListView2);
         var selectedIndices:Array<Int> = listView.selectedIndices;
         return selectedIndices.length > 0 ? listView.dataSource.get(selectedIndices[selectedIndices.length - 1]) : null;

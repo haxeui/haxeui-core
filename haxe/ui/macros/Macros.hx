@@ -342,10 +342,13 @@ class Macros {
                     kind: kind,
                     pos: haxe.macro.Context.currentPos()
                 });
-                
                 // add getter function
                 var code = "function ():" + typeName + " {\n";
-                code += "return behaviourGet('" + f.name + "');\n";
+                if (typeName == "Dynamic") {
+                    code += "return behaviourGetDynamic('" + f.name + "');\n";
+                } else {
+                    code += "return behaviourGet('" + f.name + "');\n";
+                }
                 code += "}";
                 var fnGetter = switch (Context.parseInlineString(code, haxe.macro.Context.currentPos()) ).expr {
                     case EFunction(_, f): f;
