@@ -58,13 +58,14 @@ class VerticalVirtualLayout extends VirtualLayout {
         var contentsHeight:Float = 0;
 
         if (contents.autoHeight == true) {
-            contentsHeight = _component.autoHeight == true ? itemCount * itemHeight : _component.height;    //Avoids to render all items
+            var itemCount:Int = this.itemCount;
+            contentsHeight = itemCount > 0 ? itemCount * itemHeight : contents.height;
         } else {
             contentsHeight = contents.height;
+        }
 
-            if (contentsHeight > _component.height) {
-                contentsHeight = _component.height;
-            }
+        if (contentsHeight > _component.height) {
+            contentsHeight = _component.height;
         }
 
         if (comp.variableItemSize == true) {
@@ -165,8 +166,8 @@ class VerticalVirtualLayout extends VirtualLayout {
     override public function calcAutoSize(exclusions:Array<Component> = null):Size {
         var size:Size = super.calcAutoSize(exclusions);
         var comp:IVirtualContainer = cast(_component, IVirtualContainer);
-        if (comp.itemCount > 0 || _component.autoHeight == true) {
-            size.height = (itemHeight * itemCount) + paddingTop + paddingBottom;
+        if (comp.itemCount > 0 && _component.autoHeight == true) {
+            size.height = (itemHeight * comp.itemCount) + paddingTop + paddingBottom;
         }
 
         return size;
