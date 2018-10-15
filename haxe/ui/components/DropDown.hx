@@ -45,7 +45,7 @@ private class SelectedIndexBehaviour extends DataBehaviour {
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 private class SelectedItemBehaviour extends Behaviour {
-    public override function get():Variant {
+    public override function getDynamic():Dynamic {
         var handler:IDropDownHandler = cast(_component._compositeBuilder, DropDownBuilder).handler;
         return handler.selectedItem;
     }
@@ -137,7 +137,7 @@ class ListDropDownHandler extends DropDownHandler {
         if (_listview != null) {
             _listview.selectedIndex = value;
         }
-        if (value > 0 && value < _dropdown.dataSource.size - 1) {
+        if (value >= 0 && value < _dropdown.dataSource.size - 1) {
             var data = _dropdown.dataSource.get(value);
             _dropdown.text = data.value;
         }
