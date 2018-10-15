@@ -23,7 +23,9 @@ class DropDown extends Button implements IDataComponent {
     @:behaviour(DefaultBehaviour)                    public var dataSource:DataSource<Dynamic>;
     @:behaviour(DefaultBehaviour, "list")            public var type:String;
     @:behaviour(DefaultBehaviour, false)             public var virtual:Bool;
-    @:behaviour(DefaultBehaviour)                    public var dropDownWidth:Null<Float>;
+    @:behaviour(DefaultBehaviour)                    public var dropdownWidth:Null<Float>;
+    @:behaviour(DefaultBehaviour)                    public var dropdownHeight:Null<Float>;
+    @:behaviour(DefaultBehaviour)                    public var dropdownSize:Null<Int>;
     @:behaviour(SelectedIndexBehaviour, -1)          public var selectedIndex:Int;
     @:behaviour(SelectedItemBehaviour)               public var selectedItem:Dynamic;
 }
@@ -100,16 +102,21 @@ class ListDropDownHandler extends DropDownHandler {
     
     public override function show() {
         var itemCount = 4; //TODO - the user could customize it
+        if (_dropdown.dropdownSize != null) {
+            itemCount = _dropdown.dropdownSize;
+        }
         if (_listview.dataSource != null && _listview.dataSource.size < itemCount) {
             itemCount = _listview.dataSource.size;
         }
 
-        
         _listview.itemCount = itemCount; 
-        if (_dropdown.dropDownWidth == null) {
+        if (_dropdown.dropdownWidth == null) {
             _listview.width = _dropdown.width;
         } else {
-            _listview.width = _dropdown.dropDownWidth;
+            _listview.width = _dropdown.dropdownWidth;
+        }
+        if (_dropdown.dropdownHeight != null) {
+            _listview.height = _dropdown.dropdownHeight;
         }
 
         Screen.instance.addComponent(_listview);
@@ -177,8 +184,11 @@ class CalendarDropDownHandler extends DropDownHandler {
     }
     
     public override function show() {
-        if (_dropdown.dropDownWidth != null) {
-            _calendar.width = _dropdown.dropDownWidth;
+        if (_dropdown.dropdownWidth != null) {
+            _calendar.width = _dropdown.dropdownWidth;
+        }
+        if (_dropdown.dropdownHeight != null) {
+            _calendar.height = _dropdown.dropdownHeight;
         }
         
         Screen.instance.addComponent(_calendar);
