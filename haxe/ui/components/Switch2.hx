@@ -8,6 +8,7 @@ import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.UIEvent;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.HorizontalLayout;
+import haxe.ui.util.Variant;
 
 @:composite(Events, Builder, HorizontalLayout)
 class Switch2 extends Component {
@@ -15,6 +16,7 @@ class Switch2 extends Component {
     // Public API
     //***********************************************************************************************************
     @:clonable @:behaviour(DefaultBehaviour)          public var selected:Bool;
+    @:clonable @:behaviour(DefaultBehaviour)          public var value:Variant;
     @:clonable @:behaviour(TextBehaviour)             public var text:String;
     @:clonable @:behaviour(DefaultBehaviour)          public var textOn:String;
     @:clonable @:behaviour(DefaultBehaviour)          public var textOff:String;
