@@ -1512,7 +1512,7 @@ SOME ALTERNATE SWITCH STYLES - defaulting to alt2 for now, not sure if its the "
     background-color: #FFFFFF;
     border: 1px solid #ABABAB;
     vertical-align: center;
-    border-radius: 50px;
+    border-radius: 10px;
     filter: drop-shadow(1, 45, #888888, 0.3, 1, 1, 1, 3, true);
 }
 
