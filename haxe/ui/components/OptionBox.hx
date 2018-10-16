@@ -12,6 +12,7 @@ class OptionBox extends CheckBox {
     //***********************************************************************************************************
     @:clonable @:behaviour(GroupBehaviour, "defaultGroup")     public var group:String;
     @:clonable @:behaviour(SelectedBehaviour)                  public var selected:Bool;
+    @:clonable @:behaviour(SelectedBehaviour)                  public var value:Variant;
     @:clonable @:behaviour(SelectedOptionBehaviour)            public var selectedOption:Component;
 }
 
@@ -28,6 +29,11 @@ private class GroupBehaviour extends DataBehaviour {
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 private class SelectedBehaviour extends DataBehaviour {
+    public override function get():Variant {
+        var valueComponent:Component = _component.findComponent("optionbox-value");
+        return valueComponent.hasClass(":selected");
+    }
+    
     public override function validateData() {
         var optionbox:OptionBox = cast(_component, OptionBox);
         
