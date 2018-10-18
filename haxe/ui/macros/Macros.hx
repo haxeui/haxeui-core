@@ -39,7 +39,7 @@ class Macros {
             }
             
             var xml = ExprTools.toString(m.params[0]);
-            xml = StringTools.trim(xml.substring(1, xml.length - 2));
+            xml = StringTools.trim(xml.substring(1, xml.length - 1));
             xml = StringTools.replace(xml, "\\n", "");
             xml = StringTools.replace(xml, "\\r", "");
             xml = StringTools.replace(xml, "\\\"", "\"");
