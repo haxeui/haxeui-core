@@ -23,7 +23,7 @@ class TextField extends InteractiveComponent {
     @:clonable @:behaviour(RestrictCharsBehaviour)     public var restrictChars:String;
     @:clonable @:behaviour(PlaceholderBehaviour)       public var placeholder:String;
     @:clonable @:behaviour(TextBehaviour)              public var text:String;
-    //@:clonable @:behaviour(TextBehaviour)              public var value:Variant;
+    @:clonable @:behaviour(TextBehaviour)              public var value:Variant;
     @:clonable @:behaviour(IconBehaviour)              public var icon:String;
 }
 
@@ -239,6 +239,7 @@ private class TextFieldHelper {
         }
         
         textfield.getTextInput().text = '${text}';
+        textfield.invalidateComponentLayout();
     }
 }
 
