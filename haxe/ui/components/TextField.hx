@@ -164,11 +164,6 @@ private class PlaceholderBehaviour extends DataBehaviour {
 
 @:dox(hide) @:noCompletion
 private class TextBehaviour extends DataBehaviour {
-    public override function get():Variant {
-        var textfield:TextField = cast(_component, TextField);
-        return textfield.getTextInput().text;
-    }
-
     public override function validateData() {
         var textfield:TextField = cast(_component, TextField);
         TextFieldHelper.validateText(textfield, _value);

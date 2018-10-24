@@ -165,11 +165,6 @@ private class PlaceholderBehaviour extends DataBehaviour {
 
 @:dox(hide) @:noCompletion
 private class TextBehaviour extends DataBehaviour {
-    public override function get():Variant {
-        var textarea:TextArea = cast(_component, TextArea);
-        return textarea.getTextInput().text;
-    }
-    
     public override function validateData() {
         var textarea:TextArea = cast(_component, TextArea);
         var text:String = _value != null ? _value : "";
