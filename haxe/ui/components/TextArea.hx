@@ -1,5 +1,6 @@
 package haxe.ui.components;
 
+import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.DataBehaviour;
@@ -25,7 +26,7 @@ class TextArea extends InteractiveComponent implements IFocusable {
     // Public API
     //***********************************************************************************************************
     @:behaviour(TextBehaviour)              public var text:String;
-    @:behaviour(TextBehaviour)              public var value:Variant;
+    @:behaviour(ValueBehaviour)             public var value:Variant;
     @:behaviour(PlaceholderBehaviour)       public var placeholder:String;
     @:behaviour(WrapBehaviour, true)        public var wrap:Bool;
     
@@ -172,6 +173,18 @@ private class TextBehaviour extends DataBehaviour {
     }
 }
 
+
+@:dox(hide) @:noCompletion
+private class ValueBehaviour extends Behaviour {
+    public override function get():Variant {
+        return cast(_component, TextArea).text;
+    }
+    
+    public override function set(value:Variant) {
+        cast(_component, TextArea).text = value;
+    }
+}
+
 @:dox(hide) @:noCompletion
 private class WrapBehaviour extends DataBehaviour {
     public override function validateData() {
@@ -179,7 +192,6 @@ private class WrapBehaviour extends DataBehaviour {
         textarea.getTextInput().wordWrap = _value;
     }
 }
-
 
 //***********************************************************************************************************
 // Helpers

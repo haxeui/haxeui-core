@@ -1,5 +1,6 @@
 package haxe.ui.components;
 
+import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.DataBehaviour;
@@ -23,7 +24,7 @@ class TextField extends InteractiveComponent {
     @:clonable @:behaviour(RestrictCharsBehaviour)     public var restrictChars:String;
     @:clonable @:behaviour(PlaceholderBehaviour)       public var placeholder:String;
     @:clonable @:behaviour(TextBehaviour)              public var text:String;
-    @:clonable @:behaviour(TextBehaviour)              public var value:Variant;
+    @:clonable @:behaviour(ValueBehaviour)             public var value:String;
     @:clonable @:behaviour(IconBehaviour)              public var icon:String;
 }
 
@@ -171,6 +172,17 @@ private class TextBehaviour extends DataBehaviour {
         if (_value != null && _value != "") {
             _value = textfield.getTextInput().text;
         }
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class ValueBehaviour extends Behaviour {
+    public override function get():Variant {
+        return cast(_component, TextField).text;
+    }
+    
+    public override function set(value:Variant) {
+        cast(_component, TextField).text = value;
     }
 }
 
