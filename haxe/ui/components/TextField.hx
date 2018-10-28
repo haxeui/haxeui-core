@@ -285,10 +285,15 @@ private class Events extends haxe.ui.core.Events {
     }
     
     private function onMouseDown(event:MouseEvent) { // TODO: this should happen automatically as part of InteractiveComponent (?)
-        FocusManager.instance.focus = cast(_target, IFocusable);
+        _textfield.focus = true;
     }
     
     private function onFocusChange(event:MouseEvent) {
+        if (_textfield.focus == true) {
+            _textfield.getTextInput().focus();
+        } else {
+            _textfield.getTextInput().blur();
+        }
         TextFieldHelper.validateText(_textfield, _textfield.text);
     }
 }

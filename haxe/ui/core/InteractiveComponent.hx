@@ -1,5 +1,6 @@
 package haxe.ui.core;
 
+import haxe.ui.focus.FocusManager;
 import haxe.ui.focus.IFocusable;
 
 /**
@@ -30,9 +31,11 @@ class InteractiveComponent extends Component implements IFocusable {
         if (_focus == true) {
             addClass(":active");
             eventType = FocusEvent.FOCUS_IN;
+            FocusManager.instance.focus = cast(this, IFocusable);
         } else {
             removeClass(":active");
             eventType = FocusEvent.FOCUS_OUT;
+            FocusManager.instance.focus = null;
         }
         invalidateComponentData();
         dispatch(new FocusEvent(eventType));

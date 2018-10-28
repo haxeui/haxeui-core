@@ -37,6 +37,14 @@ class TextInput extends TextInputBase implements IValidating {
         _isAllInvalid = true;
     }
 
+    public override function focus() {
+        super.focus();
+    }
+    
+    public override function blur() {
+        super.blur();
+    }
+    
     /**
      The style to use for this text
     **/
