@@ -570,6 +570,15 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     public var parentComponent:Component = null;
 
     /**
+     Gets the number of child components under this component instance
+    **/
+    @:dox(group = "Display tree related properties and methods")
+    public var numComponents(get, never):Int;
+    private function get_numComponents():Int {
+        return _children == null ? 0 : _children.length;
+    }
+
+    /**
      Adds a child component to this component instance
     **/
     @:dox(group = "Display tree related properties and methods")
