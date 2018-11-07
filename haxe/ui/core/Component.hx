@@ -575,7 +575,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     @:dox(group = "Display tree related properties and methods")
     public var numComponents(get, never):Int;
     private function get_numComponents():Int {
-        return _children == null ? 0 : _children.length;
+        return _compositeBuilder != null ? _compositeBuilder.numComponents : _children == null ? 0 : _children.length;
     }
 
     /**
@@ -925,6 +925,10 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     **/
     @:dox(group = "Display tree related properties and methods")
     public function getComponentIndex(child:Component):Int {
+        if (_compositeBuilder != null) {
+            return _compositeBuilder.getComponentIndex(child);
+        }
+        
         var index:Int = -1;
         if (_children != null && child != null) {
             index = _children.indexOf(child);
@@ -954,6 +958,9 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     **/
     @:dox(group = "Display tree related properties and methods")
     public function getComponentAt(index:Int):Component {
+        if (_compositeBuilder != null) {
+            return _compositeBuilder.getComponentAt(index);
+        }
         if (_children == null) {
             return null;
         }

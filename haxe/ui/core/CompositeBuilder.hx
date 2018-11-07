@@ -14,6 +14,11 @@ class CompositeBuilder {
     public function destroy() {
     }
     
+    public var numComponents(get, never):Int;
+    private function get_numComponents():Int {
+        return 0;
+    }
+    
     public function addComponent(child:Component):Component {
         return null;
     }
@@ -26,7 +31,15 @@ class CompositeBuilder {
         return null;
     }
     
+    public function getComponentIndex(child:Component):Int {
+        return -1;
+    }
+    
     public function setComponentIndex(child:Component, index:Int):Component {
+        return null;
+    }
+    
+    public function getComponentAt(index:Int):Component {
         return null;
     }
     

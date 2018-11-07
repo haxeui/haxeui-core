@@ -250,6 +250,10 @@ private class Builder extends CompositeBuilder {
         return v;
     }
     
+    public override function get_numComponents():Int {
+        return _container.numComponents;
+    }
+    
     public override function addComponent(child:Component):Component {
         if (Std.is(child, _container) == false && child != _scrollLeft && child != _scrollRight) {
             return addTab(child);
@@ -276,6 +280,10 @@ private class Builder extends CompositeBuilder {
             return _container.setComponentIndex(child, index);
         }
         return null;
+    }
+    
+    public override function getComponentAt(index:Int):Component {
+        return _container.getComponentAt(index);
     }
     
     public override function validateComponentLayout():Bool {

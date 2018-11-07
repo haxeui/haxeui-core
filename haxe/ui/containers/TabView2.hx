@@ -235,6 +235,9 @@ private class Builder extends CompositeBuilder {
         }
     }
     
+    public override function get_numComponents():Int {
+        return _views.length;
+    }
     
     public override function addComponent(child:Component):Component {
         if (child != _content && child != _tabs) {
@@ -272,15 +275,36 @@ private class Builder extends CompositeBuilder {
     
     public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
         if (child != _content && child != _tabs) {
-            _views.remove(child);
-            /*
-            var button:Button = new Button();
-            button.text = text;
-            button.icon = icon;
-            _tabs.removeComponent(button, dispose, invalidate);
-            */
-            return child;
+            switch _views.indexOf(child) {
+                case -1:
+                case i:
+                    _views.splice(i, 1);
+                    _tabs.removeComponentAt(i, dispose, invalidate);
+                    return child;
+            }
         }
         return null;
+    }
+    
+    public override function getComponentIndex(child:Component):Int {
+        return _views.indexOf(child);
+    }
+    
+    public override function setComponentIndex(child:Component, index:Int):Component {
+        if (child != _content && child != _tabs) {
+            switch _views.indexOf(child) {
+                case -1:
+                case i:
+                    _views.splice(i, 1);
+                    _views.insert(index, child);
+                    _tabs.setComponentIndex(_tabs.getComponentAt(i), index);
+                    return child;
+            }
+        }
+        return null;
+    }
+    
+    public override function getComponentAt(index:Int):Component {
+        return _views[index];
     }
 }
