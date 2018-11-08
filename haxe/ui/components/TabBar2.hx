@@ -250,32 +250,58 @@ private class Builder extends CompositeBuilder {
         return v;
     }
     
+    // TODO: DRY with addTab
+    private function addTabAt(child:Component, index:Int):Component {
+        child.addClass("tabbar-button");
+        var v = _container.addComponentAt(child, index); 
+        _tabbar.registerInternalEvents(Events, true);
+        if (_tabbar.selectedIndex < 0) {
+            _tabbar.selectedIndex = 0;
+        }
+        return v;
+    }
+    
+    public override function get_numComponents():Int {
+        return _container.numComponents;
+    }
+    
     public override function addComponent(child:Component):Component {
-        if (Std.is(child, _container) == false && child != _scrollLeft && child != _scrollRight) {
+        if (child != _container && child != _scrollLeft && child != _scrollRight) {
             return addTab(child);
         }
         return null;
     }
     
     public override function addComponentAt(child:Component, index:Int):Component {
-        if (Std.is(child, _container) == false && child != _scrollLeft && child != _scrollRight) {
-            return addTab(child);
+        if (child != _container && child != _scrollLeft && child != _scrollRight) {
+            return addTabAt(child, index);
         }
         return null;
     }
     
     public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
-        if (Std.is(child, _container) == false) {
+        if (child != _container && child != _scrollLeft && child != _scrollRight) {
             return _container.removeComponent(child, dispose, invalidate);
         }
         return null;
     }
     
+    public override function getComponentIndex(child:Component):Int {
+        if (child != _container && child != _scrollLeft && child != _scrollRight) {
+            return _container.getComponentIndex(child);
+        }
+        return -1;
+    }
+    
     public override function setComponentIndex(child:Component, index:Int):Component {
-        if (Std.is(child, _container) == false) {
+        if (child != _container && child != _scrollLeft && child != _scrollRight) {
             return _container.setComponentIndex(child, index);
         }
         return null;
+    }
+    
+    public override function getComponentAt(index:Int):Component {
+        return _container.getComponentAt(index);
     }
     
     public override function validateComponentLayout():Bool {

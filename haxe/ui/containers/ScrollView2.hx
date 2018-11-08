@@ -619,6 +619,10 @@ class ScrollViewBuilder extends CompositeBuilder {
     public override function destroy() {
     }
     
+    public override function get_numComponents():Int {
+        return _contents.numComponents;
+    }
+    
     public override function addComponent(child:Component):Component {
         if (Std.is(child, HorizontalScroll2) == false && Std.is(child, VerticalScroll2) == false && child.hasClass("scrollview-contents") == false) {
             return _contents.addComponent(child);
@@ -640,11 +644,19 @@ class ScrollViewBuilder extends CompositeBuilder {
         return null;
     }
     
+    public override function getComponentIndex(child:Component):Int {
+        return _contents.getComponentIndex(child);
+    }
+    
     public override function setComponentIndex(child:Component, index:Int):Component {
         if (Std.is(child, HorizontalScroll2) == false && Std.is(child, VerticalScroll2) == false && child.hasClass("scrollview-contents") == false) {
             return _contents.setComponentIndex(child, index);
         }
         return null;
+    }
+    
+    public override function getComponentAt(index:Int):Component {
+        return _contents.getComponentAt(index);
     }
     
     private function createContentContainer(layoutName:String) {
