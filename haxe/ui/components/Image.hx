@@ -182,7 +182,7 @@ private class ResourceBehaviour extends DataBehaviour {
                     if (image.autoSize() == true && image.parentComponent != null) {
                         image.parentComponent.invalidateComponentLayout();
                     }
-                    image.validateComponent();
+                    image.invalidateComponent();
                     display.validateComponent();
                 }
             }
