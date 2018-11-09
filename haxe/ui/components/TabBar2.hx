@@ -240,61 +240,52 @@ private class Builder extends CompositeBuilder {
         }
     }
     
-    private function addTab(child:Component):Component {
+    private function addTab(child:Component, add:Component->Void):Void {
         child.addClass("tabbar-button");
-        var v = _container.addComponent(child); 
+        add(child); 
         _tabbar.registerInternalEvents(Events, true);
         if (_tabbar.selectedIndex < 0) {
             _tabbar.selectedIndex = 0;
         }
-        return v;
-    }
-    
-    // TODO: DRY with addTab
-    private function addTabAt(child:Component, index:Int):Component {
-        child.addClass("tabbar-button");
-        var v = _container.addComponentAt(child, index); 
-        _tabbar.registerInternalEvents(Events, true);
-        if (_tabbar.selectedIndex < 0) {
-            _tabbar.selectedIndex = 0;
-        }
-        return v;
     }
     
     public override function get_numComponents():Int {
         return _container.numComponents;
     }
     
+    inline function isInternal(c:Component) {
+        return c == _container || c == _scrollLeft || c == _scrollRight;
+    }
+    
     public override function addComponent(child:Component):Component {
-        if (child != _container && child != _scrollLeft && child != _scrollRight) {
-            return addTab(child);
+        if (!isInternal(child)) {
+            addTab(child, _container.addComponent);
+            return child;
         }
         return null;
     }
     
     public override function addComponentAt(child:Component, index:Int):Component {
-        if (child != _container && child != _scrollLeft && child != _scrollRight) {
-            return addTabAt(child, index);
+        if (!isInternal(child)) {
+            addTab(child, _container.addComponentAt.bind(_, index));
+            return child;
         }
         return null;
     }
     
     public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
-        if (child != _container && child != _scrollLeft && child != _scrollRight) {
+        if (!isInternal(child)) {
             return _container.removeComponent(child, dispose, invalidate);
         }
         return null;
     }
     
     public override function getComponentIndex(child:Component):Int {
-        if (child != _container && child != _scrollLeft && child != _scrollRight) {
-            return _container.getComponentIndex(child);
-        }
-        return -1;
+        return _container.getComponentIndex(child);
     }
     
     public override function setComponentIndex(child:Component, index:Int):Component {
-        if (child != _container && child != _scrollLeft && child != _scrollRight) {
+        if (!isInternal(child)) {
             return _container.setComponentIndex(child, index);
         }
         return null;
