@@ -623,22 +623,26 @@ class ScrollViewBuilder extends CompositeBuilder {
         return _contents.numComponents;
     }
     
+    inline function isInternal(c:Component) {
+        return Std.is(c, HorizontalScroll2) || Std.is(c, VerticalScroll2) || c.hasClass("scrollview-contents");
+    }
+    
     public override function addComponent(child:Component):Component {
-        if (Std.is(child, HorizontalScroll2) == false && Std.is(child, VerticalScroll2) == false && child.hasClass("scrollview-contents") == false) {
+        if (!isInternal(child)) {
             return _contents.addComponent(child);
         }
         return null;
     }
     
     public override function addComponentAt(child:Component, index:Int):Component {
-        if (Std.is(child, HorizontalScroll2) == false && Std.is(child, VerticalScroll2) == false && child.hasClass("scrollview-contents") == false) {
+        if (!isInternal(child)) {
             return _contents.addComponentAt(child, index);
         }
         return null;
     }
     
     public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
-        if (Std.is(child, HorizontalScroll2) == false && Std.is(child, VerticalScroll2) == false && child.hasClass("scrollview-contents") == false) {
+        if (!isInternal(child)) {
             return _contents.removeComponent(child, dispose, invalidate);
         }
         return null;
@@ -649,7 +653,7 @@ class ScrollViewBuilder extends CompositeBuilder {
     }
     
     public override function setComponentIndex(child:Component, index:Int):Component {
-        if (Std.is(child, HorizontalScroll2) == false && Std.is(child, VerticalScroll2) == false && child.hasClass("scrollview-contents") == false) {
+        if (!isInternal(child)) {
             return _contents.setComponentIndex(child, index);
         }
         return null;

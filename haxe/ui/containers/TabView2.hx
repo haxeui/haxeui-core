@@ -235,46 +235,45 @@ private class Builder extends CompositeBuilder {
         }
     }
     
+    private function addTab(child:Component, add:Component->Void):Void {
+        var text:String = child.text;
+        var icon:String = null;
+        if (Std.is(child, Box)) {
+            icon = cast(child, Box).icon;
+        }
+        _views.push(child);
+        var button:Button = new Button();
+        button.text = text;
+        button.icon = icon;
+        add(button);
+    }
+    
     public override function get_numComponents():Int {
         return _views.length;
     }
     
+    inline function isInternal(c:Component) {
+        return c == _content || c == _tabs;
+    }
+    
     public override function addComponent(child:Component):Component {
-        if (child != _content && child != _tabs) {
-            var text:String = child.text;
-            var icon:String = null;
-            if (Std.is(child, Box)) {
-                icon = cast(child, Box).icon;
-            }
-            _views.push(child);
-            var button:Button = new Button();
-            button.text = text;
-            button.icon = icon;
-            _tabs.addComponent(button);
+        if (!isInternal(child)) {
+            addTab(child, _tabs.addComponent);
             return child;
         }
         return null;
     }
     
     public override function addComponentAt(child:Component, index:Int):Component {
-        if (child != _content && child != _tabs) {
-            var text:String = child.text;
-            var icon:String = null;
-            if (Std.is(child, Box)) {
-                icon = cast(child, Box).icon;
-            }
-            _views.insert(index, child);
-            var button:Button = new Button();
-            button.text = text;
-            button.icon = icon;
-            _tabs.addComponentAt(button, index);
+        if (!isInternal(child)) {
+            addTab(child, _tabs.addComponentAt.bind(_, index));
             return child;
         }
         return null;
     }
     
     public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
-        if (child != _content && child != _tabs) {
+        if (!isInternal(child)) {
             switch _views.indexOf(child) {
                 case -1:
                 case i:
@@ -291,7 +290,7 @@ private class Builder extends CompositeBuilder {
     }
     
     public override function setComponentIndex(child:Component, index:Int):Component {
-        if (child != _content && child != _tabs) {
+        if (!isInternal(child)) {
             switch _views.indexOf(child) {
                 case -1:
                 case i:
