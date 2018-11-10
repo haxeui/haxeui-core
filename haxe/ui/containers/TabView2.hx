@@ -17,7 +17,7 @@ class TabView2 extends Component {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:behaviour(PageIndex)      public var pageIndex:Int;
+    @:behaviour(PageIndex, -1)  public var pageIndex:Int;
     @:behaviour(TabPosition)    public var tabPosition:String;
     @:behaviour(PageCount)      public var pageCount:Int;
     @:call(RemovePage)          public function removePage(index:Int):Void;
@@ -98,7 +98,6 @@ private class PageIndex extends DataBehaviour {
         var builder:Builder = cast(_component._compositeBuilder, Builder);
         
         if (_value < 0) {
-            _value = 0;
             return;
         }
         if (_value > builder._views.length - 1) {
@@ -251,6 +250,7 @@ private class Builder extends CompositeBuilder {
             button.text = text;
             button.icon = icon;
             _tabs.addComponent(button);
+            
             return child;
         }
         return null;

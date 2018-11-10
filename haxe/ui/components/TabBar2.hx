@@ -61,7 +61,6 @@ private class SelectedIndex extends DataBehaviour {
             return;
         }
         if (_value < 0) {
-            _value = 0;
             return;
         }
         if (_value > builder._container.childComponents.length - 1) {
