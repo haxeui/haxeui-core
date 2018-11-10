@@ -17,7 +17,7 @@ class TabBar2 extends Component {
     //***********************************************************************************************************
     @:behaviour(SelectedIndex, -1)      public var selectedIndex:Int;
     @:behaviour(SelectedTab)            public var selectedTab:Component;
-    @:behaviour(TabPosition)            public var tabPosition:String;
+    @:behaviour(TabPosition, "top")     public var tabPosition:String;
     @:behaviour(TabCount)               public var tabCount:Int;
     @:call(RemoveTab)                   public function removeTab(index:Int):Void;
 }
@@ -237,11 +237,15 @@ private class Builder extends CompositeBuilder {
             _container.id = "tabbar-contents";
             _container.addClass("tabbar-contents");
             _tabbar.addComponent(_container);
+            _tabbar.addClass(":bottom");
         }
     }
     
     private function addTab(child:Component):Component {
         child.addClass("tabbar-button");
+        if (_tabbar.tabPosition == "bottom") {
+            child.addClass(":bottom");
+        }
         var v = _container.addComponent(child); 
         _tabbar.registerInternalEvents(Events, true);
         if (_tabbar.selectedIndex < 0) {
