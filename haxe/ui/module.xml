@@ -22,7 +22,9 @@
         <import class="haxe.ui.core.Component" keep="true" />
         <import package="haxe.ui.components" keep="true" /> <!-- TODO: remove this eventually -->
         <import package="haxe.ui.containers" />
+        <!--
         <import package="haxe.ui.containers.dialogs" />
+            -->
         <import class="Std" keep="true" static="true" />
         <!--
         TODO: Under neko & haxe 3.3 importing 'Math' like this causes this error: Class<Math> has no field MathImpl
@@ -34,9 +36,11 @@
         <import class="haxe.ui.core.Screen" keep="true" static="true" />
         <import class="haxe.ui.core.UIEvent" keep="true" static="true" />
         <import class="haxe.ui.core.MouseEvent" keep="true" static="true" />
+        <!--
         <import class="haxe.ui.containers.dialogs.Dialog" keep="true" static="true" />
         <import class="haxe.ui.containers.dialogs.DialogOptions" keep="true" static="true" />
         <import class="haxe.ui.containers.dialogs.DialogButton" keep="true" static="true" />
+            -->
     </scriptlets>
 
     <themes>

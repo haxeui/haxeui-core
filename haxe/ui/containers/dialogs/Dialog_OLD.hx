@@ -10,7 +10,7 @@ import haxe.ui.layouts.VerticalLayout;
  Class returned from `Screen.instance.showDialog` or `Screen.instance.messageDialog`
 **/
 @:dox(icon = "/icons/application-sub.png")
-class Dialog extends Component {
+class Dialog_OLD extends Component {
     private var _titleBar:Box;
     private var _buttons:HBox;
 
@@ -94,7 +94,7 @@ class Dialog extends Component {
      Closes this dialog and removes it from the `Screen`
     **/
     public function close(buttonId:String = null) {
-        screen.hideDialog(this);
+        //screen.hideDialog(this);
         
         var dialogButton = null;
         
