@@ -1,4 +1,5 @@
 package haxe.ui.macros;
+import haxe.ui.util.StringUtil;
 
 
 #if macro
@@ -38,6 +39,13 @@ class Macros {
                 }
             }
             
+            var ctor = MacroHelpers.getConstructor(fields);
+            if (MacroHelpers.hasSuperClass(Context.getLocalType(), "haxe.ui.core.Component") == false) {
+                Context.error("Must have a superclass of haxe.ui.core.Component", Context.currentPos());
+            }
+
+            if (ctor == null) Context.error("A class building component must have a constructor", Context.currentPos());
+            
             var xml = ExprTools.toString(m.params[0]);
             xml = StringTools.trim(xml.substring(1, xml.length - 1));
             xml = StringTools.replace(xml, "\\n", "");
@@ -45,7 +53,10 @@ class Macros {
             xml = StringTools.replace(xml, "\\\"", "\"");
             xml = StringTools.replace(xml, "\\'", "'");
 
-            var expr = ComponentMacros.buildComponentFromString([], xml, null, null);
+            ModuleMacros.populateClassMap();
+            
+            var namedComponents:Map<String, String> = new Map<String, String>();
+            var expr = ComponentMacros.buildComponentFromString([], xml, namedComponents, null);
             switch (expr.expr) {
                 case EBlock(el): el.push(Context.parseInlineString("addComponent(c0)", pos));
                 case _: 
@@ -63,6 +74,22 @@ class Macros {
                 
                 var access:Array<Access> = [APrivate, AOverride];
                 MacroHelpers.addFunction("createChildren", Context.parseInlineString(code, pos), access, fields, pos);
+            }
+            
+            var n = 1;
+            for (id in namedComponents.keys()) {
+                var safeId:String = StringUtil.capitalizeHyphens(id);
+                var cls:String = namedComponents.get(id);
+                var classArray:Array<String> = cls.split(".");
+                var className = classArray.pop();
+                var ttype = TPath( { pack : classArray, name : className, params : [], sub : null } );
+                fields.push( { name : safeId, doc : null, meta : [], access : [APublic], kind : FVar(ttype, null), pos : pos } );
+
+                var e:Expr = Context.parseInlineString('this.${safeId} = findComponent("${id}", ${cls}, true)', Context.currentPos());
+                ctor.expr = switch(ctor.expr.expr) {
+                    case EBlock(el): macro $b{MacroHelpers.insertExpr(el, n, e)};
+                    case _: macro $b { MacroHelpers.insertExpr([ctor.expr], n, e) }
+                }
             }
         }
         
