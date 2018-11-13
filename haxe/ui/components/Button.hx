@@ -132,7 +132,7 @@ private class ButtonLayout extends DefaultLayout {
                 if (icon != null && (iconPosition == "far-right" || iconPosition == "left" || iconPosition == "right")) {
                     cx -= icon.width + verticalSpacing;
                 }
-                label.width = cx;
+                //label.width = cx;
             }
         }
     }
