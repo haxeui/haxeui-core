@@ -1,5 +1,6 @@
 package haxe.ui.core;
 
+import haxe.ui.containers.dialogs.Dialog2;
 import haxe.ui.styles.animation.Animation;
 import haxe.ui.styles.elements.AnimationKeyFrames;
 import haxe.ui.styles.Parser;
@@ -2640,6 +2641,9 @@ class Component extends ComponentBase implements IComponentBase implements IVali
 
     public var className(get, null):String;
     private function get_className():String {
+        if (Std.is(this, Dialog2)) {
+            return Type.getClassName(Dialog2);
+        }
         return Type.getClassName(Type.getClass(this));
     }
 
