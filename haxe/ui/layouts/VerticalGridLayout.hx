@@ -50,6 +50,7 @@ class VerticalGridLayout extends Layout {
         if (size.height < 0) {
             size.height = 0;
         }
+
         return size;
     }
 
@@ -59,8 +60,6 @@ class VerticalGridLayout extends Layout {
         var rowHeights:Array<Float> = calcRowHeights(size, true);
         var explicitWidths:Array<Bool> = calcExplicitWidths();
         var explicitHeights:Array<Bool> = calcExplicitHeights();
-        var totalWidth:Float = 0;
-        var totalHeight:Float = 0;
 
         var rowIndex:Int = 0;
         var columnIndex:Int = 0;
@@ -180,10 +179,7 @@ class VerticalGridLayout extends Layout {
             }
         }
 
-        if(includePercentage)
-        {
-            var copy = columnWidths.copy();
-
+        if (includePercentage) {
             rowIndex = 0;
             columnIndex = 0;
             for (child in component.childComponents) {
@@ -236,8 +232,8 @@ class VerticalGridLayout extends Layout {
             }
 
             if (child.percentHeight == null) {
-                if (child.componentHeight > rowHeights[rowIndex]) {
-                    rowHeights[rowIndex] = child.componentHeight;
+                if (child.height > rowHeights[rowIndex]) {
+                    rowHeights[rowIndex] = child.height;
                 }
             }
             columnIndex++;
@@ -247,10 +243,7 @@ class VerticalGridLayout extends Layout {
             }
         }
 
-        if(includePercentage)
-        {
-            var copy = rowHeights.copy();
-
+        if (includePercentage) {
             rowIndex = 0;
             columnIndex = 0;
             for (child in component.childComponents) {
