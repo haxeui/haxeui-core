@@ -333,9 +333,9 @@ class Screen extends ScreenBase {
                 mapEvent(type, _onMappedEvent);
             }
         } else {
-            //#if debug
+            #if debug
             trace('WARNING: Screen event "${type}" not supported');
-            //#end
+            #end
         }
     }
 

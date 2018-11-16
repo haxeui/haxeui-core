@@ -1,14 +1,12 @@
 package haxe.ui.backend;
 
+import haxe.ui.components.Button;
 import haxe.ui.containers.Box;
 import haxe.ui.containers.dialogs.Dialog2;
 import haxe.ui.core.Component;
+import haxe.ui.core.MouseEvent;
 import haxe.ui.core.Screen;
 import haxe.ui.core.UIEvent;
-
-class DialogEvent extends UIEvent {
-    public static inline var DIALOG_CLOSED:String = "dialogClosed";
-}
 
 @:xml('
 <vbox id="dialog-container" styleNames="dialog-container">
@@ -26,7 +24,10 @@ class DialogEvent extends UIEvent {
 ')
 class DialogBase extends Box {
     public var modal:Bool = true;
+    public var buttons:DialogButton2 = null;
     public var draggable:Bool = false;
+    public var centerDialog:Bool = true;
+    public var button:DialogButton2 = null;
     
     private var _overlay:Component;
     
@@ -34,8 +35,13 @@ class DialogBase extends Box {
         super();
         dialogFooterContainer.hide();
         dialogCloseButton.onClick = function(e) {
-            hide();
+            hideDialog(DialogButton2.CANCEL);
         }
+    }
+    
+    public function showDialog(modal:Bool = true) {
+        this.modal = modal;
+        show();
     }
     
     public override function show() {
@@ -46,8 +52,19 @@ class DialogBase extends Box {
             _overlay.percentWidth = _overlay.percentHeight = 100;
             Screen.instance.addComponent(_overlay);
         }
+        if (buttons != null) {
+            for (button in buttons.toArray()) {
+                var buttonComponent = new Button();
+                buttonComponent.text = button.toString();
+                buttonComponent.userData = button;
+                buttonComponent.registerEvent(MouseEvent.CLICK, onFooterButtonClick);
+                addFooterComponent(buttonComponent);
+            }
+        }
         Screen.instance.addComponent(this);
-        centerDialog(cast this);
+        if (centerDialog) {
+            centerDialogComponent(cast(this, Dialog2));
+        }
     }
 
     public override function hide() {
@@ -57,9 +74,15 @@ class DialogBase extends Box {
         Screen.instance.removeComponent(this);
         
         var event = new DialogEvent(DialogEvent.DIALOG_CLOSED);
+        event.button = this.button;
         dispatch(event);
     }
 
+    public function hideDialog(button:DialogButton2) {
+        this.button = button;
+        hide();
+    }
+    
     public var title(get, set):String;
     private function get_title():String {
         return dialogTitleLabel.text;
@@ -90,10 +113,14 @@ class DialogBase extends Box {
         dialogFooter.addComponent(c);
     }
     
-    public function centerDialog(dialog:Dialog2) {
+    public function centerDialogComponent(dialog:Dialog2) {
         dialog.syncComponentValidation();
         var x = (Screen.instance.width / 2) - (dialog.componentWidth / 2);
         var y = (Screen.instance.height / 2) - (dialog.componentHeight / 2);
         dialog.moveComponent(x, y);
+    }
+    
+    private function onFooterButtonClick(event:MouseEvent) {
+        hideDialog(event.target.userData);
     }
 }
