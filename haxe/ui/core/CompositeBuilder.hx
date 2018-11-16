@@ -48,6 +48,11 @@ class CompositeBuilder {
     }
     
     public function applyStyle(style:Style) {
-        
+    }
+    
+    public function onComponentAdded(child:Component) {
+    }
+    
+    public function onComponentRemoved(child:Component) {
     }
 }

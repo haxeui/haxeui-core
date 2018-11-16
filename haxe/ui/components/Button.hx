@@ -420,6 +420,9 @@ class ButtonEvents extends haxe.ui.core.Events {
         if (_button.selected == false) {
             _button.removeClass(":down");
         }
+        if (_button.hitTest(event.screenX, event.screenY)) {
+            _button.addClass(":hover");
+        }
     }
 }
 

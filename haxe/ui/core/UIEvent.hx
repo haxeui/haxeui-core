@@ -13,6 +13,9 @@ class UIEvent extends EventBase {
     public static inline var RENDERER_CREATED:String = "rendererCreated";
     public static inline var RENDERER_DESTROYED:String = "rendererDestroyed";
 
+    public static inline var HIDDEN:String = "hidden";
+    public static inline var SHOWN:String = "shown";
+    
     public var bubble(default, default):Bool; 
     public var type(default, default):String;
     public var target(default, default):Component;

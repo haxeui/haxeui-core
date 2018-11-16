@@ -633,6 +633,11 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         if (_disabled == true) {
             child.disabled = true;
         }
+        
+        if (_compositeBuilder != null) {
+            _compositeBuilder.onComponentAdded(child);
+        }
+        onComponentAdded(child);
         return child;
     }
 
@@ -691,9 +696,17 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         if (_disabled == true) {
             child.disabled = true;
         }
+        
+        if (_compositeBuilder != null) {
+            _compositeBuilder.onComponentAdded(child);
+        }
+        onComponentAdded(child);
         return child;
     }
 
+    private function onComponentAdded(child:Component) {
+    }
+    
     /**
      Removes the specified child component from this component instance
     **/
@@ -726,6 +739,11 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             }
         }
 
+        if (_compositeBuilder != null) {
+            _compositeBuilder.onComponentRemoved(child);
+        }
+        onComponentRemoved(child);
+        
         return child;
     }
 
@@ -759,9 +777,17 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             }
         }
 
+        if (_compositeBuilder != null) {
+            _compositeBuilder.onComponentRemoved(child);
+        }
+        onComponentRemoved(child);
+        
         return child;
     }
 
+    private function onComponentRemoved(child:Component) {
+    }
+    
     private function unregisterEvents() {
         if (__events != null) {
             var copy:Array<String> = [];
@@ -979,6 +1005,8 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             if (parentComponent != null) {
                 parentComponent.invalidateComponentLayout();
             }
+            
+            dispatch(new UIEvent(UIEvent.HIDDEN));
         }
     }
 
@@ -993,6 +1021,8 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             if (parentComponent != null) {
                 parentComponent.invalidateComponentLayout();
             }
+            
+            dispatch(new UIEvent(UIEvent.SHOWN));
         }
     }
 
