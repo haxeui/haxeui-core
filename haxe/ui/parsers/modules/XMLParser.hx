@@ -11,6 +11,7 @@ class XMLParser extends ModuleParser {
 
         var xml:Xml = Xml.parse(data).firstElement();
         module.id = xml.get("id");
+        module.preloadList = xml.get("preload");
 
         for (el in xml.elements()) {
             var nodeName:String = el.nodeName;

@@ -2,6 +2,7 @@ package haxe.ui.parsers.modules;
 
 class Module {
     public var id(default, default):String;
+    public var preloadList(default, default):String;
     public var resourceEntries(default, default):Array<ModuleResourceEntry>;
     public var componentEntries(default, default):Array<ModuleComponentEntry>;
     public var layoutEntries(default, default):Array<ModuleLayoutEntry>;

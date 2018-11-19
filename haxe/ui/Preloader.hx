@@ -39,7 +39,7 @@ class Preloader extends Component {
         
         if (current > 0) {
             var label = findComponent(Label);
-            var text = label.text + ".";
+            var text = label.text;// + ".";
             if (StringTools.endsWith(text, "....")) {
                 text = "Loading";
             }

@@ -16,6 +16,7 @@ class ModuleMacros {
     private static var _modules:Array<Module> = [];
 
     private static var _modulesProcessed:Bool;
+    private static var _resourceIds:Array<String> = [];
     macro public static function processModules():Expr {
         if (_modulesProcessed == true) {
             return macro null;
@@ -24,7 +25,14 @@ class ModuleMacros {
         var code:String = "(function() {\n";
 
         loadModules();
+        
+        var preloadAll:Bool = false;
+        
         for (m in _modules) {
+            if (m.preloadList == "all") {
+                preloadAll = true;
+            }
+            
             // add resources as haxe resources (plus prefix)
             for (r in m.resourceEntries) {
                 if (r.path != null) {
@@ -115,6 +123,14 @@ class ModuleMacros {
 
             for (p in m.preload) {
                 code += 'ToolkitAssets.instance.preloadList.push({type: "${p.type}", resourceId: "${p.id}"});\n';
+            }
+        }
+        
+        if (preloadAll) {
+            for (r in _resourceIds) {
+                if (StringTools.endsWith(r, ".png")) {
+                    code += 'ToolkitAssets.instance.preloadList.push({type: "image", resourceId: "${r}"});\n';
+                }
             }
         }
 
@@ -266,6 +282,7 @@ class ModuleMacros {
                 if (StringTools.startsWith(resourceName, "/")) {
                     resourceName = resourceName.substr(1, resourceName.length);
                 }
+                _resourceIds.push(resourceName);
                 Context.addResource(resourceName, File.getBytes(file));
             }
         }
