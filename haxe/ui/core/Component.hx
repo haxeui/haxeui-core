@@ -1265,6 +1265,9 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         if (_disabledInteractivityCounter == 1) {
             if (__events != null) {
                 for (eventType in __events.keys()) {
+                    if (!isInteractiveEvent(eventType)) {
+                        continue;
+                    }
                     var listeners:FunctionArray<UIEvent->Void> = __events.listeners(eventType);
                     if (listeners != null) {
                         for (listener in listeners.copy()) {
@@ -2673,13 +2676,13 @@ class ComponentDisabledBehaviour extends DataBehaviour {
     }
     
     public override function invalidateData() {
-        _component.disableInteractivity(_value);
         if (_value) {
-            _component.addClass(":disabled");
+            _component.addClass(":disabled", true, true);
             _component.dispatch(new UIEvent(UIEvent.DISABLED));
         } else {
-            _component.removeClass(":disabled");
+            _component.removeClass(":disabled", true, true);
             _component.dispatch(new UIEvent(UIEvent.ENABLED));
         }
+        _component.disableInteractivity(_value);
     }
 }
