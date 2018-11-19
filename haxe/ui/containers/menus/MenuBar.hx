@@ -2,6 +2,8 @@ package haxe.ui.containers.menus;
 
 import haxe.ui.components.Button;
 import haxe.ui.containers.HBox;
+import haxe.ui.containers.menus.Menu.MenuEvent;
+import haxe.ui.containers.menus.Menu.MenuEvents;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.MouseEvent;
@@ -100,10 +102,14 @@ private class Events extends haxe.ui.core.Events {
         _currentButton = target;
         _currentMenu = menu;
         Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
+        if (!_currentMenu.hasEvent(MenuEvent.MENU_SELECTED, onMenuSelected)) {
+            _currentMenu.registerEvent(MenuEvent.MENU_SELECTED, onMenuSelected);
+        }
     }
     
     private function hideCurrentMenu() {
         if (_currentMenu != null) {
+            _currentMenu.unregisterEvent(MenuEvent.MENU_SELECTED, onMenuSelected);
             _currentMenu.hide();
             _currentButton.selected = false;
             Screen.instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
@@ -120,11 +126,33 @@ private class Events extends haxe.ui.core.Events {
             close = false;
         } else if (_currentButton.hitTest(event.screenX, event.screenY)) {
             close = false;
+        } else {
+            var ref = _currentMenu;
+            var refEvents:MenuEvents = cast(ref._internalEvents, MenuEvents);
+            var refSubMenu = refEvents.currentSubMenu;
+            while (refSubMenu != null) {
+                if (refSubMenu.hitTest(event.screenX, event.screenY)) {
+                    close = false;
+                    break;
+                }
+                
+                ref = refSubMenu;
+                refEvents = cast(ref._internalEvents, MenuEvents);
+                refSubMenu = refEvents.currentSubMenu;
+            }
         }
         
         if (close) {
             hideCurrentMenu();
         }
+    }
+    
+    private function onMenuSelected(event:MenuEvent) {
+        var newEvent = new MenuEvent(MenuEvent.MENU_SELECTED);
+        newEvent.menu = event.menu;
+        newEvent.menuItem = event.menuItem;
+        _menubar.dispatch(newEvent);
+        hideCurrentMenu();
     }
 }
 

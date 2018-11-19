@@ -7,7 +7,27 @@ import haxe.ui.core.MouseEvent;
 import haxe.ui.core.Screen;
 import haxe.ui.core.UIEvent;
 
-@:composite(Events, Builder)
+class MenuEvent extends UIEvent {
+    public static inline var MENU_SELECTED:String = "menuSelected";
+    
+    public var menu:Menu = null;
+    public var menuItem:MenuItem = null;
+    
+    public override function clone():MenuEvent {
+        var c:MenuEvent = new MenuEvent(this.type);
+        c.menu = this.menu;
+        c.menuItem = this.menuItem;
+        c.type = this.type;
+        c.bubble = this.bubble; 
+        c.target = this.target;
+        c.data = this.data;
+        c.canceled = this.canceled;
+        postClone(c);
+        return c;
+    }
+}
+
+@:composite(MenuEvents, Builder)
 class Menu extends VBox {
 }
 
@@ -21,9 +41,10 @@ class Menu extends VBox {
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 @:access(haxe.ui.containers.menus.Builder)
-private class Events extends haxe.ui.core.Events {
+class MenuEvents extends haxe.ui.core.Events {
     private var _menu:Menu;
     public var currentSubMenu:Menu = null;
+    public var parentMenu:Menu = null;
     
     public function new(menu:Menu) {
         super(menu);
@@ -80,8 +101,14 @@ private class Events extends haxe.ui.core.Events {
     }
     
     private function onItemClick(event:MouseEvent) {
-        var builder:Builder = cast(_menu._compositeBuilder, Builder);
-        var subMenus:Map<MenuItem, Menu> = builder._subMenus;
+        var item:MenuItem = cast(event.target, MenuItem);
+        if (!item.expandable) {
+            var event = new MenuEvent(MenuEvent.MENU_SELECTED);
+            event.menu = _menu;
+            event.menuItem = item;
+            findRootMenu().dispatch(event);
+            findRootMenu().hide();
+        }
     }
     
     private function onItemMouseOver(event:MouseEvent) {
@@ -127,7 +154,7 @@ private class Events extends haxe.ui.core.Events {
             child.removeClass(":hover");
         }
         
-        var subMenuEvents:Events = cast(currentSubMenu._internalEvents, Events);
+        var subMenuEvents:MenuEvents = cast(currentSubMenu._internalEvents, MenuEvents);
         subMenuEvents.hideCurrentSubMenu();
         Screen.instance.removeComponent(currentSubMenu);
         currentSubMenu = null;
@@ -138,6 +165,22 @@ private class Events extends haxe.ui.core.Events {
             child.removeClass(":hover");
         }
         hideCurrentSubMenu();
+    }
+    
+    public function findRootMenu():Menu {
+        var root:Menu = null;
+        var ref = _menu;
+        while (ref != null) {
+            var events:MenuEvents = cast(ref._internalEvents, MenuEvents);
+            if (events.parentMenu == null) {
+                root = events._menu;
+                break;
+            }
+            
+            ref = events.parentMenu;
+        }
+        
+        return root;
     }
 }
 
@@ -161,7 +204,9 @@ private class Builder extends CompositeBuilder {
             item.text = child.text;
             item.expandable = true;
             _menu.addComponent(item);
-            _subMenus.set(item, cast(child, Menu));
+            var menu = cast(child, Menu);
+            cast(menu._internalEvents, MenuEvents).parentMenu = _menu;
+            _subMenus.set(item, menu);
             return child;
         }
         
