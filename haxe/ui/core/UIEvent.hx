@@ -16,6 +16,9 @@ class UIEvent extends EventBase {
     public static inline var HIDDEN:String = "hidden";
     public static inline var SHOWN:String = "shown";
     
+    public static inline var ENABLED:String = "enabled";
+    public static inline var DISABLED:String = "disabled";
+    
     public var bubble(default, default):Bool; 
     public var type(default, default):String;
     public var target(default, default):Component;

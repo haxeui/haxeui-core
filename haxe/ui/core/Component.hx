@@ -2673,11 +2673,13 @@ class ComponentDisabledBehaviour extends DataBehaviour {
     }
     
     public override function invalidateData() {
-        if (_value == true) {
+        _component.disableInteractivity(_value);
+        if (_value) {
             _component.addClass(":disabled");
+            _component.dispatch(new UIEvent(UIEvent.DISABLED));
         } else {
             _component.removeClass(":disabled");
+            _component.dispatch(new UIEvent(UIEvent.ENABLED));
         }
-        _component.disableInteractivity(_value);
     }
 }
