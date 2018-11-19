@@ -160,6 +160,7 @@
 }
 
 .textfield:disabled {
+    color: #909090;
     background: #D4D4D4 #CCCCCC vertical;
 }
 

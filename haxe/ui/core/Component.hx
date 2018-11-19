@@ -4,11 +4,7 @@ import haxe.ui.containers.dialogs.Dialog2;
 import haxe.ui.styles.animation.Animation;
 import haxe.ui.styles.elements.AnimationKeyFrames;
 import haxe.ui.styles.Parser;
-import haxe.ui.styles.EasingFunction;
-import haxe.ui.validation.IValidating;
 import haxe.ui.backend.ComponentBase;
-import haxe.ui.constants.AnimationDirection;
-import haxe.ui.constants.AnimationFillMode;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.DelegateLayout;
 import haxe.ui.layouts.Layout;
@@ -137,9 +133,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     }
     
     private function createDefaults() {
-        defaultBehaviours([
-            "disabled" =>  new ComponentDefaultDisabledBehaviour(this)
-        ]);
     }
 
     private var _internalEvents:Events = null;
@@ -630,7 +623,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
 
         invalidateComponentLayout();
-        if (_disabled == true) {
+        if (disabled) {
             child.disabled = true;
         }
         
@@ -693,7 +686,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
 
         invalidateComponentLayout();
-        if (_disabled == true) {
+        if (disabled) {
             child.disabled = true;
         }
         
@@ -1053,16 +1046,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         return value;
     }
 
-    private var _disabled:Bool = false;
-    public var disabled(get, set):Bool;
-    private function get_disabled():Bool {
-        return behaviourGet("disabled");
-    }
-    private function set_disabled(value:Bool):Bool {
-        behaviourSet("disabled", value);
-        _disabled = value;
-        return value;
-    }
+    @:clonable @:behaviour(DisabledBehaviour, false)        public var disabled:Bool;
     
     //***********************************************************************************************************
     // Style related
@@ -1194,12 +1178,10 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     **/
     @:dox(group = "Event related properties and methods")
     public function registerEvent(type:String, listener:Dynamic->Void, priority:Int = 0) {
-        if (_disabled == true && isInteractiveEvent(type) == true) {
-            trace("its disabled");
+        if (disabled == true && isInteractiveEvent(type) == true) {
             if (_disabledEvents == null) {
                 _disabledEvents = new EventMap();
             }
-            trace("adding to disabled: " + type);
             _disabledEvents.add(type, listener, priority);
             return;
         }
@@ -1228,7 +1210,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     **/
     @:dox(group = "Event related properties and methods")
     public function unregisterEvent(type:String, listener:Dynamic->Void) {
-        if (_disabledEvents != null && _disabled == false) {
+        if (_disabledEvents != null && !disabled) {
             _disabledEvents.remove(type, listener);
         }
         
@@ -1268,22 +1250,19 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         return INTERACTIVE_EVENTS.indexOf(type) != -1;
     }
     
-    private function disableInteractivity(disable:Bool, styleName:String = null) {
-        if (disable == _disabled) {
+    private var _disabledInteractivityCounter:Int = 0;
+    private function disableInteractivity(disable:Bool) { // You might want to disable interactivity but NOT actually disable visually
+        if (disable) {
+            _disabledInteractivityCounter++;
+        } else {
+            _disabledInteractivityCounter--;
+        }
+        
+        if (_disabledInteractivityCounter < 0 || _disabledInteractivityCounter > 1) {
             return;
         }
         
-        _disabled = disable;
-        
-        if (styleName != null) {
-            if (disable == true) {
-                addClass(styleName);
-            } else {
-                removeClass(styleName);
-            }
-        }
-        
-        if (disable == true) {
+        if (_disabledInteractivityCounter == 1) {
             if (__events != null) {
                 for (eventType in __events.keys()) {
                     var listeners:FunctionArray<UIEvent->Void> = __events.listeners(eventType);
@@ -1313,7 +1292,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
         
         for (child in childComponents) {
-            child.disableInteractivity(disable, styleName);
+            child.disableInteractivity(disable);
         }
     }
     
@@ -2686,18 +2665,19 @@ class Component extends ComponentBase implements IComponentBase implements IVali
 //***********************************************************************************************************
 // Default behaviours
 //***********************************************************************************************************
-@:dox(hide)
+@:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
-class ComponentDefaultDisabledBehaviour extends Behaviour {
-    public override function set(value:Variant) {
-        if (value.isNull) {
-            return;
-        }
-
-        _component.disableInteractivity(value, ":disabled");
-    }
-
+private class DisabledBehaviour extends DataBehaviour {
     public override function get():Variant {
-        return _component._disabled;
+        return _component.hasClass(":disabled");
+    }
+    
+    public override function invalidateData() {
+        if (_value == true) {
+            _component.addClass(":disabled");
+        } else {
+            _component.removeClass(":disabled");
+        }
+        _component.disableInteractivity(_value);
     }
 }
