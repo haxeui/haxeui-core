@@ -193,6 +193,7 @@ class CalendarDropDownHandler extends DropDownHandler {
             _calendar.height = _dropdown.dropdownHeight;
         }
         
+        _calendar.syncComponentValidation();
         Screen.instance.addComponent(_calendar);
     }
     
