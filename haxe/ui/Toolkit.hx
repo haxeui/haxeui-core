@@ -260,7 +260,7 @@ class Toolkit {
         if (_scaleX == value) {
             return value;
         }
-        _scaleX = Math.fround(value);
+        _scaleX = value;
         autoScale = false;
         return value;
     }
@@ -286,7 +286,7 @@ class Toolkit {
         if (_scaleY == value) {
             return value;
         }
-        _scaleY = Math.fround(value);
+        _scaleY = value;
         autoScale = false;
         return value;
     }
