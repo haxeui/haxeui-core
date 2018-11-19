@@ -1046,7 +1046,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         return value;
     }
 
-    @:clonable @:behaviour(DisabledBehaviour, false)        public var disabled:Bool;
+    @:clonable @:behaviour(ComponentDisabledBehaviour, false)       public var disabled:Bool;
     
     //***********************************************************************************************************
     // Style related
@@ -2667,7 +2667,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
-private class DisabledBehaviour extends DataBehaviour {
+class ComponentDisabledBehaviour extends DataBehaviour {
     public override function get():Variant {
         return _component.hasClass(":disabled");
     }
