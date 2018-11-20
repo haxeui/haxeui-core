@@ -1736,6 +1736,7 @@ SOME ALTERNATE SWITCH STYLES - defaulting to alt2 for now, not sure if its the "
     border-radius: 0;
     border: none;
     background-color: #E6E6E6;
+    opacity: 1;
 }
 
 .stepper-button:hover {
@@ -1744,6 +1745,11 @@ SOME ALTERNATE SWITCH STYLES - defaulting to alt2 for now, not sure if its the "
 
 .stepper-button:down {
     background-color: #C2C2C2;
+}
+
+.stepper-button:disabled {
+    opacity: 0.5;
+    background-color: #CCCCCC;
 }
 
 .stepper-inc {
@@ -1764,6 +1770,7 @@ SOME ALTERNATE SWITCH STYLES - defaulting to alt2 for now, not sure if its the "
 
 .numberstepper {
     padding: 1px;
+    spacing: 0;
 }
 
 .stepper-textfield, .stepper-textfield:active {
