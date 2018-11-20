@@ -11,9 +11,11 @@ import haxe.ui.util.Variant;
 
 @:composite(Events, Builder)
 class Stepper extends VBox {
-    @:clonable @:behaviour(PosBehaviour, 0)         public var pos:Float;
+    @:clonable @:behaviour(PosBehaviour)            public var pos:Float;
     @:clonable @:behaviour(ValueBehaviour)          public var value:Variant;
     @:clonable @:behaviour(DefaultBehaviour, 1)     public var step:Float;
+    @:clonable @:behaviour(DefaultBehaviour, null)  public var min:Null<Float>;
+    @:clonable @:behaviour(DefaultBehaviour, null)  public var max:Null<Float>;
     @:call(IncBehaviour)                            public function increment();
     @:call(DeincBehaviour)                          public function deincrement();
 }
@@ -48,6 +50,11 @@ private class IncBehaviour extends Behaviour {
         var stepper:Stepper = cast(_component, Stepper);
         var newPos = stepper.pos;
         newPos += stepper.step;
+        
+        if (stepper.max != null && newPos > stepper.max) {
+            newPos = stepper.max;
+        }
+        
         stepper.pos = newPos;
         return null;
     }
@@ -60,6 +67,11 @@ private class DeincBehaviour extends Behaviour {
         var stepper:Stepper = cast(_component, Stepper);
         var newPos = stepper.pos;
         newPos -= stepper.step;
+        
+        if (stepper.min != null && newPos < stepper.min) {
+            newPos = stepper.min;
+        }
+        
         stepper.pos = newPos;
         return null;
     }

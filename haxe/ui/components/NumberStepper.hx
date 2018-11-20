@@ -14,6 +14,8 @@ class NumberStepper extends HBox {
     @:clonable @:behaviour(PosBehaviour, 0)         public var pos:Float;
     @:clonable @:behaviour(ValueBehaviour)          public var value:Variant;
     @:clonable @:behaviour(StepBehaviour, 1)        public var step:Float;
+    @:clonable @:behaviour(MinBehaviour, null)      public var min:Null<Float>;
+    @:clonable @:behaviour(MaxBehaviour, null)      public var max:Null<Float>;
 }
 
 //***********************************************************************************************************
@@ -24,6 +26,9 @@ private class PosBehaviour extends DataBehaviour {
     public override function validateData() {
         var textfield:TextField = _component.findComponent("stepper-textfield", TextField);
         textfield.text = Std.string(_value);
+        
+        var step:Stepper = _component.findComponent("stepper-step", Stepper);
+        step.pos = _value;
         
         var event = new UIEvent(UIEvent.CHANGE);
         _component.dispatch(event);
@@ -53,6 +58,32 @@ private class StepBehaviour extends DefaultBehaviour {
     public override function set(value:Variant) {
         var step:Stepper = _component.findComponent("stepper-step", Stepper);
         step.step = value;
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class MinBehaviour extends DefaultBehaviour {
+    public override function get():Variant {
+        var step:Stepper = _component.findComponent("stepper-step", Stepper);
+        return step.min;
+    }
+    
+    public override function set(value:Variant) {
+        var step:Stepper = _component.findComponent("stepper-step", Stepper);
+        step.min = value;
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class MaxBehaviour extends DefaultBehaviour {
+    public override function get():Variant {
+        var step:Stepper = _component.findComponent("stepper-step", Stepper);
+        return step.max;
+    }
+    
+    public override function set(value:Variant) {
+        var step:Stepper = _component.findComponent("stepper-step", Stepper);
+        step.max = value;
     }
 }
 
