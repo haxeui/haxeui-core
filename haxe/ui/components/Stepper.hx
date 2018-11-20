@@ -7,17 +7,19 @@ import haxe.ui.core.DataBehaviour;
 import haxe.ui.core.DefaultBehaviour;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.UIEvent;
+import haxe.ui.util.MathUtil;
 import haxe.ui.util.Variant;
 
 @:composite(Events, Builder)
 class Stepper extends VBox {
-    @:clonable @:behaviour(PosBehaviour)            public var pos:Float;
-    @:clonable @:behaviour(ValueBehaviour)          public var value:Variant;
-    @:clonable @:behaviour(DefaultBehaviour, 1)     public var step:Float;
-    @:clonable @:behaviour(DefaultBehaviour, null)  public var min:Null<Float>;
-    @:clonable @:behaviour(DefaultBehaviour, null)  public var max:Null<Float>;
-    @:call(IncBehaviour)                            public function increment();
-    @:call(DeincBehaviour)                          public function deincrement();
+    @:clonable @:behaviour(PosBehaviour)                public var pos:Float;
+    @:clonable @:behaviour(ValueBehaviour)              public var value:Variant;
+    @:clonable @:behaviour(DefaultBehaviour, 1)         public var step:Float;
+    @:clonable @:behaviour(DefaultBehaviour, null)      public var min:Null<Float>;
+    @:clonable @:behaviour(DefaultBehaviour, null)      public var max:Null<Float>;
+    @:clonable @:behaviour(DefaultBehaviour, null)      public var precision:Null<Int>;
+    @:call(IncBehaviour)                                public function increment();
+    @:call(DeincBehaviour)                              public function deincrement();
 }
 
 //***********************************************************************************************************
@@ -55,6 +57,10 @@ private class IncBehaviour extends Behaviour {
             newPos = stepper.max;
         }
         
+        if (stepper.precision != null) {
+            newPos = MathUtil.round(newPos, stepper.precision);
+        }
+        
         stepper.pos = newPos;
         return null;
     }
@@ -70,6 +76,10 @@ private class DeincBehaviour extends Behaviour {
         
         if (stepper.min != null && newPos < stepper.min) {
             newPos = stepper.min;
+        }
+        
+        if (stepper.precision != null) {
+            newPos = MathUtil.round(newPos, stepper.precision);
         }
         
         stepper.pos = newPos;

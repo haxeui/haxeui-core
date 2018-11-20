@@ -7,15 +7,17 @@ import haxe.ui.core.DefaultBehaviour;
 import haxe.ui.core.FocusEvent;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.UIEvent;
+import haxe.ui.util.MathUtil;
 import haxe.ui.util.Variant;
 
 @:composite(Events, Builder)
 class NumberStepper extends HBox {
-    @:clonable @:behaviour(PosBehaviour, 0)         public var pos:Float;
-    @:clonable @:behaviour(ValueBehaviour)          public var value:Variant;
-    @:clonable @:behaviour(StepBehaviour, 1)        public var step:Float;
-    @:clonable @:behaviour(MinBehaviour, null)      public var min:Null<Float>;
-    @:clonable @:behaviour(MaxBehaviour, null)      public var max:Null<Float>;
+    @:clonable @:behaviour(PosBehaviour, 0)             public var pos:Float;
+    @:clonable @:behaviour(ValueBehaviour)              public var value:Variant;
+    @:clonable @:behaviour(StepBehaviour, 1)            public var step:Float;
+    @:clonable @:behaviour(MinBehaviour, null)          public var min:Null<Float>;
+    @:clonable @:behaviour(MaxBehaviour, null)          public var max:Null<Float>;
+    @:clonable @:behaviour(PrecisionBehaviour, null)    public var precision:Null<Int>;
 }
 
 //***********************************************************************************************************
@@ -24,11 +26,16 @@ class NumberStepper extends HBox {
 @:dox(hide) @:noCompletion
 private class PosBehaviour extends DataBehaviour {
     public override function validateData() {
-        var textfield:TextField = _component.findComponent("stepper-textfield", TextField);
-        textfield.text = Std.string(_value);
-        
         var step:Stepper = _component.findComponent("stepper-step", Stepper);
-        step.pos = _value;
+        var preciseValue:Float = _value;
+        if (step.precision != null) {
+            preciseValue = MathUtil.round(preciseValue, step.precision);
+        }
+
+        step.pos = preciseValue;
+        
+        var textfield:TextField = _component.findComponent("stepper-textfield", TextField);
+        textfield.text = Std.string(preciseValue);
         
         var event = new UIEvent(UIEvent.CHANGE);
         _component.dispatch(event);
@@ -84,6 +91,19 @@ private class MaxBehaviour extends DefaultBehaviour {
     public override function set(value:Variant) {
         var step:Stepper = _component.findComponent("stepper-step", Stepper);
         step.max = value;
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class PrecisionBehaviour extends DefaultBehaviour {
+    public override function get():Variant {
+        var step:Stepper = _component.findComponent("stepper-step", Stepper);
+        return step.precision;
+    }
+    
+    public override function set(value:Variant) {
+        var step:Stepper = _component.findComponent("stepper-step", Stepper);
+        step.precision = value;
     }
 }
 
