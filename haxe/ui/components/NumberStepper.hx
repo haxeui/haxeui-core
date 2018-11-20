@@ -82,8 +82,8 @@ private class Events extends haxe.ui.core.Events {
         if (!step.hasEvent(UIEvent.CHANGE, onStepChange)) {
             step.registerEvent(UIEvent.CHANGE, onStepChange);
         }
-        if (!step.hasEvent(MouseEvent.CLICK, onStepClick)) {
-            step.registerEvent(MouseEvent.CLICK, onStepClick);
+        if (!step.hasEvent(MouseEvent.MOUSE_DOWN, onStepMouseDown)) {
+            step.registerEvent(MouseEvent.MOUSE_DOWN, onStepMouseDown);
         }
     }
     
@@ -95,7 +95,7 @@ private class Events extends haxe.ui.core.Events {
         
         var step:Stepper = _stepper.findComponent("stepper-step", Stepper);
         step.unregisterEvent(UIEvent.CHANGE, onStepChange);
-        step.unregisterEvent(MouseEvent.CLICK, onStepClick);
+        step.unregisterEvent(MouseEvent.MOUSE_DOWN, onStepMouseDown);
     }
     
     private function onStepChange(event:UIEvent) {
@@ -103,8 +103,9 @@ private class Events extends haxe.ui.core.Events {
         _stepper.pos = step.pos;
     }
     
-    private function onStepClick(event:MouseEvent) {
-        _stepper.addClass(":active");
+    private function onStepMouseDown(event:MouseEvent) {
+        var textfield:TextField = _stepper.findComponent("stepper-textfield", TextField);
+        textfield.focus = true;
     }
     
     private function onTextFieldFocusIn(event:FocusEvent) {
