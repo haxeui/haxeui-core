@@ -248,4 +248,16 @@
 .menuitem:hover,.menuitem:selected{background-color:#CCCCCC;}
 .menuitem-expandable{resource:"haxeui-core/styles/default/right_arrow.png";vertical-align:"center";}
 .menuseparator{height:1px;width:100%;background-color:#ABABAB;horizontal-align:"center";}
+.stepper{spacing:0;}
+.stepper-button{padding:3px;padding-top:4px;padding-bottom:4px;border-radius:0;border:none;background-color:#E6E6E6;}
+.stepper-button:hover{background-color:#F1F1F1;}
+.stepper-button:down{background-color:#C2C2C2;}
+.stepper-inc{icon:"haxeui-core/styles/default/up_arrow.png";}
+.stepper-deinc{icon:"haxeui-core/styles/default/down_arrow.png";}
+.stepper-inc:down{icon:"haxeui-core/styles/default/up_arrow_white.png";}
+.stepper-deinc:down{icon:"haxeui-core/styles/default/down_arrow_white.png";}
+.numberstepper{padding:1px;}
+.stepper-textfield,.stepper-textfield:active{border:none;initial-width:50px;padding:4px;padding-top:5px;padding-bottom:3px;}
+.stepper-step{height:100%;}
+.stepper-step .stepper-inc,.stepper-step .stepper-deinc{height:50%;}
 
