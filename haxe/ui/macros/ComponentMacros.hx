@@ -147,7 +147,7 @@ class ComponentMacros {
             return;
         }
 
-        var numberEReg:EReg = ~/^\d+(\.(\d+))?$/;
+        var numberEReg:EReg = ~/^-?\d+(\.(\d+))?$/;
         var type = Context.getModule(className)[0];
         if (MacroHelpers.hasDirectInterface(type, "haxe.ui.core.IDirectionalComponent")) {
             var direction = c.direction;
