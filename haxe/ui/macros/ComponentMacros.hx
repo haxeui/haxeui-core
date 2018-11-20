@@ -245,7 +245,7 @@ class ComponentMacros {
             return;
         }
 
-        var numberEReg:EReg = ~/^\d+(\.(\d+))?$/;
+        var numberEReg:EReg = ~/^-?\d+(\.(\d+))?$/;
         var type = Context.getModule(className)[0];
 
         var layoutVarName = 'l${id}';
