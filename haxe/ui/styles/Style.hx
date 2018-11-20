@@ -1,13 +1,14 @@
 package haxe.ui.styles;
 
 import haxe.ui.styles.animation.Animation.AnimationOptions;
-import haxe.ui.constants.AnimationFillMode;
-import haxe.ui.constants.AnimationDirection;
 import haxe.ui.styles.elements.Directive;
 import haxe.ui.util.filters.Filter;
 import haxe.ui.util.filters.FilterParser;
 
 class Style {
+    public var left:Null<Float>;
+    public var top:Null<Float>;
+    
     public var autoWidth:Null<Bool>;
     public var width:Null<Float>;
     public var percentWidth:Null<Float>;
@@ -105,6 +106,11 @@ class Style {
             var v = map.get(key);
             
             switch (key) {
+                case "left":
+                    left = ValueTools.calcDimension(v.value);
+                case "top":
+                    top = ValueTools.calcDimension(v.value);
+                    
                 case "width":
                     autoWidth = ValueTools.constant(v.value, "auto");
                     width = ValueTools.calcDimension(v.value);
@@ -306,6 +312,9 @@ class Style {
         if (s.cursor != null) cursor = s.cursor;
         if (s.hidden != null) hidden = s.hidden;
 
+        if (s.left != null) left = s.left;
+        if (s.top != null) top = s.top;
+        
         if (s.autoWidth != null) autoWidth = s.autoWidth;
         if (s.autoHeight != null) autoHeight = s.autoHeight;
         if (s.verticalSpacing != null) verticalSpacing = s.verticalSpacing;
@@ -423,6 +432,10 @@ class Style {
         if (s.cursor != cursor) return false;
         if (s.hidden != hidden) return false;
 
+        if (s.left != left) return false;
+        if (s.top != top) return false;
+        
+        
         if (s.autoWidth != autoWidth) return false;
         if (s.autoHeight != autoHeight) return false;
         if (s.verticalSpacing != verticalSpacing) return false;

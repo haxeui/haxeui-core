@@ -1,4 +1,5 @@
 package haxe.ui.styles.elements;
+
 import haxe.ui.styles.Value;
 
 class AnimationKeyFrame {
