@@ -4,15 +4,18 @@ import haxe.ui.containers.VBox;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.DataBehaviour;
+import haxe.ui.core.DefaultBehaviour;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.UIEvent;
 import haxe.ui.util.Variant;
 
 @:composite(Events, Builder)
 class Stepper extends VBox {
-    @:clonable @:behaviour(PosBehaviour, 0)     public var pos:Int;
-    @:call(IncBehaviour)                        public function increment();
-    @:call(DeincBehaviour)                      public function deincrement();
+    @:clonable @:behaviour(PosBehaviour, 0)         public var pos:Float;
+    @:clonable @:behaviour(ValueBehaviour)          public var value:Variant;
+    @:clonable @:behaviour(DefaultBehaviour, 1)     public var step:Float;
+    @:call(IncBehaviour)                            public function increment();
+    @:call(DeincBehaviour)                          public function deincrement();
 }
 
 //***********************************************************************************************************
@@ -27,11 +30,24 @@ private class PosBehaviour extends DataBehaviour {
 }
 
 @:dox(hide) @:noCompletion
+private class ValueBehaviour extends DefaultBehaviour {
+    public override function get():Variant {
+        var stepper:Stepper = cast(_component, Stepper);
+        return stepper.pos;
+    }
+    
+    public override function set(value:Variant) {
+        var stepper:Stepper = cast(_component, Stepper);
+        stepper.pos = value;
+    }
+}
+
+@:dox(hide) @:noCompletion
 private class IncBehaviour extends Behaviour {
     public override function call(param:Any = null):Variant {
         var stepper:Stepper = cast(_component, Stepper);
         var newPos = stepper.pos;
-        newPos++;
+        newPos += stepper.step;
         stepper.pos = newPos;
         return null;
     }
@@ -43,7 +59,7 @@ private class DeincBehaviour extends Behaviour {
     public override function call(param:Any = null):Variant {
         var stepper:Stepper = cast(_component, Stepper);
         var newPos = stepper.pos;
-        newPos--;
+        newPos -= stepper.step;
         stepper.pos = newPos;
         return null;
     }

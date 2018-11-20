@@ -3,13 +3,17 @@ package haxe.ui.components;
 import haxe.ui.containers.HBox;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.DataBehaviour;
+import haxe.ui.core.DefaultBehaviour;
 import haxe.ui.core.FocusEvent;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.UIEvent;
+import haxe.ui.util.Variant;
 
 @:composite(Events, Builder)
 class NumberStepper extends HBox {
-    @:clonable @:behaviour(PosBehaviour, 0)    public var pos:Int;
+    @:clonable @:behaviour(PosBehaviour, 0)         public var pos:Float;
+    @:clonable @:behaviour(ValueBehaviour)          public var value:Variant;
+    @:clonable @:behaviour(StepBehaviour, 1)        public var step:Float;
 }
 
 //***********************************************************************************************************
@@ -23,6 +27,32 @@ private class PosBehaviour extends DataBehaviour {
         
         var event = new UIEvent(UIEvent.CHANGE);
         _component.dispatch(event);
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class ValueBehaviour extends DefaultBehaviour {
+    public override function get():Variant {
+        var stepper:NumberStepper = cast(_component, NumberStepper);
+        return stepper.pos;
+    }
+    
+    public override function set(value:Variant) {
+        var stepper:NumberStepper = cast(_component, NumberStepper);
+        stepper.pos = value;
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class StepBehaviour extends DefaultBehaviour {
+    public override function get():Variant {
+        var step:Stepper = _component.findComponent("stepper-step", Stepper);
+        return step.step;
+    }
+    
+    public override function set(value:Variant) {
+        var step:Stepper = _component.findComponent("stepper-step", Stepper);
+        step.step = value;
     }
 }
 
@@ -44,7 +74,7 @@ private class Builder extends CompositeBuilder {
         var textfield = new TextField();
         textfield.addClass("stepper-textfield");
         textfield.id = "stepper-textfield";
-        textfield.restrictChars = "0-9|-";
+        //textfield.restrictChars = "0-9|-|."; // TODO: not sure how to allow decimal point
         _stepper.addComponent(textfield);
         
         var step = new Stepper();
@@ -138,6 +168,6 @@ private class Events extends haxe.ui.core.Events {
     private function onTextFieldChange(event:UIEvent) {
         var step:Stepper = _stepper.findComponent("stepper-step", Stepper);
         var textfield:TextField = _stepper.findComponent("stepper-textfield", TextField);
-        step.pos = Std.parseInt(textfield.text);
+        step.pos = Std.parseFloat(textfield.text);
     }
 }
