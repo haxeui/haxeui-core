@@ -1,14 +1,18 @@
 package haxe.ui.components;
 
 import haxe.ui.containers.VBox;
+import haxe.ui.core.Behaviour;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.DataBehaviour;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.UIEvent;
+import haxe.ui.util.Variant;
 
 @:composite(Events, Builder)
 class Stepper extends VBox {
-    @:clonable @:behaviour(PosBehaviour, 0)    public var pos:Int;
+    @:clonable @:behaviour(PosBehaviour, 0)     public var pos:Int;
+    @:call(IncBehaviour)                        public function increment();
+    @:call(DeincBehaviour)                      public function deincrement();
 }
 
 //***********************************************************************************************************
@@ -19,6 +23,29 @@ private class PosBehaviour extends DataBehaviour {
     public override function validateData() {
         var event = new UIEvent(UIEvent.CHANGE);
         _component.dispatch(event);
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class IncBehaviour extends Behaviour {
+    public override function call(param:Any = null):Variant {
+        var stepper:Stepper = cast(_component, Stepper);
+        var newPos = stepper.pos;
+        newPos++;
+        stepper.pos = newPos;
+        return null;
+    }
+}
+
+
+@:dox(hide) @:noCompletion
+private class DeincBehaviour extends Behaviour {
+    public override function call(param:Any = null):Variant {
+        var stepper:Stepper = cast(_component, Stepper);
+        var newPos = stepper.pos;
+        newPos--;
+        stepper.pos = newPos;
+        return null;
     }
 }
 
@@ -84,22 +111,10 @@ private class Events extends haxe.ui.core.Events {
     }
     
     private function onInc(event:MouseEvent) {
-        increment();
+        _stepper.increment();
     }
     
     private function onDeinc(event:MouseEvent) {
-        deincrement();
-    }
-    
-    private function increment() {
-        var newPos = _stepper.pos;
-        newPos++;
-        _stepper.pos = newPos;
-    }
-    
-    private function deincrement() {
-        var newPos = _stepper.pos;
-        newPos--;
-        _stepper.pos = newPos;
+        _stepper.deincrement();
     }
 }
