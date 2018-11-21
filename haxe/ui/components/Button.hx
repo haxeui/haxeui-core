@@ -173,6 +173,9 @@ private class ButtonLayout extends DefaultLayout {
                 if (label != null && icon != null) {
                     var cx:Float = label.componentWidth + icon.componentWidth + horizontalSpacing;
                     var x:Float = Std.int((component.componentWidth / 2) - (cx / 2));
+                    if (cast(component, Button).textAlign == "left") {
+                        x = paddingLeft;
+                    }
 
                     if (iconPosition == "right") {
                         label.left = x + marginLeft(label) - marginRight(label);

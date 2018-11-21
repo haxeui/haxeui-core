@@ -15,6 +15,7 @@ import haxe.ui.util.Color;
 import haxe.ui.util.ComponentUtil;
 import haxe.ui.util.EventMap;
 import haxe.ui.util.FunctionArray;
+import haxe.ui.util.MathUtil;
 import haxe.ui.util.Rectangle;
 import haxe.ui.util.Size;
 import haxe.ui.util.StringUtil;
@@ -946,7 +947,10 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     @:dox(group = "Display tree related properties and methods")
     public function getComponentIndex(child:Component):Int {
         if (_compositeBuilder != null) {
-            return _compositeBuilder.getComponentIndex(child);
+            var index = _compositeBuilder.getComponentIndex(child);
+            if (index != MathUtil.MIN_INT) {
+                return index;
+            }
         }
         
         var index:Int = -1;

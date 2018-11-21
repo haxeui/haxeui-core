@@ -1,5 +1,6 @@
 package haxe.ui.core;
 import haxe.ui.styles.Style;
+import haxe.ui.util.MathUtil;
 
 class CompositeBuilder {
     private var _component:Component;
@@ -32,7 +33,7 @@ class CompositeBuilder {
     }
     
     public function getComponentIndex(child:Component):Int {
-        return -1;
+        return MathUtil.MIN_INT;
     }
     
     public function setComponentIndex(child:Component, index:Int):Component {
