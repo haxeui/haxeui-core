@@ -61,4 +61,16 @@ class Dialog2 extends DialogBase {
     public function new() {
         super();
     }
+    
+    private var __onDialogClosed:DialogEvent->Void;
+    public var onDialogClosed(null, set):DialogEvent->Void;
+    private function set_onDialogClosed(value:DialogEvent->Void):DialogEvent->Void {
+        if (__onDialogClosed != null) {
+            unregisterEvent(DialogEvent.DIALOG_CLOSED, __onClick);
+            __onDialogClosed = null;
+        }
+        registerEvent(DialogEvent.DIALOG_CLOSED, value);
+        __onDialogClosed = value;
+        return value;
+    }
 }
