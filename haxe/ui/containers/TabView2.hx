@@ -6,6 +6,7 @@ import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.DataBehaviour;
+import haxe.ui.core.DefaultBehaviour;
 import haxe.ui.core.UIEvent;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.LayoutFactory;
@@ -17,10 +18,11 @@ class TabView2 extends Component {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:behaviour(PageIndex, -1)  public var pageIndex:Int;
-    @:behaviour(TabPosition)    public var tabPosition:String;
-    @:behaviour(PageCount)      public var pageCount:Int;
-    @:call(RemovePage)          public function removePage(index:Int):Void;
+    @:behaviour(PageIndex, -1)      public var pageIndex:Int;
+    @:behaviour(SelectedPage, -1)   public var selectedPage:Component;
+    @:behaviour(TabPosition)        public var tabPosition:String;
+    @:behaviour(PageCount)          public var pageCount:Int;
+    @:call(RemovePage)              public function removePage(index:Int):Void;
 }
 
 //***********************************************************************************************************
@@ -123,6 +125,18 @@ private class PageIndex extends DataBehaviour {
 
         _component.dispatch(new UIEvent(UIEvent.CHANGE));
         
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+@:access(haxe.ui.containers.Builder)
+private class SelectedPage extends DefaultBehaviour {
+    public override function get():Variant {
+        var tabview:TabView2 = cast(_component, TabView2);
+        var builder:Builder = cast(_component._compositeBuilder, Builder);
+        var view:Component = builder._views[tabview.pageIndex];
+        return view;
     }
 }
 
