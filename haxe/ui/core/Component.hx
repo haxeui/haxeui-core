@@ -52,9 +52,10 @@ class DeferredBindingInfo {
 @:autoBuild(haxe.ui.macros.Macros.buildComposite())
 @:build(haxe.ui.macros.Macros.buildStyles())
 @:autoBuild(haxe.ui.macros.Macros.buildStyles())
-@:autoBuild(haxe.ui.macros.Macros.buildBindings())
 @:build(haxe.ui.macros.Macros.buildBehaviours())
 @:autoBuild(haxe.ui.macros.Macros.buildBehaviours())
+@:build(haxe.ui.macros.Macros.buildBindings())
+@:autoBuild(haxe.ui.macros.Macros.buildBindings())
 @:build(haxe.ui.macros.Macros.addClonable())
 @:autoBuild(haxe.ui.macros.Macros.addClonable())
 class Component extends ComponentBase implements IComponentBase implements IValidating implements IClonable<Component> {
@@ -397,8 +398,18 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         //text = value;
         return value;
     }
-    */
     @:clonable @:behaviour(DefaultBehaviour)  public var value:Variant;
+    */
+    
+    public var value(get, set):Any;
+    private function get_value():Any {
+        return text;
+    }
+    private function set_value(value:Any):Any {
+        text = value;
+        return value;
+    }
+    
 
     /**
      Reference to the `Screen` object this component is displayed on
@@ -411,6 +422,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     //***********************************************************************************************************
     //{Binding related}
     //***********************************************************************************************************
+    public var bindingRoot:Bool = false;
     private var _bindings:Map<String, Array<BindingInfo>>;
     /**
      Binds a property of this component to the property of another

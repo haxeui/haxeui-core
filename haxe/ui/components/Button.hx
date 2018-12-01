@@ -89,7 +89,7 @@ class Button extends InteractiveComponent {
     /**
      The value of this button, which is equivelant to its text
     **/
-    @:clonable @:behaviour(TextBehaviour)              public var value:Variant;
+    @:clonable @:value(text)                           public var value:Any;
     
     /**
      The image resource to use as the buttons icon

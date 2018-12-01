@@ -71,13 +71,13 @@ class ItemRenderer extends Box {
 						}
 						
 						if (propName == "value") {
-							c.value = Variant.fromDynamic(propValue);
+							c.value = propValue;
 						} else {
 							Reflect.setProperty(c, propName, propValue);
 						}
 					}
 				} else {
-					c.value = Variant.fromDynamic(v);
+					c.value = v;
 				}
                 c.show();
             } else if (c != null) {

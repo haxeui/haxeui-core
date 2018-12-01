@@ -16,7 +16,7 @@ class CheckBox extends InteractiveComponent {
     //***********************************************************************************************************
     @:clonable @:behaviour(TextBehaviour)              public var text:String;
     @:clonable @:behaviour(SelectedBehaviour)          public var selected:Bool;
-    @:clonable @:behaviour(SelectedBehaviour)          public var value:Variant;
+    @:clonable @:value(selected)                       public var value:Any;
 }
 
 //***********************************************************************************************************
@@ -72,11 +72,6 @@ private class TextBehaviour extends DataBehaviour {
 
 @:dox(hide) @:noCompletion
 private class SelectedBehaviour extends DataBehaviour {
-    public override function get():Variant {
-        var valueComponent:Value = _component.findComponent(Value);
-        return valueComponent.hasClass(":selected");
-    }
-    
     private override function validateData() {
         var valueComponent:Value = _component.findComponent(Value);
         if (_value == true) {

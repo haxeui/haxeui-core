@@ -69,7 +69,7 @@ class Switch extends InteractiveComponent {
     // Overrides
     //***********************************************************************************************************
 
-    private override function get_value():Variant {
+    private override function get_value():Any {
         return _selected;
     }
 

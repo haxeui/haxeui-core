@@ -86,11 +86,11 @@ class Scroll extends InteractiveComponent {
     //***********************************************************************************************************
     // Overrides
     //***********************************************************************************************************
-    private override function get_value():Variant {
+    private override function get_value():Any {
         return pos;
     }
 
-    private override function set_value(value:Variant):Variant {
+    private override function set_value(value:Any):Any {
         pos = value;
         return value;
     }

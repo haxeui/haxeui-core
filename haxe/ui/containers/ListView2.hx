@@ -1,5 +1,7 @@
 package haxe.ui.containers;
 
+import haxe.ui.binding.BindingManager;
+import haxe.ui.components.VerticalScroll2;
 import haxe.ui.constants.SelectionMode;
 import haxe.ui.containers.ScrollView2.ScrollViewBuilder;
 import haxe.ui.containers.ScrollView2;
@@ -308,7 +310,10 @@ private class DataSourceBehaviour extends DataBehaviour {
         var dataSource:DataSource<Dynamic> = _value;
         if (dataSource != null) {
             dataSource.transformer = new NativeTypeTransformer();
-            dataSource.onChange = _component.invalidateComponentLayout;
+            dataSource.onChange = function() {
+                _component.invalidateComponentLayout();
+                BindingManager.instance.componentPropChanged(_component, "dataSource");
+            }
         }
         _component.invalidateComponentLayout();
     }
@@ -355,14 +360,29 @@ private class SelectedIndicesBehaviour extends DataBehaviour {
         var listView:ListView2 = cast(_component, ListView2);
         var selectedIndices:Array<Int> = listView.selectedIndices;
         var contents:Component = _component.findComponent("scrollview-contents", false, "css");
+        var itemToEnsure:ItemRenderer = null;
         for (child in contents.childComponents) {
             if (selectedIndices.indexOf(cast(child, ItemRenderer).itemIndex) != -1) {
+                itemToEnsure = cast(child, ItemRenderer);
                 child.addClass(":selected", true, true);
             } else {
                 child.removeClass(":selected", true, true);
             }
         }
 
+        if (itemToEnsure != null) {
+            var vscroll:VerticalScroll2 = listView.findComponent(VerticalScroll2);
+            if (vscroll != null) {
+                var vpos:Float = vscroll.pos;
+                var contents:Component = listView.findComponent("listview-contents", "css");
+                if (itemToEnsure.top + itemToEnsure.height > vpos + contents.componentClipRect.height) {
+                    vscroll.pos = ((itemToEnsure.top + itemToEnsure.height) - contents.componentClipRect.height);
+                } else if (itemToEnsure.top < vpos) {
+                    vscroll.pos = itemToEnsure.top;
+                }
+            }
+        }
+        
         _component.dispatch(new UIEvent(UIEvent.CHANGE));
     }
 }

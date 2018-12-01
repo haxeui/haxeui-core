@@ -2,6 +2,8 @@ package haxe.ui.components;
 
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.CompositeBuilder;
+import haxe.ui.core.DataBehaviour;
+import haxe.ui.core.DefaultBehaviour;
 import haxe.ui.core.IDirectionalComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.InvalidatingBehaviour;
@@ -9,6 +11,7 @@ import haxe.ui.core.MouseEvent;
 import haxe.ui.core.Screen;
 import haxe.ui.core.UIEvent;
 import haxe.ui.core.ValueBehaviour;
+import haxe.ui.util.MathUtil;
 import haxe.ui.util.Point;
 import haxe.ui.util.Variant;
 
@@ -17,12 +20,14 @@ class Slider extends InteractiveComponent implements IDirectionalComponent {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:clonable @:behaviour(InvalidatingBehaviour, 0)   public var min:Float;
-    @:clonable @:behaviour(InvalidatingBehaviour, 100) public var max:Float;
-    @:clonable @:behaviour(StartBehaviour)             public var start:Float;
-    @:clonable @:behaviour(EndBehaviour)               public var end:Float;
-    @:clonable @:behaviour(EndBehaviour)               public var pos:Float;
-
+    @:clonable @:behaviour(MinBehaviour, 0)         public var min:Float;
+    @:clonable @:behaviour(MaxBehaviour, 100)       public var max:Float;
+    @:clonable @:behaviour(DefaultBehaviour, null)  public var precision:Null<Int>;
+    @:clonable @:behaviour(StartBehaviour)          public var start:Float;
+    @:clonable @:behaviour(EndBehaviour, 0)         public var end:Float;
+    @:clonable @:behaviour(PosBehaviour)            public var pos:Float;
+    @:clonable @:value(pos)                         public var value:Any;
+    
     //***********************************************************************************************************
     // Private API
     //***********************************************************************************************************
@@ -58,18 +63,51 @@ private class StartBehaviour extends ValueBehaviour {
 
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.components.Slider)
-private class EndBehaviour extends ValueBehaviour {
-    public override function get():Variant {
-        return _component.findComponent(Range).end;
-    }
-    
-    public override function set(value:Variant) {
-        if (value == _value) {
-            return;
+private class EndBehaviour extends DataBehaviour {
+    private override function validateData() {
+        var slider:Slider = cast(_component, Slider);
+        if (_value != null && _value < slider.min) {
+            _value = slider.min;
         }
         
-        _component.findComponent(Range).end = value;
+        if (_value != null && _value > slider.max) {
+            _value = slider.max;
+        }
+        
+        if (slider.precision != null) {
+            _value = MathUtil.round(_value, slider.precision);
+        }
+        
+        _component.findComponent(Range).end = _value;
+        cast(_component, Slider).pos = _value;
         _component.invalidateComponentLayout();
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class MinBehaviour extends DataBehaviour {
+    private override function validateData() {
+        _component.findComponent(Range).min = _value;
+        _component.invalidateComponentLayout();
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class MaxBehaviour extends DataBehaviour {
+    private override function validateData() {
+        _component.findComponent(Range).max = _value;
+        _component.invalidateComponentLayout();
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class PosBehaviour extends DataBehaviour {
+    public override function get():Variant {
+        return cast(_component, Slider).end;
+    }
+    
+    private override function validateData() {
+        cast(_component, Slider).end = _value;
     }
 }
 

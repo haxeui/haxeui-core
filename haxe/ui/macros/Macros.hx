@@ -157,34 +157,124 @@ class Macros {
 
         var bindableFields:Array<Field> = MacroHelpers.getFieldsWithMeta("bindable", fields);
         if (bindableFields.length != 0) {
-            // build get property
-            var code:String = "";
-            code += "function(name:String):haxe.ui.util.Variant {\n";
-            code += "switch (name) {\n";
             for (f in bindableFields) {
-                code += "case '" + f.name + "': return this." + f.name + ";";
+                var setFn = MacroHelpers.getFunction(fields, "set_" + f.name);
+                if (setFn != null) {
+                    switch (setFn.expr.expr) {
+                        case EBlock(exprs):
+                            var code = 'haxe.ui.binding.BindingManager.instance.componentPropChanged(this, "${f.name}")';
+                            exprs.insert(exprs.length - 1, Context.parseInlineString(code, pos)); 
+                        case _:
+                            trace(setFn.expr);
+                    }
+                }
             }
-            code += "}\n";
-            code += "return super.getProperty(name);";
-            code += "}\n";
-
-            var access:Array<Access> = [APrivate, AOverride];
-            MacroHelpers.addFunction("getProperty", Context.parseInlineString(code, pos), access, fields, pos);
-
-            // build set property
-            var code = "";
-            code += "function(name:String, v:haxe.ui.util.Variant):haxe.ui.util.Variant {\n";
-            code += "switch (name) {\n";
-            for (f in bindableFields) {
-                code += "case '" + f.name + "': return this." + f.name + " = v;\n";
-            }
-            code += "}\n";
-            code += "return super.setProperty(name, v);";
-            code += "}\n";
-            var access:Array<Access> = [APrivate, AOverride];
-            MacroHelpers.addFunction("setProperty", Context.parseInlineString(code, pos), access, fields, pos);
         }
 
+        var bindFields:Array<Field> = MacroHelpers.getFieldsWithMeta("bind", fields);
+        if (bindFields.length != 0) {
+            // TODO: think about generating a constructor if there isnt one already
+            var ctor = MacroHelpers.getConstructor(fields);
+            if (MacroHelpers.hasSuperClass(Context.getLocalType(), "haxe.ui.core.Component") == false) {
+                Context.error("Must have a superclass of haxe.ui.core.Component", Context.currentPos());
+            }
+
+            if (ctor == null) {
+                Context.error("A class building component must have a constructor", Context.currentPos());
+            }
+            
+            var n = 1;
+            for (f in bindFields) {
+                fields.remove(f);
+                
+                var metaParam = ExprTools.toString(MacroHelpers.getMeta(f, "bind").params[0]);
+                var variable:String = metaParam.split(".")[0];
+                var field:String = metaParam.split(".")[1];
+                if (field == null) {
+                    field = "value";
+                }
+                
+                var defaultValue:String = null;
+                var type = null;
+                switch (f.kind) {
+                    case FVar(t, e):
+                        type = t;
+                        if (e != null) {
+                            defaultValue = ExprTools.toString(e);
+                        }
+                    case _:
+                }
+                
+                var kind = FProp("get", "set", type);
+                fields.push({
+                    name: f.name,
+                    doc: null,
+                    meta: f.meta,
+                    access: f.access,
+                    kind: kind,
+                    pos: haxe.macro.Context.currentPos()
+                });
+                
+                var typeName = MacroHelpers.complexTypeToString(type);
+                
+                // add getter function
+                var code = "function ():" + typeName + " {\n";
+                code += "return Reflect.getProperty(findComponent('" + variable + "'), '" + field + "');\n";
+                code += "}";
+                var fnGetter = switch (Context.parseInlineString(code, haxe.macro.Context.currentPos()) ).expr {
+                    case EFunction(_, f): f;
+                    case _: throw "false";
+                }
+                fields.push({
+                    name: "get_" + f.name,
+                    doc: null,
+                    meta: [],
+                    access: [APrivate],
+                    kind: FFun(fnGetter),
+                    pos: haxe.macro.Context.currentPos()
+                });
+                
+                // add setter funtion
+                var code = "function (value:" + typeName + "):" + typeName + " {\n";
+                code += "if (value != get_" + f.name + "()) {\n";
+                code += "  Reflect.setProperty(findComponent('" + variable + "'), '" + field + "', value);\n";
+                code += "}\n";
+                code += "return value;\n";
+                code += "}";
+
+                var fnSetter = switch (Context.parseInlineString(code, haxe.macro.Context.currentPos()) ).expr {
+                    case EFunction(_, f): f;
+                    case _: throw "false";
+                }
+                fields.push({
+                    name: "set_" + f.name,
+                    doc: null,
+                    meta: [],
+                    access: [APrivate],
+                    kind: FFun(fnSetter),
+                    pos: haxe.macro.Context.currentPos()
+                });
+                
+                /*
+                var e:Expr = Context.parseInlineString("haxe.ui.binding.BindingManager.instance.add(this, '" + f.name + "', '')", Context.currentPos());
+                ctor.expr = switch(ctor.expr.expr) {
+                    case EBlock(el): macro $b{MacroHelpers.insertExpr(el, n, e)};
+                    case _: macro $b { MacroHelpers.insertExpr([ctor.expr], n, e) }
+                }
+                n++;
+                */
+                if (defaultValue != null) {
+                    var e:Expr = Context.parseInlineString("" + f.name + " = " + defaultValue, Context.currentPos());
+                    ctor.expr = switch(ctor.expr.expr) {
+                        case EBlock(el): macro $b{MacroHelpers.insertExpr(el, -1, e)};
+                        case _: macro $b { MacroHelpers.insertExpr([ctor.expr], -1, e) }
+                    }
+                    n++;
+                }
+                
+            }
+        }
+        
         return fields;
     }
 
@@ -311,6 +401,12 @@ class Macros {
         
         var behaviours:Array<Dynamic> = [];
         
+        var valueFields = MacroHelpers.getFieldsWithMeta("value", fields);
+        var valueField = null;
+        if (valueFields != null && valueFields.length > 0) {
+            valueField = ExprTools.toString(MacroHelpers.getMeta(valueFields[0], "value").params[0]);
+        }
+        
         for (f in MacroHelpers.getFieldsWithMeta("behaviour", fields)) {
             fields.remove(f);
             
@@ -321,40 +417,14 @@ class Macros {
                 }
                 case _:
             }
-            var typeName:String = null;
-            var subType:String = null;
-            switch (type) { // almost certainly a better way to be doing this
-                case TPath(type): {
-                    typeName = "";
-                    if (type.pack.length > 0) {
-                        typeName += type.pack.join(".") + ".";
-                    }
-                    if (type.params != null && type.params.length == 1) {
-                        switch (type.params[0]) {
-                            case TPType(p):
-                                switch (p) {
-                                    case TPath(tp):
-                                        subType = tp.name;
-                                    case _:
-                                }
-                            case _:
-                        }
-                    }
-                    if (subType == null) {
-                        typeName += type.name;
-                    } else {
-                        typeName += type.name + '<${subType}>';
-                    }
-                }
-                case _:
-            }
-            
+            var typeName:String = MacroHelpers.complexTypeToString(type);
             if (TypeTools.findField(Context.getLocalClass().get(), f.name) == null) {
                 var kind = FProp("get", "set", type);
                 
                 // add getter/setter property
                 var meta = [];
                 meta.push( { name: ":behaviour", pos: pos, params: [] } );
+                meta.push( { name: ":bindable", pos: pos, params: [] } );
                 for (m in f.meta) {
                     if (m.name != ":behaviour" && m.name != "behaviour" ) {
                         meta.push(m);
@@ -393,6 +463,9 @@ class Macros {
                 // add setter funtion
                 var code = "function (value:" + typeName + "):" + typeName + " {\n";
                 code += "behaviourSet('" + f.name + "', value);\n";
+                if (f.name == valueField) {
+                    code += "haxe.ui.binding.BindingManager.instance.componentPropChanged(this, 'value');\n";
+                }
                 code += "return value;\n";
                 code += "}";
 
@@ -494,6 +567,50 @@ class Macros {
                     MacroHelpers.insertLine(registerBehavioursFn, Context.parseInlineString('${line}', pos), -1);    
                 }
             }
+        }
+        
+        for (f in MacroHelpers.getFieldsWithMeta("value", fields)) {
+            fields.remove(f);
+            var meta:MetadataEntry = MacroHelpers.getMeta(f, "value");
+            var param:String = ExprTools.toString(meta.params[0]);
+
+            // add getter function
+            var code = "function ():Any {\n";
+            code += "return " + param + ";\n";
+            code += "}";
+            var fnGetter = switch (Context.parseInlineString(code, haxe.macro.Context.currentPos()) ).expr {
+                case EFunction(_, f): f;
+                case _: throw "false";
+            }
+            fields.push({
+                name: "get_" + f.name,
+                doc: null,
+                meta: [],
+                access: [APrivate, AOverride],
+                kind: FFun(fnGetter),
+                pos: haxe.macro.Context.currentPos()
+            });
+            
+            // add setter funtion
+            var code = "function (value:Any):Any {\n";
+            //code += "super.set_" + f.name + "(value);\n";
+            code += "" + param + " = value;\n";
+            code += "haxe.ui.binding.BindingManager.instance.componentPropChanged(this, '" + f.name + "');\n";
+            code += "return value;\n";
+            code += "}";
+
+            var fnSetter = switch (Context.parseInlineString(code, haxe.macro.Context.currentPos()) ).expr {
+                case EFunction(_, f): f;
+                case _: throw "false";
+            }
+            fields.push({
+                name: "set_" + f.name,
+                doc: null,
+                meta: [],
+                access: [APrivate, AOverride],
+                kind: FFun(fnSetter),
+                pos: haxe.macro.Context.currentPos()
+            });
         }
         
         return fields;

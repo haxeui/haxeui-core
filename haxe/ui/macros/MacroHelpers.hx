@@ -229,6 +229,38 @@ class MacroHelpers {
         return TPath(mkPath(s));
     }
 
+    public static function complexTypeToString(type:ComplexType):String {
+        var typeName:String = null;
+        var subType:String = null;
+        switch (type) { // almost certainly a better way to be doing this
+            case TPath(type): {
+                typeName = "";
+                if (type.pack.length > 0) {
+                    typeName += type.pack.join(".") + ".";
+                }
+                if (type.params != null && type.params.length == 1) {
+                    switch (type.params[0]) {
+                        case TPType(p):
+                            switch (p) {
+                                case TPath(tp):
+                                    subType = tp.name;
+                                case _:
+                            }
+                        case _:
+                    }
+                }
+                if (subType == null) {
+                    typeName += type.name;
+                } else {
+                    typeName += type.name + '<${subType}>';
+                }
+            }
+            case _:
+        }
+        
+        return typeName;
+    }
+    
     private static function getSuperClass(t:haxe.macro.Type) {
         var superClass = null;
         switch (t) {
