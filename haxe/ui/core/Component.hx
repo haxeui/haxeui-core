@@ -122,6 +122,14 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             if (_internalEventsClass != null && _internalEvents == null) {
                 registerInternalEvents(_internalEventsClass);
             }
+        } else {
+            var builderClass = getNativeConfigProperty(".builder.@class");
+            if (builderClass != null) { // TODO: maybe _compositeBuilder isnt the best name if native components can use them
+                if (_compositeBuilder == null) {
+                   _compositeBuilder = Type.createInstance(Type.resolveClass(builderClass), [this]); 
+                }
+                _compositeBuilder.create();
+            }
         }
         behaviours.applyDefaults();
     }
