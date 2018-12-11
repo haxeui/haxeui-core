@@ -1174,6 +1174,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         customStyle.mergeDirectives(s.rules[0].directives);
         
         _styleString = value;
+        invalidateComponentStyle();
         return value;
     }
 
