@@ -252,7 +252,7 @@ class ModuleMacros {
             var moduleParser = ModuleParser.get(MacroHelpers.extension(filePath));
             if (moduleParser != null) {
                 try {
-                    var module:Module = moduleParser.parse(File.getContent(filePath), Context.getDefines());
+                    var module:Module = moduleParser.parse(File.getContent(filePath), Context.getDefines(), filePath);
                     module.validate();
                     _modules.push(module);
                     return true;

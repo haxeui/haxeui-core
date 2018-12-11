@@ -6,7 +6,7 @@ class XMLParser extends ModuleParser {
         super();
     }
 
-    public override function parse(data:String, defines:Map<String, String>):Module {
+    public override function parse(data:String, defines:Map<String, String>, context:String = null):Module {
         var module:Module = new Module();
 
         var xml:Xml = Xml.parse(data).firstElement();
@@ -77,6 +77,12 @@ class XMLParser extends ModuleParser {
                         styleEntry.resource = styleNodes.get("resource");
                         if (styleNodes.get("priority") != null) {
                             styleEntry.priority = Std.parseInt(styleNodes.get("priority"));
+                        } else if (context.indexOf("haxe/ui/backend/") != -1) { // lets auto the priority based on if we _think_ this is a backed - not fool proof, but a good start (means it doesnt HAVE to be in module.xml)
+                            if (theme.name == "global") { // special case
+                                styleEntry.priority = -2;
+                            } else {
+                                styleEntry.priority = -1;
+                            }
                         }
                         theme.styles.push(styleEntry);
                     }
