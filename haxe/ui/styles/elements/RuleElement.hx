@@ -100,6 +100,21 @@ class RuleElement {
                 processComposite(d, ["background-image-slice-top", "background-image-slice-left", "background-image-slice-bottom", "background-image-slice-right"]);
             case "animation":
                 processComposite(d, ["animation-name", "animation-duration", "animation-timing-function", "animation-delay", "animation-iteration-count", "animation-direction", "animation-fill-mode"]);
+            case "font-style":
+                var v1 = ValueTools.composite(d.value);
+                if (v1 == null) {
+                    v1 = [d.value];
+                }
+                for (v in v1) {
+                    var s = ValueTools.string(v).toLowerCase();
+                    if (s == "bold") {
+                        directives.set("font-bold", new Directive("font-bold", Value.VBool(true)));
+                    } else if (s == "italic") {
+                        directives.set("font-italic", new Directive("font-italic", Value.VBool(true)));
+                    } else if (s == "underline") {
+                        directives.set("font-underline", new Directive("font-underline", Value.VBool(true)));
+                    }
+                }
             case _:
                 directives.set(d.directive, d);
         }
