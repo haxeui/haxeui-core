@@ -26,7 +26,7 @@ class Slider extends InteractiveComponent implements IDirectionalComponent {
     @:clonable @:behaviour(StartBehaviour)          public var start:Float;
     @:clonable @:behaviour(EndBehaviour, 0)         public var end:Float;
     @:clonable @:behaviour(PosBehaviour)            public var pos:Float;
-    @:clonable @:value(pos)                         public var value:Any;
+    @:clonable @:value(pos)                         public var value:Dynamic;
     
     //***********************************************************************************************************
     // Private API

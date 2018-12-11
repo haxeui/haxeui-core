@@ -16,7 +16,7 @@ class CheckBox extends InteractiveComponent {
     //***********************************************************************************************************
     @:clonable @:behaviour(TextBehaviour)              public var text:String;
     @:clonable @:behaviour(SelectedBehaviour)          public var selected:Bool;
-    @:clonable @:value(selected)                       public var value:Any;
+    @:clonable @:value(selected)                       public var value:Dynamic;
 }
 
 //***********************************************************************************************************

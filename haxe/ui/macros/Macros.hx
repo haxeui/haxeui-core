@@ -575,7 +575,7 @@ class Macros {
             var param:String = ExprTools.toString(meta.params[0]);
 
             // add getter function
-            var code = "function ():Any {\n";
+            var code = "function ():Dynamic {\n";
             code += "return " + param + ";\n";
             code += "}";
             var fnGetter = switch (Context.parseInlineString(code, haxe.macro.Context.currentPos()) ).expr {
@@ -592,7 +592,7 @@ class Macros {
             });
             
             // add setter funtion
-            var code = "function (value:Any):Any {\n";
+            var code = "function (value:Dynamic):Dynamic {\n";
             //code += "super.set_" + f.name + "(value);\n";
             code += "" + param + " = value;\n";
             code += "haxe.ui.binding.BindingManager.instance.componentPropChanged(this, '" + f.name + "');\n";

@@ -409,11 +409,11 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     @:clonable @:behaviour(DefaultBehaviour)  public var value:Variant;
     */
     
-    public var value(get, set):Any;
-    private function get_value():Any {
+    public var value(get, set):Dynamic;
+    private function get_value():Dynamic {
         return text;
     }
-    private function set_value(value:Any):Any {
+    private function set_value(value:Dynamic):Dynamic {
         text = value;
         return value;
     }
