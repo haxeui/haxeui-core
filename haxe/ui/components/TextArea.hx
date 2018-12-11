@@ -80,7 +80,9 @@ class TextArea extends InteractiveComponent implements IFocusable {
         super.validateComponentInternal();
 
         if (scrollInvalid || layoutInvalid || dataInvalid) {
-            cast(_compositeBuilder, TextAreaBuilder).checkScrolls(); // TODO: would be nice to not have this
+            if (_compositeBuilder != null) {
+                cast(_compositeBuilder, TextAreaBuilder).checkScrolls(); // TODO: would be nice to not have this
+            }
         }
     }
 }
