@@ -80,6 +80,9 @@
 ** IMAGE
 *************************************************************************/
 .image {
+    scale-mode: fill;
+    image-horizontal-align: center;
+    image-vertical-align: center;
     width: auto;
     height: auto;
 }

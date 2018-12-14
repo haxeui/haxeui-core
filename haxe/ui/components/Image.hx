@@ -71,10 +71,10 @@ class Image extends Component {
         return value;
     }
 
-    private var _scaleMode:ScaleMode = ScaleMode.FILL;
+    private var _scaleMode:ScaleMode;
     @:clonable public var scaleMode(get, set):ScaleMode;
     private function get_scaleMode():ScaleMode {
-        return _scaleMode;
+        return _scaleMode != null ? _scaleMode : style.scaleMode;
     }
     private function set_scaleMode(value:ScaleMode):ScaleMode {
         if (value == _scaleMode) {
@@ -85,10 +85,10 @@ class Image extends Component {
         return value;
     }
 
-    private var _imageHorizontalAlign:HorizontalAlign = HorizontalAlign.CENTER;
+    private var _imageHorizontalAlign:HorizontalAlign;
     @:clonable public var imageHorizontalAlign(get, set):HorizontalAlign;
     private function get_imageHorizontalAlign():HorizontalAlign {
-        return _imageHorizontalAlign;
+        return _imageHorizontalAlign != null ? _imageHorizontalAlign : style.imageHorizontalAlign;
     }
     private function set_imageHorizontalAlign(value:HorizontalAlign):HorizontalAlign {
         if (value == _imageHorizontalAlign) {
@@ -99,10 +99,10 @@ class Image extends Component {
         return value;
     }
 
-    private var _imageVerticalAlign:VerticalAlign = VerticalAlign.CENTER;
+    private var _imageVerticalAlign:VerticalAlign;
     @:clonable public var imageVerticalAlign(get, set):VerticalAlign;
     private function get_imageVerticalAlign():VerticalAlign {
-        return _imageVerticalAlign;
+        return _imageVerticalAlign != null ? _imageVerticalAlign : style.imageVerticalAlign;
     }
     private function set_imageVerticalAlign(value:VerticalAlign):VerticalAlign {
         if (value == _imageVerticalAlign) {
@@ -133,17 +133,38 @@ class Image extends Component {
 class ImageLayout extends DefaultLayout {
     private var imageScaleMode(get, never):ScaleMode;
     private function get_imageScaleMode():ScaleMode {
-        return cast(_component, Image).scaleMode;
+        var image:Image = cast _component;
+        if (image.scaleMode != null) {
+            return image.scaleMode;
+        } else if (image.style.scaleMode != null) {
+            return image.style.scaleMode;
+        } else {
+            return ScaleMode.FILL;
+        }
     }
 
     private var imageHorizontalAlign(get, never):HorizontalAlign;
     private function get_imageHorizontalAlign():HorizontalAlign {
-        return cast(_component, Image).imageHorizontalAlign;
+        var image:Image = cast _component;
+        if (image.imageHorizontalAlign != null) {
+            return image.imageHorizontalAlign;
+        } else if (image.style.imageHorizontalAlign != null) {
+            return image.style.imageHorizontalAlign;
+        } else {
+            return HorizontalAlign.CENTER;
+        }
     }
 
     private var imageVerticalAlign(get, never):VerticalAlign;
     private function get_imageVerticalAlign():VerticalAlign {
-        return cast(_component, Image).imageVerticalAlign;
+        var image:Image = cast _component;
+        if (image.imageVerticalAlign != null) {
+            return image.imageVerticalAlign;
+        } else if (image.style.imageVerticalAlign != null) {
+            return image.style.imageVerticalAlign;
+        } else {
+            return VerticalAlign.CENTER;
+        }
     }
 
     private override function resizeChildren() {
@@ -151,6 +172,7 @@ class ImageLayout extends DefaultLayout {
             var usz = usableSize;
             var image:Image = cast _component;
             var imageDisplay = image.getImageDisplay();
+            var scaleMode:ScaleMode = imageScaleMode;
             var maxWidth:Float = usableSize.width;
             var maxHeight:Float = usableSize.height;
             if(component.autoWidth == true) {
@@ -164,9 +186,9 @@ class ImageLayout extends DefaultLayout {
             var scaleW:Float = maxWidth != -1 ? maxWidth / image._originalSize.width : 1;
             var scaleH:Float = maxHeight != -1 ? maxHeight / image._originalSize.height : 1;
 
-            if(imageScaleMode != ScaleMode.FILL) {
+            if(scaleMode != ScaleMode.FILL) {
                 var scale:Float;
-                switch(imageScaleMode) {
+                switch(scaleMode) {
                     case ScaleMode.FIT_INSIDE:
                         scale = (scaleW < scaleH) ? scaleW : scaleH;
                     case ScaleMode.FIT_OUTSIDE:
@@ -202,7 +224,7 @@ class ImageLayout extends DefaultLayout {
                 case HorizontalAlign.RIGHT:
                     imageDisplay.left = _component.componentWidth - imageDisplay.imageWidth - paddingRight;
 
-                case HorizontalAlign.LEFT:
+                default: //HorizontalAlign.LEFT:
                     imageDisplay.left = paddingLeft;
             }
 
@@ -213,7 +235,7 @@ class ImageLayout extends DefaultLayout {
                 case VerticalAlign.BOTTOM:
                     imageDisplay.top = _component.componentHeight - imageDisplay.imageHeight - paddingBottom;
 
-                case VerticalAlign.TOP:
+                default: //VerticalAlign.TOP:
                     imageDisplay.top = paddingTop;
             }
 

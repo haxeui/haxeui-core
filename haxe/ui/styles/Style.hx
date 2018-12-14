@@ -1,6 +1,9 @@
 package haxe.ui.styles;
 
 import haxe.ui.util.Color;
+import haxe.ui.constants.VerticalAlign;
+import haxe.ui.constants.HorizontalAlign;
+import haxe.ui.constants.ScaleMode;
 import haxe.ui.util.Variant;
 import haxe.ui.util.MathUtil;
 
@@ -86,6 +89,11 @@ class Style {
     public var fontBold:Null<Bool>;
     public var fontUnderline:Null<Bool>;
     public var fontItalic:Null<Bool>;
+
+    public var scaleMode:Null<ScaleMode>;
+    public var imageHorizontalAlign:Null<HorizontalAlign>;
+    public var imageVerticalAlign:Null<VerticalAlign>;
+
 
     public function apply(s:Style) {
         if (s.cursor != null) cursor = s.cursor;
@@ -184,6 +192,10 @@ class Style {
         if (s.fontUnderline != null) fontUnderline = s.fontUnderline;
         if (s.fontItalic != null) fontItalic = s.fontItalic;
 
+        if (s.scaleMode != null) scaleMode = s.scaleMode;
+        if (s.imageHorizontalAlign != null) imageHorizontalAlign = s.imageHorizontalAlign;
+        if (s.imageVerticalAlign != null) imageVerticalAlign = s.imageVerticalAlign;
+
         assignNulls();
     }
 
@@ -268,6 +280,10 @@ class Style {
         if (s.fontBold != fontBold) return false;
         if (s.fontUnderline != fontUnderline) return false;
         if (s.fontItalic != fontItalic) return false;
+
+        if (s.scaleMode != scaleMode) return false;
+        if (s.imageHorizontalAlign != imageHorizontalAlign) return false;
+        if (s.imageVerticalAlign != imageVerticalAlign) return false;
 
         return true;
     }
