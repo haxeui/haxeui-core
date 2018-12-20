@@ -125,7 +125,7 @@ private class Builder extends CompositeBuilder {
         var textfield = new TextField();
         textfield.addClass("stepper-textfield");
         textfield.id = "stepper-textfield";
-        //textfield.restrictChars = "0-9|-|."; // TODO: not sure how to allow decimal point
+		textfield.restrictChars = "0-9.";
         _stepper.addComponent(textfield);
         
         var step = new Stepper();
