@@ -126,29 +126,25 @@ private class RestrictCharsBehaviour extends DataBehaviour {
     public var regexp:EReg;
     
     public override function validateData() {
-        var excludeEReg:EReg = ~/\^(.+)/g;
-        var excludeChars:String = null;
-        var includeChars:String = null;
-        if (excludeEReg.match(_value)) {
-            includeChars = excludeEReg.matchedLeft();
-            excludeChars = excludeEReg.matched(1);
-        } else {
-            includeChars = _value;
-        }
-
-        if (includeChars != null && includeChars.length > 0) {
-            includeChars = '[^${includeChars}]';
-        } else {
-            includeChars = '[.]';
-        }
-        
-        if (excludeChars != null && excludeChars.length > 0) {
-            excludeChars = '[${excludeChars}]';
-        } else {
-            excludeChars = '[.]';
-        }
-        
-        regexp = new EReg('${excludeChars}|${includeChars}', "g");
+		var excludeEReg:EReg = ~/\^(.-.|.)/gu;
+		var excludeChars:String = '';
+		
+		var includeChars:String = excludeEReg.map (_value, function (ereg:EReg) {
+			excludeChars += ereg.matched (1);
+			return '';
+		});
+		
+		var testRegexpParts:Array<String> = [];
+		
+		if (includeChars.length > 0) {
+			testRegexpParts.push ('[^$_value]');
+		}
+		
+		if (excludeChars.length > 0) {
+			testRegexpParts.push ('[$excludeChars]');
+		}
+		
+		regexp = new EReg ('(${testRegexpParts.join(' | ')})', 'g');
         
         var textfield:TextField = cast(_component, TextField);
         TextFieldHelper.validateText(textfield, textfield.text);
