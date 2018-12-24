@@ -2548,8 +2548,8 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         if (style.animationName != null) {
             var animationKeyFrames:AnimationKeyFrames = Toolkit.styleSheet.animations.get(style.animationName);
             applyAnimationKeyFrame(animationKeyFrames, style.animationOptions);
-        } else if (animation != null) {
-            animation = null;
+        } else if (componentAnimation != null) {
+            componentAnimation = null;
         }
 
         /*

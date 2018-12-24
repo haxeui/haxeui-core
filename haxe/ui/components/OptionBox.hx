@@ -32,7 +32,7 @@ private class SelectedBehaviour extends DataBehaviour {
     public override function validateData() {
         var optionbox:OptionBox = cast(_component, OptionBox);
         
-        if (optionbox.group != null && _value == false) { // dont allow false if no other group selection
+        if (optionbox.componentGroup != null && _value == false) { // dont allow false if no other group selection
             var arr:Array<OptionBox> = OptionBoxGroups.instance.get(optionbox.componentGroup);
             var hasSelection:Bool = false;
             if (arr != null) {
@@ -49,7 +49,7 @@ private class SelectedBehaviour extends DataBehaviour {
             }
         }
         
-        if (optionbox.group != null && _value == true) { // set all the others in group
+        if (optionbox.componentGroup != null && _value == true) { // set all the others in group
             var arr:Array<OptionBox> = OptionBoxGroups.instance.get(optionbox.componentGroup);
             if (arr != null) {
                 for (option in arr) {
