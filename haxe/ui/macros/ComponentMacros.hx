@@ -8,6 +8,8 @@ import haxe.ui.parsers.ui.ComponentParser;
 import haxe.ui.parsers.ui.LayoutInfo;
 import haxe.ui.parsers.ui.resolvers.FileResourceResolver;
 import haxe.ui.scripting.ConditionEvaluator;
+import haxe.ui.util.ComponentFieldMap;
+import haxe.ui.util.ComponentFieldMap;
 import haxe.ui.util.StringUtil;
 
 #if macro
@@ -227,6 +229,7 @@ class ComponentMacros {
 
         for (propName in c.properties.keys()) {
             var propValue = c.properties.get(propName);
+            propName = ComponentFieldMap.mapField(propName);
             var propExpr = if (propValue == "true" || propValue == "yes" || propValue == "false" || propValue == "no") {
                 macro $v{propValue == "true" || propValue == "yes"};
             } else {

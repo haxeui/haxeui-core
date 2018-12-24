@@ -10,7 +10,7 @@ class OptionBox extends CheckBox {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:clonable @:behaviour(GroupBehaviour, "defaultGroup")     public var group:String;
+    @:clonable @:behaviour(GroupBehaviour, "defaultGroup")     public var componentGroup:String;
     @:clonable @:behaviour(SelectedBehaviour)                  public var selected:Bool;
     @:clonable @:behaviour(SelectedOptionBehaviour)            public var selectedOption:Component;
     @:clonable @:value(selected)                               public var value:Any;
@@ -33,7 +33,7 @@ private class SelectedBehaviour extends DataBehaviour {
         var optionbox:OptionBox = cast(_component, OptionBox);
         
         if (optionbox.group != null && _value == false) { // dont allow false if no other group selection
-            var arr:Array<OptionBox> = OptionBoxGroups.instance.get(optionbox.group);
+            var arr:Array<OptionBox> = OptionBoxGroups.instance.get(optionbox.componentGroup);
             var hasSelection:Bool = false;
             if (arr != null) {
                 for (option in arr) {
@@ -50,7 +50,7 @@ private class SelectedBehaviour extends DataBehaviour {
         }
         
         if (optionbox.group != null && _value == true) { // set all the others in group
-            var arr:Array<OptionBox> = OptionBoxGroups.instance.get(optionbox.group);
+            var arr:Array<OptionBox> = OptionBoxGroups.instance.get(optionbox.componentGroup);
             if (arr != null) {
                 for (option in arr) {
                     if (option != _component) {
@@ -76,7 +76,7 @@ private class SelectedBehaviour extends DataBehaviour {
 private class SelectedOptionBehaviour extends DataBehaviour {
     public override function get():Variant {
         var optionbox:OptionBox = cast(_component, OptionBox);
-        var arr:Array<OptionBox> = OptionBoxGroups.instance.get(optionbox.group);
+        var arr:Array<OptionBox> = OptionBoxGroups.instance.get(optionbox.componentGroup);
         var selectionOption:OptionBox = null;
         if (arr != null) {
             for (test in arr) {
