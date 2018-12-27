@@ -111,6 +111,9 @@ class Actuator<T> {
             var componentProperty:String = StyleUtil.styleProperty2ComponentProperty(p);
             var start:Dynamic = Reflect.getProperty(target, componentProperty);
             var end:Dynamic = Reflect.getProperty(properties, p);
+            if (start == null || end == null) {
+                continue;
+            }
 
             switch (end) {
                 case Value.VColor(v):

@@ -5,7 +5,7 @@ import haxe.ui.core.DataBehaviour;
 
 @:composite(Builder)
 class MenuOptionBox extends MenuItem {
-    @:clonable @:behaviour(GroupBehaviour)          public var group:String;
+    @:clonable @:behaviour(GroupBehaviour)          public var componentGroup:String;
     @:clonable @:behaviour(TextBehaviour)           public var text:String;
     @:clonable @:behaviour(SelectedBehaviour)       public var selected:Bool;
 }
@@ -24,7 +24,7 @@ private class GroupBehaviour extends DataBehaviour {
             _component.addComponent(optionbox);
         }
         
-        optionbox.group = _value;
+        optionbox.componentGroup = _value;
     }
 }
 

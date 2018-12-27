@@ -316,9 +316,9 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     }
     private function set_animatable(value:Bool):Bool {
         if (_animatable != value) {
-            if (value == false && _animation != null) {
-                _animation.stop();
-                _animation = null;
+            if (value == false && _componentAnimation != null) {
+                _componentAnimation.stop();
+                _componentAnimation = null;
             }
 
             _animatable = value;
@@ -327,21 +327,21 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         return value;
     }
 
-    private var _animation:Animation;
+    private var _componentAnimation:Animation;
     /**
      Current animation running
     **/
-    public var animation(get, set):Animation;
-    private function get_animation():Animation {
-        return _animation;
+    public var componentAnimation(get, set):Animation;
+    private function get_componentAnimation():Animation {
+        return _componentAnimation;
     }
-    private function set_animation(value:Animation):Animation {
-        if (_animation != value && _animatable == true) {
-            if (_animation != null) {
-                _animation.stop();
+    private function set_componentAnimation(value:Animation):Animation {
+        if (_componentAnimation != value && _animatable == true) {
+            if (_componentAnimation != null) {
+                _componentAnimation.stop();
             }
 
-            _animation = value;
+            _componentAnimation = value;
         }
 
         return value;
@@ -2548,8 +2548,8 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         if (style.animationName != null) {
             var animationKeyFrames:AnimationKeyFrames = Toolkit.styleSheet.animations.get(style.animationName);
             applyAnimationKeyFrame(animationKeyFrames, style.animationOptions);
-        } else if (animation != null) {
-            animation = null;
+        } else if (componentAnimation != null) {
+            componentAnimation = null;
         }
 
         /*
@@ -2585,7 +2585,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
 
     private function applyAnimationKeyFrame(animationKeyFrames:AnimationKeyFrames, options:AnimationOptions):Void {
         if (_animatable == false || options == null || options.duration == 0 ||
-            (_animation != null && options.compareToAnimation(_animation) == true)) {
+            (_componentAnimation != null && options.compareToAnimation(_componentAnimation) == true)) {
             return;
         }
 
@@ -2593,8 +2593,8 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             dispatch(new AnimationEvent(AnimationEvent.START));
         }
 
-        animation = Animation.createWithKeyFrames(animationKeyFrames, this, options);
-        animation.run(function(){
+        componentAnimation = Animation.createWithKeyFrames(animationKeyFrames, this, options);
+        componentAnimation.run(function(){
             if (hasEvent(AnimationEvent.END)) {
                 dispatch(new AnimationEvent(AnimationEvent.END));
             }

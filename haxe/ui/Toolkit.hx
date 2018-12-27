@@ -1,6 +1,7 @@
 package haxe.ui;
 
 import haxe.ui.core.LayoutClassMap;
+import haxe.ui.util.ComponentFieldMap;
 import haxe.ui.util.Variant;
 import haxe.ui.layouts.Layout;
 import haxe.ui.parsers.ui.LayoutInfo;
@@ -172,6 +173,7 @@ class Toolkit {
 
         for (propName in c.properties.keys()) {
             var propValue:Dynamic = c.properties.get(propName);
+            propName = ComponentFieldMap.mapField(propName);
             if (StringTools.startsWith(propName, "on")) {
                 component.addScriptEvent(propName, propValue);
             } else {
