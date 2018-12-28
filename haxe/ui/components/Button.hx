@@ -326,6 +326,7 @@ class ButtonEvents extends haxe.ui.core.Events {
     private var _button:Button;
     private var _down:Bool = false;
     private var _repeatTimer:Timer;
+	private var _repeater:Bool = false;
     
     public function new(button:Button) {
         super(button);
@@ -385,15 +386,19 @@ class ButtonEvents extends haxe.ui.core.Events {
         _down = true;
         _button.addClass(":down");
         _button.screen.registerEvent(MouseEvent.MOUSE_UP, onMouseUp);
-
-        if (_button.repeater == true) {
+        if (_repeater == true) {
             _repeatTimer = new Timer(_button.repeatInterval, onRepeatTimer);
-        }
+        } else if (_button.repeater == true) {
+			Timer.delay(() -> {
+				onMouseDown(event);
+			}, _button.repeatInterval * 2);
+		}
+		_repeater = _button.repeater;
     }
     
     private function onMouseUp(event:MouseEvent) {
         //event.cancel();
-        _down = false;
+        _down = _repeater = false;
         _button.screen.unregisterEvent(MouseEvent.MOUSE_UP, onMouseUp);
 
         if (_button.toggle == true) {
