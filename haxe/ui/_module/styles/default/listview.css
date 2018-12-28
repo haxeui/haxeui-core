@@ -13,17 +13,19 @@
 .listview .listview-contents {
     spacing: 0;
     width: 100%;
-    padding: 1px;
+    padding: 0px;
 }
 
-.itemrenderer {
-    height: auto;
-    padding: 5px;
+.listview .itemrenderer {
+    cursor: pointer;    
+}
+
+.listview .itemrenderer .label {
+    color: black;
 }
 
 .listview .even {
     background-color: #FFFFFF;
-    cursor: pointer;
 }
 
 .listview .even:hover {
@@ -31,12 +33,16 @@
 }
 
 .listview .odd {
-    background-color: #F8F8F8;
-    cursor: pointer;
+    background-color: #f8f8f8;
 }
 
 .listview .odd:hover {
     background-color: #ecf2f9;
+}
+
+.listview .itemrenderer {
+    height: auto;
+    padding: 5px;
 }
 
 .listview .itemrenderer:selected {
@@ -44,103 +50,6 @@
     color: white;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-.listview2 {
-    border: 1px solid #ABABAB;
-    border-radius: 1px;
-    padding: 1px;
-    width: auto;
-    height: auto;
-    background-color: #FFFFFF;
-}
-
-.listview2 .listview-contents {
-    spacing: 0;
-    width: 100%;
-    padding: 0px;
-}
-
-.listview2 .itemrenderer {
-    cursor: pointer;    
-}
-
-.listview2 .itemrenderer .label {
-    color: black;
-}
-
-.listview2 .even {
-    background-color: #FFFFFF;
-    __cursor: pointer;
-}
-
-.listview2 .even:hover {
-    background-color: #ecf2f9;
-}
-
-.listview2 .odd {
-    background-color: #f8f8f8;
-    __cursor: pointer;
-}
-
-.listview2 .odd:hover {
-    background-color: #ecf2f9;
-}
-
-.listview2 .itemrenderer:selected {
-    background-color: #a7c4e2;
-    color: white;
-}
-
-.listview2 .itemrenderer:selected .label {
+.listview .itemrenderer:selected .label {
     color: white;
 }

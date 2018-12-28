@@ -1,6 +1,6 @@
 package haxe.ui.containers;
 
-import haxe.ui.containers.ListView2.ItemRendererFunction2;
+import haxe.ui.containers.ListView.ItemRendererFunction2;
 import haxe.ui.core.ItemRenderer;
 
 interface IVirtualContainer {

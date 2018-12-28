@@ -1,382 +1,449 @@
 package haxe.ui.containers;
 
-import haxe.ui.validation.ValidationManager;
-import haxe.ui.validation.InvalidationFlags;
+import haxe.ui.binding.BindingManager;
+import haxe.ui.components.VerticalScroll2;
+import haxe.ui.constants.SelectionMode;
+import haxe.ui.containers.ScrollView2.ScrollViewBuilder;
+import haxe.ui.containers.ScrollView2;
 import haxe.ui.core.Behaviour;
-import haxe.ui.core.ClassFactory;
-import haxe.ui.core.BasicItemRenderer;
 import haxe.ui.core.Component;
+import haxe.ui.core.DataBehaviour;
+import haxe.ui.core.DefaultBehaviour;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.ItemRenderer;
+import haxe.ui.core.LayoutBehaviour;
 import haxe.ui.core.MouseEvent;
+import haxe.ui.core.ScrollEvent;
 import haxe.ui.core.UIEvent;
-import haxe.ui.data.ArrayDataSource;
 import haxe.ui.data.DataSource;
 import haxe.ui.data.transformation.NativeTypeTransformer;
+import haxe.ui.layouts.VerticalVirtualLayout;
+import haxe.ui.util.MathUtil;
 import haxe.ui.util.Variant;
 
-class ListView extends ScrollView implements IDataComponent {
-    static private inline var NO_SELECTION:Int = -1;
+@:composite(ListViewEvents, ListViewBuilder, VerticalVirtualLayout)
+class ListView extends ScrollView2 implements IDataComponent implements IVirtualContainer {
+    //***********************************************************************************************************
+    // Public API
+    //***********************************************************************************************************
+    @:behaviour(DataSourceBehaviour)                            public var dataSource:DataSource<Dynamic>;
+    @:behaviour(LayoutBehaviour, -1)                            public var itemWidth:Float;
+    @:behaviour(LayoutBehaviour, -1)                            public var itemHeight:Float;
+    @:behaviour(LayoutBehaviour, -1)                            public var itemCount:Int;
+    @:behaviour(LayoutBehaviour, false)                         public var variableItemSize:Bool;
+    @:behaviour(SelectedIndexBehaviour, -1)                     public var selectedIndex:Int;
+    @:behaviour(SelectedItemBehaviour)                          public var selectedItem:Dynamic;
+    @:behaviour(SelectedIndicesBehaviour)                       public var selectedIndices:Array<Int>;
+    @:behaviour(SelectedItemsBehaviour)                         public var selectedItems:Array<Dynamic>;
+    @:behaviour(SelectionModeBehaviour, SelectionMode.ONE_ITEM) public var selectionMode:SelectionMode;
+    @:behaviour(DefaultBehaviour, 500)                          public var longPressSelectionTime:Int;  //ms
 
-    public function new() {
-        super();
-    }
-
-    private override function createDefaults() {
-        super.createDefaults();
-        defaultBehaviours([
-            "dataSource" => new ListViewDefaultDataSourceBehaviour(this),
-            "selectedIndex" => new DefaultSelectedIndexBehaviour(this)
-        ]);
-    }
-
-    private override function createContentContainer() {
-        if (_contents == null) {
-            super.createContentContainer();
-            _contents.percentWidth = 100;
-            _contents.addClass("listview-contents");
-        }
-    }
-    
-    public override function addComponent(child:Component):Component {
-        var r = null;
-        if (Std.is(child, ItemRenderer) && (_itemRenderer == null && _itemRendererFunction == null)) {
-            _itemRenderer = cast(child, ItemRenderer);
-            createContentContainer();
-            #if haxeui_luxe
-            _itemRenderer.hide();
-            #end
-            if (_dataSource != null) {
-                invalidateComponentData();
-            }
-        } else {
-            if (Std.is(child, ItemRenderer)) {
-                child.registerEvent(MouseEvent.CLICK, onItemClick);
-            }
-            r = super.addComponent(child);
-        }
-        return r;
-    }
-
-    private var _currentSelection:ItemRenderer;
-    private function onItemClick(event:MouseEvent) {
-        if (event.target == _currentSelection) {
-            return;
-        }
-
-        var arr = event.target.findComponentsUnderPoint(event.screenX, event.screenY);
-        for (a in arr) {
-            if (Std.is(a, InteractiveComponent)) {
-                return;
-            }
-        }
-        
-        selectedItem = cast(event.target, ItemRenderer);
-    }
-
-    private var _selectedIndex:Int = NO_SELECTION;
-    public var selectedIndex(get, set):Int;
-    private function get_selectedIndex():Int {
-        return behaviourGet("selectedIndex");
-    }
-    private function set_selectedIndex(value:Int):Int {
-        behaviourSet("selectedIndex", value);
-        return value;
-    }
-
-    public var selectedItem(get, set):ItemRenderer;
-    private function get_selectedItem():ItemRenderer {
-        if (contents == null || _selectedIndex == NO_SELECTION || contents.childComponents[_selectedIndex] == null) {
-            return null;
-        }
-
-        return cast(contents.childComponents[_selectedIndex], ItemRenderer);
-    }
-    private function set_selectedItem(value:ItemRenderer):ItemRenderer {
-        if (_dataSource != null && _contents != null)
-        {
-            selectedIndex = contents.childComponents.indexOf(value);
-        }
-
-        return value;
-    }
-
-    public function resetSelection() {
-        selectedIndex = NO_SELECTION;
-    }
-
-    public function addItem(data:Dynamic):ItemRenderer {
-        var r = itemToRenderer(data);
-        r.percentWidth = 100;
-        var n = contents.childComponents.length;
-        var item:ItemRenderer = cast addComponent(r);
-        item.addClass(n % 2 == 0 ? "even" : "odd");
-        item.data = data;
-
-        return item;
-    }
-
-    public var itemCount(get, null):Int;
-    private function get_itemCount():Int {
-        if (_dataSource == null) {
-            return 0;
-        }
-        return _dataSource.size;
-    }
-
-    public var itemHeight(get, null):Float;
-    private function get_itemHeight():Float {
-        if (itemCount == 0 || contents == null) {
-            return 0;
-        }
-
-        validateComponent();
-        return itemHeight;
-    }
-
-    private var _itemRendererFunction:ItemRendererFunction;
-    public var itemRendererFunction(get, set):ItemRendererFunction;
-    private function get_itemRendererFunction():ItemRendererFunction {
+    //TODO - error with Behaviour
+    private var _itemRendererFunction:ItemRendererFunction2;
+    public var itemRendererFunction(get, set):ItemRendererFunction2;
+    private function get_itemRendererFunction():ItemRendererFunction2 {
         return _itemRendererFunction;
     }
-    private function set_itemRendererFunction(value:ItemRendererFunction):ItemRendererFunction {
+    private function set_itemRendererFunction(value:ItemRendererFunction2):ItemRendererFunction2 {
         if (_itemRendererFunction != value) {
             _itemRendererFunction = value;
+            invalidateComponentLayout();
+        }
 
-            invalidateComponentData();
+        return value;
+    }
+
+    private var _itemRendererClass:Class<ItemRenderer>;
+    public var itemRendererClass(get, set):Class<ItemRenderer>;
+    private function get_itemRendererClass():Class<ItemRenderer> {
+        return _itemRendererClass;
+    }
+    private function set_itemRendererClass(value:Class<ItemRenderer>):Class<ItemRenderer> {
+        if (_itemRendererClass != value) {
+            _itemRendererClass = value;
+            invalidateComponentLayout();
         }
 
         return value;
     }
 
     private var _itemRenderer:ItemRenderer;
-	public var itemRendererClass(get, set):Class<ItemRenderer>;
-	private function get_itemRendererClass():Class<ItemRenderer> {
-		return Type.getClass(_itemRenderer);
-	}
-	private function set_itemRendererClass(value:Class<ItemRenderer>):Class<ItemRenderer> {
-		_itemRenderer = Type.createInstance(value, []);
-        invalidateComponentData();
-		return value;
-	}
-
-    private var _dataSource:DataSource<Dynamic>;
-    public var dataSource(get, set):DataSource<Dynamic>;
-    private function get_dataSource():DataSource<Dynamic> {
-        if (_dataSource == null) {
-            _dataSource = new ArrayDataSource(new NativeTypeTransformer());
-            //_dataSource.onChange = onDataSourceChanged;
-            behaviourGet("dataSource");
-        }
-        return _dataSource;
+    public var itemRenderer(get, set):ItemRenderer;
+    private function get_itemRenderer():ItemRenderer {
+        return _itemRenderer;
     }
-    private function set_dataSource(value:DataSource<Dynamic>):DataSource<Dynamic> {
-        _dataSource = value;
-        _dataSource.transformer = new NativeTypeTransformer();
-        invalidateComponentData();
-        //_dataSource.onChange = onDataSourceChanged;
+    private function set_itemRenderer(value:ItemRenderer):ItemRenderer {
+        if (_itemRenderer != value) {
+            _itemRenderer = value;
+            invalidateComponentLayout();
+        }
+
         return value;
     }
+}
 
-    private function onDataSourceChanged() {
-        invalidateComponentData();
+typedef ItemRendererFunction2 = Dynamic->Int->Class<ItemRenderer>;    //(data, index):Class<ItemRenderer>
+
+//***********************************************************************************************************
+// Events
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+class ListViewEvents extends ScrollViewEvents {
+    private var _listview:ListView;
+
+    public function new(listview:ListView) {
+        super(listview);
+        _listview = listview;
     }
 
-    private function syncUI() {
-        if (_dataSource == null) {
+    public override function register() {
+        super.register();
+        registerEvent(ScrollEvent.CHANGE, onScrollChange);
+        registerEvent(UIEvent.RENDERER_CREATED, onRendererCreated);
+        registerEvent(UIEvent.RENDERER_DESTROYED, onRendererDestroyed);
+    }
+    
+    public override function unregister() {
+        super.unregister();
+        unregisterEvent(ScrollEvent.CHANGE, onScrollChange);
+        unregisterEvent(UIEvent.RENDERER_CREATED, onRendererCreated);
+        unregisterEvent(UIEvent.RENDERER_DESTROYED, onRendererDestroyed);
+    }
+    
+    private function onScrollChange(e:ScrollEvent):Void {
+        _listview.invalidateComponentLayout();
+    }
+
+    private function onRendererCreated(e:UIEvent):Void {
+        var instance:ItemRenderer = cast(e.data, ItemRenderer);
+        instance.registerEvent(MouseEvent.MOUSE_DOWN, onRendererMouseDown);
+        instance.registerEvent(MouseEvent.CLICK, onRendererClick);
+        if(_listview.selectedIndices.indexOf(instance.itemIndex) != -1) {
+            instance.addClass(":selected", true, true);
+        }
+    }
+
+    private function onRendererDestroyed(e:UIEvent) {
+        var instance:ItemRenderer = cast(e.data, ItemRenderer);
+        instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onRendererMouseDown);
+        instance.unregisterEvent(MouseEvent.CLICK, onRendererClick);
+        if(_listview.selectedIndices.indexOf(instance.itemIndex) != -1) {
+            instance.removeClass(":selected", true, true);
+        }
+    }
+
+    private function onRendererMouseDown(e:MouseEvent) {
+        switch(_listview.selectionMode) {
+            case SelectionMode.MULTIPLE_LONG_PRESS:
+                if (_listview.selectedIndices.length == 0) {
+                    startLongPressSelection(e);
+                }
+
+            default:
+                //Nothing
+        }
+    }
+
+    private function startLongPressSelection(e:MouseEvent) {
+        var timerClick:Timer = null;
+        var currentMouseX:Float = e.screenX, currentMouseY:Float = e.screenY;
+        var renderer:ItemRenderer = cast(e.target, ItemRenderer);
+        var __onMouseMove:MouseEvent->Void = null, __onMouseUp:MouseEvent->Void, __onMouseClick:MouseEvent->Void;
+
+        __onMouseMove = function (_e:MouseEvent) {
+            currentMouseX = _e.screenX;
+            currentMouseY = _e.screenY;
+        }
+
+        __onMouseUp = function (_e:MouseEvent) {
+            if (timerClick != null) {
+                timerClick.stop();
+                timerClick = null;
+            }
+
+            renderer.screen.unregisterEvent(MouseEvent.MOUSE_MOVE, __onMouseMove);
+            renderer.screen.unregisterEvent(MouseEvent.MOUSE_UP, __onMouseUp);
+        }
+
+        __onMouseClick = function(_e:MouseEvent) {
+            _e.cancel();    //Avoid toggleSelection onRendererClick method
+
+            renderer.unregisterEvent(MouseEvent.CLICK, __onMouseClick);
+        }
+
+        renderer.screen.registerEvent(MouseEvent.MOUSE_MOVE, __onMouseMove);
+        renderer.screen.registerEvent(MouseEvent.MOUSE_UP, __onMouseUp);
+
+        timerClick = Timer.delay(function(){
+            if (timerClick != null) {
+                timerClick = null;
+
+                if (renderer.hitTest(currentMouseX, currentMouseY) &&
+                    MathUtil.distance(e.screenX, e.screenY, currentMouseX, currentMouseY) < 2 * Toolkit.pixelsPerRem) {
+                    toggleSelection(renderer);
+                    renderer.registerEvent(MouseEvent.CLICK, __onMouseClick, 1);
+                }
+            }
+        }, 500);   //TODO - configurable
+    }
+
+    private function onRendererClick(e:MouseEvent):Void {
+        var components = e.target.findComponentsUnderPoint(e.screenX, e.screenY);
+        for (component in components) {
+            if (Std.is(component, InteractiveComponent)) {
+                return;
+            }
+        }
+
+        var renderer:ItemRenderer = cast(e.target, ItemRenderer);
+        switch(_listview.selectionMode) {
+            case SelectionMode.DISABLED:
+
+            case SelectionMode.ONE_ITEM:
+                _listview.selectedIndex = renderer.itemIndex;
+
+            case SelectionMode.ONE_ITEM_REPEATED:
+                _listview.selectedIndices = [renderer.itemIndex];
+
+            case SelectionMode.MULTIPLE_MODIFIER_KEY, SelectionMode.MULTIPLE_CLICK_MODIFIER_KEY:
+                if (e.ctrlKey == true) {
+                    toggleSelection(renderer);
+                } else if (e.shiftKey == true) {
+                    var selectedIndices:Array<Int> = _listview.selectedIndices;
+                    var fromIndex:Int = selectedIndices.length > 0 ? selectedIndices[selectedIndices.length-1]: 0;
+                    var toIndex:Int = renderer.itemIndex;
+                    if (fromIndex < toIndex)
+                    {
+                        for (i in selectedIndices) {
+                            if (i < fromIndex) {
+                                fromIndex = i;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var tmp:Int = fromIndex;
+                        fromIndex = toIndex;
+                        toIndex = tmp;
+                    }
+
+                    selectRange(fromIndex, toIndex);
+                } else if (_listview.selectionMode == SelectionMode.MULTIPLE_CLICK_MODIFIER_KEY) {
+                    _listview.selectedIndex = renderer.itemIndex;
+                }
+
+            case SelectionMode.MULTIPLE_LONG_PRESS:
+                var selectedIndices:Array<Int> = _listview.selectedIndices;
+                if (selectedIndices.length > 0) {
+                    toggleSelection(renderer);
+                }
+
+            default:
+                //Nothing
+        }
+    }
+
+    private function toggleSelection(renderer:ItemRenderer) {
+        var itemIndex:Int = renderer.itemIndex;
+        var selectedIndices = _listview.selectedIndices.copy();
+        var index:Int;
+        if ((index = selectedIndices.indexOf(itemIndex)) == -1) {
+            selectedIndices.push(itemIndex);
+        } else {
+            selectedIndices.splice(index, 1);
+        }
+        _listview.selectedIndices = selectedIndices;
+    }
+
+    private function selectRange(fromIndex:Int, toIndex:Int) {
+        _listview.selectedIndices = [for (i in fromIndex...toIndex+1) i];
+    }
+}
+
+//***********************************************************************************************************
+// Composite Builder
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+private class ListViewBuilder extends ScrollViewBuilder {
+    private var _listview:ListView;
+
+    public function new(listview:ListView) {
+        super(listview);
+        _listview = listview;
+    }
+
+    public override function create() {
+        createContentContainer(_listview.virtual ? "absolute" : "vertical");
+    }
+
+    private override function createContentContainer(layoutName:String) {
+        if (_contents == null) {
+            super.createContentContainer(layoutName);
+            _contents.addClass("listview-contents");
+        }
+    }
+    
+    public override function addComponent(child:Component):Component {
+        var r = null;
+        if (Std.is(child, ItemRenderer) && (_listview.itemRenderer == null && _listview.itemRendererFunction == null && _listview.itemRendererClass == null)) {
+            _listview.itemRenderer = cast(child, ItemRenderer);
+            r = child;
+        } else {
+            r = super.addComponent(child);
+        }
+        return r;
+    }
+    
+    public override function onVirtualChanged() {
+        _contents.layoutName = _listview.virtual ? "absolute" : "vertical";
+    }
+}
+
+//***********************************************************************************************************
+// Behaviours
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+private class DataSourceBehaviour extends DataBehaviour {
+    public override function set(value:Variant) {
+        super.set(value);
+        var dataSource:DataSource<Dynamic> = _value;
+        if (dataSource != null) {
+            dataSource.transformer = new NativeTypeTransformer();
+            dataSource.onChange = function() {
+                _component.invalidateComponentLayout();
+                BindingManager.instance.componentPropChanged(_component, "dataSource");
+            }
+        }
+        _component.invalidateComponentLayout();
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class SelectedIndexBehaviour extends Behaviour {
+    public override function get():Variant {
+        var listView:ListView = cast(_component, ListView);
+        var selectedIndices:Array<Int> = listView.selectedIndices;
+        return selectedIndices != null && selectedIndices.length > 0 ? selectedIndices[selectedIndices.length-1] : -1;
+    }
+
+    public override function set(value:Variant) {
+        var listView:ListView = cast(_component, ListView);
+        listView.selectedIndices = value != -1 ? [value] : null;
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class SelectedItemBehaviour extends Behaviour {
+    public override function getDynamic():Dynamic {
+        var listView:ListView = cast(_component, ListView);
+        var selectedIndices:Array<Int> = listView.selectedIndices;
+        return selectedIndices.length > 0 ? listView.dataSource.get(selectedIndices[selectedIndices.length - 1]) : null;
+    }
+
+    public override function set(value:Variant) {
+        var listView:ListView = cast(_component, ListView);
+        var index:Int = listView.dataSource.indexOf(value);
+        if (index != -1 && listView.selectedIndices.indexOf(index) == -1) {
+            listView.selectedIndices = [index];
+        }
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class SelectedIndicesBehaviour extends DataBehaviour {
+    public override function get():Variant {
+        return _value.isNull ? [] : _value;
+    }
+
+    private override function validateData() {
+        var listView:ListView = cast(_component, ListView);
+        var selectedIndices:Array<Int> = listView.selectedIndices;
+        var contents:Component = _component.findComponent("scrollview-contents", false, "css");
+        var itemToEnsure:ItemRenderer = null;
+        for (child in contents.childComponents) {
+            if (selectedIndices.indexOf(cast(child, ItemRenderer).itemIndex) != -1) {
+                itemToEnsure = cast(child, ItemRenderer);
+                child.addClass(":selected", true, true);
+            } else {
+                child.removeClass(":selected", true, true);
+            }
+        }
+
+        if (itemToEnsure != null) {
+            var vscroll:VerticalScroll2 = listView.findComponent(VerticalScroll2);
+            if (vscroll != null) {
+                var vpos:Float = vscroll.pos;
+                var contents:Component = listView.findComponent("listview-contents", "css");
+                if (itemToEnsure.top + itemToEnsure.height > vpos + contents.componentClipRect.height) {
+                    vscroll.pos = ((itemToEnsure.top + itemToEnsure.height) - contents.componentClipRect.height);
+                } else if (itemToEnsure.top < vpos) {
+                    vscroll.pos = itemToEnsure.top;
+                }
+            }
+        }
+        
+        _component.dispatch(new UIEvent(UIEvent.CHANGE));
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class SelectedItemsBehaviour extends Behaviour {
+    public override function get():Variant {
+        var listView:ListView = cast(_component, ListView);
+        var selectedIndices:Array<Int> = listView.selectedIndices;
+        if (selectedIndices != null && selectedIndices.length > 0) {
+            var selectedItems:Array<Dynamic> = [];
+            for (i in 0...listView.dataSource.size) {
+                var data:Dynamic = listView.dataSource.get(i);
+                selectedItems.push(data);
+            }
+
+            return selectedItems;
+        } else {
+            return [];
+        }
+    }
+
+    public override function set(value:Variant) {
+        var listView:ListView = cast(_component, ListView);
+        var selectedItems:Array<Dynamic> = value;
+        if (selectedItems != null && selectedItems.length > 0) {
+            var selectedIndices:Array<Int> = [];
+            var index:Int;
+            for (item in selectedItems) {
+                if ((index = listView.dataSource.indexOf(item)) != -1) {
+                    selectedIndices.push(index);
+                }
+            }
+
+            listView.selectedIndices = selectedIndices;
+        } else {
+            listView.selectedIndices = [];
+        }
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class SelectionModeBehaviour extends DataBehaviour {
+    private override function validateData() {
+        var listView:ListView = cast(_component, ListView);
+        var selectedIndices:Array<Int> = listView.selectedIndices;
+        if (selectedIndices.length == 0) {
             return;
         }
 
-        for (n in 0..._dataSource.size) {
-            var data:Dynamic = _dataSource.get(n);
-            var item:ItemRenderer = null;
-            if (n < contents.childComponents.length) {
-                item = cast(contents.childComponents[n], ItemRenderer);
-                item.removeClass("even");
-                item.removeClass("odd");
+        var selectionMode:SelectionMode = cast _value;
+        switch(selectionMode) {
+            case SelectionMode.DISABLED:
+                listView.selectedIndices = null;
 
-                if (_itemRendererFunction != null
-                    && !Std.is(item, _itemRendererFunction(data).generator)) {
-                    contents.removeComponent(item);
-                    item = cast addComponent(itemToRenderer(data));  //TODO - addComponentAt
-                    contents.setComponentIndex(item, n);
+            case SelectionMode.ONE_ITEM:
+                if (selectedIndices.length > 1) {
+                    listView.selectedIndices = [selectedIndices[0]];
                 }
-            } else {
-                item = cast addComponent(itemToRenderer(data));      //TODO - addComponentAt
-                contents.setComponentIndex(item, n);
-            }
 
-            item.addClass(n % 2 == 0 ? "even" : "odd");
-            item.data = data;
-        }
-
-        while (_dataSource.size < contents.childComponents.length) {
-            contents.removeComponent(contents.childComponents[contents.childComponents.length - 1]); // remove last
-        }
-    }
-
-    private function itemToRenderer(data:Dynamic):ItemRenderer
-    {
-        if (_itemRendererFunction != null) {
-            return _itemRendererFunction(data).newInstance();
-        } else {
-            if (_itemRenderer == null) {
-                _itemRenderer = new BasicItemRenderer();
-            }
-            return _itemRenderer.cloneComponent();
-        }
-    }
-
-    //***********************************************************************************************************
-    // Validation
-    //***********************************************************************************************************
-
-    /**
-     Invalidate the index of this component
-    **/
-    @:dox(group = "Invalidation related properties and methods")
-    public inline function invalidateComponentIndex() {
-        invalidateComponent(InvalidationFlags.INDEX);
-    }
-
-    private override function validateComponentInternal() {
-        var dataInvalid = isComponentInvalid(InvalidationFlags.DATA);
-        var indexInvalid = isComponentInvalid(InvalidationFlags.INDEX);
-        var styleInvalid = isComponentInvalid(InvalidationFlags.STYLE);
-        var positionInvalid = isComponentInvalid(InvalidationFlags.POSITION);
-        var displayInvalid = isComponentInvalid(InvalidationFlags.DISPLAY);
-        var layoutInvalid = isComponentInvalid(InvalidationFlags.LAYOUT) && _layoutLocked == false;
-        var scrollInvalid = isComponentInvalid(InvalidationFlags.SCROLL);
-
-        if (dataInvalid) {
-            validateComponentData();
-        }
-
-        if (dataInvalid || indexInvalid) {
-            validateIndex();
-        }
-
-        if (styleInvalid) {
-            validateComponentStyle();
-        }
-
-        if (positionInvalid) {
-            validateComponentPosition();
-        }
-
-        if (layoutInvalid) {
-            displayInvalid = validateComponentLayout() || displayInvalid;
-        }
-
-        if (scrollInvalid || layoutInvalid) {
-            validateComponentScroll();
-        }
-
-        if (displayInvalid || styleInvalid) {
-            ValidationManager.instance.addDisplay(this);    //Update the display from all objects at the same time. Avoids UI flashes.
-        }
-    }
-
-    private override function validateComponentData() {
-        behaviourSet("dataSource", _dataSource);    //TODO - if the index is the only change, the syncUI method is executed anyway
-
-        super.validateComponentData();
-    }
-
-    private function validateIndex() {
-        var selectedItem = this.selectedItem;
-        if(_currentSelection != selectedItem)
-        {
-            if (_currentSelection != null) {
-                _currentSelection.removeClass(":selected", true, true);
-            }
-
-            _currentSelection = selectedItem;
-
-            if (_currentSelection != null) {
-                _currentSelection.addClass(":selected", true, true);
-                dispatch(new UIEvent(UIEvent.CHANGE));
-            }
-        }
-    }
-
-    private override function validateComponentLayout():Bool {
-        var result = super.validateComponentLayout();
-
-        createContentContainer();
-        if (contents == null) {
-            return result;
-        }
-        
-        //ItemHeight
-        var n:Int = 0;
-        var cy:Float = contents.layout.paddingTop + contents.layout.paddingBottom;
-        var scy:Float = contents.layout.verticalSpacing;
-        for (child in contents.childComponents) {
-            cy += child.height + scy;
-            n++;
-            if (n > 100) {
-                break;
-            }
-        }
-        if (n > 0) {
-            cy -= scy;
-        }
-        itemHeight = (cy / n);
-
-        return result;
-    }
-
-    //***********************************************************************************************************
-    // Clonable
-    //***********************************************************************************************************
-    public override function cloneComponent():ListView {
-        if (_dataSource != null) {
-            c.dataSource = _dataSource.clone();
-        }
-    }
-}
-
-typedef ItemRendererFunction = Dynamic->ClassFactory<ItemRenderer>;
-
-//***********************************************************************************************************
-// Default behaviours
-//***********************************************************************************************************
-
-@:dox(hide)
-@:access(haxe.ui.containers.ListView)
-class ListViewDefaultDataSourceBehaviour extends Behaviour {
-    public override function get():Variant {
-        var listView:ListView = cast(_component, ListView);
-        if (listView._dataSource != null) {
-            listView._dataSource.onChange = listView.onDataSourceChanged;
-        }
-        return listView._dataSource;
-    }
-
-    public override function set(value:Variant) {
-        var listView:ListView = cast(_component, ListView);
-        listView.syncUI();
-        if (listView._dataSource != null) {
-            listView._dataSource.onChange = listView.onDataSourceChanged;
-        }
-    }
-}
-
-@:dox(hide)
-@:access(haxe.ui.containers.ListView)
-class DefaultSelectedIndexBehaviour extends Behaviour {
-    public override function get():Variant {
-        var listView:ListView = cast(_component, ListView);
-        return listView._selectedIndex;
-    }
-
-    public override function set(value:Variant) {
-        var listView:ListView = cast(_component, ListView);
-        if(listView._dataSource != null && value < listView._dataSource.size && listView._selectedIndex != value) {
-            listView._selectedIndex = value;
-            listView.invalidateComponentIndex();
+            default:
         }
     }
 }

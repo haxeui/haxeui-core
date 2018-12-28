@@ -3,7 +3,7 @@ package haxe.ui.components;
 import haxe.ui.components.Button.ButtonBuilder;
 import haxe.ui.components.Button.ButtonEvents;
 import haxe.ui.containers.CalendarView;
-import haxe.ui.containers.ListView2;
+import haxe.ui.containers.ListView;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.DataBehaviour;
@@ -93,7 +93,7 @@ class DropDownHandler implements IDropDownHandler {
 
 @:access(haxe.ui.core.Component)
 class ListDropDownHandler extends DropDownHandler {
-    private var _listview:ListView2;
+    private var _listview:ListView;
     
     private override function get_component():Component {
         createListView();
@@ -151,7 +151,7 @@ class ListDropDownHandler extends DropDownHandler {
     
     private function createListView() {
         if (_listview == null) {
-            _listview = new ListView2();
+            _listview = new ListView();
             _listview.virtual = _dropdown.virtual;
             _listview.dataSource = _dropdown.dataSource;
         }
