@@ -2,7 +2,7 @@ package haxe.ui.layouts;
 
 import haxe.ui.components.HorizontalScroll2;
 import haxe.ui.components.VerticalScroll2;
-import haxe.ui.containers.ScrollView2;
+import haxe.ui.containers.ScrollView;
 import haxe.ui.core.Component;
 import haxe.ui.core.Platform;
 import haxe.ui.util.Size;
@@ -47,7 +47,7 @@ class ScrollViewLayout extends DefaultLayout {
             size.width -= vscroll.componentWidth;
         }
 
-        if (cast(component, ScrollView2).native == true) {
+        if (cast(component, ScrollView).native == true) {
             var contents:Component = component.findComponent("scrollview-contents", false, "css");
             if (contents != null) {
                 if (contents.componentWidth > size.width) {
@@ -73,7 +73,7 @@ class ScrollViewLayout extends DefaultLayout {
             size.width += vscroll.componentWidth;
         }
 
-        if (cast(component, ScrollView2).native == true) {
+        if (cast(component, ScrollView).native == true) {
             var contents:Component = component.findComponent("scrollview-contents", false, "css");
             if (contents != null) {
                 if (contents.width > component.width) {

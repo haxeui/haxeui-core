@@ -3,8 +3,8 @@ package haxe.ui.containers;
 import haxe.ui.binding.BindingManager;
 import haxe.ui.components.VerticalScroll2;
 import haxe.ui.constants.SelectionMode;
-import haxe.ui.containers.ScrollView2.ScrollViewBuilder;
-import haxe.ui.containers.ScrollView2;
+import haxe.ui.containers.ScrollView.ScrollViewBuilder;
+import haxe.ui.containers.ScrollView;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.DataBehaviour;
@@ -23,7 +23,7 @@ import haxe.ui.util.MathUtil;
 import haxe.ui.util.Variant;
 
 @:composite(ListViewEvents, ListViewBuilder, VerticalVirtualLayout)
-class ListView extends ScrollView2 implements IDataComponent implements IVirtualContainer {
+class ListView extends ScrollView implements IDataComponent implements IVirtualContainer {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
