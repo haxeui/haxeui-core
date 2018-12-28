@@ -389,8 +389,12 @@ class ButtonEvents extends haxe.ui.core.Events {
         if (_repeater == true) {
             _repeatTimer = new Timer(_button.repeatInterval, onRepeatTimer);
         } else if (_button.repeater == true) {
+			if (_repeatTimer != null) {
+				_repeatTimer.stop();
+				_repeatTimer = null;
+			}
 			Timer.delay(function():Void {
-				if (_repeater == true) onMouseDown(event);
+				if (_repeater == true && _repeatTimer == null) onMouseDown(event);
 			}, _button.repeatInterval * 2);
 		}
 		_repeater = _button.repeater;
