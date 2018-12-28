@@ -1,7 +1,7 @@
 package haxe.ui.layouts;
 
-import haxe.ui.components.HorizontalScroll2;
-import haxe.ui.components.VerticalScroll2;
+import haxe.ui.components.HorizontalScroll;
+import haxe.ui.components.VerticalScroll;
 import haxe.ui.containers.ScrollView;
 import haxe.ui.core.Component;
 import haxe.ui.core.Platform;
@@ -14,8 +14,8 @@ class ScrollViewLayout extends DefaultLayout {
             return;
         }
 
-        var hscroll = component.findComponent(HorizontalScroll2, false);
-        var vscroll = component.findComponent(VerticalScroll2, false);
+        var hscroll = component.findComponent(HorizontalScroll, false);
+        var vscroll = component.findComponent(VerticalScroll, false);
 
         var ucx = innerWidth;
         var ucy = innerHeight;
@@ -38,8 +38,8 @@ class ScrollViewLayout extends DefaultLayout {
 
     private override function get_usableSize():Size {
         var size:Size = super.get_usableSize();
-        var hscroll = component.findComponent(HorizontalScroll2, false);
-        var vscroll = component.findComponent(VerticalScroll2, false);
+        var hscroll = component.findComponent(HorizontalScroll, false);
+        var vscroll = component.findComponent(VerticalScroll, false);
         if (hscroll != null && hidden(hscroll) == false) {
             size.height -= hscroll.componentHeight;
         }
@@ -63,8 +63,8 @@ class ScrollViewLayout extends DefaultLayout {
     }
 
     public override function calcAutoSize(exclusions:Array<Component> = null):Size {
-        var hscroll = component.findComponent(HorizontalScroll2, false);
-        var vscroll = component.findComponent(VerticalScroll2, false);
+        var hscroll = component.findComponent(HorizontalScroll, false);
+        var vscroll = component.findComponent(VerticalScroll, false);
         var size:Size = super.calcAutoSize([hscroll, vscroll]);
         if (hscroll != null && hscroll.hidden == false) {
             size.height += hscroll.componentHeight;

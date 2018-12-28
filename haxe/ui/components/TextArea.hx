@@ -93,8 +93,8 @@ class TextArea extends InteractiveComponent implements IFocusable {
 @:dox(hide) @:noCompletion
 private class TextAreaLayout extends DefaultLayout {
     private override function repositionChildren() {
-        var hscroll:Component = component.findComponent(HorizontalScroll2, false);
-        var vscroll:Component = component.findComponent(VerticalScroll2, false);
+        var hscroll:Component = component.findComponent(HorizontalScroll, false);
+        var vscroll:Component = component.findComponent(VerticalScroll, false);
 
         var ucx = innerWidth;
         var ucy = innerHeight;
@@ -118,8 +118,8 @@ private class TextAreaLayout extends DefaultLayout {
     private override function resizeChildren() {
         super.resizeChildren();
 
-        var hscroll:Component = component.findComponent(HorizontalScroll2, false);
-        var vscroll:Component = component.findComponent(VerticalScroll2, false);
+        var hscroll:Component = component.findComponent(HorizontalScroll, false);
+        var vscroll:Component = component.findComponent(VerticalScroll, false);
 
         var usableSize:Size = usableSize;
         if (hscroll != null && hidden(hscroll) == false) {
@@ -142,8 +142,8 @@ private class TextAreaLayout extends DefaultLayout {
 
     private override function get_usableSize():Size {
         var size:Size = super.get_usableSize();
-        var hscroll:Component = component.findComponent(HorizontalScroll2, false);
-        var vscroll:Component = component.findComponent(VerticalScroll2, false);
+        var hscroll:Component = component.findComponent(HorizontalScroll, false);
+        var vscroll:Component = component.findComponent(VerticalScroll, false);
         if (hscroll != null && hidden(hscroll) == false) {
             size.height -= hscroll.componentHeight;
         }
@@ -251,23 +251,23 @@ private class Events extends haxe.ui.core.Events {
         
         if (_textarea.getTextInput().data.onScrollCallback == null) {
             _textarea.getTextInput().data.onScrollCallback = function() {
-                var hscroll:HorizontalScroll2 = _textarea.findComponent(HorizontalScroll2, false);
+                var hscroll:HorizontalScroll = _textarea.findComponent(HorizontalScroll, false);
                 if (hscroll != null) {
                     hscroll.pos = _textarea.getTextInput().hscrollPos;
                 }
-                var vscroll:VerticalScroll2 = _textarea.findComponent(VerticalScroll2, false);
+                var vscroll:VerticalScroll = _textarea.findComponent(VerticalScroll, false);
                 if (vscroll != null) {
                     vscroll.pos = _textarea.getTextInput().vscrollPos;
                 }
             }
         }
         
-        var hscroll:HorizontalScroll2 = _textarea.findComponent(HorizontalScroll2, false);
+        var hscroll:HorizontalScroll = _textarea.findComponent(HorizontalScroll, false);
         if (hscroll != null && hscroll.hasEvent(UIEvent.CHANGE, onScrollChange) == false) {
             hscroll.registerEvent(UIEvent.CHANGE, onScrollChange);
         }
         
-        var vscroll:VerticalScroll2 = _textarea.findComponent(VerticalScroll2, false);
+        var vscroll:VerticalScroll = _textarea.findComponent(VerticalScroll, false);
         if (vscroll != null && vscroll.hasEvent(UIEvent.CHANGE, onScrollChange) == false) {
             vscroll.registerEvent(UIEvent.CHANGE, onScrollChange);
         }
@@ -282,12 +282,12 @@ private class Events extends haxe.ui.core.Events {
         _textarea.getTextInput().data.onChangedCallback = null;
         _textarea.getTextInput().data.onScrollCallback = null;
         
-        var hscroll:HorizontalScroll2 = _textarea.findComponent(HorizontalScroll2, false);
+        var hscroll:HorizontalScroll = _textarea.findComponent(HorizontalScroll, false);
         if (hscroll != null) {
             hscroll.unregisterEvent(UIEvent.CHANGE, onScrollChange);
         }
         
-        var vscroll:VerticalScroll2 = _textarea.findComponent(VerticalScroll2, false);
+        var vscroll:VerticalScroll = _textarea.findComponent(VerticalScroll, false);
         if (vscroll != null) {
             vscroll.unregisterEvent(UIEvent.CHANGE, onScrollChange);
         }
@@ -299,7 +299,7 @@ private class Events extends haxe.ui.core.Events {
     }
     
     private function onMouseWheel(event:MouseEvent) {
-        var vscroll:VerticalScroll2 = _textarea.findComponent(VerticalScroll2, false);
+        var vscroll:VerticalScroll = _textarea.findComponent(VerticalScroll, false);
         if (vscroll != null) {
             var step = Math.ceil((_textarea.getTextInput().textStyle.fontSize + 1) / 10) * 10;
             if (event.delta > 0) {
@@ -311,12 +311,12 @@ private class Events extends haxe.ui.core.Events {
     }
     
     private function onScrollChange(event:UIEvent) {
-        var hscroll:HorizontalScroll2 = _textarea.findComponent(HorizontalScroll2, false);
+        var hscroll:HorizontalScroll = _textarea.findComponent(HorizontalScroll, false);
         if (hscroll != null) {
             _textarea.getTextInput().hscrollPos = hscroll.pos;
         }
         
-        var vscroll:VerticalScroll2 = _textarea.findComponent(VerticalScroll2, false);
+        var vscroll:VerticalScroll = _textarea.findComponent(VerticalScroll, false);
         if (vscroll != null) {
             _textarea.getTextInput().vscrollPos = vscroll.pos;
         }
@@ -357,7 +357,7 @@ private class TextAreaBuilder extends CompositeBuilder {
         
         var textInput:TextInput = _textarea.getTextInput();
         
-        var hscroll:HorizontalScroll2 = _component.findComponent(HorizontalScroll2, false);
+        var hscroll:HorizontalScroll = _component.findComponent(HorizontalScroll, false);
         if (textInput.textWidth > textInput.width) {
             if (hscroll == null) {
                 hscroll = createHScroll();
@@ -372,7 +372,7 @@ private class TextAreaBuilder extends CompositeBuilder {
             }
         }
         
-        var vscroll:VerticalScroll2 = _component.findComponent(VerticalScroll2, false);
+        var vscroll:VerticalScroll = _component.findComponent(VerticalScroll, false);
         if (textInput.textHeight > textInput.height) {
             if (vscroll == null) {
                 vscroll = createVScroll();
@@ -389,8 +389,8 @@ private class TextAreaBuilder extends CompositeBuilder {
         }
     }
     
-    public function createHScroll():HorizontalScroll2 {
-        var hscroll = new HorizontalScroll2();
+    public function createHScroll():HorizontalScroll {
+        var hscroll = new HorizontalScroll();
         hscroll.percentWidth = 100;
         hscroll.id = "textarea-hscroll";
         _component.addComponent(hscroll);
@@ -398,8 +398,8 @@ private class TextAreaBuilder extends CompositeBuilder {
         return hscroll;
     }
     
-    public function createVScroll():VerticalScroll2 {
-        var vscroll = new VerticalScroll2();
+    public function createVScroll():VerticalScroll {
+        var vscroll = new VerticalScroll();
         vscroll.percentHeight = 100;
         vscroll.id = "textarea-vscroll";
         _component.addComponent(vscroll);

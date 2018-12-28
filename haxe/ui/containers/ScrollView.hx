@@ -1,7 +1,7 @@
 package haxe.ui.containers;
 
-import haxe.ui.components.HorizontalScroll2;
-import haxe.ui.components.VerticalScroll2;
+import haxe.ui.components.HorizontalScroll;
+import haxe.ui.components.VerticalScroll;
 import haxe.ui.constants.ScrollMode;
 import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
@@ -154,7 +154,7 @@ private class HScrollPos extends DataBehaviour {
     }
     
     public override function get():Variant {
-        var hscroll = _scrollview.findComponent(HorizontalScroll2, false);
+        var hscroll = _scrollview.findComponent(HorizontalScroll, false);
         if (hscroll == null) {
             return 0;
         }
@@ -162,7 +162,7 @@ private class HScrollPos extends DataBehaviour {
     }
     
     public override function validateData() { // TODO: feels a bit ugly!
-        var hscroll = _scrollview.findComponent(HorizontalScroll2, false);
+        var hscroll = _scrollview.findComponent(HorizontalScroll, false);
         if (_scrollview.virtual == true) {
             if (hscroll == null) {
                 hscroll = cast(_scrollview._compositeBuilder, ScrollViewBuilder).createHScroll();
@@ -186,7 +186,7 @@ private class VScrollPos extends DataBehaviour {
     }
     
     public override function get():Variant {
-        var vscroll = _scrollview.findComponent(VerticalScroll2, false);
+        var vscroll = _scrollview.findComponent(VerticalScroll, false);
         if (vscroll == null) {
             return 0;
         }
@@ -194,7 +194,7 @@ private class VScrollPos extends DataBehaviour {
     }
     
     public override function validateData() { // TODO: feels a bit ugly!
-        var vscroll = _scrollview.findComponent(VerticalScroll2, false);
+        var vscroll = _scrollview.findComponent(VerticalScroll, false);
         if (_scrollview.virtual == true) {
             if (vscroll == null) {
                 vscroll = cast(_scrollview._compositeBuilder, ScrollViewBuilder).createVScroll();
@@ -218,7 +218,7 @@ private class HScrollMax extends DataBehaviour {
     }
     
     public override function get():Variant {
-        var hscroll = _scrollview.findComponent(HorizontalScroll2, false);
+        var hscroll = _scrollview.findComponent(HorizontalScroll, false);
         if (hscroll == null) {
             return 0;
         }
@@ -227,7 +227,7 @@ private class HScrollMax extends DataBehaviour {
     
     public override function validateData() { // TODO: feels a bit ugly!
         if (_scrollview.virtual == true) {
-            var hscroll = _scrollview.findComponent(HorizontalScroll2, false);
+            var hscroll = _scrollview.findComponent(HorizontalScroll, false);
             if (hscroll == null) {
                 hscroll = cast(_scrollview._compositeBuilder, ScrollViewBuilder).createHScroll();
             }
@@ -247,7 +247,7 @@ private class VScrollMax extends DataBehaviour {
     }
     
     public override function get():Variant {
-        var vscroll = _scrollview.findComponent(VerticalScroll2, false);
+        var vscroll = _scrollview.findComponent(VerticalScroll, false);
         if (vscroll == null) {
             return 0;
         }
@@ -256,7 +256,7 @@ private class VScrollMax extends DataBehaviour {
     
     public override function validateData() { // TODO: feels a bit ugly!
         if (_scrollview.virtual == true) {
-            var vscroll = _scrollview.findComponent(VerticalScroll2, false);
+            var vscroll = _scrollview.findComponent(VerticalScroll, false);
             if (vscroll == null) {
                 vscroll = cast(_scrollview._compositeBuilder, ScrollViewBuilder).createVScroll();
             }
@@ -277,7 +277,7 @@ private class HScrollPageSize extends DataBehaviour {
     
     public override function validateData() { // TODO: feels a bit ugly!
         if (_scrollview.virtual == true) {
-            var hscroll = _scrollview.findComponent(HorizontalScroll2, false);
+            var hscroll = _scrollview.findComponent(HorizontalScroll, false);
             if (hscroll == null) {
                 hscroll = cast(_scrollview._compositeBuilder, ScrollViewBuilder).createHScroll();
             }
@@ -298,7 +298,7 @@ private class VScrollPageSize extends DataBehaviour {
     
     public override function validateData() { // TODO: feels a bit ugly!
         if (_scrollview.virtual == true) {
-            var vscroll = _scrollview.findComponent(VerticalScroll2, false);
+            var vscroll = _scrollview.findComponent(VerticalScroll, false);
             if (vscroll == null) {
                 vscroll = cast(_scrollview._compositeBuilder, ScrollViewBuilder).createVScroll();
             }
@@ -342,12 +342,12 @@ class ScrollViewEvents extends haxe.ui.core.Events {
             contents.registerEvent(UIEvent.RESIZE, onContentsResized);
         }
         
-        var hscroll:HorizontalScroll2 = _scrollview.findComponent(HorizontalScroll2, false);
+        var hscroll:HorizontalScroll = _scrollview.findComponent(HorizontalScroll, false);
         if (hscroll != null && hscroll.hasEvent(UIEvent.CHANGE, onHScroll) == false) {
             hscroll.registerEvent(UIEvent.CHANGE, onHScroll);
         }
         
-        var vscroll:VerticalScroll2 = _scrollview.findComponent(VerticalScroll2, false);
+        var vscroll:VerticalScroll = _scrollview.findComponent(VerticalScroll, false);
         if (vscroll != null && vscroll.hasEvent(UIEvent.CHANGE, onVScroll) == false) {
             vscroll.registerEvent(UIEvent.CHANGE, onVScroll);
         }
@@ -367,12 +367,12 @@ class ScrollViewEvents extends haxe.ui.core.Events {
             contents.unregisterEvent(UIEvent.RESIZE, onContentsResized);
         }
         
-        var hscroll:HorizontalScroll2 = _scrollview.findComponent(HorizontalScroll2, false);
+        var hscroll:HorizontalScroll = _scrollview.findComponent(HorizontalScroll, false);
         if (hscroll != null) {
             hscroll.unregisterEvent(UIEvent.CHANGE, onHScroll);
         }
         
-        var vscroll:VerticalScroll2 = _scrollview.findComponent(VerticalScroll2, false);
+        var vscroll:VerticalScroll = _scrollview.findComponent(VerticalScroll, false);
         if (vscroll != null) {
             vscroll.unregisterEvent(UIEvent.CHANGE, onVScroll);
         }
@@ -399,8 +399,8 @@ class ScrollViewEvents extends haxe.ui.core.Events {
     private static inline var INERTIAL_TIME_CONSTANT = 325;
     private var _inertia:Inertia = null;
     private function onMouseDown(event:MouseEvent) {
-        var hscroll:HorizontalScroll2 = _scrollview.findComponent(HorizontalScroll2, false);
-        var vscroll:VerticalScroll2 = _scrollview.findComponent(VerticalScroll2, false);
+        var hscroll:HorizontalScroll = _scrollview.findComponent(HorizontalScroll, false);
+        var vscroll:VerticalScroll = _scrollview.findComponent(VerticalScroll, false);
 
         if (hscroll == null && vscroll == null) {
             return;
@@ -450,11 +450,11 @@ class ScrollViewEvents extends haxe.ui.core.Events {
     }
     
     private function onMouseMove(event:MouseEvent) {
-        var hscroll:HorizontalScroll2 = _scrollview.findComponent(HorizontalScroll2, false);
+        var hscroll:HorizontalScroll = _scrollview.findComponent(HorizontalScroll, false);
         if (hscroll != null) {
             hscroll.pos = _offset.x - event.screenX;
         }
-        var vscroll:VerticalScroll2 = _scrollview.findComponent(VerticalScroll2, false);
+        var vscroll:VerticalScroll = _scrollview.findComponent(VerticalScroll, false);
         if (vscroll != null) {
             vscroll.pos = _offset.y - event.screenY;
         }
@@ -487,7 +487,7 @@ class ScrollViewEvents extends haxe.ui.core.Events {
             
             _inertia.timestamp = haxe.Timer.stamp();
 
-            var hscroll:HorizontalScroll2 = _scrollview.findComponent(HorizontalScroll2, false);
+            var hscroll:HorizontalScroll = _scrollview.findComponent(HorizontalScroll, false);
             if (hscroll != null) {
                 _inertia.amplitude.x = 0.8 * velocityX;
             }
@@ -497,7 +497,7 @@ class ScrollViewEvents extends haxe.ui.core.Events {
                 _inertia.target.x = Math.round(_scrollview.hscrollPos + _inertia.amplitude.x);
             }
             
-            var vscroll:VerticalScroll2 = _scrollview.findComponent(VerticalScroll2, false);
+            var vscroll:VerticalScroll = _scrollview.findComponent(VerticalScroll, false);
             if (vscroll != null) {
                 _inertia.amplitude.y = 0.8 * velocityY;
             }
@@ -585,7 +585,7 @@ class ScrollViewEvents extends haxe.ui.core.Events {
     }
     
     private function onMouseWheel(event:MouseEvent) {
-        var vscroll:VerticalScroll2 = _scrollview.findComponent(VerticalScroll2, false);
+        var vscroll:VerticalScroll = _scrollview.findComponent(VerticalScroll, false);
         if (vscroll != null) {
             event.cancel();
             if (event.delta > 0) {
@@ -624,21 +624,21 @@ class ScrollViewBuilder extends CompositeBuilder {
     }
     
     public override function addComponent(child:Component):Component {
-        if (Std.is(child, HorizontalScroll2) == false && Std.is(child, VerticalScroll2) == false && child.hasClass("scrollview-contents") == false) {
+        if (Std.is(child, HorizontalScroll) == false && Std.is(child, VerticalScroll) == false && child.hasClass("scrollview-contents") == false) {
             return _contents.addComponent(child);
         }
         return null;
     }
     
     public override function addComponentAt(child:Component, index:Int):Component {
-        if (Std.is(child, HorizontalScroll2) == false && Std.is(child, VerticalScroll2) == false && child.hasClass("scrollview-contents") == false) {
+        if (Std.is(child, HorizontalScroll) == false && Std.is(child, VerticalScroll) == false && child.hasClass("scrollview-contents") == false) {
             return _contents.addComponentAt(child, index);
         }
         return null;
     }
     
     public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
-        if (Std.is(child, HorizontalScroll2) == false && Std.is(child, VerticalScroll2) == false && child.hasClass("scrollview-contents") == false) {
+        if (Std.is(child, HorizontalScroll) == false && Std.is(child, VerticalScroll) == false && child.hasClass("scrollview-contents") == false) {
             return _contents.removeComponent(child, dispose, invalidate);
         }
         return null;
@@ -649,7 +649,7 @@ class ScrollViewBuilder extends CompositeBuilder {
     }
     
     public override function setComponentIndex(child:Component, index:Int):Component {
-        if (Std.is(child, HorizontalScroll2) == false && Std.is(child, VerticalScroll2) == false && child.hasClass("scrollview-contents") == false) {
+        if (Std.is(child, HorizontalScroll) == false && Std.is(child, VerticalScroll) == false && child.hasClass("scrollview-contents") == false) {
             return _contents.setComponentIndex(child, index);
         }
         return null;
@@ -679,7 +679,7 @@ class ScrollViewBuilder extends CompositeBuilder {
         var horizontalConstraint = _contents;
         var verticalConstraint = _contents;
         
-        var hscroll:HorizontalScroll2 = _component.findComponent(HorizontalScroll2, false);
+        var hscroll:HorizontalScroll = _component.findComponent(HorizontalScroll, false);
         if (horizontalConstraint.width > usableSize.width) {
             if (hscroll == null) {
                 hscroll = createHScroll();
@@ -695,7 +695,7 @@ class ScrollViewBuilder extends CompositeBuilder {
             }
         }
 
-        var vscroll:VerticalScroll2 = _component.findComponent(VerticalScroll2, false);
+        var vscroll:VerticalScroll = _component.findComponent(VerticalScroll, false);
         if (verticalConstraint.height > usableSize.height) {
             if (vscroll == null) {
                 vscroll = createVScroll();
@@ -712,8 +712,8 @@ class ScrollViewBuilder extends CompositeBuilder {
         }
     }
 
-    public function createHScroll():HorizontalScroll2 {
-        var hscroll = new HorizontalScroll2();
+    public function createHScroll():HorizontalScroll {
+        var hscroll = new HorizontalScroll();
         hscroll.percentWidth = 100;
         hscroll.id = "scrollview-hscroll";
         _component.addComponent(hscroll);
@@ -721,8 +721,8 @@ class ScrollViewBuilder extends CompositeBuilder {
         return hscroll;
     }
     
-    public function createVScroll():VerticalScroll2 {
-        var vscroll = new VerticalScroll2();
+    public function createVScroll():VerticalScroll {
+        var vscroll = new VerticalScroll();
         vscroll.percentHeight = 100;
         vscroll.id = "scrollview-vscroll";
         _component.addComponent(vscroll);
@@ -750,12 +750,12 @@ class ScrollViewBuilder extends CompositeBuilder {
         var ypos:Float = 0;
 
         if (_scrollview.virtual == false) {
-            var hscroll = _component.findComponent(HorizontalScroll2, false);
+            var hscroll = _component.findComponent(HorizontalScroll, false);
             if (hscroll != null) {
                 xpos = hscroll.pos;
             }
             
-            var vscroll = _component.findComponent(VerticalScroll2, false);
+            var vscroll = _component.findComponent(VerticalScroll, false);
             if (vscroll != null) {
                 ypos = vscroll.pos;
             }

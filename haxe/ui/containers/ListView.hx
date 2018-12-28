@@ -1,7 +1,7 @@
 package haxe.ui.containers;
 
 import haxe.ui.binding.BindingManager;
-import haxe.ui.components.VerticalScroll2;
+import haxe.ui.components.VerticalScroll;
 import haxe.ui.constants.SelectionMode;
 import haxe.ui.containers.ScrollView.ScrollViewBuilder;
 import haxe.ui.containers.ScrollView;
@@ -371,7 +371,7 @@ private class SelectedIndicesBehaviour extends DataBehaviour {
         }
 
         if (itemToEnsure != null) {
-            var vscroll:VerticalScroll2 = listView.findComponent(VerticalScroll2);
+            var vscroll:VerticalScroll = listView.findComponent(VerticalScroll);
             if (vscroll != null) {
                 var vpos:Float = vscroll.pos;
                 var contents:Component = listView.findComponent("listview-contents", "css");

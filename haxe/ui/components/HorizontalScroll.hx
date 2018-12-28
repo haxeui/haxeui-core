@@ -5,7 +5,7 @@ import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.util.Point;
 import haxe.ui.util.Variant;
 
-class VerticalScroll2 extends Scroll2 {
+class HorizontalScroll extends Scroll {
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************
@@ -17,14 +17,14 @@ class VerticalScroll2 extends Scroll2 {
     
     private override function createChildren() { // TODO: this should be min-width / min-height in theme css when the new css engine is done
         super.createChildren();
-        if (componentHeight <= 0) {
-            componentHeight = 150;
+        if (componentWidth <= 0) {
+            componentWidth = 150;
         }
     }
     
     private override function createDefaults() { // TODO: remove this eventually, @:layout(...) or something
         super.createDefaults();
-        _defaultLayoutClass = VerticalScrollLayout;
+        _defaultLayoutClass = HorizontalScrollLayout;
     }
 }
 
@@ -35,32 +35,30 @@ class VerticalScroll2 extends Scroll2 {
 private class PosFromCoord extends Behaviour {
     public override function call(pos:Any = null):Variant {
         var p = cast(pos, Point);
-        var scroll:Scroll2 = cast(_component, Scroll2);
+        var scroll:Scroll = cast(_component, Scroll);
         var deinc:Button = _component.findComponent("scroll-deinc-button");
         var thumb:Button = _component.findComponent("scroll-thumb-button");
         
-        var ypos:Float = p.y;
-        var minY:Float = 0;
+        var xpos:Float = p.x;
+        var minX:Float = 0;
         if (deinc != null && deinc.hidden == false) {
-            minY = deinc.height + scroll.layout.verticalSpacing;
+            minX = deinc.width + scroll.layout.horizontalSpacing;
         }
-
-        var maxY:Float = scroll.layout.usableHeight - thumb.height;
+        var maxX:Float = scroll.layout.usableWidth - thumb.width;
         if (deinc != null && deinc.hidden == false) {
-            maxY += deinc.height + scroll.layout.verticalSpacing;
+            maxX += deinc.width + scroll.layout.horizontalSpacing;
+        }
+        if (xpos < minX) {
+            xpos = minX;
+        } else if (xpos > maxX) {
+            xpos = maxX;
         }
 
-        if (ypos < minY) {
-            ypos = minY;
-        } else if (ypos > maxY) {
-            ypos = maxY;
-        }
-
-        var ucy:Float = scroll.layout.usableHeight;
-        ucy -= thumb.height;
+        var ucx:Float = scroll.layout.usableWidth;
+        ucx -= thumb.width;
         var m:Int = Std.int(scroll.max - scroll.min);
-        var v:Float = ypos - minY;
-        var value:Float = scroll.min + ((v / ucy) * m);
+        var v:Float = xpos - minX;
+        var value:Float = scroll.min + ((v / ucx) * m);
         
         return value;
     }
@@ -70,12 +68,12 @@ private class PosFromCoord extends Behaviour {
 private class ApplyPageFromCoord extends Behaviour {
     public override function call(pos:Any = null):Variant {
         var p = cast(pos, Point);
-        var scroll:Scroll2 = cast(_component, Scroll2);
+        var scroll:Scroll = cast(_component, Scroll);
         var thumb:Button = _component.findComponent("scroll-thumb-button");
         
-        if (p.y < thumb.screenTop) {
+        if (p.x < thumb.screenLeft) {
             scroll.pos -= scroll.pageSize;
-        } else if (p.y > thumb.screenTop + thumb.height) {
+        } else if (p.x > thumb.screenLeft + thumb.width) {
             scroll.pos += scroll.pageSize;
         }
         
@@ -86,28 +84,23 @@ private class ApplyPageFromCoord extends Behaviour {
 //***********************************************************************************************************
 // Composite Layout
 //***********************************************************************************************************
-@:dox(hide) @:noCompletion
-private class VerticalScrollLayout extends DefaultLayout {
-    public function new() {
-        super();
-    }
-
+private class HorizontalScrollLayout extends DefaultLayout {
     public override function resizeChildren() {
         super.resizeChildren();
 
-        var scroll:Scroll2 = cast(component, Scroll2);
-        var thumb:Button =  component.findComponent("scroll-thumb-button");
+        var scroll:Scroll = cast(component, Scroll);
+        var thumb:Button = component.findComponent("scroll-thumb-button");
         if (thumb != null) {
             var m:Float = scroll.max - scroll.min;
-            var ucy:Float = usableHeight;
-            var thumbHeight = (scroll.pageSize / m) * ucy;
-            if (thumbHeight < innerWidth) {
-                thumbHeight = innerWidth;
-            } else if (thumbHeight > ucy) {
-                thumbHeight = ucy;
+            var ucx:Float = usableWidth;
+            var thumbWidth = (scroll.pageSize / m) * ucx;
+            if (thumbWidth < innerHeight) {
+                thumbWidth = innerHeight;
+            } else if (thumbWidth > ucx) {
+                thumbWidth = ucx;
             }
-            if (thumbHeight > 0 && Math.isNaN(thumbHeight) == false) {
-                thumb.height = thumbHeight;
+            if (thumbWidth > 0 && Math.isNaN(thumbWidth) == false) {
+                thumb.width = thumbWidth;
             }
         }
     }
@@ -118,35 +111,35 @@ private class VerticalScrollLayout extends DefaultLayout {
         var deinc:Button = component.findComponent("scroll-deinc-button");
         var inc:Button = component.findComponent("scroll-inc-button");
         if (inc != null && hidden(inc) == false) {
-            inc.top = component.height - inc.height - paddingBottom;
+            inc.left = component.width - inc.width - paddingRight;
         }
 
-        var scroll:Scroll2 = cast(component, Scroll2);
+        var scroll:Scroll = cast(component, Scroll);
         var thumb:Button =  component.findComponent("scroll-thumb-button");
         if (thumb != null) {
             var m:Float = scroll.max - scroll.min;
-            var u:Float = usableHeight;
-            u -= thumb.height;
-            var y:Float = ((scroll.pos - scroll.min) / m) * u;
-            y += paddingTop;
+            var u:Float = usableWidth;
+            u -= thumb.componentWidth;
+            var x:Float = ((scroll.pos - scroll.min) / m) * u;
+            x += paddingLeft;
             if (deinc != null && hidden(deinc) == false) {
-                y += deinc.height + verticalSpacing;
+                x += deinc.width + horizontalSpacing;
             }
-            thumb.top = y;
+            thumb.left = x;
         }
     }
 
     // usable height returns the amount of available space for % size components
-    private override function get_usableHeight():Float {
-        var ucy:Float = innerHeight;
+    private override function get_usableWidth():Float {
+        var ucx:Float = innerWidth;
         var deinc:Button = component.findComponent("scroll-deinc-button");
         var inc:Button = component.findComponent("scroll-inc-button");
         if (deinc != null && hidden(deinc) == false) {
-            ucy -= deinc.height + verticalSpacing;
+            ucx -= deinc.width + horizontalSpacing;
         }
         if (inc != null && hidden(inc) == false) {
-            ucy -= inc.height + verticalSpacing;
+            ucx -= inc.width + horizontalSpacing;
         }
-        return ucy;
+        return ucx;
     }
 }
