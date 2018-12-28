@@ -1,5 +1,15 @@
 package haxe.ui.containers;
 
+#if !impossible // ifdef it out for now
+
+import haxe.ui.core.Component;
+
+class TableView extends Component {
+    
+}
+
+#else
+
 import haxe.ui.layouts.Layout;
 import haxe.ui.components.HScroll;
 import haxe.ui.components.VScroll;
@@ -448,3 +458,5 @@ class TableViewRow extends HBox {
         return value;
     }
 }
+
+#end
