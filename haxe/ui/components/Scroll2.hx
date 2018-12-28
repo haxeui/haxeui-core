@@ -108,7 +108,10 @@ private class Events extends haxe.ui.core.Events  {
     }
     
     private function onMouseDown(event:MouseEvent) {
-        _scroll.applyPageFromCoord(new Point(event.screenX, event.screenY));
+		// if mouse isn't pressing _deincButton or _incButton...
+		if (_deincButton.hitTest(event.screenX, event.screenY) == false && _incButton.hitTest(event.screenX, event.screenY) == false) {
+			_scroll.applyPageFromCoord(new Point(event.screenX, event.screenY));
+		}
     }
     
     private function onDeinc(event:MouseEvent) {
