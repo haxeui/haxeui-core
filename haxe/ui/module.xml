@@ -51,6 +51,25 @@
         </global>
         <default>
             <style resource="haxeui-core/styles/default/main.css" priority="-3" />
+            <style resource="haxeui-core/styles/default/buttons.css" />
+            <style resource="haxeui-core/styles/default/dialogs.css" />
+            <style resource="haxeui-core/styles/default/textinputs.css" />
+            <style resource="haxeui-core/styles/default/scrollbars.css" />
+            <style resource="haxeui-core/styles/default/scrollview.css" />
+            <style resource="haxeui-core/styles/default/checkboxes.css" />
+            <style resource="haxeui-core/styles/default/optionboxes.css" />
+            <style resource="haxeui-core/styles/default/ranges.css" />
+            <style resource="haxeui-core/styles/default/progressbars.css" />
+            <style resource="haxeui-core/styles/default/sliders.css" />
+            <style resource="haxeui-core/styles/default/tabs.css" />
+            <style resource="haxeui-core/styles/default/listview.css" />
+            <style resource="haxeui-core/styles/default/dropdowns.css" />
+            <style resource="haxeui-core/styles/default/tableview.css" />
+            <style resource="haxeui-core/styles/default/switches.css" />
+            <style resource="haxeui-core/styles/default/calendars.css" />
+            <style resource="haxeui-core/styles/default/menus.css" />
+            <style resource="haxeui-core/styles/default/steppers.css" />
+            <style resource="haxeui-core/styles/default/accordion.css" />
         </default>
         <test parent="default">
             <style resource="haxeui-core/styles/test/main.css" />

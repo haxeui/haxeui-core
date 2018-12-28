@@ -1,0 +1,35 @@
+/************************************************************************
+** DROPDOWNS
+*************************************************************************/
+
+.dropdown {
+    icon: "haxeui-core/styles/default/up_down_arrows.png";
+    icon-position: far-right;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.dropdown {
+    icon: "haxeui-core/styles/default/up_down_arrows.png";
+    icon-position: far-right;
+    text-align: left;
+}

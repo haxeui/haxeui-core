@@ -66,9 +66,11 @@ class XMLParser extends ModuleParser {
                     if (checkCondition(themeNode, defines) == false) {
                         continue;
                     }
+                    
                     var theme:Module.ModuleThemeEntry = new Module.ModuleThemeEntry();
                     theme.name = themeNode.nodeName;
                     theme.parent = themeNode.get("parent");
+                    var lastPriority:Null<Float> = null;
                     for (styleNodes in themeNode.elementsNamed("style")) {
                         if (checkCondition(styleNodes, defines) == false) {
                             continue;
@@ -76,12 +78,18 @@ class XMLParser extends ModuleParser {
                         var styleEntry:ModuleThemeStyleEntry = new ModuleThemeStyleEntry();
                         styleEntry.resource = styleNodes.get("resource");
                         if (styleNodes.get("priority") != null) {
-                            styleEntry.priority = Std.parseInt(styleNodes.get("priority"));
+                            styleEntry.priority = Std.parseFloat(styleNodes.get("priority"));
+                            lastPriority = styleEntry.priority;
+                        } else if (lastPriority != null) {
+                            lastPriority += 0.01;
+                            styleEntry.priority = lastPriority;
                         } else if (context.indexOf("haxe/ui/backend/") != -1) { // lets auto the priority based on if we _think_ this is a backed - not fool proof, but a good start (means it doesnt HAVE to be in module.xml)
                             if (theme.name == "global") { // special case
                                 styleEntry.priority = -2;
+                                lastPriority = -2;
                             } else {
                                 styleEntry.priority = -1;
+                                lastPriority = -1;
                             }
                         }
                         theme.styles.push(styleEntry);

@@ -31,7 +31,7 @@ class ThemeManager {
         return theme;
     }
 
-    public function addStyleResource(themeName:String, resourceId:String, priority:Int = 0) {
+    public function addStyleResource(themeName:String, resourceId:String, priority:Float = 0) {
         getTheme(themeName).styles.push({
            resourceId: resourceId,
            priority: priority

@@ -2,5 +2,5 @@ package haxe.ui.themes;
 
 typedef ThemeEntry = {
     var resourceId:String;
-    var priority:Int;
+    var priority:Float;
 }

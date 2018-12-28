@@ -1,0 +1,229 @@
+/************************************************************************
+** SWITCH
+*************************************************************************/
+
+.switch {
+    background-color: #FFFFFF;
+    border: 1px solid #ABABAB;
+    border-radius: 2px;
+    cursor: pointer;
+    padding: 0px;
+    width: 60px;
+    height: 20px;
+    filter: drop-shadow(1, 45, #888888, 0.3, 1, 1, 1, 3, true);
+}
+
+.switch:hover {
+    background-color: #FFFFFF;
+}
+
+.switch:selected {
+    background-color: #98c4e6;
+}
+
+.switch .button {
+    height: 100%;
+    width: 50%;
+}
+
+.switch-label {
+    color: #ABABAB;
+}
+
+.switch-label:selected {
+    color: #2d7cb9;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.switch2 {
+    width: auto;
+    height: auto;
+    horizontal-spacing: 5px;
+}
+
+.switch-button-sub {
+    background-color: #FFFFFF;
+    border: 1px solid #ABABAB;
+    border-radius: 2px;
+    cursor: pointer;
+    padding: 0px;
+    initial-width: 60px;
+    initial-height: 20px;
+    filter: drop-shadow(1, 45, #888888, 0.3, 1, 1, 1, 3, true);
+}
+
+.switch-button-sub .button {
+    height: 100%;
+    width: 50%;
+}
+
+.switch-label {
+    color: black;
+    vertical-align: center;
+}
+
+@keyframes switchAnimateSelected {
+    0% {
+        pos: 0;
+        background-color: #FFFFFF;
+    }
+    100% {
+        pos: 100;
+        background-color: #98c4e6;
+    }
+}
+
+.switch-button-sub:selected {
+    animation: switchAnimateSelected 0.2s ease 0s 1;
+}
+
+.switch-button-sub:unselected {
+    animation: switchAnimateSelected 0.2s ease 0s 1 reverse backwards;
+}
+
+
+
+/***********************************************************************************************
+SOME ALTERNATE SWITCH STYLES - defaulting to alt2 for now, not sure if its the "best"
+************************************************************************************************/
+.alt1 .switch-button-sub {
+    border-radius: 50px;
+    initial-width: 40px;
+    padding: 3px;
+}
+
+.alt1 .switch-button-sub .button {
+    border-radius: 50px;
+    width: 14px;
+    height: 14px;
+}
+
+
+
+
+
+@keyframes switchAnimateSelectedAlt2 {
+    0% {
+        pos: 0;
+    }
+    100% {
+        pos: 100;
+    }
+}
+
+.alt2 .switch-button-sub:selected {
+    animation: switchAnimateSelectedAlt2 0.2s ease 0s 1;
+}
+ 
+.alt2 .switch-button-sub:unselected {
+    animation: switchAnimateSelectedAlt2 0.2s ease 0s 1 reverse backwards;
+}
+
+
+@keyframes switchAnimateExtraSelected {
+    0% {
+        background-color: #FFFFFF;
+    }
+    100% {
+        background-color: #98c4e6;
+    }
+}
+
+.alt2 .switch-button-sub-extra:selected {
+    animation: switchAnimateExtraSelected 0.2s ease 0s 1;
+}
+
+.alt2 .switch-button-sub-extra:unselected {
+    animation: switchAnimateExtraSelected 0.2s ease 0s 1 reverse backwards;
+}
+
+.alt2 .switch-button-sub {
+    border: none;
+    filter: none;
+    initial-width: 40px;
+}
+
+.alt2 .switch-button-sub-extra {
+    height: 14px;
+    width: 100%;
+    background-color: #FFFFFF;
+    border: 1px solid #ABABAB;
+    vertical-align: center;
+    border-radius: 10px;
+    filter: drop-shadow(1, 45, #888888, 0.3, 1, 1, 1, 3, true);
+}
+
+.alt2 .switch-button-sub .button {
+    width: 20px;
+    height: 20px;
+    border-radius: 50px;
+    filter: drop-shadow(1, 45, #000000, 0.3, 2, 2, 1, 3, false);
+}

@@ -1,0 +1,25 @@
+.accordion {
+    background-color: #ababab;
+    spacing: 1px;
+    padding: 1px;
+    border: 1px solid #ababab;
+}
+
+.accordion-button {
+    border-radius: 0;
+    border: none;
+    width: 100%;
+    text-align: left;
+    icon: "haxeui-core/styles/default/right_arrow.png";
+    icon-position: left;
+}
+
+.accordion-button:down {
+    icon: "haxeui-core/styles/default/down_arrow.png";
+}
+
+.accordion-page {
+    width: 100%;
+    padding: 5px;
+    background-color: white;
+}

@@ -1,0 +1,301 @@
+/************************************************************************
+** SCROLL
+*************************************************************************/
+.scroll {
+    background-color: #E9E9E9;
+}
+
+.scroll .button {
+    border-radius: 0;
+    border: none;
+    background-color: #E9E9E9;
+    padding: 0;
+    filter: none;
+}
+
+.scroll .button:hover {
+    background-color: #D7D7D7;
+}
+
+.scroll .button:down {
+    background-color: #525252;
+    filter: none;
+}
+
+.scroll .deinc {
+    height: 17px;
+    width: 17px;
+    opacity: 1;
+}
+
+.scroll deinc:disabled {
+    opacity: 0.5;
+}
+
+.scroll deinc:down {
+}
+
+.scroll .inc {
+    height: 17px;
+    width: 17px;
+    opacity: 1;
+}
+
+.scroll .inc:disabled {
+    opacity: 0.5;
+}
+
+.scroll .inc:down {
+}
+
+.scroll .thumb {
+    background-color: #C6C6C6;
+}
+
+.scroll .thumb:hover {
+    background-color: #AAAAAA;
+}
+
+.scroll .thumb:down {
+    background-color: #525252;
+}
+
+.scroll .thumb:disabled {
+    background-color: #DDDDDD;
+}
+
+/************************************************************************
+** VSCROLL
+*************************************************************************/
+.vscroll {
+    width: 17px;
+}
+
+.vscroll .thumb {
+    width: 17px;
+    height: 17px;
+}
+
+.vscroll .deinc {
+    icon: "haxeui-core/styles/default/up_arrow.png";
+}
+
+.vscroll .deinc:down {
+    icon: "haxeui-core/styles/default/up_arrow_white.png";
+}
+
+.vscroll .inc {
+    icon: "haxeui-core/styles/default/down_arrow.png";
+}
+
+.vscroll .inc:down {
+    icon: "haxeui-core/styles/default/down_arrow_white.png";
+}
+
+/************************************************************************
+** HSCROLL
+*************************************************************************/
+.hscroll {
+    height: 17px;
+}
+
+.hscroll .thumb {
+    width: 17px;
+    height: 17px;
+}
+
+.hscroll .deinc {
+    icon: "haxeui-core/styles/default/left_arrow.png";
+}
+
+.hscroll .deinc:down {
+    icon: "haxeui-core/styles/default/left_arrow_white.png";
+}
+
+.hscroll .inc {
+    icon: "haxeui-core/styles/default/right_arrow.png";
+}
+
+.hscroll .inc:down {
+    icon: "haxeui-core/styles/default/right_arrow_white.png";
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.scroll2 {
+    background-color: #E9E9E9;
+}
+
+.scroll2 .button {
+    border-radius: 0;
+    border: none;
+    background-color: #E9E9E9;
+    padding: 0;
+    filter: none;
+}
+
+.scroll2 .button:hover {
+    background-color: #D7D7D7;
+}
+
+.scroll2 .button:down {
+    background-color: #525252;
+    filter: none;
+}
+
+.scroll2 .deinc {
+    height: 17px;
+    width: 17px;
+    opacity: 1;
+}
+
+.scroll2 deinc:disabled {
+    opacity: 0.5;
+}
+
+.scroll2 deinc:down {
+}
+
+.scroll2 .inc {
+    height: 17px;
+    width: 17px;
+    opacity: 1;
+}
+
+.scroll2 .inc:disabled {
+    opacity: 0.5;
+}
+
+.scroll2 .inc:down {
+}
+
+.scroll2 .thumb {
+    background-color: #C6C6C6;
+}
+
+.scroll2 .thumb:hover {
+    background-color: #AAAAAA;
+}
+
+.scroll2 .thumb:down {
+    background-color: #525252;
+}
+
+.scroll2 .thumb:disabled {
+    background-color: #DDDDDD;
+}
+    
+
+
+
+
+
+
+
+
+
+
+
+
+.vertical-scroll2 {
+    width: 17px;
+}
+
+.vertical-scroll2 .thumb {
+    width: 17px;
+    height: 17px;
+}
+
+.vertical-scroll2 .deinc {
+    icon: "haxeui-core/styles/default/up_arrow.png";
+}
+
+.vertical-scroll2 .deinc:down {
+    icon: "haxeui-core/styles/default/up_arrow_white.png";
+}
+
+.vertical-scroll2 .inc {
+    icon: "haxeui-core/styles/default/down_arrow.png";
+}
+
+.vertical-scroll2 .inc:down {
+    icon: "haxeui-core/styles/default/down_arrow_white.png";
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+.horizontal-scroll2 {
+    height: 17px;
+}
+
+.horizontal-scroll2 .thumb {
+    width: 17px;
+    height: 17px;
+}
+
+.horizontal-scroll2 .deinc {
+    icon: "haxeui-core/styles/default/left_arrow.png";
+}
+
+.horizontal-scroll2 .deinc:down {
+    icon: "haxeui-core/styles/default/left_arrow_white.png";
+}
+
+.horizontal-scroll2 .inc {
+    icon: "haxeui-core/styles/default/right_arrow.png";
+}
+
+.horizontal-scroll2 .inc:down {
+    icon: "haxeui-core/styles/default/right_arrow_white.png";
+}
+
+
+
