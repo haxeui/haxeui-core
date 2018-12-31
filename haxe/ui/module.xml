@@ -72,10 +72,10 @@
             <style resource="haxeui-core/styles/default/accordion.css" />
         </default>
         <test parent="default">
-            <style resource="haxeui-core/styles/test/main.css" />
+            <style resource="haxeui-core/styles/test/main.css" priority="-3" />
         </test>
         <native parent="default">
-            <style resource="haxeui-core/styles/native/main.css" />
+            <style resource="haxeui-core/styles/native/main.css" priority="-3" />
         </native>
     </themes>
 
