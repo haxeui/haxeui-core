@@ -86,7 +86,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             c = Type.getSuperClass(c);
         }        
 
-        registerBehaviours();
+        //registerBehaviours();
         registerComposite();
         
         // we dont want to actually apply the classes, just find out if native is there or not
@@ -109,6 +109,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         createDefaults();
         handleCreate(native);
         destroyChildren();
+        registerBehaviours();
         behaviours.replaceNative();
 
         if (native == false || native == null) {
@@ -292,14 +293,13 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             removeClass(":native");
         }
 
-        //behaviours2.cache();
-        behaviours.cache();
+        behaviours.cache(); // behaviours will most likely lead to different classes now, so lets cache the current ones to get their values
         behaviours.detatch();
-        //behaviours.cache(); // behaviours will most likely lead to different classes now, so lets cache the current ones to get their values
-        //behaviours.detatch();
         create();
+        if (layout != null) {
+            layout = createLayout();
+        }
         behaviours.restore();
-        
         return value;
     }
 
