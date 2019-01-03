@@ -6,7 +6,6 @@ import haxe.ui.core.DataBehaviour;
 import haxe.ui.core.DefaultBehaviour;
 import haxe.ui.core.IDirectionalComponent;
 import haxe.ui.core.InteractiveComponent;
-import haxe.ui.core.InvalidatingBehaviour;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.Screen;
 import haxe.ui.core.UIEvent;

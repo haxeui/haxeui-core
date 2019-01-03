@@ -1,15 +1,15 @@
 package haxe.ui.core;
 
-import haxe.ui.containers.dialogs.Dialog2;
-import haxe.ui.styles.animation.Animation;
-import haxe.ui.styles.elements.AnimationKeyFrames;
-import haxe.ui.styles.Parser;
 import haxe.ui.backend.ComponentBase;
+import haxe.ui.containers.dialogs.Dialog2;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.DelegateLayout;
 import haxe.ui.layouts.Layout;
 import haxe.ui.scripting.ScriptInterp;
+import haxe.ui.styles.Parser;
 import haxe.ui.styles.Style;
+import haxe.ui.styles.animation.Animation;
+import haxe.ui.styles.elements.AnimationKeyFrames;
 import haxe.ui.util.CallStackHelper;
 import haxe.ui.util.Color;
 import haxe.ui.util.ComponentUtil;
@@ -23,27 +23,6 @@ import haxe.ui.util.Variant;
 import haxe.ui.validation.IValidating;
 import haxe.ui.validation.InvalidationFlags;
 import haxe.ui.validation.ValidationManager;
-
-@:dox(hide)
-class BindingInfo {
-    public function new() {
-    }
-    public var target:Component;
-    public var targetProperty:String;
-    public var sourceProperty:String;
-    public var transform:String;
-}
-
-@:dox(hide)
-class DeferredBindingInfo {
-    public function new() {
-    }
-    public var targetId:String;
-    public var sourceId:String;
-    public var targetProperty:String;
-    public var sourceProperty:String;
-    public var transform:String;
-}
 
 /**
  Base class of all HaxeUI controls
@@ -431,117 +410,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     //{Binding related}
     //***********************************************************************************************************
     public var bindingRoot:Bool = false;
-    private var _bindings:Map<String, Array<BindingInfo>>;
-    /**
-     Binds a property of this component to the property of another
-    **/
-    @:dox(group = "Binding related properties and methods")
-    public function addBinding(target:Component, transform:String = null, targetProperty:String = "value", sourceProperty:String = "value") {
-        if (_bindings == null) {
-            _bindings = new Map<String, Array<BindingInfo>>();
-        }
-
-        var array:Array<BindingInfo> = _bindings.get(sourceProperty);
-        if (array == null) {
-            array = [];
-            _bindings.set(sourceProperty, array);
-        }
-
-        var info:BindingInfo = new BindingInfo();
-        info.target = target;
-        info.targetProperty = targetProperty;
-        info.sourceProperty = sourceProperty;
-        info.transform = transform;
-        array.push(info);
-    }
-
-    private var _deferredBindings:Array<DeferredBindingInfo>;
-    /**
-     Binds a property of this component to the property of another that may or may not current exist in the component tree
-    **/
-    @:dox(group = "Binding related properties and methods")
-    public function addDeferredBinding(targetId:String, sourceId:String, transform:String = null, targetProperty:String = "value", sourceProperty:String = "value") {
-        if (_deferredBindings == null) {
-            _deferredBindings = [];
-        }
-
-        var deferredBinding:DeferredBindingInfo = new DeferredBindingInfo();
-        deferredBinding.targetId = targetId;
-        deferredBinding.sourceId = sourceId;
-        deferredBinding.transform = transform;
-        deferredBinding.targetProperty = targetProperty;
-        deferredBinding.sourceProperty = sourceProperty;
-
-        _deferredBindings.push(deferredBinding);
-    }
-
-    private function getDefferedBindings():Array<DeferredBindingInfo> {
-        var b = null;
-        var c = this;
-        while (b == null && c != null) {
-            if (c._deferredBindings != null) {
-                b = c._deferredBindings;
-                break;
-            }
-            c = c.parentComponent;
-        }
-        return b;
-    }
-
-    private function handleBindings(sourceProperties:Array<String>) {
-        if (_bindings == null) {
-            return;
-        }
-
-        for (sourceProperty in sourceProperties) {
-            var v:Variant = getProperty(sourceProperty);
-            if (v == null) {
-                continue;
-            }
-
-            var array:Array<BindingInfo> = _bindings.get(sourceProperty);
-            if (array == null) {
-                continue;
-            }
-
-            for (info in array) {
-
-                if (info.target == null) {
-                    continue;
-                }
-
-                if (info.transform == null) {
-                    info.target.setProperty(info.targetProperty, v);
-                } else if (info.transform.indexOf("${value}") != -1) {
-                    v = StringTools.replace(info.transform, "${value}", v);
-                    info.target.setProperty(info.targetProperty, v);
-                } else if (info.transform.indexOf("${") != -1) {
-                    var s:String = info.transform.substr(2, info.transform.length - 3);
-
-                    // probably not the most effecient method
-                    var scriptResult:Variant = null;
-                    try {
-                        var parser = new hscript.Parser();
-                        var program = parser.parseString(s);
-                        var interp = findScriptInterp();
-                        interp.variables.set("Math", Math);
-                        interp.variables.set("value", Variant.toDynamic(v));
-                        scriptResult = Variant.fromDynamic(interp.expr(program));
-                    } catch (e:Dynamic) {
-                        trace("Problem executing binding script: " + e);
-                    }
-
-                    if (scriptResult != null) {
-                        info.target.setProperty(info.targetProperty, scriptResult);
-                    }
-
-                } else {
-
-                }
-            }
-        }
-    }
-    //}
     //***********************************************************************************************************
 
     //***********************************************************************************************************
@@ -620,24 +488,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
         _children.push(child);
 
-        var deferredBindings:Array<DeferredBindingInfo> = getDefferedBindings();
-        if (deferredBindings != null) {
-            var itemsToRemove:Array<DeferredBindingInfo> = [];
-            for (binding in deferredBindings) {
-                var source:Component = findComponent(binding.sourceId, null, true);
-                var target:Component = findComponent(binding.targetId, null, true);
-                if (source != null && target != null) {
-                    source.addBinding(target, binding.transform, binding.targetProperty,  binding.sourceProperty);
-                    itemsToRemove.push(binding);
-                }
-            }
-
-            // remove found bindings
-            for (item in itemsToRemove) {
-                deferredBindings.remove(item);
-            }
-        }
-
         handleAddComponent(child);
         if (_ready) {
             child.ready();
@@ -681,25 +531,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             _children = [];
         }
         _children.insert(index, child);
-
-        // TODO: duplication, but will be removed when new binding system comes into play
-        var deferredBindings:Array<DeferredBindingInfo> = getDefferedBindings();
-        if (deferredBindings != null) {
-            var itemsToRemove:Array<DeferredBindingInfo> = [];
-            for (binding in deferredBindings) {
-                var source:Component = findComponent(binding.sourceId, null, true);
-                var target:Component = findComponent(binding.targetId, null, true);
-                if (source != null && target != null) {
-                    source.addBinding(target, binding.transform, binding.targetProperty,  binding.sourceProperty);
-                    itemsToRemove.push(binding);
-                }
-            }
-
-            // remove found bindings
-            for (item in itemsToRemove) {
-                deferredBindings.remove(item);
-            }
-        }
 
         handleAddComponentAt(child, index);
         if (_ready) {
@@ -1445,8 +1276,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
 
     private function onReady() {
         behavioursUpdate();
-
-        handleBindings(["text", "value", "width", "height"]);
     }
     
     private function onInitialize() {
