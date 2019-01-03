@@ -172,7 +172,14 @@ class Behaviours {
             var arr = autoDispatch.split(".");
             var eventName = arr.pop().toLowerCase();
             var cls = arr.join(".");
+            
+            #if hxcs // hxcs issue
+            var event:UIEvent = Type.createInstance(Type.resolveClass(cls), [null]);
+            event.type = eventName;
+            #else
             var event = Type.createInstance(Type.resolveClass(cls), [eventName]);
+            #end
+            
             b._component.dispatch(event);
         }
     }
