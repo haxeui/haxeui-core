@@ -1,5 +1,6 @@
 package haxe.ui.core;
 
+import haxe.ui.behaviours.ValueBehaviour;
 import haxe.ui.util.Variant;
 
 @:dox(hide) @:noCompletion

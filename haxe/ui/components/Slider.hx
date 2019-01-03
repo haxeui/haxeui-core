@@ -1,15 +1,15 @@
 package haxe.ui.components;
 
-import haxe.ui.core.Behaviour;
+import haxe.ui.behaviours.Behaviour;
 import haxe.ui.core.CompositeBuilder;
-import haxe.ui.core.DataBehaviour;
-import haxe.ui.core.DefaultBehaviour;
+import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.core.IDirectionalComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.Screen;
 import haxe.ui.core.UIEvent;
-import haxe.ui.core.ValueBehaviour;
+import haxe.ui.behaviours.ValueBehaviour;
 import haxe.ui.util.MathUtil;
 import haxe.ui.util.Point;
 import haxe.ui.util.Variant;

@@ -1,7 +1,7 @@
 package haxe.ui.containers.menus;
 import haxe.ui.components.OptionBox;
 import haxe.ui.core.CompositeBuilder;
-import haxe.ui.core.DataBehaviour;
+import haxe.ui.behaviours.DataBehaviour;
 
 @:composite(Builder)
 class MenuOptionBox extends MenuItem {

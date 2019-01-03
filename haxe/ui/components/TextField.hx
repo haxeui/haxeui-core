@@ -1,9 +1,9 @@
 package haxe.ui.components;
 
-import haxe.ui.core.Behaviour;
+import haxe.ui.behaviours.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
-import haxe.ui.core.DataBehaviour;
+import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.core.FocusEvent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.MouseEvent;

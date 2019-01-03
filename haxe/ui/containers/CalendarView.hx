@@ -4,7 +4,7 @@ import haxe.ui.components.Button;
 import haxe.ui.components.Calendar;
 import haxe.ui.components.Label;
 import haxe.ui.core.CompositeBuilder;
-import haxe.ui.core.DefaultBehaviour;
+import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.UIEvent;
 import haxe.ui.util.Variant;

@@ -2,7 +2,7 @@ package haxe.ui.components;
 
 import haxe.ds.StringMap;
 import haxe.ui.core.Component;
-import haxe.ui.core.DataBehaviour;
+import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.core.UIEvent;
 import haxe.ui.util.Variant;
 

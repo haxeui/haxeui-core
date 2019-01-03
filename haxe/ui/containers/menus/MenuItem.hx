@@ -4,7 +4,7 @@ import haxe.ui.components.Image;
 import haxe.ui.components.Label;
 import haxe.ui.containers.HBox;
 import haxe.ui.core.CompositeBuilder;
-import haxe.ui.core.DataBehaviour;
+import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.core.MouseEvent;
 
 @:composite(Events, Builder)

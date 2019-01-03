@@ -1,5 +1,6 @@
-package haxe.ui.core;
+package haxe.ui.behaviours;
 
+import haxe.ui.core.Component;
 import haxe.ui.util.Variant;
 
 /**

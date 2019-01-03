@@ -1,11 +1,11 @@
-package haxe.ui.core;
+package haxe.ui.behaviours;
 
 import haxe.ui.util.Variant;
 
 @:dox(hide) @:noCompletion
-class DefaultBehaviour extends Behaviour {
+class ValueBehaviour extends Behaviour {
     private var _value:Variant;
-    
+
     public override function get():Variant {
         return _value;
     }
@@ -16,7 +16,5 @@ class DefaultBehaviour extends Behaviour {
         }
 
         _value = value;
-        
-        super.set(value);
     }
 }

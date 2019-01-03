@@ -2,7 +2,7 @@ package haxe.ui.containers.menus;
 
 import haxe.ui.components.CheckBox;
 import haxe.ui.core.CompositeBuilder;
-import haxe.ui.core.DataBehaviour;
+import haxe.ui.behaviours.DataBehaviour;
 
 @:composite(Builder)
 class MenuCheckBox extends MenuItem {

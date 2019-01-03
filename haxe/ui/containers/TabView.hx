@@ -2,11 +2,11 @@ package haxe.ui.containers;
 
 import haxe.ui.components.Button;
 import haxe.ui.components.TabBar;
-import haxe.ui.core.Behaviour;
+import haxe.ui.behaviours.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
-import haxe.ui.core.DataBehaviour;
-import haxe.ui.core.DefaultBehaviour;
+import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.core.UIEvent;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.LayoutFactory;

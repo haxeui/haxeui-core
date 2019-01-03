@@ -1,8 +1,8 @@
 package haxe.ui.components;
 
 import haxe.ui.util.Variant;
-import haxe.ui.core.DataBehaviour;
-import haxe.ui.core.DefaultBehaviour;
+import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.core.IDirectionalComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.LayoutBehaviour;

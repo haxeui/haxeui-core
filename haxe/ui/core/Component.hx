@@ -1,6 +1,9 @@
 package haxe.ui.core;
 
 import haxe.ui.backend.ComponentBase;
+import haxe.ui.behaviours.Behaviours;
+import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.containers.dialogs.Dialog2;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.DelegateLayout;

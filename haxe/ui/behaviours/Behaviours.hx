@@ -1,5 +1,7 @@
-package haxe.ui.core;
+package haxe.ui.behaviours;
 
+import haxe.ui.core.Component;
+import haxe.ui.core.UIEvent;
 import haxe.ui.util.Variant;
 
 typedef BehaviourInfo = {
@@ -10,7 +12,7 @@ typedef BehaviourInfo = {
 }
 
 @:access(haxe.ui.core.Component)
-@:access(haxe.ui.core.Behaviour)
+@:access(haxe.ui.behaviours.Behaviour)
 class Behaviours {
     private var _component:Component;
     
