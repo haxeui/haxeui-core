@@ -18,7 +18,7 @@ import haxe.ui.styles.Parser;
 import haxe.ui.styles.Style;
 import haxe.ui.styles.animation.Animation;
 import haxe.ui.styles.elements.AnimationKeyFrames;
-import haxe.ui.util.CallStackHelper;
+import haxe.ui.debug.CallStackHelper;
 import haxe.ui.util.Color;
 import haxe.ui.util.ComponentUtil;
 import haxe.ui.util.EventMap;

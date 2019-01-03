@@ -1,4 +1,4 @@
-package haxe.ui.util;
+package haxe.ui.debug;
 
 import haxe.CallStack;
 
