@@ -1,4 +1,4 @@
-package haxe.ui.util.filters;
+package haxe.ui.filters;
 
 class FilterParser {
     private static var filterParamDefaults:Map<String, Array<Dynamic>>;

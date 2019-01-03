@@ -1,4 +1,4 @@
-package haxe.ui.util.filters;
+package haxe.ui.filters;
 
 class DropShadow extends Filter {
     public var distance:Float;

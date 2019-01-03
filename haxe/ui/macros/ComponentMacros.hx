@@ -8,8 +8,8 @@ import haxe.ui.parsers.ui.ComponentParser;
 import haxe.ui.parsers.ui.LayoutInfo;
 import haxe.ui.parsers.ui.resolvers.FileResourceResolver;
 import haxe.ui.scripting.ConditionEvaluator;
-import haxe.ui.util.ComponentFieldMap;
-import haxe.ui.util.ComponentFieldMap;
+import haxe.ui.core.ComponentFieldMap;
+import haxe.ui.core.ComponentFieldMap;
 import haxe.ui.util.StringUtil;
 
 #if macro

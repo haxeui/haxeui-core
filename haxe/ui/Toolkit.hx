@@ -20,7 +20,7 @@ import haxe.ui.parsers.ui.resolvers.ResourceResolver;
 import haxe.ui.scripting.ConditionEvaluator;
 import haxe.ui.styles.StyleSheet;
 import haxe.ui.themes.ThemeManager;
-import haxe.ui.util.ComponentFieldMap;
+import haxe.ui.core.ComponentFieldMap;
 import haxe.ui.util.GenericConfig;
 import haxe.ui.util.Properties;
 import haxe.ui.util.Variant;

@@ -2,8 +2,8 @@ package haxe.ui.styles;
 
 import haxe.ui.styles.animation.Animation.AnimationOptions;
 import haxe.ui.styles.elements.Directive;
-import haxe.ui.util.filters.Filter;
-import haxe.ui.util.filters.FilterParser;
+import haxe.ui.filters.Filter;
+import haxe.ui.filters.FilterParser;
 
 class Style {
     public var left:Null<Float>;

@@ -1,4 +1,4 @@
-package haxe.ui.util;
+package haxe.ui.core;
 
 class ComponentFieldMap {
     private static var MAP:Map<String, String> = [
