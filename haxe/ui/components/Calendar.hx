@@ -29,11 +29,11 @@ class Calendar extends Grid {
     @:clonable @:behaviour(SelectedDateBehaviour)          public var selectedDate:Date;
     
     public function previousMonth() { // TODO: work out a way to use meta data with callable behaviours
-        behaviourCall("previousMonth");
+        behaviours.call("previousMonth");
     }
     
     public function nextMonth() { // TODO: work out a way to use meta data with callable behaviours
-        behaviourCall("nextMonth");
+        behaviours.call("nextMonth");
     }
 }
 

@@ -186,63 +186,10 @@ class Component extends ComponentBase implements IComponentBase implements IVali
 
         return l;
     }
-
-    
-    
     
     // TODO: these functions should be removed and components should use behaviours.get/set/call/defaults direction
-    private function defaultBehaviour(name:String, behaviour:Behaviour) {
-    }
-    private function defaultBehaviours(behaviours:Map<String, Behaviour>) {
-    }
-    
-    private function getBehaviour(id:String):Behaviour {
-        //return behaviours.getBehaviour(id);
-        return behaviours.find(id);
-    }
-
-    private function behaviourGet(id:String):Variant {
-        //return behaviours.get(id);
-        return behaviours.get(id);
-    }
-
-    private function behaviourGetDynamic(id:String):Dynamic {
-        /*
-        var b:Behaviour = getBehaviour(id);
-        if (b != null) {
-            return b.getDynamic();
-        }
-        return null;
-        */
-        return behaviours.getDynamic(id);
-    }
-
-    private function behaviourSet(id:String, value:Variant) {
-        behaviours.set(id, value);
-    }
-
-    private function behaviourCall(id:String, param:Any = null):Variant {
-        return behaviours.call(id, param);
-    }
-    
-    private function behaviourRun(id:String, param:Variant = null):Variant {
-        /*
-        var r = null;
-        var b:Behaviour = getBehaviour(id);
-        if (b != null) {
-            r = b.run(param);
-        }
-        return r;
-        */
-        return null;
-    }
-
     private var _behaviourUpdateOrder:Array<String> = [];
-    private function behavioursUpdate() {
-//        behaviours.update();
-       behaviours.update();
-    }
-    
+
     private var _native:Null<Bool> = null;
     /**
      Whether to try to use a native version of this component
@@ -353,40 +300,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
 
     
     @:clonable @:behaviour(DefaultBehaviour)  public var text:String;
-    
-    private var _text:String = null;
-    /**
-     The text of this component (not used in all sub classes)
-    **/
-     /*
-    @clonable public var text(get, set):String;
-    private function get_text():String {
-        return _text;
-    }
-    private function set_text(value:String):String {
-        if (_text != value) {
-            _text = value;
-        }
-        return _text;
-    }
-    */
-
-    /**
-     The value of this component. This can mean different things depending on the component.
-
-     For example a buttons value is its text, and sliders value is its slider position.
-    **/
-     /*
-    @clonable public var value(get, set):Variant;
-    private function get_value():Variant {
-        return null;
-    }
-    private function set_value(value:Variant):Variant {
-        //text = value;
-        return value;
-    }
-    @:clonable @:behaviour(DefaultBehaviour)  public var value:Variant;
-    */
     
     public var value(get, set):Dynamic;
     private function get_value():Dynamic {
@@ -1275,7 +1188,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     }
 
     private function onReady() {
-        behavioursUpdate();
+        behaviours.update();
     }
     
     private function onInitialize() {
@@ -2453,23 +2366,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     //***********************************************************************************************************
     // Properties
     //***********************************************************************************************************
-    private function getProperty(name:String):Variant {
-        switch (name) {
-            case "value":       return this.value;
-            case "width":       return this.width;
-            case "height":      return this.height;
-        }
-        return null;
-    }
-
-    private function setProperty(name:String, value:Variant):Variant {
-        switch (name) {
-            case "value":       return this.value = value;
-            case "width":       return this.width = value;
-            case "height":      return this.height = value;
-        }
-        return null;
-    }
 
     /**
      Gets a property that is associated with all classes of this type
