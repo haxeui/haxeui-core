@@ -12,7 +12,7 @@ import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.ItemRenderer;
-import haxe.ui.core.LayoutBehaviour;
+import haxe.ui.behaviours.LayoutBehaviour;
 import haxe.ui.core.MouseEvent;
 import haxe.ui.core.ScrollEvent;
 import haxe.ui.core.UIEvent;

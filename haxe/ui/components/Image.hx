@@ -8,7 +8,7 @@ import haxe.ui.core.CompositeBuilder;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.core.ImageDisplay;
-import haxe.ui.core.InvalidatingBehaviour;
+import haxe.ui.behaviours.InvalidatingBehaviour;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.styles.Style;
 import haxe.ui.util.ImageLoader;
