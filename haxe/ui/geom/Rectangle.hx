@@ -1,4 +1,4 @@
-package haxe.ui.util;
+package haxe.ui.geom;
 
 class Rectangle {
     public var left(default, default):Float;

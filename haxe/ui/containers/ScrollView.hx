@@ -15,9 +15,9 @@ import haxe.ui.events.UIEvent;
 import haxe.ui.events.Events;
 import haxe.ui.layouts.LayoutFactory;
 import haxe.ui.layouts.ScrollViewLayout;
-import haxe.ui.util.Point;
-import haxe.ui.util.Rectangle;
-import haxe.ui.util.Size;
+import haxe.ui.geom.Point;
+import haxe.ui.geom.Rectangle;
+import haxe.ui.geom.Size;
 import haxe.ui.util.Variant;
 import haxe.ui.validation.InvalidationFlags;
 

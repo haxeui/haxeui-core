@@ -10,7 +10,7 @@ import haxe.ui.events.Events;
 import haxe.ui.focus.FocusManager;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.styles.Style;
-import haxe.ui.util.Size;
+import haxe.ui.geom.Size;
 import haxe.ui.util.Timer;
 import haxe.ui.util.Variant;
 

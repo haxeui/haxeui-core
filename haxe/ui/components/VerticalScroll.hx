@@ -2,7 +2,7 @@ package haxe.ui.components;
 
 import haxe.ui.behaviours.Behaviour;
 import haxe.ui.layouts.DefaultLayout;
-import haxe.ui.util.Point;
+import haxe.ui.geom.Point;
 import haxe.ui.util.Variant;
 
 class VerticalScroll extends Scroll {

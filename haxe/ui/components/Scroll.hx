@@ -9,7 +9,7 @@ import haxe.ui.core.InteractiveComponent;
 import haxe.ui.behaviours.LayoutBehaviour;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
-import haxe.ui.util.Point;
+import haxe.ui.geom.Point;
 
 class Scroll extends InteractiveComponent implements IDirectionalComponent {
     //***********************************************************************************************************

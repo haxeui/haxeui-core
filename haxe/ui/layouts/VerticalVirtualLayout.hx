@@ -2,7 +2,7 @@ package haxe.ui.layouts;
 
 import haxe.ui.containers.IVirtualContainer;
 import haxe.ui.core.Component;
-import haxe.ui.util.Size;
+import haxe.ui.geom.Size;
 
 class VerticalVirtualLayout extends VirtualLayout {
     private override function repositionChildren() {

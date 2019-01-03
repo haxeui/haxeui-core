@@ -5,7 +5,7 @@ import haxe.ui.core.CompositeBuilder;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.styles.Style;
-import haxe.ui.util.Size;
+import haxe.ui.geom.Size;
 import haxe.ui.util.Variant;
 
 @:composite(Builder, LabelLayout)

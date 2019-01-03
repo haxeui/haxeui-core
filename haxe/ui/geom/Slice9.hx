@@ -1,4 +1,5 @@
-package haxe.ui.util;
+package haxe.ui.geom;
+import haxe.ui.geom.Rectangle;
 
 typedef Slice9Rects = {
     src:Array<Rectangle>,

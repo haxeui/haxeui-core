@@ -1,6 +1,6 @@
 package haxe.ui.layouts;
 
-import haxe.ui.util.Size;
+import haxe.ui.geom.Size;
 
 class HorizontalLayout extends DefaultLayout {
     public function new() {

@@ -12,7 +12,7 @@ import haxe.ui.events.UIEvent;
 import haxe.ui.behaviours.ValueBehaviour;
 import haxe.ui.events.Events;
 import haxe.ui.util.MathUtil;
-import haxe.ui.util.Point;
+import haxe.ui.geom.Point;
 import haxe.ui.util.Variant;
 
 @:composite(SliderBuilder)

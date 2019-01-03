@@ -1,4 +1,4 @@
-package haxe.ui.util;
+package haxe.ui.geom;
 
 class Size {
     public var width(default, default):Float;

@@ -1,6 +1,6 @@
 package haxe.ui.components;
 
-import haxe.ui.util.Point;
+import haxe.ui.geom.Point;
 
 @:composite(VerticalRange.VerticalRangeLayout)
 class VerticalProgress extends Progress {

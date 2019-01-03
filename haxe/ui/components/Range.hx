@@ -12,7 +12,7 @@ import haxe.ui.core.Screen;
 import haxe.ui.events.UIEvent;
 import haxe.ui.events.Events;
 import haxe.ui.util.MathUtil;
-import haxe.ui.util.Point;
+import haxe.ui.geom.Point;
 import haxe.ui.util.Variant;
 
 @:composite(Builder)

@@ -11,7 +11,7 @@ import haxe.ui.events.UIEvent;
 import haxe.ui.events.Events;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.LayoutFactory;
-import haxe.ui.util.Size;
+import haxe.ui.geom.Size;
 import haxe.ui.util.Variant;
 
 @:composite(Builder, Events, Layout)

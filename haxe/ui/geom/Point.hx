@@ -1,4 +1,4 @@
-package haxe.ui.util;
+package haxe.ui.geom;
 
 class Point {
     public var x:Float;

@@ -1,7 +1,7 @@
 package haxe.ui.layouts;
 
 import haxe.ui.core.Component;
-import haxe.ui.util.Size;
+import haxe.ui.geom.Size;
 
 class Layout implements ILayout {
     public function new() {
