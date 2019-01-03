@@ -1,0 +1,9 @@
+{
+    "name": "flixel",
+    "type": "template",
+    "subProjects": [
+        "shared", "flixel-shared"
+    ],
+    "templates": [
+    ]
+}

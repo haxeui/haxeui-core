@@ -39,6 +39,6 @@ class ColorUtil {
         } else if (StringTools.startsWith(s, "0x")) {
             s = s.substring(2, s.length);
         }
-        return Std.parseInt("0xFF" + s);
+        return Std.parseInt("0x" + s);
     }
 }
