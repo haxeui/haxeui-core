@@ -6,10 +6,11 @@ import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.core.IDirectionalComponent;
 import haxe.ui.core.InteractiveComponent;
-import haxe.ui.core.MouseEvent;
+import haxe.ui.events.MouseEvent;
 import haxe.ui.core.Screen;
-import haxe.ui.core.UIEvent;
+import haxe.ui.events.UIEvent;
 import haxe.ui.behaviours.ValueBehaviour;
+import haxe.ui.events.Events;
 import haxe.ui.util.MathUtil;
 import haxe.ui.util.Point;
 import haxe.ui.util.Variant;
@@ -124,7 +125,7 @@ private class PosFromCoord extends Behaviour {
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.components.Slider)
-private class Events extends haxe.ui.core.Events  {
+private class Events extends haxe.ui.events.Events  {
     private var _slider:Slider;
     
     private var _endThumb:Button;

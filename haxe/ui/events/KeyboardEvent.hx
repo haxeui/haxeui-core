@@ -1,4 +1,4 @@
-package haxe.ui.core;
+package haxe.ui.events;
 
 class KeyboardEvent extends UIEvent {
     public static inline var KEY_TAB:Int = 9;

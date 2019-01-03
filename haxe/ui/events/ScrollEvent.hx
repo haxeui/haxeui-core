@@ -1,4 +1,4 @@
-package haxe.ui.core;
+package haxe.ui.events;
 
 class ScrollEvent extends UIEvent {
     public static inline var CHANGE:String = "scrollchange";

@@ -5,7 +5,8 @@ import haxe.ui.core.CompositeBuilder;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.core.InteractiveComponent;
-import haxe.ui.core.UIEvent;
+import haxe.ui.events.UIEvent;
+import haxe.ui.events.Events;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.HorizontalLayout;
 import haxe.ui.util.Variant;
@@ -26,7 +27,7 @@ class Switch extends Component {
 // Events
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
-private class Events extends haxe.ui.core.Events {
+private class Events extends haxe.ui.events.Events {
     private var _switch:Switch;
     
     public function new(s:Switch) {

@@ -3,7 +3,7 @@ package haxe.ui.containers.dialogs;
 import haxe.ui.components.Button;
 import haxe.ui.components.Label;
 import haxe.ui.core.Component;
-import haxe.ui.core.MouseEvent;
+import haxe.ui.events.MouseEvent;
 import haxe.ui.layouts.VerticalLayout;
 
 /**

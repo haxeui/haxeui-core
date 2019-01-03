@@ -7,9 +7,10 @@ import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.core.IDirectionalComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.behaviours.InvalidatingBehaviour;
-import haxe.ui.core.MouseEvent;
+import haxe.ui.events.MouseEvent;
 import haxe.ui.core.Screen;
-import haxe.ui.core.UIEvent;
+import haxe.ui.events.UIEvent;
+import haxe.ui.events.Events;
 import haxe.ui.util.MathUtil;
 import haxe.ui.util.Point;
 import haxe.ui.util.Variant;
@@ -85,7 +86,7 @@ private class AllowInteraction extends DefaultBehaviour {
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.components.Range)
-private class Events extends haxe.ui.core.Events {
+private class Events extends haxe.ui.events.Events {
     private var _range:Range;
     
     public function new(range:Range) {

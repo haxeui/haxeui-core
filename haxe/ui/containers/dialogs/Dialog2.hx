@@ -1,7 +1,7 @@
 package haxe.ui.containers.dialogs;
 
 import haxe.ui.backend.DialogBase;
-import haxe.ui.core.UIEvent;
+import haxe.ui.events.UIEvent;
 
 abstract DialogButton2(String) from String {
     public static inline var SAVE:DialogButton2 = "Save";

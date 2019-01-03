@@ -8,10 +8,11 @@ import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
-import haxe.ui.core.MouseEvent;
+import haxe.ui.events.MouseEvent;
 import haxe.ui.core.Screen;
-import haxe.ui.core.ScrollEvent;
-import haxe.ui.core.UIEvent;
+import haxe.ui.events.ScrollEvent;
+import haxe.ui.events.UIEvent;
+import haxe.ui.events.Events;
 import haxe.ui.layouts.LayoutFactory;
 import haxe.ui.layouts.ScrollViewLayout;
 import haxe.ui.util.Point;
@@ -328,7 +329,7 @@ typedef Inertia = {
 }
 
 @:dox(hide) @:noCompletion
-class ScrollViewEvents extends haxe.ui.core.Events {
+class ScrollViewEvents extends haxe.ui.events.Events {
     private var _scrollview:ScrollView;
     
     public function new(scrollview:ScrollView) {

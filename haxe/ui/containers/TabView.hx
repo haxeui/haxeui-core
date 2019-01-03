@@ -7,7 +7,8 @@ import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
-import haxe.ui.core.UIEvent;
+import haxe.ui.events.UIEvent;
+import haxe.ui.events.Events;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.LayoutFactory;
 import haxe.ui.util.Size;
@@ -185,7 +186,7 @@ private class RemovePage extends Behaviour {
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 @:access(haxe.ui.components.TabViewBuilder)
-private class Events extends haxe.ui.core.Events {
+private class Events extends haxe.ui.events.Events {
     private var _tabview:TabView;
     
     public function new(tabview:TabView) {

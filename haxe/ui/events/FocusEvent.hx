@@ -1,6 +1,6 @@
-package haxe.ui.core;
+package haxe.ui.events;
 
-import haxe.ui.core.UIEvent;
+import haxe.ui.events.UIEvent;
 
 class FocusEvent extends UIEvent {
     public static inline var FOCUS_IN:String = "focusin";

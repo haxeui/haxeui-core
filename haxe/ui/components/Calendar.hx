@@ -5,8 +5,9 @@ import haxe.ui.behaviours.Behaviour;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
-import haxe.ui.core.MouseEvent;
-import haxe.ui.core.UIEvent;
+import haxe.ui.events.MouseEvent;
+import haxe.ui.events.UIEvent;
+import haxe.ui.events.Events;
 import haxe.ui.util.Variant;
 
 class CalendarEvent extends UIEvent {
@@ -190,7 +191,7 @@ private class DateUtils {
 //***********************************************************************************************************
 // Events
 //***********************************************************************************************************
-private class Events extends haxe.ui.core.Events {
+private class Events extends haxe.ui.events.Events {
     public override function register() {
         unregister();
         for (child in _target.childComponents) {

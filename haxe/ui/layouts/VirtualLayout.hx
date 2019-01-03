@@ -5,7 +5,7 @@ import haxe.ui.core.BasicItemRenderer;
 import haxe.ui.core.Component;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.ItemRenderer;
-import haxe.ui.core.UIEvent;
+import haxe.ui.events.UIEvent;
 import haxe.ui.data.DataSource;
 
 class VirtualLayout extends ScrollViewLayout {

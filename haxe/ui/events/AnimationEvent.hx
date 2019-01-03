@@ -1,4 +1,4 @@
-package haxe.ui.core;
+package haxe.ui.events;
 
 class AnimationEvent extends UIEvent {
     public static inline var START:String = "animationstart";

@@ -1,7 +1,7 @@
 package haxe.ui.behaviours;
 
 import haxe.ui.core.Component;
-import haxe.ui.core.UIEvent;
+import haxe.ui.events.UIEvent;
 import haxe.ui.util.Variant;
 
 typedef BehaviourInfo = {

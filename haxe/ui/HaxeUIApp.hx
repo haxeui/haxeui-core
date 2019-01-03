@@ -5,7 +5,7 @@ import haxe.ui.backend.AppBase;
 import haxe.ui.backend.ToolkitOptions;
 import haxe.ui.core.Component;
 import haxe.ui.core.Screen;
-import haxe.ui.core.UIEvent;
+import haxe.ui.events.UIEvent;
 
 @:keep
 class HaxeUIApp extends AppBase {

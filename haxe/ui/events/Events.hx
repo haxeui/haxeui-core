@@ -1,4 +1,6 @@
-package haxe.ui.core;
+package haxe.ui.events;
+
+import haxe.ui.core.Component;
 
 class Events {
     private var _target:Component;

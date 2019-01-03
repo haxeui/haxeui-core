@@ -5,8 +5,9 @@ import haxe.ui.components.Calendar;
 import haxe.ui.components.Label;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.behaviours.DefaultBehaviour;
-import haxe.ui.core.MouseEvent;
-import haxe.ui.core.UIEvent;
+import haxe.ui.events.MouseEvent;
+import haxe.ui.events.UIEvent;
+import haxe.ui.events.Events;
 import haxe.ui.util.Variant;
 
 @:composite(Events, Builder)
@@ -32,7 +33,7 @@ private class SelectedDateBehaviour extends DefaultBehaviour {
 //***********************************************************************************************************
 // Events
 //***********************************************************************************************************
-private class Events extends haxe.ui.core.Events {
+private class Events extends haxe.ui.events.Events {
     public override function register() {
         var button:Button = _target.findComponent("prev-month");
         if (button != null && button.hasEvent(MouseEvent.CLICK) == false) {

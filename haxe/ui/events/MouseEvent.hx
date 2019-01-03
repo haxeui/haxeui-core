@@ -1,4 +1,4 @@
-package haxe.ui.core;
+package haxe.ui.events;
 
 class MouseEvent extends UIEvent {
     public static inline var MOUSE_MOVE:String = "mousemove";

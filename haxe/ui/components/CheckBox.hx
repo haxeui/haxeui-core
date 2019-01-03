@@ -3,8 +3,9 @@ package haxe.ui.components;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.core.InteractiveComponent;
-import haxe.ui.core.MouseEvent;
-import haxe.ui.core.UIEvent;
+import haxe.ui.events.MouseEvent;
+import haxe.ui.events.UIEvent;
+import haxe.ui.events.Events;
 import haxe.ui.layouts.HorizontalLayout;
 import haxe.ui.styles.Style;
 import haxe.ui.util.Variant;
@@ -88,7 +89,7 @@ private class SelectedBehaviour extends DataBehaviour {
 // Events
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
-private class Events extends haxe.ui.core.Events  {
+private class Events extends haxe.ui.events.Events  {
     private var _checkbox:CheckBox;
     
     public function new(checkbox:CheckBox) {

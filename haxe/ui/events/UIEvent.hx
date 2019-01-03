@@ -1,6 +1,7 @@
-package haxe.ui.core;
+package haxe.ui.events;
 
 import haxe.ui.backend.EventBase;
+import haxe.ui.core.Component;
 
 class UIEvent extends EventBase {
     public static inline var READY:String = "ready";

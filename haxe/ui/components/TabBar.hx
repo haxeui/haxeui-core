@@ -5,8 +5,9 @@ import haxe.ui.behaviours.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.behaviours.DataBehaviour;
-import haxe.ui.core.MouseEvent;
-import haxe.ui.core.UIEvent;
+import haxe.ui.events.MouseEvent;
+import haxe.ui.events.UIEvent;
+import haxe.ui.events.Events;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.util.Variant;
 
@@ -173,7 +174,7 @@ private class RemoveTab extends Behaviour {
 //***********************************************************************************************************
 @:access(haxe.ui.core.Component)
 @:access(haxe.ui.components.Builder)
-private class Events extends haxe.ui.core.Events {
+private class Events extends haxe.ui.events.Events {
     private var _tabbar:TabBar;
     
     public function new(tabbar:TabBar) {

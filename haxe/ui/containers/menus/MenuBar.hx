@@ -6,8 +6,9 @@ import haxe.ui.containers.menus.Menu.MenuEvent;
 import haxe.ui.containers.menus.Menu.MenuEvents;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
-import haxe.ui.core.MouseEvent;
+import haxe.ui.events.MouseEvent;
 import haxe.ui.core.Screen;
+import haxe.ui.events.Events;
 
 @:composite(Events, Builder)
 class MenuBar extends HBox {
@@ -23,7 +24,7 @@ class MenuBar extends HBox {
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 @:access(haxe.ui.containers.menus.Builder)
-private class Events extends haxe.ui.core.Events {
+private class Events extends haxe.ui.events.Events {
     private var _menubar:MenuBar;
     private var _currentMenu:Menu;
     private var _currentButton:Button;
