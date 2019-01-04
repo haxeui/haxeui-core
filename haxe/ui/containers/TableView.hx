@@ -18,14 +18,14 @@ import haxe.ui.core.BasicItemRenderer;
 import haxe.ui.core.Component;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.ItemRenderer;
-import haxe.ui.core.MouseEvent;
+import haxe.ui.events.MouseEvent;
 import haxe.ui.core.Platform;
-import haxe.ui.core.UIEvent;
+import haxe.ui.events.UIEvent;
 import haxe.ui.data.ArrayDataSource;
 import haxe.ui.data.DataSource;
 import haxe.ui.layouts.DefaultLayout;
-import haxe.ui.util.Rectangle;
-import haxe.ui.util.Size;
+import haxe.ui.geom.Rectangle;
+import haxe.ui.geom.Size;
 
 class TableView extends ScrollView implements IDataComponent {
     private var _header:Header;

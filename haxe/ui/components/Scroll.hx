@@ -1,14 +1,15 @@
 package haxe.ui.components;
 
+import haxe.ui.events.Events;
 import haxe.ui.util.Variant;
-import haxe.ui.core.DataBehaviour;
-import haxe.ui.core.DefaultBehaviour;
+import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.core.IDirectionalComponent;
 import haxe.ui.core.InteractiveComponent;
-import haxe.ui.core.LayoutBehaviour;
-import haxe.ui.core.MouseEvent;
-import haxe.ui.core.UIEvent;
-import haxe.ui.util.Point;
+import haxe.ui.behaviours.LayoutBehaviour;
+import haxe.ui.events.MouseEvent;
+import haxe.ui.events.UIEvent;
+import haxe.ui.geom.Point;
 
 class Scroll extends InteractiveComponent implements IDirectionalComponent {
     //***********************************************************************************************************
@@ -65,7 +66,7 @@ class Scroll extends InteractiveComponent implements IDirectionalComponent {
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.components.Scroll)
-private class Events extends haxe.ui.core.Events  {
+private class Events extends haxe.ui.events.Events  {
     private var _scroll:Scroll;
     private var _deincButton:Button;
     private var _incButton:Button;

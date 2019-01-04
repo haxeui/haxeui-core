@@ -1,6 +1,7 @@
 package haxe.ui.core;
 
 import haxe.ui.containers.Box;
+import haxe.ui.events.MouseEvent;
 import haxe.ui.util.Variant;
 
 class ItemRenderer extends Box {

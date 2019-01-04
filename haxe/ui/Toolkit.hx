@@ -1,30 +1,29 @@
 package haxe.ui;
 
-import haxe.ui.core.LayoutClassMap;
-import haxe.ui.util.ComponentFieldMap;
-import haxe.ui.util.Variant;
-import haxe.ui.layouts.Layout;
-import haxe.ui.parsers.ui.LayoutInfo;
 import haxe.ui.backend.ToolkitOptions;
-import haxe.ui.containers.Box;
 import haxe.ui.core.Component;
 import haxe.ui.core.ComponentClassMap;
 import haxe.ui.core.IDataComponent;
-import haxe.ui.core.KeyboardEvent;
+import haxe.ui.core.LayoutClassMap;
 import haxe.ui.core.Screen;
-import haxe.ui.styles.StyleSheet;
+import haxe.ui.events.KeyboardEvent;
 import haxe.ui.focus.FocusManager;
+import haxe.ui.layouts.Layout;
 import haxe.ui.macros.BackendMacros;
 import haxe.ui.macros.ModuleMacros;
 import haxe.ui.macros.NativeMacros;
 import haxe.ui.parsers.ui.ComponentInfo;
 import haxe.ui.parsers.ui.ComponentParser;
+import haxe.ui.parsers.ui.LayoutInfo;
 import haxe.ui.parsers.ui.resolvers.AssetResourceResolver;
 import haxe.ui.parsers.ui.resolvers.ResourceResolver;
 import haxe.ui.scripting.ConditionEvaluator;
+import haxe.ui.styles.StyleSheet;
 import haxe.ui.themes.ThemeManager;
+import haxe.ui.core.ComponentFieldMap;
 import haxe.ui.util.GenericConfig;
 import haxe.ui.util.Properties;
+import haxe.ui.util.Variant;
 
 class Toolkit {
     public static var styleSheet:StyleSheet = new StyleSheet();
@@ -51,10 +50,6 @@ class Toolkit {
         ModuleMacros.processModules();
         NativeMacros.processNative();
         _built = true;
-
-        #if (haxeui_remoting && !haxeui_remoting_server)
-        var client:haxe.ui.remoting.client.Client = new haxe.ui.remoting.client.Client();
-        #end
     }
 
     private static var _backendBuilt:Bool = false;

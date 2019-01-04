@@ -1,12 +1,13 @@
 package haxe.ui.components;
 
 import haxe.ui.containers.VBox;
-import haxe.ui.core.Behaviour;
+import haxe.ui.behaviours.Behaviour;
 import haxe.ui.core.CompositeBuilder;
-import haxe.ui.core.DataBehaviour;
-import haxe.ui.core.DefaultBehaviour;
-import haxe.ui.core.MouseEvent;
-import haxe.ui.core.UIEvent;
+import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.behaviours.DefaultBehaviour;
+import haxe.ui.events.MouseEvent;
+import haxe.ui.events.UIEvent;
+import haxe.ui.events.Events;
 import haxe.ui.util.MathUtil;
 import haxe.ui.util.Variant;
 
@@ -120,7 +121,7 @@ private class Builder extends CompositeBuilder {
 // Composite Events
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
-private class Events extends haxe.ui.core.Events {
+private class Events extends haxe.ui.events.Events {
     private var _stepper:Stepper;
     
     public function new(stepper:Stepper) {

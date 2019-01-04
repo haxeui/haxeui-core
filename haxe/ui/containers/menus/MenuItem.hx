@@ -4,8 +4,9 @@ import haxe.ui.components.Image;
 import haxe.ui.components.Label;
 import haxe.ui.containers.HBox;
 import haxe.ui.core.CompositeBuilder;
-import haxe.ui.core.DataBehaviour;
-import haxe.ui.core.MouseEvent;
+import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.events.MouseEvent;
+import haxe.ui.events.Events;
 
 @:composite(Events, Builder)
 class MenuItem extends HBox {
@@ -54,7 +55,7 @@ private class ExpandableBehaviour extends DataBehaviour {
 // Events
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
-private class Events extends haxe.ui.core.Events {
+private class Events extends haxe.ui.events.Events {
     public override function register() {
         if (!hasEvent(MouseEvent.MOUSE_OVER, onMouseOver)) {
             registerEvent(MouseEvent.MOUSE_OVER, onMouseOver);

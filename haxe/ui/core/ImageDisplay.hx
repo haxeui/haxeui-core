@@ -1,7 +1,7 @@
 package haxe.ui.core;
 
 import haxe.ui.assets.ImageInfo;
-import haxe.ui.util.Rectangle;
+import haxe.ui.geom.Rectangle;
 import haxe.ui.validation.InvalidationFlags;
 import haxe.ui.backend.ImageDisplayBase;
 

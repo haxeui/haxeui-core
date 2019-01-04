@@ -5,6 +5,7 @@ import haxe.ui.components.Label;
 import haxe.ui.containers.HBox;
 import haxe.ui.containers.dialogs.DialogButton;
 import haxe.ui.containers.dialogs.DialogOptions;
+import haxe.ui.events.UIEvent;
 import haxe.ui.focus.FocusManager;
 import haxe.ui.util.EventMap;
 

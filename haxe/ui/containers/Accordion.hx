@@ -3,7 +3,8 @@ package haxe.ui.containers;
 import haxe.ui.components.Button;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
-import haxe.ui.core.MouseEvent;
+import haxe.ui.events.MouseEvent;
+import haxe.ui.events.Events;
 
 @:composite(Events, Builder)
 class Accordion extends VBox {
@@ -15,7 +16,7 @@ class Accordion extends VBox {
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 @:access(haxe.ui.containers.Builder)
-private class Events extends haxe.ui.core.Events {
+private class Events extends haxe.ui.events.Events {
     public override function register() {
         for (button in _target.childComponents) {
             if (Std.is(button, Button) && !button.hasEvent(MouseEvent.CLICK, onButtonClicked)) {

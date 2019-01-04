@@ -1,15 +1,16 @@
 package haxe.ui.components;
 
-import haxe.ui.core.Behaviour;
+import haxe.ui.behaviours.Behaviour;
 import haxe.ui.core.CompositeBuilder;
-import haxe.ui.core.DataBehaviour;
-import haxe.ui.core.DefaultBehaviour;
+import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.core.InteractiveComponent;
-import haxe.ui.core.MouseEvent;
+import haxe.ui.events.MouseEvent;
+import haxe.ui.events.Events;
 import haxe.ui.focus.FocusManager;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.styles.Style;
-import haxe.ui.util.Size;
+import haxe.ui.geom.Size;
 import haxe.ui.util.Timer;
 import haxe.ui.util.Variant;
 
@@ -322,7 +323,7 @@ private class SelectedBehaviour extends Behaviour {
 // Events
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
-class ButtonEvents extends haxe.ui.core.Events {
+class ButtonEvents extends haxe.ui.events.Events {
     private var _button:Button;
     private var _down:Bool = false;
     private var _repeatTimer:Timer;

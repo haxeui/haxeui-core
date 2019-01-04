@@ -442,9 +442,9 @@ class Macros {
                 // add getter function
                 var code = "function ():" + typeName + " {\n";
                 if (typeName == "Dynamic") {
-                    code += "return behaviourGetDynamic('" + f.name + "');\n";
+                    code += "return behaviours.getDynamic('" + f.name + "');\n";
                 } else {
-                    code += "return behaviourGet('" + f.name + "');\n";
+                    code += "return behaviours.get('" + f.name + "');\n";
                 }
                 code += "}";
                 var fnGetter = switch (Context.parseInlineString(code, haxe.macro.Context.currentPos()) ).expr {
@@ -462,7 +462,7 @@ class Macros {
                      
                 // add setter funtion
                 var code = "function (value:" + typeName + "):" + typeName + " {\n";
-                code += "behaviourSet('" + f.name + "', value);\n";
+                code += "behaviours.set('" + f.name + "', value);\n";
                 if (f.name == valueField) {
                     code += "haxe.ui.binding.BindingManager.instance.componentPropChanged(this, 'value');\n";
                 }
@@ -518,11 +518,11 @@ class Macros {
             
             if (void == true) {
                 fn.expr = macro {
-                    behaviourCall($v{f.name}, $i{arg0});
+                    behaviours.call($v{f.name}, $i{arg0});
                 };
             } else {
                 fn.expr = macro {
-                    return behaviourCall($v{f.name}, $i{arg0});
+                    return behaviours.call($v{f.name}, $i{arg0});
                 };
             }
             

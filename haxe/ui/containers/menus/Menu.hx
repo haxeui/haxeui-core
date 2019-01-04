@@ -3,9 +3,10 @@ package haxe.ui.containers.menus;
 import haxe.ui.containers.VBox;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
-import haxe.ui.core.MouseEvent;
+import haxe.ui.events.MouseEvent;
 import haxe.ui.core.Screen;
-import haxe.ui.core.UIEvent;
+import haxe.ui.events.UIEvent;
+import haxe.ui.events.Events;
 
 class MenuEvent extends UIEvent {
     public static inline var MENU_SELECTED:String = "menuSelected";
@@ -41,7 +42,7 @@ class Menu extends VBox {
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 @:access(haxe.ui.containers.menus.Builder)
-class MenuEvents extends haxe.ui.core.Events {
+class MenuEvents extends haxe.ui.events.Events {
     private var _menu:Menu;
     public var currentSubMenu:Menu = null;
     public var parentMenu:Menu = null;

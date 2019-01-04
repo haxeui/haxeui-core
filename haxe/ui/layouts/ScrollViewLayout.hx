@@ -5,7 +5,7 @@ import haxe.ui.components.VerticalScroll;
 import haxe.ui.containers.ScrollView;
 import haxe.ui.core.Component;
 import haxe.ui.core.Platform;
-import haxe.ui.util.Size;
+import haxe.ui.geom.Size;
 
 class ScrollViewLayout extends DefaultLayout {
     private override function repositionChildren() {

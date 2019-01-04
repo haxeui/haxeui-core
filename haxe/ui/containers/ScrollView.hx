@@ -3,20 +3,21 @@ package haxe.ui.containers;
 import haxe.ui.components.HorizontalScroll;
 import haxe.ui.components.VerticalScroll;
 import haxe.ui.constants.ScrollMode;
-import haxe.ui.core.Behaviour;
+import haxe.ui.behaviours.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
-import haxe.ui.core.DataBehaviour;
-import haxe.ui.core.DefaultBehaviour;
-import haxe.ui.core.MouseEvent;
+import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.behaviours.DefaultBehaviour;
+import haxe.ui.events.MouseEvent;
 import haxe.ui.core.Screen;
-import haxe.ui.core.ScrollEvent;
-import haxe.ui.core.UIEvent;
+import haxe.ui.events.ScrollEvent;
+import haxe.ui.events.UIEvent;
+import haxe.ui.events.Events;
 import haxe.ui.layouts.LayoutFactory;
 import haxe.ui.layouts.ScrollViewLayout;
-import haxe.ui.util.Point;
-import haxe.ui.util.Rectangle;
-import haxe.ui.util.Size;
+import haxe.ui.geom.Point;
+import haxe.ui.geom.Rectangle;
+import haxe.ui.geom.Size;
 import haxe.ui.util.Variant;
 import haxe.ui.validation.InvalidationFlags;
 
@@ -328,7 +329,7 @@ typedef Inertia = {
 }
 
 @:dox(hide) @:noCompletion
-class ScrollViewEvents extends haxe.ui.core.Events {
+class ScrollViewEvents extends haxe.ui.events.Events {
     private var _scrollview:ScrollView;
     
     public function new(scrollview:ScrollView) {

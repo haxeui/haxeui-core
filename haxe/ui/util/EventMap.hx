@@ -1,7 +1,7 @@
 package haxe.ui.util;
 
 import haxe.ui.core.Component;
-import haxe.ui.core.UIEvent;
+import haxe.ui.events.UIEvent;
 
 class EventMap  {
     private var _map:Map<String, FunctionArray<UIEvent->Void>>;

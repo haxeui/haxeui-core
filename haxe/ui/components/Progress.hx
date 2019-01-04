@@ -2,9 +2,9 @@ package haxe.ui.components;
 
 import haxe.ui.components.Range;
 import haxe.ui.core.Component;
-import haxe.ui.core.DefaultBehaviour;
+import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.core.IDirectionalComponent;
-import haxe.ui.core.ValueBehaviour;
+import haxe.ui.behaviours.ValueBehaviour;
 import haxe.ui.util.Variant;
 
 class Progress extends Range implements IDirectionalComponent {
