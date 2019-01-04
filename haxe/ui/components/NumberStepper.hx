@@ -4,6 +4,7 @@ import haxe.ui.containers.HBox;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
+import haxe.ui.events.KeyboardEvent;
 import haxe.ui.events.FocusEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
@@ -126,7 +127,7 @@ private class Builder extends CompositeBuilder {
         var textfield = new TextField();
         textfield.addClass("stepper-textfield");
         textfield.id = "stepper-textfield";
-		textfield.restrictChars = "0-9.-";
+		textfield.restrictChars = "0-9\\-\\.\\,";
         _stepper.addComponent(textfield);
         
         var step = new Stepper();
@@ -153,6 +154,9 @@ private class Events extends haxe.ui.events.Events {
         if (!hasEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel)) {
             registerEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
         }
+		if (!_stepper.hasEvent(KeyboardEvent.KEY_DOWN, onKeyDown)) {
+            _stepper.registerEvent(KeyboardEvent.KEY_DOWN, onKeyDown);
+        }
         
         var textfield:TextField = _stepper.findComponent("stepper-textfield", TextField);
         if (!textfield.hasEvent(FocusEvent.FOCUS_IN, onTextFieldFocusIn)) {
@@ -176,6 +180,7 @@ private class Events extends haxe.ui.events.Events {
     
     public override function unregister() {
         unregisterEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
+		_stepper.unregisterEvent(KeyboardEvent.KEY_DOWN, onKeyDown);
         
         var textfield:TextField = _stepper.findComponent("stepper-textfield", TextField);
         textfield.unregisterEvent(FocusEvent.FOCUS_IN, onTextFieldFocusIn);
@@ -186,6 +191,22 @@ private class Events extends haxe.ui.events.Events {
         step.unregisterEvent(UIEvent.CHANGE, onStepChange);
         step.unregisterEvent(MouseEvent.MOUSE_DOWN, onStepMouseDown);
     }
+	
+	private function onKeyDown(event:KeyboardEvent):Void {
+		var step:Stepper = _stepper.findComponent("stepper-step", Stepper);
+		if (event.keyCode == 38 || event.keyCode == 39) { // ArrowUp or ArrowRight
+			step.increment();
+		}
+		if (event.keyCode == 40 || event.keyCode == 37) { // ArrowDown or ArrowLeft
+			step.deincrement();
+		}
+		if (event.keyCode == 36) { // Home
+			step.pos = step.min;
+		}
+		if (event.keyCode == 35) { // End
+			step.pos = step.max;
+		}
+	}
     
     private function onMouseWheel(event:MouseEvent) {
         var textfield:TextField = _stepper.findComponent("stepper-textfield", TextField);
