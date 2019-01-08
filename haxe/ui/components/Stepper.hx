@@ -21,6 +21,16 @@ class Stepper extends VBox {
     @:clonable @:behaviour(DefaultBehaviour, null)      public var precision:Null<Int>;
     @:call(IncBehaviour)                                public function increment();
     @:call(DeincBehaviour)                              public function deincrement();
+	
+	/**
+     Whether this button will dispatch multiple click events while the the mouse is pressed within it
+    **/
+    @:clonable @:behaviour(DefaultBehaviour, true)    public var repeater:Bool;
+    
+    /**
+     How often this button will dispatch multiple click events while the the mouse is pressed within it
+    **/
+    @:clonable @:behaviour(DefaultBehaviour, 100)       public var repeatInterval:Int;
 }
 
 //***********************************************************************************************************
@@ -104,15 +114,15 @@ private class Builder extends CompositeBuilder {
         var button = new Button();
         button.styleNames = "stepper-button stepper-inc";
         button.id = "stepper-inc";
-        button.repeater = true;
-        button.repeatInterval = 100;
+        button.repeater = _stepper.repeater;
+        button.repeatInterval = _stepper.repeatInterval;
         _stepper.addComponent(button);
         
         var button = new Button();
         button.styleNames = "stepper-button stepper-deinc";
         button.id = "stepper-deinc";
-        button.repeater = true;
-        button.repeatInterval = 100;
+        button.repeater = _stepper.repeater;
+        button.repeatInterval = _stepper.repeatInterval;
         _stepper.addComponent(button);
     }
 }
