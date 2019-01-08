@@ -13,6 +13,8 @@ import haxe.ui.util.Variant;
 @:composite(Events, Builder)
 class CalendarView extends VBox {
     public static var MONTH_NAMES:Array<String> = ["January", "Febuary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+	
+	public static var DATE_FORMAT:String = "%d/%m/%Y";
     
     //***********************************************************************************************************
     // Public API
@@ -103,7 +105,7 @@ private class Builder extends CompositeBuilder {
         
         var label = new Label();
         label.id = "current-month";
-        label.text = "August 2018";
+        label.text = "January 2019";
         hbox.addComponent(label);
         
         var button = new Button();
