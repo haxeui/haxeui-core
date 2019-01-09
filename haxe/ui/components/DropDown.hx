@@ -201,8 +201,7 @@ class CalendarDropDownHandler extends DropDownHandler {
         if (_calendar.selectedDate == null) {
             return;
         }
-        var dateFormat:String = "%d/%m/%Y";
-        _dropdown.text = DateTools.format(_calendar.selectedDate, dateFormat);
+        _dropdown.text = DateTools.format(_calendar.selectedDate, CalendarView.DATE_FORMAT);
         cast(_dropdown._internalEvents, DropDownEvents).hideDropDown();
         _dropdown.dispatch(new UIEvent(UIEvent.CHANGE));
     }
