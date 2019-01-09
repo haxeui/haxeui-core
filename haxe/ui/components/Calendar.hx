@@ -11,7 +11,7 @@ import haxe.ui.events.Events;
 import haxe.ui.util.Variant;
 
 class CalendarEvent extends UIEvent {
-    public static inline var MONTH_CHANGE:String = "monthchange";
+    public static inline var DATE_CHANGE:String = "datechange";
 }
 
 @:composite(Events, Builder)
@@ -21,6 +21,8 @@ class Calendar extends Grid {
         columns = 7; // TODO: this is really strange, cant set it in the builder, its like the parent constructor is never called
         behaviours.register("previousMonth", PreviousMonthBehaviour);
         behaviours.register("nextMonth", NextMonthBehaviour);
+		behaviours.register("previousYear", PreviousYearBehaviour);
+        behaviours.register("nextYear", NextYearBehaviour);
     }
     
     //***********************************************************************************************************
@@ -35,6 +37,14 @@ class Calendar extends Grid {
     
     public function nextMonth() { // TODO: work out a way to use meta data with callable behaviours
         behaviours.call("nextMonth");
+    }
+	
+	public function previousYear() { // TODO: work out a way to use meta data with callable behaviours
+        behaviours.call("previousYear");
+    }
+    
+    public function nextYear() { // TODO: work out a way to use meta data with callable behaviours
+        behaviours.call("nextYear");
     }
 }
 
@@ -53,6 +63,22 @@ private class NextMonthBehaviour extends Behaviour {
     public override function call(param:Any = null):Variant {
         var calendar = cast(_component, Calendar);
         calendar.date = DateUtils.nextMonth(calendar.date);
+        return null;
+    }
+}
+
+private class PreviousYearBehaviour extends Behaviour {
+    public override function call(param:Any = null):Variant {
+        var calendar = cast(_component, Calendar);
+        calendar.date = DateUtils.previousYear(calendar.date);
+        return null;
+    }
+}
+
+private class NextYearBehaviour extends Behaviour {
+    public override function call(param:Any = null):Variant {
+        var calendar = cast(_component, Calendar);
+        calendar.date = DateUtils.nextYear(calendar.date);
         return null;
     }
 }
@@ -131,7 +157,7 @@ private class DateBehaviour extends DataBehaviour {
         
         _component.registerInternalEvents(true);
         
-        _component.dispatch(new CalendarEvent(CalendarEvent.MONTH_CHANGE));
+        _component.dispatch(new CalendarEvent(CalendarEvent.DATE_CHANGE));
     }
 }
 
@@ -186,6 +212,28 @@ private class DateUtils {
 		date = new Date(year, month, day, 0, 0, 0);
         return date;
     }
+	
+	public static function previousYear(date:Date):Date {
+		var year = date.getFullYear();
+        var month = date.getMonth();
+        var day = date.getDate();
+        
+		year--;
+		day = cast(Math.min(day, getEndDay(month, year)), Int);
+		date = new Date(year, month, day, 0, 0, 0);
+        return date;
+	}
+	
+	public static function nextYear(date:Date):Date {
+		var year = date.getFullYear();
+        var month = date.getMonth();
+        var day = date.getDate();
+        
+		year++;
+		day = cast(Math.min(day, getEndDay(month, year)), Int);
+		date = new Date(year, month, day, 0, 0, 0);
+        return date;
+	}
 }
 
 //***********************************************************************************************************
