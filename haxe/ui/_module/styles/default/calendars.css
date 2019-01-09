@@ -45,6 +45,10 @@
     padding: 0px;
 }
 
+.calendar-view .hbox {
+	spacing: 0;
+}
+
 .calendar-view #prev-month {
     icon: "haxeui-core/styles/default/left_arrow.png";
     vertical-align: center;
@@ -60,7 +64,19 @@
 }
 
 .calendar-view #current-month {
-    width: 100%;
-    text-align: center;
+	__width: 100%;
+    __text-align: center;
     vertical-align: center;
+}
+
+.calendar-view #current-year {
+    text-align: right;
+    vertical-align: center;
+	border: none;
+	padding-top: 1px;
+	background-color: white;
+}
+.calendar-view #current-year .button {
+	background-color: white;
+	border: none;
 }

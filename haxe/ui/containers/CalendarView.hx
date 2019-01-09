@@ -3,6 +3,7 @@ package haxe.ui.containers;
 import haxe.ui.components.Button;
 import haxe.ui.components.Calendar;
 import haxe.ui.components.Label;
+import haxe.ui.components.Stepper;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.events.MouseEvent;
@@ -46,9 +47,14 @@ private class Events extends haxe.ui.events.Events {
         if (button != null && button.hasEvent(MouseEvent.CLICK) == false) {
             button.registerEvent(MouseEvent.CLICK, onNextMonth);
         }
+		
+		var stepper:Stepper = _target.findComponent("current-year");
+		if (stepper != null && stepper.hasEvent(UIEvent.CHANGE) == false) {
+            stepper.registerEvent(UIEvent.CHANGE, onYearChange);
+        }
         
-        if (_target.findComponent(Calendar).hasEvent(CalendarEvent.MONTH_CHANGE, onMonthChange) == false) {
-            _target.findComponent(Calendar).registerEvent(CalendarEvent.MONTH_CHANGE, onMonthChange);
+        if (_target.findComponent(Calendar).hasEvent(CalendarEvent.DATE_CHANGE, onDateChange) == false) {
+            _target.findComponent(Calendar).registerEvent(CalendarEvent.DATE_CHANGE, onDateChange);
         }
         
         if (_target.findComponent(Calendar).hasEvent(UIEvent.CHANGE, onCalendarChange) == false) {
@@ -65,11 +71,21 @@ private class Events extends haxe.ui.events.Events {
     private function onNextMonth(event:MouseEvent) {
         _target.findComponent(Calendar).nextMonth();
     }
+	
+	private function onYearChange(event:UIEvent) {
+		var calendar:Calendar = _target.findComponent(Calendar);
+		var stepper:Stepper = _target.findComponent("current-year");
+		if (stepper.pos > calendar.date.getFullYear()) {
+			calendar.nextYear();
+		} else if (stepper.pos < calendar.date.getFullYear()) {
+			calendar.previousYear();
+		}
+    }
     
-    private function onMonthChange(event:CalendarEvent) {
+    private function onDateChange(event:CalendarEvent) {
         var calendar:Calendar = _target.findComponent(Calendar);
         var monthName:String = CalendarView.MONTH_NAMES[calendar.date.getMonth()];
-        _target.findComponent("current-month", Label).text = monthName + " " + calendar.date.getFullYear();
+        _target.findComponent("current-month", Label).text = monthName + "  " + calendar.date.getFullYear();
     }
     
     private function onCalendarChange(event:CalendarEvent) {
@@ -97,23 +113,37 @@ private class Builder extends CompositeBuilder {
     }
     
     public override function create() {
-        var hbox = new HBox();
-        hbox.percentWidth = 100;
+		var box = new Box();
+        box.percentWidth = 100;
         var button = new Button();
         button.id = "prev-month";
-        hbox.addComponent(button);
-        
+        box.addComponent(button);
+
+        var hbox = new HBox();
+        hbox.horizontalAlign = "center";
         var label = new Label();
         label.id = "current-month";
-        label.text = "January 2019";
+        var now = Date.now();
+        label.text = CalendarView.MONTH_NAMES[now.getMonth()] + "  " + now.getFullYear();
         hbox.addComponent(label);
-        
+
+        var stepper = new Stepper();
+        stepper.id = "current-year";
+		stepper.min = 1000;
+		stepper.max = 2999;
+		stepper.pos = 2019;
+		stepper.repeater = false;
+        hbox.addComponent(stepper);
+
+        box.addComponent(hbox);
+
         var button = new Button();
         button.id = "next-month";
-        hbox.addComponent(button);
-        
-        _calendarView.addComponent(hbox);
-        
+        button.horizontalAlign = "right";
+        box.addComponent(button);
+
+        _calendarView.addComponent(box);
+
         var calendar = new Calendar();
         _calendarView.addComponent(calendar);
     }
