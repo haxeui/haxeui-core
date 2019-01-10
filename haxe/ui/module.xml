@@ -63,6 +63,7 @@
             <style resource="haxeui-core/styles/default/ranges.css" />
             <style resource="haxeui-core/styles/default/progressbars.css" />
             <style resource="haxeui-core/styles/default/sliders.css" />
+            <style resource="haxeui-core/styles/default/steppers.css" />
             <style resource="haxeui-core/styles/default/tabs.css" />
             <style resource="haxeui-core/styles/default/listview.css" />
             <style resource="haxeui-core/styles/default/dropdowns.css" />
@@ -70,7 +71,6 @@
             <style resource="haxeui-core/styles/default/switches.css" />
             <style resource="haxeui-core/styles/default/calendars.css" />
             <style resource="haxeui-core/styles/default/menus.css" />
-            <style resource="haxeui-core/styles/default/steppers.css" />
             <style resource="haxeui-core/styles/default/accordion.css" />
         </default>
         <test parent="default">
