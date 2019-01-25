@@ -20,6 +20,11 @@ class CompositeBuilder {
         return 0;
     }
     
+    public var cssName(get, never):String;
+    private function get_cssName():String {
+        return null;
+    }
+    
     public function addComponent(child:Component):Component {
         return null;
     }

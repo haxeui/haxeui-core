@@ -1,11 +1,13 @@
 package haxe.ui.components;
 
 import haxe.ds.StringMap;
+import haxe.ui.components.CheckBox.CheckBoxBuilder;
 import haxe.ui.core.Component;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.events.UIEvent;
 import haxe.ui.util.Variant;
 
+@:composite(OptionBoxBuilder)
 class OptionBox extends CheckBox {
     //***********************************************************************************************************
     // Public API
@@ -87,6 +89,16 @@ private class SelectedOptionBehaviour extends DataBehaviour {
             }
         }
         return selectionOption;
+    }
+}
+
+//***********************************************************************************************************
+// Composite Builder
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+class OptionBoxBuilder extends CheckBoxBuilder {
+    private override function get_cssName():String {
+        return "optionbox";
     }
 }
 

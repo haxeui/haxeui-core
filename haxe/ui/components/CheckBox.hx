@@ -10,7 +10,7 @@ import haxe.ui.layouts.HorizontalLayout;
 import haxe.ui.styles.Style;
 import haxe.ui.util.Variant;
 
-@:composite(Events, Builder, HorizontalLayout)
+@:composite(Events, CheckBoxBuilder, HorizontalLayout)
 class CheckBox extends InteractiveComponent {
     //***********************************************************************************************************
     // Public API
@@ -132,7 +132,8 @@ private class Events extends haxe.ui.events.Events  {
 //***********************************************************************************************************
 // Composite Builder
 //***********************************************************************************************************
-private class Builder extends CompositeBuilder {
+@:dox(hide) @:noCompletion
+class CheckBoxBuilder extends CompositeBuilder {
     private var _checkbox:CheckBox;
     
     public function new(checkbox:CheckBox) {
@@ -164,5 +165,9 @@ private class Builder extends CompositeBuilder {
             label.customStyle.cursor = style.cursor;
             label.invalidateComponentStyle();
         }
+    }
+    
+    private override function get_cssName():String {
+        return "checkbox";
     }
 }
