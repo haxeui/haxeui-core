@@ -500,6 +500,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             }
             if (dispose == true) {
                 child._isDisposed = true;
+                child.removeAllComponents(true);
                 child.unregisterEvents();
                 child.destroyComponent();
             }
