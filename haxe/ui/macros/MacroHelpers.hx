@@ -3,6 +3,8 @@ package haxe.ui.macros;
 import haxe.ui.util.GenericConfig;
 
 #if macro
+import haxe.macro.Type.ClassType;
+import haxe.macro.Type.Ref;
 import haxe.macro.Expr;
 import haxe.macro.Context;
 #end
@@ -14,7 +16,24 @@ class MacroHelpers {
                                                       "/lib/yaml/",
                                                       "/lib/hscript/",
                                                       "/haxe/std/",
-                                                      "/.git"];
+                                                      "/.git",
+                                                      "/_module",
+                                                      "/haxeui-core/haxe/ui/validation",
+                                                      "/haxeui-core/haxe/ui/util",
+                                                      "/haxeui-core/haxe/ui/themes",
+                                                      "/haxeui-core/haxe/ui/styles",
+                                                      "/haxeui-core/haxe/ui/scripting",
+                                                      "/haxeui-core/haxe/ui/parsers",
+                                                      "/haxeui-core/haxe/ui/macros",
+                                                      "/haxeui-core/haxe/ui/layouts",
+                                                      "/haxeui-core/haxe/ui/focus",
+                                                      "/haxeui-core/haxe/ui/data",
+                                                      "/haxeui-core/haxe/ui/core",
+                                                      "/haxeui-core/haxe/ui/containers",
+                                                      "/haxeui-core/haxe/ui/components",
+                                                      "/haxeui-core/haxe/ui/assets",
+                                                      "/haxeui-html5/haxe/ui/backend/html5",
+                                                      ];
 
     #if macro
     public static function exprToMap(params:Expr):Map<String, Dynamic> {
@@ -56,6 +75,25 @@ class MacroHelpers {
         return fn;
     }
 
+    public static function hasVar(fields:Array<Field>, name:String) {
+        return getVar(fields, name) != null;
+    }
+    
+    public static function getVar(fields:Array<Field>, name:String) {
+        var v = null;
+        for (f in fields) {
+            if (f.name == name) {
+                switch (f.kind) {
+                    case FVar(f):
+                            v = f;
+                        break;
+                    default:
+                }
+            }
+        }
+        return v;
+    }
+    
     public static function addFunction(name:String, e:Expr, access:Array<Access>, fields:Array<Field>, pos:Position):Void {
         var fn = switch (e).expr {
             case EFunction(_, f): f;
@@ -105,7 +143,14 @@ class MacroHelpers {
         }
         return has;
     }
-    
+
+    public static function appendLine(fn:{ expr : { pos : haxe.macro.Position, expr : haxe.macro.ExprDef } }, e:Expr):Void {
+        fn.expr = switch (fn.expr.expr) {
+            case EBlock(el): macro $b{insertExpr(el, -1, e)};
+            case _: macro $b { insertExpr([fn.expr], -1, e) }
+        }
+    }
+
     public static function insertLine(fn:{ expr : { pos : haxe.macro.Position, expr : haxe.macro.ExprDef } }, e:Expr, location:Int):Void {
         fn.expr = switch (fn.expr.expr) {
             case EBlock(el): macro $b{insertExpr(el, location, e)};
@@ -151,7 +196,25 @@ class MacroHelpers {
 
         return has;
     }
-
+    
+    public static function hasDirectInterface(t:haxe.macro.Type, interfaceRequired:String):Bool {
+        var has:Bool = false;
+        switch (t) {
+                case TInst(t, _): {
+                    for (i in t.get().interfaces) {
+                        var interfaceName:String = i.t.toString();
+                        if (interfaceName == interfaceRequired) {
+                            has = true;
+                            break;
+                        }
+                    }
+                }
+                case _:
+        }
+        
+        return has;
+    }
+    
     static function mkPath(name:String):TypePath {
         var parts = name.split('.');
         return {
@@ -166,6 +229,38 @@ class MacroHelpers {
         return TPath(mkPath(s));
     }
 
+    public static function complexTypeToString(type:ComplexType):String {
+        var typeName:String = null;
+        var subType:String = null;
+        switch (type) { // almost certainly a better way to be doing this
+            case TPath(type): {
+                typeName = "";
+                if (type.pack.length > 0) {
+                    typeName += type.pack.join(".") + ".";
+                }
+                if (type.params != null && type.params.length == 1) {
+                    switch (type.params[0]) {
+                        case TPType(p):
+                            switch (p) {
+                                case TPath(tp):
+                                    subType = tp.name;
+                                case _:
+                            }
+                        case _:
+                    }
+                }
+                if (subType == null) {
+                    typeName += type.name;
+                } else {
+                    typeName += type.name + '<${subType}>';
+                }
+            }
+            case _:
+        }
+        
+        return typeName;
+    }
+    
     private static function getSuperClass(t:haxe.macro.Type) {
         var superClass = null;
         switch (t) {
@@ -177,6 +272,15 @@ class MacroHelpers {
         return superClass;
     }
 
+    public static function isPrivate(t:haxe.macro.Type):Bool {
+        return switch (t) { 
+            case TInst(c, _): 
+                c.get().isPrivate; 
+            case _: 
+                false; 
+        } 
+    }
+    
     public static function getClassNameFromType(t:haxe.macro.Type):String {
         var className:String = "";
         switch (t) {
@@ -304,11 +408,10 @@ class MacroHelpers {
                     } else {
                         while (t != null) {
                             if (t.get().superClass != null) {
+                                t = t.get().superClass.t;
                                 if (t.toString() == classRequired) {
                                     has = true;
                                     break;
-                                } else {
-                                    t = t.get().superClass.t;
                                 }
                             } else {
                                 t = null;
@@ -322,6 +425,22 @@ class MacroHelpers {
         return has;
     }
 
+    public static function getPackage(className:String) {
+        var parts = className.split(".");
+        parts.pop();
+        return parts.join(".");
+    }
+    
+    
+    public static function hasType(type:String):Bool {
+        try {
+            Context.getType(type);
+            return true;
+        } catch (e:Dynamic) {
+        }
+        return false;
+    }
+    
     public static function extension(path:String):String {
         if (path.indexOf(".") == -1) {
             return null;
@@ -369,6 +488,7 @@ class MacroHelpers {
     public static function scanClassPath(processFileFn:String->Bool, searchCriteria:Array<String> = null, skipHidden:Bool = true) {
         var paths:Array<String> = Context.getClassPath();
         var processedFiles:Array<String> = new Array<String>();
+
         while (paths.length != 0) {
             var path:String = paths[0];
             paths.remove(path);
@@ -382,7 +502,6 @@ class MacroHelpers {
             if (StringTools.startsWith(lastPath, ".") && skipHidden == true) {
                 continue;
             }
-
             if (sys.FileSystem.exists(path)) {
                 if (sys.FileSystem.isDirectory(path)) {
                     var subDirs:Array<String> = sys.FileSystem.readDirectory(path);

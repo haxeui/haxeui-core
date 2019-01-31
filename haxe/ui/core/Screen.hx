@@ -1,12 +1,11 @@
 package haxe.ui.core;
 
-import haxe.ui.animation.AnimationManager;
 import haxe.ui.backend.ScreenBase;
 import haxe.ui.components.Label;
 import haxe.ui.containers.HBox;
-import haxe.ui.containers.dialogs.Dialog;
 import haxe.ui.containers.dialogs.DialogButton;
 import haxe.ui.containers.dialogs.DialogOptions;
+import haxe.ui.events.UIEvent;
 import haxe.ui.focus.FocusManager;
 import haxe.ui.util.EventMap;
 
@@ -17,7 +16,7 @@ class DialogEntry {
     }
 
     public var overlay:Component;
-    public var dialog:Dialog;
+    //public var dialog:Dialog;
     public var callback:Int->Void;
 }
 
@@ -37,19 +36,24 @@ class Screen extends ScreenBase {
     //***********************************************************************************************************
     public var rootComponents:Array<Component>;
 
+    /*
     private var _dialogs:Map<Dialog, DialogEntry>;
+    */
     private var _eventMap:EventMap;
 
     public function new() {
         super();
         rootComponents = [];
-        _dialogs = new Map<Dialog, DialogEntry>();
+        
+        //_dialogs = new Map<Dialog, DialogEntry>();
         _eventMap = new EventMap();
     }
 
     public override function addComponent(component:Component) {
         super.addComponent(component);
+        #if !haxeui_android
         component.ready();
+        #end
         rootComponents.push(component);
         FocusManager.instance.pushView(component);
         component.registerEvent(UIEvent.RESIZE, _onRootComponentResize);    //refresh vh & vw
@@ -80,8 +84,8 @@ class Screen extends ScreenBase {
     private function _refreshStyleComponent(component:Component) {
         for (child in component.childComponents) {
 //            child.applyStyle(child.style);
-            child.invalidateStyle();
-            child.invalidateDisplay();
+            child.invalidateComponentStyle();
+            child.invalidateComponentDisplay();
             _refreshStyleComponent(child);
         }
     }
@@ -93,6 +97,7 @@ class Screen extends ScreenBase {
     //***********************************************************************************************************
     // Dialogs
     //***********************************************************************************************************
+    /*
     public override function messageDialog(message:String, title:String = null, options:Dynamic = null, callback:DialogButton->Void = null):Dialog {
         var dialog = super.messageDialog(message, title, options, callback);
         if (dialog != null) {
@@ -140,7 +145,9 @@ class Screen extends ScreenBase {
 
         return showDialog(content, dialogOptions, callback);
     }
+    */
 
+    /*
     public override function showDialog(content:Component, options:Dynamic = null, callback:DialogButton->Void = null):Dialog {
         var dialog = super.showDialog(content, options, callback);
         if (dialog != null) {
@@ -170,9 +177,13 @@ class Screen extends ScreenBase {
             "endLeft" => x,
             "endTop" => y
         ];
+        */
+        /* TODO: need to move this to new animation system
         AnimationManager.instance.run("haxe.ui.components.animation.dialog.show", ["target" => dialog], vars);
         //animation.r
+        */
 
+        /*
         var entry:DialogEntry = new DialogEntry();
         entry.overlay = overlay;
         entry.dialog = dialog;
@@ -186,7 +197,9 @@ class Screen extends ScreenBase {
 
         return dialog;
     }
+    */
 
+    /*
     private static function createDialogOptions(options:Dynamic):DialogOptions {
         if (Std.is(options, DialogOptions)) {
             return cast(options, DialogOptions);
@@ -265,6 +278,8 @@ class Screen extends ScreenBase {
 
         return dialogOptions;
     }
+    */
+    /*
 
     public override function hideDialog(dialog:Dialog):Bool {
         if (super.hideDialog(dialog) == true) {
@@ -283,6 +298,8 @@ class Screen extends ScreenBase {
             "endLeft" => x,
             "endTop" => dialog.top - 20
         ];
+        */
+        /* TODO: need to move this to new animation system
         AnimationManager.instance.run("haxe.ui.components.animation.dialog.hide", ["target" => dialog], vars, function() {
             Screen.instance.removeComponent(entry.dialog);
             Screen.instance.removeComponent(entry.overlay);
@@ -294,29 +311,32 @@ class Screen extends ScreenBase {
                 }
             }
         });
+        */
 
+        /*
         return true;
     }
 
     public function centerDialog(dialog:Dialog) {
-        dialog.syncValidation();
+        dialog.syncComponentValidation();
         var x = (width / 2) - (dialog.componentWidth / 2);
         var y = (height / 2) - (dialog.componentHeight / 2);
         dialog.moveComponent(x, y);
     }
+    */
 
     //***********************************************************************************************************
     // Events
     //***********************************************************************************************************
-    public function registerEvent(type:String, listener:Dynamic->Void) {
+    public function registerEvent(type:String, listener:Dynamic->Void, priority:Int = 0) {
         if (supportsEvent(type) == true) {
-            if (_eventMap.add(type, listener) == true) {
+            if (_eventMap.add(type, listener, priority) == true) {
                 mapEvent(type, _onMappedEvent);
             }
         } else {
-            //#if debug
+            #if debug
             trace('WARNING: Screen event "${type}" not supported');
-            //#end
+            #end
         }
     }
 

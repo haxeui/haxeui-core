@@ -37,6 +37,10 @@ class TemplateProject extends Project {
         for (k in vars.keys()) {
             Reflect.setField(params, k, vars.get(k));
         }
+        var env = Sys.environment();
+        for (k in env.keys()) {
+            Reflect.setField(params, k, env.get(k));
+        }
         
         src = Path.normalize(src);
         dst = Path.normalize(dst);

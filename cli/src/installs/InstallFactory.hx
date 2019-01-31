@@ -17,9 +17,10 @@ class InstallFactory {
                 i = new HaxeLibInstall(["haxeui-hxwidgets", "hxWidgets", "hxcpp"]);
             case "pixijs":
                 i = new HaxeLibInstall(["haxeui-pixijs"]);
-            case "kha": {
+            case "kha": 
                 i = new KhaInstall();
-            }
+            case "winforms":
+                i = new HaxeLibInstall(["haxeui-winforms", "hxcs"]);
         }
         
         return i;

@@ -1,59 +1,58 @@
 package haxe.ui.core;
 
 import haxe.ui.backend.ComponentBase;
+import haxe.ui.behaviours.Behaviours;
+import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.behaviours.DefaultBehaviour;
+import haxe.ui.containers.dialogs.Dialog2;
+import haxe.ui.events.AnimationEvent;
+import haxe.ui.events.Events;
+import haxe.ui.events.KeyboardEvent;
+import haxe.ui.events.MouseEvent;
+import haxe.ui.events.UIEvent;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.DelegateLayout;
 import haxe.ui.layouts.Layout;
 import haxe.ui.scripting.ScriptInterp;
 import haxe.ui.styles.Parser;
 import haxe.ui.styles.Style;
-import haxe.ui.util.CallStackHelper;
+import haxe.ui.styles.animation.Animation;
+import haxe.ui.styles.elements.AnimationKeyFrames;
+import haxe.ui.debug.CallStackHelper;
 import haxe.ui.util.Color;
 import haxe.ui.util.ComponentUtil;
 import haxe.ui.util.EventMap;
 import haxe.ui.util.FunctionArray;
-import haxe.ui.util.Rectangle;
-import haxe.ui.util.Size;
+import haxe.ui.util.MathUtil;
+import haxe.ui.geom.Rectangle;
+import haxe.ui.geom.Size;
 import haxe.ui.util.StringUtil;
 import haxe.ui.util.Variant;
 import haxe.ui.validation.IValidating;
 import haxe.ui.validation.InvalidationFlags;
 import haxe.ui.validation.ValidationManager;
 
-@:dox(hide)
-class BindingInfo {
-    public function new() {
-    }
-    public var target:Component;
-    public var targetProperty:String;
-    public var sourceProperty:String;
-    public var transform:String;
-}
-
-@:dox(hide)
-class DeferredBindingInfo {
-    public function new() {
-    }
-    public var targetId:String;
-    public var sourceId:String;
-    public var targetProperty:String;
-    public var sourceProperty:String;
-    public var transform:String;
-}
-
 /**
  Base class of all HaxeUI controls
 **/
 @:allow(haxe.ui.backend.ComponentBase)
+@:autoBuild(haxe.ui.macros.Macros.buildComposite())
 @:build(haxe.ui.macros.Macros.buildStyles())
 @:autoBuild(haxe.ui.macros.Macros.buildStyles())
+@:build(haxe.ui.macros.Macros.buildBehaviours())
+@:autoBuild(haxe.ui.macros.Macros.buildBehaviours())
+@:build(haxe.ui.macros.Macros.buildBindings())
 @:autoBuild(haxe.ui.macros.Macros.buildBindings())
 @:build(haxe.ui.macros.Macros.addClonable())
 @:autoBuild(haxe.ui.macros.Macros.addClonable())
 class Component extends ComponentBase implements IComponentBase implements IValidating implements IClonable<Component> {
+    private var behaviours:Behaviours;
+    
     public function new() {
         super();
 
+        behaviours = new Behaviours(this);
+        
         #if flash
         addClass("flash", false);
         #end
@@ -65,51 +64,99 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         var c:Class<Dynamic> = Type.getClass(this);
         while (c != null) {
             var css = Type.getClassName(c);
-            var className:String = css.split(".").pop().toLowerCase();
-            addClass(className, false);
-            if (className == "component") {
+            var className:String = css.split(".").pop();
+            addClass(className.toLowerCase(), false);
+            addClass(StringUtil.toDashes(className), false);
+            if (className.toLowerCase() == "component") {
                 break;
             }
             c = Type.getSuperClass(c);
         }        
 
+        //registerBehaviours();
+        registerComposite();
+        
         // we dont want to actually apply the classes, just find out if native is there or not
         //TODO - we could include the initialization in the validate method
-        var s = Toolkit.styleSheet.applyClasses(this, false);
+        //var s = Toolkit.styleSheet.applyClasses(this, false);
+        var s = Toolkit.styleSheet.buildStyleFor(this);
         if (s.native != null && hasNativeEntry == true) {
             native = s.native;
         } else {
             create();
         }
+        
     }
 
     //***********************************************************************************************************
     // Construction
     //***********************************************************************************************************
+    private var _defaultLayoutClass:Class<Layout> = null;
     private function create() {
         createDefaults();
         handleCreate(native);
         destroyChildren();
+        registerBehaviours();
+        behaviours.replaceNative();
 
-        layout = createLayout();
         if (native == false || native == null) {
+            if (_compositeBuilderClass != null) {
+                if (_compositeBuilder == null) {
+                   _compositeBuilder = Type.createInstance(_compositeBuilderClass, [this]); 
+                }
+                _compositeBuilder.create();
+            }
             createChildren();
+            if (_internalEventsClass != null && _internalEvents == null) {
+                registerInternalEvents(_internalEventsClass);
+            }
+        } else {
+            var builderClass = getNativeConfigProperty(".builder.@class");
+            if (builderClass != null) { // TODO: maybe _compositeBuilder isnt the best name if native components can use them
+                if (_compositeBuilder == null) {
+                   _compositeBuilder = Type.createInstance(Type.resolveClass(builderClass), [this]); 
+                }
+                _compositeBuilder.create();
+            }
+        }
+        behaviours.applyDefaults();
+    }
+
+    private function registerBehaviours() {
+    }
+
+    private var _compositeBuilderClass:Class<CompositeBuilder>;
+    private var _compositeBuilder:CompositeBuilder;
+    private function registerComposite() {
+    }
+    
+    private function createDefaults() {
+    }
+
+    private var _internalEvents:Events = null;
+    private var _internalEventsClass:Class<Events> = null;
+    private function registerInternalEvents(eventsClass:Class<Events> = null, reregister:Bool = false) {
+        if (_internalEvents == null && eventsClass != null) {
+            _internalEvents = Type.createInstance(eventsClass, [this]);
+            _internalEvents.register();
+        } if (reregister == true && _internalEvents != null) {
+            _internalEvents.register();
         }
     }
-
-    private function createDefaults() {
-        defaultBehaviours([
-            "disabled" =>  new ComponentDefaultDisabledBehaviour(this)
-        ]);
-        layout = new DefaultLayout();       //TODO - it should be avoided. For each component it creates the object and possibly overwritten with a custom layout, so it is useless. Create in case it is needed
+    private function unregisterInternalEvents() {
+        if (_internalEvents == null) {
+            return;
+        }
+        _internalEvents.unregister();
+        _internalEvents = null;
     }
-
+    
     private function createChildren() {
 
     }
 
     private function destroyChildren() {
-
+        unregisterInternalEvents();
     }
 
     private var _hasNativeEntry:Null<Bool>;
@@ -121,7 +168,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         return _hasNativeEntry;
     }
 
-    private var _defaultLayout:Layout;
     private function createLayout():Layout {
         var l:Layout = null;
         if (native == true) {
@@ -139,92 +185,18 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
 
         if (l == null) {
-            l = _defaultLayout;
+            if (_defaultLayoutClass != null) {
+                l = Type.createInstance(_defaultLayoutClass, []);
+            } else {
+                l = new DefaultLayout();
+            }
         }
-        if (l == null) {
-            return layout;
-        }
+
         return l;
     }
-
-    private var _defaultBehaviours:Map<String, Behaviour> = new Map<String, Behaviour>();
-    private function defaultBehaviour(name:String, behaviour:Behaviour) {
-        _defaultBehaviours.set(name, behaviour);
-    }
-    private function defaultBehaviours(behaviours:Map<String, Behaviour>) {
-        for (name in behaviours.keys()) {
-            defaultBehaviour(name, behaviours.get(name));
-        }
-    }
     
-    private var _behaviours:Map<String, Behaviour> = new Map<String, Behaviour>();
-    private function getBehaviour(id:String):Behaviour {
-        var b:Behaviour = _behaviours.get(id);
-        if (b != null) {
-            return b;
-        }
-
-        if (native == true) {
-            var nativeProps = getNativeConfigProperties('.behaviour[id=${id}]');
-            if (nativeProps != null && nativeProps.exists("class")) {
-                b = Type.createInstance(Type.resolveClass(nativeProps.get("class")), [this]);
-                b.config = nativeProps;
-            }
-        }
-
-        if (b == null) {
-            b = _defaultBehaviours.get(id);
-        }
-        _behaviours.set(id, b);
-        return b;
-    }
-
-    private function behaviourGet(id:String):Variant {
-        var b:Behaviour = getBehaviour(id);
-        if (b != null) {
-            return b.get();
-        }
-        return null;
-    }
-
-    private function behaviourGetDynamic(id:String):Dynamic {
-        var b:Behaviour = getBehaviour(id);
-        if (b != null) {
-            return b.getDynamic();
-        }
-        return null;
-    }
-
-    private function behaviourSet(id:String, value:Variant) {
-        var b:Behaviour = getBehaviour(id);
-        if (b != null) {
-            b.set(value);
-        }
-    }
-
-    private function behaviourRun(id:String, param:Variant = null) {
-        var b:Behaviour = getBehaviour(id);
-        if (b != null) {
-            b.run(param);
-        }
-    }
-
+    // TODO: these functions should be removed and components should use behaviours.get/set/call/defaults direction
     private var _behaviourUpdateOrder:Array<String> = [];
-    private function behavioursUpdate() {
-        var order:Array<String> = _behaviourUpdateOrder.copy();
-        for (key in _behaviours.keys()) {
-            if (order.indexOf(key) == -1) {
-                order.push(key);
-            }
-        }
-        
-        for (key in order) {
-            var b = _behaviours.get(key);
-            if (b != null) {
-                b.update();
-            }
-        }
-    }
 
     private var _native:Null<Bool> = null;
     /**
@@ -248,10 +220,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             return value;
         }
 
-        if (_ready == false) {
-            //return value;
-        }
-
         _native = value;
         if (_native == true && hasNativeEntry) {
             addClass(":native");
@@ -259,8 +227,13 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             removeClass(":native");
         }
 
-        _behaviours  = new Map<String, Behaviour>();
+        behaviours.cache(); // behaviours will most likely lead to different classes now, so lets cache the current ones to get their values
+        behaviours.detatch();
         create();
+        if (layout != null) {
+            layout = createLayout();
+        }
+        behaviours.restore();
         return value;
     }
 
@@ -276,7 +249,35 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         return _animatable;
     }
     private function set_animatable(value:Bool):Bool {
+        if (_animatable != value) {
+            if (value == false && _componentAnimation != null) {
+                _componentAnimation.stop();
+                _componentAnimation = null;
+            }
+
+            _animatable = value;
+        }
         _animatable = value;
+        return value;
+    }
+
+    private var _componentAnimation:Animation;
+    /**
+     Current animation running
+    **/
+    public var componentAnimation(get, set):Animation;
+    private function get_componentAnimation():Animation {
+        return _componentAnimation;
+    }
+    private function set_componentAnimation(value:Animation):Animation {
+        if (_componentAnimation != value && _animatable == true) {
+            if (_componentAnimation != null) {
+                _componentAnimation.stop();
+            }
+
+            _componentAnimation = value;
+        }
+
         return value;
     }
 
@@ -305,34 +306,18 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         return _id;
     }
 
-    private var _text:String = null;
-    /**
-     The text of this component (not used in all sub classes)
-    **/
-    @clonable public var text(get, set):String;
-    private function get_text():String {
-        return _text;
-    }
-    private function set_text(value:String):String {
-        if (_text != value) {
-            _text = value;
-        }
-        return _text;
-    }
-
-    /**
-     The value of this component. This can mean different things depending on the component.
-
-     For example a buttons value is its text, and sliders value is its slider position.
-    **/
-    @clonable public var value(get, set):Variant;
-    private function get_value():Variant {
+    
+    @:clonable @:behaviour(DefaultBehaviour)  public var text:String;
+    
+    public var value(get, set):Dynamic;
+    private function get_value():Dynamic {
         return text;
     }
-    private function set_value(value:Variant):Variant {
+    private function set_value(value:Dynamic):Dynamic {
         text = value;
         return value;
     }
+    
 
     /**
      Reference to the `Screen` object this component is displayed on
@@ -345,117 +330,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     //***********************************************************************************************************
     //{Binding related}
     //***********************************************************************************************************
-    private var _bindings:Map<String, Array<BindingInfo>>;
-    /**
-     Binds a property of this component to the property of another
-    **/
-    @:dox(group = "Binding related properties and methods")
-    public function addBinding(target:Component, transform:String = null, targetProperty:String = "value", sourceProperty:String = "value") {
-        if (_bindings == null) {
-            _bindings = new Map<String, Array<BindingInfo>>();
-        }
-
-        var array:Array<BindingInfo> = _bindings.get(sourceProperty);
-        if (array == null) {
-            array = [];
-            _bindings.set(sourceProperty, array);
-        }
-
-        var info:BindingInfo = new BindingInfo();
-        info.target = target;
-        info.targetProperty = targetProperty;
-        info.sourceProperty = sourceProperty;
-        info.transform = transform;
-        array.push(info);
-    }
-
-    private var _deferredBindings:Array<DeferredBindingInfo>;
-    /**
-     Binds a property of this component to the property of another that may or may not current exist in the component tree
-    **/
-    @:dox(group = "Binding related properties and methods")
-    public function addDeferredBinding(targetId:String, sourceId:String, transform:String = null, targetProperty:String = "value", sourceProperty:String = "value") {
-        if (_deferredBindings == null) {
-            _deferredBindings = [];
-        }
-
-        var deferredBinding:DeferredBindingInfo = new DeferredBindingInfo();
-        deferredBinding.targetId = targetId;
-        deferredBinding.sourceId = sourceId;
-        deferredBinding.transform = transform;
-        deferredBinding.targetProperty = targetProperty;
-        deferredBinding.sourceProperty = sourceProperty;
-
-        _deferredBindings.push(deferredBinding);
-    }
-
-    private function getDefferedBindings():Array<DeferredBindingInfo> {
-        var b = null;
-        var c = this;
-        while (b == null && c != null) {
-            if (c._deferredBindings != null) {
-                b = c._deferredBindings;
-                break;
-            }
-            c = c.parentComponent;
-        }
-        return b;
-    }
-
-    private function handleBindings(sourceProperties:Array<String>) {
-        if (_bindings == null) {
-            return;
-        }
-
-        for (sourceProperty in sourceProperties) {
-            var v:Variant = getProperty(sourceProperty);
-            if (v == null) {
-                continue;
-            }
-
-            var array:Array<BindingInfo> = _bindings.get(sourceProperty);
-            if (array == null) {
-                continue;
-            }
-
-            for (info in array) {
-
-                if (info.target == null) {
-                    continue;
-                }
-
-                if (info.transform == null) {
-                    info.target.setProperty(info.targetProperty, v);
-                } else if (info.transform.indexOf("${value}") != -1) {
-                    v = StringTools.replace(info.transform, "${value}", v);
-                    info.target.setProperty(info.targetProperty, v);
-                } else if (info.transform.indexOf("${") != -1) {
-                    var s:String = info.transform.substr(2, info.transform.length - 3);
-
-                    // probably not the most effecient method
-                    var scriptResult:Variant = null;
-                    try {
-                        var parser = new hscript.Parser();
-                        var program = parser.parseString(s);
-                        var interp = findScriptInterp();
-                        interp.variables.set("Math", Math);
-                        interp.variables.set("value", Variant.toDynamic(v));
-                        scriptResult = Variant.fromDynamic(interp.expr(program));
-                    } catch (e:Dynamic) {
-                        trace("Problem executing binding script: " + e);
-                    }
-
-                    if (scriptResult != null) {
-                        info.target.setProperty(info.targetProperty, scriptResult);
-                    }
-
-                } else {
-
-                }
-            }
-        }
-    }
-    //}
+    public var bindingRoot:Bool = false;
     //***********************************************************************************************************
 
     //***********************************************************************************************************
@@ -471,7 +346,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     }
     private function set_componentClipRect(value:Rectangle):Rectangle {
         _componentClipRect = value;
-        handleClipRect(value);
+        invalidateComponentDisplay();
         return value;
     }
 
@@ -499,10 +374,26 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     public var parentComponent:Component = null;
 
     /**
+     Gets the number of child components under this component instance
+    **/
+    @:dox(group = "Display tree related properties and methods")
+    public var numComponents(get, never):Int;
+    private function get_numComponents():Int {
+        return _compositeBuilder != null ? _compositeBuilder.numComponents : _children == null ? 0 : _children.length;
+    }
+
+    /**
      Adds a child component to this component instance
     **/
     @:dox(group = "Display tree related properties and methods")
     public function addComponent(child:Component):Component {
+        if (_compositeBuilder != null) {
+            var v = _compositeBuilder.addComponent(child);
+            if (v != null) {
+                return v;
+            }
+        }
+        
         if (this.native == true) {
             var allowChildren:Bool = getNativeConfigPropertyBool('.@allowChildren', true);
             if (allowChildren == false) {
@@ -518,33 +409,20 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
         _children.push(child);
 
-        var deferredBindings:Array<DeferredBindingInfo> = getDefferedBindings();
-        if (deferredBindings != null) {
-            var itemsToRemove:Array<DeferredBindingInfo> = [];
-            for (binding in deferredBindings) {
-                var source = findComponent(binding.sourceId, null, true);
-                var target = findComponent(binding.targetId, null, true);
-                if (source != null && target != null) {
-                    source.addBinding(target, binding.transform, binding.targetProperty,  binding.sourceProperty);
-                    itemsToRemove.push(binding);
-                }
-            }
-
-            // remove found bindings
-            for (item in itemsToRemove) {
-                deferredBindings.remove(item);
-            }
-        }
-
         handleAddComponent(child);
         if (_ready) {
             child.ready();
         }
 
-        invalidateLayout();
-        if (_disabled == true) {
+        invalidateComponentLayout();
+        if (disabled) {
             child.disabled = true;
         }
+        
+        if (_compositeBuilder != null) {
+            _compositeBuilder.onComponentAdded(child);
+        }
+        onComponentAdded(child);
         return child;
     }
 
@@ -553,6 +431,13 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     **/
     @:dox(group = "Display tree related properties and methods")
     public function addComponentAt(child:Component, index:Int):Component {
+        if (_compositeBuilder != null) {
+            var v = _compositeBuilder.addComponentAt(child, index);
+            if (v != null) {
+                return v;
+            }
+        }
+        
         if (this.native == true) {
             var allowChildren:Bool = getNativeConfigPropertyBool('.@allowChildren', true);
             if (allowChildren == false) {
@@ -568,37 +453,26 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
         _children.insert(index, child);
 
-        // TODO: duplication, but will be removed when new binding system comes into play
-        var deferredBindings:Array<DeferredBindingInfo> = getDefferedBindings();
-        if (deferredBindings != null) {
-            var itemsToRemove:Array<DeferredBindingInfo> = [];
-            for (binding in deferredBindings) {
-                var source = findComponent(binding.sourceId, null, true);
-                var target = findComponent(binding.targetId, null, true);
-                if (source != null && target != null) {
-                    source.addBinding(target, binding.transform, binding.targetProperty,  binding.sourceProperty);
-                    itemsToRemove.push(binding);
-                }
-            }
-
-            // remove found bindings
-            for (item in itemsToRemove) {
-                deferredBindings.remove(item);
-            }
-        }
-
         handleAddComponentAt(child, index);
         if (_ready) {
             child.ready();
         }
 
-        invalidateLayout();
-        if (_disabled == true) {
+        invalidateComponentLayout();
+        if (disabled) {
             child.disabled = true;
         }
+        
+        if (_compositeBuilder != null) {
+            _compositeBuilder.onComponentAdded(child);
+        }
+        onComponentAdded(child);
         return child;
     }
 
+    private function onComponentAdded(child:Component) {
+    }
+    
     /**
      Removes the specified child component from this component instance
     **/
@@ -608,6 +482,13 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             return null;
         }
         
+        if (_compositeBuilder != null) {
+            var v = _compositeBuilder.removeComponent(child, dispose, invalidate);
+            if (v != null) {
+                return v;
+            }
+        }
+        
         handleRemoveComponent(child, dispose);
         if (_children != null) {
             if (_children.remove(child)) {
@@ -615,14 +496,21 @@ class Component extends ComponentBase implements IComponentBase implements IVali
                 child.depth = -1;
             }
             if (invalidate == true) {
-                invalidateLayout();
+                invalidateComponentLayout();
             }
             if (dispose == true) {
                 child._isDisposed = true;
-                child.onDestroy();
+                child.removeAllComponents(true);
+                child.unregisterEvents();
+                child.destroyComponent();
             }
         }
 
+        if (_compositeBuilder != null) {
+            _compositeBuilder.onComponentRemoved(child);
+        }
+        onComponentRemoved(child);
+        
         return child;
     }
 
@@ -647,17 +535,48 @@ class Component extends ComponentBase implements IComponentBase implements IVali
                 child.depth = -1;
             }
             if (invalidate == true) {
-                invalidateLayout();
+                invalidateComponentLayout();
             }
             if (dispose == true) {
                 child._isDisposed = true;
-                child.onDestroy();
+                child.unregisterEvents();
+                child.destroyComponent();
             }
         }
 
+        if (_compositeBuilder != null) {
+            _compositeBuilder.onComponentRemoved(child);
+        }
+        onComponentRemoved(child);
+        
         return child;
     }
 
+    private function onComponentRemoved(child:Component) {
+    }
+    
+    private function unregisterEvents() {
+        if (__events != null) {
+            var copy:Array<String> = [];
+            for (eventType in __events.keys()) {
+                copy.push(eventType);
+            }
+            for (eventType in copy) {
+                var listeners = __events.listeners(eventType);
+                for (listener in listeners) {
+                    __events.remove(eventType, listener);
+                }
+            }
+        }
+    }
+    
+    private function destroyComponent() {
+        if (_compositeBuilder != null) {
+            _compositeBuilder.destroy();
+        }
+        onDestroy();
+    }
+    
     private function onDestroy() {
         for (child in childComponents) {
             child.onDestroy();
@@ -675,7 +594,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
                 _children[0].removeAllComponents(dispose);
                 removeComponent(_children[0], dispose, false);
             }
-            invalidateLayout();
+            invalidateComponentLayout();
         }
     }
 
@@ -709,7 +628,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             - `css` - The first component that contains a style name specified by `criteria` will be considered a match
     **/
     @:dox(group = "Display tree related properties and methods")
-    public function findComponent<T>(criteria:String = null, type:Class<T> = null, recursive:Null<Bool> = null, searchType:String = "id"):Null<T> {
+    public function findComponent<T:Component>(criteria:String = null, type:Class<T> = null, recursive:Null<Bool> = null, searchType:String = "id"):Null<T> {
         if (recursive == null && criteria != null && searchType == "id") {
             recursive = true;
         }
@@ -758,7 +677,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             - `css` - The first component that contains a style name specified by `criteria` will be considered a match
     **/
     @:dox(group = "Display tree related properties and methods")
-    public function findAncestor<T>(criteria:String = null, type:Class<T> = null, searchType:String = "id"):Null<T> {
+    public function findAncestor<T:Component>(criteria:String = null, type:Class<T> = null, searchType:String = "id"):Null<T> {
         var match:Component = null;
         var p = this.parentComponent;
         while (p != null) {
@@ -803,6 +722,13 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     **/
     @:dox(group = "Display tree related properties and methods")
     public function getComponentIndex(child:Component):Int {
+        if (_compositeBuilder != null) {
+            var index = _compositeBuilder.getComponentIndex(child);
+            if (index != MathUtil.MIN_INT) {
+                return index;
+            }
+        }
+        
         var index:Int = -1;
         if (_children != null && child != null) {
             index = _children.indexOf(child);
@@ -810,13 +736,21 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         return index;
     }
 
-    public function setComponentIndex(child:Component, index:Int) {
+    public function setComponentIndex(child:Component, index:Int):Component {
+        if (_compositeBuilder != null) {
+            var v = _compositeBuilder.setComponentIndex(child, index);
+            if (v != null) {
+                return v;
+            }
+        }
+        
         if (index >= 0 && index <= _children.length && child.parentComponent == this) {
             handleSetComponentIndex(child, index);
             _children.remove(child);
             _children.insert(index, child);
-            invalidateLayout();
+            invalidateComponentLayout();
         }
+        return child;
     }
 
     /**
@@ -824,6 +758,9 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     **/
     @:dox(group = "Display tree related properties and methods")
     public function getComponentAt(index:Int):Component {
+        if (_compositeBuilder != null) {
+            return _compositeBuilder.getComponentAt(index);
+        }
         if (_children == null) {
             return null;
         }
@@ -839,8 +776,10 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             handleVisibility(false);
             _hidden = true;
             if (parentComponent != null) {
-                parentComponent.invalidateLayout();
+                parentComponent.invalidateComponentLayout();
             }
+            
+            dispatch(new UIEvent(UIEvent.HIDDEN));
         }
     }
 
@@ -853,8 +792,10 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             handleVisibility(true);
             _hidden = false;
             if (parentComponent != null) {
-                parentComponent.invalidateLayout();
+                parentComponent.invalidateComponentLayout();
             }
+            
+            dispatch(new UIEvent(UIEvent.SHOWN));
         }
     }
 
@@ -885,16 +826,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         return value;
     }
 
-    private var _disabled:Bool = false;
-    public var disabled(get, set):Bool;
-    private function get_disabled():Bool {
-        return behaviourGet("disabled");
-    }
-    private function set_disabled(value:Bool):Bool {
-        behaviourSet("disabled", value);
-        _disabled = value;
-        return value;
-    }
+    @:clonable @:behaviour(ComponentDisabledBehaviour, false)       public var disabled:Bool;
     
     //***********************************************************************************************************
     // Style related
@@ -905,7 +837,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     @:dox(group = "Style related properties and methods")
     public var customStyle:Style = new Style();
     @:dox(group = "Style related properties and methods")
-    @:allow(haxe.ui.styles.Engine)
+    @:allow(haxe.ui.styles_old.Engine)
     private var classes:Array<String> = [];
 
     /**
@@ -916,7 +848,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         if (classes.indexOf(name) == -1) {
             classes.push(name);
             if (invalidate == true) {
-                invalidateStyle();
+                invalidateComponentStyle();
             }
         }
 		
@@ -935,7 +867,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         if (classes.indexOf(name) != -1) {
             classes.remove(name);
             if (invalidate == true) {
-                invalidateStyle();
+                invalidateComponentStyle();
             }
         }
 
@@ -983,7 +915,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         return _styleString;
     }
     private function set_styleString(value:String):String {
-        if (value == null) {
+        if (value == null || value == _styleString) {
             return value;
         }
         var cssString = StringTools.trim(value);
@@ -994,9 +926,11 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             cssString += ";";
         }
         cssString = "_ { " + cssString + "}";
-        var s = new Parser().parseRules(cssString)[0].s;
-        customStyle.apply(s);
+        var s = new Parser().parse(cssString);
+        customStyle.mergeDirectives(s.rules[0].directives);
+        
         _styleString = value;
+        invalidateComponentStyle();
         return value;
     }
 
@@ -1024,23 +958,32 @@ class Component extends ComponentBase implements IComponentBase implements IVali
      Register a listener for a certain `UIEvent`
     **/
     @:dox(group = "Event related properties and methods")
-    public function registerEvent(type:String, listener:Dynamic->Void) {
-        if (_disabled == true && isInteractiveEvent(type) == true) {
-            trace("its disabled");
+    public function registerEvent(type:String, listener:Dynamic->Void, priority:Int = 0) {
+        if (disabled == true && isInteractiveEvent(type) == true) {
             if (_disabledEvents == null) {
                 _disabledEvents = new EventMap();
             }
-            trace("adding to disabled: " + type);
-            _disabledEvents.add(type, listener);
+            _disabledEvents.add(type, listener, priority);
             return;
         }
         
         if (__events == null) {
             __events = new EventMap();
         }
-        if (__events.add(type, listener) == true) {
+        if (__events.add(type, listener, priority) == true) {
             mapEvent(type, _onMappedEvent);
         }
+    }
+
+    /**
+     Returns if this component has a certain event and listener
+    **/
+    @:dox(group = "Event related properties and methods")
+    public function hasEvent(type:String, listener:Dynamic->Void = null):Bool {
+        if (__events == null) {
+            return false;
+        }
+        return __events.contains(type, listener);
     }
 
     /**
@@ -1048,7 +991,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     **/
     @:dox(group = "Event related properties and methods")
     public function unregisterEvent(type:String, listener:Dynamic->Void) {
-        if (_disabledEvents != null && _disabled == false) {
+        if (_disabledEvents != null && !disabled) {
             _disabledEvents.remove(type, listener);
         }
         
@@ -1067,6 +1010,10 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         if (__events != null) {
             __events.invoke(event.type, event, this);
         }
+        
+        if (event.bubble == true && event.canceled == false && parentComponent != null) {
+            parentComponent.dispatch(event);
+        }
     }
 
     private function _onMappedEvent(event:UIEvent) {
@@ -1084,24 +1031,24 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         return INTERACTIVE_EVENTS.indexOf(type) != -1;
     }
     
-    private function disableInteractivity(disable:Bool, styleName:String = null) {
-        if (disable == _disabled) {
+    private var _disabledInteractivityCounter:Int = 0;
+    private function disableInteractivity(disable:Bool) { // You might want to disable interactivity but NOT actually disable visually
+        if (disable) {
+            _disabledInteractivityCounter++;
+        } else {
+            _disabledInteractivityCounter--;
+        }
+        
+        if (_disabledInteractivityCounter < 0 || _disabledInteractivityCounter > 1) {
             return;
         }
         
-        _disabled = disable;
-        
-        if (styleName != null) {
-            if (disable == true) {
-                addClass(styleName);
-            } else {
-                removeClass(styleName);
-            }
-        }
-        
-        if (disable == true) {
+        if (_disabledInteractivityCounter == 1) {
             if (__events != null) {
                 for (eventType in __events.keys()) {
+                    if (!isInteractiveEvent(eventType)) {
+                        continue;
+                    }
                     var listeners:FunctionArray<UIEvent->Void> = __events.listeners(eventType);
                     if (listeners != null) {
                         for (listener in listeners.copy()) {
@@ -1129,7 +1076,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
         
         for (child in childComponents) {
-            child.disableInteractivity(disable, styleName);
+            child.disableInteractivity(disable);
         }
     }
     
@@ -1205,7 +1152,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
 
         _layoutLocked = false;
-        invalidateLayout();
+        invalidateComponentLayout();
     }
 
     //***********************************************************************************************************
@@ -1228,6 +1175,11 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     public function ready() {
         depth = ComponentUtil.getDepth(this);
 
+        if (isComponentInvalid()) {
+            _invalidateCount = 0;
+            ValidationManager.instance.add(this);
+        }
+
         if (_ready == false) {
             _ready = true;
             handleReady();
@@ -1240,7 +1192,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
                 }
             }
 
-            invalidate();
+            invalidateComponent();
 
             onReady();
             dispatch(new UIEvent(UIEvent.READY));
@@ -1248,9 +1200,11 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     }
 
     private function onReady() {
-        behavioursUpdate();
+        behaviours.update();
+    }
+    
+    private function onInitialize() {
 
-        handleBindings(["text", "value", "width", "height"]);
     }
 
     private function onResized() {
@@ -1272,7 +1226,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     @:style                 public var borderSize:Null<Float>;
     @:style                 public var borderRadius:Null<Float>;
 
-    @:style(writeonly)      public var padding:Null<Float>;
     @:style                 public var paddingLeft:Null<Float>;
     @:style                 public var paddingRight:Null<Float>;
     @:style                 public var paddingTop:Null<Float>;
@@ -1326,22 +1279,40 @@ class Component extends ComponentBase implements IComponentBase implements IVali
      Resize this components width and height in one call
     **/
     @:dox(group = "Size related properties and methods")
-    public function resizeComponent(width:Null<Float>, height:Null<Float>) {
+    public function resizeComponent(w:Null<Float>, h:Null<Float>) {
         var invalidate:Bool = false;
-        if (width != null && _componentWidth != width) {
-            _componentWidth = width;
-
+        
+        if (style != null) {
+            if (w != null) {
+                if (style.minWidth != null && w < style.minWidth) {
+                    w = style.minWidth;
+                } else if (style.maxWidth != null && w > style.maxWidth) {
+                    w = style.maxWidth;
+                }
+            }
+            
+            if (h != null) {
+                if (style.minHeight != null && h < style.minHeight) {
+                    h = style.minHeight;
+                } else if (style.maxHeight != null && h > style.maxHeight) {
+                    h = style.maxHeight;
+                }
+            }
+        }
+        
+        
+        if (w != null && _componentWidth != w) {
+            _componentWidth = w;
             invalidate = true;
         }
 
-        if (height != null && _componentHeight != height) {
-            _componentHeight = height;
-
+        if (h != null && _componentHeight != h) {
+            _componentHeight = h;
             invalidate = true;
         }
 
-        if (invalidate == true && isInvalid(InvalidationFlags.LAYOUT) == false) {
-            invalidateLayout();
+        if (invalidate == true && isComponentInvalid(InvalidationFlags.LAYOUT) == false) {
+            invalidateComponentLayout();
         }
     }
 
@@ -1373,7 +1344,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         _percentWidth = value;
 
         if (parentComponent != null) {
-            parentComponent.invalidateLayout();
+            parentComponent.invalidateComponentLayout();
         }
         return value;
     }
@@ -1394,7 +1365,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         _percentHeight = value;
 
         if (parentComponent != null) {
-            parentComponent.invalidateLayout();
+            parentComponent.invalidateComponentLayout();
         }
         return value;
     }
@@ -1497,8 +1468,13 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         if (_width == value) {
             return #if !flash value #end;
         }
-        _width = value;
-        componentWidth = value;
+        if (value == haxe.ui.util.MathUtil.MIN_INT) {
+            _width = null;
+            componentWidth = null;
+        } else {
+            _width = value;
+            componentWidth = value;
+        }
         #if !flash return value; #end
     }
 
@@ -1514,8 +1490,13 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         if (_height == value) {
             return #if !flash value #end;
         }
-        _height = value;
-        componentHeight = value;
+        if (value == haxe.ui.util.MathUtil.MIN_INT) {
+            _height = null;
+            componentHeight = null;
+        } else {
+            _height = value;
+            componentHeight = value;
+        }
         #if !flash return value; #end
     }
 
@@ -1569,9 +1550,9 @@ class Component extends ComponentBase implements IComponentBase implements IVali
      The width of this component
     **/
     @:dox(group = "Size related properties and methods")
-    @bindable public var width(get, set):Float;
+    @bindable public var width(get, set):Null<Float>;
     private var _width:Null<Float>;
-    private function set_width(value:Float):Float {
+    private function set_width(value:Null<Float>):Null<Float> {
         if (_width == value) {
             return value;
         }
@@ -1580,7 +1561,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         return value;
     }
 
-    private function get_width():Float {
+    private function get_width():Null<Float> {
         var f:Float = componentWidth;
         return f;
     }
@@ -1589,9 +1570,9 @@ class Component extends ComponentBase implements IComponentBase implements IVali
      The height of this component
     **/
     @:dox(group = "Size related properties and methods")
-    @bindable public var height(get, set):Float;
+    @bindable public var height(get, set):Null<Float>;
     private var _height:Null<Float>;
-    private function set_height(value:Float):Float {
+    private function set_height(value:Null<Float>):Null<Float> {
         if (_height == value) {
             return value;
         }
@@ -1600,7 +1581,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         return value;
     }
 
-    private function get_height():Float {
+    private function get_height():Null<Float> {
         var f:Float = componentHeight;
         return f;
     }
@@ -1628,8 +1609,8 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             invalidate = true;
         }
 
-        if (invalidate == true && isInvalid(InvalidationFlags.POSITION) == false) {
-            invalidatePosition();
+        if (invalidate == true && isComponentInvalid(InvalidationFlags.POSITION) == false) {
+            invalidateComponentPosition();
         }
     }
 
@@ -1699,6 +1680,30 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             c = c.parentComponent;
         }
         return ypos;
+    }
+
+    //***********************************************************************************************************
+    // Text related
+    //***********************************************************************************************************
+    override public function createTextDisplay(text:String = null):TextDisplay {
+        super.createTextDisplay();
+        _textDisplay.parentComponent = this;
+        return _textDisplay;
+    }
+
+    override public function createTextInput(text:String = null):TextInput {
+        super.createTextInput();
+        _textInput.parentComponent = this;
+        return _textInput;
+    }
+
+    //***********************************************************************************************************
+    // Image related
+    //***********************************************************************************************************
+    override public function createImageDisplay():ImageDisplay {
+        super.createImageDisplay();
+        _imageDisplay.parentComponent = this;
+        return _imageDisplay;
     }
 
     //***********************************************************************************************************
@@ -1895,6 +1900,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     private var _delayedInvalidationFlags:Map<String, Bool> = new Map<String, Bool>();
     private var _isAllInvalid:Bool = false;
     private var _isValidating:Bool = false;
+    private var _isInitialized:Bool = false;
     private var _isDisposed:Bool = false;
     private var _invalidateCount:Int = 0;
 
@@ -1918,13 +1924,13 @@ class Component extends ComponentBase implements IComponentBase implements IVali
      Validate this component and its children on demand.
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public function syncValidation() {
+    public function syncComponentValidation() {
         var count:Int = 0;
-        while(isInvalid()) {
-            validate();
+        while(isComponentInvalid()) {
+            validateComponent();
 
             for (child in childComponents) {
-                child.syncValidation();
+                child.syncComponentValidation();
             }
 
             if (++count >= 10) {
@@ -1937,18 +1943,41 @@ class Component extends ComponentBase implements IComponentBase implements IVali
      This method validates the tasks pending in the component.
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public function validate() {
+    public function validateComponent() {
         if (_ready == false ||
             _isDisposed == true ||      //we don't want to validate disposed components, but they may have been left in the queue.
             _isValidating == true ||    //we were already validating, the existing validation will continue.
-            isInvalid() == false) {     //if none is invalid, exit.
+            isComponentInvalid() == false) {     //if none is invalid, exit.
             return;
+        }
+
+        var isInitialized = _isInitialized;
+        if (isInitialized == false) {
+            initializeComponent();
         }
 
         _isValidating = true;
 
-        validateInternal();
+        validateComponentInternal();
 
+        if (isInitialized == false && _style != null) {
+            if ((_style.initialWidth != null || _style.initialPercentWidth != null) && width <= 0) {
+                if (_style.initialWidth != null) {
+                    width = _style.initialWidth;
+                } else  if (_style.initialPercentWidth != null) {
+                    percentWidth = _style.initialPercentWidth;
+                }
+            }
+            
+            if ((_style.initialHeight != null || _style.initialPercentHeight != null) && height <= 0) {
+                if (_style.initialHeight != null) {
+                    height = _style.initialHeight;
+                } else  if (_style.initialPercentHeight != null) {
+                    percentHeight = _style.initialPercentHeight;
+                }
+            }
+        }
+        
         for (flag in _invalidationFlags.keys()) {
             _invalidationFlags.remove(flag);
         }
@@ -1966,39 +1995,60 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         _isValidating = false;
     }
 
-    private function validateInternal() {
-        var dataInvalid = isInvalid(InvalidationFlags.DATA);
-        var styleInvalid = isInvalid(InvalidationFlags.STYLE);
-        var positionInvalid = isInvalid(InvalidationFlags.POSITION);
-        var displayInvalid = isInvalid(InvalidationFlags.DISPLAY);
-        var layoutInvalid = isInvalid(InvalidationFlags.LAYOUT) && _layoutLocked == false;
+    private function initializeComponent() {
+        if (_isInitialized == true) {
+            return;
+        }
+
+        onInitialize();
+
+        if (_layout == null) {
+            layout = createLayout();
+        }
+
+        _isInitialized = true;
+
+        if (hasEvent(UIEvent.INITIALIZE)) {
+            dispatch(new UIEvent(UIEvent.INITIALIZE));
+        }
+    }
+
+    private function validateComponentInternal() {
+        var dataInvalid = isComponentInvalid(InvalidationFlags.DATA);
+        var styleInvalid = isComponentInvalid(InvalidationFlags.STYLE);
+        var textDisplayInvalid = isComponentInvalid(InvalidationFlags.TEXT_DISPLAY) && hasTextDisplay();
+        var textInputInvalid = isComponentInvalid(InvalidationFlags.TEXT_INPUT) && hasTextInput();
+        var imageDisplayInvalid = isComponentInvalid(InvalidationFlags.IMAGE_DISPLAY) && hasImageDisplay();
+        var positionInvalid = isComponentInvalid(InvalidationFlags.POSITION);
+        var displayInvalid = isComponentInvalid(InvalidationFlags.DISPLAY);
+        var layoutInvalid = isComponentInvalid(InvalidationFlags.LAYOUT) && _layoutLocked == false;
 
         if (dataInvalid) {
-            validateData();
+            validateComponentData();
         }
 
         if (styleInvalid) {
-            validateStyle();
+            validateComponentStyle();
         }
 
-        if (hasTextDisplay()) {
-            getTextDisplay().validate();
+        if (textDisplayInvalid) {
+            getTextDisplay().validateComponent();
         }
 
-        if (hasTextInput()) {
-            getTextInput().validate();
+        if (textInputInvalid) {
+            getTextInput().validateComponent();
         }
 
-        if (hasImageDisplay()) {
-            getImageDisplay().validate();
+        if (imageDisplayInvalid) {
+            getImageDisplay().validateComponent();
         }
 
         if (positionInvalid) {
-            validatePosition();
+            validateComponentPosition();
         }
 
         if (layoutInvalid) {
-            displayInvalid = validateLayout() || displayInvalid;
+            displayInvalid = validateComponentLayout() || displayInvalid;
         }
 
         if (displayInvalid || styleInvalid) {
@@ -2006,69 +2056,77 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
     }
 
-    private function validateData() {
-        //To be overwritten
+    private function validateComponentData() {
+        behaviours.validateData();
     }
 
     /**
      Return true if the size has changed.
     **/
-    private function validateLayout():Bool {
+    private function validateComponentLayout():Bool {
         layout.refresh();
 
         //TODO - Required. Something is wrong with the autosize order in the first place if we need to do that twice. Revision required for performance.
-        while(validateAutoSize()) {
+        while(validateComponentAutoSize()) {
             layout.refresh();
         }
 
+        var sizeChanged = false;
         if (_componentWidth != _actualWidth || _componentHeight != _actualHeight) {
             _actualWidth = _componentWidth;
             _actualHeight = _componentHeight;
 
             if (parentComponent != null) {
-                parentComponent.invalidateLayout();
+                parentComponent.invalidateComponentLayout();
             }
 
             onResized();
             dispatch(new UIEvent(UIEvent.RESIZE));
 
-            return true;
-        } else {
-            return false;
+            sizeChanged = true;
         }
+        
+        if (_compositeBuilder != null) {
+            sizeChanged = _compositeBuilder.validateComponentLayout() || sizeChanged;
+        }
+        
+        return sizeChanged;
     }
 
-    private function validateStyle() {
-        var s:Style = Toolkit.styleSheet.applyClasses(this, false);
-        if (_ready == false || _style == null || _style.equalTo(s) == false) { // lets not update if nothing has changed
+    private function validateComponentStyle() {
+        var s:Style = Toolkit.styleSheet.buildStyleFor(this);
+        s.apply(customStyle);
+
+        if (_style == null || _style.equalTo(s) == false) { // lets not update if nothing has changed
             _style = s;
-            applyStyle(_style);
+            applyStyle(s);
         }
     }
 
-    private function validatePosition() {
+    private function validateComponentPosition() {
         handlePosition(_left, _top, _style);
 
         onMoved();
         dispatch(new UIEvent(UIEvent.MOVE));
     }
 
-    public function updateDisplay() {
+    public function updateComponentDisplay() {
         if (componentWidth == null || componentHeight == null || componentWidth <= 0 || componentHeight <= 0) {
             return;
         }
 
         handleSize(componentWidth, componentHeight, _style);
         
-        if (style != null && style.clip != null && style.clip == true) {
-            handleClipRect(new Rectangle(0, 0, componentWidth, componentHeight));
+        if (_componentClipRect != null ||
+            (style != null && style.clip != null && style.clip == true)) {
+            handleClipRect(_componentClipRect != null ? _componentClipRect : new Rectangle(0, 0, componentWidth, componentHeight));
         }
     }
 
     /**
      Return true if the size calculated has changed and the autosize is enabled.
     **/
-    private function validateAutoSize():Bool {
+    private function validateComponentAutoSize():Bool {
         var invalidate:Bool = false;
         if (autoWidth == true || autoHeight == true) {
             var s:Size = layout.calcAutoSize();
@@ -2093,7 +2151,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
      Check if the component is invalidated with some `flag`.
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public function isInvalid(flag:String = InvalidationFlags.ALL):Bool {
+    public function isComponentInvalid(flag:String = InvalidationFlags.ALL):Bool {
         if (_isAllInvalid == true) {
             return true;
         }
@@ -2113,12 +2171,12 @@ class Component extends ComponentBase implements IComponentBase implements IVali
      Invalidate this components with the `InvalidationFlags` indicated. If it hasn't parameter then the component will be invalidated completely.
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public function invalidate(flag:String = InvalidationFlags.ALL) {
+    public function invalidateComponent(flag:String = InvalidationFlags.ALL) {
         if (_ready == false) {
             return;     //it should be added into the queue later
         }
 
-        var isAlreadyInvalid:Bool = isInvalid();
+        var isAlreadyInvalid:Bool = isComponentInvalid();
         var isAlreadyDelayedInvalid:Bool = false;
         if (_isValidating == true) {
             for (value in _delayedInvalidationFlags) {
@@ -2168,48 +2226,58 @@ class Component extends ComponentBase implements IComponentBase implements IVali
      Invalidate the data of this component
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public inline function invalidateData() {
-        invalidate(InvalidationFlags.DATA);
+    public inline function invalidateComponentData() {
+        invalidateComponent(InvalidationFlags.DATA);
     }
 
     /**
      Invalidate this components layout, may result in multiple calls to `invalidateDisplay` and `invalidateLayout` of its children
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public inline function invalidateLayout() {
+    public inline function invalidateComponentLayout() {
         if (_layout == null || _layoutLocked == true) {
             return;
         }
-        invalidate(InvalidationFlags.LAYOUT);
+        invalidateComponent(InvalidationFlags.LAYOUT);
     }
 
     /**
      Invalidate the position of this component
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public inline function invalidatePosition() {
-        invalidate(InvalidationFlags.POSITION);
+    public inline function invalidateComponentPosition() {
+        invalidateComponent(InvalidationFlags.POSITION);
     }
 
     /**
      Invalidate the visible aspect of this component
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public inline function invalidateDisplay() {
-        invalidate(InvalidationFlags.DISPLAY);
+    public inline function invalidateComponentDisplay() {
+        invalidateComponent(InvalidationFlags.DISPLAY);
     }
 
     /**
      Invalidate and recalculate this components style, may result in a call to `invalidateDisplay`
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public inline function invalidateStyle() {
-        invalidate(InvalidationFlags.STYLE);
+    public inline function invalidateComponentStyle(force:Bool = false) {
+        invalidateComponent(InvalidationFlags.STYLE);
+        if (force == true) {
+            _style = null;
+        }
     }
 
     private override function applyStyle(style:Style) {
         super.applyStyle(style);
 
+        if (style.left != null) {
+            left = style.left;
+        }
+        if (style.top != null) {
+            top = style.top;
+        }
+        
         if (style.percentWidth != null) {
             percentWidth = style.percentWidth;
         }
@@ -2229,6 +2297,13 @@ class Component extends ComponentBase implements IComponentBase implements IVali
 
         if (style.hidden != null) {
             hidden = style.hidden;
+        }
+
+        if (style.animationName != null) {
+            var animationKeyFrames:AnimationKeyFrames = Toolkit.styleSheet.animations.get(style.animationName);
+            applyAnimationKeyFrame(animationKeyFrames, style.animationOptions);
+        } else if (componentAnimation != null) {
+            componentAnimation = null;
         }
 
         /*
@@ -2252,6 +2327,32 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             native = false;
         }
         */
+        
+        if (_compositeBuilder != null) {
+            _compositeBuilder.applyStyle(style);
+        }
+    }
+
+    //***********************************************************************************************************
+    // Animation
+    //***********************************************************************************************************
+
+    private function applyAnimationKeyFrame(animationKeyFrames:AnimationKeyFrames, options:AnimationOptions):Void {
+        if (_animatable == false || options == null || options.duration == 0 ||
+            (_componentAnimation != null && options.compareToAnimation(_componentAnimation) == true)) {
+            return;
+        }
+
+        if (hasEvent(AnimationEvent.START)) {
+            dispatch(new AnimationEvent(AnimationEvent.START));
+        }
+
+        componentAnimation = Animation.createWithKeyFrames(animationKeyFrames, this, options);
+        componentAnimation.run(function(){
+            if (hasEvent(AnimationEvent.END)) {
+                dispatch(new AnimationEvent(AnimationEvent.END));
+            }
+        });
     }
 
     //***********************************************************************************************************
@@ -2277,23 +2378,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     //***********************************************************************************************************
     // Properties
     //***********************************************************************************************************
-    private function getProperty(name:String):Variant {
-        switch (name) {
-            case "value":       return this.value;
-            case "width":       return this.width;
-            case "height":      return this.height;
-        }
-        return null;
-    }
-
-    private function setProperty(name:String, value:Variant):Variant {
-        switch (name) {
-            case "value":       return this.value = value;
-            case "width":       return this.width = value;
-            case "height":      return this.height = value;
-        }
-        return null;
-    }
 
     /**
      Gets a property that is associated with all classes of this type
@@ -2338,25 +2422,43 @@ class Component extends ComponentBase implements IComponentBase implements IVali
 
     public var className(get, null):String;
     private function get_className():String {
+        if (Std.is(this, Dialog2)) {
+            return Type.getClassName(Dialog2);
+        }
         return Type.getClassName(Type.getClass(this));
+    }
+
+    public var cssName(get, null):String;
+    private function get_cssName():String {
+        var cssName:String = null;
+        if (_compositeBuilder != null) {
+            cssName = _compositeBuilder.cssName;
+        }
+        if (cssName == null) {
+            cssName = Type.getClassName(Type.getClass(this)).split(".").pop().toLowerCase();
+        }
+        return cssName;
     }
 }
 
 //***********************************************************************************************************
 // Default behaviours
 //***********************************************************************************************************
-@:dox(hide)
+@:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
-class ComponentDefaultDisabledBehaviour extends Behaviour {
-    public override function set(value:Variant) {
-        if (value.isNull) {
-            return;
-        }
-
-        _component.disableInteractivity(value, ":disabled");
-    }
-
+class ComponentDisabledBehaviour extends DataBehaviour {
     public override function get():Variant {
-        return _component._disabled;
+        return _component.hasClass(":disabled");
+    }
+    
+    public override function invalidateData() {
+        if (_value) {
+            _component.addClass(":disabled", true, true);
+            _component.dispatch(new UIEvent(UIEvent.DISABLED));
+        } else {
+            _component.removeClass(":disabled", true, true);
+            _component.dispatch(new UIEvent(UIEvent.ENABLED));
+        }
+        _component.disableInteractivity(_value);
     }
 }

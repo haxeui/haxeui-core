@@ -1,0 +1,10 @@
+{
+    "name": "android-flash-develop",
+    "type": "template",
+    "subProjects": [
+        "shared", "android-shared"
+    ],
+    "templates": [
+        { "src": "android.hxproj", "dst": "${target}/android.hxproj"}
+    ]
+}

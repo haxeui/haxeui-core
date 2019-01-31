@@ -1,7 +1,7 @@
 package haxe.ui.core;
 
 import haxe.ui.assets.ImageInfo;
-import haxe.ui.util.Rectangle;
+import haxe.ui.geom.Rectangle;
 import haxe.ui.validation.InvalidationFlags;
 import haxe.ui.backend.ImageDisplayBase;
 
@@ -28,7 +28,7 @@ class ImageDisplay extends ImageDisplayBase {
         }
 
         _left = value;
-        invalidate(InvalidationFlags.POSITION);
+        invalidateComponent(InvalidationFlags.POSITION);
         return value;
     }
 
@@ -42,7 +42,7 @@ class ImageDisplay extends ImageDisplayBase {
         }
 
         _top = value;
-        invalidate(InvalidationFlags.POSITION);
+        invalidateComponent(InvalidationFlags.POSITION);
         return value;
     }
 
@@ -53,7 +53,7 @@ class ImageDisplay extends ImageDisplayBase {
         }
 
         _imageWidth = value;
-        invalidate(InvalidationFlags.DISPLAY);
+        invalidateComponent(InvalidationFlags.DISPLAY);
         return value;
     }
 
@@ -68,7 +68,7 @@ class ImageDisplay extends ImageDisplayBase {
         }
 
         _imageHeight = value;
-        invalidate(InvalidationFlags.DISPLAY);
+        invalidateComponent(InvalidationFlags.DISPLAY);
         return value;
     }
 
@@ -88,8 +88,8 @@ class ImageDisplay extends ImageDisplayBase {
         _imageInfo = value;
         _imageWidth = _imageInfo.width;
         _imageHeight = _imageInfo.height;
-        invalidate(InvalidationFlags.DATA);
-        invalidate(InvalidationFlags.DISPLAY);
+        invalidateComponent(InvalidationFlags.DATA);
+        invalidateComponent(InvalidationFlags.DISPLAY);
 
         return value;
     }
@@ -100,13 +100,13 @@ class ImageDisplay extends ImageDisplayBase {
     }
     private function set_imageClipRect(value:Rectangle):Rectangle {
         _imageClipRect = value;
-        invalidate(InvalidationFlags.DISPLAY);
+        invalidateComponent(InvalidationFlags.DISPLAY);
 
         return value;
     }
 
 
-    public function isInvalid(flag:String = InvalidationFlags.ALL):Bool {
+    public function isComponentInvalid(flag:String = InvalidationFlags.ALL):Bool {
         if (_isAllInvalid == true) {
             return true;
         }
@@ -122,19 +122,19 @@ class ImageDisplay extends ImageDisplayBase {
         return _invalidationFlags.exists(flag);
     }
 
-    public function invalidate(flag:String = InvalidationFlags.ALL) {
+    public function invalidateComponent(flag:String = InvalidationFlags.ALL) {
         if (flag == InvalidationFlags.ALL) {
             _isAllInvalid = true;
-        } else {
-            if (flag != InvalidationFlags.ALL && !_invalidationFlags.exists(flag)) {
-                _invalidationFlags.set(flag, true);
-            }
+            parentComponent.invalidateComponent(InvalidationFlags.IMAGE_DISPLAY);
+        } else if (!_invalidationFlags.exists(flag)) {
+            _invalidationFlags.set(flag, true);
+            parentComponent.invalidateComponent(InvalidationFlags.IMAGE_DISPLAY);
         }
     }
 
-    public function validate() {
+    public function validateComponent() {
         if (_isValidating == true ||    //we were already validating, the existing validation will continue.
-            isInvalid() == false) {     //if none is invalid, exit.
+            isComponentInvalid() == false) {     //if none is invalid, exit.
             return;
         }
 
@@ -151,9 +151,9 @@ class ImageDisplay extends ImageDisplayBase {
     }
 
     private function handleValidate() {
-        var dataInvalid = isInvalid(InvalidationFlags.DATA);
-        var positionInvalid = isInvalid(InvalidationFlags.POSITION);
-        var displayInvalid = isInvalid(InvalidationFlags.DISPLAY);
+        var dataInvalid = isComponentInvalid(InvalidationFlags.DATA);
+        var positionInvalid = isComponentInvalid(InvalidationFlags.POSITION);
+        var displayInvalid = isComponentInvalid(InvalidationFlags.DISPLAY);
 
         if (dataInvalid) {
             validateData();

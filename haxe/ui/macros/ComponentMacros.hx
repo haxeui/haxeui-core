@@ -1,10 +1,15 @@
 package haxe.ui.macros;
 
+import haxe.macro.ExprTools;
 import haxe.ui.core.ComponentClassMap;
+import haxe.ui.core.LayoutClassMap;
 import haxe.ui.parsers.ui.ComponentInfo;
 import haxe.ui.parsers.ui.ComponentParser;
+import haxe.ui.parsers.ui.LayoutInfo;
 import haxe.ui.parsers.ui.resolvers.FileResourceResolver;
 import haxe.ui.scripting.ConditionEvaluator;
+import haxe.ui.core.ComponentFieldMap;
+import haxe.ui.core.ComponentFieldMap;
 import haxe.ui.util.StringUtil;
 
 #if macro
@@ -35,7 +40,7 @@ class ComponentMacros {
         ModuleMacros.populateClassMap();
 
         var namedComponents:Map<String, String> = new Map<String, String>();
-        var code:Expr = buildComponentSource([], resourcePath, namedComponents, MacroHelpers.exprToMap(params));
+        var code:Expr = buildComponentFromFile([], resourcePath, namedComponents, MacroHelpers.exprToMap(params));
         var e:Expr = macro addComponent($code);
         //code += "this.addClass('custom-component');";
         //trace(code);
@@ -86,13 +91,13 @@ class ComponentMacros {
     }
 
     macro public static function buildComponent(filePath:String, params:Expr = null):Expr {
-        ModuleMacros.populateClassMap();
-
-        return buildComponentSource([], filePath, null, MacroHelpers.exprToMap(params));
+        return buildComponentFromFile([], filePath, null, MacroHelpers.exprToMap(params));
     }
 
     #if macro
-    public static function buildComponentSource(code:Array<Expr>, filePath:String, namedComponents:Map<String, String> = null, params:Map<String, Dynamic> = null):Expr {
+    public static function buildComponentFromFile(code:Array<Expr>, filePath:String, namedComponents:Map<String, String> = null, params:Map<String, Dynamic> = null):Expr {
+        ModuleMacros.populateClassMap();
+
         var f = MacroHelpers.resolveFile(filePath);
         if (f == null) {
             throw "Could not resolve: " + filePath;
@@ -100,51 +105,102 @@ class ComponentMacros {
 
         var fileContent:String = StringUtil.replaceVars(File.getContent(f), params);
         var c:ComponentInfo = ComponentParser.get(MacroHelpers.extension(f)).parse(fileContent, new FileResourceResolver(f, params));
+        return buildComponentSource(code, c, namedComponents, params);
+    }
+
+    public static function buildComponentFromString(code:Array<Expr>, source:String, namedComponents:Map<String, String> = null, params:Map<String, Dynamic> = null):Expr {
+        ModuleMacros.populateClassMap();
+
+        source = StringUtil.replaceVars(source, params);
+        var c:ComponentInfo = ComponentParser.get("xml").parse(source);
+        return buildComponentSource(code, c, namedComponents, params);
+    }
+
+    private static var bindingInfo:Array<Dynamic> = [];
+    public static function buildComponentSource(code:Array<Expr>, c:ComponentInfo, namedComponents:Map<String, String> = null, params:Map<String, Dynamic> = null):Expr {
         //trace(c);
 
+        bindingInfo = [];
+
         for (styleString in c.styles) {
-            code.push(macro haxe.ui.Toolkit.styleSheet.addRules($v{styleString}));
+            code.push(macro haxe.ui.Toolkit.styleSheet.parse($v{styleString}));
         }
 
-        buildComponentCode(code, c, 0, namedComponents);
+        _componentId = 0;
+        buildComponentCode(code, c, -1, namedComponents, Context.currentPos());
         assignBindings(code, c.bindings);
 
         var fullScript = "";
         for (scriptString in c.scriptlets) {
             fullScript += scriptString;
         }
+
+        for (b in bindingInfo) {
+            code.push(macro haxe.ui.binding.BindingManager.instance.add($i{b.componentVarName}, $v{b.field}, $v{b.value}));
+        }
+
         code.push(macro c0.script = $v{fullScript});
+        code.push(macro c0.bindingRoot = true);
         code.push(macro c0);
+
+//        trace(ExprTools.toString(macro @:pos(Context.currentPos()) $b{code}));
 
         return macro @:pos(Context.currentPos()) $b{code};
     }
 
-    private static function buildComponentCode(code:Array<Expr>, c:ComponentInfo, id:Int, namedComponents:Map<String, String>) {
+    private static var _componentId:Int = 0;
+    private static function buildComponentCode(code:Array<Expr>, c:ComponentInfo, parentId:Int, namedComponents:Map<String, String>, pos:Position = null) {
         if (c.condition != null && new ConditionEvaluator().evaluate(c.condition) == false) {
             return;
         }
 
         var className:String = ComponentClassMap.get(c.type.toLowerCase());
         if (className == null) {
-            trace("WARNING: no class found for component: " + c.type);
+            if (pos == null) {
+                pos = Context.currentPos();
+            }
+            Context.warning("no class found for component: " + c.type, pos);
             return;
         }
 
-        var numberEReg:EReg = ~/^\d+(\.(\d+))?$/;
+        var numberEReg:EReg = ~/^-?\d+(\.(\d+))?$/;
         var localeEReg = ~/^_\( *([\w'", \.]+) *\)$/;
         var localeStringParamEReg = ~/['"](.+)['"]/;
         var type = Context.getModule(className)[0];
-        //trace(className + " = " + MacroHelpers.hasInterface(type, "haxe.ui.core.IDataComponent"));
+        if (MacroHelpers.hasDirectInterface(type, "haxe.ui.core.IDirectionalComponent")) {
+            var direction = c.direction;
+            if (direction == null) {
+                direction = "horizontal"; // default to horizontal
+            }
+            var directionalClassName = ComponentClassMap.get(direction + c.type.toLowerCase());
+            if (directionalClassName == null) {
+                trace("WARNING: no direction class found for component: " + c.type + " (" + (direction + c.type.toLowerCase()) + ")");
+                return;
+            }
 
-        var componentVarName = 'c${id}';
+            className = directionalClassName;
+            type = Context.getModule(className)[0];
+        }
+
+        var componentVarName = 'c${_componentId}';
+        var orgId = _componentId;
+        _componentId++;
         var typePath = {
             var split = className.split(".");
             { name: split.pop(), pack: split }
         };
+
         inline function add(e:Expr) {
             code.push(e);
         }
         inline function assign(field:String, value:Dynamic) {
+            if (Std.string(value).indexOf("${") != -1) {
+                bindingInfo.push({
+                    componentVarName: componentVarName,
+                    field: field,
+                    value: value
+                });
+            }
             add(macro $i{componentVarName}.$field = $v{value});
         }
         function assignText(field:String, value:String) {
@@ -217,8 +273,10 @@ class ComponentMacros {
         }
         add(macro var $componentVarName = new $typePath());
 
+        var childParentId = _componentId - 1;
         for (child in c.children) {
-            buildComponentCode(code, child, id + 1, namedComponents);
+            buildComponentCode(code, child, childParentId, namedComponents, pos);
+
         }
 
         if (c.id != null)                       assign("id", c.id);
@@ -235,31 +293,48 @@ class ComponentMacros {
         if (c.text != null)                     assignText("text", c.text);
         if (c.styleNames != null)               assign("styleNames", c.styleNames);
         if (c.style != null)                    assign("styleString", c.styleString);
-        if (c.layoutName != null)               assign("layoutName", c.layoutName);
+        if (c.layout != null) {
+            buildLayoutCode(code, c.layout, orgId, namedComponents, pos);
+        }
+
         for (propName in c.properties.keys()) {
             var propValue = c.properties.get(propName);
-            if (localeEReg.match(propValue)) {
-                assignText(propName, propValue);
+            propName = ComponentFieldMap.mapField(propName);
+            var propExpr = if (propValue == "true" || propValue == "yes" || propValue == "false" || propValue == "no") {
+                macro $v{propValue == "true" || propValue == "yes"};
             } else {
-                var propExpr = if (propValue == "true" || propValue == "yes" || propValue == "false" || propValue == "no") {
-                    macro $v{propValue == "true" || propValue == "yes"};
-                } else {
-                    if(numberEReg.match(propValue)) {
-                        if(numberEReg.matched(2) != null) {
-                            macro $v{Std.parseFloat(propValue)};
-                        } else {
-                            macro $v{Std.parseInt(propValue)};
-                        }
+                if(numberEReg.match(propValue)) {
+                    if(numberEReg.matched(2) != null) {
+                        macro $v{Std.parseFloat(propValue)};
                     } else {
-                        macro $v{propValue};
+                        macro $v{Std.parseInt(propValue)};
                     }
-                }
-
-                if (StringTools.startsWith(propName, "on")) {
-                    add(macro $i{componentVarName}.addScriptEvent($v{propName}, $propExpr));
+                } else if (localeEReg.match(propValue)) {
+                    assignText(propName, propValue);
                 } else {
-                    add(macro $i{componentVarName}.$propName = $propExpr);
+                    macro $v{propValue};
                 }
+            }
+
+            if (StringTools.startsWith(propName, "on")) {
+                add(macro $i{componentVarName}.addScriptEvent($v{propName}, $propExpr));
+            } else if (Std.string(propValue).indexOf("${") != -1) {
+                bindingInfo.push({
+                    componentVarName: componentVarName,
+                    field: propName,
+                    value: propValue
+                });
+                // TODO: does this make sense? Basically, if you try to apply a bound variable to something that isnt
+                // a string, then we cant assign it as normal, ie:
+                //     c5.selectedIndex = ${something}
+                // but, if we skip it, then you can use non-existing xml attributes in the xml (eg: fakeComponentProperty)
+                // and they will go unchecked and you wont get an error. This is a way around that, so it essentially generates
+                // the following expr:
+                //     c5.fakeComponentProperty = c5.fakeComponentProperty
+                // which will result in a compile time error
+                add(macro $i{componentVarName}.$propName = $i{componentVarName}.$propName);
+            } else {
+                add(macro $i{componentVarName}.$propName = $propExpr);
             }
         }
 
@@ -271,8 +346,58 @@ class ComponentMacros {
             namedComponents.set(c.id, className);
         }
 
+        if (parentId != -1) {
+            add(macro $i{"c" + (parentId)}.addComponent($i{componentVarName}));
+        }
+    }
+
+    private static function buildLayoutCode(code:Array<Expr>, l:LayoutInfo, id:Int, namedComponents:Map<String, String>, pos:Position = null) {
+        var className:String = LayoutClassMap.get(l.type.toLowerCase());
+        if (className == null) {
+            if (pos == null) {
+                pos = Context.currentPos();
+            }
+            Context.warning("no class found for layout: " + l.type, pos);
+            return;
+        }
+
+        var numberEReg:EReg = ~/^-?\d+(\.(\d+))?$/;
+        var type = Context.getModule(className)[0];
+
+        var layoutVarName = 'l${id}';
+        var typePath = {
+            var split = className.split(".");
+            { name: split.pop(), pack: split }
+        };
+        inline function add(e:Expr) {
+            code.push(e);
+        }
+        inline function assign(field:String, value:Dynamic) {
+            add(macro $i{layoutVarName}.$field = $v{value});
+        }
+        add(macro var $layoutVarName = new $typePath());
+
+        for (propName in l.properties.keys()) {
+            var propValue = l.properties.get(propName);
+            var propExpr = if (propValue == "true" || propValue == "yes" || propValue == "false" || propValue == "no") {
+                macro $v{propValue == "true" || propValue == "yes"};
+            } else {
+                if(numberEReg.match(propValue)) {
+                    if(numberEReg.matched(2) != null) {
+                        macro $v{Std.parseFloat(propValue)};
+                    } else {
+                        macro $v{Std.parseInt(propValue)};
+                    }
+                } else {
+                    macro $v{propValue};
+                }
+            }
+
+            add(macro $i{layoutVarName}.$propName = $propExpr);
+        }
+
         if (id != 0) {
-            add(macro $i{"c" + (id - 1)}.addComponent($i{"c" + id}));
+            add(macro $i{"c" + (id)}.layout = $i{"l" + id});
         }
     }
 

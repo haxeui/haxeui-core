@@ -1,0 +1,8 @@
+{
+    "name": "flixel-shared",
+    "type": "template",
+    "templates": [
+        { "src": "project.xml", "dst": "${target}/project.xml"},
+        { "src": "haxeui-flixel.properties", "dst": "${target}/src/haxeui-flixel.properties"}
+    ]
+}

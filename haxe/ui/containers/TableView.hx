@@ -1,5 +1,15 @@
 package haxe.ui.containers;
 
+#if !impossible // ifdef it out for now
+
+import haxe.ui.core.Component;
+
+class TableView extends Component {
+    
+}
+
+#else
+
 import haxe.ui.layouts.Layout;
 import haxe.ui.components.HScroll;
 import haxe.ui.components.VScroll;
@@ -8,14 +18,14 @@ import haxe.ui.core.BasicItemRenderer;
 import haxe.ui.core.Component;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.ItemRenderer;
-import haxe.ui.core.MouseEvent;
+import haxe.ui.events.MouseEvent;
 import haxe.ui.core.Platform;
-import haxe.ui.core.UIEvent;
+import haxe.ui.events.UIEvent;
 import haxe.ui.data.ArrayDataSource;
 import haxe.ui.data.DataSource;
 import haxe.ui.layouts.DefaultLayout;
-import haxe.ui.util.Rectangle;
-import haxe.ui.util.Size;
+import haxe.ui.geom.Rectangle;
+import haxe.ui.geom.Size;
 
 class TableView extends ScrollView implements IDataComponent {
     private var _header:Header;
@@ -77,7 +87,7 @@ class TableView extends ScrollView implements IDataComponent {
 
             v = addComponentToSuper(child);
             if (_dataSource != null) {
-                invalidateData();
+                invalidateComponentData();
             }
         } else if (Std.is(child, ItemRenderer)) {
             #if haxeui_luxe
@@ -147,14 +157,14 @@ class TableView extends ScrollView implements IDataComponent {
     }
     private function set_dataSource(value:DataSource<Dynamic>):DataSource<Dynamic> {
         _dataSource = value;
-        invalidateData();
+        invalidateComponentData();
         _dataSource.onChange = onDataSourceChanged;
         return value;
     }
 
     private function onDataSourceChanged() {
         if (_ready == true) {
-            invalidateData();
+            invalidateComponentData();
         }
     }
 
@@ -196,7 +206,7 @@ class TableView extends ScrollView implements IDataComponent {
             }
         }
 
-        invalidateDisplay();
+        invalidateComponentDisplay();
     }
 
     public function resetSelection() {
@@ -286,12 +296,12 @@ class TableView extends ScrollView implements IDataComponent {
     // Validation
     //***********************************************************************************************************
 
-    private override function validateData() {
+    private override function validateComponentData() {
         syncUI();
     }
 
-    public override function updateDisplay() {
-        super.updateDisplay();
+    public override function updateComponentDisplay() {
+        super.updateComponentDisplay();
 
         for (row in _contents.childComponents) {
             for (c in 0..._header.childComponents.length) {
@@ -303,7 +313,7 @@ class TableView extends ScrollView implements IDataComponent {
         }
     }
 
-    private override function validateScroll() {
+    private override function validateComponentScroll() {
         checkScrolls();
         updateScrollRect();
 
@@ -448,3 +458,5 @@ class TableViewRow extends HBox {
         return value;
     }
 }
+
+#end

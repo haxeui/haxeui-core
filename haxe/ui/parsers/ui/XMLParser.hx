@@ -24,27 +24,24 @@ class XMLParser extends ComponentParser {
     }
 
     private static function parseComponent(component:ComponentInfo, xml:Xml, resourceResolver:ResourceResolver):Bool {
-        var isComponent:Bool = true;
+        var isComponent:Bool = false;
         var nodeName = xml.nodeName;
         if (nodeName == "import") {
             parseImportNode(component.parent, xml, resourceResolver);
-            isComponent = false;
         } else if (nodeName == "script") {
             parseScriptNode(component, xml, resourceResolver);
-            isComponent = false;
         } else if (nodeName == "style") {
             parseStyleNode(component, xml, resourceResolver);
-            isComponent = false;
         } else if (nodeName == "bind") {
             parseBindNode(component, xml);
-            isComponent = false;
         } else if (nodeName == "data") {
             if (xml.firstElement() != null) {
                 component.parent.data = StringTools.trim(xml.toString());
             } else if (StringTools.startsWith(StringTools.trim(xml.firstChild().nodeValue), "[")) {
                 component.parent.data = StringTools.trim(xml.firstChild().nodeValue);
             }
-            isComponent = false;
+        } else if (nodeName == "layout") {
+            parseLayoutNode(component.parent, xml);
         } else {
             parseDetails(component, xml);
             parseAttributes(component, xml);
@@ -56,6 +53,9 @@ class XMLParser extends ComponentParser {
                     component.children.push(child);
                 }
             }
+
+            component.validate();
+            isComponent = true;
         }
         return isComponent;
     }
@@ -63,6 +63,9 @@ class XMLParser extends ComponentParser {
     private static function parseImportNode(component:ComponentInfo, xml:Xml, resourceResolver:ResourceResolver) {
         if (xml.get("source") != null) {
             var source:String = xml.get("source");
+            if (source == null) {
+                source = xml.get("resource");
+            }
             var sourceData:String = resourceResolver.getResourceData(source);
             if (sourceData != null) {
                 var extension:String = resourceResolver.extension(source);
@@ -141,6 +144,19 @@ class XMLParser extends ComponentParser {
         component.findRootComponent().bindings.push(binding);
     }
 
+    private static function parseLayoutNode(component:ComponentInfo, xml:Xml) {
+        var layoutXml:Xml = xml.firstElement();
+        var layout:LayoutInfo = new LayoutInfo();
+        component.layout = layout;
+
+        layout.type = layoutXml.nodeName;
+
+        for (attrName in layoutXml.attributes()) {
+            var attrValue:String = layoutXml.get(attrName);
+            layout.properties.set(attrName, attrValue);
+        }
+    }
+
     private static function parseDetails(component:ComponentInfo, xml:Xml) {
         if (xml.firstChild() != null && '${xml.firstChild().nodeType}' == "1") {
             var value = StringTools.trim(xml.firstChild().nodeValue);
@@ -209,11 +225,10 @@ class XMLParser extends ComponentParser {
                     component.composite = (attrValue == "true");
                 case "layout":
                     component.layoutName = attrValue;
+                case "direction":
+                    component.direction = attrValue;
                 case "bindTo" | "bindTransform": // do nothing
                 default:
-                    if (attrName == "group") {
-                        attrName = "groupName";
-                    }
                     component.properties.set(attrName, attrValue);
             }
         }

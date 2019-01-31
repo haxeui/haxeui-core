@@ -1,0 +1,51 @@
+/************************************************************************
+** BUTTONS
+*************************************************************************/
+.button {
+    background: #EDEDED #E6E6E6 vertical;
+    color: #222222;
+    border: 1px solid #ABABAB;
+    border-radius: 2px;
+    padding: 5px 5px;
+    cursor: pointer;
+    width: auto;
+    height: auto;
+    spacing: 5px 5px;
+    text-align: center;
+}
+
+.button:hover {
+    background: #F5F5F5 #F1F1F1 vertical;
+    color: #000000;
+}
+
+.button:down {
+    background: #D2D2D2 #C2C2C2 vertical;
+    color: #000000;
+    border-color: #7F7F7F;
+}
+
+.button:active {
+    border: 2px solid #77C6FF;
+}
+
+.button.emphasized {
+    background: #DAE4EE #D4DEE8 vertical;
+    border-color: #6CA1D7;
+}
+
+.button.emphasized:hover {
+    background: #E2ECF6 #DEE8F2 vertical;
+    border-color: #6CA1D7;
+}
+
+.button.emphasized:down {
+    background: #C2CCD6 #B4BEC8 vertical;
+    border-color: #568CC1;
+}
+
+.button:disabled {
+    background: #D4D4D4 #CCCCCC vertical;
+    color: #909090;
+    cursor: default;
+}

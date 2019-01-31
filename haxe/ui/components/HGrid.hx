@@ -16,7 +16,7 @@ class HGrid extends Component {
     //***********************************************************************************************************
     private override function createDefaults() {
         super.createDefaults();
-        _defaultLayout = new HorizontalGridLayout();
+        _defaultLayoutClass = HorizontalGridLayout;
     }
 
     //***********************************************************************************************************
@@ -34,7 +34,7 @@ class HGrid extends Component {
             _rows = value;
 
             cast(layout, HorizontalGridLayout).rows = value;
-            invalidateLayout();
+            invalidateComponentLayout();
         }
         return value;
     }

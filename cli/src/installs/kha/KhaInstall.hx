@@ -1,4 +1,5 @@
 package installs.kha;
+
 import installs.HaxeLibInstall;
 
 class KhaInstall extends HaxeLibInstall {

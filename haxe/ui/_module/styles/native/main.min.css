@@ -1,5 +1,0 @@
-*{native:true;}
-.hslider:native,.vslider:native,.hprogress:native,.vprogress:native{width:auto;height:auto;background:none;border:none;border-radius:none;}
-.button:native,.dropdown:native{background:none;border:none;border-radius:none;color:none;}
-.textfield:native,.textarea:native{background:none;border:none;border-radius:none;color:none;filter:none;}
-.dialog:native{padding-top:0px!important;}

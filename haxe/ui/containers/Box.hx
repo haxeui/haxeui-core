@@ -16,7 +16,7 @@ class Box extends Component {
 
 
     private var _layoutName:String;
-    public var layoutName(get, set):String;
+    @:clonable public var layoutName(get, set):String;
     private function get_layoutName():String {
         return _layoutName;
     }

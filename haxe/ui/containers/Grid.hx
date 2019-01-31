@@ -12,7 +12,7 @@ class Grid extends Box {
         cast(_layout, VerticalGridLayout).columns = 4;
     }
     
-    public var columns(get, set):Int;
+    @:clonable public var columns(get, set):Int;
     private function get_columns():Int {
         return cast(_layout, VerticalGridLayout).columns;
     }

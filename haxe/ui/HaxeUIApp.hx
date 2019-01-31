@@ -2,14 +2,17 @@ package haxe.ui;
 
 import haxe.ui.Preloader.PreloadItem;
 import haxe.ui.backend.AppBase;
+import haxe.ui.backend.ToolkitOptions;
 import haxe.ui.core.Component;
 import haxe.ui.core.Screen;
-import haxe.ui.core.UIEvent;
+import haxe.ui.events.UIEvent;
 
 @:keep
 class HaxeUIApp extends AppBase {
-    public function new() {
+    private var _options:ToolkitOptions;
+    public function new(options:ToolkitOptions = null) {
         super();
+        _options = options;
         Toolkit.build();
         build();
     }
@@ -23,7 +26,11 @@ class HaxeUIApp extends AppBase {
             Toolkit.theme = Toolkit.backendProperties.getProp("haxe.ui.theme");
         }
 
-        Toolkit.init(getToolkitInit());
+        if (_options == null) {
+            Toolkit.init(getToolkitInit());
+        } else { // TODO: consider: https://code.haxe.org/category/macros/combine-objects.html
+            Toolkit.init(_options);
+        }
         
         var preloadList:Array<PreloadItem> = null;
         var preloader = null;
@@ -35,7 +42,7 @@ class HaxeUIApp extends AppBase {
             preloader = new Preloader();
             preloader.progress(0, preloadList.length);
             addComponent(preloader);
-            preloader.validate();
+            preloader.validateComponent();
         }
         
         #end

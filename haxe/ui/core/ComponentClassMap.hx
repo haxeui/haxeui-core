@@ -11,6 +11,7 @@ class ComponentClassMap {
     }
 
     public static function get(alias:String):String {
+        alias = StringTools.replace(alias, "-", "");
         return instance.getClassName(alias);
     }
 

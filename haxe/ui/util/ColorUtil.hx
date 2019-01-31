@@ -1,15 +1,15 @@
 package haxe.ui.util;
 
 class ColorUtil {
-    public static function buildColorArray(startColor:Int, endColor:Int, size:Float):Array<Int> {
+    public static function buildColorArray(startColor:Color, endColor:Color, size:Float):Array<Int> {
         var array:Array<Int> = [];
 
-        var r1 = r(startColor);
-        var g1 = g(startColor);
-        var b1 = b(startColor);
-        var r2 = r(endColor);
-        var g2 = g(endColor);
-        var b2 = b(endColor);
+        var r1 = startColor.r;
+        var g1 = startColor.g;
+        var b1 = startColor.b;
+        var r2 = endColor.r;
+        var g2 = endColor.g;
+        var b2 = endColor.b;
         var rd = r2 - r1; // deltas
         var gd = g2 - g1; // deltas
         var bd = b2 - b1; // deltas
@@ -20,8 +20,9 @@ class ColorUtil {
         var r:Float = r1;
         var g:Float = g1;
         var b:Float = b1;
+        var c:Color;
         for (n in 0...cast size) {
-            var c = color(r, g, b);
+            c.set(Math.round(r), Math.round(g), Math.round(b), 0);
             array.push(c);
 
             r += ri;
@@ -38,22 +39,6 @@ class ColorUtil {
         } else if (StringTools.startsWith(s, "0x")) {
             s = s.substring(2, s.length);
         }
-        return Std.parseInt("0xFF" + s);
-    }
-
-    public static inline function color(r:Float, g:Float, b:Float):Int {
-        return (Math.round(r) << 16) | (Math.round(g) << 8) | Math.round(b);
-    }
-
-    public static inline function r(c:Int):Int {
-        return c >> 16 & 0xFF;
-    }
-
-    public static inline function g(c:Int):Int {
-        return c >> 8 & 0xFF;
-    }
-
-    public static inline function b(c:Int):Int {
-        return c & 0xFF;
+        return Std.parseInt("0x" + s);
     }
 }

@@ -1,5 +1,6 @@
 package haxe.ui.macros;
 
+import haxe.ui.core.LayoutClassMap;
 import haxe.ui.core.ComponentClassMap;
 import haxe.ui.parsers.modules.Module;
 import haxe.ui.parsers.modules.ModuleParser;
@@ -15,19 +16,32 @@ class ModuleMacros {
     private static var _modules:Array<Module> = [];
 
     private static var _modulesProcessed:Bool;
+    private static var _resourceIds:Array<String> = [];
     macro public static function processModules():Expr {
         if (_modulesProcessed == true) {
             return macro null;
         }
 
-        var code:String = "function() {\n";
+        var code:String = "(function() {\n";
 
         loadModules();
+        
+        var preloadAll:Bool = false;
+        
         for (m in _modules) {
+            if (m.preloadList == "all") {
+                preloadAll = true;
+            }
+            
             // add resources as haxe resources (plus prefix)
             for (r in m.resourceEntries) {
                 if (r.path != null) {
-                    var resolvedPath = Context.resolvePath(r.path);
+                    var resolvedPath = null; 
+                    try { 
+                        resolvedPath = Context.resolvePath(r.path); 
+                    } catch (e:Dynamic) { 
+                        resolvedPath = haxe.io.Path.join([Sys.getCwd(), r.path]); 
+                    } 
                     if (FileSystem.isDirectory(resolvedPath) && FileSystem.exists(resolvedPath)) {
                         addResources(resolvedPath, resolvedPath, r.prefix);
                     } else {
@@ -46,6 +60,10 @@ class ModuleMacros {
 
                 if (types != null) {
                     for (t in types) {
+                        if (MacroHelpers.isPrivate(t) == true) {
+                            continue;
+                        }
+                        
                         var skipRest = false;
                         var resolvedClass:String = MacroHelpers.classNameFromType(t);
                         var classAlias:String = s.classAlias;
@@ -79,7 +97,7 @@ class ModuleMacros {
                     code += 'haxe.ui.themes.ThemeManager.instance.getTheme("${t.name}").parent = "${t.parent}";\n';
                 }
                 for (r in t.styles) {
-                    code += 'haxe.ui.themes.ThemeManager.instance.addStyleResource("${t.name}", "${r.resource}");\n';
+                    code += 'haxe.ui.themes.ThemeManager.instance.addStyleResource("${t.name}", "${r.resource}", ${r.priority});\n';
                 }
             }
 
@@ -112,29 +130,16 @@ class ModuleMacros {
                 code += 'Toolkit.properties.set("${p.name}", "${p.value}");\n';
             }
 
-            // load animations
-            for (a in m.animations) {
-                code += 'var a:haxe.ui.animation.Animation = new haxe.ui.animation.Animation();\n';
-                code += 'a.id = "${a.id}";\n';
-                code += 'a.easing = haxe.ui.animation.Animation.easingFromString("${a.ease}");\n';
-                for (kf in a.keyFrames) {
-                    code += 'var kf:haxe.ui.animation.AnimationKeyFrame = a.addKeyFrame(${kf.time});\n';
-                    for (r in kf.componentRefs) {
-                        code += 'var ref:haxe.ui.animation.AnimationComponentRef = kf.addComponentRef("${r.id}");\n';
-                        for (p in r.properties.keys()) {
-                            code += 'ref.addProperty("${p}", ${r.properties.get(p)});\n';
-                        }
-                        for (v in r.vars.keys()) {
-                            code += 'ref.addVar("${v}", "${r.vars.get(v)}");\n';
-                        }
-                    }
-                }
-
-                code += 'haxe.ui.animation.AnimationManager.instance.registerAnimation(a.id, a);\n';
-            }
-            
             for (p in m.preload) {
                 code += 'ToolkitAssets.instance.preloadList.push({type: "${p.type}", resourceId: "${p.id}"});\n';
+            }
+        }
+        
+        if (preloadAll) {
+            for (r in _resourceIds) {
+                if (StringTools.endsWith(r, ".png")) {
+                    code += 'ToolkitAssets.instance.preloadList.push({type: "image", resourceId: "${r}"});\n';
+                }
             }
         }
 
@@ -144,8 +149,12 @@ class ModuleMacros {
             code += 'haxe.ui.core.ComponentClassMap.register("${alias}", "${className}");\n';
         }
 
-        code += "}()\n";
-        //trace(code);
+        for (alias in LayoutClassMap.list()) {
+            var className:String = LayoutClassMap.get(alias);
+            code += 'haxe.ui.core.LayoutClassMap.register("${alias}", "${className}");\n';
+        }
+
+        code += "})()\n";
 
         _modulesProcessed = true;
 
@@ -172,17 +181,67 @@ class ModuleMacros {
 
                 if (types != null) {
                     for (t in types) {
+                        if (MacroHelpers.isPrivate(t) == true) {
+                            continue;
+                        }
+                        
                         if (MacroHelpers.hasSuperClass(t, "haxe.ui.core.Component") == true) {
                             var resolvedClass:String = MacroHelpers.classNameFromType(t);
                             if (c.className != null && resolvedClass != c.className) {
                                 continue;
                             }
+                            
+                            var resolvedClassName = resolvedClass.substr(resolvedClass.lastIndexOf(".") + 1, resolvedClass.length);
                             var classAlias:String = c.classAlias;
                             if (classAlias == null) {
-                                classAlias = resolvedClass.substr(resolvedClass.lastIndexOf(".") + 1, resolvedClass.length);
+                                classAlias = resolvedClassName;
                             }
                             classAlias = classAlias.toLowerCase();
+                            
+                            if (MacroHelpers.hasInterface(t, "haxe.ui.core.IDirectionalComponent")) {
+                                var pkg = MacroHelpers.getPackage(resolvedClass);
+                                if (StringTools.startsWith(resolvedClassName, "Horizontal")) { // alias HorizontalComponent with hcomponent
+                                    ComponentClassMap.register("h" + StringTools.replace(resolvedClassName, "Horizontal", "").toLowerCase(), resolvedClass);
+                                } else if (StringTools.startsWith(resolvedClassName, "Vertical")) { // alias VerticalComponent with vcomponent
+                                    ComponentClassMap.register("v" + StringTools.replace(resolvedClassName, "Vertical", "").toLowerCase(), resolvedClass);
+                                }
+                            }
+                            
                             ComponentClassMap.register(classAlias, resolvedClass);
+                        }
+                    }
+                }
+            }
+
+            // load layout classes from all modules
+            for (c in m.layoutEntries) {
+                var types:Array<haxe.macro.Type> = null;
+                if (c.className != null) {
+                    types = Context.getModule(c.className);
+                } else if (c.classPackage != null) {
+                    types = MacroHelpers.typesFromPackage(c.classPackage);
+                }
+
+                if (types != null) {
+                    for (t in types) {
+                        if (MacroHelpers.isPrivate(t) == true) {
+                            continue;
+                        }
+
+                        if (MacroHelpers.hasSuperClass(t, "haxe.ui.layouts.Layout") == true) {
+                            var resolvedClass:String = MacroHelpers.classNameFromType(t);
+                            if (c.className != null && resolvedClass != c.className) {
+                                continue;
+                            }
+
+                            var resolvedClassName = resolvedClass.substr(resolvedClass.lastIndexOf(".") + 1, resolvedClass.length);
+                            var classAlias:String = c.classAlias;
+                            if (classAlias == null) {
+                                classAlias = resolvedClassName;
+                            }
+                            classAlias = classAlias.toLowerCase();
+
+                            LayoutClassMap.register(classAlias, resolvedClass);
                         }
                     }
                 }
@@ -202,7 +261,7 @@ class ModuleMacros {
             var moduleParser = ModuleParser.get(MacroHelpers.extension(filePath));
             if (moduleParser != null) {
                 try {
-                    var module:Module = moduleParser.parse(File.getContent(filePath), Context.getDefines());
+                    var module:Module = moduleParser.parse(File.getContent(filePath), Context.getDefines(), filePath);
                     module.validate();
                     _modules.push(module);
                     return true;
@@ -232,6 +291,7 @@ class ModuleMacros {
                 if (StringTools.startsWith(resourceName, "/")) {
                     resourceName = resourceName.substr(1, resourceName.length);
                 }
+                _resourceIds.push(resourceName);
                 Context.addResource(resourceName, File.getBytes(file));
             }
         }

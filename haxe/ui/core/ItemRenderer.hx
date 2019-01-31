@@ -1,9 +1,11 @@
 package haxe.ui.core;
 
 import haxe.ui.locale.LocaleManager;
+import haxe.ui.containers.Box;
+import haxe.ui.events.MouseEvent;
 import haxe.ui.util.Variant;
 
-class ItemRenderer extends Component {
+class ItemRenderer extends Box {
     public function new() {
         super();
         registerEvent(MouseEvent.MOUSE_OVER, _onItemMouseOver);
@@ -48,19 +50,21 @@ class ItemRenderer extends Component {
             return value;
         }
 
-        invalidateData();
         _data = value;
+        invalidateComponentData();
         return value;
     }
 
-    private override function validateData() {
+    public var itemIndex:Int = -1;
+
+    private override function validateComponentData() {
         for (f in Reflect.fields(_data)) {
-            var v = Reflect.field(_data, f);
+            var v = Reflect.getProperty(_data, f);
             var c:Component = findComponent(f, null, true);
             if (c != null && v != null) {
 				if (Type.typeof(v) == TObject) {
 					for (propName in Reflect.fields(v)) {
-						var propValue:Dynamic = Reflect.field(v, propName);
+						var propValue:Dynamic = Reflect.getProperty(v, propName);
 						
 						if (propValue == "true" || propValue == "yes" || propValue == "false" || propValue == "no") {
 							propValue = (propValue == "true" || propValue == "yes");
@@ -69,13 +73,13 @@ class ItemRenderer extends Component {
 						}
 						
 						if (propName == "value") {
-							c.value = Variant.fromDynamic(propValue);
+							c.value = propValue;
 						} else {
 							Reflect.setProperty(c, propName, propValue);
 						}
 					}
 				} else {
-					c.value = LocaleManager.instance.getText(Variant.fromDynamic(v));
+					c.value = LocaleManager.instance.getText(v);
 				}
                 c.show();
             } else if (c != null) {
