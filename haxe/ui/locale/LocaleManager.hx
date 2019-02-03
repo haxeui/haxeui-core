@@ -1,6 +1,6 @@
 package haxe.ui.locale;
 
-import haxe.ui.core.UIEvent;
+import haxe.ui.events.UIEvent;
 import haxe.ui.util.EventMap;
 using StringTools;
 
