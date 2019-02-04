@@ -66,8 +66,8 @@ private class Events extends haxe.ui.events.Events {
     }
     
     public override function unregister() {
-        registerEvent(MouseEvent.MOUSE_OVER, onMouseOver);
-        registerEvent(MouseEvent.MOUSE_OUT, onMouseOut);
+        unregisterEvent(MouseEvent.MOUSE_OVER, onMouseOver);
+        unregisterEvent(MouseEvent.MOUSE_OUT, onMouseOut);
     }   
     
     private function onMouseOver(event:MouseEvent) {
