@@ -2268,6 +2268,24 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     private override function applyStyle(style:Style) {
         super.applyStyle(style);
 
+        if (style != null) {
+            if ((style.initialWidth != null || style.initialPercentWidth != null) && width <= 0) {
+                if (style.initialWidth != null) {
+                    width = style.initialWidth;
+                } else  if (style.initialPercentWidth != null) {
+                    percentWidth = style.initialPercentWidth;
+                }
+            }
+            
+            if ((style.initialHeight != null || style.initialPercentHeight != null) && height <= 0) {
+                if (style.initialHeight != null) {
+                    height = style.initialHeight;
+                } else  if (style.initialPercentHeight != null) {
+                    percentHeight = style.initialPercentHeight;
+                }
+            }
+        }
+        
         if (style.left != null) {
             left = style.left;
         }
