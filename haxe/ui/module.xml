@@ -51,7 +51,6 @@
         <import class="haxe.ui.containers.dialogs.DialogOptions" keep="true" static="true" />
         <import class="haxe.ui.containers.dialogs.DialogButton" keep="true" static="true" />
             -->
-        <import class="haxe.ui.animation.AnimationManager" static="true" />
         <import class="haxe.ui.locale.LocaleManager" keep="true" static="true" />
     </scriptlets>
 
