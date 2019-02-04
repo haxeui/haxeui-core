@@ -383,7 +383,9 @@ private class SelectedIndicesBehaviour extends DataBehaviour {
             }
         }
         
-        _component.dispatch(new UIEvent(UIEvent.CHANGE));
+        if (listView.selectedIndex != -1 && listView.selectedIndices.length != 0) {
+            _component.dispatch(new UIEvent(UIEvent.CHANGE));
+        }
     }
 }
 
