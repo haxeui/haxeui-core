@@ -178,7 +178,6 @@ class BindingManager {
         var parser = new Parser();
         var expr = parser.parseString(script);
         
-        interp.variables = new Map<String,Dynamic>();
         var root = findRoot(t);
         for (objectId in prop.objects.keys()) {
             interp.variables.set(objectId, root.findComponent(objectId));
