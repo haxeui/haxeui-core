@@ -126,9 +126,10 @@ class ListDropDownHandler extends DropDownHandler {
         _listview.registerEvent(UIEvent.CHANGE, onListChange); // TODO: not great!
     }
     
+    private var _cachedSelectedIndex:Int = -1;
     private override function get_selectedIndex():Int{
         if (_listview == null) {
-            return -1;
+            return _cachedSelectedIndex;
         }
         return _listview.selectedIndex;
     }
@@ -136,15 +137,28 @@ class ListDropDownHandler extends DropDownHandler {
     private override function set_selectedIndex(value:Int):Int {
         if (_listview != null) {
             _listview.selectedIndex = value;
+        } else if (_cachedSelectedIndex != value) {
+            _cachedSelectedIndex = value;
+            _dropdown.dispatch(new UIEvent(UIEvent.CHANGE));
         }
+        
         if (value >= 0 && value < _dropdown.dataSource.size) {
             var data = _dropdown.dataSource.get(value);
             _dropdown.text = data.value;
         }
+        
         return value;
     }
     
     private override function get_selectedItem():Dynamic {
+        if (_listview == null) {
+            if (_cachedSelectedIndex >= 0 && _cachedSelectedIndex < _dropdown.dataSource.size) {
+                var data = _dropdown.dataSource.get(_cachedSelectedIndex);
+                return data;
+            } else {
+                return null;
+            }
+        }
         return _listview.selectedItem;
     }
     
