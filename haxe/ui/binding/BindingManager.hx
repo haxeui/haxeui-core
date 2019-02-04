@@ -223,7 +223,9 @@ class BindingManager {
                     extractFields(e2, propInfo);
             case EUnop(op, prefix, e):     
                     extractFields(e, propInfo);
-            case EConst(_):        
+            case EArrayDecl(values):
+                    values.map(function(v){ extractFields(v, propInfo); });
+            case EConst(_):
             case _:
                 trace(expr);
         }
