@@ -42,6 +42,7 @@ Currently, HaxeUI supports the following `backends`. Please refer to each `backe
 | <a href="https://github.com/haxeui/haxeui-pixijs">haxeui-pixijs</a> | `PixiJS` | <img src="http://haxeui.org/db/browser.png" title="Browser"> | <img src="http://haxeui.org/db/cross.png"> | [![Build Status](https://travis-ci.org/haxeui/haxeui-pixijs.svg?branch=master)](https://travis-ci.org/haxeui/haxeui-pixijs) |
 | <a href="https://github.com/haxeui/haxeui-nme">haxeui-nme</a> | `NME` | <img src="http://haxeui.org/db/mobile.png" title="Mobile"> <img src="http://haxeui.org/db/desktop.png" title="Desktop"> <img src="http://haxeui.org/db/browser.png" title="Browser"> | <img src="http://haxeui.org/db/cross.png"> | [![Build Status](https://travis-ci.org/haxeui/haxeui-nme.svg?branch=master)](https://travis-ci.org/haxeui/haxeui-nme) |
 | <a href="https://github.com/haxeui/haxeui-hxwidgets">haxeui-hxwidgets</a> | `hxWidgets` / `wxWidgets` | <img src="http://haxeui.org/db/desktop.png" title="Desktop"> | <img src="http://haxeui.org/db/tick.png"> | [![Build Status](https://travis-ci.org/haxeui/haxeui-hxwidgets.svg?branch=master)](https://travis-ci.org/haxeui/haxeui-hxwidgets) |
+| <a href="https://github.com/haxeui/haxeui-flixel">haxeui-flixel</a> | `Flixel` / `OpenFL` / `Lime` | <img src="http://haxeui.org/db/mobile.png" title="Mobile"> <img src="http://haxeui.org/db/desktop.png" title="Desktop"> <img src="http://haxeui.org/db/browser.png" title="Browser"> | <img src="http://haxeui.org/db/cross.png"> | |
 
 
 ## Usage
