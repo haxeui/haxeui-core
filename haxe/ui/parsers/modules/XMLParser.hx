@@ -1,5 +1,6 @@
 package haxe.ui.parsers.modules;
 import haxe.ui.parsers.modules.Module.ModuleThemeStyleEntry;
+import haxe.ui.parsers.modules.Module.ModuleAnimationEntry;
 
 class XMLParser extends ModuleParser {
     public function new() {
@@ -97,50 +98,24 @@ class XMLParser extends ModuleParser {
                     module.properties.push(property);
                 }
             } else if (nodeName == "animations" && checkCondition(el, defines) == true) {
-                for (animationNode in el.elementsNamed("animation")) {
-                    if (checkCondition(animationNode, defines) == false) {
+                parseAnimations(el, defines, module.animations);
+            } else if (nodeName == "transitions" && checkCondition(el, defines) == true) {
+                for (transitionNode in el.elementsNamed("transition")) {
+                    if (checkCondition(transitionNode, defines) == false) {
                         continue;
                     }
-                    var animation:Module.ModuleAnimationEntry = new Module.ModuleAnimationEntry();
-                    animation.id = animationNode.get("id");
-                    animation.ease = animationNode.get("ease");
+                    var transition:Module.ModuleTransitionEntry = new Module.ModuleTransitionEntry();
+                    transition.id = transitionNode.get("id");
 
-                    for (keyFrameNode in animationNode.elementsNamed("keyframe")) {
-                        var keyFrame:Module.ModuleAnimationKeyFrameEntry = new Module.ModuleAnimationKeyFrameEntry();
-                        if (keyFrameNode.get("time") != null) {
-                            keyFrame.time = Std.parseInt(keyFrameNode.get("time"));
-                        }
-
-                        for (componentRefNode in keyFrameNode.elements()) {
-                            var componentRef:Module.ModuleAnimationComponentRefEntry = new Module.ModuleAnimationComponentRefEntry();
-                            componentRef.id = componentRefNode.nodeName;
-                            for (attrName in componentRefNode.attributes()) {
-                                var attrValue = componentRefNode.get(attrName);
-                                if (StringTools.startsWith(attrValue, "{") && StringTools.endsWith(attrValue, "}")) {
-                                    attrValue = attrValue.substring(1, attrValue.length - 1);
-                                    componentRef.vars.set(attrName, attrValue);
-                                } else {
-                                    componentRef.properties.set(attrName, Std.parseFloat(attrValue));
-                                }
-                            }
-
-                            keyFrame.componentRefs.set(componentRef.id, componentRef);
-                        }
-
-                        animation.keyFrames.push(keyFrame);
+                    for (inAnimationNode in transitionNode.elementsNamed("inAnimations")) {
+                        parseAnimations(inAnimationNode, defines, transition.inAnimations);
                     }
 
-                    module.animations.push(animation);
-                }
-            } else if (nodeName == "preload" && checkCondition(el, defines) == true) {
-                for (propertyNode in el.elements()) {
-                    if (checkCondition(propertyNode, defines) == false) {
-                        continue;
+                    for (outAnimationNode in transitionNode.elementsNamed("outAnimations")) {
+                        parseAnimations(outAnimationNode, defines, transition.outAnimations);
                     }
-                    var entry:Module.ModulePreloadEntry = new Module.ModulePreloadEntry();
-                    entry.type = propertyNode.nodeName;
-                    entry.id = propertyNode.get("id");
-                    module.preload.push(entry);
+
+                    module.transitions.push(transition);
                 }
             }
         }
@@ -148,12 +123,57 @@ class XMLParser extends ModuleParser {
         return module;
     }
 
+    private function parseAnimations(node:Xml, defines:Map<String, String>, result:Array<ModuleAnimationEntry>=null):Array<ModuleAnimationEntry>
+    {
+        if (result == null) {
+            result = [];
+        }
+
+        for (animationNode in node.elementsNamed("animation")) {
+            if (checkCondition(animationNode, defines) == false) {
+                continue;
+            }
+            var animation:Module.ModuleAnimationEntry = new Module.ModuleAnimationEntry();
+            animation.id = animationNode.get("id");
+            animation.ease = animationNode.get("ease");
+
+            for (keyFrameNode in animationNode.elementsNamed("keyframe")) {
+                var keyFrame:Module.ModuleAnimationKeyFrameEntry = new Module.ModuleAnimationKeyFrameEntry();
+                if (keyFrameNode.get("time") != null) {
+                    keyFrame.time = Std.parseInt(keyFrameNode.get("time"));
+                }
+
+                for (componentRefNode in keyFrameNode.elements()) {
+                    var componentRef:Module.ModuleAnimationComponentRefEntry = new Module.ModuleAnimationComponentRefEntry();
+                    componentRef.id = componentRefNode.nodeName;
+                    for (attrName in componentRefNode.attributes()) {
+                        var attrValue = componentRefNode.get(attrName);
+                        if (StringTools.startsWith(attrValue, "{") && StringTools.endsWith(attrValue, "}")) {
+                            attrValue = attrValue.substring(1, attrValue.length - 1);
+                            componentRef.vars.set(attrName, attrValue);
+                        } else {
+                            componentRef.properties.set(attrName, Std.parseFloat(attrValue));
+                        }
+                    }
+
+                    keyFrame.componentRefs.set(componentRef.id, componentRef);
+                }
+
+                animation.keyFrames.push(keyFrame);
+            }
+
+            result.push(animation);
+        }
+
+        return result;
+    }
+
     private function checkCondition(node:Xml, defines:Map<String, String>):Bool {
         if (node.get("if") != null) {
             var condition = "haxeui_" + node.get("if");
             return defines.exists(condition);
         }
-        
+
         return true;
     }
 }

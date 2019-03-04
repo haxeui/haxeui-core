@@ -10,6 +10,7 @@ class Module {
     public var properties(default, default):Array<ModulePropertyEntry>;
     public var animations(default, default):Array<ModuleAnimationEntry>;
     public var preload(default, default):Array<ModulePreloadEntry>;
+    public var transitions(default, default):Array<ModuleTransitionEntry>;
 
     public function new() {
         resourceEntries = [];
@@ -20,6 +21,7 @@ class Module {
         properties = [];
         animations = [];
         preload = [];
+        transitions = [];
     }
 
     public function validate() {
@@ -66,7 +68,7 @@ class ModuleThemeEntry {
 
 class ModuleThemeStyleEntry {
     public var resource:String;
-    
+
     public function new() {
     }
 }
@@ -122,7 +124,18 @@ class ModuleAnimationComponentRefEntry {
 class ModulePreloadEntry {
     public var type(default, default):String;
     public var id(default, default):String;
-    
+
     public function new() {
+    }
+}
+
+class ModuleTransitionEntry {
+    public var id(default, default):String;
+    public var inAnimations(default, default):Array<ModuleAnimationEntry>;
+    public var outAnimations(default, default):Array<ModuleAnimationEntry>;
+
+    public function new() {
+        inAnimations = [];
+        outAnimations = [];
     }
 }
