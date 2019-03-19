@@ -167,12 +167,19 @@ private class ResourceBehaviour extends DataBehaviour {
     private override function validateData() {
         if (_value == null || _value.isNull) {
             _component.removeImageDisplay();
+            _component.invalidateComponent();
             return;
         }
 
         var imageLoader = new ImageLoader(_value);
         imageLoader.load(function(imageInfo) {
             if (imageInfo != null) {
+                if (_value == null || _value.isNull) { // its possible that while loading the image (async) its been set to null, lets honour it
+                    _component.removeImageDisplay();
+                    _component.invalidateComponent();
+                    return;
+                }
+                
                 var image:Image = cast(_component, Image);
                 var display:ImageDisplay = image.getImageDisplay();
                 if (display != null) {

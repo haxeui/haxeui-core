@@ -21,15 +21,6 @@ class MenuItem extends HBox {
 private class TextBehaviour extends DataBehaviour {
     private override function validateData() {
         var label:Label = _component.findComponent(Label, false);
-        if (label == null) {
-            label = new Label();
-            label.id = "menuitem-label";
-            label.styleNames = "menuitem-label";
-            label.scriptAccess = false;
-            _component.addComponent(label);
-            _component.invalidateComponentStyle(true);
-        }
-        
         label.text = _value;
     }
 }
@@ -66,8 +57,8 @@ private class Events extends haxe.ui.events.Events {
     }
     
     public override function unregister() {
-        registerEvent(MouseEvent.MOUSE_OVER, onMouseOver);
-        registerEvent(MouseEvent.MOUSE_OUT, onMouseOut);
+        unregisterEvent(MouseEvent.MOUSE_OVER, onMouseOver);
+        unregisterEvent(MouseEvent.MOUSE_OUT, onMouseOut);
     }   
     
     private function onMouseOver(event:MouseEvent) {
@@ -85,4 +76,13 @@ private class Events extends haxe.ui.events.Events {
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 private class Builder extends CompositeBuilder {
+    public override function create() {
+        super.create();
+        
+        var label = new Label();
+        label.id = "menuitem-label";
+        label.styleNames = "menuitem-label";
+        label.scriptAccess = false;
+        _component.addComponent(label);
+    }
 }
