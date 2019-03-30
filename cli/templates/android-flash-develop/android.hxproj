@@ -56,7 +56,6 @@ cmd /c xcopy build\android\app\src\main\java\*.png build\android\app\src\main\as
 cmd /c del build\android\app\src\main\java\*.png /q /s
 
 cmd /c cd $(ProjectDir)\build\android &amp; gradlew build -x lint</postBuildCommand>
-
   <!-- Other project options -->
   <options>
     <option showHiddenPaths="False" />

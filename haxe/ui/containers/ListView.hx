@@ -83,6 +83,7 @@ class ListView extends ScrollView implements IDataComponent implements IVirtualC
     }
 }
 
+@:dox(hide) @:noCompletion
 typedef ItemRendererFunction2 = Dynamic->Int->Class<ItemRenderer>;    //(data, index):Class<ItemRenderer>
 
 //***********************************************************************************************************

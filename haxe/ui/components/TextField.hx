@@ -8,6 +8,7 @@ import haxe.ui.events.FocusEvent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.Events;
+import haxe.ui.events.UIEvent;
 import haxe.ui.focus.FocusManager;
 import haxe.ui.focus.IFocusable;
 import haxe.ui.layouts.DefaultLayout;
@@ -162,6 +163,13 @@ private class PlaceholderBehaviour extends DataBehaviour {
 
 @:dox(hide) @:noCompletion
 private class TextBehaviour extends DataBehaviour {
+    public override function get():Variant {
+        if (_component.hasTextInput() == false) {
+            return null;
+        }
+        return _component.getTextInput().text;
+    }
+    
     public override function validateData() {
         var textfield:TextField = cast(_component, TextField);
         TextFieldHelper.validateText(textfield, _value);
@@ -265,6 +273,7 @@ private class Events extends haxe.ui.events.Events {
             _textfield.getTextInput().data.onChangedCallback = function() {
                 if (_textfield.hasClass(":empty") == false) {
                     _textfield.text = _textfield.getTextInput().text;
+                    //_textfield.dispatch(new UIEvent(UIEvent.CHANGE));
                 }
             };
         }

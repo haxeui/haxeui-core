@@ -20,6 +20,7 @@ class DropDown extends Button implements IDataComponent {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
+    @:behaviour(DefaultBehaviour)                    public var handlerStyleNames:String;
     @:behaviour(DefaultBehaviour)                    public var dataSource:DataSource<Dynamic>;
     @:behaviour(DefaultBehaviour, "list")            public var type:String;
     @:behaviour(DefaultBehaviour, false)             public var virtual:Bool;
@@ -255,6 +256,7 @@ class DropDownEvents extends ButtonEvents {
     public function showDropDown() {
         var handler:IDropDownHandler = cast(_dropdown._compositeBuilder, DropDownBuilder).handler;
         handler.component.addClass("popup");
+        handler.component.styleNames = _dropdown.handlerStyleNames;
         handler.component.left = _dropdown.screenLeft;
         handler.component.top = _dropdown.screenTop + _dropdown.height - 1;
         handler.show();

@@ -41,7 +41,6 @@ private class Events extends haxe.ui.events.Events {
         } else {
             _target.removeComponent(view, false);
         }
-        trace("cick - " + index);
     }
 }
 

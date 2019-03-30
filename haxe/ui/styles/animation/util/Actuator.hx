@@ -114,7 +114,6 @@ class Actuator<T> {
             if (start == null || end == null) {
                 continue;
             }
-
             switch (end) {
                 case Value.VColor(v):
                     var startColor:Color = cast(start, Color);

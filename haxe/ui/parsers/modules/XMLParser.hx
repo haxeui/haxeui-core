@@ -53,6 +53,7 @@ class XMLParser extends ModuleParser {
                     if (checkCondition(classNode, defines) == false) {
                         continue;
                     }
+                    
                     var scriptletEntry:Module.ModuleScriptletEntry = new Module.ModuleScriptletEntry();
                     scriptletEntry.classPackage = classNode.get("package");
                     scriptletEntry.className = classNode.get("class");

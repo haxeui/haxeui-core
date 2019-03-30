@@ -22,6 +22,7 @@ import haxe.ui.events.UIEvent;
     </box>
 </vbox>
 ')
+@:dox(hide) @:noCompletion
 class DialogBase extends Box {
     public var modal:Bool = true;
     public var buttons:DialogButton2 = null;
@@ -67,15 +68,36 @@ class DialogBase extends Box {
         }
     }
 
-    public override function hide() {
-        if (modal && _overlay != null) {
-            Screen.instance.removeComponent(_overlay);
+    public var closable(get, set):Bool;
+    private function get_closable():Bool {
+        return !dialogCloseButton.hidden;
+    }
+    private function set_closable(value:Bool):Bool {
+        if (value == true) {
+            dialogCloseButton.show();
+        } else {
+            dialogCloseButton.hide();
         }
-        Screen.instance.removeComponent(this);
-        
-        var event = new DialogEvent(DialogEvent.DIALOG_CLOSED);
-        event.button = this.button;
-        dispatch(event);
+        return value;
+    }
+    
+    private function validateDialog(button:DialogButton2, fn:Bool->Void) {
+        fn(true);
+    }
+    
+    public override function hide() {
+        validateDialog(this.button, function(result) {
+            if (result == true) {
+                if (modal && _overlay != null) {
+                    Screen.instance.removeComponent(_overlay);
+                }
+                Screen.instance.removeComponent(this);
+                
+                var event = new DialogEvent(DialogEvent.DIALOG_CLOSED);
+                event.button = this.button;
+                dispatch(event);
+            }
+        });
     }
 
     public function hideDialog(button:DialogButton2) {

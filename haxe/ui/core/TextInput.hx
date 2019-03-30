@@ -1,6 +1,6 @@
 package haxe.ui.core;
 
-import haxe.ui.backend.TextInputBase;
+import haxe.ui.backend.TextInputImpl;
 import haxe.ui.styles.Style;
 import haxe.ui.validation.IValidating;
 import haxe.ui.validation.InvalidationFlags;
@@ -26,7 +26,7 @@ class TextInputData {
 /**
  Class that represents a framework specific method to display editable text inside a component
 **/
-class TextInput extends TextInputBase implements IValidating {
+class TextInput extends TextInputImpl implements IValidating {
     private var _invalidationFlags:Map<String, Bool> = new Map<String, Bool>();
     private var _isAllInvalid:Bool = false;
     private var _isValidating:Bool = false;

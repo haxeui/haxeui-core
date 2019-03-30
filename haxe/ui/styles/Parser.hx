@@ -10,13 +10,15 @@ import haxe.ui.styles.elements.RuleElement;
 // based on: https://github.com/jotform/css.js/blob/master/css.js
 
 class Parser {
-    var cssRegex = ~/([\s\S]*?)\{([\s\S]*?)\}/gi;
+    static var cssRegex = ~/([\s\S]*?)\{([\s\S]*?)\}/gi;
 //    var cssMediaQueryRegex = ~/((@media [\s\S]*?)\{([\s\S]*?\}\s*?)\})/gi;
-    var cssKeyframesRegex = ~/@keyframes\s*(\w+?)\s*\{([\s\S]*?\}\s*?)\}/gi;
-    var cssKeyframeSelectorRegex = ~/([\w%]+)\s*\{\s*([\s\S]*?)\s*\}/gi;
-    var combinedCSSMediaRegex = ~/((\s*?(?:\/\*[\s\S]*?\*\/)?\s*?@media[\s\S]*?)\{([\s\S]*?)\}\s*?\})|(([\s\S]*?)\{([\s\S]*?)\})/gi; //to match css & media queries together
-    var cssCommentsRegex = ~/(\/\*[\s\S]*?\*\/)/gi;
-    var cssImportStatementRegex = ~/@import .*?;/gi;
+    static var cssKeyframesRegex = ~/@keyframes\s*(\w+?)\s*\{([\s\S]*?\}\s*?)\}/gi;
+    static var cssKeyframeSelectorRegex = ~/([\w%]+)\s*\{\s*([\s\S]*?)\s*\}/gi;
+    static var combinedCSSMediaRegex = ~/((\s*?(?:\/\*[\s\S]*?\*\/)?\s*?@media[\s\S]*?)\{([\s\S]*?)\}\s*?\})|(([\s\S]*?)\{([\s\S]*?)\})/gi; //to match css & media queries together
+    static var cssCommentsRegex = ~/(\/\*[\s\S]*?\*\/)/gi;
+    static var cssImportStatementRegex = ~/@import .*?;/gi;
+    
+    static var newlineRegex = new EReg("\n+", "g");
     
     public function new() {
     }
@@ -71,7 +73,7 @@ class Parser {
             }
             
             // Never have more than a single line break in a row
-            selector = new EReg("\n+", "g").replace(selector, "\n");
+            selector = newlineRegex.replace(selector, "\n");
             
             
             //determine the type

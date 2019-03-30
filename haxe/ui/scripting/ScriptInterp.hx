@@ -1,5 +1,6 @@
 package haxe.ui.scripting;
 
+import haxe.ds.Map;
 import hscript.Interp;
 
 class ScriptInterp extends Interp {
@@ -74,6 +75,7 @@ class ScriptInterp extends Interp {
         if (_classAliases == null) {
             _classAliases = new Map<String, String>();
         }
+
         _classAliases.set(alias, classPath);
     }
 

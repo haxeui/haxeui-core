@@ -1,8 +1,8 @@
 package haxe.ui;
 
-import haxe.ui.backend.CallLaterBase;
+import haxe.ui.backend.CallLaterImpl;
 
-class CallLater extends CallLaterBase {
+class CallLater extends CallLaterImpl {
     public function new(fn:Void->Void) {
         super(fn);
     }

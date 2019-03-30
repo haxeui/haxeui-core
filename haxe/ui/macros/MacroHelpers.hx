@@ -275,7 +275,9 @@ class MacroHelpers {
     public static function isPrivate(t:haxe.macro.Type):Bool {
         return switch (t) { 
             case TInst(c, _): 
-                c.get().isPrivate; 
+                c.get().isPrivate || c.get().meta.has(":noCompletion"); 
+            case TType(tt, _):
+                return tt.get().meta.has(":noCompletion"); 
             case _: 
                 false; 
         } 
@@ -384,9 +386,12 @@ class MacroHelpers {
     public static function moduleNameFromType(t:haxe.macro.Type):String {
         var moduleName:String = "";
         switch (t) {
-            case TInst(t, _):
-                moduleName = t.get().module;
+            case TInst(ti, _):
+                moduleName = ti.get().module;
+            case TType(tt, _):
+                moduleName = tt.get().module;
             default:
+                trace("Unimplemented type: " + t);
         }
         return moduleName;
     }

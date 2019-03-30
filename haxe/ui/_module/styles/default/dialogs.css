@@ -2,7 +2,7 @@
 ** DIALOGS
 *************************************************************************/
 .dialog {
-    border: 1px solid #ABABAB;
+    border: 1px solid red;
     filter: drop-shadow(1, 45, #000000, 0.2, 2, 2, 1, 3, false);
     border-radius: 2px;
     height: auto;
@@ -32,9 +32,9 @@
 
 .dialog-close-button {
     icon: "haxeui-core/styles/default/small-close-button.png";
-    padding: 0 !important;
-    border: none !important;
-    background-color: none !important;
+    padding: 0;
+    border: none;
+    background-color: none;
     horizontal-align: right;
     vertical-align: center;
 }

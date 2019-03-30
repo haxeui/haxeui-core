@@ -1,6 +1,6 @@
 package haxe.ui.core;
 
-import haxe.ui.backend.ScreenBase;
+import haxe.ui.backend.ScreenImpl;
 import haxe.ui.components.Label;
 import haxe.ui.containers.HBox;
 import haxe.ui.containers.dialogs.DialogButton;
@@ -20,7 +20,7 @@ class DialogEntry {
     public var callback:Int->Void;
 }
 
-class Screen extends ScreenBase {
+class Screen extends ScreenImpl {
 
     private static var _instance:Screen;
     public static var instance(get, never):Screen;

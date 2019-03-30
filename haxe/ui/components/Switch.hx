@@ -16,7 +16,7 @@ class Switch extends Component {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:clonable @:behaviour(DefaultBehaviour)          public var selected:Bool;
+    @:clonable @:behaviour(SelectedBehaviour)         public var selected:Bool;
     @:clonable @:behaviour(DefaultBehaviour)          public var value:Variant;
     @:clonable @:behaviour(TextBehaviour)             public var text:String;
     @:clonable @:behaviour(DefaultBehaviour)          public var textOn:String;
@@ -39,6 +39,13 @@ private class Events extends haxe.ui.events.Events {
 //***********************************************************************************************************
 // Behaviours
 //***********************************************************************************************************
+@:dox(hide) @:noCompletion
+private class SelectedBehaviour extends DataBehaviour {
+    private override function validateData() {
+        _component.findComponent(SwitchButtonSub).selected = _value;
+    }
+}
+
 @:dox(hide) @:noCompletion
 private class TextBehaviour extends DataBehaviour {
     private override function validateData() {
@@ -80,6 +87,10 @@ private class Builder extends CompositeBuilder {
     public override function create() {
         if (_button == null) {
             _button = new SwitchButtonSub();
+            _button.onChange = function(e) {
+                _switch.selected = _button.selected;
+                _switch.dispatch(new UIEvent(UIEvent.CHANGE));
+            }
             _component.addComponent(_button);
         }
     }
@@ -148,6 +159,7 @@ private class SwitchButtonSub extends InteractiveComponent {
             addClass(":selected", true, true);
         }
 
+        trace(">>>>>>>>>>>>> here! " + _selected);
         var event:UIEvent = new UIEvent(UIEvent.CHANGE);
         dispatch(event);
         

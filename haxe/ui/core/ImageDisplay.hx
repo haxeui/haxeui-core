@@ -1,19 +1,18 @@
 package haxe.ui.core;
 
 import haxe.ui.assets.ImageInfo;
+import haxe.ui.backend.ImageDisplayImpl;
 import haxe.ui.geom.Rectangle;
 import haxe.ui.validation.InvalidationFlags;
-import haxe.ui.backend.ImageDisplayBase;
 
 /**
  Class that represents a framework specific method to display an image inside a component
 **/
-class ImageDisplay extends ImageDisplayBase {
-
+class ImageDisplay extends ImageDisplayImpl {
     private var _invalidationFlags:Map<String, Bool> = new Map<String, Bool>();
     private var _isAllInvalid:Bool = false;
     private var _isValidating:Bool = false;
-
+    
     public function new() {
         super();
     }

@@ -9,6 +9,7 @@ import haxe.ui.events.FocusEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.events.Events;
+import haxe.ui.styles.Style;
 import haxe.ui.util.MathUtil;
 import haxe.ui.util.Variant;
 
@@ -134,6 +135,22 @@ private class Builder extends CompositeBuilder {
         step.addClass("stepper-step");
         step.id = "stepper-step";
         _stepper.addComponent(step);
+    }
+    
+    public override function applyStyle(style:Style) {
+        var textfield:TextField = _stepper.findComponent(TextField);
+        if (textfield != null &&
+            (textfield.customStyle.color != style.color ||
+            textfield.customStyle.fontName != style.fontName ||
+            textfield.customStyle.fontSize != style.fontSize ||
+            textfield.customStyle.cursor != style.cursor)) {
+
+            textfield.customStyle.color = style.color;
+            textfield.customStyle.fontName = style.fontName;
+            textfield.customStyle.fontSize = style.fontSize;
+            textfield.customStyle.cursor = style.cursor;
+            textfield.invalidateComponentStyle();
+        }
     }
 }
 

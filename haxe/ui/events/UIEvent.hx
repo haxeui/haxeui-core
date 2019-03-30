@@ -1,9 +1,9 @@
 package haxe.ui.events;
 
-import haxe.ui.backend.EventBase;
+import haxe.ui.backend.EventImpl;
 import haxe.ui.core.Component;
 
-class UIEvent extends EventBase {
+class UIEvent extends EventImpl {
     public static inline var READY:String = "ready";
     public static inline var RESIZE:String = "resize";
     public static inline var CHANGE:String = "change";
@@ -27,7 +27,6 @@ class UIEvent extends EventBase {
     public var canceled(default, default):Bool; 
 
     public function new(type:String, bubble:Null<Bool> = false, data:Dynamic = null) {
-        super();
         this.type = type;
         this.bubble = bubble; 
         this.data = data;

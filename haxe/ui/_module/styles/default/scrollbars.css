@@ -88,7 +88,7 @@
     icon: "haxeui-core/styles/default/down_arrow.png";
 }
 
-.vertical-scroll2 .inc:down {
+.vertical-scroll .inc:down {
     icon: "haxeui-core/styles/default/down_arrow_white.png";
 }
 

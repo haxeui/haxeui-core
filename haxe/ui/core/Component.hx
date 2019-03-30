@@ -1,15 +1,13 @@
 package haxe.ui.core;
 
-import haxe.ui.backend.ComponentBase;
-import haxe.ui.behaviours.Behaviours;
-import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.backend.ComponentImpl;
 import haxe.ui.behaviours.DefaultBehaviour;
-import haxe.ui.containers.dialogs.Dialog2;
+import haxe.ui.debug.CallStackHelper;
 import haxe.ui.events.AnimationEvent;
-import haxe.ui.events.Events;
-import haxe.ui.events.KeyboardEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
+import haxe.ui.geom.Rectangle;
+import haxe.ui.geom.Size;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.DelegateLayout;
 import haxe.ui.layouts.Layout;
@@ -18,41 +16,28 @@ import haxe.ui.styles.Parser;
 import haxe.ui.styles.Style;
 import haxe.ui.styles.animation.Animation;
 import haxe.ui.styles.elements.AnimationKeyFrames;
-import haxe.ui.debug.CallStackHelper;
 import haxe.ui.util.Color;
 import haxe.ui.util.ComponentUtil;
-import haxe.ui.util.EventMap;
-import haxe.ui.util.FunctionArray;
 import haxe.ui.util.MathUtil;
-import haxe.ui.geom.Rectangle;
-import haxe.ui.geom.Size;
 import haxe.ui.util.StringUtil;
-import haxe.ui.util.Variant;
 import haxe.ui.validation.IValidating;
-import haxe.ui.validation.InvalidationFlags;
 import haxe.ui.validation.ValidationManager;
 
 /**
  Base class of all HaxeUI controls
 **/
-@:allow(haxe.ui.backend.ComponentBase)
+@:allow(haxe.ui.backend.ComponentImpl)
 @:autoBuild(haxe.ui.macros.Macros.buildComposite())
 @:build(haxe.ui.macros.Macros.buildStyles())
 @:autoBuild(haxe.ui.macros.Macros.buildStyles())
-@:build(haxe.ui.macros.Macros.buildBehaviours())
-@:autoBuild(haxe.ui.macros.Macros.buildBehaviours())
 @:build(haxe.ui.macros.Macros.buildBindings())
 @:autoBuild(haxe.ui.macros.Macros.buildBindings())
 @:build(haxe.ui.macros.Macros.addClonable())
 @:autoBuild(haxe.ui.macros.Macros.addClonable())
-class Component extends ComponentBase implements IComponentBase implements IValidating implements IClonable<Component> {
-    private var behaviours:Behaviours;
-    
+class Component extends ComponentImpl implements IComponentBase implements IValidating implements IClonable<Component> {
     public function new() {
         super();
 
-        behaviours = new Behaviours(this);
-        
         #if flash
         addClass("flash", false);
         #end
@@ -122,33 +107,12 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         behaviours.applyDefaults();
     }
 
-    private function registerBehaviours() {
-    }
-
     private var _compositeBuilderClass:Class<CompositeBuilder>;
     private var _compositeBuilder:CompositeBuilder;
     private function registerComposite() {
     }
     
     private function createDefaults() {
-    }
-
-    private var _internalEvents:Events = null;
-    private var _internalEventsClass:Class<Events> = null;
-    private function registerInternalEvents(eventsClass:Class<Events> = null, reregister:Bool = false) {
-        if (_internalEvents == null && eventsClass != null) {
-            _internalEvents = Type.createInstance(eventsClass, [this]);
-            _internalEvents.register();
-        } if (reregister == true && _internalEvents != null) {
-            _internalEvents.register();
-        }
-    }
-    private function unregisterInternalEvents() {
-        if (_internalEvents == null) {
-            return;
-        }
-        _internalEvents.unregister();
-        _internalEvents = null;
     }
     
     private function createChildren() {
@@ -157,15 +121,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
 
     private function destroyChildren() {
         unregisterInternalEvents();
-    }
-
-    private var _hasNativeEntry:Null<Bool>;
-    private var hasNativeEntry(get, null):Bool;
-    private function get_hasNativeEntry():Bool {
-        if (_hasNativeEntry == null) {
-            _hasNativeEntry = (getNativeConfigProperty(".@id") != null);
-        }
-        return _hasNativeEntry;
     }
 
     private function createLayout():Layout {
@@ -196,7 +151,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     }
     
     // TODO: these functions should be removed and components should use behaviours.get/set/call/defaults direction
-    private var _behaviourUpdateOrder:Array<String> = [];
+    //private var _behaviourUpdateOrder:Array<String> = [];
 
     private var _native:Null<Bool> = null;
     /**
@@ -334,23 +289,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     //***********************************************************************************************************
 
     //***********************************************************************************************************
-    // Clip rect
-    //***********************************************************************************************************
-    private var _componentClipRect:Rectangle = null;
-    /**
-     Whether to clip the display of this component
-    **/
-    public var componentClipRect(get, set):Rectangle;
-    private function get_componentClipRect():Rectangle {
-        return _componentClipRect;
-    }
-    private function set_componentClipRect(value:Rectangle):Rectangle {
-        _componentClipRect = value;
-        invalidateComponentDisplay();
-        return value;
-    }
-
-    //***********************************************************************************************************
     // Display tree
     //***********************************************************************************************************
     /**
@@ -365,13 +303,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
         return r;
     }
-
-    private var _children:Array<Component>;
-    /**
-     The parent component of this component instance
-    **/
-    @:dox(group = "Display tree related properties and methods")
-    public var parentComponent:Component = null;
 
     /**
      Gets the number of child components under this component instance
@@ -555,21 +486,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     private function onComponentRemoved(child:Component) {
     }
     
-    private function unregisterEvents() {
-        if (__events != null) {
-            var copy:Array<String> = [];
-            for (eventType in __events.keys()) {
-                copy.push(eventType);
-            }
-            for (eventType in copy) {
-                var listeners = __events.listeners(eventType);
-                for (listener in listeners) {
-                    __events.remove(eventType, listener);
-                }
-            }
-        }
-    }
-    
     private function destroyComponent() {
         if (_compositeBuilder != null) {
             _compositeBuilder.destroy();
@@ -593,20 +509,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             }
             invalidateComponentLayout();
         }
-    }
-
-    /**
-     A list of this components children
-
-     *Note*: this function will return an empty array if the component has no children
-    **/
-    @:dox(group = "Display tree related properties and methods")
-    public var childComponents(get, null):Array<Component>;
-    private function get_childComponents():Array<Component> {
-        if (_children == null) {
-            return [];
-        }
-        return _children;
     }
 
     /**
@@ -823,8 +725,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         return value;
     }
 
-    @:clonable @:behaviour(ComponentDisabledBehaviour, false)       public var disabled:Bool;
-    
     //***********************************************************************************************************
     // Style related
     //***********************************************************************************************************
@@ -834,7 +734,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     @:dox(group = "Style related properties and methods")
     public var customStyle:Style = new Style();
     @:dox(group = "Style related properties and methods")
-    @:allow(haxe.ui.styles_old.Engine)
+    //@:allow(haxe.ui.styles_old.Engine)
     private var classes:Array<String> = [];
 
     /**
@@ -931,152 +831,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         return value;
     }
 
-    private var _style:Style;
-    /**
-     The calculated style of this component
-    **/
-    @:dox(group = "Style related properties and methods")
-    public var style(get, set):Style;
-    private function get_style():Style {
-        return _style;
-    }
-
-    private function set_style(value):Style {
-        _style = value;
-        return value;
-    }
-
-    //***********************************************************************************************************
-    // Events
-    //***********************************************************************************************************
-    private var __events:EventMap;
-
-    /**
-     Register a listener for a certain `UIEvent`
-    **/
-    @:dox(group = "Event related properties and methods")
-    public function registerEvent(type:String, listener:Dynamic->Void, priority:Int = 0) {
-        if (disabled == true && isInteractiveEvent(type) == true) {
-            if (_disabledEvents == null) {
-                _disabledEvents = new EventMap();
-            }
-            _disabledEvents.add(type, listener, priority);
-            return;
-        }
-        
-        if (__events == null) {
-            __events = new EventMap();
-        }
-        if (__events.add(type, listener, priority) == true) {
-            mapEvent(type, _onMappedEvent);
-        }
-    }
-
-    /**
-     Returns if this component has a certain event and listener
-    **/
-    @:dox(group = "Event related properties and methods")
-    public function hasEvent(type:String, listener:Dynamic->Void = null):Bool {
-        if (__events == null) {
-            return false;
-        }
-        return __events.contains(type, listener);
-    }
-
-    /**
-     Unregister a listener for a certain `UIEvent`
-    **/
-    @:dox(group = "Event related properties and methods")
-    public function unregisterEvent(type:String, listener:Dynamic->Void) {
-        if (_disabledEvents != null && !disabled) {
-            _disabledEvents.remove(type, listener);
-        }
-        
-        if (__events != null) {
-            if (__events.remove(type, listener) == true) {
-                unmapEvent(type, _onMappedEvent);
-            }
-        }
-    }
-
-    /**
-     Dispatch a certain `UIEvent`
-    **/
-    @:dox(group = "Event related properties and methods")
-    public function dispatch(event:UIEvent) {
-        if (__events != null) {
-            __events.invoke(event.type, event, this);
-        }
-        
-        if (event.bubble == true && event.canceled == false && parentComponent != null) {
-            parentComponent.dispatch(event);
-        }
-    }
-
-    private function _onMappedEvent(event:UIEvent) {
-        dispatch(event);
-    }
-
-    private var _disabledEvents:EventMap;
-    private static var INTERACTIVE_EVENTS:Array<String> = [
-        MouseEvent.MOUSE_MOVE, MouseEvent.MOUSE_OVER, MouseEvent.MOUSE_OUT, MouseEvent.MOUSE_DOWN,
-        MouseEvent.MOUSE_UP, MouseEvent.MOUSE_WHEEL, MouseEvent.CLICK, KeyboardEvent.KEY_DOWN,
-        KeyboardEvent.KEY_UP
-    ];
-    
-    private function isInteractiveEvent(type:String):Bool {
-        return INTERACTIVE_EVENTS.indexOf(type) != -1;
-    }
-    
-    private var _disabledInteractivityCounter:Int = 0;
-    private function disableInteractivity(disable:Bool) { // You might want to disable interactivity but NOT actually disable visually
-        if (disable) {
-            _disabledInteractivityCounter++;
-        } else {
-            _disabledInteractivityCounter--;
-        }
-        
-        if (_disabledInteractivityCounter < 0 || _disabledInteractivityCounter > 1) {
-            return;
-        }
-        
-        if (_disabledInteractivityCounter == 1) {
-            if (__events != null) {
-                for (eventType in __events.keys()) {
-                    if (!isInteractiveEvent(eventType)) {
-                        continue;
-                    }
-                    var listeners:FunctionArray<UIEvent->Void> = __events.listeners(eventType);
-                    if (listeners != null) {
-                        for (listener in listeners.copy()) {
-                            if (_disabledEvents == null) {
-                                _disabledEvents = new EventMap();
-                            }
-                            _disabledEvents.add(eventType, listener);
-                            unregisterEvent(eventType, listener);
-                        }
-                    }
-                }
-            }
-        } else {
-            if (_disabledEvents != null) {
-                for (eventType in _disabledEvents.keys()) {
-                    var listeners:FunctionArray<UIEvent->Void> = _disabledEvents.listeners(eventType);
-                    if (listeners != null) {
-                        for (listener in listeners.copy()) {
-                            registerEvent(eventType, listener);
-                        }
-                    }
-                }
-                _disabledEvents = null;
-            }
-        }
-        
-        for (child in childComponents) {
-            child.disableInteractivity(disable);
-        }
-    }
-    
     //***********************************************************************************************************
     // Layout related
     //***********************************************************************************************************
@@ -1099,7 +853,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         return value;
     }
 
-    private var _layout:Layout;
+    //private var _layout:Layout;
     /**
      The layout of this component
     **/
@@ -1123,7 +877,9 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         return value;
     }
 
+    /*
     private var _layoutLocked:Bool = false;
+    */
     public function lockLayout(recursive:Bool = false) {
         if (_layoutLocked == true) {
             return;
@@ -1155,14 +911,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     //***********************************************************************************************************
     // Event handlers
     //***********************************************************************************************************
-    private var _ready:Bool = false;
-    /**
-     Whether the framework considers this component ready or not
-    **/
-    public var isReady(get, null):Bool;
-    private function get_isReady():Bool {
-        return _ready;
-    }
 
     /**
      Tells the framework this component is ready
@@ -1239,470 +987,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     @:style(layoutparent)   public var horizontalAlign:String;
     @:style(layoutparent)   public var verticalAlign:String;
     
-    //***********************************************************************************************************
-    // Size related
-    //***********************************************************************************************************
-    /**
-     Whether this component will automatically resize itself based on it childrens calculated width
-    **/
-    @:dox(group = "Size related properties and methods")
-    public var autoWidth(get, null):Bool;
-    private function get_autoWidth():Bool {
-        if (_percentWidth != null || _width != null || style == null) {
-            return false;
-        }
-        if (style.autoWidth == null) {
-            return false;
-        }
-        return style.autoWidth;
-    }
-
-    /**
-     Whether this component will automatically resize itself based on it childrens calculated height
-    **/
-    @:dox(group = "Size related properties and methods")
-    public var autoHeight(get, null):Bool;
-    private function get_autoHeight():Bool {
-        if (_percentHeight != null || _height  != null || style == null) {
-            return false;
-        }
-        if (style.autoHeight == null) {
-            return false;
-        }
-        return style.autoHeight;
-    }
-
-    /**
-     Resize this components width and height in one call
-    **/
-    @:dox(group = "Size related properties and methods")
-    public function resizeComponent(w:Null<Float>, h:Null<Float>) {
-        var invalidate:Bool = false;
-        
-        if (style != null) {
-            if (w != null) {
-                if (style.minWidth != null && w < style.minWidth) {
-                    w = style.minWidth;
-                } else if (style.maxWidth != null && w > style.maxWidth) {
-                    w = style.maxWidth;
-                }
-            }
-            
-            if (h != null) {
-                if (style.minHeight != null && h < style.minHeight) {
-                    h = style.minHeight;
-                } else if (style.maxHeight != null && h > style.maxHeight) {
-                    h = style.maxHeight;
-                }
-            }
-        }
-        
-        
-        if (w != null && _componentWidth != w) {
-            _componentWidth = w;
-            invalidate = true;
-        }
-
-        if (h != null && _componentHeight != h) {
-            _componentHeight = h;
-            invalidate = true;
-        }
-
-        if (invalidate == true && isComponentInvalid(InvalidationFlags.LAYOUT) == false) {
-            invalidateComponentLayout();
-        }
-    }
-
-    /**
-     Autosize this component based on its children
-    **/
-    @:dox(group = "Size related properties and methods")
-    private function autoSize():Bool {
-        if (_ready == false || _layout == null) {
-           return false;
-        }
-        return layout.autoSize();
-    }
-
-    private var _percentWidth:Null<Float>;
-    /**
-     What percentage of this components parent to use to calculate its width
-    **/
-    @:dox(group = "Size related properties and methods")
-    @clonable @bindable public var percentWidth(get, set):Null<Float>;
-    private function get_percentWidth():Null<Float> {
-        return _percentWidth;
-    }
-    private function set_percentWidth(value:Null<Float>):Null<Float> {
-        if (_percentWidth == value) {
-            return value;
-        }
-
-        _percentWidth = value;
-
-        if (parentComponent != null) {
-            parentComponent.invalidateComponentLayout();
-        }
-        return value;
-    }
-
-    private var _percentHeight:Null<Float>;
-    /**
-     What percentage of this components parent to use to calculate its height
-    **/
-    @:dox(group = "Size related properties and methods")
-    @clonable @bindable public var percentHeight(get, set):Null<Float>;
-    private function get_percentHeight():Null<Float> {
-        return _percentHeight;
-    }
-    private function set_percentHeight(value:Null<Float>):Null<Float> {
-        if (_percentHeight == value) {
-            return value;
-        }
-        _percentHeight = value;
-
-        if (parentComponent != null) {
-            parentComponent.invalidateComponentLayout();
-        }
-        return value;
-    }
-
-    /**
-     Whether or not a point is inside this components bounds
-
-     *Note*: `left` and `top` must be stage (screen) co-ords
-    **/
-    @:dox(group = "Size related properties and methods")
-    public function hitTest(left:Float, top:Float):Bool { // co-ords must be stage
-        var b:Bool = false;
-        var sx:Float = screenLeft;
-        var sy:Float = screenTop;
-        var cx:Float = 0;
-        if (componentWidth != null) {
-            cx = componentWidth;
-        }
-        var cy:Float = 0;
-        if (componentHeight != null) {
-            cy = componentHeight;
-        }
-
-        if (cx <= 0 || cy <= 0) {
-            return false;
-        }
-
-        if (left >= sx && left < sx + cx && top >= sy && top < sy + cy) {
-            b = true;
-        }
-
-        return b;
-    }
-
-    private var _componentWidth:Null<Float>;
-    @:allow(haxe.ui.layouts.Layout)
-    @:allow(haxe.ui.core.Screen)
-    /**
-     The calculated width of this component
-    **/
-    @:dox(group = "Size related properties and methods")
-    @:clonable private var componentWidth(get, set):Null<Float>;
-    private function get_componentWidth():Null<Float> {
-        if (_componentWidth == null) {
-            return 0;
-        }
-        return _componentWidth;
-    }
-    private function set_componentWidth(value:Null<Float>):Null<Float> {
-        resizeComponent(value, null);
-        return value;
-    }
-
-    private var _componentHeight:Null<Float>;
-    @:allow(haxe.ui.layouts.Layout)
-    @:allow(haxe.ui.core.Screen)
-    /**
-     The calculated height of this component
-    **/
-    @:dox(group = "Size related properties and methods")
-    @:clonable private var componentHeight(get, set):Null<Float>;
-    private function get_componentHeight():Null<Float> {
-        if (_componentHeight == null) {
-            return 0;
-        }
-        return _componentHeight;
-    }
-    private function set_componentHeight(value:Null<Float>):Null<Float> {
-        resizeComponent(null, value);
-        return value;
-    }
-
-    #if ((openfl || nme) && !flixel)
-
-    #if flash @:setter(x) #else override #end
-    public function set_x(value:Float): #if flash Void #else Float #end {
-        #if flash
-        super.x = value;
-        #else
-        super.set_x(value);
-        #end
-        left = value;
-        #if !flash return value; #end
-    }
-    
-    #if flash @:setter(y) #else override #end
-    public function set_y(value:Float): #if flash Void #else Float #end {
-        #if flash
-        super.y = value;
-        #else
-        super.set_y(value);
-        #end
-        top = value;
-        #if !flash return value; #end
-    }
-    
-    private var _width:Null<Float>;
-    #if flash @:setter(width) #else override #end
-    private function set_width(value:Float): #if flash Void #else Float #end {
-        if (_width == value) {
-            return #if !flash value #end;
-        }
-        if (value == haxe.ui.util.MathUtil.MIN_INT) {
-            _width = null;
-            componentWidth = null;
-        } else {
-            _width = value;
-            componentWidth = value;
-        }
-        #if !flash return value; #end
-    }
-
-    #if flash @:getter(width) #else override #end
-    private function get_width():Float {
-        var f:Float = componentWidth;
-        return f;
-    }
-
-    private var _height:Null<Float>;
-    #if flash @:setter(height) #else override #end
-    private function set_height(value:Float): #if flash Void #else Float #end {
-        if (_height == value) {
-            return #if !flash value #end;
-        }
-        if (value == haxe.ui.util.MathUtil.MIN_INT) {
-            _height = null;
-            componentHeight = null;
-        } else {
-            _height = value;
-            componentHeight = value;
-        }
-        #if !flash return value; #end
-    }
-
-    #if flash @:getter(height) #else override #end
-    private function get_height():Float {
-        var f:Float = componentHeight;
-        return f;
-    }
-
-    #elseif (flixel)
-
-    private var _width:Null<Float>;
-    private override function set_width(value:Float):Float {
-        if (value == 0) {
-            return value;
-        }
-        if (_width == value) {
-            return value;
-        }
-        _width = value;
-        componentWidth = value;
-        return value;
-    }
-
-    private override function get_width():Float {
-        var f:Float = componentWidth;
-        return f;
-    }
-
-    private var _height:Null<Float>;
-    private override function set_height(value:Float):Float {
-        if (value == 0) {
-            return value;
-        }
-        if (_height == value) {
-            return value;
-        }
-        _height = value;
-        componentHeight = value;
-        return value;
-    }
-
-    private override function get_height() {
-        var f:Float = componentHeight;
-        return f;
-    }
-
-    #else
-
-    /**
-     The width of this component
-    **/
-    @:dox(group = "Size related properties and methods")
-    @bindable public var width(get, set):Null<Float>;
-    private var _width:Null<Float>;
-    private function set_width(value:Null<Float>):Null<Float> {
-        if (_width == value) {
-            return value;
-        }
-        _width = value;
-        componentWidth = value;
-        return value;
-    }
-
-    private function get_width():Null<Float> {
-        var f:Float = componentWidth;
-        return f;
-    }
-
-    /**
-     The height of this component
-    **/
-    @:dox(group = "Size related properties and methods")
-    @bindable public var height(get, set):Null<Float>;
-    private var _height:Null<Float>;
-    private function set_height(value:Null<Float>):Null<Float> {
-        if (_height == value) {
-            return value;
-        }
-        _height = value;
-        componentHeight = value;
-        return value;
-    }
-
-    private function get_height():Null<Float> {
-        var f:Float = componentHeight;
-        return f;
-    }
-
-    #end
-
-    private var _actualWidth:Null<Float>;
-    private var _actualHeight:Null<Float>;
-
-    //***********************************************************************************************************
-    // Position related
-    //***********************************************************************************************************
-    /**
-     Move this components left and top co-ord in one call
-    **/
-    @:dox(group = "Position related properties and methods")
-    public function moveComponent(left:Null<Float>, top:Null<Float>) {
-        var invalidate:Bool = false;
-        if (left != null && _left != left) {
-            _left = left;
-            invalidate = true;
-        }
-        if (top != null && _top != top) {
-            _top = top;
-            invalidate = true;
-        }
-
-        if (invalidate == true && isComponentInvalid(InvalidationFlags.POSITION) == false) {
-            invalidateComponentPosition();
-        }
-    }
-
-    private var _left:Null<Float> = 0;
-    /**
-     The left co-ord of this component relative to its parent
-    **/
-    @:dox(group = "Position related properties and methods")
-    public var left(get, set):Null<Float>;
-    private function get_left():Null<Float> {
-        return _left;
-    }
-    private function set_left(value:Null<Float>):Null<Float> {
-        moveComponent(value, null);
-        return value;
-    }
-
-    private var _top:Null<Float> = 0;
-    /**
-     The top co-ord of this component relative to its parent
-    **/
-    @:dox(group = "Position related properties and methods")
-    public var top(get, set):Null<Float>;
-    private function get_top():Null<Float> {
-        return _top;
-    }
-    private function set_top(value:Null<Float>):Null<Float> {
-        moveComponent(null, value);
-        return value;
-    }
-
-    /**
-     The left co-ord of this component relative to the screen
-    **/
-    @:dox(group = "Position related properties and methods")
-    public var screenLeft(get, null):Float;
-    private function get_screenLeft():Float {
-        var c:Component = this;
-        var xpos:Float = 0;
-        while (c != null) {
-            xpos += c.left;
-
-            if (c.componentClipRect != null) {
-                xpos -= c.componentClipRect.left;
-            }
-
-            c = c.parentComponent;
-        }
-        return xpos;
-    }
-
-    /**
-     The top co-ord of this component relative to the screen
-    **/
-    @:dox(group = "Position related properties and methods")
-    public var screenTop(get, null):Float;
-    private function get_screenTop():Float {
-        var c:Component = this;
-        var ypos:Float = 0;
-        while (c != null) {
-            ypos += c.top;
-
-            if (c.componentClipRect != null) {
-                ypos -= c.componentClipRect.top;
-            }
-
-            c = c.parentComponent;
-        }
-        return ypos;
-    }
-
-    //***********************************************************************************************************
-    // Text related
-    //***********************************************************************************************************
-    override public function createTextDisplay(text:String = null):TextDisplay {
-        super.createTextDisplay();
-        _textDisplay.parentComponent = this;
-        return _textDisplay;
-    }
-
-    override public function createTextInput(text:String = null):TextInput {
-        super.createTextInput();
-        _textInput.parentComponent = this;
-        return _textInput;
-    }
-
-    //***********************************************************************************************************
-    // Image related
-    //***********************************************************************************************************
-    override public function createImageDisplay():ImageDisplay {
-        super.createImageDisplay();
-        _imageDisplay.parentComponent = this;
-        return _imageDisplay;
-    }
-
     //***********************************************************************************************************
     // Script related
     //***********************************************************************************************************
@@ -1893,106 +1177,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     // Invalidation
     //***********************************************************************************************************
 
-    private var _invalidationFlags:Map<String, Bool> = new Map<String, Bool>();
-    private var _delayedInvalidationFlags:Map<String, Bool> = new Map<String, Bool>();
-    private var _isAllInvalid:Bool = false;
-    private var _isValidating:Bool = false;
-    private var _isInitialized:Bool = false;
-    private var _isDisposed:Bool = false;
-    private var _invalidateCount:Int = 0;
-
-    private var _depth:Int = -1;
-    @:dox(hide)
-    public var depth(get, set):Int;
-    private function get_depth():Int {
-        return _depth;
-    }
-    private function set_depth(value:Int):Int {
-        if (_depth == value) {
-            return value;
-        }
-
-        _depth = value;
-
-        return value;
-    }
-
-    /**
-     Validate this component and its children on demand.
-    **/
-    @:dox(group = "Invalidation related properties and methods")
-    public function syncComponentValidation() {
-        var count:Int = 0;
-        while(isComponentInvalid()) {
-            validateComponent();
-
-            for (child in childComponents) {
-                child.syncComponentValidation();
-            }
-
-            if (++count >= 10) {
-                throw 'The syncValidation returned too many times during validation. This may be an infinite loop. Try to avoid doing anything that calls invalidate() during validation.';
-            }
-        }
-    }
-
-    /**
-     This method validates the tasks pending in the component.
-    **/
-    @:dox(group = "Invalidation related properties and methods")
-    public function validateComponent() {
-        if (_ready == false ||
-            _isDisposed == true ||      //we don't want to validate disposed components, but they may have been left in the queue.
-            _isValidating == true ||    //we were already validating, the existing validation will continue.
-            isComponentInvalid() == false) {     //if none is invalid, exit.
-            return;
-        }
-
-        var isInitialized = _isInitialized;
-        if (isInitialized == false) {
-            initializeComponent();
-        }
-
-        _isValidating = true;
-
-        validateComponentInternal();
-
-        if (isInitialized == false && _style != null) {
-            if ((_style.initialWidth != null || _style.initialPercentWidth != null) && width <= 0) {
-                if (_style.initialWidth != null) {
-                    width = _style.initialWidth;
-                } else  if (_style.initialPercentWidth != null) {
-                    percentWidth = _style.initialPercentWidth;
-                }
-            }
-            
-            if ((_style.initialHeight != null || _style.initialPercentHeight != null) && height <= 0) {
-                if (_style.initialHeight != null) {
-                    height = _style.initialHeight;
-                } else  if (_style.initialPercentHeight != null) {
-                    percentHeight = _style.initialPercentHeight;
-                }
-            }
-        }
-        
-        for (flag in _invalidationFlags.keys()) {
-            _invalidationFlags.remove(flag);
-        }
-
-        _isAllInvalid = false;
-
-        for (flag in _delayedInvalidationFlags.keys()) {
-            if (flag == InvalidationFlags.ALL) {
-                _isAllInvalid = true;
-            } else {
-                _invalidationFlags.set(flag, true);
-            }
-            _delayedInvalidationFlags.remove(flag);
-        }
-        _isValidating = false;
-    }
-
-    private function initializeComponent() {
+    private override function initializeComponent() {
         if (_isInitialized == true) {
             return;
         }
@@ -2010,57 +1195,30 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
     }
 
-    private function validateComponentInternal() {
-        var dataInvalid = isComponentInvalid(InvalidationFlags.DATA);
-        var styleInvalid = isComponentInvalid(InvalidationFlags.STYLE);
-        var textDisplayInvalid = isComponentInvalid(InvalidationFlags.TEXT_DISPLAY) && hasTextDisplay();
-        var textInputInvalid = isComponentInvalid(InvalidationFlags.TEXT_INPUT) && hasTextInput();
-        var imageDisplayInvalid = isComponentInvalid(InvalidationFlags.IMAGE_DISPLAY) && hasImageDisplay();
-        var positionInvalid = isComponentInvalid(InvalidationFlags.POSITION);
-        var displayInvalid = isComponentInvalid(InvalidationFlags.DISPLAY);
-        var layoutInvalid = isComponentInvalid(InvalidationFlags.LAYOUT) && _layoutLocked == false;
-
-        if (dataInvalid) {
-            validateComponentData();
-        }
-
-        if (styleInvalid) {
-            validateComponentStyle();
-        }
-
-        if (textDisplayInvalid) {
-            getTextDisplay().validateComponent();
-        }
-
-        if (textInputInvalid) {
-            getTextInput().validateComponent();
-        }
-
-        if (imageDisplayInvalid) {
-            getImageDisplay().validateComponent();
-        }
-
-        if (positionInvalid) {
-            validateComponentPosition();
-        }
-
-        if (layoutInvalid) {
-            displayInvalid = validateComponentLayout() || displayInvalid;
-        }
-
-        if (displayInvalid || styleInvalid) {
-            ValidationManager.instance.addDisplay(this);    //Update the display from all objects at the same time. Avoids UI flashes.
+    private override function validateInitialSize(isInitialized:Bool) {
+        if (isInitialized == false && _style != null) {
+            if ((_style.initialWidth != null || _style.initialPercentWidth != null) && width <= 0) {
+                if (_style.initialWidth != null) {
+                    width = _style.initialWidth;
+                } else  if (_style.initialPercentWidth != null) {
+                    percentWidth = _style.initialPercentWidth;
+                }
+            }
+            
+            if ((_style.initialHeight != null || _style.initialPercentHeight != null) && height <= 0) {
+                if (_style.initialHeight != null) {
+                    height = _style.initialHeight;
+                } else  if (_style.initialPercentHeight != null) {
+                    percentHeight = _style.initialPercentHeight;
+                }
+            }
         }
     }
-
-    private function validateComponentData() {
-        behaviours.validateData();
-    }
-
+    
     /**
      Return true if the size has changed.
     **/
-    private function validateComponentLayout():Bool {
+    private override function validateComponentLayout():Bool {
         layout.refresh();
 
         //TODO - Required. Something is wrong with the autosize order in the first place if we need to do that twice. Revision required for performance.
@@ -2090,7 +1248,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         return sizeChanged;
     }
 
-    private function validateComponentStyle() {
+    private override function validateComponentStyle() {
         var s:Style = Toolkit.styleSheet.buildStyleFor(this);
         s.apply(customStyle);
 
@@ -2100,7 +1258,7 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
     }
 
-    private function validateComponentPosition() {
+    private override function validateComponentPosition() {
         handlePosition(_left, _top, _style);
 
         onMoved();
@@ -2142,127 +1300,6 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         }
 
         return invalidate;
-    }
-
-    /**
-     Check if the component is invalidated with some `flag`.
-    **/
-    @:dox(group = "Invalidation related properties and methods")
-    public function isComponentInvalid(flag:String = InvalidationFlags.ALL):Bool {
-        if (_isAllInvalid == true) {
-            return true;
-        }
-
-        if (flag == InvalidationFlags.ALL) {
-            for (value in _invalidationFlags) {
-                return true;
-            }
-
-            return false;
-        }
-
-        return _invalidationFlags.exists(flag);
-    }
-
-    /**
-     Invalidate this components with the `InvalidationFlags` indicated. If it hasn't parameter then the component will be invalidated completely.
-    **/
-    @:dox(group = "Invalidation related properties and methods")
-    public function invalidateComponent(flag:String = InvalidationFlags.ALL) {
-        if (_ready == false) {
-            return;     //it should be added into the queue later
-        }
-
-        var isAlreadyInvalid:Bool = isComponentInvalid();
-        var isAlreadyDelayedInvalid:Bool = false;
-        if (_isValidating == true) {
-            for (value in _delayedInvalidationFlags) {
-                isAlreadyDelayedInvalid = true;
-                break;
-            }
-        }
-
-        if (flag == InvalidationFlags.ALL) {
-            if (_isValidating == true) {
-                _delayedInvalidationFlags.set(InvalidationFlags.ALL, true);
-            } else {
-                _isAllInvalid = true;
-            }
-        } else {
-            if (_isValidating == true) {
-                _delayedInvalidationFlags.set(flag, true);
-            } else if (flag != InvalidationFlags.ALL && !_invalidationFlags.exists(flag)) {
-                _invalidationFlags.set(flag, true);
-            }
-        }
-
-        if (_isValidating == true) {
-            //it is already in queue
-            if (isAlreadyDelayedInvalid == true) {
-                return;
-            }
-
-            _invalidateCount++;
-
-            //we track the invalidate count to check if we are in an infinite loop or serious bug because it affects performance
-            if (this._invalidateCount >= 10) {
-                throw 'The validation queue returned too many times during validation. This may be an infinite loop. Try to avoid doing anything that calls invalidate() during validation.';
-            }
-
-            ValidationManager.instance.add(this);
-            return;
-        } else if (isAlreadyInvalid == true) {
-            return;
-        }
-
-        _invalidateCount = 0;
-        ValidationManager.instance.add(this);
-    }
-
-    /**
-     Invalidate the data of this component
-    **/
-    @:dox(group = "Invalidation related properties and methods")
-    public inline function invalidateComponentData() {
-        invalidateComponent(InvalidationFlags.DATA);
-    }
-
-    /**
-     Invalidate this components layout, may result in multiple calls to `invalidateDisplay` and `invalidateLayout` of its children
-    **/
-    @:dox(group = "Invalidation related properties and methods")
-    public inline function invalidateComponentLayout() {
-        if (_layout == null || _layoutLocked == true) {
-            return;
-        }
-        invalidateComponent(InvalidationFlags.LAYOUT);
-    }
-
-    /**
-     Invalidate the position of this component
-    **/
-    @:dox(group = "Invalidation related properties and methods")
-    public inline function invalidateComponentPosition() {
-        invalidateComponent(InvalidationFlags.POSITION);
-    }
-
-    /**
-     Invalidate the visible aspect of this component
-    **/
-    @:dox(group = "Invalidation related properties and methods")
-    public inline function invalidateComponentDisplay() {
-        invalidateComponent(InvalidationFlags.DISPLAY);
-    }
-
-    /**
-     Invalidate and recalculate this components style, may result in a call to `invalidateDisplay`
-    **/
-    @:dox(group = "Invalidation related properties and methods")
-    public inline function invalidateComponentStyle(force:Bool = false) {
-        invalidateComponent(InvalidationFlags.STYLE);
-        if (force == true) {
-            _style = null;
-        }
     }
 
     private override function applyStyle(style:Style) {
@@ -2389,60 +1426,10 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             }
         }
     }
-
+    
     //***********************************************************************************************************
     // Properties
     //***********************************************************************************************************
-
-    /**
-     Gets a property that is associated with all classes of this type
-    **/
-    public function getClassProperty(name:String):String {
-        var v = null;
-        if (_classProperties != null) {
-            v = _classProperties.get(name);
-        }
-        if (v == null) {
-            var c = Type.getClassName(Type.getClass(this)).toLowerCase() + "." + name;
-            v = Toolkit.properties.get(c);
-        }
-        return v;
-    }
-
-    private var _classProperties:Map<String, String>;
-    /**
-     Sets a property that is associated with all classes of this type
-    **/
-    public function setClassProperty(name:String, value:String) {
-        if (_classProperties == null) {
-            _classProperties = new Map<String, String>();
-        }
-        _classProperties.set(name, value);
-    }
-
-    private function getNativeConfigProperty(query:String, defaultValue:String = null):String {
-        query = 'component[id=${className}]${query}';
-        return Toolkit.nativeConfig.query(query, defaultValue, this);
-    }
-
-    private function getNativeConfigPropertyBool(query:String, defaultValue:Bool = false):Bool {
-        query = 'component[id=${className}]${query}';
-        return Toolkit.nativeConfig.queryBool(query, defaultValue, this);
-    }
-
-    private function getNativeConfigProperties(query:String = ""):Map<String, String> {
-        query = 'component[id=${className}]${query}';
-        return Toolkit.nativeConfig.queryValues(query, this);
-    }
-
-    public var className(get, null):String;
-    private function get_className():String {
-        if (Std.is(this, Dialog2)) {
-            return Type.getClassName(Dialog2);
-        }
-        return Type.getClassName(Type.getClass(this));
-    }
-
     public var cssName(get, null):String;
     private function get_cssName():String {
         var cssName:String = null;
@@ -2456,24 +1443,3 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     }
 }
 
-//***********************************************************************************************************
-// Default behaviours
-//***********************************************************************************************************
-@:dox(hide) @:noCompletion
-@:access(haxe.ui.core.Component)
-class ComponentDisabledBehaviour extends DataBehaviour {
-    public override function get():Variant {
-        return _component.hasClass(":disabled");
-    }
-    
-    public override function invalidateData() {
-        if (_value) {
-            _component.addClass(":disabled", true, true);
-            _component.dispatch(new UIEvent(UIEvent.DISABLED));
-        } else {
-            _component.removeClass(":disabled", true, true);
-            _component.dispatch(new UIEvent(UIEvent.ENABLED));
-        }
-        _component.disableInteractivity(_value);
-    }
-}

@@ -1,6 +1,6 @@
 package haxe.ui.core;
 
-import haxe.ui.backend.TextDisplayBase;
+import haxe.ui.backend.TextDisplayImpl;
 import haxe.ui.styles.Style;
 import haxe.ui.validation.IValidating;
 import haxe.ui.validation.InvalidationFlags;
@@ -16,7 +16,7 @@ class TextDisplayData {
 /**
  Class that represents a framework specific method to display read-only text inside a component
 **/
-class TextDisplay extends TextDisplayBase implements IValidating {
+class TextDisplay extends TextDisplayImpl implements IValidating {
 
     private var _invalidationFlags:Map<String, Bool> = new Map<String, Bool>();
     private var _isAllInvalid:Bool = false;
