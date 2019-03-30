@@ -705,6 +705,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         if (_hidden == true) {
             handleVisibility(true);
             _hidden = false;
+            invalidateComponentLayout();
             if (parentComponent != null) {
                 parentComponent.invalidateComponentLayout();
             }
