@@ -179,10 +179,6 @@ private class Builder extends CompositeBuilder {
     public override function destroy() {
     }
     
-    public override function get_numComponents():Int {
-        return 0;
-    }
-    
     public override function addComponent(child:Component):Component {
         if (Std.is(child, Menu)) {
             var button = new Button();

@@ -265,7 +265,7 @@ private class Builder extends CompositeBuilder {
         return v;
     }
     
-    public override function get_numComponents():Int {
+    public override function get_numComponents():Null<Int> {
         return _container.numComponents;
     }
     
@@ -288,6 +288,10 @@ private class Builder extends CompositeBuilder {
             return _container.removeComponent(child, dispose, invalidate);
         }
         return null;
+    }
+    
+    public override function removeComponentAt(index:Int, dispose:Bool = true, invalidate:Bool = true):Component {
+        return _container.removeComponentAt(index, dispose, invalidate);
     }
     
     public override function getComponentIndex(child:Component):Int {

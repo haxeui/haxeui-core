@@ -249,7 +249,7 @@ private class Builder extends CompositeBuilder {
         }
     }
     
-    public override function get_numComponents():Int {
+    public override function get_numComponents():Null<Int> {
         return _views.length;
     }
     
@@ -299,6 +299,11 @@ private class Builder extends CompositeBuilder {
             }
         }
         return null;
+    }
+    
+    public override function removeComponentAt(index:Int, dispose:Bool = true, invalidate:Bool = true):Component {
+        _views.splice(index, 1);
+        return _tabs.removeComponentAt(index, dispose, invalidate);
     }
     
     public override function getComponentIndex(child:Component):Int {

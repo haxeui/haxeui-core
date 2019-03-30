@@ -620,7 +620,7 @@ class ScrollViewBuilder extends CompositeBuilder {
     public override function destroy() {
     }
     
-    public override function get_numComponents():Int {
+    public override function get_numComponents():Null<Int> {
         return _contents.numComponents;
     }
     
@@ -643,6 +643,10 @@ class ScrollViewBuilder extends CompositeBuilder {
             return _contents.removeComponent(child, dispose, invalidate);
         }
         return null;
+    }
+    
+    public override function removeComponentAt(index:Int, dispose:Bool = true, invalidate:Bool = true):Component {
+        return _contents.removeComponentAt(index, dispose, invalidate);
     }
     
     public override function getComponentIndex(child:Component):Int {

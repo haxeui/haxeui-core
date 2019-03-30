@@ -454,8 +454,23 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             return null;
         }
         
-        if (index < 0 || index > _children.length - 1) {
+        var childCount:Int = _children.length;
+        if (_compositeBuilder != null) {
+            var compositeChildCount = _compositeBuilder.numComponents;
+            if (compositeChildCount != null) {
+                childCount = compositeChildCount;
+            }
+        }
+        
+        if (index < 0 || index > childCount - 1) {
             return null;
+        }
+        
+        if (_compositeBuilder != null) {
+            var v = _compositeBuilder.removeComponentAt(index, dispose, invalidate);
+            if (v != null) {
+                return v;
+            }
         }
         
         handleRemoveComponentAt(index, dispose);

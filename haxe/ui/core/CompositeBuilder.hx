@@ -15,9 +15,9 @@ class CompositeBuilder {
     public function destroy() {
     }
     
-    public var numComponents(get, never):Int;
-    private function get_numComponents():Int {
-        return 0;
+    public var numComponents(get, never):Null<Int>;
+    private function get_numComponents():Null<Int> {
+        return null;
     }
     
     public var cssName(get, never):String;
@@ -34,6 +34,10 @@ class CompositeBuilder {
     }
     
     public function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
+        return null;
+    }
+    
+    public function removeComponentAt(index:Int, dispose:Bool = true, invalidate:Bool = true):Component {
         return null;
     }
     
