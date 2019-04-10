@@ -12,7 +12,7 @@ class ComponentValidation extends ComponentEvents {
     private var _invalidateCount:Int = 0;
     
     private var _depth:Int = -1;
-    @:dox(hide)
+    @:dox(group = "Internal")
     public var depth(get, set):Int;
     private function get_depth():Int {
         return _depth;

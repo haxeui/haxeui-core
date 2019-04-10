@@ -18,9 +18,9 @@ import haxe.ui.util.Variant;
  General purpose push button that supports both text and icon as well as repeat event dispatching
  
  Composite children:
-    | Id             | Type    | Style Name   | Notes                                  |
-    | `button-label` | `Label` | `.label`     | The text of the button (if applicable) |
-    | `button-icon`  | `Image` | `.icon`      | The icon of the button (if applicable) |
+    | Id             | Type                       | Style Name   | Notes                                  |
+    | `button-label` | `haxe.ui.components.Label` | `.label`     | The text of the button (if applicable) |
+    | `button-icon`  | `haxe.ui.components.Image` | `.icon`      | The icon of the button (if applicable) |
  
  Pseudo classes:
     | Name      | Notes                                                                    |

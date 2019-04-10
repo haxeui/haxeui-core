@@ -433,7 +433,7 @@ class Macros {
                 
                 fields.push({
                     name: f.name,
-                    doc: null,
+                    doc: f.doc,
                     meta: meta,
                     access: f.access,
                     kind: kind,
