@@ -8,6 +8,7 @@ class Module {
     public var layoutEntries(default, default):Array<ModuleLayoutEntry>;
     public var scriptletEntries(default, default):Array<ModuleScriptletEntry>;
     public var themeEntries(default, default):Map<String, ModuleThemeEntry>;
+    public var localeEntries(default, default):Array<ModuleLocaleEntry>;
     public var plugins(default, default):Array<ModulePluginEntry>;
     public var properties(default, default):Array<ModulePropertyEntry>;
     public var preload(default, default):Array<ModulePreloadEntry>;
@@ -18,6 +19,7 @@ class Module {
         layoutEntries = [];
         scriptletEntries = [];
         themeEntries = new Map<String, ModuleThemeEntry>();
+        localeEntries = [];
         plugins = [];
         properties = [];
         preload = [];
@@ -68,7 +70,7 @@ class ModuleThemeEntry {
 class ModuleThemeStyleEntry {
     public var resource:String;
     public var priority:Float = 0;
-    
+
     public function new() {
     }
 }
@@ -86,6 +88,14 @@ class ModulePluginEntry {
 class ModulePropertyEntry {
     public var name(default, default):String;
     public var value(default, default):String;
+
+    public function new() {
+    }
+}
+
+class ModuleLocaleEntry {
+    public var id(default, default):String;
+    public var resource(default, default):String;
 
     public function new() {
     }

@@ -1,5 +1,6 @@
 package haxe.ui.core;
 
+import haxe.ui.locale.LocaleManager;
 import haxe.ui.containers.Box;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.util.Variant;
@@ -78,7 +79,7 @@ class ItemRenderer extends Box {
 						}
 					}
 				} else {
-					c.value = v;
+					c.value = LocaleManager.instance.getText(v);
 				}
                 c.show();
             } else if (c != null) {

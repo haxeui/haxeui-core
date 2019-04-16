@@ -97,7 +97,7 @@ class ComponentMacros {
     #if macro
     public static function buildComponentFromFile(code:Array<Expr>, filePath:String, namedComponents:Map<String, String> = null, params:Map<String, Dynamic> = null):Expr {
         ModuleMacros.populateClassMap();
-        
+
         var f = MacroHelpers.resolveFile(filePath);
         if (f == null) {
             throw "Could not resolve: " + filePath;
@@ -107,21 +107,21 @@ class ComponentMacros {
         var c:ComponentInfo = ComponentParser.get(MacroHelpers.extension(f)).parse(fileContent, new FileResourceResolver(f, params));
         return buildComponentSource(code, c, namedComponents, params);
     }
-    
+
     public static function buildComponentFromString(code:Array<Expr>, source:String, namedComponents:Map<String, String> = null, params:Map<String, Dynamic> = null):Expr {
         ModuleMacros.populateClassMap();
-        
+
         source = StringUtil.replaceVars(source, params);
         var c:ComponentInfo = ComponentParser.get("xml").parse(source);
         return buildComponentSource(code, c, namedComponents, params);
     }
-    
+
     private static var bindingInfo:Array<Dynamic> = [];
     public static function buildComponentSource(code:Array<Expr>, c:ComponentInfo, namedComponents:Map<String, String> = null, params:Map<String, Dynamic> = null):Expr {
         //trace(c);
 
         bindingInfo = [];
-        
+
         for (styleString in c.styles) {
             code.push(macro haxe.ui.Toolkit.styleSheet.parse($v{styleString}));
         }
@@ -134,17 +134,17 @@ class ComponentMacros {
         for (scriptString in c.scriptlets) {
             fullScript += scriptString;
         }
-        
+
         for (b in bindingInfo) {
             code.push(macro haxe.ui.binding.BindingManager.instance.add($i{b.componentVarName}, $v{b.field}, $v{b.value}));
         }
-        
+
         code.push(macro c0.script = $v{fullScript});
         code.push(macro c0.bindingRoot = true);
         code.push(macro c0);
 
 //        trace(ExprTools.toString(macro @:pos(Context.currentPos()) $b{code}));
-        
+
         return macro @:pos(Context.currentPos()) $b{code};
     }
 
@@ -164,6 +164,8 @@ class ComponentMacros {
         }
 
         var numberEReg:EReg = ~/^-?\d+(\.(\d+))?$/;
+        var localeEReg = ~/^_\( *([\w'", \.\$\{\}]+) *\)$/;
+        var localeStringParamEReg = ~/['"](.+)['"]/;
         var type = Context.getModule(className)[0];
         if (MacroHelpers.hasDirectInterface(type, "haxe.ui.core.IDirectionalComponent")) {
             var direction = c.direction;
@@ -175,7 +177,7 @@ class ComponentMacros {
                 trace("WARNING: no direction class found for component: " + c.type + " (" + (direction + c.type.toLowerCase()) + ")");
                 return;
             }
-            
+
             className = directionalClassName;
             type = Context.getModule(className)[0];
         }
@@ -201,12 +203,73 @@ class ComponentMacros {
             }
             add(macro $i{componentVarName}.$field = $v{value});
         }
+        function assignText(field:String, value:String) {
+            if (localeEReg.match(value)) {
+                var localeMatched = localeEReg.matched(1);
+                var localeArr = localeMatched.split(",");
+                var localeID = localeArr[0];
+                if (!localeStringParamEReg.match(localeID)) {
+                    throw 'First parameter $localeID in locale function isn\'t a string.';
+                }
+
+                localeID = localeStringParamEReg.matched(1);
+                var localeParams = localeArr.slice(1, localeArr.length);
+
+                var onLocaleChangeCode:Array<Expr> = [];
+                var rootComponent:ComponentInfo = null;
+                if (localeParams != null && localeParams.length > 0) {
+                    onLocaleChangeCode.push(macro var params:Array<Any> = []);
+                    for (i in 0...localeParams.length) {
+                        var param = StringTools.trim(localeParams[i]);
+                        localeParams[i] = param;
+
+                        if (localeStringParamEReg.match(param)) {
+                            onLocaleChangeCode.push(macro params.push($v{localeStringParamEReg.matched(1)}));
+                        } else if (param.indexOf(".") != -1) {
+                            var sourceArr:Array<String> = param.split(".");
+                            var sourceId:String = sourceArr[0];
+                            var sourceProp:String = sourceArr[1];
+                            onLocaleChangeCode.push(macro var source = c0.findComponent($v{sourceId}, null, true));
+                            onLocaleChangeCode.push(macro params.push(Std.string(Reflect.getProperty(source, $v{sourceProp}))));
+
+                            bindingInfo.push({
+                                componentVarName: componentVarName,
+                                field: field,
+                                value: "${" + 'LocaleManager.instance.get("${localeID}", ${localeParams.toString()})' + "}"
+                            });
+                        } else {
+                            onLocaleChangeCode.push(macro params.push(Std.string($v{param})));
+                        }
+                    }
+
+                    onLocaleChangeCode.push(macro $i{componentVarName}.$field = haxe.ui.locale.LocaleManager.instance.get($v{localeID}, params));
+                } else {
+                    onLocaleChangeCode.push(macro $i{componentVarName}.$field = haxe.ui.locale.LocaleManager.instance.get($v{localeID}));
+                }
+
+                add(macro {
+                    var _onLocaleChange = function(_) {
+                        $b{onLocaleChangeCode}
+                    };
+                    $i{componentVarName}.registerEvent(haxe.ui.events.UIEvent.READY, function(_) {
+                        haxe.ui.locale.LocaleManager.instance.registerEvent(haxe.ui.events.UIEvent.CHANGE, _onLocaleChange);
+                        _onLocaleChange(null);
+                    });
+                    $i{componentVarName}.registerEvent(haxe.ui.events.UIEvent.DESTROY, function(_) {
+                        haxe.ui.locale.LocaleManager.instance.unregisterEvent(haxe.ui.events.UIEvent.CHANGE, _onLocaleChange);
+                    });
+                });
+
+            } else {
+                assign(field, value);
+            }
+        }
         add(macro var $componentVarName = new $typePath());
 
         var childParentId = _componentId - 1;
         for (child in c.children) {
             buildComponentCode(code, child, childParentId, namedComponents, pos);
-            
+
         }
 
         if (c.id != null)                       assign("id", c.id);
@@ -220,7 +283,7 @@ class ComponentMacros {
         if (c.contentHeight != null)            assign("contentHeight", c.contentHeight);
         if (c.percentContentWidth != null)      assign("percentContentWidth", c.percentContentWidth);
         if (c.percentContentHeight != null)     assign("percentContentHeight", c.percentContentHeight);
-        if (c.text != null)                     assign("text", c.text);
+        if (c.text != null)                     assignText("text", c.text);
         if (c.styleNames != null)               assign("styleNames", c.styleNames);
         if (c.style != null)                    assign("styleString", c.styleString);
         if (c.layout != null) {
@@ -230,39 +293,43 @@ class ComponentMacros {
         for (propName in c.properties.keys()) {
             var propValue = c.properties.get(propName);
             propName = ComponentFieldMap.mapField(propName);
-            var propExpr = if (propValue == "true" || propValue == "yes" || propValue == "false" || propValue == "no") {
-                macro $v{propValue == "true" || propValue == "yes"};
+            if (localeEReg.match(propValue)) {
+                assignText(propName, propValue);
             } else {
-                if(numberEReg.match(propValue)) {
-                    if(numberEReg.matched(2) != null) {
-                        macro $v{Std.parseFloat(propValue)};
-                    } else {
-                        macro $v{Std.parseInt(propValue)};
-                    }
+                var propExpr = if (propValue == "true" || propValue == "yes" || propValue == "false" || propValue == "no") {
+                    macro $v{propValue == "true" || propValue == "yes"};
                 } else {
-                    macro $v{propValue};
+                    if(numberEReg.match(propValue)) {
+                        if(numberEReg.matched(2) != null) {
+                            macro $v{Std.parseFloat(propValue)};
+                        } else {
+                            macro $v{Std.parseInt(propValue)};
+                        }
+                    } else {
+                        macro $v{propValue};
+                    }
                 }
-            }
 
-            if (StringTools.startsWith(propName, "on")) {
-                add(macro $i{componentVarName}.addScriptEvent($v{propName}, $propExpr));
-            } else if (Std.string(propValue).indexOf("${") != -1) {
-                bindingInfo.push({
-                    componentVarName: componentVarName,
-                    field: propName,
-                    value: propValue
-                });
-                // TODO: does this make sense? Basically, if you try to apply a bound variable to something that isnt
-                // a string, then we cant assign it as normal, ie:
-                //     c5.selectedIndex = ${something}
-                // but, if we skip it, then you can use non-existing xml attributes in the xml (eg: fakeComponentProperty)
-                // and they will go unchecked and you wont get an error. This is a way around that, so it essentially generates
-                // the following expr:
-                //     c5.fakeComponentProperty = c5.fakeComponentProperty
-                // which will result in a compile time error
-                add(macro $i{componentVarName}.$propName = $i{componentVarName}.$propName);
-            } else {
-                add(macro $i{componentVarName}.$propName = $propExpr);
+                if (StringTools.startsWith(propName, "on")) {
+                    add(macro $i{componentVarName}.addScriptEvent($v{propName}, $propExpr));
+                } else if (Std.string(propValue).indexOf("${") != -1) {
+                    bindingInfo.push({
+                        componentVarName: componentVarName,
+                        field: propName,
+                        value: propValue
+                    });
+                    // TODO: does this make sense? Basically, if you try to apply a bound variable to something that isnt
+                    // a string, then we cant assign it as normal, ie:
+                    //     c5.selectedIndex = ${something}
+                    // but, if we skip it, then you can use non-existing xml attributes in the xml (eg: fakeComponentProperty)
+                    // and they will go unchecked and you wont get an error. This is a way around that, so it essentially generates
+                    // the following expr:
+                    //     c5.fakeComponentProperty = c5.fakeComponentProperty
+                    // which will result in a compile time error
+                    add(macro $i{componentVarName}.$propName = $i{componentVarName}.$propName);
+                } else {
+                    add(macro $i{componentVarName}.$propName = $propExpr);
+                }
             }
         }
 

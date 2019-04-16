@@ -510,7 +510,10 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     }
     
     private function onDestroy() {
-
+        for (child in childComponents) {
+            child.onDestroy();
+        }
+        dispatch(new UIEvent(UIEvent.DESTROY));
     }
 
     /**

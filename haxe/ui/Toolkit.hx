@@ -4,10 +4,12 @@ import haxe.ui.backend.ToolkitOptions;
 import haxe.ui.core.Component;
 import haxe.ui.core.ComponentClassMap;
 import haxe.ui.core.IDataComponent;
+import haxe.ui.core.Platform;
 import haxe.ui.core.LayoutClassMap;
 import haxe.ui.core.Screen;
 import haxe.ui.events.KeyboardEvent;
 import haxe.ui.focus.FocusManager;
+import haxe.ui.locale.LocaleManager;
 import haxe.ui.layouts.Layout;
 import haxe.ui.macros.BackendMacros;
 import haxe.ui.macros.ModuleMacros;
@@ -27,7 +29,7 @@ import haxe.ui.util.Variant;
 
 class Toolkit {
     public static var styleSheet:StyleSheet = new StyleSheet();
-    
+
     public static var theme:String = "default";
 
     public static var properties:Map<String, String> = new Map<String, String>();
@@ -40,7 +42,7 @@ class Toolkit {
         buildBackend();
         return _backendProperties;
     }
-    
+
     private static var _built:Bool = false;
     public static function build() {
         if (_built == true) {
@@ -60,9 +62,15 @@ class Toolkit {
         BackendMacros.processBackend();
         _backendBuilt = true;
     }
-    
+
+    public static function setDefaultLanguage() {
+        var systemLocale:String = Platform.systemLocale;
+        LocaleManager.instance.setLanguage(systemLocale);
+    }
+
     public static function init(options:ToolkitOptions = null) {
         build();
+        setDefaultLanguage();
         ThemeManager.instance.applyTheme(theme);
         if (options != null) {
             screen.options = options;

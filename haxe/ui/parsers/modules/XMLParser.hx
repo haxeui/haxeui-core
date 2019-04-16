@@ -97,6 +97,16 @@ class XMLParser extends ModuleParser {
                     }
                     module.themeEntries.set(theme.name, theme);
                 }
+            } else if (nodeName == "locales" && checkCondition(el, defines) == true) {
+                for (localeNode in el.elements()) {
+                    if (checkCondition(localeNode, defines) == false) {
+                        continue;
+                    }
+                    var locale:Module.ModuleLocaleEntry = new Module.ModuleLocaleEntry();
+                    locale.id = localeNode.get("id");
+                    locale.resource = localeNode.get("resource");
+                    module.localeEntries.push(locale);
+                }
             } else if (nodeName == "plugins" && checkCondition(el, defines) == true) {
                 for (pluginNode in el.elementsNamed("plugin")) {
                     if (checkCondition(pluginNode, defines) == false) {
@@ -147,7 +157,7 @@ class XMLParser extends ModuleParser {
             var condition = "haxeui_" + node.get("if");
             return defines.exists(condition);
         }
-        
+
         return true;
     }
 }
