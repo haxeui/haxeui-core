@@ -27,13 +27,8 @@ import haxe.ui.validation.ValidationManager;
  Base class of all HaxeUI controls
 **/
 @:allow(haxe.ui.backend.ComponentImpl)
-@:autoBuild(haxe.ui.macros.Macros.buildComposite())
-@:build(haxe.ui.macros.Macros.buildStyles())
-@:autoBuild(haxe.ui.macros.Macros.buildStyles())
-@:build(haxe.ui.macros.Macros.buildBindings())
-@:autoBuild(haxe.ui.macros.Macros.buildBindings())
-@:build(haxe.ui.macros.Macros.addClonable())
-@:autoBuild(haxe.ui.macros.Macros.addClonable())
+@:build(haxe.ui.macros.Macros.build())
+@:autoBuild(haxe.ui.macros.Macros.build())
 class Component extends ComponentImpl implements IComponentBase implements IValidating implements IClonable<Component> {
     public function new() {
         super();
@@ -1158,37 +1153,15 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         }
     }
 
-    private var __onClick:MouseEvent->Void;
     /**
-     Utility property to add a single `UIEvent.CLICK` event
+     Utility property to add a single `MouseEvent.CLICK` event
     **/
-    @:dox(group = "Event related properties and methods")
-    public var onClick(null, set):MouseEvent->Void;
-    private function set_onClick(value:MouseEvent->Void):MouseEvent->Void {
-        if (__onClick != null) {
-            unregisterEvent(MouseEvent.CLICK, __onClick);
-            __onClick = null;
-        }
-        registerEvent(MouseEvent.CLICK, value);
-        __onClick = value;
-        return value;
-    }
-
-    private var __onChange:UIEvent->Void;
+    @:event(MouseEvent.CLICK)       public var onClick:MouseEvent->Void;
+    
     /**
      Utility property to add a single `UIEvent.CHANGE` event
     **/
-    @:dox(group = "Event related properties and methods")
-    public var onChange(null, set):UIEvent->Void;
-    private function set_onChange(value:UIEvent->Void):UIEvent->Void {
-        if (__onChange != null) {
-            unregisterEvent(UIEvent.CHANGE, __onChange);
-            __onChange = null;
-        }
-        registerEvent(UIEvent.CHANGE, value);
-        __onChange = value;
-        return value;
-    }
+    @:event(UIEvent.CHANGE)         public var onChange:UIEvent->Void;
 
     //***********************************************************************************************************
     // Invalidation

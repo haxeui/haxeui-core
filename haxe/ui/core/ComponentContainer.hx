@@ -8,8 +8,7 @@ import haxe.ui.layouts.Layout;
 import haxe.ui.styles.Style;
 import haxe.ui.util.Variant;
 
-// TODO: having this on breaks haxeui-heaps, but having it off doesnt seem to affect anything, so may have been ill-concieved
-//@:build(haxe.ui.macros.Macros.buildBehaviours())
+@:build(haxe.ui.macros.Macros.buildBehaviours())
 @:autoBuild(haxe.ui.macros.Macros.buildBehaviours())
 class ComponentContainer extends ComponentCommon {
     @:clonable @:behaviour(ComponentDisabledBehaviour, false)       public var disabled:Bool;

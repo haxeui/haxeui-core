@@ -24,7 +24,6 @@ class ComponentInfo {
     public var properties:Map<String, String>;
     public var parent:ComponentInfo;
     public var children:Array<ComponentInfo>;
-    public var bindings:Array<ComponentBindingInfo>;
     public var layout:LayoutInfo;
 
     public var scriptlets:Array<String>;
@@ -37,7 +36,6 @@ class ComponentInfo {
     public function new() {
         properties = new Map<String, String>();
         children = [];
-        bindings = [];
         scriptlets = [];
         styles = [];
     }
@@ -86,13 +84,4 @@ class ComponentInfo {
             properties.remove(propName);
         }
     }
-}
-
-class ComponentBindingInfo {
-    public function new() {
-    }
-
-    public var source:String;
-    public var target:String;
-    public var transform:String;
 }

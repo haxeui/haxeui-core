@@ -1,6 +1,5 @@
 package haxe.ui.parsers.ui;
 
-import haxe.ui.parsers.ui.ComponentInfo.ComponentBindingInfo;
 import haxe.ui.parsers.ui.resolvers.ResourceResolver;
 
 class XMLParser extends ComponentParser {
@@ -32,8 +31,6 @@ class XMLParser extends ComponentParser {
             parseScriptNode(component, xml, resourceResolver);
         } else if (nodeName == "style") {
             parseStyleNode(component, xml, resourceResolver);
-        } else if (nodeName == "bind") {
-            parseBindNode(component, xml);
         } else if (nodeName == "data") {
             if (xml.firstElement() != null) {
                 component.parent.data = StringTools.trim(xml.toString());
@@ -76,9 +73,6 @@ class XMLParser extends ComponentParser {
 
                 component.findRootComponent().scriptlets = component.findRootComponent().scriptlets.concat(c.scriptlets);
                 c.scriptlets = [];
-
-                component.findRootComponent().bindings = component.findRootComponent().bindings.concat(c.bindings);
-                c.bindings = [];
 
                 c.parent = component;
                 component.children.push(c);
@@ -134,14 +128,6 @@ class XMLParser extends ComponentParser {
                 component.findRootComponent().styles.push(styleText);
             }
         }
-    }
-
-    private static function parseBindNode(component:ComponentInfo, xml:Xml) {
-        var binding:ComponentBindingInfo = new ComponentBindingInfo();
-        binding.source = xml.get("source");
-        binding.target = xml.get("target");
-        binding.transform = xml.get("transform");
-        component.findRootComponent().bindings.push(binding);
     }
 
     private static function parseLayoutNode(component:ComponentInfo, xml:Xml) {
@@ -227,23 +213,9 @@ class XMLParser extends ComponentParser {
                     component.layoutName = attrValue;
                 case "direction":
                     component.direction = attrValue;
-                case "bindTo" | "bindTransform": // do nothing
                 default:
                     component.properties.set(attrName, attrValue);
             }
-        }
-
-        var bindTo:String = xml.get("bindTo");
-        if (bindTo != null) {
-            if (component.id == null) {
-                component.id = ComponentParser.nextId();
-            }
-
-            var binding:ComponentBindingInfo = new ComponentBindingInfo();
-            binding.source = bindTo;
-            binding.target = component.id;
-            binding.transform = xml.get("bindTransform");
-            component.findRootComponent().bindings.push(binding);
         }
     }
 }

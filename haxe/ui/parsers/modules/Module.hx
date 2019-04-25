@@ -38,6 +38,8 @@ class ModuleResourceEntry {
 class ModuleClassEntry {
     public var classPackage(default, default):String;
     public var className(default, default):String;
+    public var classFolder(default, default):String;
+    public var classFile(default, default):String;
     public var classAlias(default, default):String;
 
     public function new() {
@@ -47,7 +49,7 @@ class ModuleClassEntry {
 class ModuleComponentEntry extends ModuleClassEntry {
 }
 
-class ModuleLayoutEntry extends ModuleClassEntry{
+class ModuleLayoutEntry extends ModuleClassEntry {
 }
 
 class ModuleScriptletEntry extends ModuleClassEntry {

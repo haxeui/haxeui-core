@@ -1,33 +1,37 @@
 package haxe.ui.macros;
 
-import haxe.ui.core.LayoutClassMap;
+#if macro
+import haxe.io.Path;
+import haxe.macro.Context;
+import haxe.macro.Expr.TypePath;
 import haxe.ui.core.ComponentClassMap;
+import haxe.ui.core.LayoutClassMap;
+import haxe.ui.macros.helpers.ClassBuilder;
+import haxe.ui.macros.helpers.CodeBuilder;
 import haxe.ui.parsers.modules.Module;
 import haxe.ui.parsers.modules.ModuleParser;
-
-#if macro
-import haxe.macro.Expr;
-import haxe.macro.Context;
+import haxe.ui.util.StringUtil;
 import sys.FileSystem;
 import sys.io.File;
 #end
 
 class ModuleMacros {
+    
+    #if macro
     private static var _modules:Array<Module> = [];
-
     private static var _modulesProcessed:Bool;
     private static var _resourceIds:Array<String> = [];
-    macro public static function processModules():Expr {
+    #end
+    
+    macro public static function processModules() {
         if (_modulesProcessed == true) {
             return macro null;
         }
 
-        var code:String = "(function() {\n";
-
         loadModules();
         
         var preloadAll:Bool = false;
-        
+        var builder = new CodeBuilder();
         for (m in _modules) {
             if (m.preloadList == "all") {
                 preloadAll = true;
@@ -51,41 +55,38 @@ class ModuleMacros {
             }
 
             for (s in m.scriptletEntries) {
-                var types:Array<haxe.macro.Type> = null;
-                if (s.className != null) {
-                    types = Context.getModule(s.className);
-                } else if (s.classPackage != null) {
-                    types = MacroHelpers.typesFromPackage(s.classPackage);
-                }
-
+                var types:Array<haxe.macro.Type> = MacroHelpers.typesFromClassOrPackage(s.className, s.classPackage);
                 if (types != null) {
                     for (t in types) {
-                        if (MacroHelpers.isPrivate(t) == true) {
+                        var scriptType = new ClassBuilder(t);
+                        if (scriptType.isPrivate == true) {
                             continue;
                         }
                         
                         var skipRest = false;
-                        var resolvedClass:String = MacroHelpers.classNameFromType(t);
+                        var resolvedClass:String = scriptType.fullPath;
                         var classAlias:String = s.classAlias;
                         if (classAlias == null) {
-                            var parts = resolvedClass.split(".");
-                            classAlias = parts[parts.length - 1];
+                            classAlias = scriptType.name;
                         } else {
                             skipRest = true; // as we have an alias defined lets skip any other types (assumes the first class is the one to alias)
                         }
                         if (StringTools.startsWith(resolvedClass, ".")) {
                             continue;
                         }
-                        code += 'haxe.ui.scripting.ScriptInterp.addClassAlias("${classAlias}", "${resolvedClass}");\n';
+                        
+                        builder.add(macro 
+                            haxe.ui.scripting.ScriptInterp.addClassAlias($v{classAlias}, $v{resolvedClass})
+                        );
+                        
+                        if (s.staticClass == true || s.keep == true) {
+                            builder.add(macro 
+                                haxe.ui.scripting.ScriptInterp.addStaticClass($v{classAlias}, $p{resolvedClass.split(".")})
+                            );
+                        }
 
                         if (skipRest == true) {
                             break;
-                        }
-                        if (s.keep == true) {
-                            MacroHelpers.addMeta(t, ":keep", Context.currentPos());
-                        }
-                        if (s.staticClass == true) {
-                            code += 'haxe.ui.scripting.ScriptInterp.addStaticClass("${classAlias}", ${resolvedClass});\n';
                         }
                     }
                 }
@@ -94,14 +95,19 @@ class ModuleMacros {
             // setup themes
             for (t in m.themeEntries) {
                 if (t.parent != null) {
-                    code += 'haxe.ui.themes.ThemeManager.instance.getTheme("${t.name}").parent = "${t.parent}";\n';
+                    builder.add(macro 
+                        haxe.ui.themes.ThemeManager.instance.getTheme($v{t.name}).parent = $v{t.parent}
+                    );
                 }
                 for (r in t.styles) {
-                    code += 'haxe.ui.themes.ThemeManager.instance.addStyleResource("${t.name}", "${r.resource}", ${r.priority});\n';
+                    builder.add(macro 
+                        haxe.ui.themes.ThemeManager.instance.addStyleResource($v{t.name}, $v{r.resource}, $v{r.priority})
+                    );
                 }
             }
 
             // handle plugins
+            /* TODO: is this still relevant??? Check haxeui-kha
             for (p in m.plugins) {
                 switch (p.type) {
                     case "asset":
@@ -115,41 +121,48 @@ class ModuleMacros {
                         trace("WARNING: unknown plugin type: " + p.type);
                 }
             }
+            */
 
             // set toolkit properties
             for (p in m.properties) {
-                code += 'Toolkit.properties.set("${p.name}", "${p.value}");\n';
+                builder.add(macro 
+                    haxe.ui.Toolkit.properties.set($v{p.name}, $v{p.value})
+                );
             }
 
             for (p in m.preload) {
-                code += 'ToolkitAssets.instance.preloadList.push({type: "${p.type}", resourceId: "${p.id}"});\n';
+                builder.add(macro 
+                    haxe.ui.ToolkitAssets.instance.preloadList.push({type: $v{p.type}, resourceId: $v{p.id}})
+                );
             }
         }
         
         if (preloadAll) {
             for (r in _resourceIds) {
                 if (StringTools.endsWith(r, ".png")) {
-                    code += 'ToolkitAssets.instance.preloadList.push({type: "image", resourceId: "${r}"});\n';
+                    builder.add(macro 
+                        haxe.ui.ToolkitAssets.instance.preloadList.push({type: "image", resourceId: $v{r}})
+                    );
                 }
             }
         }
 
         populateClassMap();
+        
         for (alias in ComponentClassMap.list()) {
-            var className:String = ComponentClassMap.get(alias);
-            code += 'haxe.ui.core.ComponentClassMap.register("${alias}", "${className}");\n';
+            builder.add(macro 
+                haxe.ui.core.ComponentClassMap.register($v{alias}, $v{ComponentClassMap.get(alias)})
+            );
         }
 
         for (alias in LayoutClassMap.list()) {
-            var className:String = LayoutClassMap.get(alias);
-            code += 'haxe.ui.core.LayoutClassMap.register("${alias}", "${className}");\n';
+            builder.add(macro 
+                haxe.ui.core.LayoutClassMap.register($v{alias}, $v{LayoutClassMap.get(alias)})
+            );
         }
-
-        code += "})()\n";
-
+        
         _modulesProcessed = true;
-
-        return Context.parseInlineString(code, Context.currentPos());
+        return builder.expr;
     }
 
     #if macro
@@ -159,38 +172,32 @@ class ModuleMacros {
             return;
         }
 
-        var modules:Array<Module> = ModuleMacros.loadModules();
+        var modules:Array<Module> = loadModules();
         for (m in modules) {
             // load component classes from all modules
             for (c in m.componentEntries) {
-                var types:Array<haxe.macro.Type> = null;
-                if (c.className != null) {
-                    types = Context.getModule(c.className);
-                } else if (c.classPackage != null) {
-                    types = MacroHelpers.typesFromPackage(c.classPackage);
-                }
-
+                var types:Array<haxe.macro.Type> = MacroHelpers.typesFromClassOrPackage(c.className, c.classPackage);
                 if (types != null) {
                     for (t in types) {
-                        if (MacroHelpers.isPrivate(t) == true) {
+                        var builder = new ClassBuilder(t);
+                        if (builder.isPrivate == true) {
                             continue;
                         }
                         
-                        if (MacroHelpers.hasSuperClass(t, "haxe.ui.core.Component") == true) {
-                            var resolvedClass:String = MacroHelpers.classNameFromType(t);
+                        if (builder.hasSuperClass("haxe.ui.core.Component") == true) {
+                            var resolvedClass:String = builder.fullPath;
                             if (c.className != null && resolvedClass != c.className) {
                                 continue;
                             }
                             
-                            var resolvedClassName = resolvedClass.substr(resolvedClass.lastIndexOf(".") + 1, resolvedClass.length);
+                            var resolvedClassName = builder.name;
                             var classAlias:String = c.classAlias;
                             if (classAlias == null) {
                                 classAlias = resolvedClassName;
                             }
                             classAlias = classAlias.toLowerCase();
                             
-                            if (MacroHelpers.hasInterface(t, "haxe.ui.core.IDirectionalComponent")) {
-                                var pkg = MacroHelpers.getPackage(resolvedClass);
+                            if (builder.hasInterface("haxe.ui.core.IDirectionalComponent")) {
                                 if (StringTools.startsWith(resolvedClassName, "Horizontal")) { // alias HorizontalComponent with hcomponent
                                     ComponentClassMap.register("h" + StringTools.replace(resolvedClassName, "Horizontal", "").toLowerCase(), resolvedClass);
                                 } else if (StringTools.startsWith(resolvedClassName, "Vertical")) { // alias VerticalComponent with vcomponent
@@ -206,26 +213,21 @@ class ModuleMacros {
 
             // load layout classes from all modules
             for (c in m.layoutEntries) {
-                var types:Array<haxe.macro.Type> = null;
-                if (c.className != null) {
-                    types = Context.getModule(c.className);
-                } else if (c.classPackage != null) {
-                    types = MacroHelpers.typesFromPackage(c.classPackage);
-                }
-
+                var types:Array<haxe.macro.Type> = MacroHelpers.typesFromClassOrPackage(c.className, c.classPackage);
                 if (types != null) {
                     for (t in types) {
-                        if (MacroHelpers.isPrivate(t) == true) {
+                        var builder = new ClassBuilder(t);
+                        if (builder.isPrivate == true) {
                             continue;
                         }
 
-                        if (MacroHelpers.hasSuperClass(t, "haxe.ui.layouts.Layout") == true) {
-                            var resolvedClass:String = MacroHelpers.classNameFromType(t);
+                        if (builder.hasSuperClass("haxe.ui.layouts.Layout") == true) {                            
+                            var resolvedClass:String = builder.fullPath;
                             if (c.className != null && resolvedClass != c.className) {
                                 continue;
                             }
 
-                            var resolvedClassName = resolvedClass.substr(resolvedClass.lastIndexOf(".") + 1, resolvedClass.length);
+                            var resolvedClassName = builder.name;
                             var classAlias:String = c.classAlias;
                             if (classAlias == null) {
                                 classAlias = resolvedClassName;
@@ -238,10 +240,83 @@ class ModuleMacros {
                 }
             }
         }
-
+       
+        // do this last so we have all the other haxeui classes from modules - might need sometype pf dependancy walker eventually
+        populateDynamicClassMap();
+        
         _classMapPopulated = true;
     }
 
+    private static var _dynamicClassMapPopulated:Bool = false;
+    private static function populateDynamicClassMap() {
+        if (_dynamicClassMapPopulated == true) {
+            return;
+        }
+        _dynamicClassMapPopulated = true;
+        
+        var modules:Array<Module> = loadModules();
+        for (m in modules) {
+            for (c in m.componentEntries) {
+                if (c.classFolder != null) {
+                    createDynamicClasses(c.classFolder);
+                } else if (c.classFile != null) {
+                    createDynamicClass(c.classFile, c.classAlias);
+                }
+            }
+        }
+    }
+    
+    private static function createDynamicClasses(dir) {
+        var contents = FileSystem.readDirectory(dir);
+        for (item in contents) {
+            var fullPath = Path.normalize(dir + "/" + item);
+            if (FileSystem.isDirectory(fullPath)) {
+                createDynamicClasses(fullPath);
+            } else {
+                createDynamicClass(fullPath);
+            }
+        }
+    }
+    
+    private static function createDynamicClass(filePath:String, alias:String = null) {
+        var fileParts = filePath.split("/");
+        var fileName = fileParts.pop();
+        var className:String = StringUtil.capitalizeFirstLetter(StringUtil.capitalizeHyphens(new Path(fileName).file));
+        if (alias != null) {
+            className = alias;
+        }
+        var superClassString = "haxe.ui.containers.Box";
+        var superClassParts = superClassString.split(".");
+        var superClass:TypePath = {
+            name: superClassParts.pop(),
+            pack: superClassParts
+        }
+        var xml = sys.io.File.getContent(filePath);
+        var namedComponents:Map<String, String> = new Map<String, String>();
+        var codeBuilder = new CodeBuilder();
+        ComponentMacros.buildComponentFromString(codeBuilder, xml, namedComponents);
+        codeBuilder.add(macro
+            addComponent(c0)
+        );
+            
+        var newClass = macro
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////
+        class $className extends $superClass {
+            public function new() {
+                super();
+            }
+            
+            private override function createChildren() {
+                super.createChildren();
+                $e{codeBuilder.expr}
+            }
+        };
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        Context.defineModule(fileParts.concat([className]).join("."), [newClass]);
+        ComponentClassMap.register(className, fileParts.concat([className]).join("."));
+    }
+    
     private static var _modulesLoaded:Bool = false;
     public static function loadModules():Array<Module> {
         if (_modulesLoaded == true) {

@@ -34,6 +34,8 @@ class XMLParser extends ModuleParser {
                     var classEntry:Module.ModuleComponentEntry = new Module.ModuleComponentEntry();
                     classEntry.classPackage = classNode.get("package");
                     classEntry.className = classNode.get("name");
+                    classEntry.classFolder = classNode.get("folder");
+                    classEntry.classFile = classNode.get("file");
                     classEntry.classAlias = classNode.get("alias");
                     module.componentEntries.push(classEntry);
                 }

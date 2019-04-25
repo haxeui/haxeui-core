@@ -11,12 +11,12 @@ class ComponentClassMap {
     }
 
     public static function get(alias:String):String {
-        alias = StringTools.replace(alias, "-", "");
+        alias = StringTools.replace(alias, "-", "").toLowerCase();
         return instance.getClassName(alias);
     }
 
     public static function register(alias:String, className:String) {
-        instance.registerClassName(alias, className);
+        instance.registerClassName(alias.toLowerCase(), className);
     }
 
     public static function list():Iterator<String> {

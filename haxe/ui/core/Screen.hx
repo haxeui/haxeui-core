@@ -9,17 +9,6 @@ import haxe.ui.events.UIEvent;
 import haxe.ui.focus.FocusManager;
 import haxe.ui.util.EventMap;
 
-@:dox(hide)
-class DialogEntry {
-    public function new() {
-
-    }
-
-    public var overlay:Component;
-    //public var dialog:Dialog;
-    public var callback:Int->Void;
-}
-
 class Screen extends ScreenImpl {
 
     private static var _instance:Screen;

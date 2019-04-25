@@ -20,8 +20,8 @@
     </layouts>
 
     <scriptlets>
-        <import class="haxe.ui.core.Component" keep="true" />
-        <import package="haxe.ui.components" keep="true" /> <!-- TODO: remove this eventually -->
+        <import class="haxe.ui.core.Component" />
+        <import package="haxe.ui.components" />
         <import package="haxe.ui.containers" />
         <import package="haxe.ui.containers.menus" />
         <!--
@@ -82,16 +82,5 @@
     </themes>
 
     <properties>
-        <property name="haxe.ui.components.hslider.animation.pos" value="haxe.ui.components.animation.pos" />
-        <property name="haxe.ui.components.hslider.animation.rangeStart" value="haxe.ui.components.animation.rangeStart" />
-        <property name="haxe.ui.components.hslider.animation.rangeEnd" value="haxe.ui.components.animation.rangeEnd" />
-
-        <property name="haxe.ui.components.vslider.animation.pos" value="haxe.ui.components.animation.pos" />
-        <property name="haxe.ui.components.vslider.animation.rangeStart" value="haxe.ui.components.animation.rangeStart" />
-        <property name="haxe.ui.components.vslider.animation.rangeEnd" value="haxe.ui.components.animation.rangeEnd" />
-
-        <property name="haxe.ui.components.hscroll.animation.pos" value="haxe.ui.components.animation.pos" />
-
-        <property name="haxe.ui.components.vscroll.animation.pos" value="haxe.ui.components.animation.pos" />
     </properties>
 </module>
