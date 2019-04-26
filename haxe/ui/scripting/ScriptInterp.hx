@@ -1,6 +1,5 @@
 package haxe.ui.scripting;
 
-import haxe.ds.Map;
 import hscript.Interp;
 
 class ScriptInterp extends Interp {

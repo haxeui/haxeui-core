@@ -1,6 +1,5 @@
 package haxe.ui.macros;
 
-import haxe.ds.Map;
 import haxe.macro.Context;
 import haxe.macro.Expr;
 import haxe.macro.TypeTools;
