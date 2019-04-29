@@ -150,6 +150,7 @@ class Macros {
                     _style = new haxe.ui.styles.Style();
                 }
                 $p{["customStyle", f.name]} = value;
+                invalidateComponentStyle();
                 return value;
             });
             if (f.hasMetaParam("style", "layout")) {
