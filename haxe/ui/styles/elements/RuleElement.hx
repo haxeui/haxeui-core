@@ -127,22 +127,7 @@ class RuleElement {
         
         switch (d.value) {
             case Value.VConstant(v):
-                /*
-                var vp = v.split(" ");
-                var n = 0;
-                for (p in parts) {
-                    var vv = vp[n];
-                    if (vv == null) {
-                        vv = vp[vp.length - 1];
-                    }
-                    directives.set(p, new Directive(p, ValueTools.parse(vv)));
-                    n++;
-                }
-                trace(v);
-                */
-//                trace(">>>>>>>>>>>>>>>>>>>>>>>>>>>--------------------------- " + v);
             case Value.VColor(v):    
- //               trace(">>>>>>>>>>>>>>>>>>>>>>>>>>> " + v);
                 if (duplicate == false) {
                     directives.set(parts[0], new Directive(parts[0], d.value));
                 } else {
@@ -151,36 +136,10 @@ class RuleElement {
                     }
                 }
             case Value.VDimension(v):
-                /*
-                var vp = ValueTools.string(d.value).split(" ");
-                var n = 0;
-                for (p in parts) {
-                    var vv = vp[n];
-                    if (vv == null) {
-                        vv = vp[vp.length - 1];
-                    }
-                    directives.set(p, new Directive(p, ValueTools.parse(vv)));
-                    n++;
-                }
-                trace(v);
-                */
                 for (p in parts) {
                     directives.set(p, new Directive(p, Value.VDimension(v)));
                 }
             case Value.VNumber(v):
-                /*
-                var vp = ValueTools.string(d.value).split(" ");
-                var n = 0;
-                for (p in parts) {
-                    var vv = vp[n];
-                    if (vv == null) {
-                        vv = vp[vp.length - 1];
-                    }
-                    directives.set(p, new Directive(p, ValueTools.parse(vv)));
-                    n++;
-                }
-                trace(v);
-                */
                 for (p in parts) {
                     directives.set(p, new Directive(p, d.value));
                 }
