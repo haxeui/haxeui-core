@@ -17,8 +17,8 @@ class Scroll extends InteractiveComponent implements IDirectionalComponent {
     //***********************************************************************************************************
     @:behaviour(ScrollValueBehaviour, 0)        public var min:Float;
     @:behaviour(ScrollValueBehaviour, 100)      public var max:Float;
-    @:behaviour(LayoutBehaviour)                public var pageSize:Float;
-    @:behaviour(ScrollValueBehaviour)           public var pos:Float;
+    @:behaviour(LayoutBehaviour, 0)             public var pageSize:Float;
+    @:behaviour(ScrollValueBehaviour, 0)        public var pos:Float;
     @:behaviour(DefaultBehaviour, 20)           public var increment:Float; // TODO: should calc, 20 is too high if there are, say, 30 items
     
     //***********************************************************************************************************
