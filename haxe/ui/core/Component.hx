@@ -1382,7 +1382,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
 
     private function applyAnimationKeyFrame(animationKeyFrames:AnimationKeyFrames, options:AnimationOptions):Void {
         if (_animatable == false || options == null || options.duration == 0 ||
-            (_componentAnimation != null && options.compareToAnimation(_componentAnimation) == true)) {
+            (_componentAnimation != null && _componentAnimation.name == animationKeyFrames.id && options.compareToAnimation(_componentAnimation) == true)) {
             return;
         }
 
