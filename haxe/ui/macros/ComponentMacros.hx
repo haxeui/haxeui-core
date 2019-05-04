@@ -67,7 +67,7 @@ class ComponentMacros {
         var aliasClassName = alias + "-component";
         codeBuilder.add(macro this.addClass($v{aliasClassName}));
         
-        builder.constructor.add(codeBuilder);
+        builder.constructor.add(codeBuilder, 1);
         
         return builder.fields;
     }
