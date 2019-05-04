@@ -159,7 +159,6 @@ private class SwitchButtonSub extends InteractiveComponent {
             addClass(":selected", true, true);
         }
 
-        trace(">>>>>>>>>>>>> here! " + _selected);
         var event:UIEvent = new UIEvent(UIEvent.CHANGE);
         dispatch(event);
         
