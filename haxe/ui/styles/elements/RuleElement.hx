@@ -75,6 +75,8 @@ class RuleElement {
                 } else if (vl.length == 2) {
                     processComposite(new Directive("", vl[0]), ["padding-top", "padding-bottom"]);
                     processComposite(new Directive("", vl[1]), ["padding-left", "padding-right"]);
+                } else if (vl.length == 0) {
+                    processComposite(d, ["padding-top", "padding-left", "padding-right", "padding-bottom"]);
                 }
             case "margin":
                 var vl = ValueTools.composite(d.value);

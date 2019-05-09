@@ -82,6 +82,8 @@ class ValueTools {
                 return vl;
             case Value.VDimension(_) | Value.VNumber(_):
                 return [value];
+            case Value.VNone:
+                return [];
             case _:
                 return null;
         }

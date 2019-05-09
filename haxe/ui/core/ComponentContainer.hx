@@ -3,6 +3,7 @@ package haxe.ui.core;
 import haxe.ui.backend.ComponentSurface;
 import haxe.ui.behaviours.Behaviours;
 import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.events.UIEvent;
 import haxe.ui.layouts.Layout;
 import haxe.ui.styles.Style;
@@ -12,6 +13,7 @@ import haxe.ui.util.Variant;
 @:autoBuild(haxe.ui.macros.Macros.buildBehaviours())
 class ComponentContainer extends ComponentCommon {
     @:clonable @:behaviour(ComponentDisabledBehaviour, false)       public var disabled:Bool;
+    @:clonable @:behaviour(DefaultBehaviour)                        public var text:String;
     
     private var behaviours:Behaviours;
 
@@ -65,6 +67,26 @@ class ComponentContainer extends ComponentCommon {
     // Style related
     //***********************************************************************************************************
     private var _style:Style;
+    
+    //***********************************************************************************************************
+    // General
+    //***********************************************************************************************************
+    private var _id:String = null;
+    /**
+     The identifier of this component
+    **/
+    @clonable public var id(get, set):String;
+    private function get_id():String {
+        return _id;
+    }
+    private function set_id(value:String):String {
+        if (_id != value) {
+            _id = value;
+            //invalidate(InvalidationFlags.STYLE);
+            //invalidateDisplay();
+        }
+        return _id;
+    }
 }
 
 //***********************************************************************************************************
