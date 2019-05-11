@@ -121,8 +121,8 @@ class Behaviours {
         }
 
         if (b == null) {
-            b = new Behaviour(_component); // TODO: TEMP!!!!!! (just while components move over)
-            //throw 'behaviour ${id} not found';
+            // b = new Behaviour(_component); // TODO: TEMP!!!!!! (just while components move over)
+            throw 'behaviour ${id} not found';
         }
         
         return b;
@@ -165,9 +165,31 @@ class Behaviours {
         _cache = null;
     }
     
+    #if sys
+    var _mutex:sys.thread.Mutex = null;
+    #end
+    private function lock() {
+        #if sys
+        if (_mutex == null) {
+            _mutex = new sys.thread.Mutex();
+        }
+        _mutex.acquire();
+        #end
+    }
+    
+    private function unlock() {
+        #if sys
+        _mutex.release();
+        #end
+    }
+    
     public function set(id, value:Variant) {
+        lock();
+        
         var b = find(id);
         b.set(value);
+        
+        unlock();
             
         var autoDispatch = b.getConfigValue("autoDispatch", null);
         if (autoDispatch != null) {
@@ -187,11 +209,29 @@ class Behaviours {
     }
     
     public function get(id):Variant {
-        return find(id).get();
+        lock();
+        
+        var b = find(id);
+        var v = null;
+        if (b != null) {
+            v = b.get();
+        }
+        
+        unlock();
+        return v;
     }
     
     public function getDynamic(id):Dynamic {
-        return find(id).getDynamic();
+        lock();
+        
+        var b = find(id);
+        var v = null;
+        if (b != null) {
+            v = b.getDynamic();
+        }
+        
+        unlock();
+        return v;
     }
     
     public function call(id, param:Any = null):Variant {
