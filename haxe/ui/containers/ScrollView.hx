@@ -1,23 +1,23 @@
 package haxe.ui.containers;
 
+import haxe.ui.behaviours.Behaviour;
+import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.components.HorizontalScroll;
 import haxe.ui.components.VerticalScroll;
 import haxe.ui.constants.ScrollMode;
-import haxe.ui.behaviours.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
-import haxe.ui.behaviours.DataBehaviour;
-import haxe.ui.behaviours.DefaultBehaviour;
-import haxe.ui.events.MouseEvent;
 import haxe.ui.core.Screen;
+import haxe.ui.events.Events;
+import haxe.ui.events.MouseEvent;
 import haxe.ui.events.ScrollEvent;
 import haxe.ui.events.UIEvent;
-import haxe.ui.events.Events;
-import haxe.ui.layouts.LayoutFactory;
-import haxe.ui.layouts.ScrollViewLayout;
 import haxe.ui.geom.Point;
 import haxe.ui.geom.Rectangle;
 import haxe.ui.geom.Size;
+import haxe.ui.layouts.LayoutFactory;
+import haxe.ui.layouts.ScrollViewLayout;
 import haxe.ui.util.Variant;
 import haxe.ui.validation.InvalidationFlags;
 
@@ -55,6 +55,39 @@ class ScrollView extends Component {
         if (scrollInvalid || layoutInvalid) {
             cast(_compositeBuilder, ScrollViewBuilder).checkScrolls(); // TODO: would be nice to not have this
             cast(_compositeBuilder, ScrollViewBuilder).updateScrollRect(); // TODO: or this
+        }
+    }
+    
+    public function ensureVisible(component:Component) {
+        var contents:Component = findComponent("scrollview-contents", false, "css");
+        
+        var hscroll:HorizontalScroll = findComponent(HorizontalScroll);
+        var vscroll:VerticalScroll = findComponent(VerticalScroll);
+        
+        var rect = new Rectangle(contents.componentClipRect.left, contents.componentClipRect.top, contents.componentClipRect.width, contents.componentClipRect.height);
+        if (hscroll != null) {
+            rect.height -= hscroll.height;
+        }
+        if (vscroll != null) {
+            rect.width -= vscroll.width;
+        }
+
+        if (hscroll != null) {
+            var hpos:Float = hscroll.pos;
+            if (component.left + component.width > hpos + rect.width) {
+                hscroll.pos = ((component.left + component.width) - rect.width);
+            } else if (component.left < hpos) {
+                hscroll.pos = component.left;
+            }
+        }
+        
+        if (vscroll != null) {
+            var vpos:Float = vscroll.pos;
+            if (component.top + component.height > vpos + rect.height) {
+                vscroll.pos = ((component.top + component.height) - rect.height);
+            } else if (component.top < vpos) {
+                vscroll.pos = component.top;
+            }
         }
     }
 }
@@ -720,6 +753,7 @@ class ScrollViewBuilder extends CompositeBuilder {
     public function createHScroll():HorizontalScroll {
         var hscroll = new HorizontalScroll();
         hscroll.percentWidth = 100;
+        hscroll.allowFocus = false;
         hscroll.id = "scrollview-hscroll";
         _component.addComponent(hscroll);
         _component.registerInternalEvents(true);
@@ -729,6 +763,7 @@ class ScrollViewBuilder extends CompositeBuilder {
     public function createVScroll():VerticalScroll {
         var vscroll = new VerticalScroll();
         vscroll.percentHeight = 100;
+        vscroll.allowFocus = false;
         vscroll.id = "scrollview-vscroll";
         _component.addComponent(vscroll);
         _component.registerInternalEvents(true);

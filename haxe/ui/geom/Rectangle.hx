@@ -43,6 +43,14 @@ class Rectangle {
         return false;
     }
     
+	public function containsRect(rect:Rectangle):Bool {
+		if (rect.width <= 0 || rect.height <= 0) {
+            return rect.left > left && rect.top > top && rect.right < right && rect.bottom < bottom;
+        } else {
+            return rect.left >= left && rect.top >= top && rect.right <= right && rect.bottom <= bottom;
+        }
+	}
+    
     public function toString():String {
         return "{left: " + left + ", top: " + top + ", bottom: " + bottom + ", right: " + right + ", width: " + width + ", height: " + height + "}";
     }
