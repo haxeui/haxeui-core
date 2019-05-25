@@ -269,6 +269,7 @@ class DropDownEvents extends ButtonEvents {
         }
         
         Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
+        Screen.instance.registerEvent(MouseEvent.RIGHT_MOUSE_DOWN, onScreenMouseDown);
     }
     
     public function hideDropDown() {
@@ -280,7 +281,7 @@ class DropDownEvents extends ButtonEvents {
         _dropdown.selected = false;
         Screen.instance.removeComponent(handler.component);
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
-        
+        Screen.instance.unregisterEvent(MouseEvent.RIGHT_MOUSE_DOWN, onScreenMouseDown);
     }
     
     private function onScreenMouseDown(event:MouseEvent) {
