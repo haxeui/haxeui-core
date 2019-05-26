@@ -43,23 +43,31 @@ private class Builder extends CompositeBuilder {
 	
 	private function childAdd(child:Component):Void {
 		if (Std.is(child, InteractiveComponent)) {
-			if (Std.is(child, OptionBox)) {
-				// set group name
-				if (_group.componentGroup == null) {
-					_group.componentGroup = "group" + GUID.uuid();
-				}
-				cast(child, OptionBox).componentGroup = _group.componentGroup;
-			}
-			if (!child.hasEvent(UIEvent.CHANGE, childChangeHandler)) {
-				// attach change event
-				child.registerEvent(UIEvent.CHANGE, childChangeHandler);
-			}
-		}
+            processGroupChild(child);
+		} else {
+            var interactiveChildren = child.findChildren(InteractiveComponent);
+            for (interactiveChild in interactiveChildren) {
+                processGroupChild(interactiveChild);
+            }
+        }
 	}
 	
+    private function processGroupChild(child:Component) {
+        if (Std.is(child, OptionBox)) {
+            // set group name
+            if (_group.componentGroup == null) {
+                _group.componentGroup = "group" + GUID.uuid();
+            }
+            cast(child, OptionBox).componentGroup = _group.componentGroup;
+        }
+        if (child.hasEvent(UIEvent.CHANGE, childChangeHandler) == false) {
+            // attach change event
+            child.registerEvent(UIEvent.CHANGE, childChangeHandler);
+        }
+    }
+    
 	private function childChangeHandler(e:UIEvent):Void {
 		var child:Component = e.target;
 		_group.dispatch(e.clone());
 	}
-	
 }
