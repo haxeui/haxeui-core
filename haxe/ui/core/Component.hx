@@ -554,6 +554,35 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         return cast match;
     }
 
+    public function findChildren<T:Component>(styleName:String = null, type:Class<T> = null, maxDepth:Int = 5):Array<T> {
+        if (maxDepth <= 0) {
+            return [];
+        }
+        
+        maxDepth--;
+        
+        var r:Array<T> = [];
+        for (child in childComponents) {
+            var match = false;
+            if (styleName != null && child.hasClass(styleName)) {
+                match = match || true;
+            }
+            if (type != null && Std.is(child, type)) {
+                match = match || true;
+            }
+            
+            if (match == true) {
+                r.push(cast child);
+            } else {
+                var childArray = child.findChildren(styleName, type, maxDepth);
+                for (c in childArray) { // r.concat caused issues here on hxcpp
+                    r.push(c);
+                }
+            }
+        }
+        return r;
+    }
+    
     /**
      Finds a specific parent in this components display tree and can optionally cast the result
 
@@ -1009,7 +1038,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
      *Note*: this component will first attempt to use its own script interpreter if its avialable otherwise it will scan its parents until it finds one
     **/
     @:dox(group = "Script related properties and methods")
-    public function executeScriptCall(expr:String) {
+    public function executeScriptCall(expr:String, variables:Map<String, Any> = null) {
         #if allow_script_errors
         try {
         #end
@@ -1017,8 +1046,18 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             var line = parser.parseString(expr);
             var interp:ScriptInterp = findScriptInterp();
             interp.variables.set("this", this);
+            if (variables != null) {
+                for (k in variables.keys()) {
+                    interp.variables.set(k, variables.get(k));
+                }
+            }
             interp.expr(line);
             interp.variables.remove("this");
+            if (variables != null) {
+                for (k in variables.keys()) {
+                    interp.variables.remove(k);
+                }
+            }
         #if allow_script_errors
         } catch (e:Dynamic) {
             trace("Problem executing scriptlet: " + e);
@@ -1104,7 +1143,9 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             var script:String = _scriptEvents.get(eventId);
             if (script != null) {
                 event.cancel();
-                executeScriptCall(script);
+                var variables = new Map<String, Any>();
+                variables.set("event", event);
+                executeScriptCall(script, variables);
             }
         }
     }
