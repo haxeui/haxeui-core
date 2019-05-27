@@ -23,6 +23,10 @@ class ComponentClassMap {
         return instance._map.keys();
     }
 
+    public static function hasClass(className:String):Bool {
+        return instance.hasClassName(className);
+    }
+    
     ////////////////////////////////////////////////////////////////////////////////////////////
     // Instance
     ////////////////////////////////////////////////////////////////////////////////////////////
@@ -40,4 +44,12 @@ class ComponentClassMap {
         _map.set(alias, className);
     }
 
+    public function hasClassName(className:String):Bool {
+        for (k in _map.keys()) {
+            if (_map.get(k) == className) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -282,15 +282,16 @@ class ModuleMacros {
     
     public static function createDynamicClass(filePath:String, alias:String = null):String {
         var fileParts = filePath.split("/");
-        var fullClass = fileParts.join(".");
-        if (ComponentClassMap.get(fullClass) != null) {
-            return fullClass;
-        }
         var fileName = fileParts.pop();
         var className:String = StringUtil.capitalizeFirstLetter(StringUtil.capitalizeHyphens(new Path(fileName).file));
         if (alias != null) {
             className = alias;
         }
+        var fullClass = fileParts.concat([className]).join(".");
+        if (ComponentClassMap.hasClass(fullClass) == true) {
+            return fullClass;
+        }
+        
         var superClassString = "haxe.ui.containers.Box";
         var superClassParts = superClassString.split(".");
         var superClass:TypePath = {
