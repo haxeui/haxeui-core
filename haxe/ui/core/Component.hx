@@ -961,13 +961,15 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
 
             invalidateComponent();
 
-            onReady();
-            dispatch(new UIEvent(UIEvent.READY));
+            behaviours.update();
+            Toolkit.callLater(function() {
+                onReady();
+                dispatch(new UIEvent(UIEvent.READY));
+            });
         }
     }
 
     private function onReady() {
-        behaviours.update();
     }
     
     private function onInitialize() {
