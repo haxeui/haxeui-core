@@ -78,6 +78,18 @@ class ComponentMacros {
         return builder.expr;
     }
 
+    macro public static function createInstance(filePath:String):Expr {
+        var cls = ModuleMacros.createDynamicClass(filePath);
+
+        var parts = cls.split(".");
+        var name:String = parts.pop();
+        var t:TypePath = {
+            pack: parts,
+            name: name
+        }
+        return macro new $t();
+    }
+    
     #if macro
     
     public static function buildComponentFromFile(builder:CodeBuilder, filePath:String, namedComponents:Map<String, String> = null, params:Map<String, Dynamic> = null) {

@@ -1,4 +1,6 @@
 package haxe.ui.macros;
+import haxe.macro.Expr.ComplexType;
+import haxe.macro.ExprTools;
 
 #if macro
 import haxe.io.Path;
@@ -278,8 +280,12 @@ class ModuleMacros {
         }
     }
     
-    private static function createDynamicClass(filePath:String, alias:String = null) {
+    public static function createDynamicClass(filePath:String, alias:String = null):String {
         var fileParts = filePath.split("/");
+        var fullClass = fileParts.join(".");
+        if (ComponentClassMap.get(fullClass) != null) {
+            return fullClass;
+        }
         var fileName = fileParts.pop();
         var className:String = StringUtil.capitalizeFirstLetter(StringUtil.capitalizeHyphens(new Path(fileName).file));
         if (alias != null) {
@@ -298,23 +304,40 @@ class ModuleMacros {
         codeBuilder.add(macro
             addComponent(c0)
         );
-            
+        
         var newClass = macro
         ////////////////////////////////////////////////////////////////////////////////////////////////////////
         class $className extends $superClass {
             public function new() {
                 super();
+                $e{codeBuilder.expr}
             }
             
             private override function createChildren() {
                 super.createChildren();
-                $e{codeBuilder.expr}
             }
         };
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////
         
+        var classBuilder = new ClassBuilder(newClass.fields, Context.currentPos());
+        
+        for (name in namedComponents.keys()) {
+            var typeClass = namedComponents.get(name);
+            var typeParts = typeClass.split(".");
+            var typeName = typeParts.pop();
+            var t:TypePath = {
+                name: typeName,
+                pack: typeParts
+            }
+            
+            classBuilder.addVar(name, ComplexType.TPath(t));
+            classBuilder.constructor.add(macro $i{name} = findComponent($v{name}, $p{typeClass.split(".")}));
+        }
+        
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         Context.defineModule(fileParts.concat([className]).join("."), [newClass]);
         ComponentClassMap.register(className, fileParts.concat([className]).join("."));
+        return fileParts.concat([className]).join(".");
     }
     
     private static var _modulesLoaded:Bool = false;
