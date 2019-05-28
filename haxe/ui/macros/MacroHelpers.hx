@@ -179,7 +179,7 @@ class MacroHelpers {
                 break;
             }
         }
-        if (exclude == true) {
+        if (exclude == true || ! sys.FileSystem.exists(path)) {
             return;
         }
 
