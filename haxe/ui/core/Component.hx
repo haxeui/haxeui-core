@@ -984,6 +984,8 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
 
             behaviours.update();
             Toolkit.callLater(function() {
+                invalidateComponentData();
+                invalidateComponentStyle();
                 onReady();
                 dispatch(new UIEvent(UIEvent.READY));
             });

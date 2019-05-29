@@ -76,6 +76,7 @@ private class SelectedBehaviour extends DataBehaviour {
     private override function validateData() {
         var valueComponent:Value = _component.findComponent(Value);
         if (_value == true) {
+            trace("ADDING SELECTED!");
             valueComponent.addClass(":selected");
         } else {
             valueComponent.removeClass(":selected");
