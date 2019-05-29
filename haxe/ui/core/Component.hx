@@ -549,6 +549,9 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
                     break;
                 }
             }
+            if (match == null && _compositeBuilder != null) {
+                match = _compositeBuilder.findComponent(criteria, type,recursive, searchType);
+            }
         }
 
         return cast match;

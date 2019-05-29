@@ -65,4 +65,13 @@ class CompositeBuilder {
     
     public function onComponentRemoved(child:Component) {
     }
+    
+    public function findComponent<T:Component>(criteria:String, type:Class<T>, recursive:Null<Bool>, searchType:String):Null<T> {
+        for (i in 0...numComponents) {
+            final c = getComponentAt(i);
+            final match = c.findComponent(criteria, type, recursive, searchType);
+            if (match != null) return match;
+        }
+        return null;
+    }
 }
