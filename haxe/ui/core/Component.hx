@@ -239,6 +239,24 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     //***********************************************************************************************************
     // General
     //***********************************************************************************************************
+    @:clonable @:behaviour(DefaultBehaviour)                        public var text:String;
+
+    private var _id:String = null;
+    /**
+     The identifier of this component
+    **/
+    @:clonable public var id(get, set):String;
+    private function get_id():String {
+        return _id;
+    }
+    private function set_id(value:String):String {
+        if (_id != value) {
+            _id = value;
+            //invalidate(InvalidationFlags.STYLE);
+            //invalidateDisplay();
+        }
+        return _id;
+    }
     
     public var value(get, set):Dynamic;
     private function get_value():Dynamic {

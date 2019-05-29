@@ -256,6 +256,13 @@ class Macros {
             }
             n++;
         }
+        cloneFn.add(macro {
+            if (this.childComponents.length != c.childComponents.length) {
+                for (child in this.childComponents) {
+                    c.addComponent(child.cloneComponent());
+                }
+            }
+        });
         cloneFn.add(macro return c);
 
         // add "self" function

@@ -13,7 +13,6 @@ import haxe.ui.util.Variant;
 @:autoBuild(haxe.ui.macros.Macros.buildBehaviours())
 class ComponentContainer extends ComponentCommon {
     @:clonable @:behaviour(ComponentDisabledBehaviour, false)       public var disabled:Bool;
-    @:clonable @:behaviour(DefaultBehaviour)                        public var text:String;
     
     private var behaviours:Behaviours;
 
@@ -71,22 +70,6 @@ class ComponentContainer extends ComponentCommon {
     //***********************************************************************************************************
     // General
     //***********************************************************************************************************
-    private var _id:String = null;
-    /**
-     The identifier of this component
-    **/
-    @clonable public var id(get, set):String;
-    private function get_id():String {
-        return _id;
-    }
-    private function set_id(value:String):String {
-        if (_id != value) {
-            _id = value;
-            //invalidate(InvalidationFlags.STYLE);
-            //invalidateDisplay();
-        }
-        return _id;
-    }
 }
 
 //***********************************************************************************************************
