@@ -112,19 +112,15 @@ class ComponentEvents extends ComponentContainer {
         return INTERACTIVE_EVENTS.indexOf(type) != -1;
     }
     
-    private var _disabledInteractivityCounter:Int = 0;
+    private var _interactivityDisabled:Bool = false;
     private function disableInteractivity(disable:Bool) { // You might want to disable interactivity but NOT actually disable visually
-        if (disable) {
-            _disabledInteractivityCounter++;
-        } else {
-            _disabledInteractivityCounter--;
-        }
-        
-        if (_disabledInteractivityCounter < 0 || _disabledInteractivityCounter > 1) {
+        if (_interactivityDisabled == disable) {
             return;
         }
         
-        if (_disabledInteractivityCounter == 1) {
+        _interactivityDisabled = disable;
+        
+        if (disable == true) {
             if (__events != null) {
                 for (eventType in __events.keys()) {
                     if (!isInteractiveEvent(eventType)) {
