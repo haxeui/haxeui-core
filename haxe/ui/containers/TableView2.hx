@@ -13,6 +13,7 @@ import haxe.ui.core.ItemRenderer;
 import haxe.ui.data.DataSource;
 import haxe.ui.data.transformation.NativeTypeTransformer;
 import haxe.ui.events.UIEvent;
+import haxe.ui.layouts.LayoutFactory;
 import haxe.ui.layouts.ScrollViewLayout;
 import haxe.ui.util.Variant;
 
@@ -247,13 +248,7 @@ private class Events extends ScrollViewEvents {
     private override function onHScroll(event:UIEvent) {
         super.onHScroll(event);
         var builder = cast(_scrollview._compositeBuilder, Builder);
-        trace("here");
         _scrollview.invalidateComponentLayout();
-        //builder._header.left = -_scrollview.vscrollPos;
-    }
-    
-    private override function onVScroll(event:UIEvent) {
-        super.onVScroll(event);
     }
 }
 
@@ -273,12 +268,13 @@ private class Builder extends ScrollViewBuilder {
     }
     
     public override function create() {
-        createContentContainer("");
+        createContentContainer("absolute");
         tableDataContainer = new VBox();
         tableDataContainer.addClass("tableview-data");
         tableDataContainer.styleString = "spacing: 0";
         _contents.addComponent(tableDataContainer);
         _contents.styleString = "spacing: 0";
+        trace("create");
     }
     
     private override function createContentContainer(layoutName:String) {
@@ -292,15 +288,69 @@ private class Builder extends ScrollViewBuilder {
         if (_header == null) {
             return 0;
         }
+
         return _header.height;
     }
     
     public override function addComponent(child:Component):Component {
         if (Std.is(child, Header) == true) {
             _header = cast(child, Header);
+            buildDefaultRenderer();
+            return null;
+        } else if (Std.is(child, ItemRenderer)) {
+            trace("renderer!");
             return null;
         }
         return super.addComponent(child);
+    }
+    
+    private function buildDefaultRenderer() {
+        var r = new DefaultTableRenderer();
+        for (column in _header.childComponents) {
+            var label = new Label();
+            label.id = column.id;
+            label.styleString = "border: 0px solid red;padding: 5px;";
+            r.addComponent(label);
+        }
+        _tableview.itemRenderer = r;
+    }
+}
+
+private class DefaultTableRenderer extends ItemRenderer {
+    public function new() {
+        super();
+        this.layout = LayoutFactory.createFromName("horizontal");
+        this.styleString = "spacing: 2px;";
+    }
+    
+    public override function hasClass(name:String):Bool {
+        if (name != "even" && name != "odd") {
+            return super.hasClass(name);
+        }
+        var b = false;
+        for (child in childComponents) {
+            b = b || child.hasClass(name);
+        }
+        return b;
+    }
+    
+    public override function addClass(name:String, invalidate:Bool = true, recursive:Bool = false) {
+        if (name != "even" && name != "odd") {
+            return super.addClass(name, invalidate, recursive);
+        }
+        trace("add: " + name + ", " + childComponents.length);
+        for (child in childComponents) {
+            child.addClass(name, invalidate, recursive);
+        }
+    }
+    
+    public override function removeClass(name:String, invalidate:Bool = true, recursive:Bool = false) {
+        if (name != "even" && name != "odd") {
+            return super.addClass(name, invalidate, recursive);
+        }
+        for (child in childComponents) {
+            child.removeClass(name, invalidate, recursive);
+        }
     }
 }
 
@@ -326,11 +376,11 @@ private class Layout extends ScrollViewLayout {
             for (column in header.childComponents) {
                 var x = item.findComponent(column.id, Component);
                 if (x != null) {
-                    x.width = column.width;
+                    x.width = column.width - 2;
                 }
             }
         }
-        
+        data.left = 1;
         data.top = header.height;
     }
     
