@@ -110,7 +110,7 @@ class VirtualLayout extends ScrollViewLayout {
             var data:Dynamic = dataSource.get(n);
             var item:ItemRenderer = null;
             if (n < contents.childComponents.length) {
-                item = cast contents.childComponents[n];
+                item = cast(contents.childComponents[n], ItemRenderer);
                 if (item.data == data) {
                     continue;
                 }
@@ -140,7 +140,7 @@ class VirtualLayout extends ScrollViewLayout {
         }
 
         while (dataSource.size < contents.childComponents.length) {
-            var item:ItemRenderer = cast contents.childComponents[contents.childComponents.length - 1];
+            var item:ItemRenderer = cast(contents.childComponents[contents.childComponents.length - 1], ItemRenderer);
             removeRenderer(item);    // remove last
         }
     }
@@ -161,7 +161,7 @@ class VirtualLayout extends ScrollViewLayout {
                 item = getRenderer(cls, n);
                 contents.addComponent(item);
             } else {
-                item = cast contents.childComponents[i];
+                item = cast(contents.childComponents[i], ItemRenderer);
 
                 //Renderers are always ordered
                 if (!Std.is(item, cls)) {
@@ -194,7 +194,7 @@ class VirtualLayout extends ScrollViewLayout {
         }
 
         while (contents.childComponents.length > i) {
-            removeRenderer(cast contents.childComponents[contents.childComponents.length - 1], false);    // remove last
+            removeRenderer(cast(contents.childComponents[contents.childComponents.length - 1], ItemRenderer), false);    // remove last
         }
     }
 
@@ -268,14 +268,14 @@ class VirtualLayout extends ScrollViewLayout {
         var contents:Component = this.contents;
         if (_firstIndex >= 0) {
             while (contents.childComponents.length > 0 && !isRendererVisible(contents.childComponents[0])) {
-                removeRenderer(cast contents.childComponents[0], false);
+                removeRenderer(cast(contents.childComponents[0], ItemRenderer), false);
                 ++_firstIndex;
             }
         }
 
         if (_lastIndex >= 0) {
             while (contents.childComponents.length > 0 && !isRendererVisible(contents.childComponents[contents.childComponents.length - 1])) {
-                removeRenderer(cast contents.childComponents[contents.childComponents.length - 1], false);
+                removeRenderer(cast(contents.childComponents[contents.childComponents.length - 1], ItemRenderer), false);
                 --_lastIndex;
             }
         }

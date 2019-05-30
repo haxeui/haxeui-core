@@ -707,6 +707,14 @@ class ScrollViewBuilder extends CompositeBuilder {
         }
     }
     
+    private function horizontalConstraintModifier():Float {
+        return 0;
+    }
+    
+    private function verticalConstraintModifier():Float {
+        return 0;
+    }
+    
     private function checkScrolls() {
         if (_scrollview.virtual == true) {
             return;
@@ -718,13 +726,14 @@ class ScrollViewBuilder extends CompositeBuilder {
         var verticalConstraint = _contents;
         
         var hscroll:HorizontalScroll = _component.findComponent(HorizontalScroll, false);
-        if (horizontalConstraint.width > usableSize.width) {
+        var vcw:Float = horizontalConstraint.width + horizontalConstraintModifier();
+        if (vcw > usableSize.width) {
             if (hscroll == null) {
                 hscroll = createHScroll();
             }
 
-            hscroll.max = horizontalConstraint.width - usableSize.width;
-            hscroll.pageSize = (usableSize.width / horizontalConstraint.width) * hscroll.max;
+            hscroll.max = vcw - usableSize.width;
+            hscroll.pageSize = (usableSize.width / vcw) * hscroll.max;
 
             hscroll.syncComponentValidation();    //avoid another pass
         } else {
@@ -734,13 +743,14 @@ class ScrollViewBuilder extends CompositeBuilder {
         }
 
         var vscroll:VerticalScroll = _component.findComponent(VerticalScroll, false);
-        if (verticalConstraint.height > usableSize.height) {
+        var vch:Float = verticalConstraint.height + verticalConstraintModifier();
+        if (vch > usableSize.height) {
             if (vscroll == null) {
                 vscroll = createVScroll();
             }
 
-            vscroll.max = verticalConstraint.height - usableSize.height;
-            vscroll.pageSize = (usableSize.height / verticalConstraint.height) * vscroll.max;
+            vscroll.max = vch - usableSize.height;
+            vscroll.pageSize = (usableSize.height / vch) * vscroll.max;
 
             vscroll.syncComponentValidation();    //avoid another pass
         } else {
@@ -801,7 +811,7 @@ class ScrollViewBuilder extends CompositeBuilder {
             }
         }
 
-        var rc:Rectangle = new Rectangle(xpos, ypos, clipCX, clipCY);
+        var rc:Rectangle = new Rectangle(xpos, ypos, clipCX + horizontalConstraintModifier(), clipCY + verticalConstraintModifier());
         _contents.componentClipRect = rc;
     }
     
