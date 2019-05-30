@@ -45,7 +45,7 @@ private class Builder extends CompositeBuilder {
 		if (Std.is(child, InteractiveComponent)) {
             processGroupChild(child);
 		} else {
-            var interactiveChildren = child.findChildren(InteractiveComponent);
+            var interactiveChildren = child.findComponents(InteractiveComponent);
             for (interactiveChild in interactiveChildren) {
                 processGroupChild(interactiveChild);
             }

@@ -575,7 +575,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         return cast match;
     }
 
-    public function findChildren<T:Component>(styleName:String = null, type:Class<T> = null, maxDepth:Int = 5):Array<T> {
+    public function findComponents<T:Component>(styleName:String = null, type:Class<T> = null, maxDepth:Int = 5):Array<T> {
         if (maxDepth <= 0) {
             return [];
         }
@@ -595,7 +595,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             if (match == true) {
                 r.push(cast child);
             } else {
-                var childArray = child.findChildren(styleName, type, maxDepth);
+                var childArray = child.findComponents(styleName, type, maxDepth);
                 for (c in childArray) { // r.concat caused issues here on hxcpp
                     r.push(c);
                 }
