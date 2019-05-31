@@ -719,7 +719,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
      Whether this component is hidden or not
     **/
     @:dox(group = "Display tree related properties and methods")
-    public var hidden(get, set):Bool;
+    @:clonable public var hidden(get, set):Bool;
     private function get_hidden():Bool {
         if (_hidden == true) {
             return true;
