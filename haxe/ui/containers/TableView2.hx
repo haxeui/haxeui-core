@@ -275,12 +275,10 @@ private class Builder extends ScrollViewBuilder {
         tableDataContainer.styleString = "spacing: 0";
         _contents.addComponent(tableDataContainer);
         _contents.styleString = "spacing: 0";
-        trace("create");
     }
     
     public override function onInitialize() {
         if (_tableview.itemRenderer == null) {
-            trace("CREATE RENDERER");
             buildDefaultRenderer();
         } else {
             fillExistingRenderer();
@@ -306,10 +304,8 @@ private class Builder extends ScrollViewBuilder {
         if (Std.is(child, Header) == true) {
             _header = cast(child, Header);
             //buildDefaultRenderer();
-            trace("default");
             return null;
         } else if (Std.is(child, ItemRenderer)) {
-            trace("renderer!");
             var itemRenderer = _tableview.itemRenderer;
             if (itemRenderer == null) {
                 itemRenderer = new CompositeItemRenderer();
