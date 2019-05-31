@@ -404,16 +404,28 @@ private class Layout extends ScrollViewLayout {
         
         var data = findComponent("tableview-data", VBox, true, "css");
         for (item in data.childComponents) {
+            var biggest:Float = 0;
             for (column in header.childComponents) {
                 var itemRenderer = item.findComponent(column.id, Component).findAncestor(ItemRenderer);
                 if (itemRenderer != null) {
+                    itemRenderer.percentWidth = null;
                     itemRenderer.width = column.width - 2;
-                    itemRenderer.height = 30; // TEMP
+                    if (itemRenderer.height > biggest) {
+                        biggest = itemRenderer.height;
+                    }
+                }
+            }
+            if (biggest != 0) { // might not be a great idea - maybe rethink
+                for (column in header.childComponents) {
+                    var itemRenderer = item.findComponent(column.id, Component).findAncestor(ItemRenderer);
+                    if (itemRenderer != null) {
+                        itemRenderer.height = biggest;
+                    }
                 }
             }
         }
-        data.left = 1;
-        data.top = header.height;
+        data.left = 0;
+        data.top = header.height - 1;
     }
     
     public override function resizeChildren() {
