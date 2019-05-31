@@ -11,7 +11,7 @@ import haxe.ui.util.Variant;
 
 @:build(haxe.ui.macros.Macros.buildBehaviours())
 @:autoBuild(haxe.ui.macros.Macros.buildBehaviours())
-class ComponentContainer extends ComponentCommon {
+class ComponentContainer extends ComponentCommon implements IClonable<ComponentContainer> {
     @:clonable @:behaviour(ComponentDisabledBehaviour, false)       public var disabled:Bool;
     
     private var behaviours:Behaviours;
@@ -54,6 +54,22 @@ class ComponentContainer extends ComponentCommon {
     private function registerBehaviours() {
     }
     
+    public function addComponent(child:Component):Component {
+        return null;
+    }
+    
+    public function addComponentAt(child:Component, index:Int):Component {
+        return null;
+    }
+    
+    public function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
+        return null;
+    }
+    
+    public function removeComponentAt(index:Int, dispose:Bool = true, invalidate:Bool = true):Component {
+        return null;
+    }
+    
     //***********************************************************************************************************
     // Layout related
     //***********************************************************************************************************
@@ -70,6 +86,33 @@ class ComponentContainer extends ComponentCommon {
     //***********************************************************************************************************
     // General
     //***********************************************************************************************************
+    @:clonable @:behaviour(DefaultBehaviour)                        public var text:String;
+
+    private var _id:String = null;
+    /**
+     The identifier of this component
+    **/
+    @:clonable public var id(get, set):String;
+    private function get_id():String {
+        return _id;
+    }
+    private function set_id(value:String):String {
+        if (_id != value) {
+            _id = value;
+            //invalidate(InvalidationFlags.STYLE);
+            //invalidateDisplay();
+        }
+        return _id;
+    }
+    
+    public var value(get, set):Dynamic;
+    private function get_value():Dynamic {
+        return text;
+    }
+    private function set_value(value:Dynamic):Dynamic {
+        text = value;
+        return value;
+    }
 }
 
 //***********************************************************************************************************

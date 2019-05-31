@@ -239,33 +239,6 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     //***********************************************************************************************************
     // General
     //***********************************************************************************************************
-    @:clonable @:behaviour(DefaultBehaviour)                        public var text:String;
-
-    private var _id:String = null;
-    /**
-     The identifier of this component
-    **/
-    @:clonable public var id(get, set):String;
-    private function get_id():String {
-        return _id;
-    }
-    private function set_id(value:String):String {
-        if (_id != value) {
-            _id = value;
-            //invalidate(InvalidationFlags.STYLE);
-            //invalidateDisplay();
-        }
-        return _id;
-    }
-    
-    public var value(get, set):Dynamic;
-    private function get_value():Dynamic {
-        return text;
-    }
-    private function set_value(value:Dynamic):Dynamic {
-        text = value;
-        return value;
-    }
     
 
     /**
@@ -312,7 +285,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
      Adds a child component to this component instance
     **/
     @:dox(group = "Display tree related properties and methods")
-    public function addComponent(child:Component):Component {
+    public override function addComponent(child:Component):Component {
         if (_compositeBuilder != null) {
             var v = _compositeBuilder.addComponent(child);
             if (v != null) {
@@ -356,7 +329,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
      Adds a child component to this component instance
     **/
     @:dox(group = "Display tree related properties and methods")
-    public function addComponentAt(child:Component, index:Int):Component {
+    public override function addComponentAt(child:Component, index:Int):Component {
         if (_compositeBuilder != null) {
             var v = _compositeBuilder.addComponentAt(child, index);
             if (v != null) {
@@ -403,7 +376,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
      Removes the specified child component from this component instance
     **/
     @:dox(group = "Display tree related properties and methods")
-    public function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
+    public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
         if (child == null) {
             return null;
         }
@@ -444,7 +417,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
      Removes the child component from this component instance
     **/
     @:dox(group = "Display tree related properties and methods")
-    public function removeComponentAt(index:Int, dispose:Bool = true, invalidate:Bool = true):Component {
+    public override function removeComponentAt(index:Int, dispose:Bool = true, invalidate:Bool = true):Component {
         if (_children == null) {
             return null;
         }
@@ -1463,7 +1436,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     //***********************************************************************************************************
     // Clonable
     //***********************************************************************************************************
-    public function cloneComponent():Component {
+    public override function cloneComponent():Component {
         if (_ready == false) {
             //ready();
         }

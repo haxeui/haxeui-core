@@ -26,12 +26,6 @@ class Macros {
         }
 
         buildEvents(builder);
-        buildStyles(builder);
-        buildBindings(builder);
-        
-        if (builder.hasInterface("haxe.ui.core.IClonable")) {
-            buildClonable(builder);
-        }
         
         return builder.fields;
     }
@@ -172,7 +166,7 @@ class Macros {
             var setFn = builder.findFunction("set_" + f.name);
             if (setFn != null) {
                 setFn.add(macro
-                    haxe.ui.binding.BindingManager.instance.componentPropChanged(this, $v{f.name})
+                    haxe.ui.binding.BindingManager.instance.componentPropChanged(cast this, $v{f.name})
                 );
             }
         }
@@ -223,7 +217,7 @@ class Macros {
     }
     
     static function buildClonable(builder:ClassBuilder) {
-        var useSelf:Bool = (builder.fullPath == "haxe.ui.core.Component");
+        var useSelf:Bool = (builder.fullPath == "haxe.ui.core.ComponentContainer");
         
         var cloneFn = builder.findFunction("cloneComponent");
         if (cloneFn == null) { // add new clone fn
@@ -366,6 +360,14 @@ class Macros {
                 haxe.ui.binding.BindingManager.instance.componentPropChanged(this, $v{propName});
                 return value;
             }, false, true);
+        }
+        
+        //buildEvents(builder);
+        buildStyles(builder);
+        buildBindings(builder);
+        
+        if (builder.hasInterface("haxe.ui.core.IClonable")) {
+            buildClonable(builder);
         }
         
         return builder.fields;
