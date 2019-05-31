@@ -986,7 +986,13 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             Toolkit.callLater(function() {
                 invalidateComponentData();
                 invalidateComponentStyle();
+                
+                if (_compositeBuilder != null) {
+                    _compositeBuilder.onReady();
+                }
+                
                 onReady();
+                
                 dispatch(new UIEvent(UIEvent.READY));
             });
         }
@@ -1224,6 +1230,10 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             return;
         }
 
+        if (_compositeBuilder != null) {
+            _compositeBuilder.onInitialize();
+        }
+        
         onInitialize();
 
         if (_layout == null) {

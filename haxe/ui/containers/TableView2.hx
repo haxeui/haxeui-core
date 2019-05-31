@@ -278,6 +278,15 @@ private class Builder extends ScrollViewBuilder {
         trace("create");
     }
     
+    public override function onInitialize() {
+        if (_tableview.itemRenderer == null) {
+            trace("CREATE RENDERER");
+            buildDefaultRenderer();
+        } else {
+            fillExistingRenderer();
+        }
+    }
+    
     private override function createContentContainer(layoutName:String) {
         if (_contents == null) {
             super.createContentContainer(layoutName);
@@ -296,36 +305,62 @@ private class Builder extends ScrollViewBuilder {
     public override function addComponent(child:Component):Component {
         if (Std.is(child, Header) == true) {
             _header = cast(child, Header);
-            buildDefaultRenderer();
+            //buildDefaultRenderer();
+            trace("default");
             return null;
         } else if (Std.is(child, ItemRenderer)) {
             trace("renderer!");
-            return null;
+            var itemRenderer = _tableview.itemRenderer;
+            if (itemRenderer == null) {
+                itemRenderer = new CompositeItemRenderer();
+                _tableview.itemRenderer = itemRenderer;
+            }
+            itemRenderer.addComponent(child);
+            
+            return child;
         }
         return super.addComponent(child);
     }
     
-    private function buildDefaultRenderer() {
-        var r = new DefaultTableRenderer();
+    public function buildDefaultRenderer() {
+        var r = new CompositeItemRenderer();
         for (column in _header.childComponents) {
+            var itemRenderer = new ItemRenderer();
             var label = new Label();
             label.id = column.id;
-            label.styleString = "border: 0px solid red;padding: 5px;";
-            r.addComponent(label);
+            label.verticalAlign = "center";
+            itemRenderer.addComponent(label);
+            r.addComponent(itemRenderer);
         }
         _tableview.itemRenderer = r;
     }
+    
+    public function fillExistingRenderer() {
+        for (column in _header.childComponents) {
+            var existing = _tableview.itemRenderer.findComponent(column.id, ItemRenderer, true);
+            if (existing == null) {
+                var label = new Label();
+                var itemRenderer = new ItemRenderer();
+                var label = new Label();
+                label.id = column.id;
+                label.verticalAlign = "center";
+                itemRenderer.addComponent(label);
+                _tableview.itemRenderer.addComponent(itemRenderer);
+            }
+        }
+    }
 }
 
-private class DefaultTableRenderer extends ItemRenderer {
+private class CompositeItemRenderer extends ItemRenderer {
     public function new() {
         super();
         this.layout = LayoutFactory.createFromName("horizontal");
         this.styleString = "spacing: 2px;";
+        removeClass("itemrenderer");
     }
     
     public override function hasClass(name:String):Bool {
-        if (name != "even" && name != "odd") {
+        if (name != "even" && name != "odd" && name != "itemrenderer") {
             return super.hasClass(name);
         }
         var b = false;
@@ -336,17 +371,16 @@ private class DefaultTableRenderer extends ItemRenderer {
     }
     
     public override function addClass(name:String, invalidate:Bool = true, recursive:Bool = false) {
-        if (name != "even" && name != "odd") {
+        if (name != "even" && name != "odd" && name != "itemrenderer") {
             return super.addClass(name, invalidate, recursive);
         }
-        trace("add: " + name + ", " + childComponents.length);
         for (child in childComponents) {
             child.addClass(name, invalidate, recursive);
         }
     }
     
     public override function removeClass(name:String, invalidate:Bool = true, recursive:Bool = false) {
-        if (name != "even" && name != "odd") {
+        if (name != "even" && name != "odd" && name != "itemrenderer") {
             return super.addClass(name, invalidate, recursive);
         }
         for (child in childComponents) {
@@ -375,9 +409,10 @@ private class Layout extends ScrollViewLayout {
         var data = findComponent("tableview-data", VBox, true, "css");
         for (item in data.childComponents) {
             for (column in header.childComponents) {
-                var x = item.findComponent(column.id, Component);
-                if (x != null) {
-                    x.width = column.width - 2;
+                var itemRenderer = item.findComponent(column.id, Component).findAncestor(ItemRenderer);
+                if (itemRenderer != null) {
+                    itemRenderer.width = column.width - 2;
+                    itemRenderer.height = 30; // TEMP
                 }
             }
         }

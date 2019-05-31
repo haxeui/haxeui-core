@@ -78,7 +78,15 @@ class ItemRenderer extends Box {
 						}
 					}
 				} else {
-					c.value = v;
+                    var propValue:Dynamic = v;
+                    
+                    if (propValue == "true" || propValue == "yes" || propValue == "false" || propValue == "no") {
+                        propValue = (propValue == "true" || propValue == "yes");
+                    } else if (~/^[0-9]*$/i.match(propValue)) {
+                        propValue = Std.parseInt(propValue);
+                    }
+                    
+					c.value = propValue;
 				}
                 c.show();
             } else if (c != null) {

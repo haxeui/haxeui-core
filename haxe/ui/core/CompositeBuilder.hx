@@ -15,6 +15,14 @@ class CompositeBuilder {
     public function destroy() {
     }
     
+    public function onInitialize() {
+        
+    }
+    
+    public function onReady() {
+        
+    }
+    
     public var numComponents(get, never):Null<Int>;
     private function get_numComponents():Null<Int> {
         return null;

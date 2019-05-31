@@ -19,7 +19,7 @@ class Progress extends Range implements IDirectionalComponent {
     @:clonable @:behaviour(Indeterminate)      public var indeterminate:Bool;
     @:clonable @:behaviour(Pos)                public var pos:Float;
     @:clonable @:behaviour(Min)                public var min:Float;
-    @:clonable @:behaviour(Pos)                public var value:Variant;
+    @:clonable @:value(pos)                    public var value:Dynamic;
     
     //***********************************************************************************************************
     // Overrides
@@ -49,7 +49,7 @@ private class Pos extends DefaultBehaviour {
 private class Min extends DefaultBehaviour {
     public override function set(value:Variant) {
         var progress = cast(_component, Progress);
-        progress.min = value;
+        //progress.min = value;
         progress.start = value;
     }
 }
