@@ -789,11 +789,11 @@ class ScrollViewBuilder extends CompositeBuilder {
 
         var clipCX = usableSize.width;
         if (clipCX > _contents.width) {
-            clipCX = _contents.width;
+            clipCX = _contents.width + horizontalConstraintModifier();
         }
         var clipCY = usableSize.height;
         if (clipCY > _contents.height) {
-            clipCY = _contents.height;
+            clipCY = _contents.height + verticalConstraintModifier();
         }
 
         var xpos:Float = 0;
@@ -811,7 +811,7 @@ class ScrollViewBuilder extends CompositeBuilder {
             }
         }
 
-        var rc:Rectangle = new Rectangle(xpos, ypos, clipCX + horizontalConstraintModifier(), clipCY + verticalConstraintModifier());
+        var rc:Rectangle = new Rectangle(xpos, ypos, clipCX, clipCY);
         _contents.componentClipRect = rc;
     }
     

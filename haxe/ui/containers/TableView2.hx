@@ -265,6 +265,7 @@ private class Builder extends ScrollViewBuilder {
     public function new(tableview:TableView2) {
         super(tableview);
         _tableview = tableview;
+        _tableview.clip = true;
     }
     
     public override function create() {
