@@ -12,9 +12,11 @@ import haxe.ui.core.IDataComponent;
 import haxe.ui.core.ItemRenderer;
 import haxe.ui.data.DataSource;
 import haxe.ui.data.transformation.NativeTypeTransformer;
+import haxe.ui.events.ScrollEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.layouts.LayoutFactory;
 import haxe.ui.layouts.ScrollViewLayout;
+import haxe.ui.layouts.VerticalVirtualLayout;
 import haxe.ui.util.Variant;
 
 @:composite(Events, Builder, Layout)
@@ -75,7 +77,7 @@ class TableView2 extends ScrollView implements IDataComponent implements IVirtua
     
     
     
-    
+    /*
     private var _rendererPool:Array<ItemRenderer> = [];
     public function refreshNonVirtualData() {
         if (dataSource == null) {
@@ -184,54 +186,8 @@ class TableView2 extends ScrollView implements IDataComponent implements IVirtua
 
         renderer.itemIndex = -1;
     }
+    */
 }
-
-private class TempItemRenderer extends ItemRenderer {
-    public function new() {
-        super();
-
-        //this.percentWidth = 100;
-
-        var hbox:HBox = new HBox();
-        hbox.styleString = "spacing: 0";
-        //hbox.percentWidth = 100;
-
-        var label:Label = new Label();
-        label.styleString = "border: 1px solid black;padding: 3px;";
-        label.id = "colA";
-        //label.percentWidth = 100;
-        label.verticalAlign = "center";
-        label.hide();
-        hbox.addComponent(label);
-
-        var label:Label = new Label();
-        label.styleString = "border: 1px solid black;padding: 3px;";
-        label.id = "colB";
-        //label.percentWidth = 100;
-        label.verticalAlign = "center";
-        label.hide();
-        hbox.addComponent(label);
-
-        var label:Label = new Label();
-        label.styleString = "border: 1px solid black;padding: 3px;";
-        label.id = "colC";
-        //label.percentWidth = 100;
-        label.verticalAlign = "center";
-        label.hide();
-        hbox.addComponent(label);
-
-        var label:Label = new Label();
-        label.styleString = "border: 1px solid black;padding: 3px;";
-        label.id = "colD";
-        //label.percentWidth = 100;
-        label.verticalAlign = "center";
-        label.hide();
-        hbox.addComponent(label);
-
-        addComponent(hbox);
-    }
-}
-
 
 @:dox(hide) @:noCompletion
 typedef ItemRendererFunction3 = Dynamic->Int->Class<ItemRenderer>;    //(data, index):Class<ItemRenderer>
@@ -245,10 +201,43 @@ typedef ItemRendererFunction3 = Dynamic->Int->Class<ItemRenderer>;    //(data, i
 @:access(haxe.ui.core.Component)
 @:access(haxe.ui.containers.Builder)
 private class Events extends ScrollViewEvents {
+    private var _tableview:TableView2;
+
+    public function new(tableview:TableView2) {
+        super(tableview);
+        _tableview = tableview;
+    }
+
+    public override function register() {
+        super.register();
+        registerEvent(ScrollEvent.CHANGE, onScrollChange);
+        /*
+        registerEvent(UIEvent.RENDERER_CREATED, onRendererCreated);
+        registerEvent(UIEvent.RENDERER_DESTROYED, onRendererDestroyed);
+        */
+    }
+    
+    public override function unregister() {
+        super.unregister();
+        unregisterEvent(ScrollEvent.CHANGE, onScrollChange);
+        /*
+        unregisterEvent(UIEvent.RENDERER_CREATED, onRendererCreated);
+        unregisterEvent(UIEvent.RENDERER_DESTROYED, onRendererDestroyed);
+        */
+    }
+    
+    /*
     private override function onHScroll(event:UIEvent) {
         super.onHScroll(event);
         var builder = cast(_scrollview._compositeBuilder, Builder);
-        _scrollview.invalidateComponentLayout();
+        _tableview.invalidateComponentLayout();
+    }
+    */
+    
+    
+    private function onScrollChange(e:ScrollEvent):Void {
+        trace(_tableview.vscrollPos);
+        _tableview.invalidateComponentLayout();
     }
 }
 
@@ -257,7 +246,7 @@ private class Events extends ScrollViewEvents {
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
 private class Builder extends ScrollViewBuilder {
-    public var tableDataContainer:VBox;
+    public var tableDataContainer:Box;
     
     private var _tableview:TableView2;
     private var _header:Header = null;
@@ -270,8 +259,9 @@ private class Builder extends ScrollViewBuilder {
     
     public override function create() {
         createContentContainer("absolute");
-        tableDataContainer = new VBox();
+        tableDataContainer = new Box();
         tableDataContainer.addClass("tableview-data");
+        tableDataContainer.layoutName = _tableview.virtual ? "absolute" : "vertical";
         tableDataContainer.styleString = "spacing: 0";
         _contents.addComponent(tableDataContainer);
         _contents.styleString = "spacing: 0";
@@ -293,7 +283,7 @@ private class Builder extends ScrollViewBuilder {
     }
     
     private override function verticalConstraintModifier():Float {
-        if (_header == null) {
+        if (_header == null || _tableview.virtual == true) {
             return 0;
         }
 
@@ -345,6 +335,10 @@ private class Builder extends ScrollViewBuilder {
             }
         }
     }
+    
+    public override function onVirtualChanged() {
+        tableDataContainer.layoutName = _tableview.virtual ? "absolute" : "vertical";
+    }
 }
 
 private class CompositeItemRenderer extends ItemRenderer {
@@ -389,11 +383,29 @@ private class CompositeItemRenderer extends ItemRenderer {
 // Layout
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
-private class Layout extends ScrollViewLayout {
+private class Layout extends VerticalVirtualLayout {
+    /*
     public override function refresh() {
         cast(_component, TableView2).refreshNonVirtualData();
 
         super.refresh();
+    }
+    */
+    
+    private override function get_itemHeight():Float {
+        return 25;
+    }
+    
+    private override function get_itemCount():Int {
+        return 11;
+    }
+    
+    private override function get_contents():Component {
+        if (contents == null) {
+            contents = findComponent("tableview-data", true, "css");
+        }
+
+        return contents;
     }
     
     public override function repositionChildren() {
@@ -402,32 +414,35 @@ private class Layout extends ScrollViewLayout {
         var header = findComponent(Header, true);
         header.left = -cast(_component, ScrollView).hscrollPos;
         
-        var data = findComponent("tableview-data", VBox, true, "css");
-        for (item in data.childComponents) {
-            var biggest:Float = 0;
-            for (column in header.childComponents) {
-                var itemRenderer = item.findComponent(column.id, Component).findAncestor(ItemRenderer);
-                if (itemRenderer != null) {
-                    itemRenderer.percentWidth = null;
-                    itemRenderer.width = column.width - 2;
-                    if (itemRenderer.height > biggest) {
-                        biggest = itemRenderer.height;
-                    }
-                }
-            }
-            if (biggest != 0) { // might not be a great idea - maybe rethink
+        var data = findComponent("tableview-data", Box, true, "css");
+        if (data != null) {
+            for (item in data.childComponents) {
+                var biggest:Float = 0;
                 for (column in header.childComponents) {
                     var itemRenderer = item.findComponent(column.id, Component).findAncestor(ItemRenderer);
                     if (itemRenderer != null) {
-                        itemRenderer.height = biggest;
+                        itemRenderer.percentWidth = null;
+                        itemRenderer.width = column.width - 2;
+                        if (itemRenderer.height > biggest) {
+                            biggest = itemRenderer.height;
+                        }
+                    }
+                }
+                if (biggest != 0) { // might not be a great idea - maybe rethink
+                    for (column in header.childComponents) {
+                        var itemRenderer = item.findComponent(column.id, Component).findAncestor(ItemRenderer);
+                        if (itemRenderer != null) {
+                            //itemRenderer.height = biggest;
+                        }
                     }
                 }
             }
+            data.left = 0;
+            data.top = header.height - 1;
         }
-        data.left = 0;
-        data.top = header.height - 1;
     }
     
+    /*
     public override function resizeChildren() {
         super.resizeChildren();
         
@@ -435,6 +450,7 @@ private class Layout extends ScrollViewLayout {
         var data = findComponent("tableview-data", VBox, true, "css");
         //data.height = usableHeight;
     }
+    */
 }
 
 //***********************************************************************************************************
