@@ -2,6 +2,7 @@ package haxe.ui.core;
 
 import haxe.ui.containers.Box;
 import haxe.ui.events.MouseEvent;
+import haxe.ui.events.UIEvent;
 import haxe.ui.util.Variant;
 
 class ItemRenderer extends Box {
@@ -88,10 +89,20 @@ class ItemRenderer extends Box {
                     
 					c.value = propValue;
 				}
+                
+                if (c.hasEvent(UIEvent.CHANGE, onItemChange) == false) {
+                    c.registerEvent(UIEvent.CHANGE, onItemChange);
+                }
+                
                 c.show();
             } else if (c != null) {
                 c.hide();
             }
         }
+    }
+    
+    private function onItemChange(event:UIEvent) {
+        var v = event.target.value;
+        Reflect.setField(_data, event.target.id, v);
     }
 }
