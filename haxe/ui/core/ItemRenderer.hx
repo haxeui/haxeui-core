@@ -57,8 +57,22 @@ class ItemRenderer extends Box {
 
     public var itemIndex:Int = -1;
 
+    private var _fieldList:Array<String> = null; // is caching a good idea?
     private override function validateComponentData() {
-        for (f in Reflect.fields(_data)) {
+        if (_fieldList == null) {
+            var fieldList:Array<String> = Reflect.fields(_data);
+            if (Type.getClass(_data) != null) {
+                var instanceFields = Type.getInstanceFields(Type.getClass(_data));
+                for (i in instanceFields) {
+                    if (Reflect.isFunction(Reflect.getProperty(_data, i)) == false && fieldList.indexOf(i) == -1) {
+                        fieldList.push(i);
+                    }
+                }
+            }
+            _fieldList = fieldList;
+        }
+        
+        for (f in _fieldList) {
             var v = Reflect.getProperty(_data, f);
             var c:Component = findComponent(f, null, true);
             if (c != null && v != null) {
@@ -103,6 +117,6 @@ class ItemRenderer extends Box {
     
     private function onItemChange(event:UIEvent) {
         var v = event.target.value;
-        Reflect.setField(_data, event.target.id, v);
+        Reflect.setProperty(_data, event.target.id, v);
     }
 }

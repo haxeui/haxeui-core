@@ -373,5 +373,35 @@ class Macros {
         return builder.fields;
     }
     
+    static function buildData():Array<Field> {
+        var builder = new ClassBuilder(haxe.macro.Context.getBuildFields(), Context.getLocalType(), Context.currentPos());
+        
+        for (f in builder.vars) {
+            builder.removeVar(f.name);
+            
+            var name = '_${f.name}';
+            builder.addVar(name, f.type);
+            var newField = builder.addGetter(f.name, f.type, macro {
+                return $i{name};
+            });
+            var newField = builder.addSetter(f.name, f.type, macro {
+                if (value == $i{name}) {
+                    return value;
+                }
+                $i{name} = value;
+                if (onDataSourceChanged != null) {
+                    onDataSourceChanged();
+                }
+                return value;
+            });
+            newField.addMeta(":isVar");
+            //builder.addVar(f.name, f.type, null, null, [{name: ":isVar", pos: Context.currentPos()}]);
+        }
+        
+        builder.addVar("onDataSourceChanged", macro: Void->Void, macro null);
+        
+        return builder.fields;
+    }
+    
     #end
 }

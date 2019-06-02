@@ -29,6 +29,19 @@ class ClassBuilder {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // General
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public var vars(get, null):Array<FieldBuilder>;
+    private function get_vars():Array<FieldBuilder> {
+        var r = [];
+        for (f in fields) {
+            switch (f.kind) {
+                case FVar(_, _):
+                    r.push(new FieldBuilder(f, this));
+                case _:
+            }
+        }
+        return r;
+    }
+    
     public var path(get, null):ComplexType;
     private function get_path():ComplexType {
         var p = fullPath.split(".");
@@ -297,7 +310,7 @@ class ClassBuilder {
         return v;
     }
     
-    public function addVar(name:String, t:ComplexType, e:Expr = null, access:Array<Access> = null):Field {
+    public function addVar(name:String, t:ComplexType, e:Expr = null, access:Array<Access> = null, meta:Metadata = null):Field {
         if (access == null) {
             if (StringTools.startsWith(name, "_")) {
                 access = [APrivate];
@@ -305,10 +318,13 @@ class ClassBuilder {
                 access = [APublic];
             }
         }
+        if (meta == null) {
+            meta = [];
+        }
         var newField = {
             name: name,
             doc: null,
-            meta: [],
+            meta: meta,
             access: access,
             kind : FVar(t, e),
             pos : pos
