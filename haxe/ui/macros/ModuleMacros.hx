@@ -302,9 +302,21 @@ class ModuleMacros {
         var namedComponents:Map<String, String> = new Map<String, String>();
         var codeBuilder = new CodeBuilder();
         ComponentMacros.buildComponentFromString(codeBuilder, xml, namedComponents);
-        codeBuilder.add(macro
-            addComponent(c0)
-        );
+        codeBuilder.add(macro {
+            addComponent(c0);
+            if (c0.width != null) {
+                this.width = c0.width;
+            }
+            if (c0.height != null) {
+                this.height = c0.height;
+            }
+            if (c0.percentWidth != null) {
+                this.percentWidth = c0.percentWidth;
+            }
+            if (c0.percentHeight != null) {
+                this.percentHeight = c0.percentHeight;
+            }
+        });
         
         var newClass = macro
         ////////////////////////////////////////////////////////////////////////////////////////////////////////
