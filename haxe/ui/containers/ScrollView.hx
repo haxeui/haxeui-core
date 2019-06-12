@@ -201,7 +201,9 @@ private class HScrollPos extends DataBehaviour {
             if (hscroll == null) {
                 hscroll = cast(_scrollview._compositeBuilder, ScrollViewBuilder).createHScroll();
             }
-            hscroll.pos = _value;
+            if (hscroll != null) {
+                hscroll.pos = _value;
+            }
             
         } else if (hscroll != null) {
             hscroll.pos = _value;
@@ -233,7 +235,9 @@ private class VScrollPos extends DataBehaviour {
             if (vscroll == null) {
                 vscroll = cast(_scrollview._compositeBuilder, ScrollViewBuilder).createVScroll();
             }
-            vscroll.pos = _value;
+            if (vscroll != null) {
+                vscroll.pos = _value;
+            }
             
         } else if (vscroll != null) {
             vscroll.pos = _value;
@@ -265,7 +269,9 @@ private class HScrollMax extends DataBehaviour {
             if (hscroll == null) {
                 hscroll = cast(_scrollview._compositeBuilder, ScrollViewBuilder).createHScroll();
             }
-            hscroll.max = _value;
+            if (hscroll != null) {
+                hscroll.max = _value;
+            }
         }
     }
 }
@@ -294,7 +300,9 @@ private class VScrollMax extends DataBehaviour {
             if (vscroll == null) {
                 vscroll = cast(_scrollview._compositeBuilder, ScrollViewBuilder).createVScroll();
             }
-            vscroll.max = _value;
+            if (vscroll != null) {
+                vscroll.max = _value;
+            }
         }
     }
 }
@@ -315,7 +323,9 @@ private class HScrollPageSize extends DataBehaviour {
             if (hscroll == null) {
                 hscroll = cast(_scrollview._compositeBuilder, ScrollViewBuilder).createHScroll();
             }
-            hscroll.pageSize = _value;
+            if (hscroll != null) {
+                hscroll.pageSize = _value;
+            }
         }
     }
 }
@@ -336,7 +346,9 @@ private class VScrollPageSize extends DataBehaviour {
             if (vscroll == null) {
                 vscroll = cast(_scrollview._compositeBuilder, ScrollViewBuilder).createVScroll();
             }
-            vscroll.pageSize = _value;
+            if (vscroll != null) {
+                vscroll.pageSize = _value;
+            }
         }
     }
 }
@@ -761,22 +773,38 @@ class ScrollViewBuilder extends CompositeBuilder {
     }
 
     public function createHScroll():HorizontalScroll {
-        var hscroll = new HorizontalScroll();
-        hscroll.percentWidth = 100;
-        hscroll.allowFocus = false;
-        hscroll.id = "scrollview-hscroll";
-        _component.addComponent(hscroll);
-        _component.registerInternalEvents(true);
+        var usableSize:Size = _component.layout.usableSize;
+        var horizontalConstraint = _contents;
+        var hscroll:HorizontalScroll = _component.findComponent(HorizontalScroll, false);
+        var vcw:Float = horizontalConstraint.width + horizontalConstraintModifier();
+        
+        if (vcw > usableSize.width && hscroll == null) {
+            hscroll = new HorizontalScroll();
+            hscroll.percentWidth = 100;
+            hscroll.allowFocus = false;
+            hscroll.id = "scrollview-hscroll";
+            _component.addComponent(hscroll);
+            _component.registerInternalEvents(true);
+        }
+        
         return hscroll;
     }
     
     public function createVScroll():VerticalScroll {
-        var vscroll = new VerticalScroll();
-        vscroll.percentHeight = 100;
-        vscroll.allowFocus = false;
-        vscroll.id = "scrollview-vscroll";
-        _component.addComponent(vscroll);
-        _component.registerInternalEvents(true);
+        var usableSize:Size = _component.layout.usableSize;
+        var verticalConstraint = _contents;
+        var vscroll:VerticalScroll = _component.findComponent(VerticalScroll, false);
+        var vch:Float = verticalConstraint.height + verticalConstraintModifier();
+        
+        if (vch > usableSize.height && vscroll == null) {
+            vscroll = new VerticalScroll();
+            vscroll.percentHeight = 100;
+            vscroll.allowFocus = false;
+            vscroll.id = "scrollview-vscroll";
+            _component.addComponent(vscroll);
+            _component.registerInternalEvents(true);
+        }
+        
         return vscroll;
     }
     
