@@ -691,6 +691,29 @@ class Component extends ComponentBase implements IComponentBase implements IVali
     }
 
     /**
+     Checks if this component meets the search criteria
+
+     - `criteria` - The criteria by which to search, the interpretation of this is defined using `searchType` (the default search type is _id_)
+
+     - `type` - The component class you wish to cast the result to (defaults to _null_)
+
+     - `searchType` - Allows you specify how to consider a parent a match (defaults to _id_), can be either:
+
+            - `id` - The first component that has the id specified in `criteria` will be considered a match
+
+            - `css` - The first component that contains a style name specified by `criteria` will be considered a match
+    **/
+    @:dox(group = "Display tree related properties and methods")
+    public function matchesSearch<T>(criteria:String = null, type:Class<T> = null, searchType:String = "id"):Bool {
+        if (criteria != null) {
+            return searchType == "id" && id == criteria || searchType == "css" && hasClass(criteria) == true;
+        } else if (type != null) {
+            return Std.is(this, type) == true;
+        }
+	   return false;
+    }
+
+    /**
      Finds a specific child in this components display tree (recusively if desired) and can optionally cast the result
 
      - `criteria` - The criteria by which to search, the interpretation of this is defined using `searchType` (the default search type is *id*)
@@ -713,19 +736,9 @@ class Component extends ComponentBase implements IComponentBase implements IVali
 
         var match:Component = null;
         for (child in childComponents) {
-            if (criteria != null) {
-                if (searchType == "id" && child.id == criteria) {
-                    match = cast child;
-                    break;
-                } else if (searchType == "css" && child.hasClass(criteria) == true) {
-                    match = cast child;
-                    break;
-                }
-            } else if (type != null) {
-                if (Std.is(child, type) == true) {
-                    match = cast child;
-                    break;
-                }
+            if (child.matchesSearch(criteria, type, searchType)) {
+                 match = child;
+                 break;
             }
         }
         if (match == null && recursive == true) {
@@ -759,19 +772,11 @@ class Component extends ComponentBase implements IComponentBase implements IVali
         var match:Component = null;
         var p = this.parentComponent;
         while (p != null) {
-            if (criteria != null) {
-                if (searchType == "id" && p.id == criteria) {
-                    match = cast p;
-                    break;
-                } else if (searchType == "css" && p.hasClass(criteria) == true) {
-                    match = cast p;
-                    break;
-                }
-            } else if (type != null) {
-                if (Std.is(p, type) == true) {
-                    match = cast p;
-                    break;
-                }
+            if (p.matchesSearch(criteria, type, searchType)) {
+                 match = p;
+                 break;
+            } else {
+                 p = p.parentComponent;
             }
             
             p = p.parentComponent;
@@ -916,12 +921,12 @@ class Component extends ComponentBase implements IComponentBase implements IVali
                 invalidateComponentStyle();
             }
         }
-		
-		if (recursive == true) {
-			for (child in childComponents) {
-				child.addClass(name, invalidate, recursive);
-			}
-		}
+          
+          if (recursive == true) {
+               for (child in childComponents) {
+                    child.addClass(name, invalidate, recursive);
+               }
+          }
     }
 
     /**
@@ -936,11 +941,11 @@ class Component extends ComponentBase implements IComponentBase implements IVali
             }
         }
 
-		if (recursive == true) {
-			for (child in childComponents) {
-				child.removeClass(name, invalidate, recursive);
-			}
-		}
+          if (recursive == true) {
+               for (child in childComponents) {
+                    child.removeClass(name, invalidate, recursive);
+               }
+          }
     }
 
     /**

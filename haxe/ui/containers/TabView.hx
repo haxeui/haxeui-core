@@ -112,7 +112,11 @@ class TabView extends Component {
         var match: Component = super.findComponent(criteria, type, recursive, searchType);
         if (match == null && _views != null) {
             for (view in _views) {
-                match = view.findComponent(criteria, type, recursive, searchType);
+                if (view.matchesSearch(criteria, type, searchType)) {
+                    return cast view;
+                } else {
+                    match = view.findComponent(criteria, type, recursive, searchType);
+                }
                 if (match != null) {
                     break;
                 }
