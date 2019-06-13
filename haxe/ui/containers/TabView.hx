@@ -327,4 +327,23 @@ private class Builder extends CompositeBuilder {
     public override function getComponentAt(index:Int):Component {
         return _views[index];
     }
+    
+    
+    public override function findComponent<T:Component>(criteria:String, type:Class<T>, recursive:Null<Bool>, searchType:String):Null<T> {
+        var match = super.findComponent(criteria, type, recursive, searchType);
+        if (match == null) {
+            for (view in _views) {
+                match = view.findComponent(criteria, type, recursive, searchType);
+                if (view.matchesSearch(criteria, type, searchType)) {
+                    return cast view;
+			 } else {
+                    match = view.findComponent(criteria, type, recursive, searchType);
+                }
+                if (match != null) {
+                    break;
+                }
+            }
+        }
+        return cast match;
+    }
 }
