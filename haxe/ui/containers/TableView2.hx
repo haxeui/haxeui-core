@@ -226,17 +226,7 @@ private class Events extends ScrollViewEvents {
         */
     }
     
-    /*
-    private override function onHScroll(event:UIEvent) {
-        super.onHScroll(event);
-        var builder = cast(_scrollview._compositeBuilder, Builder);
-        _tableview.invalidateComponentLayout();
-    }
-    */
-    
-    
     private function onScrollChange(e:ScrollEvent):Void {
-        trace(_tableview.vscrollPos);
         _tableview.invalidateComponentLayout();
     }
 }
@@ -393,11 +383,22 @@ private class Layout extends VerticalVirtualLayout {
     */
     
     private override function get_itemHeight():Float {
-        return 25;
+        return 30;
     }
     
+    /*
     private override function get_itemCount():Int {
         return 11;
+    }
+    */
+    
+    private override function verticalConstraintModifier():Float {
+        var header = findComponent(Header, true);
+        if (header == null) {
+            return 0;
+        }
+
+        return header.height;
     }
     
     private override function get_contents():Component {
@@ -432,7 +433,8 @@ private class Layout extends VerticalVirtualLayout {
                     for (column in header.childComponents) {
                         var itemRenderer = item.findComponent(column.id, Component).findAncestor(ItemRenderer);
                         if (itemRenderer != null) {
-                            //itemRenderer.height = biggest;
+                            trace(biggest);
+                            itemRenderer.height = biggest;
                         }
                     }
                 }

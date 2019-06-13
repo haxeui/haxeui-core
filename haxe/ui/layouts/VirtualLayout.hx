@@ -71,6 +71,8 @@ class VirtualLayout extends ScrollViewLayout {
             }
         }
 
+        trace(result);
+        
         if (result <= 0) {
             result = 1; //Min value to render items
         }

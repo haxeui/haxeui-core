@@ -50,6 +50,10 @@ class VerticalVirtualLayout extends VirtualLayout {
         }
     }
 
+    private function verticalConstraintModifier():Float {
+        return 0;
+    }
+    
     private override function calculateRangeVisible() {
         var comp:IVirtualContainer = cast(_component, IVirtualContainer);
         var verticalSpacing = contents.layout.verticalSpacing;
@@ -61,11 +65,11 @@ class VerticalVirtualLayout extends VirtualLayout {
             var itemCount:Int = this.itemCount;
             contentsHeight = itemCount > 0 ? itemCount * itemHeight : contents.height;
         } else {
-            contentsHeight = contents.height;
+            contentsHeight = contents.height - 25;// - verticalConstraintModifier();
         }
 
         if (contentsHeight > _component.height) {
-            contentsHeight = _component.height;
+            contentsHeight = _component.height;// - verticalConstraintModifier();
         }
 
         if (comp.variableItemSize == true) {
