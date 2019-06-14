@@ -236,7 +236,7 @@ private class Events extends ScrollViewEvents {
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
 private class Builder extends ScrollViewBuilder {
-    public var tableDataContainer:Box;
+    //public var tableDataContainer:Box;
     
     private var _tableview:TableView2;
     private var _header:Header = null;
@@ -248,12 +248,15 @@ private class Builder extends ScrollViewBuilder {
     }
     
     public override function create() {
-        createContentContainer("absolute");
+//        createContentContainer("absolute");
+        createContentContainer(_tableview.virtual ? "absolute" : "vertical");
+        /*
         tableDataContainer = new Box();
         tableDataContainer.addClass("tableview-data");
         tableDataContainer.layoutName = _tableview.virtual ? "absolute" : "vertical";
         tableDataContainer.styleString = "spacing: 0";
         _contents.addComponent(tableDataContainer);
+        */
         _contents.styleString = "spacing: 0";
     }
     
@@ -272,6 +275,7 @@ private class Builder extends ScrollViewBuilder {
         }
     }
     
+    /*
     private override function verticalConstraintModifier():Float {
         if (_header == null || _tableview.virtual == true) {
             return 0;
@@ -279,6 +283,7 @@ private class Builder extends ScrollViewBuilder {
 
         return _header.height;
     }
+    */
     
     public override function addComponent(child:Component):Component {
         if (Std.is(child, Header) == true) {
@@ -327,7 +332,8 @@ private class Builder extends ScrollViewBuilder {
     }
     
     public override function onVirtualChanged() {
-        tableDataContainer.layoutName = _tableview.virtual ? "absolute" : "vertical";
+        //tableDataContainer.layoutName = _tableview.virtual ? "absolute" : "vertical";
+        _contents.layoutName = _tableview.virtual ? "absolute" : "vertical";
     }
 }
 
@@ -392,6 +398,7 @@ private class Layout extends VerticalVirtualLayout {
     }
     */
     
+    /*
     private override function verticalConstraintModifier():Float {
         var header = findComponent(Header, true);
         if (header == null) {
@@ -400,10 +407,11 @@ private class Layout extends VerticalVirtualLayout {
 
         return header.height;
     }
+    */
     
     private override function get_contents():Component {
         if (contents == null) {
-            contents = findComponent("tableview-data", true, "css");
+            contents = findComponent("tableview-contents", true, "css");
         }
 
         return contents;
@@ -412,10 +420,13 @@ private class Layout extends VerticalVirtualLayout {
     public override function repositionChildren() {
         super.repositionChildren();
         
-        var header = findComponent(Header, true);
-        header.left = -cast(_component, ScrollView).hscrollPos;
+        return;
         
-        var data = findComponent("tableview-data", Box, true, "css");
+        var header = findComponent(Header, true);
+//        header.left = -cast(_component, ScrollView).hscrollPos + paddingLeft;
+//        header.top = paddingTop;
+        
+        var data = findComponent("tableview-contents", Box, true, "css");
         if (data != null) {
             for (item in data.childComponents) {
                 var biggest:Float = 0;
@@ -433,14 +444,14 @@ private class Layout extends VerticalVirtualLayout {
                     for (column in header.childComponents) {
                         var itemRenderer = item.findComponent(column.id, Component).findAncestor(ItemRenderer);
                         if (itemRenderer != null) {
-                            trace(biggest);
+                            //trace(biggest);
                             itemRenderer.height = biggest;
                         }
                     }
                 }
             }
-            data.left = 0;
-            data.top = header.height - 1;
+//            data.left = paddingLeft;
+//            data.top = header.top + header.height - 1;
         }
     }
     
@@ -449,8 +460,8 @@ private class Layout extends VerticalVirtualLayout {
         super.resizeChildren();
         
         var header = findComponent(Header, true);
-        var data = findComponent("tableview-data", VBox, true, "css");
-        //data.height = usableHeight;
+        var data = findComponent("tableview-contents", Box, true, "css");
+        data.height = usableHeight - header.height;
     }
     */
 }
