@@ -1,6 +1,6 @@
 package haxe.ui.backend;
 
-import haxe.ui.containers.dialogs.Dialog2;
+import haxe.ui.containers.dialogs.Dialog;
 import haxe.ui.core.Component;
 import haxe.ui.core.ComponentBounds;
 import haxe.ui.core.ComponentLayout;
@@ -227,8 +227,8 @@ class ComponentBase extends ComponentBounds {
 
     public var className(get, null):String;
     private function get_className():String {
-        if (Std.is(this, Dialog2)) {
-            return Type.getClassName(Dialog2);
+        if (Std.is(this, Dialog)) {
+            return Type.getClassName(Dialog);
         }
         return Type.getClassName(Type.getClass(this));
     }

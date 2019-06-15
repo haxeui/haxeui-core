@@ -36,6 +36,7 @@
         -->    
         <import class="StringTools" keep="true" static="true" />
         <import class="haxe.ui.core.Screen" keep="true" static="true" />
+        <import class="haxe.ui.containers.dialogs.MessageBox" keep="true" static="true" />
         <!--
         <import class="haxe.ui.core.UIEvent" keep="true" static="true" />
         <import class="haxe.ui.core.MouseEvent" keep="true" static="true" />

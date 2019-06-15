@@ -1,8 +1,12 @@
 package haxe.ui;
 
 import haxe.ui.backend.ToolkitOptions;
+import haxe.ui.containers.dialogs.Dialog;
+import haxe.ui.containers.dialogs.MessageBox;
+import haxe.ui.containers.dialogs.MessageBox.MessageBoxType;
 import haxe.ui.core.Component;
 import haxe.ui.core.ComponentClassMap;
+import haxe.ui.core.ComponentFieldMap;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.LayoutClassMap;
 import haxe.ui.core.Screen;
@@ -20,7 +24,6 @@ import haxe.ui.parsers.ui.resolvers.ResourceResolver;
 import haxe.ui.scripting.ConditionEvaluator;
 import haxe.ui.styles.StyleSheet;
 import haxe.ui.themes.ThemeManager;
-import haxe.ui.core.ComponentFieldMap;
 import haxe.ui.util.GenericConfig;
 import haxe.ui.util.Properties;
 import haxe.ui.util.Variant;
@@ -81,6 +84,26 @@ class Toolkit {
         }
     }
 
+    public static function messageBox(message:String, title:String = null, type:MessageBoxType = null, modal:Bool = true, callback:DialogButton->Void = null):Dialog {
+        if (type == null) {
+            type = MessageBoxType.INFO;
+        }
+        var messageBox = new MessageBox();
+        messageBox.type = type;
+        messageBox.message = message;
+        messageBox.modal = modal;
+        if (title != null) {
+            messageBox.title = title;
+        }
+        messageBox.show();
+        if (callback != null) {
+            messageBox.registerEvent(DialogEvent.DIALOG_CLOSED, function(e:DialogEvent) {
+                callback(e.button);
+            });
+        }
+        return messageBox;
+    }
+  
     public static var assets(get, null):ToolkitAssets;
     private static function get_assets():ToolkitAssets {
         return ToolkitAssets.instance;

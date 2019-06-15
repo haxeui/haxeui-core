@@ -62,6 +62,7 @@ class Macros {
             builder.constructor.add(macro
                 $i{safeId} = findComponent($v{id}, $p{cls.split(".")}, true)
             , 1);
+            createChildrenFn.add(macro $i{safeId} = findComponent($v{id}, $p{cls.split(".")}, true));
         }
     }
     

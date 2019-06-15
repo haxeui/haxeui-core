@@ -3,17 +3,17 @@ package haxe.ui.containers.dialogs;
 import haxe.ui.backend.DialogBase;
 import haxe.ui.events.UIEvent;
 
-abstract DialogButton2(String) from String {
-    public static inline var SAVE:DialogButton2 = "Save";
-    public static inline var YES:DialogButton2 = "Yes";
-    public static inline var NO:DialogButton2 = "No";
-    public static inline var CLOSE:DialogButton2 = "Close";
-    public static inline var OK:DialogButton2 = "OK";
-    public static inline var CANCEL:DialogButton2 = "Cancel";
-    public static inline var APPLY:DialogButton2 = "Apply";
+abstract DialogButton(String) from String {
+    public static inline var SAVE:DialogButton = "Save";
+    public static inline var YES:DialogButton = "Yes";
+    public static inline var NO:DialogButton = "No";
+    public static inline var CLOSE:DialogButton = "Close";
+    public static inline var OK:DialogButton = "OK";
+    public static inline var CANCEL:DialogButton = "Cancel";
+    public static inline var APPLY:DialogButton = "Apply";
     
     @:op(A | B)
-    private static inline function bitOr(lhs:DialogButton2, rhs:DialogButton2):DialogButton2 {
+    private static inline function bitOr(lhs:DialogButton, rhs:DialogButton):DialogButton {
         var larr = Std.string(lhs).split("|");
         var rarr = Std.string(rhs).split("|");
         for (r in rarr) {
@@ -25,13 +25,21 @@ abstract DialogButton2(String) from String {
     }
     
     @:op(A == B)
-    private static inline function eq(lhs:DialogButton2, rhs:DialogButton2):Bool {
+    private static inline function eq(lhs:DialogButton, rhs:DialogButton):Bool {
         var larr = Std.string(lhs).split("|");
         return larr.indexOf(Std.string(rhs)) != -1;
     }
     
-	public function toArray():Array<DialogButton2> {
-        return Std.string(this).split("|");
+	public function toArray():Array<DialogButton> {
+        var a = [];
+        for (i in Std.string(this).split("|")) {
+            i = StringTools.trim(i);
+            if (i.length == 0 || i == "null") {
+                continue;
+            }
+            a.push(i);
+        }
+        return a;
     }
     
 	public function toString():String {
@@ -42,7 +50,7 @@ abstract DialogButton2(String) from String {
 class DialogEvent extends UIEvent {
     public static inline var DIALOG_CLOSED:String = "dialogClosed";
     
-    public var button:DialogButton2;
+    public var button:DialogButton;
     
     public override function clone():DialogEvent {
         var c:DialogEvent = new DialogEvent(this.type);
@@ -57,7 +65,7 @@ class DialogEvent extends UIEvent {
     }
 }
 
-class Dialog2 extends DialogBase {
+class Dialog extends DialogBase {
     public function new() {
         super();
     }

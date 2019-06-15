@@ -2,7 +2,7 @@ package haxe.ui.backend;
 
 import haxe.ui.components.Button;
 import haxe.ui.containers.Box;
-import haxe.ui.containers.dialogs.Dialog2;
+import haxe.ui.containers.dialogs.Dialog;
 import haxe.ui.core.Component;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.core.Screen;
@@ -25,10 +25,10 @@ import haxe.ui.events.UIEvent;
 @:dox(hide) @:noCompletion
 class DialogBase extends Box {
     public var modal:Bool = true;
-    public var buttons:DialogButton2 = null;
+    public var buttons:DialogButton = null;
     public var draggable:Bool = false;
     public var centerDialog:Bool = true;
-    public var button:DialogButton2 = null;
+    public var button:DialogButton = null;
     
     private var _overlay:Component;
     
@@ -36,7 +36,7 @@ class DialogBase extends Box {
         super();
         dialogFooterContainer.hide();
         dialogCloseButton.onClick = function(e) {
-            hideDialog(DialogButton2.CANCEL);
+            hideDialog(DialogButton.CANCEL);
         }
     }
     
@@ -53,6 +53,14 @@ class DialogBase extends Box {
             _overlay.percentWidth = _overlay.percentHeight = 100;
             Screen.instance.addComponent(_overlay);
         }
+        createButtons();
+        Screen.instance.addComponent(this);
+        if (centerDialog) {
+            centerDialogComponent(cast(this, Dialog));
+        }
+    }
+
+    private function createButtons() {
         if (buttons != null) {
             for (button in buttons.toArray()) {
                 var buttonComponent = new Button();
@@ -62,12 +70,8 @@ class DialogBase extends Box {
                 addFooterComponent(buttonComponent);
             }
         }
-        Screen.instance.addComponent(this);
-        if (centerDialog) {
-            centerDialogComponent(cast(this, Dialog2));
-        }
     }
-
+    
     public var closable(get, set):Bool;
     private function get_closable():Bool {
         return !dialogCloseButton.hidden;
@@ -81,7 +85,7 @@ class DialogBase extends Box {
         return value;
     }
     
-    private function validateDialog(button:DialogButton2, fn:Bool->Void) {
+    private function validateDialog(button:DialogButton, fn:Bool->Void) {
         fn(true);
     }
     
@@ -100,7 +104,7 @@ class DialogBase extends Box {
         });
     }
 
-    public function hideDialog(button:DialogButton2) {
+    public function hideDialog(button:DialogButton) {
         this.button = button;
         hide();
     }
@@ -135,7 +139,7 @@ class DialogBase extends Box {
         dialogFooter.addComponent(c);
     }
     
-    public function centerDialogComponent(dialog:Dialog2) {
+    public function centerDialogComponent(dialog:Dialog) {
         dialog.syncComponentValidation();
         var x = (Screen.instance.width / 2) - (dialog.componentWidth / 2);
         var y = (Screen.instance.height / 2) - (dialog.componentHeight / 2);
