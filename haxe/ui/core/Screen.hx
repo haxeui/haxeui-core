@@ -82,6 +82,9 @@ class Screen extends ScreenImpl {
         return Toolkit.messageBox(message, title, type, modal, callback);
     }
   
+    public function dialog(contents:Component, title:String = null, buttons:DialogButton = null, modal:Bool = true, callback:DialogButton->Void = null):Dialog {
+        return Toolkit.dialog(contents, title, buttons, modal, callback);
+    }
     
     //***********************************************************************************************************
     // Events

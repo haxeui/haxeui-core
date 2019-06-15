@@ -104,6 +104,25 @@ class Toolkit {
         return messageBox;
     }
   
+    public static function dialog(contents:Component, title:String = null, buttons:DialogButton = null, modal:Bool = true, callback:DialogButton->Void = null):Dialog {
+        var dialog = new Dialog();
+        dialog.modal = modal;
+        if (title != null) {
+            dialog.title = title;
+        }
+        if (buttons != null) {
+            dialog.buttons = buttons;
+        }
+        dialog.addComponent(contents);
+        dialog.show();
+        if (callback != null) {
+            dialog.registerEvent(DialogEvent.DIALOG_CLOSED, function(e:DialogEvent) {
+                callback(e.button);
+            });
+        }
+        return dialog;
+    }
+    
     public static var assets(get, null):ToolkitAssets;
     private static function get_assets():ToolkitAssets {
         return ToolkitAssets.instance;
