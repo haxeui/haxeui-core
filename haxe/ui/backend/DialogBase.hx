@@ -4,9 +4,8 @@ import haxe.ui.components.Button;
 import haxe.ui.containers.Box;
 import haxe.ui.containers.dialogs.Dialog;
 import haxe.ui.core.Component;
-import haxe.ui.events.MouseEvent;
 import haxe.ui.core.Screen;
-import haxe.ui.events.UIEvent;
+import haxe.ui.events.MouseEvent;
 
 @:xml('
 <vbox id="dialog-container" styleNames="dialog-container">
