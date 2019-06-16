@@ -157,10 +157,10 @@ class VerticalVirtualLayout extends VirtualLayout {
                     size = itemHeight;
                 }
 
-                scrollMax += size + verticalSpacing;
+                scrollMax += size + verticalSpacing + verticalConstraintModifier();
             }
         } else {
-            scrollMax = (dataSize * itemHeight + ((dataSize - 1) * verticalSpacing)) - usableSize.height;
+            scrollMax = (dataSize * itemHeight + ((dataSize - 1) * verticalSpacing)) - usableSize.height + verticalConstraintModifier();
         }
 
         if (scrollMax < 0) {

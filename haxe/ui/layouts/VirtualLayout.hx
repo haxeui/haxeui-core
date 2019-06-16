@@ -147,14 +147,10 @@ class VirtualLayout extends ScrollViewLayout {
     }
 
     private function refreshVirtualData() {
-        trace("start start");
-        
         removeInvisibleRenderers();
         calculateRangeVisible();
         updateScroll();
 
-        trace("start 1");
-        
         var dataSource:DataSource<Dynamic> = dataSource;
         var i = 0;
         for (n in _firstIndex..._lastIndex) {
@@ -198,13 +194,9 @@ class VirtualLayout extends ScrollViewLayout {
             i++;
         }
 
-        trace("end 1");
-        
         while (contents.childComponents.length > i) {
             removeRenderer(cast(contents.childComponents[contents.childComponents.length - 1], ItemRenderer), false);    // remove last
         }
-        
-        trace("end end");
     }
 
     private function calculateRangeVisible() {

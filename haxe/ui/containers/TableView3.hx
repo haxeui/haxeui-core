@@ -82,7 +82,6 @@ class TableView3 extends ScrollView implements IDataComponent implements IVirtua
 @:dox(hide) @:noCompletion
 typedef ItemRendererFunction4 = Dynamic->Int->Class<ItemRenderer>;    //(data, index):Class<ItemRenderer>
 
-/*
 private class CompoundItemRenderer extends ItemRenderer {
     public function new() {
         super();
@@ -119,8 +118,19 @@ private class CompoundItemRenderer extends ItemRenderer {
             child.removeClass(name, invalidate, recursive);
         }
     }
+    
+    private override function _onItemMouseOver(event:MouseEvent) {
+        for (child in childComponents) {
+            child.addClass(":hover");
+        }
+    }
+
+    private override function _onItemMouseOut(event:MouseEvent) {
+        for (child in childComponents) {
+            child.removeClass(":hover");
+        }
+    }
 }
-*/
 
 //***********************************************************************************************************
 // Events
@@ -170,7 +180,6 @@ private class Builder extends ScrollViewBuilder {
         createContentContainer(_tableview.virtual ? "absolute" : "vertical");
     }
 
-    /*
     public override function onInitialize() {
         if (_tableview.itemRenderer == null) {
             buildDefaultRenderer();
@@ -178,7 +187,6 @@ private class Builder extends ScrollViewBuilder {
             fillExistingRenderer();
         }
     }
-    */
     
     private override function createContentContainer(layoutName:String) {
         if (_contents == null) {
@@ -191,14 +199,12 @@ private class Builder extends ScrollViewBuilder {
         var r = null;
         if (Std.is(child, ItemRenderer) && (_tableview.itemRenderer == null && _tableview.itemRendererFunction == null && _tableview.itemRendererClass == null)) {
             _tableview.itemRenderer = cast(child, ItemRenderer);
-            /*
             var itemRenderer = _tableview.itemRenderer;
             if (itemRenderer == null) {
                 itemRenderer = new CompoundItemRenderer();
                 _tableview.itemRenderer = itemRenderer;
             }
             itemRenderer.addComponent(child);
-            */
             
             r = child;
         } else if (Std.is(child, Header)) {
@@ -210,7 +216,6 @@ private class Builder extends ScrollViewBuilder {
         return r;
     }
     
-    /*
     public function buildDefaultRenderer() {
         var r = new CompoundItemRenderer();
         for (column in _header.childComponents) {
@@ -238,7 +243,14 @@ private class Builder extends ScrollViewBuilder {
             }
         }
     }
-    */
+    
+    private override function verticalConstraintModifier():Float {
+        if (_header == null || _tableview.virtual == true) {
+            return 0;
+        }
+
+        return _header.height;
+    }
     
     public override function onVirtualChanged() {
         _contents.layoutName = _tableview.virtual ? "absolute" : "vertical";
@@ -249,6 +261,73 @@ private class Builder extends ScrollViewBuilder {
 // Composite Layout
 //***********************************************************************************************************
 private class Layout extends VerticalVirtualLayout {
+    public override function repositionChildren() {
+        super.repositionChildren();
+
+        var header = findComponent(Header, true);
+        if (header == null) {
+            return;
+        }
+        
+        header.left = -cast(_component, ScrollView).hscrollPos + paddingLeft - 1;
+        header.top = paddingTop - 1;
+        
+        var data = findComponent("tableview-contents", Box, true, "css");
+        if (data != null) {
+            for (item in data.childComponents) {
+                var biggest:Float = 0;
+                for (column in header.childComponents) {
+                    var itemRenderer = item.findComponent(column.id, Component).findAncestor(ItemRenderer);
+                    if (itemRenderer != null) {
+                        itemRenderer.percentWidth = null;
+                        itemRenderer.width = column.width - item.layout.horizontalSpacing;
+                        if (itemRenderer.height > biggest) {
+                            biggest = itemRenderer.height;
+                        }
+                    }
+                }
+                data.componentWidth = item.width;
+                /*
+                if (biggest != 0) { // might not be a great idea - maybe rethink
+                    for (column in header.childComponents) {
+                        var itemRenderer = item.findComponent(column.id, Component).findAncestor(ItemRenderer);
+                        if (itemRenderer != null) {
+                            //trace(biggest);
+                            //itemRenderer.height = biggest;
+                        }
+                    }
+                }
+                */
+            }
+            
+            data.left = paddingLeft;
+            data.top = header.top + header.height - 1;
+        }
+    }
+    
+    private override function verticalConstraintModifier():Float {
+        var header = findComponent(Header, true);
+        if (header == null) {
+            return 0;
+        }
+
+        return header.height;
+    }
+    
+    public override function resizeChildren() {
+        super.resizeChildren();
+        
+        var header = findComponent(Header, true);
+        if (header != null) {
+            var vscroll = findComponent(VerticalScroll);
+            if (vscroll == null) {
+                header.componentWidth += 2;
+            } else {
+                header.componentWidth += 1;
+            }
+        }
+        
+    }
     
 }
 

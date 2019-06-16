@@ -236,7 +236,7 @@ private class Events extends ScrollViewEvents {
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
 private class Builder extends ScrollViewBuilder {
-    //public var tableDataContainer:Box;
+    public var tableDataContainer:Box;
     
     private var _tableview:TableView2;
     private var _header:Header = null;
@@ -250,13 +250,11 @@ private class Builder extends ScrollViewBuilder {
     public override function create() {
 //        createContentContainer("absolute");
         createContentContainer(_tableview.virtual ? "absolute" : "vertical");
-        /*
         tableDataContainer = new Box();
         tableDataContainer.addClass("tableview-data");
         tableDataContainer.layoutName = _tableview.virtual ? "absolute" : "vertical";
         tableDataContainer.styleString = "spacing: 0";
         _contents.addComponent(tableDataContainer);
-        */
         _contents.styleString = "spacing: 0";
     }
     
@@ -275,7 +273,6 @@ private class Builder extends ScrollViewBuilder {
         }
     }
     
-    /*
     private override function verticalConstraintModifier():Float {
         if (_header == null || _tableview.virtual == true) {
             return 0;
@@ -283,7 +280,6 @@ private class Builder extends ScrollViewBuilder {
 
         return _header.height;
     }
-    */
     
     public override function addComponent(child:Component):Component {
         if (Std.is(child, Header) == true) {
@@ -332,8 +328,8 @@ private class Builder extends ScrollViewBuilder {
     }
     
     public override function onVirtualChanged() {
-        //tableDataContainer.layoutName = _tableview.virtual ? "absolute" : "vertical";
-        _contents.layoutName = _tableview.virtual ? "absolute" : "vertical";
+        tableDataContainer.layoutName = _tableview.virtual ? "absolute" : "vertical";
+        //_contents.layoutName = _tableview.virtual ? "absolute" : "vertical";
     }
 }
 
@@ -388,9 +384,11 @@ private class Layout extends VerticalVirtualLayout {
     }
     */
     
+    /*
     private override function get_itemHeight():Float {
         return 30;
     }
+    */
     
     /*
     private override function get_itemCount():Int {
@@ -398,7 +396,6 @@ private class Layout extends VerticalVirtualLayout {
     }
     */
     
-    /*
     private override function verticalConstraintModifier():Float {
         var header = findComponent(Header, true);
         if (header == null) {
@@ -407,11 +404,10 @@ private class Layout extends VerticalVirtualLayout {
 
         return header.height;
     }
-    */
     
     private override function get_contents():Component {
         if (contents == null) {
-            contents = findComponent("tableview-contents", true, "css");
+            contents = findComponent("tableview-data", true, "css");
         }
 
         return contents;
@@ -426,7 +422,7 @@ private class Layout extends VerticalVirtualLayout {
 //        header.left = -cast(_component, ScrollView).hscrollPos + paddingLeft;
 //        header.top = paddingTop;
         
-        var data = findComponent("tableview-contents", Box, true, "css");
+        var data = findComponent("tableview-data", Box, true, "css");
         if (data != null) {
             for (item in data.childComponents) {
                 var biggest:Float = 0;
