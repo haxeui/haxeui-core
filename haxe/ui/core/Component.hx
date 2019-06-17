@@ -1211,7 +1211,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
 
     private override function validateInitialSize(isInitialized:Bool) {
         if (isInitialized == false && _style != null) {
-            if ((_style.initialWidth != null || _style.initialPercentWidth != null) && width <= 0) {
+            if ((_style.initialWidth != null || _style.initialPercentWidth != null) && width <= 0 && percentWidth == null) {
                 if (_style.initialWidth != null) {
                     width = _style.initialWidth;
                 } else  if (_style.initialPercentWidth != null) {
@@ -1219,7 +1219,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
                 }
             }
             
-            if ((_style.initialHeight != null || _style.initialPercentHeight != null) && height <= 0) {
+            if ((_style.initialHeight != null || _style.initialPercentHeight != null) && height <= 0 && percentHeight == null) {
                 if (_style.initialHeight != null) {
                     height = _style.initialHeight;
                 } else  if (_style.initialPercentHeight != null) {
@@ -1320,24 +1320,6 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     private override function applyStyle(style:Style) {
         super.applyStyle(style);
 
-        if (style != null) {
-            if ((style.initialWidth != null || style.initialPercentWidth != null) && width <= 0) {
-                if (style.initialWidth != null) {
-                    width = style.initialWidth;
-                } else  if (style.initialPercentWidth != null) {
-                    percentWidth = style.initialPercentWidth;
-                }
-            }
-            
-            if ((style.initialHeight != null || style.initialPercentHeight != null) && height <= 0) {
-                if (style.initialHeight != null) {
-                    height = style.initialHeight;
-                } else  if (style.initialPercentHeight != null) {
-                    percentHeight = style.initialPercentHeight;
-                }
-            }
-        }
-        
         if (style.left != null) {
             left = style.left;
         }

@@ -1,23 +1,23 @@
 package haxe.ui.components;
 
 import haxe.ui.behaviours.Behaviour;
+import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
-import haxe.ui.behaviours.DataBehaviour;
-import haxe.ui.events.FocusEvent;
 import haxe.ui.core.InteractiveComponent;
-import haxe.ui.events.MouseEvent;
 import haxe.ui.core.TextInput;
-import haxe.ui.events.UIEvent;
 import haxe.ui.events.Events;
-import haxe.ui.focus.FocusManager;
+import haxe.ui.events.FocusEvent;
+import haxe.ui.events.MouseEvent;
+import haxe.ui.events.UIEvent;
 import haxe.ui.focus.IFocusable;
+import haxe.ui.geom.Size;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.styles.Style;
-import haxe.ui.geom.Size;
 import haxe.ui.util.Variant;
 import haxe.ui.validation.InvalidationFlags;
 
+@:composite(Events, TextAreaBuilder, TextAreaLayout)
 class TextArea extends InteractiveComponent implements IFocusable {
     //***********************************************************************************************************
     // Styles
@@ -30,41 +30,6 @@ class TextArea extends InteractiveComponent implements IFocusable {
     @:behaviour(ValueBehaviour)             public var value:Variant;
     @:behaviour(PlaceholderBehaviour)       public var placeholder:String;
     @:behaviour(WrapBehaviour, true)        public var wrap:Bool;
-    
-    //***********************************************************************************************************
-    // Internals
-    //***********************************************************************************************************
-    private override function createDefaults() {  // TODO: remove this eventually, @:layout(...) or something
-        super.createDefaults();
-        _defaultLayoutClass = TextAreaLayout;
-    }
-    
-    private override function createChildren() { // TODO: this should be min-width / min-height in theme css when the new css engine is done
-        super.createChildren();
-        if (width <= 0) {
-            width = 150;
-        }
-        if (height <= 0) {
-            height = 100;
-        }
-        
-        registerInternalEvents(Events);
-    }
-    
-    private override function registerComposite() { // TODO: remove this eventually, @:composite(...) or something
-       super.registerComposite();
-       _compositeBuilderClass = TextAreaBuilder;
-    }
-    
-    //***********************************************************************************************************
-    // Overrides
-    //***********************************************************************************************************
-    private override function applyStyle(style:Style) { // TODO: remove this eventually, @:styleApplier(...) or something
-        super.applyStyle(style);
-        if (hasTextInput() == true) {
-            getTextInput().textStyle = style;
-        }
-    }
     
     //***********************************************************************************************************
     // Validation
@@ -406,5 +371,12 @@ private class TextAreaBuilder extends CompositeBuilder {
         _component.addComponent(vscroll);
         _component.registerInternalEvents(true);
         return vscroll;
+    }
+    
+    public override function applyStyle(style:Style) {
+        super.applyStyle(style);
+        if (_component.hasTextInput() == true) {
+            _component.getTextInput().textStyle = style;
+        }
     }
 }
