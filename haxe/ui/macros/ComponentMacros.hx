@@ -94,6 +94,9 @@ class ComponentMacros {
     
     public static function buildComponentFromFile(builder:CodeBuilder, filePath:String, namedComponents:Map<String, String> = null, params:Map<String, Dynamic> = null) {
         var f = MacroHelpers.resolveFile(filePath);
+
+        Context.registerModuleDependency(Context.getLocalModule(), f);
+
         if (f == null) {
             throw "Could not resolve: " + filePath;
         }
