@@ -59,7 +59,12 @@ class DialogBase extends Box {
         }
     }
 
+    private var _buttonsCreated:Bool = false;
     private function createButtons() {
+        if (_buttonsCreated == true) {
+            return;
+        }
+        _buttonsCreated = true;
         if (buttons != null) {
             for (button in buttons.toArray()) {
                 var buttonComponent = new Button();
