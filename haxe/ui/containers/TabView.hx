@@ -20,7 +20,7 @@ class TabView extends Component {
     // Public API
     //***********************************************************************************************************
     @:behaviour(PageIndex, -1)      public var pageIndex:Int;
-    @:behaviour(SelectedPage, -1)   public var selectedPage:Component;
+    @:behaviour(SelectedPage, null) public var selectedPage:Component;
     @:behaviour(TabPosition)        public var tabPosition:String;
     @:behaviour(PageCount)          public var pageCount:Int;
     @:call(RemovePage)              public function removePage(index:Int):Void;
@@ -138,6 +138,16 @@ private class SelectedPage extends DefaultBehaviour {
         var builder:Builder = cast(_component._compositeBuilder, Builder);
         var view:Component = builder._views[tabview.pageIndex];
         return view;
+    }
+    
+    public override function set(value:Variant) {
+        var tabview:TabView = cast(_component, TabView);
+        var builder:Builder = cast(_component._compositeBuilder, Builder);
+        var view:Component = value;
+        var viewIndex = builder._views.indexOf(view);
+        if (viewIndex != -1) {
+            tabview.pageIndex = viewIndex;
+        }
     }
 }
 

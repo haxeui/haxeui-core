@@ -191,7 +191,7 @@ abstract Variant(VariantType) from VariantType {
         return VT_Component(s);
     }
 
-    @:to function toComponent():Component {
+    @:to public function toComponent():Component {
         if (this == null) {
             return null;
         }
