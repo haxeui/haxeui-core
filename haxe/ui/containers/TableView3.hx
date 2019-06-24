@@ -87,7 +87,6 @@ private class CompoundItemRenderer extends ItemRenderer {
         super();
         this.layout = LayoutFactory.createFromName("horizontal");
         this.styleString = "spacing: 2px;";
-        removeClass("itemrenderer");
     }
     
     public override function hasClass(name:String):Bool {
@@ -197,8 +196,7 @@ private class Builder extends ScrollViewBuilder {
     
     public override function addComponent(child:Component):Component {
         var r = null;
-        if (Std.is(child, ItemRenderer) && (_tableview.itemRenderer == null && _tableview.itemRendererFunction == null && _tableview.itemRendererClass == null)) {
-            _tableview.itemRenderer = cast(child, ItemRenderer);
+        if (Std.is(child, ItemRenderer)) {
             var itemRenderer = _tableview.itemRenderer;
             if (itemRenderer == null) {
                 itemRenderer = new CompoundItemRenderer();
@@ -206,7 +204,7 @@ private class Builder extends ScrollViewBuilder {
             }
             itemRenderer.addComponent(child);
             
-            r = child;
+            return child;
         } else if (Std.is(child, Header)) {
             _header = cast(child, Header);
             r = null;
@@ -255,6 +253,10 @@ private class Builder extends ScrollViewBuilder {
     public override function onVirtualChanged() {
         _contents.layoutName = _tableview.virtual ? "absolute" : "vertical";
     }
+    
+    private override function get_virtualHorizontal():Bool {
+        return false;
+    }
 }
 
 //***********************************************************************************************************
@@ -287,17 +289,15 @@ private class Layout extends VerticalVirtualLayout {
                     }
                 }
                 data.componentWidth = item.width;
-                /*
                 if (biggest != 0) { // might not be a great idea - maybe rethink
                     for (column in header.childComponents) {
                         var itemRenderer = item.findComponent(column.id, Component).findAncestor(ItemRenderer);
                         if (itemRenderer != null) {
                             //trace(biggest);
-                            //itemRenderer.height = biggest;
+                            itemRenderer.height = biggest;
                         }
                     }
                 }
-                */
             }
             
             data.left = paddingLeft;

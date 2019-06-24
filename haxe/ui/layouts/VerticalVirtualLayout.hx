@@ -64,16 +64,16 @@ class VerticalVirtualLayout extends VirtualLayout {
         if (contents.autoHeight == true) {
             var itemCount:Int = this.itemCount;
             if (itemCount > 0 || _component.autoHeight == true) {
-                contentsHeight = itemCount * itemHeight;
+                contentsHeight = itemCount * itemHeight - verticalConstraintModifier();
             } else {
-                contentsHeight = _component.height;
+                contentsHeight = _component.height - verticalConstraintModifier();
             }
         } else {
-            contentsHeight = contents.height;
+            contentsHeight = contents.height - verticalConstraintModifier();
         }
 
-        if (contentsHeight > _component.height) {
-            contentsHeight = _component.height;
+        if (contentsHeight > _component.height - verticalConstraintModifier()) {
+            contentsHeight = _component.height - verticalConstraintModifier();
         }
 
         if (comp.variableItemSize == true) {

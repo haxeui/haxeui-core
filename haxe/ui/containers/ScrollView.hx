@@ -728,46 +728,46 @@ class ScrollViewBuilder extends CompositeBuilder {
     }
     
     private function checkScrolls() {
-        if (_scrollview.virtual == true) {
-            return;
-        }
-        
         var usableSize:Size = _component.layout.usableSize;
         
-        var horizontalConstraint = _contents;
-        var verticalConstraint = _contents;
         
-        var hscroll:HorizontalScroll = _component.findComponent(HorizontalScroll, false);
-        var vcw:Float = horizontalConstraint.width + horizontalConstraintModifier();
-        if (vcw > usableSize.width) {
-            if (hscroll == null) {
-                hscroll = createHScroll();
-            }
+        if (virtualHorizontal == false) {
+            var horizontalConstraint = _contents;
+            var hscroll:HorizontalScroll = _component.findComponent(HorizontalScroll, false);
+            var vcw:Float = horizontalConstraint.width + horizontalConstraintModifier();
+            if (vcw > usableSize.width) {
+                if (hscroll == null) {
+                    hscroll = createHScroll();
+                }
 
-            hscroll.max = vcw - usableSize.width;
-            hscroll.pageSize = (usableSize.width / vcw) * hscroll.max;
+                hscroll.max = vcw - usableSize.width;
+                hscroll.pageSize = (usableSize.width / vcw) * hscroll.max;
 
-            hscroll.syncComponentValidation();    //avoid another pass
-        } else {
-            if (hscroll != null) {
-                _component.removeComponent(hscroll);
+                hscroll.syncComponentValidation();    //avoid another pass
+            } else {
+                if (hscroll != null) {
+                    _component.removeComponent(hscroll);
+                }
             }
         }
 
-        var vscroll:VerticalScroll = _component.findComponent(VerticalScroll, false);
-        var vch:Float = verticalConstraint.height + verticalConstraintModifier();
-        if (vch > usableSize.height) {
-            if (vscroll == null) {
-                vscroll = createVScroll();
-            }
+        if (virtualVertical == false) {
+            var verticalConstraint = _contents;
+            var vscroll:VerticalScroll = _component.findComponent(VerticalScroll, false);
+            var vch:Float = verticalConstraint.height + verticalConstraintModifier();
+            if (vch > usableSize.height) {
+                if (vscroll == null) {
+                    vscroll = createVScroll();
+                }
 
-            vscroll.max = vch - usableSize.height;
-            vscroll.pageSize = (usableSize.height / vch) * vscroll.max;
+                vscroll.max = vch - usableSize.height;
+                vscroll.pageSize = (usableSize.height / vch) * vscroll.max;
 
-            vscroll.syncComponentValidation();    //avoid another pass
-        } else {
-            if (vscroll != null) {
-                _component.removeComponent(vscroll);
+                vscroll.syncComponentValidation();    //avoid another pass
+            } else {
+                if (vscroll != null) {
+                    _component.removeComponent(vscroll);
+                }
             }
         }
     }
@@ -827,12 +827,14 @@ class ScrollViewBuilder extends CompositeBuilder {
         var xpos:Float = 0;
         var ypos:Float = 0;
 
-        if (_scrollview.virtual == false) {
+        if (virtualHorizontal == false) {
             var hscroll = _component.findComponent(HorizontalScroll, false);
             if (hscroll != null) {
                 xpos = hscroll.pos;
             }
-            
+        }
+        
+        if (virtualVertical == false) {
             var vscroll = _component.findComponent(VerticalScroll, false);
             if (vscroll != null) {
                 ypos = vscroll.pos;
@@ -843,6 +845,16 @@ class ScrollViewBuilder extends CompositeBuilder {
         _contents.componentClipRect = rc;
     }
     
+    public var virtualHorizontal(get, null):Bool;
+    private function get_virtualHorizontal():Bool {
+        return _scrollview.virtual;
+    }
+    
+    public var virtualVertical(get, null):Bool;
+    private function get_virtualVertical():Bool {
+        return _scrollview.virtual;
+    }
+        
     public function onVirtualChanged() {
         
     }
