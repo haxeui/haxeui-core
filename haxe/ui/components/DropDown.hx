@@ -21,7 +21,7 @@ class DropDown extends Button implements IDataComponent {
     // Public API
     //***********************************************************************************************************
     @:behaviour(DefaultBehaviour)                    public var handlerStyleNames:String;
-    @:behaviour(DefaultBehaviour)                    public var dataSource:DataSource<Dynamic>;
+    @:behaviour(DataSourceBehaviour)                 public var dataSource:DataSource<Dynamic>;
     @:behaviour(DefaultBehaviour, "list")            public var type:String;
     @:behaviour(DefaultBehaviour, false)             public var virtual:Bool;
     @:behaviour(DefaultBehaviour)                    public var dropdownWidth:Null<Float>;
@@ -34,6 +34,20 @@ class DropDown extends Button implements IDataComponent {
 //***********************************************************************************************************
 // Composite Behaviours
 //***********************************************************************************************************
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class DataSourceBehaviour extends DefaultBehaviour {
+    public override function set(value:Variant) {
+        super.set(value);
+        if (value == _value) {
+            return;
+        }
+        
+        var handler:IDropDownHandler = cast(_component._compositeBuilder, DropDownBuilder).handler;
+        handler.reset();
+    }
+}
+
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 private class SelectedIndexBehaviour extends DataBehaviour {
@@ -58,6 +72,7 @@ private class SelectedItemBehaviour extends Behaviour {
 interface IDropDownHandler {
     var component(get, null):Component;
     function show():Void;
+    function reset():Void;
     var selectedIndex(get, set):Int;
     var selectedItem(get, null):Dynamic;
     
@@ -76,6 +91,9 @@ class DropDownHandler implements IDropDownHandler {
     }
     
     public function show() {
+    }
+    
+    public function reset() {
     }
     
     public var selectedIndex(get, set):Int;
@@ -101,8 +119,14 @@ class ListDropDownHandler extends DropDownHandler {
         return _listview;
     }
     
+    public override function reset() {
+        _cachedSelectedIndex = -1;
+        _listview = null;
+        //_dropdown.selectedIndex = -1;
+    }
+    
     public override function show() {
-        var itemCount = 4; //TODO - the user could customize it
+        var itemCount = 4;
         if (_dropdown.dropdownSize != null) {
             itemCount = _dropdown.dropdownSize;
         }
