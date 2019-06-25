@@ -22,7 +22,7 @@ class Image extends Component {
     // Public API
     //***********************************************************************************************************
     @:clonable @:behaviour(ResourceBehaviour)                              public var resource:String;
-    @:clonable @:behaviour(ResourceBehaviour)                              public var value:Variant;
+    @:clonable @:value(resource)                                           public var value:Dynamic;
     @:clonable @:behaviour(InvalidatingBehaviour, ScaleMode.FILL)          public var scaleMode:ScaleMode;
     @:clonable @:behaviour(InvalidatingBehaviour, HorizontalAlign.CENTER)  public var imageHorizontalAlign:HorizontalAlign;
     @:clonable @:behaviour(InvalidatingBehaviour, VerticalAlign.CENTER)    public var imageVerticalAlign:VerticalAlign;
