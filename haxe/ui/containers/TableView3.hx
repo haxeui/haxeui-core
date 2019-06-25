@@ -1,27 +1,22 @@
 package haxe.ui.containers;
 
+import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.behaviours.LayoutBehaviour;
 import haxe.ui.binding.BindingManager;
 import haxe.ui.components.Label;
 import haxe.ui.components.VerticalScroll;
-import haxe.ui.constants.SelectionMode;
-import haxe.ui.containers.ScrollView.ScrollViewBuilder;
 import haxe.ui.containers.ScrollView;
-import haxe.ui.behaviours.Behaviour;
+import haxe.ui.containers.ScrollView.ScrollViewBuilder;
 import haxe.ui.core.Component;
-import haxe.ui.behaviours.DataBehaviour;
-import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.core.IDataComponent;
-import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.ItemRenderer;
-import haxe.ui.behaviours.LayoutBehaviour;
-import haxe.ui.events.MouseEvent;
-import haxe.ui.events.ScrollEvent;
-import haxe.ui.events.UIEvent;
 import haxe.ui.data.DataSource;
 import haxe.ui.data.transformation.NativeTypeTransformer;
+import haxe.ui.events.MouseEvent;
+import haxe.ui.events.ScrollEvent;
+import haxe.ui.geom.Rectangle;
 import haxe.ui.layouts.LayoutFactory;
 import haxe.ui.layouts.VerticalVirtualLayout;
-import haxe.ui.util.MathUtil;
 import haxe.ui.util.Variant;
 
 @:composite(Events, Builder, Layout)
@@ -87,47 +82,16 @@ private class CompoundItemRenderer extends ItemRenderer {
         super();
         this.layout = LayoutFactory.createFromName("horizontal");
         this.styleString = "spacing: 2px;";
+        removeClass("itemrenderer");
     }
     
-    public override function hasClass(name:String):Bool {
-        if (name != "even" && name != "odd" && name != "itemrenderer") {
-            return super.hasClass(name);
+    public override function addComponent(child:Component):Component {
+        if (childComponents.length > 1) {
+            var c = new Component();
+            c.styleString = "width:2px;color:black;height:10px";
+            //super.addComponent(c);
         }
-        var b = false;
-        for (child in childComponents) {
-            b = b || child.hasClass(name);
-        }
-        return b;
-    }
-    
-    public override function addClass(name:String, invalidate:Bool = true, recursive:Bool = false) {
-        if (name != "even" && name != "odd" && name != "itemrenderer") {
-            return super.addClass(name, invalidate, recursive);
-        }
-        for (child in childComponents) {
-            child.addClass(name, invalidate, recursive);
-        }
-    }
-    
-    public override function removeClass(name:String, invalidate:Bool = true, recursive:Bool = false) {
-        if (name != "even" && name != "odd" && name != "itemrenderer") {
-            return super.addClass(name, invalidate, recursive);
-        }
-        for (child in childComponents) {
-            child.removeClass(name, invalidate, recursive);
-        }
-    }
-    
-    private override function _onItemMouseOver(event:MouseEvent) {
-        for (child in childComponents) {
-            child.addClass(":hover");
-        }
-    }
-
-    private override function _onItemMouseOut(event:MouseEvent) {
-        for (child in childComponents) {
-            child.removeClass(":hover");
-        }
+        return super.addComponent(child);
     }
 }
 
@@ -140,6 +104,7 @@ private class Events extends ScrollViewEvents {
 
     public function new(tableview:TableView3) {
         super(tableview);
+        //tableview.clip = true;
         _tableview = tableview;
     }
 
@@ -271,8 +236,13 @@ private class Layout extends VerticalVirtualLayout {
             return;
         }
         
+        /*
         header.left = -cast(_component, ScrollView).hscrollPos + paddingLeft - 1;
-        header.top = paddingTop - 1;
+        */
+        header.left = paddingLeft;
+        header.top = paddingTop;
+        var rc:Rectangle = new Rectangle(cast(_component, ScrollView).hscrollPos + 1, 1, usableWidth, header.height);
+        header.componentClipRect = rc;
         
         var data = findComponent("tableview-contents", Box, true, "css");
         if (data != null) {
@@ -284,11 +254,12 @@ private class Layout extends VerticalVirtualLayout {
                         itemRenderer.percentWidth = null;
                         itemRenderer.width = column.width - item.layout.horizontalSpacing;
                         if (itemRenderer.height > biggest) {
-                            biggest = itemRenderer.height;
+                            biggest = itemRenderer.componentHeight;
                         }
                     }
                 }
                 data.componentWidth = item.width;
+                /*
                 if (biggest != 0) { // might not be a great idea - maybe rethink
                     for (column in header.childComponents) {
                         var itemRenderer = item.findComponent(column.id, Component).findAncestor(ItemRenderer);
@@ -298,10 +269,11 @@ private class Layout extends VerticalVirtualLayout {
                         }
                     }
                 }
+                */
             }
             
             data.left = paddingLeft;
-            data.top = header.top + header.height - 1;
+            data.top = header.top + header.height;
         }
     }
     
@@ -321,12 +293,12 @@ private class Layout extends VerticalVirtualLayout {
         if (header != null) {
             var vscroll = findComponent(VerticalScroll);
             if (vscroll == null) {
-                header.componentWidth += 2;
+                //header.componentWidth += 2;
             } else {
-                header.componentWidth += 1;
+                //header.componentWidth += 1;
             }
+            //header.width += 1;
         }
-        
     }
     
 }

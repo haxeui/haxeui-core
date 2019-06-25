@@ -2,6 +2,7 @@ package haxe.ui.layouts;
 
 import haxe.ui.containers.IVirtualContainer;
 import haxe.ui.core.Component;
+import haxe.ui.geom.Rectangle;
 import haxe.ui.geom.Size;
 
 class VerticalVirtualLayout extends VirtualLayout {
@@ -135,6 +136,10 @@ class VerticalVirtualLayout extends VirtualLayout {
             _firstIndex = 0;
         }
 
+        var rc:Rectangle = new Rectangle(0, 0, contents.width - (paddingRight + paddingLeft), contentsHeight - (paddingTop + paddingBottom));
+        contents.componentClipRect = rc;
+
+        
         _lastIndex = _firstIndex + visibleItemsCount + 1;
         if (_lastIndex > dataSource.size) {
             _lastIndex = dataSource.size;

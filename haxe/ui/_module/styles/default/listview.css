@@ -29,7 +29,7 @@
 }
 
 .listview .even:hover {
-    background-color: #ecf2f9;
+    background-color: #d9e5f2;
 }
 
 .listview .odd {
@@ -37,7 +37,7 @@
 }
 
 .listview .odd:hover {
-    background-color: #ecf2f9;
+    background-color: #d9e5f2;
 }
 
 .listview .itemrenderer {
