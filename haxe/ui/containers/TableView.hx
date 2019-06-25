@@ -281,6 +281,7 @@ private class Layout extends VerticalVirtualLayout {
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
 private class DataSourceBehaviour extends DataBehaviour {
+    private var _firstPass:Bool = true; // may not have any any children at first, so a height of 1 causes loads of renderers to be created
     public override function set(value:Variant) {
         super.set(value);
         var dataSource:DataSource<Dynamic> = _value;
@@ -288,10 +289,16 @@ private class DataSourceBehaviour extends DataBehaviour {
             dataSource.transformer = new NativeTypeTransformer();
             dataSource.onChange = function() {
                 _component.invalidateComponentLayout();
+                if (_firstPass == true) {
+                    _component.syncComponentValidation();
+                    _firstPass = false;
+                    _component.invalidateComponentLayout();
+                }
                 BindingManager.instance.componentPropChanged(_component, "dataSource");
             }
+        } else {
+            _component.invalidateComponentLayout();
         }
-        _component.invalidateComponentLayout();
     }
 }
 

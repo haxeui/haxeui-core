@@ -778,6 +778,10 @@ class ScrollViewBuilder extends CompositeBuilder {
         var hscroll:HorizontalScroll = _component.findComponent(HorizontalScroll, false);
         var vcw:Float = horizontalConstraint.width + horizontalConstraintModifier();
         
+        if (usableSize.width <= 0) {
+            return hscroll;
+        }
+        
         if (vcw > usableSize.width && hscroll == null) {
             hscroll = new HorizontalScroll();
             hscroll.percentWidth = 100;
@@ -795,6 +799,10 @@ class ScrollViewBuilder extends CompositeBuilder {
         var verticalConstraint = _contents;
         var vscroll:VerticalScroll = _component.findComponent(VerticalScroll, false);
         var vch:Float = verticalConstraint.height + verticalConstraintModifier();
+        
+        if (usableSize.height <= 0) {
+            return vscroll;
+        }
         
         if (vch > usableSize.height && vscroll == null) {
             vscroll = new VerticalScroll();
