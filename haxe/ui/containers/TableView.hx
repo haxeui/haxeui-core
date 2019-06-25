@@ -235,7 +235,10 @@ private class Layout extends VerticalVirtualLayout {
             for (item in data.childComponents) {
                 var biggest:Float = 0;
                 for (column in header.childComponents) {
-                    var itemRenderer = item.findComponent(column.id, Component).findAncestor(ItemRenderer);
+                    var itemRenderer = item.findComponent(column.id, Component);
+                    if (Std.is(itemRenderer, ItemRenderer) == false) {
+                        itemRenderer = itemRenderer.findAncestor(ItemRenderer);
+                    }
                     if (itemRenderer != null) {
                         itemRenderer.percentWidth = null;
                         itemRenderer.width = column.width - item.layout.horizontalSpacing;
