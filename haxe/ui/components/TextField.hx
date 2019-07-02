@@ -249,6 +249,7 @@ private class TextFieldHelper {
 				if (text == textfield.placeholder) {
 				text = "";
 				}
+				textfield.password = password;
 			}
 		} else {
             textfield.password = password;
