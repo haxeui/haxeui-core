@@ -233,22 +233,32 @@ private class TextFieldHelper {
             text = regexp.replace(text, "");
         }
         
-        if (textfield.focus == false && textfield.placeholder != null) {
-            if (text.length == 0) {
-                text = textfield.placeholder;
-                textfield.password = false;
-                textfield.addClass(":empty");
-            } else {
-                textfield.password = password;
-                textfield.removeClass(":empty");
-            }
-        } else {
+       if (textfield.placeholder != null) {
+			if (textfield.focus == false)
+			{
+				if (text.length == 0) {
+					text = textfield.placeholder;
+					textfield.password = false;
+					textfield.addClass(":empty");
+				} else if (text != textfield.placeholder) {
+					textfield.password = password;
+					textfield.removeClass(":empty");
+				}
+			} else {
+				textfield.removeClass(":empty");
+				if (text == textfield.placeholder) {
+					text = "";
+				}
+				textfield.password = password;
+			}
+		} else {
             textfield.password = password;
 
             if (placeholderVisible == true) {
                 textfield.removeClass(":empty");
             }
-        }
+		}
+
         
         textfield.getTextInput().text = '${text}';
         textfield.invalidateComponentLayout();
