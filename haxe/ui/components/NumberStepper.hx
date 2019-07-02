@@ -16,7 +16,7 @@ import haxe.ui.util.Variant;
 @:composite(Events, Builder)
 class NumberStepper extends HBox {
     @:clonable @:behaviour(PosBehaviour, 0)             public var pos:Float;
-    @:clonable @:behaviour(ValueBehaviour)              public var value:Variant;
+    @:clonable @:value(pos)                             public var value:Dynamic;
     @:clonable @:behaviour(StepBehaviour, 1)            public var step:Float;
     @:clonable @:behaviour(MinBehaviour, null)          public var min:Null<Float>;
     @:clonable @:behaviour(MaxBehaviour, null)          public var max:Null<Float>;
