@@ -247,7 +247,7 @@ private class TextFieldHelper {
 			} else {
 				textfield.removeClass(":empty");
 				if (text == textfield.placeholder) {
-				text = "";
+					text = "";
 				}
 				textfield.password = password;
 			}
