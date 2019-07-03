@@ -1,14 +1,14 @@
 package haxe.ui.components;
 
-import haxe.ui.containers.HBox;
-import haxe.ui.core.CompositeBuilder;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
-import haxe.ui.events.KeyboardEvent;
+import haxe.ui.containers.HBox;
+import haxe.ui.core.CompositeBuilder;
+import haxe.ui.events.Events;
 import haxe.ui.events.FocusEvent;
+import haxe.ui.events.KeyboardEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
-import haxe.ui.events.Events;
 import haxe.ui.styles.Style;
 import haxe.ui.util.MathUtil;
 import haxe.ui.util.Variant;

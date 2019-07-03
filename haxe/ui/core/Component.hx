@@ -1209,21 +1209,26 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         }
     }
 
+    private var _initialSizeApplied:Bool = false;
     private override function validateInitialSize(isInitialized:Bool) {
-        if (isInitialized == false && _style != null) {
-            if ((_style.initialWidth != null || _style.initialPercentWidth != null) && width <= 0 && percentWidth == null) {
+        if (isInitialized == false && _style != null && _initialSizeApplied == false) {
+            if ((_style.initialWidth != null || _style.initialPercentWidth != null) && percentWidth == null) {
                 if (_style.initialWidth != null) {
                     width = _style.initialWidth;
+                    _initialSizeApplied = true;
                 } else  if (_style.initialPercentWidth != null) {
                     percentWidth = _style.initialPercentWidth;
+                    _initialSizeApplied = true;
                 }
             }
             
-            if ((_style.initialHeight != null || _style.initialPercentHeight != null) && height <= 0 && percentHeight == null) {
+            if ((_style.initialHeight != null || _style.initialPercentHeight != null) && percentHeight == null) {
                 if (_style.initialHeight != null) {
                     height = _style.initialHeight;
+                    _initialSizeApplied = true;
                 } else  if (_style.initialPercentHeight != null) {
                     percentHeight = _style.initialPercentHeight;
+                    _initialSizeApplied = true;
                 }
             }
         }
