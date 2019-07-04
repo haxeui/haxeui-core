@@ -9,6 +9,7 @@ typedef BehaviourInfo = {
     var cls:Class<Behaviour>;
     @:optional var defaultValue:Variant;
     @:optional var config:Map<String, String>;
+    var isSet:Bool;
 }
 
 @:access(haxe.ui.core.Component)
@@ -27,7 +28,8 @@ class Behaviours {
         var info:BehaviourInfo = {
             id: id,
             cls: cls,
-            defaultValue: defaultValue
+            defaultValue: defaultValue,
+            isSet: false
         }
         
         _registry.set(id, info);
@@ -57,7 +59,8 @@ class Behaviours {
                     id: id,
                     cls: cast Type.resolveClass(nativeProps.get("class")),
                     defaultValue: registered.defaultValue,
-                    config: nativeProps
+                    config: nativeProps,
+                    isSet: false
                 }
                 _registry.set(id, info);
             }
@@ -188,6 +191,8 @@ class Behaviours {
         
         var b = find(id);
         b.set(value);
+        var info = _registry.get(id);
+        info.isSet = true;
         
         unlock();
             
@@ -214,7 +219,12 @@ class Behaviours {
         var b = find(id);
         var v = null;
         if (b != null) {
-            v = b.get();
+            var info = _registry.get(id);
+            if (info.isSet == false && info.defaultValue != null && Type.getClass(b) == haxe.ui.behaviours.DefaultBehaviour) {
+                v = info.defaultValue;
+            } else {
+                v = b.get();
+            }
         }
         
         unlock();
