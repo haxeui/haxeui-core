@@ -64,7 +64,6 @@ class VerticalGridLayout extends Layout {
         var rowIndex:Int = 0;
         var columnIndex:Int = 0;
         for (child in component.childComponents) {
-
             if (child.includeInLayout == false) {
                 continue;
             }
@@ -112,7 +111,6 @@ class VerticalGridLayout extends Layout {
         var xpos:Float = paddingLeft;
         var ypos:Float = paddingTop;
         for (child in component.childComponents) {
-
             if (child.includeInLayout == false) {
                 continue;
             }
@@ -161,7 +159,6 @@ class VerticalGridLayout extends Layout {
         var rowIndex:Int = 0;
         var columnIndex:Int = 0;
         for (child in component.childComponents) {
-
             if (child.includeInLayout == false) {
                 continue;
             }
@@ -226,7 +223,6 @@ class VerticalGridLayout extends Layout {
         var rowIndex:Int = 0;
         var columnIndex:Int = 0;
         for (child in component.childComponents) {
-
             if (child.includeInLayout == false) {
                 continue;
             }

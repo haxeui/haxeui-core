@@ -190,7 +190,7 @@ class ComponentMacros {
         assignProperties(builder, componentVarName, c.properties);
         
         if (classInfo.hasInterface("haxe.ui.core.IDataComponent") == true && c.data != null) {
-            var ds = new haxe.ui.data.DataSourceFactory<Dynamic>().fromString(c.dataString, haxe.ui.data.ArrayDataSource);
+            var ds = new haxe.ui.data.DataSourceFactory<Dynamic>().fromString(c.dataString, haxe.ui.data.ListDataSource);
             var dsVarName = 'ds${id}';
             builder.add(macro var $dsVarName = new haxe.ui.data.ListDataSource<Dynamic>());
             for (i in 0...ds.size) {

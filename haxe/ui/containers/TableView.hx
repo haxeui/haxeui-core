@@ -170,14 +170,16 @@ private class Builder extends ScrollViewBuilder {
     
     public function buildDefaultRenderer() {
         var r = new CompoundItemRenderer();
-        for (column in _header.childComponents) {
-            var itemRenderer = new ItemRenderer();
-            var label = new Label();
-            label.id = column.id;
-            label.verticalAlign = "center";
-            itemRenderer.addComponent(label);
-            r.addComponent(itemRenderer);
-        }
+        //if (_header != null) {
+            for (column in _header.childComponents) {
+                var itemRenderer = new ItemRenderer();
+                var label = new Label();
+                label.id = column.id;
+                label.verticalAlign = "center";
+                itemRenderer.addComponent(label);
+                r.addComponent(itemRenderer);
+            }
+        //}
         _tableview.itemRenderer = r;
     }
     
@@ -185,7 +187,6 @@ private class Builder extends ScrollViewBuilder {
         for (column in _header.childComponents) {
             var existing = _tableview.itemRenderer.findComponent(column.id, ItemRenderer, true);
             if (existing == null) {
-                var label = new Label();
                 var itemRenderer = new ItemRenderer();
                 var label = new Label();
                 label.id = column.id;
