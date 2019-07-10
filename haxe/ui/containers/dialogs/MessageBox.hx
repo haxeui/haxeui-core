@@ -1,5 +1,6 @@
 package haxe.ui.containers.dialogs;
 
+import haxe.ui.backend.MessageBoxBase;
 import haxe.ui.containers.dialogs.Dialog;
 
 abstract MessageBoxType(String) from String {
@@ -13,13 +14,7 @@ abstract MessageBoxType(String) from String {
     }
 }
 
-@:xml('
-<hbox width="100%" style="spacing:10px;">
-    <image id="iconImage" />
-    <label width="100%" id="messageLabel" />
-</hbox>
-')
-class MessageBox extends Dialog {
+class MessageBox extends MessageBoxBase {
     public function new() {
         super();
         title = "Message";
@@ -52,23 +47,5 @@ class MessageBox extends Dialog {
                     title = "Error";
             }
         }
-    }
-    
-    public var message(get, set):String;
-    private function get_message():String {
-        return messageLabel.text;
-    }
-    private function set_message(value:String):String {
-        messageLabel.text = value;
-        return value;
-    }
-    
-    public var type(get, set):MessageBoxType;
-    private function get_type():MessageBoxType {
-        return iconImage.resource;
-    }
-    private function set_type(value:MessageBoxType):MessageBoxType {
-        iconImage.resource = value.toString();
-        return value;
     }
 }
