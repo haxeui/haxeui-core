@@ -64,7 +64,6 @@ class DialogBase extends Box {
         if (_buttonsCreated == true) {
             return;
         }
-        _buttonsCreated = true;
         if (buttons != null) {
             for (button in buttons.toArray()) {
                 var buttonComponent = new Button();
@@ -73,6 +72,7 @@ class DialogBase extends Box {
                 buttonComponent.registerEvent(MouseEvent.CLICK, onFooterButtonClick);
                 addFooterComponent(buttonComponent);
             }
+            _buttonsCreated = true;
         }
     }
     
