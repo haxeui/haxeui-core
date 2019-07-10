@@ -53,7 +53,13 @@ class DialogBase extends Box {
             Screen.instance.addComponent(_overlay);
         }
         createButtons();
+        
         Screen.instance.addComponent(this);
+        this.syncComponentValidation();
+        if (autoHeight == false) {
+            dialogContainer.percentHeight = 100;
+            dialogContent.percentHeight = 100;
+        }
         if (centerDialog) {
             centerDialogComponent(cast(this, Dialog));
         }

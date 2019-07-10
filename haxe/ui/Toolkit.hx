@@ -86,7 +86,7 @@ class Toolkit {
 
     public static function messageBox(message:String, title:String = null, type:MessageBoxType = null, modal:Bool = true, callback:DialogButton->Void = null):Dialog {
         if (type == null) {
-            type = MessageBoxType.INFO;
+            type = MessageBoxType.TYPE_INFO;
         }
         var messageBox = new MessageBox();
         messageBox.type = type;
