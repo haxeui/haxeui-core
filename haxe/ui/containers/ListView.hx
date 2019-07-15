@@ -321,6 +321,7 @@ private class DataSourceBehaviour extends DataBehaviour {
                 }
                 BindingManager.instance.componentPropChanged(_component, "dataSource");
             }
+            _component.invalidateComponentLayout();
         } else {
             _component.invalidateComponentLayout();
         }
