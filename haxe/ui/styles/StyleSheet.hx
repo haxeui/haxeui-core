@@ -43,6 +43,22 @@ class StyleSheet {
         return r;
     }
     
+    public function findRule(selector:String):RuleElement {
+        for (r in rules) {
+            if (r.selector.toString() == selector) {
+                return r;
+            }
+        }
+        return null;
+    }
+    
+    public function removeRule(selector:String) {
+        var r = findRule(selector);
+        if (r != null) {
+            _rules.remove(r);
+        }
+    }
+    
     public function addRule(el:RuleElement) {
         _rules.push(el);
     }

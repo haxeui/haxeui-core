@@ -17,6 +17,11 @@ class RuleElement {
         }
     }
     
+    public function addDirective(directive:String, value:Value) {
+        var d = new Directive(directive, value);
+        processDirective(d);
+    }
+    
     public function match(d:Component):Bool {
         return ruleMatch(selector.parts[selector.parts.length - 1], d);
     }

@@ -35,7 +35,9 @@ class Selector {
             parts.push(current);
             parent = current;
         }
-        
-        
+    }
+    
+    public function toString():String {
+        return parts.join(" ");
     }
 }
