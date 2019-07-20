@@ -265,9 +265,17 @@ private class Events extends haxe.ui.events.Events {
     }
     
     private function onMouseWheel(event:MouseEvent) {
+        if (_textarea.getTextInput().data.vscrollNativeWheel == true) {
+            return;
+        }
         var vscroll:VerticalScroll = _textarea.findComponent(VerticalScroll, false);
         if (vscroll != null) {
-            var step = Math.ceil((_textarea.getTextInput().textStyle.fontSize + 1) / 10) * 10;
+            var step:Float = 20;
+            if (_textarea.getTextInput().data.vscrollPageStep != null) {
+                step = _textarea.getTextInput().data.vscrollPageStep;
+            } else {
+                step = Math.ceil((_textarea.getTextInput().textStyle.fontSize + 1) / 10) * 10;
+            }
             if (event.delta > 0) {
                 vscroll.pos -= step;
             } else if (event.delta < 0) {
@@ -366,6 +374,9 @@ private class TextAreaBuilder extends CompositeBuilder {
     
     public function createVScroll():VerticalScroll {
         var vscroll = new VerticalScroll();
+        if (_textarea.getTextInput().data.vscrollPageStep != null) {
+            vscroll.increment = _textarea.getTextInput().data.vscrollPageStep;
+        }
         vscroll.percentHeight = 100;
         vscroll.id = "textarea-vscroll";
         _component.addComponent(vscroll);

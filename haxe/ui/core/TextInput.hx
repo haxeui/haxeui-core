@@ -15,6 +15,8 @@ class TextInputData {
     public var vscrollPos:Float = 0;
     public var vscrollMax:Float = 0;
     public var vscrollPageSize:Float = 0;
+    public var vscrollPageStep:Null<Float> = null;
+    public var vscrollNativeWheel:Bool = false;
     
     public var onScrollCallback:Void->Void = null;
     public var onChangedCallback:Void->Void = null;
