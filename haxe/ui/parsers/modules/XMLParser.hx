@@ -39,6 +39,18 @@ class XMLParser extends ModuleParser {
                     classEntry.classAlias = classNode.get("alias");
                     module.componentEntries.push(classEntry);
                 }
+                for (classNode in el.elementsNamed("component")) {
+                    if (checkCondition(classNode, defines) == false) {
+                        continue;
+                    }
+                    var classEntry:Module.ModuleComponentEntry = new Module.ModuleComponentEntry();
+                    classEntry.classPackage = classNode.get("package");
+                    classEntry.className = classNode.get("class");
+                    classEntry.classFolder = classNode.get("folder");
+                    classEntry.classFile = classNode.get("file");
+                    classEntry.classAlias = classNode.get("alias");
+                    module.componentEntries.push(classEntry);
+                }
             } else if (nodeName == "layouts" && checkCondition(el, defines) == true) {
                 for (classNode in el.elementsNamed("class")) {
                     if (checkCondition(classNode, defines) == false) {
