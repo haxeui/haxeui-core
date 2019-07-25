@@ -13,13 +13,14 @@ class Label extends Component {
     //***********************************************************************************************************
     // Styles
     //***********************************************************************************************************
-    @:style(layout)                         public var textAlign:Null<String>;
+    @:style(layout)                             public var textAlign:Null<String>;
     
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:clonable @:behaviour(TextBehaviour)   public var text:String;
-    @:clonable @:behaviour(TextBehaviour)   public var value:Variant;
+    @:clonable @:behaviour(TextBehaviour)       public var text:String;
+    @:clonable @:behaviour(TextBehaviour)       public var value:Variant;
+    @:clonable @:behaviour(HtmlTextBehaviour)   public var htmlText:String;
 }
 
 //***********************************************************************************************************
@@ -88,6 +89,13 @@ private class TextBehaviour extends DataBehaviour {
             _component.invalidateComponentStyle(true);
         }
         _component.getTextDisplay().text = '${_value}';
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class HtmlTextBehaviour extends DataBehaviour {
+    public override function validateData() {
+        _component.getTextDisplay().htmlText = '${_value}';
     }
 }
 

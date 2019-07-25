@@ -14,6 +14,7 @@ class TextBase {
     private var _inputData:TextInputData = new TextInputData();
     
     private var _text:String;
+    private var _htmlText:String = null;
     private var _left:Float = 0;
     private var _top:Float = 0;
     private var _width:Float = 0;

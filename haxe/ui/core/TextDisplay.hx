@@ -62,11 +62,27 @@ class TextDisplay extends TextDisplayImpl implements IValidating {
             return value;
         }
 
-        invalidateComponent(InvalidationFlags.DATA);
         _text = value;
+        _htmlText = null;
+        invalidateComponent(InvalidationFlags.DATA);
         return value;
     }
 
+    public var htmlText(get, set):String;
+    private function get_htmlText():String {
+        return _htmlText;
+    }
+    private function set_htmlText(value:String):String {
+        if (value == _htmlText) {
+            return value;
+        }
+
+        _htmlText = value;
+        _text = null;
+        invalidateComponent(InvalidationFlags.DATA);
+        return value;
+    }
+    
     public var left(get, set):Float;
     private function get_left():Float {
         return _left;
