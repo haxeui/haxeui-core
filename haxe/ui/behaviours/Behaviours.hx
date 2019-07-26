@@ -168,22 +168,10 @@ class Behaviours {
         _cache = null;
     }
     
-    #if sys
-    var _mutex:sys.thread.Mutex = null;
-    #end
     private function lock() {
-        #if sys
-        if (_mutex == null) {
-            _mutex = new sys.thread.Mutex();
-        }
-        _mutex.acquire();
-        #end
     }
     
     private function unlock() {
-        #if sys
-        _mutex.release();
-        #end
     }
     
     public function set(id, value:Variant) {
