@@ -2,19 +2,20 @@ package haxe.ui.components;
 
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
-import haxe.ui.containers.HBox;
 import haxe.ui.core.CompositeBuilder;
+import haxe.ui.core.InteractiveComponent;
 import haxe.ui.events.Events;
 import haxe.ui.events.FocusEvent;
 import haxe.ui.events.KeyboardEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
+import haxe.ui.layouts.HorizontalLayout;
 import haxe.ui.styles.Style;
 import haxe.ui.util.MathUtil;
 import haxe.ui.util.Variant;
 
-@:composite(Events, Builder)
-class NumberStepper extends HBox {
+@:composite(Events, Builder, HorizontalLayout)
+class NumberStepper extends InteractiveComponent {
     @:clonable @:behaviour(PosBehaviour, 0)             public var pos:Float;
     @:clonable @:value(pos)                             public var value:Dynamic;
     @:clonable @:behaviour(StepBehaviour, 1)            public var step:Float;
