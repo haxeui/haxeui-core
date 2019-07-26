@@ -76,15 +76,15 @@ class Macros {
         
         for (param in builder.getClassMetaValues("composite")) {
             // probably a better way to do this
-            if (param.indexOf("Event") != -1) {
+            if (Std.string(param).indexOf("Event") != -1) {
                 registerCompositeFn.add(macro
                     _internalEventsClass = $p{param.split(".")}
                 );
-            } else if (param.indexOf("Builder") != -1) {
+            } else if (Std.string(param).indexOf("Builder") != -1) {
                 registerCompositeFn.add(macro
                     _compositeBuilderClass = $p{param.split(".")}
                 );
-            } else if (param.indexOf("Layout") != -1) {
+            } else if (Std.string(param).indexOf("Layout") != -1) {
                 registerCompositeFn.add(macro
                     _defaultLayoutClass = $p{param.split(".")}
                 );
