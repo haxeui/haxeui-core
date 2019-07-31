@@ -1,453 +1,305 @@
 package haxe.ui.containers;
 
-import haxe.ui.layouts.Layout;
-import haxe.ui.components.HScroll;
-import haxe.ui.components.VScroll;
-import haxe.ui.containers.TableView.TableViewRow;
-import haxe.ui.core.BasicItemRenderer;
+import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.behaviours.LayoutBehaviour;
+import haxe.ui.binding.BindingManager;
+import haxe.ui.components.Label;
+import haxe.ui.containers.ScrollView;
+import haxe.ui.containers.ScrollView.ScrollViewBuilder;
 import haxe.ui.core.Component;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.ItemRenderer;
-import haxe.ui.core.MouseEvent;
-import haxe.ui.core.Platform;
-import haxe.ui.core.UIEvent;
-import haxe.ui.data.ArrayDataSource;
 import haxe.ui.data.DataSource;
-import haxe.ui.layouts.DefaultLayout;
-import haxe.ui.util.Rectangle;
-import haxe.ui.util.Size;
+import haxe.ui.data.transformation.NativeTypeTransformer;
+import haxe.ui.events.ScrollEvent;
+import haxe.ui.geom.Rectangle;
+import haxe.ui.layouts.LayoutFactory;
+import haxe.ui.layouts.VerticalVirtualLayout;
+import haxe.ui.util.Variant;
 
-class TableView extends ScrollView implements IDataComponent {
-    private var _header:Header;
-    private var _itemRenderers:Array<ItemRenderer> = [];
+@:composite(Events, Builder, Layout)
+class TableView extends ScrollView implements IDataComponent implements IVirtualContainer {
+    //***********************************************************************************************************
+    // Public API
+    //***********************************************************************************************************
+    @:behaviour(DataSourceBehaviour)                            public var dataSource:DataSource<Dynamic>;
+    @:behaviour(LayoutBehaviour, -1)                            public var itemWidth:Float;
+    @:behaviour(LayoutBehaviour, -1)                            public var itemHeight:Float;
+    @:behaviour(LayoutBehaviour, -1)                            public var itemCount:Int;
+    @:behaviour(LayoutBehaviour, false)                         public var variableItemSize:Bool;
 
-    public function new() {
-        super();
+    //TODO - error with Behaviour
+    private var _itemRendererFunction:ItemRendererFunction4;
+    public var itemRendererFunction(get, set):ItemRendererFunction4;
+    private function get_itemRendererFunction():ItemRendererFunction4 {
+        return _itemRendererFunction;
     }
-
-    private override function createDefaults() {
-        super.createDefaults();
-//        _defaultLayout = new TableViewLayout();   //TODO - don't work because ScrollView override createLayout method, so _defaultLayout isn't taken in count.
-    }
-
-    private override function createLayout():Layout {
-        return new TableViewLayout();
-    }
-
-    private override function createChildren() {
-        super.createChildren();
-        percentContentWidth = 100;
-        _contents.addClass("tableview-contents", false);
-    }
-
-    private override function onReady() {
-        super.onReady();
-
-        if (_header != null && _itemRenderers.length < _header.childComponents.length) {
-            var delta:Int = _header.childComponents.length - _itemRenderers.length;
-            for (n in 0...delta) {
-                var item = new BasicItemRenderer();
-                item.width = 1; // TODO: hack!
-                addComponent(item);
-            }
+    private function set_itemRendererFunction(value:ItemRendererFunction4):ItemRendererFunction4 {
+        if (_itemRendererFunction != value) {
+            _itemRendererFunction = value;
+            invalidateComponentLayout();
         }
-    }
 
-    private override function _onContentsResized(event:UIEvent) {
-        super._onContentsResized(event);
-    }
-
-    #if haxeui_html5 // TODO: should be in backend somehow
-    private var lastScrollLeft = 0;
-    #end
-    public override function addComponent(child:Component):Component {
-        var v = null;
-        if (Std.is(child, Header)) {
-            _header = cast(child, Header);
-            _header.registerEvent(UIEvent.RESIZE, _onHeaderResized);
-
-            #if haxeui_html5 // TODO: should be in backend somehow
-            if (native == true) {
-                this.element.onscroll = function(e) {
-                    if (lastScrollLeft != this.element.scrollLeft) {
-                        lastScrollLeft = this.element.scrollLeft;
-                        _onHeaderResized(null);
-                    }
-                }
-            }
-            #end
-
-            v = addComponentToSuper(child);
-            if (_dataSource != null) {
-                invalidateComponentData();
-            }
-        } else if (Std.is(child, ItemRenderer)) {
-            #if haxeui_luxe
-            child.hide();
-            #end
-            var itemRenderer:ItemRenderer = cast(child, ItemRenderer);
-            itemRenderer.allowHover = false;
-            _itemRenderers.push(itemRenderer);
-        } else if (Std.is(child, VScroll)) {
-            child.includeInLayout = false;
-            super.addComponent(child);
-        } else {
-            v = super.addComponent(child);
-        }
-        return v;
-    }
-
-    private function _onHeaderResized(event:UIEvent) {
-        #if haxeui_html5 // TODO: this should be in the backend somehow
-        updateNativeHeaderClip();
-        #end
-    }
-
-    #if haxeui_html5
-    private function updateNativeHeaderClip() {
-        if (native == true) {
-            if (_header != null) {
-                var ucx = layout.usableWidth;
-                var xpos = this.element.scrollLeft; // _hscroll.pos;
-                var clipCX = ucx;
-                if (clipCX > _header.componentWidth) {
-                    clipCX = _header.componentWidth;
-                }
-                if (xpos > 0) { // TODO: bit hacky - should use style or calc
-                    _header.left = 2;
-                    xpos++;
-                } else {
-                    _header.left = 1;
-                }
-                var rc:Rectangle = new Rectangle(Std.int(xpos), Std.int(0), clipCX, _header.componentHeight);
-                _header.componentClipRect = rc;
-            }
-        }
-    }
-    #end
-
-    private override function get_horizontalConstraint():Component {
-        return _header;
-    }
-
-    private override function get_verticalConstraint():Component {
-        return _contents;
-    }
-
-    private override function get_hscrollOffset():Float {
-        return 2;
-    }
-
-    private var _dataSource:DataSource<Dynamic>;
-    public var dataSource(get, set):DataSource<Dynamic>;
-    private function get_dataSource():DataSource<Dynamic> {
-        if (_dataSource == null) {
-            _dataSource = new ArrayDataSource();
-            _dataSource.onChange = onDataSourceChanged;
-        }
-        return _dataSource;
-    }
-    private function set_dataSource(value:DataSource<Dynamic>):DataSource<Dynamic> {
-        _dataSource = value;
-        invalidateComponentData();
-        _dataSource.onChange = onDataSourceChanged;
         return value;
     }
 
-    private function onDataSourceChanged() {
-        if (_ready == true) {
-            invalidateComponentData();
+    private var _itemRendererClass:Class<ItemRenderer>;
+    public var itemRendererClass(get, set):Class<ItemRenderer>;
+    private function get_itemRendererClass():Class<ItemRenderer> {
+        return _itemRendererClass;
+    }
+    private function set_itemRendererClass(value:Class<ItemRenderer>):Class<ItemRenderer> {
+        if (_itemRendererClass != value) {
+            _itemRendererClass = value;
+            invalidateComponentLayout();
         }
+
+        return value;
     }
 
-    private function syncUI() {
-        if (_dataSource == null || _header == null || _contents == null || _itemRenderers.length < _header.childComponents.length) {
-            trace("here");
-            return;
+    private var _itemRenderer:ItemRenderer;
+    public var itemRenderer(get, set):ItemRenderer;
+    private function get_itemRenderer():ItemRenderer {
+        return _itemRenderer;
+    }
+    private function set_itemRenderer(value:ItemRenderer):ItemRenderer {
+        if (_itemRenderer != value) {
+            _itemRenderer = value;
+            invalidateComponentLayout();
         }
 
-        var delta = _dataSource.size - itemCount;
-        if (delta > 0) { // not enough items
-            for (n in 0...delta) {
-                var row:TableViewRow = new TableViewRow();
-                row.addClass("tableview-row");
-                for (n in 0..._header.childComponents.length) {
-                    row.addComponent(_itemRenderers[n].cloneComponent());
-                }
-                row.registerEvent(MouseEvent.CLICK, onRowClick);
-                addComponent(row);
-            }
-        } else if (delta < 0) { // too many items
-            while (delta < 0) {
-                _contents.removeComponent(_contents.childComponents[_contents.childComponents.length - 1]); // remove last
-                delta++;
-            }
-        }
+        return value;
+    }
+}
 
-        for (n in 0..._dataSource.size) {
-            var row:TableViewRow = cast(_contents.childComponents[n], TableViewRow);
-            //row.addClass(n % 2 == 0 ? "even" : "odd");
-            var data:Dynamic = _dataSource.get(n);
-            row.userData = data;
-            for (c in 0..._header.childComponents.length) {
-                var item:ItemRenderer = cast(row.childComponents[c], ItemRenderer);
-                item.addClass(n % 2 == 0 ? "even" : "odd");
-                var textData:String = Reflect.field(data, _header.childComponents[c].id);
-                if (textData != null) {
-                    item.data = {value: textData};
-                }
-            }
-        }
+@:dox(hide) @:noCompletion
+typedef ItemRendererFunction4 = Dynamic->Int->Class<ItemRenderer>;    //(data, index):Class<ItemRenderer>
 
-        invalidateComponentDisplay();
+private class CompoundItemRenderer extends ItemRenderer {
+    public function new() {
+        super();
+        this.layout = LayoutFactory.createFromName("horizontal");
+        this.styleString = "spacing: 2px;";
+        removeClass("itemrenderer");
+    }
+}
+
+//***********************************************************************************************************
+// Events
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+private class Events extends ScrollViewEvents {
+    private var _tableview:TableView;
+
+    public function new(tableview:TableView) {
+        super(tableview);
+        //tableview.clip = true;
+        _tableview = tableview;
     }
 
-    public function resetSelection() {
-        if (_selectedRow != null) {
-            for (c in _selectedRow.childComponents) {
-                c.removeClass(":selected");
-            }
-            _selectedRow = null;
-        }
+    public override function register() {
+        super.register();
+        registerEvent(ScrollEvent.CHANGE, onScrollChange);
+        //registerEvent(UIEvent.RENDERER_CREATED, onRendererCreated);
+        //registerEvent(UIEvent.RENDERER_DESTROYED, onRendererDestroyed);
+    }
+    
+    public override function unregister() {
+        super.unregister();
+        unregisterEvent(ScrollEvent.CHANGE, onScrollChange);
+        //unregisterEvent(UIEvent.RENDERER_CREATED, onRendererCreated);
+        //unregisterEvent(UIEvent.RENDERER_DESTROYED, onRendererDestroyed);
+    }
+    
+    private function onScrollChange(e:ScrollEvent):Void {
+        _tableview.invalidateComponentLayout();
+    }
+}
+
+//***********************************************************************************************************
+// Composite Builder
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+private class Builder extends ScrollViewBuilder {
+    private var _tableview:TableView;
+    private var _header:Header;
+
+    public function new(tableview:TableView) {
+        super(tableview);
+        _tableview = tableview;
     }
 
-    private var _selectedRow:TableViewRow;
-    public var selectedRow(get, null):TableViewRow;
-    private function get_selectedRow():TableViewRow {
-        return _selectedRow;
+    public override function create() {
+        createContentContainer(_tableview.virtual ? "absolute" : "vertical");
     }
 
-    private function onRowClick(event:MouseEvent) {
-        if (_selectedRow == event.target) {
-            return;
+    public override function onInitialize() {
+        if (_tableview.itemRenderer == null) {
+            buildDefaultRenderer();
+        } else {
+            fillExistingRenderer();
         }
-
-        resetSelection();
-
-        _selectedRow = cast event.target;
-        for (c in _selectedRow.childComponents) {
-            c.addClass(":selected");
-        }
-
-        var event:UIEvent = new UIEvent(UIEvent.CHANGE);
-        dispatch(event);
     }
-
-    public var itemCount(get, null):Int;
-    private function get_itemCount():Int {
+    
+    private override function createContentContainer(layoutName:String) {
         if (_contents == null) {
+            super.createContentContainer(layoutName);
+            _contents.addClass("tableview-contents");
+        }
+    }
+    
+    public override function addComponent(child:Component):Component {
+        var r = null;
+        if (Std.is(child, ItemRenderer)) {
+            var itemRenderer = _tableview.itemRenderer;
+            if (itemRenderer == null) {
+                itemRenderer = new CompoundItemRenderer();
+                _tableview.itemRenderer = itemRenderer;
+            }
+            itemRenderer.addComponent(child);
+            
+            return child;
+        } else if (Std.is(child, Header)) {
+            _header = cast(child, Header);
+            r = null;
+        } else {
+            r = super.addComponent(child);
+        }
+        return r;
+    }
+    
+    public function buildDefaultRenderer() {
+        var r = new CompoundItemRenderer();
+        //if (_header != null) {
+            for (column in _header.childComponents) {
+                var itemRenderer = new ItemRenderer();
+                var label = new Label();
+                label.id = column.id;
+                label.verticalAlign = "center";
+                itemRenderer.addComponent(label);
+                r.addComponent(itemRenderer);
+            }
+        //}
+        _tableview.itemRenderer = r;
+    }
+    
+    public function fillExistingRenderer() {
+        for (column in _header.childComponents) {
+            var existing = _tableview.itemRenderer.findComponent(column.id, ItemRenderer, true);
+            if (existing == null) {
+                var itemRenderer = new ItemRenderer();
+                var label = new Label();
+                label.id = column.id;
+                label.verticalAlign = "center";
+                itemRenderer.addComponent(label);
+                _tableview.itemRenderer.addComponent(itemRenderer);
+            }
+        }
+    }
+    
+    private override function verticalConstraintModifier():Float {
+        if (_header == null || _tableview.virtual == true) {
             return 0;
         }
-        return _contents.childComponents.length;
+
+        return _header.height;
     }
+    
+    public override function onVirtualChanged() {
+        _contents.layoutName = _tableview.virtual ? "absolute" : "vertical";
+    }
+    
+    private override function get_virtualHorizontal():Bool {
+        return false;
+    }
+}
 
-    private override function updateScrollRect() {
-        var rc:Rectangle = null;
+//***********************************************************************************************************
+// Composite Layout
+//***********************************************************************************************************
+private class Layout extends VerticalVirtualLayout {
+    public override function repositionChildren() {
+        super.repositionChildren();
 
-        var ucx = layout.usableWidth;
-        var ucy = layout.usableHeight;
-
-        var xpos:Float = 0;
-        if (_hscroll != null) {
-            xpos = _hscroll.pos;
+        var header = findComponent(Header, true);
+        if (header == null) {
+            return;
         }
-
-        var ypos:Float = 0;
-        if (_vscroll != null) {
-            ypos = _vscroll.pos;
-        }
-
-        if (_header != null && (native == false || native == null)) {
-            var clipCX = ucx;
-            if (clipCX > _header.componentWidth) {
-                clipCX = _header.componentWidth;
+        
+        header.left = paddingLeft;
+        header.top = paddingTop;
+        var rc:Rectangle = new Rectangle(cast(_component, ScrollView).hscrollPos + 1, 1, usableWidth, header.height);
+        header.componentClipRect = rc;
+        
+        var data = findComponent("tableview-contents", Box, true, "css");
+        if (data != null) {
+            for (item in data.childComponents) {
+                var biggest:Float = 0;
+                for (column in header.childComponents) {
+                    var itemRenderer = item.findComponent(column.id, Component);
+                    if (Std.is(itemRenderer, ItemRenderer) == false) {
+                        itemRenderer = itemRenderer.findAncestor(ItemRenderer);
+                    }
+                    if (itemRenderer != null) {
+                        itemRenderer.percentWidth = null;
+                        itemRenderer.width = column.width - item.layout.horizontalSpacing;
+                        if (itemRenderer.height > biggest) {
+                            biggest = itemRenderer.componentHeight;
+                        }
+                    }
+                }
+                data.componentWidth = item.width;
+                /*
+                if (biggest != 0) { // might not be a great idea - maybe rethink
+                    for (column in header.childComponents) {
+                        var itemRenderer = item.findComponent(column.id, Component).findAncestor(ItemRenderer);
+                        if (itemRenderer != null) {
+                            //trace(biggest);
+                            itemRenderer.height = biggest;
+                        }
+                    }
+                }
+                */
             }
-            var rc:Rectangle = new Rectangle(Std.int(xpos + 1), Std.int(1), clipCX, _header.componentHeight);
-            _header.componentClipRect = rc;
+            
+            data.left = paddingLeft;
+            data.top = header.top + header.height;
+        }
+    }
+    
+    private override function verticalConstraintModifier():Float {
+        var header = findComponent(Header, true);
+        if (header == null) {
+            return 0;
+        }
+
+        return header.height;
+    }
+}
+
+//***********************************************************************************************************
+// Behaviours
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+private class DataSourceBehaviour extends DataBehaviour {
+    private var _firstPass:Bool = true; // may not have any any children at first, so a height of 1 causes loads of renderers to be created
+    public override function set(value:Variant) {
+        super.set(value);
+        var dataSource:DataSource<Dynamic> = _value;
+        if (dataSource != null) {
+            dataSource.transformer = new NativeTypeTransformer();
+            dataSource.onChange = function() {
+                _component.invalidateComponentLayout();
+                if (_firstPass == true) {
+                    _component.syncComponentValidation();
+                    _firstPass = false;
+                    _component.invalidateComponentLayout();
+                }
+                BindingManager.instance.componentPropChanged(_component, "dataSource");
+            }
         } else {
-            #if haxeui_html5
-            updateNativeHeaderClip();
-            #end
-        }
-
-        if (_contents != null) {
-            var clipCX = ucx;
-            if (clipCX > _contents.componentWidth) {
-                clipCX = _contents.componentWidth;
-            }
-            var clipCY = ucy;
-            if (clipCY > _contents.componentHeight) {
-                clipCY = _contents.componentHeight;
-            }
-
-            var rc:Rectangle = new Rectangle(Std.int(xpos + 0), Std.int(ypos), clipCX, clipCY);
-            _contents.componentClipRect = rc;
-        }
-    }
-
-    //***********************************************************************************************************
-    // Validation
-    //***********************************************************************************************************
-
-    private override function validateData() {
-        syncUI();
-    }
-
-    public override function updateDisplay() {
-        super.updateDisplay();
-
-        for (row in _contents.childComponents) {
-            for (c in 0..._header.childComponents.length) {
-                var item = row.childComponents[c];
-                item.percentWidth = null;
-                item.componentWidth = _header.childComponents[c].componentWidth - 2;
-//                item.height = row.componentHeight;
-            }
-        }
-    }
-
-    private override function validateScroll() {
-        checkScrolls();
-        updateScrollRect();
-
-        handleBindings(["hscrollPos"]);
-        handleBindings(["vscrollPos"]);
-    }
-
-    //***********************************************************************************************************
-    // Clonable
-    //***********************************************************************************************************
-    public override function cloneComponent():TableView {
-        if (_dataSource != null) {
-            c.dataSource = _dataSource.clone();
+            _component.invalidateComponentLayout();
         }
     }
 }
 
-@:dox(hide)
-class TableViewLayout extends DefaultLayout {
-    public function new() {
-        super();
-    }
-
-    private override function resizeChildren() {
-        super.resizeChildren();
-        var vscroll:Component = component.findComponent(VScroll);
-        var header:Header = component.findComponent(Header);
-        if (vscroll != null) {
-            var offsetY:Float = 0;
-            if (header != null) {
-                offsetY += header.componentHeight;
-            }
-
-            vscroll.componentHeight = usableHeight + offsetY;
-        }
-    }
-
-    private override function repositionChildren() {
-        var header:Header = component.findComponent(Header);
-        if (header != null) {
-            header.left = paddingLeft + marginLeft(header) - marginRight(header);
-            header.top = paddingTop + marginTop(header) - marginBottom(header);
-        }
-
-        var hscroll:Component = component.findComponent(HScroll, false);
-        var vscroll:Component = component.findComponent(VScroll, false);
-
-        var ucx = innerWidth;
-        var ucy = innerHeight;
-
-        if (hscroll != null && hidden(hscroll) == false) {
-            hscroll.left = paddingLeft;
-            hscroll.top = ucy - hscroll.componentHeight + paddingBottom;
-        }
-
-        if (vscroll != null && hidden(vscroll) == false) {
-            vscroll.left = ucx - vscroll.componentWidth + paddingRight;
-            vscroll.top = paddingTop;
-        }
-
-        var contents:Component = component.findComponent("tableview-contents", null, false, "css");
-        if (contents != null) {
-            var offsetY:Float = 0;
-            if (header != null) {
-                offsetY += header.componentHeight;
-            }
-            contents.left = paddingLeft + marginLeft(contents) - marginRight(contents);
-            contents.top = paddingTop + marginTop(contents) - marginBottom(contents) + offsetY;
-        }
-    }
-
-    private override function get_usableSize():Size {
-        var size:Size = super.get_usableSize();
-        var hscroll:Component = component.findComponent(HScroll, false);
-        var vscroll:Component = component.findComponent(VScroll, false);
-        if (hscroll != null && hidden(hscroll) == false) {
-            size.height -= hscroll.componentHeight;
-        }
-        if (vscroll != null && hidden(vscroll) == false) {
-            size.width -= vscroll.componentWidth;
-        }
-
-        var header:Header = component.findComponent(Header);
-        if (header != null) {
-            size.height -= header.componentHeight;
-        }
-        size.height += 1;
-        size.width += 1;
-        if (cast(component, TableView).native == true) {
-            var contents:Component = component.findComponent("tableview-contents", null, false, "css");
-            if (contents != null && contents.componentHeight > size.height) {
-                size.width -= Platform.vscrollWidth;
-            }
-
-            if (contents != null && contents.componentWidth > size.width) {
-                size.height -= Platform.hscrollHeight;
-            }
-        }
-
-        return size;
-    }
-
-    public override function calcAutoSize(exclusions:Array<Component> = null):Size {
-        var size:Size = super.calcAutoSize(exclusions);
-        var hscroll:Component = component.findComponent(HScroll, false);
-        var vscroll:Component = component.findComponent(VScroll, false);
-        if (hscroll != null && hscroll.hidden == false) {
-            size.height += hscroll.componentHeight;
-        }
-        if (vscroll != null && vscroll.hidden == false) {
-            size.width += vscroll.componentWidth;
-        }
-        return size;
-    }
-}
-
-class TableViewRow extends HBox {
-    public function new() {
-        super();
-        registerEvent(MouseEvent.MOUSE_OVER, _onMouseOver);
-        registerEvent(MouseEvent.MOUSE_OUT, _onMouseOut);
-    }
-
-    private function _onMouseOver(event:MouseEvent) {
-        for (c in childComponents) {
-            c.addClass(":hover");
-        }
-    }
-
-    private function _onMouseOut(event:MouseEvent) {
-        for (c in childComponents) {
-            c.removeClass(":hover");
-        }
-    }
-
-    public var data(get, set):Dynamic;
-    private function get_data():Dynamic {
-        return userData;
-    }
-    private function set_data(value:Dynamic):Dynamic {
-        userData = value;
-        return value;
-    }
-}

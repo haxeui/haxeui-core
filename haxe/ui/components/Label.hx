@@ -1,81 +1,33 @@
 package haxe.ui.components;
 
-import haxe.ui.components.Label.LabelLayout;
-import haxe.ui.core.Behaviour;
 import haxe.ui.core.Component;
-import haxe.ui.core.InteractiveComponent;
-import haxe.ui.core.TextDisplay;
+import haxe.ui.core.CompositeBuilder;
+import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.styles.Style;
-import haxe.ui.util.Size;
+import haxe.ui.geom.Size;
 import haxe.ui.util.Variant;
-import haxe.ui.validation.InvalidationFlags;
 
-/**
- A general purpose component to display text
-**/
-@:dox(icon = "/icons/ui-label.png")
+@:composite(Builder, LabelLayout)
 class Label extends Component {
-    public function new() {
-        super();
-        #if (openfl && !flixel)
-        mouseChildren = false;
-        #end
-    }
-
     //***********************************************************************************************************
     // Styles
     //***********************************************************************************************************
-    @:style(layout)           public var textAlign:Null<String>;
-
+    @:style(layout)                             public var textAlign:Null<String>;
+    
     //***********************************************************************************************************
-    // Internals
+    // Public API
     //***********************************************************************************************************
-    private override function createDefaults() {
-        super.createDefaults();
-        defaultBehaviours([
-            "text" => new LabelDefaultTextBehaviour(this)
-        ]);
-        _defaultLayout = new LabelLayout();
-    }
-
-    //***********************************************************************************************************
-    // Overrides
-    //***********************************************************************************************************
-    private override function set_text(value:String):String {
-        if (value == _text) {
-            return value;
-        }
-
-        value = super.set_text(value);
-        invalidateComponentData();
-        invalidateComponentLayout();
-        return value;
-    }
-
-    private override function applyStyle(style:Style) {
-        super.applyStyle(style);
-        if (hasTextDisplay() == true) {
-            getTextDisplay().textStyle = style;
-        }
-    }
-
-    //***********************************************************************************************************
-    // Validation
-    //***********************************************************************************************************
-
-    private override function validateData() {
-        behaviourSet("text", _text);
-        handleBindings(["text", "value"]);
-    }
+    @:clonable @:behaviour(TextBehaviour)       public var text:String;
+    @:clonable @:behaviour(TextBehaviour)       public var value:Variant;
+    @:clonable @:behaviour(HtmlTextBehaviour)   public var htmlText:String;
 }
 
 //***********************************************************************************************************
-// Custom layouts
+// Composite Layout
 //***********************************************************************************************************
-@:dox(hide)
-@:access(haxe.ui.components.Label)
-class LabelLayout extends DefaultLayout {
+@:dox(hide) @:noCompletion
+private class LabelLayout extends DefaultLayout {
     private override function resizeChildren() {
         if (component.autoWidth == false) {
             component.getTextDisplay().width = component.componentWidth - paddingLeft - paddingRight;
@@ -128,20 +80,40 @@ class LabelLayout extends DefaultLayout {
 }
 
 //***********************************************************************************************************
-// Default behaviours
+// Behaviours
 //***********************************************************************************************************
-@:dox(hide)
-@:access(haxe.ui.components.Label)
-class LabelDefaultTextBehaviour extends Behaviour {
-    public override function set(value:Variant) {
-        if (value.isNull) {
-            value = "";
+@:dox(hide) @:noCompletion
+private class TextBehaviour extends DataBehaviour {
+    public override function validateData() {
+        if (_component.getTextDisplay().textStyle != _component.style) {
+            _component.invalidateComponentStyle(true);
         }
+        _component.getTextDisplay().text = '${_value}';
+    }
+}
 
-        var label:Label = cast _component;
-        label.getTextDisplay().text = '${value}';
-        if (label.isInvalid(InvalidationFlags.DISPLAY) == false) {
-            label.invalidateComponentDisplay();
+@:dox(hide) @:noCompletion
+private class HtmlTextBehaviour extends DataBehaviour {
+    public override function validateData() {
+        _component.getTextDisplay().htmlText = '${_value}';
+    }
+}
+
+//***********************************************************************************************************
+// Composite Builder
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+private class Builder extends CompositeBuilder {
+    private var _label:Label;
+    
+    public function new(label:Label) {
+        super(label);
+        _label = label;
+    }
+    
+    public override function applyStyle(style:Style) {
+        if (_label.hasTextDisplay() == true) {
+            _label.getTextDisplay().textStyle = style;
         }
     }
 }

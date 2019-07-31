@@ -1,0 +1,11 @@
+{
+    "name": "winforms-flash-develop",
+    "type": "template",
+    "subProjects": [
+        "shared", "winforms-shared"
+    ],
+    "templates": [
+        { "src": "winforms.hxproj", "dst": "${target}/winforms.hxproj"},
+        { "src": "run-winforms.bat", "dst": "${target}/run-winforms.bat"}
+    ]
+}

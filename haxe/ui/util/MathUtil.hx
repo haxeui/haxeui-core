@@ -7,4 +7,8 @@ class MathUtil {
     static public inline function distance(x1:Float, y1:Float, x2:Float, y2:Float):Float {
         return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
     }
+    
+    public static function round(v:Float, precision:Int = 0):Float {
+        return Math.round(v * Math.pow(10, precision)) / Math.pow(10, precision);
+    }
 }

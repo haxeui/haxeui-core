@@ -60,7 +60,7 @@ class FocusManager {
         return focusInfo.currentFocus;
     }
     private function set_focus(value:IFocusable):IFocusable {
-        if (Std.is(value, IFocusable) == false) {
+        if (value != null && Std.is(value, IFocusable) == false) {
             throw "Component does not implement IFocusable";
         }
         

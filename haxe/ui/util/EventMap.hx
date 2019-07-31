@@ -1,7 +1,7 @@
 package haxe.ui.util;
 
 import haxe.ui.core.Component;
-import haxe.ui.core.UIEvent;
+import haxe.ui.events.UIEvent;
 
 class EventMap  {
     private var _map:Map<String, FunctionArray<UIEvent->Void>>;
@@ -14,16 +14,16 @@ class EventMap  {
         return _map.keys();
     }
     
-    public function add(type:String,  listener:UIEvent->Void):Bool { // returns true if a new FunctionArray was created
+    public function add(type:String, listener:UIEvent->Void, priority:Int = 0):Bool { // returns true if a new FunctionArray was created
         var b:Bool = false;
         var arr:FunctionArray<UIEvent->Void> = _map.get(type);
         if (arr == null) {
             arr = new FunctionArray<UIEvent->Void>();
-            arr.push(listener);
+            arr.push(listener, priority);
             _map.set(type, arr);
             b = true;
         } else if (arr.contains(listener) == false) {
-            arr.push(listener);
+            arr.push(listener, priority);
         }
         return b;
     }
@@ -41,26 +41,34 @@ class EventMap  {
         return b;
     }
 
-    public function invoke(type:String, event:UIEvent, target:Component = null) {
-        if (event.bubble && event.target == null) {
-            event.target = target;
+    public function contains(type:String, listener:UIEvent->Void=null):Bool {
+        var b:Bool = false;
+        var arr:FunctionArray<UIEvent->Void> = _map.get(type);
+        if (arr != null) {
+            b = (listener != null) ? arr.contains(listener) : true;
         }
-
+        return b;
+    }
+    
+    public function invoke(type:String, event:UIEvent, target:Component = null) {
+        if (event.bubble && event.target == null) { 
+            event.target = target; 
+        } 
+        
         var arr:FunctionArray<UIEvent->Void> = _map.get(type);
         if (arr != null) {
             arr = arr.copy();
-            for (fn in arr) {
-                #if !kha // TODO - causes undesirable behaviour with scrollbars on kha (button cancels screen event, scroll thus never gets event and always thinks its "down")
-                if (event.canceled) {
-                    break;
-                }
-                #end
+            for (listener in arr) {
+                if (event.canceled) { 
+                    break; 
+                } 
+                
                 var c = event.clone();
                 if (c.target == null) {
-                    c.target = target;
+                    c.target = target; 
                 }
-                fn(c);
-                event.canceled = c.canceled;
+                listener.callback(c);
+                event.canceled = c.canceled; 
             }
         }
     }

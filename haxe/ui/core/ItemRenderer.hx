@@ -1,6 +1,8 @@
 package haxe.ui.core;
 
 import haxe.ui.containers.Box;
+import haxe.ui.events.MouseEvent;
+import haxe.ui.events.UIEvent;
 import haxe.ui.util.Variant;
 
 class ItemRenderer extends Box {
@@ -48,13 +50,29 @@ class ItemRenderer extends Box {
             return value;
         }
 
-        invalidateComponentData();
         _data = value;
+        invalidateComponentData();
         return value;
     }
 
-    private override function validateData() {
-        for (f in Reflect.fields(_data)) {
+    public var itemIndex:Int = -1;
+
+    private var _fieldList:Array<String> = null; // is caching a good idea?
+    private override function validateComponentData() {
+        if (_fieldList == null || _fieldList.length == 0) {
+            var fieldList:Array<String> = Reflect.fields(_data);
+            if (Type.getClass(_data) != null) {
+                var instanceFields = Type.getInstanceFields(Type.getClass(_data));
+                for (i in instanceFields) {
+                    if (Reflect.isFunction(Reflect.getProperty(_data, i)) == false && fieldList.indexOf(i) == -1) {
+                        fieldList.push(i);
+                    }
+                }
+            }
+            _fieldList = fieldList;
+        }
+        
+        for (f in _fieldList) {
             var v = Reflect.getProperty(_data, f);
             var c:Component = findComponent(f, null, true);
             if (c != null && v != null) {
@@ -69,18 +87,36 @@ class ItemRenderer extends Box {
 						}
 						
 						if (propName == "value") {
-							c.value = Variant.fromDynamic(propValue);
+							c.value = propValue;
 						} else {
 							Reflect.setProperty(c, propName, propValue);
 						}
 					}
 				} else {
-					c.value = Variant.fromDynamic(v);
+                    var propValue:Dynamic = v;
+                    
+                    if (propValue == "true" || propValue == "yes" || propValue == "false" || propValue == "no") {
+                        propValue = (propValue == "true" || propValue == "yes");
+                    } else if (~/^[0-9]*$/i.match(propValue)) {
+                        propValue = Std.parseInt(propValue);
+                    }
+                    
+					c.value = propValue;
 				}
+                
+                if (c.hasEvent(UIEvent.CHANGE, onItemChange) == false) {
+                    c.registerEvent(UIEvent.CHANGE, onItemChange);
+                }
+                
                 c.show();
             } else if (c != null) {
                 c.hide();
             }
         }
+    }
+    
+    private function onItemChange(event:UIEvent) {
+        var v = event.target.value;
+        Reflect.setProperty(_data, event.target.id, v);
     }
 }

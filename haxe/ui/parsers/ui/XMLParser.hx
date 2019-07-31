@@ -1,6 +1,5 @@
 package haxe.ui.parsers.ui;
 
-import haxe.ui.parsers.ui.ComponentInfo.ComponentBindingInfo;
 import haxe.ui.parsers.ui.resolvers.ResourceResolver;
 
 class XMLParser extends ComponentParser {
@@ -24,27 +23,22 @@ class XMLParser extends ComponentParser {
     }
 
     private static function parseComponent(component:ComponentInfo, xml:Xml, resourceResolver:ResourceResolver):Bool {
-        var isComponent:Bool = true;
+        var isComponent:Bool = false;
         var nodeName = xml.nodeName;
         if (nodeName == "import") {
             parseImportNode(component.parent, xml, resourceResolver);
-            isComponent = false;
         } else if (nodeName == "script") {
             parseScriptNode(component, xml, resourceResolver);
-            isComponent = false;
         } else if (nodeName == "style") {
             parseStyleNode(component, xml, resourceResolver);
-            isComponent = false;
-        } else if (nodeName == "bind") {
-            parseBindNode(component, xml);
-            isComponent = false;
         } else if (nodeName == "data") {
             if (xml.firstElement() != null) {
                 component.parent.data = StringTools.trim(xml.toString());
             } else if (StringTools.startsWith(StringTools.trim(xml.firstChild().nodeValue), "[")) {
                 component.parent.data = StringTools.trim(xml.firstChild().nodeValue);
             }
-            isComponent = false;
+        } else if (nodeName == "layout") {
+            parseLayoutNode(component.parent, xml);
         } else {
             parseDetails(component, xml);
             parseAttributes(component, xml);
@@ -56,6 +50,9 @@ class XMLParser extends ComponentParser {
                     component.children.push(child);
                 }
             }
+
+            component.validate();
+            isComponent = true;
         }
         return isComponent;
     }
@@ -63,6 +60,9 @@ class XMLParser extends ComponentParser {
     private static function parseImportNode(component:ComponentInfo, xml:Xml, resourceResolver:ResourceResolver) {
         if (xml.get("source") != null) {
             var source:String = xml.get("source");
+            if (source == null) {
+                source = xml.get("resource");
+            }
             var sourceData:String = resourceResolver.getResourceData(source);
             if (sourceData != null) {
                 var extension:String = resourceResolver.extension(source);
@@ -73,9 +73,6 @@ class XMLParser extends ComponentParser {
 
                 component.findRootComponent().scriptlets = component.findRootComponent().scriptlets.concat(c.scriptlets);
                 c.scriptlets = [];
-
-                component.findRootComponent().bindings = component.findRootComponent().bindings.concat(c.bindings);
-                c.bindings = [];
 
                 c.parent = component;
                 component.children.push(c);
@@ -133,12 +130,17 @@ class XMLParser extends ComponentParser {
         }
     }
 
-    private static function parseBindNode(component:ComponentInfo, xml:Xml) {
-        var binding:ComponentBindingInfo = new ComponentBindingInfo();
-        binding.source = xml.get("source");
-        binding.target = xml.get("target");
-        binding.transform = xml.get("transform");
-        component.findRootComponent().bindings.push(binding);
+    private static function parseLayoutNode(component:ComponentInfo, xml:Xml) {
+        var layoutXml:Xml = xml.firstElement();
+        var layout:LayoutInfo = new LayoutInfo();
+        component.layout = layout;
+
+        layout.type = layoutXml.nodeName;
+
+        for (attrName in layoutXml.attributes()) {
+            var attrValue:String = layoutXml.get(attrName);
+            layout.properties.set(attrName, attrValue);
+        }
     }
 
     private static function parseDetails(component:ComponentInfo, xml:Xml) {
@@ -209,26 +211,11 @@ class XMLParser extends ComponentParser {
                     component.composite = (attrValue == "true");
                 case "layout":
                     component.layoutName = attrValue;
-                case "bindTo" | "bindTransform": // do nothing
+                case "direction":
+                    component.direction = attrValue;
                 default:
-                    if (attrName == "group") {
-                        attrName = "groupName";
-                    }
                     component.properties.set(attrName, attrValue);
             }
-        }
-
-        var bindTo:String = xml.get("bindTo");
-        if (bindTo != null) {
-            if (component.id == null) {
-                component.id = ComponentParser.nextId();
-            }
-
-            var binding:ComponentBindingInfo = new ComponentBindingInfo();
-            binding.source = bindTo;
-            binding.target = component.id;
-            binding.transform = xml.get("bindTransform");
-            component.findRootComponent().bindings.push(binding);
         }
     }
 }

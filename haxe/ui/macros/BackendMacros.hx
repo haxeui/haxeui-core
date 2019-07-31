@@ -1,26 +1,35 @@
 package haxe.ui.macros;
 
-import haxe.ui.util.Properties;
-
 #if macro
-import haxe.macro.Expr;
 import haxe.macro.Context;
+import haxe.macro.Expr;
+import haxe.ui.macros.helpers.CodeBuilder;
+import haxe.ui.util.Properties;
 #end
 
 class BackendMacros {
+    
+    #if macro
     public static var properties:Properties = new Properties();
+    #end
+    
     macro public static function processBackend():Expr {
         loadBackendProperties();
 
-        var code:String = "(function() {\n";
+        var builder = new CodeBuilder();
         for (name in properties.names()) {
-            code += 'Toolkit.backendProperties.setProp("${name}", "${properties.getProp(name)}");\n';
+            builder.add(macro
+                Toolkit._backendProperties.setProp($v{name}, $v{properties.getProp(name)})
+            );
         }
-        if (Context.getDefines().exists("theme")) {
-            code += 'Toolkit.theme = "${Context.getDefines().get("theme")}";\n';
+
+        if (Context.getDefines().get("theme") != null) {
+            builder.add(macro
+                Toolkit.theme = $v{Context.getDefines().get("theme")}
+            );
         }
-        code += "})()\n";
-        return Context.parseInlineString(code, Context.currentPos());
+        
+        return builder.expr;
     }
 
     #if macro

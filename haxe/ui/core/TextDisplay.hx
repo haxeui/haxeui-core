@@ -1,6 +1,6 @@
 package haxe.ui.core;
 
-import haxe.ui.backend.TextDisplayBase;
+import haxe.ui.backend.TextDisplayImpl;
 import haxe.ui.styles.Style;
 import haxe.ui.validation.IValidating;
 import haxe.ui.validation.InvalidationFlags;
@@ -16,7 +16,7 @@ class TextDisplayData {
 /**
  Class that represents a framework specific method to display read-only text inside a component
 **/
-class TextDisplay extends TextDisplayBase implements IValidating {
+class TextDisplay extends TextDisplayImpl implements IValidating {
 
     private var _invalidationFlags:Map<String, Bool> = new Map<String, Bool>();
     private var _isAllInvalid:Bool = false;
@@ -42,11 +42,11 @@ class TextDisplay extends TextDisplayBase implements IValidating {
         if ((value.fontName != null && _textStyle == null) || (_textStyle != null && value.fontName != _textStyle.fontName)) {
             ToolkitAssets.instance.getFont(value.fontName, function(fontInfo) {
                 _fontInfo = fontInfo;
-                invalidate(InvalidationFlags.STYLE);
+                invalidateComponent(InvalidationFlags.STYLE);
                 parentComponent.invalidateComponent(InvalidationFlags.STYLE);
             });
         } else {
-            invalidate(InvalidationFlags.STYLE);
+            invalidateComponent(InvalidationFlags.STYLE);
         }
         
         _textStyle = value;
@@ -62,11 +62,27 @@ class TextDisplay extends TextDisplayBase implements IValidating {
             return value;
         }
 
-        invalidate(InvalidationFlags.DATA);
         _text = value;
+        _htmlText = null;
+        invalidateComponent(InvalidationFlags.DATA);
         return value;
     }
 
+    public var htmlText(get, set):String;
+    private function get_htmlText():String {
+        return _htmlText;
+    }
+    private function set_htmlText(value:String):String {
+        if (value == _htmlText) {
+            return value;
+        }
+
+        _htmlText = value;
+        _text = null;
+        invalidateComponent(InvalidationFlags.DATA);
+        return value;
+    }
+    
     public var left(get, set):Float;
     private function get_left():Float {
         return _left;
@@ -76,7 +92,7 @@ class TextDisplay extends TextDisplayBase implements IValidating {
             return value;
         }
 
-        invalidate(InvalidationFlags.POSITION);
+        invalidateComponent(InvalidationFlags.POSITION);
         _left = value;
         return value;
     }
@@ -90,7 +106,7 @@ class TextDisplay extends TextDisplayBase implements IValidating {
             return value;
         }
 
-        invalidate(InvalidationFlags.POSITION);
+        invalidateComponent(InvalidationFlags.POSITION);
         _top = value;
         return value;
     }
@@ -101,7 +117,7 @@ class TextDisplay extends TextDisplayBase implements IValidating {
             return value;
         }
 
-        invalidate(InvalidationFlags.DISPLAY);
+        invalidateComponent(InvalidationFlags.DISPLAY);
         _width = value;
         return value;
     }
@@ -116,7 +132,7 @@ class TextDisplay extends TextDisplayBase implements IValidating {
             return value;
         }
 
-        invalidate(InvalidationFlags.DISPLAY);
+        invalidateComponent(InvalidationFlags.DISPLAY);
         _height = value;
         return value;
     }
@@ -131,8 +147,8 @@ class TextDisplay extends TextDisplayBase implements IValidating {
             return 0;
         }
 
-        if (isInvalid() == true) {
-            validate();
+        if (isComponentInvalid() == true) {
+            validateComponent();
         }
 
         return _textWidth;
@@ -144,8 +160,8 @@ class TextDisplay extends TextDisplayBase implements IValidating {
 //            return 0;
 //        }
 
-        if (isInvalid() == true) {
-            validate();
+        if (isComponentInvalid() == true) {
+            validateComponent();
         }
         
         return _textHeight;
@@ -160,7 +176,7 @@ class TextDisplay extends TextDisplayBase implements IValidating {
             return value;
         }
 
-        invalidate(InvalidationFlags.STYLE);
+        invalidateComponent(InvalidationFlags.STYLE);
         _displayData.multiline = value;
         return value;
     }
@@ -174,12 +190,12 @@ class TextDisplay extends TextDisplayBase implements IValidating {
             return value;
         }
 
-        invalidate(InvalidationFlags.STYLE);
+        invalidateComponent(InvalidationFlags.STYLE);
         _displayData.wordWrap = value;
         return value;
     }
 
-    public function isInvalid(flag:String = InvalidationFlags.ALL):Bool {
+    public function isComponentInvalid(flag:String = InvalidationFlags.ALL):Bool {
         if (_isAllInvalid == true) {
             return true;
         }
@@ -195,7 +211,7 @@ class TextDisplay extends TextDisplayBase implements IValidating {
         return _invalidationFlags.exists(flag);
     }
 
-    public function invalidate(flag:String = InvalidationFlags.ALL) {
+    public function invalidateComponent(flag:String = InvalidationFlags.ALL) {
         if (flag == InvalidationFlags.ALL) {
             _isAllInvalid = true;
             parentComponent.invalidateComponent(InvalidationFlags.TEXT_DISPLAY);
@@ -221,18 +237,18 @@ class TextDisplay extends TextDisplayBase implements IValidating {
         return value;
     }
 
-    public function updateDisplay() {
+    public function updateComponentDisplay() {
     }
     
-    public function validate() {
+    public function validateComponent() {
         if (_isValidating == true ||    //we were already validating, the existing validation will continue.
-            isInvalid() == false) {     //if none is invalid, exit.
+            isComponentInvalid() == false) {     //if none is invalid, exit.
                 return;
         }
 
         _isValidating = true;
 
-        validateInternal();
+        validateComponentInternal();
 
         for (flag in _invalidationFlags.keys()) {
             _invalidationFlags.remove(flag);
@@ -242,12 +258,12 @@ class TextDisplay extends TextDisplayBase implements IValidating {
         _isValidating = false;
     }
 
-    private function validateInternal() {
-        var dataInvalid = isInvalid(InvalidationFlags.DATA);
-        var styleInvalid = isInvalid(InvalidationFlags.STYLE);
-        var positionInvalid = isInvalid(InvalidationFlags.POSITION);
-        var displayInvalid = isInvalid(InvalidationFlags.DISPLAY);
-        var measureInvalid = isInvalid(InvalidationFlags.MEASURE);
+    private function validateComponentInternal() {
+        var dataInvalid = isComponentInvalid(InvalidationFlags.DATA);
+        var styleInvalid = isComponentInvalid(InvalidationFlags.STYLE);
+        var positionInvalid = isComponentInvalid(InvalidationFlags.POSITION);
+        var displayInvalid = isComponentInvalid(InvalidationFlags.DISPLAY);
+        var measureInvalid = isComponentInvalid(InvalidationFlags.MEASURE);
 
         if (dataInvalid) {
             validateData();

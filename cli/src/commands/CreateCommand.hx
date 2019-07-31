@@ -21,6 +21,9 @@ class CreateCommand extends Command {
         
         var force = Util.mapContains("force", params.additional, true);
         var flashDevelop = Util.mapContains("flash-develop", params.additional, true);
+        if (!flashDevelop) {
+            flashDevelop = Util.mapContains("haxe-develop", params.additional, true);
+        }
 
         //////////////////////////////////////////////////////
         // handle name

@@ -22,8 +22,8 @@ class Preloader extends Component {
         addComponent(label);
     }
     
-    private override function validateLayout():Bool {
-        var b = super.validateLayout();
+    private override function validateComponentLayout():Bool {
+        var b = super.validateComponentLayout();
         if (width > 0 && height > 0) {
             left = (Screen.instance.width / 2) - (width / 2);
             top = (Screen.instance.height / 2) - (height / 2);
@@ -39,7 +39,7 @@ class Preloader extends Component {
         
         if (current > 0) {
             var label = findComponent(Label);
-            var text = label.text + ".";
+            var text = label.text;// + ".";
             if (StringTools.endsWith(text, "....")) {
                 text = "Loading";
             }

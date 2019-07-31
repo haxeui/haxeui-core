@@ -1,50 +1,69 @@
 package haxe.ui;
 
 import haxe.ui.backend.ToolkitOptions;
-import haxe.ui.containers.Box;
+import haxe.ui.containers.dialogs.Dialog;
+import haxe.ui.containers.dialogs.MessageBox;
+import haxe.ui.containers.dialogs.MessageBox.MessageBoxType;
 import haxe.ui.core.Component;
 import haxe.ui.core.ComponentClassMap;
+import haxe.ui.core.ComponentFieldMap;
 import haxe.ui.core.IDataComponent;
-import haxe.ui.core.KeyboardEvent;
+import haxe.ui.core.LayoutClassMap;
 import haxe.ui.core.Screen;
+import haxe.ui.events.KeyboardEvent;
 import haxe.ui.focus.FocusManager;
+import haxe.ui.layouts.Layout;
 import haxe.ui.macros.BackendMacros;
 import haxe.ui.macros.ModuleMacros;
 import haxe.ui.macros.NativeMacros;
 import haxe.ui.parsers.ui.ComponentInfo;
 import haxe.ui.parsers.ui.ComponentParser;
+import haxe.ui.parsers.ui.LayoutInfo;
 import haxe.ui.parsers.ui.resolvers.AssetResourceResolver;
 import haxe.ui.parsers.ui.resolvers.ResourceResolver;
 import haxe.ui.scripting.ConditionEvaluator;
-import haxe.ui.styles.Engine;
+import haxe.ui.styles.StyleSheet;
 import haxe.ui.themes.ThemeManager;
 import haxe.ui.util.GenericConfig;
 import haxe.ui.util.Properties;
+import haxe.ui.util.Variant;
 
 class Toolkit {
-    public static var styleSheet:Engine = new Engine();
+    public static var styleSheet:StyleSheet = new StyleSheet();
+    
     public static var theme:String = "default";
 
     public static var properties:Map<String, String> = new Map<String, String>();
 
-    public static var backendProperties:Properties = new Properties();
     public static var nativeConfig:GenericConfig = new GenericConfig();
 
+    private static var _backendProperties:Properties = new Properties();
+    public static var backendProperties(get, null):Properties;
+    private static function get_backendProperties():Properties {
+        buildBackend();
+        return _backendProperties;
+    }
+    
     private static var _built:Bool = false;
     public static function build() {
         if (_built == true) {
             return;
         }
-        BackendMacros.processBackend();
+        buildBackend();
         ModuleMacros.processModules();
         NativeMacros.processNative();
         _built = true;
-
-        #if (haxeui_remoting && !haxeui_remoting_server)
-        var client:haxe.ui.remoting.client.Client = new haxe.ui.remoting.client.Client();
-        #end
     }
 
+    private static var _backendBuilt:Bool = false;
+    private static function buildBackend() {
+        if (_backendBuilt == true) {
+            return;
+        }
+        BackendMacros.processBackend();
+        _backendBuilt = true;
+    }
+    
     public static function init(options:ToolkitOptions = null) {
         build();
         ThemeManager.instance.applyTheme(theme);
@@ -65,6 +84,45 @@ class Toolkit {
         }
     }
 
+    public static function messageBox(message:String, title:String = null, type:MessageBoxType = null, modal:Bool = true, callback:DialogButton->Void = null):Dialog {
+        if (type == null) {
+            type = MessageBoxType.TYPE_INFO;
+        }
+        var messageBox = new MessageBox();
+        messageBox.type = type;
+        messageBox.message = message;
+        messageBox.modal = modal;
+        if (title != null) {
+            messageBox.title = title;
+        }
+        messageBox.show();
+        if (callback != null) {
+            messageBox.registerEvent(DialogEvent.DIALOG_CLOSED, function(e:DialogEvent) {
+                callback(e.button);
+            });
+        }
+        return messageBox;
+    }
+  
+    public static function dialog(contents:Component, title:String = null, buttons:DialogButton = null, modal:Bool = true, callback:DialogButton->Void = null):Dialog {
+        var dialog = new Dialog();
+        dialog.modal = modal;
+        if (title != null) {
+            dialog.title = title;
+        }
+        if (buttons != null) {
+            dialog.buttons = buttons;
+        }
+        dialog.addComponent(contents);
+        dialog.show();
+        if (callback != null) {
+            dialog.registerEvent(DialogEvent.DIALOG_CLOSED, function(e:DialogEvent) {
+                callback(e.button);
+            });
+        }
+        return dialog;
+    }
+    
     public static var assets(get, null):ToolkitAssets;
     private static function get_assets():ToolkitAssets {
         return ToolkitAssets.instance;
@@ -137,10 +195,9 @@ class Toolkit {
         if (c.text != null)             component.text = c.text;
         if (c.styleNames != null)       component.styleNames = c.styleNames;
         if (c.style != null)            component.styleString = c.style;
-
-        if (Std.is(component, Box)) {
-            var box:haxe.ui.containers.Box = cast(component, haxe.ui.containers.Box);
-            if (c.layoutName != null)               box.layoutName = c.layoutName;
+        if (c.layout != null) {
+            var layout:Layout = buildLayoutFromInfo(c.layout);
+            component.layout = layout;
         }
         
         if (Std.is(component, haxe.ui.containers.ScrollView)) { // special properties for scrollview and derived classes
@@ -153,6 +210,7 @@ class Toolkit {
 
         for (propName in c.properties.keys()) {
             var propValue:Dynamic = c.properties.get(propName);
+            propName = ComponentFieldMap.mapField(propName);
             if (StringTools.startsWith(propName, "on")) {
                 component.addScriptEvent(propName, propValue);
             } else {
@@ -182,6 +240,27 @@ class Toolkit {
         }
         
         return component;
+    }
+
+    private static function buildLayoutFromInfo(l:LayoutInfo):Layout {
+        var className:String = LayoutClassMap.get(l.type.toLowerCase());
+        if (className == null) {
+            trace("WARNING: no class found for layout: " + l.type);
+            return null;
+        }
+
+        var layout:Layout = Type.createInstance(Type.resolveClass(className), []);
+        if (layout == null) {
+            trace("WARNING: could not create class instance: " + className);
+            return null;
+        }
+
+        for (propName in l.properties.keys()) {
+            var propValue:Dynamic = l.properties.get(propName);
+            Reflect.setProperty(layout, propName, Variant.fromDynamic(propValue));
+        }
+
+        return layout;
     }
 
     public static var pixelsPerRem(default, set):Int = 16;

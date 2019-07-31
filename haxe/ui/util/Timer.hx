@@ -1,8 +1,8 @@
 package haxe.ui.util;
 
-import haxe.ui.backend.TimerBase;
+import haxe.ui.backend.TimerImpl;
 
-class Timer extends TimerBase {
+class Timer extends TimerImpl {
     public static function delay( f : Void -> Void, time_ms : Int ):Timer {
         var t:Timer = null;
         t = new Timer(time_ms, function() {

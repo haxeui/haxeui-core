@@ -1,7 +1,7 @@
 package haxe.ui.layouts;
 
 import haxe.ui.core.Component;
-import haxe.ui.util.Size;
+import haxe.ui.geom.Size;
 
 class Layout implements ILayout {
     public function new() {
@@ -21,6 +21,13 @@ class Layout implements ILayout {
         return value;
     }
 
+    private function findComponent<T:Component>(criteria:String = null, type:Class<T> = null, recursive:Null<Bool> = null, searchType:String = "id"):Null<T> {
+        if (_component == null) {
+            return null;
+        }
+        return _component.findComponent(criteria, type, recursive, searchType);
+    }
+    
     @:access(haxe.ui.core.Component)
     public function refresh() {
         if (_component != null && _component.isReady == true) {

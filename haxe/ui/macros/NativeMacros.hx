@@ -1,32 +1,31 @@
 package haxe.ui.macros;
 
+#if macro
+import haxe.macro.Context;
+import haxe.macro.Expr;
+import haxe.ui.macros.helpers.CodeBuilder;
 import haxe.ui.parsers.config.ConfigParser;
 import haxe.ui.util.GenericConfig;
-
-#if macro
-import haxe.macro.Expr;
-import haxe.macro.Context;
 import sys.io.File;
 #end
 
 class NativeMacros {
     private static var _nativeProcessed:Bool;
+    
     macro public static function processNative():Expr {
         if (_nativeProcessed == true) {
             return macro null;
         }
-
-        var code:String = "(function() {\n";
+        
+        _nativeProcessed = true;
 
         var nativeConfigs:Array<GenericConfig> = loadNativeConfig();
+        var builder = new CodeBuilder();
         for (config in nativeConfigs) {
-            code += MacroHelpers.buildGenericConfigCode(config, "nativeConfig");
+            MacroHelpers.buildGenericConfigCode(builder, config, "nativeConfig");
         }
-
-        code += "})()\n";
-
-        _nativeProcessed = true;
-        return Context.parseInlineString(code, Context.currentPos());
+        
+        return builder.expr;
     }
 
     #if macro

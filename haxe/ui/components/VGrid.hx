@@ -16,7 +16,7 @@ class VGrid extends Component {
     //***********************************************************************************************************
     private override function createDefaults() {
         super.createDefaults();
-        _defaultLayout = new VerticalGridLayout();
+        _defaultLayoutClass = VerticalGridLayout;
     }
 
     //***********************************************************************************************************

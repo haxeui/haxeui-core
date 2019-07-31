@@ -1,0 +1,41 @@
+{
+    "name": "android-shared",
+    "type": "template",
+    "directories": [
+        "${target}/build/android",
+        "${target}/build/android/app",
+        "${target}/build/android/app/src",
+        "${target}/build/android/app/src/main",
+        "${target}/build/android/app/src/main/java",
+        "${target}/build/android/app/src/main/assets",
+        "${target}/build/android/app/src/main/res",
+        "${target}/build/android/app/src/main/res/mipmap-hdpi",
+        "${target}/build/android/app/src/main/res/mipmap-ldpi",
+        "${target}/build/android/app/src/main/res/mipmap-mdpi",
+        "${target}/build/android/app/src/main/res/mipmap-xhdpi",
+        "${target}/build/android/gradle",
+        "${target}/build/android/gradle/wrapper"
+    ],
+    "templates": [
+        { "src": "haxeui-android.properties", "dst": "${target}/src/haxeui-android.properties"},
+        { "src": "run-android.bat", "dst": "${target}/run-android.bat"},
+        
+        { "src": "build.gradle", "dst": "${target}/build/android/build.gradle"},
+        { "src": "gradle.properties", "dst": "${target}/build/android/gradle.properties"},
+        { "src": "gradlew", "dst": "${target}/build/android/gradlew"},
+        { "src": "gradlew.bat", "dst": "${target}/build/android/gradlew.bat"},
+        { "src": "local.properties", "dst": "${target}/build/android/local.properties"},
+        { "src": "settings.gradle", "dst": "${target}/build/android/settings.gradle"},
+    
+        { "src": "app/build.gradle", "dst": "${target}/build/android/app/build.gradle"},
+        { "src": "app/src/main/AndroidManifest.xml", "dst": "${target}/build/android/app/src/main/AndroidManifest.xml"},
+
+        { "src": "gradle/wrapper/gradle-wrapper.jar", "dst": "${target}/build/android/gradle/wrapper/gradle-wrapper.jar"},
+        { "src": "gradle/wrapper/gradle-wrapper.properties", "dst": "${target}/build/android/gradle/wrapper/gradle-wrapper.properties"},
+        
+        { "src": "app/src/main/res/mipmap-hdpi/ic_launcher.png", "dst": "${target}/build/android/app/src/main/res/mipmap-hdpi/ic_launcher.png"},
+        { "src": "app/src/main/res/mipmap-ldpi/ic_launcher.png", "dst": "${target}/build/android/app/src/main/res/mipmap-ldpi/ic_launcher.png"},
+        { "src": "app/src/main/res/mipmap-mdpi/ic_launcher.png", "dst": "${target}/build/android/app/src/main/res/mipmap-mdpi/ic_launcher.png"},
+        { "src": "app/src/main/res/mipmap-xhdpi/ic_launcher.png", "dst": "${target}/build/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png"}
+    ]
+}

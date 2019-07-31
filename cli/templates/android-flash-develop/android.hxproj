@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project version="2">
+  <!-- Output SWF options -->
+  <output>
+    <movie outputType="Application" />
+    <movie input="" />
+    <movie path="build\android\app\src\main\java" />
+    <movie fps="0" />
+    <movie width="0" />
+    <movie height="0" />
+    <movie version="0" />
+    <movie minorVersion="0" />
+    <movie platform="Java" />
+    <movie background="#FFFFFF" />
+  </output>
+  <!-- Other classes to be compiled into your SWF -->
+  <classpaths>
+    <class path="src" />
+  </classpaths>
+  <!-- Build options -->
+  <build>
+    <option directives="" />
+    <option flashStrict="False" />
+    <option noInlineOnDebug="False" />
+    <option mainClass="::fullMain::" />
+    <option enabledebug="False" />
+    <option additional="-D no-compilation&#xA;-java-lib ::ANDROID_HOME::\platforms\android-21\android.jar" />
+  </build>
+  <!-- haxelib libraries -->
+  <haxelib>
+    <library name="haxeui-core" />
+    <library name="haxeui-android" />
+  </haxelib>
+  <!-- Class files to compile (other referenced classes will automatically be included) -->
+  <compileTargets>
+    <!-- example: <compile path="..." /> -->
+  </compileTargets>
+  <!-- Paths to exclude from the Project Explorer tree -->
+  <hiddenPaths>
+    <hidden path="obj" />
+  </hiddenPaths>
+  <!-- Executed before build -->
+  <preBuildCommand />
+  <!-- Executed after build -->
+  <postBuildCommand alwaysRun="False">cmd /c xcopy build\android\app\src\main\java\src build\android\app\src\main\java /s /e /y /i
+cmd /c del build\android\app\src\main\java\src\* /q /s
+cmd /c rmdir build\android\app\src\main\java\src /q /s
+
+cmd /c xcopy build\android\app\src\main\java\*.css build\android\app\src\main\assets /s /y /i
+cmd /c del build\android\app\src\main\java\*.css /q /s
+
+cmd /c xcopy build\android\app\src\main\java\*.xml build\android\app\src\main\assets /s /y /i
+cmd /c del build\android\app\src\main\java\*.xml /q /s
+
+cmd /c xcopy build\android\app\src\main\java\*.png build\android\app\src\main\assets /s /y /i
+cmd /c del build\android\app\src\main\java\*.png /q /s
+
+cmd /c cd $(ProjectDir)\build\android &amp; gradlew build -x lint</postBuildCommand>
+  <!-- Other project options -->
+  <options>
+    <option showHiddenPaths="False" />
+    <option testMovie="Custom" />
+    <option testMovieCommand="run-android.bat $(BuildConfig)" />
+  </options>
+  <!-- Plugin storage -->
+  <storage />
+</project>

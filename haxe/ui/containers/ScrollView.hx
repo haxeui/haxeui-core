@@ -1,408 +1,528 @@
 package haxe.ui.containers;
 
-import haxe.ui.core.Behaviour;
-import haxe.ui.core.ScrollEvent;
-import haxe.ui.components.HScroll;
-import haxe.ui.components.VScroll;
+import haxe.ui.behaviours.Behaviour;
+import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.behaviours.DefaultBehaviour;
+import haxe.ui.components.HorizontalScroll;
+import haxe.ui.components.VerticalScroll;
 import haxe.ui.constants.ScrollMode;
 import haxe.ui.core.Component;
-import haxe.ui.core.MouseEvent;
-import haxe.ui.core.Platform;
+import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.Screen;
-import haxe.ui.core.UIEvent;
-import haxe.ui.layouts.DefaultLayout;
-import haxe.ui.layouts.Layout;
+import haxe.ui.events.Events;
+import haxe.ui.events.MouseEvent;
+import haxe.ui.events.ScrollEvent;
+import haxe.ui.events.UIEvent;
+import haxe.ui.geom.Point;
+import haxe.ui.geom.Rectangle;
+import haxe.ui.geom.Size;
 import haxe.ui.layouts.LayoutFactory;
-import haxe.ui.util.Rectangle;
-import haxe.ui.util.Size;
+import haxe.ui.layouts.ScrollViewLayout;
 import haxe.ui.util.Variant;
 import haxe.ui.validation.InvalidationFlags;
 
-@:dox(icon = "/icons/ui-scroll-pane-both.png")
+@:composite(ScrollViewEvents, ScrollViewBuilder, ScrollViewLayout)
 class ScrollView extends Component {
-    private var _contents:Box;
-    private var _hscroll:HScroll;
-    private var _vscroll:VScroll;
-
-    public function new() {
-        super();
-    }
-
-    private override function createLayout():Layout {
-        return new ScrollViewLayout();
-    }
-
-    private override function createDefaults() {
-        super.createDefaults();
-        defaultBehaviours([
-            "vscrollPos" => new DefaultVScrollPosBehaviour(this),
-            "hscrollPos" => new DefaultHScrollPosBehaviour(this)
-        ]);
-        _defaultLayout = new ScrollViewLayout();
-    }
-
-    private var _layoutName:String = "vertical";
-    public var layoutName(get, set):String;
-    private function get_layoutName():String {
-        return _layoutName;
-    }
-    private function set_layoutName(value:String):String {
-        if (_layoutName == value) {
-            return value;
-        }
-
-        _layoutName = value;
-        if (_contents != null) {
-            _contents.layout = LayoutFactory.createFromName(layoutName);
-        }
-        return value;
-    }
-
-    private override function createChildren() {
-        super.createChildren();
-        registerEvent(MouseEvent.MOUSE_WHEEL, _onMouseWheel);
-        if (_scrollMode == ScrollMode.DRAG || _scrollMode == ScrollMode.INERTIAL) {
-            registerEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
-        }
-        createContentContainer();
-    }
-
-    private function createContentContainer() {
-        if (_contents == null) {
-            _contents = new Box();
-            _contents.addClass("scrollview-contents");
-            _contents.registerEvent(UIEvent.RESIZE, _onContentsResized);
-            _contents.layout = LayoutFactory.createFromName(layoutName);
-            addComponent(_contents);
-        }
-    }
-
-    private override function destroyChildren() {
-        if (_hscroll != null) {
-            removeComponent(_hscroll);
-            _hscroll = null;
-        }
-        if (_vscroll != null) {
-            removeComponent(_vscroll);
-            _vscroll = null;
-        }
-    }
-
-    private var _vscrollPos:Float = 0;
-    @bindable public var vscrollPos(get, set):Float;
-    private function get_vscrollPos():Float {
-        return _vscrollPos;
-    }
-    private function set_vscrollPos(value:Float):Float {
-        if (_vscrollPos == value) {
-            return value;
-        }
-
-        invalidateComponentScroll();
-        _vscrollPos = value;
-        return value;
-    }
-
-    public var vscrollMax(get, null):Float;
-    private function get_vscrollMax():Float {
-        if (_vscroll == null) {
-            return 0;
-        }
-        return _vscroll.max;
-    }
+    //***********************************************************************************************************
+    // Public API
+    //***********************************************************************************************************
+    @:behaviour(Virtual)                                public var virtual:Bool;
+    @:behaviour(ContentWidth)                           public var contentWidth:Float;
+    @:behaviour(PercentContentWidth)                    public var percentContentWidth:Float;
+    @:behaviour(ContentHeight)                          public var contentHeight:Float;
+    @:behaviour(PercentContentHeight)                   public var percentContentHeight:Float;
+    @:behaviour(HScrollPos)                             public var hscrollPos:Float;
+    @:behaviour(HScrollMax)                             public var hscrollMax:Float;
+    @:behaviour(HScrollPageSize)                        public var hscrollPageSize:Float;
+    @:behaviour(VScrollPos)                             public var vscrollPos:Float;
+    @:behaviour(VScrollMax)                             public var vscrollMax:Float;
+    @:behaviour(VScrollPageSize)                        public var vscrollPageSize:Float;
+    @:behaviour(ScrollModeBehaviour, ScrollMode.DRAG)   public var scrollMode:ScrollMode;
     
-    private var _hscrollPos:Float = 0;
-    @bindable public var hscrollPos(get, set):Float;
-    private function get_hscrollPos():Float {
-        return _hscrollPos;
-    }
-    private function set_hscrollPos(value:Float):Float {
-        if (_hscrollPos == value) {
-            return value;
-        }
-
-        invalidateComponentScroll();
-        _hscrollPos = value;
-        return value;
-    }
-
-    public var hscrollMax(get, null):Float;
-    private function get_hscrollMax():Float {
-        if (_hscroll == null) {
-            return 0;
-        }
-        return _hscroll.max;
-    }
-
-    public var contentWidth(get, set):Null<Float>;
-    private function get_contentWidth():Null<Float> {
-        if (_contents == null) {
-            return 0;
-        }
-        return _contents.width;
-    }
-    private function set_contentWidth(value:Null<Float>):Null<Float> {
-        if (_contents == null) {
-            return value;
-        }
-        return _contents.width = value;
-    }
-
-    public var contentHeight(get, set):Null<Float>;
-    private function get_contentHeight():Null<Float> {
-        if (_contents == null) {
-            return 0;
-        }
-        return _contents.height;
-    }
-    private function set_contentHeight(value:Null<Float>):Null<Float> {
-        if (_contents == null) {
-            return value;
-        }
-        return _contents.height = value;
-    }
-
-    public var percentContentWidth(get, set):Null<Float>;
-    private function get_percentContentWidth():Null<Float> {
-        if (_contents == null) {
-            return 0;
-        }
-        return _contents.percentWidth;
-    }
-    private function set_percentContentWidth(value:Null<Float>):Null<Float> {
-        if (_contents == null) {
-            return value;
-        }
-        return _contents.percentWidth = value;
-    }
-
-    public var percentContentHeight(get, set):Null<Float>;
-    private function get_percentContentHeight():Null<Float> {
-        if (_contents == null) {
-            return 0;
-        }
-        return _contents.percentHeight;
-    }
-    private function set_percentContentHeight(value:Null<Float>):Null<Float> {
-        if (_contents == null) {
-            return value;
-        }
-        return _contents.percentHeight = value;
-    }
-
-    public override function addComponent(child:Component):Component {
-        var v = null;
-        if (Std.is(child, HScroll) || Std.is(child, VScroll) || child == _contents) {
-            v = super.addComponent(child);
-        } else {
-            createContentContainer();
-            v = _contents.addComponent(child);
-        }
-        return v;
-    }
-
-    public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
-        var v = null;
-        if (Std.is(child, HScroll) || Std.is(child, VScroll) || child == _contents) {
-            v = super.removeComponent(child, dispose, invalidate);
-        } else if (_contents != null) {
-            v = _contents.removeComponent(child, dispose, invalidate);
-        }
-        return v;
-    }
-
-    public function clearContents() {
-        _contents.removeAllComponents();
-    }
-
-    private function addComponentToSuper(child:Component):Component {
-        return super.addComponent(child);
-    }
-
-    public var contents(get, null):Component;
-    private function get_contents():Component {
-        return _contents;
-    }
-
-    /*
-    private function _onScrollReady(event:UIEvent) {
-        event.target.unregisterEvent(UIEvent.READY, _onScrollReady);
-        checkScrolls();
-        updateScrollRect();
-    }
-    */
-
-    private var horizontalConstraint(get, null):Component;
-    private function get_horizontalConstraint():Component {
-        return _contents;
-    }
-
-    private var verticalConstraint(get, null):Component;
-    private function get_verticalConstraint():Component {
-        return _contents;
-    }
-
-    private var _scrollMode:ScrollMode = ScrollMode.DRAG;
-    public var scrollMode(get, set):ScrollMode;
-    private function get_scrollMode():ScrollMode {
-        return _scrollMode;
-    }
-    private function set_scrollMode(value:String):String {
-        if (value == _scrollMode) {
-            return value;
-        }
-        
-        _scrollMode = value;
-        if (_scrollMode == ScrollMode.DRAG || _scrollMode == ScrollMode.INERTIAL) {
-            registerEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
-        } else {
-            unregisterEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
-        }
-        
-        return value;
-    }
-
-    private var __onScrollChange:ScrollEvent->Void;
-    /**
-     Utility property to add a single `ScrollEvent.CHANGE` event
-    **/
-    @:dox(group = "Event related properties and methods")
-    public var onScrollChange(null, set):UIEvent->Void;
-    private function set_onScrollChange(value:UIEvent->Void):UIEvent->Void {
-        if (__onScrollChange != null) {
-            unregisterEvent(ScrollEvent.CHANGE, __onScrollChange);
-            __onScrollChange = null;
-        }
-        registerEvent(ScrollEvent.CHANGE, value);
-        __onScrollChange = value;
-        return value;
-    }
-
     //***********************************************************************************************************
     // Validation
     //***********************************************************************************************************
+    private override function validateComponentInternal() { // TODO: can this be moved to CompositeBuilder? Like validateComponentLayout?
+        if (native == true) { // TODO:  teeeeeemp! This should _absolutely_ be part of CompositeBuilder as native components try to call it and things like checkScrolls dont make sense
+            super.validateComponentInternal();
+            return;
+        }
+        var scrollInvalid = isComponentInvalid(InvalidationFlags.SCROLL);
+        var layoutInvalid = isComponentInvalid(InvalidationFlags.LAYOUT);
 
-    private inline function invalidateComponentScroll() {
-        invalidateComponent(InvalidationFlags.SCROLL);
-    }
-
-    private override function validateInternal() {
-        var scrollInvalid = isInvalid(InvalidationFlags.SCROLL);
-        var layoutInvalid = isInvalid(InvalidationFlags.LAYOUT);
-
-        super.validateInternal();
+        super.validateComponentInternal();
 
         if (scrollInvalid || layoutInvalid) {
-            validateScroll();
+            cast(_compositeBuilder, ScrollViewBuilder).checkScrolls(); // TODO: would be nice to not have this
+            cast(_compositeBuilder, ScrollViewBuilder).updateScrollRect(); // TODO: or this
         }
     }
-
-    private function validateScroll() {
-        if(behaviourGet("hscrollPos") != _hscrollPos)
-        {
-            behaviourSet("hscrollPos", _hscrollPos);
-            handleBindings(["hscrollPos"]);
+    
+    public function ensureVisible(component:Component) {
+        var contents:Component = findComponent("scrollview-contents", false, "css");
+        
+        var hscroll:HorizontalScroll = findComponent(HorizontalScroll);
+        var vscroll:VerticalScroll = findComponent(VerticalScroll);
+        
+        var rect = new Rectangle(contents.componentClipRect.left, contents.componentClipRect.top, contents.componentClipRect.width, contents.componentClipRect.height);
+        if (hscroll != null) {
+            rect.height -= hscroll.height;
+        }
+        if (vscroll != null) {
+            rect.width -= vscroll.width;
         }
 
-        if(behaviourGet("vscrollPos") != _vscrollPos)
-        {
-            behaviourSet("vscrollPos", _vscrollPos);
-            handleBindings(["vscrollPos"]);
-        }
-
-        checkScrolls();
-        updateScrollRect();
-    }
-
-    // ********************************************************************************
-    // Inertial and drag scroll functions
-    // ********************************************************************************
-    
-    private var _inertialTimestamp:Float;
-    private static inline var INERTIAL_TIME_CONSTANT = 325;
-
-    private var _offsetX:Float = 0;
-    private var _screenOffsetX:Float;
-    private var _inertialAmplitudeX:Float = 0;
-    private var _inertialTargetX:Float = 0;
-    private var _inertiaDirectionX:Int;
-    
-    private var _offsetY:Float = 0;
-    private var _screenOffsetY:Float;
-    private var _inertialAmplitudeY:Float = 0;
-    private var _inertialTargetY:Float = 0;
-    private var _inertiaDirectionY:Int;
-
-    private function _onMouseWheel(event:MouseEvent) {
-        if (_vscroll != null) {
-            event.cancel();
-            if (event.delta > 0) {
-                _vscroll.pos -= 50; // TODO: calculate this
-                //_vscroll.animatePos(_vscroll.pos - 50);
-            } else if (event.delta < 0) {
-                _vscroll.pos += 50;
+        if (hscroll != null) {
+            var hpos:Float = hscroll.pos;
+            if (component.left + component.width > hpos + rect.width) {
+                hscroll.pos = ((component.left + component.width) - rect.width);
+            } else if (component.left < hpos) {
+                hscroll.pos = component.left;
             }
-            dispatch(new ScrollEvent(ScrollEvent.CHANGE));
+        }
+        
+        if (vscroll != null) {
+            var vpos:Float = vscroll.pos;
+            if (component.top + component.height > vpos + rect.height) {
+                vscroll.pos = ((component.top + component.height) - rect.height);
+            } else if (component.top < vpos) {
+                vscroll.pos = component.top;
+            }
         }
     }
+}
 
-    private function _onMouseDown(event:MouseEvent) {
-        if (_hscroll == null && _vscroll == null) {
-            return;
-        }
+//***********************************************************************************************************
+// Behaviours
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class Virtual extends DefaultBehaviour {
+    public override function set(value:Variant) {
+        super.set(value);
         
-        event.cancel();
-        if (_hscroll != null && _hscroll.hitTest(event.screenX, event.screenY) == true) {
-            return;
-        }
-        if (_vscroll != null && _vscroll.hitTest(event.screenX, event.screenY) == true) {
-            return;
-        }
+        cast(_component._compositeBuilder, ScrollViewBuilder).onVirtualChanged();
+    }
+}
 
-        _offsetX = hscrollPos + event.screenX;
-        _offsetY = vscrollPos + event.screenY;
-
-        if (_scrollMode == ScrollMode.INERTIAL) {
-            _inertialTargetX = hscrollPos;
-            _inertialTargetY = vscrollPos;
-            _inertialAmplitudeX = 0;
-            _inertialAmplitudeY = 0;
-            
-            _screenOffsetX = event.screenX;
-            _screenOffsetY = event.screenY;
-            
-            _inertialTimestamp = haxe.Timer.stamp();
+@:dox(hide) @:noCompletion
+private class ContentWidth extends Behaviour {
+    public override function get():Variant {
+        var contents:Component = _component.findComponent("scrollview-contents", false, "css");
+        if (contents == null) {
+            return null;
         }
-        
-        Screen.instance.registerEvent(MouseEvent.MOUSE_MOVE, _onMouseMove);
-        Screen.instance.registerEvent(MouseEvent.MOUSE_UP, _onMouseUp);
-
-        dispatch(new ScrollEvent(ScrollEvent.START));
+        return contents.width;
     }
     
-    private function _onMouseMove(event:MouseEvent) {
-        hscrollPos = _offsetX - event.screenX;
-        vscrollPos = _offsetY - event.screenY;
-        dispatch(new ScrollEvent(ScrollEvent.CHANGE));
+    public override function set(value:Variant) {
+        var contents:Component = _component.findComponent("scrollview-contents", false, "css");
+        if (contents != null) {
+            contents.width = value;
+        }
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class PercentContentWidth extends Behaviour {
+    public override function get():Variant {
+        var contents:Component = _component.findComponent("scrollview-contents", false, "css");
+        if (contents == null) {
+            return null;
+        }
+        return contents.percentWidth;
     }
     
-    private function _onMouseUp(event:MouseEvent) {
-        Screen.instance.unregisterEvent(MouseEvent.MOUSE_MOVE, _onMouseMove);
-        Screen.instance.unregisterEvent(MouseEvent.MOUSE_UP, _onMouseUp);
+    public override function set(value:Variant) {
+        var contents:Component = _component.findComponent("scrollview-contents", false, "css");
+        if (contents != null) {
+            contents.percentWidth = value;
+        }
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class ContentHeight extends Behaviour {
+    public override function get():Variant {
+        var contents:Component = _component.findComponent("scrollview-contents", false, "css");
+        if (contents == null) {
+            return null;
+        }
+        return contents.height;
+    }
+    
+    public override function set(value:Variant) {
+        var contents:Component = _component.findComponent("scrollview-contents", false, "css");
+        if (contents != null) {
+            contents.height = value;
+        }
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class PercentContentHeight extends Behaviour {
+    public override function get():Variant {
+        var contents:Component = _component.findComponent("scrollview-contents", false, "css");
+        if (contents == null) {
+            return null;
+        }
+        return contents.percentHeight;
+    }
+    
+    public override function set(value:Variant) {
+        var contents:Component = _component.findComponent("scrollview-contents", false, "css");
+        if (contents != null) {
+            contents.percentHeight = value;
+        }
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class HScrollPos extends DataBehaviour {
+    private var _scrollview:ScrollView;
+    
+    public function new(scrollview:ScrollView) {
+        super(scrollview);
+        _scrollview = scrollview;
+    }
+    
+    public override function get():Variant {
+        var hscroll = _scrollview.findComponent(HorizontalScroll, false);
+        if (hscroll == null) {
+            return 0;
+        }
+        return hscroll.pos;
+    }
+    
+    public override function validateData() { // TODO: feels a bit ugly!
+        var hscroll = _scrollview.findComponent(HorizontalScroll, false);
+        if (_scrollview.virtual == true) {
+            if (hscroll == null) {
+                hscroll = cast(_scrollview._compositeBuilder, ScrollViewBuilder).createHScroll();
+            }
+            if (hscroll != null) {
+                hscroll.pos = _value;
+            }
+            
+        } else if (hscroll != null) {
+            hscroll.pos = _value;
+        }
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class VScrollPos extends DataBehaviour {
+    private var _scrollview:ScrollView;
+    
+    public function new(scrollview:ScrollView) {
+        super(scrollview);
+        _scrollview = scrollview;
+    }
+    
+    public override function get():Variant {
+        var vscroll = _scrollview.findComponent(VerticalScroll, false);
+        if (vscroll == null) {
+            return 0;
+        }
+        return vscroll.pos;
+    }
+    
+    public override function validateData() { // TODO: feels a bit ugly!
+        var vscroll = _scrollview.findComponent(VerticalScroll, false);
+        if (_scrollview.virtual == true) {
+            if (vscroll == null) {
+                vscroll = cast(_scrollview._compositeBuilder, ScrollViewBuilder).createVScroll();
+            }
+            if (vscroll != null) {
+                vscroll.pos = _value;
+            }
+            
+        } else if (vscroll != null) {
+            vscroll.pos = _value;
+        }
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class HScrollMax extends DataBehaviour {
+    private var _scrollview:ScrollView;
+    
+    public function new(scrollview:ScrollView) {
+        super(scrollview);
+        _scrollview = scrollview;
+    }
+    
+    public override function get():Variant {
+        var hscroll = _scrollview.findComponent(HorizontalScroll, false);
+        if (hscroll == null) {
+            return 0;
+        }
+        return hscroll.max;
+    }
+    
+    public override function validateData() { // TODO: feels a bit ugly!
+        if (_scrollview.virtual == true) {
+            var hscroll = _scrollview.findComponent(HorizontalScroll, false);
+            if (hscroll == null) {
+                hscroll = cast(_scrollview._compositeBuilder, ScrollViewBuilder).createHScroll();
+            }
+            if (hscroll != null) {
+                hscroll.max = _value;
+            }
+        }
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class VScrollMax extends DataBehaviour {
+    private var _scrollview:ScrollView;
+    
+    public function new(scrollview:ScrollView) {
+        super(scrollview);
+        _scrollview = scrollview;
+    }
+    
+    public override function get():Variant {
+        var vscroll = _scrollview.findComponent(VerticalScroll, false);
+        if (vscroll == null) {
+            return 0;
+        }
+        return vscroll.max;
+    }
+    
+    public override function validateData() { // TODO: feels a bit ugly!
+        if (_scrollview.virtual == true) {
+            var vscroll = _scrollview.findComponent(VerticalScroll, false);
+            if (vscroll == null) {
+                vscroll = cast(_scrollview._compositeBuilder, ScrollViewBuilder).createVScroll();
+            }
+            if (vscroll != null) {
+                vscroll.max = _value;
+            }
+        }
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class HScrollPageSize extends DataBehaviour {
+    private var _scrollview:ScrollView;
+    
+    public function new(scrollview:ScrollView) {
+        super(scrollview);
+        _scrollview = scrollview;
+    }
+    
+    public override function validateData() { // TODO: feels a bit ugly!
+        if (_scrollview.virtual == true) {
+            var hscroll = _scrollview.findComponent(HorizontalScroll, false);
+            if (hscroll == null) {
+                hscroll = cast(_scrollview._compositeBuilder, ScrollViewBuilder).createHScroll();
+            }
+            if (hscroll != null) {
+                hscroll.pageSize = _value;
+            }
+        }
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class VScrollPageSize extends DataBehaviour {
+    private var _scrollview:ScrollView;
+    
+    public function new(scrollview:ScrollView) {
+        super(scrollview);
+        _scrollview = scrollview;
+    }
+    
+    public override function validateData() { // TODO: feels a bit ugly!
+        if (_scrollview.virtual == true) {
+            var vscroll = _scrollview.findComponent(VerticalScroll, false);
+            if (vscroll == null) {
+                vscroll = cast(_scrollview._compositeBuilder, ScrollViewBuilder).createVScroll();
+            }
+            if (vscroll != null) {
+                vscroll.pageSize = _value;
+            }
+        }
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class ScrollModeBehaviour extends DataBehaviour {
+    public override function validateData() {
+        _component.registerInternalEvents(true);
+    }
+}
+
+//***********************************************************************************************************
+// Events
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+typedef Inertia = {
+    var screen:Point;
+    var target:Point;
+    var amplitude:Point;
+    var direction:Point;
+    var timestamp:Float;
+}
+
+@:dox(hide) @:noCompletion
+class ScrollViewEvents extends haxe.ui.events.Events {
+    private var _scrollview:ScrollView;
+    
+    public function new(scrollview:ScrollView) {
+        super(scrollview);
+        _scrollview = scrollview;
+    }
+    
+    public override function register() {
+        var contents:Component = _scrollview.findComponent("scrollview-contents", false, "css");
+        if (contents != null && contents.hasEvent(UIEvent.RESIZE, onContentsResized) == false) {
+            contents.registerEvent(UIEvent.RESIZE, onContentsResized);
+        }
         
-        if (_scrollMode == ScrollMode.INERTIAL) {
+        var hscroll:HorizontalScroll = _scrollview.findComponent(HorizontalScroll, false);
+        if (hscroll != null && hscroll.hasEvent(UIEvent.CHANGE, onHScroll) == false) {
+            hscroll.registerEvent(UIEvent.CHANGE, onHScroll);
+        }
+        
+        var vscroll:VerticalScroll = _scrollview.findComponent(VerticalScroll, false);
+        if (vscroll != null && vscroll.hasEvent(UIEvent.CHANGE, onVScroll) == false) {
+            vscroll.registerEvent(UIEvent.CHANGE, onVScroll);
+        }
+        
+        if (_scrollview.scrollMode == ScrollMode.DRAG || _scrollview.scrollMode == ScrollMode.INERTIAL) {
+            registerEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
+        } else if (hasEvent(MouseEvent.MOUSE_DOWN, onMouseDown) == false) {
+            unregisterEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
+        }
+        
+        registerEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
+    }
+    
+    public override function unregister() {
+        var contents:Component = _scrollview.findComponent("scrollview-contents", false, "css");
+        if (contents != null) {
+            contents.unregisterEvent(UIEvent.RESIZE, onContentsResized);
+        }
+        
+        var hscroll:HorizontalScroll = _scrollview.findComponent(HorizontalScroll, false);
+        if (hscroll != null) {
+            hscroll.unregisterEvent(UIEvent.CHANGE, onHScroll);
+        }
+        
+        var vscroll:VerticalScroll = _scrollview.findComponent(VerticalScroll, false);
+        if (vscroll != null) {
+            vscroll.unregisterEvent(UIEvent.CHANGE, onVScroll);
+        }
+        
+        unregisterEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
+        unregisterEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
+    }
+    
+    private function onContentsResized(event:UIEvent) {
+        _scrollview.invalidateComponent(InvalidationFlags.SCROLL);
+    }
+    
+    private function onHScroll(event:UIEvent) {
+        _scrollview.invalidateComponent(InvalidationFlags.SCROLL);
+        _target.dispatch(new ScrollEvent(ScrollEvent.CHANGE));
+    }
+    
+    private function onVScroll(event:UIEvent) {
+        _scrollview.invalidateComponent(InvalidationFlags.SCROLL);
+        _target.dispatch(new ScrollEvent(ScrollEvent.CHANGE));
+    }
+    
+    private var _offset:Point;
+    private static inline var INERTIAL_TIME_CONSTANT = 325;
+    private var _inertia:Inertia = null;
+    private function onMouseDown(event:MouseEvent) {
+        var hscroll:HorizontalScroll = _scrollview.findComponent(HorizontalScroll, false);
+        var vscroll:VerticalScroll = _scrollview.findComponent(VerticalScroll, false);
+
+        if (hscroll == null && vscroll == null) {
+            return;
+        }
+        
+        //event.cancel();
+        if (hscroll != null && hscroll.hitTest(event.screenX, event.screenY) == true) {
+            return;
+        }
+        if (vscroll != null && vscroll.hitTest(event.screenX, event.screenY) == true) {
+            return;
+        }
+        
+        _offset = new Point();
+        if (hscroll != null) {
+            _offset.x = hscroll.pos + event.screenX;
+        }
+        if (vscroll != null) {
+            _offset.y = vscroll.pos + event.screenY;
+        }
+        
+        
+        if (_scrollview.scrollMode == ScrollMode.INERTIAL) {
+            if (_inertia == null) {
+                _inertia = {
+                    screen: new Point(),
+                    target: new Point(),
+                    amplitude: new Point(),
+                    direction: new Point(),
+                    timestamp: 0
+                }
+            }
+            
+            _inertia.target.x = _scrollview.hscrollPos;
+            _inertia.target.y = _scrollview.vscrollPos;
+            _inertia.amplitude.x = 0;
+            _inertia.amplitude.y = 0;
+            
+            _inertia.screen.x = event.screenX;
+            _inertia.screen.y = event.screenY;
+            
+            _inertia.timestamp = haxe.Timer.stamp();
+        }
+        
+        Screen.instance.registerEvent(MouseEvent.MOUSE_MOVE, onMouseMove);
+        Screen.instance.registerEvent(MouseEvent.MOUSE_UP, onMouseUp);
+    }
+    
+    private function onMouseMove(event:MouseEvent) {
+        var hscroll:HorizontalScroll = _scrollview.findComponent(HorizontalScroll, false);
+        if (hscroll != null) {
+            hscroll.pos = _offset.x - event.screenX;
+        }
+        var vscroll:VerticalScroll = _scrollview.findComponent(VerticalScroll, false);
+        if (vscroll != null) {
+            vscroll.pos = _offset.y - event.screenY;
+        }
+    }
+    
+    private function onMouseUp(event:MouseEvent) {
+        Screen.instance.unregisterEvent(MouseEvent.MOUSE_MOVE, onMouseMove);
+        Screen.instance.unregisterEvent(MouseEvent.MOUSE_UP, onMouseUp);
+        
+        if (_scrollview.scrollMode == ScrollMode.INERTIAL) {
             var now = haxe.Timer.stamp();
-            var elapsed = (now - _inertialTimestamp) * 1000;
+            var elapsed = (now - _inertia.timestamp) * 1000;
             
-            var deltaX = Math.abs(_screenOffsetX - event.screenX);
-            var deltaY = Math.abs(_screenOffsetY - event.screenY);
+            var deltaX = Math.abs(_inertia.screen.x - event.screenX);
+            var deltaY = Math.abs(_inertia.screen.y - event.screenY);
 
-            _inertiaDirectionX = (_screenOffsetX - event.screenX) < 0 ? 0 : 1;
+            _inertia.direction.x = (_inertia.screen.x - event.screenX) < 0 ? 0 : 1;
             var velocityX = deltaX / elapsed;
             var v = 1000 * deltaX / (1 + elapsed);
             velocityX = 0.8 * v + 0.2 * velocityX;
             
-            _inertiaDirectionY = (_screenOffsetY - event.screenY) < 0 ? 0 : 1;
+            _inertia.direction.y = (_inertia.screen.y - event.screenY) < 0 ? 0 : 1;
             var velocityY = deltaY / elapsed;
             var v = 1000 * deltaY / (1 + elapsed);
             velocityY = 0.8 * v + 0.2 * velocityY;
@@ -411,35 +531,37 @@ class ScrollView extends Component {
                 return;
             }
             
-            _inertialTimestamp = haxe.Timer.stamp();
+            _inertia.timestamp = haxe.Timer.stamp();
 
-            if (_hscroll != null) {
-                _inertialAmplitudeX = 0.8 * velocityX;
+            var hscroll:HorizontalScroll = _scrollview.findComponent(HorizontalScroll, false);
+            if (hscroll != null) {
+                _inertia.amplitude.x = 0.8 * velocityX;
             }
-            if (_inertiaDirectionX == 0) {
-                _inertialTargetX = Math.round(hscrollPos - _inertialAmplitudeX);
+            if (_inertia.direction.x == 0) {
+                _inertia.target.x = Math.round(_scrollview.hscrollPos - _inertia.amplitude.x);
             } else {
-                _inertialTargetX = Math.round(hscrollPos + _inertialAmplitudeX);
+                _inertia.target.x = Math.round(_scrollview.hscrollPos + _inertia.amplitude.x);
             }
             
-            if (_vscroll != null) {
-                _inertialAmplitudeY = 0.8 * velocityY;
+            var vscroll:VerticalScroll = _scrollview.findComponent(VerticalScroll, false);
+            if (vscroll != null) {
+                _inertia.amplitude.y = 0.8 * velocityY;
             }
-            if (_inertiaDirectionY == 0) {
-                _inertialTargetY = Math.round(vscrollPos - _inertialAmplitudeY);
+            if (_inertia.direction.y == 0) {
+                _inertia.target.y = Math.round(_scrollview.vscrollPos - _inertia.amplitude.y);
             } else {
-                _inertialTargetY = Math.round(vscrollPos + _inertialAmplitudeY);
+                _inertia.target.y = Math.round(_scrollview.vscrollPos + _inertia.amplitude.y);
             }
             
-            if (hscrollPos == _inertialTargetX && vscrollPos == _inertialTargetY) {
+            if (_scrollview.hscrollPos == _inertia.target.x && _scrollview.vscrollPos == _inertia.target.y) {
                 return;
             }
 
-            if (hscrollPos == _inertialTargetX) {
-                _inertialAmplitudeX = 0;
+            if (_scrollview.hscrollPos == _inertia.target.x) {
+                _inertia.amplitude.x = 0;
             }
-            if (vscrollPos == _inertialTargetY) {
-                _inertialAmplitudeY = 0;
+            if (_scrollview.vscrollPos == _inertia.target.y) {
+                _inertia.amplitude.y = 0;
             }
 
             Toolkit.callLater(inertialScroll);
@@ -447,31 +569,28 @@ class ScrollView extends Component {
             dispatch(new ScrollEvent(ScrollEvent.STOP));
         }
     }
-
+    
     private function inertialScroll() {
-        var elapsed = (haxe.Timer.stamp() - _inertialTimestamp) * 1000;
+        var elapsed = (haxe.Timer.stamp() - _inertia.timestamp) * 1000;
 
-        
         var finishedX = false;
-        if (_inertialAmplitudeX != 0) {
-            var deltaX = -_inertialAmplitudeX * Math.exp(-elapsed / INERTIAL_TIME_CONSTANT);
+        if (_inertia.amplitude.x != 0) {
+            var deltaX = -_inertia.amplitude.x * Math.exp(-elapsed / INERTIAL_TIME_CONSTANT);
             if (deltaX > 0.5 || deltaX < -0.5) {
-                var oldPos = hscrollPos;
+                var oldPos = _scrollview.hscrollPos;
                 var newPos:Float = 0;
-                if (_inertiaDirectionX == 0) {
-                    //hscrollPos = _inertialTargetX - deltaX;
-                    newPos = _inertialTargetX - deltaX;
+                if (_inertia.direction.x == 0) {
+                    newPos = _inertia.target.x - deltaX;
                 } else {
-                    //hscrollPos = _inertialTargetX + deltaX;
-                    newPos = _inertialTargetX + deltaX;
+                    newPos = _inertia.target.x + deltaX;
                 }
                 if (newPos < 0) {
                     newPos = 0;
-                } else if (newPos > hscrollMax) {
-                    newPos = hscrollMax;
+                } else if (newPos > _scrollview.hscrollMax) {
+                    newPos = _scrollview.hscrollMax;
                 }
-                hscrollPos = newPos;
-                finishedX = (hscrollPos == oldPos || newPos == 0 || newPos == hscrollMax);
+                _scrollview.hscrollPos = newPos;
+                finishedX = (newPos == oldPos || newPos == 0 || newPos == _scrollview.hscrollMax);
             } else {    
                 finishedX = true;
             }
@@ -480,23 +599,23 @@ class ScrollView extends Component {
         }
 
         var finishedY = false;
-        if (_inertialAmplitudeY != 0) {
-            var deltaY = -_inertialAmplitudeY * Math.exp(-elapsed / INERTIAL_TIME_CONSTANT);
+        if (_inertia.amplitude.y != 0) {
+            var deltaY = -_inertia.amplitude.y * Math.exp(-elapsed / INERTIAL_TIME_CONSTANT);
             if (deltaY > 0.5 || deltaY < -0.5) {
-                var oldPos = vscrollPos;
+                var oldPos = _scrollview.vscrollPos;
                 var newPos:Float = 0;
-                if (_inertiaDirectionY == 0) {
-                    newPos = _inertialTargetY - deltaY;
+                if (_inertia.direction.y == 0) {
+                    newPos = _inertia.target.y - deltaY;
                 } else {
-                    newPos = _inertialTargetY + deltaY;
+                    newPos = _inertia.target.y + deltaY;
                 }
                 if (newPos < 0) {
                     newPos = 0;
-                } else if (newPos > vscrollMax) {
-                    newPos = vscrollMax;
+                } else if (newPos > _scrollview.vscrollMax) {
+                    newPos = _scrollview.vscrollMax;
                 }
-                vscrollPos = newPos;
-                finishedY = (vscrollPos == oldPos || newPos == 0 || newPos == vscrollMax);
+                _scrollview.vscrollPos = newPos;
+                finishedY = (newPos == oldPos || newPos == 0 || newPos == _scrollview.vscrollMax);
             } else {
                 finishedY = true;
             }
@@ -511,230 +630,244 @@ class ScrollView extends Component {
         }
     }
     
-    private function _onContentsResized(event:UIEvent) {
-        invalidateComponentScroll();
+    private function onMouseWheel(event:MouseEvent) {
+        var vscroll:VerticalScroll = _scrollview.findComponent(VerticalScroll, false);
+        if (vscroll != null) {
+            event.cancel();
+            if (event.delta > 0) {
+                vscroll.pos -= 50; // TODO: calculate this
+            } else if (event.delta < 0) {
+                vscroll.pos += 50;
+            }
+        }
     }
+}
 
-    private var hscrollOffset(get, null):Float;
-    private function get_hscrollOffset():Float {
+//***********************************************************************************************************
+// Composite Builder
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+@:allow(haxe.ui.containers.ScrollView)
+@:access(haxe.ui.core.Component)
+class ScrollViewBuilder extends CompositeBuilder {
+    private var _scrollview:ScrollView;
+    private var _contents:Box;
+    
+    public function new(scrollview:ScrollView) {
+        super(scrollview);
+        _scrollview = scrollview;
+    }
+    
+    public override function create() {
+        createContentContainer("vertical");
+    }
+    
+    public override function destroy() {
+    }
+    
+    public override function get_numComponents():Null<Int> {
+        return _contents.numComponents;
+    }
+    
+    public override function addComponent(child:Component):Component {
+        if (Std.is(child, HorizontalScroll) == false && Std.is(child, VerticalScroll) == false && child.hasClass("scrollview-contents") == false) {
+            return _contents.addComponent(child);
+        }
+        return null;
+    }
+    
+    public override function addComponentAt(child:Component, index:Int):Component {
+        if (Std.is(child, HorizontalScroll) == false && Std.is(child, VerticalScroll) == false && child.hasClass("scrollview-contents") == false) {
+            return _contents.addComponentAt(child, index);
+        }
+        return null;
+    }
+    
+    public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
+        if (Std.is(child, HorizontalScroll) == false && Std.is(child, VerticalScroll) == false && child.hasClass("scrollview-contents") == false) {
+            return _contents.removeComponent(child, dispose, invalidate);
+        }
+        return null;
+    }
+    
+    public override function removeComponentAt(index:Int, dispose:Bool = true, invalidate:Bool = true):Component {
+        return _contents.removeComponentAt(index, dispose, invalidate);
+    }
+    
+    public override function getComponentIndex(child:Component):Int {
+        return _contents.getComponentIndex(child);
+    }
+    
+    public override function setComponentIndex(child:Component, index:Int):Component {
+        if (Std.is(child, HorizontalScroll) == false && Std.is(child, VerticalScroll) == false && child.hasClass("scrollview-contents") == false) {
+            return _contents.setComponentIndex(child, index);
+        }
+        return null;
+    }
+    
+    public override function getComponentAt(index:Int):Component {
+        return _contents.getComponentAt(index);
+    }
+    
+    private function createContentContainer(layoutName:String) {
+        if (_contents == null) {
+            _contents = new Box();
+            _contents.addClass("scrollview-contents");
+            _contents.id = "scrollview-contents";
+            _contents.layout = LayoutFactory.createFromName(layoutName); // TODO: temp
+            _component.addComponent(_contents);
+        }
+    }
+    
+    private function horizontalConstraintModifier():Float {
         return 0;
     }
-
+    
+    private function verticalConstraintModifier():Float {
+        return 0;
+    }
+    
     private function checkScrolls() {
-        if (isReady == false ||
-            horizontalConstraint == null || horizontalConstraint.childComponents.length == 0 ||
-            verticalConstraint == null || verticalConstraint.childComponents.length == 0 ||
-            native == true) {
-            return;
-        }
+        var usableSize:Size = _component.layout.usableSize;
+        
+        
+        if (virtualHorizontal == false && usableSize.width > 0) {
+            var horizontalConstraint = _contents;
+            var hscroll:HorizontalScroll = _component.findComponent(HorizontalScroll, false);
+            var vcw:Float = horizontalConstraint.width + horizontalConstraintModifier();
+            if (vcw > usableSize.width) {
+                if (hscroll == null) {
+                    hscroll = createHScroll();
+                }
 
-        var usableSize:Size = layout.usableSize;
-        if (horizontalConstraint.componentWidth > usableSize.width) {
-            if (_hscroll == null) {
-                _hscroll = new HScroll();
-                _hscroll.percentWidth = 100;
-                _hscroll.id = "scrollview-hscroll";
-                _hscroll.registerEvent(UIEvent.CHANGE, _onHScroll);
-                addComponent(_hscroll);
-            }
+                hscroll.max = vcw - usableSize.width;
+                hscroll.pageSize = (usableSize.width / vcw) * hscroll.max;
 
-            _hscroll.max = horizontalConstraint.componentWidth - usableSize.width - hscrollOffset; // _contents.layout.horizontalSpacing;
-            _hscroll.pageSize = (usableSize.width / horizontalConstraint.componentWidth) * _hscroll.max;
-
-            _hscroll.syncValidation();    //avoid another pass
-        } else {
-            if (_hscroll != null) {
-                _hscroll.unregisterEvent(UIEvent.CHANGE, _onHScroll);
-                removeComponent(_hscroll);
-                _hscroll = null;
+                hscroll.syncComponentValidation();    //avoid another pass
+            } else {
+                if (hscroll != null) {
+                    _component.removeComponent(hscroll);
+                }
             }
         }
 
-        if (verticalConstraint.componentHeight > usableSize.height) {
-            if (_vscroll == null) {
-                _vscroll = new VScroll();
-                _vscroll.percentHeight = 100;
-                _vscroll.id = "scrollview-vscroll";
-                _vscroll.registerEvent(UIEvent.CHANGE, _onVScroll);
-                addComponent(_vscroll);
-            }
+        if (virtualVertical == false && usableSize.height > 0) {
+            var verticalConstraint = _contents;
+            var vscroll:VerticalScroll = _component.findComponent(VerticalScroll, false);
+            var vch:Float = verticalConstraint.height + verticalConstraintModifier();
+            if (vch > usableSize.height) {
+                if (vscroll == null) {
+                    vscroll = createVScroll();
+                }
 
-            _vscroll.max = verticalConstraint.componentHeight - usableSize.height;
-            _vscroll.pageSize = (usableSize.height / verticalConstraint.componentHeight) * _vscroll.max;
+                vscroll.max = vch - usableSize.height;
+                vscroll.pageSize = (usableSize.height / vch) * vscroll.max;
 
-            _vscroll.syncValidation();    //avoid another pass
-        } else {
-            if (_vscroll != null) {
-                _vscroll.unregisterEvent(UIEvent.CHANGE, _onVScroll);
-                removeComponent(_vscroll);
-                _vscroll = null;
+                vscroll.syncComponentValidation();    //avoid another pass
+            } else {
+                if (vscroll != null) {
+                    _component.removeComponent(vscroll);
+                }
             }
         }
     }
 
-    private function _onHScroll(event:UIEvent) {
-        hscrollPos = _hscroll.pos;
+    public function createHScroll():HorizontalScroll {
+        var usableSize:Size = _component.layout.usableSize;
+        var horizontalConstraint = _contents;
+        var hscroll:HorizontalScroll = _component.findComponent(HorizontalScroll, false);
+        var vcw:Float = horizontalConstraint.width + horizontalConstraintModifier();
+        
+        if (usableSize.width <= 0) {
+            return hscroll;
+        }
+        
+        if (vcw > usableSize.width && hscroll == null) {
+            hscroll = new HorizontalScroll();
+            hscroll.percentWidth = 100;
+            hscroll.allowFocus = false;
+            hscroll.id = "scrollview-hscroll";
+            _component.addComponent(hscroll);
+            _component.registerInternalEvents(true);
+        }
+        
+        return hscroll;
     }
-
-    private function _onVScroll(event:UIEvent) {
-        vscrollPos = _vscroll.pos;
+    
+    public function createVScroll():VerticalScroll {
+        var usableSize:Size = _component.layout.usableSize;
+        var verticalConstraint = _contents;
+        var vscroll:VerticalScroll = _component.findComponent(VerticalScroll, false);
+        var vch:Float = verticalConstraint.height + verticalConstraintModifier();
+        
+        if (usableSize.height <= 0) {
+            return vscroll;
+        }
+        
+        if (vch > usableSize.height && vscroll == null) {
+            vscroll = new VerticalScroll();
+            vscroll.percentHeight = 100;
+            vscroll.allowFocus = false;
+            vscroll.id = "scrollview-vscroll";
+            _component.addComponent(vscroll);
+            _component.registerInternalEvents(true);
+        }
+        
+        return vscroll;
     }
-
+    
     private function updateScrollRect() {
         if (_contents == null) {
             return;
         }
 
-        var usableSize = layout.usableSize;
+        var usableSize = _component.layout.usableSize;
 
-        var clipCX = usableSize.width;
-        if (clipCX > _contents.componentWidth) {
-            clipCX = _contents.componentWidth;
+        var clipCX = usableSize.width - horizontalConstraintModifier();
+        if (clipCX > _contents.width) {
+            clipCX = _contents.width + horizontalConstraintModifier();
         }
-        var clipCY = usableSize.height;
-        if (clipCY > _contents.componentHeight) {
-            clipCY = _contents.componentHeight;
+        var clipCY = usableSize.height - verticalConstraintModifier();
+        if (clipCY > _contents.height) {
+            clipCY = _contents.height + verticalConstraintModifier();
         }
 
         var xpos:Float = 0;
-        if (_hscroll != null) {
-            xpos = _hscroll.pos;
-        }
         var ypos:Float = 0;
-        if (_vscroll != null) {
-            ypos = _vscroll.pos;
+
+        if (virtualHorizontal == false) {
+            var hscroll = _component.findComponent(HorizontalScroll, false);
+            if (hscroll != null) {
+                xpos = hscroll.pos;
+            }
+        } else if (_contents.componentClipRect != null) {
+            clipCX = _contents.componentClipRect.width;
+        }
+        
+        if (virtualVertical == false) {
+            var vscroll = _component.findComponent(VerticalScroll, false);
+            if (vscroll != null) {
+                ypos = vscroll.pos;
+            }
+        } else if (_contents.componentClipRect != null) {
+            clipCY = _contents.componentClipRect.height;
         }
 
-        var rc:Rectangle = new Rectangle(Std.int(xpos), Std.int(ypos), clipCX, clipCY);
+        var rc:Rectangle = new Rectangle(xpos, ypos, clipCX, clipCY);
         _contents.componentClipRect = rc;
     }
-}
-
-//***********************************************************************************************************
-// Default behaviours
-//***********************************************************************************************************
-@:dox(hide)
-class DefaultVScrollPosBehaviour extends Behaviour {
-    public override function get():Variant {
-        var vscroll:VScroll = _component.findComponent(VScroll);
-        if (vscroll == null) {
-            return 0;
-        }
-        return vscroll.pos;
+    
+    public var virtualHorizontal(get, null):Bool;
+    private function get_virtualHorizontal():Bool {
+        return _scrollview.virtual;
     }
-
-    public override function set(value:Variant) {
-        var vscroll:VScroll = _component.findComponent(VScroll);
-        if (vscroll != null) {
-            vscroll.pos = value;
-        }
+    
+    public var virtualVertical(get, null):Bool;
+    private function get_virtualVertical():Bool {
+        return _scrollview.virtual;
     }
-}
-
-@:dox(hide)
-class DefaultHScrollPosBehaviour extends Behaviour {
-    public override function get():Variant {
-        var hscroll:HScroll = _component.findComponent(HScroll);
-        if (hscroll == null) {
-            return 0;
-        }
-        return hscroll.pos;
-    }
-
-    public override function set(value:Variant) {
-        var hscroll:HScroll = _component.findComponent(HScroll);
-        if (hscroll != null) {
-            hscroll.pos = value;
-        }
-    }
-}
-
-//***********************************************************************************************************
-// Layout
-//***********************************************************************************************************
-@:dox(hide)
-class ScrollViewLayout extends DefaultLayout {
-    public function new() {
-        super();
-    }
-
-    private override function repositionChildren() {
-        var contents:Component = component.findComponent("scrollview-contents", null, false, "css");
-        if (contents == null) {
-            return;
-        }
-
-        var hscroll:Component = component.findComponent(HScroll, false);
-        var vscroll:Component = component.findComponent(VScroll, false);
-
-        var ucx = innerWidth;
-        var ucy = innerHeight;
-
-        if (hscroll != null && hidden(hscroll) == false) {
-            var ucy = innerHeight;
-            hscroll.moveComponent(paddingLeft, ucy - hscroll.componentHeight + paddingBottom);
-        }
-
-        if (vscroll != null && hidden(vscroll) == false) {
-            var ucx = innerWidth;
-            vscroll.moveComponent(ucx - vscroll.componentWidth + paddingRight, paddingTop);
-        }
-
-        var contents:Component = component.findComponent("scrollview-contents", null, false, "css");
-        if (contents != null) {
-            contents.moveComponent(paddingLeft, paddingTop);
-        }
-    }
-
-    private override function get_usableSize():Size {
-        var size:Size = super.get_usableSize();
-        var hscroll:Component = component.findComponent(HScroll, false);
-        var vscroll:Component = component.findComponent(VScroll, false);
-        if (hscroll != null && hidden(hscroll) == false) {
-            size.height -= hscroll.componentHeight;
-        }
-        if (vscroll != null && hidden(vscroll) == false) {
-            size.width -= vscroll.componentWidth;
-        }
-
-        if (cast(component, ScrollView).native == true) {
-            var contents:Component = component.findComponent("scrollview-contents", null, false, "css");
-            if (contents != null) {
-                if (contents.componentWidth > size.width) {
-                    size.height -= Platform.hscrollHeight;
-                }
-                if (contents.componentHeight > size.height) {
-                    size.width -= Platform.vscrollWidth;
-                }
-            }
-        }
-
-        return size;
-    }
-
-    public override function calcAutoSize(exclusions:Array<Component> = null):Size {
-        var hscroll:Component = component.findComponent(HScroll, false);
-        var vscroll:Component = component.findComponent(VScroll, false);
-        var size:Size = super.calcAutoSize([hscroll, vscroll]);
-        if (hscroll != null && hscroll.hidden == false) {
-            size.height += hscroll.componentHeight;
-        }
-        if (vscroll != null && vscroll.hidden == false) {
-            size.width += vscroll.componentWidth;
-        }
         
-        if (cast(component, ScrollView).native == true) {
-            var contents:Component = component.findComponent("scrollview-contents", null, false, "css");
-            if (contents != null) {
-                if (contents.width > component.width) {
-                    size.height += Platform.hscrollHeight;
-                }
-                if (contents.height > component.height) {
-                    size.width += Platform.vscrollWidth;
-                }
-            }
-        }
+    public function onVirtualChanged() {
         
-        return size;
     }
 }

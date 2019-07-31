@@ -6,11 +6,11 @@ import haxe.ui.Preloader.PreloadItem;
 import haxe.ui.assets.AssetPlugin;
 import haxe.ui.assets.FontInfo;
 import haxe.ui.assets.ImageInfo;
-import haxe.ui.backend.AssetsBase;
+import haxe.ui.backend.AssetsImpl;
 import haxe.ui.backend.ToolkitOptions;
 import haxe.ui.util.CallbackMap;
 
-class ToolkitAssets extends AssetsBase {
+class ToolkitAssets extends AssetsImpl {
     private static var _instance:ToolkitAssets;
     public static var instance(get, never):ToolkitAssets;
     private static function get_instance():ToolkitAssets {
