@@ -60,6 +60,10 @@ class ModuleMacros {
                 var types:Array<haxe.macro.Type> = MacroHelpers.typesFromClassOrPackage(s.className, s.classPackage);
                 if (types != null) {
                     for (t in types) {
+                        if (!t.match(TInst(_))) {
+                            continue;
+                        }
+
                         var scriptType = new ClassBuilder(t);
                         if (scriptType.isPrivate == true) {
                             continue;
