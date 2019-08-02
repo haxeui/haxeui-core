@@ -3,7 +3,6 @@ package haxe.ui.core;
 import haxe.ui.containers.Box;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
-import haxe.ui.util.Variant;
 
 class ItemRenderer extends Box {
     public function new() {
@@ -72,51 +71,66 @@ class ItemRenderer extends Box {
             _fieldList = fieldList;
         }
         
-        for (f in _fieldList) {
-            var v = Reflect.getProperty(_data, f);
-            var c:Component = findComponent(f, null, true);
-            if (c != null && v != null) {
-				if (Type.typeof(v) == TObject) {
-					for (propName in Reflect.fields(v)) {
-						var propValue:Dynamic = Reflect.getProperty(v, propName);
-						
-						if (propValue == "true" || propValue == "yes" || propValue == "false" || propValue == "no") {
-							propValue = (propValue == "true" || propValue == "yes");
-						} else if (~/^[0-9]*$/i.match(propValue)) {
-							propValue = Std.parseInt(propValue);
-						}
-						
-						if (propName == "value") {
-							c.value = propValue;
-						} else {
-							Reflect.setProperty(c, propName, propValue);
-						}
-					}
-				} else {
-                    var propValue:Dynamic = v;
-                    
-                    if (propValue == "true" || propValue == "yes" || propValue == "false" || propValue == "no") {
-                        propValue = (propValue == "true" || propValue == "yes");
-                    } else if (~/^[0-9]*$/i.match(propValue)) {
-                        propValue = Std.parseInt(propValue);
-                    }
-                    
-					c.value = propValue;
-				}
-                
-                if (c.hasEvent(UIEvent.CHANGE, onItemChange) == false) {
-                    c.registerEvent(UIEvent.CHANGE, onItemChange);
-                }
-                
-                c.show();
-            } else if (c != null) {
-                c.hide();
-            }
-        }
+        updateValues(_data, _fieldList);
     }
     
     private function onItemChange(event:UIEvent) {
         var v = event.target.value;
         Reflect.setProperty(_data, event.target.id, v);
+    }
+    
+    private function updateValues(value:Dynamic, fieldList:Array<String> = null) {
+        if (fieldList == null) {
+            fieldList = Reflect.fields(value);
+        }
+        
+        for (f in fieldList) {
+            var v = Reflect.getProperty(value, f);
+            if (Type.typeof(v) == TObject) {
+                updateValues(v);
+            } else {
+                var c:Component = findComponent(f, null, true);
+                if (c != null && v != null) {
+                    var c:Component = findComponent(f, null, true);
+                    if (c != null && v != null) {
+                        if (Type.typeof(v) == TObject) {
+                            for (propName in Reflect.fields(v)) {
+                                var propValue:Dynamic = Reflect.getProperty(v, propName);
+                                
+                                if (propValue == "true" || propValue == "yes" || propValue == "false" || propValue == "no") {
+                                    propValue = (propValue == "true" || propValue == "yes");
+                                } else if (~/^[0-9]*$/i.match(propValue)) {
+                                    propValue = Std.parseInt(propValue);
+                                }
+                                
+                                if (propName == "value") {
+                                    c.value = propValue;
+                                } else {
+                                    Reflect.setProperty(c, propName, propValue);
+                                }
+                            }
+                        } else {
+                            var propValue:Dynamic = v;
+                            
+                            if (propValue == "true" || propValue == "yes" || propValue == "false" || propValue == "no") {
+                                propValue = (propValue == "true" || propValue == "yes");
+                            } else if (~/^[0-9]*$/i.match(propValue)) {
+                                propValue = Std.parseInt(propValue);
+                            }
+                            
+                            c.value = propValue;
+                        }
+                        
+                        if (c.hasEvent(UIEvent.CHANGE, onItemChange) == false) {
+                            c.registerEvent(UIEvent.CHANGE, onItemChange);
+                        }
+                        
+                        c.show();
+                    } else if (c != null) {
+                        c.hide();
+                    }
+                }
+            }
+        }
     }
 }
