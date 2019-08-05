@@ -291,6 +291,17 @@ class ModuleMacros {
         if (alias != null) {
             className = alias;
         }
+        
+        var temp = [];
+        for (part in fileParts) {
+            part = StringTools.trim(part);
+            if (part == "" || part == "." || part == "..") {
+                continue;
+            }
+            temp.push(part.toLowerCase());
+        }
+        fileParts = temp;
+        
         var fullClass = fileParts.concat([className]).join(".");
         if (ComponentClassMap.hasClass(fullClass) == true) {
             return fullClass;
@@ -308,16 +319,18 @@ class ModuleMacros {
         ComponentMacros.buildComponentFromString(codeBuilder, xml, namedComponents);
         codeBuilder.add(macro {
             addComponent(c0);
-            if (c0.width != null) {
+            if (c0.width != null && c0.width > 0) {
                 this.width = c0.width;
             }
-            if (c0.height != null) {
+            if (c0.height != null && c0.height > 0) {
                 this.height = c0.height;
             }
-            if (c0.percentWidth != null) {
+            if (c0.percentWidth != null && c0.percentWidth > 0) {
+                this.width = null;
                 this.percentWidth = c0.percentWidth;
             }
-            if (c0.percentHeight != null) {
+            if (c0.percentHeight != null && c0.percentHeight > 0) {
+                this.height = null;
                 this.percentHeight = c0.percentHeight;
             }
         });
