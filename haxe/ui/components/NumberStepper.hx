@@ -36,6 +36,7 @@ private class PosBehaviour extends DataBehaviour {
             preciseValue = MathUtil.round(preciseValue, step.precision);
         }
 
+        preciseValue = MathUtil.clamp(preciseValue, step.min, step.max);
         step.pos = preciseValue;
         
         var textfield:TextField = _component.findComponent("stepper-textfield", TextField);
@@ -43,19 +44,6 @@ private class PosBehaviour extends DataBehaviour {
         
         var event = new UIEvent(UIEvent.CHANGE);
         _component.dispatch(event);
-    }
-}
-
-@:dox(hide) @:noCompletion
-private class ValueBehaviour extends DefaultBehaviour {
-    public override function get():Variant {
-        var stepper:NumberStepper = cast(_component, NumberStepper);
-        return stepper.pos;
-    }
-    
-    public override function set(value:Variant) {
-        var stepper:NumberStepper = cast(_component, NumberStepper);
-        stepper.pos = value;
     }
 }
 
@@ -259,6 +247,7 @@ private class Events extends haxe.ui.events.Events {
     private function onTextFieldChange(event:UIEvent) {
         var step:Stepper = _stepper.findComponent("stepper-step", Stepper);
         var textfield:TextField = _stepper.findComponent("stepper-textfield", TextField);
-        step.pos = Std.parseFloat(textfield.text);
+        _stepper.pos = MathUtil.clamp(Std.parseFloat(textfield.text), _stepper.min, _stepper.max);
+        textfield.text = Std.string(_stepper.pos);
     }
 }

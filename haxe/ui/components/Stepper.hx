@@ -14,7 +14,7 @@ import haxe.ui.util.Variant;
 @:composite(Events, Builder)
 class Stepper extends VBox {
     @:clonable @:behaviour(PosBehaviour)                public var pos:Float;
-    @:clonable @:behaviour(ValueBehaviour)              public var value:Variant;
+    @:clonable @:value(pos)                             public var value:Dynamic;
     @:clonable @:behaviour(DefaultBehaviour, 1)         public var step:Float;
     @:clonable @:behaviour(DefaultBehaviour, null)      public var min:Null<Float>;
     @:clonable @:behaviour(DefaultBehaviour, null)      public var max:Null<Float>;
@@ -39,21 +39,14 @@ class Stepper extends VBox {
 @:dox(hide) @:noCompletion
 private class PosBehaviour extends DataBehaviour {
     public override function validateData() {
-        var event = new UIEvent(UIEvent.CHANGE);
-        _component.dispatch(event);
-    }
-}
-
-@:dox(hide) @:noCompletion
-private class ValueBehaviour extends DefaultBehaviour {
-    public override function get():Variant {
         var stepper:Stepper = cast(_component, Stepper);
-        return stepper.pos;
-    }
-    
-    public override function set(value:Variant) {
-        var stepper:Stepper = cast(_component, Stepper);
-        stepper.pos = value;
+        var v:Float = MathUtil.clamp(_value, stepper.min, stepper.max);
+        if (v != _value) {
+            stepper.pos = v;
+            _value = v;
+            var event = new UIEvent(UIEvent.CHANGE);
+            _component.dispatch(event);
+        }
     }
 }
 
