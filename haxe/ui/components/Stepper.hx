@@ -41,12 +41,10 @@ private class PosBehaviour extends DataBehaviour {
     public override function validateData() {
         var stepper:Stepper = cast(_component, Stepper);
         var v:Float = MathUtil.clamp(_value, stepper.min, stepper.max);
-        if (v != _value) {
-            stepper.pos = v;
-            _value = v;
-            var event = new UIEvent(UIEvent.CHANGE);
-            _component.dispatch(event);
-        }
+        stepper.pos = v;
+        _value = v;
+        var event = new UIEvent(UIEvent.CHANGE);
+        _component.dispatch(event);
     }
 }
 
