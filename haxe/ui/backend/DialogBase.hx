@@ -7,6 +7,7 @@ import haxe.ui.core.Component;
 import haxe.ui.core.Screen;
 import haxe.ui.events.MouseEvent;
 
+#if (haxe_ver >= 4)
 @:xml('
 <vbox id="dialog-container" styleNames="dialog-container">
     <hbox id="dialog-title" styleNames="dialog-title">
@@ -21,6 +22,7 @@ import haxe.ui.events.MouseEvent;
     </box>
 </vbox>
 ')
+#end
 @:dox(hide) @:noCompletion
 class DialogBase extends Box {
     public var modal:Bool = true;
@@ -31,8 +33,58 @@ class DialogBase extends Box {
     
     private var _overlay:Component;
     
+    #if (haxe_ver < 4) // TODO: seems using two @xml build macros in haxe 3.4.7 breaks things - order related probably - work around for now is to manually create 
+    public var dialogContainer:haxe.ui.containers.VBox;
+    public var dialogTitle:haxe.ui.containers.HBox;
+    public var dialogTitleLabel:haxe.ui.components.Label;
+    public var dialogCloseButton:haxe.ui.components.Image;
+    public var dialogContent:haxe.ui.containers.VBox;
+    public var dialogFooterContainer:haxe.ui.containers.Box;
+    public var dialogFooter:haxe.ui.containers.HBox;
+    #end
+    
     public function new() {
         super();
+        
+        #if (haxe_ver < 4) // TODO: seems using two @xml build macros in haxe 3.4.7 breaks things - order related probably - work around for now is to manually create 
+        dialogContainer = new haxe.ui.containers.VBox();
+        dialogContainer.id = "dialog-container";
+        dialogContainer.styleNames = "dialog-container";
+        addComponent(dialogContainer);
+        
+        dialogTitle = new haxe.ui.containers.HBox();
+        dialogTitle.id = "dialog-title";
+        dialogTitle.styleNames = "dialog-title";
+        dialogContainer.addComponent(dialogTitle);
+        
+        dialogTitleLabel = new haxe.ui.components.Label();
+        dialogTitleLabel.id ="dialog-title-label";
+        dialogTitleLabel.styleNames = "dialog-title-label";
+        dialogTitleLabel.text = "HaxeUI";
+        dialogTitle.addComponent(dialogTitleLabel);
+    
+        dialogCloseButton = new haxe.ui.components.Image();
+        dialogCloseButton.id ="dialog-close-button";
+        dialogCloseButton.styleNames = "dialog-close-button";
+        dialogTitle.addComponent(dialogCloseButton);
+        
+        dialogContent = new haxe.ui.containers.VBox();
+        dialogContent.id = "dialog-content";
+        dialogContent.styleNames = "dialog-content";
+        dialogContainer.addComponent(dialogContent);
+        
+        dialogFooterContainer = new haxe.ui.containers.Box();
+        dialogFooterContainer.percentWidth = 100;
+        dialogFooterContainer.id ="dialog-footer-container";
+        dialogFooterContainer.styleNames = "dialog-footer-container";
+        dialogContainer.addComponent(dialogFooterContainer);
+        
+        dialogFooter = new haxe.ui.containers.HBox();
+        dialogFooterContainer.id ="dialog-footer";
+        dialogFooterContainer.styleNames = "dialog-footer";
+        dialogFooterContainer.addComponent(dialogFooter);
+        #end
+    
         dialogFooterContainer.hide();
         dialogCloseButton.onClick = function(e) {
             hideDialog(DialogButton.CANCEL);

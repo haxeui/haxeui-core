@@ -93,8 +93,7 @@ class ClassBuilder {
         if (recursive == true) {
             return (TypeTools.findField(classType, name) != null);
         }
-        
-        return (findField != null);
+        return (findField(name) != null);
     }
     
     public function getFieldsWithMeta(meta:String) {
