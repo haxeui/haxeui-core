@@ -739,7 +739,6 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     @:dox(group = "Style related properties and methods")
     public var customStyle:Style = new Style();
     @:dox(group = "Style related properties and methods")
-    //@:allow(haxe.ui.styles_old.Engine)
     private var classes:Array<String> = [];
 
     /**
@@ -788,6 +787,33 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         return (classes.indexOf(name) != -1);
     }
 
+    /**
+     Adds a css style name to this component
+    **/
+    @:dox(group = "Style related properties and methods")
+    public function swapClass(classToAdd:String, classToRemove:String = null, invalidate:Bool = true, recursive:Bool = false) {
+        var needsInvalidate = false;
+        if (classToAdd != null && classes.indexOf(classToAdd) == -1) {
+            classes.push(classToAdd);
+            needsInvalidate = true;
+        }
+		
+        if (classToRemove != null && classes.indexOf(classToRemove) != -1) {
+            classes.remove(classToRemove);
+            needsInvalidate = true;
+        }
+        
+        if (invalidate == true && needsInvalidate == true) {
+            invalidateComponentStyle();
+        }
+        
+		if (recursive == true) {
+			for (child in childComponents) {
+				child.swapClass(classToAdd, classToRemove, invalidate, recursive);
+			}
+		}
+    }
+    
     /**
      A string representation of the css classes associated with this component
     **/
