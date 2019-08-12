@@ -80,8 +80,8 @@ class DialogBase extends Box {
         dialogContainer.addComponent(dialogFooterContainer);
         
         dialogFooter = new haxe.ui.containers.HBox();
-        dialogFooterContainer.id ="dialog-footer";
-        dialogFooterContainer.styleNames = "dialog-footer";
+        dialogFooter.id ="dialog-footer";
+        dialogFooter.styleNames = "dialog-footer";
         dialogFooterContainer.addComponent(dialogFooter);
         #end
     
