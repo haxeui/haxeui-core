@@ -24,6 +24,7 @@ class TabView extends Component {
     @:behaviour(TabPosition)        public var tabPosition:String;
     @:behaviour(PageCount)          public var pageCount:Int;
     @:call(RemovePage)              public function removePage(index:Int):Void;
+    @:call(RemoveAllPages)          public function removeAllPages():Void;
 }
 
 //***********************************************************************************************************
@@ -186,6 +187,24 @@ private class RemovePage extends Behaviour {
             builder._content.removeComponent(view);
             builder._tabs.removeTab(index);
         }
+        return null;
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+@:access(haxe.ui.containers.Builder)
+private class RemoveAllPages extends Behaviour {
+    public override function call(param:Any = null):Variant {
+        var builder:Builder = cast(_component._compositeBuilder, Builder);
+        while (builder._views.length > 0) {
+            var view = builder._views[0];
+            builder._views.remove(view);
+            builder._content.removeComponent(view);
+            builder._tabs.removeTab(0);
+        }
+        cast(_component, TabView).pageIndex = -1;
+        builder._tabs.selectedIndex = -1;
         return null;
     }
 }
