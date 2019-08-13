@@ -91,35 +91,16 @@ class ItemRenderer extends Box {
             } else {
                 var c:Component = findComponent(f, null, true);
                 if (c != null && v != null) {
-                    var c:Component = findComponent(f, null, true);
                     if (c != null && v != null) {
-                        if (Type.typeof(v) == TObject) {
-                            for (propName in Reflect.fields(v)) {
-                                var propValue:Dynamic = Reflect.getProperty(v, propName);
-                                
-                                if (propValue == "true" || propValue == "yes" || propValue == "false" || propValue == "no") {
-                                    propValue = (propValue == "true" || propValue == "yes");
-                                } else if (~/^[0-9]*$/i.match(propValue)) {
-                                    propValue = Std.parseInt(propValue);
-                                }
-                                
-                                if (propName == "value") {
-                                    c.value = propValue;
-                                } else {
-                                    Reflect.setProperty(c, propName, propValue);
-                                }
-                            }
-                        } else {
-                            var propValue:Dynamic = v;
-                            
-                            if (propValue == "true" || propValue == "yes" || propValue == "false" || propValue == "no") {
-                                propValue = (propValue == "true" || propValue == "yes");
-                            } else if (~/^[0-9]*$/i.match(propValue)) {
-                                propValue = Std.parseInt(propValue);
-                            }
-                            
-                            c.value = propValue;
+                        var propValue:Dynamic = v;
+                        
+                        if (propValue == "true" || propValue == "yes" || propValue == "false" || propValue == "no") {
+                            propValue = (propValue == "true" || propValue == "yes");
+                        } else if (~/^[0-9]*$/i.match(propValue)) {
+                            propValue = Std.parseInt(propValue);
                         }
+                        
+                        c.value = propValue;
                         
                         if (c.hasEvent(UIEvent.CHANGE, onItemChange) == false) {
                             c.registerEvent(UIEvent.CHANGE, onItemChange);
