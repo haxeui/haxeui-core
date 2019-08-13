@@ -134,6 +134,20 @@ private class Builder extends ScrollViewBuilder {
     }
 
     public override function onInitialize() {
+        if (_header == null) {
+            return;
+        }
+        if (_tableview.itemRenderer == null) {
+            buildDefaultRenderer();
+        } else {
+            fillExistingRenderer();
+        }
+    }
+
+    public override function onReady() {
+        if (_header == null) {
+            return;
+        }
         if (_tableview.itemRenderer == null) {
             buildDefaultRenderer();
         } else {
@@ -161,6 +175,13 @@ private class Builder extends ScrollViewBuilder {
             return child;
         } else if (Std.is(child, Header)) {
             _header = cast(child, Header);
+            
+            if (_tableview.itemRenderer == null) {
+                buildDefaultRenderer();
+            } else {
+                fillExistingRenderer();
+            }
+            
             r = null;
         } else {
             r = super.addComponent(child);
@@ -170,7 +191,7 @@ private class Builder extends ScrollViewBuilder {
     
     public function buildDefaultRenderer() {
         var r = new CompoundItemRenderer();
-        //if (_header != null) {
+        if (_header != null) {
             for (column in _header.childComponents) {
                 var itemRenderer = new ItemRenderer();
                 var label = new Label();
@@ -179,7 +200,7 @@ private class Builder extends ScrollViewBuilder {
                 itemRenderer.addComponent(label);
                 r.addComponent(itemRenderer);
             }
-        //}
+        }
         _tableview.itemRenderer = r;
     }
     
@@ -218,6 +239,10 @@ private class Builder extends ScrollViewBuilder {
 // Composite Layout
 //***********************************************************************************************************
 private class Layout extends VerticalVirtualLayout {
+    private override function itemClass(index:Int, data:Dynamic):Class<ItemRenderer> {
+        return CompoundItemRenderer;
+    }
+    
     public override function repositionChildren() {
         super.repositionChildren();
 
@@ -237,7 +262,7 @@ private class Layout extends VerticalVirtualLayout {
                 var biggest:Float = 0;
                 for (column in header.childComponents) {
                     var itemRenderer = item.findComponent(column.id, Component);
-                    if (Std.is(itemRenderer, ItemRenderer) == false) {
+                    if (itemRenderer != null && Std.is(itemRenderer, ItemRenderer) == false) {
                         itemRenderer = itemRenderer.findAncestor(ItemRenderer);
                     }
                     if (itemRenderer != null) {
@@ -297,6 +322,7 @@ private class DataSourceBehaviour extends DataBehaviour {
                 }
                 BindingManager.instance.componentPropChanged(_component, "dataSource");
             }
+            _component.invalidateComponentLayout();
         } else {
             _component.invalidateComponentLayout();
         }
