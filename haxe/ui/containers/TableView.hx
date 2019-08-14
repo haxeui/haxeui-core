@@ -1,6 +1,8 @@
 package haxe.ui.containers;
 
+import haxe.ui.behaviours.Behaviour;
 import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.behaviours.ValueBehaviour;
 import haxe.ui.behaviours.LayoutBehaviour;
 import haxe.ui.binding.BindingManager;
 import haxe.ui.components.Label;
@@ -8,9 +10,12 @@ import haxe.ui.containers.ScrollView;
 import haxe.ui.containers.ScrollView.ScrollViewBuilder;
 import haxe.ui.core.Component;
 import haxe.ui.core.IDataComponent;
+import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.ItemRenderer;
 import haxe.ui.data.DataSource;
 import haxe.ui.data.transformation.NativeTypeTransformer;
+import haxe.ui.events.MouseEvent;
+import haxe.ui.events.UIEvent;
 import haxe.ui.events.ScrollEvent;
 import haxe.ui.geom.Rectangle;
 import haxe.ui.layouts.LayoutFactory;
@@ -27,6 +32,8 @@ class TableView extends ScrollView implements IDataComponent implements IVirtual
     @:behaviour(LayoutBehaviour, -1)                            public var itemHeight:Float;
     @:behaviour(LayoutBehaviour, -1)                            public var itemCount:Int;
     @:behaviour(LayoutBehaviour, false)                         public var variableItemSize:Bool;
+    @:behaviour(SelectedIndexBehaviour, -1)                       public var selectedIndex:Int;
+    @:behaviour(SelectedItemBehaviour)                          public var selectedItem:Dynamic;
 
     //TODO - error with Behaviour
     private var _itemRendererFunction:ItemRendererFunction4;
@@ -100,19 +107,48 @@ private class Events extends ScrollViewEvents {
     public override function register() {
         super.register();
         registerEvent(ScrollEvent.CHANGE, onScrollChange);
-        //registerEvent(UIEvent.RENDERER_CREATED, onRendererCreated);
-        //registerEvent(UIEvent.RENDERER_DESTROYED, onRendererDestroyed);
+        registerEvent(UIEvent.RENDERER_CREATED, onRendererCreated);
+        registerEvent(UIEvent.RENDERER_DESTROYED, onRendererDestroyed);
     }
     
     public override function unregister() {
         super.unregister();
         unregisterEvent(ScrollEvent.CHANGE, onScrollChange);
-        //unregisterEvent(UIEvent.RENDERER_CREATED, onRendererCreated);
-        //unregisterEvent(UIEvent.RENDERER_DESTROYED, onRendererDestroyed);
+        unregisterEvent(UIEvent.RENDERER_CREATED, onRendererCreated);
+        unregisterEvent(UIEvent.RENDERER_DESTROYED, onRendererDestroyed);
     }
     
     private function onScrollChange(e:ScrollEvent):Void {
         _tableview.invalidateComponentLayout();
+    }
+
+
+    private function onRendererCreated(e:UIEvent):Void {
+        var instance:ItemRenderer = cast(e.data, ItemRenderer);
+        instance.registerEvent(MouseEvent.CLICK, onRendererClick);
+        if(_tableview.selectedIndex != -1) {
+            instance.addClass(":selected", true, true);
+        }
+    }
+
+    private function onRendererDestroyed(e:UIEvent) {
+        var instance:ItemRenderer = cast(e.data, ItemRenderer);
+        instance.unregisterEvent(MouseEvent.CLICK, onRendererClick);
+        if(_tableview.selectedIndex != -1) {
+            instance.removeClass(":selected", true, true);
+        }
+    }
+
+    private function onRendererClick(e:MouseEvent):Void {
+        var components = e.target.findComponentsUnderPoint(e.screenX, e.screenY);
+        for (component in components) {
+            if (Std.is(component, InteractiveComponent)) {
+                return;
+            }
+        }
+
+        var renderer:ItemRenderer = cast(e.target, ItemRenderer);
+        _tableview.selectedIndex = renderer.itemIndex;
     }
 }
 
@@ -329,3 +365,29 @@ private class DataSourceBehaviour extends DataBehaviour {
     }
 }
 
+@:dox(hide) @:noCompletion
+private class SelectedIndexBehaviour extends ValueBehaviour {
+    public override function set(value:Variant) {
+        super.set(value);
+        _component.dispatch(new UIEvent(UIEvent.CHANGE));
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class SelectedItemBehaviour extends Behaviour {
+    public override function getDynamic():Dynamic {
+        var tableView:TableView = cast(_component, TableView);
+        if (tableView.selectedIndex != -1) {
+            return tableView.dataSource.get(tableView.selectedIndex);
+        }
+        return null;
+    }
+
+    public override function set(value:Variant) {
+        var tableView:TableView = cast(_component, TableView);
+        var index:Int = tableView.dataSource.indexOf(value);
+        if (index != -1) {
+            tableView.selectedIndex = index;
+        }
+    }
+}
