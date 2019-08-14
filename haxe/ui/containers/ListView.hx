@@ -405,7 +405,10 @@ private class SelectedItemsBehaviour extends Behaviour {
         var selectedIndices:Array<Int> = listView.selectedIndices;
         if (selectedIndices != null && selectedIndices.length > 0) {
             var selectedItems:Array<Dynamic> = [];
-            for (i in 0...listView.dataSource.size) {
+            for (i in selectedIndices) {
+                if ((i < 0) || (i >= listView.dataSource.size)) {
+                    continue;
+                }
                 var data:Dynamic = listView.dataSource.get(i);
                 selectedItems.push(data);
             }
