@@ -120,7 +120,7 @@ class ListViewEvents extends ScrollViewEvents {
         var instance:ItemRenderer = cast(e.data, ItemRenderer);
         instance.registerEvent(MouseEvent.MOUSE_DOWN, onRendererMouseDown);
         instance.registerEvent(MouseEvent.CLICK, onRendererClick);
-        if(_listview.selectedIndices.indexOf(instance.itemIndex) != -1) {
+        if (_listview.selectedIndices.indexOf(instance.itemIndex) != -1) {
             instance.addClass(":selected", true, true);
         }
     }
@@ -129,7 +129,7 @@ class ListViewEvents extends ScrollViewEvents {
         var instance:ItemRenderer = cast(e.data, ItemRenderer);
         instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onRendererMouseDown);
         instance.unregisterEvent(MouseEvent.CLICK, onRendererClick);
-        if(_listview.selectedIndices.indexOf(instance.itemIndex) != -1) {
+        if (_listview.selectedIndices.indexOf(instance.itemIndex) != -1) {
             instance.removeClass(":selected", true, true);
         }
     }
@@ -379,7 +379,7 @@ private class SelectedIndicesBehaviour extends DataBehaviour {
             }
         }
 
-        if (itemToEnsure != null) {
+        if (itemToEnsure != null && listView.virtual == false) { // TODO: virtual scroll into view
             var vscroll:VerticalScroll = listView.findComponent(VerticalScroll);
             if (vscroll != null) {
                 var vpos:Float = vscroll.pos;

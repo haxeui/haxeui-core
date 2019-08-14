@@ -133,7 +133,7 @@ private class Events extends ScrollViewEvents {
     private function onRendererCreated(e:UIEvent):Void {
         var instance:ItemRenderer = cast(e.data, ItemRenderer);
         instance.registerEvent(MouseEvent.CLICK, onRendererClick);
-        if(_tableview.selectedIndex != -1) {
+        if (_tableview.selectedIndices.indexOf(instance.itemIndex) != -1) {
             instance.addClass(":selected", true, true);
         }
     }
@@ -141,7 +141,7 @@ private class Events extends ScrollViewEvents {
     private function onRendererDestroyed(e:UIEvent) {
         var instance:ItemRenderer = cast(e.data, ItemRenderer);
         instance.unregisterEvent(MouseEvent.CLICK, onRendererClick);
-        if(_tableview.selectedIndex != -1) {
+        if (_tableview.selectedIndices.indexOf(instance.itemIndex) != -1) {
             instance.removeClass(":selected", true, true);
         }
     }
@@ -423,7 +423,7 @@ private class SelectedIndicesBehaviour extends DataBehaviour {
             }
         }
 
-        if (itemToEnsure != null) {
+        if (itemToEnsure != null && tableView.virtual == false) {  // TODO: virtual scroll into view
             var vscroll:VerticalScroll = tableView.findComponent(VerticalScroll);
             if (vscroll != null) {
                 var vpos:Float = vscroll.pos;
