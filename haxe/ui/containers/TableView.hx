@@ -2,10 +2,13 @@ package haxe.ui.containers;
 
 import haxe.ui.behaviours.Behaviour;
 import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.behaviours.ValueBehaviour;
 import haxe.ui.behaviours.LayoutBehaviour;
 import haxe.ui.binding.BindingManager;
 import haxe.ui.components.Label;
+import haxe.ui.components.VerticalScroll;
+import haxe.ui.constants.SelectionMode;
 import haxe.ui.containers.ScrollView;
 import haxe.ui.containers.ScrollView.ScrollViewBuilder;
 import haxe.ui.core.Component;
@@ -32,8 +35,12 @@ class TableView extends ScrollView implements IDataComponent implements IVirtual
     @:behaviour(LayoutBehaviour, -1)                            public var itemHeight:Float;
     @:behaviour(LayoutBehaviour, -1)                            public var itemCount:Int;
     @:behaviour(LayoutBehaviour, false)                         public var variableItemSize:Bool;
-    @:behaviour(SelectedIndexBehaviour, -1)                       public var selectedIndex:Int;
+    @:behaviour(SelectedIndexBehaviour, -1)                     public var selectedIndex:Int;
     @:behaviour(SelectedItemBehaviour)                          public var selectedItem:Dynamic;
+    @:behaviour(SelectedIndicesBehaviour)                       public var selectedIndices:Array<Int>;
+    @:behaviour(SelectedItemsBehaviour)                         public var selectedItems:Array<Dynamic>;
+    @:behaviour(SelectionModeBehaviour, SelectionMode.ONE_ITEM) public var selectionMode:SelectionMode;
+    @:behaviour(DefaultBehaviour, 500)                          public var longPressSelectionTime:Int;  //ms
 
     //TODO - error with Behaviour
     private var _itemRendererFunction:ItemRendererFunction4;
@@ -366,10 +373,16 @@ private class DataSourceBehaviour extends DataBehaviour {
 }
 
 @:dox(hide) @:noCompletion
-private class SelectedIndexBehaviour extends ValueBehaviour {
+private class SelectedIndexBehaviour extends Behaviour {
+    public override function get():Variant {
+        var tableView:TableView = cast(_component, TableView);
+        var selectedIndices:Array<Int> = tableView.selectedIndices;
+        return selectedIndices != null && selectedIndices.length > 0 ? selectedIndices[selectedIndices.length-1] : -1;
+    }
+
     public override function set(value:Variant) {
-        super.set(value);
-        _component.dispatch(new UIEvent(UIEvent.CHANGE));
+        var tableView:TableView = cast(_component, TableView);
+        tableView.selectedIndices = value != -1 ? [value] : null;
     }
 }
 
@@ -377,17 +390,115 @@ private class SelectedIndexBehaviour extends ValueBehaviour {
 private class SelectedItemBehaviour extends Behaviour {
     public override function getDynamic():Dynamic {
         var tableView:TableView = cast(_component, TableView);
-        if (tableView.selectedIndex != -1) {
-            return tableView.dataSource.get(tableView.selectedIndex);
-        }
-        return null;
+        var selectedIndices:Array<Int> = tableView.selectedIndices;
+        return selectedIndices.length > 0 ? tableView.dataSource.get(selectedIndices[selectedIndices.length - 1]) : null;
     }
 
     public override function set(value:Variant) {
         var tableView:TableView = cast(_component, TableView);
         var index:Int = tableView.dataSource.indexOf(value);
-        if (index != -1) {
-            tableView.selectedIndex = index;
+        if (index != -1 && tableView.selectedIndices.indexOf(index) == -1) {
+            tableView.selectedIndices = [index];
+        }
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class SelectedIndicesBehaviour extends DataBehaviour {
+    public override function get():Variant {
+        return _value.isNull ? [] : _value;
+    }
+
+    private override function validateData() {
+        var tableView:TableView = cast(_component, TableView);
+        var selectedIndices:Array<Int> = tableView.selectedIndices;
+        var contents:Component = _component.findComponent("scrollview-contents", false, "css");
+        var itemToEnsure:ItemRenderer = null;
+        for (child in contents.childComponents) {
+            if (selectedIndices.indexOf(cast(child, ItemRenderer).itemIndex) != -1) {
+                itemToEnsure = cast(child, ItemRenderer);
+                child.addClass(":selected", true, true);
+            } else {
+                child.removeClass(":selected", true, true);
+            }
+        }
+
+        if (itemToEnsure != null) {
+            var vscroll:VerticalScroll = tableView.findComponent(VerticalScroll);
+            if (vscroll != null) {
+                var vpos:Float = vscroll.pos;
+                var contents:Component = tableView.findComponent("tableview-contents", "css");
+                if (itemToEnsure.top + itemToEnsure.height > vpos + contents.componentClipRect.height) {
+                    vscroll.pos = ((itemToEnsure.top + itemToEnsure.height) - contents.componentClipRect.height);
+                } else if (itemToEnsure.top < vpos) {
+                    vscroll.pos = itemToEnsure.top;
+                }
+            }
+        }
+        
+        if (tableView.selectedIndex != -1 && tableView.selectedIndices.length != 0) {
+            _component.dispatch(new UIEvent(UIEvent.CHANGE));
+        }
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class SelectedItemsBehaviour extends Behaviour {
+    public override function get():Variant {
+        var tableView:TableView = cast(_component, TableView);
+        var selectedIndices:Array<Int> = tableView.selectedIndices;
+        if (selectedIndices != null && selectedIndices.length > 0) {
+            var selectedItems:Array<Dynamic> = [];
+            for (i in 0...tableView.dataSource.size) {
+                var data:Dynamic = tableView.dataSource.get(i);
+                selectedItems.push(data);
+            }
+
+            return selectedItems;
+        } else {
+            return [];
+        }
+    }
+
+    public override function set(value:Variant) {
+        var tableView:TableView = cast(_component, TableView);
+        var selectedItems:Array<Dynamic> = value;
+        if (selectedItems != null && selectedItems.length > 0) {
+            var selectedIndices:Array<Int> = [];
+            var index:Int;
+            for (item in selectedItems) {
+                if ((index = tableView.dataSource.indexOf(item)) != -1) {
+                    selectedIndices.push(index);
+                }
+            }
+
+            tableView.selectedIndices = selectedIndices;
+        } else {
+            tableView.selectedIndices = [];
+        }
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class SelectionModeBehaviour extends DataBehaviour {
+    private override function validateData() {
+        var tableView:TableView = cast(_component, TableView);
+        var selectedIndices:Array<Int> = tableView.selectedIndices;
+        if (selectedIndices.length == 0) {
+            return;
+        }
+
+        var selectionMode:SelectionMode = cast _value;
+        switch(selectionMode) {
+            case SelectionMode.DISABLED:
+                tableView.selectedIndices = null;
+
+            case SelectionMode.ONE_ITEM:
+                if (selectedIndices.length > 1) {
+                    tableView.selectedIndices = [selectedIndices[0]];
+                }
+
+            default:
         }
     }
 }
