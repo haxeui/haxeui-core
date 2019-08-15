@@ -49,9 +49,9 @@ class Toolkit {
         if (_built == true) {
             return;
         }
-        buildBackend();
         ModuleMacros.processModules();
         NativeMacros.processNative();
+        buildBackend();
         _built = true;
     }
 

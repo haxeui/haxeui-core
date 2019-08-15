@@ -1,4 +1,5 @@
 package haxe.ui.macros;
+import haxe.ds.ArraySort;
 import haxe.macro.Expr.ComplexType;
 import haxe.macro.ExprTools;
 
@@ -382,6 +383,7 @@ class ModuleMacros {
                 try {
                     var module:Module = moduleParser.parse(File.getContent(filePath), Context.getDefines(), filePath);
                     module.validate();
+                    module.rootPath = new Path(filePath).dir;
                     _modules.push(module);
                     return true;
                 } catch (e:Dynamic) {
@@ -391,6 +393,31 @@ class ModuleMacros {
             return false;
         }, ["module."]);
 
+        ArraySort.sort(_modules, function(a, b):Int {
+            if (a.priority < b.priority) return -1;
+            else if (a.priority > b.priority) return 1;
+            return 0;
+        });    
+        
+        for (entry in MacroHelpers.classPathCache) {
+            var entryModule = null;
+            for (m in _modules) {
+                if (StringTools.startsWith(entry.path, m.rootPath)) {
+                    entryModule = m;
+                    break;
+                }
+            }
+            if (entryModule != null) {
+                entry.priority = entryModule.priority;
+            }
+        }
+        
+        ArraySort.sort(MacroHelpers.classPathCache, function(a, b):Int {
+            if (a.priority < b.priority) return -1;
+            else if (a.priority > b.priority) return 1;
+            return 0;
+        });    
+        
         _modulesLoaded = true;
         return _modules;
     }

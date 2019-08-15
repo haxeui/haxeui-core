@@ -8,6 +8,11 @@ import haxe.ui.macros.helpers.CodeBuilder;
 import haxe.ui.util.GenericConfig;
 #end
 
+typedef ClassPathEntry = {
+    var path:String;
+    var priority:Int;
+}
+
 class MacroHelpers {
     #if macro
     public static function exprToMap(params:Expr):Map<String, Dynamic> {
@@ -116,7 +121,7 @@ class MacroHelpers {
         }
     }
 
-    private static var classPathCache:Array<String> = null;
+    public static var classPathCache:Array<ClassPathEntry> = null;
     private static var primaryClassPathExceptions:Array<EReg> = [];
     private static var secondaryClassPathExceptions:Array<EReg> = [];
     private static function loadClassPathExclusions(filePath:String) {
@@ -199,7 +204,10 @@ class MacroHelpers {
                     cacheClassPathEntries(fullPath, array);
                 }
             } else if (isDir == false) {
-                array.push(fullPath);
+                array.push({
+                    path: fullPath,
+                    priority: 0
+                });
             }
         }
         
@@ -207,11 +215,11 @@ class MacroHelpers {
     
     public static function scanClassPath(processFileFn:String->Bool, searchCriteria:Array<String> = null) {
         buildClassPathCache();
-        for (fullPath in classPathCache) {
-            var parts = fullPath.split("/");
+        for (entry in classPathCache) {
+            var parts = entry.path.split("/");
             var fileName = parts[parts.length - 1];
             if (searchCriteria == null) {
-                processFileFn(fullPath);
+                processFileFn(entry.path);
             } else {
                 var found:Bool = false;
                 for (s in searchCriteria) {
@@ -221,7 +229,7 @@ class MacroHelpers {
                     }
                 }
                 if (found == true) {
-                    processFileFn(fullPath);
+                    processFileFn(entry.path);
                 }
             }
         }
