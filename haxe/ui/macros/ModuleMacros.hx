@@ -327,11 +327,9 @@ class ModuleMacros {
                 this.height = c0.height;
             }
             if (c0.percentWidth != null && c0.percentWidth > 0) {
-                this.width = null;
                 this.percentWidth = c0.percentWidth;
             }
             if (c0.percentHeight != null && c0.percentHeight > 0) {
-                this.height = null;
                 this.percentHeight = c0.percentHeight;
             }
         });
