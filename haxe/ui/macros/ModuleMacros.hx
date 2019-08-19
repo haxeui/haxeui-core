@@ -320,10 +320,10 @@ class ModuleMacros {
         ComponentMacros.buildComponentFromString(codeBuilder, xml, namedComponents);
         codeBuilder.add(macro {
             addComponent(c0);
-            if (c0.width != null && c0.width > 0) {
+            if (c0.width > 0) {
                 this.width = c0.width;
             }
-            if (c0.height != null && c0.height > 0) {
+            if (c0.height > 0) {
                 this.height = c0.height;
             }
             if (c0.percentWidth != null && c0.percentWidth > 0) {
