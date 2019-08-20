@@ -118,7 +118,7 @@ class Layout implements ILayout {
 
     private function fixedMinWidth(child:Component):Bool {
         var fixedMinWidth = false;
-        if (child.style.minWidth != null) {
+        if (child != null && child.style != null && child.style.minWidth != null) {
             fixedMinWidth = child.componentWidth <= child.style.minWidth;
         }
         return fixedMinWidth;
@@ -126,7 +126,7 @@ class Layout implements ILayout {
 
     private function fixedMinHeight(child:Component):Bool {
         var fixedMinHeight = false;
-        if (child.style.minHeight != null) {
+        if (child != null && child.style != null && child.style.minHeight != null) {
             fixedMinHeight = child.componentHeight <= child.style.minHeight;
         }
         return fixedMinHeight;
