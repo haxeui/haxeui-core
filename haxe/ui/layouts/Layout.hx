@@ -116,6 +116,22 @@ class Layout implements ILayout {
         return child.style.verticalAlign;
     }
 
+    private function fixedMinWidth(child:Component):Bool {
+        var fixedMinWidth = false;
+        if (child.style.minWidth != null) {
+            fixedMinWidth = child.componentWidth <= child.style.minWidth;
+        }
+        return fixedMinWidth;
+    }
+
+    private function fixedMinHeight(child:Component):Bool {
+        var fixedMinHeight = false;
+        if (child.style.minHeight != null) {
+            fixedMinHeight = child.componentHeight <= child.style.minHeight;
+        }
+        return fixedMinHeight;
+    }
+    
     //******************************************************************************************
     // Helper props
     //******************************************************************************************

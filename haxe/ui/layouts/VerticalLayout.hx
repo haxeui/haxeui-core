@@ -44,7 +44,7 @@ class VerticalLayout extends DefaultLayout {
                 continue;
             }
 
-            if (child.componentHeight > 0 && child.percentHeight == null) { // means its a fixed height, ie, not a % sized control
+            if (child.componentHeight > 0 && (child.percentHeight == null || fixedMinHeight(child) == true)) { // means its a fixed height, ie, not a % sized control
                 size.height -= child.componentHeight + marginTop(child) + marginBottom(child);
             }
         }

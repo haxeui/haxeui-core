@@ -44,7 +44,7 @@ class HorizontalLayout extends DefaultLayout {
                 continue;
             }
 
-            if (child.componentWidth > 0 && child.percentWidth == null) { // means its a fixed width, ie, not a % sized control
+            if (child.componentWidth > 0 && (child.percentWidth == null || fixedMinWidth(child) == true)) { // means its a fixed width, ie, not a % sized control
                 size.width -= child.componentWidth + marginLeft(child) + marginRight(child);
             }
         }
