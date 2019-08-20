@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="http://haxeui.org/db/haxeui2-warning.png"/>
-</p>
-
 [![Build Status](https://travis-ci.org/haxeui/haxeui-core.svg?branch=master)](https://travis-ci.org/haxeui/haxeui-core)
 [![Code Climate](https://codeclimate.com/github/haxeui/haxeui-core/badges/gpa.svg)](https://codeclimate.com/github/haxeui/haxeui-core)
 [![Issue Count](https://codeclimate.com/github/haxeui/haxeui-core/badges/issue_count.svg)](https://codeclimate.com/github/haxeui/haxeui-core)
@@ -12,7 +8,7 @@
 `haxeui-core` is a users universal entry point into the HaxeUI framework and allows for the same user interface code (either with markup or via `haxe` source code) to be used to build a user interface on various platforms using various HaxeUI `backends`. Below is a general overview of how `haxeui-core` and the various HaxeUI `backends` fit together. You can watch a presentation (given at WWX2016) about HaxeUI to get more of an understanding <a href="https://www.youtube.com/watch?v=L8J8qrR2VSg&feature=youtu.be">here</a>.
 
 <p align="center">
-  <img src="http://haxeui.org/db/haxeui-overview.png"/>
+  <img src="https://raw.githubusercontent.com/haxeui/haxeui-core/master/system.jpg"/>
 </p>
 
 ## Installation
