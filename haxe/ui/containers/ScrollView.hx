@@ -27,6 +27,7 @@ class ScrollView extends Component {
     // Public API
     //***********************************************************************************************************
     @:behaviour(Virtual)                                public var virtual:Bool;
+    @:behaviour(ContentLayoutName, "vertical")          public var contentLayoutName:String;
     @:behaviour(ContentWidth)                           public var contentWidth:Float;
     @:behaviour(PercentContentWidth)                    public var percentContentWidth:Float;
     @:behaviour(ContentHeight)                          public var contentHeight:Float;
@@ -104,6 +105,21 @@ private class Virtual extends DefaultBehaviour {
         cast(_component._compositeBuilder, ScrollViewBuilder).onVirtualChanged();
     }
 }
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+@:access(haxe.ui.containers.ScrollViewBuilder)
+private class ContentLayoutName extends DefaultBehaviour {
+    public override function set(value:Variant) {
+        super.set(value);
+        var builder = cast(_component._compositeBuilder, ScrollViewBuilder);
+        if (builder._contentsLayoutName != value) {
+            builder._contentsLayoutName = value;
+            builder._contents.layout = LayoutFactory.createFromName(value);
+        }
+    }
+}
+
 
 @:dox(hide) @:noCompletion
 private class ContentWidth extends Behaviour {
@@ -652,6 +668,7 @@ class ScrollViewEvents extends haxe.ui.events.Events {
 class ScrollViewBuilder extends CompositeBuilder {
     private var _scrollview:ScrollView;
     private var _contents:Box;
+    private var _contentsLayoutName:String;
     
     public function new(scrollview:ScrollView) {
         super(scrollview);
@@ -659,7 +676,12 @@ class ScrollViewBuilder extends CompositeBuilder {
     }
     
     public override function create() {
-        createContentContainer("vertical");
+        trace(_scrollview.contentLayoutName);
+        var contentLayoutName = _scrollview.contentLayoutName;
+        if (contentLayoutName == null) {
+            contentLayoutName = "vertical";
+        }
+        createContentContainer(contentLayoutName);
     }
     
     public override function destroy() {
@@ -716,6 +738,7 @@ class ScrollViewBuilder extends CompositeBuilder {
             _contents.id = "scrollview-contents";
             _contents.layout = LayoutFactory.createFromName(layoutName); // TODO: temp
             _component.addComponent(_contents);
+            _contentsLayoutName = layoutName;
         }
     }
     
