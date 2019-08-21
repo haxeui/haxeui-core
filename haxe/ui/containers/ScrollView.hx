@@ -676,7 +676,6 @@ class ScrollViewBuilder extends CompositeBuilder {
     }
     
     public override function create() {
-        trace(_scrollview.contentLayoutName);
         var contentLayoutName = _scrollview.contentLayoutName;
         if (contentLayoutName == null) {
             contentLayoutName = "vertical";
