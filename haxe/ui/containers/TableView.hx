@@ -449,7 +449,10 @@ private class SelectedItemsBehaviour extends Behaviour {
         var selectedIndices:Array<Int> = tableView.selectedIndices;
         if (selectedIndices != null && selectedIndices.length > 0) {
             var selectedItems:Array<Dynamic> = [];
-            for (i in 0...tableView.dataSource.size) {
+            for (i in selectedIndices) {
+                if ((i < 0) || (i >= tableView.dataSource.size)) {
+                    continue;
+                }
                 var data:Dynamic = tableView.dataSource.get(i);
                 selectedItems.push(data);
             }
