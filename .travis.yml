@@ -11,5 +11,5 @@ rvm:
      - 2.1
 before_install:
     - gem install travis
-#install:
-#    - echo "y" | travis login --org --github-token $GH_TOKEN
+install:
+    - echo "y" | travis login --org --github-token $GH_TOKEN
