@@ -45,6 +45,7 @@ private class DataSourceBehaviour extends DefaultBehaviour {
         
         var handler:IDropDownHandler = cast(_component._compositeBuilder, DropDownBuilder).handler;
         handler.reset();
+        cast(_component, DropDown).selectedIndex = -1;
     }
 }
 
@@ -121,7 +122,11 @@ class ListDropDownHandler extends DropDownHandler {
     
     public override function reset() {
         _cachedSelectedIndex = -1;
+        if (_listview != null) {
+            _listview.unregisterEvent(UIEvent.CHANGE, onListChange);
+        }
         _listview = null;
+        createListView();
         //_dropdown.selectedIndex = -1;
     }
     
@@ -162,6 +167,7 @@ class ListDropDownHandler extends DropDownHandler {
     private override function set_selectedIndex(value:Int):Int {
         if (_listview != null) {
             _listview.selectedIndex = value;
+            _cachedSelectedIndex = value;
         } else if (_cachedSelectedIndex != value) {
             _cachedSelectedIndex = value;
             _dropdown.dispatch(new UIEvent(UIEvent.CHANGE));
