@@ -45,7 +45,6 @@ private class DataSourceBehaviour extends DefaultBehaviour {
         
         var handler:IDropDownHandler = cast(_component._compositeBuilder, DropDownBuilder).handler;
         handler.reset();
-        cast(_component, DropDown).selectedIndex = -1;
     }
 }
 
