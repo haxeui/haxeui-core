@@ -7,22 +7,6 @@ import haxe.ui.core.Component;
 import haxe.ui.core.Screen;
 import haxe.ui.events.MouseEvent;
 
-#if (haxe_ver >= 4)
-@:xml('
-<vbox id="dialog-container" styleNames="dialog-container">
-    <hbox id="dialog-title" styleNames="dialog-title">
-        <label id="dialog-title-label" styleNames="dialog-title-label" text="HaxeUI" />
-        <image id="dialog-close-button" styleNames="dialog-close-button" />
-    </hbox>
-    <vbox id="dialog-content" styleNames="dialog-content">
-    </vbox>
-    <box width="100%" id="dialog-footer-container" styleNames="dialog-footer-container">
-        <hbox id="dialog-footer" styleNames="dialog-footer">
-        </hbox>
-    </box>
-</vbox>
-')
-#end
 @:dox(hide) @:noCompletion
 class DialogBase extends Box {
     public var modal:Bool = true;
@@ -33,7 +17,6 @@ class DialogBase extends Box {
     
     private var _overlay:Component;
     
-    #if (haxe_ver < 4) // TODO: seems using two @xml build macros in haxe 3.4.7 breaks things - order related probably - work around for now is to manually create 
     public var dialogContainer:haxe.ui.containers.VBox;
     public var dialogTitle:haxe.ui.containers.HBox;
     public var dialogTitleLabel:haxe.ui.components.Label;
@@ -41,12 +24,10 @@ class DialogBase extends Box {
     public var dialogContent:haxe.ui.containers.VBox;
     public var dialogFooterContainer:haxe.ui.containers.Box;
     public var dialogFooter:haxe.ui.containers.HBox;
-    #end
     
     public function new() {
         super();
         
-        #if (haxe_ver < 4) // TODO: seems using two @xml build macros in haxe 3.4.7 breaks things - order related probably - work around for now is to manually create 
         dialogContainer = new haxe.ui.containers.VBox();
         dialogContainer.id = "dialog-container";
         dialogContainer.styleNames = "dialog-container";
@@ -83,7 +64,6 @@ class DialogBase extends Box {
         dialogFooter.id ="dialog-footer";
         dialogFooter.styleNames = "dialog-footer";
         dialogFooterContainer.addComponent(dialogFooter);
-        #end
     
         dialogFooterContainer.hide();
         dialogCloseButton.onClick = function(e) {
