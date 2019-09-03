@@ -66,6 +66,11 @@ class Button extends InteractiveComponent {
      How often this button will dispatch multiple click events while the the mouse is pressed within it
     **/
     @:clonable @:behaviour(DefaultBehaviour, 50)       public var repeatInterval:Int;
+	
+	/**
+     Whether this button will ease in to specified repeatInterval
+    **/
+    @:clonable @:behaviour(DefaultBehaviour, false)    public var easeInRepeater:Bool;
     
     /**
      Whether the buttons state should remain pressed even when the mouse has left its bounds
@@ -328,6 +333,7 @@ class ButtonEvents extends haxe.ui.events.Events {
     private var _down:Bool = false;
     private var _repeatTimer:Timer;
 	private var _repeater:Bool = false;
+	private var _repeatInterval:Int = 0;
     
     public function new(button:Button) {
         super(button);
@@ -384,26 +390,37 @@ class ButtonEvents extends haxe.ui.events.Events {
         if (FocusManager.instance.focusInfo != null && FocusManager.instance.focusInfo.currentFocus != null) {
             FocusManager.instance.focusInfo.currentFocus.focus = false;
         }
+		if (_button.repeater == true && _repeatInterval == 0) {
+			_repeatInterval = (_button.easeInRepeater) ? _button.repeatInterval * 2 : _button.repeatInterval;
+		}
         _down = true;
         _button.addClass(":down");
         _button.screen.registerEvent(MouseEvent.MOUSE_UP, onMouseUp);
-        if (_repeater == true) {
-            _repeatTimer = new Timer(_button.repeatInterval, onRepeatTimer);
+        if (_repeater == true && _repeatInterval == _button.repeatInterval) {
+            _repeatTimer = new Timer(_repeatInterval, onRepeatTimer);
         } else if (_button.repeater == true) {
 			if (_repeatTimer != null) {
 				_repeatTimer.stop();
 				_repeatTimer = null;
 			}
 			Timer.delay(function():Void {
-				if (_repeater == true && _repeatTimer == null) onMouseDown(event);
-			}, _button.repeatInterval * 2);
+				if (_repeater == true && _repeatTimer == null) {
+					if (_button.easeInRepeater == true && _repeatInterval > _button.repeatInterval) {
+						_repeatInterval = Std.int(_repeatInterval - (_repeatInterval - _button.repeatInterval) / 2);
+						onRepeatTimer();
+					}
+					onMouseDown(event);
+				}
+			}, _repeatInterval);
 		}
 		_repeater = _button.repeater;
+		
     }
     
     private function onMouseUp(event:MouseEvent) {
         //event.cancel();
         _down = _repeater = false;
+		_repeatInterval = (_button.easeInRepeater) ? _button.repeatInterval * 2 : _button.repeatInterval;
         _button.screen.unregisterEvent(MouseEvent.MOUSE_UP, onMouseUp);
 
         if (_button.toggle == true) {
