@@ -219,12 +219,14 @@ class BindingManager {
             case EIdent(objectId):
                 propInfo.addObject(objectId, "value");
             case EBinop(op, e1, e2):    
-                    extractFields(e1, propInfo);
-                    extractFields(e2, propInfo);
+                extractFields(e1, propInfo);
+                extractFields(e2, propInfo);
             case EUnop(op, prefix, e):     
-                    extractFields(e, propInfo);
+                extractFields(e, propInfo);
             case EArrayDecl(values):
-                    values.map(function(v){ extractFields(v, propInfo); });
+                for (v in values) {
+                    extractFields(v, propInfo);
+                }
             case EConst(_):
             case _:
                 trace(expr);
