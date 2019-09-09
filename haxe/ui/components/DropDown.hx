@@ -151,9 +151,20 @@ class ListDropDownHandler extends DropDownHandler {
             _listview.height = _dropdown.dropdownHeight;
         }
 
+        var selectedIndex = _dropdown.selectedIndex;
+        if (_dropdown.dataSource != null && _dropdown.text != null && selectedIndex < 0) {
+            var text = _dropdown.text;
+            for (i in 0..._dropdown.dataSource.size) {
+                var item:Dynamic = _dropdown.dataSource.get(i);
+                if (item == text || item.value == text || item.text == text) {
+                    selectedIndex = i;
+                }
+            }
+        }
+        
         Screen.instance.addComponent(_listview);
         _listview.unregisterEvent(UIEvent.CHANGE, onListChange); // TODO: not great!
-        _listview.selectedIndex = _dropdown.selectedIndex;
+        _listview.selectedIndex = selectedIndex;
         _listview.syncComponentValidation();
         _listview.registerEvent(UIEvent.CHANGE, onListChange); // TODO: not great!
     }
