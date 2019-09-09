@@ -45,6 +45,9 @@ private class DataSourceBehaviour extends DefaultBehaviour {
         
         var handler:IDropDownHandler = cast(_component._compositeBuilder, DropDownBuilder).handler;
         handler.reset();
+        if (_component.text == null) {
+            cast(_component, DropDown).selectedIndex = 0;
+        }
     }
 }
 
@@ -148,9 +151,20 @@ class ListDropDownHandler extends DropDownHandler {
             _listview.height = _dropdown.dropdownHeight;
         }
 
+        var selectedIndex = _dropdown.selectedIndex;
+        if (_dropdown.dataSource != null && _dropdown.text != null && selectedIndex < 0) {
+            var text = _dropdown.text;
+            for (i in 0..._dropdown.dataSource.size) {
+                var item:Dynamic = _dropdown.dataSource.get(i);
+                if (item == text || item.value == text || item.text == text) {
+                    selectedIndex = i;
+                }
+            }
+        }
+        
         Screen.instance.addComponent(_listview);
         _listview.unregisterEvent(UIEvent.CHANGE, onListChange); // TODO: not great!
-        _listview.selectedIndex = _dropdown.selectedIndex;
+        _listview.selectedIndex = selectedIndex;
         _listview.syncComponentValidation();
         _listview.registerEvent(UIEvent.CHANGE, onListChange); // TODO: not great!
     }
@@ -282,12 +296,14 @@ class DropDownEvents extends ButtonEvents {
         }
     }
     
+    @:access(haxe.ui.core.Component)
     public function showDropDown() {
         var handler:IDropDownHandler = cast(_dropdown._compositeBuilder, DropDownBuilder).handler;
         handler.component.addClass("popup");
         handler.component.styleNames = _dropdown.handlerStyleNames;
-        handler.component.left = _dropdown.screenLeft;
-        handler.component.top = _dropdown.screenTop + _dropdown.height - 1;
+        var componentOffset = _dropdown.getComponentOffset();
+        handler.component.left = _dropdown.screenLeft + componentOffset.x;
+        handler.component.top = _dropdown.screenTop + _dropdown.height - 1 + componentOffset.y;
         handler.show();
 
         if (handler.component.screenLeft + handler.component.width > Screen.instance.width) {
@@ -313,12 +329,14 @@ class DropDownEvents extends ButtonEvents {
         Screen.instance.unregisterEvent(MouseEvent.RIGHT_MOUSE_DOWN, onScreenMouseDown);
     }
     
+    @:access(haxe.ui.core.Component)
     private function onScreenMouseDown(event:MouseEvent) {
         var handler:IDropDownHandler = cast(_dropdown._compositeBuilder, DropDownBuilder).handler;
         if (handler.component.hitTest(event.screenX, event.screenY) == true) {
             return;
         }
-        if (_dropdown.hitTest(event.screenX, event.screenY) == true) {
+        var componentOffset = _dropdown.getComponentOffset();
+        if (_dropdown.hitTest(event.screenX - componentOffset.x, event.screenY - componentOffset.y) == true) {
             return;
         }
         
@@ -362,6 +380,9 @@ private class DropDownBuilder extends ButtonBuilder {
     
     public override function create() {
         _dropdown.toggle = true;
+        if (_dropdown.text == null) {
+            _dropdown.selectedIndex = 0;
+        }
     }
     
     public override function destroy() {

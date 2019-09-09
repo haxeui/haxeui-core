@@ -460,6 +460,7 @@ class ScrollViewEvents extends haxe.ui.events.Events {
     private var _offset:Point;
     private static inline var INERTIAL_TIME_CONSTANT = 325;
     private var _inertia:Inertia = null;
+    @:access(haxe.ui.core.Component)
     private function onMouseDown(event:MouseEvent) {
         var hscroll:HorizontalScroll = _scrollview.findComponent(HorizontalScroll, false);
         var vscroll:VerticalScroll = _scrollview.findComponent(VerticalScroll, false);
@@ -469,10 +470,11 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         }
         
         //event.cancel();
-        if (hscroll != null && hscroll.hitTest(event.screenX, event.screenY) == true) {
+        var componentOffset = _scrollview.getComponentOffset();
+        if (hscroll != null && hscroll.hitTest(event.screenX - componentOffset.x, event.screenY - componentOffset.y) == true) {
             return;
         }
-        if (vscroll != null && vscroll.hitTest(event.screenX, event.screenY) == true) {
+        if (vscroll != null && vscroll.hitTest(event.screenX - componentOffset.x, event.screenY - componentOffset.y) == true) {
             return;
         }
         
