@@ -282,12 +282,14 @@ class DropDownEvents extends ButtonEvents {
         }
     }
     
+    @:access(haxe.ui.core.Component)
     public function showDropDown() {
         var handler:IDropDownHandler = cast(_dropdown._compositeBuilder, DropDownBuilder).handler;
         handler.component.addClass("popup");
         handler.component.styleNames = _dropdown.handlerStyleNames;
-        handler.component.left = _dropdown.screenLeft;
-        handler.component.top = _dropdown.screenTop + _dropdown.height - 1;
+        var componentOffset = _dropdown.getComponentOffset();
+        handler.component.left = _dropdown.screenLeft + componentOffset.x;
+        handler.component.top = _dropdown.screenTop + _dropdown.height - 1 + componentOffset.y;
         handler.show();
 
         if (handler.component.screenLeft + handler.component.width > Screen.instance.width) {

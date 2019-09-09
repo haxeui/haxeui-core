@@ -9,6 +9,7 @@ import haxe.ui.core.ImageDisplay;
 import haxe.ui.core.TextDisplay;
 import haxe.ui.core.TextInput;
 import haxe.ui.events.UIEvent;
+import haxe.ui.geom.Point;
 import haxe.ui.geom.Rectangle;
 import haxe.ui.styles.Style;
 
@@ -39,6 +40,10 @@ class ComponentBase extends ComponentBounds {
     
     private function handleVisibility(show:Bool) {
         
+    }
+    
+    private function getComponentOffset():Point {
+        return new Point(0, 0);
     }
     
     //***********************************************************************************************************
