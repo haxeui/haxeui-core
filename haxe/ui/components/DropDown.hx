@@ -329,6 +329,7 @@ class DropDownEvents extends ButtonEvents {
         Screen.instance.unregisterEvent(MouseEvent.RIGHT_MOUSE_DOWN, onScreenMouseDown);
     }
     
+    @:access(haxe.ui.core.Component)
     private function onScreenMouseDown(event:MouseEvent) {
         var handler:IDropDownHandler = cast(_dropdown._compositeBuilder, DropDownBuilder).handler;
         if (handler.component.hitTest(event.screenX, event.screenY) == true) {
