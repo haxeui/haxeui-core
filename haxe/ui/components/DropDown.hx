@@ -45,6 +45,9 @@ private class DataSourceBehaviour extends DefaultBehaviour {
         
         var handler:IDropDownHandler = cast(_component._compositeBuilder, DropDownBuilder).handler;
         handler.reset();
+        if (_component.text == null) {
+            cast(_component, DropDown).selectedIndex = 0;
+        }
     }
 }
 
@@ -320,7 +323,8 @@ class DropDownEvents extends ButtonEvents {
         if (handler.component.hitTest(event.screenX, event.screenY) == true) {
             return;
         }
-        if (_dropdown.hitTest(event.screenX, event.screenY) == true) {
+        var componentOffset = _dropdown.getComponentOffset();
+        if (_dropdown.hitTest(event.screenX - componentOffset.x, event.screenY - componentOffset.y) == true) {
             return;
         }
         
@@ -364,6 +368,9 @@ private class DropDownBuilder extends ButtonBuilder {
     
     public override function create() {
         _dropdown.toggle = true;
+        if (_dropdown.text == null) {
+            _dropdown.selectedIndex = 0;
+        }
     }
     
     public override function destroy() {
