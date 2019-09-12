@@ -3,7 +3,6 @@ package haxe.ui.containers;
 import haxe.ui.behaviours.Behaviour;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
-import haxe.ui.behaviours.ValueBehaviour;
 import haxe.ui.behaviours.LayoutBehaviour;
 import haxe.ui.binding.BindingManager;
 import haxe.ui.components.Label;
@@ -196,6 +195,8 @@ private class Builder extends ScrollViewBuilder {
         } else {
             fillExistingRenderer();
         }
+        
+        _component.invalidateComponentLayout();
     }
     
     private override function createContentContainer(layoutName:String) {
@@ -219,11 +220,13 @@ private class Builder extends ScrollViewBuilder {
         } else if (Std.is(child, Header)) {
             _header = cast(child, Header);
             
+            /*
             if (_tableview.itemRenderer == null) {
                 buildDefaultRenderer();
             } else {
                 fillExistingRenderer();
             }
+            */
             
             r = null;
         } else {
