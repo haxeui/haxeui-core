@@ -186,18 +186,21 @@ class ModuleMacros {
                 var types:Array<haxe.macro.Type> = MacroHelpers.typesFromClassOrPackage(c.className, c.classPackage);
                 if (types != null) {
                     for (t in types) {
+                        var orgType = t;
+                        t = Context.follow(orgType);
                         var builder = new ClassBuilder(t);
                         if (builder.isPrivate == true) {
                             continue;
                         }
+                        var org = new ClassBuilder(orgType);
                         
                         if (builder.hasSuperClass("haxe.ui.core.Component") == true) {
                             var resolvedClass:String = builder.fullPath;
-                            if (c.className != null && resolvedClass != c.className) {
+                            if (c.className != null && org.fullPath != c.className) {
                                 continue;
                             }
                             
-                            var resolvedClassName = builder.name;
+                            var resolvedClassName = org.name;
                             var classAlias:String = c.classAlias;
                             if (classAlias == null) {
                                 classAlias = resolvedClassName;
@@ -211,7 +214,6 @@ class ModuleMacros {
                                     ComponentClassMap.register("v" + StringTools.replace(resolvedClassName, "Vertical", "").toLowerCase(), resolvedClass);
                                 }
                             }
-                            
                             ComponentClassMap.register(classAlias, resolvedClass);
                         }
                     }
