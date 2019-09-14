@@ -486,7 +486,6 @@ class ScrollViewEvents extends haxe.ui.events.Events {
             _offset.y = vscroll.pos + event.screenY;
         }
         
-        
         if (_scrollview.scrollMode == ScrollMode.INERTIAL) {
             if (_inertia == null) {
                 _inertia = {
@@ -513,15 +512,42 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         Screen.instance.registerEvent(MouseEvent.MOUSE_UP, onMouseUp);
     }
     
+    private var _lastMousePos:Point = null;
     private function onMouseMove(event:MouseEvent) {
+        _lastMousePos = new Point(event.screenX, event.screenY);
         var hscroll:HorizontalScroll = _scrollview.findComponent(HorizontalScroll, false);
         if (hscroll != null) {
             hscroll.pos = _offset.x - event.screenX;
+            pauseContainerEvents();
         }
         var vscroll:VerticalScroll = _scrollview.findComponent(VerticalScroll, false);
         if (vscroll != null) {
             vscroll.pos = _offset.y - event.screenY;
+            pauseContainerEvents();
         }
+    }
+    
+    private var _containerEventsPaused:Bool = false;
+    private function pauseContainerEvents() {
+        if (_containerEventsPaused == true) {
+            return;
+        }
+        _containerEventsPaused = true;
+        onContainerEventsStatusChanged();
+    }
+    
+    private function resumeContainerEvents() {
+        if (_containerEventsPaused == false) {
+            return;
+        }
+        
+        _containerEventsPaused = false;
+        onContainerEventsStatusChanged();
+    }
+
+    @:access(haxe.ui.core.Component)
+    private function onContainerEventsStatusChanged() {
+        _scrollview.findComponent("scrollview-contents", Component, true, "css").disableInteractivity(_containerEventsPaused);
     }
     
     private function onMouseUp(event:MouseEvent) {
@@ -546,6 +572,7 @@ class ScrollViewEvents extends haxe.ui.events.Events {
             velocityY = 0.8 * v + 0.2 * velocityY;
 
             if (velocityX <= 75 && velocityY <= 75) {
+                Toolkit.callLater(resumeContainerEvents);
                 return;
             }
             
@@ -572,6 +599,7 @@ class ScrollViewEvents extends haxe.ui.events.Events {
             }
             
             if (_scrollview.hscrollPos == _inertia.target.x && _scrollview.vscrollPos == _inertia.target.y) {
+                Toolkit.callLater(resumeContainerEvents);
                 return;
             }
 
@@ -585,6 +613,7 @@ class ScrollViewEvents extends haxe.ui.events.Events {
             Toolkit.callLater(inertialScroll);
         } else {
             dispatch(new ScrollEvent(ScrollEvent.STOP));
+            Toolkit.callLater(resumeContainerEvents);
         }
     }
     
@@ -643,6 +672,7 @@ class ScrollViewEvents extends haxe.ui.events.Events {
 
         if (finishedX == true && finishedY == true) {
             dispatch(new ScrollEvent(ScrollEvent.STOP));
+            Toolkit.callLater(resumeContainerEvents);
         } else {
             Toolkit.callLater(inertialScroll);
         }

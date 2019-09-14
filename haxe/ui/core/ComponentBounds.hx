@@ -432,7 +432,7 @@ class ComponentBounds extends ComponentLayout {
             xpos += l;
 
             if (c.componentClipRect != null) {
-                xpos -= c.componentClipRect.left;
+                xpos -= c.componentClipRect.left * Toolkit.scaleX;
             }
 
             c = c.parentComponent;
@@ -456,7 +456,7 @@ class ComponentBounds extends ComponentLayout {
             ypos += t;
 
             if (c.componentClipRect != null) {
-                ypos -= c.componentClipRect.top;
+                ypos -= c.componentClipRect.top * Toolkit.scaleY;
             }
 
             c = c.parentComponent;
