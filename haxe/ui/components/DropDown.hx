@@ -296,21 +296,39 @@ class DropDownEvents extends ButtonEvents {
         }
     }
     
+    private var _overlay:Component = null;
     @:access(haxe.ui.core.Component)
     public function showDropDown() {
         var handler:IDropDownHandler = cast(_dropdown._compositeBuilder, DropDownBuilder).handler;
         handler.component.addClass("popup");
+        handler.component.addClass("dropdown-popup");
         handler.component.styleNames = _dropdown.handlerStyleNames;
         var componentOffset = _dropdown.getComponentOffset();
-        handler.component.left = _dropdown.screenLeft + componentOffset.x;
-        handler.component.top = _dropdown.screenTop + (_dropdown.actualComponentHeight - Toolkit.scaleY) + componentOffset.y;
-        handler.show();
+        
+        var mode = "mobile";
+        if (_dropdown.style.mode != null && _dropdown.style.mode == "mobile") {
+            if (_overlay == null) {
+                _overlay = new Component();
+                _overlay.id = "modal-background";
+                _overlay.addClass("modal-background");
+                _overlay.percentWidth = _overlay.percentHeight = 100;
+            }
+            Screen.instance.addComponent(_overlay);
+            
+            handler.show();
+            handler.component.left = (Screen.instance.width / 2) - (handler.component.actualComponentWidth / 2);
+            handler.component.top = (Screen.instance.height / 2) - (handler.component.actualComponentHeight / 2);
+        } else {
+            handler.component.left = _dropdown.screenLeft + componentOffset.x;
+            handler.component.top = _dropdown.screenTop + (_dropdown.actualComponentHeight - Toolkit.scaleY) + componentOffset.y;
+            handler.show();
 
-        if (handler.component.screenLeft + handler.component.width > Screen.instance.width) {
-            handler.component.left = handler.component.screenLeft - handler.component.width + _dropdown.width;
-        }
-        if (handler.component.screenTop + handler.component.height > Screen.instance.height) {
-            handler.component.top = _dropdown.screenTop - handler.component.height;
+            if (handler.component.screenLeft + handler.component.width > Screen.instance.width) {
+                handler.component.left = handler.component.screenLeft - handler.component.width + _dropdown.width;
+            }
+            if (handler.component.screenTop + handler.component.height > Screen.instance.height) {
+                handler.component.top = _dropdown.screenTop - handler.component.height;
+            }
         }
 
         Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
@@ -321,6 +339,11 @@ class DropDownEvents extends ButtonEvents {
         var handler:IDropDownHandler = cast(_dropdown._compositeBuilder, DropDownBuilder).handler;
         if (handler == null) {
             return;
+        }
+        
+        if (_overlay != null) {
+            Screen.instance.removeComponent(_overlay);
+            _overlay = null;
         }
         
         _dropdown.selected = false;
