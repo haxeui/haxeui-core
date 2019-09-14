@@ -119,3 +119,34 @@
 .horizontal-scroll .inc:down {
     icon: "haxeui-core/styles/default/right_arrow_white.png";
 }
+
+/************************************************************************
+** MOBILE VARIANTS
+*************************************************************************/
+.scroll:mobile .inc, .scroll:mobile .deinc {
+    hidden: true;
+}
+
+.horizontal-scroll:mobile {
+    opacity: .5;
+    height: 8px;
+    padding: 2px;
+    background-color: none;
+}
+
+.horizontal-scroll:mobile .thumb {
+    height: 4px;
+    border-radius: 2px;
+}
+
+.vertical-scroll:mobile {
+    opacity: .5;
+    width: 8px;
+    padding: 2px;
+    background-color: none;
+}
+
+.vertical-scroll:mobile .thumb {
+    width: 4px;
+    border-radius: 2px;
+}
