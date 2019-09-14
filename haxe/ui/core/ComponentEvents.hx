@@ -40,6 +40,10 @@ class ComponentEvents extends ComponentContainer {
     **/
     @:dox(group = "Event related properties and methods")
     public function registerEvent(type:String, listener:Dynamic->Void, priority:Int = 0) {
+        if (cast(this, Component).hasClass(":mobile") && (type == MouseEvent.MOUSE_OVER || type == MouseEvent.MOUSE_OUT)) {
+            return;
+        }
+        
         if (disabled == true && isInteractiveEvent(type) == true) {
             if (_disabledEvents == null) {
                 _disabledEvents = new EventMap();
