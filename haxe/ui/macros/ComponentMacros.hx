@@ -120,7 +120,7 @@ class ComponentMacros {
         }
         
         for (styleString in c.styles) {
-            builder.add(macro haxe.ui.Toolkit.styleSheet.parse($v{styleString}));
+            builder.add(macro haxe.ui.Toolkit.styleSheet.parse($v{styleString}, "user"));
         }
         
         buildComponentNode(builder, c, 0, -1, namedComponents);

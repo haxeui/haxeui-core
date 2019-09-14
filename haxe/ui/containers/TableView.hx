@@ -3,7 +3,6 @@ package haxe.ui.containers;
 import haxe.ui.behaviours.Behaviour;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
-import haxe.ui.behaviours.ValueBehaviour;
 import haxe.ui.behaviours.LayoutBehaviour;
 import haxe.ui.binding.BindingManager;
 import haxe.ui.components.Label;
@@ -146,6 +145,20 @@ private class Events extends ScrollViewEvents {
         }
     }
 
+    private override function onContainerEventsStatusChanged() {
+        super.onContainerEventsStatusChanged();
+        if (_containerEventsPaused == true) {
+            _tableview.findComponent("tableview-contents", Component, true, "css").removeClass(":hover", true, true);
+        } else if (_lastMousePos != null) {
+            /* TODO: may be ill concieved, doesnt look good on mobile
+            var items = _tableview.findComponentsUnderPoint(_lastMousePos.x, _lastMousePos.y, ItemRenderer);
+            for (i in items) {
+                i.addClass(":hover", true, true);
+            }
+            */
+        }
+    }
+    
     private function onRendererClick(e:MouseEvent):Void {
         var components = e.target.findComponentsUnderPoint(e.screenX, e.screenY);
         for (component in components) {
@@ -196,6 +209,8 @@ private class Builder extends ScrollViewBuilder {
         } else {
             fillExistingRenderer();
         }
+        
+        _component.invalidateComponentLayout();
     }
     
     private override function createContentContainer(layoutName:String) {
@@ -219,11 +234,13 @@ private class Builder extends ScrollViewBuilder {
         } else if (Std.is(child, Header)) {
             _header = cast(child, Header);
             
+            /*
             if (_tableview.itemRenderer == null) {
                 buildDefaultRenderer();
             } else {
                 fillExistingRenderer();
             }
+            */
             
             r = null;
         } else {

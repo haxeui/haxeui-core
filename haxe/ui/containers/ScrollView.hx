@@ -18,6 +18,7 @@ import haxe.ui.geom.Rectangle;
 import haxe.ui.geom.Size;
 import haxe.ui.layouts.LayoutFactory;
 import haxe.ui.layouts.ScrollViewLayout;
+import haxe.ui.styles.Style;
 import haxe.ui.util.Variant;
 import haxe.ui.validation.InvalidationFlags;
 
@@ -486,7 +487,6 @@ class ScrollViewEvents extends haxe.ui.events.Events {
             _offset.y = vscroll.pos + event.screenY;
         }
         
-        
         if (_scrollview.scrollMode == ScrollMode.INERTIAL) {
             if (_inertia == null) {
                 _inertia = {
@@ -513,14 +513,64 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         Screen.instance.registerEvent(MouseEvent.MOUSE_UP, onMouseUp);
     }
     
+    private var _lastMousePos:Point = null;
     private function onMouseMove(event:MouseEvent) {
+        _lastMousePos = new Point(event.screenX, event.screenY);
         var hscroll:HorizontalScroll = _scrollview.findComponent(HorizontalScroll, false);
         if (hscroll != null) {
             hscroll.pos = _offset.x - event.screenX;
+            pauseContainerEvents();
         }
         var vscroll:VerticalScroll = _scrollview.findComponent(VerticalScroll, false);
         if (vscroll != null) {
             vscroll.pos = _offset.y - event.screenY;
+            pauseContainerEvents();
+        }
+    }
+    
+    private var _containerEventsPaused:Bool = false;
+    private function pauseContainerEvents() {
+        if (_containerEventsPaused == true) {
+            return;
+        }
+        _containerEventsPaused = true;
+        onContainerEventsStatusChanged();
+    }
+    
+    private function resumeContainerEvents() {
+        if (_containerEventsPaused == false) {
+            return;
+        }
+        
+        _containerEventsPaused = false;
+        onContainerEventsStatusChanged();
+    }
+
+    @:access(haxe.ui.core.Component)
+    private function onContainerEventsStatusChanged() {
+        _scrollview.findComponent("scrollview-contents", Component, true, "css").disableInteractivity(_containerEventsPaused);
+        
+        var hscroll = _scrollview.findComponent(HorizontalScroll, false);
+        var vscroll = _scrollview.findComponent(VerticalScroll, false);
+        if (hscroll != null || vscroll != null) {
+            var builder = cast(_scrollview._compositeBuilder, ScrollViewBuilder);
+            if (builder.autoHideScrolls == true) {
+                if (_containerEventsPaused == true) {
+                    if (hscroll != null) {
+                        hscroll.hidden = false;
+                    }
+                    if (vscroll != null) {
+                        vscroll.hidden = false;
+                    }
+                } else {
+                    if (hscroll != null) {
+                        hscroll.hidden = true;
+                    }
+                    if (vscroll != null) {
+                        vscroll.hidden = true;
+                    }
+                }
+            }
         }
     }
     
@@ -546,6 +596,8 @@ class ScrollViewEvents extends haxe.ui.events.Events {
             velocityY = 0.8 * v + 0.2 * velocityY;
 
             if (velocityX <= 75 && velocityY <= 75) {
+                dispatch(new ScrollEvent(ScrollEvent.STOP));
+                Toolkit.callLater(resumeContainerEvents);
                 return;
             }
             
@@ -572,6 +624,8 @@ class ScrollViewEvents extends haxe.ui.events.Events {
             }
             
             if (_scrollview.hscrollPos == _inertia.target.x && _scrollview.vscrollPos == _inertia.target.y) {
+                dispatch(new ScrollEvent(ScrollEvent.STOP));
+                Toolkit.callLater(resumeContainerEvents);
                 return;
             }
 
@@ -585,6 +639,7 @@ class ScrollViewEvents extends haxe.ui.events.Events {
             Toolkit.callLater(inertialScroll);
         } else {
             dispatch(new ScrollEvent(ScrollEvent.STOP));
+            Toolkit.callLater(resumeContainerEvents);
         }
     }
     
@@ -643,6 +698,7 @@ class ScrollViewEvents extends haxe.ui.events.Events {
 
         if (finishedX == true && finishedY == true) {
             dispatch(new ScrollEvent(ScrollEvent.STOP));
+            Toolkit.callLater(resumeContainerEvents);
         } else {
             Toolkit.callLater(inertialScroll);
         }
@@ -807,7 +863,10 @@ class ScrollViewBuilder extends CompositeBuilder {
         }
         
         if (vcw > usableSize.width && hscroll == null) {
+            var builder = cast(_scrollview._compositeBuilder, ScrollViewBuilder);
             hscroll = new HorizontalScroll();
+            hscroll.includeInLayout = !builder.autoHideScrolls;
+            hscroll.hidden = builder.autoHideScrolls;
             hscroll.percentWidth = 100;
             hscroll.allowFocus = false;
             hscroll.id = "scrollview-hscroll";
@@ -829,7 +888,10 @@ class ScrollViewBuilder extends CompositeBuilder {
         }
         
         if (vch > usableSize.height && vscroll == null) {
+            var builder = cast(_scrollview._compositeBuilder, ScrollViewBuilder);
             vscroll = new VerticalScroll();
+            vscroll.includeInLayout = !builder.autoHideScrolls;
+            vscroll.hidden = builder.autoHideScrolls;
             vscroll.percentHeight = 100;
             vscroll.allowFocus = false;
             vscroll.id = "scrollview-vscroll";
@@ -893,5 +955,15 @@ class ScrollViewBuilder extends CompositeBuilder {
         
     public function onVirtualChanged() {
         
+    }
+    
+    public var autoHideScrolls:Bool = false;
+    public override function applyStyle(style:Style) {
+        super.applyStyle(style);
+        if (style.mode != null && style.mode == "mobile") {
+            autoHideScrolls = true;
+        } else {
+            autoHideScrolls = false;
+        }
     }
 }

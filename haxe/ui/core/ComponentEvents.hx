@@ -40,6 +40,10 @@ class ComponentEvents extends ComponentContainer {
     **/
     @:dox(group = "Event related properties and methods")
     public function registerEvent(type:String, listener:Dynamic->Void, priority:Int = 0) {
+        if (cast(this, Component).hasClass(":mobile") && (type == MouseEvent.MOUSE_OVER || type == MouseEvent.MOUSE_OUT)) {
+            return;
+        }
+        
         if (disabled == true && isInteractiveEvent(type) == true) {
             if (_disabledEvents == null) {
                 _disabledEvents = new EventMap();
@@ -72,7 +76,7 @@ class ComponentEvents extends ComponentContainer {
     **/
     @:dox(group = "Event related properties and methods")
     public function unregisterEvent(type:String, listener:Dynamic->Void) {
-        if (_disabledEvents != null && !disabled) {
+        if (_disabledEvents != null && !_interactivityDisabled) {
             _disabledEvents.remove(type, listener);
         }
         
@@ -113,11 +117,11 @@ class ComponentEvents extends ComponentContainer {
     }
     
     private var _interactivityDisabled:Bool = false;
-    private function disableInteractivity(disable:Bool) { // You might want to disable interactivity but NOT actually disable visually
+    private function disableInteractivity(disable:Bool, recursive:Bool = true) { // You might want to disable interactivity but NOT actually disable visually
         if (_interactivityDisabled == disable) {
             return;
         }
-        
+
         _interactivityDisabled = disable;
         
         if (disable == true) {
@@ -152,8 +156,10 @@ class ComponentEvents extends ComponentContainer {
             }
         }
         
-        for (child in childComponents) {
-            child.disableInteractivity(disable);
+        if (recursive == true) {
+            for (child in childComponents) {
+                child.disableInteractivity(disable, recursive);
+            }
         }
     }
     

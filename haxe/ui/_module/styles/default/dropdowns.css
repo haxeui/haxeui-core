@@ -6,3 +6,14 @@
     icon-position: far-right;
     text-align: left;
 }
+
+/************************************************************************
+** MOBILE VARIANTS
+*************************************************************************/
+.dropdown:mobile {
+    mode: mobile;
+}
+
+.dropdown-popup:mobile {
+    width: 75%;
+}

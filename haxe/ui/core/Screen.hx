@@ -86,6 +86,19 @@ class Screen extends ScreenImpl {
         return Toolkit.dialog(contents, title, buttons, modal, callback);
     }
     
+    private function invalidateAll() {
+        for (c in rootComponents) {
+            invalidateChildren(c);
+        }
+    }
+    
+    private function invalidateChildren(c:Component) {
+        c.invalidateComponent();
+        for (child in c.childComponents) {
+            invalidateChildren(child);
+        }
+    }
+    
     //***********************************************************************************************************
     // Events
     //***********************************************************************************************************

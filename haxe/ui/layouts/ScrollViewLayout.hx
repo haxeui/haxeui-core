@@ -36,14 +36,49 @@ class ScrollViewLayout extends DefaultLayout {
         }
     }
 
+    private override function resizeChildren() {
+        super.resizeChildren();
+
+        var hscroll = component.findComponent(HorizontalScroll, false);
+        var vscroll = component.findComponent(VerticalScroll, false);
+        
+        var usableSize:Size = usableSize;
+        var percentWidth:Float = 100;
+        var percentHeight:Float = 100;
+        for (child in component.childComponents) {
+            if (child != hscroll && child != vscroll) {
+                continue;
+            }
+
+            var cx:Null<Float> = null;
+            var cy:Null<Float> = null;
+
+            if (child.percentWidth != null) {
+                cx = (usableSize.width * child.percentWidth) / percentWidth - marginLeft(child) - marginRight(child);
+            }
+            if (child.percentHeight != null) {
+                cy = (usableSize.height * child.percentHeight) / percentHeight - marginTop(child) - marginBottom(child);
+            }
+
+            if (fixedMinWidth(child) && child.percentWidth != null) {
+                percentWidth -= child.percentWidth;
+            }
+            if (fixedMinHeight(child) && child.percentHeight != null) {
+                percentHeight -= child.percentHeight;
+            }
+            
+            child.resizeComponent(cx, cy);
+        }
+    }
+    
     private override function get_usableSize():Size {
         var size:Size = super.get_usableSize();
         var hscroll = component.findComponent(HorizontalScroll, false);
         var vscroll = component.findComponent(VerticalScroll, false);
-        if (hscroll != null && hidden(hscroll) == false) {
+        if (hscroll != null && hscroll.includeInLayout == true && hidden(hscroll) == false) {
             size.height -= hscroll.componentHeight;
         }
-        if (vscroll != null && hidden(vscroll) == false) {
+        if (vscroll != null && vscroll.includeInLayout == true && hidden(vscroll) == false) {
             size.width -= vscroll.componentWidth;
         }
 

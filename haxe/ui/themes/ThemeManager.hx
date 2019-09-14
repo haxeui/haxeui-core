@@ -39,6 +39,7 @@ class ThemeManager {
     }
 
     public function applyTheme(themeName:String) {
+        Toolkit.styleSheet.clear("default");
         var entries:Array<ThemeEntry> = [];
         buildThemeEntries("global", entries);
         buildThemeEntries(themeName, entries);

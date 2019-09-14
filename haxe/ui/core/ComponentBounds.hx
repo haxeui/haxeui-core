@@ -75,6 +75,16 @@ class ComponentBounds extends ComponentLayout {
         }
     }
     
+    public var actualComponentWidth(get, null):Float;
+    private function get_actualComponentWidth():Float {
+        return componentWidth * Toolkit.scaleX;
+    }
+    
+    public var actualComponentHeight(get, null):Float;
+    private function get_actualComponentHeight():Float {
+        return componentHeight * Toolkit.scaleY;
+    }
+    
     private var _componentWidth:Null<Float>;
     @:allow(haxe.ui.layouts.Layout)
     @:allow(haxe.ui.core.Screen)
@@ -316,18 +326,23 @@ class ComponentBounds extends ComponentLayout {
     **/
     @:dox(group = "Size related properties and methods")
     public function hitTest(left:Float, top:Float):Bool { // co-ords must be stage
+        
+        left *= Toolkit.scale;
+        top *= Toolkit.scale;
+        
         var b:Bool = false;
         var sx:Float = screenLeft;
         var sy:Float = screenTop;
+        
         var cx:Float = 0;
         if (componentWidth != null) {
-            cx = componentWidth;
+            cx = actualComponentWidth;
         }
         var cy:Float = 0;
         if (componentHeight != null) {
-            cy = componentHeight;
+            cy = actualComponentHeight;
         }
-
+ 
         if (cx <= 0 || cy <= 0) {
             return false;
         }
@@ -410,10 +425,14 @@ class ComponentBounds extends ComponentLayout {
         var c = this;
         var xpos:Float = 0;
         while (c != null) {
-            xpos += c.left;
+            var l = c.left;
+            if (c.parentComponent != null) {
+                l *= Toolkit.scale;
+            }
+            xpos += l;
 
             if (c.componentClipRect != null) {
-                xpos -= c.componentClipRect.left;
+                xpos -= c.componentClipRect.left * Toolkit.scaleX;
             }
 
             c = c.parentComponent;
@@ -430,10 +449,14 @@ class ComponentBounds extends ComponentLayout {
         var c = this;
         var ypos:Float = 0;
         while (c != null) {
-            ypos += c.top;
+            var t = c.top;
+            if (c.parentComponent != null) {
+                t *= Toolkit.scale;
+            }
+            ypos += t;
 
             if (c.componentClipRect != null) {
-                ypos -= c.componentClipRect.top;
+                ypos -= c.componentClipRect.top * Toolkit.scaleY;
             }
 
             c = c.parentComponent;

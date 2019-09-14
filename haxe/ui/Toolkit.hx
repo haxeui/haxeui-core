@@ -22,6 +22,7 @@ import haxe.ui.parsers.ui.LayoutInfo;
 import haxe.ui.parsers.ui.resolvers.AssetResourceResolver;
 import haxe.ui.parsers.ui.resolvers.ResourceResolver;
 import haxe.ui.scripting.ConditionEvaluator;
+import haxe.ui.styles.CompositeStyleSheet;
 import haxe.ui.styles.StyleSheet;
 import haxe.ui.themes.ThemeManager;
 import haxe.ui.util.GenericConfig;
@@ -29,14 +30,30 @@ import haxe.ui.util.Properties;
 import haxe.ui.util.Variant;
 
 class Toolkit {
-    public static var styleSheet:StyleSheet = new StyleSheet();
+    public static var styleSheet:CompositeStyleSheet = new CompositeStyleSheet();
     
-    public static var theme:String = "default";
-
     public static var properties:Map<String, String> = new Map<String, String>();
 
     public static var nativeConfig:GenericConfig = new GenericConfig();
 
+    private static var _theme:String = "default";
+    public static var theme(get, set):String;
+    private static function get_theme():String {
+        return _theme;
+    }
+    @:access(haxe.ui.core.Screen)
+    private static function set_theme(value:String):String {
+        if (_theme == value) {
+            return value;
+        }
+        _theme = value;
+        if (_initialized == true) {
+            ThemeManager.instance.applyTheme(_theme);
+            Screen.instance.invalidateAll();
+        }
+        return value;
+    }
+    
     private static var _backendProperties:Properties = new Properties();
     public static var backendProperties(get, null):Properties;
     private static function get_backendProperties():Properties {
@@ -64,14 +81,16 @@ class Toolkit {
         _backendBuilt = true;
     }
     
+    private static var _initialized:Bool = false;
     public static function init(options:ToolkitOptions = null) {
         build();
-        ThemeManager.instance.applyTheme(theme);
+        ThemeManager.instance.applyTheme(_theme);
         if (options != null) {
             screen.options = options;
             ToolkitAssets.instance.options = options;
         }
         screen.registerEvent(KeyboardEvent.KEY_DOWN, onKeyDown);
+        _initialized = true;
     }
 
     private static function onKeyDown(event:KeyboardEvent) {
@@ -276,7 +295,7 @@ class Toolkit {
     }
 
     public static var autoScale:Bool = true;
-    public static var autoScaleDPIThreshold:Int = 160;
+    public static var autoScaleDPIThreshold:Int = 120;
 
     private static var _scaleX:Float = 0;
     public static var scaleX(get, set):Float;

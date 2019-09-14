@@ -188,8 +188,26 @@ class ListViewEvents extends ScrollViewEvents {
             }
         }, 500);   //TODO - configurable
     }
-
+    
+    private override function onContainerEventsStatusChanged() {
+        super.onContainerEventsStatusChanged();
+        if (_containerEventsPaused == true) {
+            _scrollview.findComponent("listview-contents", Component, true, "css").removeClass(":hover", true, true);
+        } else if (_lastMousePos != null) {
+            /* TODO: may be ill concieved, doesnt look good on mobile
+            var items = _scrollview.findComponentsUnderPoint(_lastMousePos.x, _lastMousePos.y, ItemRenderer);
+            for (i in items) {
+                i.addClass(":hover", true, true);
+            }
+            */
+        }
+    }
+    
     private function onRendererClick(e:MouseEvent):Void {
+        if (_containerEventsPaused == true) {
+            return;
+        }
+        
         var components = e.target.findComponentsUnderPoint(e.screenX, e.screenY);
         for (component in components) {
             if (Std.is(component, InteractiveComponent)) {
