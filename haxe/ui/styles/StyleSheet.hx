@@ -7,6 +7,8 @@ import haxe.ui.styles.elements.MediaQuery;
 import haxe.ui.styles.elements.RuleElement;
 
 class StyleSheet {
+    public var name:String;
+    
     private var _imports:Array<ImportElement> = [];
     private var _rules:Array<RuleElement> = [];
     
@@ -59,6 +61,17 @@ class StyleSheet {
         }
     }
     
+    public function removeAllRules() {
+        _rules = [];
+    }
+    
+    public function clear() {
+        removeAllRules();
+        _imports = [];
+        _mediaQueries = [];
+        _animations = new Map<String, AnimationKeyFrames>();
+    }
+    
     public function addRule(el:RuleElement) {
         _rules.push(el);
     }
@@ -94,8 +107,10 @@ class StyleSheet {
         }
     }
     
-    public function buildStyleFor(c:Component):Style {
-        var style:Style = new Style();
+    public function buildStyleFor(c:Component, style:Style = null):Style {
+        if (style == null) {
+            style = new Style();
+        }
         for (r in rules) {
             if (!r.match(c)) {
                 continue;
