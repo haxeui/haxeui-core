@@ -145,6 +145,20 @@ private class Events extends ScrollViewEvents {
         }
     }
 
+    private override function onContainerEventsStatusChanged() {
+        super.onContainerEventsStatusChanged();
+        if (_containerEventsPaused == true) {
+            _tableview.findComponent("tableview-contents", Component, true, "css").removeClass(":hover", true, true);
+        } else if (_lastMousePos != null) {
+            /* TODO: may be ill concieved, doesnt look good on mobile
+            var items = _tableview.findComponentsUnderPoint(_lastMousePos.x, _lastMousePos.y, ItemRenderer);
+            for (i in items) {
+                i.addClass(":hover", true, true);
+            }
+            */
+        }
+    }
+    
     private function onRendererClick(e:MouseEvent):Void {
         var components = e.target.findComponentsUnderPoint(e.screenX, e.screenY);
         for (component in components) {
