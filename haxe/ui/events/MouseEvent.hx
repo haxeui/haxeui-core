@@ -30,7 +30,7 @@ class MouseEvent extends UIEvent {
             return null;
         }
         
-        return screenX - target.screenLeft;
+        return ((screenX * Toolkit.scaleX) - target.screenLeft) / Toolkit.scaleX;
     }
     
     public var localY(get, null):Null<Float>;
@@ -39,7 +39,7 @@ class MouseEvent extends UIEvent {
             return null;
         }
         
-        return screenY - target.screenTop;
+        return ((screenY * Toolkit.scaleY) - target.screenTop) / Toolkit.scaleY;
     }
     
     public override function clone():MouseEvent {

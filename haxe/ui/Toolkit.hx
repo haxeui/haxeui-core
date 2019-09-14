@@ -276,7 +276,7 @@ class Toolkit {
     }
 
     public static var autoScale:Bool = true;
-    public static var autoScaleDPIThreshold:Int = 160;
+    public static var autoScaleDPIThreshold:Int = 120;
 
     private static var _scaleX:Float = 0;
     public static var scaleX(get, set):Float;

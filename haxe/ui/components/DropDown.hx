@@ -303,7 +303,7 @@ class DropDownEvents extends ButtonEvents {
         handler.component.styleNames = _dropdown.handlerStyleNames;
         var componentOffset = _dropdown.getComponentOffset();
         handler.component.left = _dropdown.screenLeft + componentOffset.x;
-        handler.component.top = _dropdown.screenTop + _dropdown.height - 1 + componentOffset.y;
+        handler.component.top = _dropdown.screenTop + (_dropdown.actualComponentHeight - Toolkit.scaleY) + componentOffset.y;
         handler.show();
 
         if (handler.component.screenLeft + handler.component.width > Screen.instance.width) {
@@ -312,7 +312,7 @@ class DropDownEvents extends ButtonEvents {
         if (handler.component.screenTop + handler.component.height > Screen.instance.height) {
             handler.component.top = _dropdown.screenTop - handler.component.height;
         }
-        
+
         Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
         Screen.instance.registerEvent(MouseEvent.RIGHT_MOUSE_DOWN, onScreenMouseDown);
     }
