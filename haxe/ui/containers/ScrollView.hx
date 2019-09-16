@@ -519,16 +519,16 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         _lastMousePos = new Point(event.screenX, event.screenY);
         var hscroll:HorizontalScroll = _scrollview.findComponent(HorizontalScroll, false);
         if (hscroll != null) {
+            var distX = Math.abs(hscroll.pos - (_offset.x - event.screenX));
             hscroll.pos = _offset.x - event.screenX;
-            var distX = Math.abs(_offset.x - event.screenX);
             if (distX > _movementThreshold * Toolkit.scaleX) {
                 pauseContainerEvents();
             }
         }
         var vscroll:VerticalScroll = _scrollview.findComponent(VerticalScroll, false);
         if (vscroll != null) {
+            var distY = Math.abs(vscroll.pos - (_offset.y - event.screenY));
             vscroll.pos = _offset.y - event.screenY;
-            var distY = Math.abs(_offset.y - event.screenY);
             if (distY > _movementThreshold * Toolkit.scaleY) {
                 pauseContainerEvents();
             }
