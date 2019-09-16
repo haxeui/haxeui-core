@@ -665,7 +665,10 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     @:dox(group = "Display tree related properties and methods")
     public function getComponentAt(index:Int):Component {
         if (_compositeBuilder != null) {
-            return _compositeBuilder.getComponentAt(index);
+            var v = _compositeBuilder.getComponentAt(index);
+            if (v != null) {
+                return v;
+            }
         }
         if (_children == null) {
             return null;
