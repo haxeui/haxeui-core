@@ -142,7 +142,7 @@ class ListViewEvents extends ScrollViewEvents {
                 }
 
             default:
-                //Nothing
+                e.target.addClass(":hover");
         }
     }
 
