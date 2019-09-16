@@ -470,6 +470,8 @@ class ScrollViewEvents extends haxe.ui.events.Events {
             return;
         }
         
+        _lastMousePos = new Point(event.screenX, event.screenY);
+        
         //event.cancel();
         var componentOffset = _scrollview.getComponentOffset();
         if (hscroll != null && hscroll.hitTest(event.screenX - componentOffset.x, event.screenY - componentOffset.y) == true) {
@@ -516,23 +518,23 @@ class ScrollViewEvents extends haxe.ui.events.Events {
     private var _movementThreshold:Int = 3;
     private var _lastMousePos:Point = null;
     private function onMouseMove(event:MouseEvent) {
-        _lastMousePos = new Point(event.screenX, event.screenY);
         var hscroll:HorizontalScroll = _scrollview.findComponent(HorizontalScroll, false);
         if (hscroll != null) {
             hscroll.pos = _offset.x - event.screenX;
-            var distX = Math.abs(_offset.x - event.screenX);
-            if (distX > _movementThreshold * Toolkit.scaleX) {
+            var distX = Math.abs(event.screenX - _lastMousePos.x);
+            if (distX > Toolkit.scaleX) {
                 pauseContainerEvents();
             }
         }
         var vscroll:VerticalScroll = _scrollview.findComponent(VerticalScroll, false);
         if (vscroll != null) {
             vscroll.pos = _offset.y - event.screenY;
-            var distY = Math.abs(_offset.y - event.screenY);
-            if (distY > _movementThreshold * Toolkit.scaleY) {
+            var distY = Math.abs(event.screenY - _lastMousePos.y);
+            if (distY > Toolkit.scaleY) {
                 pauseContainerEvents();
             }
         }
+        _lastMousePos = new Point(event.screenX, event.screenY);
     }
     
     private var _containerEventsPaused:Bool = false;
