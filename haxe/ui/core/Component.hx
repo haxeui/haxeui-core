@@ -556,12 +556,12 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         
         var r:Array<T> = [];
         for (child in childComponents) {
-            var match = false;
-            if (styleName != null && child.hasClass(styleName)) {
-                match = match || true;
+            var match = true;
+            if (styleName != null && child.hasClass(styleName) == false) {
+                match = false;
             }
-            if (type != null && Std.is(child, type)) {
-                match = match || true;
+            if (type != null && Std.is(child, type) == false) {
+                match = false;
             }
             
             if (match == true) {
