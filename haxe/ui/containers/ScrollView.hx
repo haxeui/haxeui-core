@@ -532,7 +532,6 @@ class ScrollViewEvents extends haxe.ui.events.Events {
             if (distY > _movementThreshold * Toolkit.scaleY) {
                 pauseContainerEvents();
             }
-            pauseContainerEvents();
         }
     }
     
