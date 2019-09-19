@@ -292,7 +292,7 @@ class ModuleMacros {
         var fileName = fileParts.pop();
         var className:String = StringUtil.capitalizeFirstLetter(StringUtil.capitalizeHyphens(new Path(fileName).file));
         if (alias != null) {
-            className = alias;
+			className = StringUtil.capitalizeFirstLetter(alias);
         }
         
         var temp = [];
