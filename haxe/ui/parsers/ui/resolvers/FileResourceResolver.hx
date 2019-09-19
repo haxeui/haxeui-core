@@ -29,6 +29,8 @@ class FileResourceResolver extends ResourceResolver {
         var data:String = null;
         if (FileSystem.exists(f)) {
             data = StringUtil.replaceVars(File.getContent(f), _params);
+        }else if(FileSystem.exists(r)){
+            data = StringUtil.replaceVars(File.getContent(r), _params);
         }
         if (data == null) {
             trace("WARNING: Could not find file: " + f);
