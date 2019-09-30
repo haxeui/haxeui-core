@@ -119,7 +119,7 @@ class DataSource<T> {
         return null;
     }
 
-    private function handleClear():Void {
+    private function handleClear() {
     }
 
     private function handleUpdateItem(index:Int, item:T):T {
