@@ -68,6 +68,10 @@ class ListDataSource<T> extends DataSource<T> {
         return item;
     }
 
+    private override function handleClear():Void {
+        _array.clear();
+    }
+
     private override function handleUpdateItem(index:Int, item:T):T {
         var i = 0;
         var r = null;
