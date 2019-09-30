@@ -37,6 +37,11 @@ class ArrayDataSource<T> extends DataSource<T> {
         _array.remove(item);
         return item;
     }
+    private override function handleClear():Void{
+        while (_array.length > 0) {
+            _array.pop();
+        }
+    }
 
     private override function handleUpdateItem(index:Int, item:T):T {
         return _array[index] = item;
