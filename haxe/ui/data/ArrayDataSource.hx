@@ -37,7 +37,7 @@ class ArrayDataSource<T> extends DataSource<T> {
         _array.remove(item);
         return item;
     }
-    private override function handleClear():Void{
+    private override function handleClear() {
         while (_array.length > 0) {
             _array.pop();
         }
