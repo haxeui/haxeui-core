@@ -81,9 +81,7 @@ class DataSource<T> {
     public function clear() {
         var o = _allowCallbacks;
         _allowCallbacks = false;
-        while (size > 0) {
-            remove(get(0));
-        }
+        handleClear();
         _allowCallbacks = o;
         handleChanged();
     }
@@ -119,6 +117,9 @@ class DataSource<T> {
 
     private function handleRemoveItem(item:T):T {
         return null;
+    }
+
+    private function handleClear():Void {
     }
 
     private function handleUpdateItem(index:Int, item:T):T {
