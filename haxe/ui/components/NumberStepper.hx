@@ -198,12 +198,12 @@ private class Events extends haxe.ui.events.Events {
         step.unregisterEvent(MouseEvent.MOUSE_DOWN, onStepMouseDown);
     }
 	
-	private function onKeyDown(event:KeyboardEvent):Void {
+	private function onKeyDown(event:KeyboardEvent) {
 		var step:Stepper = _stepper.findComponent("stepper-step", Stepper);
-		if (event.keyCode == 38 || event.keyCode == 39) { // ArrowUp or ArrowRight
+		if (event.keyCode == 38 || event.keyCode == 39 || event.keyCode == 107) { // ArrowUp, ArrowRight, or add(+)
 			step.increment();
 		}
-		if (event.keyCode == 40 || event.keyCode == 37) { // ArrowDown or ArrowLeft
+		if (event.keyCode == 40 || event.keyCode == 37 || event.keyCode == 109) { // ArrowDown, ArrowLeft, or minus(-)
 			step.deincrement();
 		}
 		if (event.keyCode == 36) { // Home

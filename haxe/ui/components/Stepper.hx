@@ -106,6 +106,7 @@ private class Builder extends CompositeBuilder {
         button.styleNames = "stepper-button stepper-inc";
         button.id = "stepper-inc";
         button.repeater = _stepper.repeater;
+		button.easeInRepeater = true;
         button.repeatInterval = _stepper.repeatInterval;
         _stepper.addComponent(button);
         
@@ -113,6 +114,7 @@ private class Builder extends CompositeBuilder {
         button.styleNames = "stepper-button stepper-deinc";
         button.id = "stepper-deinc";
         button.repeater = _stepper.repeater;
+		button.easeInRepeater = true;
         button.repeatInterval = _stepper.repeatInterval;
         _stepper.addComponent(button);
     }
