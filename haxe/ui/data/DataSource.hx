@@ -120,6 +120,12 @@ class DataSource<T> {
     }
 
     private function handleClear() {
+        var cachedTransformer = transformer;
+        transformer = null;
+        while (size > 0) {
+            remove(get(0));
+        }
+        transformer = cachedTransformer;
     }
 
     private function handleUpdateItem(index:Int, item:T):T {
