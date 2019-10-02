@@ -275,19 +275,50 @@ class ModuleMacros {
         }
     }
     
-    private static function createDynamicClasses(dir) {
+    private static function createDynamicClasses(dir:String, root:String = null) {
+        var resolvedPath = null;
+        try { 
+            resolvedPath = Context.resolvePath(dir); 
+        } catch (e:Dynamic) { 
+            resolvedPath = haxe.io.Path.join([Sys.getCwd(), dir]); 
+        } 
+        if (resolvedPath == null || FileSystem.exists(resolvedPath) == false || FileSystem.isDirectory(resolvedPath) == false) {
+            trace("WARNING: Could not find path " + resolvedPath);
+        }
+        
+        dir = Path.normalize(resolvedPath);
+        if (root == null) {
+            root = dir;
+        }
+        
         var contents = FileSystem.readDirectory(dir);
         for (item in contents) {
             var fullPath = Path.normalize(dir + "/" + item);
             if (FileSystem.isDirectory(fullPath)) {
-                createDynamicClasses(fullPath);
+                createDynamicClasses(fullPath, root);
             } else {
-                createDynamicClass(fullPath);
+                createDynamicClass(fullPath, null, root);
             }
         }
     }
     
-    public static function createDynamicClass(filePath:String, alias:String = null):String {
+    public static function createDynamicClass(filePath:String, alias:String = null, root:String = null):String {
+        var resolvedPath = null;
+        try { 
+            resolvedPath = Context.resolvePath(filePath); 
+        } catch (e:Dynamic) { 
+            resolvedPath = haxe.io.Path.join([Sys.getCwd(), filePath]); 
+        } 
+        if (resolvedPath == null || FileSystem.exists(resolvedPath) == false || FileSystem.isDirectory(resolvedPath) == true) {
+            trace("WARNING: Could not find path " + resolvedPath);
+        }
+        
+        filePath = Path.normalize(resolvedPath);
+        var fullPath = filePath;
+        if (root != null) {
+            filePath = StringTools.replace(filePath, root, "");
+        }
+        
         var fileParts = filePath.split("/");
         var fileName = fileParts.pop();
         var className:String = StringUtil.capitalizeFirstLetter(StringUtil.capitalizeHyphens(new Path(fileName).file));
@@ -317,7 +348,7 @@ class ModuleMacros {
             name: superClassParts.pop(),
             pack: superClassParts
         }
-        var xml = sys.io.File.getContent(filePath);
+        var xml = sys.io.File.getContent(fullPath);
         var namedComponents:Map<String, String> = new Map<String, String>();
         var codeBuilder = new CodeBuilder();
         ComponentMacros.buildComponentFromString(codeBuilder, xml, namedComponents);
