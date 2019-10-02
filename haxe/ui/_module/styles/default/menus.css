@@ -49,6 +49,11 @@
 
 .menuitem-label, .menuitem-checkbox, .menuitem-optionbox {
     width: 100%;
+    vertical-align: center;
+}
+
+.menuitem-icon {
+    vertical-align: center;
 }
 
 .menuitem:hover, .menuitem:selected {

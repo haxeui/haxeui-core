@@ -11,6 +11,7 @@ import haxe.ui.events.Events;
 @:composite(Events, Builder)
 class MenuItem extends HBox {
     @:clonable @:behaviour(TextBehaviour)           public var text:String;
+    @:clonable @:behaviour(IconBehaviour)           public var icon:String;
     @:clonable @:behaviour(ExpandableBehaviour)     public var expandable:Bool;
 }
 
@@ -22,6 +23,25 @@ private class TextBehaviour extends DataBehaviour {
     private override function validateData() {
         var label:Label = _component.findComponent(Label, false);
         label.text = _value;
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class IconBehaviour extends DataBehaviour {
+    private override function validateData() {
+        if (_value == null || _value.isNull) {
+            return;
+        }
+        
+        var icon:Image = _component.findComponent("menuitem-icon", Image, false);
+        if (icon == null) {
+            icon = new Image();
+            icon.scriptAccess = false;
+            icon.id = "menuitem-icon";
+            icon.addClass("menuitem-icon");
+            _component.addComponentAt(icon, 0);
+        }
+        icon.resource = _value;
     }
 }
 
