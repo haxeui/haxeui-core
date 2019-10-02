@@ -93,10 +93,10 @@ class Screen extends ScreenImpl {
     }
     
     private function invalidateChildren(c:Component) {
-        c.invalidateComponent();
         for (child in c.childComponents) {
             invalidateChildren(child);
         }
+        c.invalidateComponent();
     }
     
     //***********************************************************************************************************
