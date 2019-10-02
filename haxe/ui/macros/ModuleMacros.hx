@@ -301,6 +301,7 @@ class ModuleMacros {
             if (part == "" || part == "." || part == "..") {
                 continue;
             }
+            part = StringTools.replace(part, "-", "");
             temp.push(part.toLowerCase());
         }
         fileParts = temp;
@@ -335,7 +336,7 @@ class ModuleMacros {
                 this.percentHeight = c0.percentHeight;
             }
         });
-        
+
         var newClass = macro
         ////////////////////////////////////////////////////////////////////////////////////////////////////////
         class $className extends $superClass {
