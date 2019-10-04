@@ -202,11 +202,12 @@ private class Builder extends CompositeBuilder {
     
     public override function addComponent(child:Component):Component {
         if (Std.is(child, Menu)) {
+            var menu = cast(child, Menu);
             var item = new MenuItem();
             item.text = child.text;
+            item.icon = menu.icon;
             item.expandable = true;
             _menu.addComponent(item);
-            var menu = cast(child, Menu);
             cast(menu._internalEvents, MenuEvents).parentMenu = _menu;
             _subMenus.set(item, menu);
             return child;
