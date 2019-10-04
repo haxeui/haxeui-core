@@ -108,6 +108,7 @@ class MenuEvents extends haxe.ui.events.Events {
             event.menu = _menu;
             event.menuItem = item;
             findRootMenu().dispatch(event);
+            hideCurrentSubMenu();
             findRootMenu().hide();
         }
     }
