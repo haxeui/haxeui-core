@@ -183,35 +183,37 @@ class Macros {
             }
             
             for (f in bindFields) {
-                var param1 = f.getMetaValueString("bind", 0);
-                var param2 = f.getMetaValueString("bind", 1);
-                if (param1 != null && param2 == null) { // one param, lets assume binding to component prop
-                    f.remove();
-                    
-                    var variable:String = param1.split(".")[0];
-                    var field:String = param1.split(".")[1];
-                    if (field == null) {
-                        field = "value";
-                    }
-                    
-                    builder.addGetter(f.name, f.type, macro {
-                        return Reflect.getProperty(findComponent($v{variable}), $v{field});
-                    });
-                    builder.addSetter(f.name, f.type, macro {
-                        if (value != $i{f.name}) {
-                            Reflect.setProperty(findComponent($v{variable}), $v{field}, value);
+                for (n in 0...f.getMetaCount("bind")) {
+                    var param1 = f.getMetaValueString("bind", 0, n);
+                    var param2 = f.getMetaValueString("bind", 1, n);
+                    if (param1 != null && param2 == null) { // one param, lets assume binding to component prop
+                        f.remove();
+                        
+                        var variable:String = param1.split(".")[0];
+                        var field:String = param1.split(".")[1];
+                        if (field == null) {
+                            field = "value";
                         }
-                        return value;
-                    });
-                    if (f.expr != null) {
+                        
+                        builder.addGetter(f.name, f.type, macro {
+                            return Reflect.getProperty(findComponent($v{variable}), $v{field});
+                        });
+                        builder.addSetter(f.name, f.type, macro {
+                            if (value != $i{f.name}) {
+                                Reflect.setProperty(findComponent($v{variable}), $v{field}, value);
+                            }
+                            return value;
+                        });
+                        if (f.expr != null) {
+                            builder.constructor.add(macro
+                                $i{f.name} = $e{f.expr}
+                            , 1);
+                        }
+                    } else if (param1 != null && param2 != null) { // two params, lets assume event binding
                         builder.constructor.add(macro
-                            $i{f.name} = $e{f.expr}
+                            findComponent($v{param1}, haxe.ui.core.Component).registerEvent($p{param2.split(".")}, $i{f.name})
                         , 1);
                     }
-                } else if (param1 != null && param2 != null) { // two params, lets assume event binding
-                    builder.constructor.add(macro
-                        findComponent($v{param1}, haxe.ui.core.Component).registerEvent($p{param2.split(".")}, $i{f.name})
-                    , 1);
                 }
             }
         }

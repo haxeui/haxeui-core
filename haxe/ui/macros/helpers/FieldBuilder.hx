@@ -128,14 +128,29 @@ class FieldBuilder {
             pos: classBuilder.pos
         });
     }
-    
-    public function getMetaValueString(name:String, paramIndex:Int = 0):String {
+
+    public function getMetaCount(name:String):Int {
+        var n = 0;
         for (m in field.meta) {
             if (m.name == name || m.name == ':${name}') {
-                if (m.params[paramIndex] == null) {
-                    return null;
+                n++;
+            }
+        }
+        return n;
+    }
+    
+    public function getMetaValueString(name:String, paramIndex:Int = 0, metaIndex:Int = 0):String {
+        var n = 0;
+        for (m in field.meta) {
+            if (m.name == name || m.name == ':${name}') {
+                if (n == metaIndex) {
+                    if (m.params[paramIndex] == null) {
+                        return null;
+                    }
+                    return ExprTools.toString(m.params[paramIndex]);
                 }
-                return ExprTools.toString(m.params[paramIndex]);
+                
+                n++;
             }
         }
         return null;
