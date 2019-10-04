@@ -11,7 +11,7 @@ class ImageLoader {
     }
     
     public function load(callback:ImageInfo->Void) {
-        if (StringTools.startsWith(_resource, "http://")) {
+        if (StringTools.startsWith(_resource, "http://") || StringTools.startsWith(_resource, "https://")) {
            loadFromHttp(_resource, callback);
         } else if (StringTools.startsWith(_resource, "file://")) {
             loadFromFile(_resource.substr(7), callback);
