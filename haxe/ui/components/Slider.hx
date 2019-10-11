@@ -40,38 +40,7 @@ class Slider extends InteractiveComponent implements IDirectionalComponent {
 @:access(haxe.ui.components.Slider)
 @:access(haxe.ui.core.Component)
 private class StartBehaviour extends DataBehaviour {
-    /*
-    public override function get():Variant {
-        return _component.findComponent(Range).start;
-    }
-    
-    public override function set(value:Variant) {
-        if (value == _value) {
-            return;
-        }
-        
-        var builder:SliderBuilder = cast(_component._compositeBuilder, SliderBuilder);
-        
-        if (_component.findComponent("start-thumb") == null) {
-            builder.createThumb("start-thumb");
-        }
-        
-        _component.findComponent(Range).start = value;
-        _component.invalidateComponentLayout();
-    }
-    */
-    
     private override function validateData() {
-        /*
-        var builder:SliderBuilder = cast(_component._compositeBuilder, SliderBuilder);
-        
-        if (_component.findComponent("start-thumb") == null) {
-            builder.createThumb("start-thumb");
-        }
-        
-        _component.findComponent(Range).start = _value;
-        _component.invalidateComponentLayout();
-        */
         var builder:SliderBuilder = cast(_component._compositeBuilder, SliderBuilder);
         if (_component.findComponent("start-thumb") == null) {
             builder.createThumb("start-thumb");
