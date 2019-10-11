@@ -210,9 +210,15 @@ class Macros {
                             , 1);
                         }
                     } else if (param1 != null && param2 != null) { // two params, lets assume event binding
-                        builder.constructor.add(macro
-                            findComponent($v{param1}, haxe.ui.core.Component).registerEvent($p{param2.split(".")}, $i{f.name})
-                        , 1);
+                        if (param1 == "this") {
+                            builder.constructor.add(macro
+                                this.registerEvent($p{param2.split(".")}, $i{f.name})
+                            , 1);
+                        } else {
+                            builder.constructor.add(macro
+                                findComponent($v{param1}, haxe.ui.core.Component).registerEvent($p{param2.split(".")}, $i{f.name})
+                            , 1);
+                        }
                     }
                 }
             }
