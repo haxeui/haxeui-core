@@ -20,10 +20,10 @@ class Range extends InteractiveComponent implements IDirectionalComponent {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:clonable @:behaviour(RangeValue, 0)           public var min:Float;
-    @:clonable @:behaviour(RangeValue, 100)         public var max:Float;
-    @:clonable @:behaviour(RangeValue)              public var start:Float;
-    @:clonable @:behaviour(RangeValue)              public var end:Float;
+    @:clonable @:behaviour(RangeMin, 0)             public var min:Float;
+    @:clonable @:behaviour(RangeMax, 100)           public var max:Float;
+    @:clonable @:behaviour(RangeStart, null)        public var start:Null<Float>;
+    @:clonable @:behaviour(RangeEnd, 0)             public var end:Float;
     @:clonable @:behaviour(InvalidatingBehaviour)   public var precision:Int;
     @:clonable @:behaviour(InvalidatingBehaviour)   public var step:Float;
     @:clonable @:behaviour(AllowInteraction)        public var allowInteraction:Bool;
@@ -45,15 +45,56 @@ class Range extends InteractiveComponent implements IDirectionalComponent {
 // Behaviours
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
-private class RangeValue extends DataBehaviour {
+private class RangeMin extends DataBehaviour {
+    public override function validateData() {
+        var range:Range = cast(_component, Range);
+        range.min = _value;
+        if (range.start < range.min) {
+            range.start = range.min;
+        }
+        _component.invalidateComponentLayout();
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class RangeMax extends DataBehaviour {
+    public override function validateData() {
+        var range:Range = cast(_component, Range);
+        range.max = _value;
+        if (range.end > range.max) {
+            range.end = range.max;
+        }
+        _component.invalidateComponentLayout();
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class RangeStart extends DataBehaviour {
     public override function validateData() {
         var range:Range = cast(_component, Range);
         if (_value != null && _value < range.min) {
             _value = range.min;
-        }
-        if (_value != null && _value > range.max) {
+        } else if (_value != null && _value > range.max) {
             _value = range.max;
         }
+        range.start = _value;
+        _component.invalidateComponentLayout();
+        
+        var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
+        _component.dispatch(changeEvent);
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class RangeEnd extends DataBehaviour {
+    public override function validateData() {
+        var range:Range = cast(_component, Range);
+        if (_value != null && _value < range.min) {
+            _value = range.min;
+        } else if (_value != null && _value > range.max) {
+            _value = range.max;
+        }
+        range.end = _value;
         _component.invalidateComponentLayout();
         
         var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);

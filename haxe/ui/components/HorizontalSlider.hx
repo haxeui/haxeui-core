@@ -18,17 +18,14 @@ class HorizontalSliderLayout extends DefaultLayout {
         
         var range:Range = findComponent(Range);
         var rangeValue:Component = range.findComponent("range-value");
-        
         var startThumb:Button = findComponent("start-thumb");
         var endThumb:Button = findComponent("end-thumb");
         
         if (startThumb != null) {
             startThumb.left =  (range.left + rangeValue.left) - (startThumb.width / 2);
-            //startThumb.top = (rangeValue.screenTop - _component.screenTop) - (startThumb.width / 2) + (rangeValue.screenTop - range.screenTop);
         }
 
         endThumb.left =  (range.left + rangeValue.left + rangeValue.width) - (endThumb.width / 2);
-        //endThumb.top = (rangeValue.screenTop - _component.screenTop) - (endThumb.width / 2) + (rangeValue.screenTop - range.screenTop);
     }
 }
 

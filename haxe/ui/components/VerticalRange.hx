@@ -23,16 +23,15 @@ class VerticalRangePosFromCoord extends Behaviour {
         var range = cast(_component, Range);
         var p = cast(pos, Point);
         var ypos = p.y - range.layout.paddingTop;
-        
         var ucy = range.layout.usableHeight;
-
         if (ypos >= ucy) {
             ypos = ucy;
         }
         
         var m:Float = range.max - range.min;
-        var v:Float = ypos;
-        var p:Float = range.min + ((v / ucy) * m);
+        var d = (ucy / m);
+        var v:Float = ypos;// - (range.start * d);
+        var p:Float = v / d;
 
         return (range.max - p);
     }
@@ -50,7 +49,12 @@ class VerticalRangeLayout extends DefaultLayout {
         var value:Component = findComponent('${range.cssName}-value');
         if (value != null) {
             var ucy:Float = usableHeight;
-            var cy:Float = ((range.end - range.start) - range.min) / (range.max - range.min) * ucy;
+            
+            var m:Float = range.max - range.min;
+            var d = (ucy / m);
+            var startInPixels = (range.start * d) - (range.min * d);
+            var endInPixels = (range.end * d) - (range.min * d);
+            var cy:Float = Math.abs(endInPixels - startInPixels);
 
             if (cy < 0) {
                 cy = 0;
@@ -73,9 +77,11 @@ class VerticalRangeLayout extends DefaultLayout {
         var value:Component = findComponent('${range.cssName}-value');
         
         var ucy:Float = usableHeight;
-        var y = (ucy - value.height) - (range.start - range.min) / (range.max - range.min) * ucy;
+        var m:Float = range.max - range.min;
+        var d = (ucy / m);
 
+        var startInPixels = (ucy - value.height) - ((range.start * d) - (range.min * d));
         value.left = paddingLeft;
-        value.top = paddingTop + y;
+        value.top = paddingTop + startInPixels;
     }    
 }

@@ -23,17 +23,16 @@ class HorizontalRangePosFromCoord extends Behaviour {
         var range = cast(_component, Range);
         var p = cast(pos, Point);
         var xpos = p.x - range.layout.paddingLeft;
-        
         var ucx = range.layout.usableWidth;
-
         if (xpos >= ucx) {
             xpos = ucx;
         }
         
         var m:Float = range.max - range.min;
-        var v:Float = xpos;
-        var p:Float = range.min + ((v / ucx) * m);
-
+        var d = (ucx / m);
+        var v:Float = xpos + (range.start * d);
+        var p:Float = v / d;
+        
         return p;
     }
 }
@@ -48,22 +47,28 @@ class HorizontalRangeLayout extends DefaultLayout {
         
         var range:Range = cast(component, Range);
         var value:Component = findComponent('${range.cssName}-value');
-        
-        var ucx:Float = usableWidth;
-        var cx:Float = ((range.end - range.start) - range.min) / (range.max - range.min) * ucx;
+        if (value != null) {
+            var ucx:Float = usableWidth;
+            
+            var m:Float = range.max - range.min;
+            var d = (ucx / m);
+            var startInPixels = (range.start * d) - (range.min * d);
+            var endInPixels = (range.end * d) - (range.min * d);
+            var cx:Float = Math.abs(endInPixels - startInPixels);
 
-        if (cx < 0) {
-            cx = 0;
-        } else if (cx > ucx) {
-            cx = ucx;
-        }
+            if (cx < 0) {
+                cx = 0;
+            } else if (cx > ucx) {
+                cx = ucx;
+            }
 
-        if (cx == 0) {
-            value.width = 0;
-            value.hidden = true;
-        } else {
-            value.width = cx;
-            value.hidden = false;
+            if (cx == 0) {
+                value.width = 0;
+                value.hidden = true;
+            } else {
+                value.width = Std.int(cx);
+                value.hidden = false;
+            }
         }
     }
 
@@ -72,9 +77,11 @@ class HorizontalRangeLayout extends DefaultLayout {
         var value:Component = findComponent('${range.cssName}-value');
         
         var ucx:Float = usableWidth;
-        var x = (range.start - range.min) / (range.max - range.min) * ucx;
+        var m:Float = range.max - range.min;
+        var d = (ucx / m);
 
-        value.left = paddingLeft + x;
+        var startInPixels = (range.start * d) - (range.min * d);
+        value.left = paddingLeft + startInPixels;
         value.top = paddingTop;
     }    
 }

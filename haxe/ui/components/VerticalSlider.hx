@@ -18,16 +18,13 @@ class VerticalSliderLayout extends DefaultLayout {
         
         var range:Range = findComponent(Range);
         var rangeValue:Component = range.findComponent("range-value");
-        
         var startThumb:Button = findComponent("start-thumb");
         var endThumb:Button = findComponent("end-thumb");
 
         if (startThumb != null) {
-            //startThumb.left =  (rangeValue.screenLeft - _component.screenLeft) - (startThumb.height / 2) + (rangeValue.screenLeft - range.screenLeft);
             startThumb.top = (range.top + rangeValue.top + rangeValue.height) - (startThumb.height / 2);
         }
 
-        //endThumb.left =  (rangeValue.screenLeft - _component.screenLeft) - (endThumb.height / 2) + (rangeValue.screenLeft - range.screenLeft);
         endThumb.top = (range.top + rangeValue.top) - (endThumb.height / 2);
     }
 }

@@ -1,18 +1,17 @@
 package haxe.ui.components;
 
 import haxe.ui.behaviours.Behaviour;
-import haxe.ui.core.CompositeBuilder;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
+import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.IDirectionalComponent;
 import haxe.ui.core.InteractiveComponent;
-import haxe.ui.events.MouseEvent;
 import haxe.ui.core.Screen;
-import haxe.ui.events.UIEvent;
-import haxe.ui.behaviours.ValueBehaviour;
 import haxe.ui.events.Events;
-import haxe.ui.util.MathUtil;
+import haxe.ui.events.MouseEvent;
+import haxe.ui.events.UIEvent;
 import haxe.ui.geom.Point;
+import haxe.ui.util.MathUtil;
 import haxe.ui.util.Variant;
 
 @:composite(SliderBuilder)
@@ -23,7 +22,7 @@ class Slider extends InteractiveComponent implements IDirectionalComponent {
     @:clonable @:behaviour(MinBehaviour, 0)         public var min:Float;
     @:clonable @:behaviour(MaxBehaviour, 100)       public var max:Float;
     @:clonable @:behaviour(DefaultBehaviour, null)  public var precision:Null<Int>;
-    @:clonable @:behaviour(StartBehaviour)          public var start:Float;
+    @:clonable @:behaviour(StartBehaviour, null)    public var start:Null<Float>;
     @:clonable @:behaviour(EndBehaviour, 0)         public var end:Float;
     @:clonable @:behaviour(PosBehaviour)            public var pos:Float;
     @:clonable @:value(pos)                         public var value:Dynamic;
@@ -31,7 +30,7 @@ class Slider extends InteractiveComponent implements IDirectionalComponent {
     //***********************************************************************************************************
     // Private API
     //***********************************************************************************************************
-    @:call(PosFromCoord)                               private function posFromCoord(coord:Point):Float;
+    @:call(PosFromCoord)                            private function posFromCoord(coord:Point):Float;
 }
 
 //***********************************************************************************************************
@@ -40,7 +39,8 @@ class Slider extends InteractiveComponent implements IDirectionalComponent {
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.components.Slider)
 @:access(haxe.ui.core.Component)
-private class StartBehaviour extends ValueBehaviour {
+private class StartBehaviour extends DataBehaviour {
+    /*
     public override function get():Variant {
         return _component.findComponent(Range).start;
     }
@@ -57,6 +57,40 @@ private class StartBehaviour extends ValueBehaviour {
         }
         
         _component.findComponent(Range).start = value;
+        _component.invalidateComponentLayout();
+    }
+    */
+    
+    private override function validateData() {
+        /*
+        var builder:SliderBuilder = cast(_component._compositeBuilder, SliderBuilder);
+        
+        if (_component.findComponent("start-thumb") == null) {
+            builder.createThumb("start-thumb");
+        }
+        
+        _component.findComponent(Range).start = _value;
+        _component.invalidateComponentLayout();
+        */
+        var builder:SliderBuilder = cast(_component._compositeBuilder, SliderBuilder);
+        if (_component.findComponent("start-thumb") == null) {
+            builder.createThumb("start-thumb");
+        }
+        
+        var slider:Slider = cast(_component, Slider);
+        if (_value != null && _value < slider.min) {
+            _value = slider.min;
+        }
+        
+        if (_value != null && _value > slider.max) {
+            _value = slider.max;
+        }
+        
+        if (slider.precision != null) {
+            _value = MathUtil.round(_value, slider.precision);
+        }
+        
+        _component.findComponent(Range).start = _value;
         _component.invalidateComponentLayout();
     }
 }
