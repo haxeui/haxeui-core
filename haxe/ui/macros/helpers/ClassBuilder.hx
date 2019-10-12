@@ -91,11 +91,42 @@ class ClassBuilder {
     
     public function hasField(name:String, recursive:Bool = false):Bool {
         if (recursive == true) {
+            #if (haxe_ver < 4)
+            // TODO: this is a really ugly haxe3 hack / workaround - once haxe4 stabalises this *MUST* be removed - its likely brittle and ill conceived!
+            if (findField(name) != null) {
+                return true;
+            }
+            return (haxe3FindField(classType, name) != null);
+            #else
             return (TypeTools.findField(classType, name) != null);
+            #end
         }
         return (findField(name) != null);
     }
     
+    #if (haxe_ver < 4)
+    // TODO: this is a really ugly haxe3 hack / workaround - once haxe4 stabalises this *MUST* be removed - its likely brittle and ill conceived!
+    private function haxe3FindField(c:ClassType, name:String) {
+        var fullPath = c.pack.join(".") + "." + c.name;
+        var fields = Macros._cachedFields.get(fullPath);
+        var field = null;
+        if (fields != null) {
+            for (f in fields) {
+                if (f.name == name) {
+                    field = f;
+                    break;
+                }
+            }
+        }
+
+        if (field == null && c.superClass != null) {
+            field = haxe3FindField(c.superClass.t.get(), name);
+        }
+
+        return field;
+    }
+    #end
+
     public function getFieldsWithMeta(meta:String) {
         var fs = [];
         for (f in fields) {
