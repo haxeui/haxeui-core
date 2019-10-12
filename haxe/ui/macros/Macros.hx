@@ -279,6 +279,10 @@ class Macros {
         }, builder.path, access);
     }
     
+    #if (haxe_ver < 4)
+    // TODO: this is a really ugly haxe3 hack / workaround - once haxe4 stabalises this *MUST* be removed - its likely brittle and ill conceived!
+    public static var _cachedFields:Map<String, Array<Field>> = new Map<String, Array<Field>>();
+    #end
     static function buildBehaviours():Array<Field> {
         var builder = new ClassBuilder(haxe.macro.Context.getBuildFields(), Context.getLocalType(), Context.currentPos());
         var registerBehavioursFn = builder.findFunction("registerBehaviours");
@@ -378,7 +382,12 @@ class Macros {
         if (builder.hasInterface("haxe.ui.core.IClonable")) {
             buildClonable(builder);
         }
-        
+
+        #if (haxe_ver < 4)        
+        // TODO: this is a really ugly haxe3 hack / workaround - once haxe4 stabalises this *MUST* be removed - its likely brittle and ill conceived!
+        _cachedFields.set(builder.fullPath, builder.fields);
+        #end
+
         return builder.fields;
     }
     
