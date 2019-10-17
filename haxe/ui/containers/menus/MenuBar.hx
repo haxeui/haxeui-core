@@ -96,10 +96,19 @@ private class Events extends haxe.ui.events.Events {
         target.selected = true;
         
         hideCurrentMenu();
-        menu.left = target.screenLeft;
-        menu.top = target.screenTop + target.height - 1;
+        var left = target.screenLeft;
+        var top =  target.screenTop + target.height;
         menu.show();
         Screen.instance.addComponent(menu);
+        menu.syncComponentValidation();
+        
+        if (left + menu.width > Screen.instance.width) {
+            left = target.screenLeft - menu.width + target.width;
+        }
+        
+        menu.left = left;
+        menu.top = top;
+        
         _currentButton = target;
         _currentMenu = menu;
         Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);

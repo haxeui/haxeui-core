@@ -141,9 +141,18 @@ class MenuEvents extends haxe.ui.events.Events {
     private function showSubMenu(subMenu:Menu, source:MenuItem) {
         hideCurrentSubMenu();
         
-        subMenu.left = source.screenLeft + source.width;
-        subMenu.top = source.screenTop;
+        var left = source.screenLeft + source.width;
+        var top = source.screenTop;
         Screen.instance.addComponent(subMenu);
+        subMenu.syncComponentValidation();
+
+        if (left + subMenu.width > Screen.instance.width) {
+            left = source.screenLeft - subMenu.width;
+        }
+        
+        subMenu.left = left;
+        subMenu.top = top;
+        
         currentSubMenu = subMenu;
     }
     
