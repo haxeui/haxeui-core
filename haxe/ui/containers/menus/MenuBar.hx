@@ -181,9 +181,11 @@ private class Builder extends CompositeBuilder {
     
     public override function addComponent(child:Component):Component {
         if (Std.is(child, Menu)) {
+            var menu = cast(child, Menu);
             var button = new Button();
             button.styleNames = "menubar-button";
-            button.text = child.text;
+            button.text = menu.text;
+            button.icon = menu.icon;
             button.toggle = true;
             _buttons.push(button);
             _menubar.addComponent(button);
