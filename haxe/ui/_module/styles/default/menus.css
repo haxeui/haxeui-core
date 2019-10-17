@@ -13,6 +13,7 @@
     background-color: #EEEEEE;
     border: none;
     color: #666666;
+    vertical-align: center;
 }
 
 .menubar-button:hover {
