@@ -1,20 +1,20 @@
 {
+    "version": "1.0.1",
     "contributors": [
         "haxeui",
         "ianharrigan",
         "_ibilon",
         "aW4KeNiNG"
     ],
-    "version": "1.0.0",
-    "dependencies": {
-        "hscript": ""
-    },
-    "releasenote": "Official release",
+    "license": "MIT",
     "tags": [
         "ui",
         "gui"
     ],
-    "license": "MIT",
+    "releasenote": "Closable composite tabs",
+    "dependencies": {
+        "hscript": ""
+    },
     "name": "haxeui-core",
     "description": "The core library of the HaxeUI framework",
     "url": "https://github.com/haxeui/haxeui-core"
