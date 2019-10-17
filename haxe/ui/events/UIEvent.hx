@@ -19,6 +19,9 @@ class UIEvent extends EventImpl {
     
     public static inline var ENABLED:String = "enabled";
     public static inline var DISABLED:String = "disabled";
+
+    public static inline var BEFORE_CLOSE:String = "beforeClose";
+    public static inline var CLOSE:String = "close";
     
     public var bubble(default, default):Bool; 
     public var type(default, default):String;

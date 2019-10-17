@@ -1,20 +1,19 @@
 package haxe.ui.components;
 
+import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.behaviours.DefaultBehaviour;
+import haxe.ui.behaviours.InvalidatingBehaviour;
 import haxe.ui.constants.HorizontalAlign;
 import haxe.ui.constants.ScaleMode;
 import haxe.ui.constants.VerticalAlign;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
-import haxe.ui.behaviours.DataBehaviour;
-import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.core.ImageDisplay;
-import haxe.ui.behaviours.InvalidatingBehaviour;
+import haxe.ui.geom.Rectangle;
+import haxe.ui.geom.Size;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.styles.Style;
 import haxe.ui.util.ImageLoader;
-import haxe.ui.geom.Rectangle;
-import haxe.ui.geom.Size;
-import haxe.ui.util.Variant;
 
 @:composite(ImageLayout, Builder)
 class Image extends Component {

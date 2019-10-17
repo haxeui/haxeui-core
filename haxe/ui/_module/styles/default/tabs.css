@@ -60,6 +60,9 @@
 .tabbar-button-selected .icon {
 }
 
+.tabbar-button .tab-close-button {
+    resource: "haxeui-core/styles/default/tiny-close-button.png";
+}
 /************************************************************************
 ** TABBAR (BOTTOM)
 *************************************************************************/

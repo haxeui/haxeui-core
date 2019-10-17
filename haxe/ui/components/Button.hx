@@ -117,7 +117,7 @@ class Button extends InteractiveComponent {
 // Composite Layout
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
-private class ButtonLayout extends DefaultLayout {
+class ButtonLayout extends DefaultLayout {
     private var iconPosition(get, null):String;
     private function get_iconPosition():String {
         if (component.style == null || component.style.iconPosition == null) {
@@ -130,12 +130,12 @@ private class ButtonLayout extends DefaultLayout {
         super.resizeChildren();
         
         var label:Label = component.findComponent(Label, false);
-        var icon:Image = component.findComponent(Image, false);
+        var icon:Image = component.findComponent("button-icon", false);
         if (_component.autoWidth == false) {
             var ucx:Size = usableSize;
             if (label != null) {
                 var cx = ucx.width;
-                if (icon != null && (iconPosition == "far-right" || iconPosition == "left" || iconPosition == "right")) {
+                if (icon != null && (iconPosition == "far-right" || iconPosition == "far-left" || iconPosition == "left" || iconPosition == "right")) {
                     cx -= icon.width + verticalSpacing;
                 }
                 //label.width = cx;
@@ -147,7 +147,7 @@ private class ButtonLayout extends DefaultLayout {
         super.repositionChildren();
 
         var label:Label = component.findComponent(Label, false);
-        var icon:Image = component.findComponent(Image, false);
+        var icon:Image = component.findComponent("button-icon", false);
         switch (iconPosition) {
             case "far-right":
                 if (label != null && icon != null) {
@@ -166,6 +166,25 @@ private class ButtonLayout extends DefaultLayout {
                         }
                     }
 
+                    label.top = Std.int((component.componentHeight / 2) - (label.componentHeight / 2)) + marginTop(label) - marginBottom(label);
+                    icon.top = Std.int((component.componentHeight / 2) - (icon.componentHeight / 2)) + marginTop(icon) - marginBottom(icon);
+                } else if (label != null) {
+                    label.left = paddingLeft;
+                    label.top = Std.int((component.componentHeight / 2) - (label.componentHeight / 2)) + marginTop(label) - marginBottom(label);
+                } else if (icon != null) {
+                    icon.left = Std.int((component.componentWidth / 2) - (icon.componentWidth / 2)); // + marginLeft(icon) - marginRight(icon);
+                    icon.top = Std.int((component.componentHeight / 2) - (icon.componentHeight / 2)) + marginTop(icon) - marginBottom(icon);
+                }
+            case "far-left":
+                if (label != null && icon != null) {
+                    var x:Float = paddingLeft;
+
+                    if (iconPosition == "far-left") {
+                        icon.left = x + marginLeft(icon) - marginRight(icon);
+                        x += horizontalSpacing + icon.componentWidth;
+                        label.left = x + marginLeft(label) - marginRight(label);
+                    }
+                    
                     label.top = Std.int((component.componentHeight / 2) - (label.componentHeight / 2)) + marginTop(label) - marginBottom(label);
                     icon.top = Std.int((component.componentHeight / 2) - (icon.componentHeight / 2)) + marginTop(icon) - marginBottom(icon);
                 } else if (label != null) {
@@ -263,7 +282,7 @@ private class TextBehaviour extends DataBehaviour {
 @:dox(hide) @:noCompletion
 private class IconBehaviour extends DataBehaviour {
     private override function validateData() {
-        var icon:Image = _component.findComponent(Image, false);
+        var icon:Image = _component.findComponent("button-icon", false);
         if (icon == null) {
             icon = new Image();
             icon.addClass("icon");
@@ -486,7 +505,7 @@ class ButtonBuilder extends CompositeBuilder {
             label.invalidateComponentStyle();
         }
 
-        var icon:Image = _button.findComponent(Image);
+        var icon:Image = _button.findComponent("button-icon", false);
         if (icon != null && (icon.customStyle.cursor != style.cursor)) {
             icon.customStyle.cursor = style.cursor;
             icon.invalidateComponentStyle();

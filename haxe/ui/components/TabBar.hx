@@ -1,13 +1,15 @@
 package haxe.ui.components;
 
-import haxe.ui.containers.HBox;
 import haxe.ui.behaviours.Behaviour;
+import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.components.Button.ButtonLayout;
+import haxe.ui.containers.HBox;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
-import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.events.Events;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
-import haxe.ui.events.Events;
+import haxe.ui.geom.Size;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.util.Variant;
 
@@ -20,6 +22,7 @@ class TabBar extends Component {
     @:behaviour(SelectedTab)            public var selectedTab:Component;
     @:behaviour(TabPosition, "top")     public var tabPosition:String;
     @:behaviour(TabCount)               public var tabCount:Int;
+    @:behaviour(Closable, false)        public var closable:Bool;
     @:call(RemoveTab)                   public function removeTab(index:Int):Void;
 }
 
@@ -52,6 +55,23 @@ private class Layout extends DefaultLayout {
 //***********************************************************************************************************
 // Behaviours
 //***********************************************************************************************************
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+@:access(haxe.ui.components.Builder)
+private class Closable extends DataBehaviour {
+    public override function validateData() {
+        var builder:Builder = cast(_component._compositeBuilder, Builder);
+        if (builder._container == null) {
+            return;
+        }
+        
+        var buttons = builder._container.findComponents(TabBarButton, 1);
+        for (b in buttons) {
+            b.closable = _value;
+        }
+    }
+}
+
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 @:access(haxe.ui.components.Builder)
@@ -163,7 +183,22 @@ private class RemoveTab extends Behaviour {
         var builder:Builder = cast(_component._compositeBuilder, Builder);
         var index:Int = param;
         if (index < builder._container.childComponents.length) {
+            var selectedIndex = cast(_component, TabBar).selectedIndex;
+            var newSelectedIndex = selectedIndex;
+            if (index < selectedIndex) {
+                newSelectedIndex--;
+            } else if (index == selectedIndex) {
+                cast(_component, TabBar).selectedIndex = -1;
+                newSelectedIndex = selectedIndex;
+                if (newSelectedIndex > builder._container.childComponents.length - 2) {
+                    newSelectedIndex = builder._container.childComponents.length - 2;
+                }
+            }
+            
             builder._container.removeComponentAt(index);
+            _component.dispatch(new UIEvent(UIEvent.CLOSE, index));
+            
+            cast(_component, TabBar).selectedIndex = newSelectedIndex;
         }
         return null;
     }
@@ -207,7 +242,15 @@ private class Events extends haxe.ui.events.Events {
     
     private function onTabMouseDown(event:MouseEvent) {
         var builder:Builder = cast(_tabbar._compositeBuilder, Builder);
-        _tabbar.selectedIndex = builder._container.getComponentIndex(event.target);
+        var button = event.target;
+        var close = button.findComponent("tab-close-button", Image, false);
+        var select:Bool = true;
+        if (close != null) {
+            select = !close.hitTest(event.screenX, event.screenY);
+        }
+        if (select == true) {
+            _tabbar.selectedIndex = builder._container.getComponentIndex(button);
+        }
     }
 }
 
@@ -242,11 +285,8 @@ private class Builder extends CompositeBuilder {
     }
     
     private function addTab(child:Component):Component {
-        child.addClass("tabbar-button");
-        if (_tabbar.tabPosition == "bottom") {
-            child.addClass(":bottom");
-        }
-        var v = _container.addComponent(child); 
+        var button = createTabBarButton(child);
+        var v = _container.addComponent(button); 
         _tabbar.registerInternalEvents(Events, true);
         if (_tabbar.selectedIndex < 0) {
             _tabbar.selectedIndex = 0;
@@ -254,15 +294,31 @@ private class Builder extends CompositeBuilder {
         return v;
     }
     
-    // TODO: DRY with addTab
     private function addTabAt(child:Component, index:Int):Component {
-        child.addClass("tabbar-button");
-        var v = _container.addComponentAt(child, index); 
+        var button = createTabBarButton(child);
+        var v = _container.addComponentAt(button, index); 
         _tabbar.registerInternalEvents(Events, true);
         if (_tabbar.selectedIndex < 0) {
             _tabbar.selectedIndex = 0;
         }
         return v;
+        
+    }
+    
+    private function createTabBarButton(child:Component):TabBarButton {
+        var button = new TabBarButton();
+        
+        button.addClass("tabbar-button");
+        if (_tabbar.tabPosition == "bottom") {
+            button.addClass(":bottom");
+        }
+        
+        button.id = child.id;
+        button.text = child.text;
+        button.icon = cast(child, Button).icon;
+        button.closable = _tabbar.closable;
+        
+        return button;
     }
     
     public override function get_numComponents():Null<Int> {
@@ -411,5 +467,75 @@ private class Builder extends CompositeBuilder {
         if (_scrollRight != null) {
             _scrollRight.hide();
         }
+    }
+}
+
+@:composite(TabBarButtonLayout)
+@:access(haxe.ui.components.Builder)
+private class TabBarButton extends Button {
+    private var _closable:Bool = false;
+    public var closable(get, set):Bool;
+    private function get_closable():Bool {
+        return _closable;
+    }
+    private function set_closable(value:Bool):Bool {
+        if (_closable == value) {
+            return value;
+        }
+        
+        _closable = value;
+        var existing = findComponent("tab-close-button", Image, false);
+        
+        if (_closable == true && existing == null) {
+            iconPosition = "far-left";
+            var image = new Image();
+            image.id = "tab-close-button";
+            image.addClass("tab-close-button");
+            image.includeInLayout = false;
+            image.scriptAccess = false;
+            image.onClick = onCloseClicked;
+            addComponent(image);
+        } else if (existing != null) {
+            removeComponent(existing);
+        }
+        
+        return value;
+    }
+    
+    private function onCloseClicked(e:MouseEvent) {
+        var tabbar = findAncestor(TabBar);
+        
+        var builder:Builder = cast(tabbar._compositeBuilder, Builder);
+        var index = builder._container.getComponentIndex(this);
+        var event = new UIEvent(UIEvent.BEFORE_CLOSE, index);
+        tabbar.dispatch(event);
+        if (event.canceled == false) {
+            if (index != -1) {
+                tabbar.removeTab(index);
+            }
+        }
+    }
+}
+
+private class TabBarButtonLayout extends ButtonLayout {
+    private override function repositionChildren() {
+        super.repositionChildren();
+        
+        var image = _component.findComponent("tab-close-button", Image, false);
+        if (image != null && component.componentWidth > 0) {
+            image.top = Std.int((component.componentHeight / 2) - (image.componentHeight / 2)) + marginTop(image) - marginBottom(image);
+            image.left = component.componentWidth - image.componentWidth - paddingRight + marginLeft(image) - marginRight(image);
+        }
+    }
+    
+    public override function calcAutoSize(exclusions:Array<Component> = null):Size {
+        var size = super.calcAutoSize(exclusions);
+        
+        var image = _component.findComponent("tab-close-button", Image, false);
+        if (image != null) {
+            size.width += image.width + horizontalSpacing;
+        }
+        
+        return size;
     }
 }

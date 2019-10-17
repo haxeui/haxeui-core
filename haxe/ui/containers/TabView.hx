@@ -23,6 +23,7 @@ class TabView extends Component {
     @:behaviour(SelectedPage, null) public var selectedPage:Component;
     @:behaviour(TabPosition)        public var tabPosition:String;
     @:behaviour(PageCount)          public var pageCount:Int;
+    @:behaviour(Closable, false)    public var closable:Bool;
     @:call(RemovePage)              public function removePage(index:Int):Void;
     @:call(RemoveAllPages)          public function removeAllPages():Void;
 }
@@ -90,6 +91,20 @@ private class Layout extends DefaultLayout {
 //***********************************************************************************************************
 // Behaviours
 //***********************************************************************************************************
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+@:access(haxe.ui.containers.Builder)
+private class Closable extends DataBehaviour {
+    public override function validateData() {
+        if (_component.native == true) {
+            return;
+        }
+
+        var builder:Builder = cast(_component._compositeBuilder, Builder);
+        builder._tabs.closable = _value;
+    }
+}
+
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 @:access(haxe.ui.containers.Builder)
@@ -215,6 +230,7 @@ private class RemoveAllPages extends Behaviour {
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 @:access(haxe.ui.components.TabViewBuilder)
+@:access(haxe.ui.containers.Builder)
 private class Events extends haxe.ui.events.Events {
     private var _tabview:TabView;
     
@@ -228,15 +244,36 @@ private class Events extends haxe.ui.events.Events {
         if (tabs.hasEvent(UIEvent.CHANGE, onTabChanged) == false) {
             tabs.registerEvent(UIEvent.CHANGE, onTabChanged);
         }
+        if (tabs.hasEvent(UIEvent.BEFORE_CLOSE, onBeforeTabClosed) == false) {
+            tabs.registerEvent(UIEvent.BEFORE_CLOSE, onBeforeTabClosed);
+        }
+        if (tabs.hasEvent(UIEvent.CLOSE, onTabClosed) == false) {
+            tabs.registerEvent(UIEvent.CLOSE, onTabClosed);
+        }
     }
     
     public override function unregister() {
         var tabs:TabBar = _tabview.findComponent(TabBar, false);
         tabs.unregisterEvent(UIEvent.CHANGE, onTabChanged);
+        tabs.unregisterEvent(UIEvent.BEFORE_CLOSE, onBeforeTabClosed);
+    }
+    
+    private function onBeforeTabClosed(event:UIEvent) {
+        _tabview.dispatch(event);
+    }
+    
+    private function onTabClosed(event:UIEvent) {
+        var builder:Builder = cast(_tabview._compositeBuilder, Builder);
+        var view = builder._views[event.data];
+        builder._views.remove(view);
+        builder._content.removeComponent(view);
+        
+        _tabview.dispatch(new UIEvent(UIEvent.CLOSE, event.data));
     }
     
     private function onTabChanged(event:UIEvent) {
         var tabs:TabBar = _tabview.findComponent(TabBar, false);
+        _tabview.pageIndex = -1;
         _tabview.pageIndex = tabs.selectedIndex;
     }
 }
