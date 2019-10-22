@@ -107,7 +107,7 @@ private class Events extends haxe.ui.events.Events {
         }
         
         menu.left = left;
-        menu.top = top;
+        menu.top = top - 1;
         
         _currentButton = target;
         _currentMenu = menu;

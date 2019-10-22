@@ -120,7 +120,7 @@ class MenuEvents extends haxe.ui.events.Events {
 
         for (child in _menu.childComponents) {
             if (child != item) {
-                child.removeClass(":hover");
+                child.removeClass(":hover", true, true);
             }
         }
         
@@ -133,7 +133,7 @@ class MenuEvents extends haxe.ui.events.Events {
     
     private function onItemMouseOut(event:MouseEvent) {
         if (currentSubMenu != null) {
-            event.target.addClass(":hover");
+            event.target.addClass(":hover", true, true);
             return;
         }
     }
@@ -162,7 +162,7 @@ class MenuEvents extends haxe.ui.events.Events {
         }
         
         for (child in currentSubMenu.childComponents) {
-            child.removeClass(":hover");
+            child.removeClass(":hover", true, true);
         }
         
         var subMenuEvents:MenuEvents = cast(currentSubMenu._internalEvents, MenuEvents);
@@ -173,7 +173,7 @@ class MenuEvents extends haxe.ui.events.Events {
     
     private function onHidden(event:UIEvent) {
         for (child in _menu.childComponents) {
-            child.removeClass(":hover");
+            child.removeClass(":hover", true, true);
         }
         hideCurrentSubMenu();
     }
