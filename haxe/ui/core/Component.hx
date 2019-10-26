@@ -688,7 +688,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
                 parentComponent.invalidateComponentLayout();
             }
             
-            dispatch(new UIEvent(UIEvent.HIDDEN));
+            dispatchRecursively(new UIEvent(UIEvent.HIDDEN));
         }
     }
 
@@ -705,7 +705,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
                 parentComponent.invalidateComponentLayout();
             }
             
-            dispatch(new UIEvent(UIEvent.SHOWN));
+            dispatchRecursively(new UIEvent(UIEvent.SHOWN));
         }
     }
 
