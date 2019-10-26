@@ -1149,6 +1149,12 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     }
 
     private var _scriptEvents:Map<String, String>;
+    
+    public var scriptEvents(get, null):Map<String, String>;
+    private function get_scriptEvents():Map<String, String> {
+        return _scriptEvents;
+    }
+    
     /**
      Registers a piece of hscript to be execute when a certain `UIEvent` is fired
     **/
