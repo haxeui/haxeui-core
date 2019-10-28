@@ -92,13 +92,15 @@ class ComponentEvents extends ComponentContainer {
     **/
     @:dox(group = "Event related properties and methods")
     public function dispatch(event:UIEvent) {
-        if (__events != null) {
-            __events.invoke(event.type, event, cast(this, Component));  // TODO: avoid cast
-        }
-        
-        if (event.bubble == true && event.canceled == false && parentComponent != null) {
-            parentComponent.dispatch(event);
-        }
+		if (event != null) {
+			if (__events != null) {
+				__events.invoke(event.type, event, cast(this, Component));  // TODO: avoid cast
+			}
+			
+			if (event.bubble == true && event.canceled == false && parentComponent != null) {
+				parentComponent.dispatch(event);
+			}
+		}
     }
 
     private function _onMappedEvent(event:UIEvent) {
