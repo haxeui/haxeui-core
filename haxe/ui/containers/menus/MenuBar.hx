@@ -12,6 +12,10 @@ import haxe.ui.events.Events;
 
 @:composite(Events, Builder)
 class MenuBar extends HBox {
+    /**
+     Utility property to add a single `MenuEvent.MENU_SELECTED` event
+    **/
+    @:event(MenuEvent.MENU_SELECTED)        public var onMenuSelected:MenuEvent->Void;
 }
 
 //***********************************************************************************************************

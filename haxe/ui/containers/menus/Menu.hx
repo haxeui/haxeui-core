@@ -9,7 +9,7 @@ import haxe.ui.events.UIEvent;
 import haxe.ui.events.Events;
 
 class MenuEvent extends UIEvent {
-    public static inline var MENU_SELECTED:String = "menuSelected";
+    public static inline var MENU_SELECTED:String = "menuselected";
     
     public var menu:Menu = null;
     public var menuItem:MenuItem = null;
