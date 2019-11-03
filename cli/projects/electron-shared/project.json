@@ -1,0 +1,13 @@
+{
+    "name": "electron-shared",
+    "type": "template",
+    "directories": [
+        "${target}/build/electron"
+    ],
+    "templates": [
+        { "src": "index.html", "dst": "${target}/build/electron/index.html"},
+        { "src": "package.json", "dst": "${target}/build/electron/package.json"},
+        { "src": "ElectronApp.hx", "dst": "${target}/src/ElectronApp.hx"},
+        { "src": "electron.hxml", "dst": "${target}/electron.hxml"}
+    ]
+}

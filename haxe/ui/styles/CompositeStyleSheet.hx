@@ -29,6 +29,14 @@ class CompositeStyleSheet {
         return _animations;
     }
     
+    public function addStyleSheet(styleSheet:StyleSheet) {
+        _styleSheets.push(styleSheet);
+    }
+    
+    public function removeStyleSheet(styleSheet:StyleSheet) {
+        _styleSheets.remove(styleSheet);
+    }
+    
     public function parse(css:String, styleSheetName:String = "default") {
         var s = findStyleSheet(styleSheetName);
         if (s == null) {

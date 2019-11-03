@@ -688,7 +688,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
                 parentComponent.invalidateComponentLayout();
             }
             
-            dispatch(new UIEvent(UIEvent.HIDDEN));
+            dispatchRecursively(new UIEvent(UIEvent.HIDDEN));
         }
     }
 
@@ -705,7 +705,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
                 parentComponent.invalidateComponentLayout();
             }
             
-            dispatch(new UIEvent(UIEvent.SHOWN));
+            dispatchRecursively(new UIEvent(UIEvent.SHOWN));
         }
     }
 
@@ -1149,6 +1149,12 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     }
 
     private var _scriptEvents:Map<String, String>;
+    
+    public var scriptEvents(get, null):Map<String, String>;
+    private function get_scriptEvents():Map<String, String> {
+        return _scriptEvents;
+    }
+    
     /**
      Registers a piece of hscript to be execute when a certain `UIEvent` is fired
     **/
@@ -1200,20 +1206,23 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         }
     }
 
+    @:event(AnimationEvent.START)       public var onAnimationStart:AnimationEvent->Void;
+    @:event(AnimationEvent.END)         public var onAnimationEnd:AnimationEvent->Void;
+    
     /**
      Utility property to add a single `MouseEvent.CLICK` event
     **/
-    @:event(MouseEvent.CLICK)       public var onClick:MouseEvent->Void;
+    @:event(MouseEvent.CLICK)           public var onClick:MouseEvent->Void;
     
     /**
      Utility property to add a single `MouseEvent.RIGHT_CLICK` event
     **/
-    @:event(MouseEvent.RIGHT_CLICK) public var onRightClick:MouseEvent->Void;
+    @:event(MouseEvent.RIGHT_CLICK)     public var onRightClick:MouseEvent->Void;
     
     /**
      Utility property to add a single `UIEvent.CHANGE` event
     **/
-    @:event(UIEvent.CHANGE)         public var onChange:UIEvent->Void;
+    @:event(UIEvent.CHANGE)             public var onChange:UIEvent->Void;
 
     //***********************************************************************************************************
     // Invalidation

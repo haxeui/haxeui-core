@@ -102,6 +102,13 @@ class ComponentEvents extends ComponentContainer {
 			}
 		}
     }
+    
+    private function dispatchRecursively(event:UIEvent) {
+        dispatch(event);
+        for (child in childComponents) {
+            child.dispatchRecursively(event);
+        }
+    }
 
     private function _onMappedEvent(event:UIEvent) {
         dispatch(event);

@@ -1,0 +1,11 @@
+{
+    "name": "electron-flash-develop",
+    "type": "template",
+    "subProjects": [
+        "shared", "electron-shared"
+    ],
+    "templates": [
+        { "src": "electron.hxproj", "dst": "${target}/electron.hxproj"},
+        { "src": "run-electron.bat", "dst": "${target}/run-electron.bat"}
+    ]
+}

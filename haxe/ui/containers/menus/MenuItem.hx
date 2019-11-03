@@ -82,11 +82,11 @@ private class Events extends haxe.ui.events.Events {
     }   
     
     private function onMouseOver(event:MouseEvent) {
-        _target.addClass(":hover");
+        _target.addClass(":hover", true, true);
     }
     
     private function onMouseOut(event:MouseEvent) {
-        _target.removeClass(":hover");
+        _target.removeClass(":hover", true, true);
     }
 }
 

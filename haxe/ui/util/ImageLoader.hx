@@ -56,10 +56,16 @@ class ImageLoader {
                 trace(error);
                 
                 #end
-                
+                if (s == 0) { // Seems status = 0 is a CORS error, lets try and use a "normal" http request from the browser rather than XMLHttpRequest
+                    Toolkit.assets.getImage(url, callback);
+                    return;
+                }
                 callback(null);
             }
         }
+        request.onerror = function(x) {
+        }
+        
         request.send();
         
         #elseif cs // hxcs bytes are wrong in haxe.Http

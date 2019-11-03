@@ -1,5 +1,5 @@
 {
-    "version": "1.0.1",
+    "version": "1.0.3",
     "contributors": [
         "haxeui",
         "ianharrigan",
@@ -11,7 +11,7 @@
         "ui",
         "gui"
     ],
-    "releasenote": "Closable composite tabs",
+    "releasenote": "CLI template for creating electron projects",
     "dependencies": {
         "hscript": ""
     },

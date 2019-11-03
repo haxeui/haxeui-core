@@ -23,7 +23,7 @@
 
 .menubar-button:down {
     background-color: #ABABAB;
-    color: #222222;
+    color: #EEEEEE;
 }
 
 /************************************************************************
@@ -59,6 +59,10 @@
 
 .menuitem:hover, .menuitem:selected {
     background-color: #CCCCCC;
+}
+
+.menuitem .label:hover, .menuitem .label:selected {
+    color: #222222;
 }
 
 .menuitem-expandable {
