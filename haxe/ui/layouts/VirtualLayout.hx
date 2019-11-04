@@ -283,6 +283,9 @@ class VirtualLayout extends ScrollViewLayout {
     }
 
     private function isRendererVisible(renderer:Component):Bool {
+        if (renderer == null) {
+            return false;
+        }
         return renderer.top < _component.componentHeight &&
         renderer.top + renderer.componentHeight >= 0 &&
         renderer.left < _component.componentWidth &&

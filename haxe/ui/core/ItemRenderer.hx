@@ -67,8 +67,8 @@ class ItemRenderer extends Box {
                         fieldList.push(i);
                     }
                 }
+                _fieldList = fieldList;
             }
-            _fieldList = fieldList;
         }
         
         updateValues(_data, _fieldList);
