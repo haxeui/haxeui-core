@@ -9,6 +9,11 @@ class Size {
         this.height = height;
     }
 
+    public function round() {
+        width = Math.fround(width);
+        height = Math.fround(height);
+    }
+    
     public function toString():String {
         return '[${width}x${height}]';
     }
