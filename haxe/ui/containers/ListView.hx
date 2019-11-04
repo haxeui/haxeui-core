@@ -13,6 +13,7 @@ import haxe.ui.core.IDataComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.ItemRenderer;
 import haxe.ui.behaviours.LayoutBehaviour;
+import haxe.ui.data.ArrayDataSource;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.ScrollEvent;
 import haxe.ui.events.UIEvent;
@@ -343,6 +344,14 @@ private class DataSourceBehaviour extends DataBehaviour {
         } else {
             _component.invalidateComponentLayout();
         }
+    }
+    
+    public override function get():Variant {
+        if (_value == null || _value.isNull) {
+            _value = new ArrayDataSource<Dynamic>();
+            set(_value);
+        }
+        return _value;
     }
 }
 

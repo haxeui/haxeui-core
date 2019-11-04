@@ -14,6 +14,7 @@ import haxe.ui.core.Component;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.ItemRenderer;
+import haxe.ui.data.ArrayDataSource;
 import haxe.ui.data.DataSource;
 import haxe.ui.data.transformation.NativeTypeTransformer;
 import haxe.ui.events.MouseEvent;
@@ -388,6 +389,14 @@ private class DataSourceBehaviour extends DataBehaviour {
         } else {
             _component.invalidateComponentLayout();
         }
+    }
+    
+    public override function get():Variant {
+        if (_value == null || _value.isNull) {
+            _value = new ArrayDataSource<Dynamic>();
+            set(_value);
+        }
+        return _value;
     }
 }
 
