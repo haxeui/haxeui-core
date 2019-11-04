@@ -72,7 +72,8 @@ class VirtualLayout extends ScrollViewLayout {
         }
 
         if (result <= 0) {
-            result = 1; //Min value to render items
+            result = 25; // more sensible default? Other wise you can get 100's of item renderers for 0 length datasource which will then be removed on 2nd pass
+                         // may be ill-concieved
         }
 
         return result;
