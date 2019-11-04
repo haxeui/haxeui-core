@@ -171,6 +171,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         }
 
         _native = value;
+        customStyle.native = value;
         if (_native == true && hasNativeEntry) {
             addClass(":native");
         } else {
