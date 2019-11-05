@@ -308,6 +308,7 @@ private class ListViewBuilder extends ScrollViewBuilder {
         var r = null;
         if (Std.is(child, ItemRenderer) && (_listview.itemRenderer == null && _listview.itemRendererFunction == null && _listview.itemRendererClass == null)) {
             _listview.itemRenderer = cast(child, ItemRenderer);
+            _listview.itemRenderer.ready();
             r = child;
         } else {
             r = super.addComponent(child);
