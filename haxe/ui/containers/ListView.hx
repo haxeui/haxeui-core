@@ -1,24 +1,25 @@
 package haxe.ui.containers;
 
+import haxe.ui.behaviours.Behaviour;
+import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.behaviours.DefaultBehaviour;
+import haxe.ui.behaviours.LayoutBehaviour;
 import haxe.ui.binding.BindingManager;
 import haxe.ui.components.VerticalScroll;
 import haxe.ui.constants.SelectionMode;
-import haxe.ui.containers.ScrollView.ScrollViewBuilder;
 import haxe.ui.containers.ScrollView;
-import haxe.ui.behaviours.Behaviour;
+import haxe.ui.containers.ScrollView.ScrollViewBuilder;
 import haxe.ui.core.Component;
-import haxe.ui.behaviours.DataBehaviour;
-import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.ItemRenderer;
-import haxe.ui.behaviours.LayoutBehaviour;
 import haxe.ui.data.ArrayDataSource;
+import haxe.ui.data.DataSource;
+import haxe.ui.data.transformation.NativeTypeTransformer;
+import haxe.ui.events.ItemEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.ScrollEvent;
 import haxe.ui.events.UIEvent;
-import haxe.ui.data.DataSource;
-import haxe.ui.data.transformation.NativeTypeTransformer;
 import haxe.ui.layouts.VerticalVirtualLayout;
 import haxe.ui.util.MathUtil;
 import haxe.ui.util.Variant;
@@ -40,6 +41,8 @@ class ListView extends ScrollView implements IDataComponent implements IVirtualC
     @:behaviour(SelectionModeBehaviour, SelectionMode.ONE_ITEM) public var selectionMode:SelectionMode;
     @:behaviour(DefaultBehaviour, 500)                          public var longPressSelectionTime:Int;  //ms
 
+    @:event(ItemEvent.COMPONENT_EVENT)                          public var onComponentEvent:ItemEvent->Void;
+    
     //TODO - error with Behaviour
     private var _itemRendererFunction:ItemRendererFunction2;
     public var itemRendererFunction(get, set):ItemRendererFunction2;
