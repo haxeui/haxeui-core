@@ -102,8 +102,9 @@ class ScrollView extends Component {
 private class Virtual extends DefaultBehaviour {
     public override function set(value:Variant) {
         super.set(value);
-        
-        cast(_component._compositeBuilder, ScrollViewBuilder).onVirtualChanged();
+        if (_component._compositeBuilder != null) {
+            cast(_component._compositeBuilder, ScrollViewBuilder).onVirtualChanged();
+        }
     }
 }
 
