@@ -304,11 +304,13 @@ private class ListViewBuilder extends ScrollViewBuilder {
         }
     }
     
+    @:access(haxe.ui.backend.ComponentImpl)
     public override function addComponent(child:Component):Component {
         var r = null;
         if (Std.is(child, ItemRenderer) && (_listview.itemRenderer == null && _listview.itemRendererFunction == null && _listview.itemRendererClass == null)) {
             _listview.itemRenderer = cast(child, ItemRenderer);
             _listview.itemRenderer.ready();
+            _listview.itemRenderer.handleVisibility(false);
             r = child;
         } else {
             r = super.addComponent(child);
