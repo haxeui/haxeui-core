@@ -320,21 +320,14 @@ private class ToggleBehaviour extends Behaviour {
 }
 
 @:dox(hide) @:noCompletion
-private class SelectedBehaviour extends Behaviour {
-    private var _value:Variant;
-    
-    public override function get():Variant {
-        return _value;
-    }
-    
-    public override function set(value:Variant) {
+private class SelectedBehaviour extends DataBehaviour {
+    private override function validateData() {
         var button:Button = cast(_component, Button);
-        if (_value == value || button.toggle == false) {
+        if (button.toggle == false) {
             return;
         }
         
-        _value = value;
-        if (value == false) {
+        if (_value == false) {
             button.removeClass(":down");
         } else {
             button.addClass(":down");
