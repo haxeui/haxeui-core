@@ -1,5 +1,6 @@
 package haxe.ui.styles;
 
+import haxe.ui.core.Platform;
 import haxe.ui.styles.EasingFunction;
 import haxe.ui.constants.UnitTime;
 import haxe.ui.core.Screen;
@@ -195,6 +196,8 @@ class ValueTools {
                 return Std.int(v);
             case Value.VNone:
                 return null;
+            case Value.VCall(f, vl):
+                return call(f, vl);
             case _:
                 return null;
         }
@@ -311,22 +314,28 @@ class ValueTools {
     }
     
     public static function call(f, vl:Array<Value>):Any {
-        #if hscript
         
         switch (f) {
             case "calc":
+                #if hscript
+                
                 var parser = new hscript.Parser();
                 var program = parser.parseString(string(vl[0]));
                 
                 var interp = new hscript.Interp();
                 return interp.expr(program);
+                
+                #else
+                
+                return null;
+                
+                #end
+            case "platform-color":
+                return Platform.instance.getColor(ValueTools.string(vl[0]));
             case _:
                 return null;
         }
-        #else
         
         return null;
-        
-        #end
     }
 }

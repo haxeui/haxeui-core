@@ -1,10 +1,9 @@
 package haxe.ui.styles;
 
-import haxe.ui.core.Platform;
-import haxe.ui.styles.animation.Animation.AnimationOptions;
-import haxe.ui.styles.elements.Directive;
 import haxe.ui.filters.Filter;
 import haxe.ui.filters.FilterParser;
+import haxe.ui.styles.animation.Animation.AnimationOptions;
+import haxe.ui.styles.elements.Directive;
 
 class Style {
     public var left:Null<Float>;
@@ -166,10 +165,6 @@ class Style {
                     
                 case "background-color":
                     switch (v.value) {
-                        case Value.VCall(f, vl):
-                            if (f == "platform-color") {
-                                backgroundColor = Platform.instance.getColor(ValueTools.string(vl[0]));
-                            }
                         default:    
                             backgroundColor = ValueTools.int(v.value);
                             if (map.exists("background-color-end")) {
