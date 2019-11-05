@@ -46,6 +46,11 @@ class ComponentBase extends ComponentBounds {
         return new Point(0, 0);
     }
     
+    private var isNativeScroller(get, null):Bool;
+    private function get_isNativeScroller():Bool {
+        return false;
+    }
+    
     //***********************************************************************************************************
     // Display tree
     //***********************************************************************************************************

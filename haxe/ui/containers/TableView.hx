@@ -14,11 +14,13 @@ import haxe.ui.core.Component;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.ItemRenderer;
+import haxe.ui.data.ArrayDataSource;
 import haxe.ui.data.DataSource;
 import haxe.ui.data.transformation.NativeTypeTransformer;
+import haxe.ui.events.ItemEvent;
 import haxe.ui.events.MouseEvent;
-import haxe.ui.events.UIEvent;
 import haxe.ui.events.ScrollEvent;
+import haxe.ui.events.UIEvent;
 import haxe.ui.geom.Rectangle;
 import haxe.ui.layouts.LayoutFactory;
 import haxe.ui.layouts.VerticalVirtualLayout;
@@ -41,6 +43,8 @@ class TableView extends ScrollView implements IDataComponent implements IVirtual
     @:behaviour(SelectionModeBehaviour, SelectionMode.ONE_ITEM) public var selectionMode:SelectionMode;
     @:behaviour(DefaultBehaviour, 500)                          public var longPressSelectionTime:Int;  //ms
 
+    @:event(ItemEvent.COMPONENT_EVENT)                          public var onComponentEvent:ItemEvent->Void;
+    
     //TODO - error with Behaviour
     private var _itemRendererFunction:ItemRendererFunction4;
     public var itemRendererFunction(get, set):ItemRendererFunction4;
@@ -388,6 +392,14 @@ private class DataSourceBehaviour extends DataBehaviour {
         } else {
             _component.invalidateComponentLayout();
         }
+    }
+    
+    public override function get():Variant {
+        if (_value == null || _value.isNull) {
+            _value = new ArrayDataSource<Dynamic>();
+            set(_value);
+        }
+        return _value;
     }
 }
 

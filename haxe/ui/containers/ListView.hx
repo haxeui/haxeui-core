@@ -1,23 +1,25 @@
 package haxe.ui.containers;
 
+import haxe.ui.behaviours.Behaviour;
+import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.behaviours.DefaultBehaviour;
+import haxe.ui.behaviours.LayoutBehaviour;
 import haxe.ui.binding.BindingManager;
 import haxe.ui.components.VerticalScroll;
 import haxe.ui.constants.SelectionMode;
-import haxe.ui.containers.ScrollView.ScrollViewBuilder;
 import haxe.ui.containers.ScrollView;
-import haxe.ui.behaviours.Behaviour;
+import haxe.ui.containers.ScrollView.ScrollViewBuilder;
 import haxe.ui.core.Component;
-import haxe.ui.behaviours.DataBehaviour;
-import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.ItemRenderer;
-import haxe.ui.behaviours.LayoutBehaviour;
+import haxe.ui.data.ArrayDataSource;
+import haxe.ui.data.DataSource;
+import haxe.ui.data.transformation.NativeTypeTransformer;
+import haxe.ui.events.ItemEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.ScrollEvent;
 import haxe.ui.events.UIEvent;
-import haxe.ui.data.DataSource;
-import haxe.ui.data.transformation.NativeTypeTransformer;
 import haxe.ui.layouts.VerticalVirtualLayout;
 import haxe.ui.util.MathUtil;
 import haxe.ui.util.Variant;
@@ -39,6 +41,8 @@ class ListView extends ScrollView implements IDataComponent implements IVirtualC
     @:behaviour(SelectionModeBehaviour, SelectionMode.ONE_ITEM) public var selectionMode:SelectionMode;
     @:behaviour(DefaultBehaviour, 500)                          public var longPressSelectionTime:Int;  //ms
 
+    @:event(ItemEvent.COMPONENT_EVENT)                          public var onComponentEvent:ItemEvent->Void;
+    
     //TODO - error with Behaviour
     private var _itemRendererFunction:ItemRendererFunction2;
     public var itemRendererFunction(get, set):ItemRendererFunction2;
@@ -303,10 +307,13 @@ private class ListViewBuilder extends ScrollViewBuilder {
         }
     }
     
+    @:access(haxe.ui.backend.ComponentImpl)
     public override function addComponent(child:Component):Component {
         var r = null;
         if (Std.is(child, ItemRenderer) && (_listview.itemRenderer == null && _listview.itemRendererFunction == null && _listview.itemRendererClass == null)) {
             _listview.itemRenderer = cast(child, ItemRenderer);
+            _listview.itemRenderer.ready();
+            _listview.itemRenderer.handleVisibility(false);
             r = child;
         } else {
             r = super.addComponent(child);
@@ -343,6 +350,14 @@ private class DataSourceBehaviour extends DataBehaviour {
         } else {
             _component.invalidateComponentLayout();
         }
+    }
+    
+    public override function get():Variant {
+        if (_value == null || _value.isNull) {
+            _value = new ArrayDataSource<Dynamic>();
+            set(_value);
+        }
+        return _value;
     }
 }
 

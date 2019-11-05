@@ -102,8 +102,9 @@ class ScrollView extends Component {
 private class Virtual extends DefaultBehaviour {
     public override function set(value:Variant) {
         super.set(value);
-        
-        cast(_component._compositeBuilder, ScrollViewBuilder).onVirtualChanged();
+        if (_component._compositeBuilder != null) {
+            cast(_component._compositeBuilder, ScrollViewBuilder).onVirtualChanged();
+        }
     }
 }
 
@@ -816,9 +817,13 @@ class ScrollViewBuilder extends CompositeBuilder {
         return 0;
     }
     
+    @:access(haxe.ui.backend.ComponentBase)
     private function checkScrolls() {
-        var usableSize:Size = _component.layout.usableSize;
+        if (_component.isNativeScroller == true) {
+            return;
+        }
         
+        var usableSize:Size = _component.layout.usableSize;
         
         if (virtualHorizontal == false && usableSize.width > 0) {
             var horizontalConstraint = _contents;
@@ -861,7 +866,12 @@ class ScrollViewBuilder extends CompositeBuilder {
         }
     }
 
+    @:access(haxe.ui.backend.ComponentBase)
     public function createHScroll():HorizontalScroll {
+        if (_component.isNativeScroller == true) {
+            return null;
+        }
+        
         var usableSize:Size = _component.layout.usableSize;
         var horizontalConstraint = _contents;
         var hscroll:HorizontalScroll = _component.findComponent(HorizontalScroll, false);
@@ -886,7 +896,12 @@ class ScrollViewBuilder extends CompositeBuilder {
         return hscroll;
     }
     
+    @:access(haxe.ui.backend.ComponentBase)
     public function createVScroll():VerticalScroll {
+        if (_component.isNativeScroller == true) {
+            return null;
+        }
+        
         var usableSize:Size = _component.layout.usableSize;
         var verticalConstraint = _contents;
         var vscroll:VerticalScroll = _component.findComponent(VerticalScroll, false);

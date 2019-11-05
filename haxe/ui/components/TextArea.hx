@@ -332,7 +332,7 @@ private class TextAreaBuilder extends CompositeBuilder {
         var textInput:TextInput = _textarea.getTextInput();
         
         var hscroll:HorizontalScroll = _component.findComponent(HorizontalScroll, false);
-        if (textInput.textWidth > textInput.width) {
+        if (textInput.textWidth - textInput.width > 1) {
             if (hscroll == null) {
                 hscroll = createHScroll();
             }
@@ -347,7 +347,7 @@ private class TextAreaBuilder extends CompositeBuilder {
         }
         
         var vscroll:VerticalScroll = _component.findComponent(VerticalScroll, false);
-        if (textInput.textHeight > textInput.height) {
+        if (textInput.textHeight - textInput.height > 1) {
             if (vscroll == null) {
                 vscroll = createVScroll();
             }

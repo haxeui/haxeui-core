@@ -12,11 +12,10 @@
 </p>
 
 ## Installation
-Eventually all these libs will become haxelibs, however, currently in their alpha form they do not even contain a `haxelib.json` file (for dependencies, etc) and therefore can only be used by downloading the source and using the `haxelib dev` command or by directly using the git versions using the `haxelib git` command (recommended). Eg:
-
+Installation of the haxeui can be performed by using haxelib, you will need a the haxeui-core haxelib as well as a backend, for example: 
 ```
-haxelib git haxeui-core https://github.com/haxeui/haxeui-core
-haxelib dev haxeui-openfl path/to/expanded/source/archive
+haxelib install haxeui-core
+haxelib install haxeui-openfl
 ```
 
 

@@ -71,6 +71,7 @@ class ScrollViewLayout extends DefaultLayout {
         }
     }
     
+    @:access(haxe.ui.backend.ComponentBase)
     private override function get_usableSize():Size {
         var size:Size = super.get_usableSize();
         var hscroll = component.findComponent(HorizontalScroll, false);
@@ -82,7 +83,7 @@ class ScrollViewLayout extends DefaultLayout {
             size.width -= vscroll.componentWidth;
         }
 
-        if (cast(component, ScrollView).native == true) {
+        if (cast(component, ScrollView).native == true || _component.isNativeScroller == true) {
             var contents:Component = component.findComponent("scrollview-contents", false, "css");
             if (contents != null) {
                 if (contents.componentWidth > size.width) {
@@ -97,6 +98,7 @@ class ScrollViewLayout extends DefaultLayout {
         return size;
     }
 
+    @:access(haxe.ui.backend.ComponentBase)
     public override function calcAutoSize(exclusions:Array<Component> = null):Size {
         var hscroll = component.findComponent(HorizontalScroll, false);
         var vscroll = component.findComponent(VerticalScroll, false);
@@ -108,7 +110,7 @@ class ScrollViewLayout extends DefaultLayout {
             size.width += vscroll.componentWidth;
         }
 
-        if (cast(component, ScrollView).native == true) {
+        if (cast(component, ScrollView).native == true || _component.isNativeScroller == true) {
             var contents:Component = component.findComponent("scrollview-contents", false, "css");
             if (contents != null) {
                 if (contents.width > component.width) {
