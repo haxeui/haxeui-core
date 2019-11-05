@@ -75,10 +75,16 @@ class ItemRenderer extends Box {
         
         updateValues(_data, _fieldList);
         
-        var buttons = findComponents(Button);
-        for (c in buttons) {
-            if (c.hasEvent(MouseEvent.CLICK, onItemClick) == false) {
-                c.registerEvent(MouseEvent.CLICK, onItemClick);
+        var components = findComponents(InteractiveComponent);
+        for (c in components) {
+            if (Std.is(c, Button)) {
+                if (c.hasEvent(MouseEvent.CLICK, onItemClick) == false) {
+                    c.registerEvent(MouseEvent.CLICK, onItemClick);
+                }
+            } else {
+                if (c.hasEvent(UIEvent.CHANGE, onItemChange) == false) {
+                    c.registerEvent(UIEvent.CHANGE, onItemChange);
+                }
             }
         }
     }
