@@ -819,7 +819,7 @@ class ScrollViewBuilder extends CompositeBuilder {
     
     @:access(haxe.ui.backend.ComponentBase)
     private function checkScrolls() {
-        if (_component.hasNativeEntry == true) {
+        if (_component.isNativeScroller == true) {
             return;
         }
         
@@ -868,7 +868,7 @@ class ScrollViewBuilder extends CompositeBuilder {
 
     @:access(haxe.ui.backend.ComponentBase)
     public function createHScroll():HorizontalScroll {
-        if (_component.hasNativeEntry == true) {
+        if (_component.isNativeScroller == true) {
             return null;
         }
         
@@ -898,7 +898,7 @@ class ScrollViewBuilder extends CompositeBuilder {
     
     @:access(haxe.ui.backend.ComponentBase)
     public function createVScroll():VerticalScroll {
-        if (_component.hasNativeEntry == true) {
+        if (_component.isNativeScroller == true) {
             return null;
         }
         

@@ -83,7 +83,7 @@ class ScrollViewLayout extends DefaultLayout {
             size.width -= vscroll.componentWidth;
         }
 
-        if (cast(component, ScrollView).native == true || _component.hasNativeEntry == true) {
+        if (cast(component, ScrollView).native == true || _component.isNativeScroller == true) {
             var contents:Component = component.findComponent("scrollview-contents", false, "css");
             if (contents != null) {
                 if (contents.componentWidth > size.width) {
@@ -110,7 +110,7 @@ class ScrollViewLayout extends DefaultLayout {
             size.width += vscroll.componentWidth;
         }
 
-        if (cast(component, ScrollView).native == true || _component.hasNativeEntry == true) {
+        if (cast(component, ScrollView).native == true || _component.isNativeScroller == true) {
             var contents:Component = component.findComponent("scrollview-contents", false, "css");
             if (contents != null) {
                 if (contents.width > component.width) {
