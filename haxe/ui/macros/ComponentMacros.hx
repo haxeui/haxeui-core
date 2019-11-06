@@ -149,6 +149,10 @@ class ComponentMacros {
         }
         
         var classInfo = new ClassBuilder(Context.getModule(className)[0]);
+        var useNamedComponents = true;
+        if (classInfo.hasSuperClass("haxe.ui.core.ItemRenderer")) { // we dont really want to create variable instances of contents of item renderers
+            useNamedComponents = false;
+        }
         if (classInfo.hasDirectInterface("haxe.ui.core.IDirectionalComponent")) {
             var direction = c.direction;
             if (direction == null) {
@@ -200,13 +204,17 @@ class ComponentMacros {
             builder.add(macro ($i{componentVarName} : haxe.ui.core.IDataComponent).dataSource = $i{dsVarName});
         }
 
-        if (c.id != null && namedComponents != null) {
+        if (c.id != null && namedComponents != null && useNamedComponents == true) {
             namedComponents.set(c.id, className);
         }
         
         var childId = id + 1;
         for (child in c.children) {
-            buildComponentNode(builder, child, childId, id, namedComponents);
+            var nc = namedComponents;
+            if (useNamedComponents == false) {
+                nc = null;
+            }
+            buildComponentNode(builder, child, childId, id, nc);
             childId++;
         }
         
