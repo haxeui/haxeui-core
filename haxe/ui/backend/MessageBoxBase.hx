@@ -3,6 +3,7 @@ package haxe.ui.backend;
 import haxe.ui.containers.dialogs.Dialog;
 import haxe.ui.containers.dialogs.MessageBox.MessageBoxType;
 
+/*
 #if (haxe_ver >= 4)
 @:xml('
 <hbox width="100%" style="spacing:10px;">
@@ -11,15 +12,16 @@ import haxe.ui.containers.dialogs.MessageBox.MessageBoxType;
 </hbox>
 ')
 #end
+*/
 class MessageBoxBase extends Dialog {
-    #if (haxe_ver < 4) // TODO: seems using two @xml build macros in haxe 3.4.7 breaks things - order related probably - work around for now is to manually create 
+    //#if (haxe_ver < 4) // TODO: seems using two @xml build macros in haxe 3.4.7 breaks things - order related probably - work around for now is to manually create 
     public var iconImage:haxe.ui.components.Image;
     public var messageLabel:haxe.ui.components.Label;
-    #end 
+    //#end 
     
     public function new() {
         super();
-        #if (haxe_ver < 4) // TODO: seems using two @xml build macros in haxe 3.4.7 breaks things - order related probably - work around for now is to manually create 
+        //#if (haxe_ver < 4) // TODO: seems using two @xml build macros in haxe 3.4.7 breaks things - order related probably - work around for now is to manually create 
         
         var hbox = new haxe.ui.containers.HBox();
         hbox.percentWidth = 100;
@@ -35,7 +37,7 @@ class MessageBoxBase extends Dialog {
         messageLabel.percentWidth = 100;
         hbox.addComponent(messageLabel);
         
-        #end
+        //#end
     }
     
     public var message(get, set):String;
