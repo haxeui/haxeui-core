@@ -8,9 +8,12 @@ import haxe.ui.core.Screen;
 
 @:keep
 class HaxeUIApp extends AppImpl {
+    public static var instance:HaxeUIApp;
+    
     private var _options:ToolkitOptions;
     public function new(options:ToolkitOptions = null) {
         super();
+        instance = this;
         _options = options;
         Toolkit.build();
         build();
