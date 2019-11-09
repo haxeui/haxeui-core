@@ -1,20 +1,20 @@
 {
+    "version": "1.0.5",
     "contributors": [
         "haxeui",
         "ianharrigan",
         "_ibilon",
         "aW4KeNiNG"
     ],
-    "version": "1.0.4",
-    "dependencies": {
-        "hscript": ""
-    },
-    "releasenote": "CORS fallback for js, virtualisation & datasource fixes",
+    "license": "MIT",
     "tags": [
         "ui",
         "gui"
     ],
-    "license": "MIT",
+    "releasenote": "Lots of native fixes",
+    "dependencies": {
+        "hscript": ""
+    },
     "name": "haxeui-core",
     "description": "The core library of the HaxeUI framework",
     "url": "https://github.com/haxeui/haxeui-core"
