@@ -389,14 +389,10 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             }
         }
         
-        handleRemoveComponent(child, dispose);
         if (_children != null) {
             if (_children.remove(child)) {
                 child.parentComponent = null;
                 child.depth = -1;
-            }
-            if (invalidate == true) {
-                invalidateComponentLayout();
             }
             if (dispose == true) {
                 child._isDisposed = true;
@@ -404,6 +400,10 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
                 child.unregisterEvents();
                 child.destroyComponent();
             }
+        }
+        handleRemoveComponent(child, dispose);
+        if (_children != null && invalidate == true) {
+            invalidateComponentLayout();
         }
 
         if (_compositeBuilder != null) {
