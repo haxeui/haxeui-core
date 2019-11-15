@@ -88,7 +88,7 @@ Screen.instance.addComponent(main);
 ```
 
 ## Additional resources
-* <a href="http://haxeui.github.io/haxeui-api/">haxeui-api</a> - The HaxeUI api docs.
+* <a href="http://haxeui.org/api/haxe/ui/">haxeui-api</a> - The HaxeUI api docs.
 * <a href="https://github.com/haxeui/haxeui-guides">haxeui-guides</a> - Set of guides to working with HaxeUI and backends.
 * <a href="https://github.com/haxeui/haxeui-demo">haxeui-demo</a> - Demo application written using HaxeUI.
 * <a href="https://github.com/haxeui/haxeui-templates">haxeui-templates</a> - Set of templates for IDEs to allow quick project creation.
