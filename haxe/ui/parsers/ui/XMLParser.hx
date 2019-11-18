@@ -51,6 +51,10 @@ class XMLParser extends ComponentParser {
                 }
             }
 
+            if (component.type == "itemrenderer") {
+                component.parent.properties.set("native", "false");
+            }
+            
             component.validate();
             isComponent = true;
         }
@@ -150,7 +154,7 @@ class XMLParser extends ComponentParser {
                 component.text = value;
             }
         }
-        component.type = xml.nodeName;
+        component.type = StringTools.replace(xml.nodeName.toLowerCase(), "-", "");
     }
 
     private static function parseAttributes(component:ComponentInfo, xml:Xml) {

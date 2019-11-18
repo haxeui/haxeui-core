@@ -15,7 +15,7 @@
 .switch-button-sub {
     border: none;
     filter: none;
-    background-color: #FFFFFF;
+    background-color: none;
     border-radius: 2px;
     cursor: pointer;
     padding: 0px;

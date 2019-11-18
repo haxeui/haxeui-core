@@ -58,6 +58,20 @@ private class SelectedIndexBehaviour extends DataBehaviour {
         var handler:IDropDownHandler = cast(_component._compositeBuilder, DropDownBuilder).handler;
         handler.selectedIndex = _value;
     }
+    
+    public override function get():Variant {
+        var handler:IDropDownHandler = cast(_component._compositeBuilder, DropDownBuilder).handler;
+        return handler.selectedIndex;
+    }
+    
+    public override function set(value:Variant) {
+        if (value == _value) {
+            return;
+        }
+        super.set(value);
+        var handler:IDropDownHandler = cast(_component._compositeBuilder, DropDownBuilder).handler;
+        handler.selectedIndex = _value;
+    }
 }
 
 @:dox(hide) @:noCompletion
@@ -186,7 +200,7 @@ class ListDropDownHandler extends DropDownHandler {
             _dropdown.dispatch(new UIEvent(UIEvent.CHANGE));
         }
         
-        if (value >= 0 && value < _dropdown.dataSource.size) {
+        if (_dropdown.dataSource != null && value >= 0 && value < _dropdown.dataSource.size) {
             var data = _dropdown.dataSource.get(value);
             _dropdown.text = data.value;
         }
