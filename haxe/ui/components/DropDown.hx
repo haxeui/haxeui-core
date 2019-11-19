@@ -68,7 +68,8 @@ private class SelectedIndexBehaviour extends DataBehaviour {
         if (value == _value) {
             return;
         }
-        super.set(value);
+        _value = value;
+        invalidateData();
         var handler:IDropDownHandler = cast(_component._compositeBuilder, DropDownBuilder).handler;
         handler.selectedIndex = _value;
     }
