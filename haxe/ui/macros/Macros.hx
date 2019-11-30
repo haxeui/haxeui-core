@@ -215,9 +215,14 @@ class Macros {
                                 this.registerEvent($p{param2.split(".")}, $i{f.name})
                             , 1);
                         } else {
-                            builder.constructor.add(macro
-                                findComponent($v{param1}, haxe.ui.core.Component).registerEvent($p{param2.split(".")}, $i{f.name})
-                            , 1);
+                            builder.constructor.add(macro {
+                                var c = findComponent($v{param1}, haxe.ui.core.Component);
+                                if (c != null) {
+                                    c.registerEvent($p{param2.split(".")}, $i{f.name});
+                                } else {
+                                    trace("WARNING: could not find component to regsiter event (" + $v{param1} + ")");
+                                }
+                            }, 1);
                         }
                     }
                 }
