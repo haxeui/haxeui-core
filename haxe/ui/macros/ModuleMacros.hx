@@ -342,9 +342,11 @@ class ModuleMacros {
         fileParts = temp;
         
         var fullClass = fileParts.concat([className]).join(".");
+        /* this causes problems with language server it seems
         if (ComponentClassMap.hasClass(fullClass) == true) {
             return fullClass;
         }
+        */
         
         var superClassString = "haxe.ui.containers.Box";
         var superClassParts = superClassString.split(".");
