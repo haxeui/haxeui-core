@@ -31,6 +31,10 @@ class ModuleMacros {
             return macro null;
         }
 
+        _modules = [];
+        _resourceIds = [];
+        ComponentClassMap.clear();
+        
         loadModules();
         
         var preloadAll:Bool = false;

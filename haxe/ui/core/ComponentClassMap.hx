@@ -23,6 +23,10 @@ class ComponentClassMap {
         return instance._map.keys();
     }
 
+    public static function clear() {
+        instance._map.clear();
+    }
+
     public static function hasClass(className:String):Bool {
         return instance.hasClassName(className);
     }
