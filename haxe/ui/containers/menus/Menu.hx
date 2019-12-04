@@ -14,6 +14,10 @@ class MenuEvent extends UIEvent {
     public var menu:Menu = null;
     public var menuItem:MenuItem = null;
     
+    public function new(type:String, bubble:Null<Bool> = false, data:Dynamic = null) {
+        super(type, true, data);
+    }
+    
     public override function clone():MenuEvent {
         var c:MenuEvent = new MenuEvent(this.type);
         c.menu = this.menu;
