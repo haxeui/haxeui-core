@@ -24,7 +24,7 @@ class ComponentClassMap {
     }
 
     public static function clear() {
-        instance._map.clear();
+        instance._map = new Map<String, String>();
     }
 
     public static function hasClass(className:String):Bool {
