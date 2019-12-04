@@ -549,6 +549,9 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     }
 
     public function findComponents<T:Component>(styleName:String = null, type:Class<T> = null, maxDepth:Int = 5):Array<T> {
+        if (maxDepth == -1) {
+            maxDepth = 100;
+        }
         if (maxDepth <= 0) {
             return [];
         }
