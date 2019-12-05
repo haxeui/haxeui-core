@@ -1,20 +1,20 @@
 {
+    "version": "1.0.11",
     "contributors": [
         "haxeui",
         "ianharrigan",
         "_ibilon",
         "aW4KeNiNG"
     ],
-    "version": "1.0.10",
-    "dependencies": {
-        "hscript": ""
-    },
-    "releasenote": "allow duplicate dynamic classes (language server)",
+    "license": "MIT",
     "tags": [
         "ui",
         "gui"
     ],
-    "license": "MIT",
+    "releasenote": "Various bug fixes",
+    "dependencies": {
+        "hscript": ""
+    },
     "name": "haxeui-core",
     "description": "The core library of the HaxeUI framework",
     "url": "https://github.com/haxeui/haxeui-core"
