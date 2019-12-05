@@ -186,6 +186,14 @@ class ComponentValidation extends ComponentEvents {
         }
         _isValidating = false;
     }
+
+    /**
+     Validate this component and its children on demand.
+    **/
+    @:dox(group = "Invalidation related properties and methods")
+    public function validateNow() {
+        syncComponentValidation();
+    }
     
     /**
      Validate this component and its children on demand.
