@@ -63,15 +63,26 @@ class ModuleThemeEntry {
     public var name(default, default):String;
     public var parent(default, default):String;
     public var styles(default, default):Array<ModuleThemeStyleEntry>;
+    public var vars(default, default):Array<ModuleThemeVarEntry>;
 
     public function new() {
         styles = [];
+        vars = [];
     }
 }
 
 class ModuleThemeStyleEntry {
-    public var resource:String;
+    public var resource:String = null;
     public var priority:Float = 0;
+    public var styleText:String = null;
+    
+    public function new() {
+    }
+}
+
+class ModuleThemeVarEntry {
+    public var name:String;
+    public var value:String;
     
     public function new() {
     }

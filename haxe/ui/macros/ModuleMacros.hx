@@ -112,10 +112,34 @@ class ModuleMacros {
                         haxe.ui.themes.ThemeManager.instance.getTheme($v{t.name}).parent = $v{t.parent}
                     );
                 }
+                
+                var varMap = null;
+                for (v in t.vars) {
+                    if (varMap == null) {
+                        varMap = new Map<String, String>();
+                    }
+                    varMap.set(v.name, v.value);
+                }
+                if (varMap != null) {
+                    builder.add(macro var vars = new Map<String, String>());
+                    for (k in varMap.keys()) {
+                        var v = varMap.get(k);
+                        builder.add(macro vars.set($v{k}, $v{v}));
+                    }
+                    builder.add(macro 
+                        haxe.ui.themes.ThemeManager.instance.getTheme($v{t.name}).vars = vars
+                    );
+                }
+          
                 for (r in t.styles) {
                     builder.add(macro 
                         haxe.ui.themes.ThemeManager.instance.addStyleResource($v{t.name}, $v{r.resource}, $v{r.priority})
                     );
+                    if (r.styleText != null) {
+                        builder.add(macro 
+                            haxe.ui.themes.ThemeManager.instance.addStyleText($v{t.name}, $v{r.styleText}, $v{r.priority})
+                        );
+                    }
                 }
             }
 

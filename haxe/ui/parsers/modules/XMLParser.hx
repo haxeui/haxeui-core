@@ -1,5 +1,6 @@
 package haxe.ui.parsers.modules;
 import haxe.ui.parsers.modules.Module.ModuleThemeStyleEntry;
+import haxe.ui.parsers.modules.Module.ModuleThemeVarEntry;
 
 class XMLParser extends ModuleParser {
     public function new() {
@@ -95,6 +96,12 @@ class XMLParser extends ModuleParser {
                         }
                         var styleEntry:ModuleThemeStyleEntry = new ModuleThemeStyleEntry();
                         styleEntry.resource = styleNodes.get("resource");
+                        if (styleNodes.firstChild() != null) {
+                            styleEntry.styleText = StringTools.trim(styleNodes.firstChild().nodeValue);
+                            if (styleEntry.styleText.length == 0) {
+                                styleEntry.styleText = null;
+                            }
+                        }
                         if (styleNodes.get("priority") != null) {
                             styleEntry.priority = Std.parseFloat(styleNodes.get("priority"));
                             lastPriority = styleEntry.priority;
@@ -111,6 +118,15 @@ class XMLParser extends ModuleParser {
                             }
                         }
                         theme.styles.push(styleEntry);
+                    }
+                    for (varNode in themeNode.elementsNamed("var")) {
+                        if (checkCondition(varNode, defines) == false) {
+                            continue;
+                        }
+                        var varEntry = new ModuleThemeVarEntry();
+                        varEntry.name = varNode.get("name");
+                        varEntry.value = varNode.get("value");
+                        theme.vars.push(varEntry);
                     }
                     module.themeEntries.set(theme.name, theme);
                 }

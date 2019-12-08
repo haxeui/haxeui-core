@@ -2,10 +2,10 @@
 ** CALENDAR
 *************************************************************************/
 .calendar {
-    background-color: #FFFFFF;
+    background-color: ${colors.panel.normal};
     padding: 5px;
-    border: 1px solid #ABABAB;
-    border-radius: 1px;
+    border: 1px solid ${borders.normal.color};
+    border-radius: ${borders.normal.radius};
 }
 
 .calendar .calendar-off-day {
