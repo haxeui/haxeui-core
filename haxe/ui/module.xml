@@ -70,8 +70,12 @@
             <var name="colors.gradient.down.end" value="#C2C2C2" />
             <var name="colors.gradient.normal.disabled.start" value="#D4D4D4" />
             <var name="colors.gradient.normal.disabled.end" value="#CCCCCC" />
+            <var name="colors.gradient.inset.start" value="#F1F1F1" />
+            <var name="colors.gradient.inset.end" value="#FFFFFF" />
             <var name="colors.gradient.inset.disabled.start" value="#CCCCCC" />
             <var name="colors.gradient.inset.disabled.end" value="#D4D4D4" />
+            <var name="colors.gradient.bar.start" value="#6CAADB" />
+            <var name="colors.gradient.bar.end" value="#216AAE" />
             <var name="colors.fore.normal" value="#222222" />
             <var name="colors.fore.hover" value="#000000" />
             <var name="colors.fore.down" value="#000000" />
