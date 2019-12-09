@@ -7,9 +7,9 @@
     padding-right: 5px;
     height: auto;
     width: auto;
-    background-color: white;
+    background-color: none;
     border-bottom-width: 1px;
-    border-bottom-color: #ABABAB;
+    border-bottom-color: ${borders.normal.color};
     border-top-width: 0px;
     clip: true;
 }
@@ -17,18 +17,18 @@
 .tabbar .tabbar-contents {
     border: none;
     border-bottom-width: 1px;
-    border-bottom-color: #ABABAB;
+    border-bottom-color: ${borders.normal.color};
 }
 
 .tabbar-button {
     border-radius: 0px;
-    background: #EDEDED #E6E6E6 vertical;
+    background: ${colors.flat.normal} ${colors.flat.normal} vertical;
     padding: 6px;
     vertical-align: bottom;
 }
 
 .tabbar-button:hover {
-    background: #F5F5F5 #F1F1F1 vertical;
+    background: ${colors.flat.hover} ${colors.flat.hover} vertical;
 }
 
 .tabbar-button:down {
@@ -37,10 +37,10 @@
 .tabbar-button-selected {
     border-radius: 0px;
 
-    border: 1px solid #ABABAB;
+    border: 1px solid ${borders.normal.color};
     border-bottom-width: 1px;
-    border-bottom-color: white;
-    background-color: white;
+    border-bottom-color: ${colors.panel.normal};
+    background-color: ${colors.panel.normal};
 }
 
 
@@ -72,10 +72,10 @@
     padding-right: 5px;
     height: auto;
     width: auto;
-    background-color: white;
+    background-color: none;
     border-bottom-width: 0px;
     border-top-width: 1px;
-    border-top-color: #ABABAB;
+    border-top-color: ${borders.normal.color};
     clip: true;
 }
 
@@ -83,7 +83,7 @@
     border: none;
     border-bottom-width: 0px;
     border-top-width: 1px;
-    border-top-color: #ABABAB;
+    border-top-color: ${borders.normal.color};
 }
 
 .tabbar-button:bottom {
@@ -93,10 +93,10 @@
 .tabbar-button-selected:bottom {
     border-radius: 0px;
 
-    border: 1px solid #ABABAB;
+    border: 1px solid ${borders.normal.color};
     border-top-width: 1px;
-    border-top-color: white;
-    background-color: white;
+    border-top-color: ${colors.panel.normal};
+    background-color: ${colors.panel.normal};
 }
 
 /************************************************************************
@@ -112,6 +112,7 @@
 }
 
 .tabview .tabview-content {
-    border: 1px solid #ABABAB;
+    border: 1px solid ${borders.normal.color};
     padding: 5px;
+    border-radius: 0px;
 }

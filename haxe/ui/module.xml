@@ -76,14 +76,31 @@
             <var name="colors.gradient.inset.disabled.end" value="#D4D4D4" />
             <var name="colors.gradient.bar.start" value="#6CAADB" />
             <var name="colors.gradient.bar.end" value="#216AAE" />
+            <var name="colors.gradient.bar.disabled.start" value="#9E9E9E" />
+            <var name="colors.gradient.bar.disabled.end" value="#616161" />
             <var name="colors.fore.normal" value="#222222" />
             <var name="colors.fore.hover" value="#000000" />
             <var name="colors.fore.down" value="#000000" />
             <var name="colors.fore.disabled" value="#909090" />
             <var name="colors.fore.lighter" value="#444444" />
             <var name="colors.fore.lightest" value="#909090" />
+            <var name="colors.fore.selected" value="#ffffff" />
             <var name="colors.panel.normal" value="#FFFFFF" />
             <var name="colors.panel.inset" value="#FFFFFF" />
+            <var name="colors.panel.disabled" value="#909090" />
+            <var name="colors.dialog.title" value="#EEEEEE" />
+            <var name="colors.flat.normal" value="#E6E6E6" />
+            <var name="colors.flat.hover" value="#F1F1F1" />
+            <var name="colors.flat.down" value="#C2C2C2" />
+            <var name="colors.flat.disabled" value="#CCCCCC" />
+            <var name="colors.alternating.normal.even" value="#FFFFFF" />
+            <var name="colors.alternating.normal.odd" value="#f8f8f8" />
+            <var name="colors.alternating.disabled.even" value="#FFFFFF" />
+            <var name="colors.alternating.disabled.odd" value="#f8f8f8" />
+            <var name="colors.alternating.hover.even" value="#d9e5f2" />
+            <var name="colors.alternating.hover.odd" value="#d9e5f2" />
+            <var name="colors.selection.normal" value="#a7c4e2" />
+            <var name="colors.selection.disabled" value="#C0C0C0" />
             
             <var name="borders.normal.color" value="#ABABAB" />
             <var name="borders.normal.radius" value="2px" />
@@ -94,6 +111,8 @@
             <var name="fonts.normal.name" value="Arial" />
             <var name="fonts.normal.size" value="13px" />
             
+            <var name="filters.shadow.popup" value="drop-shadow(1, 45, #000000, 0.15, 1, 1, 1, 3, false)" />
+            <var name="filters.shadow.dialog" value="drop-shadow(1, 45, #000000, 0.2, 30, 2, 1, 3, false)" />
             <var name="filters.shadow.inset" value="drop-shadow(1, 45, #888888, 0.2, 1, 1, 1, 3, true)" />
         </default>
         <native parent="default">

@@ -2,12 +2,12 @@
 ** LISTVIEW
 *************************************************************************/
 .listview {
-    border: 1px solid #ABABAB;
-    border-radius: 1px;
+    border: 1px solid ${borders.normal.color};
+    border-radius: ${borders.normal.radius};
     padding: 1px;
     width: auto;
     height: auto;
-    background-color: #FFFFFF;
+    background-color: ${colors.panel.normal};
 }
 
 .listview .listview-contents {
@@ -21,23 +21,31 @@
 }
 
 .listview .itemrenderer .label {
-    color: black;
+    color: ${colors.fore.normal};
 }
 
 .listview .even {
-    background-color: #FFFFFF;
+    background-color: ${colors.alternating.normal.even};
+}
+
+.listview .even:disabled {
+    background-color: ${colors.alternating.disabled.even};
 }
 
 .listview .even:hover {
-    background-color: #d9e5f2;
+    background-color: ${colors.alternating.hover.even};
 }
 
 .listview .odd {
-    background-color: #f8f8f8;
+    background-color: ${colors.alternating.normal.odd};
+}
+
+.listview .odd:disabled {
+    background-color: ${colors.alternating.disabled.odd};
 }
 
 .listview .odd:hover {
-    background-color: #d9e5f2;
+    background-color: ${colors.alternating.hover.odd};
 }
 
 .listview .itemrenderer {
@@ -46,10 +54,14 @@
 }
 
 .listview .itemrenderer:selected {
-    background-color: #a7c4e2;
-    color: white;
+    background-color: ${colors.selection.normal};
+    color: ${colors.fore.selected};
+}
+
+.listview:disabled .itemrenderer:selected {
+    background-color: ${colors.selection.disabled};
 }
 
 .listview .itemrenderer:selected .label {
-    color: white;
+    color: ${colors.fore.selected};
 }

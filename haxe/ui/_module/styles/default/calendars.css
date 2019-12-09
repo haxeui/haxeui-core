@@ -19,6 +19,10 @@
     background-color: #ecf2f9;
 }
 
+.calendar .calendar-day:disabled {
+    background-color: #f1f1f1;
+}
+
 .calendar .calendar-day:hover {
     border: none;
     background-color: #a7c4e2;
@@ -28,6 +32,10 @@
     border: none;
     background-color: #a7c4e2;
     color: white;
+}
+
+.calendar .calendar-day-selected:disabled {
+    background-color: c0c0c0;
 }
 
 /************************************************************************
@@ -64,8 +72,6 @@
 }
 
 .calendar-view #current-month {
-	__width: 100%;
-    __text-align: center;
     vertical-align: center;
 }
 
@@ -76,6 +82,7 @@
 	padding-top: 1px;
 	background-color: white;
 }
+
 .calendar-view #current-year .button {
 	background-color: white;
 	border: none;

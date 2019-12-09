@@ -19,9 +19,17 @@
     initial-height: 20px;
 }    
 
+.horizontal-range:disabled {
+    background: ${colors.gradient.inset.disabled.start} ${colors.gradient.inset.disabled.end} vertical;
+}    
+
 .horizontal-range .range-value {
     background: ${colors.gradient.bar.start} ${colors.gradient.bar.end} vertical;
     height: 100%;
+}
+
+.horizontal-range .range-value:disabled {
+    background: ${colors.gradient.bar.disabled.start} ${colors.gradient.bar.disabled.end} vertical;
 }
 
 .vertical-range {
@@ -30,7 +38,15 @@
     initial-height: 150px;
 }
 
+.vertical-range:disabled {
+    background: ${colors.gradient.inset.disabled.start} ${colors.gradient.inset.disabled.end} horizontal;
+}
+
 .vertical-range .range-value {
     background: ${colors.gradient.bar.start} ${colors.gradient.bar.end} horizontal;
     width: 100%;
+}
+
+.vertical-range .range-value:disabled {
+    background: ${colors.gradient.bar.disabled.start} ${colors.gradient.bar.disabled.end} horizontal;
 }

@@ -53,9 +53,17 @@
     initial-height: 20px;
 }
 
+.horizontal-progress:disabled {
+    background: ${colors.gradient.inset.disabled.start} ${colors.gradient.inset.disabled.end} vertical;
+}
+
 .horizontal-progress .progress-value {
     background: ${colors.gradient.bar.start} ${colors.gradient.bar.end} vertical;
     height: 100%;
+}
+
+.horizontal-progress .progress-value:disabled {
+    background: ${colors.gradient.bar.disabled.start} ${colors.gradient.bar.disabled.end} vertical;
 }
 
 .vertical-progress {
@@ -64,8 +72,16 @@
     initial-height: 150px;
 }
 
+.vertical-progress:disabled {
+    background: ${colors.gradient.inset.disabled.start} ${colors.gradient.inset.disabled.end} horizontal;
+}
+
 .vertical-progress .progress-value {
     background: ${colors.gradient.bar.start} ${colors.gradient.bar.end} horizontal;
     width: 100%;
+}
+
+.vertical-progress .progress-value:disabled {
+    background: ${colors.gradient.bar.disabled.start} ${colors.gradient.bar.disabled.end} horizontal;
 }
 

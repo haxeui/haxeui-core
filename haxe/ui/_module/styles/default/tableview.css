@@ -21,12 +21,12 @@
 ** LISTVIEW
 *************************************************************************/
 .tableview {
-    border: 1px solid #ABABAB;
-    border-radius: 1px;
+    border: 1px solid ${borders.normal.color};
+    border-radius: ${borders.normal.radius};
     padding: 1px;
     width: auto;
     height: auto;
-    background-color: #FFFFFF;
+    background-color: ${colors.panel.normal};
 }
 
 .tableview .tableview-contents {
@@ -36,12 +36,12 @@
 }
 
 .tableview .even {
-    background-color: white;
+    background-color: ${colors.alternating.normal.even};
     cursor: pointer;
 }
 
 .tableview .odd {
-    background-color: #f8f8f8;
+    background-color: ${colors.alternating.normal.odd};
     cursor: pointer;
 }
 
@@ -51,22 +51,26 @@
 }
 
 .tableview .even:hover {
-    background-color: #d9e5f2;
+    background-color: ${colors.alternating.hover.even};
 }
 
 .tableview .odd:hover {
-    background-color: #d9e5f2;
+    background-color: ${colors.alternating.hover.odd};
 }
 
 .tableview .compounditemrenderer .label {
-    color: black;
+    color: ${colors.fore.normal};
 }
 
 .tableview .compounditemrenderer:selected {
-    background-color: #a7c4e2;
-    color: white;
+    background-color: ${colors.selection.normal};
+    color: ${colors.fore.selected};
+}
+
+.tableview:disabled .compounditemrenderer:selected {
+    background-color: ${colors.selection.disabled};
 }
 
 .tableview .compounditemrenderer:selected .label {
-    color: white;
+    color: ${colors.fore.selected};
 }
