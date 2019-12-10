@@ -2,12 +2,12 @@
 ** DIALOGS
 *************************************************************************/
 .dialog {
-    border: 1px solid ${borders.normal.color};
-    filter: ${filters.shadow.dialog};
-    border-radius: ${borders.normal.radius};
+    border: 1px solid ${dialog.border.color};
+    filter: ${dialog.filter.shadow};
+    border-radius: ${default.border.radius};
     height: auto;
     initial-width: 300px;
-    background-color: ${colors.panel.normal};
+    background-color: ${dialog.background.color};
     padding: 1px;
 }
 
@@ -16,16 +16,16 @@
 }
 
 .dialog-title {
-    background-color: ${colors.dialog.title};
+    background-color: ${dialog.background.title.color};
     padding: 5px;
     border-bottom-width: 1px;
-    border-bottom-color: ${borders.normal.color};
+    border-bottom-color: ${dialog.border.color};
 }
 
 .dialog-title-label {
     width: 100%;
     vertical-align: center;
-    color: ${colors.fore.lightest};
+    color: ${dialog.text.title.color};
     vertical-align: "center";
 }
 
@@ -35,8 +35,8 @@
 
 .dialog-footer-container {
     border-top-width: 1px;
-    border-top-color: ${borders.normal.color};
-    background-color: ${colors.dialog.title};
+    border-top-color: ${dialog.border.color};
+    background-color: ${dialog.background.title.color};
 }
 
 .dialog-footer {

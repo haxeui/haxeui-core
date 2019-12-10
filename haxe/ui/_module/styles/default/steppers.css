@@ -13,21 +13,20 @@
     padding-bottom: 4px;
     border-radius: 0;
     border: none;
-    background-color: ${colors.flat.normal};
+    background-color: ${flat.background.color};
     opacity: 1;
 }
 
 .stepper-button:hover {
-    background-color: ${colors.flat.hover};
+    background-color: ${flat.background.hover.color};
 }
 
 .stepper-button:down {
-    background-color: ${colors.flat.down};
+    background-color: ${flat.background.down.color};
 }
 
 .stepper-button:disabled {
-    opacity: 0.5;
-    background-color: ${colors.flat.disabled};
+    background-color: ${flat.background.disabled.color};
 }
 
 .stepper-inc {
@@ -53,7 +52,7 @@
     padding-top: 5px;
     padding-bottom: 3px;
     vertical-align: center;
-    filter: ${filters.shadow.inset};
+    filter: ${inset.filter.shadow};
 }
 
 .stepper-step {

@@ -2,12 +2,12 @@
 ** LISTVIEW
 *************************************************************************/
 .listview {
-    border: 1px solid ${borders.normal.color};
-    border-radius: ${borders.normal.radius};
+    border: 1px solid ${panel.border.color};
+    border-radius: ${default.border.radius};
     padding: 1px;
     width: auto;
     height: auto;
-    background-color: ${colors.panel.normal};
+    background-color: ${panel.background.color};
 }
 
 .listview .listview-contents {
@@ -21,31 +21,39 @@
 }
 
 .listview .itemrenderer .label {
-    color: ${colors.fore.normal};
+    color: ${default.text.color};
+}
+
+.listview:disabled .itemrenderer .label {
+    color: ${default.text.disabled.color};
+}
+
+.listview:disabled {
+    border-color: ${panel.border.disabled.color};
 }
 
 .listview .even {
-    background-color: ${colors.alternating.normal.even};
+    background-color: ${alternating.background.color.even};
 }
 
-.listview .even:disabled {
-    background-color: ${colors.alternating.disabled.even};
+.listview:disabled .even {
+    background-color: ${alternating.background.color.disabled.even};
 }
 
 .listview .even:hover {
-    background-color: ${colors.alternating.hover.even};
+    background-color: ${alternating.background.color.hover.even};
 }
 
 .listview .odd {
-    background-color: ${colors.alternating.normal.odd};
+    background-color: ${alternating.background.color.odd};
 }
 
-.listview .odd:disabled {
-    background-color: ${colors.alternating.disabled.odd};
+.listview:disabled .odd {
+    background-color: ${alternating.background.color.disabled.odd};
 }
 
 .listview .odd:hover {
-    background-color: ${colors.alternating.hover.odd};
+    background-color: ${alternating.background.color.hover.odd};
 }
 
 .listview .itemrenderer {
@@ -54,14 +62,18 @@
 }
 
 .listview .itemrenderer:selected {
-    background-color: ${colors.selection.normal};
-    color: ${colors.fore.selected};
+    background-color: ${selection.background.color};
+    color: ${selection.text.color};
 }
 
 .listview:disabled .itemrenderer:selected {
-    background-color: ${colors.selection.disabled};
+    background-color: ${selection.background.color.disabled};
 }
 
 .listview .itemrenderer:selected .label {
-    color: ${colors.fore.selected};
+    color: ${selection.text.color};
+}
+
+.listview:disabled .itemrenderer:selected .label {
+    color: ${selection.text.disabled.color};
 }

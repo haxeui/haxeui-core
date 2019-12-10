@@ -2,8 +2,8 @@
 ** SCROLLVIEW
 *************************************************************************/
 .scrollview {
-    border: 1px solid #ABABAB;
-    border-radius: 1px;
+    border: 1px solid ${panel.border.color};
+    border-radius: ${default.border.radius};
     padding: 1px;
     width: auto;
     height: auto;

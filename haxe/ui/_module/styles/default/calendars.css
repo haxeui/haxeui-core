@@ -2,49 +2,51 @@
 ** CALENDAR
 *************************************************************************/
 .calendar {
-    background-color: ${colors.panel.normal};
+    background-color: ${panel.background.color};
     padding: 5px;
-    border: 1px solid ${borders.normal.color};
-    border-radius: ${borders.normal.radius};
+    border: 1px solid ${panel.border.color};
+    border-radius: ${default.border.radius};
 }
 
 .calendar .calendar-off-day {
     border: none;
-    background-color: white;
+    background-color: ${panel.background.color};
     cursor: default;
 }
 
 .calendar .calendar-day {
     border: none;
-    background-color: #ecf2f9;
+    background-color: ${alternating.background.color.hover.odd};
 }
 
-.calendar .calendar-day:disabled {
-    background-color: #f1f1f1;
+.calendar:disabled .calendar-day {
+    background-color: ${alternating.background.color.disabled.odd};
 }
 
 .calendar .calendar-day:hover {
     border: none;
-    background-color: #a7c4e2;
+    background-color: ${selection.background.color};
+    color: ${selection.text.color};
 }
 
 .calendar .calendar-day-selected {
     border: none;
-    background-color: #a7c4e2;
-    color: white;
+    background-color: ${selection.background.color};
+    color: ${selection.text.color};
 }
 
-.calendar .calendar-day-selected:disabled {
-    background-color: c0c0c0;
+.calendar:disabled .calendar-day-selected {
+    background-color: ${selection.background.color.disabled};
+    color: ${selection.text.disabled.color};
 }
 
 /************************************************************************
 ** CALENDARVIEW
 *************************************************************************/
 .calendar-view {
-    background-color: #FFFFFF;
+    background-color: ${panel.background.color};
     padding: 5px;
-    border: 1px solid #ABABAB;
+    border: 1px solid ${panel.border.color};
     border-radius: 1px;
 }
 
@@ -61,18 +63,22 @@
     icon: "haxeui-core/styles/default/left_arrow.png";
     vertical-align: center;
     border: none;
-    background-color: white;
+    background-color: ${panel.background.color};
 }
 
 .calendar-view #next-month {
     icon: "haxeui-core/styles/default/right_arrow.png";
     vertical-align: center;
     border: none;
-    background-color: white;
+    background-color: ${panel.background.color};
 }
 
 .calendar-view #current-month {
     vertical-align: center;
+}
+
+.calendar-view:disabled #current-month {
+    color: ${default.text.disabled.color};
 }
 
 .calendar-view #current-year {
@@ -80,10 +86,10 @@
     vertical-align: center;
 	border: none;
 	padding-top: 1px;
-	background-color: white;
+	background-color: ${panel.background.color};
 }
 
 .calendar-view #current-year .button {
-	background-color: white;
+	background-color: ${panel.background.color};
 	border: none;
 }

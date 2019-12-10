@@ -2,66 +2,50 @@
 ** SCROLL
 *************************************************************************/
 .scroll {
-    background-color: #E9E9E9;
+    background-color: ${flat.background.color};
 }
 
 .scroll .button {
     border-radius: 0;
     border: none;
-    background-color: #E9E9E9;
+    background-color: ${flat.background.color};
     padding: 0;
     filter: none;
 }
 
 .scroll .button:hover {
-    background-color: #D7D7D7;
+    background-color: ${flat.background.hover.color};
 }
 
 .scroll .button:down {
-    background-color: #525252;
+    background-color: ${flat.background.down.color};
     filter: none;
 }
 
 .scroll .deinc {
     height: 17px;
     width: 17px;
-    opacity: 1;
-}
-
-.scroll deinc:disabled {
-    opacity: 0.5;
-}
-
-.scroll deinc:down {
 }
 
 .scroll .inc {
     height: 17px;
     width: 17px;
-    opacity: 1;
-}
-
-.scroll .inc:disabled {
-    opacity: 0.5;
-}
-
-.scroll .inc:down {
 }
 
 .scroll .thumb {
-    background-color: #C6C6C6;
+    background-color: ${flat.background.hover.color};
 }
 
 .scroll .thumb:hover {
-    background-color: #AAAAAA;
+    background-color: ${flat.background.hover.color};
 }
 
 .scroll .thumb:down {
-    background-color: #525252;
+    background-color: ${flat.background.down.color};
 }
 
 .scroll .thumb:disabled {
-    background-color: #DDDDDD;
+    background-color: ${flat.background.disabled.color};
 }
 
 /************************************************************************

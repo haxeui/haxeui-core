@@ -6,7 +6,7 @@
     height: auto;
     horizontal-spacing: 4px;
     cursor: pointer;
-    color: ${colors.fore.normal};
+    color: ${default.text.color};
 }
 
 .checkbox:hover {
@@ -14,18 +14,18 @@
 
 .checkbox:disabled {
     cursor: default;
-    color: ${colors.fore.disabled};
+    color: ${default.text.disabled.color};
 }
 
 .checkbox-value {
-    border: 1px solid ${borders.normal.color};
-    background-color: ${colors.panel.inset};
+    border: 1px solid ${inset.border.color};
+    background: ${inset.gradient.start} ${inset.gradient.end} vertical;
     width: 16px;
     height: 16px;
     vertical-align: center;
-    border-radius: ${borders.normal.radius};
+    border-radius: ${default.border.radius};
     icon: none;
-    filter: ${filters.shadow.inset};
+    filter: ${inset.filter.shadow};
     cursor: pointer;
 }
 
@@ -38,7 +38,7 @@
 }
 
 .checkbox-value:disabled {
-    background: ${colors.gradient.inset.disabled.start} ${colors.gradient.inset.disabled.end} vertical;
+    background: ${inset.gradient.disabled.start} ${inset.gradient.disabled.end} vertical;
     cursor: default;
 }
 

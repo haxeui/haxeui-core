@@ -44,44 +44,44 @@
 
 .progress-value {
     border: none;
-    border-radius: 2px;
+    border-radius: ${default.border.radius};
 }
 
 .horizontal-progress {
-    background: ${colors.gradient.inset.start} ${colors.gradient.inset.end} vertical;
+    background: ${sunken.gradient.start} ${sunken.gradient.end} vertical;
     initial-width: 150px;
     initial-height: 20px;
 }
 
 .horizontal-progress:disabled {
-    background: ${colors.gradient.inset.disabled.start} ${colors.gradient.inset.disabled.end} vertical;
+    background: ${sunken.gradient.disabled.start} ${sunken.gradient.disabled.end} vertical;
 }
 
 .horizontal-progress .progress-value {
-    background: ${colors.gradient.bar.start} ${colors.gradient.bar.end} vertical;
+    background: ${bar.gradient.start} ${bar.gradient.end} vertical;
     height: 100%;
 }
 
-.horizontal-progress .progress-value:disabled {
-    background: ${colors.gradient.bar.disabled.start} ${colors.gradient.bar.disabled.end} vertical;
+.horizontal-progress:disabled .progress-value {
+    background: ${bar.gradient.disabled.start} ${bar.gradient.disabled.end} vertical;
 }
 
 .vertical-progress {
-    background: ${colors.gradient.inset.start} ${colors.gradient.inset.end} horizontal;
+    background: ${sunken.gradient.start} ${sunken.gradient.end} horizontal;
     initial-width: 20px;
     initial-height: 150px;
 }
 
 .vertical-progress:disabled {
-    background: ${colors.gradient.inset.disabled.start} ${colors.gradient.inset.disabled.end} horizontal;
+    background: ${sunken.gradient.disabled.start} ${sunken.gradient.disabled.end} horizontal;
 }
 
 .vertical-progress .progress-value {
-    background: ${colors.gradient.bar.start} ${colors.gradient.bar.end} horizontal;
+    background: ${bar.gradient.start} ${bar.gradient.end} horizontal;
     width: 100%;
 }
 
-.vertical-progress .progress-value:disabled {
-    background: ${colors.gradient.bar.disabled.start} ${colors.gradient.bar.disabled.end} horizontal;
+.vertical-progress:disabled .progress-value {
+    background: ${bar.gradient.disabled.start} ${bar.gradient.disabled.end} horizontal;
 }
 

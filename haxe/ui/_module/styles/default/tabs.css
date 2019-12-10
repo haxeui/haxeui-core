@@ -9,7 +9,7 @@
     width: auto;
     background-color: none;
     border-bottom-width: 1px;
-    border-bottom-color: ${borders.normal.color};
+    border-bottom-color: ${panel.border.color};
     border-top-width: 0px;
     clip: true;
 }
@@ -17,18 +17,19 @@
 .tabbar .tabbar-contents {
     border: none;
     border-bottom-width: 1px;
-    border-bottom-color: ${borders.normal.color};
+    border-bottom-color: ${panel.border.color};
 }
 
 .tabbar-button {
     border-radius: 0px;
-    background: ${colors.flat.normal} ${colors.flat.normal} vertical;
+    background: ${flat.background.color} ${flat.background.color} vertical;
+    border-color: ${panel.border.color};
     padding: 6px;
     vertical-align: bottom;
 }
 
 .tabbar-button:hover {
-    background: ${colors.flat.hover} ${colors.flat.hover} vertical;
+    background: ${flat.background.hover.color} ${flat.background.hover.color} vertical;
 }
 
 .tabbar-button:down {
@@ -37,10 +38,10 @@
 .tabbar-button-selected {
     border-radius: 0px;
 
-    border: 1px solid ${borders.normal.color};
+    border: 1px solid ${panel.border.color};
     border-bottom-width: 1px;
-    border-bottom-color: ${colors.panel.normal};
-    background-color: ${colors.panel.normal};
+    border-bottom-color: ${panel.background.color};
+    background-color: ${panel.background.color};
 }
 
 
@@ -75,7 +76,7 @@
     background-color: none;
     border-bottom-width: 0px;
     border-top-width: 1px;
-    border-top-color: ${borders.normal.color};
+    border-top-color: ${panel.border.color};
     clip: true;
 }
 
@@ -83,7 +84,7 @@
     border: none;
     border-bottom-width: 0px;
     border-top-width: 1px;
-    border-top-color: ${borders.normal.color};
+    border-top-color: ${panel.border.color};
 }
 
 .tabbar-button:bottom {
@@ -93,10 +94,10 @@
 .tabbar-button-selected:bottom {
     border-radius: 0px;
 
-    border: 1px solid ${borders.normal.color};
+    border: 1px solid ${panel.border.color};
     border-top-width: 1px;
-    border-top-color: ${colors.panel.normal};
-    background-color: ${colors.panel.normal};
+    border-top-color: ${panel.background.color};
+    background-color: ${panel.background.color};
 }
 
 /************************************************************************
@@ -112,7 +113,7 @@
 }
 
 .tabview .tabview-content {
-    border: 1px solid ${borders.normal.color};
+    border: 1px solid ${panel.border.color};
     padding: 5px;
     border-radius: 0px;
 }

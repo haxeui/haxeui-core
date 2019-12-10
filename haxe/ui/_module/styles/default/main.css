@@ -10,7 +10,7 @@
 }
 
 .modal-background {
-    background-color: ${colors.panel.normal};
+    background-color: ${panel.background.color};
     opacity: 0.75;
 }
 
@@ -19,7 +19,7 @@
 }
 
 .popup {
-    filter: ${filters.shadow.popup};
+    filter: ${default.popup.filter.shadow};
 }
 
 /************************************************************************

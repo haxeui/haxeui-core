@@ -62,6 +62,100 @@
             <style resource="haxeui-core/styles/default/menus.css" />
             <style resource="haxeui-core/styles/default/accordion.css" />
             
+            
+            
+            
+            <!-- "raised" items like buttons -->
+            <var name="raised.gradient.start" value="#ededed" />
+            <var name="raised.gradient.end" value="#e6e6e6" />
+            <var name="raised.gradient.hover.start" value="#f5f5f5" />
+            <var name="raised.gradient.hover.end" value="#f1f1f1" />
+            <var name="raised.gradient.down.start" value="#d2d2d2" />
+            <var name="raised.gradient.down.end" value="#c2c2c2" />
+            <var name="raised.gradient.disabled.start" value="#f5f5f5" />
+            <var name="raised.gradient.disabled.end" value="#f1f1f1" />
+            <var name="raised.border.color" value="#c5c5c5" />
+            <var name="raised.border.hover.color" value="#c5c5c5" />
+            <var name="rasied.border.down.color" value="#aaaaaa" />
+            <var name="rasied.border.disabled.color" value="#c2c2c2" />
+            <var name="raised.text.color" value="#222222" />
+            <var name="raised.text.hover.color" value="#000000" />
+            <var name="raised.text.down.color" value="#000000" />
+            <var name="raised.text.disabled.color" value="#c2c2c2" />
+
+            <!-- "sunken" items, like progress bar backgrounds -->
+            <var name="sunken.gradient.start" value="#f1f1f1" />
+            <var name="sunken.gradient.end" value="#ffffff" />
+            <var name="sunken.gradient.disabled.start" value="#f1f1f1" />
+            <var name="sunken.gradient.disabled.end" value="#f5f5f5" />
+            <var name="sunken.border.color" value="#ababab" />
+            <var name="sunken.filter.shadow" value="drop-shadow(1, 45, #888888, 0.2, 1, 1, 1, 3, true)" />
+            
+            <!-- "bar" items, like progress var values -->
+            <var name="bar.gradient.start" value="#6caadb" />
+            <var name="bar.gradient.end" value="#216aae" />
+            <var name="bar.gradient.disabled.start" value="#c8c8c8" />
+            <var name="bar.gradient.disabled.end" value="#aeaeae" />
+            
+            <!-- "inset" items, like textfields -->
+            <var name="inset.gradient.start" value="#ffffff" />
+            <var name="inset.gradient.end" value="#ffffff" />
+            <var name="inset.gradient.disabled.start" value="#f1f1f1" />
+            <var name="inset.gradient.disabled.end" value="#f5f5f5" />
+            <var name="inset.border.color" value="#ababab" />
+            <var name="inset.border.disabled.color" value="#c2c2c2" />
+            <var name="inset.filter.shadow" value="drop-shadow(1, 45, #888888, 0.2, 1, 1, 1, 3, true)" />
+            <var name="inset.text.color" value="#222222" />     
+            <var name="inset.text.alt.color" value="#c2c2c2" />     
+            <var name="inset.text.disabled.color" value="#c2c2c2" />     
+            
+            <!-- "panel" items, like... panels -->
+            <var name="panel.background.color" value="#ffffff" />
+            <var name="panel.border.color" value="#ababab" />
+            <var name="panel.border.disabled.color" value="#c2c2c2" />
+            
+            <!-- alternating items, like in listviews -->
+            <var name="alternating.background.color.even" value="#ffffff" />
+            <var name="alternating.background.color.odd" value="#f8f8f8" />
+            <var name="alternating.background.color.hover.even" value="#d9e5f2" />
+            <var name="alternating.background.color.hover.odd" value="#d9e5f2" />
+            <var name="alternating.background.color.disabled.even" value="#ffffff" />
+            <var name="alternating.background.color.disabled.odd" value="#f8f8f8" />
+
+            <!-- dialog items -->
+            <var name="dialog.background.color" value="#ffffff" />
+            <var name="dialog.background.title.color" value="#eeeeee" />
+            <var name="dialog.text.title.color" value="#909090" />
+            <var name="dialog.border.color" value="#ababab" />
+            <var name="dialog.filter.shadow" value="drop-shadow(1, 45, #000000, 0.2, 30, 2, 1, 3, false)" />
+            
+            <!-- selection colors -->
+            <var name="selection.background.color" value="#a7c4e2" />
+            <var name="selection.background.color.disabled" value="#ededed" />
+            <var name="selection.text.color" value="#ffffff" />
+            <var name="selection.text.disabled.color" value="#c2c2c2" />
+            
+            <!-- "flat" items, like scrollbar buttons -->
+            <var name="flat.background.color" value="#e9e9e9" />
+            <var name="flat.background.hover.color" value="#d7d7d7" />
+            <var name="flat.background.down.color" value="#525252" />
+            <var name="flat.background.disabled.color" value="#dddddd" />
+            
+            <!-- some general vars -->
+            <var name="default.border.radius" value="2px" />
+            <var name="default.text.font.name" value="Arial" />
+            <var name="default.text.font.size" value="12px" />
+            <var name="default.text.color" value="#222222" />
+            <var name="default.text.disabled.color" value="#c2c2c2" />
+            <var name="default.popup.filter.shadow" value="drop-shadow(1, 45, #000000, 0.15, 1, 1, 1, 3, false)" />
+            
+            
+            
+            
+            
+            
+            
+            <!--
             <var name="colors.gradient.normal.start" value="#EDEDED" />
             <var name="colors.gradient.normal.end" value="#E6E6E6" />
             <var name="colors.gradient.hover.start" value="#F5F5F5" />
@@ -114,6 +208,7 @@
             <var name="filters.shadow.popup" value="drop-shadow(1, 45, #000000, 0.15, 1, 1, 1, 3, false)" />
             <var name="filters.shadow.dialog" value="drop-shadow(1, 45, #000000, 0.2, 30, 2, 1, 3, false)" />
             <var name="filters.shadow.inset" value="drop-shadow(1, 45, #888888, 0.2, 1, 1, 1, 3, true)" />
+                -->
         </default>
         <native parent="default">
             <style resource="haxeui-core/styles/native/main.css" priority="-3" />

@@ -2,10 +2,10 @@
 ** BUTTONS
 *************************************************************************/
 .button {
-    background: ${colors.gradient.normal.start} ${colors.gradient.normal.end} vertical;
-    color: ${colors.fore.normal};
-    border: 1px solid ${borders.normal.color};
-    border-radius: ${borders.normal.radius};
+    background: ${raised.gradient.start} ${raised.gradient.end} vertical;
+    color: ${raised.text.color};
+    border: 1px solid ${raised.border.color};
+    border-radius: ${default.border.radius};
     padding: 5px 5px;
     cursor: pointer;
     width: auto;
@@ -14,16 +14,20 @@
     text-align: center;
 }
 
+.button .icon {
+    opacity: 1;
+}
+
 .button:hover {
-    background: ${colors.gradient.hover.start} ${colors.gradient.hover.end} vertical;
-    color: ${colors.fore.hover};
-    border-color: ${borders.hover.color};
+    background: ${raised.gradient.hover.start} ${raised.gradient.hover.end} vertical;
+    color: ${raised.text.hover.color};
+    border-color: ${raised.border.hover.color};
 }
 
 .button:down {
-    background: ${colors.gradient.down.start} ${colors.gradient.down.end} vertical;
-    color: ${colors.fore.down};
-    border-color: ${borders.down.color};
+    background: ${raised.gradient.down.start} ${raised.gradient.down.end} vertical;
+    color: ${raised.text.down.color};
+    border-color: ${rasied.border.down.color};
 }
 
 .button:active {
@@ -31,8 +35,12 @@
 }
 
 .button:disabled {
-    background: ${colors.gradient.normal.disabled.start} ${colors.gradient.normal.disabled.end} vertical;
-    color: ${colors.fore.disabled};
+    background: ${raised.gradient.disabled.start} ${raised.gradient.disabled.end} vertical;
+    color: ${raised.text.disabled.color};
     cursor: default;
-    border-color: ${borders.disabled.color};
+    border-color: ${rasied.border.disabled.color};
+}
+
+.button:disabled .icon {
+    opacity: .5;
 }

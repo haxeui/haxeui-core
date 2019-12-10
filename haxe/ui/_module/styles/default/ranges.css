@@ -2,51 +2,51 @@
 ** RANGE
 *************************************************************************/
 .range {
-    border: 1px solid ${borders.normal.color};
+    border: 1px solid ${sunken.border.color};
     padding: 2px;
-    border-radius: ${borders.normal.radius};
-    filter: ${filters.shadow.inset};
+    border-radius: ${default.border.radius};
+    filter: ${sunken.filter.shadow};
 }
 
 .range-value {
     border: none;
-    border-radius: ${borders.normal.radius};
+    border-radius: ${default.border.radius};
 }
 
 .horizontal-range {
-    background: ${colors.gradient.inset.start} ${colors.gradient.inset.end} vertical;
+    background: ${sunken.gradient.start} ${sunken.gradient.end} vertical;
     initial-width: 150px;
     initial-height: 20px;
 }    
 
 .horizontal-range:disabled {
-    background: ${colors.gradient.inset.disabled.start} ${colors.gradient.inset.disabled.end} vertical;
+    background: ${sunken.gradient.disabled.start} ${sunken.gradient.disabled.end} vertical;
 }    
 
 .horizontal-range .range-value {
-    background: ${colors.gradient.bar.start} ${colors.gradient.bar.end} vertical;
+    background: ${bar.gradient.start} ${bar.gradient.end} vertical;
     height: 100%;
 }
 
-.horizontal-range .range-value:disabled {
-    background: ${colors.gradient.bar.disabled.start} ${colors.gradient.bar.disabled.end} vertical;
+.horizontal-range:disabled .range-value {
+    background: ${bar.gradient.disabled.start} ${bar.gradient.disabled.end} vertical;
 }
 
 .vertical-range {
-    background: ${colors.gradient.inset.start} ${colors.gradient.inset.end} horizontal;
+    background: ${sunken.gradient.start} ${sunken.gradient.end} horizontal;
     initial-width: 20px;
     initial-height: 150px;
 }
 
 .vertical-range:disabled {
-    background: ${colors.gradient.inset.disabled.start} ${colors.gradient.inset.disabled.end} horizontal;
+    background: ${sunken.gradient.disabled.start} ${sunken.gradient.disabled.end} horizontal;
 }
 
 .vertical-range .range-value {
-    background: ${colors.gradient.bar.start} ${colors.gradient.bar.end} horizontal;
+    background: ${bar.gradient.start} ${bar.gradient.end} horizontal;
     width: 100%;
 }
 
-.vertical-range .range-value:disabled {
-    background: ${colors.gradient.bar.disabled.start} ${colors.gradient.bar.disabled.end} horizontal;
+.vertical-range:disabled .range-value {
+    background: ${bar.gradient.disabled.start} ${bar.gradient.disabled.end} horizontal;
 }

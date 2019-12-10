@@ -2,12 +2,12 @@
 ** TEXT FIELD
 *************************************************************************/
 .textfield {
-    background-color: ${colors.panel.inset};
-    color: ${colors.fore.lighter};
-    border: 1px solid ${borders.normal.color};
-    border-radius: ${borders.normal.radius};
+    background: ${inset.gradient.start} ${inset.gradient.start} vertical;
+    color: ${inset.text.color};
+    border: 1px solid ${inset.border.color};
+    border-radius: ${default.border.radius};
     padding: 5px 5px;
-    filter: ${filters.shadow.inset};
+    filter: ${inset.filter.shadow};
     initial-width: 150px;
     height: auto;
     spacing: 5px;
@@ -19,25 +19,25 @@
 }
 
 .textfield:empty {
-    color: ${colors.fore.lightest};
+    color: ${inset.text.alt.color};
 }
 
 .textfield:disabled {
-    color: ${colors.fore.disabled};
-    background: ${colors.gradient.inset.disabled.start} ${colors.gradient.inset.disabled.end} vertical;
-    border-color: ${borders.disabled.color};
+    color: ${inset.text.disabled.color};
+    background: ${inset.gradient.disabled.start} ${inset.gradient.disabled.end} vertical;
+    border-color: ${inset.border.disabled.color};
 }
 
 /************************************************************************
 ** TEXT AREA
 *************************************************************************/
 .textarea {
-    color: ${colors.fore.lighter};
-    border: 1px solid ${borders.normal.color};
-    border-radius: ${borders.normal.radius};
+    color: ${inset.text.color};
+    border: 1px solid ${inset.border.color};
+    border-radius: ${default.border.radius};
     padding: 1px;
-    filter: ${filters.shadow.inset};
-    background-color: ${colors.panel.inset};
+    filter: ${inset.filter.shadow};
+    background: ${inset.gradient.start} ${inset.gradient.start} vertical;
     initial-width: 150px;
     initial-height: 100px;
 }
@@ -47,11 +47,11 @@
 }
 
 .textarea:empty {
-    color: ${colors.fore.lightest};
+    color: ${inset.text.alt.color};
 }
 
 .textarea:disabled {
-    color: ${colors.fore.disabled};
-    background: ${colors.gradient.inset.disabled.start} ${colors.gradient.inset.disabled.end} vertical;
-    border-color: ${borders.disabled.color};
+    color: ${inset.text.disabled.color};
+    background: ${inset.gradient.disabled.start} ${inset.gradient.disabled.end} vertical;
+    border-color: ${inset.border.disabled.color};
 }
