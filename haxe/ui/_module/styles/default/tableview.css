@@ -27,6 +27,7 @@
     width: auto;
     height: auto;
     background-color: #FFFFFF;
+    spacing: 0;
 }
 
 .tableview .tableview-contents {

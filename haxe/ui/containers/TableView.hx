@@ -325,36 +325,27 @@ private class Layout extends VerticalVirtualLayout {
         var data = findComponent("tableview-contents", Box, true, "css");
         if (data != null) {
             for (item in data.childComponents) {
-                var biggest:Float = 0;
-                for (column in header.childComponents) {
+                var headerChildComponents = header.childComponents;
+                for (column in headerChildComponents) {
+                    var isLast = (headerChildComponents.indexOf(column) == (headerChildComponents.length - 1));
                     var itemRenderer = item.findComponent(column.id, Component);
                     if (itemRenderer != null && Std.is(itemRenderer, ItemRenderer) == false) {
                         itemRenderer = itemRenderer.findAncestor(ItemRenderer);
                     }
                     if (itemRenderer != null) {
                         itemRenderer.percentWidth = null;
-                        itemRenderer.width = column.width - item.layout.horizontalSpacing;
-                        if (itemRenderer.height > biggest) {
-                            biggest = itemRenderer.componentHeight;
+                        if (isLast == false) {
+                            itemRenderer.width = column.width - item.layout.horizontalSpacing;
+                        } else {
+                            itemRenderer.width = column.width;
                         }
                     }
                 }
                 data.componentWidth = item.width;
-                /*
-                if (biggest != 0) { // might not be a great idea - maybe rethink
-                    for (column in header.childComponents) {
-                        var itemRenderer = item.findComponent(column.id, Component).findAncestor(ItemRenderer);
-                        if (itemRenderer != null) {
-                            //trace(biggest);
-                            itemRenderer.height = biggest;
-                        }
-                    }
-                }
-                */
             }
             
             data.left = paddingLeft;
-            data.top = header.top + header.height;
+            data.top = header.top + header.height - 1;
         }
     }
     
