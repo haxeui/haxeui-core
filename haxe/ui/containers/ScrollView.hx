@@ -67,10 +67,10 @@ class ScrollView extends Component {
         var vscroll:VerticalScroll = findComponent(VerticalScroll);
         
         var rect = new Rectangle(contents.componentClipRect.left, contents.componentClipRect.top, contents.componentClipRect.width, contents.componentClipRect.height);
-        if (hscroll != null) {
+        if (hscroll != null && hscroll.hidden == false) {
             rect.height -= hscroll.height;
         }
-        if (vscroll != null) {
+        if (vscroll != null && vscroll.hidden == false) {
             rect.width -= vscroll.width;
         }
 
@@ -86,7 +86,9 @@ class ScrollView extends Component {
         if (vscroll != null) {
             var vpos:Float = vscroll.pos;
             if (component.top + component.height > vpos + rect.height) {
-                vscroll.pos = ((component.top + component.height) - rect.height);
+                // offset calc may be incorrect
+                var offset = (contents.layout.paddingTop + contents.layout.paddingBottom);
+                vscroll.pos = ((component.top + component.height) - rect.height) + offset;
             } else if (component.top < vpos) {
                 vscroll.pos = component.top;
             }

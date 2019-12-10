@@ -196,11 +196,31 @@ class Macros {
                         }
                         
                         builder.addGetter(f.name, f.type, macro {
-                            return Reflect.getProperty(findComponent($v{variable}), $v{field});
+                            var c = findComponent($v{variable});
+                            if (c == null) {
+                                trace("WARNING: no child component found: " + $v{variable});
+                                return Reflect.getProperty(c, $v{field});
+                            }
+                            var fieldIndex = Type.getInstanceFields(Type.getClass(c)).indexOf("get_" + $v{field});
+                            if (fieldIndex == -1) {
+                                trace("WARNING: no component getter found: " + $v{field});
+                                return Reflect.getProperty(c, $v{field});
+                            }
+                            return Reflect.getProperty(c, $v{field});
                         });
                         builder.addSetter(f.name, f.type, macro {
                             if (value != $i{f.name}) {
-                                Reflect.setProperty(findComponent($v{variable}), $v{field}, value);
+                                var c = findComponent($v{variable});
+                                if (c == null) {
+                                    trace("WARNING: no child component found: " + $v{variable});
+                                    return value;
+                                }
+                                var fieldIndex = Type.getInstanceFields(Type.getClass(c)).indexOf("set_" + $v{field});
+                                if (fieldIndex == -1) {
+                                    trace("WARNING: no component setter found: " + $v{field});
+                                    return value;
+                                }
+                                Reflect.setProperty(c, $v{field}, value);
                             }
                             return value;
                         });
