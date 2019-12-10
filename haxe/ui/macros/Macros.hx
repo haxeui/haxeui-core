@@ -199,12 +199,12 @@ class Macros {
                             var c = findComponent($v{variable});
                             if (c == null) {
                                 trace("WARNING: no child component found: " + $v{variable});
-                                return null;
+                                return Reflect.getProperty(c, $v{field});
                             }
                             var fieldIndex = Type.getInstanceFields(Type.getClass(c)).indexOf("get_" + $v{field});
                             if (fieldIndex == -1) {
                                 trace("WARNING: no component getter found: " + $v{field});
-                                return null;
+                                return Reflect.getProperty(c, $v{field});
                             }
                             return Reflect.getProperty(c, $v{field});
                         });
