@@ -91,7 +91,9 @@ class ItemRenderer extends Box {
     
     private function onItemChange(event:UIEvent) {
         var v = event.target.value;
-        Reflect.setProperty(_data, event.target.id, v);
+        if (_data != null) {
+            Reflect.setProperty(_data, event.target.id, v);
+        }
         var e = new ItemEvent(ItemEvent.COMPONENT_EVENT);
         e.bubble = true;
         e.source = event.target;

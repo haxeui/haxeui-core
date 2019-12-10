@@ -241,9 +241,11 @@ private class Events extends haxe.ui.events.Events  {
         var pos:Float = _slider.posFromCoord(coord);
         
         if (_activeThumb == _startThumb) {
+            pos -= _slider.start;
             _slider.start = pos;
         } else if (_activeThumb == _endThumb) {
-             _slider.end = pos;
+            pos -= _slider.start;
+            _slider.end = pos;
         }
     }
 }

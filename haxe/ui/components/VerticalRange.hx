@@ -66,7 +66,7 @@ class VerticalRangeLayout extends DefaultLayout {
                 value.height = 0;
                 value.hidden = true;
             } else {
-                value.height = Std.int(cy);
+                value.height = cy;
                 value.hidden = false;
             }
         }

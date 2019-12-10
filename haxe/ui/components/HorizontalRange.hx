@@ -66,7 +66,7 @@ class HorizontalRangeLayout extends DefaultLayout {
                 value.width = 0;
                 value.hidden = true;
             } else {
-                value.width = Std.int(cx);
+                value.width = cx;
                 value.hidden = false;
             }
         }
