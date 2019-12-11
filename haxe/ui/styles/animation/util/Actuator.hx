@@ -4,6 +4,7 @@ import haxe.ui.styles.animation.util.ColorPropertyDetails;
 import haxe.ui.styles.animation.util.PropertyDetails;
 import haxe.ui.styles.EasingFunction;
 import haxe.ui.util.Color;
+import haxe.ui.util.StringUtil;
 import haxe.ui.util.StyleUtil;
 
 @:structInit
@@ -109,8 +110,23 @@ class Actuator<T> {
 
         for (p in Reflect.fields(properties)) {
             var componentProperty:String = StyleUtil.styleProperty2ComponentProperty(p);
-            var start:Dynamic = Reflect.getProperty(target, componentProperty);
+            
             var end:Dynamic = Reflect.getProperty(properties, p);
+            switch (end) {
+                case Value.VDimension(Dimension.PERCENT(v)):
+                    componentProperty = "percent" + StringUtil.capitalizeFirstLetter(componentProperty);
+                case _:
+            }
+            
+            var start:Dynamic = Reflect.getProperty(target, componentProperty);
+            if (start == null) {
+                switch (end) {
+                    case Value.VDimension(Dimension.PERCENT(v)):
+                        start = 0;
+                    case _:
+                }
+            }
+            
             if (start == null || end == null) {
                 continue;
             }
@@ -119,17 +135,23 @@ class Actuator<T> {
                     var startColor:Color = cast(start, Color);
                     var endColor:Color = v;
                     var details:ColorPropertyDetails<T> = new ColorPropertyDetails(target,
-                    componentProperty,
-                    startColor,
-                    endColor.r - startColor.r,
-                    endColor.g - startColor.g,
-                    endColor.b - startColor.b,
-                    endColor.a - startColor.a
+                        componentProperty,
+                        startColor,
+                        endColor.r - startColor.r,
+                        endColor.g - startColor.g,
+                        endColor.b - startColor.b,
+                        endColor.a - startColor.a
                     );
                     if (_colorPropertyDetails == null) {
                         _colorPropertyDetails = [];
                     }
                     _colorPropertyDetails.push (details);
+                case Value.VDimension(Dimension.PERCENT(v)):    
+                    var val:Null<Float> = v;
+                    if (val != null) {
+                        var details:PropertyDetails<T> = new PropertyDetails(target, componentProperty, start, val - start);
+                        _propertyDetails.push (details);
+                    }
                 case _:
                     var val:Null<Float> = ValueTools.calcDimension(end);
                     if (val != null) {
@@ -171,7 +193,7 @@ class Actuator<T> {
     private function _apply(position:Float) {
         position = _easeFunc(position);
         for (details in _propertyDetails) {
-            Reflect.setProperty (target, details.propertyName, details.start + (details.change * position));
+            Reflect.setProperty(target, details.propertyName, details.start + (details.change * position));
         }
 
         for (details in _colorPropertyDetails) {
