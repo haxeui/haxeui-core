@@ -22,7 +22,7 @@ import haxe.ui.util.MathUtil;
 import haxe.ui.util.StringUtil;
 import haxe.ui.validation.IValidating;
 import haxe.ui.validation.ValidationManager;
-x
+
 /**
  Base class of all HaxeUI controls
 **/
