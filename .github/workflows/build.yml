@@ -9,7 +9,7 @@ jobs:
 
     strategy:
       matrix:
-        backend: [haxeui-html5]
+        backend: [haxeui-html5, haxeui-openfl]
 
     steps:
     - uses: actions/checkout@v1
