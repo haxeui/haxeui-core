@@ -1,20 +1,20 @@
 {
+    "version": "1.0.13",
     "contributors": [
         "haxeui",
         "ianharrigan",
         "_ibilon",
         "aW4KeNiNG"
     ],
-    "version": "1.0.12",
-    "dependencies": {
-        "hscript": ""
-    },
-    "releasenote": "tableview / slider / range tweaks",
+    "license": "MIT",
     "tags": [
         "ui",
         "gui"
     ],
-    "license": "MIT",
+    "releasenote": "Bug fixes & accordion overhaul",
+    "dependencies": {
+        "hscript": ""
+    },
     "name": "haxeui-core",
     "description": "The core library of the HaxeUI framework",
     "url": "https://github.com/haxeui/haxeui-core"
