@@ -26,6 +26,7 @@ try {
 
     if (platform == "linux64") {
         child_process.execSync('sudo add-apt-repository ppa:haxe/snapshots -y', {stdio: 'inherit'});
+        child_process.execSync('sudo rm -f /etc/apt/sources.list.d/dotnetdev.list /etc/apt/sources.list.d/microsoft-prod.list', {stdio: 'inherit'});
         child_process.execSync('sudo apt-get update', {stdio: 'inherit'});
         child_process.execSync('sudo apt install neko -y', {stdio: 'inherit'});
 
