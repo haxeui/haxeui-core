@@ -86,7 +86,7 @@ class Button extends InteractiveComponent {
     /**
      Whether this button is toggled or not (only relavant if toggle = true)
     **/
-    @:clonable @:behaviour(SelectedBehaviour, false)   public var selected:Bool;
+    @:clonable @:behaviour(SelectedBehaviour)           public var selected:Bool;
     
     /**
      The text (label) of this button
