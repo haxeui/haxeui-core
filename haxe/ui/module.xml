@@ -12,6 +12,7 @@
         <class package="haxe.ui.components" />
         <class package="haxe.ui.containers" />
         <class package="haxe.ui.containers.menus" />
+        <class package="haxe.ui.containers.properties" />
         <class name="haxe.ui.components.Label" alias="text" />
     </components>
 
@@ -73,6 +74,7 @@
             <style resource="haxeui-core/styles/default/calendars.css" />
             <style resource="haxeui-core/styles/default/menus.css" />
             <style resource="haxeui-core/styles/default/accordion.css" />
+            <style resource="haxeui-core/styles/default/propertygrids.css" />
         </default>
         <native parent="default">
             <style resource="haxeui-core/styles/native/main.css" priority="-3" />

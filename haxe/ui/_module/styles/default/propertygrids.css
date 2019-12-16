@@ -1,0 +1,86 @@
+.property-grid {
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.property-grid .scrollview-contents {
+    padding: 0;
+    width: 100%;
+    spacing: 0;
+}
+
+.property-group {
+    width: 100%;
+    spacing: 0;
+}
+
+.property-group-header {
+    background-color: #EEEEEE;
+    width: 100%;
+    padding: 5px;
+    border-color: #ABABAB;
+    border-bottom-width: 1px;
+    border-bottom-size: 1px;
+    cursor: pointer;
+}
+
+.property-group-header-icon {
+    vertical-align: center;
+}
+
+.property-group-header:expanded .property-group-header-icon {
+    resource: "haxeui-core/styles/default/down_arrow_square.png";
+}
+
+.property-group-header:collapsed .property-group-header-icon {
+    resource: "haxeui-core/styles/default/right_arrow_square.png";
+}
+
+.property-group-header-label {
+}
+
+.property-group-contents {
+    width: 100%;
+    spacing: 1;
+    background-color: #ABABAB;
+    padding-bottom: 1px;
+}
+
+.property-group-item-label-container {
+    width: 50%;
+    background-color: white;
+    height: 100%;
+    padding-left: 5px;
+}
+
+.property-group-item-editor-container {
+    width: 50%;
+    background-color: white;
+}        
+
+.property-group-item-label {
+    vertical-align: center;
+}
+
+.property-group-item-editor {
+    width: 100%;
+}
+
+.property-group .textfield {
+    border: none;
+    filter: none;
+    border-radius: 0;
+}
+
+.property-group .checkbox {
+    padding: 5px;
+    padding-left: 4px;
+}
+
+.property-group .number-stepper {
+    padding: 0;
+}
+
+.property-group .dropdown {
+    border: none;
+}
