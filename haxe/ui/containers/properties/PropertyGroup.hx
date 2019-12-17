@@ -10,6 +10,7 @@ import haxe.ui.components.TextField;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.events.MouseEvent;
+import haxe.ui.events.UIEvent;
 
 @:composite(Events, Builder)
 class PropertyGroup extends VBox {
@@ -112,7 +113,7 @@ private class Builder extends CompositeBuilder {
             
             var label = new Label();
             label.scriptAccess = false;
-            label.text = child.text;
+            label.text = prop.label;
             label.addClass("property-group-item-label");
             labelContainer.addComponent(label);
 
@@ -123,8 +124,10 @@ private class Builder extends CompositeBuilder {
             
             var editor = buildEditor(prop);
             editor.scriptAccess = false;
+            editor.id = child.id;
             editor.addClass("property-group-item-editor");
             editorContainer.addComponent(editor);
+            editor.registerEvent(UIEvent.CHANGE, onPropertyEditorChange);
             
             _propertyGroup.registerInternalEvents(Events, true);
             
@@ -132,6 +135,12 @@ private class Builder extends CompositeBuilder {
         }
         
         return null;
+    }
+    
+    private function onPropertyEditorChange(event:UIEvent) {
+        var newEvent = new UIEvent(UIEvent.CHANGE);
+        newEvent.target = event.target;
+        _component.findAncestor(PropertyGrid).dispatch(newEvent);
     }
     
     private function buildEditor(property:Property):Component {
