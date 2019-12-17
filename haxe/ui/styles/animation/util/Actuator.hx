@@ -156,7 +156,10 @@ class Actuator<T> {
                     var val:Null<Float> = ValueTools.calcDimension(end);
                     if (val != null) {
                         var details:PropertyDetails<T> = new PropertyDetails(target, componentProperty, start, val - start);
-                        _propertyDetails.push (details);
+                        _propertyDetails.push(details);
+                    } else {
+                        var details:PropertyDetails<T> = new PropertyDetails(target, componentProperty, start, end - start);
+                        _propertyDetails.push (details); 
                     }
             }
         }
