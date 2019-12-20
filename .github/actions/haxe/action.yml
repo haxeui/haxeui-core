@@ -1,0 +1,15 @@
+name: Install haxe
+author: Ian Harrigan
+description: Install & setup haxe for github actions
+
+inputs:
+  haxe-version:
+    description: 'Which version of haxe'
+    required: true
+  platform:
+    description: 'Which platform'
+    required: true
+
+runs:
+  using: 'node12'
+  main: 'main.js'

@@ -69,6 +69,10 @@ class ValueTools {
     }
     
     public static function compositeParts(value:Value):Int {
+        if (value == null) {
+            return 0;
+        }
+        
         switch (value) {
             case Value.VComposite(vl):
                 return vl.length;
@@ -78,6 +82,10 @@ class ValueTools {
     }
     
     public static function composite(value:Value):Array<Value> {
+        if (value == null) {
+            return null;
+        }
+        
         switch (value) {
             case Value.VComposite(vl):
                 return vl;
@@ -155,6 +163,10 @@ class ValueTools {
     }
 
     public static function time(value:Value):Null<Float> {
+        if (value == null) {
+            return null;
+        }
+        
         switch (value) {
             case Value.VTime(v, unit):
                 switch (unit) {
@@ -171,6 +183,10 @@ class ValueTools {
     }
     
     public static function string(value:Value):String {
+        if (value == null) {
+            return null;
+        }
+        
         switch (value) {
             case Value.VString(v) | Value.VConstant(v):
                 return v;
@@ -180,6 +196,10 @@ class ValueTools {
     }
     
     public static function bool(value:Value):Null<Bool> {
+        if (value == null) {
+            return null;
+        }
+        
         switch (value) {
             case Value.VBool(v):
                 return v;
@@ -189,6 +209,10 @@ class ValueTools {
     }
     
     public static function int(value:Value):Null<Int> {
+        if (value == null) {
+            return null;
+        }
+        
         switch (value) {
             case Value.VColor(v):
                 return v;
@@ -204,6 +228,10 @@ class ValueTools {
     }
     
     public static function float(value:Value):Null<Float> {
+        if (value == null) {
+            return null;
+        }
+        
         switch (value) {
             case Value.VNumber(v):
                 return v;
@@ -217,6 +245,10 @@ class ValueTools {
     }
     
     public static function any(v:Value):Any {
+        if (v == null) {
+            return null;
+        }
+        
         switch (v) {
             case Value.VNumber(v):
                 return v;
@@ -243,6 +275,10 @@ class ValueTools {
     }
     
     public static function percent(value:Value):Null<Float> {
+        if (value == null) {
+            return null;
+        }
+        
         switch (value) {
             case Value.VDimension(v):
                 switch (v) {
@@ -257,6 +293,10 @@ class ValueTools {
     }
     
     public static function constant(value:Value, required:String):Bool {
+        if (value == null) {
+            return false;
+        }
+        
         switch (value) {
             case Value.VConstant(v):
                 return v == required;
@@ -266,6 +306,10 @@ class ValueTools {
     }
     
     public static function calcDimension(value:Value):Null<Float> {
+        if (value == null) {
+            return null;
+        }
+        
         switch (value) {
             case Value.VDimension(v):
                 switch (v) {

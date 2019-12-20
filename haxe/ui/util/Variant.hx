@@ -119,6 +119,7 @@ abstract Variant(VariantType) from VariantType {
         }
         return switch (this) {
             case VT_Bool(s): s;
+            case VT_String(s): s == "true";
             default: throw "Variant Type Error";
         }
     }

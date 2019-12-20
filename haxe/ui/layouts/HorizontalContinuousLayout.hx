@@ -65,6 +65,12 @@ class HorizontalContinuousLayout extends HorizontalLayout {
                 dimensions.push([]);
             }
 
+            if (dimensions[row] == null) { // too small to display anything, lets pop our prev row and overwrite with adjusted one column
+                ypos -= verticalSpacing;
+                row--;
+                dimensions[row].pop();
+            }
+            
             rc.left = xpos;
             rc.top = ypos;
             dimensions[row].push(rc);

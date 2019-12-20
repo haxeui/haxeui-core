@@ -5,11 +5,11 @@
         "_ibilon",
         "aW4KeNiNG"
     ],
-    "version": "1.0.12",
+    "version": "1.0.14",
     "dependencies": {
         "hscript": ""
     },
-    "releasenote": "tableview / slider / range tweaks",
+    "releasenote": "button fix",
     "tags": [
         "ui",
         "gui"

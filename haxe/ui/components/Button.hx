@@ -7,6 +7,7 @@ import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.Events;
+import haxe.ui.events.UIEvent;
 import haxe.ui.focus.FocusManager;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.styles.Style;
@@ -85,7 +86,7 @@ class Button extends InteractiveComponent {
     /**
      Whether this button is toggled or not (only relavant if toggle = true)
     **/
-    @:clonable @:behaviour(SelectedBehaviour)          public var selected:Bool;
+    @:clonable @:behaviour(SelectedBehaviour)           public var selected:Bool;
     
     /**
      The text (label) of this button
@@ -333,6 +334,7 @@ private class SelectedBehaviour extends DataBehaviour {
             button.addClass(":down");
         }
         button.removeClass(":hover");
+        _component.dispatch(new UIEvent(UIEvent.CHANGE));
     }
 }
 
