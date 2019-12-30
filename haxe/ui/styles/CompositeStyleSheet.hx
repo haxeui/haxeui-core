@@ -1,6 +1,7 @@
 package haxe.ui.styles;
 
 import haxe.ui.core.Component;
+import haxe.ui.core.Screen;
 import haxe.ui.styles.StyleSheet;
 import haxe.ui.styles.elements.AnimationKeyFrames;
 
@@ -37,7 +38,7 @@ class CompositeStyleSheet {
         _styleSheets.remove(styleSheet);
     }
     
-    public function parse(css:String, styleSheetName:String = "default") {
+    public function parse(css:String, styleSheetName:String = "default", invalidateAll:Bool = false) {
         var s = findStyleSheet(styleSheetName);
         if (s == null) {
             s = new StyleSheet();
@@ -47,6 +48,10 @@ class CompositeStyleSheet {
         
         s.parse(css);
         _animations = null;
+        
+        if (invalidateAll == true) {
+            Screen.instance.invalidateAll();
+        }
     }
     
     public function findStyleSheet(styleSheetName:String):StyleSheet {
