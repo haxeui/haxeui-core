@@ -38,9 +38,11 @@ class Screen extends ScreenImpl {
         #if !haxeui_android
         component.ready();
         #end
-        rootComponents.push(component);
-        FocusManager.instance.pushView(component);
-        component.registerEvent(UIEvent.RESIZE, _onRootComponentResize);    //refresh vh & vw
+        if (rootComponents.indexOf(component) == -1) {
+            rootComponents.push(component);
+            FocusManager.instance.pushView(component);
+            component.registerEvent(UIEvent.RESIZE, _onRootComponentResize);    //refresh vh & vw
+        }
     }
 
     public override function removeComponent(component:Component) {
