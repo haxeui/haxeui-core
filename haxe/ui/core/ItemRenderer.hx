@@ -127,7 +127,7 @@ class ItemRenderer extends Box {
                     
                     if (propValue == "true" || propValue == "yes" || propValue == "false" || propValue == "no") {
                         propValue = (propValue == "true" || propValue == "yes");
-                    } else if (~/^[0-9]*$/i.match(propValue)) {
+                    } else if (~/^[0-9]*$/i.match(Std.string(propValue))) {
                         propValue = Std.parseInt(propValue);
                     }
                     
