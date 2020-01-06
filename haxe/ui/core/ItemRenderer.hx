@@ -5,6 +5,7 @@ import haxe.ui.containers.Box;
 import haxe.ui.events.ItemEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
+import haxe.ui.util.TypeConverter;
 
 class ItemRenderer extends Box {
     public function new() {
@@ -123,14 +124,7 @@ class ItemRenderer extends Box {
             } else {
                 var c:Component = findComponent(f, null, true);
                 if (c != null && v != null) {
-                    var propValue:Dynamic = v;
-                    
-                    if (propValue == "true" || propValue == "yes" || propValue == "false" || propValue == "no") {
-                        propValue = (propValue == "true" || propValue == "yes");
-                    } else if (~/^[0-9]*$/i.match(propValue)) {
-                        propValue = Std.parseInt(propValue);
-                    }
-                    
+                    var propValue:Dynamic = TypeConverter.convert(v);
                     c.value = propValue;
                     
                     if (c.hasEvent(UIEvent.CHANGE, onItemChange) == false) {

@@ -221,6 +221,7 @@ class VirtualLayout extends ScrollViewLayout {
         }
     }
 
+    @:access(haxe.ui.backend.ComponentImpl)
     private function getRenderer(cls:Class<ItemRenderer>, index:Int):ItemRenderer {
         var instance:ItemRenderer = null;
         var comp:IVirtualContainer = cast(_component, IVirtualContainer);
@@ -248,6 +249,9 @@ class VirtualLayout extends ScrollViewLayout {
             _component.dispatch(new UIEvent(UIEvent.RENDERER_CREATED, instance));
         }
 
+        if (_component.hidden == false) {
+            instance.handleVisibility(true);
+        }
         return cast(instance, ItemRenderer);
     }
 

@@ -5,11 +5,11 @@
         "_ibilon",
         "aW4KeNiNG"
     ],
-    "version": "1.0.14",
+    "version": "1.0.16",
     "dependencies": {
         "hscript": ""
     },
-    "releasenote": "button fix",
+    "releasenote": "Neko fix",
     "tags": [
         "ui",
         "gui"

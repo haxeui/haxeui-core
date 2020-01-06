@@ -12,6 +12,7 @@ import haxe.ui.parsers.ui.LayoutInfo;
 import haxe.ui.parsers.ui.resolvers.FileResourceResolver;
 import haxe.ui.scripting.ConditionEvaluator;
 import haxe.ui.util.StringUtil;
+import haxe.ui.util.TypeConverter;
 
 #if macro
 import haxe.ui.macros.helpers.ClassBuilder;
@@ -194,9 +195,9 @@ class ComponentMacros {
         assignProperties(builder, componentVarName, c.properties);
         
         if (classInfo.hasInterface("haxe.ui.core.IDataComponent") == true && c.data != null) {
-            var ds = new haxe.ui.data.DataSourceFactory<Dynamic>().fromString(c.dataString, haxe.ui.data.ArrayDataSource);
+            var ds = new haxe.ui.data.DataSourceFactory<Dynamic>().fromString(c.dataString, haxe.ui.data.ListDataSource);
             var dsVarName = 'ds${id}';
-            builder.add(macro var $dsVarName = new haxe.ui.data.ArrayDataSource<Dynamic>());
+            builder.add(macro var $dsVarName = new haxe.ui.data.ListDataSource<Dynamic>());
             for (i in 0...ds.size) {
                 var item = ds.get(i);
                 builder.add(macro $i{dsVarName}.add($v{item}));
@@ -248,23 +249,10 @@ class ComponentMacros {
     // certain things dont actually apply to layouts (namely "ComponentFieldMap", "on" and "${")
     // but they shouldnt cause any issues with layouts and the reuse is useful
     private static function assignProperties(builder:CodeBuilder, varName:String, properties:Map<String, String>) {
-        var numberEReg:EReg = ~/^-?\d+(\.(\d+))?$/;
         for (propName in properties.keys()) {
             var propValue = properties.get(propName);
             propName = ComponentFieldMap.mapField(propName);
-            var propExpr = if (propValue == "true" || propValue == "yes" || propValue == "false" || propValue == "no") {
-                macro $v{propValue == "true" || propValue == "yes"};
-            } else {
-                if(numberEReg.match(propValue)) {
-                    if(numberEReg.matched(2) != null) {
-                        macro $v{Std.parseFloat(propValue)};
-                    } else {
-                        macro $v{Std.parseInt(propValue)};
-                    }
-                } else {
-                    macro $v{propValue};
-                }
-            }
+            var propExpr = macro $v{TypeConverter.convert(propValue)};
 
             if (StringTools.startsWith(propName, "on")) {
                 builder.add(macro $i{varName}.addScriptEvent($v{propName}, $propExpr));
