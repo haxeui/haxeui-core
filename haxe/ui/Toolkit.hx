@@ -27,6 +27,7 @@ import haxe.ui.styles.StyleSheet;
 import haxe.ui.themes.ThemeManager;
 import haxe.ui.util.GenericConfig;
 import haxe.ui.util.Properties;
+import haxe.ui.util.TypeConverter;
 import haxe.ui.util.Variant;
 
 class Toolkit {
@@ -233,12 +234,7 @@ class Toolkit {
             if (StringTools.startsWith(propName, "on")) {
                 component.addScriptEvent(propName, propValue);
             } else {
-                if (propValue == "true" || propValue == "yes" || propValue == "false" || propValue == "no") {
-                    propValue = (propValue == "true" || propValue == "yes");
-                } else if (Std.parseInt(propValue) != null) {
-                    propValue = Std.parseInt(propValue);
-                }
-                
+                propValue = TypeConverter.convert(propValue);
                 Reflect.setProperty(component, propName, propValue);
             }
         }
