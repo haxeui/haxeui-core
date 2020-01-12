@@ -321,6 +321,8 @@ private class ToggleBehaviour extends Behaviour {
 }
 
 @:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+@:access(haxe.ui.components.ButtonEvents)
 private class SelectedBehaviour extends DataBehaviour {
     private override function validateData() {
         var button:Button = cast(_component, Button);
@@ -334,7 +336,7 @@ private class SelectedBehaviour extends DataBehaviour {
             button.addClass(":down");
         }
         button.removeClass(":hover");
-        _component.dispatch(new UIEvent(UIEvent.CHANGE));
+        cast(button._internalEvents, ButtonEvents).dispatchChanged();
     }
 }
 
@@ -467,6 +469,10 @@ class ButtonEvents extends haxe.ui.events.Events {
         if (_button.hitTest(event.screenX, event.screenY)) {
             _button.addClass(":hover");
         }
+    }
+    
+    private function dispatchChanged() {
+        _button.dispatch(new UIEvent(UIEvent.CHANGE));
     }
 }
 

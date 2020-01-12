@@ -380,6 +380,10 @@ class DropDownEvents extends ButtonEvents {
         
         hideDropDown();
     }
+
+    // override and do nothing
+    private override function dispatchChanged() {
+    }
 }
 
 //***********************************************************************************************************
