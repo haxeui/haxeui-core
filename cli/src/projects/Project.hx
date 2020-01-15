@@ -63,6 +63,11 @@ class Project {
             s = StringTools.replace(s, "${" + k + "}", vars.get(k));
         }
         
+        var env = Sys.environment();
+        for (k in env.keys()) {
+            s = StringTools.replace(s, "${" + k + "}", env.get(k));
+        }
+        
         return s;
     }
     

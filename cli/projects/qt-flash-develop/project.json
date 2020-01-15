@@ -1,0 +1,11 @@
+{
+    "name": "qt-flash-develop",
+    "type": "template",
+    "subProjects": [
+        "shared", "qt-shared"
+    ],
+    "templates": [
+        { "src": "qt.hxproj", "dst": "${target}/qt.hxproj"},
+        { "src": "run-qt.bat", "dst": "${target}/run-qt.bat"}
+    ]
+}
