@@ -131,10 +131,14 @@ class Behaviours {
             var info = _registry.get(id);
             if (info != null) {
                 b = Type.createInstance(info.cls, [_component]);
-                b.config = info.config;
-                b.id = id;
-                _instances.set(id, b);
-                _actualUpdateOrder = null;
+                if (b != null) {
+                    b.config = info.config;
+                    b.id = id;
+                    _instances.set(id, b);
+                    _actualUpdateOrder = null;
+                } else {
+                    trace("WARNING: problem creating behaviour class '" + info.cls +"' for '" + Type.getClassName(Type.getClass(_component)) + ":" + id + "'");
+                }
             }
         }
 
