@@ -70,6 +70,7 @@ class Style {
     public var borderRightSize:Null<Float>;
     public var borderRadius:Null<Float>;
     public var borderOpacity:Null<Float>;
+    public var borderStyle:Null<String>;
     
     public var icon:Null<String>;
     public var iconPosition:Null<String>;
@@ -227,6 +228,8 @@ class Style {
                     borderRadius = ValueTools.calcDimension(v.value);
                 case "border-opacity":
                     borderOpacity = ValueTools.float(v.value);
+                case "border-style":
+                    borderStyle = ValueTools.string(v.value);
                     
                 case "icon":
                     switch (v.value) {
@@ -401,6 +404,7 @@ class Style {
 
         if (s.borderRadius != null) borderRadius = s.borderRadius;
         if (s.borderOpacity != null) borderOpacity = s.borderOpacity;
+        if (s.borderStyle != null) borderStyle = s.borderStyle;
 
         if (s.filter != null) filter = s.filter.copy();
         if (s.resource != null) resource = s.resource;
@@ -509,6 +513,7 @@ class Style {
 
         if (s.borderRadius != borderRadius) return false;
         if (s.borderOpacity != borderOpacity) return false;
+        if (s.borderStyle != borderStyle) return false;
 
         if (s.filter != filter) return false;
         if (s.resource != resource) return false;
