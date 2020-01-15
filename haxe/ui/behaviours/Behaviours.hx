@@ -65,8 +65,9 @@ class Behaviours {
                 _registry.set(id, info);
             } else {
                 #if debug
-                trace("WARNING: no native behaviour found for " + Type.getClassName(Type.getClass(_component)) + "::" + id + ", using DefaultBehaviour");
+                //trace("WARNING: no native behaviour found for " + Type.getClassName(Type.getClass(_component)) + "::" + id + ", using DefaultBehaviour");
                 #end
+                /*
                 var registered = _registry.get(id);
                 var info:BehaviourInfo = {
                     id: id,
@@ -76,6 +77,7 @@ class Behaviours {
                     isSet: false
                 }
                 _registry.set(id, info);
+                */
             }
         }
     }
