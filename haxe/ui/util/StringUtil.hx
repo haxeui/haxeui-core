@@ -12,13 +12,17 @@ class StringUtil {
     }
 
     public static function capitalizeHyphens(s:String):String {
+        return capitalizeDelim(s, "-");
+    }
+
+    public static function capitalizeDelim(s:String, d:String):String {
         var r:String = s;
-        var n:Int = r.indexOf("-");
+        var n:Int = r.indexOf(d);
         while (n != -1) {
             var before:String = r.substr(0, n);
             var after:String = r.substr(n + 1, r.length);
             r = before + capitalizeFirstLetter(after);
-            n = r.indexOf("-", n + 1);
+            n = r.indexOf(d, n + 1);
         }
         return r;
     }
