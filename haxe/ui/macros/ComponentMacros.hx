@@ -273,9 +273,16 @@ class ComponentMacros {
         }
     }
     
-    private static inline function assignField(builder:CodeBuilder, varName:String, field:String, value:Any) {
-        if (Std.string(value).indexOf("${") != -1) {
+    private static function assignField(builder:CodeBuilder, varName:String, field:String, value:Any) {
+        var stringValue = Std.string(value);
+        if (stringValue.indexOf("${") != -1) {
             builder.add(macro haxe.ui.binding.BindingManager.instance.add($i{varName}, $v{field}, $v{value}));
+            if (stringValue.indexOf("${") == 0 && stringValue.indexOf("}") == stringValue.length - 1) {
+                var extractedValue = stringValue.substring(2, stringValue.length - 1);
+                var e = Context.parse(extractedValue, Context.currentPos());
+                builder.add(macro $i{varName}.$field = $e{e});
+                return;
+            }
         }
         
         builder.add(macro $i{varName}.$field = $v{value});
