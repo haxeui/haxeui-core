@@ -48,9 +48,13 @@
     cursor: pointer;
 }
 
-.menuitem-label, .menuitem-checkbox, .menuitem-optionbox {
-    width: 100%;
+.menuitem-label, .menuitem-checkbox, .menuitem-optionbox, .menuitem-shortcut-label {
+    width: 50%;
     vertical-align: center;
+}
+
+.menuitem-shortcut-label {
+    text-align: right;
 }
 
 .menuitem-icon {

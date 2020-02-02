@@ -1,12 +1,14 @@
 package haxe.ui.containers.menus;
 
 import haxe.ui.components.CheckBox;
+import haxe.ui.components.Label;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.behaviours.DataBehaviour;
 
 @:composite(Builder)
 class MenuCheckBox extends MenuItem {
     @:clonable @:behaviour(TextBehaviour)           public var text:String;
+    @:clonable @:behaviour(ShortcutTextBehaviour)   public var shortcutText:String;
     @:clonable @:behaviour(SelectedBehaviour)       public var selected:Bool;
 }
 
@@ -25,6 +27,16 @@ private class TextBehaviour extends DataBehaviour {
         }
         
         checkbox.text = _value;
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class ShortcutTextBehaviour extends DataBehaviour {
+    private override function validateData() {
+        var label:Label = _component.findComponent("menuitem-shortcut-label", false);
+        if (label != null) {
+            label.text = _value;
+        }
     }
 }
 
@@ -56,5 +68,11 @@ private class Builder extends CompositeBuilder {
         _checkbox.styleNames = "menuitem-checkbox";
         _checkbox.scriptAccess = false;
         _component.addComponent(_checkbox);
+        
+        var label = new Label();
+        label.id = "menuitem-shortcut-label";
+        label.styleNames = "menuitem-shortcut-label";
+        label.scriptAccess = false;
+        _component.addComponent(label);
     }
 }

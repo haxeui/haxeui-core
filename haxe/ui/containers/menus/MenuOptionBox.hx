@@ -1,4 +1,5 @@
 package haxe.ui.containers.menus;
+import haxe.ui.components.Label;
 import haxe.ui.components.OptionBox;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.behaviours.DataBehaviour;
@@ -7,6 +8,7 @@ import haxe.ui.behaviours.DataBehaviour;
 class MenuOptionBox extends MenuItem {
     @:clonable @:behaviour(GroupBehaviour)          public var componentGroup:String;
     @:clonable @:behaviour(TextBehaviour)           public var text:String;
+    @:clonable @:behaviour(ShortcutTextBehaviour)   public var shortcutText:String;
     @:clonable @:behaviour(SelectedBehaviour)       public var selected:Bool;
 }
 
@@ -25,6 +27,16 @@ private class GroupBehaviour extends DataBehaviour {
         }
         
         optionbox.componentGroup = _value;
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class ShortcutTextBehaviour extends DataBehaviour {
+    private override function validateData() {
+        var label:Label = _component.findComponent("menuitem-shortcut-label", false);
+        if (label != null) {
+            label.text = _value;
+        }
     }
 }
 
@@ -71,5 +83,11 @@ private class Builder extends CompositeBuilder {
         _optionbox.styleNames = "menuitem-optionbox";
         _optionbox.scriptAccess = false;
         _component.addComponent(_optionbox);
+        
+        var label = new Label();
+        label.id = "menuitem-shortcut-label";
+        label.styleNames = "menuitem-shortcut-label";
+        label.scriptAccess = false;
+        _component.addComponent(label);
     }
 }

@@ -11,6 +11,7 @@ import haxe.ui.events.Events;
 @:composite(Events, Builder)
 class MenuItem extends HBox {
     @:clonable @:behaviour(TextBehaviour)           public var text:String;
+    @:clonable @:behaviour(ShortcutTextBehaviour)   public var shortcutText:String;
     @:clonable @:behaviour(IconBehaviour)           public var icon:String;
     @:clonable @:behaviour(ExpandableBehaviour)     public var expandable:Bool;
 }
@@ -21,8 +22,18 @@ class MenuItem extends HBox {
 @:dox(hide) @:noCompletion
 private class TextBehaviour extends DataBehaviour {
     private override function validateData() {
-        var label:Label = _component.findComponent(Label, false);
+        var label:Label = _component.findComponent("menuitem-label", false);
         label.text = _value;
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class ShortcutTextBehaviour extends DataBehaviour {
+    private override function validateData() {
+        var label:Label = _component.findComponent("menuitem-shortcut-label", false);
+        if (label != null) {
+            label.text = _value;
+        }
     }
 }
 
@@ -102,6 +113,12 @@ private class Builder extends CompositeBuilder {
         var label = new Label();
         label.id = "menuitem-label";
         label.styleNames = "menuitem-label";
+        label.scriptAccess = false;
+        _component.addComponent(label);
+        
+        var label = new Label();
+        label.id = "menuitem-shortcut-label";
+        label.styleNames = "menuitem-shortcut-label";
         label.scriptAccess = false;
         _component.addComponent(label);
     }
