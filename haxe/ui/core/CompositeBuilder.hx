@@ -1,4 +1,5 @@
 package haxe.ui.core;
+
 import haxe.ui.styles.Style;
 import haxe.ui.util.MathUtil;
 
@@ -16,11 +17,17 @@ class CompositeBuilder {
     }
     
     public function onInitialize() {
-        
     }
     
     public function onReady() {
-        
+    }
+    
+    public function show():Bool {
+        return false;
+    }
+    
+    public function hide():Bool {
+        return false;
     }
     
     public var numComponents(get, never):Null<Int>;

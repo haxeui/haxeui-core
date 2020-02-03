@@ -117,7 +117,7 @@ class ComponentEvents extends ComponentContainer {
     private var _disabledEvents:EventMap;
     private static var INTERACTIVE_EVENTS:Array<String> = [
         MouseEvent.MOUSE_MOVE, MouseEvent.MOUSE_OVER, MouseEvent.MOUSE_OUT, MouseEvent.MOUSE_DOWN,
-        MouseEvent.MOUSE_UP, MouseEvent.MOUSE_WHEEL, MouseEvent.CLICK, MouseEvent.DOUBLE_CLICK, KeyboardEvent.KEY_DOWN,
+        MouseEvent.MOUSE_UP, MouseEvent.MOUSE_WHEEL, MouseEvent.CLICK, MouseEvent.DBL_CLICK, KeyboardEvent.KEY_DOWN,
         KeyboardEvent.KEY_UP
     ];
     

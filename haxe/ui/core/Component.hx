@@ -685,6 +685,13 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     **/
     @:dox(group = "Display tree related properties and methods")
     public function hide() {
+        if (_compositeBuilder != null) {
+            var v = _compositeBuilder.hide();
+            if (v != true) {
+                return;
+            }
+        }
+        
         if (_hidden == false) {
             handleVisibility(false);
             _hidden = true;
@@ -701,6 +708,13 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     **/
     @:dox(group = "Display tree related properties and methods")
     public function show() {
+        if (_compositeBuilder != null) {
+            var v = _compositeBuilder.show();
+            if (v != true) {
+                return;
+            }
+        }
+        
         if (_hidden == true) {
             handleVisibility(true);
             _hidden = false;

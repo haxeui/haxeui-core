@@ -8,7 +8,7 @@ class MouseEvent extends UIEvent {
     public static inline var MOUSE_UP:String = "mouseup";
     public static inline var MOUSE_WHEEL:String = "mousewheel";
     public static inline var CLICK:String = "click";
-	public static inline var DOUBLE_CLICK:String = "doubleclick";
+	public static inline var DBL_CLICK:String = "doubleclick";
     public static inline var RIGHT_CLICK:String = "rightclick";
     public static inline var RIGHT_MOUSE_DOWN:String = "rightmousedown";
     public static inline var RIGHT_MOUSE_UP:String = "rightmouseup";
