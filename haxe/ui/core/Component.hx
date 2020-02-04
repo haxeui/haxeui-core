@@ -687,7 +687,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     public function hide() {
         if (_compositeBuilder != null) {
             var v = _compositeBuilder.hide();
-            if (v != true) {
+            if (v == true) {
                 return;
             }
         }
@@ -710,7 +710,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     public function show() {
         if (_compositeBuilder != null) {
             var v = _compositeBuilder.show();
-            if (v != true) {
+            if (v == true) {
                 return;
             }
         }
