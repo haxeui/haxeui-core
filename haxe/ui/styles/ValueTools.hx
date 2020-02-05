@@ -52,6 +52,7 @@ class ValueTools {
         } else if (timeEReg.match(s)) {
             v = Value.VTime(Std.parseFloat(timeEReg.matched(1)), timeEReg.matched(2));
         } else {
+            s = StringTools.replace(s, ",", " ");
             var arr = s.split(" ");
             if (arr.length == 1) {
                 v = Value.VConstant(s);

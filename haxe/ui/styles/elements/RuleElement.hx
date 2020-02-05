@@ -94,7 +94,7 @@ class RuleElement {
             case "spacing":
                 processComposite(d, ["horizontal-spacing", "vertical-spacing"]);
             case "background":
-                processComposite(d, ["background-color", "background-color-end", "background-gradient-style"]);
+                processBackground(d);
             case "border":
                 processComposite(d, ["border-size", "border-style", "border-color"]);
             case "border-size":    
@@ -125,6 +125,68 @@ class RuleElement {
             case _:
                 directives.set(d.directive, d);
         }
+    }
+    
+    private function processBackground(d:Directive) {
+        switch (d.value) {
+            case VComposite(vl):
+                var colorCount:Int = 0;
+                var locationCount:Int = 0;
+                var colDif:Bool = false;
+                var lastCol:Null<Int> = null;
+                for (item in vl) {
+                    switch(item) {
+                        case VColor(v):
+                            colorCount++;
+                            if (lastCol != null && lastCol != v) {
+                                colDif = true;
+                            }
+                            lastCol = v;
+                        case VDimension(Dimension.PERCENT(v)):
+                            locationCount++;
+                        default:    
+                    }
+                }
+                
+                var copy:Array<Value> = [];
+                if (colDif == true) {
+                    var n = 0;
+                    var p:Float = 0;
+                    for (item in vl) {
+                        switch (item) {
+                            case VColor(v):
+                                copy.push(item);
+                                if (colorCount != locationCount) {
+                                    copy.push(VDimension(Dimension.PERCENT(p)));
+                                    p += 100 / (colorCount - 1);
+                                    locationCount++;
+                                }
+                            case VDimension(v):
+                                copy.push(item);
+                            case VConstant(v):
+                                if (v == "horizontal" || v == "vertical") {
+                                    var nd = new Directive("background-gradient-style", VConstant(v));
+                                    directives.set(nd.directive, nd);
+                                }
+                            default:
+                        }
+                        n++;
+                    }
+                } else {
+                    for (item in vl) {
+                        switch (item) {
+                            case VColor(v):
+                                copy.push(item);
+                                break;
+                            default:    
+                        }
+                    }
+                }
+                
+                d.value = VComposite(copy);
+            default:    
+        }
+        directives.set(d.directive, d);
     }
     
     private function processComposite(d:Directive, parts:Array<String>, duplicate:Bool = false) {

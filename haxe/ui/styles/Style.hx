@@ -5,7 +5,14 @@ import haxe.ui.filters.FilterParser;
 import haxe.ui.styles.animation.Animation.AnimationOptions;
 import haxe.ui.styles.elements.Directive;
 
+typedef StyleColorPair = {
+    var color:Null<Int>;
+    var location:Null<Float>;
+}
+
 class Style {
+    public var backgroundColors:Array<StyleColorPair>;
+    
     public var left:Null<Float>;
     public var top:Null<Float>;
     
@@ -167,12 +174,33 @@ class Style {
                 case "background-color":
                     switch (v.value) {
                         default:    
-                            backgroundColor = ValueTools.int(v.value);
-                            if (map.exists("background-color-end")) {
-                                backgroundColorEnd = ValueTools.int(map.get("background-color-end").value);
-                            } else {
-                                backgroundColorEnd = null;
+                            backgroundColors = [];
+                            backgroundColors.push({
+                                color: ValueTools.int(v.value),
+                                location: null
+                            });
+                    }
+                case "background":
+                    switch (v.value) {
+                        case VComposite(vl):
+                            backgroundColors = [];
+                            var i = 0;
+                            while (i < vl.length) {
+                                var col = vl[i];
+                                var location = vl[i + 1];
+                                backgroundColors.push({
+                                    color: ValueTools.int(col),
+                                    location: ValueTools.percent(location)
+                                });
+                                i += 2;
                             }
+                        case VColor(vc):
+                            backgroundColors = [];
+                            backgroundColors.push({
+                                color: ValueTools.int(v.value),
+                                location: null
+                            });
+                        default:    
                     }
                 case "background-color-end":
                     backgroundColorEnd = ValueTools.int(v.value);
@@ -373,6 +401,9 @@ class Style {
             backgroundColor = s.backgroundColor;
             backgroundColorEnd = null;
         }
+        if (s.backgroundColors != null && s.backgroundColors.length > 0) {
+            backgroundColors = s.backgroundColors;
+        }
         if (s.backgroundColorEnd != null) backgroundColorEnd = s.backgroundColorEnd;
         if (s.backgroundGradientStyle != null) backgroundGradientStyle = s.backgroundGradientStyle;
         if (s.backgroundOpacity != null) backgroundOpacity = s.backgroundOpacity;
@@ -482,6 +513,18 @@ class Style {
         if (s.color != color) return false;
 
         if (s.backgroundColor != backgroundColor) return false;
+        if (s.backgroundColors != null && backgroundColors != null) {
+            if (s.backgroundColors.length != backgroundColors.length) {
+                return false;
+            }
+            for (i in 0...s.backgroundColors.length) {
+                var c1 = s.backgroundColors[i];
+                var c2 = backgroundColors[i];
+                if (c1.color != c2.color || c1.location != c2.location) {
+                    return false;
+                }
+            }
+        }
         if (s.backgroundColorEnd != backgroundColorEnd) return false;
         if (s.backgroundGradientStyle != backgroundGradientStyle) return false;
         if (s.backgroundOpacity != backgroundOpacity) return false;

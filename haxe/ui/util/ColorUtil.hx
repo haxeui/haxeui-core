@@ -1,6 +1,25 @@
 package haxe.ui.util;
 
 class ColorUtil {
+    public static function buildColorArrayPercents(colors:Array<Int>, percents:Array<Float>, size:Float):Array<Int> {
+        var array:Array<Int> = [];
+        
+        var current:Float = 0;
+        size -= colors.length - 2;
+        for (i in 0...colors.length - 1) {
+            var c1 = colors[i];
+            var p1 = percents[i];
+            var c2 = colors[i + 1];
+            var p2 = percents[i + 1];
+            
+            var blockSize = (p2 - p1) * size / 100;
+            var blockArray = buildColorArray(c1, c2, blockSize);
+            array = array.concat(blockArray);
+        }
+        
+        return array;
+    }
+    
     public static function buildColorArray(startColor:Color, endColor:Color, size:Float):Array<Int> {
         var array:Array<Int> = [];
 
