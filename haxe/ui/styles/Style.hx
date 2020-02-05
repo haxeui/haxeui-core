@@ -47,8 +47,10 @@ class Style {
     
     public var color:Null<Int>;
     
+    /*
     public var backgroundColor:Null<Int>;
     public var backgroundColorEnd:Null<Int>;
+    */
     public var backgroundGradientStyle:Null<String>;
     public var backgroundOpacity:Null<Float>;
     
@@ -111,6 +113,24 @@ class Style {
     public function new() {
     }
     
+    public var backgroundColor(get, set):Null<Int>;
+    private function get_backgroundColor():Null<Int> {
+        if (backgroundColors == null || backgroundColors.length == 0) {
+            return null;
+        }
+        return null;
+        return backgroundColors[0].color;
+    }
+    private function set_backgroundColor(value:Null<Int>):Null<Int> {
+        /*
+        backgroundColors = [{
+            color: value,
+            location: null
+        }];
+        */
+        return value;
+    }
+    
     public function mergeDirectives(map:Map<String, Directive>) {
         for (key in map.keys()) {
             var v = map.get(key);
@@ -171,6 +191,7 @@ class Style {
                 case "color":
                     color = ValueTools.int(v.value);
                     
+                    /*
                 case "background-color":
                     switch (v.value) {
                         default:    
@@ -180,6 +201,7 @@ class Style {
                                 location: null
                             });
                     }
+                    */
                 case "background":
                     switch (v.value) {
                         case VComposite(vl):
@@ -194,16 +216,15 @@ class Style {
                                 });
                                 i += 2;
                             }
-                        case VColor(vc):
+                        case VNone:
+                            backgroundColors = null;
+                        default:
                             backgroundColors = [];
                             backgroundColors.push({
                                 color: ValueTools.int(v.value),
                                 location: null
                             });
-                        default:    
                     }
-                case "background-color-end":
-                    backgroundColorEnd = ValueTools.int(v.value);
                 case "background-gradient-style":
                     backgroundGradientStyle = ValueTools.string(v.value);
                 case "background-opacity":
@@ -397,14 +418,9 @@ class Style {
 
         if (s.color != null) color = s.color;
 
-        if (s.backgroundColor != null) {
-            backgroundColor = s.backgroundColor;
-            backgroundColorEnd = null;
-        }
         if (s.backgroundColors != null && s.backgroundColors.length > 0) {
             backgroundColors = s.backgroundColors;
         }
-        if (s.backgroundColorEnd != null) backgroundColorEnd = s.backgroundColorEnd;
         if (s.backgroundGradientStyle != null) backgroundGradientStyle = s.backgroundGradientStyle;
         if (s.backgroundOpacity != null) backgroundOpacity = s.backgroundOpacity;
 
@@ -512,7 +528,6 @@ class Style {
 
         if (s.color != color) return false;
 
-        if (s.backgroundColor != backgroundColor) return false;
         if (s.backgroundColors != null && backgroundColors != null) {
             if (s.backgroundColors.length != backgroundColors.length) {
                 return false;
@@ -525,7 +540,6 @@ class Style {
                 }
             }
         }
-        if (s.backgroundColorEnd != backgroundColorEnd) return false;
         if (s.backgroundGradientStyle != backgroundGradientStyle) return false;
         if (s.backgroundOpacity != backgroundOpacity) return false;
 

@@ -2,7 +2,7 @@
 ** BUTTONS
 *************************************************************************/
 .button {
-    background: #EDEDED #E6E6E6 vertical;
+    background: red blue vertical;
     color: #222222;
     border: 1px solid #ABABAB;
     border-radius: 2px;

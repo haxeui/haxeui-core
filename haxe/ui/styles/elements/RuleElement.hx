@@ -93,6 +93,10 @@ class RuleElement {
                 }
             case "spacing":
                 processComposite(d, ["horizontal-spacing", "vertical-spacing"]);
+            case "background-color":
+                directives.remove(d.directive);
+                var nd = new Directive("background", d.value, d.defective);
+                processBackground(nd);
             case "background":
                 processBackground(d);
             case "border":
@@ -184,9 +188,10 @@ class RuleElement {
                 }
                 
                 d.value = VComposite(copy);
+                directives.set(d.directive, d);
             default:    
+                directives.set(d.directive, d);
         }
-        directives.set(d.directive, d);
     }
     
     private function processComposite(d:Directive, parts:Array<String>, duplicate:Bool = false) {
