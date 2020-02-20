@@ -49,10 +49,12 @@ class ScreenBase {
         return 0;
     }
     
-    public function addComponent(component:Component) {
+    public function addComponent(component:Component):Component {
+		return component;
     }
     
-    public function removeComponent(component:Component) {
+    public function removeComponent(component:Component):Component {
+		return component;
     }
     
     private function handleSetComponentIndex(child:Component, index:Int) {
