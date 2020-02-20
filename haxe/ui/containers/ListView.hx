@@ -190,7 +190,7 @@ class ListViewEvents extends ScrollViewEvents {
                     renderer.registerEvent(MouseEvent.CLICK, __onMouseClick, 1);
                 }
             }
-        }, 500);   //TODO - configurable
+        }, _listview.longPressSelectionTime);
     }
     
     private override function onContainerEventsStatusChanged() {
