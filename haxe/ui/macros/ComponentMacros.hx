@@ -21,6 +21,11 @@ import sys.FileSystem;
 import sys.io.File;
 #end
 
+typedef NamedComponentDescription = {
+    generatedVarName:String,
+    type:String
+};
+
 class ComponentMacros {
     macro public static function build(resourcePath:String, params:Expr = null, alias:String = null):Array<Field> {
         var pos = haxe.macro.Context.currentPos();
@@ -41,7 +46,7 @@ class ComponentMacros {
             Context.error('UI markup file "${originalRes}" not found', Context.currentPos());
         }
         
-        var namedComponents:Map<String, String> = new Map<String, String>();
+        var namedComponents:Map<String, NamedComponentDescription> = new Map<String, NamedComponentDescription>();
         var codeBuilder = new CodeBuilder();
         buildComponentFromFile(codeBuilder, resourcePath, namedComponents, MacroHelpers.exprToMap(params));
         codeBuilder.add(macro
@@ -50,10 +55,11 @@ class ComponentMacros {
         
         for (id in namedComponents.keys()) {
             var safeId:String = StringUtil.capitalizeHyphens(id);
-            var cls:String = namedComponents.get(id);
+            var varDescription = namedComponents.get(id);
+            var cls:String = varDescription.type;
             builder.addVar(safeId, TypeTools.toComplexType(Context.getType(cls)));
             codeBuilder.add(macro
-                $i{safeId} = findComponent($v{id}, $p{cls.split(".")}, true)
+                $i{safeId} = $i{varDescription.generatedVarName}
             );
         }
         
@@ -93,7 +99,7 @@ class ComponentMacros {
     
     #if macro
     
-    public static function buildComponentFromFile(builder:CodeBuilder, filePath:String, namedComponents:Map<String, String> = null, params:Map<String, Dynamic> = null) {
+    public static function buildComponentFromFile(builder:CodeBuilder, filePath:String, namedComponents:Map<String, NamedComponentDescription> = null, params:Map<String, Dynamic> = null) {
         var f = MacroHelpers.resolveFile(filePath);
 
         Context.registerModuleDependency(Context.getLocalModule(), f);
@@ -107,17 +113,17 @@ class ComponentMacros {
         buildComponentFromInfo(builder, c, namedComponents, params);
     }
     
-    public static function buildComponentFromString(builder:CodeBuilder, source:String, namedComponents:Map<String, String> = null, params:Map<String, Dynamic> = null) {
+    public static function buildComponentFromString(builder:CodeBuilder, source:String, namedComponents:Map<String, NamedComponentDescription> = null, params:Map<String, Dynamic> = null) {
         source = StringUtil.replaceVars(source, params);
         var c:ComponentInfo = ComponentParser.get("xml").parse(source);
         buildComponentFromInfo(builder, c, namedComponents, params);
     }
     
-    private static function buildComponentFromInfo(builder:CodeBuilder, c:ComponentInfo, namedComponents:Map<String, String> = null, params:Map<String, Dynamic> = null) {
+    private static function buildComponentFromInfo(builder:CodeBuilder, c:ComponentInfo, namedComponents:Map<String, NamedComponentDescription> = null, params:Map<String, Dynamic> = null) {
         ModuleMacros.populateClassMap();
         
         if (namedComponents == null) {
-            namedComponents = new Map<String, String>();
+            namedComponents = new Map<String, NamedComponentDescription>();
         }
         
         for (styleString in c.styles) {
@@ -137,16 +143,17 @@ class ComponentMacros {
         builder.add(macro c0.bindingRoot = true);
         builder.add(macro c0);
     }
-    
-    private static function buildComponentNode(builder:CodeBuilder, c:ComponentInfo, id:Int, parentId:Int, namedComponents:Map<String, String>) {
+
+    // returns next free id
+    private static function buildComponentNode(builder:CodeBuilder, c:ComponentInfo, id:Int, parentId:Int, namedComponents:Map<String, NamedComponentDescription>) {
         if (c.condition != null && new ConditionEvaluator().evaluate(c.condition) == false) {
-            return;
+            return id;
         }
         
         var className:String = ComponentClassMap.get(c.type);
         if (className == null) {
             Context.warning("no class found for component: " + c.type, Context.currentPos());
-            return;
+            return id;
         }
         
         var classInfo = new ClassBuilder(Context.getModule(className)[0]);
@@ -162,7 +169,7 @@ class ComponentMacros {
             var directionalClassName = ComponentClassMap.get(direction + c.type);
             if (directionalClassName == null) {
                 trace("WARNING: no direction class found for component: " + c.type + " (" + (direction + c.type.toLowerCase()) + ")");
-                return;
+                return id;
             }
             
             className = directionalClassName;
@@ -206,7 +213,11 @@ class ComponentMacros {
         }
 
         if (c.id != null && namedComponents != null && useNamedComponents == true) {
-            namedComponents.set(c.id, className);
+            var varDescription = {
+                generatedVarName: componentVarName,
+                type: className
+            };
+            namedComponents.set(c.id, varDescription);
         }
         
         var childId = id + 1;
@@ -215,15 +226,15 @@ class ComponentMacros {
             if (useNamedComponents == false) {
                 nc = null;
             }
-            buildComponentNode(builder, child, childId, id, nc);
-            childId++;
+            childId = buildComponentNode(builder, child, childId, id, nc);
         }
         
         if (parentId != -1) {
             builder.add(macro $i{"c" + (parentId)}.addComponent($i{componentVarName}));
         }
+        return childId;
     }
-    
+
     private static function buildLayoutCode(builder:CodeBuilder, l:LayoutInfo, id:Int) {
         var className:String = LayoutClassMap.get(l.type.toLowerCase());
         if (className == null) {
