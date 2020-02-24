@@ -138,6 +138,19 @@ class FieldBuilder {
         }
         return n;
     }
+
+    public function getMetaByIndex(name:String, index:Int = 0):MetadataEntry {
+        var n = 0;
+        for (m in field.meta) {
+            if (m.name == name || m.name == ':${name}') {
+                if (n == index) {
+                    return m;
+                }
+                n++;
+            }
+        }
+        return null;
+    }
     
     public function getMetaValueString(name:String, paramIndex:Int = 0, metaIndex:Int = 0):String {
         var n = 0;
