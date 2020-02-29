@@ -61,7 +61,7 @@ class Macros {
             builder.addVar(safeId, TypeTools.toComplexType(Context.getType(cls)));
             builder.constructor.add(macro
                 $i{safeId} = findComponent($v{id}, $p{cls.split(".")}, true)
-            , 1);
+            , AfterSuper);
             createChildrenFn.add(macro $i{safeId} = findComponent($v{id}, $p{cls.split(".")}, true));
         }
     }
@@ -227,13 +227,13 @@ class Macros {
                         if (f.expr != null) {
                             builder.constructor.add(macro
                                 $i{f.name} = $e{f.expr}
-                            , 1);
+                            , AfterSuper);
                         }
                     } else if (param1 != null && param2 != null) { // two params, lets assume event binding
                         if (param1 == "this") {
                             builder.constructor.add(macro
                                 this.registerEvent($p{param2.split(".")}, $i{f.name})
-                            , 1);
+                            , AfterSuper);
                         } else {
                             builder.constructor.add(macro {
                                 var c = findComponent($v{param1}, haxe.ui.core.Component);
@@ -242,7 +242,7 @@ class Macros {
                                 } else {
                                     trace("WARNING: could not find component to regsiter event (" + $v{param1} + ")");
                                 }
-                            }, 1);
+                            }, AfterSuper);
                         }
                     }
                 }
@@ -276,11 +276,11 @@ class Macros {
             if (f.isNullable == true) {
                 cloneFn.add(macro
                     if ($p{["this", f.name]} != null) $p{["c", f.name]} = $p{["this", f.name]}
-                , n);
+                , Pos(n));
             } else {
                 cloneFn.add(macro
                     $p{["c", f.name]} = $p{["this", f.name]}
-                , n);
+                , Pos(n));
             }
             n++;
         }

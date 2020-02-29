@@ -49,9 +49,6 @@ class ComponentMacros {
         var namedComponents:Map<String, NamedComponentDescription> = new Map<String, NamedComponentDescription>();
         var codeBuilder = new CodeBuilder();
         buildComponentFromFile(codeBuilder, resourcePath, namedComponents, MacroHelpers.exprToMap(params));
-        codeBuilder.add(macro
-            addComponent(c0)
-        );
         
         for (id in namedComponents.keys()) {
             var safeId:String = StringUtil.capitalizeHyphens(id);
@@ -62,7 +59,10 @@ class ComponentMacros {
                 $i{safeId} = $i{varDescription.generatedVarName}
             );
         }
-        
+        codeBuilder.add(macro @:pos(pos)
+            addComponent(c0)
+        );
+
         var resolvedClass:String = "" + Context.getLocalClass();
         if (alias == null) {
             alias = resolvedClass.substr(resolvedClass.lastIndexOf(".") + 1, resolvedClass.length);
@@ -74,7 +74,7 @@ class ComponentMacros {
         var aliasClassName = alias + "-component";
         codeBuilder.add(macro this.addClass($v{aliasClassName}));
         
-        builder.constructor.add(codeBuilder, 1);
+        builder.constructor.add(codeBuilder, AfterSuper);
         
         return builder.fields;
     }
