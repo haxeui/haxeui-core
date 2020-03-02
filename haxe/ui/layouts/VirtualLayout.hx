@@ -195,7 +195,7 @@ class VirtualLayout extends ScrollViewLayout {
             i++;
         }
 
-        while (contents.childComponents.length - 1 > i) {
+        while (contents.childComponents.length > i) {
             removeRenderer(cast(contents.childComponents[contents.childComponents.length - 1], ItemRenderer), false);    // remove last
         }
     }
