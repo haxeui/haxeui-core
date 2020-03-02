@@ -374,6 +374,14 @@ private class Builder extends ScrollViewBuilder {
         return r;
     }
     
+    public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
+        if (Std.is(child, Header) == true) {
+            _header = null;
+            return null;
+        }
+        return super.removeComponent(child, dispose, invalidate);
+    }
+    
     public function buildDefaultRenderer() {
         var r = new CompoundItemRenderer();
         if (_header != null) {
