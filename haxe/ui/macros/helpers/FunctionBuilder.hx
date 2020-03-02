@@ -41,7 +41,10 @@ class FunctionBuilder {
         return null;
     }
     
-    public function add(e:Expr = null, cb:CodeBuilder = null, where:CodePos = CodePos.End) {
+    public function add(e:Expr = null, cb:CodeBuilder = null, where:CodePos = null) {
+        if (where == null) {
+            where = CodePos.End;
+        }
         var current = new CodeBuilder(fn.expr);
         current.add(e, cb, where);
         fn.expr = current.expr;
