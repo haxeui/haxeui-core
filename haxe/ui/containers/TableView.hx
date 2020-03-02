@@ -403,7 +403,7 @@ private class Builder extends ScrollViewBuilder {
     }
     
     private override function verticalConstraintModifier():Float {
-        if (_header == null || _tableview.virtual == true) {
+        if (_header == null) {
             return 0;
         }
 

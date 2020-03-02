@@ -286,8 +286,14 @@ private class HScrollMax extends DataBehaviour {
     public override function validateData() { // TODO: feels a bit ugly!
         if (_scrollview.virtual == true) {
             var hscroll = _scrollview.findComponent(HorizontalScroll, false);
-            if (hscroll == null) {
-                hscroll = cast(_scrollview._compositeBuilder, ScrollViewBuilder).createHScroll();
+            if (_value > 0) {
+                if (hscroll == null) {
+                    hscroll = cast(_scrollview._compositeBuilder, ScrollViewBuilder).createHScroll();
+                }
+            } else {
+                if (hscroll != null) {
+                    cast(_scrollview._compositeBuilder, ScrollViewBuilder).destroyHScroll();
+                }
             }
             if (hscroll != null) {
                 hscroll.max = _value;
@@ -317,8 +323,14 @@ private class VScrollMax extends DataBehaviour {
     public override function validateData() { // TODO: feels a bit ugly!
         if (_scrollview.virtual == true) {
             var vscroll = _scrollview.findComponent(VerticalScroll, false);
-            if (vscroll == null) {
-                vscroll = cast(_scrollview._compositeBuilder, ScrollViewBuilder).createVScroll();
+            if (_value > 0) {
+                if (vscroll == null) {
+                    vscroll = cast(_scrollview._compositeBuilder, ScrollViewBuilder).createVScroll();
+                }
+            } else {
+                if (vscroll != null) {
+                    cast(_scrollview._compositeBuilder, ScrollViewBuilder).destroyVScroll();
+                }
             }
             if (vscroll != null) {
                 vscroll.max = _value;
@@ -842,7 +854,7 @@ class ScrollViewBuilder extends CompositeBuilder {
                 hscroll.syncComponentValidation();    //avoid another pass
             } else {
                 if (hscroll != null) {
-                    _component.removeComponent(hscroll);
+                    destroyHScroll();
                 }
             }
         }
@@ -862,7 +874,7 @@ class ScrollViewBuilder extends CompositeBuilder {
                 vscroll.syncComponentValidation();    //avoid another pass
             } else {
                 if (vscroll != null) {
-                    _component.removeComponent(vscroll);
+                    destroyVScroll();
                 }
             }
         }
@@ -926,6 +938,22 @@ class ScrollViewBuilder extends CompositeBuilder {
         }
         
         return vscroll;
+    }
+    
+    @:access(haxe.ui.backend.ComponentBase)
+    public function destroyHScroll() {
+        var hscroll:HorizontalScroll = _component.findComponent(HorizontalScroll, false);
+        if (hscroll != null) {
+            _component.removeComponent(hscroll);
+        }
+    }
+    
+    @:access(haxe.ui.backend.ComponentBase)
+    public function destroyVScroll() {
+        var vscroll:VerticalScroll = _component.findComponent(VerticalScroll, false);
+        if (vscroll != null) {
+            _component.removeComponent(vscroll);
+        }
     }
     
     private function updateScrollRect() {
