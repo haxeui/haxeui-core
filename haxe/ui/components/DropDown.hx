@@ -60,11 +60,18 @@ private class SelectedIndexBehaviour extends DataBehaviour {
     }
     
     public override function get():Variant {
+        if (_component.isReady == false) {
+            return super.get();
+        }
         var handler:IDropDownHandler = cast(_component._compositeBuilder, DropDownBuilder).handler;
         return handler.selectedIndex;
     }
     
     public override function set(value:Variant) {
+        if (_component.isReady == false) {
+            super.set(value);
+            return;
+        }
         if (value == _value) {
             return;
         }
