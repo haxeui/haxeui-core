@@ -28,7 +28,10 @@ class CodeBuilder {
         return result;
     }
 
-    public function add(e:Expr = null, cb:CodeBuilder = null, where:CodePos = CodePos.End) {
+    public function add(e:Expr = null, cb:CodeBuilder = null, where:CodePos = null) {
+        if (where == null) {
+            where = CodePos.End;
+        }
         if (e == null && cb == null) {
             throw "Nothing specified";
         }
