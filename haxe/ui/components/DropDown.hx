@@ -398,7 +398,7 @@ class DropDownEvents extends ButtonEvents {
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 @:access(haxe.ui.components.DropDownEvents)
-private class DropDownBuilder extends ButtonBuilder {
+class DropDownBuilder extends ButtonBuilder {
     
     public static var HANDLER_MAP:Map<String, String> = new Map<String, String>();
     
