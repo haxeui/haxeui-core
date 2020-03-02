@@ -81,4 +81,8 @@ class FunctionBuilder {
         }
         return null;
     }
+    
+    public function printString():String {
+        return ExprTools.toString(fn.expr);
+    }
 }
