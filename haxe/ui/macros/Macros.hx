@@ -43,7 +43,8 @@ class Macros {
         var xml = builder.getClassMetaValue("xml");
         var namedComponents:Map<String, NamedComponentDescription> = new Map<String, NamedComponentDescription>();
         var codeBuilder = new CodeBuilder();
-        ComponentMacros.buildComponentFromString(codeBuilder, xml, namedComponents);
+        var bindingExprs:Array<Expr> = [];
+        ComponentMacros.buildComponentFromString(codeBuilder, xml, namedComponents, bindingExprs);
         codeBuilder.add(macro
             addComponent(c0)
         );
@@ -57,7 +58,11 @@ class Macros {
             );
         }
         
-       builder.constructor.add(codeBuilder);
+        for (expr in bindingExprs) {
+            codeBuilder.add(expr);
+        }
+        
+        builder.constructor.add(codeBuilder, AfterSuper);
     }
     
     static function buildComposite(builder:ClassBuilder) {
