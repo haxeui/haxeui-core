@@ -106,6 +106,7 @@ private class CompoundItemRenderer extends ItemRenderer {
 // Events
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
 private class Events extends ScrollViewEvents {
     private var _tableview:TableView;
 
@@ -139,7 +140,8 @@ private class Events extends ScrollViewEvents {
         instance.registerEvent(MouseEvent.MOUSE_DOWN, onRendererMouseDown);
         instance.registerEvent(MouseEvent.CLICK, onRendererClick);
         if (_tableview.selectedIndices.indexOf(instance.itemIndex) != -1) {
-            instance.addClass(":selected", true, true);
+            var builder:Builder = cast(_tableview._compositeBuilder, Builder);
+            builder.addItemRendererClass(instance, ":selected");
         }
     }
 
@@ -148,7 +150,8 @@ private class Events extends ScrollViewEvents {
         instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onRendererMouseDown);
         instance.unregisterEvent(MouseEvent.CLICK, onRendererClick);
         if (_tableview.selectedIndices.indexOf(instance.itemIndex) != -1) {
-            instance.removeClass(":selected", true, true);
+            var builder:Builder = cast(_tableview._compositeBuilder, Builder);
+            builder.addItemRendererClass(instance, ":selected", false);
         }
     }
 
@@ -417,6 +420,21 @@ private class Builder extends ScrollViewBuilder {
     private override function get_virtualHorizontal():Bool {
         return false;
     }
+    
+    public function addItemRendererClass(child:Component, className:String, add:Bool = true) {
+        child.walkComponents(function(c) {
+            if (Std.is(c, ItemRenderer)) {
+                if (add == true) {
+                    c.addClass(className);
+                } else {
+                    c.removeClass(className);
+                }
+            } else {
+                c.invalidateComponentStyle(); // we do want to invalidate the other components incase the css rule applies indirectly
+            }
+            return true;
+        });
+    }
 }
 
 //***********************************************************************************************************
@@ -544,6 +562,7 @@ private class SelectedItemBehaviour extends Behaviour {
 }
 
 @:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
 private class SelectedIndicesBehaviour extends DataBehaviour {
     public override function get():Variant {
         return _value.isNull ? [] : _value;
@@ -554,12 +573,14 @@ private class SelectedIndicesBehaviour extends DataBehaviour {
         var selectedIndices:Array<Int> = tableView.selectedIndices;
         var contents:Component = _component.findComponent("scrollview-contents", false, "css");
         var itemToEnsure:ItemRenderer = null;
+        var builder:Builder = cast(_component._compositeBuilder, Builder);
+        
         for (child in contents.childComponents) {
             if (selectedIndices.indexOf(cast(child, ItemRenderer).itemIndex) != -1) {
                 itemToEnsure = cast(child, ItemRenderer);
-                child.addClass(":selected", true, true);
+                builder.addItemRendererClass(child, ":selected");
             } else {
-                child.removeClass(":selected", true, true);
+                builder.addItemRendererClass(child, ":selected", false);
             }
         }
 

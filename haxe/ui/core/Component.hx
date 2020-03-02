@@ -482,6 +482,33 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     }
 
     /**
+     Walk all children recursively, callback should return "true" if walking should continue
+    **/
+    public function walkComponents(callback:Component->Bool) {
+        if (callback(this) == false) {
+            return;
+        }
+        
+        for (child in childComponents) {
+            if (callback(child) == false) {
+                return;
+            }
+        }
+        
+        for (child in childComponents) {
+            var cont = true;
+            child.walkComponents(function(c) {
+                cont = callback(c);
+                return cont;
+            });
+            
+            if (cont == false) {
+                break;
+            }
+        }
+    }
+    
+    /**
      Removes all child components from this component instance
     **/
     @:dox(group = "Display tree related properties and methods")
