@@ -2,6 +2,7 @@ package haxe.ui.core;
 
 import haxe.ui.backend.ComponentImpl;
 import haxe.ui.behaviours.DefaultBehaviour;
+import haxe.ui.components.Label;
 import haxe.ui.debug.CallStackHelper;
 import haxe.ui.events.AnimationEvent;
 import haxe.ui.events.MouseEvent;
@@ -14,14 +15,18 @@ import haxe.ui.layouts.Layout;
 import haxe.ui.scripting.ScriptInterp;
 import haxe.ui.styles.Parser;
 import haxe.ui.styles.Style;
+import haxe.ui.styles.Style2;
+import haxe.ui.styles.StyleUtils;
 import haxe.ui.styles.animation.Animation;
 import haxe.ui.styles.elements.AnimationKeyFrames;
 import haxe.ui.util.Color;
 import haxe.ui.util.ComponentUtil;
+import haxe.ui.util.IDGenerator;
 import haxe.ui.util.MathUtil;
 import haxe.ui.util.StringUtil;
 import haxe.ui.validation.IValidating;
 import haxe.ui.validation.ValidationManager;
+import haxe.ui.styles.Style2.StyleDimension;
 
 /**
  Base class of all HaxeUI controls
@@ -881,6 +886,9 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         var s = new Parser().parse(cssString);
         customStyle.mergeDirectives(s.rules[0].directives);
         
+        StyleUtils.mergeStyle(style2, s.rules[0].style);
+        
+        
         _styleString = value;
         invalidateComponentStyle();
         return value;
@@ -1028,29 +1036,44 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     //***********************************************************************************************************
     // Styles
     //***********************************************************************************************************
+    /*
     #if !flixel
     @:style                 public var color:Null<Color>;
     #end
-    @:style                 public var backgroundColor:Null<Color>;
-    @:style                 public var borderColor:Null<Color>;
-    @:style                 public var borderSize:Null<Float>;
-    @:style                 public var borderRadius:Null<Float>;
+    */
+//    @:style                 public var backgroundColor:Null<Color>;
+//    @:style                 public var borderColor:Null<Color>;
+//    @:style                 public var borderSize:Null<Float>;
+//    @:style                 public var borderRadius:Null<Float>;
 
-    @:style                 public var paddingLeft:Null<Float>;
-    @:style                 public var paddingRight:Null<Float>;
-    @:style                 public var paddingTop:Null<Float>;
-    @:style                 public var paddingBottom:Null<Float>;
+//    @:style                 public var paddingLeft:Null<Float>;
+//    @:style                 public var paddingRight:Null<Float>;
+//    @:style                 public var paddingTop:Null<Float>;
+//    @:style                 public var paddingBottom:Null<Float>;
 
-    @:style                 public var marginLeft:Null<Float>;
-    @:style                 public var marginRight:Null<Float>;
-    @:style                 public var marginTop:Null<Float>;
-    @:style                 public var marginBottom:Null<Float>;
+//    @:style                 public var marginLeft:Null<Float>;
+//    @:style                 public var marginRight:Null<Float>;
+//    @:style                 public var marginTop:Null<Float>;
+//    @:style                 public var marginBottom:Null<Float>;
     @:style                 public var clip:Null<Bool>;
 
-    @:style                 public var opacity:Null<Float>;
+//    @:style                 public var opacity:Null<Float>;
 
+    /*
     @:style(layoutparent)   public var horizontalAlign:String;
     @:style(layoutparent)   public var verticalAlign:String;
+    */
+    
+    public function addStyle(suffix:String = null, style:Style2) {
+        if (this.id == null) {
+            this.id = IDGenerator.generateId(Type.getClass(this));
+        }
+        var rule = this.id;
+        if (suffix != null) {
+            rule += suffix;
+        }
+        trace("SETTING STYLE: " + rule);
+    }
     
     //***********************************************************************************************************
     // Script related
@@ -1270,6 +1293,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
 
     private var _initialSizeApplied:Bool = false;
     private override function validateInitialSize(isInitialized:Bool) {
+        /*
         if (isInitialized == false && _style != null && _initialSizeApplied == false) {
             if ((_style.initialWidth != null || _style.initialPercentWidth != null) && (width <= 0 && percentWidth == null)) {
                 if (_style.initialWidth != null) {
@@ -1291,6 +1315,65 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
                 }
             }
         }
+        */
+        
+        
+        
+        
+        
+        
+        if (isInitialized == false && computedStyle != null && _initialSizeApplied == false) {
+            if ((computedStyle.initialWidth != null && computedStyle.initialWidth != auto) && (width <= 0 && percentWidth == null)) {
+                switch (computedStyle.initialWidth) {
+                    case pixels(v):
+                        width = v;
+                        _initialSizeApplied = true;
+                    case percent(v):
+                        percentWidth = v;
+                        _initialSizeApplied = true;
+                    case auto:    
+                }
+            }
+            
+            if ((computedStyle.initialHeight != null && computedStyle.initialHeight != auto) && (height <= 0 && percentHeight == null)) {
+                switch (computedStyle.initialHeight) {
+                    case pixels(v):
+                        height = v;
+                        _initialSizeApplied = true;
+                    case percent(v):
+                        percentHeight = v;
+                        _initialSizeApplied = true;
+                    case auto:    
+                }
+            }
+        }
+        
+        
+        /*
+            if ((style2.initialWidth != null && style2.initialWidth != Auto) && (width <= 0 && percentWidth == null)) {
+                switch (style2.initialWidth) {
+                    case Pixels(v):
+                        width = v;
+                        _initialSizeApplied = true;
+                    case Percent(v):
+                        percentWidth = v;
+                        _initialSizeApplied = true;
+                    case Auto:    
+                }
+            }
+            
+            if ((style2.initialHeight != null && style2.initialHeight != Auto) && (height <= 0 && percentHeight == null)) {
+                switch (style2.initialHeight) {
+                    case Pixels(v):
+                        height = v;
+                        _initialSizeApplied = true;
+                    case Percent(v):
+                        percentHeight = v;
+                        _initialSizeApplied = true;
+                    case Auto:    
+                }
+            }
+            */
     }
     
     /**
@@ -1327,12 +1410,44 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     }
 
     private override function validateComponentStyle() {
+        trace(Type.getClassName(Type.getClass(this)) + " component id: " + id);
+        var tempStyle:Style2 = Toolkit.styleSheet.buildStyleFor2(this);
+        computedStyle = tempStyle;
+        //StyleUtils.mergeStyle(computedStyle, tempStyle); // merge user style
+        StyleUtils.mergeStyle(computedStyle, style2);
+        
+        if (animatingStyle != null) {
+            StyleUtils.mergeStyle(computedStyle, animatingStyle);
+            //trace("WE MERGED ANIMATION! - " + computedStyle);
+        }
+        
+        StyleUtils.applyInheritence(computedStyle, this);
+
+        trace(computedStyle);
+        
+        applyStyle2(computedStyle);
+        
+
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         var s:Style = Toolkit.styleSheet.buildStyleFor(this);
         s.apply(customStyle);
 
         if (_style == null || _style.equalTo(s) == false) { // lets not update if nothing has changed
             _style = s;
             applyStyle(s);
+            //trace("legacy style applied");
         }
     }
 
@@ -1381,9 +1496,42 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         return invalidate;
     }
 
+    private function applyStyle2(style:Style2) {
+        if (style.width != null && style.width != auto) {
+            switch (style.width) {
+                case pixels(v):
+                    width = v;
+                case percent(v):
+                    percentWidth = v;
+                case auto:    
+            }
+        }
+        
+        if (style.height != null && style.height != auto) {
+            switch (style.height) {
+                case pixels(v):
+                    height = v;
+                case percent(v):
+                    percentHeight = v;
+                case auto:    
+            }
+        }
+        
+        if (style.animation != null && style.animation.isNull == false && style.animation.name != null) {
+            trace("ANIMATION ISNT NULL!");
+            var animationKeyFrames:AnimationKeyFrames = Toolkit.styleSheet.animations.get(style.animation.name);
+            applyAnimationKeyFrame2(animationKeyFrames, style.animation);
+        } else {
+            componentAnimation = null;
+        }
+    }
+    
     private override function applyStyle(style:Style) {
         super.applyStyle(style);
 
+        var style2 = this.computedStyle;
+        
+        /*
         if (style != null && _initialSizeApplied == false) {
             if ((style.initialWidth != null || style.initialPercentWidth != null) && (width <= 0 && percentWidth == null)) {
                 if (style.initialWidth != null) {
@@ -1405,14 +1553,102 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
                 }
             }
         }
+        */
         
-        if (style.left != null) {
-            left = style.left;
-        }
-        if (style.top != null) {
-            top = style.top;
+        if (style2 != null && _initialSizeApplied == false) {
+            if ((style2.initialWidth != null && style2.initialWidth != auto) && (width <= 0 && percentWidth == null)) {
+                switch (style2.initialWidth) {
+                    case pixels(v):
+                        width = v;
+                        _initialSizeApplied = true;
+                    case percent(v):
+                        percentWidth = v;
+                        _initialSizeApplied = true;
+                    case auto:    
+                }
+            }
+            
+            if ((style2.initialHeight != null && style2.initialHeight != auto) && (height <= 0 && percentHeight == null)) {
+                switch (style2.initialHeight) {
+                    case pixels(v):
+                        height = v;
+                        _initialSizeApplied = true;
+                    case percent(v):
+                        percentHeight = v;
+                        _initialSizeApplied = true;
+                    case auto:    
+                }
+            }
+            /*
+            if ((style.initialWidth != null || style.initialPercentWidth != null) && (width <= 0 && percentWidth == null)) {
+                if (style.initialWidth != null) {
+                    width = style.initialWidth;
+                    _initialSizeApplied = true;
+                } else  if (style.initialPercentWidth != null) {
+                    percentWidth = style.initialPercentWidth;
+                    _initialSizeApplied = true;
+                }
+            }
+            
+            if ((style.initialHeight != null || style.initialPercentHeight != null) && (height <= 0 && percentHeight == null)) {
+                if (style.initialHeight != null) {
+                    height = style.initialHeight;
+                    _initialSizeApplied = true;
+                } else  if (style.initialPercentHeight != null) {
+                    percentHeight = style.initialPercentHeight;
+                    _initialSizeApplied = true;
+                }
+            }
+            */
         }
         
+        if (style2.left != null) {
+            left = style2.left;
+        }
+        if (style2.top != null) {
+            top = style2.top;
+        }
+        
+        /*
+        if (computedStyle.percentWidth != null) {
+            percentWidth = computedStyle.percentWidth;
+        }
+        */
+        /*
+        if (computedStyle.percentHeight != null) {
+            percentHeight = computedStyle.percentHeight;
+        }
+        */
+        /*
+        if (computedStyle.width != null) {
+            width = computedStyle.width;
+        }
+        */
+        if (style2.width != null && style2.width != auto) {
+            switch (style2.width) {
+                case pixels(v):
+                    width = v;
+                case percent(v):
+                    percentWidth = v;
+                case auto:    
+            }
+        }
+        
+        if (style2.height != null && style2.height != auto) {
+            switch (style2.height) {
+                case pixels(v):
+                    height = v;
+                case percent(v):
+                    percentHeight = v;
+                case auto:    
+            }
+        }
+        /*
+        if (computedStyle.height != null) {
+            height = computedStyle.height;
+        }
+        */
+        /*
         if (style.percentWidth != null) {
             percentWidth = style.percentWidth;
         }
@@ -1425,19 +1661,34 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         if (style.height != null) {
             height = style.height;
         }
+        */
 
         if (style.native != null) {
             native = style.native;
         }
 
+        /*
         if (style.hidden != null) {
             hidden = style.hidden;
         }
+        */
+        if (style2.display != null) {
+            hidden = (style2.display == none);
+        }
 
+        /*
         if (style.animationName != null) {
             var animationKeyFrames:AnimationKeyFrames = Toolkit.styleSheet.animations.get(style.animationName);
             applyAnimationKeyFrame(animationKeyFrames, style.animationOptions);
         } else if (componentAnimation != null) {
+            componentAnimation = null;
+        }
+        */
+        if (style2.animation != null && style2.animation.isNull == false && style2.animation.name != null) {
+            trace("ANIMATION ISNT NULL!");
+            var animationKeyFrames:AnimationKeyFrames = Toolkit.styleSheet.animations.get(style2.animation.name);
+            applyAnimationKeyFrame2(animationKeyFrames, style2.animation);
+        } else {
             componentAnimation = null;
         }
 
@@ -1473,6 +1724,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     //***********************************************************************************************************
 
     private function applyAnimationKeyFrame(animationKeyFrames:AnimationKeyFrames, options:AnimationOptions):Void {
+        /*
         if (_animatable == false || options == null || options.duration == 0 ||
             (_componentAnimation != null && _componentAnimation.name == animationKeyFrames.id && options.compareToAnimation(_componentAnimation) == true)) {
             return;
@@ -1481,14 +1733,60 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         if (hasEvent(AnimationEvent.START)) {
             dispatch(new AnimationEvent(AnimationEvent.START));
         }
+        */
 
+        /*
         componentAnimation = Animation.createWithKeyFrames(animationKeyFrames, this, options);
         componentAnimation.run(function(){
             if (hasEvent(AnimationEvent.END)) {
                 dispatch(new AnimationEvent(AnimationEvent.END));
             }
         });
+        */
     }
+
+    private var _animationActive:Bool = false;
+    private function applyAnimationKeyFrame2(animationKeyFrames:AnimationKeyFrames, options:StyleAnimation):Void {
+        if (_animationActive == true) {
+            return;
+        }
+        if (animationKeyFrames == null) {
+            trace("ANIMATION 0");
+            return;
+        }
+        if (_animatable == false || options == null || options.isNull == true || options.duration == 0) {
+            trace("ANIMATION 1");
+            return;
+        }
+        if (_componentAnimation != null && _componentAnimation.name == animationKeyFrames.id) {
+            trace("ANIMATION 2");
+            //return;
+        }
+        /*
+        if (_animatable == false || options == null || options.isNull == true || options.duration == 0 ||
+            (_componentAnimation != null && _componentAnimation.name == animationKeyFrames.id)) {
+            //return;
+        }
+        */
+
+        trace("ANIMATION PLAY: " + animationKeyFrames.id);
+        
+        if (hasEvent(AnimationEvent.START)) {
+            dispatch(new AnimationEvent(AnimationEvent.START));
+        }
+
+        _animationActive = true;
+        componentAnimation = Animation.createWithKeyFrames(animationKeyFrames, this, options);
+        componentAnimation.run(function(){
+            trace("ANIMATION ON FINISH777");
+                //componentAnimation = null;
+                //_animationActive = false;
+            if (hasEvent(AnimationEvent.END)) {
+                dispatch(new AnimationEvent(AnimationEvent.END));
+            }
+        });
+    }
+
 
     //***********************************************************************************************************
     // Clonable

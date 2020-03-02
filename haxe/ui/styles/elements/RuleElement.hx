@@ -8,12 +8,19 @@ class RuleElement {
     public var selector:Selector;
     public var directives:Map<String, Directive> = new Map<String, Directive>();
     
+    public var style:Style2 = {};
+    
     public function new(selector:String, directives:Array<Directive>) {
         this.selector = new Selector(selector);
-        //this.directives = directives;
+        
+        style = {};
         
         for (d in directives) {
             processDirective(d);
+        }
+        
+        for (d in directives) {
+            StyleUtils.processDirective(style, d);
         }
     }
     

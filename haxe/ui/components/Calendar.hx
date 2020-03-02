@@ -110,7 +110,7 @@ private class DateBehaviour extends DataBehaviour {
         var endDay:Int = DateUtils.getEndDay(month, year);
         
         for (child in _component.childComponents) {
-            child.opacity = .3;
+            child.style2.opacity = .3;
             child.removeClass("calendar-off-day");
             child.removeClass("calendar-day");
             child.removeClass("calendar-day-selected");
@@ -136,7 +136,7 @@ private class DateBehaviour extends DataBehaviour {
         for (i in 0...endDay) {
             var item = _component.childComponents[i + startDay];
             item.addClass("calendar-day");
-            item.opacity = 1;
+            item.style2.opacity = 1;
             item.hidden = false;
             item.text = "" + (i + 1);
             if (i + 1 == selectedDate.getDate() && month == selectedDate.getMonth() && year == selectedDate.getFullYear()) {

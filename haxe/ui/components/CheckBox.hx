@@ -151,6 +151,7 @@ class CheckBoxBuilder extends CompositeBuilder {
         }
     }
     
+    /* TODO!
     public override function applyStyle(style:Style) {
         var label:Label = _checkbox.findComponent(Label);
         if (label != null &&
@@ -166,6 +167,7 @@ class CheckBoxBuilder extends CompositeBuilder {
             label.invalidateComponentStyle();
         }
     }
+    */
     
     private override function get_cssName():String {
         return "checkbox";

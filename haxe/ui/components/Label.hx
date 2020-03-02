@@ -6,6 +6,7 @@ import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.styles.Style;
 import haxe.ui.geom.Size;
+import haxe.ui.styles.Style2;
 import haxe.ui.util.Variant;
 
 @:composite(Builder, LabelLayout)
@@ -13,7 +14,7 @@ class Label extends Component {
     //***********************************************************************************************************
     // Styles
     //***********************************************************************************************************
-    @:style(layout)                             public var textAlign:Null<String>;
+//    @:style(layout)                             public var textAlign:Null<String>;
     
     //***********************************************************************************************************
     // Public API
@@ -21,6 +22,13 @@ class Label extends Component {
     @:clonable @:behaviour(TextBehaviour)       public var text:String;
     @:clonable @:behaviour(TextBehaviour)       public var value:Variant;
     @:clonable @:behaviour(HtmlTextBehaviour)   public var htmlText:String;
+    
+    private override function applyStyle2(style:Style2) {
+        super.applyStyle2(style);
+        if (hasTextDisplay() == true) {
+            getTextDisplay().textStyle2 = style;
+        }
+    }
 }
 
 //***********************************************************************************************************
@@ -72,10 +80,10 @@ private class LabelLayout extends DefaultLayout {
     }
 
     private function textAlign(child:Component):String {
-        if (child == null || child.style == null || child.style.textAlign == null) {
+        if (child == null || child.computedStyle == null || child.computedStyle.textAlign == null) {
             return "left";
         }
-        return child.style.textAlign;
+        return child.computedStyle.textAlign;
     }
 }
 
@@ -112,6 +120,24 @@ private class Builder extends CompositeBuilder {
     }
     
     public override function applyStyle(style:Style) {
+        /*
+        var p = _component;
+        while (p != null) {
+            if (p.style != null && p.style.color != null) {
+                trace("WE GOT COLOR FROM: " + Type.getClassName(Type.getClass(p)) + ", " + StringTools.hex(p.style.color, 6));
+                //style.color = p.style.color;
+            }
+            p = p.parentComponent;
+            if (p == null) {
+                break;
+            }
+        }
+        */
+        
+        
+        if (_label.hasTextDisplay() == true) {
+            _label.getTextDisplay().textStyle2 = _component.computedStyle;
+        }
         if (_label.hasTextDisplay() == true) {
             _label.getTextDisplay().textStyle = style;
         }

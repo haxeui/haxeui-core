@@ -120,7 +120,8 @@ private class Builder extends CompositeBuilder {
         box.addComponent(button);
 
         var hbox = new HBox();
-        hbox.horizontalAlign = "center";
+        //hbox.horizontalAlign = "center";
+        hbox.style2.horizontalAlign = "center";
         var label = new Label();
         label.id = "current-month";
         var now = Date.now();
@@ -139,7 +140,8 @@ private class Builder extends CompositeBuilder {
 
         var button = new Button();
         button.id = "next-month";
-        button.horizontalAlign = "right";
+        //button.horizontalAlign = "right";
+        button.style2.horizontalAlign = "right";
         box.addComponent(button);
 
         _calendarView.addComponent(box);

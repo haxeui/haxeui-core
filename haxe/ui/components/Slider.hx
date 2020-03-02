@@ -188,8 +188,11 @@ private class Events extends haxe.ui.events.Events  {
         }
         
         var coord:Point = new Point();
-        coord.x = (e.screenX - _slider.screenLeft) - _slider.paddingLeft;
-        coord.y = (e.screenY - _slider.screenTop) - _slider.paddingTop;
+        // TODO!!!
+//        coord.x = (e.screenX - _slider.screenLeft) - _slider.paddingLeft;
+//        coord.y = (e.screenY - _slider.screenTop) - _slider.paddingTop;
+        coord.x = (e.screenX - _slider.screenLeft);
+        coord.y = (e.screenY - _slider.screenTop);
         var pos:Float = _slider.posFromCoord(coord);
         
         if (_startThumb == null) {
@@ -236,8 +239,11 @@ private class Events extends haxe.ui.events.Events  {
    
     private function onScreenMouseMove(e:MouseEvent) {
         var coord:Point = new Point();
-        coord.x = (e.screenX - _slider.screenLeft - _offset.x) - _slider.paddingLeft +  (_activeThumb.width / 2);
-        coord.y = (e.screenY - _slider.screenTop - _offset.y) - _slider.paddingTop +  (_activeThumb.height / 2);
+        // TODO!!!
+//        coord.x = (e.screenX - _slider.screenLeft - _offset.x) - _slider.paddingLeft +  (_activeThumb.width / 2);
+//        coord.y = (e.screenY - _slider.screenTop - _offset.y) - _slider.paddingTop +  (_activeThumb.height / 2);
+        coord.x = (e.screenX - _slider.screenLeft - _offset.x) +  (_activeThumb.width / 2);
+        coord.y = (e.screenY - _slider.screenTop - _offset.y) +  (_activeThumb.height / 2);
         var pos:Float = _slider.posFromCoord(coord);
         
         if (_activeThumb == _startThumb) {

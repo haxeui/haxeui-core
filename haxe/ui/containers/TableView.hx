@@ -261,7 +261,8 @@ private class Builder extends ScrollViewBuilder {
                 var label = new Label();
                 label.id = column.id;
                 label.percentWidth = 100;
-                label.verticalAlign = "center";
+                //label.verticalAlign = "center";
+                label.style2.verticalAlign = "center";
                 itemRenderer.addComponent(label);
                 r.addComponent(itemRenderer);
             }
@@ -277,7 +278,8 @@ private class Builder extends ScrollViewBuilder {
                 var label = new Label();
                 label.id = column.id;
                 label.percentWidth = 100;
-                label.verticalAlign = "center";
+                label.style2.verticalAlign = "center";
+                //label.verticalAlign = "center";
                 itemRenderer.addComponent(label);
                 _tableview.itemRenderer.addComponent(itemRenderer);
             }

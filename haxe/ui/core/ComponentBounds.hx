@@ -2,6 +2,8 @@ package haxe.ui.core;
 
 import haxe.ui.backend.ComponentSurface;
 import haxe.ui.geom.Rectangle;
+import haxe.ui.styles.Style2.StyleDimension;
+import haxe.ui.styles.Style2.StyleDimensionType;
 import haxe.ui.validation.InvalidationFlags;
 
 class ComponentBounds extends ComponentLayout {
@@ -17,10 +19,19 @@ class ComponentBounds extends ComponentLayout {
         if (_percentWidth != null || _width != null || style == null) {
             return false;
         }
+        /*
         if (style.autoWidth == null) {
             return false;
         }
         return style.autoWidth;
+        */
+        /*
+        if (computedStyle.autoWidth == null) {
+            return false;
+        }
+        return computedStyle.autoWidth;
+        */
+        return (computedStyle.width == auto);
     }
     
     /**
@@ -32,16 +43,26 @@ class ComponentBounds extends ComponentLayout {
         if (_percentHeight != null || _height  != null || style == null) {
             return false;
         }
+        /*
         if (style.autoHeight == null) {
             return false;
         }
         return style.autoHeight;
+        */
+        /*
+        if (computedStyle.autoHeight == null) {
+            return false;
+        }
+        return computedStyle.autoHeight;
+        */
+        return (computedStyle.height == auto);
     }
     
     @:dox(group = "Size related properties and methods")
     public function resizeComponent(w:Null<Float>, h:Null<Float>) {
         var invalidate:Bool = false;
         
+        /*
         if (style != null) {
             if (w != null) {
                 if (style.minWidth != null && w < style.minWidth) {
@@ -56,6 +77,48 @@ class ComponentBounds extends ComponentLayout {
                     h = style.minHeight;
                 } else if (style.maxHeight != null && h > style.maxHeight) {
                     h = style.maxHeight;
+                }
+            }
+        }
+        */
+        if (computedStyle != null) {
+            if (w != null) {
+                if (computedStyle.minWidth != null) {
+                    switch (computedStyle.minWidth) {
+                        case pixels(v):
+                            if (w < v) {
+                                w = v;
+                            }
+                        default:    
+                    }
+                } else if (computedStyle.maxWidth != null) {
+                    switch (computedStyle.maxWidth) {
+                        case pixels(v):
+                            if (w > v) {
+                                w = v;
+                            }
+                        default:    
+                    }
+                }
+            }
+            
+            if (h != null) {
+                if (computedStyle.minHeight != null) {
+                    switch (computedStyle.minHeight) {
+                        case pixels(v):
+                            if (h < v) {
+                                h = v;
+                            }
+                        default:    
+                    }
+                } else if (computedStyle.maxHeight != null) {
+                    switch (computedStyle.maxHeight) {
+                        case pixels(v):
+                            if (h > v) {
+                                h = v;
+                            }
+                        default:    
+                    }
                 }
             }
         }

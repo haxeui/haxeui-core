@@ -2,6 +2,8 @@ package haxe.ui.styles.animation;
 
 import haxe.ui.constants.AnimationFillMode;
 import haxe.ui.constants.AnimationDirection;
+import haxe.ui.core.Component;
+import haxe.ui.styles.Style2.StyleAnimation;
 import haxe.ui.util.StyleUtil;
 import haxe.ui.styles.EasingFunction;
 import haxe.ui.styles.elements.AnimationKeyFrames;
@@ -47,7 +49,7 @@ class Animation {
     //***********************************************************************************************************
     // Helpers
     //***********************************************************************************************************
-    public static function createWithKeyFrames(animationKeyFrames:AnimationKeyFrames, target:Dynamic, ?options:AnimationOptions):Animation {
+    public static function createWithKeyFrames(animationKeyFrames:AnimationKeyFrames, target:Dynamic, ?options:StyleAnimation):Animation {
         var animation:Animation = new Animation(target, options);
         animation.name = animationKeyFrames.id;
 
@@ -65,6 +67,7 @@ class Animation {
                             kf.time = p / 100;
                             kf.easingFunction = animation.easingFunction;
                             kf.directives = keyFrame.directives;
+                            kf.style = keyFrame.style;
                             animation._keyframes.push(kf);
                         case _:
                     }
@@ -140,7 +143,7 @@ class Animation {
     **/
     public var target(default, null):Dynamic;
 
-    public function new(target:Dynamic, ?options:AnimationOptions) {
+    public function new(target:Dynamic, ?options:StyleAnimation) {
         this.target = target;
 
         if (options != null) {
@@ -150,6 +153,10 @@ class Animation {
             if (options.iterationCount != null)     this.iterationCount = options.iterationCount;
             if (options.direction != null)          this.direction = options.direction;
             if (options.fillMode != null)           this.fillMode = options.fillMode;
+            
+            
+            trace("ANIMATION DURATION: " + options.duration + ", this.duration =" + this.duration);
+            
         }
     }
 
@@ -270,7 +277,6 @@ class Animation {
         }
 
         if (++_currentKeyFrameIndex >= _keyframes.length) {
-            _currentKeyFrameIndex = -1;
             _restoreState();
 
             if (iterationCount == -1 || ++_currentIterationCount < iterationCount) {
@@ -278,10 +284,14 @@ class Animation {
                 _runNextKeyframe(onFinish);
             } else {
                 running = false;
-                if (onFinish != null) {
+                if (_keyframes.length == _currentKeyFrameIndex && onFinish != null) {
+                    trace("ANIMATION ON FINISH2 - " + _keyframes.length + ", " + _currentKeyFrameIndex);
+                    var c:Component = cast(target, Component);
+                    //c.animatingStyle = null;
                     onFinish();
                 }
             }
+            _currentKeyFrameIndex = -1;
             return;
         } else {
             currentKeyFrame.run(target, _runNextKeyframe.bind(onFinish));

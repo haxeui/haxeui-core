@@ -7,6 +7,7 @@ import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.events.UIEvent;
 import haxe.ui.layouts.Layout;
 import haxe.ui.styles.Style;
+import haxe.ui.styles.Style2;
 import haxe.ui.util.Variant;
 
 @:build(haxe.ui.macros.Macros.buildBehaviours())
@@ -81,6 +82,9 @@ class ComponentContainer extends ComponentCommon implements IClonable<ComponentC
     //***********************************************************************************************************
     // Style related
     //***********************************************************************************************************
+    public var computedStyle:Style2;
+    public var animatingStyle:Style2 = null;
+    public var style2:Style2 = {};
     private var _style:Style;
     
     //***********************************************************************************************************

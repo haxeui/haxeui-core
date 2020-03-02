@@ -2,6 +2,7 @@ package haxe.ui.layouts;
 
 import haxe.ui.core.Component;
 import haxe.ui.geom.Size;
+import haxe.ui.styles.Style2.StyleDimensionType;
 
 class Layout implements ILayout {
     public function new() {
@@ -65,34 +66,47 @@ class Layout implements ILayout {
     // Child helpers
     //******************************************************************************************
     private function marginTop(child:Component):Float {
-        if (child == null || child.style == null || child.style.marginTop == null) {
+        if (child == null || child.computedStyle == null || child.computedStyle.margin == null) {
             return 0;
         }
-        return child.style.marginTop;
+        var margin = child.computedStyle.margin;
+        if (margin.top == null) {
+            return 0;
+        }
+        return margin.top;
     }
 
     private function marginLeft(child:Component):Float {
-        if (child == null || child.style == null || child.style.marginLeft == null) {
+        if (child == null || child.computedStyle == null || child.computedStyle.margin == null) {
             return 0;
         }
-
-        return child.style.marginLeft;
+        var margin = child.computedStyle.margin;
+        if (margin.left == null) {
+            return 0;
+        }
+        return margin.left;
     }
 
     private function marginBottom(child:Component):Float {
-        if (child == null || child.style == null || child.style.marginBottom == null) {
+        if (child == null || child.computedStyle == null || child.computedStyle.margin == null) {
             return 0;
         }
-
-        return child.style.marginBottom;
+        var margin = child.computedStyle.margin;
+        if (margin.bottom == null) {
+            return 0;
+        }
+        return margin.bottom;
     }
 
     private function marginRight(child:Component):Float {
-        if (child == null || child.style == null || child.style.marginRight == null) {
+        if (child == null || child.computedStyle == null || child.computedStyle.margin == null) {
             return 0;
         }
-
-        return child.style.marginRight;
+        var margin = child.computedStyle.margin;
+        if (margin.right == null) {
+            return 0;
+        }
+        return margin.right;
     }
 
     private function hidden(c:Component = null):Bool {
@@ -103,31 +117,65 @@ class Layout implements ILayout {
     }
 
     private function horizontalAlign(child:Component):String {
+        /*
         if (child == null || child.style == null || child.style.horizontalAlign == null) {
             return "left";
         }
         return child.style.horizontalAlign;
+        */
+        if (child == null || child.computedStyle == null || child.computedStyle.horizontalAlign == null) {
+            return "left";
+        }
+        return child.computedStyle.horizontalAlign;
     }
 
     private function verticalAlign(child:Component):String {
+        /*
         if (child == null || child.style == null || child.style.verticalAlign == null) {
             return "top";
         }
         return child.style.verticalAlign;
+        */
+        if (child == null || child.computedStyle == null || child.computedStyle.verticalAlign == null) {
+            return "left";
+        }
+        return child.computedStyle.verticalAlign;
     }
 
     private function fixedMinWidth(child:Component):Bool {
+        /*
         var fixedMinWidth = false;
         if (child != null && child.style != null && child.style.minWidth != null) {
             fixedMinWidth = child.componentWidth <= child.style.minWidth;
         }
         return fixedMinWidth;
+        */
+        var fixedMinWidth = false;
+        if (child != null && child.computedStyle != null && child.computedStyle.minWidth != null) {
+            switch (child.computedStyle.minWidth) {
+                case pixels(v):
+                    fixedMinWidth = child.componentWidth <= v;
+                default:
+            }
+        }
+        return fixedMinWidth;
     }
 
     private function fixedMinHeight(child:Component):Bool {
+        /*
         var fixedMinHeight = false;
         if (child != null && child.style != null && child.style.minHeight != null) {
             fixedMinHeight = child.componentHeight <= child.style.minHeight;
+        }
+        return fixedMinHeight;
+        */
+        var fixedMinHeight = false;
+        if (child != null && child.style != null && child.computedStyle.minHeight != null) {
+            switch (child.computedStyle.minHeight) {
+                case pixels(v):
+                    fixedMinHeight = child.componentWidth <= v;
+                default:
+            }
         }
         return fixedMinHeight;
     }
@@ -137,50 +185,86 @@ class Layout implements ILayout {
     //******************************************************************************************
     public var paddingLeft(get, null):Float;
     private function get_paddingLeft():Float {
-        if (_component == null || _component.style == null || _component.style.paddingLeft == null) {
+        if (_component == null || _component.computedStyle == null || _component.computedStyle.padding == null) {
             return 0;
         }
-        return _component.style.paddingLeft;
+        var padding = _component.computedStyle.padding;
+        if (padding.left == null) {
+            return 0;
+        }
+        return padding.left;
     }
 
     public var paddingTop(get, null):Float;
     private function get_paddingTop():Float {
-        if (_component == null || _component.style == null || _component.style.paddingTop == null) {
+        if (_component == null || _component.computedStyle == null || _component.computedStyle.padding == null) {
             return 0;
         }
-        return _component.style.paddingTop;
+        var padding = _component.computedStyle.padding;
+        if (padding.top == null) {
+            return 0;
+        }
+        return padding.top;
     }
 
     public var paddingBottom(get, null):Float;
     private function get_paddingBottom():Float {
-        if (_component == null || _component.style == null || _component.style.paddingBottom == null) {
+        if (_component == null || _component.computedStyle == null || _component.computedStyle.padding == null) {
             return 0;
         }
-        return _component.style.paddingBottom;
+        var padding = _component.computedStyle.padding;
+        if (padding.bottom == null) {
+            return 0;
+        }
+        return padding.bottom;
     }
 
     public var paddingRight(get, null):Float;
     private function get_paddingRight():Float {
-        if (_component == null || _component.style == null || _component.style.paddingRight == null) {
+        if (_component == null || _component.computedStyle == null || _component.computedStyle.padding == null) {
             return 0;
         }
-        return _component.style.paddingRight;
+        var padding = _component.computedStyle.padding;
+        if (padding.right == null) {
+            return 0;
+        }
+        return padding.right;
     }
 
     public var horizontalSpacing(get, null):Float;
     private function get_horizontalSpacing():Float {
+        if (_component == null || _component.computedStyle == null || _component.computedStyle.spacing == null) {
+            return 0;
+        }
+        var spacing = _component.computedStyle.spacing;
+        if (spacing.horizontal == null) {
+            return 0;
+        }
+        return spacing.horizontal;
+        /*
         if (_component == null || _component.style == null || _component.style.horizontalSpacing == null) {
             return 0;
         }
         return _component.style.horizontalSpacing;
+        */
     }
 
     public var verticalSpacing(get, null):Float;
     private function get_verticalSpacing():Float {
+        /*
         if (_component == null || _component.style == null || _component.style.verticalSpacing == null) {
             return 0;
         }
         return _component.style.verticalSpacing;
+        */
+        if (_component == null || _component.computedStyle == null || _component.computedStyle.spacing == null) {
+            return 0;
+        }
+        var spacing = _component.computedStyle.spacing;
+        if (spacing.vertical == null) {
+            return 0;
+        }
+        return spacing.vertical;
     }
 
     //******************************************************************************************
@@ -202,15 +286,7 @@ class Layout implements ILayout {
         if (component == null) {
             return 0;
         }
-        var padding:Float = 0;
-        if (component.style != null && component.style.paddingTop != null) {
-            padding = component.style.paddingTop + padding;
-        }
-        if (component.style != null && component.style.paddingBottom != null) {
-            padding = component.style.paddingBottom + padding;
-        }
-        var icy:Float = component.componentHeight - padding;
-        return icy;
+        return component.componentHeight - (paddingTop + paddingBottom);
     }
 
     private function resizeChildren() {

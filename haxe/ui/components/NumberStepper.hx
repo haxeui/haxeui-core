@@ -126,6 +126,7 @@ private class Builder extends CompositeBuilder {
         _stepper.addComponent(step);
     }
     
+    /* TODO!
     public override function applyStyle(style:Style) {
         var textfield:TextField = _stepper.findComponent(TextField);
         if (textfield != null &&
@@ -141,6 +142,7 @@ private class Builder extends CompositeBuilder {
             textfield.invalidateComponentStyle();
         }
     }
+    */
 }
 
 

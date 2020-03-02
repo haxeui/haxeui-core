@@ -274,7 +274,8 @@ private class Events extends haxe.ui.events.Events {
             if (_textarea.getTextInput().data.vscrollPageStep != null) {
                 step = _textarea.getTextInput().data.vscrollPageStep;
             } else {
-                step = Math.ceil((_textarea.getTextInput().textStyle.fontSize + 1) / 10) * 10;
+                var fontSize:Float = _textarea.getTextInput().textStyle2.font.size;
+                step = Math.ceil((fontSize + 1) / 10) * 10;
             }
             if (event.delta > 0) {
                 vscroll.pos -= step;

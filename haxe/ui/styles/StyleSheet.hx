@@ -121,4 +121,20 @@ class StyleSheet {
         
         return style;
     }
+    
+    
+    public function buildStyleFor2(c:Component, style:Style2 = null):Style2 {
+        if (style == null) {
+            style = {};
+        }
+        for (r in rules) {
+            if (!r.match(c)) {
+                continue;
+            }
+
+            StyleUtils.mergeStyle(style, r.style);
+        }
+        
+        return style;
+    }
 }

@@ -5,6 +5,7 @@ import haxe.ui.core.Component;
 import haxe.ui.core.TextDisplay.TextDisplayData;
 import haxe.ui.core.TextInput.TextInputData;
 import haxe.ui.styles.Style;
+import haxe.ui.styles.Style2;
 
 @:dox(hide) @:noCompletion
 class TextBase {
@@ -22,6 +23,7 @@ class TextBase {
     private var _textWidth:Float = 0;
     private var _textHeight:Float = 0;
     private var _textStyle:Style;
+    private var _textStyle2:Style2; 
     private var _fontInfo:FontInfo;
     
     public function new() {

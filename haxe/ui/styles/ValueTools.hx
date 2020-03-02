@@ -4,6 +4,9 @@ import haxe.ui.core.Platform;
 import haxe.ui.styles.EasingFunction;
 import haxe.ui.constants.UnitTime;
 import haxe.ui.core.Screen;
+import haxe.ui.styles.Style2.Optional;
+import haxe.ui.styles.Style2.Option;
+import haxe.ui.util.Color;
 
 class ValueTools {
     private static var timeEReg:EReg = ~/^(-?\d+(?:\.\d+)?)(s|ms)$/gi;
@@ -27,6 +30,8 @@ class ValueTools {
             v = parseColor(s);
         } else if (s == "none") {
             v = Value.VNone;
+        } else if (s == "inherit") {
+            v = Value.VInherit;
         } else if (s.indexOf("(") != -1 && StringTools.endsWith(s, ")")) {    
             var n = s.indexOf("(");
             var f = s.substr(0, n);
@@ -195,6 +200,23 @@ class ValueTools {
         }
     }
     
+    public static function optionalString(value:Value):Optional<String> {
+        if (value == null) {
+            return null;
+        }
+        
+        switch (value) {
+            case Value.VString(v) | Value.VConstant(v):
+                return Some(v);
+            case VInherit:
+                return inherit;
+            case VNone:
+                return none;
+            case _:
+                return null;
+        }
+    }
+    
     public static function bool(value:Value):Null<Bool> {
         if (value == null) {
             return null;
@@ -226,6 +248,25 @@ class ValueTools {
                 return null;
         }
     }
+
+    public static function optionalInt(value:Value):Optional<Int> {
+        if (value == null) {
+            return null;
+        }
+        
+        switch (value) {
+            case Value.VColor(v):
+                return Some(v);
+            case Value.VNumber(v):
+                return Some(Std.int(v));
+            case Value.VNone:
+                return none;
+            case Value.VCall(f, vl):
+                return Some(Std.int(call(f, vl)));
+            case _:
+                return null;
+        }
+    }
     
     public static function float(value:Value):Null<Float> {
         if (value == null) {
@@ -243,7 +284,51 @@ class ValueTools {
                 return null;
         }
     }
+
+    public static function optionalFloat(value:Value):Optional<Float> {
+        if (value == null) {
+            return null;
+        }
+        
+        switch (value) {
+            case Value.VNumber(v):
+                return Some(v);
+            case Value.VTime(v, unit):
+                return Some(v);
+            case Value.VColor(v):
+                return Some(cast v);
+            case Value.VNone:
+                return none;
+            case VDimension(v):
+                return Some(calcDimension(value));
+            case _:
+                return null;
+        }
+    }
     
+    public static function color(value:Value):Color {
+        if (value == null) {
+            return null;
+        }
+        
+        switch (value) {
+            case Value.VNumber(v):
+                return Std.int(v);
+            case Value.VColor(v):
+                return v;
+            case Value.VNone:
+                return none;
+            case VString(v) | VConstant(v):
+                return v;
+            case VInherit:
+                trace("COLOR IS INHERIT");
+                return inherit;
+            case _:
+                return null;
+        }
+    }
+    
+
     public static function any(v:Value):Any {
         if (v == null) {
             return null;

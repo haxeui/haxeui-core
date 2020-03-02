@@ -13,4 +13,5 @@ enum Value {
     VComposite(vl:Array<Value>);
     VTime(v:Float, unit:UnitTime);
     VNone();
+    VInherit();
 }

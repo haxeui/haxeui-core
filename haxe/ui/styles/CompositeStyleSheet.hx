@@ -73,6 +73,16 @@ class CompositeStyleSheet {
         
         return style;
     }
+
+    public function buildStyleFor2(c:Component):Style2 {
+        var style = {};
+        
+        for (s in _styleSheets) {
+            style = s.buildStyleFor2(c, style);
+        }
+        
+        return style;
+    }
     
     public function clear(styleSheetName:String) {
         var s = findStyleSheet(styleSheetName);

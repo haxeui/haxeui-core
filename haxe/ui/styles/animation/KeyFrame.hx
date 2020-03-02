@@ -6,6 +6,7 @@ import haxe.ui.styles.elements.Directive;
 
 class KeyFrame {
     public var directives:Array<Directive> = [];
+    public var style:Style2 = {};
     public var time:Float = 0;
     public var delay:Float = 0;
     public var easingFunction:EasingFunction;
@@ -32,7 +33,11 @@ class KeyFrame {
             Reflect.setField(properties, d.directive, d.value);
         }
 
-        _actuator = new Actuator(target, properties, time, {
+        trace("anim run: " + properties);
+        trace("anim run2: " + style);
+        trace("anim run3: " + time);
+        
+        _actuator = new Actuator(target, properties, style, time, {
             delay: delay,
             easingFunction: easingFunction,
             onComplete: function() {

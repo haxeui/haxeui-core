@@ -1,4 +1,6 @@
 package haxe.ui.util;
+import haxe.ui.styles.Style2.Optional;
+import haxe.ui.styles.Style2.Option.Some;
 
 abstract Color(Int) from Int {
     @:from static function fromString(s:String):Color {
@@ -26,6 +28,29 @@ abstract Color(Int) from Int {
         }
     }
 
+    @:from private static inline function fromOptional<T>(v:Optional<T>):Color {
+        return switch(v) {
+            case Some(q):
+                cast q;
+            case inherit:
+                MathUtil.MIN_INT + 1;
+            case none:
+                MathUtil.MIN_INT;
+            case _:
+                null;
+        }
+    }
+    
+    public var isNone(get, never):Bool;
+    private function get_isNone():Bool {
+        return (this == MathUtil.MIN_INT);
+    }
+    
+    public var isInherit(get, never):Bool;
+    private function get_isInherit():Bool {
+        return (this == MathUtil.MIN_INT + 1);
+    }
+    
     static public function fromComponents(r:Int, g:Int, b:Int, a:Int):Color {
         var result:Color;
         return result.set(r, g, b, a);

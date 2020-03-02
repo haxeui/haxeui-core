@@ -12,6 +12,7 @@ import haxe.ui.focus.FocusManager;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.styles.Style;
 import haxe.ui.geom.Size;
+import haxe.ui.styles.Style2;
 import haxe.ui.util.Timer;
 import haxe.ui.util.Variant;
 
@@ -52,8 +53,8 @@ class Button extends InteractiveComponent {
     // Styles
     //***********************************************************************************************************
     @:style(layout)                                     public var iconPosition:String;
-    @:style(layout)                                     public var fontSize:Null<Float>;
-    @:style(layout)                                     public var textAlign:String;
+//    @:style(layout)                                     public var fontSize:Null<Float>;
+//    @:style(layout)                                     public var textAlign:String;
     
     //***********************************************************************************************************
     // Public API
@@ -111,6 +112,18 @@ class Button extends InteractiveComponent {
         if (style.icon != null) {
             icon = style.icon;
         }
+    }
+    
+    private override function applyStyle2(style:Style2) {
+        super.applyStyle2(style);
+        var label:Label = findComponent(Label);
+        if (label != null) {
+            label.invalidateComponentStyle();
+        }
+    }
+
+    public static function addClassStyle(suffix:String = null, style:Style2) {
+        
     }
 }
 
@@ -199,7 +212,8 @@ class ButtonLayout extends DefaultLayout {
                 if (label != null && icon != null) {
                     var cx:Float = label.componentWidth + icon.componentWidth + horizontalSpacing;
                     var x:Float = Std.int((component.componentWidth / 2) - (cx / 2));
-                    if (cast(component, Button).textAlign == "left") {
+                    if (component.computedStyle.textAlign == "left") {
+//                    if (cast(component, Button).textAlign == "left") {
                         x = paddingLeft;
                     }
 
@@ -250,10 +264,10 @@ class ButtonLayout extends DefaultLayout {
     }
 
     private function getTextAlignPos(label:Label, usableWidth:Float):Float {
-        switch (cast(component, Button).textAlign) {
-            case "left":
+        switch (component.computedStyle.textAlign) {
+            case Some("left"):
                 return marginLeft(label) + paddingLeft;
-            case "right":
+            case Some("right"):
                 return usableWidth - label.componentWidth - marginRight(label) - paddingRight;
             default:
                 return Std.int((usableWidth / 2) - (label.componentWidth / 2)) + marginLeft(label) - marginRight(label);
@@ -491,6 +505,28 @@ class ButtonBuilder extends CompositeBuilder {
 
     public override function applyStyle(style:Style) {
         var label:Label = _button.findComponent(Label);
+        if (label != null) {
+            label.invalidateComponentStyle();
+        }
+        
+        //trace("WE GOT COLOUR IN BUTTON: " + StringTools.hex(style.color));
+        /*
+        var label:Label = _button.findComponent(Label);
+        if (label != null &&
+            (label.customStyle.color != style.color ||
+            label.customStyle.fontName != style.fontName ||
+            label.customStyle.fontSize != style.fontSize ||
+            label.customStyle.textAlign != style.textAlign)) {
+
+            label.customStyle.color = style.color;
+            label.customStyle.fontName = style.fontName;
+            label.customStyle.fontSize = style.fontSize;
+            label.customStyle.textAlign = style.textAlign;
+            label.invalidateComponentStyle();
+        }
+        */
+        /*
+        var label:Label = _button.findComponent(Label);
         if (label != null &&
             (label.customStyle.color != style.color ||
             label.customStyle.fontName != style.fontName ||
@@ -511,5 +547,6 @@ class ButtonBuilder extends CompositeBuilder {
             icon.customStyle.cursor = style.cursor;
             icon.invalidateComponentStyle();
         }
+        */
     }
 }

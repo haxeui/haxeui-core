@@ -2,6 +2,7 @@ package haxe.ui.core;
 
 import haxe.ui.backend.TextInputImpl;
 import haxe.ui.styles.Style;
+import haxe.ui.styles.Style2;
 import haxe.ui.validation.IValidating;
 import haxe.ui.validation.InvalidationFlags;
 
@@ -47,6 +48,29 @@ class TextInput extends TextInputImpl implements IValidating {
         super.blur();
     }
     
+    public var textStyle2(get, set):Style2;
+    private function get_textStyle2():Style2 {
+        return _textStyle2;
+    }
+    private function set_textStyle2(value:Style2):Style2 {
+        if (value == null) {
+            return value;
+        }
+        
+        if ((value.font.family != null && _textStyle == null) || (_textStyle != null && value.font.family != _textStyle2.font.family)) {
+            ToolkitAssets.instance.getFont(value.font.family, function(fontInfo) {
+                _fontInfo = fontInfo;
+                invalidateComponent(InvalidationFlags.STYLE);
+                parentComponent.invalidateComponent(InvalidationFlags.STYLE);
+            });
+        } else {
+            invalidateComponent(InvalidationFlags.STYLE);
+        }
+        
+        _textStyle2 = value;
+        return value;
+    }
+    
     /**
      The style to use for this text
     **/
@@ -60,6 +84,7 @@ class TextInput extends TextInputImpl implements IValidating {
             return value;
         }
 
+        /*
         if ((value.fontName != null && _textStyle == null) || (_textStyle != null && value.fontName != _textStyle.fontName)) {
             ToolkitAssets.instance.getFont(value.fontName, function(fontInfo) {
                 _fontInfo = fontInfo;
@@ -68,6 +93,7 @@ class TextInput extends TextInputImpl implements IValidating {
         } else {
             invalidateComponent(InvalidationFlags.STYLE);
         }
+        */
         
         _textStyle = value;
         return value;
