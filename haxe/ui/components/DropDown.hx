@@ -320,7 +320,6 @@ class DropDownEvents extends ButtonEvents {
         handler.component.styleNames = _dropdown.handlerStyleNames;
         var componentOffset = _dropdown.getComponentOffset();
         
-        var mode = "mobile";
         if (_dropdown.style.mode != null && _dropdown.style.mode == "mobile") {
             if (_overlay == null) {
                 _overlay = new Component();
