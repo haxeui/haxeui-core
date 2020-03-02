@@ -459,11 +459,11 @@ private class Layout extends VerticalVirtualLayout {
                         }
                     }
                 }
-                data.componentWidth = item.width;
             }
             
             data.left = paddingLeft;
             data.top = header.top + header.height - 1;
+            data.componentWidth = header.width;
         }
     }
     
