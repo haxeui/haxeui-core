@@ -9,6 +9,7 @@ import haxe.ui.macros.helpers.CodeBuilder;
 import haxe.ui.macros.helpers.CodePos;
 import haxe.ui.macros.helpers.FieldBuilder;
 import haxe.ui.util.StringUtil;
+import haxe.ui.macros.ComponentMacros.NamedComponentDescription;
 #end
 
 class Macros {
@@ -40,30 +41,23 @@ class Macros {
         }
         
         var xml = builder.getClassMetaValue("xml");
-        var namedComponents:Map<String, String> = new Map<String, String>();
+        var namedComponents:Map<String, NamedComponentDescription> = new Map<String, NamedComponentDescription>();
         var codeBuilder = new CodeBuilder();
         ComponentMacros.buildComponentFromString(codeBuilder, xml, namedComponents);
         codeBuilder.add(macro
             addComponent(c0)
         );
         
-        var createChildrenFn = builder.findFunction("createChildren");
-        if (createChildrenFn == null) {
-            createChildrenFn = builder.addFunction("createChildren", macro {
-                super.createChildren();
-            }, [APrivate, AOverride]);
-        }
-        createChildrenFn.add(codeBuilder);
-        
         for (id in namedComponents.keys()) {
             var safeId:String = StringUtil.capitalizeHyphens(id);
-            var cls:String = namedComponents.get(id);
-            builder.addVar(safeId, TypeTools.toComplexType(Context.getType(cls)));
-            builder.constructor.add(macro
-                $i{safeId} = findComponent($v{id}, $p{cls.split(".")}, true)
-            , AfterSuper);
-            createChildrenFn.add(macro $i{safeId} = findComponent($v{id}, $p{cls.split(".")}, true));
+            var info:NamedComponentDescription = namedComponents.get(id);
+            builder.addVar(safeId, TypeTools.toComplexType(Context.getType(info.type)));
+            codeBuilder.add(macro
+                $i{safeId} = $i{info.generatedVarName}
+            );
         }
+        
+       builder.constructor.add(codeBuilder);
     }
     
     static function buildComposite(builder:ClassBuilder) {
