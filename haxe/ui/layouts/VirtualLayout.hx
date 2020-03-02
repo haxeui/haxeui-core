@@ -104,7 +104,15 @@ class VirtualLayout extends ScrollViewLayout {
         }
     }
 
+    private var _lastItemRenderer:ItemRenderer = null;
     private function refreshNonVirtualData() {
+        
+        var comp:IVirtualContainer = cast(_component, IVirtualContainer);
+        if (comp.itemRenderer != _lastItemRenderer) {
+            _lastItemRenderer = comp.itemRenderer;
+            contents.removeAllComponents();
+        }
+
         var dataSource:DataSource<Dynamic> = dataSource;
         var contents:Component = this.contents;
         for (n in 0...dataSource.size) {
@@ -148,6 +156,13 @@ class VirtualLayout extends ScrollViewLayout {
     }
 
     private function refreshVirtualData() {
+        var comp:IVirtualContainer = cast(_component, IVirtualContainer);
+        if (comp.itemRenderer != _lastItemRenderer) {
+            _lastItemRenderer = comp.itemRenderer;
+            contents.removeAllComponents();
+            _rendererPool = [];
+        }
+        
         removeInvisibleRenderers();
         calculateRangeVisible();
         updateScroll();
