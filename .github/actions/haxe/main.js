@@ -33,7 +33,7 @@ try {
         installLocation = "/opt/haxe";
         haxelibLocation = "/opt/haxe/haxelibs";
     } else if (platform == "osx") {
-        child_process.execSync('brew install neko --HEAD', {stdio: 'inherit'});
+        child_process.execSync('brew install neko', {stdio: 'inherit'});
     } else if (platform == "win64") {
         installLocation = "D:\\haxe";
         haxelibLocation = "D:\\haxe\\haxelibs";
