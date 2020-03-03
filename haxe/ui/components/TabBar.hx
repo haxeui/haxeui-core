@@ -280,7 +280,6 @@ private class Builder extends CompositeBuilder {
             _container.id = "tabbar-contents";
             _container.addClass("tabbar-contents");
             _tabbar.addComponent(_container);
-            _tabbar.addClass(":bottom");
         }
     }
     

@@ -4,6 +4,7 @@ import haxe.ui.backend.ScreenImpl;
 import haxe.ui.containers.dialogs.Dialog;
 import haxe.ui.containers.dialogs.Dialog.DialogButton;
 import haxe.ui.containers.dialogs.MessageBox.MessageBoxType;
+import haxe.ui.core.Component;
 import haxe.ui.events.UIEvent;
 import haxe.ui.focus.FocusManager;
 import haxe.ui.util.EventMap;
@@ -33,7 +34,7 @@ class Screen extends ScreenImpl {
         _eventMap = new EventMap();
     }
 
-    public override function addComponent(component:Component) {
+    public override function addComponent(component:Component):Component {
         super.addComponent(component);
         #if !haxeui_android
         component.ready();
@@ -43,21 +44,24 @@ class Screen extends ScreenImpl {
             FocusManager.instance.pushView(component);
             component.registerEvent(UIEvent.RESIZE, _onRootComponentResize);    //refresh vh & vw
         }
+		return component;
     }
 
-    public override function removeComponent(component:Component) {
+    public override function removeComponent(component:Component):Component {
         super.removeComponent(component);
         component.depth = -1;
         rootComponents.remove(component);
         component.unregisterEvent(UIEvent.RESIZE, _onRootComponentResize);
+		return component;
     }
 
-    public function setComponentIndex(child:Component, index:Int) {
+    public function setComponentIndex(child:Component, index:Int):Component {
         if (index >= 0 && index <= rootComponents.length) {
             handleSetComponentIndex(child, index);
             rootComponents.remove(child);
             rootComponents.insert(index, child);
         }
+		return child;
     }
 
     public function refreshStyleRootComponents() {

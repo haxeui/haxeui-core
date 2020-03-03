@@ -33,7 +33,7 @@ abstract Variant(VariantType) from VariantType {
             case VT_Bool(s): Std.string(s);
             case VT_Array(s): Std.string(s);
             case VT_Component(s): Std.string(s);
-            case VT_DataSource(s): Std.string(s);
+            case VT_DataSource(s): "";
             case VT_Date(s): Std.string(s);
             default: throw "Variant Type Error";
         }

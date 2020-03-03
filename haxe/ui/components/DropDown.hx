@@ -60,11 +60,18 @@ private class SelectedIndexBehaviour extends DataBehaviour {
     }
     
     public override function get():Variant {
+        if (_component.isReady == false) {
+            return super.get();
+        }
         var handler:IDropDownHandler = cast(_component._compositeBuilder, DropDownBuilder).handler;
         return handler.selectedIndex;
     }
     
     public override function set(value:Variant) {
+        if (_component.isReady == false) {
+            super.set(value);
+            return;
+        }
         if (value == _value) {
             return;
         }
@@ -320,7 +327,6 @@ class DropDownEvents extends ButtonEvents {
         handler.component.styleNames = _dropdown.handlerStyleNames;
         var componentOffset = _dropdown.getComponentOffset();
         
-        var mode = "mobile";
         if (_dropdown.style.mode != null && _dropdown.style.mode == "mobile") {
             if (_overlay == null) {
                 _overlay = new Component();
@@ -392,7 +398,7 @@ class DropDownEvents extends ButtonEvents {
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 @:access(haxe.ui.components.DropDownEvents)
-private class DropDownBuilder extends ButtonBuilder {
+class DropDownBuilder extends ButtonBuilder {
     
     public static var HANDLER_MAP:Map<String, String> = new Map<String, String>();
     

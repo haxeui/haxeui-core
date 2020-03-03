@@ -47,4 +47,28 @@ class StringUtil {
         }
         return s;
     }
+    
+    public static function rpad(s:String, count:Int, c:String = " "):String {
+        for (i in 0...count) {
+            s += c;
+        }
+        return s;
+    }
+    
+    public static function padDecimal(v:Float, precision:Null<Int>):String {
+        var s = Std.string(v);
+        if (precision == null || precision <= 0) {
+            return s;
+        }
+        
+        var n = s.indexOf(".");
+        if (n == -1) {
+            n = s.length;
+            s += ".";
+        }
+        
+        var delta = precision - (s.length - n - 1);
+        
+        return rpad(s, delta, "0");
+    }
 }

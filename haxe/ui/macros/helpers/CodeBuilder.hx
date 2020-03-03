@@ -13,8 +13,25 @@ class CodeBuilder {
         }
         this.expr = expr;
     }
-    
-    public function add(e:Expr = null, cb:CodeBuilder = null, where:CodePos = CodePos.End) {
+
+    function findSuper(exprs:Array<Expr>):Null<Int> {
+        var result:Null<Int> = null;
+        for (pos in 0...exprs.length) {
+            var expr = exprs[pos];
+            switch (expr.expr) {
+                case ECall({expr: EConst(CIdent("super")), pos:_}, params):
+                    result = pos;
+                    break;
+                default:
+            }
+        }
+        return result;
+    }
+
+    public function add(e:Expr = null, cb:CodeBuilder = null, where:CodePos = null) {
+        if (where == null) {
+            where = CodePos.End;
+        }
         if (e == null && cb == null) {
             throw "Nothing specified";
         }
@@ -24,16 +41,24 @@ class CodeBuilder {
         
         switch (expr.expr) {
             case EBlock(el):
-                if (where == CodePos.Start) {
-                    el.unshift(e);
-                } else if (where == CodePos.End) {
-                    if (isLastLineReturn() == true) {
-                        el.insert(el.length - 1, e);
-                    } else {
-                        el.push(e);
-                    }
-                } else {
-                    el.insert(where, e);
+                switch (where) {
+                    case Start:
+                        el.unshift(e);
+                    case End:
+                        if (isLastLineReturn() == true) {
+                            el.insert(el.length - 1, e);
+                        } else {
+                            el.push(e);
+                        }
+                    case AfterSuper:
+                        var superPos = findSuper(el);
+                        if (superPos == null) {
+                            throw 'super call not found in method at ${e.pos}';
+                        } else {
+                            el.insert(superPos + 1, e);
+                        }
+                    case Pos(pos):
+                        el.insert(pos, e);
                 }
             case _:    
                 throw "NOT IMPL! - " + expr;

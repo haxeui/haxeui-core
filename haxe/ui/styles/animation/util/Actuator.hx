@@ -320,7 +320,7 @@ class Actuator<T> {
             var start:Dynamic = Reflect.getProperty(target, componentProperty);
             if (start == null) {
                 switch (end) {
-                    case Value.VDimension(Dimension.PERCENT(v)):
+                    case Value.VDimension(Dimension.PERCENT(v)) | Value.VNumber(v):
                         start = 0;
                     case _:
                 }

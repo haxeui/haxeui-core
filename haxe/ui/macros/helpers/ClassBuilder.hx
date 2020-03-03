@@ -599,7 +599,10 @@ class ClassBuilder {
         }
     }
     
-    public function addToFunction(name:String, e:Expr = null, cb:CodeBuilder = null, where:CodePos = CodePos.End) {
+    public function addToFunction(name:String, e:Expr = null, cb:CodeBuilder = null, where:CodePos = null) {
+        if (where == null) {
+            where = CodePos.End;
+        }
         var fn = findFunction(name);
         if (fn == null) {
             throw 'Could not find function: ${name}';

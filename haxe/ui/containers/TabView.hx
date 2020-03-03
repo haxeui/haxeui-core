@@ -197,9 +197,6 @@ private class RemovePage extends Behaviour {
         var builder:Builder = cast(_component._compositeBuilder, Builder);
         var index:Int = param;
         if (index < builder._views.length) {
-            var view = builder._views[index];
-            builder._views.remove(view);
-            builder._content.removeComponent(view);
             builder._tabs.removeTab(index);
         }
         return null;
@@ -213,9 +210,6 @@ private class RemoveAllPages extends Behaviour {
     public override function call(param:Any = null):Variant {
         var builder:Builder = cast(_component._compositeBuilder, Builder);
         while (builder._views.length > 0) {
-            var view = builder._views[0];
-            builder._views.remove(view);
-            builder._content.removeComponent(view);
             builder._tabs.removeTab(0);
         }
         cast(_component, TabView).pageIndex = -1;

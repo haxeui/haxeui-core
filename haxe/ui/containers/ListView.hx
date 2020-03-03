@@ -10,6 +10,7 @@ import haxe.ui.constants.SelectionMode;
 import haxe.ui.containers.ScrollView;
 import haxe.ui.containers.ScrollView.ScrollViewBuilder;
 import haxe.ui.core.Component;
+import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.ItemRenderer;
@@ -94,6 +95,7 @@ typedef ItemRendererFunction2 = Dynamic->Int->Class<ItemRenderer>;    //(data, i
 // Events
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
 class ListViewEvents extends ScrollViewEvents {
     private var _listview:ListView;
 
@@ -125,7 +127,8 @@ class ListViewEvents extends ScrollViewEvents {
         instance.registerEvent(MouseEvent.MOUSE_DOWN, onRendererMouseDown);
         instance.registerEvent(MouseEvent.CLICK, onRendererClick);
         if (_listview.selectedIndices.indexOf(instance.itemIndex) != -1) {
-            instance.addClass(":selected", true, true);
+            var builder:ListViewBuilder = cast(_listview._compositeBuilder, ListViewBuilder);
+            builder.addItemRendererClass(instance, ":selected");
         }
     }
 
@@ -134,7 +137,8 @@ class ListViewEvents extends ScrollViewEvents {
         instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onRendererMouseDown);
         instance.unregisterEvent(MouseEvent.CLICK, onRendererClick);
         if (_listview.selectedIndices.indexOf(instance.itemIndex) != -1) {
-            instance.removeClass(":selected", true, true);
+            var builder:ListViewBuilder = cast(_listview._compositeBuilder, ListViewBuilder);
+            builder.addItemRendererClass(instance, ":selected", false);
         }
     }
 
@@ -190,7 +194,7 @@ class ListViewEvents extends ScrollViewEvents {
                     renderer.registerEvent(MouseEvent.CLICK, __onMouseClick, 1);
                 }
             }
-        }, 500);   //TODO - configurable
+        }, _listview.longPressSelectionTime);
     }
     
     private override function onContainerEventsStatusChanged() {
@@ -324,6 +328,21 @@ private class ListViewBuilder extends ScrollViewBuilder {
     public override function onVirtualChanged() {
         _contents.layoutName = _listview.virtual ? "absolute" : "vertical";
     }
+    
+    public function addItemRendererClass(child:Component, className:String, add:Bool = true) {
+        child.walkComponents(function(c) {
+            if (Std.is(c, ItemRenderer)) {
+                if (add == true) {
+                    c.addClass(className);
+                } else {
+                    c.removeClass(className);
+                }
+            } else {
+                c.invalidateComponentStyle(); // we do want to invalidate the other components incase the css rule applies indirectly
+            }
+            return true;
+        });
+    }
 }
 
 //***********************************************************************************************************
@@ -393,6 +412,7 @@ private class SelectedItemBehaviour extends Behaviour {
 }
 
 @:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
 private class SelectedIndicesBehaviour extends DataBehaviour {
     public override function get():Variant {
         return _value.isNull ? [] : _value;
@@ -403,12 +423,14 @@ private class SelectedIndicesBehaviour extends DataBehaviour {
         var selectedIndices:Array<Int> = listView.selectedIndices;
         var contents:Component = _component.findComponent("scrollview-contents", false, "css");
         var itemToEnsure:ItemRenderer = null;
+        var builder:ListViewBuilder = cast(_component._compositeBuilder, ListViewBuilder);
+        
         for (child in contents.childComponents) {
             if (selectedIndices.indexOf(cast(child, ItemRenderer).itemIndex) != -1) {
                 itemToEnsure = cast(child, ItemRenderer);
-                child.addClass(":selected", true, true);
+                builder.addItemRendererClass(child, ":selected");
             } else {
-                child.removeClass(":selected", true, true);
+                builder.addItemRendererClass(child, ":selected", false);
             }
         }
 

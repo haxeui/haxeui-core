@@ -24,6 +24,7 @@ import haxe.ui.events.UIEvent;
 import haxe.ui.geom.Rectangle;
 import haxe.ui.layouts.LayoutFactory;
 import haxe.ui.layouts.VerticalVirtualLayout;
+import haxe.ui.util.MathUtil;
 import haxe.ui.util.Variant;
 
 @:composite(Events, Builder, Layout)
@@ -105,6 +106,7 @@ private class CompoundItemRenderer extends ItemRenderer {
 // Events
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
 private class Events extends ScrollViewEvents {
     private var _tableview:TableView;
 
@@ -135,18 +137,77 @@ private class Events extends ScrollViewEvents {
 
     private function onRendererCreated(e:UIEvent):Void {
         var instance:ItemRenderer = cast(e.data, ItemRenderer);
+        instance.registerEvent(MouseEvent.MOUSE_DOWN, onRendererMouseDown);
         instance.registerEvent(MouseEvent.CLICK, onRendererClick);
         if (_tableview.selectedIndices.indexOf(instance.itemIndex) != -1) {
-            instance.addClass(":selected", true, true);
+            var builder:Builder = cast(_tableview._compositeBuilder, Builder);
+            builder.addItemRendererClass(instance, ":selected");
         }
     }
 
     private function onRendererDestroyed(e:UIEvent) {
         var instance:ItemRenderer = cast(e.data, ItemRenderer);
+        instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onRendererMouseDown);
         instance.unregisterEvent(MouseEvent.CLICK, onRendererClick);
         if (_tableview.selectedIndices.indexOf(instance.itemIndex) != -1) {
-            instance.removeClass(":selected", true, true);
+            var builder:Builder = cast(_tableview._compositeBuilder, Builder);
+            builder.addItemRendererClass(instance, ":selected", false);
         }
+    }
+
+
+    private function onRendererMouseDown(e:MouseEvent) {
+        switch(_tableview.selectionMode) {
+            case SelectionMode.MULTIPLE_LONG_PRESS:
+                if (_tableview.selectedIndices.length == 0) {
+                    startLongPressSelection(e);
+                }
+
+            default:
+        }
+    }
+
+    private function startLongPressSelection(e:MouseEvent) {
+        var timerClick:Timer = null;
+        var currentMouseX:Float = e.screenX, currentMouseY:Float = e.screenY;
+        var renderer:ItemRenderer = cast(e.target, ItemRenderer);
+        var __onMouseMove:MouseEvent->Void = null, __onMouseUp:MouseEvent->Void, __onMouseClick:MouseEvent->Void;
+
+        __onMouseMove = function (_e:MouseEvent) {
+            currentMouseX = _e.screenX;
+            currentMouseY = _e.screenY;
+        }
+
+        __onMouseUp = function (_e:MouseEvent) {
+            if (timerClick != null) {
+                timerClick.stop();
+                timerClick = null;
+            }
+
+            renderer.screen.unregisterEvent(MouseEvent.MOUSE_MOVE, __onMouseMove);
+            renderer.screen.unregisterEvent(MouseEvent.MOUSE_UP, __onMouseUp);
+        }
+
+        __onMouseClick = function(_e:MouseEvent) {
+            _e.cancel();    //Avoid toggleSelection onRendererClick method
+
+            renderer.unregisterEvent(MouseEvent.CLICK, __onMouseClick);
+        }
+
+        renderer.screen.registerEvent(MouseEvent.MOUSE_MOVE, __onMouseMove);
+        renderer.screen.registerEvent(MouseEvent.MOUSE_UP, __onMouseUp);
+
+        timerClick = Timer.delay(function(){
+            if (timerClick != null) {
+                timerClick = null;
+
+                if (renderer.hitTest(currentMouseX, currentMouseY) &&
+                    MathUtil.distance(e.screenX, e.screenY, currentMouseX, currentMouseY) < 2 * Toolkit.pixelsPerRem) {
+                    toggleSelection(renderer);
+                    renderer.registerEvent(MouseEvent.CLICK, __onMouseClick, 1);
+                }
+            }
+        }, _tableview.longPressSelectionTime);
     }
 
     private override function onContainerEventsStatusChanged() {
@@ -172,7 +233,67 @@ private class Events extends ScrollViewEvents {
         }
 
         var renderer:ItemRenderer = cast(e.target, ItemRenderer);
-        _tableview.selectedIndex = renderer.itemIndex;
+        switch(_tableview.selectionMode) {
+            case SelectionMode.DISABLED:
+
+            case SelectionMode.ONE_ITEM:
+                _tableview.selectedIndex = renderer.itemIndex;
+
+            case SelectionMode.ONE_ITEM_REPEATED:
+                _tableview.selectedIndices = [renderer.itemIndex];
+
+            case SelectionMode.MULTIPLE_MODIFIER_KEY, SelectionMode.MULTIPLE_CLICK_MODIFIER_KEY:
+                if (e.ctrlKey == true) {
+                    toggleSelection(renderer);
+                } else if (e.shiftKey == true) {
+                    var selectedIndices:Array<Int> = _tableview.selectedIndices;
+                    var fromIndex:Int = selectedIndices.length > 0 ? selectedIndices[selectedIndices.length-1]: 0;
+                    var toIndex:Int = renderer.itemIndex;
+                    if (fromIndex < toIndex)
+                    {
+                        for (i in selectedIndices) {
+                            if (i < fromIndex) {
+                                fromIndex = i;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var tmp:Int = fromIndex;
+                        fromIndex = toIndex;
+                        toIndex = tmp;
+                    }
+
+                    selectRange(fromIndex, toIndex);
+                } else if (_tableview.selectionMode == SelectionMode.MULTIPLE_CLICK_MODIFIER_KEY) {
+                    _tableview.selectedIndex = renderer.itemIndex;
+                }
+
+            case SelectionMode.MULTIPLE_LONG_PRESS:
+                var selectedIndices:Array<Int> = _tableview.selectedIndices;
+                if (selectedIndices.length > 0) {
+                    toggleSelection(renderer);
+                }
+
+            default:
+                //Nothing
+        }
+    }
+
+    private function toggleSelection(renderer:ItemRenderer) {
+        var itemIndex:Int = renderer.itemIndex;
+        var selectedIndices = _tableview.selectedIndices.copy();
+        var index:Int;
+        if ((index = selectedIndices.indexOf(itemIndex)) == -1) {
+            selectedIndices.push(itemIndex);
+        } else {
+            selectedIndices.splice(index, 1);
+        }
+        _tableview.selectedIndices = selectedIndices;
+    }
+
+    private function selectRange(fromIndex:Int, toIndex:Int) {
+        _tableview.selectedIndices = [for (i in fromIndex...toIndex+1) i];
     }
 }
 
@@ -253,6 +374,14 @@ private class Builder extends ScrollViewBuilder {
         return r;
     }
     
+    public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
+        if (Std.is(child, Header) == true) {
+            _header = null;
+            return null;
+        }
+        return super.removeComponent(child, dispose, invalidate);
+    }
+    
     public function buildDefaultRenderer() {
         var r = new CompoundItemRenderer();
         if (_header != null) {
@@ -287,7 +416,7 @@ private class Builder extends ScrollViewBuilder {
     }
     
     private override function verticalConstraintModifier():Float {
-        if (_header == null || _tableview.virtual == true) {
+        if (_header == null) {
             return 0;
         }
 
@@ -300,6 +429,21 @@ private class Builder extends ScrollViewBuilder {
     
     private override function get_virtualHorizontal():Bool {
         return false;
+    }
+    
+    public function addItemRendererClass(child:Component, className:String, add:Bool = true) {
+        child.walkComponents(function(c) {
+            if (Std.is(c, ItemRenderer)) {
+                if (add == true) {
+                    c.addClass(className);
+                } else {
+                    c.removeClass(className);
+                }
+            } else {
+                c.invalidateComponentStyle(); // we do want to invalidate the other components incase the css rule applies indirectly
+            }
+            return true;
+        });
     }
 }
 
@@ -343,11 +487,11 @@ private class Layout extends VerticalVirtualLayout {
                         }
                     }
                 }
-                data.componentWidth = item.width;
             }
             
             data.left = paddingLeft;
             data.top = header.top + header.height - 1;
+            data.componentWidth = header.width;
         }
     }
     
@@ -428,6 +572,7 @@ private class SelectedItemBehaviour extends Behaviour {
 }
 
 @:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
 private class SelectedIndicesBehaviour extends DataBehaviour {
     public override function get():Variant {
         return _value.isNull ? [] : _value;
@@ -438,12 +583,14 @@ private class SelectedIndicesBehaviour extends DataBehaviour {
         var selectedIndices:Array<Int> = tableView.selectedIndices;
         var contents:Component = _component.findComponent("scrollview-contents", false, "css");
         var itemToEnsure:ItemRenderer = null;
+        var builder:Builder = cast(_component._compositeBuilder, Builder);
+        
         for (child in contents.childComponents) {
             if (selectedIndices.indexOf(cast(child, ItemRenderer).itemIndex) != -1) {
                 itemToEnsure = cast(child, ItemRenderer);
-                child.addClass(":selected", true, true);
+                builder.addItemRendererClass(child, ":selected");
             } else {
-                child.removeClass(":selected", true, true);
+                builder.addItemRendererClass(child, ":selected", false);
             }
         }
 

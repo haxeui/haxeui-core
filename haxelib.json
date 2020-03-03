@@ -5,11 +5,11 @@
         "_ibilon",
         "aW4KeNiNG"
     ],
-    "version": "1.0.21",
+    "version": "1.0.25",
     "dependencies": {
         "hscript": ""
     },
-    "releasenote": "bugfix",
+    "releasenote": "haxe3 fixes",
     "tags": [
         "ui",
         "gui"

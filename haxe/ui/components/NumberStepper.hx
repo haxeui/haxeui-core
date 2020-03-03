@@ -12,6 +12,7 @@ import haxe.ui.events.UIEvent;
 import haxe.ui.layouts.HorizontalLayout;
 import haxe.ui.styles.Style;
 import haxe.ui.util.MathUtil;
+import haxe.ui.util.StringUtil;
 import haxe.ui.util.Variant;
 
 @:composite(Events, Builder, HorizontalLayout)
@@ -40,7 +41,8 @@ private class PosBehaviour extends DataBehaviour {
         step.pos = preciseValue;
         
         var textfield:TextField = _component.findComponent("stepper-textfield", TextField);
-        textfield.text = Std.string(preciseValue);
+        var value = StringUtil.padDecimal(preciseValue, step.precision);
+        textfield.text = value;
         
         var event = new UIEvent(UIEvent.CHANGE);
         _component.dispatch(event);

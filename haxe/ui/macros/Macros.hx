@@ -9,6 +9,8 @@ import haxe.ui.macros.helpers.CodeBuilder;
 import haxe.ui.macros.helpers.CodePos;
 import haxe.ui.macros.helpers.FieldBuilder;
 import haxe.ui.util.StringUtil;
+import haxe.ui.macros.ComponentMacros.NamedComponentDescription;
+import haxe.macro.ExprTools;
 #end
 
 class Macros {
@@ -40,30 +42,28 @@ class Macros {
         }
         
         var xml = builder.getClassMetaValue("xml");
-        var namedComponents:Map<String, String> = new Map<String, String>();
+        var namedComponents:Map<String, NamedComponentDescription> = new Map<String, NamedComponentDescription>();
         var codeBuilder = new CodeBuilder();
-        ComponentMacros.buildComponentFromString(codeBuilder, xml, namedComponents);
+        var bindingExprs:Array<Expr> = [];
+        ComponentMacros.buildComponentFromString(codeBuilder, xml, namedComponents, bindingExprs);
         codeBuilder.add(macro
             addComponent(c0)
         );
         
-        var createChildrenFn = builder.findFunction("createChildren");
-        if (createChildrenFn == null) {
-            createChildrenFn = builder.addFunction("createChildren", macro {
-                super.createChildren();
-            }, [APrivate, AOverride]);
-        }
-        createChildrenFn.add(codeBuilder);
-        
         for (id in namedComponents.keys()) {
             var safeId:String = StringUtil.capitalizeHyphens(id);
-            var cls:String = namedComponents.get(id);
-            builder.addVar(safeId, TypeTools.toComplexType(Context.getType(cls)));
-            builder.constructor.add(macro
-                $i{safeId} = findComponent($v{id}, $p{cls.split(".")}, true)
-            , 1);
-            createChildrenFn.add(macro $i{safeId} = findComponent($v{id}, $p{cls.split(".")}, true));
+            var info:NamedComponentDescription = namedComponents.get(id);
+            builder.addVar(safeId, TypeTools.toComplexType(Context.getType(info.type)));
+            codeBuilder.add(macro
+                $i{safeId} = $i{info.generatedVarName}
+            );
         }
+        
+        for (expr in bindingExprs) {
+            codeBuilder.add(expr);
+        }
+        
+        builder.constructor.add(codeBuilder, AfterSuper);
     }
     
     static function buildComposite(builder:ClassBuilder) {
@@ -161,6 +161,47 @@ class Macros {
             var setter = builder.addSetter(f.name, f.type, codeBuilder.expr);
         }
     }
+
+    private static function buildPropertyBinding(builder:ClassBuilder, f:FieldBuilder, variable:Expr, field:String) {
+        f.remove();
+
+        var variable = ExprTools.toString(variable);
+
+        builder.addGetter(f.name, f.type, macro {
+            var c = findComponent($v{variable});
+            if (c == null) {
+                trace("WARNING: no child component found: " + $v{variable});
+                return Reflect.getProperty(c, $v{field});
+            }
+            var fieldIndex = Type.getInstanceFields(Type.getClass(c)).indexOf("get_" + $v{field});
+            if (fieldIndex == -1) {
+                trace("WARNING: no component getter found: " + $v{field});
+                return Reflect.getProperty(c, $v{field});
+            }
+            return Reflect.getProperty(c, $v{field});
+        });
+        builder.addSetter(f.name, f.type, macro {
+            if (value != $i{f.name}) {
+                var c = findComponent($v{variable});
+                if (c == null) {
+                    trace("WARNING: no child component found: " + $v{variable});
+                    return value;
+                }
+                var fieldIndex = Type.getInstanceFields(Type.getClass(c)).indexOf("set_" + $v{field});
+                if (fieldIndex == -1) {
+                    trace("WARNING: no component setter found: " + $v{field});
+                    return value;
+                }
+                Reflect.setProperty(c, $v{field}, value);
+            }
+            return value;
+        });
+        if (f.expr != null) {
+            builder.constructor.add(macro
+                $i{f.name} = $e{f.expr}
+            , AfterSuper);
+        }
+    }
     
     static function buildBindings(builder:ClassBuilder) {
         for (f in builder.getFieldsWithMeta("bindable")) {
@@ -183,67 +224,25 @@ class Macros {
             }
             
             for (f in bindFields) {
-                for (n in 0...f.getMetaCount("bind")) {
-                    var param1 = f.getMetaValueString("bind", 0, n);
-                    var param2 = f.getMetaValueString("bind", 1, n);
-                    if (param1 != null && param2 == null) { // one param, lets assume binding to component prop
-                        f.remove();
-                        
-                        var variable:String = param1.split(".")[0];
-                        var field:String = param1.split(".")[1];
-                        if (field == null) {
-                            field = "value";
-                        }
-                        
-                        builder.addGetter(f.name, f.type, macro {
-                            var c = findComponent($v{variable});
-                            if (c == null) {
-                                trace("WARNING: no child component found: " + $v{variable});
-                                return Reflect.getProperty(c, $v{field});
-                            }
-                            var fieldIndex = Type.getInstanceFields(Type.getClass(c)).indexOf("get_" + $v{field});
-                            if (fieldIndex == -1) {
-                                trace("WARNING: no component getter found: " + $v{field});
-                                return Reflect.getProperty(c, $v{field});
-                            }
-                            return Reflect.getProperty(c, $v{field});
-                        });
-                        builder.addSetter(f.name, f.type, macro {
-                            if (value != $i{f.name}) {
-                                var c = findComponent($v{variable});
-                                if (c == null) {
-                                    trace("WARNING: no child component found: " + $v{variable});
-                                    return value;
-                                }
-                                var fieldIndex = Type.getInstanceFields(Type.getClass(c)).indexOf("set_" + $v{field});
-                                if (fieldIndex == -1) {
-                                    trace("WARNING: no component setter found: " + $v{field});
-                                    return value;
-                                }
-                                Reflect.setProperty(c, $v{field}, value);
-                            }
-                            return value;
-                        });
-                        if (f.expr != null) {
-                            builder.constructor.add(macro
-                                $i{f.name} = $e{f.expr}
-                            , 1);
-                        }
-                    } else if (param1 != null && param2 != null) { // two params, lets assume event binding
-                        if (param1 == "this") {
-                            builder.constructor.add(macro
-                                this.registerEvent($p{param2.split(".")}, $i{f.name})
-                            , 1);
-                        } else {
+                for (n in 0...f.getMetaCount("bind")) { // single method can be bound to multiple events
+                    var meta = f.getMetaByIndex("bind", n);
+                    switch (meta.params) {
+                        case [{expr: EField(variable, field), pos: pos}]: // one param, lets assume binding to component prop
+                            buildPropertyBinding(builder, f, variable, field);
+                        case [param1]:
+                            buildPropertyBinding(builder, f, param1, "value"); // input component that has value
+                        case [component, event]: // two params, lets assume event binding
                             builder.constructor.add(macro {
-                                var c = findComponent($v{param1}, haxe.ui.core.Component);
+                                @:pos(component.pos)
+                                var c:haxe.ui.core.Component = ${component};
                                 if (c != null) {
-                                    c.registerEvent($p{param2.split(".")}, $i{f.name});
+                                    c.registerEvent($event, $i{f.name});
                                 } else {
-                                    trace("WARNING: could not find component to regsiter event (" + $v{param1} + ")");
+                                    trace("WARNING: could not find component to regsiter event (" + $v{ExprTools.toString(component)} + ")");
                                 }
-                            }, 1);
-                        }
+                            }, AfterSuper);
+                        default:
+                            haxe.macro.Context.error("Unsupported bind format, expected bind(component.field) or bind(component, event)", meta.pos);
                     }
                 }
             }
@@ -276,11 +275,11 @@ class Macros {
             if (f.isNullable == true) {
                 cloneFn.add(macro
                     if ($p{["this", f.name]} != null) $p{["c", f.name]} = $p{["this", f.name]}
-                , n);
+                , Pos(n));
             } else {
                 cloneFn.add(macro
                     $p{["c", f.name]} = $p{["this", f.name]}
-                , n);
+                , Pos(n));
             }
             n++;
         }
