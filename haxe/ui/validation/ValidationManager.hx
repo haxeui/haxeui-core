@@ -92,13 +92,16 @@ class ValidationManager {
         }
     }
 
-    public function addDisplay(item:Component):Void {
+    public function addDisplay(item:Component, nextFrame:Bool = true):Void {
         if(_displayQueue.indexOf(item) == -1) {
             _displayQueue.push(item);
         }
+        if (nextFrame == false) {
+            process();
+        }
     }
 
-    private function process() {
+    public function process() {
         if (isValidating == true || isPending == false) {
             return;
         }

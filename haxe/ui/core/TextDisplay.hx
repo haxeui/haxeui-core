@@ -240,7 +240,7 @@ class TextDisplay extends TextDisplayImpl implements IValidating {
     public function updateComponentDisplay() {
     }
     
-    public function validateComponent() {
+    public function validateComponent(nextFrame:Bool = true) {
         if (_isValidating == true ||    //we were already validating, the existing validation will continue.
             isComponentInvalid() == false) {     //if none is invalid, exit.
                 return;

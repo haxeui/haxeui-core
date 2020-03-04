@@ -152,7 +152,7 @@ class ComponentValidation extends ComponentEvents {
      This method validates the tasks pending in the component.
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public function validateComponent() {
+    public function validateComponent(nextFrame:Bool = true) {
         if (_ready == false ||
             _isDisposed == true ||      //we don't want to validate disposed components, but they may have been left in the queue.
             _isValidating == true ||    //we were already validating, the existing validation will continue.
@@ -167,7 +167,7 @@ class ComponentValidation extends ComponentEvents {
 
         _isValidating = true;
 
-        validateComponentInternal();
+        validateComponentInternal(nextFrame);
         validateInitialSize(isInitialized);
         
         for (flag in _invalidationFlags.keys()) {
@@ -192,20 +192,24 @@ class ComponentValidation extends ComponentEvents {
     **/
     @:dox(group = "Invalidation related properties and methods")
     public function validateNow() {
-        syncComponentValidation();
+        for (child in childComponents) {
+            child.validateNow();
+        }
+        invalidateComponent();
+        syncComponentValidation(false);
     }
     
     /**
      Validate this component and its children on demand.
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public function syncComponentValidation() {
+    public function syncComponentValidation(nextFrame:Bool = true) {
         var count:Int = 0;
         while(isComponentInvalid()) {
-            validateComponent();
+            validateComponent(nextFrame);
 
             for (child in childComponents) {
-                child.syncComponentValidation();
+                child.syncComponentValidation(nextFrame);
             }
 
             if (++count >= 10) {
@@ -214,7 +218,7 @@ class ComponentValidation extends ComponentEvents {
         }
     }
     
-    private function validateComponentInternal() {
+    private function validateComponentInternal(nextFrame:Bool = true) {
         var dataInvalid = isComponentInvalid(InvalidationFlags.DATA);
         var styleInvalid = isComponentInvalid(InvalidationFlags.STYLE);
         var textDisplayInvalid = isComponentInvalid(InvalidationFlags.TEXT_DISPLAY) && hasTextDisplay();
@@ -253,8 +257,7 @@ class ComponentValidation extends ComponentEvents {
         }
 
         if (displayInvalid || styleInvalid) {
-            ValidationManager.instance.addDisplay(cast(this, Component));    //Update the display from all objects at the same time. Avoids UI flashes.
-                                                                             // TODO: avoid cast
+            ValidationManager.instance.addDisplay(cast(this, Component), nextFrame);    //Update the display from all objects at the same time. Avoids UI flashes.
         }
     }
     

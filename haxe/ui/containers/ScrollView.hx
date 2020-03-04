@@ -44,15 +44,15 @@ class ScrollView extends Component {
     //***********************************************************************************************************
     // Validation
     //***********************************************************************************************************
-    private override function validateComponentInternal() { // TODO: can this be moved to CompositeBuilder? Like validateComponentLayout?
+    private override function validateComponentInternal(nextFrame:Bool = true) { // TODO: can this be moved to CompositeBuilder? Like validateComponentLayout?
         if (native == true) { // TODO:  teeeeeemp! This should _absolutely_ be part of CompositeBuilder as native components try to call it and things like checkScrolls dont make sense
-            super.validateComponentInternal();
+            super.validateComponentInternal(nextFrame);
             return;
         }
         var scrollInvalid = isComponentInvalid(InvalidationFlags.SCROLL);
         var layoutInvalid = isComponentInvalid(InvalidationFlags.LAYOUT);
 
-        super.validateComponentInternal();
+        super.validateComponentInternal(nextFrame);
 
         if (scrollInvalid || layoutInvalid) {
             cast(_compositeBuilder, ScrollViewBuilder).checkScrolls(); // TODO: would be nice to not have this
