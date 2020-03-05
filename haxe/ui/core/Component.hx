@@ -1772,11 +1772,14 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         */
     }
 
-    private var _animationActive:Bool = false;
+    //private var _animationActive:Bool = false;
     private function applyAnimationKeyFrame2(animationKeyFrames:AnimationKeyFrames, options:StyleAnimation):Void {
+        /*
         if (_animationActive == true) {
+            trace("anim active");
             return;
         }
+        */
         if (animationKeyFrames == null) {
             trace("ANIMATION 0");
             return;
@@ -1785,9 +1788,9 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             trace("ANIMATION 1");
             return;
         }
-        if (_componentAnimation != null && _componentAnimation.name == animationKeyFrames.id) {
+        if (_componentAnimation != null && _componentAnimation.equals(options)) {
             trace("ANIMATION 2");
-            //return;
+            return;
         }
         /*
         if (_animatable == false || options == null || options.isNull == true || options.duration == 0 ||
@@ -1802,7 +1805,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             dispatch(new AnimationEvent(AnimationEvent.START));
         }
 
-        _animationActive = true;
+        //_animationActive = true;
         componentAnimation = Animation.createWithKeyFrames(animationKeyFrames, this, options);
         componentAnimation.run(function(){
             trace("ANIMATION ON FINISH777");

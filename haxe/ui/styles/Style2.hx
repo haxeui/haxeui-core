@@ -39,7 +39,7 @@ abstract Optional<T>(Option<T>) from Option<T> to Option<T> {
                 return null;
         }
     }
-
+    
     /*
     @:op(A - B) static inline function subT<T>(a:Optional<T>, b:T):Optional<T> {
         return switch (a) {
@@ -523,8 +523,8 @@ typedef StyleAnimationType = {
     @:optional public var duration:Optional<Float>;
     @:optional public var delay:Optional<Float>;
     @:optional public var iterationCount:Optional<Int>;
-    @:optional public var easingFunction:Optional<EasingFunction>;
     @:optional public var direction:Optional<AnimationDirection>;
+    @:optional public var easingFunction:Optional<EasingFunction>;
     @:optional public var fillMode:Optional<AnimationFillMode>;
 }
 
@@ -557,6 +557,13 @@ abstract StyleAnimation(StyleAnimationType) from StyleAnimationType to StyleAnim
             return true;
         }
         return false;
+    }
+    
+    @:op(A == B) private inline function equals(b:StyleAnimation):Bool {
+        if ((b == null || b.isNull) && (this == null || isNull)) {
+            return true;
+        }
+        return (this.name == b.name && this.duration == b.duration && this.delay == b.delay && this.iterationCount == b.iterationCount && this.easingFunction == b.easingFunction && this.direction == b.direction && this.fillMode == b.fillMode);
     }
 }
 

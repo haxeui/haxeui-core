@@ -1,5 +1,7 @@
 package haxe.ui.styles;
 
+import haxe.ui.constants.AnimationDirection;
+import haxe.ui.constants.AnimationFillMode;
 import haxe.ui.core.Component;
 import haxe.ui.styles.Style2.Optional;
 import haxe.ui.styles.Style2.StyleBorderPart;
@@ -680,21 +682,33 @@ class StyleUtils {
                         }
                         if (vl[1] != null) {
                             style.animation.duration = ValueTools.optionalFloat(vl[1]);
+                        } else {
+                            style.animation.duration = 0;
                         }
                         if (vl[2] != null) {
                             style.animation.delay = ValueTools.optionalFloat(vl[2]);
+                        } else {
+                            style.animation.delay = 0;
                         }
                         if (vl[3] != null) {
                             style.animation.iterationCount = ValueTools.optionalInt(vl[3]);
+                        } else {
+                            style.animation.iterationCount = 1;
                         }
                         if (vl[4] != null) {
                             style.animation.direction = ValueTools.optionalString(vl[4]);
+                        } else {
+                            style.animation.direction = AnimationDirection.NORMAL;
                         }
                         if (vl[5] != null) {
                             style.animation.easingFunction = ValueTools.optionalString(vl[5]);
+                        } else {
+                            style.animation.easingFunction = EasingFunction.EASE;
                         }
                         if (vl[6] != null) {
                             style.animation.fillMode = ValueTools.optionalString(vl[6]);
+                        } else {
+                            style.animation.fillMode = AnimationFillMode.FORWARDS;
                         }
                     case VNone:
                         style.animation = none;

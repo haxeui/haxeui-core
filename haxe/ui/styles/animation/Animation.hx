@@ -160,6 +160,18 @@ class Animation {
         }
     }
 
+    public function equals(b:StyleAnimation):Bool {
+        trace(b);
+            trace(b.name == this.name);
+            trace(this.duration == b.duration);
+            trace(this.delay == b.delay);
+            trace(this.iterationCount == b.iterationCount);
+            trace(this.easingFunction == b.easingFunction);
+            trace(this.direction == b.direction);
+            trace(this.fillMode == b.fillMode);
+        return (b.name == this.name && b.duration == this.duration && b.delay == this.delay && b.iterationCount == this.iterationCount && b.easingFunction == this.easingFunction && b.direction == this.direction && b.fillMode == this.fillMode);
+    }
+    
     /**
      Starts to run the animation.
     **/
