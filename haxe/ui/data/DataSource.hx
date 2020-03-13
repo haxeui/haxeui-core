@@ -8,6 +8,12 @@ class DataSource<T> {
 
     private var _changed:Bool;
 
+    public var onAdd:T->Void = null;
+    public var onInsert:Int->T->Void = null;
+    public var onUpdate:Int->T->Void = null;
+    public var onRemove:T->Void = null;
+    public var onClear:Void->Void = null;
+    
     public function new(transformer:IItemTransformer<T> = null) {
         this.transformer = transformer;
         _allowCallbacks = true;
@@ -57,24 +63,36 @@ class DataSource<T> {
     public function add(item:T):T {
         var r = handleAddItem(item);
         handleChanged();
+        if (_allowCallbacks == true && onAdd != null) {
+            onAdd(r);
+        }
         return r;
     }
 
     public function insert(index:Int, item:T):T {
         var r = handleInsert(index, item);
         handleChanged();
+        if (_allowCallbacks == true && onInsert != null) {
+            onInsert(index, r);
+        }
         return r;
     }
 
     public function remove(item:T):T {
         var r = handleRemoveItem(item);
         handleChanged();
+        if (_allowCallbacks == true && onRemove != null) {
+            onRemove(r);
+        }
         return r;
     }
 
     public function update(index:Int, item:T):T {
         var r = handleUpdateItem(index, item);
         handleChanged();
+        if (_allowCallbacks == true && onUpdate != null) {
+            onUpdate(index, r);
+        }
         return r;
     }
 
@@ -84,6 +102,9 @@ class DataSource<T> {
         handleClear();
         _allowCallbacks = o;
         handleChanged();
+        if (_allowCallbacks == true && onClear != null) {
+            onClear();
+        }
     }
     
     private function handleChanged() {

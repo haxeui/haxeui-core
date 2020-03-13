@@ -4,6 +4,7 @@ import haxe.ui.assets.FontInfo;
 import haxe.ui.core.Component;
 import haxe.ui.core.TextDisplay.TextDisplayData;
 import haxe.ui.core.TextInput.TextInputData;
+import haxe.ui.data.DataSource;
 import haxe.ui.styles.Style;
 
 @:dox(hide) @:noCompletion
@@ -31,6 +32,16 @@ class TextBase {
     }
     
     public function blur() {
+    }
+    
+    private var _dataSource:DataSource<String>;
+    public var dataSource(get, set):DataSource<String>;
+    private function get_dataSource():DataSource<String> {
+        return _dataSource;
+    }
+    private function set_dataSource(value:DataSource<String>):DataSource<String> {
+        _dataSource = value;
+        return value;
     }
     
     //***********************************************************************************************************
