@@ -15,7 +15,7 @@ import haxe.ui.util.Variant;
 class CalendarView extends VBox {
     public static var MONTH_NAMES:Array<String> = ["January", "Febuary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 	
-	public static var DATE_FORMAT:String = "%d/%m/%Y";
+	public static var DATE_FORMAT:String = "%Y-%m-%d";
     
     //***********************************************************************************************************
     // Public API

@@ -64,8 +64,6 @@
 }
 
 .calendar-view #current-month {
-	__width: 100%;
-    __text-align: center;
     vertical-align: center;
 }
 

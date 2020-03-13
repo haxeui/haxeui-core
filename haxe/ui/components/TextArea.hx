@@ -2,6 +2,7 @@ package haxe.ui.components;
 
 import haxe.ui.behaviours.Behaviour;
 import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.InteractiveComponent;
@@ -33,6 +34,10 @@ class TextArea extends InteractiveComponent implements IFocusable {
     @:behaviour(PlaceholderBehaviour)       public var placeholder:String;
     @:behaviour(WrapBehaviour, true)        public var wrap:Bool;
     @:behaviour(DataSourceBehaviour)        public var dataSource:DataSource<String>;
+    @:behaviour(DefaultBehaviour)           public var autoScrollToBottom:Bool;
+    
+    @:call(ScrollToTop)                     public function scrollToTop();
+    @:call(ScrollToBottom)                  public function scrollToBottom();
     
     //***********************************************************************************************************
     // Validation
@@ -131,7 +136,6 @@ private class TextAreaLayout extends DefaultLayout {
 @:access(haxe.ui.backend.TextInputImpl)
 private class DataSourceBehaviour extends DataBehaviour {
     public override function set(value:Variant) {
-        trace("setting");
         _value = value;
         _component.getTextInput().dataSource = value;
     }
@@ -159,6 +163,9 @@ private class TextBehaviour extends DataBehaviour {
         var textarea:TextArea = cast(_component, TextArea);
         var text:String = _value != null ? _value : "";
         TextAreaHelper.validateText(textarea, text);
+        if (textarea.autoScrollToBottom == true) {
+            textarea.scrollToBottom();
+        }
     }
 }
 
@@ -179,6 +186,26 @@ private class WrapBehaviour extends DataBehaviour {
     public override function validateData() {
         var textarea:TextArea = cast(_component, TextArea);
         textarea.getTextInput().wordWrap = _value;
+    }
+}
+
+private class ScrollToTop extends Behaviour {
+    public override function call(param:Any = null):Variant {
+        var vscroll = _component.findComponent(VerticalScroll, false);
+        if (vscroll != null) {
+            vscroll.pos = 0;
+        }
+        return null;
+    }
+}
+
+private class ScrollToBottom extends Behaviour {
+    public override function call(param:Any = null):Variant {
+        var vscroll = _component.findComponent(VerticalScroll, false);
+        if (vscroll != null) {
+            vscroll.pos = vscroll.max;
+        }
+        return null;
     }
 }
 
