@@ -6,6 +6,8 @@ import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.TextInput;
+import haxe.ui.data.ArrayDataSource;
+import haxe.ui.data.DataSource;
 import haxe.ui.events.Events;
 import haxe.ui.events.FocusEvent;
 import haxe.ui.events.MouseEvent;
@@ -30,6 +32,7 @@ class TextArea extends InteractiveComponent implements IFocusable {
     @:behaviour(ValueBehaviour)             public var value:Variant;
     @:behaviour(PlaceholderBehaviour)       public var placeholder:String;
     @:behaviour(WrapBehaviour, true)        public var wrap:Bool;
+    @:behaviour(DataSourceBehaviour)        public var dataSource:DataSource<String>;
     
     //***********************************************************************************************************
     // Validation
@@ -124,6 +127,24 @@ private class TextAreaLayout extends DefaultLayout {
 //***********************************************************************************************************
 // Behaviours
 //***********************************************************************************************************
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.backend.TextInputImpl)
+private class DataSourceBehaviour extends DataBehaviour {
+    public override function set(value:Variant) {
+        trace("setting");
+        _value = value;
+        _component.getTextInput().dataSource = value;
+    }
+    
+    public override function get():Variant {
+        if (_value == null || _value.isNull) {
+            _value = new ArrayDataSource<String>();
+            set(_value);
+        }
+        return _value;
+    }
+}
+
 @:dox(hide) @:noCompletion
 private class PlaceholderBehaviour extends DataBehaviour {
     public override function validateData() {
@@ -238,10 +259,18 @@ private class Events extends haxe.ui.events.Events {
             vscroll.registerEvent(UIEvent.CHANGE, onScrollChange);
         }
         
-        registerEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
-        registerEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
-        registerEvent(FocusEvent.FOCUS_IN, onFocusChange);
-        registerEvent(FocusEvent.FOCUS_OUT, onFocusChange);
+        if (hasEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel) == false) {
+            registerEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
+        }
+        if (hasEvent(MouseEvent.MOUSE_DOWN, onMouseDown) == false) {
+            registerEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
+        }
+        if (hasEvent(FocusEvent.FOCUS_IN, onFocusChange) == false) {
+            registerEvent(FocusEvent.FOCUS_IN, onFocusChange);
+        }
+        if (hasEvent(FocusEvent.FOCUS_OUT, onFocusChange) == false) {
+            registerEvent(FocusEvent.FOCUS_OUT, onFocusChange);
+        }
     }
     
     public override function unregister() {
