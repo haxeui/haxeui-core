@@ -412,6 +412,9 @@ private class TextAreaBuilder extends CompositeBuilder {
             vscroll.pos = textInput.vscrollPos;
             vscroll.pageSize = textInput.vscrollPageSize;
             
+            if (_textarea.autoScrollToBottom == true) {
+                _textarea.scrollToBottom();
+            }
         } else {
             if (vscroll != null) {
                 _component.removeComponent(vscroll);
