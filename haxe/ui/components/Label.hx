@@ -19,8 +19,8 @@ class Label extends Component {
     // Public API
     //***********************************************************************************************************
     @:clonable @:behaviour(TextBehaviour)       public var text:String;
-    @:clonable @:behaviour(TextBehaviour)       public var value:Variant;
     @:clonable @:behaviour(HtmlTextBehaviour)   public var htmlText:String;
+    @:clonable @:value(text)                    public var value:Dynamic;
 }
 
 //***********************************************************************************************************
@@ -46,6 +46,8 @@ private class LabelLayout extends DefaultLayout {
             #else
             component.getTextDisplay().wordWrap = true;
             #end
+        } else {
+            component.getTextDisplay().width = component.getTextDisplay().textWidth;
         }
         
         if (component.autoHeight == true) {
