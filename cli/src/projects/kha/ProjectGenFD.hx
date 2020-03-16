@@ -17,6 +17,8 @@ class ProjectGenFD extends ProjectGen {
         var target = "html5";
         if (Util.mapContains("windows", params.additional)) {
             target = "windows";
+        } else if (Util.mapContains("android", params.additional)) {
+            target = "android";
         }
         
         if (target == "html5") {
