@@ -89,9 +89,8 @@ private class SelectedDateBehaviour extends DefaultBehaviour {
         
         var date:Date = value;
         _component.invalidateComponentData();
-        
         var calendar = cast(_component, Calendar);
-        calendar.date = calendar.date; // TODO: this is wrong, works, but its wrong... need to split up the code into util classes, one to build the month, another to select it
+        calendar.date = date; // TODO: this is wrong, works, but its wrong... need to split up the code into util classes, one to build the month, another to select it
         
         _component.dispatch(new UIEvent(UIEvent.CHANGE));
     }
@@ -133,6 +132,7 @@ private class DateBehaviour extends DataBehaviour {
         if (selectedDate == null) {
             selectedDate = Date.now();
         }
+
         for (i in 0...endDay) {
             var item = _component.childComponents[i + startDay];
             item.addClass("calendar-day");

@@ -8,6 +8,10 @@
     border-radius: 1px;
 }
 
+.calendar .button {
+    padding: 5px;
+}
+
 .calendar .calendar-off-day {
     border: none;
     background-color: white;
@@ -29,6 +33,7 @@
     background-color: #a7c4e2;
     color: white;
 }
+
 
 /************************************************************************
 ** CALENDARVIEW

@@ -192,7 +192,7 @@ class Behaviours {
     private function unlock() {
     }
     
-    public function set(id, value:Variant) {
+    public function set(id:String, value:Variant) {
         lock();
         
         var b = find(id);

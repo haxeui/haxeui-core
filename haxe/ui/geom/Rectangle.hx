@@ -51,6 +51,21 @@ class Rectangle {
         }
 	}
     
+    public function intersects(rect:Rectangle):Bool {
+        var x0 = left < rect.left ? rect.left : left;
+        var x1 = right > rect.right ? rect.right : right;
+
+        if (x1 <= x0) {
+            return false;
+        }
+
+        var y0 = top < rect.top ? rect.top : top;
+        var y1 = bottom > rect.bottom ? rect.bottom : bottom;
+
+        return y1 > y0;
+    }
+    
+    
     public function toString():String {
         return "{left: " + left + ", top: " + top + ", bottom: " + bottom + ", right: " + right + ", width: " + width + ", height: " + height + "}";
     }

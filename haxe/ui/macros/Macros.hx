@@ -338,10 +338,17 @@ class Macros {
                         return value;
                     }, f.access);
                 } else {
-                    newField = builder.addSetter(f.name, f.type, macro { // add a normal (Variant) setter
-                        behaviours.set($v{f.name}, value);
-                        return value;
-                    }, f.access);
+                    if (f.isDynamic == true) {
+                        newField = builder.addSetter(f.name, f.type, macro { // add a normal (Variant) setter
+                            behaviours.set($v{f.name}, haxe.ui.util.Variant.fromDynamic(value));
+                            return value;
+                        }, f.access);
+                    } else {
+                        newField = builder.addSetter(f.name, f.type, macro { // add a normal (Variant) setter
+                            behaviours.set($v{f.name}, value);
+                            return value;
+                        }, f.access);
+                    }
                 }
                 
                 newField.doc = f.doc;

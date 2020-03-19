@@ -106,13 +106,12 @@ class ComponentMacros {
     
     public static function buildComponentFromFile(builder:CodeBuilder, filePath:String, namedComponents:Map<String, NamedComponentDescription> = null, bindingExprs:Array<Expr> = null, params:Map<String, Dynamic> = null) {
         var f = MacroHelpers.resolveFile(filePath);
-
-        Context.registerModuleDependency(Context.getLocalModule(), f);
-
         if (f == null) {
             throw "Could not resolve: " + filePath;
         }
 
+        Context.registerModuleDependency(Context.getLocalModule(), f);
+        
         var fileContent:String = StringUtil.replaceVars(File.getContent(f), params);
         var c:ComponentInfo = ComponentParser.get(MacroHelpers.extension(f)).parse(fileContent, new FileResourceResolver(f, params));
         buildComponentFromInfo(builder, c, namedComponents, bindingExprs, params);
