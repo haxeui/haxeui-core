@@ -29,14 +29,6 @@ class DropDown extends Button implements IDataComponent {
     @:behaviour(DefaultBehaviour)                    public var dropdownSize:Null<Int>;
     @:behaviour(SelectedIndexBehaviour, -1)          public var selectedIndex:Int;
     @:behaviour(SelectedItemBehaviour)               public var selectedItem:Dynamic;
-    
-    public override function set_text(value:String):String {
-        if (this.type == "date") {
-            value = value.split(" ")[0];
-        }
-        super.set_text(value);
-        return value;
-    }
 }
 
 //***********************************************************************************************************
