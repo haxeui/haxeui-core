@@ -334,6 +334,9 @@ private class ListViewBuilder extends ScrollViewBuilder {
             if (Std.is(c, ItemRenderer)) {
                 if (add == true) {
                     c.addClass(className);
+                    Toolkit.callLater(function() {
+                        ensureVisible(cast(c, ItemRenderer));
+                    });
                 } else {
                     c.removeClass(className);
                 }
@@ -342,6 +345,21 @@ private class ListViewBuilder extends ScrollViewBuilder {
             }
             return true;
         });
+    }
+    
+    private function ensureVisible(itemToEnsure:ItemRenderer) {
+        if (itemToEnsure != null && _listview.virtual == false) { // TODO: virtual scroll into view
+            var vscroll:VerticalScroll = _listview.findComponent(VerticalScroll);
+            if (vscroll != null) {
+                var vpos:Float = vscroll.pos;
+                var contents:Component = _listview.findComponent("listview-contents", "css");
+                if (itemToEnsure.top + itemToEnsure.height > vpos + contents.componentClipRect.height) {
+                    vscroll.pos = ((itemToEnsure.top + itemToEnsure.height) - contents.componentClipRect.height);
+                } else if (itemToEnsure.top < vpos) {
+                    vscroll.pos = itemToEnsure.top;
+                }
+            }
+        }
     }
 }
 
@@ -422,31 +440,16 @@ private class SelectedIndicesBehaviour extends DataBehaviour {
         var listView:ListView = cast(_component, ListView);
         var selectedIndices:Array<Int> = listView.selectedIndices;
         var contents:Component = _component.findComponent("scrollview-contents", false, "css");
-        var itemToEnsure:ItemRenderer = null;
         var builder:ListViewBuilder = cast(_component._compositeBuilder, ListViewBuilder);
         
         for (child in contents.childComponents) {
             if (selectedIndices.indexOf(cast(child, ItemRenderer).itemIndex) != -1) {
-                itemToEnsure = cast(child, ItemRenderer);
                 builder.addItemRendererClass(child, ":selected");
             } else {
                 builder.addItemRendererClass(child, ":selected", false);
             }
         }
 
-        if (itemToEnsure != null && listView.virtual == false) { // TODO: virtual scroll into view
-            var vscroll:VerticalScroll = listView.findComponent(VerticalScroll);
-            if (vscroll != null) {
-                var vpos:Float = vscroll.pos;
-                var contents:Component = listView.findComponent("listview-contents", "css");
-                if (itemToEnsure.top + itemToEnsure.height > vpos + contents.componentClipRect.height) {
-                    vscroll.pos = ((itemToEnsure.top + itemToEnsure.height) - contents.componentClipRect.height);
-                } else if (itemToEnsure.top < vpos) {
-                    vscroll.pos = itemToEnsure.top;
-                }
-            }
-        }
-        
         if (listView.selectedIndex != -1 && listView.selectedIndices.length != 0) {
             _component.dispatch(new UIEvent(UIEvent.CHANGE));
         }

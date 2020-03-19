@@ -50,10 +50,10 @@ private class DataSourceBehaviour extends DefaultBehaviour {
         if (value == _value) {
             return;
         }
-        
+
         var handler:IDropDownHandler = cast(_component._compositeBuilder, DropDownBuilder).handler;
         handler.reset();
-        if (_component.text == null) {
+        if (_component.text == null && _component.isReady) {
             cast(_component, DropDown).selectedIndex = 0;
         }
     }
@@ -197,11 +197,9 @@ class ListDropDownHandler extends DropDownHandler {
         var selectedIndex = _dropdown.selectedIndex;
         if (_dropdown.dataSource != null && _dropdown.text != null && selectedIndex < 0) {
             var text = _dropdown.text;
-            for (i in 0..._dropdown.dataSource.size) {
-                var item:Dynamic = _dropdown.dataSource.get(i);
-                if (item == text || item.value == text || item.text == text) {
-                    selectedIndex = i;
-                }
+            var itemIndex = indexOfItem(text);
+            if (itemIndex != -1) {
+                selectedIndex = itemIndex;
             }
         }
         
@@ -237,16 +235,40 @@ class ListDropDownHandler extends DropDownHandler {
         return value;
     }
     
+    private function indexOfItem(text:String) {
+        var index = -1;
+        if (_dropdown.dataSource != null) {
+            for (i in 0..._dropdown.dataSource.size) {
+                var item:Dynamic = _dropdown.dataSource.get(i);
+                if (item == text || item.value == text || item.text == text) {
+                    index = i;
+                }
+            }
+        }
+        return index;
+    }
+    
     private override function get_selectedItem():Dynamic {
         if (_listview == null) {
             if (_cachedSelectedIndex >= 0 && _cachedSelectedIndex < _dropdown.dataSource.size) {
                 var data = _dropdown.dataSource.get(_cachedSelectedIndex);
                 return data;
             } else {
-                return null;
+                return _cachedSelectedItem;
             }
         }
         return _listview.selectedItem;
+    }
+    
+    private var _cachedSelectedItem:Dynamic = null;
+    private override function set_selectedItem(value:Dynamic):Dynamic {
+        if (_listview == null) {
+            _cachedSelectedItem = value;
+            return value;
+        }
+        var v:Variant = value;
+        _dropdown.selectedIndex = indexOfItem(v);
+        return value;
     }
     
     private function createListView() {
@@ -273,7 +295,15 @@ class ListDropDownHandler extends DropDownHandler {
     }
     
     public override function applyDefault() {
-        _dropdown.selectedIndex = 0;
+        var indexToSelect = 0;
+        if (_cachedSelectedItem != null) {
+            var v:Variant = _cachedSelectedItem;
+            var index = indexOfItem(v);
+            if (index != -1) {
+                indexToSelect = index;
+            }
+        }
+        _dropdown.selectedIndex = indexToSelect;
     }
 }
 
