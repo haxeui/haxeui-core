@@ -442,7 +442,7 @@ abstract Variant(VariantType) from VariantType {
         return this == null || toString() == null;
     }
 
-    public static function fromDynamic(r:Dynamic):Variant {
+    public static function fromDynamic<T>(r:Dynamic):Variant {
         var v:Variant = null;
         if (r != null) {
             if (containsOnlyDigits(r) && Math.isNaN(Std.parseFloat("" + r)) == false) {
@@ -456,9 +456,13 @@ abstract Variant(VariantType) from VariantType {
             } else if (Std.is(r, String)) {
                 v = Std.string(r);
             } else if (Std.is(r, Component)) {
-                v =  cast r;
+                v = cast(r, Component);
             } else if (Std.is(r, DataSource)) {
-                v =  cast r;
+                v = cast r;
+            } else if (Std.is(r, Array)) {
+                v = cast r;
+            } else if (Std.is(r, Date)) {
+                v = cast(r, Date);
             } else {
                 v = Std.string(r);
             }
@@ -492,7 +496,7 @@ abstract Variant(VariantType) from VariantType {
                 case VariantType.VT_Array(y):          d = y;
                 case VariantType.VT_Component(y):      d = y;
                 case VariantType.VT_DataSource(y):     d = y;
-                case VariantType.VT_Date(y):             d = y;
+                case VariantType.VT_Date(y):           d = y;
             }
         }
         return d;
