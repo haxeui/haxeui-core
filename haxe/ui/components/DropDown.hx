@@ -97,6 +97,12 @@ private class SelectedItemBehaviour extends Behaviour {
         var handler:IDropDownHandler = cast(_component._compositeBuilder, DropDownBuilder).handler;
         return handler.selectedItem;
     }
+    
+    public override function set(value:Variant) {
+        super.set(value);
+        var handler:IDropDownHandler = cast(_component._compositeBuilder, DropDownBuilder).handler;
+        handler.selectedItem = value;
+    }
 }
 
 //***********************************************************************************************************
@@ -107,7 +113,8 @@ interface IDropDownHandler {
     function show():Void;
     function reset():Void;
     var selectedIndex(get, set):Int;
-    var selectedItem(get, null):Dynamic;
+    var selectedItem(get, set):Dynamic;
+    function applyDefault():Void;
     
 }
 
@@ -137,9 +144,15 @@ class DropDownHandler implements IDropDownHandler {
         return value;
     }
     
-    public var selectedItem(get, null):Dynamic;
+    public var selectedItem(get, set):Dynamic;
     private function get_selectedItem():Dynamic {
         return null;
+    }
+    private function set_selectedItem(value:Dynamic):Dynamic {
+        return value;
+    }
+    
+    public function applyDefault() {
     }
 }
 
@@ -236,7 +249,6 @@ class ListDropDownHandler extends DropDownHandler {
         return _listview.selectedItem;
     }
     
-    
     private function createListView() {
         if (_listview == null) {
             _listview = new ListView();
@@ -259,10 +271,16 @@ class ListDropDownHandler extends DropDownHandler {
         cast(_dropdown._internalEvents, DropDownEvents).hideDropDown();
         _dropdown.dispatch(new UIEvent(UIEvent.CHANGE));
     }
+    
+    public override function applyDefault() {
+        _dropdown.selectedIndex = 0;
+    }
 }
 
 @:access(haxe.ui.core.Component)
 class CalendarDropDownHandler extends DropDownHandler {
+	public static var DATE_FORMAT:String = "%d/%m/%Y";
+    
     private var _calendar:CalendarView;
     
     private override function get_component():Component {
@@ -281,21 +299,54 @@ class CalendarDropDownHandler extends DropDownHandler {
             _calendar.height = _dropdown.dropdownHeight;
         }
         
+        if (_cachedSelectedDate != null) {
+            _calendar.unregisterEvent(UIEvent.CHANGE, onCalendarChange); // TODO: not great!
+            _calendar.selectedDate = _cachedSelectedDate;
+            _calendar.registerEvent(UIEvent.CHANGE, onCalendarChange); // TODO: not great!
+        }
+        
         Screen.instance.addComponent(_calendar);
         _calendar.syncComponentValidation();
     }
     
+    private var _cachedSelectedDate:Date = null;
     private override function get_selectedItem():Dynamic {
+        if (_calendar == null) {
+            return _cachedSelectedDate;
+        }
         return _calendar.selectedDate;
+    }
+    
+    private override function set_selectedItem(value:Dynamic):Dynamic {
+        var v:Variant = value;
+        var date:Date = null;
+        if (v.isString == true) {
+            date = Date.fromString(v);
+        } else  if (v.isDate) {
+            date = v;
+        }
+        if (_calendar != null) {
+            _calendar.selectedDate = value;
+        } else if (date != null) {
+            _cachedSelectedDate = date;
+            _dropdown.text = DateTools.format(_cachedSelectedDate, DATE_FORMAT);
+        }
+        return value;
     }
     
     public function onCalendarChange(event:UIEvent) {
         if (_calendar.selectedDate == null) {
             return;
         }
-        _dropdown.text = DateTools.format(_calendar.selectedDate, CalendarView.DATE_FORMAT);
+        _cachedSelectedDate = _calendar.selectedDate;
+        _dropdown.text = DateTools.format(_calendar.selectedDate, DATE_FORMAT);
         cast(_dropdown._internalEvents, DropDownEvents).hideDropDown();
         _dropdown.dispatch(new UIEvent(UIEvent.CHANGE));
+    }
+    
+    public override function applyDefault() {
+        var now = Date.now();
+        _dropdown.selectedItem = now;
     }
 }
 
@@ -437,12 +488,16 @@ class DropDownBuilder extends ButtonBuilder {
         
         return _handler;
     }
+
+    public override function onReady() {
+        super.onReady();
+        if (_dropdown.text == null) {
+            handler.applyDefault();
+        }
+    }
     
     public override function create() {
         _dropdown.toggle = true;
-        if (_dropdown.text == null) {
-            _dropdown.selectedIndex = 0;
-        }
     }
     
     public override function destroy() {
