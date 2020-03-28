@@ -1,0 +1,117 @@
+/************************************************************************
+** TABBAR (TOP)
+*************************************************************************/
+.tabbar {
+    horizontal-spacing: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+    height: auto;
+    width: auto;
+    background-color: white;
+    border-bottom-width: 1px;
+    border-bottom-color: #ABABAB;
+    border-top-width: 0px;
+    clip: true;
+}
+
+.tabbar .tabbar-contents {
+    border: none;
+    border-bottom-width: 1px;
+    border-bottom-color: #ABABAB;
+}
+
+.tabbar-button {
+    border-radius: 0px;
+    background: #EDEDED #E6E6E6 vertical;
+    padding: 6px;
+    vertical-align: bottom;
+}
+
+.tabbar-button:hover {
+    background: #F5F5F5 #F1F1F1 vertical;
+}
+
+.tabbar-button:down {
+}
+
+.tabbar-button-selected {
+    border-radius: 0px;
+
+    border: 1px solid #ABABAB;
+    border-bottom-width: 1px;
+    border-bottom-color: white;
+    background-color: white;
+}
+
+
+.tabbar-scroll-left {
+    icon: "haxeui-core/styles/default/left_arrow.png";
+    border-radius: 0;
+}
+
+.tabbar-scroll-right {
+    icon: "haxeui-core/styles/default/right_arrow.png";
+    border-radius: 0;
+}
+
+.tabbar-button-selected .label {
+}
+
+.tabbar-button-selected .icon {
+}
+
+.tabbar-button .tab-close-button {
+    resource: "haxeui-core/styles/default/tiny-close-button.png";
+}
+/************************************************************************
+** TABBAR (BOTTOM)
+*************************************************************************/
+.tabbar:bottom {
+    horizontal-spacing: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+    height: auto;
+    width: auto;
+    background-color: white;
+    border-bottom-width: 0px;
+    border-top-width: 1px;
+    border-top-color: #ABABAB;
+    clip: true;
+}
+
+.tabbar:bottom .tabbar-contents {
+    border: none;
+    border-bottom-width: 0px;
+    border-top-width: 1px;
+    border-top-color: #ABABAB;
+}
+
+.tabbar-button:bottom {
+    vertical-align: top;
+}
+
+.tabbar-button-selected:bottom {
+    border-radius: 0px;
+
+    border: 1px solid #ABABAB;
+    border-top-width: 1px;
+    border-top-color: white;
+    background-color: white;
+}
+
+/************************************************************************
+** TABVIEW
+*************************************************************************/
+.tabview {
+    border: none;
+    width: auto;
+    height: auto;
+}
+
+.tabview .tabview-tabs {
+}
+
+.tabview .tabview-content {
+    border: 1px solid #ABABAB;
+    padding: 5px;
+}

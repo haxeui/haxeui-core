@@ -1,6 +1,6 @@
 package haxe.ui.layouts;
 
-import haxe.ui.util.Size;
+import haxe.ui.geom.Size;
 
 class DefaultLayout extends Layout {
     public function new() {
@@ -9,6 +9,8 @@ class DefaultLayout extends Layout {
 
     private override function resizeChildren() {
         var usableSize:Size = usableSize;
+        var percentWidth:Float = 100;
+        var percentHeight:Float = 100;
         for (child in component.childComponents) {
             if (child.includeInLayout == false) {
                 continue;
@@ -18,12 +20,19 @@ class DefaultLayout extends Layout {
             var cy:Null<Float> = null;
 
             if (child.percentWidth != null) {
-                cx = (usableSize.width * child.percentWidth) / 100 - marginLeft(child) - marginRight(child);
+                cx = (usableSize.width * child.percentWidth) / percentWidth - marginLeft(child) - marginRight(child);
             }
             if (child.percentHeight != null) {
-                cy = (usableSize.height * child.percentHeight) / 100 - marginTop(child) - marginBottom(child);
+                cy = (usableSize.height * child.percentHeight) / percentHeight - marginTop(child) - marginBottom(child);
             }
 
+            if (fixedMinWidth(child) && child.percentWidth != null) {
+                percentWidth -= child.percentWidth;
+            }
+            if (fixedMinHeight(child) && child.percentHeight != null) {
+                percentHeight -= child.percentHeight;
+            }
+            
             child.resizeComponent(cx, cy);
         }
     }

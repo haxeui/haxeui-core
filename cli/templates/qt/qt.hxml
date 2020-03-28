@@ -1,0 +1,11 @@
+-cp src
+-main ::fullMain::
+
+-lib haxeui-core
+-lib haxeui-qt
+-lib hxQt
+-lib hscript
+
+-D HXCPP_M64
+
+-cpp build/qt

@@ -28,7 +28,7 @@ class ArrayDataSource<T> extends DataSource<T> {
         return item;
     }
 
-    private override function handleInsert(item:T, index:Int):T {
+    private override function handleInsert(index:Int, item:T):T {
         _array.insert(index, item);
         return item;
     }
@@ -36,6 +36,11 @@ class ArrayDataSource<T> extends DataSource<T> {
     private override function handleRemoveItem(item:T):T {
         _array.remove(item);
         return item;
+    }
+    private override function handleClear() {
+        while (_array.length > 0) {
+            _array.pop();
+        }
     }
 
     private override function handleUpdateItem(index:Int, item:T):T {

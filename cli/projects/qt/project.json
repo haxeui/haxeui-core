@@ -1,0 +1,10 @@
+{
+    "name": "qt",
+    "type": "template",
+    "subProjects": [
+        "shared", "qt-shared"
+    ],
+    "templates": [
+        { "src": "qt.hxml", "dst": "${target}/qt.hxml"}
+    ]
+}

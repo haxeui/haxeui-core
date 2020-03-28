@@ -1,4 +1,5 @@
 package haxe.ui.parsers.ui;
+import haxe.ui.util.StringUtil;
 
 class ComponentInfo {
     public var type:Null<String>;
@@ -18,11 +19,12 @@ class ComponentInfo {
     public var styleNames:Null<String>;
     public var composite:Null<Bool>;
     public var layoutName:Null<String>;
+    public var direction:Null<String>;
 
     public var properties:Map<String, String>;
     public var parent:ComponentInfo;
     public var children:Array<ComponentInfo>;
-    public var bindings:Array<ComponentBindingInfo>;
+    public var layout:LayoutInfo;
 
     public var scriptlets:Array<String>;
     public var styles:Array<String>;
@@ -34,7 +36,6 @@ class ComponentInfo {
     public function new() {
         properties = new Map<String, String>();
         children = [];
-        bindings = [];
         scriptlets = [];
         styles = [];
     }
@@ -64,15 +65,23 @@ class ComponentInfo {
     }
 
     public function validate() {
-
+        var propsToRemove = [];
+        if (layoutName != null && layout == null) {
+            layout = new LayoutInfo();
+            layout.type = layoutName;
+            for (propName in properties.keys()) {
+                if (StringTools.startsWith(propName, "layout")) {
+                    var propValue = properties.get(propName);
+                    propsToRemove.push(propName);
+                    propName = StringTools.replace(propName, "layout", "");
+                    propName = StringUtil.uncapitalizeFirstLetter(propName);
+                    layout.properties.set(propName, propValue);
+                }
+            }
+        }
+        
+        for (propName in propsToRemove) {
+            properties.remove(propName);
+        }
     }
-}
-
-class ComponentBindingInfo {
-    public function new() {
-    }
-
-    public var source:String;
-    public var target:String;
-    public var transform:String;
 }

@@ -1,0 +1,19 @@
+-lib electron
+
+-cp src
+-dce full
+-D no-deprecation-warnings 
+
+-js build/electron/app.js
+-main ElectronApp
+
+--next 
+
+-cp src
+-main ::fullMain::
+
+-lib haxeui-core
+-lib haxeui-html5
+-lib hscript
+
+-js build/electron/::output::.js

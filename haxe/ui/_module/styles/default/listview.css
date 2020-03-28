@@ -1,0 +1,55 @@
+/************************************************************************
+** LISTVIEW
+*************************************************************************/
+.listview {
+    border: 1px solid #ABABAB;
+    border-radius: 1px;
+    padding: 1px;
+    width: auto;
+    height: auto;
+    background-color: #FFFFFF;
+}
+
+.listview .listview-contents {
+    spacing: 0;
+    width: 100%;
+    padding: 0px;
+}
+
+.listview .itemrenderer {
+    cursor: pointer;    
+}
+
+.listview .itemrenderer .label {
+    color: black;
+}
+
+.listview .even {
+    background-color: #FFFFFF;
+}
+
+.listview .even:hover {
+    background-color: #d9e5f2;
+}
+
+.listview .odd {
+    background-color: #f8f8f8;
+}
+
+.listview .odd:hover {
+    background-color: #d9e5f2;
+}
+
+.listview .itemrenderer {
+    height: auto;
+    padding: 5px;
+}
+
+.listview .itemrenderer:selected {
+    background-color: #a7c4e2;
+    color: white;
+}
+
+.listview .itemrenderer:selected .label {
+    color: white;
+}

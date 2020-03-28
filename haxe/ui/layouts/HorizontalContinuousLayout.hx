@@ -1,8 +1,8 @@
 package haxe.ui.layouts;
 
 import haxe.ui.core.Component;
-import haxe.ui.util.Rectangle;
-import haxe.ui.util.Size;
+import haxe.ui.geom.Rectangle;
+import haxe.ui.geom.Size;
 
 class HorizontalContinuousLayout extends HorizontalLayout {
     public function new() {
@@ -65,6 +65,12 @@ class HorizontalContinuousLayout extends HorizontalLayout {
                 dimensions.push([]);
             }
 
+            if (dimensions[row] == null) { // too small to display anything, lets pop our prev row and overwrite with adjusted one column
+                ypos -= verticalSpacing;
+                row--;
+                dimensions[row].pop();
+            }
+            
             rc.left = xpos;
             rc.top = ypos;
             dimensions[row].push(rc);

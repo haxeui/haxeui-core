@@ -1,7 +1,7 @@
 package haxe.ui.layouts;
 
 import haxe.ui.core.Component;
-import haxe.ui.util.Size;
+import haxe.ui.geom.Size;
 
 class Layout implements ILayout {
     public function new() {
@@ -21,6 +21,13 @@ class Layout implements ILayout {
         return value;
     }
 
+    private function findComponent<T:Component>(criteria:String = null, type:Class<T> = null, recursive:Null<Bool> = null, searchType:String = "id"):Null<T> {
+        if (_component == null) {
+            return null;
+        }
+        return _component.findComponent(criteria, type, recursive, searchType);
+    }
+    
     @:access(haxe.ui.core.Component)
     public function refresh() {
         if (_component != null && _component.isReady == true) {
@@ -109,6 +116,22 @@ class Layout implements ILayout {
         return child.style.verticalAlign;
     }
 
+    private function fixedMinWidth(child:Component):Bool {
+        var fixedMinWidth = false;
+        if (child != null && child.style != null && child.style.minWidth != null) {
+            fixedMinWidth = child.componentWidth <= child.style.minWidth;
+        }
+        return fixedMinWidth;
+    }
+
+    private function fixedMinHeight(child:Component):Bool {
+        var fixedMinHeight = false;
+        if (child != null && child.style != null && child.style.minHeight != null) {
+            fixedMinHeight = child.componentHeight <= child.style.minHeight;
+        }
+        return fixedMinHeight;
+    }
+    
     //******************************************************************************************
     // Helper props
     //******************************************************************************************
@@ -269,6 +292,12 @@ class Layout implements ILayout {
 
         var w:Float = (x2 - x1) + (paddingLeft + paddingRight);
         var h:Float = (y2 - y1) + (paddingTop + paddingBottom);
+        
+        if (Std.is(this, AbsoluteLayout)) {
+            w += x1;
+            h += y1;
+        }
+        
         return new Size(w, h);
     }
 

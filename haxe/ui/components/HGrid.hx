@@ -16,7 +16,7 @@ class HGrid extends Component {
     //***********************************************************************************************************
     private override function createDefaults() {
         super.createDefaults();
-        _defaultLayout = new HorizontalGridLayout();
+        _defaultLayoutClass = HorizontalGridLayout;
     }
 
     //***********************************************************************************************************

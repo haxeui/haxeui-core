@@ -1,6 +1,6 @@
 package haxe.ui.layouts;
 
-import haxe.ui.util.Size;
+import haxe.ui.geom.Size;
 
 class HorizontalGridLayout extends Layout {
     private var _rows:Int = 1;

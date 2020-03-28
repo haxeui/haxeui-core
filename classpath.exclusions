@@ -1,0 +1,11 @@
+; exclude paths from classpath when searching for haxeui arifacts (module.xml, native.xml, etc)
+; speeds up build
+^build\/
+^export\/
+
+\/haxe\/std
+\/hscript
+
+\/haxeui-core\/cli.?$
+\/haxeui-core\/haxe\/ui.*\w+
+\/haxeui-\w+\/haxe\/ui\/backend\/\w+

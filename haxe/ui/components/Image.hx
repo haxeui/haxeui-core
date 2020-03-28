@@ -1,136 +1,39 @@
 package haxe.ui.components;
 
-import haxe.ui.util.Rectangle;
-import haxe.ui.constants.VerticalAlign;
+import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.behaviours.DefaultBehaviour;
+import haxe.ui.behaviours.InvalidatingBehaviour;
 import haxe.ui.constants.HorizontalAlign;
 import haxe.ui.constants.ScaleMode;
-import haxe.ui.Toolkit;
-import haxe.ui.assets.ImageInfo;
-import haxe.ui.core.Behaviour;
+import haxe.ui.constants.VerticalAlign;
 import haxe.ui.core.Component;
+import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.ImageDisplay;
+import haxe.ui.geom.Rectangle;
+import haxe.ui.geom.Size;
 import haxe.ui.layouts.DefaultLayout;
-import haxe.ui.util.Size;
-import haxe.ui.util.Variant;
+import haxe.ui.styles.Style;
+import haxe.ui.util.ImageLoader;
 
-/**
- A general purpose component to display images
-**/
-@:dox(icon = "/icons/image-sunset.png")
+@:composite(ImageLayout, Builder)
 class Image extends Component {
-    private var _originalSize:Size = new Size();
-
-    public function new() {
-        super();
-    }
-
-    //***********************************************************************************************************
-    // Internals
-    //***********************************************************************************************************
-    private override function createDefaults() {
-        super.createDefaults();
-        defaultBehaviours([
-            "resource" => new ImageDefaultResourceBehaviour(this)
-        ]);
-        _defaultLayout = new ImageLayout();
-    }
-
-    //***********************************************************************************************************
-    // Overrides
-    //***********************************************************************************************************
-    private override function get_value():Variant {
-        return Variant.fromDynamic(resource);
-    }
-
-    private override function set_value(value:Variant):Variant {
-        if (value == null) {
-            return null;
-        }
-        resource = value.toString();
-        return value;
-    }
-
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    private var _resource:String = null;
-    /**
-     The resource to use for this image, currently only assets are supported, later versions will also support things like HTTP, files, etc
-    **/
-    @:clonable @:bindable public var resource(get, set):String;
-    private function get_resource():String {
-        return _resource;
-    }
-    private function set_resource(value:String):String {
-        if (_resource == value) {
-            return value;
-        }
-
-        _resource = value;
-        invalidateComponentData();
-        return value;
-    }
-
-    private var _scaleMode:ScaleMode = ScaleMode.FILL;
-    @:clonable public var scaleMode(get, set):ScaleMode;
-    private function get_scaleMode():ScaleMode {
-        return _scaleMode;
-    }
-    private function set_scaleMode(value:ScaleMode):ScaleMode {
-        if (value == _scaleMode) {
-            return value;
-        }
-        _scaleMode = value;
-        invalidateComponentLayout();
-        return value;
-    }
-
-    private var _imageHorizontalAlign:HorizontalAlign = HorizontalAlign.CENTER;
-    @:clonable public var imageHorizontalAlign(get, set):HorizontalAlign;
-    private function get_imageHorizontalAlign():HorizontalAlign {
-        return _imageHorizontalAlign;
-    }
-    private function set_imageHorizontalAlign(value:HorizontalAlign):HorizontalAlign {
-        if (value == _imageHorizontalAlign) {
-            return value;
-        }
-        _imageHorizontalAlign = value;
-        invalidateComponentLayout();
-        return value;
-    }
-
-    private var _imageVerticalAlign:VerticalAlign = VerticalAlign.CENTER;
-    @:clonable public var imageVerticalAlign(get, set):VerticalAlign;
-    private function get_imageVerticalAlign():VerticalAlign {
-        return _imageVerticalAlign;
-    }
-    private function set_imageVerticalAlign(value:VerticalAlign):VerticalAlign {
-        if (value == _imageVerticalAlign) {
-            return value;
-        }
-        _imageVerticalAlign = value;
-        invalidateComponentLayout();
-        return value;
-    }
-
-    //***********************************************************************************************************
-    // Validation
-    //***********************************************************************************************************
-
-    private override function validateData() {
-        var resourceValue:Dynamic = behaviourGetDynamic("resource");
-        if (resourceValue != _resource) {
-            behaviourSet("resource", _resource);
-        }
-    }
+    @:clonable @:behaviour(ResourceBehaviour)                              public var resource:String;
+    @:clonable @:value(resource)                                           public var value:Dynamic;
+    @:clonable @:behaviour(InvalidatingBehaviour, ScaleMode.FILL)          public var scaleMode:ScaleMode;
+    @:clonable @:behaviour(InvalidatingBehaviour, HorizontalAlign.CENTER)  public var imageHorizontalAlign:HorizontalAlign;
+    @:clonable @:behaviour(InvalidatingBehaviour, VerticalAlign.CENTER)    public var imageVerticalAlign:VerticalAlign;
+    @:clonable @:behaviour(DefaultBehaviour)                               public var originalWidth:Float;
+    @:clonable @:behaviour(DefaultBehaviour)                               public var originalHeight:Float;
 }
 
 //***********************************************************************************************************
-// Custom layouts
+// Composite Layout
 //***********************************************************************************************************
-@:dox(hide)
-@:access(haxe.ui.components.Image)
-class ImageLayout extends DefaultLayout {
+@:dox(hide) @:noCompletion
+private class ImageLayout extends DefaultLayout {
     private var imageScaleMode(get, never):ScaleMode;
     private function get_imageScaleMode():ScaleMode {
         return cast(_component, Image).scaleMode;
@@ -148,8 +51,7 @@ class ImageLayout extends DefaultLayout {
 
     private override function resizeChildren() {
         if (component.hasImageDisplay()) {
-            var usz = usableSize;
-            var image:Image = cast _component;
+            var image:Image = cast(_component, Image);
             var imageDisplay = image.getImageDisplay();
             var maxWidth:Float = usableSize.width;
             var maxHeight:Float = usableSize.height;
@@ -161,10 +63,10 @@ class ImageLayout extends DefaultLayout {
                 maxHeight = -1;
             }
 
-            var scaleW:Float = maxWidth != -1 ? maxWidth / image._originalSize.width : 1;
-            var scaleH:Float = maxHeight != -1 ? maxHeight / image._originalSize.height : 1;
+            var scaleW:Float = maxWidth != -1 ? maxWidth / image.originalWidth : 1;
+            var scaleH:Float = maxHeight != -1 ? maxHeight / image.originalHeight : 1;
 
-            if(imageScaleMode != ScaleMode.FILL) {
+            if (imageScaleMode != ScaleMode.FILL) {
                 var scale:Float;
                 switch(imageScaleMode) {
                     case ScaleMode.FIT_INSIDE:
@@ -179,20 +81,18 @@ class ImageLayout extends DefaultLayout {
                         scale = 1;
                 }
 
-                imageDisplay.imageWidth = image._originalSize.width * scale;
-                imageDisplay.imageHeight = image._originalSize.height * scale;
+                imageDisplay.imageWidth = image.originalWidth * scale;
+                imageDisplay.imageHeight = image.originalHeight * scale;
             } else {
-                imageDisplay.imageWidth = image._originalSize.width * scaleW;
-                imageDisplay.imageHeight = image._originalSize.height * scaleH;
+                imageDisplay.imageWidth = image.originalWidth * scaleW;
+                imageDisplay.imageHeight = image.originalHeight * scaleH;
             }
-
-            updateClipRect(usz);
         }
     }
 
     private override function repositionChildren() {
         if (component.hasImageDisplay()) {
-            var image:Image = cast _component;
+            var image:Image = cast(_component, Image);
             var imageDisplay:ImageDisplay = _component.getImageDisplay();
 
             switch(image.imageHorizontalAlign) {
@@ -216,8 +116,6 @@ class ImageLayout extends DefaultLayout {
                 case VerticalAlign.TOP:
                     imageDisplay.top = paddingTop;
             }
-
-            updateClipRect(usableSize);
         }
     }
 
@@ -230,73 +128,89 @@ class ImageLayout extends DefaultLayout {
         return size;
     }
 
-    private function updateClipRect(usz:Size) {
-        var imageDisplay:ImageDisplay = _component.getImageDisplay();
-        var rc:Rectangle = imageDisplay.imageClipRect;
-        if(rc == null)
-            rc = new Rectangle();
+    public override function refresh() {
+        super.refresh();
 
-        if(imageDisplay.imageWidth > usz.width
-           || imageDisplay.imageHeight > usz.height) {
-            rc.top = paddingLeft;
-            rc.left = paddingTop;
-            rc.width = usz.width;
-            rc.height = usz.height;
-        } else {
-            rc = null;
+        updateClipRect();
+    }
+
+    private function updateClipRect() {
+        if (component.hasImageDisplay()) {
+            var usz:Size = usableSize;
+            var imageDisplay:ImageDisplay = component.getImageDisplay();
+            var rc:Rectangle = imageDisplay.imageClipRect;
+
+            if (imageDisplay.imageWidth > usz.width
+            || imageDisplay.imageHeight > usz.height) {
+                if (rc == null)
+                    rc = new Rectangle();
+
+                rc.top = paddingLeft;
+                rc.left = paddingTop;
+                rc.width = usz.width;
+                rc.height = usz.height;
+            } else {
+                rc = null;
+            }
+
+            imageDisplay.imageClipRect = rc;
+        }
+    }
+}
+//***********************************************************************************************************
+// Behaviours
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.components.Image)
+private class ResourceBehaviour extends DataBehaviour {
+    private override function validateData() {
+        if (_value == null || _value.isNull) {
+            _component.removeImageDisplay();
+            _component.invalidateComponent();
+            return;
         }
 
-        imageDisplay.imageClipRect = rc;
+        var imageLoader = new ImageLoader(_value);
+        imageLoader.load(function(imageInfo) {
+            if (imageInfo != null) {
+                if (_value == null || _value.isNull) { // its possible that while loading the image (async) its been set to null, lets honour it
+                    _component.removeImageDisplay();
+                    _component.invalidateComponent();
+                    return;
+                }
+                
+                var image:Image = cast(_component, Image);
+                var display:ImageDisplay = image.getImageDisplay();
+                if (display != null) {
+                    display.imageInfo = imageInfo;
+                    image.originalWidth = imageInfo.width;
+                    image.originalHeight = imageInfo.height;
+                    if (image.autoSize() == true && image.parentComponent != null) {
+                        image.parentComponent.invalidateComponentLayout();
+                    }
+                    image.invalidateComponent();
+                    display.validateComponent();
+                }
+            }
+        });
     }
 }
 
 //***********************************************************************************************************
-// Default behaviours
+// Composite Builder
 //***********************************************************************************************************
-@:dox(hide)
-@:access(haxe.ui.components.Image)
-class ImageDefaultResourceBehaviour extends Behaviour {
-    private var _value:Dynamic;
-
-    public override function set(value:Variant) {
-        if (_value == value) {
-            return;
-        }
-
-        _value = value;
-
-        var image:Image = cast _component;
-
-        if (value == null || value.isNull || value == "null") { // TODO: hack
-            image.removeImageDisplay();
-            return;
-        }
-
-        if (value.isString) {
-            var resource:String = value.toString();
-            if (StringTools.startsWith(resource, "http://")) {
-                // load remote placeholder
-            } else { // assume asset
-                Toolkit.assets.getImage(resource, function(imageInfo:ImageInfo) {
-                    if (imageInfo != null) {
-                        var display:ImageDisplay = image.getImageDisplay();
-                        if (display != null) {
-                            display.imageInfo = imageInfo;
-                            image._originalSize = new Size(imageInfo.width, imageInfo.height);
-                            if (image.autoSize() == true && image.parentComponent != null) {
-                                image.parentComponent.invalidateComponentLayout();
-                            }
-                            image.validateLayout();
-                            display.validate();
-                        }
-                    }
-                });
-            }
-
-        }
+@:dox(hide) @:noCompletion
+private class Builder extends CompositeBuilder {
+    private var _image:Image;
+    
+    public function new(image:Image) {
+        super(image);
+        _image = image;
     }
-
-    public override function getDynamic():Dynamic {
-        return _value;
+    
+    public override function applyStyle(style:Style) {
+        if (style.resource != null) {
+            _image.resource = style.resource;
+        }
     }
 }

@@ -1,5 +1,6 @@
 package haxe.ui.containers;
 
+import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.core.Component;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.LayoutFactory;
@@ -9,11 +10,21 @@ import haxe.ui.layouts.LayoutFactory;
 **/
 @:dox(icon = "/icons/ui-panel.png")
 class Box extends Component {
+    //***********************************************************************************************************
+    // Public API
+    //***********************************************************************************************************
+    /**
+     The icon associated with this box component
+
+     *Note*: this class itself does nothing special with this property and simply here to allow subclasses to make use
+     of it should they want to
+    **/
+    @:clonable @:behaviour(DefaultBehaviour)                public var icon:String;
+    
     public function new() {
         super();
         layout = new DefaultLayout();
     }
-
 
     private var _layoutName:String;
     @:clonable public var layoutName(get, set):String;
@@ -27,26 +38,6 @@ class Box extends Component {
 
         _layoutName = value;
         layout = LayoutFactory.createFromName(layoutName);
-        return value;
-    }
-    
-    //***********************************************************************************************************
-    // Public API
-    //***********************************************************************************************************
-    private var _icon:String;
-    /**
-     The icon associated with this box component
-
-     *Note*: this class itself does nothing special with this property and simply here to allow subclasses to make use
-     of it should they want to
-    **/
-    @:clonable public var icon(get, set):String;
-    private function get_icon():String {
-        return _icon;
-    }
-
-    private function set_icon(value:String):String {
-        _icon = value;
         return value;
     }
 }

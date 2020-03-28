@@ -1,21 +1,19 @@
 package haxe.ui.macros;
 
-import haxe.ui.util.GenericConfig;
-
 #if macro
-import haxe.macro.Expr;
+import haxe.io.Path;
 import haxe.macro.Context;
+import haxe.macro.Expr;
+import haxe.ui.macros.helpers.CodeBuilder;
+import haxe.ui.util.GenericConfig;
 #end
 
-class MacroHelpers {
-    private static var SKIP_PATTERNS:Array<String> = ["/lib/actuate/",
-                                                      "/lib/lime/",
-                                                      "/lib/openfl/",
-                                                      "/lib/yaml/",
-                                                      "/lib/hscript/",
-                                                      "/haxe/std/",
-                                                      "/.git"];
+typedef ClassPathEntry = {
+    var path:String;
+    var priority:Int;
+}
 
+class MacroHelpers {
     #if macro
     public static function exprToMap(params:Expr):Map<String, Dynamic> {
         if (params == null) {
@@ -37,177 +35,6 @@ class MacroHelpers {
         return map;
     }
 
-    public static function getConstructor(fields:Array<Field>) {
-        return getFunction(fields, "new");
-    }
-
-    public static function getFunction(fields:Array<Field>, name:String) {
-        var fn = null;
-        for (f in fields) {
-            if (f.name == name) {
-                switch (f.kind) {
-                    case FFun(f):
-                            fn = f;
-                        break;
-                    default:
-                }
-            }
-        }
-        return fn;
-    }
-
-    public static function addFunction(name:String, e:Expr, access:Array<Access>, fields:Array<Field>, pos:Position):Void {
-        var fn = switch (e).expr {
-            case EFunction(_, f): f;
-            case _: throw "false";
-        }
-        fields.push( { name : name, doc : null, meta : [], access : access, kind : FFun(fn), pos : pos } );
-    }
-
-    public static function getFieldsWithMeta(meta:String, fields:Array<Field>):Array<Field> {
-        var arr:Array<Field> = new Array<Field>();
-
-        for (f in fields) {
-            if (hasMeta(f, meta)) {
-                arr.push(f);
-            }
-        }
-
-        return arr;
-    }
-
-    public static function hasMeta(f:Field, meta:String):Bool {
-        return (getMeta(f, meta) != null);
-    }
-
-    public static function getMeta(f:Field, meta:String):MetadataEntry {
-        var entry:MetadataEntry = null;
-        for (m in f.meta) {
-            if (m.name == meta || m.name == ":" + meta) {
-                entry = m;
-                break;
-            }
-        }
-        return entry;
-    }
-    
-    public static function hasMetaParam(meta:MetadataEntry, param:String):Bool {
-        var has:Bool = false;
-        for (p in meta.params) {
-            switch (p.expr) {
-                case EConst(CIdent(c)):
-                    if (c == param) {
-                        has = true;
-                        break;
-                    }
-                case _:
-            }
-        }
-        return has;
-    }
-    
-    public static function insertLine(fn:{ expr : { pos : haxe.macro.Position, expr : haxe.macro.ExprDef } }, e:Expr, location:Int):Void {
-        fn.expr = switch (fn.expr.expr) {
-            case EBlock(el): macro $b{insertExpr(el, location, e)};
-            case _: macro $b { insertExpr([fn.expr], location, e) }
-        }
-    }
-
-    public static function insertExpr(arr:Array<Expr>, pos:Int, item:Expr):Array<Expr> {
-        if (pos == -1) {
-            arr.push(item);
-        } else {
-            arr.insert(pos, item);
-        }
-        return arr;
-    }
-
-    public static function hasInterface(t:haxe.macro.Type, interfaceRequired:String):Bool {
-        var has:Bool = false;
-        switch (t) {
-                case TInst(t, _): {
-                    while (t != null) {
-                        for (i in t.get().interfaces) {
-                            var interfaceName:String = i.t.toString();
-                            if (interfaceName == interfaceRequired) {
-                                has = true;
-                                break;
-                            }
-                        }
-
-                        if (has == false) {
-                            if (t.get().superClass != null) {
-                                t = t.get().superClass.t;
-                            } else {
-                                t = null;
-                            }
-                        } else {
-                            break;
-                        }
-                    }
-                }
-                case _:
-        }
-
-        return has;
-    }
-
-    static function mkPath(name:String):TypePath {
-        var parts = name.split('.');
-        return {
-            sub: null,
-            params: [],
-            name: parts.pop(),
-            pack: parts
-        }
-    }
-
-    static function mkType(s:String):ComplexType {
-        return TPath(mkPath(s));
-    }
-
-    private static function getSuperClass(t:haxe.macro.Type) {
-        var superClass = null;
-        switch (t) {
-                case TInst(t, _): {
-                    superClass = t.get().superClass;
-                }
-                case _:
-        }
-        return superClass;
-    }
-
-    public static function getClassNameFromType(t:haxe.macro.Type):String {
-        var className:String = "";
-        switch (t) {
-                case TAnonymous(t): className = t.toString();
-                case TMono(t): className = t.toString();
-                case TLazy(t): className = "";
-                case TFun(t, _): className = t.toString();
-                case TDynamic(t): className = "";
-                case TInst(t, _): className = t.toString();
-                case TEnum(t, _): className = t.toString();
-                case TType(t, _): className = t.toString();
-                case TAbstract(t, _): className = t.toString();
-        }
-        return className;
-    }
-    
-    public static function skipPath(path:String):Bool {
-        var skip:Bool = false;
-
-        path = StringTools.replace(path, "\\", "/");
-
-        for (s in SKIP_PATTERNS) {
-            if (path.indexOf(s) != -1) {
-                skip = true;
-                break;
-            }
-        }
-
-        return skip;
-    }
-
     public static function resolveFile(file:String):String {
         var resolvedPath:String = null;
         if (sys.FileSystem.exists(file) == false) {
@@ -227,6 +54,16 @@ class MacroHelpers {
         return resolvedPath;
     }
 
+    public static function typesFromClassOrPackage(className:String, pack:String):Array<haxe.macro.Type> {
+        var types:Array<haxe.macro.Type> = null;
+        if (className != null) {
+            types = Context.getModule(className);
+        } else if (pack != null) {
+            types = MacroHelpers.typesFromPackage(pack);
+        }
+        return types;
+    }
+    
     public static function typesFromPackage(pack:String):Array<haxe.macro.Type> {
         var types:Array<haxe.macro.Type> = new Array<haxe.macro.Type>();
 
@@ -253,75 +90,6 @@ class MacroHelpers {
         return types;
     }
 
-    public static function classNameFromType(t:haxe.macro.Type):String {
-        var className:String = "";
-        switch (t) {
-                case TAnonymous(t): className = t.toString();
-                case TMono(t): className = t.toString();
-                case TLazy(t): className = "";
-                case TFun(t, _): className = t.toString();
-                case TDynamic(t): className = "";
-                case TInst(t, _): className = t.toString();
-                case TEnum(t, _): className = t.toString();
-                case TType(t, _): className = t.toString();
-                case TAbstract(t, _): className = t.toString();
-        }
-
-        var c = className.split(".");
-        var name = c[c.length - 1];
-        var module = moduleNameFromType(t);
-        if (StringTools.endsWith(module, name) == false) {
-            className = module + "." + name;
-        }
-
-        return className;
-    }
-
-    public static function moduleNameFromType(t:haxe.macro.Type):String {
-        var moduleName:String = "";
-        switch (t) {
-            case TInst(t, _):
-                moduleName = t.get().module;
-            default:
-        }
-        return moduleName;
-    }
-
-    public static function addMeta(t:haxe.macro.Type, meta:String, pos:haxe.macro.Position) {
-        switch (t) {
-            case TInst(t, _):
-                t.get().meta.add(meta, [], pos);
-            default:
-        }
-    }
-
-    public static function hasSuperClass(t:haxe.macro.Type, classRequired:String):Bool {
-        var has:Bool = false;
-        switch (t) {
-                case TInst(t, _): {
-                    if (t.toString() == classRequired) {
-                        has = true;
-                    } else {
-                        while (t != null) {
-                            if (t.get().superClass != null) {
-                                if (t.toString() == classRequired) {
-                                    has = true;
-                                    break;
-                                } else {
-                                    t = t.get().superClass.t;
-                                }
-                            } else {
-                                t = null;
-                            }
-                        }
-                    }
-                }
-                case _:
-        }
-
-        return has;
-    }
-
     public static function extension(path:String):String {
         if (path.indexOf(".") == -1) {
             return null;
@@ -331,109 +99,137 @@ class MacroHelpers {
         return extension;
     }
 
-    public static function aliasType(source:String, target:String) {
-        var pack = target.split(".");
-        var name = pack.pop();
-
-        var c = {
-            pack : pack,
-            name : name,
-            pos : Context.currentPos(),
-            meta : [],
-            params : [],
-            isExtern : false,
-            kind : TDAlias(MacroHelpers.mkType(source)),
-            fields : []
-        }
-        Context.defineType(c);
-    }
-
-    public static function buildGenericConfigCode(c:GenericConfig, name:String, v:Int = 0):String {
-        var code:String = "";
+    public static function buildGenericConfigCode(builder:CodeBuilder, c:GenericConfig, name:String, depth:Int = 0) {
         for (key in c.values.keys()) {
-            code += 's${v}.values.set("${key}", "${c.values.get(key)}");\n';
+            var sectionVar = 'section${depth}';
+            var value = c.values.get(key);
+            builder.add(macro $i{sectionVar}.values.set($v{key}, $v{value}));
         }
+        
         for (sectionName in c.sections.keys()) {
             for (section in c.sections.get(sectionName)) {
-                if (v == 0) {
-                    code += 'var s1 = ${name}.addSection("${sectionName}");\n';
+                if (depth == 0) {
+                    builder.add(macro var section1 = $i{name}.addSection($v{sectionName}));
                 } else {
-                    code += 'var s${v + 1} = s${v}.addSection("${sectionName}");\n';
+                    var sectionVar = 'section${depth + 1}';
+                    var parentSectionVar = 'section${depth}';
+                    builder.add(macro var $sectionVar = $i{parentSectionVar}.addSection($v{sectionName}));
                 }
-                code += buildGenericConfigCode(section, name, v + 1);
+                
+                buildGenericConfigCode(builder, section, name, depth + 1);
             }
         }
-        return code;
     }
 
-    public static function scanClassPath(processFileFn:String->Bool, searchCriteria:Array<String> = null, skipHidden:Bool = true) {
+    public static var classPathCache:Array<ClassPathEntry> = null;
+    private static var primaryClassPathExceptions:Array<EReg> = [];
+    private static var secondaryClassPathExceptions:Array<EReg> = [];
+    private static function loadClassPathExclusions(filePath:String) {
+        var contents = sys.io.File.getContent(filePath);
+        var lines = contents.split("\r");
+        for (line in lines) {
+            line = StringTools.trim(line);
+            if (line.length == 0 || StringTools.startsWith(line, ";")) {
+                continue;
+            }
+            primaryClassPathExceptions.push(new EReg(line, "gm"));
+            secondaryClassPathExceptions.push(new EReg(line, "gm"));
+        }
+    }
+    
+    private static function buildClassPathCache() {
+        if (classPathCache != null) {
+            return;
+        }
+        
+        classPathCache = [];
         var paths:Array<String> = Context.getClassPath();
-        var processedFiles:Array<String> = new Array<String>();
-        while (paths.length != 0) {
-            var path:String = paths[0];
-            paths.remove(path);
-            path = StringTools.replace(path, "\\", "/");
-
-            if (MacroHelpers.skipPath(path) == true) {
-                continue;
-            }
-            var pathArray:Array<String> = path.split("/");
-            var lastPath:String = pathArray[pathArray.length - 1];
-            if (StringTools.startsWith(lastPath, ".") && skipHidden == true) {
-                continue;
-            }
-
+        for (path in paths) {
+            path = StringTools.trim(path + "/classpath.exclusions");
+            path = Path.normalize(path);
             if (sys.FileSystem.exists(path)) {
-                if (sys.FileSystem.isDirectory(path)) {
-                    var subDirs:Array<String> = sys.FileSystem.readDirectory(path);
-                    var continueSearch = true;
-                    for (subDir in subDirs) {
-                        var fileName = subDir;
-                        if (StringTools.endsWith(path, "/") == false && StringTools.endsWith(path, "\\") == false) {
-                            subDir = path + "/" + subDir;
-                        } else {
-                            subDir = path + subDir;
-                        }
+                loadClassPathExclusions(path);
+            }
+        }
+        
+        
+        for (path in paths) {
+            path = StringTools.trim(path);
+            path = Path.normalize(path);
+            var exclude = false;
+            for (r in primaryClassPathExceptions) {
+                if (r.match(path) == true) {
+                    exclude = true;
+                    break;
+                }
+            }
+            if (exclude == true) {
+                continue;
+            }
+            cacheClassPathEntries(path, classPathCache);
+        }
+    }
+    
+    private static function cacheClassPathEntries(path, array) {
+        path = StringTools.trim(path);
+        if (path.length == 0) {
+            return;
+        }
+        path = Path.normalize(path);
+        
+        var exclude = false;
+        for (r in secondaryClassPathExceptions) {
+            if (r.match(path) == true) {
+                exclude = true;
+                break;
+            }
+        }
+        if (exclude == true || ! sys.FileSystem.exists(path)) {
+            return;
+        }
 
-                        if (sys.FileSystem.isDirectory(subDir) && StringTools.endsWith(subDir, "/cli") == false) {
-                            subDir = StringTools.replace(subDir, "\\", "/");
-                            paths.insert(0, subDir);
-                        } else {
-                            var file:String = subDir;
-                            if (searchCriteria == null) {
-                                if (processedFiles.indexOf(file) == -1) {
-                                    continueSearch = !processFileFn(file);
-                                    if (continueSearch == false) {
-                                        processedFiles.push(file);
-                                    }
-                                } else {
-                                    continueSearch = false;
-                                }
-                            } else {
-                                var found:Bool = false;
-                                for (s in searchCriteria) {
-                                    if (StringTools.startsWith(fileName, s)) {
-                                        found = true;
-                                        break;
-                                    }
-                                }
-                                if (found) {
-                                    if (processedFiles.indexOf(file) == -1) {
-                                        continueSearch = !processFileFn(file);
-                                        if (continueSearch == false) {
-                                            processedFiles.push(file);
-                                        }
-                                    } else {
-                                        continueSearch = false;
-                                    }
-                                }
-                            }
-                        }
-
-                        if (continueSearch == false) {
-                            break;
-                        }
+        var contents = sys.FileSystem.readDirectory(path);
+        for (item in contents) {
+            item = StringTools.trim(item);
+            if (item.length == 0) {
+                continue;
+            }
+            var fullPath = Path.normalize(path + "/" + item);
+            if (sys.FileSystem.exists(fullPath) == false) {
+                continue;
+            }
+            var isDir = sys.FileSystem.isDirectory(fullPath);
+            if (isDir == true && StringTools.startsWith(item, ".") == false) {
+                if (exclude == false) {
+                    cacheClassPathEntries(fullPath, array);
+                }
+            } else if (isDir == false) {
+                array.push({
+                    path: fullPath,
+                    priority: 0
+                });
+            }
+        }
+        
+    }
+    
+    public static function scanClassPath(processFileFn:String->Bool, searchCriteria:Array<String> = null) {
+        buildClassPathCache();
+        for (entry in classPathCache) {
+            var parts = entry.path.split("/");
+            var fileName = parts[parts.length - 1];
+            if (searchCriteria == null) {
+                processFileFn(entry.path);
+            } else {
+                var found:Bool = false;
+                for (s in searchCriteria) {
+                    if (StringTools.startsWith(fileName, s)) {
+                        found = true;
+                        break;
                     }
+                }
+                if (found == true) {
+                    processFileFn(entry.path);
                 }
             }
         }

@@ -1,8 +1,8 @@
 package haxe.ui.core;
 
-import haxe.ui.backend.PlatformBase;
+import haxe.ui.backend.PlatformImpl;
 
-class Platform extends PlatformBase {
+class Platform extends PlatformImpl {
     public static inline var METRIC_VSCROLL_WIDTH:String = "patform.metrics.vscroll.width";
     public static inline var METRIC_HSCROLL_HEIGHT:String = "patform.metrics.hscroll.height";
 
@@ -23,10 +23,6 @@ class Platform extends PlatformBase {
             _instance = new Platform();
         }
         return _instance;
-    }
-
-    public function new() {
-
     }
 
     public override function getMetric(id:String):Float {

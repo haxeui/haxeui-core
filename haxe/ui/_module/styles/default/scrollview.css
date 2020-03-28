@@ -1,0 +1,24 @@
+/************************************************************************
+** SCROLLVIEW
+*************************************************************************/
+.scrollview {
+    border: 1px solid #ABABAB;
+    border-radius: 1px;
+    padding: 1px;
+    width: auto;
+    height: auto;
+}
+
+.scrollview .scrollview-contents {
+    height: auto;
+    spacing: 5px;
+    padding: 5px;
+    border: none;
+}
+
+/************************************************************************
+** MOBILE VARIANTS
+*************************************************************************/
+.scrollview:mobile {
+    mode: mobile;
+}

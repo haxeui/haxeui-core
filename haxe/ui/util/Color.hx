@@ -25,6 +25,48 @@ abstract Color(Int) from Int {
             default: 0;
         }
     }
+
+    static public function fromComponents(r:Int, g:Int, b:Int, a:Int):Color {
+        var result:Color;
+        return result.set(r, g, b, a);
+    }
+
+    public var r (get, set):Int;
+    public var g (get, set):Int;
+    public var b (get, set):Int;
+    public var a (get, set):Int;
+
+    private inline function get_r():Int {
+        return (this >> 16) & 0xFF;
+    }
+    private inline function set_r(value:Int):Int {
+        return set(value, g, b, a);
+    }
+
+    private inline function get_g():Int {
+        return (this >> 8) & 0xFF;
+    }
+    private inline function set_g(value:Int):Int {
+        return set(r, value, b, a);
+    }
+
+    private inline function get_b():Int {
+        return this & 0xFF;
+    }
+    private inline function set_b(value:Int):Int {
+        return set(r, g, value, a);
+    }
+
+    private inline function get_a():Int {
+        return (this >> 24) & 0xFF;
+    }
+    private inline function set_a(value:Int):Int {
+        return set(r, g, b, value);
+    }
+
+    public inline function set(r:Int, g:Int, b:Int, a:Int):Int {
+        return this = ((a & 0xFF) << 24) | ((r & 0xFF) << 16) | ((g & 0xFF) << 8) | (b & 0xFF);
+    }
     
     @:to function toInt():Int {
         return this;
@@ -32,5 +74,22 @@ abstract Color(Int) from Int {
     
     @:op(A | B) static inline function or(a:Color, b:Color):Int {
         return a.toInt() | b.toInt();
+    }
+
+    @:op(A + B) static inline function sumColor(a:Color, b:Color):Int {
+        return fromComponents(a.r + b.r, a.g + b.g, a.b + b.b, a.a + b.a);
+    }
+
+    @:op(A - B) static inline function restColor(a:Color, b:Color):Int {
+        return fromComponents(a.r - b.r, a.g - b.g, a.b - b.b, a.a - b.a);
+    }
+
+    @:op(A - B) static inline function sumFloat(a:Color, b:Float):Int {
+        var bInt:Int = Std.int(b);
+        return fromComponents(a.r - bInt, a.g - bInt, a.b - bInt, a.a - bInt);
+    }
+
+    @:op(A * B) static inline function mulFloat(a:Color, b:Float):Int {
+        return fromComponents(Std.int(a.r * b), Std.int(a.g * b), Std.int(a.b * b), Std.int(a.a * b));
     }
 }

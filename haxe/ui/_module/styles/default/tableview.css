@@ -1,0 +1,73 @@
+/************************************************************************
+** HEADER
+*************************************************************************/
+.header {
+    width: auto;
+    height: auto;
+    spacing: 0;
+}
+
+.header .column {
+    border-radius: 0;
+    icon-position: far-right;
+}
+
+.header .sortable {
+    icon: "haxeui-core/styles/default/up_down_arrows.png";
+    icon-position: far-right;
+}
+
+/************************************************************************
+** LISTVIEW
+*************************************************************************/
+.tableview {
+    border: 1px solid #ABABAB;
+    border-radius: 1px;
+    padding: 1px;
+    width: auto;
+    height: auto;
+    background-color: #FFFFFF;
+    spacing: 0;
+}
+
+.tableview .tableview-contents {
+    spacing: 0;
+    width: 100%;
+    padding: 0px;
+}
+
+.tableview .even {
+    background-color: white;
+    cursor: pointer;
+}
+
+.tableview .odd {
+    background-color: #f8f8f8;
+    cursor: pointer;
+}
+
+.tableview .compounditemrenderer .itemrenderer {
+    height: auto;
+    padding: 5px;
+}
+
+.tableview .even:hover {
+    background-color: #d9e5f2;
+}
+
+.tableview .odd:hover {
+    background-color: #d9e5f2;
+}
+
+.tableview .compounditemrenderer .label {
+    color: black;
+}
+
+.tableview .compounditemrenderer:selected {
+    background-color: #a7c4e2;
+    color: white;
+}
+
+.tableview .compounditemrenderer:selected .label {
+    color: white;
+}

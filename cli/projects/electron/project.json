@@ -1,0 +1,9 @@
+{
+    "name": "electron",
+    "type": "template",
+    "subProjects": [
+        "shared", "electron-shared"
+    ],
+    "templates": [
+    ]
+}

@@ -2,11 +2,10 @@ package haxe.ui.parsers.modules;
 
 class ModuleParser {
     private static var _parsers:Map<String, Class<ModuleParser>>;
-
     public function new() {
     }
 
-    public function parse(data:String, defines:Map<String, String>):Module {
+    public function parse(data:String, defines:Map<String, String>, context:String = null):Module {
         throw "Module parser not implemented!";
     }
 

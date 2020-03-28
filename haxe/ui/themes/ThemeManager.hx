@@ -1,5 +1,6 @@
 package haxe.ui.themes;
 
+import haxe.ds.ArraySort;
 import haxe.ui.Toolkit;
 
 class ThemeManager {
@@ -30,35 +31,56 @@ class ThemeManager {
         return theme;
     }
 
-    public function addStyleResource(themeName:String, resourceId:String) {
-        getTheme(themeName).styles.push(resourceId);
+    public function addStyleResource(themeName:String, resourceId:String, priority:Float = 0) {
+        getTheme(themeName).styles.push({
+           resourceId: resourceId,
+           priority: priority
+        });
     }
 
     public function applyTheme(themeName:String) {
-        applyThemeStyles("global");
-        applyThemeStyles(themeName);
+        Toolkit.styleSheet.clear("default");
+        var entries:Array<ThemeEntry> = [];
+        buildThemeEntries("global", entries);
+        buildThemeEntries(themeName, entries);
+        
+        ArraySort.sort(entries, function(a, b):Int {
+            if (a.priority < b.priority) return -1;
+            else if (a.priority > b.priority) return 1;
+            return 0;
+        });        
+        
+        for (e in entries) {
+            applyResource(e.resourceId);
+        }
     }
 
-    public function applyThemeStyles(themeName:String) {
+    public function applyResource(resourceId:String) {
+        var style:String = Toolkit.assets.getText(resourceId);
+        if (style != null) {
+            addStyleString(style);
+        } else {
+            #if debug
+            trace("WARNING: could not find " + resourceId);
+            #end
+        }
+    }
+    
+    public function addStyleString(style:String) {
+        Toolkit.styleSheet.parse(style);
+    }
+    
+    private function buildThemeEntries(themeName:String, arr:Array<ThemeEntry>) {
         var theme:Theme = _themes.get(themeName);
         if (theme == null) {
             return;
         }
         if (theme.parent != null) {
-            applyThemeStyles(theme.parent);
+            buildThemeEntries(theme.parent, arr);
         }
-
-        var styles = theme.styles;
-        styles.reverse();
-        for (s in styles) {
-            var css:String = Toolkit.assets.getText(s);
-            if (css != null) {
-                Toolkit.styleSheet.addRules(css);
-            } else {
-                #if debug
-                trace("WARNING: could not find " + s);
-                #end
-            }
+        
+        for (s in theme.styles) {
+            arr.push(s);
         }
     }
 }

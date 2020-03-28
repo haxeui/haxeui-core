@@ -1,35 +1,113 @@
 package haxe.ui.components;
 
-import haxe.ui.core.UIEvent;
-import haxe.ui.util.Variant;
+import haxe.ui.core.Component;
+import haxe.ui.core.CompositeBuilder;
+import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.core.InteractiveComponent;
-import haxe.ui.core.MouseEvent;
-import haxe.ui.focus.FocusManager;
+import haxe.ui.events.UIEvent;
+import haxe.ui.events.Events;
 import haxe.ui.layouts.DefaultLayout;
-import haxe.ui.styles.Style;
-import haxe.ui.util.MathUtil;
+import haxe.ui.layouts.HorizontalLayout;
+import haxe.ui.util.Variant;
 
-/**
- A Switch is a two-state toggle switch component that can select between two options
-**/
-//@:dox(icon = "")  //TODO
-class Switch extends InteractiveComponent {
+@:composite(Events, Builder, HorizontalLayout)
+class Switch extends Component {
+    //***********************************************************************************************************
+    // Public API
+    //***********************************************************************************************************
+    @:clonable @:behaviour(SelectedBehaviour)         public var selected:Bool;
+    @:clonable @:behaviour(DefaultBehaviour)          public var value:Variant;
+    @:clonable @:behaviour(TextBehaviour)             public var text:String;
+    @:clonable @:behaviour(DefaultBehaviour)          public var textOn:String;
+    @:clonable @:behaviour(DefaultBehaviour)          public var textOff:String;
+}
+
+//***********************************************************************************************************
+// Events
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+private class Events extends haxe.ui.events.Events {
+    private var _switch:Switch;
+    
+    public function new(s:Switch) {
+        super(s);
+        _switch = s;
+    }
+}
+
+//***********************************************************************************************************
+// Behaviours
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+private class SelectedBehaviour extends DataBehaviour {
+    private override function validateData() {
+        _component.findComponent(SwitchButtonSub).selected = _value;
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class TextBehaviour extends DataBehaviour {
+    private override function validateData() {
+        var label:Label = _component.findComponent(Label, false);
+        if (label == null) {
+            label = new Label();
+            label.styleNames = "switch-label";
+            label.id = "switch-label";
+            label.scriptAccess = false;
+            _component.addComponentAt(label, 0);
+            
+            var spacer = new Spacer(); // TODO: ugly
+            spacer.percentWidth = 100;
+            _component.addComponentAt(spacer, 1);
+            
+            _component.invalidateComponentStyle(true);
+            
+        }
+        
+        label.text = _value;
+    }
+}
+
+//***********************************************************************************************************
+// Composite Builder
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+private class Builder extends CompositeBuilder {
+    private var _switch:Switch;
+    
+    private var _button:SwitchButtonSub;
+    private var _label:Label;
+    
+    public function new(s:Switch) {
+        super(s);
+        _switch = s;
+    }
+    
+    public override function create() {
+        if (_button == null) {
+            _button = new SwitchButtonSub();
+            _button.onChange = function(e) {
+                _switch.selected = _button.selected;
+                _switch.dispatch(new UIEvent(UIEvent.CHANGE));
+            }
+            _component.addComponent(_button);
+        }
+    }
+}
+
+//***********************************************************************************************************
+// Custom children
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+@:composite(SwitchButtonLayout)
+private class SwitchButtonSub extends InteractiveComponent {
     private var _button:Button;
     private var _label:Label;
-
-    public function new() {
-        super();
-    }
-
-    //***********************************************************************************************************
-    // Internals
-    //***********************************************************************************************************
-    private override function createDefaults() {
-        super.createDefaults();
-        _defaultLayout = new SwitchLayout();
-    }
-
+    
     private override function createChildren() {
+        super.createChildren();
+        
         if (_button == null) {
             _label = new Label();
             _label.id = "switch-label";
@@ -40,70 +118,21 @@ class Switch extends InteractiveComponent {
             _button = new Button();
             _button.id = "switch-button";
             _button.addClass("switch-button");
-            _button.onClick = function(e) {
+            addComponent(_button);
+            
+            onClick = function(e) {
                 selected = !selected;
             }
-            addComponent(_button);
+            
+            var component:Component = new Component();
+            component.addClass("switch-button-sub-extra");
+            addComponentAt(component, 0);
         }
-
-        registerEvent(MouseEvent.MOUSE_OVER, _onMouseOver);
-        registerEvent(MouseEvent.MOUSE_OUT, _onMouseOut);
-        registerEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
-    }
-
-    private override function destroyChildren() {
-        super.destroyChildren();
-
-        unregisterEvent(MouseEvent.MOUSE_OVER, _onMouseOver);
-        unregisterEvent(MouseEvent.MOUSE_OUT, _onMouseOut);
-        unregisterEvent(MouseEvent.MOUSE_DOWN, _onMouseDown);
-
-
-        if(_button != null) {
-            removeComponent(_button);
-            _button = null;
-        }
-    }
-
-    //***********************************************************************************************************
-    // Overrides
-    //***********************************************************************************************************
-
-    private override function get_value():Variant {
-        return _selected;
-    }
-
-    private override function applyStyle(style:Style) {
-        super.applyStyle(style);
-
-        if(_button != null) {
-            _button.customStyle.borderRadius = style.borderRadius;
-        }
-    }
-
-    //***********************************************************************************************************
-    // Validation
-    //***********************************************************************************************************
-
-    private override function validateData() {
-        if (_selected == false) {
-            _label.text = _unselectedText;
-            _label.removeClass(":selected");
-            removeClass(":selected");
-        } else {
-            _label.text = _selectedText;
-            _label.addClass(":selected");
-            addClass(":selected");
-        }
-
-        var event:UIEvent = new UIEvent(UIEvent.CHANGE);
-        dispatch(event);
     }
 
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-
     private var _selected:Bool = false;
     @:clonable public var selected(get, set):Bool;
     private function get_selected():Bool {
@@ -117,10 +146,26 @@ class Switch extends InteractiveComponent {
         invalidateComponentData();
         invalidateComponentLayout();
         _selected = value;
+        
+        if (_selected == false) {
+            _label.text = _unselectedText;
+            _label.removeClass(":selected");
+            removeClass(":selected", true, true);
+            addClass(":unselected", true, true);
+        } else {
+            _label.text = _selectedText;
+            _label.addClass(":selected");
+            removeClass(":unselected", true, true);
+            addClass(":selected", true, true);
+        }
+
+        var event:UIEvent = new UIEvent(UIEvent.CHANGE);
+        dispatch(event);
+        
         return value;
     }
 
-    private var _selectedText:String = "On";
+    private var _selectedText:String = "";
     public var selectedText(get, set):String;
     private function get_selectedText():String {
         return _selectedText;
@@ -133,7 +178,7 @@ class Switch extends InteractiveComponent {
         return value;
     }
     
-    private var _unselectedText:String = "Off";
+    private var _unselectedText:String = "";
     public var unselectedText(get, set):String;
     private function get_unselectedText():String {
         return _unselectedText;
@@ -146,60 +191,30 @@ class Switch extends InteractiveComponent {
         return value;
     }
     
-    //***********************************************************************************************************
-    // Events
-    //***********************************************************************************************************
-    private var _mouseDownOffsetX:Float;
-    private var _mouseDownOffsetY:Float;
-    private var _down:Bool = false;
-
-    private function _onMouseOver(event:MouseEvent) {
-        if (_down == false) {
-            addClass(":hover");
-        }
+    private var _pos:Float = 0;
+    public var pos(get, set):Float;
+    private function get_pos():Float {
+        return _pos;
     }
-
-    private function _onMouseOut(event:MouseEvent) {
-        removeClass(":hover");
-    }
-
-    private function _onMouseDown(event:MouseEvent) {
-        if (FocusManager.instance.focusInfo != null && FocusManager.instance.focusInfo.currentFocus != null) {
-            FocusManager.instance.focusInfo.currentFocus.focus = false;
+    private function set_pos(value:Float):Float {
+        if (_pos == value) {
+            return value;
         }
-        _down = true;
-
-        _mouseDownOffsetX = event.screenX;
-        _mouseDownOffsetY = event.screenY;
-        screen.registerEvent(MouseEvent.MOUSE_UP, _onMouseUp);
-    }
-
-    private function _onMouseUp(event:MouseEvent) {
-        _down = false;
-
-        //Check if the user makes a click (selected should change) or if the user tries to move the button
-        if(MathUtil.distance(event.screenX, event.screenY, _mouseDownOffsetX, _mouseDownOffsetY) < 5) {   //TODO - DPI should be considered
-            selected = !selected;
-        } else {
-            selected = (event.screenX - ((screenLeft + componentWidth) / 2) > 0);
-        }
-
-        if (hitTest(event.screenX, event.screenY)) {
-            addClass(":hover");
-        }
-
-        screen.unregisterEvent(MouseEvent.MOUSE_UP, _onMouseUp);
+        
+        _pos = value;
+        invalidateComponentLayout();
+        
+        return value;
     }
 }
 
-@:dox(hide)
-class SwitchLayout extends DefaultLayout {
-    public function new() {
-        super();
-    }
-
+//***********************************************************************************************************
+// SwitchButton Layout
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+private class SwitchButtonLayout extends DefaultLayout {
     private override function repositionChildren() {
-        var switchComp:Switch = cast _component;
+        var switchComp = cast(_component, SwitchButtonSub);
         var button:Button = switchComp.findComponent("switch-button");
         var label:Label = switchComp.findComponent("switch-label");
         if (button == null || label == null) {
@@ -210,11 +225,23 @@ class SwitchLayout extends DefaultLayout {
         label.top = (component.componentHeight / 2) - (label.componentHeight / 2);
         
         if(switchComp.selected == true) {
-            button.left = switchComp.componentWidth - button.componentWidth - paddingRight;
             label.left = (button.componentWidth / 2) - (label.componentWidth / 2);
         } else {
-            button.left = paddingLeft;
             label.left = button.left + button.componentWidth + (button.componentWidth / 2) - (label.componentWidth / 2);
         }
+        
+        var ucx:Float = usableWidth - button.width;
+        var min = 0;
+        var max = 100;
+        var x = (switchComp.pos - min) / (max - min) * ucx;
+
+        button.left = paddingLeft + x;
+        
+        
+        var extra:Component = switchComp.findComponent("switch-button-sub-extra", "css");
+        if (extra != null) {
+            extra.top = (_component.height / 2) - (extra.height / 2);
+        }
+        
     }
 }

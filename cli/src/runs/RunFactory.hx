@@ -1,5 +1,6 @@
 package runs;
 import projects.ProjectFactory;
+import runs.android.AndroidRun;
 
 class RunFactory {
     public static function get(id:String, params:Params):Run {
@@ -11,6 +12,8 @@ class RunFactory {
         }
         
         switch (id) {
+            case "android":
+                r = new AndroidRun();
             case "html5":
                 r = new WebServerRun("build/html5");
             case "openfl":
@@ -23,8 +26,10 @@ class RunFactory {
                 r = new WebServerRun("build/pixijs");
             case "hxwidgets":
                 var main = Util.name(params);
-                trace(main);
                 r = new ProcessRun(['build/hxwidgets/${main}']);
+            case "winforms":
+                var main = Util.name(params);
+                r = new ProcessRun(['build/winforms/bin/${main}']);
             case "nme":
                 r = new ProcessRun(["nme", "run"]);
         }

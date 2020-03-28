@@ -1,0 +1,152 @@
+/************************************************************************
+** SCROLL
+*************************************************************************/
+.scroll {
+    background-color: #E9E9E9;
+}
+
+.scroll .button {
+    border-radius: 0;
+    border: none;
+    background-color: #E9E9E9;
+    padding: 0;
+    filter: none;
+}
+
+.scroll .button:hover {
+    background-color: #D7D7D7;
+}
+
+.scroll .button:down {
+    background-color: #525252;
+    filter: none;
+}
+
+.scroll .deinc {
+    height: 17px;
+    width: 17px;
+    opacity: 1;
+}
+
+.scroll deinc:disabled {
+    opacity: 0.5;
+}
+
+.scroll deinc:down {
+}
+
+.scroll .inc {
+    height: 17px;
+    width: 17px;
+    opacity: 1;
+}
+
+.scroll .inc:disabled {
+    opacity: 0.5;
+}
+
+.scroll .inc:down {
+}
+
+.scroll .thumb {
+    background-color: #C6C6C6;
+}
+
+.scroll .thumb:hover {
+    background-color: #AAAAAA;
+}
+
+.scroll .thumb:down {
+    background-color: #525252;
+}
+
+.scroll .thumb:disabled {
+    background-color: #DDDDDD;
+}
+
+/************************************************************************
+** VERTICAL SCROLL
+*************************************************************************/
+.vertical-scroll {
+    width: 17px;
+}
+
+.vertical-scroll .thumb {
+    width: 17px;
+    height: 17px;
+}
+
+.vertical-scroll .deinc {
+    icon: "haxeui-core/styles/default/up_arrow.png";
+}
+
+.vertical-scroll .deinc:down {
+    icon: "haxeui-core/styles/default/up_arrow_white.png";
+}
+
+.vertical-scroll .inc {
+    icon: "haxeui-core/styles/default/down_arrow.png";
+}
+
+.vertical-scroll .inc:down {
+    icon: "haxeui-core/styles/default/down_arrow_white.png";
+}
+
+/************************************************************************
+** HORIZONTAL SCROLL
+*************************************************************************/
+.horizontal-scroll {
+    height: 17px;
+}
+
+.horizontal-scroll .thumb {
+    width: 17px;
+    height: 17px;
+}
+
+.horizontal-scroll .deinc {
+    icon: "haxeui-core/styles/default/left_arrow.png";
+}
+
+.horizontal-scroll .deinc:down {
+    icon: "haxeui-core/styles/default/left_arrow_white.png";
+}
+
+.horizontal-scroll .inc {
+    icon: "haxeui-core/styles/default/right_arrow.png";
+}
+
+.horizontal-scroll .inc:down {
+    icon: "haxeui-core/styles/default/right_arrow_white.png";
+}
+
+/************************************************************************
+** MOBILE VARIANTS
+*************************************************************************/
+.scroll:mobile .inc, .scroll:mobile .deinc {
+    hidden: true;
+}
+
+.horizontal-scroll:mobile {
+    opacity: .5;
+    height: 8px;
+    padding: 2px;
+    background-color: none;
+}
+
+.horizontal-scroll:mobile .thumb {
+    height: 4px;
+    border-radius: 2px;
+}
+
+.vertical-scroll:mobile {
+    opacity: .5;
+    width: 8px;
+    padding: 2px;
+    background-color: none;
+}
+
+.vertical-scroll:mobile .thumb {
+    width: 4px;
+    border-radius: 2px;
+}

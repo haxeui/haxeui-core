@@ -1,0 +1,10 @@
+{
+    "name": "flixel-flash-develop",
+    "type": "template",
+    "subProjects": [
+        "flixel", "flixel-shared"
+    ],
+    "templates": [
+        { "src": "flixel.hxproj", "dst": "${target}/flixel.hxproj"}
+    ]
+}

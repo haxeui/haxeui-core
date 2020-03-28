@@ -1,460 +1,676 @@
 package haxe.ui.containers;
 
-import haxe.ui.layouts.Layout;
-import haxe.ui.components.HScroll;
-import haxe.ui.components.VScroll;
-import haxe.ui.containers.TableView.TableViewRow;
-import haxe.ui.core.BasicItemRenderer;
+import haxe.ui.behaviours.Behaviour;
+import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.behaviours.DefaultBehaviour;
+import haxe.ui.behaviours.LayoutBehaviour;
+import haxe.ui.binding.BindingManager;
+import haxe.ui.components.Label;
+import haxe.ui.components.VerticalScroll;
+import haxe.ui.constants.SelectionMode;
+import haxe.ui.containers.ScrollView;
+import haxe.ui.containers.ScrollView.ScrollViewBuilder;
 import haxe.ui.core.Component;
 import haxe.ui.core.IDataComponent;
+import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.ItemRenderer;
-import haxe.ui.core.MouseEvent;
-import haxe.ui.core.Platform;
-import haxe.ui.core.UIEvent;
 import haxe.ui.data.ArrayDataSource;
 import haxe.ui.data.DataSource;
-import haxe.ui.layouts.DefaultLayout;
-import haxe.ui.util.Rectangle;
-import haxe.ui.util.Size;
+import haxe.ui.data.transformation.NativeTypeTransformer;
+import haxe.ui.events.ItemEvent;
+import haxe.ui.events.MouseEvent;
+import haxe.ui.events.ScrollEvent;
+import haxe.ui.events.UIEvent;
+import haxe.ui.geom.Rectangle;
+import haxe.ui.layouts.LayoutFactory;
+import haxe.ui.layouts.VerticalVirtualLayout;
+import haxe.ui.util.MathUtil;
+import haxe.ui.util.Variant;
 
-class TableView extends ScrollView implements IDataComponent {
-    private var _header:Header;
-    private var _itemRenderers:Array<ItemRenderer> = [];
+@:composite(Events, Builder, Layout)
+class TableView extends ScrollView implements IDataComponent implements IVirtualContainer {
+    //***********************************************************************************************************
+    // Public API
+    //***********************************************************************************************************
+    @:behaviour(DataSourceBehaviour)                            public var dataSource:DataSource<Dynamic>;
+    @:behaviour(LayoutBehaviour, -1)                            public var itemWidth:Float;
+    @:behaviour(LayoutBehaviour, -1)                            public var itemHeight:Float;
+    @:behaviour(LayoutBehaviour, -1)                            public var itemCount:Int;
+    @:behaviour(LayoutBehaviour, false)                         public var variableItemSize:Bool;
+    @:behaviour(SelectedIndexBehaviour, -1)                     public var selectedIndex:Int;
+    @:behaviour(SelectedItemBehaviour)                          public var selectedItem:Dynamic;
+    @:behaviour(SelectedIndicesBehaviour)                       public var selectedIndices:Array<Int>;
+    @:behaviour(SelectedItemsBehaviour)                         public var selectedItems:Array<Dynamic>;
+    @:behaviour(SelectionModeBehaviour, SelectionMode.ONE_ITEM) public var selectionMode:SelectionMode;
+    @:behaviour(DefaultBehaviour, 500)                          public var longPressSelectionTime:Int;  //ms
 
+    @:event(ItemEvent.COMPONENT_EVENT)                          public var onComponentEvent:ItemEvent->Void;
+    
+    //TODO - error with Behaviour
+    private var _itemRendererFunction:ItemRendererFunction4;
+    public var itemRendererFunction(get, set):ItemRendererFunction4;
+    private function get_itemRendererFunction():ItemRendererFunction4 {
+        return _itemRendererFunction;
+    }
+    private function set_itemRendererFunction(value:ItemRendererFunction4):ItemRendererFunction4 {
+        if (_itemRendererFunction != value) {
+            _itemRendererFunction = value;
+            invalidateComponentLayout();
+        }
+
+        return value;
+    }
+
+    private var _itemRendererClass:Class<ItemRenderer>;
+    public var itemRendererClass(get, set):Class<ItemRenderer>;
+    private function get_itemRendererClass():Class<ItemRenderer> {
+        return _itemRendererClass;
+    }
+    private function set_itemRendererClass(value:Class<ItemRenderer>):Class<ItemRenderer> {
+        if (_itemRendererClass != value) {
+            _itemRendererClass = value;
+            invalidateComponentLayout();
+        }
+
+        return value;
+    }
+
+    private var _itemRenderer:ItemRenderer;
+    public var itemRenderer(get, set):ItemRenderer;
+    private function get_itemRenderer():ItemRenderer {
+        return _itemRenderer;
+    }
+    private function set_itemRenderer(value:ItemRenderer):ItemRenderer {
+        if (_itemRenderer != value) {
+            _itemRenderer = value;
+            invalidateComponentLayout();
+        }
+
+        return value;
+    }
+}
+
+@:dox(hide) @:noCompletion
+typedef ItemRendererFunction4 = Dynamic->Int->Class<ItemRenderer>;    //(data, index):Class<ItemRenderer>
+
+private class CompoundItemRenderer extends ItemRenderer {
     public function new() {
         super();
+        this.layout = LayoutFactory.createFromName("horizontal");
+        this.styleString = "spacing: 2px;";
+        removeClass("itemrenderer");
+    }
+}
+
+//***********************************************************************************************************
+// Events
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class Events extends ScrollViewEvents {
+    private var _tableview:TableView;
+
+    public function new(tableview:TableView) {
+        super(tableview);
+        //tableview.clip = true;
+        _tableview = tableview;
     }
 
-    private override function createDefaults() {
-        super.createDefaults();
-//        _defaultLayout = new TableViewLayout();   //TODO - don't work because ScrollView override createLayout method, so _defaultLayout isn't taken in count.
+    public override function register() {
+        super.register();
+        registerEvent(ScrollEvent.CHANGE, onScrollChange);
+        registerEvent(UIEvent.RENDERER_CREATED, onRendererCreated);
+        registerEvent(UIEvent.RENDERER_DESTROYED, onRendererDestroyed);
+    }
+    
+    public override function unregister() {
+        super.unregister();
+        unregisterEvent(ScrollEvent.CHANGE, onScrollChange);
+        unregisterEvent(UIEvent.RENDERER_CREATED, onRendererCreated);
+        unregisterEvent(UIEvent.RENDERER_DESTROYED, onRendererDestroyed);
+    }
+    
+    private function onScrollChange(e:ScrollEvent):Void {
+        _tableview.invalidateComponentLayout();
     }
 
-    private override function createLayout():Layout {
-        return new TableViewLayout();
-    }
 
-    private override function createChildren() {
-        super.createChildren();
-        percentContentWidth = 100;
-        _contents.addClass("tableview-contents", false);
-    }
-
-    private override function onReady() {
-        super.onReady();
-
-        if (_header != null && _itemRenderers.length < _header.childComponents.length) {
-            var delta:Int = _header.childComponents.length - _itemRenderers.length;
-            for (n in 0...delta) {
-                addComponent(new BasicItemRenderer());
-            }
+    private function onRendererCreated(e:UIEvent):Void {
+        var instance:ItemRenderer = cast(e.data, ItemRenderer);
+        instance.registerEvent(MouseEvent.MOUSE_DOWN, onRendererMouseDown);
+        instance.registerEvent(MouseEvent.CLICK, onRendererClick);
+        if (_tableview.selectedIndices.indexOf(instance.itemIndex) != -1) {
+            var builder:Builder = cast(_tableview._compositeBuilder, Builder);
+            builder.addItemRendererClass(instance, ":selected");
         }
     }
 
-    private override function _onContentsResized(event:UIEvent) {
-        super._onContentsResized(event);
+    private function onRendererDestroyed(e:UIEvent) {
+        var instance:ItemRenderer = cast(e.data, ItemRenderer);
+        instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onRendererMouseDown);
+        instance.unregisterEvent(MouseEvent.CLICK, onRendererClick);
+        if (_tableview.selectedIndices.indexOf(instance.itemIndex) != -1) {
+            var builder:Builder = cast(_tableview._compositeBuilder, Builder);
+            builder.addItemRendererClass(instance, ":selected", false);
+        }
     }
 
-    #if haxeui_html5 // TODO: should be in backend somehow
-    private var lastScrollLeft = 0;
-    #end
-    public override function addComponent(child:Component):Component {
-        var v = null;
-        if (Std.is(child, Header)) {
-            _header = cast(child, Header);
-            _header.registerEvent(UIEvent.RESIZE, _onHeaderResized);
 
-            #if haxeui_html5 // TODO: should be in backend somehow
-            if (native == true) {
-                this.element.onscroll = function(e) {
-                    if (lastScrollLeft != this.element.scrollLeft) {
-                        lastScrollLeft = this.element.scrollLeft;
-                        _onHeaderResized(null);
+    private function onRendererMouseDown(e:MouseEvent) {
+        switch(_tableview.selectionMode) {
+            case SelectionMode.MULTIPLE_LONG_PRESS:
+                if (_tableview.selectedIndices.length == 0) {
+                    startLongPressSelection(e);
+                }
+
+            default:
+        }
+    }
+
+    private function startLongPressSelection(e:MouseEvent) {
+        var timerClick:Timer = null;
+        var currentMouseX:Float = e.screenX, currentMouseY:Float = e.screenY;
+        var renderer:ItemRenderer = cast(e.target, ItemRenderer);
+        var __onMouseMove:MouseEvent->Void = null, __onMouseUp:MouseEvent->Void, __onMouseClick:MouseEvent->Void;
+
+        __onMouseMove = function (_e:MouseEvent) {
+            currentMouseX = _e.screenX;
+            currentMouseY = _e.screenY;
+        }
+
+        __onMouseUp = function (_e:MouseEvent) {
+            if (timerClick != null) {
+                timerClick.stop();
+                timerClick = null;
+            }
+
+            renderer.screen.unregisterEvent(MouseEvent.MOUSE_MOVE, __onMouseMove);
+            renderer.screen.unregisterEvent(MouseEvent.MOUSE_UP, __onMouseUp);
+        }
+
+        __onMouseClick = function(_e:MouseEvent) {
+            _e.cancel();    //Avoid toggleSelection onRendererClick method
+
+            renderer.unregisterEvent(MouseEvent.CLICK, __onMouseClick);
+        }
+
+        renderer.screen.registerEvent(MouseEvent.MOUSE_MOVE, __onMouseMove);
+        renderer.screen.registerEvent(MouseEvent.MOUSE_UP, __onMouseUp);
+
+        timerClick = Timer.delay(function(){
+            if (timerClick != null) {
+                timerClick = null;
+
+                if (renderer.hitTest(currentMouseX, currentMouseY) &&
+                    MathUtil.distance(e.screenX, e.screenY, currentMouseX, currentMouseY) < 2 * Toolkit.pixelsPerRem) {
+                    toggleSelection(renderer);
+                    renderer.registerEvent(MouseEvent.CLICK, __onMouseClick, 1);
+                }
+            }
+        }, _tableview.longPressSelectionTime);
+    }
+
+    private override function onContainerEventsStatusChanged() {
+        super.onContainerEventsStatusChanged();
+        if (_containerEventsPaused == true) {
+            _tableview.findComponent("tableview-contents", Component, true, "css").removeClass(":hover", true, true);
+        } else if (_lastMousePos != null) {
+            /* TODO: may be ill concieved, doesnt look good on mobile
+            var items = _tableview.findComponentsUnderPoint(_lastMousePos.x, _lastMousePos.y, ItemRenderer);
+            for (i in items) {
+                i.addClass(":hover", true, true);
+            }
+            */
+        }
+    }
+    
+    private function onRendererClick(e:MouseEvent):Void {
+        var components = e.target.findComponentsUnderPoint(e.screenX, e.screenY);
+        for (component in components) {
+            if (Std.is(component, InteractiveComponent)) {
+                return;
+            }
+        }
+
+        var renderer:ItemRenderer = cast(e.target, ItemRenderer);
+        switch(_tableview.selectionMode) {
+            case SelectionMode.DISABLED:
+
+            case SelectionMode.ONE_ITEM:
+                _tableview.selectedIndex = renderer.itemIndex;
+
+            case SelectionMode.ONE_ITEM_REPEATED:
+                _tableview.selectedIndices = [renderer.itemIndex];
+
+            case SelectionMode.MULTIPLE_MODIFIER_KEY, SelectionMode.MULTIPLE_CLICK_MODIFIER_KEY:
+                if (e.ctrlKey == true) {
+                    toggleSelection(renderer);
+                } else if (e.shiftKey == true) {
+                    var selectedIndices:Array<Int> = _tableview.selectedIndices;
+                    var fromIndex:Int = selectedIndices.length > 0 ? selectedIndices[selectedIndices.length-1]: 0;
+                    var toIndex:Int = renderer.itemIndex;
+                    if (fromIndex < toIndex)
+                    {
+                        for (i in selectedIndices) {
+                            if (i < fromIndex) {
+                                fromIndex = i;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var tmp:Int = fromIndex;
+                        fromIndex = toIndex;
+                        toIndex = tmp;
+                    }
+
+                    selectRange(fromIndex, toIndex);
+                } else if (_tableview.selectionMode == SelectionMode.MULTIPLE_CLICK_MODIFIER_KEY) {
+                    _tableview.selectedIndex = renderer.itemIndex;
+                }
+
+            case SelectionMode.MULTIPLE_LONG_PRESS:
+                var selectedIndices:Array<Int> = _tableview.selectedIndices;
+                if (selectedIndices.length > 0) {
+                    toggleSelection(renderer);
+                }
+
+            default:
+                //Nothing
+        }
+    }
+
+    private function toggleSelection(renderer:ItemRenderer) {
+        var itemIndex:Int = renderer.itemIndex;
+        var selectedIndices = _tableview.selectedIndices.copy();
+        var index:Int;
+        if ((index = selectedIndices.indexOf(itemIndex)) == -1) {
+            selectedIndices.push(itemIndex);
+        } else {
+            selectedIndices.splice(index, 1);
+        }
+        _tableview.selectedIndices = selectedIndices;
+    }
+
+    private function selectRange(fromIndex:Int, toIndex:Int) {
+        _tableview.selectedIndices = [for (i in fromIndex...toIndex+1) i];
+    }
+}
+
+//***********************************************************************************************************
+// Composite Builder
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+private class Builder extends ScrollViewBuilder {
+    private var _tableview:TableView;
+    private var _header:Header;
+
+    public function new(tableview:TableView) {
+        super(tableview);
+        _tableview = tableview;
+    }
+
+    public override function create() {
+        createContentContainer(_tableview.virtual ? "absolute" : "vertical");
+    }
+
+    public override function onInitialize() {
+        if (_header == null) {
+            return;
+        }
+        if (_tableview.itemRenderer == null) {
+            buildDefaultRenderer();
+        } else {
+            fillExistingRenderer();
+        }
+    }
+
+    public override function onReady() {
+        if (_header == null) {
+            return;
+        }
+        if (_tableview.itemRenderer == null) {
+            buildDefaultRenderer();
+        } else {
+            fillExistingRenderer();
+        }
+        
+        _component.invalidateComponentLayout();
+    }
+    
+    private override function createContentContainer(layoutName:String) {
+        if (_contents == null) {
+            super.createContentContainer(layoutName);
+            _contents.addClass("tableview-contents");
+        }
+    }
+    
+    public override function addComponent(child:Component):Component {
+        var r = null;
+        if (Std.is(child, ItemRenderer)) {
+            var itemRenderer = _tableview.itemRenderer;
+            if (itemRenderer == null) {
+                itemRenderer = new CompoundItemRenderer();
+                _tableview.itemRenderer = itemRenderer;
+            }
+            itemRenderer.addComponent(child);
+            
+            return child;
+        } else if (Std.is(child, Header)) {
+            _header = cast(child, Header);
+            
+            /*
+            if (_tableview.itemRenderer == null) {
+                buildDefaultRenderer();
+            } else {
+                fillExistingRenderer();
+            }
+            */
+            
+            r = null;
+        } else {
+            r = super.addComponent(child);
+        }
+        return r;
+    }
+    
+    public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
+        if (Std.is(child, Header) == true) {
+            _header = null;
+            return null;
+        }
+        return super.removeComponent(child, dispose, invalidate);
+    }
+    
+    public function buildDefaultRenderer() {
+        var r = new CompoundItemRenderer();
+        if (_header != null) {
+            for (column in _header.childComponents) {
+                var itemRenderer = new ItemRenderer();
+                var label = new Label();
+                label.id = column.id;
+                label.percentWidth = 100;
+                label.verticalAlign = "center";
+                itemRenderer.addComponent(label);
+                r.addComponent(itemRenderer);
+            }
+        }
+        _tableview.itemRenderer = r;
+    }
+    
+    public function fillExistingRenderer() {
+        for (column in _header.childComponents) {
+            var existing = _tableview.itemRenderer.findComponent(column.id, ItemRenderer, true);
+            if (existing == null) {
+                var itemRenderer = new ItemRenderer();
+                var label = new Label();
+                label.id = column.id;
+                label.percentWidth = 100;
+                label.verticalAlign = "center";
+                itemRenderer.addComponent(label);
+                _tableview.itemRenderer.addComponent(itemRenderer);
+            }
+        }
+    }
+    
+    private override function verticalConstraintModifier():Float {
+        if (_header == null) {
+            return 0;
+        }
+
+        return _header.height;
+    }
+    
+    public override function onVirtualChanged() {
+        _contents.layoutName = _tableview.virtual ? "absolute" : "vertical";
+    }
+    
+    private override function get_virtualHorizontal():Bool {
+        return false;
+    }
+    
+    public function addItemRendererClass(child:Component, className:String, add:Bool = true) {
+        child.walkComponents(function(c) {
+            if (Std.is(c, ItemRenderer)) {
+                if (add == true) {
+                    c.addClass(className);
+                } else {
+                    c.removeClass(className);
+                }
+            } else {
+                c.invalidateComponentStyle(); // we do want to invalidate the other components incase the css rule applies indirectly
+            }
+            return true;
+        });
+    }
+}
+
+//***********************************************************************************************************
+// Composite Layout
+//***********************************************************************************************************
+private class Layout extends VerticalVirtualLayout {
+    private override function itemClass(index:Int, data:Dynamic):Class<ItemRenderer> {
+        return CompoundItemRenderer;
+    }
+    
+    public override function repositionChildren() {
+        super.repositionChildren();
+
+        var header = findComponent(Header, true);
+        if (header == null) {
+            return;
+        }
+        
+        header.left = paddingLeft;
+        header.top = paddingTop;
+        var rc:Rectangle = new Rectangle(cast(_component, ScrollView).hscrollPos + 1, 1, usableWidth, header.height);
+        header.componentClipRect = rc;
+        
+        var data = findComponent("tableview-contents", Box, true, "css");
+        if (data != null) {
+            for (item in data.childComponents) {
+                var headerChildComponents = header.childComponents;
+                for (column in headerChildComponents) {
+                    var isLast = (headerChildComponents.indexOf(column) == (headerChildComponents.length - 1));
+                    var itemRenderer = item.findComponent(column.id, Component);
+                    if (itemRenderer != null && Std.is(itemRenderer, ItemRenderer) == false) {
+                        itemRenderer = itemRenderer.findAncestor(ItemRenderer);
+                    }
+                    if (itemRenderer != null) {
+                        itemRenderer.percentWidth = null;
+                        if (isLast == false) {
+                            itemRenderer.width = column.width - item.layout.horizontalSpacing;
+                        } else {
+                            itemRenderer.width = column.width;
+                        }
                     }
                 }
             }
-            #end
-
-            v = addComponentToSuper(child);
-            if (_dataSource != null) {
-                invalidateComponentData();
-            }
-        } else if (Std.is(child, ItemRenderer)) {
-            #if haxeui_luxe
-            child.hide();
-            #end
-            var itemRenderer:ItemRenderer = cast(child, ItemRenderer);
-            itemRenderer.allowHover = false;
-            _itemRenderers.push(itemRenderer);
-        } else if (Std.is(child, VScroll)) {
-            child.includeInLayout = false;
-            super.addComponent(child);
-        } else {
-            v = super.addComponent(child);
-        }
-        return v;
-    }
-
-    private function _onHeaderResized(event:UIEvent) {
-        #if haxeui_html5 // TODO: this should be in the backend somehow
-        updateNativeHeaderClip();
-        #end
-    }
-
-    #if haxeui_html5
-    private function updateNativeHeaderClip() {
-        if (native == true) {
-            if (_header != null) {
-                var ucx = layout.usableWidth;
-                var xpos = this.element.scrollLeft; // _hscroll.pos;
-                var clipCX = ucx;
-                if (clipCX > _header.componentWidth) {
-                    clipCX = _header.componentWidth;
-                }
-                if (xpos > 0) { // TODO: bit hacky - should use style or calc
-                    _header.left = 2;
-                    xpos++;
-                } else {
-                    _header.left = 1;
-                }
-                var rc:Rectangle = new Rectangle(Std.int(xpos), Std.int(0), clipCX, _header.componentHeight);
-                _header.componentClipRect = rc;
-            }
+            
+            data.left = paddingLeft;
+            data.top = header.top + header.height - 1;
+            data.componentWidth = header.width;
         }
     }
-    #end
-
-    private override function get_horizontalConstraint():Component {
-        return _header;
-    }
-
-    private override function get_verticalConstraint():Component {
-        return _contents;
-    }
-
-    private override function get_hscrollOffset():Float {
-        return 2;
-    }
-
-    private var _dataSource:DataSource<Dynamic>;
-    public var dataSource(get, set):DataSource<Dynamic>;
-    private function get_dataSource():DataSource<Dynamic> {
-        if (_dataSource == null) {
-            _dataSource = new ArrayDataSource();
-            _dataSource.onChange = onDataSourceChanged;
-        }
-        return _dataSource;
-    }
-    private function set_dataSource(value:DataSource<Dynamic>):DataSource<Dynamic> {
-        _dataSource = value;
-        invalidateComponentData();
-        _dataSource.onChange = onDataSourceChanged;
-        return value;
-    }
-
-    private function onDataSourceChanged() {
-        if (_ready == true) {
-            invalidateComponentData();
-        }
-    }
-
-    private function syncUI() {
-        if (_dataSource == null || _header == null || _contents == null || _itemRenderers.length < _header.childComponents.length) {
-            return;
-        }
-
-        var delta = _dataSource.size - itemCount;
-        if (delta > 0) { // not enough items
-            for (n in 0...delta) {
-                var row:TableViewRow = new TableViewRow();
-                row.addClass("tableview-row");
-                for (n in 0..._header.childComponents.length) {
-                    row.addComponent(_itemRenderers[n].cloneComponent());
-                }
-                row.registerEvent(MouseEvent.CLICK, onRowClick);
-                addComponent(row);
-            }
-        } else if (delta < 0) { // too many items
-            while (delta < 0) {
-                _contents.removeComponent(_contents.childComponents[_contents.childComponents.length - 1]); // remove last
-                delta++;
-            }
-        }
-
-        for (n in 0..._dataSource.size) {
-            var row:TableViewRow = cast(_contents.childComponents[n], TableViewRow);
-            //row.addClass(n % 2 == 0 ? "even" : "odd");
-            var data:Dynamic = _dataSource.get(n);
-            row.userData = data;
-            for (c in 0..._header.childComponents.length) {
-                var item:ItemRenderer = cast(row.childComponents[c], ItemRenderer);
-                item.addClass(n % 2 == 0 ? "even" : "odd");
-                var textData:String = Reflect.field(data, _header.childComponents[c].id);
-                if (textData != null) {
-                    item.data = {value: textData};
-                }
-            }
-        }
-
-        invalidateComponentDisplay();
-    }
-
-    public function resetSelection() {
-        if (_selectedRow != null) {
-            for (c in _selectedRow.childComponents) {
-                c.removeClass(":selected");
-            }
-            _selectedRow = null;
-        }
-    }
-
-    private var _selectedRow:TableViewRow;
-    public var selectedRow(get, set):TableViewRow;
-	private function set_selectedRow(row:TableViewRow):TableViewRow {
-		resetSelection();
-		_selectedRow = row;
-		if (_selectedRow!=null){
-			for (c in _selectedRow.childComponents) {
-				c.addClass(":selected");
-			}
-		}
-        return _selectedRow;
-    }
-    private function get_selectedRow():TableViewRow {
-        return _selectedRow;
-    }
-
-    private function onRowClick(event:MouseEvent) {
-        /*if (_selectedRow == event.target) {
-            return;
-        }*/
-
-        resetSelection();
-
-        _selectedRow = cast event.target;
-        for (c in _selectedRow.childComponents) {
-            c.addClass(":selected");
-        }
-
-        var event:UIEvent = new UIEvent(UIEvent.CHANGE);
-        dispatch(event);
-    }
-
-    public var itemCount(get, null):Int;
-    private function get_itemCount():Int {
-        if (_contents == null) {
+    
+    private override function verticalConstraintModifier():Float {
+        var header = findComponent(Header, true);
+        if (header == null) {
             return 0;
         }
-        return _contents.childComponents.length;
+
+        return header.height;
     }
+}
 
-    private override function updateScrollRect() {
-        var rc:Rectangle = null;
-
-        var ucx = layout.usableWidth;
-        var ucy = layout.usableHeight;
-
-        var xpos:Float = 0;
-        if (_hscroll != null) {
-            xpos = _hscroll.pos;
-        }
-
-        var ypos:Float = 0;
-        if (_vscroll != null) {
-            ypos = _vscroll.pos;
-        }
-
-        if (_header != null && (native == false || native == null)) {
-            var clipCX = ucx;
-            if (clipCX > _header.componentWidth) {
-                clipCX = _header.componentWidth;
+//***********************************************************************************************************
+// Behaviours
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+private class DataSourceBehaviour extends DataBehaviour {
+    private var _firstPass:Bool = true; // may not have any any children at first, so a height of 1 causes loads of renderers to be created
+    public override function set(value:Variant) {
+        super.set(value);
+        var dataSource:DataSource<Dynamic> = _value;
+        if (dataSource != null) {
+            dataSource.transformer = new NativeTypeTransformer();
+            dataSource.onChange = function() {
+                _component.invalidateComponentLayout();
+                if (_firstPass == true) {
+                    _component.syncComponentValidation();
+                    _firstPass = false;
+                    _component.invalidateComponentLayout();
+                }
+                BindingManager.instance.componentPropChanged(_component, "dataSource");
             }
-            var rc:Rectangle = new Rectangle(Std.int(xpos + 1), Std.int(1), clipCX, _header.componentHeight);
-            _header.componentClipRect = rc;
+            _component.invalidateComponentLayout();
         } else {
-            #if haxeui_html5
-            updateNativeHeaderClip();
-            #end
-        }
-
-        if (_contents != null) {
-            var clipCX = ucx;
-            if (clipCX > _contents.componentWidth) {
-                clipCX = _contents.componentWidth;
-            }
-            var clipCY = ucy;
-            if (clipCY > _contents.componentHeight) {
-                clipCY = _contents.componentHeight;
-            }
-
-            var rc:Rectangle = new Rectangle(Std.int(xpos + 0), Std.int(ypos), clipCX, clipCY);
-            _contents.componentClipRect = rc;
+            _component.invalidateComponentLayout();
         }
     }
+    
+    public override function get():Variant {
+        if (_value == null || _value.isNull) {
+            _value = new ArrayDataSource<Dynamic>();
+            set(_value);
+        }
+        return _value;
+    }
+}
 
-    //***********************************************************************************************************
-    // Validation
-    //***********************************************************************************************************
+@:dox(hide) @:noCompletion
+private class SelectedIndexBehaviour extends Behaviour {
+    public override function get():Variant {
+        var tableView:TableView = cast(_component, TableView);
+        var selectedIndices:Array<Int> = tableView.selectedIndices;
+        return selectedIndices != null && selectedIndices.length > 0 ? selectedIndices[selectedIndices.length-1] : -1;
+    }
+
+    public override function set(value:Variant) {
+        var tableView:TableView = cast(_component, TableView);
+        tableView.selectedIndices = value != -1 ? [value] : null;
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class SelectedItemBehaviour extends Behaviour {
+    public override function getDynamic():Dynamic {
+        var tableView:TableView = cast(_component, TableView);
+        var selectedIndices:Array<Int> = tableView.selectedIndices;
+        return selectedIndices.length > 0 ? tableView.dataSource.get(selectedIndices[selectedIndices.length - 1]) : null;
+    }
+
+    public override function set(value:Variant) {
+        var tableView:TableView = cast(_component, TableView);
+        var index:Int = tableView.dataSource.indexOf(value);
+        if (index != -1 && tableView.selectedIndices.indexOf(index) == -1) {
+            tableView.selectedIndices = [index];
+        }
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class SelectedIndicesBehaviour extends DataBehaviour {
+    public override function get():Variant {
+        return _value.isNull ? [] : _value;
+    }
 
     private override function validateData() {
-        syncUI();
-    }
-
-    public override function updateDisplay() {
-        super.updateDisplay();
-
-        for (row in _contents.childComponents) {
-            for (c in 0..._header.childComponents.length) {
-                var item = row.childComponents[c];
-                item.percentWidth = null;
-                item.componentWidth = _header.childComponents[c].componentWidth - 2;
-//                item.height = row.componentHeight;
+        var tableView:TableView = cast(_component, TableView);
+        var selectedIndices:Array<Int> = tableView.selectedIndices;
+        var contents:Component = _component.findComponent("scrollview-contents", false, "css");
+        var itemToEnsure:ItemRenderer = null;
+        var builder:Builder = cast(_component._compositeBuilder, Builder);
+        
+        for (child in contents.childComponents) {
+            if (selectedIndices.indexOf(cast(child, ItemRenderer).itemIndex) != -1) {
+                itemToEnsure = cast(child, ItemRenderer);
+                builder.addItemRendererClass(child, ":selected");
+            } else {
+                builder.addItemRendererClass(child, ":selected", false);
             }
         }
-    }
 
-    private override function validateScroll() {
-        checkScrolls();
-        updateScrollRect();
-
-        handleBindings(["hscrollPos"]);
-        handleBindings(["vscrollPos"]);
-    }
-
-    //***********************************************************************************************************
-    // Clonable
-    //***********************************************************************************************************
-    public override function cloneComponent():TableView {
-        if (_dataSource != null) {
-            c.dataSource = _dataSource.clone();
+        if (itemToEnsure != null && tableView.virtual == false) {  // TODO: virtual scroll into view
+            var vscroll:VerticalScroll = tableView.findComponent(VerticalScroll);
+            if (vscroll != null) {
+                var vpos:Float = vscroll.pos;
+                var contents:Component = tableView.findComponent("tableview-contents", "css");
+                if (itemToEnsure.top + itemToEnsure.height > vpos + contents.componentClipRect.height) {
+                    vscroll.pos = ((itemToEnsure.top + itemToEnsure.height) - contents.componentClipRect.height);
+                } else if (itemToEnsure.top < vpos) {
+                    vscroll.pos = itemToEnsure.top;
+                }
+            }
+        }
+        
+        if (tableView.selectedIndex != -1 && tableView.selectedIndices.length != 0) {
+            _component.dispatch(new UIEvent(UIEvent.CHANGE));
         }
     }
 }
 
-@:dox(hide)
-class TableViewLayout extends DefaultLayout {
-    public function new() {
-        super();
-    }
-
-    private override function resizeChildren() {
-        super.resizeChildren();
-        var vscroll:Component = component.findComponent(VScroll);
-        var header:Header = component.findComponent(Header);
-        if (vscroll != null) {
-            var offsetY:Float = 0;
-            if (header != null) {
-                offsetY += header.componentHeight;
+@:dox(hide) @:noCompletion
+private class SelectedItemsBehaviour extends Behaviour {
+    public override function get():Variant {
+        var tableView:TableView = cast(_component, TableView);
+        var selectedIndices:Array<Int> = tableView.selectedIndices;
+        if (selectedIndices != null && selectedIndices.length > 0) {
+            var selectedItems:Array<Dynamic> = [];
+            for (i in selectedIndices) {
+                if ((i < 0) || (i >= tableView.dataSource.size)) {
+                    continue;
+                }
+                var data:Dynamic = tableView.dataSource.get(i);
+                selectedItems.push(data);
             }
 
-            vscroll.componentHeight = usableHeight + offsetY;
-        }
-    }
-
-    private override function repositionChildren() {
-        var header:Header = component.findComponent(Header);
-        if (header != null) {
-            header.left = paddingLeft + marginLeft(header) - marginRight(header);
-            header.top = paddingTop + marginTop(header) - marginBottom(header);
-        }
-
-        var hscroll:Component = component.findComponent(HScroll, false);
-        var vscroll:Component = component.findComponent(VScroll, false);
-
-        var ucx = innerWidth;
-        var ucy = innerHeight;
-
-        if (hscroll != null && hidden(hscroll) == false) {
-            hscroll.left = paddingLeft;
-            hscroll.top = ucy - hscroll.componentHeight + paddingBottom;
-        }
-
-        if (vscroll != null && hidden(vscroll) == false) {
-            vscroll.left = ucx - vscroll.componentWidth + paddingRight;
-            vscroll.top = paddingTop;
-        }
-
-        var contents:Component = component.findComponent("tableview-contents", null, false, "css");
-        if (contents != null) {
-            var offsetY:Float = 0;
-            if (header != null) {
-                offsetY += header.componentHeight;
-            }
-            contents.left = paddingLeft + marginLeft(contents) - marginRight(contents);
-            contents.top = paddingTop + marginTop(contents) - marginBottom(contents) + offsetY;
+            return selectedItems;
+        } else {
+            return [];
         }
     }
 
-    private override function get_usableSize():Size {
-        var size:Size = super.get_usableSize();
-        var hscroll:Component = component.findComponent(HScroll, false);
-        var vscroll:Component = component.findComponent(VScroll, false);
-        if (hscroll != null && hidden(hscroll) == false) {
-            size.height -= hscroll.componentHeight;
-        }
-        if (vscroll != null && hidden(vscroll) == false) {
-            size.width -= vscroll.componentWidth;
-        }
-
-        var header:Header = component.findComponent(Header);
-        if (header != null) {
-            size.height -= header.componentHeight;
-        }
-        size.height += 1;
-        size.width += 1;
-        if (cast(component, TableView).native == true) {
-            var contents:Component = component.findComponent("tableview-contents", null, false, "css");
-            if (contents != null && contents.componentHeight > size.height) {
-                size.width -= Platform.vscrollWidth;
+    public override function set(value:Variant) {
+        var tableView:TableView = cast(_component, TableView);
+        var selectedItems:Array<Dynamic> = value;
+        if (selectedItems != null && selectedItems.length > 0) {
+            var selectedIndices:Array<Int> = [];
+            var index:Int;
+            for (item in selectedItems) {
+                if ((index = tableView.dataSource.indexOf(item)) != -1) {
+                    selectedIndices.push(index);
+                }
             }
 
-            if (contents != null && contents.componentWidth > size.width) {
-                size.height -= Platform.hscrollHeight;
-            }
+            tableView.selectedIndices = selectedIndices;
+        } else {
+            tableView.selectedIndices = [];
         }
-
-        return size;
-    }
-
-    public override function calcAutoSize(exclusions:Array<Component> = null):Size {
-        var size:Size = super.calcAutoSize(exclusions);
-        var hscroll:Component = component.findComponent(HScroll, false);
-        var vscroll:Component = component.findComponent(VScroll, false);
-        if (hscroll != null && hscroll.hidden == false) {
-            size.height += hscroll.componentHeight;
-        }
-        if (vscroll != null && vscroll.hidden == false) {
-            size.width += vscroll.componentWidth;
-        }
-        return size;
     }
 }
 
-class TableViewRow extends HBox {
-    public function new() {
-        super();
-        registerEvent(MouseEvent.MOUSE_OVER, _onMouseOver);
-        registerEvent(MouseEvent.MOUSE_OUT, _onMouseOut);
-    }
-
-    private function _onMouseOver(event:MouseEvent) {
-        for (c in childComponents) {
-            c.addClass(":hover");
+@:dox(hide) @:noCompletion
+private class SelectionModeBehaviour extends DataBehaviour {
+    private override function validateData() {
+        var tableView:TableView = cast(_component, TableView);
+        var selectedIndices:Array<Int> = tableView.selectedIndices;
+        if (selectedIndices.length == 0) {
+            return;
         }
-    }
 
-    private function _onMouseOut(event:MouseEvent) {
-        for (c in childComponents) {
-            c.removeClass(":hover");
+        var selectionMode:SelectionMode = cast _value;
+        switch(selectionMode) {
+            case SelectionMode.DISABLED:
+                tableView.selectedIndices = null;
+
+            case SelectionMode.ONE_ITEM:
+                if (selectedIndices.length > 1) {
+                    tableView.selectedIndices = [selectedIndices[0]];
+                }
+
+            default:
         }
-    }
-
-    public var data(get, set):Dynamic;
-    private function get_data():Dynamic {
-        return userData;
-    }
-    private function set_data(value:Dynamic):Dynamic {
-        userData = value;
-        return value;
     }
 }

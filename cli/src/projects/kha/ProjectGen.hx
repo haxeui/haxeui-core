@@ -17,6 +17,8 @@ class ProjectGen extends Post {
         var target = "html5";
         if (Util.mapContains("windows", params.additional)) {
             target = "windows";
+        } else if (Util.mapContains("android", params.additional)) {
+            target = "android";
         }
         
         var p = new ProcessHelper();
@@ -43,6 +45,16 @@ class ProjectGen extends Post {
             var hxml = new HxmlFile();
             hxml.load("kha-windows.hxml");
             hxml.changeOutput("build/kha/windows-build/Sources");
+        } else if (target == "android") {
+            Util.copyDir("assets", "build/kha/assets");
+            
+            p.run("node", ["Kha/make", "android-native", "--to", "build/kha"]);
+            
+            File.copy("build/kha/project-android-native.hxml", "kha-android-native.hxml");
+
+            var hxml = new HxmlFile();
+            hxml.load("kha-android-native.hxml");
+            hxml.changeOutput("build/kha/android-native/Sources");
         }
         
         Sys.setCwd(params.cwd);
@@ -58,6 +70,8 @@ class ProjectGen extends Post {
         var target = "html5";
         if (Util.mapContains("windows", params.additional)) {
             target = "windows";
+        } else if (Util.mapContains("android", params.additional)) {
+            target = "android";
         }
         
         if (target == "html5") {

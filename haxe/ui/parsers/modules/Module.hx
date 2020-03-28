@@ -2,23 +2,26 @@ package haxe.ui.parsers.modules;
 
 class Module {
     public var id(default, default):String;
+    public var rootPath(default, default):String;
+    public var priority(default, default):Int = 0;
+    public var preloadList(default, default):String;
     public var resourceEntries(default, default):Array<ModuleResourceEntry>;
     public var componentEntries(default, default):Array<ModuleComponentEntry>;
+    public var layoutEntries(default, default):Array<ModuleLayoutEntry>;
     public var scriptletEntries(default, default):Array<ModuleScriptletEntry>;
     public var themeEntries(default, default):Map<String, ModuleThemeEntry>;
     public var plugins(default, default):Array<ModulePluginEntry>;
     public var properties(default, default):Array<ModulePropertyEntry>;
-    public var animations(default, default):Array<ModuleAnimationEntry>;
     public var preload(default, default):Array<ModulePreloadEntry>;
 
     public function new() {
         resourceEntries = [];
         componentEntries = [];
+        layoutEntries = [];
         scriptletEntries = [];
         themeEntries = new Map<String, ModuleThemeEntry>();
         plugins = [];
         properties = [];
-        animations = [];
         preload = [];
     }
 
@@ -34,24 +37,26 @@ class ModuleResourceEntry {
     }
 }
 
-class ModuleComponentEntry {
+class ModuleClassEntry {
     public var classPackage(default, default):String;
     public var className(default, default):String;
+    public var classFolder(default, default):String;
+    public var classFile(default, default):String;
     public var classAlias(default, default):String;
 
     public function new() {
     }
 }
 
-class ModuleScriptletEntry {
-    public var classPackage(default, default):String;
-    public var className(default, default):String;
-    public var classAlias(default, default):String;
+class ModuleComponentEntry extends ModuleClassEntry {
+}
+
+class ModuleLayoutEntry extends ModuleClassEntry {
+}
+
+class ModuleScriptletEntry extends ModuleClassEntry {
     public var keep(default, default):Bool;
     public var staticClass(default, default):Bool;
-
-    public function new() {
-    }
 }
 
 class ModuleThemeEntry {
@@ -66,6 +71,7 @@ class ModuleThemeEntry {
 
 class ModuleThemeStyleEntry {
     public var resource:String;
+    public var priority:Float = 0;
     
     public function new() {
     }
@@ -86,36 +92,6 @@ class ModulePropertyEntry {
     public var value(default, default):String;
 
     public function new() {
-    }
-}
-
-class ModuleAnimationEntry {
-    public var id(default, default):String;
-    public var ease(default, default):String;
-    public var keyFrames(default, default):Array<ModuleAnimationKeyFrameEntry>;
-
-    public function new() {
-        keyFrames = [];
-    }
-}
-
-class ModuleAnimationKeyFrameEntry {
-    public var time(default, default):Int = 0;
-    public var componentRefs(default, default):Map<String, ModuleAnimationComponentRefEntry>;
-
-    public function new() {
-        componentRefs = new Map<String, ModuleAnimationComponentRefEntry>();
-    }
-}
-
-class ModuleAnimationComponentRefEntry {
-    public var id(default, default):String;
-    public var properties(default, default):Map<String, Float>;
-    public var vars(default, default):Map<String, String>;
-
-    public function new() {
-        properties = new Map<String, Float>();
-        vars  = new Map<String, String>();
     }
 }
 

@@ -1,0 +1,16 @@
+{
+    "name": "qt-shared",
+    "type": "template",
+    "directories": [
+        "${target}/build/qt"
+    ],
+    "templates": [
+        { "src": "haxeui-qt.properties", "dst": "${target}/src/haxeui-qt.properties"},
+        { "src": "${QTPATH}/bin/Qt5Core.dll", "dst": "${target}/build/qt/Qt5Core.dll", "binary": true, "system": true},
+        { "src": "${QTPATH}/bin/Qt5Cored.dll", "dst": "${target}/build/qt/Qt5Cored.dll", "binary": true, "system": true},
+        { "src": "${QTPATH}/bin/Qt5Gui.dll", "dst": "${target}/build/qt/Qt5Gui.dll", "binary": true, "system": true},
+        { "src": "${QTPATH}/bin/Qt5Guid.dll", "dst": "${target}/build/qt/Qt5Guid.dll", "binary": true, "system": true},
+        { "src": "${QTPATH}/bin/Qt5Widgets.dll", "dst": "${target}/build/qt/Qt5Widgets.dll", "binary": true, "system": true},
+        { "src": "${QTPATH}/bin/Qt5Widgetsd.dll", "dst": "${target}/build/qt/Qt5Widgetsd.dll", "binary": true, "system": true}
+    ]
+}

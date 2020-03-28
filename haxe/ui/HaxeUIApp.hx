@@ -1,15 +1,20 @@
 package haxe.ui;
 
 import haxe.ui.Preloader.PreloadItem;
-import haxe.ui.backend.AppBase;
+import haxe.ui.backend.AppImpl;
+import haxe.ui.backend.ToolkitOptions;
 import haxe.ui.core.Component;
 import haxe.ui.core.Screen;
-import haxe.ui.core.UIEvent;
 
 @:keep
-class HaxeUIApp extends AppBase {
-    public function new() {
+class HaxeUIApp extends AppImpl {
+    public static var instance:HaxeUIApp;
+    
+    private var _options:ToolkitOptions;
+    public function new(options:ToolkitOptions = null) {
         super();
+        instance = this;
+        _options = options;
         Toolkit.build();
         build();
     }
@@ -23,19 +28,23 @@ class HaxeUIApp extends AppBase {
             Toolkit.theme = Toolkit.backendProperties.getProp("haxe.ui.theme");
         }
 
-        Toolkit.init(getToolkitInit());
+       if (_options == null) {
+            Toolkit.init(getToolkitInit());
+        } else { // TODO: consider: https://code.haxe.org/category/macros/combine-objects.html
+            Toolkit.init(_options);
+        }
         
         var preloadList:Array<PreloadItem> = null;
         var preloader = null;
         
-        #if (!haxeui_hxwidgets && !haxeui_kha) // TODO: needs some work here
+        #if (!haxeui_hxwidgets && !haxeui_kha && !haxeui_qt) // TODO: needs some work here
 
         preloadList = buildPreloadList();        
         if (preloadList != null && preloadList.length > 0) {
             preloader = new Preloader();
             preloader.progress(0, preloadList.length);
             addComponent(preloader);
-            preloader.validate();
+            preloader.validateComponent();
         }
         
         #end
@@ -77,16 +86,16 @@ class HaxeUIApp extends AppBase {
         }
     }
     
-    public function addComponent(component:Component) {
-        Screen.instance.addComponent(component);
+    public function addComponent(component:Component):Component {
+        return Screen.instance.addComponent(component);
     }
 
-    public function removeComponent(component:Component) {
-        Screen.instance.removeComponent(component);
+    public function removeComponent(component:Component):Component {
+        return Screen.instance.removeComponent(component);
     }
 
-    public function setComponentIndex(child:Component, index:Int) {
-        Screen.instance.setComponentIndex(child, index);
+    public function setComponentIndex(child:Component, index:Int):Component {
+        return Screen.instance.setComponentIndex(child, index);
     }
     
     private override function buildPreloadList():Array<PreloadItem> {

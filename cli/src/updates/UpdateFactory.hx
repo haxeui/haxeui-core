@@ -18,9 +18,10 @@ class UpdateFactory {
                 u = new HaxeLibUpdate(["haxeui-hxwidgets", "hxWidgets", "hxcpp"]);
             case "pixijs":
                 u = new HaxeLibUpdate(["haxeui-pixijs", "pixijs"]);
-            case "kha": {
+            case "kha":
                 u = new KhaUpdate();
-            }
+            case "winforms":
+                u = new HaxeLibUpdate(["haxeui-winforms", "hxcs"]);
         }
         
         return u;

@@ -11,17 +11,26 @@ class ComponentClassMap {
     }
 
     public static function get(alias:String):String {
+        alias = StringTools.replace(alias, "-", "").toLowerCase();
         return instance.getClassName(alias);
     }
 
     public static function register(alias:String, className:String) {
-        instance.registerClassName(alias, className);
+        instance.registerClassName(alias.toLowerCase(), className);
     }
 
     public static function list():Iterator<String> {
         return instance._map.keys();
     }
 
+    public static function clear() {
+        instance._map = new Map<String, String>();
+    }
+
+    public static function hasClass(className:String):Bool {
+        return instance.hasClassName(className);
+    }
+    
     ////////////////////////////////////////////////////////////////////////////////////////////
     // Instance
     ////////////////////////////////////////////////////////////////////////////////////////////
@@ -39,4 +48,12 @@ class ComponentClassMap {
         _map.set(alias, className);
     }
 
+    public function hasClassName(className:String):Bool {
+        for (k in _map.keys()) {
+            if (_map.get(k) == className) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

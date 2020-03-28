@@ -1,10 +1,10 @@
 package haxe.ui;
 
-import haxe.ui.backend.BackendBase;
+import haxe.ui.backend.BackendImpl;
 
-class Backend extends BackendBase {
+class Backend extends BackendImpl {
     public static var id(get, null):String;
     private static function get_id():String {
-        return BackendBase.id;
+        return BackendImpl.id;
     }
 }

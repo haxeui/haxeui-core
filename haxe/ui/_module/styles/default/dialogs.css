@@ -1,0 +1,51 @@
+/************************************************************************
+** DIALOGS
+*************************************************************************/
+.dialog {
+    border: 1px solid #ABABAB;
+    filter: drop-shadow(1, 45, #000000, 0.2, 30, 2, 1, 3, false);
+    border-radius: 2px;
+    height: auto;
+    initial-width: 300px;
+    background-color: white;
+    padding: 1px;
+}
+
+.dialog-container {
+    spacing: 0;
+}
+
+.dialog-title {
+    background-color: #EEEEEE;
+    padding: 5px;
+    border-bottom-width: 1px;
+    border-bottom-color: #ABABAB;
+}
+
+.dialog-title-label {
+    width: 100%;
+    vertical-align: center;
+    color: #888888;
+    vertical-align: "center";
+}
+
+.dialog-content {
+    padding: 5px;
+}
+
+.dialog-footer-container {
+    border-top-width: 1px;
+    border-top-color: #ABABAB;
+    background-color: #EEEEEE;
+}
+
+.dialog-footer {
+    padding: 5px;
+    horizontal-align: right;
+}
+
+.dialog-close-button {
+    resource: "haxeui-core/styles/default/small-close-button.png";
+    vertical-align: "center";
+    cursor: "pointer";
+}
