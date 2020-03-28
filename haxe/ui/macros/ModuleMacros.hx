@@ -357,7 +357,7 @@ class ModuleMacros {
             pack: superClassParts
         }
         var xml = sys.io.File.getContent(fullPath);
-        var namedComponents:Map<String, String> = new Map<String, String>();
+        var namedComponents:Map<String, ComponentMacros.NamedComponentDescription> = new Map<String, ComponentMacros.NamedComponentDescription>();
         var codeBuilder = new CodeBuilder();
         ComponentMacros.buildComponentFromString(codeBuilder, xml, namedComponents);
         codeBuilder.add(macro {
@@ -392,7 +392,7 @@ class ModuleMacros {
         var classBuilder = new ClassBuilder(newClass.fields, Context.currentPos());
         
         for (name in namedComponents.keys()) {
-            var typeClass = namedComponents.get(name);
+            var typeClass = namedComponents.get(name).type;
             var typeParts = typeClass.split(".");
             var typeName = typeParts.pop();
             var t:TypePath = {
