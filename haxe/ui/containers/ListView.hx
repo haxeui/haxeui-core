@@ -150,7 +150,9 @@ class ListViewEvents extends ScrollViewEvents {
                 }
 
             default:
-                e.target.addClass(":hover");
+                if (_listview.hasClass(":mobile") == false) {
+                    e.target.addClass(":hover");
+                }
         }
     }
 
@@ -333,15 +335,15 @@ private class ListViewBuilder extends ScrollViewBuilder {
         child.walkComponents(function(c) {
             if (Std.is(c, ItemRenderer)) {
                 if (add == true) {
-                    c.addClass(className);
+                    c.addClass(className, true, true);
                     Toolkit.callLater(function() {
                         ensureVisible(cast(c, ItemRenderer));
                     });
                 } else {
-                    c.removeClass(className);
+                    c.removeClass(className, true, true);
                 }
             } else {
-                c.invalidateComponentStyle(); // we do want to invalidate the other components incase the css rule applies indirectly
+                //c.invalidateComponentStyle(); // we do want to invalidate the other components incase the css rule applies indirectly
             }
             return true;
         });
