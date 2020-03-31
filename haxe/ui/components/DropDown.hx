@@ -16,6 +16,7 @@ import haxe.ui.data.DataSource;
 import haxe.ui.util.Variant;
 
 @:composite(DropDownEvents, DropDownBuilder)
+@:keep
 class DropDown extends Button implements IDataComponent {
     //***********************************************************************************************************
     // Public API
