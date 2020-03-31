@@ -11,7 +11,7 @@ import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.HorizontalLayout;
 import haxe.ui.util.Variant;
 
-@:composite(Events, Builder, HorizontalLayout)
+@:composite(Builder, HorizontalLayout)
 class Switch extends Component {
     //***********************************************************************************************************
     // Public API
@@ -21,19 +21,6 @@ class Switch extends Component {
     @:clonable @:behaviour(TextBehaviour)             public var text:String;
     @:clonable @:behaviour(DefaultBehaviour)          public var textOn:String;
     @:clonable @:behaviour(DefaultBehaviour)          public var textOff:String;
-}
-
-//***********************************************************************************************************
-// Events
-//***********************************************************************************************************
-@:dox(hide) @:noCompletion
-private class Events extends haxe.ui.events.Events {
-    private var _switch:Switch;
-    
-    public function new(s:Switch) {
-        super(s);
-        _switch = s;
-    }
 }
 
 //***********************************************************************************************************
