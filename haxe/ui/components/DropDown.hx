@@ -340,15 +340,25 @@ class CalendarDropDownHandler extends DropDownHandler {
     }
     
     private override function set_selectedItem(value:Dynamic):Dynamic {
+        if (value == null) {
+            return value;
+        }
         var v:Variant = value;
         var date:Date = null;
         if (v.isString == true) {
             date = Date.fromString(v);
-        } else  if (v.isDate) {
+        } else if (v.isDate) {
             date = v;
         }
-        if (_calendar != null) {
-            _calendar.selectedDate = value;
+        
+        if (_calendar != null && date != null) {
+            if (date.toString() == _calendar.selectedDate.toString()) {
+                _dropdown.text = DateTools.format(date, DATE_FORMAT);
+                return value;
+            }
+            _cachedSelectedDate = date;
+            _calendar.selectedDate = date;
+            //_dropdown.text = DateTools.format(date, DATE_FORMAT);
         } else if (date != null) {
             _cachedSelectedDate = date;
             _dropdown.text = DateTools.format(_cachedSelectedDate, DATE_FORMAT);

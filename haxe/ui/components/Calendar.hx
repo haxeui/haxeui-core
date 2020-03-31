@@ -101,6 +101,10 @@ private class DateBehaviour extends DataBehaviour {
     private override function validateData() {
         var date:Date = _value;
         
+        if (date == null) {
+            return;
+        }
+        
         var year = date.getFullYear();
         var month = date.getMonth();
         var day = date.getDate();
