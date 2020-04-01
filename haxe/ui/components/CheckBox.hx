@@ -1,14 +1,13 @@
 package haxe.ui.components;
 
-import haxe.ui.core.CompositeBuilder;
 import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.InteractiveComponent;
+import haxe.ui.events.Events;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
-import haxe.ui.events.Events;
 import haxe.ui.layouts.HorizontalLayout;
 import haxe.ui.styles.Style;
-import haxe.ui.util.Variant;
 
 @:composite(Events, CheckBoxBuilder, HorizontalLayout)
 class CheckBox extends InteractiveComponent {
@@ -34,7 +33,7 @@ private class Value extends InteractiveComponent {
 
     private override function onReady() { // use onReady so we have a parentComponent
         var icon:Image = findComponent(Image);
-        if (icon == null) {
+        if (icon == null && parentComponent != null) {
             icon = new Image();
             icon.id = '${parentComponent.cssName}-icon';
             icon.addClass('${parentComponent.cssName}-icon');
