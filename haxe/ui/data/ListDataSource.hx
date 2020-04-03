@@ -90,4 +90,12 @@ class ListDataSource<T> extends DataSource<T> {
         c._array = Lambda.list(_array); // this is a shallow copy
         return c;
     }
+    
+    public static function fromArray<T>(source:Array<T>, transformer:IItemTransformer<T> = null):ListDataSource<T> {
+        var ds = new ListDataSource<T>(transformer);
+        for (i in source) {
+            ds._array.add(i);
+        }
+        return ds;
+    }
 }
