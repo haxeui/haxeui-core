@@ -127,7 +127,7 @@ class ComponentDisabledBehaviour extends DataBehaviour {
     
     public override function invalidateData() {
         if (_value) {
-            _component.addClass(":disabled", true, true);
+            _component.swapClass(":disabled", ":hover", true, true);
             _component.dispatch(new UIEvent(UIEvent.DISABLED));
         } else {
             _component.removeClass(":disabled", true, true);
