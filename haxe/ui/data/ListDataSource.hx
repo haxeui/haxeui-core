@@ -91,7 +91,6 @@ class ListDataSource<T> extends DataSource<T> {
         return c;
     }
     
-	@:keep
     public static function fromArray<T>(source:Array<T>, transformer:IItemTransformer<T> = null):ListDataSource<T> {
         var ds = new ListDataSource<T>(transformer);
         for (i in source) {

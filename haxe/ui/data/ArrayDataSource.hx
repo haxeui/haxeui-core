@@ -53,7 +53,6 @@ class ArrayDataSource<T> extends DataSource<T> {
         return c;
     }
 
-	@:keep
     public static function fromArray<T>(source:Array<T>, transformer:IItemTransformer<T> = null):ArrayDataSource<T> {
         var ds = new ArrayDataSource<T>(transformer);
         ds._array = source;
