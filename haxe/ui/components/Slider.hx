@@ -198,13 +198,15 @@ private class Events extends haxe.ui.events.Events  {
             return;
         }
         
+        var builder:SliderBuilder = cast(_slider._compositeBuilder, SliderBuilder);
         var d1 = _slider.end - _slider.start;
         var d2 = pos - _slider.start;
-
         if (d2 < d1 / 2) {
+            pos -= builder.getStartOffset();
             _slider.start = pos;
             startDrag(_startThumb, (_startThumb.width / 2), (_startThumb.height / 2));
         } else if (d2 >= d1 / 2) {
+            pos -= builder.getStartOffset();
             _slider.end = pos;
             startDrag(_endThumb, (_endThumb.width / 2), (_endThumb.height / 2));
         } else if (pos > _slider.start) {
@@ -240,16 +242,15 @@ private class Events extends haxe.ui.events.Events  {
         coord.y = (e.screenY - _slider.screenTop - _offset.y) - _slider.paddingTop +  (_activeThumb.height / 2);
         var pos:Float = _slider.posFromCoord(coord);
         
-        var start:Float = 0;
-        if (_slider.start != null) {
-            start = _slider.start;
-        }
-        
+        var builder:SliderBuilder = cast(_slider._compositeBuilder, SliderBuilder);
         if (_activeThumb == _startThumb) {
-            pos -= start;
+            pos -= builder.getStartOffset();
+            if (pos > _slider.end) {
+                pos = _slider.end;
+            }
             _slider.start = pos;
         } else if (_activeThumb == _endThumb) {
-            pos -= start;
+            pos -= builder.getStartOffset();
             _slider.end = pos;
         }
     }
@@ -262,7 +263,7 @@ private class Events extends haxe.ui.events.Events  {
 @:access(haxe.ui.core.Component)
 class SliderBuilder extends CompositeBuilder {
     public override function create() {
-         if (_component.findComponent("range") == null) {
+        if (_component.findComponent("range") == null) {
             var v = createValueComponent();
             v.scriptAccess = false;
             v.id = "range";
@@ -272,8 +273,12 @@ class SliderBuilder extends CompositeBuilder {
         }
         
         createThumb("end-thumb");
-   }
-   
+    }
+
+    public function getStartOffset():Float {
+        return 0;
+    }
+    
     private function createValueComponent():Range {
         return null;
     }

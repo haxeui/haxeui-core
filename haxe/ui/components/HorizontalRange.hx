@@ -54,8 +54,8 @@ class HorizontalRangeLayout extends DefaultLayout {
             var d = (ucx / m);
             var startInPixels = (range.start * d) - (range.min * d);
             var endInPixels = (range.end * d) - (range.min * d);
-            var cx:Float = Math.abs(endInPixels - startInPixels);
-
+            var cx:Float = endInPixels - startInPixels;
+            
             if (cx < 0) {
                 cx = 0;
             } else if (cx > ucx) {
