@@ -331,11 +331,11 @@ private class SelectedBehaviour extends DataBehaviour {
         }
         
         if (_value == false) {
-            button.removeClass(":down");
+            button.removeClass(":down", true, true);
         } else {
-            button.addClass(":down");
+            button.addClass(":down", true, true);
         }
-        button.removeClass(":hover");
+        button.removeClass(":hover", true, true);
         cast(button._internalEvents, ButtonEvents).dispatchChanged();
     }
 }
@@ -385,9 +385,9 @@ class ButtonEvents extends haxe.ui.events.Events {
         }
 
         if (event.buttonDown == false || _down == false) {
-            _button.addClass(":hover");
+            _button.addClass(":hover", true, true);
         } else {
-            _button.addClass(":down");
+            _button.addClass(":down", true, true);
         }
     }
     
@@ -397,9 +397,9 @@ class ButtonEvents extends haxe.ui.events.Events {
         }
 
         if (_button.remainPressed == false) {
-            _button.removeClass(":down");
+            _button.removeClass(":down", true, true);
         }
-        _button.removeClass(":hover");
+        _button.removeClass(":hover", true, true);
     }
     
     private function onMouseDown(event:MouseEvent) {
@@ -410,7 +410,7 @@ class ButtonEvents extends haxe.ui.events.Events {
 			_repeatInterval = (_button.easeInRepeater) ? _button.repeatInterval * 2 : _button.repeatInterval;
 		}
         _down = true;
-        _button.addClass(":down");
+        _button.addClass(":down", true, true);
         _button.screen.registerEvent(MouseEvent.MOUSE_UP, onMouseUp);
         if (_repeater == true && _repeatInterval == _button.repeatInterval) {
             _repeatTimer = new Timer(_repeatInterval, onRepeatTimer);
@@ -443,9 +443,9 @@ class ButtonEvents extends haxe.ui.events.Events {
             return;
         }
 
-        _button.removeClass(":down");
+        _button.removeClass(":down", true, true);
         if (event.touchEvent == false && _button.hitTest(event.screenX, event.screenY)) {
-            _button.addClass(":hover");
+            _button.addClass(":hover", true, true);
         }
 
         if (_repeatTimer != null) {
@@ -464,10 +464,10 @@ class ButtonEvents extends haxe.ui.events.Events {
     private function onMouseClick(event:MouseEvent) {
         _button.selected = !_button.selected;
         if (_button.selected == false) {
-            _button.removeClass(":down");
+            _button.removeClass(":down", true, true);
         }
         if (_button.hitTest(event.screenX, event.screenY)) {
-            _button.addClass(":hover");
+            _button.addClass(":hover", true, true);
         }
     }
     
