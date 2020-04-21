@@ -33,7 +33,21 @@ class HorizontalSliderLayout extends DefaultLayout {
 // Composite Builder
 //***********************************************************************************************************
 private class Builder extends SliderBuilder {
+    private var _slider:Slider;
+    public function new(slider:Slider) {
+        super(slider);
+        _slider = slider;
+    }
+    
     private override function createValueComponent():Range {
         return new HorizontalRange();
+    }
+    
+    public override function getStartOffset():Float {
+        var start:Float = 0;
+        if (_slider.start != null) {
+            start = _slider.start;
+        }
+        return start;
     }
 }

@@ -300,7 +300,13 @@ class Toolkit {
     }
 
     public static var autoScale:Bool = true;
-    public static var autoScaleDPIThreshold:Int = 120;
+    public static var autoScaleDPIThreshold(get, null):Int;
+    private static function get_autoScaleDPIThreshold():Int {
+        if (Screen.instance.isRetina == true) {
+            return 192;
+        }
+        return 120;
+    }
 
     private static var _scaleX:Float = 0;
     public static var scaleX(get, set):Float;

@@ -49,6 +49,11 @@ class ScreenBase {
         return 0;
     }
     
+    public var isRetina(get, null):Bool;
+    private function get_isRetina():Bool {
+        return false;
+    }
+    
     public function addComponent(component:Component):Component {
 		return component;
     }

@@ -39,8 +39,11 @@ class RuleElement {
         }
         
         if (c.className != null) {
-            if (d.classes.indexOf(c.className) == -1) {
-                return false;
+            var classNameParts = c.className.split(".");
+            for (p in c.classNameParts) {
+                if (d.classes.indexOf(p) == -1) {
+                    return false;
+                }
             }
         }
         

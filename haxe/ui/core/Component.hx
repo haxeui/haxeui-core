@@ -1055,7 +1055,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     //***********************************************************************************************************
     // Styles
     //***********************************************************************************************************
-    #if !flixel
+    #if !(flixel || heaps)
     @:style                 public var color:Null<Color>;
     #end
     @:style                 public var backgroundColor:Null<Color>;
@@ -1358,8 +1358,17 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         s.apply(customStyle);
 
         if (_style == null || _style.equalTo(s) == false) { // lets not update if nothing has changed
+            
+            var marginsChanged = false;
+            if (parentComponent != null && _style != null) {
+                marginsChanged = _style.marginLeft != s.marginLeft || _style.marginRight != s.marginRight ||  _style.marginTop != s.marginTop ||  _style.marginBottom != s.marginBottom;
+            }
+            
             _style = s;
             applyStyle(s);
+            if (marginsChanged == true) {
+                parentComponent.invalidateComponentLayout();
+            }
         }
     }
 

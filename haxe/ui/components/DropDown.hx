@@ -9,6 +9,7 @@ import haxe.ui.core.Component;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.core.IDataComponent;
+import haxe.ui.data.ArrayDataSource;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.core.Screen;
 import haxe.ui.events.UIEvent;
@@ -37,6 +38,14 @@ class DropDown extends Button implements IDataComponent {
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 private class DataSourceBehaviour extends DefaultBehaviour {
+    public override function get():Variant {
+        if (_value == null || _value.isNull == true) {
+            _value = new ArrayDataSource<Dynamic>();
+        }
+        
+        return _value;
+    }
+    
     public override function set(value:Variant) {
         super.set(value);
         if (value == _value) {
