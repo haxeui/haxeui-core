@@ -11,6 +11,19 @@ class SelectorPart {
     public function new() {
     }
     
+    private var _parts:Array<String> = null;
+    public var classNameParts(get, null):Array<String>;
+    private function get_classNameParts():Array<String> {
+        if (className == null) {
+            return null;
+        }
+        if (_parts == null) {
+            _parts = className.split(".");
+        }
+        return _parts;
+    }
+    
+    
     public function toString():String {
         var sb:StringBuf = new StringBuf();
         
