@@ -127,7 +127,7 @@ class ComponentEvents extends ComponentContainer {
     
     private var _interactivityDisabled:Bool = false;
     private var _interactivityDisabledCounter:Int = 0;
-    private function disableInteractivity(disable:Bool, recursive:Bool = true) { // You might want to disable interactivity but NOT actually disable visually
+    private function disableInteractivity(disable:Bool, recursive:Bool = true, updateStyle:Bool = false) { // You might want to disable interactivity but NOT actually disable visually
         if (disable == true) {
             _interactivityDisabledCounter++;
         } else {
@@ -136,6 +136,9 @@ class ComponentEvents extends ComponentContainer {
         
         if (_interactivityDisabledCounter > 0 && _interactivityDisabled == false) {
             _interactivityDisabled = true;
+            if (updateStyle == true) {
+                cast(this, Component).swapClass(":disabled", ":hover");
+            }
             if (__events != null) {
                 for (eventType in __events.keys()) {
                     if (!isInteractiveEvent(eventType)) {
@@ -155,6 +158,9 @@ class ComponentEvents extends ComponentContainer {
             }
         } else if (_interactivityDisabledCounter < 1 && _interactivityDisabled == true) {
             _interactivityDisabled = false;
+            if (updateStyle == true) {
+                cast(this, Component).removeClass(":disabled");
+            }
             if (_disabledEvents != null) {
                 for (eventType in _disabledEvents.keys()) {
                     var listeners:FunctionArray<UIEvent->Void> = _disabledEvents.listeners(eventType);
@@ -170,7 +176,7 @@ class ComponentEvents extends ComponentContainer {
         
         if (recursive == true) {
             for (child in childComponents) {
-                child.disableInteractivity(disable, recursive);
+                child.disableInteractivity(disable, recursive, updateStyle);
             }
         }
     }
