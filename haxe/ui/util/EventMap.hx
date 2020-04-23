@@ -15,6 +15,9 @@ class EventMap  {
     }
     
     public function add(type:String, listener:UIEvent->Void, priority:Int = 0):Bool { // returns true if a new FunctionArray was created
+        if (listener == null) {
+            return false;
+        }
         var b:Bool = false;
         var arr:FunctionArray<UIEvent->Void> = _map.get(type);
         if (arr == null) {
@@ -29,6 +32,9 @@ class EventMap  {
     }
 
     public function remove(type:String, listener:UIEvent->Void):Bool { // returns true if a FunctionArray was removed
+        if (listener != null) {
+            return false;
+        }
         var b:Bool = false;
         var arr:FunctionArray<UIEvent->Void> = _map.get(type);
         if (arr != null) {
@@ -41,7 +47,7 @@ class EventMap  {
         return b;
     }
 
-    public function contains(type:String, listener:UIEvent->Void=null):Bool {
+    public function contains(type:String, listener:UIEvent->Void = null):Bool {
         var b:Bool = false;
         var arr:FunctionArray<UIEvent->Void> = _map.get(type);
         if (arr != null) {
