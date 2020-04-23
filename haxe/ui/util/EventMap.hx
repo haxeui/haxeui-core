@@ -32,7 +32,7 @@ class EventMap  {
     }
 
     public function remove(type:String, listener:UIEvent->Void):Bool { // returns true if a FunctionArray was removed
-        if (listener != null) {
+        if (listener == null) {
             return false;
         }
         var b:Bool = false;
