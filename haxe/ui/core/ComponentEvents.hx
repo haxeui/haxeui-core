@@ -189,8 +189,12 @@ class ComponentEvents extends ComponentContainer {
             }
             for (eventType in copy) {
                 var listeners = __events.listeners(eventType);
-                for (listener in listeners) {
-                    __events.remove(eventType, listener);
+                if (listeners != null) {
+                    for (listener in listeners) {
+                        if (listener != null) {
+                            __events.remove(eventType, listener);
+                        }
+                    }
                 }
             }
         }
