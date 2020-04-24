@@ -396,9 +396,10 @@ private class Builder extends CompositeBuilder {
                 match = view.findComponent(criteria, type, recursive, searchType);
                 if (view.matchesSearch(criteria, type, searchType)) {
                     return cast view;
-			 } else {
+                } else {
                     match = view.findComponent(criteria, type, recursive, searchType);
                 }
+                
                 if (match != null) {
                     break;
                 }

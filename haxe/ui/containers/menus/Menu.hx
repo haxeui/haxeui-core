@@ -234,4 +234,23 @@ private class Builder extends CompositeBuilder {
             _menu.registerInternalEvents(true);
         }
     }
+    
+    public override function findComponent<T:Component>(criteria:String, type:Class<T>, recursive:Null<Bool>, searchType:String):Null<T> {
+        var match = super.findComponent(criteria, type, recursive, searchType);
+        if (match == null) {
+            for (menu in _subMenus) {
+                match = menu.findComponent(criteria, type, recursive, searchType);
+                if (menu.matchesSearch(criteria, type, searchType)) {
+                    return cast menu;
+                } else {
+                    match = menu.findComponent(criteria, type, recursive, searchType);
+                }
+                
+                if (match != null) {
+                    break;
+                }
+            }
+        }
+        return cast match;
+    }
 }
