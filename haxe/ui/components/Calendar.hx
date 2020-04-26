@@ -1,50 +1,38 @@
 package haxe.ui.components;
 
-import haxe.ui.containers.Grid;
 import haxe.ui.behaviours.Behaviour;
-import haxe.ui.core.CompositeBuilder;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
+import haxe.ui.containers.Grid;
+import haxe.ui.core.CompositeBuilder;
+import haxe.ui.events.Events;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
-import haxe.ui.events.Events;
+import haxe.ui.layouts.VerticalGridLayout;
 import haxe.ui.util.Variant;
 
 class CalendarEvent extends UIEvent {
     public static inline var DATE_CHANGE:String = "datechange";
 }
 
-@:composite(Events, Builder)
+@:composite(Events, Builder, Layout)
 class Calendar extends Grid {
-    public function new() {
-        super();
-        columns = 7; // TODO: this is really strange, cant set it in the builder, its like the parent constructor is never called
-        behaviours.register("previousMonth", PreviousMonthBehaviour);
-        behaviours.register("nextMonth", NextMonthBehaviour);
-		behaviours.register("previousYear", PreviousYearBehaviour);
-        behaviours.register("nextYear", NextYearBehaviour);
-    }
-    
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:clonable @:behaviour(DateBehaviour)                  public var date:Date;
-    @:clonable @:behaviour(SelectedDateBehaviour)          public var selectedDate:Date;
+    @:clonable @:behaviour(DateBehaviour)                   public var date:Date;
+    @:clonable @:behaviour(SelectedDateBehaviour)           public var selectedDate:Date;
+    @:call(PreviousMonthBehaviour)                          public function previousMonth():Void;
+    @:call(NextMonthBehaviour)                              public function nextMonth():Void;
+    @:call(PreviousYearBehaviour)                           public function previousYear():Void;
+    @:call(NextYearBehaviour)                               public function nextYear():Void;
     
-    public function previousMonth() { // TODO: work out a way to use meta data with callable behaviours
-        behaviours.call("previousMonth");
-    }
-    
-    public function nextMonth() { // TODO: work out a way to use meta data with callable behaviours
-        behaviours.call("nextMonth");
-    }
-	
-	public function previousYear() { // TODO: work out a way to use meta data with callable behaviours
-        behaviours.call("previousYear");
-    }
-    
-    public function nextYear() { // TODO: work out a way to use meta data with callable behaviours
-        behaviours.call("nextYear");
+    //***********************************************************************************************************
+    // Internals
+    //***********************************************************************************************************
+    private override function createDefaults() {
+        super.createDefaults();
+        _defaultLayoutClass = Layout;
     }
 }
 
@@ -280,17 +268,45 @@ private class Builder extends CompositeBuilder {
     }
     
     public override function create() {
+        _calendar.columns = 7; // this is really strange, this does work here!
+        
         for (i in 0...6) {
             for (j in 0...7) {
                 var item = new Button();
-                item.width = 25;
-                item.height = 25;
+                item.scriptAccess = false;
                 _calendar.addComponent(item);
             }
         }
         
-        _calendar.syncComponentValidation();
-        //_calendar.columns = 7; // this is really strange, this does work here!
+        //_calendar.syncComponentValidation();
         _calendar.date = Date.now();
+    }
+}
+
+//***********************************************************************************************************
+// Composite Layout
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+private class Layout extends VerticalGridLayout {
+    private override function resizeChildren() {
+        var max:Float = 0;
+        for (child in component.childComponents) {
+            if (child.layout == null) {
+                continue;
+            }
+            if (child.width > child.layout.paddingLeft + child.layout.paddingRight && child.width > max) {
+                max = child.width;
+            }
+            if (child.width > child.layout.paddingTop + child.layout.paddingBottom && child.height > max) {
+                max = child.height;
+            }
+        }
+        if (max > 0) {
+            for (child in component.childComponents) {
+                child.width = max;
+                child.height = max;
+            }
+        }
+        //super.resizeChildren();
     }
 }

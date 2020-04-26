@@ -959,9 +959,6 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         return value;
     }
 
-    /*
-    private var _layoutLocked:Bool = false;
-    */
     public function lockLayout(recursive:Bool = false) {
         if (_layoutLocked == true) {
             return;

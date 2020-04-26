@@ -21,11 +21,6 @@ class Box extends Component {
     **/
     @:clonable @:behaviour(DefaultBehaviour)                public var icon:String;
     
-    public function new() {
-        super();
-        layout = new DefaultLayout();
-    }
-
     private var _layoutName:String;
     @:clonable public var layoutName(get, set):String;
     private function get_layoutName():String {
@@ -39,5 +34,13 @@ class Box extends Component {
         _layoutName = value;
         layout = LayoutFactory.createFromName(layoutName);
         return value;
+    }
+    
+    //***********************************************************************************************************
+    // Internals
+    //***********************************************************************************************************
+    private override function createDefaults() {
+        super.createDefaults();
+        _defaultLayoutClass = DefaultLayout;
     }
 }

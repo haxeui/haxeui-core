@@ -47,11 +47,13 @@
 .tabbar-scroll-left {
     icon: "haxeui-core/styles/default/left_arrow.png";
     border-radius: 0;
+    padding: 5px;
 }
 
 .tabbar-scroll-right {
     icon: "haxeui-core/styles/default/right_arrow.png";
     border-radius: 0;
+    padding: 5px;
 }
 
 .tabbar-button-selected .label {
