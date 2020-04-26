@@ -41,10 +41,6 @@ class Behaviour {
     public function getDynamic():Dynamic {
         return null;
     }
-
-    public function run(param:Variant = null):Variant {
-        return null;
-    }
     
     /**
      Update this behaviour with its current value
