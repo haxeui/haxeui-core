@@ -44,7 +44,7 @@ class ComponentContainer extends ComponentCommon implements IClonable<ComponentC
     **/
     @:dox(group = "Display tree related properties and methods")
     public var childComponents(get, null):Array<Component>;
-    private function get_childComponents():Array<Component> {
+    private inline function get_childComponents():Array<Component> {
         if (_children == null) {
             return [];
         }
