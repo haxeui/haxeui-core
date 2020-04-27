@@ -111,6 +111,11 @@
 }
 
 .tabview .tabview-tabs {
+    margin-top: 1px;
+}
+
+.tabview:bottom .tabview-tabs {
+    margin-top: -1px;
 }
 
 .tabview .tabview-content {
