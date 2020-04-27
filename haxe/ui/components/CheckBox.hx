@@ -37,6 +37,9 @@ private class Value extends InteractiveComponent {
             icon = new Image();
             icon.id = '${parentComponent.cssName}-icon';
             icon.addClass('${parentComponent.cssName}-icon');
+            if (style != null && style.icon != null) {
+                icon.resource = style.icon;
+            }
             addComponent(icon);
         }
     }
