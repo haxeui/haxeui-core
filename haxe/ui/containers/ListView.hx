@@ -335,15 +335,15 @@ private class ListViewBuilder extends ScrollViewBuilder {
         child.walkComponents(function(c) {
             if (Std.is(c, ItemRenderer)) {
                 if (add == true) {
-                    c.addClass(className, true, true);
+                    c.addClass(className);
                     Toolkit.callLater(function() {
                         ensureVisible(cast(c, ItemRenderer));
                     });
                 } else {
-                    c.removeClass(className, true, true);
+                    c.removeClass(className);
                 }
             } else {
-                //c.invalidateComponentStyle(); // we do want to invalidate the other components incase the css rule applies indirectly
+                c.invalidateComponentStyle(); // we do want to invalidate the other components incase the css rule applies indirectly
             }
             return true;
         });
