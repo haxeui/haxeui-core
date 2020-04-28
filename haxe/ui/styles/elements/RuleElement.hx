@@ -39,7 +39,6 @@ class RuleElement {
         }
         
         if (c.className != null) {
-            var classNameParts = c.className.split(".");
             for (p in c.classNameParts) {
                 if (d.classes.indexOf(p) == -1) {
                     return false;
@@ -47,12 +46,14 @@ class RuleElement {
             }
         }
         
+        /*
         if (c.nodeName != null) {
             var className:String = Type.getClassName(Type.getClass(d)).split(".").pop().toLowerCase();    //TODO - the value can be cached
             if (c.nodeName != className) {
                 return false;
             }
         }
+        */
         
         if (c.id != null && c.id != d.id) {
             return false;
