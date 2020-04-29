@@ -314,6 +314,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             child.ready();
         }
 
+        assignPositionClasses();
         invalidateComponentLayout();
         if (disabled) {
             child.disabled = true;
@@ -358,6 +359,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             child.ready();
         }
 
+        assignPositionClasses();
         invalidateComponentLayout();
         if (disabled) {
             child.disabled = true;
@@ -402,6 +404,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             }
         }
         handleRemoveComponent(child, dispose);
+        assignPositionClasses(invalidate);
         if (_children != null && invalidate == true) {
             invalidateComponentLayout();
         }
@@ -449,6 +452,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
                 child.parentComponent = null;
                 child.depth = -1;
             }
+            assignPositionClasses(invalidate);
             if (invalidate == true) {
                 invalidateComponentLayout();
             }
@@ -468,6 +472,19 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     }
 
     private function onComponentRemoved(child:Component) {
+    }
+    
+    private function assignPositionClasses(invalidate:Bool = true) {
+        for (i in 0...childComponents.length) {
+            var c = childComponents[i];
+            if (i == 0) {
+                c.swapClass("first", "last", invalidate);
+            } else if (childComponents.length > 1 && i == childComponents.length - 1) {
+                c.swapClass("last", "first", invalidate);
+            } else {
+                c.removeClasses(["first", "last"], invalidate);
+            }
+        }
     }
     
     private function destroyComponent() {
@@ -812,6 +829,32 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     }
 
     /**
+     Adds a css style names to this component
+    **/
+    @:dox(group = "Style related properties and methods")
+    public function addClasses(names:Array<String>, invalidate:Bool = true, recursive:Bool = false) {
+        var needsInvalidate = false;
+        for (name in names) {
+            if (classes.indexOf(name) == -1) {
+                classes.push(name);
+                if (invalidate == true) {
+                    needsInvalidate = true;
+                }
+            }
+        }
+		
+        if (needsInvalidate == true) {
+            invalidateComponentStyle();
+        }
+        
+		if (recursive == true) {
+			for (child in childComponents) {
+				child.addClasses(names, invalidate, recursive);
+			}
+		}
+    }
+
+    /**
      Removes a css style name from this component
     **/
     @:dox(group = "Style related properties and methods")
@@ -830,6 +873,32 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
 		}
     }
 
+    /**
+     Removes a css style names from this component
+    **/
+    @:dox(group = "Style related properties and methods")
+    public function removeClasses(names:Array<String>, invalidate:Bool = true, recursive:Bool = false) {
+        var needsInvalidate = false;
+        for (name in names) {
+            if (classes.indexOf(name) != -1) {
+                classes.remove(name);
+                if (invalidate == true) {
+                    needsInvalidate = true;
+                }
+            }
+        }
+
+        if (needsInvalidate == true) {
+            invalidateComponentStyle();
+        }
+        
+		if (recursive == true) {
+			for (child in childComponents) {
+				child.removeClasses(names, invalidate, recursive);
+			}
+		}
+    }
+    
     /**
      Whether or not this component has a css class associated with it
     **/
