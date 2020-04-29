@@ -408,20 +408,25 @@ class DropDownEvents extends ButtonEvents {
     
     public override function register() {
         super.register();
-        registerEvent(MouseEvent.CLICK, onClick);
+        registerEvent(MouseEvent.MOUSE_DOWN, onClick);
     }
     
     public override function unregister() {
         super.unregister();
-        unregisterEvent(MouseEvent.CLICK, onClick);
+        unregisterEvent(MouseEvent.MOUSE_DOWN, onClick);
     }
     
     private function onClick(event:MouseEvent) {
+        _dropdown.selected = !_dropdown.selected;
         if (_dropdown.selected == true) {
             showDropDown();
         } else {
             hideDropDown();
         }
+    }
+    
+    private override function onMouseClick(event:MouseEvent) {
+        // do nothing
     }
     
     private var _overlay:Component = null;
