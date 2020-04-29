@@ -8,6 +8,7 @@ import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.layouts.HorizontalLayout;
 import haxe.ui.styles.Style;
+import haxe.ui.util.Variant;
 
 @:composite(Events, CheckBoxBuilder, HorizontalLayout)
 class CheckBox extends InteractiveComponent {
@@ -75,6 +76,28 @@ private class TextBehaviour extends DataBehaviour {
 
 @:dox(hide) @:noCompletion
 private class SelectedBehaviour extends DataBehaviour {
+    /*
+    public override function get():Variant {
+        var valueComponent:Value = _component.findComponent(Value);
+        return valueComponent.hasClass(":selected");
+    }
+    
+    public override function set(value:Variant) {
+        if (value == get()) {
+            return;
+        }
+        
+        var valueComponent:Value = _component.findComponent(Value);
+        _value = value;
+        if (_value == true) {
+            valueComponent.addClass(":selected");
+        } else {
+            valueComponent.removeClass(":selected");
+        }
+        invalidateData();
+    }
+    */
+    
     private override function validateData() {
         var valueComponent:Value = _component.findComponent(Value);
         if (_value == true) {
