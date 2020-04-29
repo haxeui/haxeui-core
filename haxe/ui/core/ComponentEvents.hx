@@ -192,7 +192,9 @@ class ComponentEvents extends ComponentContainer {
                 if (listeners != null) {
                     for (listener in listeners) {
                         if (listener != null) {
-                            __events.remove(eventType, listener);
+                            if (__events.remove(eventType, listener) == true) {
+                                unmapEvent(eventType, _onMappedEvent);
+                            }
                         }
                     }
                 }
