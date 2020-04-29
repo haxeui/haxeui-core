@@ -470,19 +470,17 @@ class DropDownEvents extends ButtonEvents {
             handler.prepare(_wrapper);
             _wrapper.syncComponentValidation();
             
+            var cx = _wrapper.width - _dropdown.width;
             var filler:Component = _wrapper.findComponent("dropdown-filler", false);
-            if (filler != null) {
-                var cx = _wrapper.width - _dropdown.width;
-                if (cx > 0) {
-                    _wrapper.addClass("dropdown-popup-expanded");
-                    cx += 2;
-                    filler.width = cx;
-                    filler.left = _wrapper.width - cx;
-                    filler.hidden = false;
-                } else {
-                    filler.hidden = true;
-                    _wrapper.removeClass("dropdown-popup-expanded");
-                }
+            if (cx > 0 && filler != null) {
+                _wrapper.addClass("dropdown-popup-expanded");
+                cx += 2;
+                filler.width = cx;
+                filler.left = _wrapper.width - cx;
+                filler.hidden = false;
+            } else if (filler != null) {
+                filler.hidden = true;
+                _wrapper.removeClass("dropdown-popup-expanded");
             }
             
             if (_wrapper.screenLeft + _wrapper.width > Screen.instance.width) {
