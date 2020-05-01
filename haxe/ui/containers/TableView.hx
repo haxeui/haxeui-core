@@ -461,8 +461,8 @@ private class Layout extends VerticalVirtualLayout {
             return;
         }
         
-        header.left = paddingLeft;
-        header.top = paddingTop;
+        header.left = paddingLeft;// + marginLeft(header);
+        header.top = paddingTop;// + marginTop(header);
         var rc:Rectangle = new Rectangle(cast(_component, ScrollView).hscrollPos + 1, 1, usableWidth, header.height);
         header.componentClipRect = rc;
         

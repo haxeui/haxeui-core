@@ -2,6 +2,7 @@ package haxe.ui.components;
 
 import haxe.ui.components.Button.ButtonBuilder;
 import haxe.ui.components.Button.ButtonEvents;
+import haxe.ui.containers.Box;
 import haxe.ui.containers.CalendarView;
 import haxe.ui.containers.ListView;
 import haxe.ui.behaviours.Behaviour;
@@ -111,7 +112,7 @@ private class SelectedItemBehaviour extends Behaviour {
 //***********************************************************************************************************
 interface IDropDownHandler {
     var component(get, null):Component;
-    function show():Void;
+    function prepare(wrapper:Box):Void;
     function reset():Void;
     var selectedIndex(get, set):Int;
     var selectedItem(get, set):Dynamic;
@@ -131,7 +132,7 @@ class DropDownHandler implements IDropDownHandler {
         return null;
     }
     
-    public function show() {
+    public function prepare(wrapper:Box) {
     }
     
     public function reset() {
@@ -176,7 +177,7 @@ class ListDropDownHandler extends DropDownHandler {
         //_dropdown.selectedIndex = -1;
     }
     
-    public override function show() {
+    public override function prepare(wrapper:Box) {
         var itemCount = 4;
         if (_dropdown.dropdownSize != null) {
             itemCount = _dropdown.dropdownSize;
@@ -187,7 +188,8 @@ class ListDropDownHandler extends DropDownHandler {
 
         _listview.itemCount = itemCount; 
         if (_dropdown.dropdownWidth == null) {
-            _listview.width = _dropdown.width;
+            wrapper.syncComponentValidation();
+            _listview.width = _dropdown.width - (wrapper.layout.paddingLeft + wrapper.layout.paddingRight);
         } else {
             _listview.width = _dropdown.dropdownWidth;
         }
@@ -204,7 +206,7 @@ class ListDropDownHandler extends DropDownHandler {
             }
         }
         
-        Screen.instance.addComponent(_listview);
+        //Screen.instance.addComponent(_listview);
         _listview.unregisterEvent(UIEvent.CHANGE, onListChange); // TODO: not great!
         _listview.selectedIndex = selectedIndex;
         _listview.syncComponentValidation();
@@ -322,7 +324,7 @@ class CalendarDropDownHandler extends DropDownHandler {
         return _calendar;
     }
     
-    public override function show() {
+    public override function prepare(wrapper:Box) {
         if (_dropdown.dropdownWidth != null) {
             _calendar.width = _dropdown.dropdownWidth;
         }
@@ -336,7 +338,7 @@ class CalendarDropDownHandler extends DropDownHandler {
             _calendar.registerEvent(UIEvent.CHANGE, onCalendarChange); // TODO: not great!
         }
         
-        Screen.instance.addComponent(_calendar);
+        //Screen.instance.addComponent(_calendar);
         _calendar.syncComponentValidation();
     }
     
@@ -406,15 +408,16 @@ class DropDownEvents extends ButtonEvents {
     
     public override function register() {
         super.register();
-        registerEvent(MouseEvent.CLICK, onClick);
+        registerEvent(MouseEvent.MOUSE_DOWN, onClick);
     }
     
     public override function unregister() {
         super.unregister();
-        unregisterEvent(MouseEvent.CLICK, onClick);
+        unregisterEvent(MouseEvent.MOUSE_DOWN, onClick);
     }
     
     private function onClick(event:MouseEvent) {
+        _dropdown.selected = !_dropdown.selected;
         if (_dropdown.selected == true) {
             showDropDown();
         } else {
@@ -422,15 +425,36 @@ class DropDownEvents extends ButtonEvents {
         }
     }
     
+    private override function onMouseClick(event:MouseEvent) {
+        // do nothing
+    }
+    
     private var _overlay:Component = null;
+    private var _wrapper:Box = null;
     @:access(haxe.ui.core.Component)
     public function showDropDown() {
         var handler:IDropDownHandler = cast(_dropdown._compositeBuilder, DropDownBuilder).handler;
-        handler.component.addClass("popup");
-        handler.component.addClass("dropdown-popup");
-        handler.component.styleNames = _dropdown.handlerStyleNames;
-        var componentOffset = _dropdown.getComponentOffset();
+        if (handler == null) {
+            return;
+        }
         
+        if (_wrapper == null) {
+            _wrapper = new Box();
+            _wrapper.addClass("popup");
+            _wrapper.addClass("dropdown-popup");
+            _wrapper.styleNames = _dropdown.handlerStyleNames;
+            _wrapper.addComponent(handler.component);
+            
+            var filler = new Component();
+            filler.horizontalAlign = "right";
+            filler.includeInLayout = false;
+            filler.addClass("dropdown-filler");
+            filler.id = "dropdown-filler";
+            _wrapper.addComponent(filler);
+        }
+        
+        var componentOffset = _dropdown.getComponentOffset();
+
         if (_dropdown.style.mode != null && _dropdown.style.mode == "mobile") {
             if (_overlay == null) {
                 _overlay = new Component();
@@ -439,20 +463,36 @@ class DropDownEvents extends ButtonEvents {
                 _overlay.percentWidth = _overlay.percentHeight = 100;
             }
             Screen.instance.addComponent(_overlay);
-            
-            handler.show();
-            handler.component.left = (Screen.instance.width / 2) - (handler.component.actualComponentWidth / 2);
-            handler.component.top = (Screen.instance.height / 2) - (handler.component.actualComponentHeight / 2);
-        } else {
-            handler.component.left = _dropdown.screenLeft + componentOffset.x;
-            handler.component.top = _dropdown.screenTop + (_dropdown.actualComponentHeight - Toolkit.scaleY) + componentOffset.y;
-            handler.show();
 
-            if (handler.component.screenLeft + handler.component.width > Screen.instance.width) {
-                handler.component.left = handler.component.screenLeft - handler.component.width + _dropdown.width;
+            handler.prepare(_wrapper);
+            Screen.instance.addComponent(_wrapper);
+            _wrapper.left = (Screen.instance.width / 2) - (_wrapper.actualComponentWidth / 2);
+            _wrapper.top = (Screen.instance.height / 2) - (_wrapper.actualComponentHeight / 2);
+        } else {
+            _wrapper.left = _dropdown.screenLeft + componentOffset.x;
+            _wrapper.top = _dropdown.screenTop + (_dropdown.actualComponentHeight - Toolkit.scaleY) + componentOffset.y;
+            Screen.instance.addComponent(_wrapper);
+            handler.prepare(_wrapper);
+            _wrapper.syncComponentValidation();
+            
+            var cx = _wrapper.width - _dropdown.width;
+            var filler:Component = _wrapper.findComponent("dropdown-filler", false);
+            if (cx > 0 && filler != null) {
+                _wrapper.addClass("dropdown-popup-expanded");
+                cx += 2;
+                filler.width = cx;
+                filler.left = _wrapper.width - cx;
+                filler.hidden = false;
+            } else if (filler != null) {
+                filler.hidden = true;
+                _wrapper.removeClass("dropdown-popup-expanded");
             }
-            if (handler.component.screenTop + handler.component.height > Screen.instance.height) {
-                handler.component.top = _dropdown.screenTop - handler.component.height;
+            
+            if (_wrapper.screenLeft + _wrapper.width > Screen.instance.width) {
+                _wrapper.left = _wrapper.screenLeft - _wrapper.width + _dropdown.width;
+            }
+            if (_wrapper.screenTop + _wrapper.height > Screen.instance.height) {
+                _wrapper.top = _dropdown.screenTop - _wrapper.height;
             }
         }
 
@@ -472,7 +512,10 @@ class DropDownEvents extends ButtonEvents {
         }
         
         _dropdown.selected = false;
-        Screen.instance.removeComponent(handler.component);
+        
+        if (_wrapper != null) {
+            Screen.instance.removeComponent(_wrapper);
+        }
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
         Screen.instance.unregisterEvent(MouseEvent.RIGHT_MOUSE_DOWN, onScreenMouseDown);
     }

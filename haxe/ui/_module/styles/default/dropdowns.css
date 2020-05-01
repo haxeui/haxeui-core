@@ -7,6 +7,11 @@
     text-align: left;
 }
 
+.dropdown-popup {
+    background-color: white;
+    border: 1px solid #ABABAB;
+}
+
 /************************************************************************
 ** MOBILE VARIANTS
 *************************************************************************/
