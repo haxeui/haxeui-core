@@ -292,7 +292,7 @@ class ListDropDownHandler extends DropDownHandler {
         }
         var text = _listview.selectedItem.value;
         _dropdown.text = text;
-        _dropdown.selectedIndex = _listview.selectedIndex;
+        //_dropdown.selectedIndex = _listview.selectedIndex;
         cast(_dropdown._internalEvents, DropDownEvents).hideDropDown();
         _dropdown.dispatch(new UIEvent(UIEvent.CHANGE));
     }
