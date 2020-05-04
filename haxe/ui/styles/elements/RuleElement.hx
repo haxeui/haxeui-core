@@ -46,14 +46,12 @@ class RuleElement {
             }
         }
         
-        /*
         if (c.nodeName != null) {
             var className:String = Type.getClassName(Type.getClass(d)).split(".").pop().toLowerCase();    //TODO - the value can be cached
             if (c.nodeName != className) {
                 return false;
             }
         }
-        */
         
         if (c.id != null && c.id != d.id) {
             return false;
