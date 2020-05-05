@@ -85,7 +85,7 @@ class ComponentMacros {
             if (c0.height != null) this.height = c0.height;
             if (c0.percentHeight != null) this.percentHeight = c0.percentHeight;
             if (c0.text != null) this.text = c0.text;
-            if (c0.styleString != null) this.styleString = c0.styleString;
+            //if (c0.styleString != null) this.styleString = c0.styleString;
             if (c0.horizontalAlign != null) this.horizontalAlign = c0.horizontalAlign;
             if (c0.verticalAlign != null) this.verticalAlign = c0.verticalAlign;
         });
