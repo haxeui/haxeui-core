@@ -1,5 +1,6 @@
 package haxe.ui.containers.menus;
 
+import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.containers.VBox;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
@@ -34,6 +35,7 @@ class MenuEvent extends UIEvent {
 
 @:composite(MenuEvents, Builder)
 class Menu extends VBox {
+    @:behaviour(DefaultBehaviour)           public var menuStyleNames:String;
 }
 
 //***********************************************************************************************************
@@ -144,7 +146,8 @@ class MenuEvents extends haxe.ui.events.Events {
     
     private function showSubMenu(subMenu:Menu, source:MenuItem) {
         hideCurrentSubMenu();
-        
+        subMenu.menuStyleNames = _menu.menuStyleNames;
+        subMenu.addClass(_menu.menuStyleNames);
         var left = source.screenLeft + source.width;
         var top = source.screenTop;
         Screen.instance.addComponent(subMenu);

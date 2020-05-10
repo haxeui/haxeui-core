@@ -22,7 +22,7 @@ class MenuItem extends HBox {
 @:dox(hide) @:noCompletion
 private class TextBehaviour extends DataBehaviour {
     private override function validateData() {
-        var label:Label = _component.findComponent("menuitem-label", false);
+        var label:Label = _component.findComponent("menuitem-label", true);
         label.text = _value;
     }
 }
@@ -30,7 +30,7 @@ private class TextBehaviour extends DataBehaviour {
 @:dox(hide) @:noCompletion
 private class ShortcutTextBehaviour extends DataBehaviour {
     private override function validateData() {
-        var label:Label = _component.findComponent("menuitem-shortcut-label", false);
+        var label:Label = _component.findComponent("menuitem-shortcut-label", true);
         if (label != null) {
             label.text = _value;
         }
@@ -44,7 +44,7 @@ private class IconBehaviour extends DataBehaviour {
             return;
         }
         
-        var icon:Image = _component.findComponent("menuitem-icon", Image, false);
+        var icon:Image = _component.findComponent("menuitem-icon", true);
         if (icon == null) {
             icon = new Image();
             icon.scriptAccess = false;
@@ -110,16 +110,22 @@ private class Builder extends CompositeBuilder {
     public override function create() {
         super.create();
         
+        var box = new Box();
+        box.percentWidth = 100;
+        box.verticalAlign = "center";
+        
         var label = new Label();
         label.id = "menuitem-label";
         label.styleNames = "menuitem-label";
         label.scriptAccess = false;
-        _component.addComponent(label);
+        box.addComponent(label);
         
         var label = new Label();
         label.id = "menuitem-shortcut-label";
         label.styleNames = "menuitem-shortcut-label";
         label.scriptAccess = false;
-        _component.addComponent(label);
+        box.addComponent(label);
+        
+        _component.addComponent(box);
     }
 }
