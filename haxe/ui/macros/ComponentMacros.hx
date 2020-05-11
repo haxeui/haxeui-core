@@ -80,9 +80,9 @@ class ComponentMacros {
         }
 
         codeBuilder.add(macro {
-            if (c0.width != null && c0.width > 0) this.width = c0.width;
+            if (c0.width > 0) this.width = c0.width;
             if (c0.percentWidth != null) this.percentWidth = c0.percentWidth;
-            if (c0.height != null && c0.height > 0) this.height = c0.height;
+            if (c0.height > 0) this.height = c0.height;
             if (c0.percentHeight != null) this.percentHeight = c0.percentHeight;
             if (c0.text != null) this.text = c0.text;
             //if (c0.styleString != null) this.styleString = c0.styleString;
