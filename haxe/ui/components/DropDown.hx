@@ -168,13 +168,12 @@ class ListDropDownHandler extends DropDownHandler {
     }
     
     public override function reset() {
-        _cachedSelectedIndex = -1;
         if (_listview != null) {
-            _listview.unregisterEvent(UIEvent.CHANGE, onListChange);
+            _listview.dataSource = _dropdown.dataSource;
+            _listview.unregisterEvent(UIEvent.CHANGE, onListChange); // TODO: not great!
+            selectedIndex = _cachedSelectedIndex;
+            _listview.registerEvent(UIEvent.CHANGE, onListChange); // TODO: not great!
         }
-        _listview = null;
-        createListView();
-        //_dropdown.selectedIndex = -1;
     }
     
     public override function prepare(wrapper:Box) {
@@ -270,7 +269,8 @@ class ListDropDownHandler extends DropDownHandler {
             return value;
         }
         var v:Variant = value;
-        _dropdown.selectedIndex = indexOfItem(v);
+        _cachedSelectedIndex = indexOfItem(v);
+        _dropdown.selectedIndex = _cachedSelectedIndex;
         return value;
     }
     
