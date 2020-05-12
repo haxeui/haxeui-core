@@ -124,6 +124,7 @@ private class Builder extends CompositeBuilder {
 
         var hbox = new HBox();
         hbox.horizontalAlign = "center";
+        hbox.verticalAlign = "center";
         var label = new Label();
         label.id = "current-month";
         var now = Date.now();
