@@ -303,7 +303,7 @@ class Macros {
         }, builder.path, access);
     }
     
-    #if ((haxe_ver < 4) || someflag)
+    #if ((haxe_ver < 4) || haxeui_heaps)
     // TODO: this is a really ugly haxe3 hack / workaround - once haxe4 stabalises this *MUST* be removed - its likely brittle and ill conceived!
     public static var _cachedFields:Map<String, Array<Field>> = new Map<String, Array<Field>>();
     #end

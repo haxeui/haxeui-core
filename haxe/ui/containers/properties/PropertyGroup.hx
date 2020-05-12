@@ -75,6 +75,13 @@ private class Builder extends CompositeBuilder {
         _propertyGroup = propertyGroup;
     }
     
+    public override function onReady() {
+        var propGrid = _component.findAncestor(PropertyGrid);
+        for (c in _propertyGroupContents.findComponents(DropDown)) {
+            c.handlerStyleNames = propGrid.popupStyleNames;
+        }
+    }
+    
     public override function create() {
         _propertyGroupHeader = new HBox();
         _propertyGroupHeader.scriptAccess = false;
@@ -128,7 +135,7 @@ private class Builder extends CompositeBuilder {
             editor.addClass("property-group-item-editor");
             editorContainer.addComponent(editor);
             editor.registerEvent(UIEvent.CHANGE, onPropertyEditorChange);
-            
+
             _propertyGroup.registerInternalEvents(Events, true);
             
             return editor;
