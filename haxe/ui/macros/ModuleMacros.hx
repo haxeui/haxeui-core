@@ -156,6 +156,10 @@ class ModuleMacros {
                     builder.add(macro 
                         haxe.ui.ToolkitAssets.instance.preloadList.push({type: "image", resourceId: $v{r}})
                     );
+                } else if (StringTools.endsWith(r, ".ttf")) {
+                    builder.add(macro 
+                        haxe.ui.ToolkitAssets.instance.preloadList.push({type: "font", resourceId: $v{r}})
+                    );
                 }
             }
         }
