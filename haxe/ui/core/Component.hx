@@ -1339,6 +1339,24 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     // Invalidation
     //***********************************************************************************************************
 
+    private function onThemeChanged() {
+        _initialSizeApplied = false;
+        if (_style != null) {
+            if (_style.initialWidth != null) {
+                width = 0;
+            }
+            if (_style.initialPercentWidth != null) {
+                percentWidth = null;
+            }
+            if (_style.initialHeight != null) {
+                height = 0;
+            }
+            if (_style.initialPercentHeight != null) {
+                percentHeight = null;
+            }
+        }
+    }
+    
     private override function initializeComponent() {
         if (_isInitialized == true) {
             return;

@@ -104,6 +104,20 @@ class Screen extends ScreenImpl {
         }
         c.invalidateComponent();
     }
+
+    private function onThemeChanged() {
+        for (c in rootComponents) {
+            onThemeChangedChildren(c);
+        }
+    }
+    
+    @:access(haxe.ui.core.Component)
+    private function onThemeChangedChildren(c:Component) {
+        for (child in c.childComponents) {
+            onThemeChangedChildren(child);
+        }
+        c.onThemeChanged();
+    }
     
     //***********************************************************************************************************
     // Events

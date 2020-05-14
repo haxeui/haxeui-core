@@ -50,6 +50,7 @@ class Toolkit {
         _theme = value;
         if (_initialized == true) {
             ThemeManager.instance.applyTheme(_theme);
+            Screen.instance.onThemeChanged();
             Screen.instance.invalidateAll();
         }
         return value;
