@@ -1628,6 +1628,12 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
                 c.addScriptEvent(k, _scriptEvents.get(k));
             }
         }
+        if (customStyle != null) {
+            if (c.customStyle == null) {
+                c.customStyle = new Style();
+            }
+            c.customStyle.apply(customStyle);
+        }
     }
     
     //***********************************************************************************************************

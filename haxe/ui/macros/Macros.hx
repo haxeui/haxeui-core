@@ -125,7 +125,7 @@ class Macros {
             }
             
             var getter = builder.addGetter(f.name, f.type, macro {
-                if ($p{["customStyle", f.name]} != $v{defaultValue}) {
+                if ($p{["customStyle", f.name]} != null) {
                     return $p{["customStyle", f.name]};
                 }
                 if (style == null || $p{["style", f.name]} == null) {
@@ -134,7 +134,7 @@ class Macros {
                 return $p{["style", f.name]};
             });
             getter.addMeta(":style");
-            getter.addMeta(":clonable");
+            //getter.addMeta(":clonable");
             getter.addMeta(":dox", [macro group = "Style properties"]);
             
             var codeBuilder = new CodeBuilder(macro {
