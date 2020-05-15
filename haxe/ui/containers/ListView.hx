@@ -220,7 +220,7 @@ class ListViewEvents extends ScrollViewEvents {
         
         var components = e.target.findComponentsUnderPoint(e.screenX, e.screenY);
         for (component in components) {
-            if (Std.is(component, InteractiveComponent)) {
+            if (Std.is(component, InteractiveComponent) && cast(component, InteractiveComponent).allowInteraction == true) {
                 return;
             }
         }

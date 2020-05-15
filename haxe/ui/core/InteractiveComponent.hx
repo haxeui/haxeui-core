@@ -1,5 +1,6 @@
 package haxe.ui.core;
 
+import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.containers.ScrollView;
 import haxe.ui.events.FocusEvent;
 import haxe.ui.focus.FocusManager;
@@ -13,6 +14,11 @@ class InteractiveComponent extends Component implements IFocusable {
         super();
     }
 
+    //***********************************************************************************************************
+    // Public API
+    //***********************************************************************************************************
+    @:clonable @:behaviour(DefaultBehaviour, true)      public var allowInteraction:Bool;
+    
     private var _focus:Bool = false;
     /**
      Whether this component currently has focus
