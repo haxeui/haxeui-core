@@ -10,7 +10,6 @@ class VerticalVirtualLayout extends VirtualLayout {
         super.repositionChildren();
 
         var comp:IVirtualContainer = cast(_component, IVirtualContainer);
-        var usableSize = this.usableSize;
         var itemHeight:Float = this.itemHeight;
         var contents:Component = this.contents;
         var verticalSpacing = contents.layout.verticalSpacing;

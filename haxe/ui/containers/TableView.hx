@@ -458,13 +458,13 @@ private class Layout extends VerticalVirtualLayout {
     }
     
     public override function repositionChildren() {
-        super.repositionChildren();
-
         var header = findComponent(Header, true);
         if (header == null) {
             return;
         }
-        
+
+        super.repositionChildren();
+
         header.left = paddingLeft;// + marginLeft(header);
         header.top = paddingTop;// + marginTop(header);
         var rc:Rectangle = new Rectangle(cast(_component, ScrollView).hscrollPos + 1, 1, usableWidth, header.height);
@@ -495,6 +495,15 @@ private class Layout extends VerticalVirtualLayout {
             data.top = header.top + header.height - 1;
             data.componentWidth = header.width;
         }
+    }
+    
+    private override function resizeChildren() {
+        var header = findComponent(Header, true);
+        if (header == null) {
+            return;
+        }
+        
+        super.resizeChildren();
     }
     
     private override function verticalConstraintModifier():Float {
