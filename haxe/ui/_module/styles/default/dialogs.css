@@ -49,3 +49,19 @@
     vertical-align: "center";
     cursor: "pointer";
 }
+
+.dialog #iconImage.info {
+    resource: "haxeui-core/styles/default/dialogs/information.png";
+}
+
+.dialog #iconImage.question {
+    resource: "haxeui-core/styles/default/dialogs/question.png";
+}
+
+.dialog #iconImage.warning {
+    resource: "haxeui-core/styles/default/dialogs/exclamation.png";
+}
+
+.dialog #iconImage.error {
+    resource: "haxeui-core/styles/default/dialogs/cross-circle.png";
+}
