@@ -57,6 +57,7 @@ class MessageBoxBase extends Dialog {
     private function set_type(value:MessageBoxType):MessageBoxType {
         _type = value.toString();
         iconImage.addClass(_type);
+        addClass(_type);
         return value;
     }
 }
