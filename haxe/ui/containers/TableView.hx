@@ -472,6 +472,7 @@ private class Layout extends VerticalVirtualLayout {
         
         var data = findComponent("tableview-contents", Box, true, "css");
         if (data != null) {
+            data.lockLayout(true);
             for (item in data.childComponents) {
                 var headerChildComponents = header.childComponents;
                 for (column in headerChildComponents) {
@@ -494,6 +495,7 @@ private class Layout extends VerticalVirtualLayout {
             data.left = paddingLeft;
             data.top = header.top + header.height - 1;
             data.componentWidth = header.width;
+            data.unlockLayout(true);
         }
     }
     
