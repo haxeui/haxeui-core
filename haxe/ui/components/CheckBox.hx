@@ -24,7 +24,7 @@ class CheckBox extends InteractiveComponent {
 // Custom children
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
-private class Value extends InteractiveComponent {
+class CheckBoxValue extends InteractiveComponent {
     public function new() {
         super();
         #if (openfl && !flixel)
@@ -33,6 +33,18 @@ private class Value extends InteractiveComponent {
     }
 
     private override function onReady() { // use onReady so we have a parentComponent
+        createIcon();
+    }
+    
+    private override function applyStyle(style:Style) {
+        super.applyStyle(style);
+        var icon:Image = findComponent(Image);
+        if (icon != null) {
+            icon.resource = style.icon;
+        }
+    }
+    
+    public function createIcon() {
         var icon:Image = findComponent(Image);
         if (icon == null && parentComponent != null) {
             icon = new Image();
@@ -42,14 +54,6 @@ private class Value extends InteractiveComponent {
                 icon.resource = style.icon;
             }
             addComponent(icon);
-        }
-    }
-    
-    private override function applyStyle(style:Style) {
-        super.applyStyle(style);
-        var icon:Image = findComponent(Image);
-        if (icon != null) {
-            icon.resource = style.icon;
         }
     }
 }
@@ -99,7 +103,13 @@ private class SelectedBehaviour extends DataBehaviour {
     */
     
     private override function validateData() {
-        var valueComponent:Value = _component.findComponent(Value);
+        var valueComponent:CheckBoxValue = _component.findComponent(CheckBoxValue);
+        if (valueComponent == null) {
+            return;
+        }
+        
+        valueComponent.createIcon();
+        
         if (_value == true) {
             valueComponent.addClass(":selected");
         } else {
@@ -141,12 +151,12 @@ private class Events extends haxe.ui.events.Events  {
     
     private function onMouseOver(event:MouseEvent) {
         _target.addClass(":hover");
-        _target.findComponent(Value).addClass(":hover");
+        _target.findComponent(CheckBoxValue).addClass(":hover");
     }
     
     private function onMouseOut(event:MouseEvent) {
         _target.removeClass(":hover");
-        _target.findComponent(Value).removeClass(":hover");
+        _target.findComponent(CheckBoxValue).removeClass(":hover");
     }
     
     private function onClick(event:MouseEvent) {
@@ -167,8 +177,8 @@ class CheckBoxBuilder extends CompositeBuilder {
     }
     
     public override function create() {
-        if (_checkbox.findComponent(Value) == null) {
-            var value = new Value();
+        if (_checkbox.findComponent(CheckBoxValue) == null) {
+            var value = new CheckBoxValue();
             value.id = '${_checkbox.cssName}-value';
             value.addClass('${_checkbox.cssName}-value');
             value.scriptAccess = false;
