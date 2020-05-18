@@ -3,8 +3,6 @@ package haxe.ui.backend;
 import haxe.ui.containers.dialogs.Dialog;
 import haxe.ui.core.Component;
 import haxe.ui.core.ComponentBounds;
-import haxe.ui.core.ComponentLayout;
-import haxe.ui.core.ComponentValidation;
 import haxe.ui.core.ImageDisplay;
 import haxe.ui.core.TextDisplay;
 import haxe.ui.core.TextInput;
