@@ -10,7 +10,7 @@ import haxe.ui.layouts.HorizontalLayout;
 import haxe.ui.styles.Style;
 import haxe.ui.util.Variant;
 
-@:composite(Events, CheckBoxBuilder, HorizontalLayout)
+@:composite(Events, CheckBoxBuilder, CheckBoxLayout)
 class CheckBox extends InteractiveComponent {
     //***********************************************************************************************************
     // Public API
@@ -204,5 +204,20 @@ class CheckBoxBuilder extends CompositeBuilder {
     
     private override function get_cssName():String {
         return "checkbox";
+    }
+}
+
+//***********************************************************************************************************
+// Layout
+//***********************************************************************************************************
+private class CheckBoxLayout extends HorizontalLayout {
+    public override function repositionChildren() {
+        super.repositionChildren();
+        
+        var icon = _component.findComponent(Image, true);
+        if (icon != null) {
+            icon.left = Math.fround(icon.left);
+            icon.top = Math.fround(icon.top);
+        }
     }
 }

@@ -1005,7 +1005,7 @@ class ScrollViewBuilder extends CompositeBuilder {
             clipCY = _contents.componentClipRect.height;
         }
 
-        var rc:Rectangle = new Rectangle(xpos, ypos, clipCX, clipCY);
+        var rc:Rectangle = new Rectangle(xpos, ypos, Math.fround(clipCX), Math.fround(clipCY));
         _contents.componentClipRect = rc;
     }
     

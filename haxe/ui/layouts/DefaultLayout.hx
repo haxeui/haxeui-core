@@ -38,8 +38,6 @@ class DefaultLayout extends Layout {
     }
 
     private override function repositionChildren() {
-        var usableSize:Size = component.layout.usableSize;
-
         for (child in component.childComponents) {
             if (child.includeInLayout == false) {
                 continue;
