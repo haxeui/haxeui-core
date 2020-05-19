@@ -27,7 +27,7 @@ class CheckBox extends InteractiveComponent {
 class CheckBoxValue extends InteractiveComponent {
     public function new() {
         super();
-        #if (openfl && !flixel)
+        #if (haxeui_openfl && !haxeui_flixel)
         mouseChildren = false;
         #end
     }

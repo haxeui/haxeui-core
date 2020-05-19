@@ -33,14 +33,14 @@ private class LabelLayout extends DefaultLayout {
             component.getTextDisplay().width = component.componentWidth - paddingLeft - paddingRight;
 
              // TODO: make not specific - need to check all backends first
-            #if (flixel)
+            #if (haxeui_flixel)
             component.getTextDisplay().wordWrap = true;
             component.getTextDisplay().tf.autoSize = false;
-            #elseif (openfl)
+            #elseif (haxeui_openfl)
             component.getTextDisplay().textField.autoSize = openfl.text.TextFieldAutoSize.NONE;
             component.getTextDisplay().multiline = true;
             component.getTextDisplay().wordWrap = true;
-            #elseif (pixijs)
+            #elseif (haxeui_pixijs)
             component.getTextDisplay().textField.style.wordWrapWidth = component.getTextDisplay().width;
             component.getTextDisplay().wordWrap = true;
             #else

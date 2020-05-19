@@ -1121,7 +1121,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     //***********************************************************************************************************
     // Styles
     //***********************************************************************************************************
-    #if !(flixel || heaps)
+    #if !(haxeui_flixel || haxeui_heaps)
     @:style                 public var color:Null<Color>;
     #end
     @:style                 public var backgroundColor:Null<Color>;
