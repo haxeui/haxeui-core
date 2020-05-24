@@ -61,6 +61,7 @@ class ScrollView extends Component {
     }
     
     public function ensureVisible(component:Component) {
+        return; // TODO: causes issues, needs to be enhanced / re-implemented (specifically in propertygrids)
         var contents:Component = findComponent("scrollview-contents", false, "css");
         
         var hscroll:HorizontalScroll = findComponent(HorizontalScroll);
