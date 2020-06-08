@@ -24,7 +24,7 @@
         { "src": "gradle.properties", "dst": "${target}/build/android/gradle.properties"},
         { "src": "gradlew", "dst": "${target}/build/android/gradlew"},
         { "src": "gradlew.bat", "dst": "${target}/build/android/gradlew.bat"},
-        { "src": "local.properties", "dst": "${target}/build/android/local.properties"},
+        { "src": "local.properties_", "dst": "${target}/build/android/local.properties"},
         { "src": "settings.gradle", "dst": "${target}/build/android/settings.gradle"},
     
         { "src": "app/build.gradle", "dst": "${target}/build/android/app/build.gradle"},
