@@ -33,9 +33,15 @@ class ImageLoader {
             }
             
             var s = try request.status catch (e:Dynamic) null;
+            #if (haxe_ver >= 4)
+            if (s == js.Syntax.code("undefined")) {
+                s = null;
+            }
+            #else
             if (s == untyped __js__("undefined")) {
                 s = null;
             }
+            #end
             
             if (s != null && s >= 200 && s < 400) {
                 Toolkit.assets.imageFromBytes(Bytes.ofData(request.response), callback);
