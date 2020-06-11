@@ -508,11 +508,11 @@ class DropDownEvents extends ButtonEvents {
                 _wrapper.removeClass("dropdown-popup-expanded");
             }
             
-            if (_wrapper.screenLeft + _wrapper.width > Screen.instance.width) {
-                _wrapper.left = _wrapper.screenLeft - _wrapper.width + _dropdown.width;
+            if (_wrapper.screenLeft + _wrapper.actualComponentWidth > Screen.instance.width) {
+                _wrapper.left = _wrapper.screenLeft - _wrapper.actualComponentWidth + _dropdown.actualComponentWidth;
             }
-            if (_wrapper.screenTop + _wrapper.height > Screen.instance.height) {
-                _wrapper.top = _dropdown.screenTop - _wrapper.height;
+            if (_wrapper.screenTop + _wrapper.actualComponentHeight > Screen.instance.height) {
+                _wrapper.top = _dropdown.screenTop - _wrapper.actualComponentHeight;
             }
         }
 
