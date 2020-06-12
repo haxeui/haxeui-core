@@ -142,7 +142,7 @@ class Macros {
                     return value;
                 }
                 if (_style == null) {
-                    _style = new haxe.ui.styles.Style();
+                    _style = {};
                 }
                 $p{["customStyle", f.name]} = value;
                 invalidateComponentStyle();

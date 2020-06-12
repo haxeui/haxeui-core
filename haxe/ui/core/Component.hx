@@ -805,7 +805,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
      A custom style object that will appled to this component after any css rules have been matched and applied
     **/
     @:dox(group = "Style related properties and methods")
-    public var customStyle:Style = new Style();
+    public var customStyle:Style = {};
     @:dox(group = "Style related properties and methods")
     private var classes:Array<String> = [];
 
@@ -1630,7 +1630,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         }
         if (customStyle != null) {
             if (c.customStyle == null) {
-                c.customStyle = new Style();
+                c.customStyle = {};
             }
             c.customStyle.apply(customStyle);
         }

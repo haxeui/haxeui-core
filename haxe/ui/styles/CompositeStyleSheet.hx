@@ -65,7 +65,7 @@ class CompositeStyleSheet {
     }
     
     public function buildStyleFor(c:Component):Style {
-        var style = new Style();
+        var style:Style = {};
         
         for (s in _styleSheets) {
             style = s.buildStyleFor(c, style);

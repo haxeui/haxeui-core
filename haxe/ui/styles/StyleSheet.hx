@@ -109,7 +109,7 @@ class StyleSheet {
     
     public function buildStyleFor(c:Component, style:Style = null):Style {
         if (style == null) {
-            style = new Style();
+            style = {};
         }
         for (r in rules) {
             if (!r.match(c)) {
