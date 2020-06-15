@@ -9,7 +9,6 @@ class VerticalLayout extends DefaultLayout {
 
     private override function repositionChildren() {
         var ypos = paddingTop;
-        var usableSize:Size = component.layout.usableSize;
 
         for (child in component.childComponents) {
             if (child.includeInLayout == false) {

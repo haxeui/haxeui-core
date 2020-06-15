@@ -9,6 +9,7 @@ import haxe.ui.behaviours.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
+import haxe.ui.core.ComponentContainer.ComponentValueBehaviour;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.data.ArrayDataSource;
 import haxe.ui.events.MouseEvent;
@@ -31,6 +32,7 @@ class DropDown extends Button implements IDataComponent {
     @:behaviour(DefaultBehaviour)                    public var dropdownSize:Null<Int>;
     @:behaviour(SelectedIndexBehaviour, -1)          public var selectedIndex:Int;
     @:behaviour(SelectedItemBehaviour)               public var selectedItem:Dynamic;
+    @:clonable @:value(selectedItem)                 public var value:Dynamic;
 }
 
 //***********************************************************************************************************
@@ -94,14 +96,27 @@ private class SelectedIndexBehaviour extends DataBehaviour {
 
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
-private class SelectedItemBehaviour extends Behaviour {
+private class SelectedItemBehaviour extends DataBehaviour  {
+    private override function validateData() {
+        var handler:IDropDownHandler = cast(_component._compositeBuilder, DropDownBuilder).handler;
+        handler.selectedItem = _value;
+    }
+    
     public override function getDynamic():Dynamic {
         var handler:IDropDownHandler = cast(_component._compositeBuilder, DropDownBuilder).handler;
         return handler.selectedItem;
     }
     
     public override function set(value:Variant) {
-        super.set(value);
+        if (_component.isReady == false) {
+            super.set(value);
+            return;
+        }
+        if (value == _value) {
+            return;
+        }
+        _value = value;
+        invalidateData();
         var handler:IDropDownHandler = cast(_component._compositeBuilder, DropDownBuilder).handler;
         handler.selectedItem = value;
     }
@@ -264,12 +279,17 @@ class ListDropDownHandler extends DropDownHandler {
     
     private var _cachedSelectedItem:Dynamic = null;
     private override function set_selectedItem(value:Dynamic):Dynamic {
+        var v:Variant = value;
+        var index = indexOfItem(v);
+        _cachedSelectedIndex = index;
         if (_listview == null) {
             _cachedSelectedItem = value;
+            if (index != -1) {
+                _dropdown.text = v;
+            }
             return value;
         }
-        var v:Variant = value;
-        _cachedSelectedIndex = indexOfItem(v);
+        
         _dropdown.selectedIndex = _cachedSelectedIndex;
         return value;
     }
@@ -488,11 +508,11 @@ class DropDownEvents extends ButtonEvents {
                 _wrapper.removeClass("dropdown-popup-expanded");
             }
             
-            if (_wrapper.screenLeft + _wrapper.width > Screen.instance.width) {
-                _wrapper.left = _wrapper.screenLeft - _wrapper.width + _dropdown.width;
+            if (_wrapper.screenLeft + _wrapper.actualComponentWidth > Screen.instance.width) {
+                _wrapper.left = _wrapper.screenLeft - _wrapper.actualComponentWidth + _dropdown.actualComponentWidth;
             }
-            if (_wrapper.screenTop + _wrapper.height > Screen.instance.height) {
-                _wrapper.top = _dropdown.screenTop - _wrapper.height;
+            if (_wrapper.screenTop + _wrapper.actualComponentHeight > Screen.instance.height) {
+                _wrapper.top = _dropdown.screenTop - _wrapper.actualComponentHeight;
             }
         }
 

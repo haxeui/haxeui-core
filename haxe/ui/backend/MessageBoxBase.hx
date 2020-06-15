@@ -49,12 +49,15 @@ class MessageBoxBase extends Dialog {
         return value;
     }
     
+    private var _type:String = null;
     public var type(get, set):MessageBoxType;
     private function get_type():MessageBoxType {
-        return iconImage.resource;
+        return _type;
     }
     private function set_type(value:MessageBoxType):MessageBoxType {
-        iconImage.resource = value.toString();
+        _type = value.toString();
+        iconImage.addClass(_type);
+        addClass(_type);
         return value;
     }
 }

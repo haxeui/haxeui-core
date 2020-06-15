@@ -20,13 +20,13 @@ class Range extends InteractiveComponent implements IDirectionalComponent {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:clonable @:behaviour(RangeMin, 0)             public var min:Float;
-    @:clonable @:behaviour(RangeMax, 100)           public var max:Float;
-    @:clonable @:behaviour(RangeStart, null)        public var start:Null<Float>;
-    @:clonable @:behaviour(RangeEnd, 0)             public var end:Float;
-    @:clonable @:behaviour(InvalidatingBehaviour)   public var precision:Int;
-    @:clonable @:behaviour(InvalidatingBehaviour)   public var step:Float;
-    @:clonable @:behaviour(AllowInteraction)        public var allowInteraction:Bool;
+    @:clonable @:behaviour(RangeMin, 0)                 public var min:Float;
+    @:clonable @:behaviour(RangeMax, 100)               public var max:Float;
+    @:clonable @:behaviour(RangeStart, null)            public var start:Null<Float>;
+    @:clonable @:behaviour(RangeEnd, 0)                 public var end:Float;
+    @:clonable @:behaviour(InvalidatingBehaviour)       public var precision:Int;
+    @:clonable @:behaviour(InvalidatingBehaviour)       public var step:Float;
+    @:clonable @:behaviour(AllowInteraction, false)     public var allowInteraction:Bool;
     
     //***********************************************************************************************************
     // Private API

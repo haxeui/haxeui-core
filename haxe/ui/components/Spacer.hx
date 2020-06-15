@@ -8,7 +8,7 @@ import haxe.ui.core.Component;
 class Spacer extends Component {
     public function new() {
         super();
-        #if (openfl && !flixel)
+        #if (haxeui_openfl && !haxeui_flixel)
         mouseChildren = false;
         #end
     }

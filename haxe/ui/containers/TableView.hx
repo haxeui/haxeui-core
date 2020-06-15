@@ -171,7 +171,9 @@ private class Events extends ScrollViewEvents {
         var timerClick:Timer = null;
         var currentMouseX:Float = e.screenX, currentMouseY:Float = e.screenY;
         var renderer:ItemRenderer = cast(e.target, ItemRenderer);
-        var __onMouseMove:MouseEvent->Void = null, __onMouseUp:MouseEvent->Void, __onMouseClick:MouseEvent->Void;
+        var __onMouseMove:MouseEvent->Void = null;
+        var __onMouseUp:MouseEvent->Void = null;
+        var __onMouseClick:MouseEvent->Void = null;
 
         __onMouseMove = function (_e:MouseEvent) {
             currentMouseX = _e.screenX;
@@ -225,9 +227,13 @@ private class Events extends ScrollViewEvents {
     }
     
     private function onRendererClick(e:MouseEvent):Void {
+        if (_containerEventsPaused == true) {
+            return;
+        }
+        
         var components = e.target.findComponentsUnderPoint(e.screenX, e.screenY);
         for (component in components) {
-            if (Std.is(component, InteractiveComponent)) {
+            if (Std.is(component, InteractiveComponent) && cast(component, InteractiveComponent).allowInteraction == true) {
                 return;
             }
         }
@@ -454,13 +460,13 @@ private class Layout extends VerticalVirtualLayout {
     }
     
     public override function repositionChildren() {
-        super.repositionChildren();
-
         var header = findComponent(Header, true);
         if (header == null) {
             return;
         }
-        
+
+        super.repositionChildren();
+
         header.left = paddingLeft;// + marginLeft(header);
         header.top = paddingTop;// + marginTop(header);
         var rc:Rectangle = new Rectangle(cast(_component, ScrollView).hscrollPos + 1, 1, usableWidth, header.height);
@@ -468,6 +474,7 @@ private class Layout extends VerticalVirtualLayout {
         
         var data = findComponent("tableview-contents", Box, true, "css");
         if (data != null) {
+            data.lockLayout(true);
             for (item in data.childComponents) {
                 var headerChildComponents = header.childComponents;
                 for (column in headerChildComponents) {
@@ -490,7 +497,17 @@ private class Layout extends VerticalVirtualLayout {
             data.left = paddingLeft;
             data.top = header.top + header.height - 1;
             data.componentWidth = header.width;
+            data.unlockLayout(true);
         }
+    }
+    
+    private override function resizeChildren() {
+        var header = findComponent(Header, true);
+        if (header == null) {
+            return;
+        }
+        
+        super.resizeChildren();
     }
     
     private override function verticalConstraintModifier():Float {

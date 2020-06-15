@@ -4,10 +4,10 @@ import haxe.ui.backend.MessageBoxBase;
 import haxe.ui.containers.dialogs.Dialog;
 
 abstract MessageBoxType(String) from String {
-    public static inline var TYPE_INFO:MessageBoxType = "haxeui-core/styles/default/dialogs/information.png";
-    public static inline var TYPE_QUESTION:MessageBoxType = "haxeui-core/styles/default/dialogs/question.png";
-    public static inline var TYPE_WARNING:MessageBoxType = "haxeui-core/styles/default/dialogs/exclamation.png";
-    public static inline var TYPE_ERROR:MessageBoxType = "haxeui-core/styles/default/dialogs/cross-circle.png";
+    public static inline var TYPE_INFO:MessageBoxType = "info";
+    public static inline var TYPE_QUESTION:MessageBoxType = "question";
+    public static inline var TYPE_WARNING:MessageBoxType = "warning";
+    public static inline var TYPE_ERROR:MessageBoxType = "error";
     
 	public function toString():String {
         return Std.string(this);

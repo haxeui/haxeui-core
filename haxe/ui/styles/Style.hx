@@ -5,104 +5,104 @@ import haxe.ui.filters.FilterParser;
 import haxe.ui.styles.animation.Animation.AnimationOptions;
 import haxe.ui.styles.elements.Directive;
 
+@:structInit
 class Style {
-    public var left:Null<Float>;
-    public var top:Null<Float>;
+    @:optional public var left:Null<Float>;
+    @:optional public var top:Null<Float>;
     
-    public var autoWidth:Null<Bool>;
-    public var width:Null<Float>;
-    public var percentWidth:Null<Float>;
-    public var initialWidth:Null<Float>;
-    public var initialPercentWidth:Null<Float>;
-    public var minWidth:Null<Float>;
-    public var maxWidth:Null<Float>;
+    @:optional public var autoWidth:Null<Bool>;
+    @:optional public var width:Null<Float>;
+    @:optional public var percentWidth:Null<Float>;
+    @:optional public var initialWidth:Null<Float>;
+    @:optional public var initialPercentWidth:Null<Float>;
+    @:optional public var minWidth:Null<Float>;
+    @:optional public var maxWidth:Null<Float>;
     
-    public var autoHeight:Null<Bool>;
-    public var height:Null<Float>;
-    public var percentHeight:Null<Float>;
-    public var initialHeight:Null<Float>;
-    public var initialPercentHeight:Null<Float>;
-    public var minHeight:Null<Float>;
-    public var maxHeight:Null<Float>;
+    @:optional public var autoHeight:Null<Bool>;
+    @:optional public var height:Null<Float>;
+    @:optional public var percentHeight:Null<Float>;
+    @:optional public var initialHeight:Null<Float>;
+    @:optional public var initialPercentHeight:Null<Float>;
+    @:optional public var minHeight:Null<Float>;
+    @:optional public var maxHeight:Null<Float>;
     
-    public var paddingTop:Null<Float>;
-    public var paddingLeft:Null<Float>;
-    public var paddingRight:Null<Float>;
-    public var paddingBottom:Null<Float>;
+    @:optional public var paddingTop:Null<Float>;
+    @:optional public var paddingLeft:Null<Float>;
+    @:optional public var paddingRight:Null<Float>;
+    @:optional public var paddingBottom:Null<Float>;
 
-    public var marginTop:Null<Float>;
-    public var marginLeft:Null<Float>;
-    public var marginRight:Null<Float>;
-    public var marginBottom:Null<Float>;
+    @:optional public var marginTop:Null<Float>;
+    @:optional public var marginLeft:Null<Float>;
+    @:optional public var marginRight:Null<Float>;
+    @:optional public var marginBottom:Null<Float>;
 
-    public var horizontalSpacing:Null<Float>;
-    public var verticalSpacing:Null<Float>;
+    @:optional public var horizontalSpacing:Null<Float>;
+    @:optional public var verticalSpacing:Null<Float>;
     
-    public var color:Null<Int>;
+    @:optional public var color:Null<Int>;
     
-    public var backgroundColor:Null<Int>;
-    public var backgroundColorEnd:Null<Int>;
-    public var backgroundGradientStyle:Null<String>;
-    public var backgroundOpacity:Null<Float>;
+    @:optional public var backgroundColor:Null<Int>;
+    @:optional public var backgroundColorEnd:Null<Int>;
+    @:optional public var backgroundGradientStyle:Null<String>;
+    @:optional public var backgroundOpacity:Null<Float>;
     
-    public var backgroundImage:Null<String>;
-    public var backgroundImageRepeat:Null<String>;
+    @:optional public var backgroundImage:Null<String>;
+    @:optional public var backgroundImageRepeat:Null<String>;
 
-    public var backgroundImageClipTop:Null<Float>;
-    public var backgroundImageClipLeft:Null<Float>;
-    public var backgroundImageClipBottom:Null<Float>;
-    public var backgroundImageClipRight:Null<Float>;
+    @:optional public var backgroundImageClipTop:Null<Float>;
+    @:optional public var backgroundImageClipLeft:Null<Float>;
+    @:optional public var backgroundImageClipBottom:Null<Float>;
+    @:optional public var backgroundImageClipRight:Null<Float>;
 
-    public var backgroundImageSliceTop:Null<Float>;
-    public var backgroundImageSliceLeft:Null<Float>;
-    public var backgroundImageSliceBottom:Null<Float>;
-    public var backgroundImageSliceRight:Null<Float>;
+    @:optional public var backgroundImageSliceTop:Null<Float>;
+    @:optional public var backgroundImageSliceLeft:Null<Float>;
+    @:optional public var backgroundImageSliceBottom:Null<Float>;
+    @:optional public var backgroundImageSliceRight:Null<Float>;
     
-    public var borderColor:Null<Int>;
-    public var borderTopColor:Null<Int>;
-    public var borderLeftColor:Null<Int>;
-    public var borderBottomColor:Null<Int>;
-    public var borderRightColor:Null<Int>;
-    public var borderSize:Null<Float>;
-    public var borderTopSize:Null<Float>;
-    public var borderLeftSize:Null<Float>;
-    public var borderBottomSize:Null<Float>;
-    public var borderRightSize:Null<Float>;
-    public var borderRadius:Null<Float>;
-    public var borderOpacity:Null<Float>;
-    public var borderStyle:Null<String>;
+    @:optional public var borderColor:Null<Int>;
+    @:optional public var borderTopColor:Null<Int>;
+    @:optional public var borderLeftColor:Null<Int>;
+    @:optional public var borderBottomColor:Null<Int>;
+    @:optional public var borderRightColor:Null<Int>;
+    @:optional public var borderSize:Null<Float>;
+    @:optional public var borderTopSize:Null<Float>;
+    @:optional public var borderLeftSize:Null<Float>;
+    @:optional public var borderBottomSize:Null<Float>;
+    @:optional public var borderRightSize:Null<Float>;
+    @:optional public var borderRadius:Null<Float>;
+    @:optional public var borderOpacity:Null<Float>;
+    @:optional public var borderStyle:Null<String>;
     
-    public var icon:Null<String>;
-    public var iconPosition:Null<String>;
+    @:optional public var icon:Null<String>;
+    @:optional public var iconPosition:Null<String>;
     
-    public var horizontalAlign:Null<String>;
-    public var verticalAlign:Null<String>;
-    public var textAlign:Null<String>;
+    @:optional public var horizontalAlign:Null<String>;
+    @:optional public var verticalAlign:Null<String>;
+    @:optional public var textAlign:Null<String>;
     
-    public var opacity:Null<Float>;
-    public var clip:Null<Bool>;
-    public var native:Null<Bool>;
+    @:optional public var opacity:Null<Float>;
+    @:optional public var clip:Null<Bool>;
+    @:optional public var native:Null<Bool>;
 
-    public var fontName:Null<String>;
-    public var fontSize:Null<Float>;
-    public var fontBold:Null<Bool>;
-    public var fontUnderline:Null<Bool>;
-    public var fontItalic:Null<Bool>;
+    @:optional public var fontName:Null<String>;
+    @:optional public var fontSize:Null<Float>;
+    @:optional public var fontBold:Null<Bool>;
+    @:optional public var fontUnderline:Null<Bool>;
+    @:optional public var fontItalic:Null<Bool>;
     
-    public var cursor:Null<String>;
-    public var hidden:Null<Bool>;
+    @:optional public var cursor:Null<String>;
+    @:optional public var hidden:Null<Bool>;
     
-    public var filter:Array<Filter>;
+    @:optional public var filter:Array<Filter>;
     
-    public var resource:String;
+    @:optional public var resource:String;
     
-    public var animationName:Null<String>;
-    public var animationOptions:AnimationOptions;
+    @:optional public var animationName:Null<String>;
+    @:optional public var animationOptions:AnimationOptions;
     
-    public var mode:String;
+    @:optional public var mode:String;
     
-    public function new() {
-    }
+    // public function new() {}
     
     public function mergeDirectives(map:Map<String, Directive>) {
         for (key in map.keys()) {

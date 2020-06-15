@@ -9,7 +9,6 @@ class HorizontalLayout extends DefaultLayout {
 
     private override function repositionChildren() {
         var xpos = paddingLeft;
-        var usableSize:Size = component.layout.usableSize;
 
         for (child in component.childComponents) {
             if (child.includeInLayout == false) {

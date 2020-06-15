@@ -61,6 +61,7 @@ class ScrollView extends Component {
     }
     
     public function ensureVisible(component:Component) {
+        return; // TODO: causes issues, needs to be enhanced / re-implemented (specifically in propertygrids)
         var contents:Component = findComponent("scrollview-contents", false, "css");
         
         var hscroll:HorizontalScroll = findComponent(HorizontalScroll);
@@ -487,7 +488,7 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         
         _lastMousePos = new Point(event.screenX, event.screenY);
         
-        event.cancel();
+        //event.cancel();
         var componentOffset = _scrollview.getComponentOffset();
         if (hscroll != null && hscroll.hitTest(event.screenX - componentOffset.x, event.screenY - componentOffset.y) == true) {
             return;
@@ -1005,7 +1006,7 @@ class ScrollViewBuilder extends CompositeBuilder {
             clipCY = _contents.componentClipRect.height;
         }
 
-        var rc:Rectangle = new Rectangle(xpos, ypos, clipCX, clipCY);
+        var rc:Rectangle = new Rectangle(xpos, ypos, Math.fround(clipCX), Math.fround(clipCY));
         _contents.componentClipRect = rc;
     }
     

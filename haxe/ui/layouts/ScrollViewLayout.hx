@@ -17,17 +17,12 @@ class ScrollViewLayout extends DefaultLayout {
         var hscroll = component.findComponent(HorizontalScroll, false);
         var vscroll = component.findComponent(VerticalScroll, false);
 
-        var ucx = innerWidth;
-        var ucy = innerHeight;
-
         if (hscroll != null && hidden(hscroll) == false) {
-            var ucy = innerHeight;
-            hscroll.moveComponent(paddingLeft, ucy - hscroll.componentHeight + paddingBottom);
+            hscroll.moveComponent(paddingLeft, Math.fround(component.componentHeight - hscroll.componentHeight - paddingBottom));
         }
 
         if (vscroll != null && hidden(vscroll) == false) {
-            var ucx = innerWidth;
-            vscroll.moveComponent(ucx - vscroll.componentWidth + paddingRight, paddingTop);
+            vscroll.moveComponent(Math.fround(component.componentWidth - vscroll.componentWidth - paddingRight), paddingTop);
         }
 
         var contents:Component = component.findComponent("scrollview-contents", false, "css");

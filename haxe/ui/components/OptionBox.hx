@@ -2,6 +2,7 @@ package haxe.ui.components;
 
 import haxe.ds.StringMap;
 import haxe.ui.components.CheckBox.CheckBoxBuilder;
+import haxe.ui.components.CheckBox.CheckBoxValue;
 import haxe.ui.core.Component;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.events.UIEvent;
@@ -63,7 +64,11 @@ private class SelectedBehaviour extends DataBehaviour {
         }
 
         
-        var valueComponent:Component = _component.findComponent("optionbox-value");
+        var valueComponent:CheckBoxValue = _component.findComponent("optionbox-value", CheckBoxValue);
+        if (valueComponent == null) {
+            return;
+        }
+        valueComponent.createIcon();
         if (_value == true) {
             valueComponent.addClass(":selected");
             _component.dispatch(new UIEvent(UIEvent.CHANGE));

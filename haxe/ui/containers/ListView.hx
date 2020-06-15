@@ -160,7 +160,9 @@ class ListViewEvents extends ScrollViewEvents {
         var timerClick:Timer = null;
         var currentMouseX:Float = e.screenX, currentMouseY:Float = e.screenY;
         var renderer:ItemRenderer = cast(e.target, ItemRenderer);
-        var __onMouseMove:MouseEvent->Void = null, __onMouseUp:MouseEvent->Void, __onMouseClick:MouseEvent->Void;
+        var __onMouseMove:MouseEvent->Void = null;
+        var __onMouseUp:MouseEvent->Void = null;
+        var __onMouseClick:MouseEvent->Void = null;
 
         __onMouseMove = function (_e:MouseEvent) {
             currentMouseX = _e.screenX;
@@ -220,7 +222,7 @@ class ListViewEvents extends ScrollViewEvents {
         
         var components = e.target.findComponentsUnderPoint(e.screenX, e.screenY);
         for (component in components) {
-            if (Std.is(component, InteractiveComponent)) {
+            if (Std.is(component, InteractiveComponent) && cast(component, InteractiveComponent).allowInteraction == true) {
                 return;
             }
         }

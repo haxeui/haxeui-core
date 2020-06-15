@@ -7,7 +7,6 @@
     padding-right: 5px;
     height: auto;
     width: auto;
-    background-color: white;
     border-bottom-width: 1px;
     border-bottom-color: #ABABAB;
     border-top-width: 0px;
@@ -121,4 +120,5 @@
 .tabview .tabview-content {
     border: 1px solid #ABABAB;
     padding: 5px;
+    background-color: white;
 }

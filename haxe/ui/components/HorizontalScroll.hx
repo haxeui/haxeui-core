@@ -126,6 +126,7 @@ private class HorizontalScrollLayout extends DefaultLayout {
                 x += deinc.width + horizontalSpacing;
             }
             thumb.left = x;
+            thumb.top = Math.fround(thumb.top);
         }
     }
 

@@ -166,7 +166,7 @@ class ComponentBounds extends ComponentLayout {
         return value;
     }
     
-    #if ((openfl || nme) && !flixel)
+    #if ((haxeui_openfl || haxeui_nme) && !haxeui_flixel)
 
     #if flash @:setter(x) #else override #end
     public function set_x(value:Float): #if flash Void #else Float #end {
@@ -234,7 +234,7 @@ class ComponentBounds extends ComponentLayout {
         return f;
     }
 
-    #elseif (flixel)
+    #elseif (haxeui_flixel)
 
     private var _width:Null<Float>;
     private override function set_width(value:Float):Float {

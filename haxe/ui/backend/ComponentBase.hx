@@ -1,10 +1,7 @@
 package haxe.ui.backend;
 
-import haxe.ui.containers.dialogs.Dialog;
 import haxe.ui.core.Component;
 import haxe.ui.core.ComponentBounds;
-import haxe.ui.core.ComponentLayout;
-import haxe.ui.core.ComponentValidation;
 import haxe.ui.core.ImageDisplay;
 import haxe.ui.core.TextDisplay;
 import haxe.ui.core.TextInput;
@@ -221,25 +218,55 @@ class ComponentBase extends ComponentBounds {
     }
     
     private function getNativeConfigProperty(query:String, defaultValue:String = null):String {
-        query = 'component[id=${className}]${query}';
+        query = 'component[id=${nativeClassName}]${query}';
         return Toolkit.nativeConfig.query(query, defaultValue, this);
     }
 
     private function getNativeConfigPropertyBool(query:String, defaultValue:Bool = false):Bool {
-        query = 'component[id=${className}]${query}';
+        query = 'component[id=${nativeClassName}]${query}';
         return Toolkit.nativeConfig.queryBool(query, defaultValue, this);
     }
 
     private function getNativeConfigProperties(query:String = ""):Map<String, String> {
-        query = 'component[id=${className}]${query}';
+        query = 'component[id=${nativeClassName}]${query}';
         return Toolkit.nativeConfig.queryValues(query, this);
     }
 
+    private var _className:String = null;
     public var className(get, null):String;
     private function get_className():String {
-        if (Std.is(this, Dialog)) {
-            return Type.getClassName(Dialog);
+        if (_className != null) {
+            return _className;
         }
-        return Type.getClassName(Type.getClass(this));
+        _className = Type.getClassName(Type.getClass(this));
+        return _className;
+    }
+    
+    private var _nativeClassName:String = null;
+    private var nativeClassName(get, null):String;
+    private function get_nativeClassName():String {
+        if (_nativeClassName != null) {
+            return _nativeClassName;
+        }
+        
+        var r:Class<Dynamic> = Type.getClass(this);
+        while (r != null) {
+            var c = Type.getClassName(r);
+            var t = Toolkit.nativeConfig.query('component[id=${c}].@class', null, this);
+            if (t != null) {
+                _nativeClassName = c;
+                break;
+            }
+            r = Type.getSuperClass(r);
+            if (r == Component) {
+                break;
+            }
+        }
+        
+        if (_nativeClassName == null) {
+            _nativeClassName = className;
+        }
+        
+        return _nativeClassName;
     }
 }

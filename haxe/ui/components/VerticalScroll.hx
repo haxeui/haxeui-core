@@ -132,6 +132,7 @@ private class VerticalScrollLayout extends DefaultLayout {
             if (deinc != null && hidden(deinc) == false) {
                 y += deinc.height + verticalSpacing;
             }
+            thumb.left = Math.fround(thumb.left);
             thumb.top = y;
         }
     }

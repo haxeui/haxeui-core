@@ -805,7 +805,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
      A custom style object that will appled to this component after any css rules have been matched and applied
     **/
     @:dox(group = "Style related properties and methods")
-    public var customStyle:Style = new Style();
+    public var customStyle:Style = {};
     @:dox(group = "Style related properties and methods")
     private var classes:Array<String> = [];
 
@@ -1121,7 +1121,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     //***********************************************************************************************************
     // Styles
     //***********************************************************************************************************
-    #if !(flixel || heaps)
+    #if !(haxeui_flixel || haxeui_heaps)
     @:style                 public var color:Null<Color>;
     #end
     @:style                 public var backgroundColor:Null<Color>;
@@ -1339,6 +1339,24 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     // Invalidation
     //***********************************************************************************************************
 
+    private function onThemeChanged() {
+        _initialSizeApplied = false;
+        if (_style != null) {
+            if (_style.initialWidth != null) {
+                width = 0;
+            }
+            if (_style.initialPercentWidth != null) {
+                percentWidth = null;
+            }
+            if (_style.initialHeight != null) {
+                height = 0;
+            }
+            if (_style.initialPercentHeight != null) {
+                percentHeight = null;
+            }
+        }
+    }
+    
     private override function initializeComponent() {
         if (_isInitialized == true) {
             return;
@@ -1609,6 +1627,12 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             for (k in _scriptEvents.keys()) {
                 c.addScriptEvent(k, _scriptEvents.get(k));
             }
+        }
+        if (customStyle != null) {
+            if (c.customStyle == null) {
+                c.customStyle = {};
+            }
+            c.customStyle.apply(customStyle);
         }
     }
     

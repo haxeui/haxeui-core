@@ -104,8 +104,9 @@ private class Events extends haxe.ui.events.Events {
         target.selected = true;
         
         hideCurrentMenu();
-        var left = target.screenLeft;
-        var top =  target.screenTop + target.height;
+        var componentOffset = target.getComponentOffset();
+        var left = target.screenLeft + componentOffset.x;
+        var top =  target.screenTop + (target.actualComponentHeight - Toolkit.scaleY) + componentOffset.y;
         menu.menuStyleNames = _menubar.menuStyleNames;
         menu.addClasses([_menubar.menuStyleNames, "expanded"]);
         if (menu.findComponent("menu-filler", false) == null) {
@@ -120,12 +121,12 @@ private class Events extends haxe.ui.events.Events {
         Screen.instance.addComponent(menu);
         menu.syncComponentValidation();
         
-        if (left + menu.width > Screen.instance.width) {
-            left = target.screenLeft - menu.width + target.width;
+        if (left + menu.actualComponentWidth > Screen.instance.width) {
+            left = target.screenLeft - menu.actualComponentWidth + target.actualComponentWidth;
         }
         
         menu.left = left;
-        menu.top = top - 1;
+        menu.top = top - Toolkit.scaleY;
         
         _currentButton = target;
         _currentMenu = menu;

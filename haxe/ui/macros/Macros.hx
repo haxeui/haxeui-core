@@ -125,7 +125,7 @@ class Macros {
             }
             
             var getter = builder.addGetter(f.name, f.type, macro {
-                if ($p{["customStyle", f.name]} != $v{defaultValue}) {
+                if ($p{["customStyle", f.name]} != null) {
                     return $p{["customStyle", f.name]};
                 }
                 if (style == null || $p{["style", f.name]} == null) {
@@ -134,7 +134,7 @@ class Macros {
                 return $p{["style", f.name]};
             });
             getter.addMeta(":style");
-            getter.addMeta(":clonable");
+            //getter.addMeta(":clonable");
             getter.addMeta(":dox", [macro group = "Style properties"]);
             
             var codeBuilder = new CodeBuilder(macro {
@@ -142,7 +142,7 @@ class Macros {
                     return value;
                 }
                 if (_style == null) {
-                    _style = new haxe.ui.styles.Style();
+                    _style = {};
                 }
                 $p{["customStyle", f.name]} = value;
                 invalidateComponentStyle();
@@ -332,11 +332,19 @@ class Macros {
                 }
                 
                 if (f.name == valueField) {
-                    newField = builder.addSetter(f.name, f.type, macro { // add a normal (Variant) setter but let the binding manager know that the value has changed
-                        behaviours.set($v{f.name}, value);
-                        haxe.ui.binding.BindingManager.instance.componentPropChanged(this, "value");
-                        return value;
-                    }, f.access);
+                    if (f.isDynamic == true) {
+                        newField = builder.addSetter(f.name, f.type, macro { // add a normal (Variant) setter but let the binding manager know that the value has changed
+                            behaviours.set($v{f.name}, haxe.ui.util.Variant.fromDynamic(value));
+                            haxe.ui.binding.BindingManager.instance.componentPropChanged(this, "value");
+                            return value;
+                        }, f.access);
+                    } else {
+                        newField = builder.addSetter(f.name, f.type, macro { // add a normal (Variant) setter but let the binding manager know that the value has changed
+                            behaviours.set($v{f.name}, value);
+                            haxe.ui.binding.BindingManager.instance.componentPropChanged(this, "value");
+                            return value;
+                        }, f.access);
+                    }
                 } else {
                     if (f.isDynamic == true) {
                         newField = builder.addSetter(f.name, f.type, macro { // add a normal (Variant) setter
