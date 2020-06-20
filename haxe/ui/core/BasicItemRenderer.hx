@@ -20,7 +20,7 @@ class BasicItemRenderer extends ItemRenderer {
         hbox.addComponent(icon);
 
         var label:Label = new Label();
-        label.id = "value";
+        label.id = "text";
         label.percentWidth = 100;
         label.verticalAlign = "center";
         label.hide();
