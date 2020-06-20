@@ -123,13 +123,16 @@ class ComponentMacros {
         for (scriptString in c.scriptlets) {
             fullScript += scriptString;
         }
+        var n = 0;
         for (child in c.children) {
-            buildComponentFromInfo(builder, child, namedComponents, bindingExprs, params, function(componentInfo:ComponentInfo, codeBuilder:CodeBuilder) {
-                codeBuilder.add(macro $i{rootVarName}.addComponent(c0));
+            var componentId = "c" + n;
+            var r = buildComponentFromInfo(builder, child, namedComponents, bindingExprs, params, function(componentInfo:ComponentInfo, codeBuilder:CodeBuilder) {
+                codeBuilder.add(macro $i{rootVarName}.addComponent($i{componentId}));
                 for (scriptString in componentInfo.scriptlets) {
                     fullScript += scriptString;
                 }
-            });
+            }, n);
+            n = r;
         }
         if (buildRoot == false) {
             assignComponentProperties(builder, c, rootVarName, bindingExprs);
@@ -149,13 +152,16 @@ class ComponentMacros {
         for (scriptString in c.scriptlets) {
             fullScript += scriptString;
         }
+        var n = 0;
         for (child in c.children) {
-            buildComponentFromInfo(builder, child, namedComponents, bindingExprs, params, function(componentInfo:ComponentInfo, codeBuilder:CodeBuilder) {
-                codeBuilder.add(macro $i{rootVarName}.addComponent(c0));
+            var componentId = "c" + n;
+            var r = buildComponentFromInfo(builder, child, namedComponents, bindingExprs, params, function(componentInfo:ComponentInfo, codeBuilder:CodeBuilder) {
+                codeBuilder.add(macro $i{rootVarName}.addComponent($i{componentId}));
                 for (scriptString in componentInfo.scriptlets) {
                     fullScript += scriptString;
                 }
-            });
+            }, n);
+            n = r;
         }
         assignComponentProperties(builder, c, rootVarName, bindingExprs);
         if (StringTools.trim(fullScript).length > 0) {
@@ -165,7 +171,7 @@ class ComponentMacros {
         return c;
     }
     
-    private static function buildComponentFromInfo(builder:CodeBuilder, c:ComponentInfo, namedComponents:Map<String, NamedComponentDescription> = null, bindingExprs:Array<Expr> = null, params:Map<String, Dynamic> = null, cb:ComponentInfo->CodeBuilder->Void = null) {
+    private static function buildComponentFromInfo(builder:CodeBuilder, c:ComponentInfo, namedComponents:Map<String, NamedComponentDescription> = null, bindingExprs:Array<Expr> = null, params:Map<String, Dynamic> = null, cb:ComponentInfo->CodeBuilder->Void = null, firstId:Int = 0) {
         ModuleMacros.populateClassMap();
         
         if (namedComponents == null) {
@@ -179,11 +185,13 @@ class ComponentMacros {
         if (bindingExprs == null) {
             bindingExprs = [];
         }
-        buildComponentNode(builder, c, 0, -1, namedComponents, bindingExprs);
+        var r = buildComponentNode(builder, c, firstId, -1, namedComponents, bindingExprs);
         
         if (cb != null) {
             cb(c, builder);
         }
+        
+        return r;
     }
 
     // returns next free id
