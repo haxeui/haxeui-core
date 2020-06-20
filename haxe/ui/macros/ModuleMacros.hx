@@ -353,32 +353,22 @@ class ModuleMacros {
         }
         */
         
+        var xml = sys.io.File.getContent(fullPath);
+        var namedComponents:Map<String, ComponentMacros.NamedComponentDescription> = new Map<String, ComponentMacros.NamedComponentDescription>();
+        var codeBuilder = new CodeBuilder();
+        var c = ComponentMacros.buildComponentFromString(codeBuilder, xml, namedComponents);
+        
         var superClassString = "haxe.ui.containers.Box";
+        var superClassLookup:String = ComponentClassMap.get(c.type);
+        if (superClassLookup != null) {
+            superClassString = superClassLookup;
+        }
         var superClassParts = superClassString.split(".");
         var superClass:TypePath = {
             name: superClassParts.pop(),
             pack: superClassParts
         }
-        var xml = sys.io.File.getContent(fullPath);
-        var namedComponents:Map<String, ComponentMacros.NamedComponentDescription> = new Map<String, ComponentMacros.NamedComponentDescription>();
-        var codeBuilder = new CodeBuilder();
-        ComponentMacros.buildComponentFromString(codeBuilder, xml, namedComponents);
-        codeBuilder.add(macro {
-            addComponent(c0);
-            if (c0.width > 0) {
-                this.width = c0.width;
-            }
-            if (c0.height > 0) {
-                this.height = c0.height;
-            }
-            if (c0.percentWidth != null && c0.percentWidth > 0) {
-                this.percentWidth = c0.percentWidth;
-            }
-            if (c0.percentHeight != null && c0.percentHeight > 0) {
-                this.percentHeight = c0.percentHeight;
-            }
-        });
-
+        
         var newClass = macro
         ////////////////////////////////////////////////////////////////////////////////////////////////////////
         class $className extends $superClass {
