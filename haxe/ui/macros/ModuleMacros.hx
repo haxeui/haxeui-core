@@ -323,10 +323,9 @@ class ModuleMacros {
             trace("WARNING: Could not find path " + resolvedPath);
         }
         
-        filePath = Path.normalize(resolvedPath);
-        var fullPath = filePath;
+        var fullPath = Path.normalize(resolvedPath);
         if (root != null) {
-            filePath = StringTools.replace(filePath, root, "");
+            filePath = StringTools.replace(fullPath, root, "");
         }
         
         var fileParts = filePath.split("/");
