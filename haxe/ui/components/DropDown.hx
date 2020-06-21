@@ -1,21 +1,19 @@
 package haxe.ui.components;
 
+import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.components.Button.ButtonBuilder;
 import haxe.ui.components.Button.ButtonEvents;
 import haxe.ui.containers.Box;
 import haxe.ui.containers.CalendarView;
 import haxe.ui.containers.ListView;
-import haxe.ui.behaviours.Behaviour;
 import haxe.ui.core.Component;
-import haxe.ui.behaviours.DataBehaviour;
-import haxe.ui.behaviours.DefaultBehaviour;
-import haxe.ui.core.ComponentContainer.ComponentValueBehaviour;
 import haxe.ui.core.IDataComponent;
-import haxe.ui.data.ArrayDataSource;
-import haxe.ui.events.MouseEvent;
 import haxe.ui.core.Screen;
-import haxe.ui.events.UIEvent;
+import haxe.ui.data.ArrayDataSource;
 import haxe.ui.data.DataSource;
+import haxe.ui.events.MouseEvent;
+import haxe.ui.events.UIEvent;
 import haxe.ui.util.Variant;
 
 @:composite(DropDownEvents, DropDownBuilder)
@@ -185,9 +183,11 @@ class ListDropDownHandler extends DropDownHandler {
     public override function reset() {
         if (_listview != null) {
             _listview.dataSource = _dropdown.dataSource;
+            /*
             _listview.unregisterEvent(UIEvent.CHANGE, onListChange); // TODO: not great!
             selectedIndex = _cachedSelectedIndex;
             _listview.registerEvent(UIEvent.CHANGE, onListChange); // TODO: not great!
+            */
         }
     }
     
@@ -293,12 +293,14 @@ class ListDropDownHandler extends DropDownHandler {
         _cachedSelectedIndex = index;
         if (_listview == null) {
             _cachedSelectedItem = value;
+            trace("----------------------------------------> here");
             if (index != -1) {
                 _dropdown.text = v;
             }
             return value;
         }
         
+        trace("setting index to: " + _cachedSelectedIndex);
         _dropdown.selectedIndex = _cachedSelectedIndex;
         return value;
     }
@@ -315,6 +317,7 @@ class ListDropDownHandler extends DropDownHandler {
         if (_listview.selectedItem == null) {
             return;
         }
+        trace("IN CHANGED!");
         var currentHover:Component = _listview.findComponent(":hover", null, true, "css");
         if (currentHover != null) { // since the dropdown list dissapears it doesnt recvieve a mouse out (sometimes)
             currentHover.removeClass(":hover");
