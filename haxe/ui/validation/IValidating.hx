@@ -23,7 +23,7 @@ interface IValidating
         renderer renders the display list. This allows multiple properties to be
         changed at a time without requiring a full update every time.
     **/
-    function validateComponent():Void;
+    function validateComponent(nextFrame:Bool = true):Void;
 
     /**
         Update the display of the object. All objects update the display at the

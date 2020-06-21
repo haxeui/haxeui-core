@@ -46,12 +46,12 @@ class TextArea extends InteractiveComponent implements IFocusable {
         invalidateComponent(InvalidationFlags.SCROLL);
     }
 
-    private override function validateComponentInternal() {
+    private override function validateComponentInternal(nextFrame:Bool = true) {
         var dataInvalid = isComponentInvalid(InvalidationFlags.DATA);
         var scrollInvalid = isComponentInvalid(InvalidationFlags.SCROLL);
         var layoutInvalid = isComponentInvalid(InvalidationFlags.LAYOUT);
 
-        super.validateComponentInternal();
+        super.validateComponentInternal(nextFrame);
 
         if (scrollInvalid || layoutInvalid || dataInvalid) {
             if (_compositeBuilder != null) {
