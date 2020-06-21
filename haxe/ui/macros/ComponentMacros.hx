@@ -113,6 +113,9 @@ class ComponentMacros {
         
         var fileContent:String = StringUtil.replaceVars(File.getContent(f), params);
         var c:ComponentInfo = ComponentParser.get(MacroHelpers.extension(f)).parse(fileContent, new FileResourceResolver(f, params));
+        for (styleString in c.styles) {
+            builder.add(macro haxe.ui.Toolkit.styleSheet.parse($v{styleString}, "user"));
+        }
         
         if (buildRoot == true) {
             buildComponentNode(builder, c, 0, -1, namedComponents, bindingExprs, false);
@@ -147,6 +150,9 @@ class ComponentMacros {
     public static function buildComponentFromString(builder:CodeBuilder, source:String, namedComponents:Map<String, NamedComponentDescription> = null, bindingExprs:Array<Expr> = null, params:Map<String, Dynamic> = null, rootVarName:String = "this"):ComponentInfo {
         source = StringUtil.replaceVars(source, params);
         var c:ComponentInfo = ComponentParser.get("xml").parse(source);
+        for (styleString in c.styles) {
+            builder.add(macro haxe.ui.Toolkit.styleSheet.parse($v{styleString}, "user"));
+        }
         
         var fullScript = "";
         for (scriptString in c.scriptlets) {
