@@ -293,14 +293,12 @@ class ListDropDownHandler extends DropDownHandler {
         _cachedSelectedIndex = index;
         if (_listview == null) {
             _cachedSelectedItem = value;
-            trace("----------------------------------------> here");
             if (index != -1) {
                 _dropdown.text = v;
             }
             return value;
         }
         
-        trace("setting index to: " + _cachedSelectedIndex);
         _dropdown.selectedIndex = _cachedSelectedIndex;
         return value;
     }
@@ -317,7 +315,6 @@ class ListDropDownHandler extends DropDownHandler {
         if (_listview.selectedItem == null) {
             return;
         }
-        trace("IN CHANGED!");
         var currentHover:Component = _listview.findComponent(":hover", null, true, "css");
         if (currentHover != null) { // since the dropdown list dissapears it doesnt recvieve a mouse out (sometimes)
             currentHover.removeClass(":hover");
