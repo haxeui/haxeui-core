@@ -62,15 +62,19 @@ class ItemRenderer extends Box {
     private var _fieldList:Array<String> = null; // is caching a good idea?
     private override function validateComponentData() {
         if (_fieldList == null || _fieldList.length == 0) {
-            var fieldList:Array<String> = Reflect.fields(_data);
-            if (Type.getClass(_data) != null) {
-                var instanceFields = Type.getInstanceFields(Type.getClass(_data));
-                for (i in instanceFields) {
-                    if (Reflect.isFunction(Reflect.getProperty(_data, i)) == false && fieldList.indexOf(i) == -1) {
-                        fieldList.push(i);
+            if (Type.typeof(_data) == TObject) {
+                var fieldList:Array<String> = Reflect.fields(_data);
+                if (Type.getClass(_data) != null) {
+                    var instanceFields = Type.getInstanceFields(Type.getClass(_data));
+                    for (i in instanceFields) {
+                        if (Reflect.isFunction(Reflect.getProperty(_data, i)) == false && fieldList.indexOf(i) == -1) {
+                            fieldList.push(i);
+                        }
                     }
+                    _fieldList = fieldList;
                 }
-                _fieldList = fieldList;
+            } else {
+                _fieldList = ["text"];
             }
         }
         
@@ -117,8 +121,15 @@ class ItemRenderer extends Box {
             fieldList = Reflect.fields(value);
         }
         
+        var valueObject = null;
+        if (Type.typeof(value) == TObject) {
+            valueObject = value;
+        } else {
+            valueObject = {text: value};
+        }
+
         for (f in fieldList) {
-            var v = Reflect.getProperty(value, f);
+            var v = Reflect.getProperty(valueObject, f);
             if (Type.typeof(v) == TObject) {
                 updateValues(v);
             } else {

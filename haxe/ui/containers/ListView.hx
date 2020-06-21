@@ -10,13 +10,11 @@ import haxe.ui.constants.SelectionMode;
 import haxe.ui.containers.ScrollView;
 import haxe.ui.containers.ScrollView.ScrollViewBuilder;
 import haxe.ui.core.Component;
-import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.ItemRenderer;
 import haxe.ui.data.ArrayDataSource;
 import haxe.ui.data.DataSource;
-import haxe.ui.data.transformation.NativeTypeTransformer;
 import haxe.ui.events.ItemEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.ScrollEvent;
@@ -119,7 +117,9 @@ class ListViewEvents extends ScrollViewEvents {
     }
     
     private function onScrollChange(e:ScrollEvent):Void {
-        _listview.invalidateComponentLayout();
+        if (_listview.virtual == true) {
+            _listview.invalidateComponentLayout();
+        }
     }
 
     private function onRendererCreated(e:UIEvent):Void {
@@ -377,7 +377,6 @@ private class DataSourceBehaviour extends DataBehaviour {
         super.set(value);
         var dataSource:DataSource<Dynamic> = _value;
         if (dataSource != null) {
-            dataSource.transformer = new NativeTypeTransformer();
             dataSource.onChange = function() {
                 _component.invalidateComponentLayout();
                 if (_firstPass == true) {

@@ -1,21 +1,19 @@
 package haxe.ui.components;
 
+import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.components.Button.ButtonBuilder;
 import haxe.ui.components.Button.ButtonEvents;
 import haxe.ui.containers.Box;
 import haxe.ui.containers.CalendarView;
 import haxe.ui.containers.ListView;
-import haxe.ui.behaviours.Behaviour;
 import haxe.ui.core.Component;
-import haxe.ui.behaviours.DataBehaviour;
-import haxe.ui.behaviours.DefaultBehaviour;
-import haxe.ui.core.ComponentContainer.ComponentValueBehaviour;
 import haxe.ui.core.IDataComponent;
-import haxe.ui.data.ArrayDataSource;
-import haxe.ui.events.MouseEvent;
 import haxe.ui.core.Screen;
-import haxe.ui.events.UIEvent;
+import haxe.ui.data.ArrayDataSource;
 import haxe.ui.data.DataSource;
+import haxe.ui.events.MouseEvent;
+import haxe.ui.events.UIEvent;
 import haxe.ui.util.Variant;
 
 @:composite(DropDownEvents, DropDownBuilder)
@@ -185,9 +183,11 @@ class ListDropDownHandler extends DropDownHandler {
     public override function reset() {
         if (_listview != null) {
             _listview.dataSource = _dropdown.dataSource;
+            /*
             _listview.unregisterEvent(UIEvent.CHANGE, onListChange); // TODO: not great!
             selectedIndex = _cachedSelectedIndex;
             _listview.registerEvent(UIEvent.CHANGE, onListChange); // TODO: not great!
+            */
         }
     }
     
@@ -246,7 +246,16 @@ class ListDropDownHandler extends DropDownHandler {
         
         if (_dropdown.dataSource != null && value >= 0 && value < _dropdown.dataSource.size) {
             var data = _dropdown.dataSource.get(value);
-            _dropdown.text = data.value;
+            var text = null;
+            if (Type.typeof(data) == TObject) {
+                text = data.text;
+                if (text == null) {
+                    text = data.value;
+                }
+            } else {
+                text = Std.string(data);
+            }
+            _dropdown.text = text;
         }
         
         return value;
@@ -310,7 +319,16 @@ class ListDropDownHandler extends DropDownHandler {
         if (currentHover != null) { // since the dropdown list dissapears it doesnt recvieve a mouse out (sometimes)
             currentHover.removeClass(":hover");
         }
-        var text = _listview.selectedItem.value;
+        var selectedItem = _listview.selectedItem;
+        var text = null;
+        if (Type.typeof(selectedItem) == TObject) {
+            text = _listview.selectedItem.text;
+            if (text == null) {
+                text = _listview.selectedItem.value;
+            }
+        } else {
+            text = Std.string(selectedItem);
+        }
         _dropdown.text = text;
         //_dropdown.selectedIndex = _listview.selectedIndex;
         cast(_dropdown._internalEvents, DropDownEvents).hideDropDown();
