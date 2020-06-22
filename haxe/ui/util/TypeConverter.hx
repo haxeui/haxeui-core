@@ -10,9 +10,9 @@ class TypeConverter {
                 var s = Std.string(input);
                 if (s == "true" || s == "false") {
                     output = (s == "true");
-                } else if (~/^[0-9]*$/i.match(Std.string(s))) {
+                } else if (~/^-|[0-9]*$/i.match(Std.string(s))) {
                     output = Std.parseInt(s);
-                } else if (~/^[0-9]*\.[0-9]*$/i.match(Std.string(s))) {
+                } else if (~/^-|[0-9]*\.[0-9]*$/i.match(Std.string(s))) {
                     output = Std.parseFloat(s);
                 }
             default:
