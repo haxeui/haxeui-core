@@ -805,7 +805,12 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
      A custom style object that will appled to this component after any css rules have been matched and applied
     **/
     @:dox(group = "Style related properties and methods")
-    public var customStyle:Style = {};
+    public var customStyle(default, set):Style = {};
+    function set_customStyle(v:Style) {
+        if(v != customStyle) 
+            invalidateComponentStyle();
+        return customStyle = v;
+    }
     @:dox(group = "Style related properties and methods")
     private var classes:Array<String> = [];
 
