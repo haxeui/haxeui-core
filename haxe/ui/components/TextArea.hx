@@ -30,7 +30,7 @@ class TextArea extends InteractiveComponent implements IFocusable {
     // Public API
     //***********************************************************************************************************
     @:behaviour(TextBehaviour)              public var text:String;
-    @:behaviour(ValueBehaviour)             public var value:Variant;
+    @:clonable @:value(text)                public var value:Dynamic;
     @:behaviour(PlaceholderBehaviour)       public var placeholder:String;
     @:behaviour(WrapBehaviour, true)        public var wrap:Bool;
     @:behaviour(DataSourceBehaviour)        public var dataSource:DataSource<String>;
@@ -166,18 +166,6 @@ private class TextBehaviour extends DataBehaviour {
         if (textarea.autoScrollToBottom == true) {
             textarea.scrollToBottom();
         }
-    }
-}
-
-
-@:dox(hide) @:noCompletion
-private class ValueBehaviour extends Behaviour {
-    public override function get():Variant {
-        return cast(_component, TextArea).text;
-    }
-    
-    public override function set(value:Variant) {
-        cast(_component, TextArea).text = value;
     }
 }
 
