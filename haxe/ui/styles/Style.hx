@@ -101,6 +101,7 @@ class Style {
     @:optional public var animationOptions:AnimationOptions;
     
     @:optional public var mode:String;
+    @:optional public var pointerEvents:String;
     
     // public function new() {}
     
@@ -314,6 +315,8 @@ class Style {
                     animationOptions.fillMode = ValueTools.string(v.value);
                 case "mode":
                     mode = ValueTools.string(v.value);
+                case "pointer-events":
+                    pointerEvents = ValueTools.string(v.value);
             }
         }
     }
@@ -439,6 +442,7 @@ class Style {
         }
         
         if (s.mode != null) mode = s.mode;
+        if (s.pointerEvents != null) pointerEvents = s.pointerEvents;
     }
 
     public function equalTo(s:Style):Bool {
@@ -541,6 +545,7 @@ class Style {
         if (animationOptions != null && animationOptions.compareTo(s.animationOptions) == false) return false;
         
         if (s.mode != mode) return false;
+        if (s.pointerEvents != pointerEvents) return false;
         return true;
     }
 

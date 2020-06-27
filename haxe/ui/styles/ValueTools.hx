@@ -190,6 +190,8 @@ class ValueTools {
         switch (value) {
             case Value.VString(v) | Value.VConstant(v):
                 return v;
+            case Value.VBool(v):
+                return Std.string(v);
             case _:
                 return null;
         }

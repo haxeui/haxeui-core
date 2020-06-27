@@ -1566,6 +1566,42 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             componentAnimation = null;
         }
 
+        if (style.pointerEvents != null && style.pointerEvents != "none") {
+            if (hasEvent(MouseEvent.MOUSE_OVER, onPointerEventsMouseOver) == false) {
+                customStyle.cursor = "pointer";
+                registerEvent(MouseEvent.MOUSE_OVER, onPointerEventsMouseOver);
+            }
+            if (hasEvent(MouseEvent.MOUSE_OUT, onPointerEventsMouseOut) == false) {
+                registerEvent(MouseEvent.MOUSE_OUT, onPointerEventsMouseOut);
+            }
+            if (hasEvent(MouseEvent.MOUSE_DOWN, onPointerEventsMouseDown) == false) {
+                registerEvent(MouseEvent.MOUSE_DOWN, onPointerEventsMouseDown);
+            }
+            if (hasEvent(MouseEvent.MOUSE_UP, onPointerEventsMouseUp) == false) {
+                registerEvent(MouseEvent.MOUSE_UP, onPointerEventsMouseUp);
+            }
+            if (hasEvent(MouseEvent.CLICK, onPointerEventsMouseClick) == false) {
+                registerEvent(MouseEvent.CLICK, onPointerEventsMouseClick);
+            }
+        } else {
+            if (hasEvent(MouseEvent.MOUSE_OVER, onPointerEventsMouseOver) == true) {
+                customStyle.cursor = null;
+                unregisterEvent(MouseEvent.MOUSE_OVER, onPointerEventsMouseOver);
+            }
+            if (hasEvent(MouseEvent.MOUSE_OUT, onPointerEventsMouseOut) == true) {
+                unregisterEvent(MouseEvent.MOUSE_OUT, onPointerEventsMouseOut);
+            }
+            if (hasEvent(MouseEvent.MOUSE_DOWN, onPointerEventsMouseDown) == true) {
+                unregisterEvent(MouseEvent.MOUSE_DOWN, onPointerEventsMouseDown);
+            }
+            if (hasEvent(MouseEvent.MOUSE_UP, onPointerEventsMouseUp) == true) {
+                unregisterEvent(MouseEvent.MOUSE_UP, onPointerEventsMouseUp);
+            }
+            if (hasEvent(MouseEvent.CLICK, onPointerEventsMouseClick) == true) {
+                unregisterEvent(MouseEvent.CLICK, onPointerEventsMouseClick);
+            }
+        }
+        
         /*
         if (style.clip != null) {
             clipContent = style.clip;
@@ -1593,6 +1629,26 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         }
     }
 
+    private function onPointerEventsMouseOver(e:MouseEvent) {
+        addClass(":hover");
+    }
+    
+    private function onPointerEventsMouseOut(e:MouseEvent) {
+        removeClass(":hover");
+    }
+    
+    private function onPointerEventsMouseDown(e:MouseEvent) {
+        removeClass(":hover");
+    }
+    
+    private function onPointerEventsMouseUp(e:MouseEvent) {
+        removeClass(":hover");
+    }
+    
+    private function onPointerEventsMouseClick(e:MouseEvent) {
+        dispatch(e);
+    }
+    
     //***********************************************************************************************************
     // Animation
     //***********************************************************************************************************
