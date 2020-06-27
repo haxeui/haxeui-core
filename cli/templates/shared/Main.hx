@@ -8,8 +8,8 @@ class ::main:: {
     public static function main() {
         var app = new HaxeUIApp();
         app.ready(function() {
-            var main:Component = ComponentMacros.buildComponent("assets/main.xml");
-            app.addComponent(main);
+            var mainView:Component = ComponentMacros.buildComponent("assets/main-view.xml");
+            app.addComponent(mainView);
 
             app.start();
         });
