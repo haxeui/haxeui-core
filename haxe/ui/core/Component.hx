@@ -1580,9 +1580,6 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             if (hasEvent(MouseEvent.MOUSE_UP, onPointerEventsMouseUp) == false) {
                 registerEvent(MouseEvent.MOUSE_UP, onPointerEventsMouseUp);
             }
-            if (hasEvent(MouseEvent.CLICK, onPointerEventsMouseClick) == false) {
-                registerEvent(MouseEvent.CLICK, onPointerEventsMouseClick);
-            }
         } else {
             if (hasEvent(MouseEvent.MOUSE_OVER, onPointerEventsMouseOver) == true) {
                 customStyle.cursor = null;
@@ -1596,9 +1593,6 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             }
             if (hasEvent(MouseEvent.MOUSE_UP, onPointerEventsMouseUp) == true) {
                 unregisterEvent(MouseEvent.MOUSE_UP, onPointerEventsMouseUp);
-            }
-            if (hasEvent(MouseEvent.CLICK, onPointerEventsMouseClick) == true) {
-                unregisterEvent(MouseEvent.CLICK, onPointerEventsMouseClick);
             }
         }
         
@@ -1643,10 +1637,6 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     
     private function onPointerEventsMouseUp(e:MouseEvent) {
         removeClass(":hover");
-    }
-    
-    private function onPointerEventsMouseClick(e:MouseEvent) {
-        dispatch(e);
     }
     
     //***********************************************************************************************************
