@@ -1632,11 +1632,11 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     }
     
     private function onPointerEventsMouseDown(e:MouseEvent) {
-        removeClass(":hover");
+        addClass(":down");
     }
     
     private function onPointerEventsMouseUp(e:MouseEvent) {
-        removeClass(":hover");
+        removeClass(":down");
     }
     
     //***********************************************************************************************************
