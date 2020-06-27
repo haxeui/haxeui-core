@@ -90,6 +90,9 @@ private class EndBehaviour extends DataBehaviour {
 @:dox(hide) @:noCompletion
 private class MinBehaviour extends DataBehaviour {
     private override function validateData() {
+        if (cast(_component, Slider).start == null) {
+            _component.findComponent(Range).start = _value;
+        }
         _component.findComponent(Range).min = _value;
         _component.invalidateComponentLayout();
     }
