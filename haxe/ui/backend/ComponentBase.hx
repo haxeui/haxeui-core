@@ -48,6 +48,10 @@ class ComponentBase extends ComponentBounds {
         return false;
     }
     
+    private function handleFrameworkProperty(id:String, value:Any) {
+        
+    }
+    
     //***********************************************************************************************************
     // Display tree
     //***********************************************************************************************************

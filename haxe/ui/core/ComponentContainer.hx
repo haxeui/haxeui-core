@@ -1,6 +1,5 @@
 package haxe.ui.core;
 
-import haxe.ui.behaviours.Behaviour;
 import haxe.ui.behaviours.Behaviours;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;

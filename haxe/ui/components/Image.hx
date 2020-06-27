@@ -9,6 +9,7 @@ import haxe.ui.constants.VerticalAlign;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.ImageDisplay;
+import haxe.ui.core.InteractiveComponent;
 import haxe.ui.geom.Rectangle;
 import haxe.ui.geom.Size;
 import haxe.ui.layouts.DefaultLayout;
@@ -16,7 +17,7 @@ import haxe.ui.styles.Style;
 import haxe.ui.util.ImageLoader;
 
 @:composite(ImageLayout, Builder)
-class Image extends Component {
+class Image extends InteractiveComponent {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************

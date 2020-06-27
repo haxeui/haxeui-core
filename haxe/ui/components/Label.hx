@@ -3,13 +3,13 @@ package haxe.ui.components;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.core.InteractiveComponent;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.styles.Style;
 import haxe.ui.geom.Size;
-import haxe.ui.util.Variant;
 
 @:composite(Builder, LabelLayout)
-class Label extends Component {
+class Label extends InteractiveComponent {
     //***********************************************************************************************************
     // Styles
     //***********************************************************************************************************
