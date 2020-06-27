@@ -15,13 +15,18 @@
 }
 
 .property-group-header {
-    background-color: #EEEEEE;
+    background-color: #EDEDED;
+    pointer-events: true;
     width: 100%;
     padding: 5px;
     border-color: #ABABAB;
     border-bottom-width: 1px;
     border-bottom-size: 1px;
     cursor: pointer;
+}
+
+.property-group-header:hover {
+    background-color: #F5F5F5;
 }
 
 .property-group-header-icon {
