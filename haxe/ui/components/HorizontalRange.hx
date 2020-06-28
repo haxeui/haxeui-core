@@ -58,7 +58,7 @@ class HorizontalRangeLayout extends DefaultLayout {
             
             if (cx < 0) {
                 cx = 0;
-            } else if (cx + 1 > ucx) {
+            } else if (cx > ucx) {
                 cx = ucx;
             }
 
@@ -66,7 +66,7 @@ class HorizontalRangeLayout extends DefaultLayout {
                 value.width = 0;
                 value.hidden = true;
             } else {
-                value.width = cx + 1;
+                value.width = cx;
                 value.hidden = false;
             }
         }
