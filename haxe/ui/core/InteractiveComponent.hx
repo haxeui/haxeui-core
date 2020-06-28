@@ -1,7 +1,6 @@
 package haxe.ui.core;
 
 import haxe.ui.behaviours.DataBehaviour;
-import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.containers.ScrollView;
 import haxe.ui.events.FocusEvent;
 import haxe.ui.events.MouseEvent;
