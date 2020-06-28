@@ -99,6 +99,14 @@ class RuleElement {
                 processComposite(d, ["background-color", "background-color-end", "background-gradient-style"]);
             case "border":
                 processComposite(d, ["border-size", "border-style", "border-color"]);
+            case "border-top":
+                processComposite(d, ["border-top-size", "border-top-style", "border-top-color"]);
+            case "border-left":
+                processComposite(d, ["border-left-size", "border-left-style", "border-left-color"]);
+            case "border-bottom":
+                processComposite(d, ["border-bottom-size", "border-bottom-style", "border-bottom-color"]);
+            case "border-right":
+                processComposite(d, ["border-right-size", "border-right-style", "border-right-color"]);
             case "border-size":    
                 processComposite(d, ["border-top-size", "border-left-size", "border-right-size", "border-bottom-size"]);
             case "border-color": 
@@ -135,8 +143,8 @@ class RuleElement {
         }
         
         switch (d.value) {
-            case Value.VConstant(v):
-            case Value.VColor(v):    
+            case Value.VConstant(_):
+            case Value.VColor(_):    
                 if (duplicate == false) {
                     directives.set(parts[0], new Directive(parts[0], d.value));
                 } else {
@@ -148,7 +156,7 @@ class RuleElement {
                 for (p in parts) {
                     directives.set(p, new Directive(p, Value.VDimension(v)));
                 }
-            case Value.VNumber(v):
+            case Value.VNumber(_):
                 for (p in parts) {
                     directives.set(p, new Directive(p, d.value));
                 }
