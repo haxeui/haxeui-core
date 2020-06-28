@@ -194,8 +194,13 @@ class Behaviours {
     
     public function set(id:String, value:Variant) {
         lock();
-        
         var b = find(id);
+        var changed:Null<Bool> = null;
+        if (Std.is(b, ValueBehaviour)) {
+            var v = @:privateAccess cast(b, ValueBehaviour)._value;
+            changed = (v != value);
+        }
+        
         b.set(value);
         var info = _registry.get(id);
         info.isSet = true;
@@ -215,7 +220,11 @@ class Behaviours {
             var event = Type.createInstance(Type.resolveClass(cls), [eventName]);
             #end
             
-            b._component.dispatch(event);
+            if (eventName != UIEvent.CHANGE) {
+                b._component.dispatch(event);  
+            } else if (changed == true || changed == null) {
+                b._component.dispatch(event);
+            }
         }
     }
     
