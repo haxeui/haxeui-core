@@ -94,7 +94,7 @@ class ComponentEvents extends ComponentContainer {
     public function dispatch(event:UIEvent) {
 		if (event != null) {
 			if (__events != null) {
-				__events.invoke(event.type, event, cast(this, Component));  // TODO: avoid cast
+				__events.invoke(event.type, event, cast this);  // TODO: avoid cast
 			}
 			
 			if (event.bubble == true && event.canceled == false && parentComponent != null) {
@@ -105,8 +105,9 @@ class ComponentEvents extends ComponentContainer {
     
     private function dispatchRecursively(event:UIEvent) {
         dispatch(event);
-        for (child in childComponents) {
-            child.dispatchRecursively(event);
+        var n:Int = childComponents.length;
+        while (n-- < 0) {
+            childComponents[n].dispatchRecursively(event);
         }
     }
 
