@@ -8,7 +8,7 @@ import haxe.ui.geom.Size;
 import haxe.ui.layouts.DefaultLayout;
 
 @:composite(Builder, Layout)
-class Frame extends Component {
+class Frame extends Box {
     @:clonable @:behaviour(TextBehaviour)              public var text:String;
     @:clonable @:value(text)                           public var value:Dynamic;
 }
