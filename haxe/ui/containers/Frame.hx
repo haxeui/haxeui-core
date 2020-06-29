@@ -110,7 +110,6 @@ private class Layout extends DefaultLayout {
             offset = 0;
         #end
         label.left = paddingLeft;
-        //label.top = label.height / 2;
         line1.top = contents.top;
         line2.left = paddingLeft + label.width + offset;
         line2.top = contents.top;
@@ -119,8 +118,6 @@ private class Layout extends DefaultLayout {
     public override function calcAutoSize(exclusions:Array<Component> = null):Size {
         var label = findComponent("frame-title", Label, false);
         var size = super.calcAutoSize(exclusions);
-        trace(size);
-        //size.height = 50;
         size.height += label.height / 2;
         size.width -= paddingLeft;
         return size;
