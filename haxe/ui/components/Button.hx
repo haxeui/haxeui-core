@@ -270,7 +270,6 @@ private class TextBehaviour extends DataBehaviour {
         var label:Label = _component.findComponent(Label, false);
         if (label == null) {
             label = new Label();
-            label.allowInteraction = false;
             label.id = "button-label";
             label.scriptAccess = false;
             _component.addComponent(label);
@@ -287,7 +286,6 @@ private class IconBehaviour extends DataBehaviour {
         var icon:Image = _component.findComponent("button-icon", false);
         if (icon == null) {
             icon = new Image();
-            icon.allowInteraction = false;
             icon.addClass("icon");
             icon.id = "button-icon";
             icon.scriptAccess = false;

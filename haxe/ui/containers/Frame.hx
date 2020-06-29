@@ -46,7 +46,6 @@ private class Builder extends CompositeBuilder {
         _frame.addComponent(_contents);
         
         _label = new Label();
-        _label.allowInteraction = false;
         _label.text = "My Frame";
         _label.id = "frame-title";
         _label.addClass("frame-title");

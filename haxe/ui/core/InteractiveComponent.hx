@@ -1,21 +1,19 @@
 package haxe.ui.core;
 
-import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.containers.ScrollView;
 import haxe.ui.events.FocusEvent;
-import haxe.ui.events.MouseEvent;
 import haxe.ui.focus.FocusManager;
 import haxe.ui.focus.IFocusable;
 
 /**
  A component that can be interacted with and gain input focus via either mouse or keyboard
 **/
-@:composite(InteractiveComponentEvents)
 class InteractiveComponent extends Component implements IFocusable {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:clonable @:behaviour(AllowInteraction, true)      public var allowInteraction:Bool;
+    @:clonable @:behaviour(DefaultBehaviour, true)      public var allowInteraction:Bool;
     
     private var _focus:Bool = false;
     /**
@@ -74,73 +72,5 @@ class InteractiveComponent extends Component implements IFocusable {
             }
         }
         return value;
-    }
-}
-
-//***********************************************************************************************************
-// Behaviours
-//***********************************************************************************************************
-@:access(haxe.ui.core.Component)
-private class AllowInteraction extends DataBehaviour {
-    private override function validateData() {
-        _component.registerInternalEvents(true);
-        if (_value == false) {
-            _component.customStyle.cursor = null;
-            _component.handleFrameworkProperty("allowMouseInteraction", false);
-        } else {
-            _component.customStyle.cursor = "pointer";
-            _component.handleFrameworkProperty("allowMouseInteraction", true);
-        }
-    }
-}
-
-//***********************************************************************************************************
-// Events
-//***********************************************************************************************************
-@:dox(hide) @:noCompletion
-private class InteractiveComponentEvents extends haxe.ui.events.Events {
-    private var _interactiveComponent:InteractiveComponent;
-    
-    public function new(interactiveComponent:InteractiveComponent) {
-        super(interactiveComponent);
-        _interactiveComponent = interactiveComponent;
-    }
-    
-    public override function register() {
-        if (_interactiveComponent.allowInteraction == true) {
-            if (hasEvent(MouseEvent.MOUSE_OVER, onMouseOver) == false) {
-                registerEvent(MouseEvent.MOUSE_OVER, onMouseOver);
-            }
-            if (hasEvent(MouseEvent.MOUSE_OUT, onMouseOut) == false) {
-                registerEvent(MouseEvent.MOUSE_OUT, onMouseOut);
-            }
-            if (hasEvent(MouseEvent.MOUSE_DOWN, onMouseDown) == false) {
-                registerEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
-            }
-        } else {
-            unregister();
-        }
-    }
-    
-    public override function unregister() {
-        unregisterEvent(MouseEvent.MOUSE_OVER, onMouseOver);
-        unregisterEvent(MouseEvent.MOUSE_OUT, onMouseOut);
-        unregisterEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
-    }
-    
-    private function onMouseOver(event:MouseEvent) {
-        _interactiveComponent.addClass(":hover");
-    }
-    
-    private function onMouseOut(event:MouseEvent) {
-        _interactiveComponent.removeClass(":hover");
-    }
-    
-    private function onMouseDown(event:MouseEvent) {
-        _interactiveComponent.addClass(":down");
-    }
-    
-    private function onMouseUp(event:MouseEvent) {
-        _interactiveComponent.removeClass(":up");
     }
 }

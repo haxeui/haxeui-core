@@ -67,7 +67,6 @@ private class TextBehaviour extends DataBehaviour {
         var label:Label = _component.findComponent(Label, false);
         if (label == null) {
             label = new Label();
-            label.allowInteraction = false;
             label.id = '${_component.cssName}-label';
             label.addClass('${_component.cssName}-label');
             label.scriptAccess = false;

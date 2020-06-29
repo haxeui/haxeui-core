@@ -1,8 +1,6 @@
 package haxe.ui.core;
 
 import haxe.ui.components.Button;
-import haxe.ui.components.Image;
-import haxe.ui.components.Label;
 import haxe.ui.containers.Box;
 import haxe.ui.events.ItemEvent;
 import haxe.ui.events.MouseEvent;
@@ -153,18 +151,5 @@ class ItemRenderer extends Box {
                 }
             }
         }
-    }
-    
-    public override function addComponent(child:Component):Component {
-        var r = super.addComponent(child);
-        var labels = findComponents(Label);
-        for (label in labels) {
-            label.allowInteraction = false;
-        }
-        var images = findComponents(Image);
-        for (image in images) {
-            image.allowInteraction = false;
-        }
-        return r;
     }
 }
