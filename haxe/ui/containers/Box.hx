@@ -9,6 +9,7 @@ import haxe.ui.layouts.LayoutFactory;
  Base `Layout` that allows a container to specify an `icon`. How that icon resource is used depends on subclasses, like `TabView`
 **/
 @:dox(icon = "/icons/ui-panel.png")
+@:composite(DefaultLayout)
 class Box extends Component {
     //***********************************************************************************************************
     // Public API
@@ -41,6 +42,8 @@ class Box extends Component {
     //***********************************************************************************************************
     private override function createDefaults() {
         super.createDefaults();
-        _defaultLayoutClass = DefaultLayout;
+        if (_defaultLayoutClass == null) {
+            _defaultLayoutClass = DefaultLayout;
+        }
     }
 }

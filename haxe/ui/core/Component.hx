@@ -54,7 +54,6 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         }        
 
         //registerBehaviours();
-        registerComposite();
         
         // we dont want to actually apply the classes, just find out if native is there or not
         //TODO - we could include the initialization in the validate method
@@ -63,6 +62,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         if (s.native != null && hasNativeEntry == true) {
             native = s.native;
         } else {
+            registerComposite();
             create();
         }
         
