@@ -6,6 +6,6 @@
 \/haxe\/std
 \/hscript
 
-\/haxeui-core\/cli.?$
-\/haxeui-core\/haxe\/ui.*\w+
-\/haxeui-\w+\/haxe\/ui\/backend\/\w+
+\/haxeui-core\/(.*\/)?cli.?$
+\/haxeui-core\/(.*\/)?haxe\/ui.*\w+
+\/haxeui-\w+\/(.*\/)?haxe\/ui\/backend\/\w+
