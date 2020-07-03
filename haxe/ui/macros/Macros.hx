@@ -317,6 +317,7 @@ class Macros {
         }
         
         var valueField = builder.getFieldMetaValue("value");
+        var resolvedValueField = null;
         for (f in builder.getFieldsWithMeta("behaviour")) {
             f.remove();
             if (builder.hasField(f.name, true) == false) { // check to see if it already exists, possibly in a super class
@@ -345,6 +346,7 @@ class Macros {
                             return value;
                         }, f.access);
                     }
+                    resolvedValueField = newField;
                 } else {
                     if (f.isDynamic == true) {
                         newField = builder.addSetter(f.name, f.type, macro { // add a normal (Variant) setter
@@ -403,15 +405,27 @@ class Macros {
             f.remove();
             
             var propName = f.getMetaValueString("value");
-            builder.addGetter(f.name, macro: Dynamic, macro {
-                return $i{propName};
-            }, false, true);
-            
-            builder.addSetter(f.name, macro: Dynamic, macro {
-                $i{propName} = value;
-                haxe.ui.binding.BindingManager.instance.componentPropChanged(this, $v{propName});
-                return value;
-            }, false, true);
+            if (resolvedValueField != null && resolvedValueField.isVariant) {
+                builder.addGetter(f.name, macro: Dynamic, macro {
+                    return haxe.ui.util.Variant.toDynamic($i{propName});
+                }, false, true);
+                
+                builder.addSetter(f.name, macro: Dynamic, macro {
+                    $i{propName} = haxe.ui.util.Variant.fromDynamic(value);
+                    haxe.ui.binding.BindingManager.instance.componentPropChanged(this, $v{propName});
+                    return value;
+                }, false, true);
+            } else {
+                builder.addGetter(f.name, macro: Dynamic, macro {
+                    return $i{propName};
+                }, false, true);
+                
+                builder.addSetter(f.name, macro: Dynamic, macro {
+                    $i{propName} = value;
+                    haxe.ui.binding.BindingManager.instance.componentPropChanged(this, $v{propName});
+                    return value;
+                }, false, true);
+            }
         }
         
         //buildEvents(builder);

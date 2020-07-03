@@ -53,8 +53,6 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             c = Type.getSuperClass(c);
         }        
 
-        //registerBehaviours();
-        
         // we dont want to actually apply the classes, just find out if native is there or not
         //TODO - we could include the initialization in the validate method
         //var s = Toolkit.styleSheet.applyClasses(this, false);
@@ -62,7 +60,6 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         if (s.native != null && hasNativeEntry == true) {
             native = s.native;
         } else {
-            registerComposite();
             create();
         }
         
@@ -73,6 +70,9 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     //***********************************************************************************************************
     private var _defaultLayoutClass:Class<Layout> = null;
     private function create() {
+        if (native == false || native == null) {
+            registerComposite();
+        }
         createDefaults();
         handleCreate(native);
         destroyChildren();

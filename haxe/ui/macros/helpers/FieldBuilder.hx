@@ -232,6 +232,16 @@ class FieldBuilder {
         return false;
     }
     
+    public var isVariant(get, null):Bool;
+    private function get_isVariant():Bool {
+        switch (type) {
+            case TPath(p):
+                return (p.name == "Variant");
+            case _:    
+        }
+        return false;
+    }
+    
     public function hasMeta(name:String):Bool {
         for (m in field.meta) {
             if (m.name == name || m.name == ':${name}') {
