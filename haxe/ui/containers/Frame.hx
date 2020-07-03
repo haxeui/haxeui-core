@@ -1,6 +1,7 @@
 package haxe.ui.containers;
 
 import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.components.Image;
 import haxe.ui.components.Label;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
@@ -10,6 +11,7 @@ import haxe.ui.layouts.DefaultLayout;
 @:composite(Builder, Layout)
 class Frame extends Box {
     @:clonable @:behaviour(TextBehaviour)              public var text:String;
+    @:clonable @:behaviour(IconBehaviour)              public var icon:String;
     @:clonable @:value(text)                           public var value:Dynamic;
 }
 
@@ -21,6 +23,23 @@ private class TextBehaviour extends DataBehaviour {
     private override function validateData() {
         var label:Label = _component.findComponent(Label, false);
         label.text = _value;
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class IconBehaviour extends DataBehaviour {
+    private override function validateData() {
+        var icon:Image = _component.findComponent("frame-icon", false);
+        if (icon == null) {
+            icon = new Image();
+            icon.addClass("frame-icon");
+            icon.id = "frame-icon";
+            icon.scriptAccess = false;
+            icon.includeInLayout = false;
+            _component.addComponent(icon);
+        }
+        
+        icon.resource = _value;
     }
 }
 
@@ -66,7 +85,7 @@ private class Builder extends CompositeBuilder {
     }
     
     public override function addComponent(child:Component):Component {
-        if (child.id != "frame-contents" && child.id != "frame-title" && child.id != "frame-left-line" && child.id != "frame-right-line") {
+        if (child.id != "frame-contents" && child.id != "frame-title"  && child.id != "frame-icon" && child.id != "frame-left-line" && child.id != "frame-right-line") {
             return _contents.addComponent(child);
         }
         return super.addComponent(child);
@@ -80,6 +99,7 @@ private class Layout extends DefaultLayout {
     public override function resizeChildren() {
         var contents = findComponent("frame-contents", Box, false);
         var label = findComponent("frame-title", Label, false);
+        var icon = findComponent("frame-icon", Image, false);
         var line1 = findComponent("frame-left-line", Component, false);
         var line2 = findComponent("frame-right-line", Component, false);
 
@@ -94,12 +114,17 @@ private class Layout extends DefaultLayout {
             offset = 0;
         #end
         line1.width = paddingLeft - offset;
-        line2.width = _component.width - (paddingLeft + label.width) - offset;
+        var cx = label.width;
+        if (icon != null) {
+            cx += icon.width + horizontalSpacing;
+        }
+        line2.width = _component.width - (paddingLeft + cx) - offset;
     }
     
     public override function repositionChildren() {
         var contents = findComponent("frame-contents", Box, false);
         var label = findComponent("frame-title", Label, false);
+        var icon = findComponent("frame-icon", Image, false);
         var line1 = findComponent("frame-left-line", Component, false);
         var line2 = findComponent("frame-right-line", Component, false);
         
@@ -108,9 +133,15 @@ private class Layout extends DefaultLayout {
         #if haxeui_openfl
             offset = 0;
         #end
-        label.left = paddingLeft;
+        var x = paddingLeft;
+        if (icon != null) {
+            icon.top = (label.height / 2) - (icon.height / 2) - 1;
+            icon.left = paddingLeft;
+            x += icon.width + horizontalSpacing;
+        }
+        label.left = x;
         line1.top = contents.top;
-        line2.left = paddingLeft + label.width + offset;
+        line2.left = _component.width - line2.width;
         line2.top = contents.top;
     }
     
