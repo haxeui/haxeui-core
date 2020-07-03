@@ -3,6 +3,7 @@ package haxe.ui.backend;
 import haxe.io.Bytes;
 import haxe.ui.assets.FontInfo;
 import haxe.ui.assets.ImageInfo;
+import haxe.ui.backend.ImageData;
 
 class AssetsBase {
     public function new() {
@@ -31,5 +32,13 @@ class AssetsBase {
     
     private function getFontFromHaxeResource(resourceId:String, callback:String->FontInfo->Void) {
         callback(resourceId, null);
+    }
+    
+    public function imageInfoFromImageData(imageData:ImageData):ImageInfo {
+        return {
+            data: imageData,
+            width: 0,
+            height: 0
+        }
     }
 }
