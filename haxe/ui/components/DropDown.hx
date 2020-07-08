@@ -30,12 +30,23 @@ class DropDown extends Button implements IDataComponent {
     @:behaviour(DefaultBehaviour)                    public var dropdownSize:Null<Int>;
     @:behaviour(SelectedIndexBehaviour, -1)          public var selectedIndex:Int;
     @:behaviour(SelectedItemBehaviour)               public var selectedItem:Dynamic;
+    @:call(HideDropDown)                             public function hideDropDown():Void;
     @:clonable @:value(selectedItem)                 public var value:Dynamic;
 }
 
 //***********************************************************************************************************
 // Composite Behaviours
 //***********************************************************************************************************
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class HideDropDown extends DefaultBehaviour {
+    public override function call(param:Any = null):Variant {
+        var events:DropDownEvents = cast(_component._internalEvents, DropDownEvents);
+        events.hideDropDown();
+        return null;
+    }
+}
+
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 private class DataSourceBehaviour extends DefaultBehaviour {
