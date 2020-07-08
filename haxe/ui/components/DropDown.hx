@@ -93,7 +93,7 @@ private class SelectedIndexBehaviour extends DataBehaviour {
             super.set(value);
             return;
         }
-        if (value == _value) {
+        if (value == get()) {
             return;
         }
         _value = value;
@@ -121,7 +121,7 @@ private class SelectedItemBehaviour extends DataBehaviour  {
             super.set(value);
             return;
         }
-        if (value == _value) {
+        if (value == getDynamic()) {
             return;
         }
         _value = value;
@@ -247,9 +247,9 @@ class ListDropDownHandler extends DropDownHandler {
     }
     
     private override function set_selectedIndex(value:Int):Int {
-        if (_listview != null) {
-            _listview.selectedIndex = value;
+        if (_listview != null && _cachedSelectedIndex != value) {
             _cachedSelectedIndex = value;
+            _listview.selectedIndex = value;
         } else if (_cachedSelectedIndex != value) {
             _cachedSelectedIndex = value;
             _dropdown.dispatch(new UIEvent(UIEvent.CHANGE));
@@ -301,16 +301,7 @@ class ListDropDownHandler extends DropDownHandler {
     private override function set_selectedItem(value:Dynamic):Dynamic {
         var v:Variant = value;
         var index = indexOfItem(v);
-        _cachedSelectedIndex = index;
-        if (_listview == null) {
-            _cachedSelectedItem = value;
-            if (index != -1) {
-                _dropdown.text = v;
-            }
-            return value;
-        }
-        
-        _dropdown.selectedIndex = _cachedSelectedIndex;
+        selectedIndex = index;
         return value;
     }
     
