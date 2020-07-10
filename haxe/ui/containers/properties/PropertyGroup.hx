@@ -182,6 +182,10 @@ private class Builder extends CompositeBuilder {
                     }
                 }
                 cast(c, DropDown).selectedIndex = indexToSelect;
+
+            case "date":
+                c = new DropDown();
+                cast(c, DropDown).type = "date";
                 
             default:     
                 c = new TextField();
