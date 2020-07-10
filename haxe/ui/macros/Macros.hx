@@ -163,43 +163,61 @@ class Macros {
     }
 
     private static function buildPropertyBinding(builder:ClassBuilder, f:FieldBuilder, variable:Expr, field:String) {
-        f.remove();
+        var hasGetter = builder.findFunction("get_" + f.name) != null;
+        var hasSetter = builder.findFunction("set_" + f.name) != null;
+        
+        if (hasGetter == false && hasSetter == false) {
+            f.remove();
+        }
 
         var variable = ExprTools.toString(variable);
-
-        builder.addGetter(f.name, f.type, macro {
-            var c = findComponent($v{variable});
-            if (c == null) {
-                trace("WARNING: no child component found: " + $v{variable});
-                return Reflect.getProperty(c, $v{field});
-            }
-            var fieldIndex = Type.getInstanceFields(Type.getClass(c)).indexOf("get_" + $v{field});
-            if (fieldIndex == -1) {
-                trace("WARNING: no component getter found: " + $v{field});
-                return Reflect.getProperty(c, $v{field});
-            }
-            return Reflect.getProperty(c, $v{field});
-        });
-        builder.addSetter(f.name, f.type, macro {
-            if (value != $i{f.name}) {
+        if (hasGetter == false) {
+            builder.addGetter(f.name, f.type, macro {
                 var c = findComponent($v{variable});
                 if (c == null) {
                     trace("WARNING: no child component found: " + $v{variable});
-                    return value;
+                    return Reflect.getProperty(c, $v{field});
                 }
-                var fieldIndex = Type.getInstanceFields(Type.getClass(c)).indexOf("set_" + $v{field});
+                var fieldIndex = Type.getInstanceFields(Type.getClass(c)).indexOf("get_" + $v{field});
                 if (fieldIndex == -1) {
-                    trace("WARNING: no component setter found: " + $v{field});
-                    return value;
+                    trace("WARNING: no component getter found: " + $v{field});
+                    return Reflect.getProperty(c, $v{field});
                 }
-                Reflect.setProperty(c, $v{field}, value);
-            }
-            return value;
-        });
+                return Reflect.getProperty(c, $v{field});
+            });
+        }
+        
+        if (hasSetter == false) {
+            builder.addSetter(f.name, f.type, macro {
+                if (value != $i{f.name}) {
+                    var c = findComponent($v{variable});
+                    if (c == null) {
+                        trace("WARNING: no child component found: " + $v{variable});
+                        return value;
+                    }
+                    var fieldIndex = Type.getInstanceFields(Type.getClass(c)).indexOf("set_" + $v{field});
+                    if (fieldIndex == -1) {
+                        trace("WARNING: no component setter found: " + $v{field});
+                        return value;
+                    }
+                    Reflect.setProperty(c, $v{field}, value);
+                }
+                return value;
+            });
+        }
+        
         if (f.expr != null) {
             builder.constructor.add(macro
                 $i{f.name} = $e{f.expr}
             , AfterSuper);
+        }
+        
+        if (hasSetter == true) {
+            builder.constructor.add(macro {
+                $i{variable}.registerEvent(haxe.ui.events.UIEvent.CHANGE, function(e) {
+                    $i{f.name} = Reflect.getProperty($i{variable}, $v{field});
+                });
+            });
         }
     }
     
