@@ -186,7 +186,11 @@ class Toolkit {
         }
 
         var c:ComponentInfo = parser.parse(data, resourceResolver);
+        for (style in c.styles) {
+            styleSheet.parse(style);
+        }
         var component = buildComponentFromInfo(c, callback);
+        
 
         var fullScript = "";
         for (scriptString in c.scriptlets) {
