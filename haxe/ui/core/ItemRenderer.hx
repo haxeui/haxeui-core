@@ -79,7 +79,6 @@ class ItemRenderer extends Box {
             }
         }
         
-        trace(Type.typeof(_data));
         updateValues(_data, _fieldList);
         
         var components = findComponents(InteractiveComponent);
