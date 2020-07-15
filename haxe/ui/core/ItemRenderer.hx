@@ -64,15 +64,19 @@ class ItemRenderer extends Box {
         if (_fieldList == null || _fieldList.length == 0) {
             switch (Type.typeof(_data)) {
                 case TObject | TClass(_):
-                    var fieldList:Array<String> = Reflect.fields(_data);
-                    if (Type.getClass(_data) != null) {
-                        var instanceFields = Type.getInstanceFields(Type.getClass(_data));
-                        for (i in instanceFields) {
-                            if (Reflect.isFunction(Reflect.getProperty(_data, i)) == false && fieldList.indexOf(i) == -1) {
-                                fieldList.push(i);
+                    if (Std.is(_data, String) == false) {
+                        var fieldList:Array<String> = Reflect.fields(_data);
+                        if (Type.getClass(_data) != null) {
+                            var instanceFields = Type.getInstanceFields(Type.getClass(_data));
+                            for (i in instanceFields) {
+                                if (Reflect.isFunction(Reflect.getProperty(_data, i)) == false && fieldList.indexOf(i) == -1) {
+                                    fieldList.push(i);
+                                }
                             }
+                            _fieldList = fieldList;
                         }
-                        _fieldList = fieldList;
+                    } else {
+                        _fieldList = ["text"];
                     }
                 case _:    
                     _fieldList = ["text"];
@@ -125,7 +129,11 @@ class ItemRenderer extends Box {
         var valueObject = null;
         switch (Type.typeof(value)) {
             case TObject | TClass(_):
-                valueObject = value;
+                if (Std.is(value, String) == false) {
+                    valueObject = value;
+                } else {
+                    valueObject = {text: value};
+                }
             case _:
                 valueObject = {text: value};
         }
