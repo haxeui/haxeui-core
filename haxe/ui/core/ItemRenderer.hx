@@ -140,7 +140,6 @@ class ItemRenderer extends Box {
 
         for (f in fieldList) {
             var v = Reflect.getProperty(valueObject, f);
-            trace(f + " = " + v);
             if (Type.typeof(v) == TObject) {
                 updateValues(v);
             } else {
