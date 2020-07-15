@@ -94,6 +94,7 @@ class Style {
     @:optional public var hidden:Null<Bool>;
     
     @:optional public var filter:Array<Filter>;
+    @:optional public var backdropFilter:Array<Filter>;
     
     @:optional public var resource:String;
     
@@ -285,6 +286,19 @@ class Style {
                             filter = null;
                         case _:
                     }
+
+                case "backdrop-filter":
+                    switch (v.value) {
+                        case Value.VCall(f, vl):
+                            var arr = ValueTools.array(vl);
+                            arr.insert(0, f);
+                            backdropFilter = [FilterParser.parseFilter(arr)];
+                        case Value.VConstant(f):
+                            backdropFilter = [FilterParser.parseFilter([f])];
+                        case Value.VNone:
+                            backdropFilter = null;
+                        case _:
+                    }
                     
                 case "resource":
                     resource = ValueTools.string(v.value);
@@ -410,6 +424,7 @@ class Style {
         if (s.borderStyle != null) borderStyle = s.borderStyle;
 
         if (s.filter != null) filter = s.filter.copy();
+        if (s.backdropFilter != null) backdropFilter = s.backdropFilter.copy();
         if (s.resource != null) resource = s.resource;
 
         if (s.icon != null) icon = s.icon;
@@ -520,6 +535,7 @@ class Style {
         if (s.borderStyle != borderStyle) return false;
 
         if (s.filter != filter) return false;
+        if (s.backdropFilter != backdropFilter) return false;
         if (s.resource != resource) return false;
 
         if (s.icon != icon) return false;
