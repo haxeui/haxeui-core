@@ -62,22 +62,24 @@ class ItemRenderer extends Box {
     private var _fieldList:Array<String> = null; // is caching a good idea?
     private override function validateComponentData() {
         if (_fieldList == null || _fieldList.length == 0) {
-            if (Type.typeof(_data) == TObject) {
-                var fieldList:Array<String> = Reflect.fields(_data);
-                if (Type.getClass(_data) != null) {
-                    var instanceFields = Type.getInstanceFields(Type.getClass(_data));
-                    for (i in instanceFields) {
-                        if (Reflect.isFunction(Reflect.getProperty(_data, i)) == false && fieldList.indexOf(i) == -1) {
-                            fieldList.push(i);
+            switch (Type.typeof(_data)) {
+                case TObject | TClass(_):
+                    var fieldList:Array<String> = Reflect.fields(_data);
+                    if (Type.getClass(_data) != null) {
+                        var instanceFields = Type.getInstanceFields(Type.getClass(_data));
+                        for (i in instanceFields) {
+                            if (Reflect.isFunction(Reflect.getProperty(_data, i)) == false && fieldList.indexOf(i) == -1) {
+                                fieldList.push(i);
+                            }
                         }
+                        _fieldList = fieldList;
                     }
-                    _fieldList = fieldList;
-                }
-            } else {
-                _fieldList = ["text"];
+                case _:    
+                    _fieldList = ["text"];
             }
         }
         
+        trace(Type.typeof(_data));
         updateValues(_data, _fieldList);
         
         var components = findComponents(InteractiveComponent);
@@ -122,10 +124,11 @@ class ItemRenderer extends Box {
         }
         
         var valueObject = null;
-        if (Type.typeof(value) == TObject) {
-            valueObject = value;
-        } else {
-            valueObject = {text: value};
+        switch (Type.typeof(value)) {
+            case TObject | TClass(_):
+                valueObject = value;
+            case _:
+                valueObject = {text: value};
         }
 
         for (f in fieldList) {

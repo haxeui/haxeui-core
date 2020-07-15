@@ -254,6 +254,8 @@ class ValueTools {
         switch (v) {
             case Value.VNumber(v):
                 return v;
+            case Value.VDimension(PX(v)):
+                return v;
             case Value.VColor(v):
                 return v;
             case Value.VBool(v):
