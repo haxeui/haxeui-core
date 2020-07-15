@@ -122,10 +122,11 @@ class ItemRenderer extends Box {
         }
         
         var valueObject = null;
-        if (Type.typeof(value) == TObject) {
-            valueObject = value;
-        } else {
-            valueObject = {text: value};
+        switch (Type.typeof(value)) {
+            case TObject | TClass(_):
+                valueObject = value;
+            case _:
+                valueObject = {text: value};
         }
 
         for (f in fieldList) {
