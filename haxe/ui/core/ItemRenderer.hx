@@ -61,7 +61,7 @@ class ItemRenderer extends Box {
 
     private var _fieldList:Array<String> = null; // is caching a good idea?
     private override function validateComponentData() {
-        if (_fieldList == null || _fieldList.length == 0) {
+        if (_data != null && (_fieldList == null || _fieldList.length == 0)) {
             switch (Type.typeof(_data)) {
                 case TObject | TClass(_):
                     if (Std.is(_data, String) == false) {
