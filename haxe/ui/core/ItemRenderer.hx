@@ -12,6 +12,8 @@ class ItemRenderer extends Box {
         super();
         registerEvent(MouseEvent.MOUSE_OVER, _onItemMouseOver);
         registerEvent(MouseEvent.MOUSE_OUT, _onItemMouseOut);
+        registerEvent(MouseEvent.MOUSE_DOWN, _onItemMouseDown);
+        registerEvent(MouseEvent.MOUSE_UP, _onItemMouseUp);
     }
 
     private function _onItemMouseOver(event:MouseEvent) {
@@ -20,6 +22,14 @@ class ItemRenderer extends Box {
 
     private function _onItemMouseOut(event:MouseEvent) {
         removeClass(":hover");
+    }
+
+    private function _onItemMouseDown(event:MouseEvent) {
+        addClass(":down");
+    }
+
+    private function _onItemMouseUp(event:MouseEvent) {
+        removeClass(":down");
     }
 
     private var _allowHover:Bool = true;

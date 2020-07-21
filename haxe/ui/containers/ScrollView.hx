@@ -487,6 +487,8 @@ class ScrollViewEvents extends haxe.ui.events.Events {
             return;
         }
         
+        _scrollview.addClass(":down");
+        
         _lastMousePos = new Point(event.screenX, event.screenY);
         
         //event.cancel();
@@ -684,6 +686,7 @@ class ScrollViewEvents extends haxe.ui.events.Events {
 
             Toolkit.callLater(inertialScroll);
         } else {
+            _scrollview.removeClass(":down");
             dispatch(new ScrollEvent(ScrollEvent.STOP));
             Toolkit.callLater(resumeContainerEvents);
         }
