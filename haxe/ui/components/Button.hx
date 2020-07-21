@@ -452,9 +452,14 @@ class ButtonEvents extends haxe.ui.events.Events {
         }
 
         _button.removeClass(":down", true, true);
-        if (event.touchEvent == false && _button.hitTest(event.screenX, event.screenY)) {
-            _button.addClass(":hover", true, true);
-        }
+        Toolkit.callLater(function() { // lets wait a frame as button could have moved (edge case)
+            var over = _button.hitTest(event.screenX, event.screenY);
+            if (event.touchEvent == false && over == true) {
+                _button.addClass(":hover", true, true);
+            } else if (over == false) {
+                _button.removeClass(":hover", true, true);
+            }
+        });
 
         if (_repeatTimer != null) {
             _repeatTimer.stop();
