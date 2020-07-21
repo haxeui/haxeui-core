@@ -787,6 +787,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
                 if (onEnd != null) {
                     onEnd();
                 }
+                removeClass("fade-in");
                 onAnimationEnd = prevEnd;
             }
         }
@@ -804,6 +805,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
                     onEnd();
                 }
                 onAnimationEnd = prevEnd;
+                removeClass("fade-out");
             }
         }
         swapClass("fade-out", "fade-in");
