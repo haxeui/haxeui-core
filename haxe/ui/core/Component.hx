@@ -1620,7 +1620,8 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             if (hasEvent(MouseEvent.MOUSE_UP, onPointerEventsMouseUp) == false) {
                 registerEvent(MouseEvent.MOUSE_UP, onPointerEventsMouseUp);
             }
-        } else {
+            handleFrameworkProperty("allowMouseInteraction", true);
+        } else if (style.pointerEvents != null) {
             if (hasEvent(MouseEvent.MOUSE_OVER, onPointerEventsMouseOver) == true) {
                 customStyle.cursor = null;
                 unregisterEvent(MouseEvent.MOUSE_OVER, onPointerEventsMouseOver);
@@ -1634,6 +1635,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             if (hasEvent(MouseEvent.MOUSE_UP, onPointerEventsMouseUp) == true) {
                 unregisterEvent(MouseEvent.MOUSE_UP, onPointerEventsMouseUp);
             }
+            handleFrameworkProperty("allowMouseInteraction", false);
         }
         
         /*

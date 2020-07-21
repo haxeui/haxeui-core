@@ -49,3 +49,7 @@
     color: #909090;
     cursor: default;
 }
+
+.button .label {
+    pointer-events: none;
+}
