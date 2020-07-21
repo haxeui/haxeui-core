@@ -771,6 +771,44 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         }
     }
 
+    public function fadeIn(onEnd:Void->Void = null, show:Bool = true) {
+        if (onEnd != null || show == true) {
+            var prevStart = onAnimationStart;
+            var prevEnd = onAnimationEnd;
+            if (show == true) {
+                prevStart = onAnimationStart;
+                onAnimationStart = function(e) {
+                    this.show();
+                    onAnimationStart = prevStart;
+                }
+            }
+            
+            onAnimationEnd = function(e) {
+                if (onEnd != null) {
+                    onEnd();
+                }
+                onAnimationEnd = prevEnd;
+            }
+        }
+        swapClass("fade-in", "fade-out");
+    }
+    
+    public function fadeOut(onEnd:Void->Void = null, hide:Bool = true) {
+        if (onEnd != null || hide == true) {
+            var prevEnd = onAnimationEnd;
+            onAnimationEnd = function(e) {
+                if (hide == true) {
+                    this.hide();
+                }
+                if (onEnd != null) {
+                    onEnd();
+                }
+                onAnimationEnd = prevEnd;
+            }
+        }
+        swapClass("fade-out", "fade-in");
+    }
+    
     private var _hidden:Bool = false;
     /**
      Whether this component is hidden or not
