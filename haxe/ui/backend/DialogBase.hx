@@ -71,22 +71,41 @@ class DialogBase extends Box {
         }
     }
     
+    private var _dialogParent:Component = null;
+    public var dialogParent(get, set):Component;
+    private function get_dialogParent():Component {
+        return _dialogParent;
+    }
+    private function set_dialogParent(value:Component):Component {
+        _dialogParent = value;
+        return value;
+    }
+    
     public function showDialog(modal:Bool = true) {
         this.modal = modal;
         show();
     }
     
     public override function show() {
+        var dp = dialogParent;
         if (modal) {
             _overlay = new Component();
             _overlay.id = "modal-background";
             _overlay.addClass("modal-background");
             _overlay.percentWidth = _overlay.percentHeight = 100;
-            Screen.instance.addComponent(_overlay);
+            if (dp != null) {
+                dp.addComponent(_overlay);
+            } else {
+                Screen.instance.addComponent(_overlay);
+            }
         }
         createButtons();
         
-        Screen.instance.addComponent(this);
+        if (dp != null) {
+            dp.addComponent(this);
+        } else {
+            Screen.instance.addComponent(this);
+        }
         this.syncComponentValidation();
         if (autoHeight == false) {
             dialogContainer.percentHeight = 100;
@@ -134,10 +153,19 @@ class DialogBase extends Box {
     public override function hide() {
         validateDialog(this.button, function(result) {
             if (result == true) {
+                var dp = dialogParent;
                 if (modal && _overlay != null) {
-                    Screen.instance.removeComponent(_overlay);
+                    if (dp != null) {
+                        dp.removeComponent(_overlay);
+                    } else {
+                        Screen.instance.removeComponent(_overlay);
+                    }
                 }
-                Screen.instance.removeComponent(this);
+                if (dp != null) {
+                    dp.removeComponent(this, false);
+                } else {
+                    Screen.instance.removeComponent(this);
+                }
                 
                 var event = new DialogEvent(DialogEvent.DIALOG_CLOSED);
                 event.button = this.button;
@@ -183,9 +211,17 @@ class DialogBase extends Box {
     
     public function centerDialogComponent(dialog:Dialog) {
         dialog.syncComponentValidation();
-        var x = (Screen.instance.width / 2) - (dialog.componentWidth / 2);
-        var y = (Screen.instance.height / 2) - (dialog.componentHeight / 2);
-        dialog.moveComponent(x, y);
+        var dp = dialogParent;
+        if (dp != null) {
+            dp.syncComponentValidation();
+            var x = (dp.width / 2) - (dialog.componentWidth / 2);
+            var y = (dp.height / 2) - (dialog.componentHeight / 2);
+            dialog.moveComponent(x, y);
+        } else {
+            var x = (Screen.instance.width / 2) - (dialog.componentWidth / 2);
+            var y = (Screen.instance.height / 2) - (dialog.componentHeight / 2);
+            dialog.moveComponent(x, y);
+        }
     }
     
     private function onFooterButtonClick(event:MouseEvent) {
