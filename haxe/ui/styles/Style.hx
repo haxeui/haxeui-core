@@ -330,7 +330,12 @@ class Style {
                 case "mode":
                     mode = ValueTools.string(v.value);
                 case "pointer-events":
-                    pointerEvents = ValueTools.string(v.value);
+                    switch (v.value) {
+                        case VNone:
+                            pointerEvents = "none";
+                        case _:    
+                            pointerEvents = ValueTools.string(v.value);
+                    }
             }
         }
     }

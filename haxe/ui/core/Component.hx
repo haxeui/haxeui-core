@@ -771,6 +771,46 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         }
     }
 
+    public function fadeIn(onEnd:Void->Void = null, show:Bool = true) {
+        if (onEnd != null || show == true) {
+            var prevStart = onAnimationStart;
+            var prevEnd = onAnimationEnd;
+            if (show == true) {
+                prevStart = onAnimationStart;
+                onAnimationStart = function(e) {
+                    this.show();
+                    onAnimationStart = prevStart;
+                }
+            }
+            
+            onAnimationEnd = function(e) {
+                if (onEnd != null) {
+                    onEnd();
+                }
+                removeClass("fade-in");
+                onAnimationEnd = prevEnd;
+            }
+        }
+        swapClass("fade-in", "fade-out");
+    }
+    
+    public function fadeOut(onEnd:Void->Void = null, hide:Bool = true) {
+        if (onEnd != null || hide == true) {
+            var prevEnd = onAnimationEnd;
+            onAnimationEnd = function(e) {
+                if (hide == true) {
+                    this.hide();
+                }
+                if (onEnd != null) {
+                    onEnd();
+                }
+                onAnimationEnd = prevEnd;
+                removeClass("fade-out");
+            }
+        }
+        swapClass("fade-out", "fade-in");
+    }
+    
     private var _hidden:Bool = false;
     /**
      Whether this component is hidden or not
@@ -1580,7 +1620,8 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             if (hasEvent(MouseEvent.MOUSE_UP, onPointerEventsMouseUp) == false) {
                 registerEvent(MouseEvent.MOUSE_UP, onPointerEventsMouseUp);
             }
-        } else {
+            handleFrameworkProperty("allowMouseInteraction", true);
+        } else if (style.pointerEvents != null) {
             if (hasEvent(MouseEvent.MOUSE_OVER, onPointerEventsMouseOver) == true) {
                 customStyle.cursor = null;
                 unregisterEvent(MouseEvent.MOUSE_OVER, onPointerEventsMouseOver);
@@ -1594,6 +1635,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             if (hasEvent(MouseEvent.MOUSE_UP, onPointerEventsMouseUp) == true) {
                 unregisterEvent(MouseEvent.MOUSE_UP, onPointerEventsMouseUp);
             }
+            handleFrameworkProperty("allowMouseInteraction", false);
         }
         
         /*

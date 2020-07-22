@@ -1,5 +1,6 @@
 package haxe.ui.containers;
 
+import haxe.ui.util.Timer;
 import haxe.ui.behaviours.Behaviour;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
@@ -486,6 +487,8 @@ class ScrollViewEvents extends haxe.ui.events.Events {
             return;
         }
         
+        _scrollview.addClass(":down");
+        
         _lastMousePos = new Point(event.screenX, event.screenY);
         
         //event.cancel();
@@ -587,6 +590,10 @@ class ScrollViewEvents extends haxe.ui.events.Events {
     private function onContainerEventsStatusChanged() {
         _scrollview.findComponent("scrollview-contents", Component, true, "css").disableInteractivity(_containerEventsPaused);
         
+        if (_containerEventsPaused == true) {
+            _scrollview.findComponent("scrollview-contents", Component, true, "css").removeClass(":hover", true, true);
+        } 
+        
         var hscroll = _scrollview.findComponent(HorizontalScroll, false);
         var vscroll = _scrollview.findComponent(VerticalScroll, false);
         if (hscroll != null || vscroll != null) {
@@ -594,17 +601,21 @@ class ScrollViewEvents extends haxe.ui.events.Events {
             if (builder.autoHideScrolls == true) {
                 if (_containerEventsPaused == true) {
                     if (hscroll != null) {
-                        hscroll.hidden = false;
+                        //hscroll.hidden = false;
+                        hscroll.fadeIn();
                     }
                     if (vscroll != null) {
-                        vscroll.hidden = false;
+                        //vscroll.hidden = false;
+                        vscroll.fadeIn();
                     }
                 } else {
                     if (hscroll != null) {
-                        hscroll.hidden = true;
+                        //hscroll.hidden = true;
+                        hscroll.fadeOut();
                     }
                     if (vscroll != null) {
-                        vscroll.hidden = true;
+                        //vscroll.hidden = true;
+                        vscroll.fadeOut();
                     }
                 }
             }
@@ -675,6 +686,7 @@ class ScrollViewEvents extends haxe.ui.events.Events {
 
             Toolkit.callLater(inertialScroll);
         } else {
+            _scrollview.removeClass(":down");
             dispatch(new ScrollEvent(ScrollEvent.STOP));
             Toolkit.callLater(resumeContainerEvents);
         }
@@ -741,14 +753,31 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         }
     }
     
+    private var _fadeTimer:Timer = null;
+    @:access(haxe.ui.core.Component)
     private function onMouseWheel(event:MouseEvent) {
         var vscroll:VerticalScroll = _scrollview.findComponent(VerticalScroll, false);
         if (vscroll != null) {
+            var builder = cast(_scrollview._compositeBuilder, ScrollViewBuilder);
+            if (builder.autoHideScrolls == true && _fadeTimer == null) {
+                vscroll.fadeIn();
+            }
             event.cancel();
             if (event.delta > 0) {
                 vscroll.pos -= 50; // TODO: calculate this
             } else if (event.delta < 0) {
                 vscroll.pos += 50;
+            }
+            if (builder.autoHideScrolls == true) {
+                if (_fadeTimer != null) {
+                    _fadeTimer.stop();
+                    _fadeTimer = null;
+                }
+                _fadeTimer = new Timer(300, function() {
+                    vscroll.fadeOut();
+                    _fadeTimer.stop();
+                    _fadeTimer = null;
+                });
             }
         }
     }

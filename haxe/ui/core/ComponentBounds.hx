@@ -319,6 +319,19 @@ class ComponentBounds extends ComponentLayout {
     private var _actualWidth:Null<Float>;
     private var _actualHeight:Null<Float>;
     
+    private var _hasScreen:Null<Bool> = null;
+    public var hasScreen(get, null):Bool;
+    private function get_hasScreen():Bool {
+        var p = this;
+        while (p != null) {
+            if (p._hasScreen == false) {
+                return false;
+            }
+            p = p.parentComponent;
+        }
+        return true;
+    }
+    
     /**
      Whether or not a point is inside this components bounds
 
@@ -326,6 +339,10 @@ class ComponentBounds extends ComponentLayout {
     **/
     @:dox(group = "Size related properties and methods")
     public function hitTest(left:Float, top:Float):Bool { // co-ords must be stage
+        
+        if (hasScreen == false) {
+            return false;
+        }
         
         left *= Toolkit.scale;
         top *= Toolkit.scale;
