@@ -57,6 +57,9 @@ class FocusManager {
 
     public var focus(get, set):IFocusable;
     private function get_focus():IFocusable {
+        if (focusInfo == null) {
+            return null;
+        }
         return focusInfo.currentFocus;
     }
     private function set_focus(value:IFocusable):IFocusable {
