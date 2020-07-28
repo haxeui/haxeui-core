@@ -70,6 +70,10 @@ class Style {
     @:optional public var borderBottomSize:Null<Float>;
     @:optional public var borderRightSize:Null<Float>;
     @:optional public var borderRadius:Null<Float>;
+    @:optional public var borderRadiusTopLeft:Null<Float>;
+    @:optional public var borderRadiusTopRight:Null<Float>;
+    @:optional public var borderRadiusBottomLeft:Null<Float>;
+    @:optional public var borderRadiusBottomRight:Null<Float>;
     @:optional public var borderOpacity:Null<Float>;
     @:optional public var borderStyle:Null<String>;
     
@@ -228,6 +232,15 @@ class Style {
                     
                 case "border-radius":
                     borderRadius = ValueTools.calcDimension(v.value);
+                case "border-top-left-radius":
+                    borderRadiusTopLeft = ValueTools.calcDimension(v.value);
+                case "border-top-right-radius":
+                    borderRadiusTopRight = ValueTools.calcDimension(v.value);
+                case "border-bottom-left-radius":
+                    borderRadiusBottomLeft = ValueTools.calcDimension(v.value);
+                case "border-bottom-right-radius":
+                    borderRadiusBottomRight = ValueTools.calcDimension(v.value);
+                    
                 case "border-opacity":
                     borderOpacity = ValueTools.float(v.value);
                 case "border-style":
@@ -425,6 +438,10 @@ class Style {
         if (s.borderRightSize != null) borderRightSize = s.borderRightSize;
 
         if (s.borderRadius != null) borderRadius = s.borderRadius;
+        if (s.borderRadiusTopLeft != null) borderRadiusTopLeft = s.borderRadiusTopLeft;
+        if (s.borderRadiusTopRight != null) borderRadiusTopRight = s.borderRadiusTopRight;
+        if (s.borderRadiusBottomLeft != null) borderRadiusBottomLeft = s.borderRadiusBottomLeft;
+        if (s.borderRadiusBottomRight != null) borderRadiusBottomRight = s.borderRadiusBottomRight;
         if (s.borderOpacity != null) borderOpacity = s.borderOpacity;
         if (s.borderStyle != null) borderStyle = s.borderStyle;
 
@@ -536,6 +553,10 @@ class Style {
         if (s.borderRightSize != borderRightSize) return false;
 
         if (s.borderRadius != borderRadius) return false;
+        if (s.borderRadiusTopLeft != borderRadiusTopLeft) return false;
+        if (s.borderRadiusTopRight != borderRadiusTopRight) return false;
+        if (s.borderRadiusBottomLeft != borderRadiusBottomLeft) return false;
+        if (s.borderRadiusBottomRight != borderRadiusBottomRight) return false;
         if (s.borderOpacity != borderOpacity) return false;
         if (s.borderStyle != borderStyle) return false;
 
