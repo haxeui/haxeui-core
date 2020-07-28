@@ -8,15 +8,18 @@ class FunctionArray<T> {
     }
 
     public function get(index:Int):T {
+        if (_array == null) _array = [];
         return _array[index].callback;
     }
 
     public var length(get, null):Int;
     private function get_length():Int {
+        if (_array == null) _array = [];
         return _array.length;
     }
 
     public function push(x:T, priority:Int = 0):Int {
+        if (_array == null) _array = [];
         var listener:Listener<T> = new Listener(x, priority);
         for(i in 0..._array.length) {
             if (_array[i].priority < priority) {
@@ -33,6 +36,7 @@ class FunctionArray<T> {
     }
 
     public function indexOf(x:T, fromIndex:Int = 0):Int {
+        if (_array == null) _array = [];
         #if neko
         if (Reflect.isFunction(x) == false) {
             return _array.indexOf(cast x);
@@ -55,6 +59,7 @@ class FunctionArray<T> {
     }
 
     public function remove(x:T):Bool {
+        if (_array == null) _array = [];
         var index:Int = indexOf(x);
         if (index != -1) {
             _array.splice(index, 1);
@@ -68,6 +73,7 @@ class FunctionArray<T> {
     }
 
     public function iterator():Iterator<Listener<T>> {
+        if (_array == null) _array = [];
         return _array.iterator();
     }
 
