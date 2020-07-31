@@ -1,5 +1,6 @@
 package haxe.ui.core;
 
+import haxe.ui.backend.ScreenBase;
 import haxe.ui.backend.ScreenImpl;
 import haxe.ui.containers.dialogs.Dialog;
 import haxe.ui.containers.dialogs.Dialog.DialogButton;
@@ -10,12 +11,22 @@ import haxe.ui.focus.FocusManager;
 import haxe.ui.util.EventMap;
 
 class Screen extends ScreenImpl {
-
+    private static var _instanceMap:Map<Int, Screen> = new Map<Int, Screen>();
+    
     private static var _instance:Screen;
     public static var instance(get, never):Screen;
     private static function get_instance():Screen {
-        if (_instance == null) {
+        var windowID:Int;
+        if (Reflect.hasField(ScreenImpl, "currentWindowID")) {
+            windowID = ScreenImpl.currentWindowID;
+        } else {
+            windowID = ScreenBase.currentWindowID;
+        }
+        if (_instanceMap.exists(windowID)) {
+            _instance = _instanceMap.get(windowID);
+        } else {
             _instance = new Screen();
+            _instanceMap.set(windowID, _instance);
         }
         return _instance;
     }

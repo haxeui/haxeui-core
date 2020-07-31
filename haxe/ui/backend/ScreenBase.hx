@@ -4,6 +4,11 @@ import haxe.ui.core.Component;
 import haxe.ui.events.UIEvent;
 
 class ScreenBase {
+    public static var currentWindowID(get, null):Int;
+    private static function get_currentWindowID():Int {
+        return #if js 0 #else 1 #end;
+    }
+
     private var _topLevelComponents:Array<Component> = new Array<Component>();
     
     private var _focus:Component = null;
