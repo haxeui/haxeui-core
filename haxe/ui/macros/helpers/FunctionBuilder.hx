@@ -61,6 +61,14 @@ class FunctionBuilder {
         return fn.args[index];
     }
     
+    public var argCount(get, null):Int;
+    private function get_argCount():Int {
+        if (fn.args == null) {
+            return 0;
+        }
+        return fn.args.length;
+    }
+    
     public function getMetaValueString(name:String, paramIndex:Int = 0):String {
         for (m in field.meta) {
             if (m.name == name || m.name == ':${name}') {
