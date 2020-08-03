@@ -310,15 +310,40 @@ class Macros {
         });
         cloneFn.add(macro return c);
 
-        // add "self" function
-        var access:Array<Access> = [APrivate];
-        if (useSelf == false) {
-            access.push(AOverride);
+        var hasOverriddenSelf = (builder.findFunction("self") != null);
+        
+        var constructorArgExprs = null;
+        if (hasOverriddenSelf == false) {
+            var hasConstructorArgs = false;
+            var constuctor = builder.findFunction("new");
+            if (constuctor != null) {
+                hasConstructorArgs = (constuctor.argCount > 0);
+                if (hasConstructorArgs == true) {
+                    constructorArgExprs = [];
+                    for (arg in constuctor.fn.args) {
+                        var varName = "_constructorParam_" + arg.name;
+                        builder.addVar(varName, arg.type, null, null, [{name: ":noCompletion", pos: Context.currentPos()}]);
+                        constructorArgExprs.push(macro this.$varName);
+                    }
+                }
+            }
+            
+            // add "self" function
+            var access:Array<Access> = [APrivate];
+            if (useSelf == false) {
+                access.push(AOverride);
+            }
+            var typePath = builder.typePath;
+            if (constructorArgExprs == null) {
+                builder.addFunction("self", macro { 
+                    return new $typePath();
+                }, builder.path, access);
+            } else {
+                builder.addFunction("self", macro {
+                    return new $typePath($a{constructorArgExprs});
+                }, builder.path, access);
+            }
         }
-        var typePath = builder.typePath;
-        builder.addFunction("self", macro {
-            return new $typePath();
-        }, builder.path, access);
     }
     
     #if ((haxe_ver < 4) || haxeui_heaps)

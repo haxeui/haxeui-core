@@ -1,4 +1,5 @@
 package haxe.ui.parsers.ui;
+
 import haxe.ui.util.StringUtil;
 
 class ComponentInfo {
@@ -27,7 +28,7 @@ class ComponentInfo {
     public var layout:LayoutInfo;
 
     public var scriptlets:Array<String>;
-    public var styles:Array<String>;
+    public var styles:Array<ComponentStyleInfo>;
 
     public var data:String;
 
