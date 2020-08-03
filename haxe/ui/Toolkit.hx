@@ -187,7 +187,9 @@ class Toolkit {
 
         var c:ComponentInfo = parser.parse(data, resourceResolver);
         for (style in c.styles) {
-            styleSheet.parse(style);
+            if (style.scope == "global") {
+                styleSheet.parse(style.style);
+            }
         }
         var component = buildComponentFromInfo(c, callback);
         

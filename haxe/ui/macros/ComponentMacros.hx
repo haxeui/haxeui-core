@@ -113,8 +113,10 @@ class ComponentMacros {
         
         var fileContent:String = StringUtil.replaceVars(File.getContent(f), params);
         var c:ComponentInfo = ComponentParser.get(MacroHelpers.extension(f)).parse(fileContent, new FileResourceResolver(f, params));
-        for (styleString in c.styles) {
-            builder.add(macro haxe.ui.Toolkit.styleSheet.parse($v{styleString}, "user"));
+        for (s in c.styles) {
+            if (s.scope == "global") {
+                builder.add(macro haxe.ui.Toolkit.styleSheet.parse($v{s.style}, "user"));
+            }
         }
         
         if (buildRoot == true) {
@@ -150,8 +152,10 @@ class ComponentMacros {
     public static function buildComponentFromString(builder:CodeBuilder, source:String, namedComponents:Map<String, NamedComponentDescription> = null, bindingExprs:Array<Expr> = null, params:Map<String, Dynamic> = null, rootVarName:String = "this"):ComponentInfo {
         source = StringUtil.replaceVars(source, params);
         var c:ComponentInfo = ComponentParser.get("xml").parse(source);
-        for (styleString in c.styles) {
-            builder.add(macro haxe.ui.Toolkit.styleSheet.parse($v{styleString}, "user"));
+        for (s in c.styles) {
+            if (s.scope == "global") { 
+                builder.add(macro haxe.ui.Toolkit.styleSheet.parse($v{s.style}, "user"));
+            }
         }
         
         var fullScript = "";
@@ -184,8 +188,10 @@ class ComponentMacros {
             namedComponents = new Map<String, NamedComponentDescription>();
         }
         
-        for (styleString in c.styles) {
-            builder.add(macro haxe.ui.Toolkit.styleSheet.parse($v{styleString}, "user"));
+        for (s in c.styles) {
+            if (s.scope == "global") {
+                builder.add(macro haxe.ui.Toolkit.styleSheet.parse($v{s.style}, "user"));
+            }
         }
 
         if (bindingExprs == null) {
@@ -238,6 +244,15 @@ class ComponentMacros {
         var componentVarName = 'c${id}';
 
         builder.add(macro var $componentVarName = new $typePath());
+        
+        if (c.styles.length > 0) {
+            builder.add(macro $i{componentVarName}.styleSheet = new haxe.ui.styles.StyleSheet());
+            for (s in c.styles) {
+                if (s.scope == "local") {
+                    builder.add(macro $i{componentVarName}.styleSheet.parse($v{s.style}));
+                }
+            }
+        }
         
         assignComponentProperties(builder, c, componentVarName, bindingExprs);
         if (c.layout != null) {

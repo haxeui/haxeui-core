@@ -14,6 +14,7 @@ import haxe.ui.layouts.Layout;
 import haxe.ui.scripting.ScriptInterp;
 import haxe.ui.styles.Parser;
 import haxe.ui.styles.Style;
+import haxe.ui.styles.StyleSheet;
 import haxe.ui.styles.animation.Animation;
 import haxe.ui.styles.elements.AnimationKeyFrames;
 import haxe.ui.util.Color;
@@ -1027,6 +1028,45 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         return value;
     }
 
+    // were going to cache the ref (which may be null) so we dont have to 
+    // perform a parent based lookup each for a performance tweak
+    private var _useCachedStyleSheetRef:Bool = false;
+    private var _cachedStyleSheetRef:StyleSheet = null;
+    private var _styleSheet:StyleSheet = null;
+    public var styleSheet(get, set):StyleSheet;
+    private function get_styleSheet():StyleSheet {
+        if (_useCachedStyleSheetRef == true) {
+            return _cachedStyleSheetRef;
+        }
+        
+        var s = null;
+        var ref = this;
+        while (ref != null) {
+            if (ref._styleSheet != null) {
+                s = ref._styleSheet;
+                break;
+            }
+            ref = ref.parentComponent;
+        }
+        
+        _useCachedStyleSheetRef = true;
+        _cachedStyleSheetRef = s;
+        
+        return s;
+    }
+    private function set_styleSheet(value:StyleSheet):StyleSheet {
+        _styleSheet = value;
+        resetCachedStyleSheetRef();
+        return value;
+    }
+    private function resetCachedStyleSheetRef() {
+        _cachedStyleSheetRef = null;
+        _useCachedStyleSheetRef = false;
+        for (c in childComponents) {
+            c.resetCachedStyleSheetRef();
+        }
+    }
+    
     //***********************************************************************************************************
     // Layout related
     //***********************************************************************************************************
@@ -1484,6 +1524,10 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
 
     private override function validateComponentStyle() {
         var s:Style = Toolkit.styleSheet.buildStyleFor(this);
+        if (this.styleSheet != null) {
+            var localStyle = this.styleSheet.buildStyleFor(this);
+            s.apply(localStyle);
+        }
         s.apply(customStyle);
 
         if (_style == null || _style.equalTo(s) == false) { // lets not update if nothing has changed
