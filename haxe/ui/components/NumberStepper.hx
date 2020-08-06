@@ -167,6 +167,9 @@ private class Events extends haxe.ui.events.Events {
         }
         
         var textfield:TextField = _stepper.findComponent("stepper-textfield", TextField);
+        if (!textfield.hasEvent(KeyboardEvent.KEY_UP, onTextFieldKeyUp)) {
+            textfield.registerEvent(KeyboardEvent.KEY_UP, onTextFieldKeyUp);
+        }
         if (!textfield.hasEvent(FocusEvent.FOCUS_IN, onTextFieldFocusIn)) {
             textfield.registerEvent(FocusEvent.FOCUS_IN, onTextFieldFocusIn);
         }
@@ -191,6 +194,7 @@ private class Events extends haxe.ui.events.Events {
 		_stepper.unregisterEvent(KeyboardEvent.KEY_DOWN, onKeyDown);
         
         var textfield:TextField = _stepper.findComponent("stepper-textfield", TextField);
+        textfield.unregisterEvent(KeyboardEvent.KEY_DOWN, onTextFieldKeyUp);
         textfield.unregisterEvent(FocusEvent.FOCUS_IN, onTextFieldFocusIn);
         textfield.unregisterEvent(FocusEvent.FOCUS_OUT, onTextFieldFocusOut);
         textfield.unregisterEvent(UIEvent.CHANGE, onTextFieldChange);
@@ -237,6 +241,14 @@ private class Events extends haxe.ui.events.Events {
         var textfield:TextField = _stepper.findComponent("stepper-textfield", TextField);
         textfield.focus = true;
     }
+
+    private function onTextFieldKeyUp(event:KeyboardEvent) {
+        if (event.keyCode == 13) { // Enter
+            var textfield:TextField = _stepper.findComponent("stepper-textfield", TextField);
+            textfield.focus = false;
+        }
+        event.cancel();
+    }
     
     private function onTextFieldFocusIn(event:FocusEvent) {
         _stepper.addClass(":active");
@@ -244,12 +256,24 @@ private class Events extends haxe.ui.events.Events {
     
     private function onTextFieldFocusOut(event:FocusEvent) {
         _stepper.removeClass(":active");
+        var textfield:TextField = _stepper.findComponent("stepper-textfield", TextField);
+        if (textfield != null) {
+            _stepper.pos = MathUtil.clamp(Std.parseFloat(textfield.text), _stepper.min, _stepper.max);
+            textfield.text = Std.string(_stepper.pos);
+        } else {
+            event.cancel();
+        }
     }
     
     private function onTextFieldChange(event:UIEvent) {
         var step:Stepper = _stepper.findComponent("stepper-step", Stepper);
         var textfield:TextField = _stepper.findComponent("stepper-textfield", TextField);
-        _stepper.pos = MathUtil.clamp(Std.parseFloat(textfield.text), _stepper.min, _stepper.max);
-        textfield.text = Std.string(_stepper.pos);
+        var lastChar:String = textfield.text.charAt(textfield.text.length - 1);
+        var maxCappedVal:Float = Math.min(Std.parseFloat(textfield.text), _stepper.max);
+        textfield.text = Std.string(maxCappedVal);
+        // if lastChar was not a digit, it was an allowed chars and should be added back (ex: decimal, dash, comma)
+        if (Std.parseInt(lastChar) == null) {
+            textfield.text += lastChar;
+        }
     }
 }
