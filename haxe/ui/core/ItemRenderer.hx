@@ -118,6 +118,7 @@ class ItemRenderer extends Box {
         e.bubble = true;
         e.source = event.target;
         e.sourceEvent = event;
+        e.itemIndex = itemIndex;
         e.data = _data;
         dispatch(e);
     }
@@ -127,6 +128,7 @@ class ItemRenderer extends Box {
         e.bubble = true;
         e.source = event.target;
         e.sourceEvent = event;
+        e.itemIndex = itemIndex;
         e.data = _data;
         dispatch(e);
     }
