@@ -101,7 +101,7 @@ class Button extends InteractiveComponent {
     /**
      The image resource to use as the buttons icon
     **/
-    @:clonable @:behaviour(IconBehaviour)              public var icon:String;
+    @:clonable @:behaviour(IconBehaviour)              public var icon:Variant;
     
     //***********************************************************************************************************
     // Overrides
