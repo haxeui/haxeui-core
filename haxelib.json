@@ -1,20 +1,20 @@
 {
+    "version": "1.1.2",
     "contributors": [
         "haxeui",
         "ianharrigan",
         "_ibilon",
         "aW4KeNiNG"
     ],
-    "version": "1.1.1",
-    "dependencies": {
-        "hscript": ""
-    },
-    "releasenote": "ItemRenderer fix",
+    "license": "MIT",
     "tags": [
         "ui",
         "gui"
     ],
-    "license": "MIT",
+    "releasenote": "Various tweaks / fixes",
+    "dependencies": {
+        "hscript": ""
+    },
     "name": "haxeui-core",
     "description": "The core library of the HaxeUI framework",
     "url": "https://github.com/haxeui/haxeui-core"
