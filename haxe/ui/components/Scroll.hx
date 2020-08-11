@@ -127,6 +127,8 @@ private class Events extends haxe.ui.events.Events  {
     
     private var _mouseDownOffset:Point;
     private function onThumbMouseDown(event:MouseEvent) {
+        event.cancel();
+        
         _mouseDownOffset = new Point();
         _mouseDownOffset.x = event.screenX - _thumb.left + _scroll.layout.paddingLeft;
         _mouseDownOffset.y = event.screenY - _thumb.top + _scroll.layout.paddingTop;
