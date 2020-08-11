@@ -221,6 +221,8 @@ private class Events extends haxe.ui.events.Events {
 	}
     
     private function onMouseWheel(event:MouseEvent) {
+        event.cancel();
+        
         var textfield:TextField = _stepper.findComponent("stepper-textfield", TextField);
         textfield.focus = true;
         
