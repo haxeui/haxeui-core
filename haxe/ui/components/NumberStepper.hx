@@ -134,12 +134,14 @@ private class Builder extends CompositeBuilder {
             (textfield.customStyle.color != style.color ||
             textfield.customStyle.fontName != style.fontName ||
             textfield.customStyle.fontSize != style.fontSize ||
-            textfield.customStyle.cursor != style.cursor)) {
+            textfield.customStyle.cursor != style.cursor ||
+            textfield.customStyle.textAlign != style.textAlign)) {
 
             textfield.customStyle.color = style.color;
             textfield.customStyle.fontName = style.fontName;
             textfield.customStyle.fontSize = style.fontSize;
             textfield.customStyle.cursor = style.cursor;
+            textfield.customStyle.textAlign = style.textAlign;
             textfield.invalidateComponentStyle();
         }
     }
