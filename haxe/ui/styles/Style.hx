@@ -59,7 +59,7 @@ class Style {
     @:optional public var backgroundImageSliceBottom:Null<Float>;
     @:optional public var backgroundImageSliceRight:Null<Float>;
     
-    @:optional @:isVar public var borderColor(get, set):Null<Int>;
+    @:optional public var borderColor(get, set):Null<Int>;
     private function get_borderColor():Null<Int> {
         return borderTopColor;
     }
@@ -74,7 +74,7 @@ class Style {
     @:optional public var borderLeftColor:Null<Int>;
     @:optional public var borderBottomColor:Null<Int>;
     @:optional public var borderRightColor:Null<Int>;
-    @:optional @:isVar public var borderSize(get, set):Null<Float>;
+    @:optional public var borderSize(get, set):Null<Float>;
     private function get_borderSize():Null<Float> {
         return borderTopSize;
     }
