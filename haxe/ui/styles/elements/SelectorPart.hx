@@ -7,6 +7,7 @@ class SelectorPart {
     public var className:String = null;
     public var id:String = null;
     public var nodeName:String = null;
+    public var direct:Bool = false;
     
     public function new() {
     }

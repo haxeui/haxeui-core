@@ -10,8 +10,6 @@ import haxe.ui.styles.elements.RuleElement;
 // based on: https://github.com/jotform/css.js/blob/master/css.js
 
 class Parser {
-    static var cssRegex = ~/([\s\S]*?)\{([\s\S]*?)\}/gi;
-//    var cssMediaQueryRegex = ~/((@media [\s\S]*?)\{([\s\S]*?\}\s*?)\})/gi;
     static var cssKeyframesRegex = ~/@keyframes\s*(\w+?)\s*\{([\s\S]*?\}\s*?)\}/gi;
     static var cssKeyframeSelectorRegex = ~/([\w%]+)\s*\{\s*([\s\S]*?)\s*\}/gi;
     static var combinedCSSMediaRegex = ~/((\s*?(?:\/\*[\s\S]*?\*\/)?\s*?@media[\s\S]*?)\{([\s\S]*?)\}\s*?\})|(([\s\S]*?)\{([\s\S]*?)\})/gi; //to match css & media queries together

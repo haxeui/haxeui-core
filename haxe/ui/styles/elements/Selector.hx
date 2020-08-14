@@ -4,15 +4,25 @@ class Selector {
     public var parts:Array<SelectorPart> = [];
     
     public function new(s:String) {
+        s = StringTools.replace(s, ">", " > ");
         var p = s.split(" ");
         var parent = null;
+        var nextDirect:Bool = false;
         for (i in p) {
             i = StringTools.trim(i);
             if (i.length == 0) {
                 continue;
             }
+            if (i == ">") {
+                nextDirect = true;
+                continue;
+            }
             
             var current = new SelectorPart();
+            if (nextDirect == true) {
+                current.direct = true;
+                nextDirect = false;
+            }
             current.parent = parent;
             
             var p1 = i.split(":");

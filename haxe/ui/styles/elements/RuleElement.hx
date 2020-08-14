@@ -58,15 +58,25 @@ class RuleElement {
         }
         
         if (c.parent != null) {
-            var p = d.parentComponent;
-            while (p != null) {
-                if (ruleMatch(c.parent, p)) {
-                    break;
+            if (c.direct == true) {
+                var p = d.parentComponent;
+                if (p == null) {
+                    return false;
                 }
-                p = p.parentComponent;
-            }
-            if (p == null) {
-                return false;
+                if (!ruleMatch(c.parent, p)) {
+                    return false;
+                }
+            } else {
+                var p = d.parentComponent;
+                while (p != null) {
+                    if (ruleMatch(c.parent, p)) {
+                        break;
+                    }
+                    p = p.parentComponent;
+                }
+                if (p == null) {
+                    return false;
+                }
             }
         }
         
