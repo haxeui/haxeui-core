@@ -13,7 +13,7 @@
     clip: true;
 }
 
-.tabbar .tabbar-contents {
+.tabbar > .tabbar-contents {
     border: none;
     border-bottom-width: 1px;
     border-bottom-color: #ABABAB;
@@ -109,15 +109,15 @@
     height: auto;
 }
 
-.tabview .tabview-tabs {
+.tabview > .tabview-tabs {
     margin-top: 1px;
 }
 
-.tabview:bottom .tabview-tabs {
+.tabview:bottom > .tabview-tabs {
     margin-top: -1px;
 }
 
-.tabview .tabview-content {
+.tabview > .tabview-content {
     border: 1px solid #ABABAB;
     padding: 5px;
     background-color: white;
