@@ -194,7 +194,7 @@ private class Events extends haxe.ui.events.Events {
 		_stepper.unregisterEvent(KeyboardEvent.KEY_DOWN, onKeyDown);
         
         var textfield:TextField = _stepper.findComponent("stepper-textfield", TextField);
-        textfield.unregisterEvent(KeyboardEvent.KEY_DOWN, onTextFieldKeyUp);
+        textfield.unregisterEvent(KeyboardEvent.KEY_UP, onTextFieldKeyUp);
         textfield.unregisterEvent(FocusEvent.FOCUS_IN, onTextFieldFocusIn);
         textfield.unregisterEvent(FocusEvent.FOCUS_OUT, onTextFieldFocusOut);
         textfield.unregisterEvent(UIEvent.CHANGE, onTextFieldChange);
