@@ -223,6 +223,7 @@ private class Events extends haxe.ui.events.Events  {
     
     private var _offset:Point = null;
     private function onThumbMouseDown(e:MouseEvent) {
+        e.cancel();
         startDrag(cast(e.target, Button), e.localX, e.localY);
     }
     
