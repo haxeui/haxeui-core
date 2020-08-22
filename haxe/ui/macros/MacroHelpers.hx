@@ -216,6 +216,7 @@ class MacroHelpers {
     public static function scanClassPath(processFileFn:String->Bool, searchCriteria:Array<String> = null) {
         buildClassPathCache();
         for (entry in classPathCache) {
+            trace(entry);
             var parts = entry.path.split("/");
             var fileName = parts[parts.length - 1];
             if (searchCriteria == null) {
