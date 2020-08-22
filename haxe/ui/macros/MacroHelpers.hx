@@ -126,7 +126,7 @@ class MacroHelpers {
     private static var secondaryClassPathExceptions:Array<EReg> = [];
     private static function loadClassPathExclusions(filePath:String) {
         var contents = sys.io.File.getContent(filePath);
-        var lines = contents.split("\r");
+        var lines = contents.split("\n");
         for (line in lines) {
             line = StringTools.trim(line);
             if (line.length == 0 || StringTools.startsWith(line, ";")) {
