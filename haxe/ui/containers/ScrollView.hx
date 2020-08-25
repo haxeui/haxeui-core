@@ -119,7 +119,7 @@ private class ContentLayoutName extends DefaultBehaviour {
     public override function set(value:Variant) {
         super.set(value);
         var builder = cast(_component._compositeBuilder, ScrollViewBuilder);
-        if (builder._contentsLayoutName != value) {
+        if (builder != null && builder._contentsLayoutName != value) {
             builder._contentsLayoutName = value;
             builder._contents.layout = LayoutFactory.createFromName(value);
         }
