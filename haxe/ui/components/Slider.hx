@@ -190,6 +190,8 @@ private class Events extends haxe.ui.events.Events  {
             return;
         }
         
+        e.cancel();
+        
         var coord:Point = new Point();
         coord.x = (e.screenX - _slider.screenLeft) - _slider.paddingLeft;
         coord.y = (e.screenY - _slider.screenTop) - _slider.paddingTop;
