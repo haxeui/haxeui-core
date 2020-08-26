@@ -369,7 +369,6 @@ private class Builder extends CompositeBuilder {
     private function onPagePropertyChanged(event:UIEvent) {
         if (event.data == "text") {
             var index = _views.indexOf(event.target);
-            trace(index + ", " + event.target.text);
             var button = _tabs.getTab(index);
             if (button != null &&  button.text != event.target.text) {
                 button.text = event.target.text;
