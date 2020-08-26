@@ -4,6 +4,7 @@ import haxe.ui.behaviours.Behaviours;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.behaviours.ValueBehaviour;
+import haxe.ui.events.UIEvent;
 import haxe.ui.layouts.Layout;
 import haxe.ui.styles.Style;
 import haxe.ui.util.Variant;
@@ -85,7 +86,7 @@ class ComponentContainer extends ComponentCommon implements IClonable<ComponentC
     //***********************************************************************************************************
     // General
     //***********************************************************************************************************
-    @:clonable @:behaviour(DefaultBehaviour)                        public var text:String;
+    @:clonable @:behaviour(ComponentTextBehaviour)                  public var text:String;
     @:clonable @:behaviour(ComponentValueBehaviour)                 public var value:Dynamic;
 
     private var _id:String = null;
@@ -109,6 +110,21 @@ class ComponentContainer extends ComponentCommon implements IClonable<ComponentC
 //***********************************************************************************************************
 // Default behaviours
 //***********************************************************************************************************
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+class ComponentTextBehaviour extends DefaultBehaviour {
+    public override function set(value:Variant) {
+        if (value == _value) {
+            return;
+        }
+
+        _value = value;
+        _component.dispatch(new UIEvent(UIEvent.PROPERTY_CHANGE, "text"));
+        
+        super.set(value);
+    }
+}
+
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 class ComponentDisabledBehaviour extends DataBehaviour {

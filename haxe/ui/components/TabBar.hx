@@ -24,6 +24,7 @@ class TabBar extends Component {
     @:behaviour(TabCount)               public var tabCount:Int;
     @:behaviour(Closable, false)        public var closable:Bool;
     @:call(RemoveTab)                   public function removeTab(index:Int):Void;
+    @:call(GetTab)                      public function getTab(index:Int):Component;
 }
 
 //***********************************************************************************************************
@@ -201,6 +202,21 @@ private class RemoveTab extends Behaviour {
             cast(_component, TabBar).selectedIndex = newSelectedIndex;
         }
         return null;
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+@:access(haxe.ui.components.Builder)
+private class GetTab extends Behaviour {
+    public override function call(param:Any = null):Variant {
+        var builder:Builder = cast(_component._compositeBuilder, Builder);
+        var index:Int = param;
+        var tab:Component = null;
+        if (index < builder._container.childComponents.length) {
+            tab = builder._container.childComponents[index];
+        }
+        return tab;
     }
 }
 

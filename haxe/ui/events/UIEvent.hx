@@ -22,6 +22,8 @@ class UIEvent extends EventImpl {
 
     public static inline var BEFORE_CLOSE:String = "beforeClose";
     public static inline var CLOSE:String = "close";
+
+    public static inline var PROPERTY_CHANGE:String = "propertyChange";
     
     public var bubble(default, default):Bool; 
     public var type(default, default):String;

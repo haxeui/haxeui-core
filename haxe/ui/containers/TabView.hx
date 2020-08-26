@@ -25,6 +25,7 @@ class TabView extends Component {
     @:behaviour(PageCount)          public var pageCount:Int;
     @:behaviour(Closable, false)    public var closable:Bool;
     @:call(RemovePage)              public function removePage(index:Int):Void;
+    @:call(GetPage)                 public function getPage(index:Int):Component;
     @:call(RemoveAllPages)          public function removeAllPages():Void;
 }
 
@@ -206,6 +207,21 @@ private class RemovePage extends Behaviour {
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 @:access(haxe.ui.containers.Builder)
+private class GetPage extends Behaviour {
+    public override function call(param:Any = null):Variant {
+        var builder:Builder = cast(_component._compositeBuilder, Builder);
+        var index:Int = param;
+        var page:Component = null;
+        if (index < builder._views.length) {
+            page = builder._views[index];
+        }
+        return page;
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+@:access(haxe.ui.containers.Builder)
 private class RemoveAllPages extends Behaviour {
     public override function call(param:Any = null):Variant {
         var builder:Builder = cast(_component._compositeBuilder, Builder);
@@ -320,6 +336,7 @@ private class Builder extends CompositeBuilder {
             if (Std.is(child, Box)) {
                 icon = cast(child, Box).icon;
             }
+            child.registerEvent(UIEvent.PROPERTY_CHANGE, onPagePropertyChanged);
             _views.push(child);
             var button:Button = new Button();
             button.text = text;
@@ -338,6 +355,7 @@ private class Builder extends CompositeBuilder {
             if (Std.is(child, Box)) {
                 icon = cast(child, Box).icon;
             }
+            child.registerEvent(UIEvent.PROPERTY_CHANGE, onPagePropertyChanged);
             _views.insert(index, child);
             var button:Button = new Button();
             button.text = text;
@@ -346,6 +364,17 @@ private class Builder extends CompositeBuilder {
             return child;
         }
         return null;
+    }
+    
+    private function onPagePropertyChanged(event:UIEvent) {
+        if (event.data == "text") {
+            var index = _views.indexOf(event.target);
+            trace(index + ", " + event.target.text);
+            var button = _tabs.getTab(index);
+            if (button != null &&  button.text != event.target.text) {
+                button.text = event.target.text;
+            }
+        }
     }
     
     public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
