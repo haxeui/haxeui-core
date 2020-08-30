@@ -211,7 +211,10 @@ class ListDropDownHandler extends DropDownHandler {
             itemCount = _listview.dataSource.size;
         }
 
-        _listview.itemCount = itemCount; 
+        if (itemCount > 0) {
+            _listview.itemCount = itemCount; 
+        }
+        
         if (_dropdown.dropdownWidth == null) {
             wrapper.syncComponentValidation();
             _listview.width = _dropdown.width - (wrapper.layout.paddingLeft + wrapper.layout.paddingRight);
