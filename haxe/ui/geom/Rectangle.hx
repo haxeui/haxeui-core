@@ -13,6 +13,13 @@ class Rectangle {
         this.height = height;
     }
 
+    public function set(left:Float = 0, top:Float = 0, width:Float = 0, height:Float = 0) {
+        this.left = left;
+        this.top = top;
+        this.width = width;
+        this.height = height;
+    }
+    
     public var right(get, set):Float;
     private function get_right():Float {
         return left + width;
@@ -64,6 +71,47 @@ class Rectangle {
 
         return y1 > y0;
     }
+    
+    
+    private var _intersectionCache:Rectangle = null;
+    public function intersection(rect:Rectangle, noAlloc = true):Rectangle {
+        if (noAlloc == true && _intersectionCache == null) {
+            _intersectionCache = new Rectangle();
+        }
+        
+        var x0 = left < rect.left ? rect.left : left;
+        var x1 = right > rect.right ? rect.right : right;
+        if (x1 <= x0) {
+            if (noAlloc == true) {
+                _intersectionCache.set();
+                return _intersectionCache;
+            } else {
+                return new Rectangle();
+            }
+        }
+        
+        var y0 = top < rect.top ? rect.top : top;
+        var y1 = bottom > rect.bottom ? rect.bottom : bottom;
+        if (y1 <= y0) {
+            if (noAlloc == true) {
+                _intersectionCache.set();
+                return _intersectionCache;
+            } else {
+                return new Rectangle();
+            }
+        }
+        
+        var r = null;
+        if (noAlloc == true) {
+            r = _intersectionCache;
+        } else {
+            r = new Rectangle();
+        }
+        
+        r.set(x0, y0, x1 - x0, y1 - y0);
+        return r;
+    }
+    
     
     
     public function toString():String {
