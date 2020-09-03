@@ -491,8 +491,6 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         
         _lastMousePos = new Point(event.screenX, event.screenY);
         
-        event.cancel();
-        
         var componentOffset = _scrollview.getComponentOffset();
         if (hscroll != null && hscroll.hitTest(event.screenX - componentOffset.x, event.screenY - componentOffset.y) == true) {
             return;
@@ -500,6 +498,8 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         if (vscroll != null && vscroll.hitTest(event.screenX - componentOffset.x, event.screenY - componentOffset.y) == true) {
             return;
         }
+
+        event.cancel();
         
         _offset = new Point();
         if (hscroll != null) {
