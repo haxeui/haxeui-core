@@ -222,13 +222,29 @@ class Style {
                     borderBottomColor = ValueTools.int(v.value);
                     
                 case "border-top-size" | "border-top-width":
-                    borderTopSize = ValueTools.calcDimension(v.value);
+                    if (v.value == VNone) {
+                        borderTopSize = 0;
+                    } else {
+                        borderTopSize = ValueTools.calcDimension(v.value);
+                    }
                 case "border-left-size" | "border-left-width":
-                    borderLeftSize = ValueTools.calcDimension(v.value);
+                    if (v.value == VNone) {
+                        borderLeftSize = 0;
+                    } else {
+                        borderLeftSize = ValueTools.calcDimension(v.value);
+                    }
                 case "border-right-size" | "border-right-width":
-                    borderRightSize = ValueTools.calcDimension(v.value);
+                    if (v.value == VNone) {
+                        borderRightSize = 0;
+                    } else {
+                        borderRightSize = ValueTools.calcDimension(v.value);
+                    }
                 case "border-bottom-size" | "border-bottom-width":
-                    borderBottomSize = ValueTools.calcDimension(v.value);
+                    if (v.value == VNone) {
+                        borderBottomSize = 0;
+                    } else {
+                        borderBottomSize = ValueTools.calcDimension(v.value);
+                    }
                     
                 case "border-radius":
                     borderRadius = ValueTools.calcDimension(v.value);
