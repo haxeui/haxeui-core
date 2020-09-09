@@ -5,6 +5,7 @@ import haxe.ui.geom.Size;
 class HorizontalLayout extends DefaultLayout {
     public function new() {
         super();
+        _calcFullWidths = true;
     }
 
     private override function repositionChildren() {

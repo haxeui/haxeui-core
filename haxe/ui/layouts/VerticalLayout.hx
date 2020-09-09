@@ -5,6 +5,7 @@ import haxe.ui.geom.Size;
 class VerticalLayout extends DefaultLayout {
     public function new() {
         super();
+        _calcFullHeights = true;
     }
 
     private override function repositionChildren() {

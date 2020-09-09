@@ -3,6 +3,9 @@ package haxe.ui.layouts;
 import haxe.ui.geom.Size;
 
 class DefaultLayout extends Layout {
+    private var _calcFullWidths:Bool = false;
+    private var _calcFullHeights:Bool = false;
+    
     public function new() {
         super();
     }
@@ -11,6 +14,33 @@ class DefaultLayout extends Layout {
         var usableSize:Size = usableSize;
         var percentWidth:Float = 100;
         var percentHeight:Float = 100;
+        
+        var fullWidthValue:Float = 100;
+        var fullHeightValue:Float = 100;
+        if (_calcFullWidths == true || _calcFullHeights == true) {
+            var n1 = 0;
+            var n2 = 0;
+            for (child in component.childComponents) {
+                if (child.includeInLayout == false) {
+                    continue;
+                }
+                
+                if (_calcFullWidths == true && child.percentWidth != null && child.percentWidth == 100) {
+                    n1++;
+                }
+                if (_calcFullHeights == true && child.percentHeight != null && child.percentHeight == 100) {
+                    n2++;
+                }
+            }
+            
+            if (n1 > 0) {
+                fullWidthValue = 100 / n1;
+            }
+            if (n2 > 0) {
+                fullHeightValue = 100 / n2;
+            }
+        }
+        
         for (child in component.childComponents) {
             if (child.includeInLayout == false) {
                 continue;
@@ -20,10 +50,18 @@ class DefaultLayout extends Layout {
             var cy:Null<Float> = null;
 
             if (child.percentWidth != null) {
-                cx = (usableSize.width * child.percentWidth) / percentWidth - marginLeft(child) - marginRight(child);
+                var childPercentWidth = child.percentWidth;
+                if (childPercentWidth == 100) {
+                    childPercentWidth = fullWidthValue;
+                }
+                cx = (usableSize.width * childPercentWidth) / percentWidth - marginLeft(child) - marginRight(child);
             }
             if (child.percentHeight != null) {
-                cy = (usableSize.height * child.percentHeight) / percentHeight - marginTop(child) - marginBottom(child);
+                var childPercentHeight = child.percentHeight;
+                if (childPercentHeight == 100) {
+                    childPercentHeight = fullHeightValue;
+                }
+                cy = (usableSize.height * childPercentHeight) / percentHeight - marginTop(child) - marginBottom(child);
             }
 
             if (fixedMinWidth(child) && child.percentWidth != null) {
