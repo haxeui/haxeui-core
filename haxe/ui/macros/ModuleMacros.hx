@@ -49,16 +49,13 @@ class ModuleMacros {
             // add resources as haxe resources (plus prefix)
             for (r in m.resourceEntries) {
                 if (r.path != null) {
-                    var resolvedPath = null; 
-                    try { 
-                        resolvedPath = Context.resolvePath(r.path); 
-                    } catch (e:Dynamic) { 
-                        resolvedPath = haxe.io.Path.join([Sys.getCwd(), r.path]); 
-                    } 
-                    if (FileSystem.isDirectory(resolvedPath) && FileSystem.exists(resolvedPath)) {
-                        addResources(resolvedPath, resolvedPath, r.prefix);
+                    var resolvedPaths = resolvePaths(r.path);
+                    if (resolvedPaths == null || resolvedPaths.length == 0) {
+                        trace("WARNING: Could not find resolve " + r.path);
                     } else {
-                        trace("WARNING: Could not find path " + resolvedPath);
+                        for (resolvedPath in resolvedPaths) {
+                            addResources(resolvedPath, resolvedPath, r.prefix);
+                        }
                     }
                 }
             }
@@ -183,6 +180,23 @@ class ModuleMacros {
     }
 
     #if macro
+    private static function resolvePaths(path:String):Array<String> {
+        var paths = [];
+        
+        for (c in Context.getClassPath()) {
+            if (c.length == 0) {
+                c = Sys.getCwd();
+            }
+            var p = Path.normalize(c + "/" + path);
+            var isDir = FileSystem.isDirectory(p) && FileSystem.exists(p);
+            if (isDir == true) {
+                paths.push(p);
+            }
+        }
+        
+        return paths;
+    }
+    
     private static var _classMapPopulated:Bool = false;
     public static function populateClassMap() {
         if (_classMapPopulated == true) {
