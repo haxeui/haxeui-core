@@ -1,0 +1,11 @@
+{
+    "name": "heaps",
+    "type": "template",
+    "subProjects": [
+        "shared", "heaps-shared"
+    ],
+    "templates": [
+        { "src": "heaps-js.hxml", "dst": "${target}/heaps-js.hxml"},
+        { "src": "heaps-hl.hxml", "dst": "${target}/heaps-hl.hxml"}
+    ]
+}

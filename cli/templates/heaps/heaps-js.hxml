@@ -1,0 +1,11 @@
+-cp src
+-main ::fullMain::
+
+-lib heaps
+-lib haxeui-core
+-lib haxeui-heaps
+-lib hscript
+
+-D resourcesPath=assets
+
+-js build/heaps/js/::output::.js

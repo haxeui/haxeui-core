@@ -47,7 +47,7 @@ class Util {
     }
     
     public static function backends():Array<String> {
-        return ["html5", "hxwidgets", "openfl", "nme", "pixijs", "kha", "winforms", "android", "flixel", "electron", "qt"];
+        return ["html5", "hxwidgets", "openfl", "nme", "pixijs", "kha", "winforms", "android", "flixel", "electron", "qt", "heaps"];
     }
     
     public static function backendString(sep:String = ", "):String {

@@ -1,0 +1,12 @@
+{
+    "name": "heaps-shared",
+    "type": "template",
+    "directories": [
+        "${target}/build/heaps/js",
+        "${target}/build/heaps/hl"
+    ],
+    "templates": [
+        { "src": "index.html", "dst": "${target}/build/heaps/js/index.html"},
+        { "src": "haxeui-heaps.properties", "dst": "${target}/src/haxeui-heaps.properties"}
+    ]
+}

@@ -1,0 +1,12 @@
+{
+    "name": "heaps-flash-develop",
+    "type": "template",
+    "subProjects": [
+        "shared", "heaps-shared"
+    ],
+    "templates": [
+        { "src": "heaps-hl.hxproj", "dst": "${target}/heaps-hl.hxproj"},
+        { "src": "heaps-js.hxproj", "dst": "${target}/heaps-js.hxproj"},
+        { "src": "run-heaps-hl.bat", "dst": "${target}/run-heaps-hl.bat"}
+    ]
+}
