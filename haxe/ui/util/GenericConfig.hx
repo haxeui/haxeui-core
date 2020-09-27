@@ -112,7 +112,9 @@ class GenericConfig {
             value = defaultValue;
         }
 
-        //cache.set(q, value);
+        if (value != null) {
+            cache.set(q, value);
+        }
         return value;
     }
 
