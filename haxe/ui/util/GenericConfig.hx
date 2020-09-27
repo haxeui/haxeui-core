@@ -58,6 +58,9 @@ class GenericConfig {
 
     public function query(q:String, defaultValue:String = null, conditionRef:Dynamic):String {
         if (cache.exists(q)) {
+            if (defaultValue != null && cache.get(q) == null) {
+                return defaultValue;
+            }
             return cache.get(q);
         }
         
