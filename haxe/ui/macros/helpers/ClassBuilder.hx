@@ -20,7 +20,11 @@ class ClassBuilder {
         this.type = type;
         if (type != null) {
             try {
+                #if macro
                 this.classType = TypeTools.getClass(type);
+                #else
+                this.classType = null;
+                #end
             } catch (e:Dynamic) { }
         }
         this.pos = pos;
@@ -58,7 +62,11 @@ class ClassBuilder {
     
     public var fullPath(get, null):String;
     private function get_fullPath():String {
+        #if macro
         return TypeTools.toString(type);
+        #else
+        return null;
+        #end
     }
     
     public var name(get, null):String;
@@ -437,7 +445,9 @@ class ClassBuilder {
                         newKind = FProp("get", existingSet, existingType, existingExpr);
                     case _:
                 }
+                #if macro
                 field.kind = newKind;
+                #end
             }
         }
         
@@ -489,7 +499,9 @@ class ClassBuilder {
                         newKind = FProp(existingGet, "set", existingType, existingExpr);
                     case _:
                 }
+                #if macro
                 field.kind = newKind;
+                #end
             }
         }
         
