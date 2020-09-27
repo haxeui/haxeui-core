@@ -170,10 +170,8 @@ class ComponentValidation extends ComponentEvents {
         validateComponentInternal(nextFrame);
         validateInitialSize(isInitialized);
         
-        for (flag in _invalidationFlags.keys()) {
-            _invalidationFlags.remove(flag);
-        }
-
+        _invalidationFlags.clear();
+        
         _isAllInvalid = false;
 
         for (flag in _delayedInvalidationFlags.keys()) {
@@ -182,8 +180,9 @@ class ComponentValidation extends ComponentEvents {
             } else {
                 _invalidationFlags.set(flag, true);
             }
-            _delayedInvalidationFlags.remove(flag);
         }
+        _delayedInvalidationFlags.clear();
+        
         _isValidating = false;
     }
 

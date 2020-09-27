@@ -250,10 +250,8 @@ class TextDisplay extends TextDisplayImpl implements IValidating {
 
         validateComponentInternal();
 
-        for (flag in _invalidationFlags.keys()) {
-            _invalidationFlags.remove(flag);
-        }
-
+        _invalidationFlags.clear();
+        
         _isAllInvalid = false;
         _isValidating = false;
     }
