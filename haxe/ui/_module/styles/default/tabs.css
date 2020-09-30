@@ -73,7 +73,6 @@
     padding-right: 5px;
     height: auto;
     width: auto;
-    background-color: white;
     border-bottom-width: 0px;
     border-top-width: 1px;
     border-top-color: #ABABAB;
@@ -114,7 +113,7 @@
 }
 
 .tabview:bottom > .tabview-tabs {
-    margin-top: -1px;
+    margin-top: 0px;
 }
 
 .tabview > .tabview-content {
