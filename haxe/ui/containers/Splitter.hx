@@ -8,6 +8,7 @@ import haxe.ui.core.IDirectionalComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.Screen;
 import haxe.ui.events.MouseEvent;
+import haxe.ui.events.UIEvent;
 import haxe.ui.geom.Point;
 
 @:composite(SplitterEvents, SplitterBuilder)
@@ -98,11 +99,65 @@ class SplitterBuilder extends CompositeBuilder {
             _splitter.addComponent(gripper);
             _splitter.registerInternalEvents(true);
         }
+        
+        if (child.hasClass(getSplitterClass()) == false) {
+            child.registerEvent(UIEvent.SHOWN, onComponentShown);
+            child.registerEvent(UIEvent.HIDDEN, onComponentHidden);
+        }
+        
+        if (child.hidden == true) {
+            onComponentHidden(null);
+        }
+        
         return null;
     }
     
     public function getSplitterClass():String {
         return "splitter-gripper";
+    }
+    
+    private function onComponentShown(e:UIEvent) {
+        var children = _splitter.childComponents.copy();
+        for (c in children) {
+            if (c.hidden == true) {
+                if (Std.is(c, SizerGripper)) {
+                    c.show();
+                }
+                break;
+            }
+        }
+        
+        children.reverse();
+        for (c in children) {
+            if (c.hidden == true) {
+                if (Std.is(c, SizerGripper)) {
+                    c.show();
+                }
+                break;
+            }
+        }
+    }
+    
+    private function onComponentHidden(e:UIEvent) {
+        var children = _splitter.childComponents.copy();
+        for (c in children) {
+            if (c.hidden == false) {
+                if (Std.is(c, SizerGripper)) {
+                    c.hide();
+                }
+                break;
+            }
+        }
+        
+        children.reverse();
+        for (c in children) {
+            if (c.hidden == false) {
+                if (Std.is(c, SizerGripper)) {
+                    c.hide();
+                }
+                break;
+            }
+        }
     }
 }
 
