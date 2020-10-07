@@ -53,6 +53,7 @@ class Screen extends ScreenImpl {
         super.removeComponent(component);
         component.depth = -1;
         rootComponents.remove(component);
+        FocusManager.instance.removeView(component);
         component.unregisterEvent(UIEvent.RESIZE, _onRootComponentResize);
 		return component;
     }
