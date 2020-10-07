@@ -40,6 +40,10 @@ class FocusManager {
         _focusInfo.remove(c);
     }
 
+    public function removeView(component:Component) {
+        _views.remove(component);
+    }
+
     public var focusInfo(get, null):FocusInfo;
     private function get_focusInfo():FocusInfo {
         if (_views.length == 0) {
