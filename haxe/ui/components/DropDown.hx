@@ -32,6 +32,12 @@ class DropDown extends Button implements IDataComponent {
     @:behaviour(SelectedItemBehaviour)               public var selectedItem:Dynamic;
     @:call(HideDropDown)                             public function hideDropDown():Void;
     @:clonable @:value(selectedItem)                 public var value:Dynamic;
+    
+    private override function onThemeChanged() {
+        super.onThemeChanged();
+        var builder:DropDownBuilder = cast(this._compositeBuilder, DropDownBuilder);
+        builder.onThemeChanged();
+    }
 }
 
 //***********************************************************************************************************
@@ -632,6 +638,14 @@ class DropDownBuilder extends ButtonBuilder {
         events.hideDropDown();
         if (_handler != null && _handler.component != null) {
             _handler.component.destroyComponent();
+        }
+    }
+    
+    @:access(haxe.ui.core.Screen)
+    public function onThemeChanged() {
+        if (_handler != null) {
+            Screen.instance.invalidateChildren(_handler.component);
+            Screen.instance.onThemeChangedChildren(_handler.component);
         }
     }
 }
