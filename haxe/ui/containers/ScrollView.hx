@@ -438,6 +438,10 @@ class ScrollViewEvents extends haxe.ui.events.Events {
             unregisterEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
         }
         
+        if (_scrollview.hasEvent(UIEvent.SHOWN) == false) {
+            registerEvent(UIEvent.SHOWN, onShown);
+        }
+        
         registerEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
     }
     
@@ -459,6 +463,19 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         
         unregisterEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
         unregisterEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
+        unregisterEvent(UIEvent.SHOWN, onShown);
+    }
+    
+    private function onShown(event:UIEvent) {
+        _scrollview.invalidateComponentLayout();
+        var hscroll:HorizontalScroll = _scrollview.findComponent(HorizontalScroll, false);
+        if (hscroll != null) {
+            hscroll.invalidateComponentLayout();
+        }
+        var vscroll:VerticalScroll = _scrollview.findComponent(VerticalScroll, false);
+        if (vscroll != null) {
+            vscroll.invalidateComponentLayout();
+        }
     }
     
     private function onContentsResized(event:UIEvent) {
