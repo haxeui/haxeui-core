@@ -19,6 +19,12 @@ class MenuBar extends HBox {
      Utility property to add a single `MenuEvent.MENU_SELECTED` event
     **/
     @:event(MenuEvent.MENU_SELECTED)        public var onMenuSelected:MenuEvent->Void;
+    
+    private override function onThemeChanged() {
+        super.onThemeChanged();
+        var builder:Builder = cast(this._compositeBuilder, Builder);
+        builder.onThemeChanged();
+    }
 }
 
 //***********************************************************************************************************
@@ -211,6 +217,14 @@ private class Builder extends CompositeBuilder {
     public function new(menubar:MenuBar) {
         super(menubar);
         _menubar = menubar;
+    }
+    
+    @:access(haxe.ui.core.Screen)
+    public function onThemeChanged() {
+        for (menu in _menus) {
+            Screen.instance.invalidateChildren(menu);
+            Screen.instance.onThemeChangedChildren(menu);
+        }
     }
     
     public override function create() {

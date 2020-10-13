@@ -36,6 +36,12 @@ class MenuEvent extends UIEvent {
 @:composite(MenuEvents, Builder)
 class Menu extends VBox {
     @:behaviour(DefaultBehaviour)           public var menuStyleNames:String;
+    
+    private override function onThemeChanged() {
+        super.onThemeChanged();
+        var builder:Builder = cast(this._compositeBuilder, Builder);
+        builder.onThemeChanged();
+    }
 }
 
 //***********************************************************************************************************
@@ -215,6 +221,15 @@ private class Builder extends CompositeBuilder {
     public function new(menu:Menu) {
         super(menu);
         _menu = menu;
+    }
+    
+    @:access(haxe.ui.core.Screen)
+    public function onThemeChanged() {
+        for (menuItem in _subMenus.keys()) {
+            var menu = _subMenus.get(menuItem);
+            Screen.instance.invalidateChildren(menu);
+            Screen.instance.onThemeChangedChildren(menu);
+        }
     }
     
     public override function addComponent(child:Component):Component {
