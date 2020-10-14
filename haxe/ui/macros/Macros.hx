@@ -1,4 +1,6 @@
 package haxe.ui.macros;
+import haxe.macro.ComplexTypeTools;
+import haxe.ui.core.TypeMap;
 
 #if macro
 import haxe.macro.Context;
@@ -224,6 +226,7 @@ class Macros {
     static function buildBindings(builder:ClassBuilder) {
         for (f in builder.getFieldsWithMeta("bindable")) {
             var setFn = builder.findFunction("set_" + f.name);
+            TypeMap.addTypeInfo(builder.fullPath, f.name, ComplexTypeTools.toString(f.type));
             if (setFn != null) {
                 setFn.add(macro
                     haxe.ui.binding.BindingManager.instance.componentPropChanged(cast this, $v{f.name})

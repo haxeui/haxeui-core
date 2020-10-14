@@ -1,7 +1,9 @@
 package haxe.ui.binding;
 
 import haxe.ui.core.Component;
+import haxe.ui.core.TypeMap;
 import haxe.ui.scripting.ScriptInterp;
+import haxe.ui.util.Variant;
 import hscript.Expr;
 import hscript.Interp;
 import hscript.Parser;
@@ -87,6 +89,20 @@ class BindingManager {
     private function new() {
     }
     
+    public function refreshAll() {
+        for (c in bindingInfo.keys()) {
+            var info:BindingInfo = bindingInfo.get(c);
+            for (propName in info.props.keys()) {
+                var propInfo:PropertyInfo = info.props.get(propName);
+                handleProp(c, propInfo);
+            }
+        }
+    }
+    
+    public function addStaticClass(name:String, c:Dynamic) {
+        interp.variables.set(name, c);
+    }
+    
     public function add(c:Component, prop:String, script:String) {
         var n1:Int = script.indexOf("${");
         while (n1 != -1) {
@@ -152,6 +168,8 @@ class BindingManager {
             result = Std.parseInt(Std.string(result));
         } else if (currentType == TBool) {
             result = (Std.string(result) == "true");
+        } else if (TypeMap.getTypeInfo(t.className, prop.name) == "Variant") {
+            result = Variant.fromDynamic(result);
         }
         
         Reflect.setProperty(t, prop.name, result);
@@ -177,7 +195,7 @@ class BindingManager {
     private function exec(script:String, prop:PropertyInfo, t:Component) {
         var parser = new Parser();
         var expr = parser.parseString(script);
-        
+
         var root = findRoot(t);
         for (objectId in prop.objects.keys()) {
             interp.variables.set(objectId, root.findComponent(objectId));
@@ -187,7 +205,11 @@ class BindingManager {
         var result:Dynamic = null;
         try {
             result = interp.expr(expr);
-        } catch (e:Dynamic) { }
+        } catch (e:Dynamic) {
+            #if debug
+            trace(e);
+            #end
+        }
         return result;
     }
     

@@ -2,6 +2,7 @@ package haxe.ui.macros;
 import haxe.ds.ArraySort;
 import haxe.macro.Expr.ComplexType;
 import haxe.macro.ExprTools;
+import haxe.ui.core.TypeMap;
 
 #if macro
 import haxe.io.Path;
@@ -173,6 +174,17 @@ class ModuleMacros {
             builder.add(macro 
                 haxe.ui.core.LayoutClassMap.register($v{alias}, $v{LayoutClassMap.get(alias)})
             );
+        }
+        
+        // add code to populate typemap
+        for (className in TypeMap.typeInfo.keys()) {
+            var classTypeMap = TypeMap.typeInfo.get(className);
+            for (property in classTypeMap.keys()) {
+                var type = classTypeMap.get(property);
+                builder.add(macro 
+                    haxe.ui.core.TypeMap.addTypeInfo($v{className}, $v{property}, $v{type})
+                );
+            }
         }
         
         _modulesProcessed = true;
