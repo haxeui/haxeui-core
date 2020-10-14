@@ -373,6 +373,12 @@ private class Builder extends CompositeBuilder {
             if (button != null &&  button.text != event.target.text) {
                 button.text = event.target.text;
             }
+        } else if (event.data == "icon") {
+            var index = _views.indexOf(event.target);
+            var button = cast(_tabs.getTab(index), Button);
+            if (button != null &&  button.icon != cast(event.target, Box).icon) {
+                button.icon = cast(event.target, Box).icon;
+            }
         }
     }
     
