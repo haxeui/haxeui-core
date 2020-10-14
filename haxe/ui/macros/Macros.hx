@@ -383,12 +383,14 @@ class Macros {
                         newField = builder.addSetter(f.name, f.type, macro { // add a normal (Variant) setter but let the binding manager know that the value has changed
                             behaviours.set($v{f.name}, haxe.ui.util.Variant.fromDynamic(value));
                             haxe.ui.binding.BindingManager.instance.componentPropChanged(this, "value");
+                            dispatch(new haxe.ui.events.UIEvent(haxe.ui.events.UIEvent.PROPERTY_CHANGE, $v{f.name}));
                             return value;
                         }, f.access);
                     } else {
                         newField = builder.addSetter(f.name, f.type, macro { // add a normal (Variant) setter but let the binding manager know that the value has changed
                             behaviours.set($v{f.name}, value);
                             haxe.ui.binding.BindingManager.instance.componentPropChanged(this, "value");
+                            dispatch(new haxe.ui.events.UIEvent(haxe.ui.events.UIEvent.PROPERTY_CHANGE, $v{f.name}));
                             return value;
                         }, f.access);
                     }
@@ -397,11 +399,13 @@ class Macros {
                     if (f.isDynamic == true) {
                         newField = builder.addSetter(f.name, f.type, macro { // add a normal (Variant) setter
                             behaviours.set($v{f.name}, haxe.ui.util.Variant.fromDynamic(value));
+                            dispatch(new haxe.ui.events.UIEvent(haxe.ui.events.UIEvent.PROPERTY_CHANGE, $v{f.name}));
                             return value;
                         }, f.access);
                     } else {
                         newField = builder.addSetter(f.name, f.type, macro { // add a normal (Variant) setter
                             behaviours.set($v{f.name}, value);
+                            dispatch(new haxe.ui.events.UIEvent(haxe.ui.events.UIEvent.PROPERTY_CHANGE, $v{f.name}));
                             return value;
                         }, f.access);
                     }

@@ -27,6 +27,9 @@ class ComponentContainer extends ComponentCommon implements IClonable<ComponentC
         behaviours = new Behaviours(cast(this, Component));
     }
     
+    public function dispatch(event:UIEvent) {
+    }
+    
     private var _ready:Bool = false;
     /**
      Whether the framework considers this component ready or not
@@ -119,7 +122,6 @@ class ComponentTextBehaviour extends DefaultBehaviour {
         }
 
         _value = value;
-        _component.dispatch(new UIEvent(UIEvent.PROPERTY_CHANGE, "text"));
         
         super.set(value);
     }

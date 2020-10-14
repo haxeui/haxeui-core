@@ -91,7 +91,7 @@ class ComponentEvents extends ComponentContainer {
      Dispatch a certain `UIEvent`
     **/
     @:dox(group = "Event related properties and methods")
-    public function dispatch(event:UIEvent) {
+    public override function dispatch(event:UIEvent) {
 		if (event != null) {
 			if (__events != null) {
 				__events.invoke(event.type, event, cast(this, Component));  // TODO: avoid cast
