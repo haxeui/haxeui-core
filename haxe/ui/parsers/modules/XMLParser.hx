@@ -1,4 +1,5 @@
 package haxe.ui.parsers.modules;
+import haxe.ui.parsers.modules.Module.ModuleThemeImageEntry;
 import haxe.ui.parsers.modules.Module.ModuleThemeStyleEntry;
 
 class XMLParser extends ModuleParser {
@@ -88,6 +89,8 @@ class XMLParser extends ModuleParser {
                     var theme:Module.ModuleThemeEntry = new Module.ModuleThemeEntry();
                     theme.name = themeNode.nodeName;
                     theme.parent = themeNode.get("parent");
+                    
+                    // style entries
                     var lastPriority:Null<Float> = null;
                     for (styleNodes in themeNode.elementsNamed("style")) {
                         if (checkCondition(styleNodes, defines) == false) {
@@ -112,6 +115,39 @@ class XMLParser extends ModuleParser {
                         }
                         theme.styles.push(styleEntry);
                     }
+                    
+                    // image entries
+                    var lastPriority:Null<Float> = null;
+                    for (imageNodes in themeNode.elements()) {
+                        if (checkCondition(imageNodes, defines) == false) {
+                            continue;
+                        }
+
+                        if (imageNodes.nodeName != "image" && imageNodes.nodeName != "icon") {
+                            continue;
+                        }
+                        
+                        var imageEntry:ModuleThemeImageEntry = new ModuleThemeImageEntry();
+                        imageEntry.id = imageNodes.get("id");
+                        imageEntry.resource = imageNodes.get("resource");
+                        if (imageNodes.get("priority") != null) {
+                            imageEntry.priority = Std.parseFloat(imageNodes.get("priority"));
+                            lastPriority = imageEntry.priority;
+                        } else if (lastPriority != null) {
+                            lastPriority += 0.01;
+                            imageEntry.priority = lastPriority;
+                        } else if (context.indexOf("haxe/ui/backend/") != -1) { // lets auto the priority based on if we _think_ this is a backed - not fool proof, but a good start (means it doesnt HAVE to be in module.xml)
+                            if (theme.name == "global") { // special case
+                                imageEntry.priority = -2;
+                                lastPriority = -2;
+                            } else {
+                                imageEntry.priority = -1;
+                                lastPriority = -1;
+                            }
+                        }
+                        theme.images.push(imageEntry);
+                    }
+                    
                     module.themeEntries.set(theme.name, theme);
                 }
             } else if (nodeName == "plugins" && checkCondition(el, defines) == true) {

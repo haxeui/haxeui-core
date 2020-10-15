@@ -115,6 +115,11 @@ class ModuleMacros {
                         haxe.ui.themes.ThemeManager.instance.addStyleResource($v{t.name}, $v{r.resource}, $v{r.priority})
                     );
                 }
+                for (r in t.images) {
+                    builder.add(macro 
+                        haxe.ui.themes.ThemeManager.instance.addImageResource($v{t.name}, $v{r.id}, $v{r.resource}, $v{r.priority})
+                    );
+                }
             }
 
             // handle plugins

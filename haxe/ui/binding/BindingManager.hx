@@ -3,6 +3,7 @@ package haxe.ui.binding;
 import haxe.ui.core.Component;
 import haxe.ui.core.TypeMap;
 import haxe.ui.scripting.ScriptInterp;
+import haxe.ui.themes.ThemeManager;
 import haxe.ui.util.Variant;
 import hscript.Expr;
 import hscript.Interp;
@@ -87,6 +88,7 @@ class BindingManager {
     private static var targets:Map<String, TargetInfo> = new Map<String, TargetInfo>();
     
     private function new() {
+        addStaticClass("theme", ThemeManager.instance);
     }
     
     public function refreshAll() {

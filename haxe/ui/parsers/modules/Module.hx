@@ -63,13 +63,24 @@ class ModuleThemeEntry {
     public var name(default, default):String;
     public var parent(default, default):String;
     public var styles(default, default):Array<ModuleThemeStyleEntry>;
+    public var images(default, default):Array<ModuleThemeImageEntry>;
 
     public function new() {
         styles = [];
+        images = [];
     }
 }
 
 class ModuleThemeStyleEntry {
+    public var resource:String;
+    public var priority:Float = 0;
+    
+    public function new() {
+    }
+}
+
+class ModuleThemeImageEntry {
+    public var id:String;
     public var resource:String;
     public var priority:Float = 0;
     
