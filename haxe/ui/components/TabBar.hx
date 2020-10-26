@@ -356,13 +356,21 @@ private class Builder extends CompositeBuilder {
     
     public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
         if (child != _container && child != _scrollLeft && child != _scrollRight) {
-            return _container.removeComponent(child, dispose, invalidate);
+            var index = _container.getComponentIndex(child);
+            if (index != -1) {
+                _tabbar.removeTab(index);
+                return child;
+            }
         }
         return null;
     }
     
     public override function removeComponentAt(index:Int, dispose:Bool = true, invalidate:Bool = true):Component {
-        return _container.removeComponentAt(index, dispose, invalidate);
+        var child = _container.getComponentAt(index);
+        if (child != null) {
+            _tabbar.removeTab(index);
+        }
+        return child;
     }
     
     public override function getComponentIndex(child:Component):Int {
