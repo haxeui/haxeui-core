@@ -1210,6 +1210,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     @:style                 public var color:Null<Color>;
     #end
     @:style                 public var backgroundColor:Null<Color>;
+    @:style                 public var backgroundImage:String;
     @:style                 public var borderColor:Null<Color>;
     @:style                 public var borderSize:Null<Float>;
     @:style                 public var borderRadius:Null<Float>;

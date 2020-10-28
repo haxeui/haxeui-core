@@ -103,10 +103,12 @@ class Actuator<T> {
 
     private var _propertyDetails:Array<PropertyDetails<T>>;
     private var _colorPropertyDetails:Array<ColorPropertyDetails<T>>;
+    private var _stringPropertyDetails:Array<StringPropertyDetails<T>>;
 
     private function _initialize() {
         _propertyDetails = [];
         _colorPropertyDetails = [];
+        _stringPropertyDetails = [];
 
         for (p in Reflect.fields(properties)) {
             var componentProperty:String = StyleUtil.styleProperty2ComponentProperty(p);
@@ -151,6 +153,35 @@ class Actuator<T> {
                     if (val != null) {
                         var details:PropertyDetails<T> = new PropertyDetails(target, componentProperty, start, val - start);
                         _propertyDetails.push (details);
+                    }
+                    
+                case Value.VString(v): 
+                    
+                    var startVal:String = start;
+                    var endVal:String = ValueTools.string(end);
+                    if (endVal.indexOf("[[") != -1) {
+                        var n1 = endVal.indexOf("[[");
+                        var n2 = endVal.indexOf("]]") + 2;
+                        var before = endVal.substr(0, n1);
+                        var after = endVal.substr(n2);
+                        
+                        // lets find out where we are
+                        var s = StringTools.replace(startVal, before, "");
+                        s = StringTools.replace(s, after, "");
+                        var startInt = Std.parseInt(s);
+                        
+                        var s = StringTools.replace(endVal, before + "[[", "");
+                        s = StringTools.replace(s, "]]" + after, "");
+                        var endInt = Std.parseInt(s);
+                        
+                        var details:StringPropertyDetails<T> = new StringPropertyDetails(target, componentProperty, startVal, endVal);
+                        details.pattern = before + "[[n]]" + after;
+                        details.startInt = startInt;
+                        details.changeInt = endInt - startInt;
+                        _stringPropertyDetails.push(details);
+                    } else {
+                        var details:StringPropertyDetails<T> = new StringPropertyDetails(target, componentProperty, startVal, endVal);
+                        _stringPropertyDetails.push(details);
                     }
                 case _:
                     var val:Null<Float> = ValueTools.calcDimension(end);
@@ -197,6 +228,20 @@ class Actuator<T> {
         position = _easeFunc(position);
         for (details in _propertyDetails) {
             Reflect.setProperty(target, details.propertyName, details.start + (details.change * position));
+        }
+        
+        for (details in _stringPropertyDetails) {
+            if (details.pattern != null) {
+                var newInt = Std.int(details.startInt + (position * details.changeInt));
+                var newString = StringTools.replace(details.pattern, "[[n]]", "" + newInt);
+                Reflect.setProperty(target, details.propertyName, newString);
+            } else {
+                if (position != 1) {
+                    Reflect.setProperty(target, details.propertyName, details.start);
+                } else {
+                    Reflect.setProperty(target, details.propertyName, details.end);
+                }
+            }
         }
 
         for (details in _colorPropertyDetails) {
