@@ -1,6 +1,7 @@
 package;
 
 import commands.CommandFactory;
+import commands.HelpCommand;
 import descriptors.DescriptorFactory;
 import descriptors.HxmlFile;
 import descriptors.InfoFile;
@@ -40,7 +41,8 @@ class Main {
         }
         
         if (params.command == null) {
-            Util.log('ERROR: no command specified');
+            Util.log('ERROR: no command specified\n');
+            new HelpCommand().displayHelp();
             return;
         }
         

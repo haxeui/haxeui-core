@@ -10,6 +10,8 @@ class RunCommand extends Command  {
     public override function execute(params:Params) {
         if (params.backend == null) {
             Util.log("ERROR: no backend specified");
+            Util.log("Please use one of the following: ");
+            Util.log("    " + Util.backendString(" | "));
             return;
         }
         

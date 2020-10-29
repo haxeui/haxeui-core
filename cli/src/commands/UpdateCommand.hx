@@ -9,7 +9,9 @@ class UpdateCommand extends Command {
     
     public override function execute(params:Params) {
         if (params.backend == null) {
-            Util.log("ERROR: no backend specified");
+            Util.log("ERROR: no backend specified\n");
+            Util.log("Please use one of the following:\n");
+            Util.log("    " + Util.backendString(" | "));
             return;
         }
         
