@@ -55,7 +55,7 @@ private class Layout extends DefaultLayout {
 
             content.left = paddingLeft;
             if (tabs.height != 0) {
-                content.top = tabs.top + tabs.height - marginTop(tabs);
+                content.top = tabs.top + tabs.height - marginTop(tabs) + marginTop(content);
             }
         }
     }

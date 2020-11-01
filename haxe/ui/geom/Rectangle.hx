@@ -112,7 +112,9 @@ class Rectangle {
         return r;
     }
     
-    
+    public function copy():Rectangle {
+        return new Rectangle(left, top, width, height);
+    }
     
     public function toString():String {
         return "{left: " + left + ", top: " + top + ", bottom: " + bottom + ", right: " + right + ", width: " + width + ", height: " + height + "}";

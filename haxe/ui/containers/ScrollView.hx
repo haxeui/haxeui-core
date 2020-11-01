@@ -781,10 +781,14 @@ class ScrollViewEvents extends haxe.ui.events.Events {
                 vscroll.fadeIn();
             }
             event.cancel();
+            var amount = 50; // TODO: calculate this
+            #if haxeui_pdcurses
+            amount = 2;
+            #end
             if (event.delta > 0) {
-                vscroll.pos -= 50; // TODO: calculate this
+                vscroll.pos -= amount;
             } else if (event.delta < 0) {
-                vscroll.pos += 50;
+                vscroll.pos += amount;
             }
             if (builder.autoHideScrolls == true) {
                 if (_fadeTimer != null) {

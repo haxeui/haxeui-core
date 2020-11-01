@@ -1,5 +1,6 @@
 package projects;
 import haxe.io.Path;
+import projects.Project;
 import sys.FileSystem;
 import sys.io.File;
 
@@ -15,7 +16,7 @@ class TemplateEntry {
 }
 
 
-class TemplateProject extends Project {
+class TemplateProject extends projects.Project {
     public var templates:Array<TemplateEntry> = [];
     
     public function new() {

@@ -4,6 +4,7 @@ import haxe.ui.core.Component;
 import haxe.ui.core.Screen;
 import haxe.ui.styles.StyleSheet;
 import haxe.ui.styles.elements.AnimationKeyFrames;
+import haxe.ui.styles.elements.RuleElement;
 
 class CompositeStyleSheet {
     private var _styleSheets:Array<StyleSheet> = [];
@@ -61,6 +62,16 @@ class CompositeStyleSheet {
             }
         }
         
+        return null;
+    }
+    
+    public function findRule(selector:String):RuleElement {
+        for (s in _styleSheets) {
+            var el = s.findRule(selector);
+            if (el != null) {
+                return el;
+            }
+        }
         return null;
     }
     
