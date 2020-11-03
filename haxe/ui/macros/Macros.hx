@@ -48,9 +48,6 @@ class Macros {
         var codeBuilder = new CodeBuilder();
         var bindingExprs:Array<Expr> = [];
         ComponentMacros.buildComponentFromString(codeBuilder, xml, namedComponents, bindingExprs);
-        codeBuilder.add(macro
-            addComponent(c0)
-        );
         
         for (id in namedComponents.keys()) {
             var safeId:String = StringUtil.capitalizeHyphens(id);
