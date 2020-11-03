@@ -197,8 +197,11 @@ class XMLParser extends ModuleParser {
 
     private function checkCondition(node:Xml, defines:Map<String, String>):Bool {
         if (node.get("if") != null) {
-            var condition = "haxeui_" + node.get("if");
+            var condition = node.get("if");
             return defines.exists(condition);
+        } else if (node.get("unless") != null) {
+            var condition = node.get("unless");
+            return !defines.exists(condition);
         }
         
         return true;
