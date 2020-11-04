@@ -26,6 +26,14 @@ class Style {
     @:optional public var minHeight:Null<Float>;
     @:optional public var maxHeight:Null<Float>;
     
+    @:optional public var padding(default, set):Null<Float>;
+    private function set_padding(value:Null<Float>):Null<Float> {
+        paddingTop = value;
+        paddingLeft = value;
+        paddingRight = value;
+        paddingBottom = value;
+        return value;
+    }
     @:optional public var paddingTop:Null<Float>;
     @:optional public var paddingLeft:Null<Float>;
     @:optional public var paddingRight:Null<Float>;
@@ -64,7 +72,14 @@ class Style {
     @:optional public var borderLeftColor:Null<Int>;
     @:optional public var borderBottomColor:Null<Int>;
     @:optional public var borderRightColor:Null<Int>;
-    @:optional public var borderSize:Null<Float>;
+    @:optional public var borderSize(default, set):Null<Float>;
+    private function set_borderSize(value:Null<Float>):Null<Float> {
+        borderTopSize = value;
+        borderLeftSize = value;
+        borderBottomSize = value;
+        borderRightSize = value;
+        return value;
+    }
     @:optional public var borderTopSize:Null<Float>;
     @:optional public var borderLeftSize:Null<Float>;
     @:optional public var borderBottomSize:Null<Float>;

@@ -1215,6 +1215,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     @:style                 public var borderSize:Null<Float>;
     @:style                 public var borderRadius:Null<Float>;
 
+    @:style                 public var padding:Null<Float>;
     @:style                 public var paddingLeft:Null<Float>;
     @:style                 public var paddingRight:Null<Float>;
     @:style                 public var paddingTop:Null<Float>;
