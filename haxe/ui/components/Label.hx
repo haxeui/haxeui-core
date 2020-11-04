@@ -96,6 +96,9 @@ private class TextBehaviour extends DataBehaviour {
 @:dox(hide) @:noCompletion
 private class HtmlTextBehaviour extends DataBehaviour {
     public override function validateData() {
+        if (_component.getTextDisplay().textStyle != _component.style) {
+            _component.invalidateComponentStyle(true);
+        }
         _component.getTextDisplay().htmlText = '${_value}';
     }
 }
