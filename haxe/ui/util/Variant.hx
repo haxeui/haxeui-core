@@ -16,6 +16,7 @@ enum VariantType {
     VT_ImageData(s:ImageData);
 }
 
+@:transitive
 abstract Variant(VariantType) from VariantType {
     // ************************************************************************************************************
     // STRINGS
