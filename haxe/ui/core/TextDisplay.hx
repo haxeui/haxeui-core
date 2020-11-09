@@ -143,7 +143,15 @@ class TextDisplay extends TextDisplayImpl implements IValidating {
 
     public var textWidth(get, null):Float;
     private function get_textWidth():Float {
-        if ((_text == null && _htmlText == null) || (_text.length == 0 && _htmlText.length == 0)) {
+        if (_text == null && _htmlText == null) {
+            return 0;
+        }
+        
+        if (_text != null && _text.length == 0) {
+            return 0;
+        }
+
+        if (_htmlText != null && _htmlText.length == 0) {
             return 0;
         }
 
@@ -156,7 +164,15 @@ class TextDisplay extends TextDisplayImpl implements IValidating {
 
     public var textHeight(get, null):Float;
     private function get_textHeight():Float {
-        if ((_text == null && _htmlText == null) || (_text.length == 0 && _htmlText.length == 0)) {
+        if (_text == null && _htmlText == null) {
+            return 0;
+        }
+        
+        if (_text != null && _text.length == 0) {
+            return 0;
+        }
+
+        if (_htmlText != null && _htmlText.length == 0) {
             return 0;
         }
 
