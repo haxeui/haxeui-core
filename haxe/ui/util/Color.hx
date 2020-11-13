@@ -1,7 +1,7 @@
 package haxe.ui.util;
 
 abstract Color(Int) from Int {
-    @:from static function fromString(s:String):Color {
+    @:from static public function fromString(s:String):Color {
         if (StringTools.startsWith(s, "0x") || StringTools.startsWith(s, "#")) {
             return Std.parseInt("0x" + s.substring(s.length - 6));
         }
