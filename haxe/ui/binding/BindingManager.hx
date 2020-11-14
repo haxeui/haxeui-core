@@ -1,12 +1,12 @@
 package haxe.ui.binding;
 
+import haxe.ui.Toolkit;
 import haxe.ui.core.Component;
 import haxe.ui.core.TypeMap;
 import haxe.ui.scripting.ScriptInterp;
 import haxe.ui.themes.ThemeManager;
 import haxe.ui.util.Variant;
 import hscript.Expr;
-import hscript.Interp;
 import hscript.Parser;
 
 class PropertyInfo {
@@ -106,11 +106,17 @@ class BindingManager {
     }
     
     public function add(c:Component, prop:String, script:String) {
+        if (c.isReady == false) {
+            Toolkit.callLater(function() {
+                add(c, prop, script);
+            });
+            return;
+        }
+        
         var n1:Int = script.indexOf("${");
         while (n1 != -1) {
             var n2:Int = script.indexOf("}", n1);
             var scriptPart:String = script.substr(n1 + 2, n2 - n1 - 2);
-        
             var parser:Parser = new Parser();
             var expr:Expr = parser.parseString(scriptPart);
             
@@ -200,7 +206,10 @@ class BindingManager {
 
         var root = findRoot(t);
         for (objectId in prop.objects.keys()) {
-            interp.variables.set(objectId, root.findComponent(objectId));
+            var object = root.findComponent(objectId);
+            if (object != null) {
+                interp.variables.set(objectId, object);
+            }
         }
         interp.variables.set("this", t);
         
@@ -232,7 +241,7 @@ class BindingManager {
     
     private function extractFields(expr:Expr, propInfo:PropertyInfo) {
         switch (expr) {
-            case ECall(e, params):
+            case ECall(_, params):
                 for (p in params) {
                     extractFields(p, propInfo);
                 }
@@ -242,10 +251,10 @@ class BindingManager {
                 propInfo.addObject(objectId, fieldId);
             case EIdent(objectId):
                 propInfo.addObject(objectId, "value");
-            case EBinop(op, e1, e2):    
+            case EBinop(_, e1, e2):    
                 extractFields(e1, propInfo);
                 extractFields(e2, propInfo);
-            case EUnop(op, prefix, e):     
+            case EUnop(_, _, e):     
                 extractFields(e, propInfo);
             case EArrayDecl(values):
                 for (v in values) {
