@@ -23,7 +23,7 @@
     height: 14px;
     border-radius: 16px;
     vertical-align: center;
-    filter: drop-shadow(1, 45, #000000, 0.2, 0, 0, 0, 3, false);
+    filter: none;
 }
     
 .vertical-slider {
@@ -48,6 +48,6 @@
     height: 14px;
     border-radius: 16px;
     horizontal-align: center;
-    filter: drop-shadow(1, 45, #000000, 0.2, 0, 0, 0, 3, false);
+    filter: none;
 }
 
