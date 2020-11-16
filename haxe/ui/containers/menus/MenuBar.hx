@@ -249,9 +249,9 @@ private class Builder extends CompositeBuilder {
             _menubar.addComponent(button);
             _menubar.registerInternalEvents(true);
             
-            _menus.push(cast(child, Menu));
+            _menus.push(menu);
             
-            return child;
+            return menu;
         }
         return null;
     }
