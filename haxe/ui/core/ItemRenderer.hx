@@ -2,6 +2,7 @@ package haxe.ui.core;
 
 import haxe.ui.components.Button;
 import haxe.ui.containers.Box;
+import haxe.ui.core.InteractiveComponent;
 import haxe.ui.events.ItemEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
@@ -160,11 +161,13 @@ class ItemRenderer extends Box {
                     var propValue:Dynamic = TypeConverter.convert(v);
                     c.value = propValue;
                     
-                    if (c.hasEvent(UIEvent.CHANGE, onItemChange) == false) {
-                        c.registerEvent(UIEvent.CHANGE, onItemChange);
-                    }
-                    if (c.hasEvent(MouseEvent.CLICK, onItemClick) == false) {
-                        c.registerEvent(MouseEvent.CLICK, onItemClick);
+                    if (Std.is(c, InteractiveComponent)) {
+                        if (c.hasEvent(UIEvent.CHANGE, onItemChange) == false) {
+                            c.registerEvent(UIEvent.CHANGE, onItemChange);
+                        }
+                        if (c.hasEvent(MouseEvent.CLICK, onItemClick) == false) {
+                            c.registerEvent(MouseEvent.CLICK, onItemClick);
+                        }
                     }
                     
                     c.show();
