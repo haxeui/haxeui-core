@@ -44,6 +44,11 @@ class TextBase {
         return value;
     }
     
+    public var supportsHtml(get, null):Bool;
+    private function get_supportsHtml():Bool {
+        return false;
+    }
+    
     //***********************************************************************************************************
     // Validation functions
     //***********************************************************************************************************

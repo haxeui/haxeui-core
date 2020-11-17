@@ -118,6 +118,15 @@ private class Builder extends CompositeBuilder {
     public override function applyStyle(style:Style) {
         if (_label.hasTextDisplay() == true) {
             _label.getTextDisplay().textStyle = style;
+            
+            if ((style.contentType == "auto" || style.contentType == "html") && _label.getTextDisplay().supportsHtml && isHtml(_component.text)) {
+                _label.htmlText = _label.text;
+            }
         }
+
+    }
+    
+    public static inline function isHtml(v:String):Bool {
+        return v.indexOf("<font ") != -1;
     }
 }
