@@ -5,7 +5,8 @@ import haxe.ui.events.UIEvent;
 
 class ScreenBase {
     private var _topLevelComponents:Array<Component> = new Array<Component>();
-    
+    public var rootComponents:Array<Component>;
+
     private var _focus:Component = null;
     public var focus(get, set):Component;
     private function get_focus():Component {

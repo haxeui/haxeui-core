@@ -23,8 +23,6 @@ class Screen extends ScreenImpl {
     //***********************************************************************************************************
     // Instance
     //***********************************************************************************************************
-    public var rootComponents:Array<Component>;
-
     private var _eventMap:EventMap;
 
     public function new() {
