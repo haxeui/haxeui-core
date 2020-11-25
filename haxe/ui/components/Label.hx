@@ -127,6 +127,6 @@ private class Builder extends CompositeBuilder {
     }
     
     public static inline function isHtml(v:String):Bool {
-        return v.indexOf("<font ") != -1;
+        return v == null ? false : v.indexOf("<font ") != -1;
     }
 }
