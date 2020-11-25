@@ -119,7 +119,7 @@ private class Builder extends CompositeBuilder {
         if (_label.hasTextDisplay() == true) {
             _label.getTextDisplay().textStyle = style;
             
-            if ((style.contentType == "auto" || style.contentType == "html") && _label.getTextDisplay().supportsHtml && isHtml(_component.text)) {
+            if ((style.contentType == "auto" || style.contentType == "html") && _label.getTextDisplay().supportsHtml && isHtml(Std.string(_component.text))) {
                 _label.htmlText = _label.text;
             }
         }
