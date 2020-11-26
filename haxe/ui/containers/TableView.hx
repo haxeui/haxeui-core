@@ -5,9 +5,11 @@ import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.behaviours.LayoutBehaviour;
 import haxe.ui.binding.BindingManager;
+import haxe.ui.components.Column;
 import haxe.ui.components.Label;
 import haxe.ui.components.VerticalScroll;
 import haxe.ui.constants.SelectionMode;
+import haxe.ui.containers.Header;
 import haxe.ui.containers.ScrollView;
 import haxe.ui.containers.ScrollView.ScrollViewBuilder;
 import haxe.ui.core.Component;
@@ -25,6 +27,7 @@ import haxe.ui.geom.Rectangle;
 import haxe.ui.layouts.LayoutFactory;
 import haxe.ui.layouts.VerticalVirtualLayout;
 import haxe.ui.util.MathUtil;
+import haxe.ui.util.StringUtil;
 import haxe.ui.util.Variant;
 
 @:composite(Events, Builder, Layout)
@@ -43,7 +46,12 @@ class TableView extends ScrollView implements IDataComponent implements IVirtual
     @:behaviour(SelectedItemsBehaviour)                         public var selectedItems:Array<Dynamic>;
     @:behaviour(SelectionModeBehaviour, SelectionMode.ONE_ITEM) public var selectionMode:SelectionMode;
     @:behaviour(DefaultBehaviour, 500)                          public var longPressSelectionTime:Int;  //ms
+    @:behaviour(GetHeader)                                      public var header:Component;
 
+    @:call(ClearTable)                                          public function clear(clearHeader:Bool = false):Void;
+    @:call(AddColumn)                                           public function addColumn(text:String):Component;
+    @:call(RemoveColumn)                                        public function removeColumn(text:String):Void;
+    
     @:event(ItemEvent.COMPONENT_EVENT)                          public var onComponentEvent:ItemEvent->Void;
     
     //TODO - error with Behaviour
@@ -364,6 +372,7 @@ private class Builder extends ScrollViewBuilder {
             return child;
         } else if (Std.is(child, Header)) {
             _header = cast(child, Header);
+            _header.registerEvent(UIEvent.COMPONENT_ADDED, onColumnAdded);
             
             /*
             if (_tableview.itemRenderer == null) {
@@ -378,6 +387,16 @@ private class Builder extends ScrollViewBuilder {
             r = super.addComponent(child);
         }
         return r;
+    }
+    
+    private function onColumnAdded(e) {
+        if (_tableview.itemRenderer == null) {
+            buildDefaultRenderer();
+        } else {
+            fillExistingRenderer();
+        }
+        
+        _component.invalidateComponentLayout();
     }
     
     public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
@@ -415,6 +434,31 @@ private class Builder extends ScrollViewBuilder {
                 label.verticalAlign = "center";
                 itemRenderer.addComponent(label);
                 _tableview.itemRenderer.addComponent(itemRenderer);
+            }
+        }
+        
+        var data = _component.findComponent("tableview-contents", Box, true, "css");
+        if (data != null) {
+            for (item in data.childComponents) {
+                for (column in _header.childComponents) {
+                    var existing = item.findComponent(column.id, ItemRenderer, true);
+                    if (existing == null) {
+                        var temp = _tableview.itemRenderer.findComponent(column.id, Component);
+                        var renderer:ItemRenderer = null;
+                        if (Std.is(temp, ItemRenderer)) {
+                            renderer = cast(temp, ItemRenderer);
+                        } else {
+                            renderer = temp.findAncestor(ItemRenderer);
+                        }
+                        var index = _tableview.itemRenderer.getComponentIndex(renderer);
+                        var instance = renderer.cloneComponent();
+                        if (index < 0) {
+                            item.addComponent(instance);
+                        } else {
+                            item.addComponentAt(instance, index);
+                        }
+                    }
+                }
             }
         }
     }
@@ -691,3 +735,65 @@ private class SelectionModeBehaviour extends DataBehaviour {
         }
     }
 }
+
+@:dox(hide) @:noCompletion
+private class GetHeader extends DefaultBehaviour {
+    public override function get():Variant {
+        var header:Header = _component.findComponent(Header);
+        return header;
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class ClearTable extends Behaviour {
+    public override function call(param:Any = null):Variant {
+        if (param == true) {
+            if (cast(_component, TableView).itemRenderer != null) {
+                cast(_component, TableView).itemRenderer.removeAllComponents();
+            }
+            var header:Header = _component.findComponent(Header);
+            if (header != null) {
+                header.removeAllComponents();
+            }
+        }
+        var contents = _component.findComponent("tableview-contents", Box, true, "css");
+        if (contents != null) {
+            contents.removeAllComponents();
+        }
+        return null;
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class AddColumn extends Behaviour {
+    public override function call(param:Any = null):Variant {
+        var header:Header = _component.findComponent(Header);
+        if (header == null) {
+            header = new Header();
+            _component.addComponent(header);
+        }
+        var column = new Column();
+        column.text = param;
+        column.id = StringTools.replace(StringUtil.uncapitalizeFirstLetter(StringUtil.capitalizeHyphens(param)), " ", "");
+        header.addComponent(column);
+        return column;
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class RemoveColumn extends Behaviour {
+    public override function call(param:Any = null):Variant {
+        var header:Header = _component.findComponent(Header);
+        if (header == null) {
+            return null;
+        }
+        for (c in header.childComponents) {
+            if (c.text == param) {
+                header.removeComponent(c);
+                break;
+            }
+        }
+        return null;
+    }
+}
+

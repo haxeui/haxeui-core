@@ -324,7 +324,10 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         if (_compositeBuilder != null) {
             _compositeBuilder.onComponentAdded(child);
         }
+        
         onComponentAdded(child);
+        dispatch(new UIEvent(UIEvent.COMPONENT_ADDED));
+        
         return child;
     }
 
@@ -369,7 +372,10 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         if (_compositeBuilder != null) {
             _compositeBuilder.onComponentAdded(child);
         }
+        
         onComponentAdded(child);
+        dispatch(new UIEvent(UIEvent.COMPONENT_ADDED));
+        
         return child;
     }
 
@@ -413,7 +419,9 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         if (_compositeBuilder != null) {
             _compositeBuilder.onComponentRemoved(child);
         }
+        
         onComponentRemoved(child);
+        dispatch(new UIEvent(UIEvent.COMPONENT_REMOVED));
         
         return child;
     }
@@ -467,7 +475,9 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         if (_compositeBuilder != null) {
             _compositeBuilder.onComponentRemoved(child);
         }
+        
         onComponentRemoved(child);
+        dispatch(new UIEvent(UIEvent.COMPONENT_REMOVED));
         
         return child;
     }
