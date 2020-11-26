@@ -508,7 +508,7 @@ private class SelectionModeBehaviour extends DataBehaviour {
             return;
         }
 
-        var selectionMode:SelectionMode = cast _value;
+        var selectionMode:SelectionMode = _value.toString();
         switch(selectionMode) {
             case SelectionMode.DISABLED:
                 listView.selectedIndices = null;
