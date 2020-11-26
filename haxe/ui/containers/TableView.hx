@@ -48,7 +48,7 @@ class TableView extends ScrollView implements IDataComponent implements IVirtual
     @:behaviour(DefaultBehaviour, 500)                          public var longPressSelectionTime:Int;  //ms
     @:behaviour(GetHeader)                                      public var header:Component;
 
-    @:call(ClearTable)                                          public function clear(clearHeader:Bool = false):Void;
+    @:call(ClearTable)                                          public function clearContents(clearHeader:Bool = false):Void;
     @:call(AddColumn)                                           public function addColumn(text:String):Component;
     @:call(RemoveColumn)                                        public function removeColumn(text:String):Void;
     
