@@ -1,6 +1,5 @@
 package haxe.ui.containers;
 
-import haxe.ui.util.Timer;
 import haxe.ui.behaviours.Behaviour;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
@@ -20,6 +19,7 @@ import haxe.ui.geom.Size;
 import haxe.ui.layouts.LayoutFactory;
 import haxe.ui.layouts.ScrollViewLayout;
 import haxe.ui.styles.Style;
+import haxe.ui.util.Timer;
 import haxe.ui.util.Variant;
 import haxe.ui.validation.InvalidationFlags;
 
@@ -41,6 +41,7 @@ class ScrollView extends Component {
     @:behaviour(VScrollMax)                             public var vscrollMax:Float;
     @:behaviour(VScrollPageSize)                        public var vscrollPageSize:Float;
     @:behaviour(ScrollModeBehaviour, ScrollMode.DRAG)   public var scrollMode:ScrollMode;
+    @:behaviour(GetContents)                            public var contents:Component;
     
     //***********************************************************************************************************
     // Validation
@@ -392,6 +393,14 @@ private class VScrollPageSize extends DataBehaviour {
 private class ScrollModeBehaviour extends DataBehaviour {
     public override function validateData() {
         _component.registerInternalEvents(true);
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class GetContents extends DefaultBehaviour {
+    public override function get():Variant {
+        var contents:Component = _component.findComponent("scrollview-contents", false, "css");
+        return contents;
     }
 }
 
