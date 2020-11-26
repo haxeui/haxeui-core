@@ -362,6 +362,8 @@ class Macros {
         var valueField = builder.getFieldMetaValue("value");
         var resolvedValueField = null;
         for (f in builder.getFieldsWithMeta("behaviour")) {
+            TypeMap.addTypeInfo(builder.fullPath, f.name, ComplexTypeTools.toString(f.type));
+            
             f.remove();
             if (builder.hasField(f.name, true) == false) { // check to see if it already exists, possibly in a super class
                 var newField:FieldBuilder = null;

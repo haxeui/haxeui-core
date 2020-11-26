@@ -6,6 +6,7 @@ import haxe.macro.TypeTools;
 import haxe.ui.core.ComponentClassMap;
 import haxe.ui.core.ComponentFieldMap;
 import haxe.ui.core.LayoutClassMap;
+import haxe.ui.core.TypeMap;
 import haxe.ui.parsers.ui.ComponentInfo;
 import haxe.ui.parsers.ui.ComponentParser;
 import haxe.ui.parsers.ui.LayoutInfo;
@@ -236,6 +237,7 @@ class ComponentMacros {
             
             className = directionalClassName;
         }
+        c.resolvedClassName = className;
         
         var typePath = {
             var split = className.split(".");
@@ -317,20 +319,20 @@ class ComponentMacros {
     }
     
     private static function assignComponentProperties(builder:CodeBuilder, c:ComponentInfo, componentVarName:String, bindingExprs:Array<Expr>) {
-        if (c.id != null)                       assignField(builder, componentVarName, "id", c.id, bindingExprs);
-        if (c.left != null)                     assignField(builder, componentVarName, "left", c.left, bindingExprs);
-        if (c.top != null)                      assignField(builder, componentVarName, "top", c.top, bindingExprs);
-        if (c.width != null)                    assignField(builder, componentVarName, "width", c.width, bindingExprs);
-        if (c.height != null)                   assignField(builder, componentVarName, "height", c.height, bindingExprs);
-        if (c.percentWidth != null)             assignField(builder, componentVarName, "percentWidth", c.percentWidth, bindingExprs);
-        if (c.percentHeight != null)            assignField(builder, componentVarName, "percentHeight", c.percentHeight, bindingExprs);
-        if (c.contentWidth != null)             assignField(builder, componentVarName, "contentWidth", c.contentWidth, bindingExprs);
-        if (c.contentHeight != null)            assignField(builder, componentVarName, "contentHeight", c.contentHeight, bindingExprs);
-        if (c.percentContentWidth != null)      assignField(builder, componentVarName, "percentContentWidth", c.percentContentWidth, bindingExprs);
-        if (c.percentContentHeight != null)     assignField(builder, componentVarName, "percentContentHeight", c.percentContentHeight, bindingExprs);
-        if (c.text != null)                     assignField(builder, componentVarName, "text", c.text, bindingExprs);
-        if (c.styleNames != null)               assignField(builder, componentVarName, "styleNames", c.styleNames, bindingExprs);
-        if (c.style != null)                    assignField(builder, componentVarName, "styleString", c.styleString, bindingExprs);
+        if (c.id != null)                       assignField(builder, componentVarName, "id", c.id, bindingExprs, c);
+        if (c.left != null)                     assignField(builder, componentVarName, "left", c.left, bindingExprs, c);
+        if (c.top != null)                      assignField(builder, componentVarName, "top", c.top, bindingExprs, c);
+        if (c.width != null)                    assignField(builder, componentVarName, "width", c.width, bindingExprs, c);
+        if (c.height != null)                   assignField(builder, componentVarName, "height", c.height, bindingExprs, c);
+        if (c.percentWidth != null)             assignField(builder, componentVarName, "percentWidth", c.percentWidth, bindingExprs, c);
+        if (c.percentHeight != null)            assignField(builder, componentVarName, "percentHeight", c.percentHeight, bindingExprs, c);
+        if (c.contentWidth != null)             assignField(builder, componentVarName, "contentWidth", c.contentWidth, bindingExprs, c);
+        if (c.contentHeight != null)            assignField(builder, componentVarName, "contentHeight", c.contentHeight, bindingExprs, c);
+        if (c.percentContentWidth != null)      assignField(builder, componentVarName, "percentContentWidth", c.percentContentWidth, bindingExprs, c);
+        if (c.percentContentHeight != null)     assignField(builder, componentVarName, "percentContentHeight", c.percentContentHeight, bindingExprs, c);
+        if (c.text != null)                     assignField(builder, componentVarName, "text", c.text, bindingExprs, c);
+        if (c.styleNames != null)               assignField(builder, componentVarName, "styleNames", c.styleNames, bindingExprs, c);
+        if (c.style != null)                    assignField(builder, componentVarName, "styleString", c.styleString, bindingExprs, c);
         
         assignProperties(builder, componentVarName, c.properties);
     }
@@ -363,14 +365,20 @@ class ComponentMacros {
         }
     }
     
-    private static function assignField(builder:CodeBuilder, varName:String, field:String, value:Any, bindingExprs:Array<Expr>) {
+    private static function assignField(builder:CodeBuilder, varName:String, field:String, value:Any, bindingExprs:Array<Expr>, c:ComponentInfo) {
         var stringValue = Std.string(value);
         if (stringValue.indexOf("${") != -1) {
             builder.add(macro haxe.ui.binding.BindingManager.instance.add($i{varName}, $v{field}, $v{value}));
             if (stringValue.indexOf("${") == 0 && stringValue.indexOf("}") == stringValue.length - 1) {
                 var extractedValue = stringValue.substring(2, stringValue.length - 1);
                 var e = Context.parse(extractedValue, Context.currentPos());
-                bindingExprs.push(macro $i{varName}.$field = cast $e{e});
+                var typeInfo = TypeMap.getTypeInfo(c.resolvedClassName, field);
+                switch (typeInfo) {
+                    case "String":
+                        bindingExprs.push(macro $i{varName}.$field = "" + $e{e});
+                    default:     
+                        bindingExprs.push(macro $i{varName}.$field = $e{e});
+                }
             }
         } else {
             builder.add(macro $i{varName}.$field = $v{value});

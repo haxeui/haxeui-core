@@ -192,7 +192,8 @@ class BindingManager {
             var after:String = copy.substr(n2 + 1, copy.length);
             var script:String = copy.substr(n1 + 2, n2 - n1 - 2);
             
-            var result = exec(script, prop, t);
+            var result:Any = exec(script, prop, t);
+
             copy = before + result + after;
             n1 = copy.indexOf("${");
         }
