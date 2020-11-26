@@ -18,10 +18,13 @@ class HorizontalRange extends Range {
 // Behaviours
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
 class HorizontalRangePosFromCoord extends Behaviour {
     public override function call(pos:Any = null):Variant {
         var range = cast(_component, Range);
         var p = cast(pos, Point);
+        p.x -= _component.getComponentOffset().x;
+        
         var xpos = p.x - range.layout.paddingLeft;
         var ucx = range.layout.usableWidth;
         if (xpos >= ucx) {

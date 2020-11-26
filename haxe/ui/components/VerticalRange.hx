@@ -18,10 +18,13 @@ class VerticalRange extends Range {
 // Behaviours
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
 class VerticalRangePosFromCoord extends Behaviour {
     public override function call(pos:Any = null):Variant {
         var range = cast(_component, Range);
         var p = cast(pos, Point);
+        p.y -= _component.getComponentOffset().y;
+        
         var ypos = p.y - range.layout.paddingTop;
         var ucy = range.layout.usableHeight;
         if (ypos >= ucy) {
