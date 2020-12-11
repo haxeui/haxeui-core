@@ -1,6 +1,5 @@
 package haxe.ui.core;
 
-import haxe.ui.backend.ComponentSurface;
 import haxe.ui.geom.Rectangle;
 import haxe.ui.validation.InvalidationFlags;
 

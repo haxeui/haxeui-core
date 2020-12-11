@@ -6,13 +6,11 @@ import haxe.ui.containers.dialogs.Dialog;
 import haxe.ui.core.Component;
 import haxe.ui.core.Screen;
 import haxe.ui.events.MouseEvent;
-import haxe.ui.geom.Point;
 
 @:dox(hide) @:noCompletion
 class DialogBase extends Box {
     public var modal:Bool = true;
     public var buttons:DialogButton = null;
-    public var draggable:Bool = false;
     public var centerDialog:Bool = true;
     public var button:DialogButton = null;
     
@@ -37,7 +35,7 @@ class DialogBase extends Box {
         dialogTitle = new haxe.ui.containers.HBox();
         dialogTitle.id = "dialog-title";
         dialogTitle.styleNames = "dialog-title";
-        dialogTitle.registerEvent(MouseEvent.MOUSE_DOWN, onTitleMouseDown);
+        dragInitiator = dialogTitle;
         dialogContainer.addComponent(dialogTitle);
         
         dialogTitleLabel = new haxe.ui.components.Label();
@@ -71,25 +69,6 @@ class DialogBase extends Box {
         dialogCloseButton.onClick = function(e) {
             hideDialog(DialogButton.CANCEL);
         }
-    }
-    
-    private var _dragOffset:Point = null;
-    private function onTitleMouseDown(e:MouseEvent) {
-        _dragOffset = new Point(e.screenX - this.screenLeft, e.screenY - this.screenTop);
-        Screen.instance.registerEvent(MouseEvent.MOUSE_MOVE, onScreenMouseMove);
-        Screen.instance.registerEvent(MouseEvent.MOUSE_UP, onScreenMouseUp);
-    }
-    
-    private function onScreenMouseMove(e:MouseEvent) {
-        var x = e.screenX - _dragOffset.x;
-        var y = e.screenY - _dragOffset.y;
-        this.left = x;
-        this.top = y;
-    }
-    
-    private function onScreenMouseUp(e:MouseEvent) {
-        Screen.instance.unregisterEvent(MouseEvent.MOUSE_MOVE, onScreenMouseMove);
-        Screen.instance.unregisterEvent(MouseEvent.MOUSE_UP, onScreenMouseUp);
     }
     
     private var _dialogParent:Component = null;

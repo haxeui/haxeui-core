@@ -1,5 +1,6 @@
 package haxe.ui.dragdrop;
 
+import haxe.ui.events.UIEvent;
 import haxe.ui.geom.Point;
 import haxe.ui.util.MathUtil;
 import haxe.ui.geom.Rectangle;
@@ -51,6 +52,10 @@ class DragManager {
      * @return DragOptions
      */
     public function registerDraggable(component:Component, ?dragOptions:DragOptions):DragOptions {
+        if (isRegisteredDraggable(component)) {
+            return null;
+        }
+        
         // Set default DragOptions if not present //
         if (dragOptions == null) dragOptions = {};
         if (dragOptions.mouseTarget == null) dragOptions.mouseTarget = component;
@@ -58,6 +63,8 @@ class DragManager {
         if (dragOptions.dragOffsetY == null) dragOptions.dragOffsetY = 0;
         if (dragOptions.dragTolerance == null) dragOptions.dragTolerance = 1;
         if (dragOptions.dragBounds == null) dragOptions.dragBounds = new Rectangle(0, 0, Screen.instance.width, Screen.instance.height);
+        if (dragOptions.draggableStyleName == null) dragOptions.draggableStyleName = "draggable";
+        if (dragOptions.draggingStyleName == null) dragOptions.draggingStyleName = "dragging";
 
         // Add component and mouseTarget to respective maps //
         _dragComponents.set(component, dragOptions);
@@ -67,7 +74,11 @@ class DragManager {
         if (!dragOptions.mouseTarget.hasEvent(MouseEvent.MOUSE_DOWN, onMouseDown)) {
             dragOptions.mouseTarget.registerEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
         }
-        trace(component, "register complete", dragOptions);
+        
+        // add styles
+        if (dragOptions.draggableStyleName != null) {
+            dragOptions.mouseTarget.addClass(dragOptions.draggableStyleName);
+        }
         return dragOptions;
     }
 
@@ -76,6 +87,10 @@ class DragManager {
      * @param component 
      */
     public function unregisterDraggable(component:Component):Void {
+        if (!isRegisteredDraggable(component)) {
+            return;
+        }
+        
         var dragOptions:DragOptions = getDragOptions(component);
 
         // Unregister events //
@@ -92,6 +107,15 @@ class DragManager {
         _dragComponents.remove(component);
     }
 
+    /**
+     * If a component is registered to be draggable
+     * @param component 
+     * @return Bool
+     */
+    public function isRegisteredDraggable(component:Component):Bool {
+        return _dragComponents.exists(component);
+    }
+    
     // Listeners //
     ///////////////
 
@@ -119,6 +143,11 @@ class DragManager {
             // Adjust mouseOffset //
             _mouseOffset.x -= _currentOptions.dragOffsetX;
             _mouseOffset.y -= _currentOptions.dragOffsetY;
+            
+            if (_currentOptions.draggingStyleName != null) {
+                _currentComponent.addClass(_currentOptions.draggingStyleName);
+            }
+            _currentComponent.dispatch(new UIEvent(UIEvent.DRAG_STARTED));
 		}
     }
     
@@ -131,6 +160,11 @@ class DragManager {
 	}
 	
 	private function onScreenMouseUp(e:MouseEvent):Void {
+        if (_currentOptions.draggingStyleName != null) {
+            _currentComponent.removeClass(_currentOptions.draggingStyleName);
+        }
+        _currentComponent.dispatch(new UIEvent(UIEvent.DRAG_ENDED));
+            
         // Clear data //
         _currentComponent = null;
         _currentOptions = null;
