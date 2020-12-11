@@ -70,6 +70,7 @@ private class Builder extends CompositeBuilder {
     
     private var _propertyGroupHeader:HBox;
     private var _propertyGroupContents:Grid;
+    private var _editorMap:Map<Component, Property> = new Map<Component, Property>();
     
     public function new(propertyGroup:PropertyGroup) {
         super(propertyGroup);
@@ -140,6 +141,7 @@ private class Builder extends CompositeBuilder {
             cast(prop._compositeBuilder, PropertyBuilder).editor = editor;
 
             _propertyGroup.registerInternalEvents(Events, true);
+            _editorMap.set(editor, prop);
             
             return editor;
         }
@@ -150,6 +152,12 @@ private class Builder extends CompositeBuilder {
     private function onPropertyEditorChange(event:UIEvent) {
         var newEvent = new UIEvent(UIEvent.CHANGE);
         newEvent.target = event.target;
+        newEvent.data = event.data;
+        var prop = _editorMap.get(event.target);
+        if (prop != null) {
+            prop.dispatch(newEvent);
+        }
+        _component.dispatch(newEvent);
         _component.findAncestor(PropertyGrid).dispatch(newEvent);
     }
     

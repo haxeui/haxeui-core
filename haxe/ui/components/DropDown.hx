@@ -261,7 +261,11 @@ class ListDropDownHandler extends DropDownHandler {
             _listview.selectedIndex = value;
         } else if (_cachedSelectedIndex != value) {
             _cachedSelectedIndex = value;
-            _dropdown.dispatch(new UIEvent(UIEvent.CHANGE));
+            var data = null;
+            if (_dropdown.dataSource != null && value >= 0 && value < _dropdown.dataSource.size) {
+                data = _dropdown.dataSource.get(value);
+            }
+            _dropdown.dispatch(new UIEvent(UIEvent.CHANGE, false, data));
         }
         
         if (_dropdown.dataSource != null && value >= 0 && value < _dropdown.dataSource.size) {
@@ -343,7 +347,8 @@ class ListDropDownHandler extends DropDownHandler {
         _dropdown.text = text;
         //_dropdown.selectedIndex = _listview.selectedIndex;
         cast(_dropdown._internalEvents, DropDownEvents).hideDropDown();
-        _dropdown.dispatch(new UIEvent(UIEvent.CHANGE));
+        
+        _dropdown.dispatch(new UIEvent(UIEvent.CHANGE, false, selectedItem));
     }
     
     public override function applyDefault() {
@@ -433,7 +438,7 @@ class CalendarDropDownHandler extends DropDownHandler {
         _cachedSelectedDate = _calendar.selectedDate;
         _dropdown.text = DateTools.format(_calendar.selectedDate, DATE_FORMAT);
         cast(_dropdown._internalEvents, DropDownEvents).hideDropDown();
-        _dropdown.dispatch(new UIEvent(UIEvent.CHANGE));
+        _dropdown.dispatch(new UIEvent(UIEvent.CHANGE, false, _calendar.selectedDate));
     }
     
     public override function applyDefault() {
