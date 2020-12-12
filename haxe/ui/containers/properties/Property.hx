@@ -84,6 +84,22 @@ private class PropertyValueBehaviour extends ComponentValueBehaviour {
             builder.editor.value = Variant.toDynamic(value);
         }
     }
+    
+    public override function get():Variant {
+        var builder = cast(_property._compositeBuilder, PropertyBuilder);
+        if (builder.editor != null) {
+            return builder.editor.value;
+        }
+        return null;
+    }
+    
+    public override function getDynamic():Dynamic {
+        var builder = cast(_property._compositeBuilder, PropertyBuilder);
+        if (builder.editor != null) {
+            return builder.editor.value;
+        }
+        return null;
+    }
 }
 
 //***********************************************************************************************************
