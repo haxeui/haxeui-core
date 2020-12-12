@@ -1,8 +1,8 @@
 package haxe.ui.core;
 
 import haxe.ui.backend.ComponentImpl;
-import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.debug.CallStackHelper;
+import haxe.ui.dragdrop.DragManager;
 import haxe.ui.events.AnimationEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
@@ -251,6 +251,33 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         return Toolkit.screen;
     }
 
+    //***********************************************************************************************************
+    // Drag & Drop
+    //***********************************************************************************************************
+    public var draggable(get, set):Bool;
+    private function get_draggable():Bool {
+        return DragManager.instance.isRegisteredDraggable(this);
+    }
+    private function set_draggable(value:Bool):Bool {
+        if (value == true) {
+            DragManager.instance.registerDraggable(this, { mouseTarget: _dragInitiator } );
+        } else {
+            DragManager.instance.unregisterDraggable(this);
+        }
+        return value;
+    }
+    
+    private var _dragInitiator:Component = null;
+    public var dragInitiator(get, set):Component;
+    private function get_dragInitiator():Component {
+        return _dragInitiator;
+    }
+    private function set_dragInitiator(value:Component):Component {
+        _dragInitiator = value;
+        draggable = true;
+        return value;
+    }
+    
     //***********************************************************************************************************
     // Binding related
     //***********************************************************************************************************

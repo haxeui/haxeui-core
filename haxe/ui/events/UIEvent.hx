@@ -27,6 +27,9 @@ class UIEvent extends EventImpl {
 
     public static inline var COMPONENT_ADDED:String = "componentAdded";
     public static inline var COMPONENT_REMOVED:String = "componentRemoved";
+
+    public static inline var DRAG_STARTED:String = "dragStarted";
+    public static inline var DRAG_ENDED:String = "dragEnded";
     
     public var bubble(default, default):Bool; 
     public var type(default, default):String;
