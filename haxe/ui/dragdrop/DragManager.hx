@@ -147,7 +147,7 @@ class DragManager {
             if (_currentOptions.draggingStyleName != null) {
                 _currentComponent.addClass(_currentOptions.draggingStyleName);
             }
-            _currentComponent.dispatch(new UIEvent(UIEvent.DRAG_STARTED));
+            _currentComponent.dispatch(new UIEvent(UIEvent.DRAG_START));
 		}
     }
     
@@ -163,7 +163,7 @@ class DragManager {
         if (_currentOptions.draggingStyleName != null) {
             _currentComponent.removeClass(_currentOptions.draggingStyleName);
         }
-        _currentComponent.dispatch(new UIEvent(UIEvent.DRAG_ENDED));
+        _currentComponent.dispatch(new UIEvent(UIEvent.DRAG_END));
             
         // Clear data //
         _currentComponent = null;
