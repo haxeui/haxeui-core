@@ -7,12 +7,15 @@ import haxe.ui.behaviours.ValueBehaviour;
 import haxe.ui.events.UIEvent;
 import haxe.ui.layouts.Layout;
 import haxe.ui.styles.Style;
+import haxe.ui.tooltips.ToolTipManager;
 import haxe.ui.util.Variant;
 
 @:build(haxe.ui.macros.Macros.buildBehaviours())
 @:autoBuild(haxe.ui.macros.Macros.buildBehaviours())
 class ComponentContainer extends ComponentCommon implements IClonable<ComponentContainer> {
     @:clonable @:behaviour(ComponentDisabledBehaviour, false)       public var disabled:Bool;
+    @:clonable @:behaviour(ComponentToolTipBehaviour, null)         public var tooltip:Dynamic;
+    @:clonable @:behaviour(ComponentToolTipRendererBehaviour, null) public var tooltipRenderer:Component;
     
     private var behaviours:Behaviours;
 
@@ -157,5 +160,51 @@ class ComponentValueBehaviour extends ValueBehaviour {
 
     public override function getDynamic():Dynamic {
         return Variant.toDynamic(_value);
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+class ComponentToolTipBehaviour extends DataBehaviour {
+    public override function validateData() {
+        if (_value == null || _value.isNull) {
+            ToolTipManager.instance.unregisterTooltip(_component);
+        } else {
+            ToolTipManager.instance.registerTooltip(_component, {
+                tipData: Variant.toDynamic(_value),
+                renderer: cast _component.tooltipRenderer
+            });
+        }
+    }
+    
+    public override function setDynamic(value:Dynamic) {
+        if (value == null) {
+            ToolTipManager.instance.unregisterTooltip(_component);
+        } else {
+            ToolTipManager.instance.registerTooltip(_component, {
+                tipData: value,
+                renderer: cast _component.tooltipRenderer
+            });
+        }
+    }
+    
+    public override function getDynamic():Dynamic {
+        var options = ToolTipManager.instance.getTooltipOptions(_component);
+        if (options == null) {
+            return null;
+        }
+        return options.tipData;
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+class ComponentToolTipRendererBehaviour extends DataBehaviour {
+    public override function validateData() {
+        if (_value == null || _value.isNull) {
+            ToolTipManager.instance.updateTooltipRenderer(_component, null);
+        } else {
+            ToolTipManager.instance.updateTooltipRenderer(_component, cast _value.toComponent());
+        }
     }
 }

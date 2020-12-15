@@ -24,6 +24,10 @@ class Behaviour {
 
     }
 
+    public function setDynamic(value:Dynamic) {
+        set(Variant.fromDynamic(value));
+    }
+    
     /**
      Called when behaviour is no longer needed
     **/
@@ -39,7 +43,7 @@ class Behaviour {
     }
 
     public function getDynamic():Dynamic {
-        return null;
+        return Variant.toDynamic(get());
     }
     
     /**
