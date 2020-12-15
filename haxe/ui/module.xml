@@ -75,6 +75,7 @@
             <style resource="haxeui-core/styles/default/propertygrids.css" />
             <style resource="haxeui-core/styles/default/frames.css" />
             <style resource="haxeui-core/styles/default/splitters.css" />
+            <style resource="haxeui-core/styles/default/tooltips.css" />
         </default>
         <native parent="default">
             <style resource="haxeui-core/styles/native/main.css" priority="-3" />

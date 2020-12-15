@@ -1,5 +1,6 @@
 package haxe.ui.behaviours;
 
+import haxe.ui.behaviours.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.events.UIEvent;
 import haxe.ui.util.Variant;
@@ -192,21 +193,66 @@ class Behaviours {
     private function unlock() {
     }
     
-    public function set(id:String, value:Variant) {
+    public function setDynamic(id:String, value:Dynamic) {
         lock();
+        
         var b = find(id);
         var changed:Null<Bool> = null;
         if (Std.is(b, ValueBehaviour)) {
             var v = @:privateAccess cast(b, ValueBehaviour)._value;
             changed = (v != value);
         }
+
+        b.setDynamic(value);
+        var info = _registry.get(id);
+        info.isSet = true;
         
+        unlock();
+        
+        performAutoDispatch(b, changed);
+    }
+    
+    public function set(id:String, value:Variant) {
+        lock();
+        
+        var b = find(id);
+        var changed:Null<Bool> = null;
+        if (Std.is(b, ValueBehaviour)) {
+            var v = @:privateAccess cast(b, ValueBehaviour)._value;
+            changed = (v != value);
+        }
+
         b.set(value);
         var info = _registry.get(id);
         info.isSet = true;
         
         unlock();
+
+        /*
+        var autoDispatch = b.getConfigValue("autoDispatch", null);
+        if (autoDispatch != null) {
+            var arr = autoDispatch.split(".");
+            var eventName = arr.pop().toLowerCase();
+            var cls = arr.join(".");
             
+            #if hxcs // hxcs issue
+            var event:UIEvent = Type.createInstance(Type.resolveClass(cls), [null]);
+            event.type = eventName;
+            #else
+            var event = Type.createInstance(Type.resolveClass(cls), [eventName]);
+            #end
+            
+            if (eventName != UIEvent.CHANGE) {
+                b._component.dispatch(event);  
+            } else if (changed == true || changed == null) {
+                b._component.dispatch(event);
+            }
+        }
+        */
+        performAutoDispatch(b, changed);
+    }
+    
+    private function performAutoDispatch(b:Behaviour, changed:Null<Bool>) {
         var autoDispatch = b.getConfigValue("autoDispatch", null);
         if (autoDispatch != null) {
             var arr = autoDispatch.split(".");

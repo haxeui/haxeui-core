@@ -1,0 +1,9 @@
+.tooltip {
+    background-color: #fffff8;
+    border: 1px solid #ABABAB;
+    filter: drop-shadow(1, 45, #000000, 0.05, 6, 1, 30, 35, false);
+    border-radius: 3px;
+    padding: 4px 5px;
+    margin-left: 0px;
+    margin-top: 30px;
+}

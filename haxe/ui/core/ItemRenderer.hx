@@ -173,6 +173,10 @@ class ItemRenderer extends Box {
                     c.show();
                 } else if (c != null) {
                     c.hide();
+                } else if (f != "id") {
+                    try {
+                        Reflect.setProperty(this, f, v);
+                    } catch (e) { }
                 }
             }
         }
