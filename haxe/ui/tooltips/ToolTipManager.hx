@@ -152,12 +152,8 @@ class ToolTipManager {
         
         Screen.instance.addComponent(_toolTip);
         _toolTip.validateNow();
-        
-        var x = _lastMouseEvent.screenX + _toolTip.marginLeft;
-        var y = _lastMouseEvent.screenY + _toolTip.marginTop;
-        
-        _toolTip.left = x;
-        _toolTip.top = y;
+
+        positionToolTip();
         Toolkit.callLater(function() {
             if (fade == true) {
                 _toolTip.fadeIn();
@@ -167,6 +163,26 @@ class ToolTipManager {
         });
         
         Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
+    }
+    
+    private function positionToolTip() {
+        var x = _lastMouseEvent.screenX + _toolTip.marginLeft;
+        var y = _lastMouseEvent.screenY + _toolTip.marginTop;
+        var w = _toolTip.width;
+        var h = _toolTip.height;
+        
+        var maxX = Screen.instance.width;
+        var maxY = Screen.instance.height;
+        
+        if (x + w > maxX) {
+            x = x - w;
+        }
+        if (y + h > maxY) {
+            y = _lastMouseEvent.screenY - h - (_toolTip.marginTop / 2);
+        }
+        
+        _toolTip.left = x;
+        _toolTip.top = y;
     }
     
     private function hideToolTip() {
