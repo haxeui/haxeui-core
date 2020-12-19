@@ -1,11 +1,16 @@
 package haxe.ui.styles.animation.util;
 
+import haxe.ui.components.Button;
+import haxe.ui.core.ComponentFieldMap;
+import haxe.ui.core.TypeMap;
 import haxe.ui.styles.animation.util.ColorPropertyDetails;
 import haxe.ui.styles.animation.util.PropertyDetails;
 import haxe.ui.styles.EasingFunction;
 import haxe.ui.util.Color;
 import haxe.ui.util.StringUtil;
 import haxe.ui.util.StyleUtil;
+import haxe.ui.util.Variant;
+import haxe.ui.util.Variant.VariantType;
 
 @:structInit
 class ActuatorOptions {
@@ -125,7 +130,28 @@ class Actuator<T> {
                 switch (end) {
                     case Value.VDimension(Dimension.PERCENT(v)) | Value.VNumber(v):
                         start = 0;
+                    case Value.VString(v):
+                        start = v;
                     case _:
+                }
+            }
+            
+            var isVariant = false;
+            if (start != null) {
+                switch (start) {
+                    case VariantType.VT_String(v):
+                        start = v;
+                        isVariant = true;
+                    case _:    
+                }
+            }
+            
+            if (end != null) {
+                switch (end) {
+                    case VariantType.VT_String(v):
+                        end = v;
+                        isVariant = true;
+                    case _:    
                 }
             }
             
@@ -164,7 +190,7 @@ class Actuator<T> {
                         var n2 = endVal.indexOf("]]") + 2;
                         var before = endVal.substr(0, n1);
                         var after = endVal.substr(n2);
-                        
+
                         // lets find out where we are
                         var s = StringTools.replace(startVal, before, "");
                         s = StringTools.replace(s, after, "");
@@ -178,6 +204,11 @@ class Actuator<T> {
                         details.pattern = before + "[[n]]" + after;
                         details.startInt = startInt;
                         details.changeInt = endInt - startInt;
+                        var typeInfo = TypeMap.getTypeInfo(Type.getClassName(Type.getClass(target)), componentProperty);
+                        if (typeInfo != null && isVariant == false && typeInfo == "Variant") {
+                            isVariant = true;
+                        }
+                        details.isVariant = isVariant;
                         _stringPropertyDetails.push(details);
                     } else {
                         var details:StringPropertyDetails<T> = new StringPropertyDetails(target, componentProperty, startVal, endVal);
@@ -234,7 +265,12 @@ class Actuator<T> {
             if (details.pattern != null) {
                 var newInt = Std.int(details.startInt + (position * details.changeInt));
                 var newString = StringTools.replace(details.pattern, "[[n]]", "" + newInt);
-                Reflect.setProperty(target, details.propertyName, newString);
+                if (details.isVariant) {
+                    var v:Variant = newString;
+                    Reflect.setProperty(target, details.propertyName, v);
+                } else {
+                    Reflect.setProperty(target, details.propertyName, newString);
+                }
             } else {
                 if (position != 1) {
                     Reflect.setProperty(target, details.propertyName, details.start);

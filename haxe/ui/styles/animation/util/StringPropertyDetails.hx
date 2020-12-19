@@ -10,6 +10,8 @@ class StringPropertyDetails<T> {
     public var changeInt:Int;
     public var pattern:String = null;
     
+    public var isVariant:Bool = false;
+    
     public function new (target:T, propertyName:String, start:String, end:String):Void {
         this.target = target;
         this.propertyName = propertyName;
