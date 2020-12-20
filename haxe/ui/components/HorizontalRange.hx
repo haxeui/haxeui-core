@@ -76,6 +76,8 @@ class HorizontalRangeLayout extends DefaultLayout {
     }
 
     public override function repositionChildren() {
+        super.repositionChildren();
+        
         var range:Range = cast(component, Range);
         var value:Component = findComponent('${range.cssName}-value');
         
