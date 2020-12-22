@@ -1,12 +1,11 @@
 package updates;
 
-import updates.HaxeLibUpdate;
 import updates.kha.KhaUpdate;
 
 class UpdateFactory {
     public static function get(id:String):Update {
         var u:Update = null;
-        
+
         switch (id) {
             case "openfl":
                 u = new HaxeLibUpdate(["haxeui-openfl", "openfl", "lime"]);
@@ -23,7 +22,7 @@ class UpdateFactory {
             case "winforms":
                 u = new HaxeLibUpdate(["haxeui-winforms", "hxcs"]);
         }
-        
+
         return u;
     }
 }

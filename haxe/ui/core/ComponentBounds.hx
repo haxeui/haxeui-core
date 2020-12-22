@@ -21,7 +21,7 @@ class ComponentBounds extends ComponentLayout {
         }
         return style.autoWidth;
     }
-    
+
     /**
      Whether this component will automatically resize itself based on it childrens calculated height
     **/
@@ -36,11 +36,11 @@ class ComponentBounds extends ComponentLayout {
         }
         return style.autoHeight;
     }
-    
+
     @:dox(group = "Size related properties and methods")
     public function resizeComponent(w:Null<Float>, h:Null<Float>) {
         var invalidate:Bool = false;
-        
+
         if (style != null) {
             if (w != null) {
                 if (style.minWidth != null && w < style.minWidth) {
@@ -49,7 +49,7 @@ class ComponentBounds extends ComponentLayout {
                     w = style.maxWidth;
                 }
             }
-            
+
             if (h != null) {
                 if (style.minHeight != null && h < style.minHeight) {
                     h = style.minHeight;
@@ -58,7 +58,7 @@ class ComponentBounds extends ComponentLayout {
                 }
             }
         }
-        
+
         if (w != null && _componentWidth != w) {
             _componentWidth = w;
             invalidate = true;
@@ -73,17 +73,17 @@ class ComponentBounds extends ComponentLayout {
             invalidateComponentLayout();
         }
     }
-    
+
     public var actualComponentWidth(get, null):Float;
     private function get_actualComponentWidth():Float {
         return componentWidth * Toolkit.scaleX;
     }
-    
+
     public var actualComponentHeight(get, null):Float;
     private function get_actualComponentHeight():Float {
         return componentHeight * Toolkit.scaleY;
     }
-    
+
     private var _componentWidth:Null<Float>;
     @:allow(haxe.ui.layouts.Layout)
     @:allow(haxe.ui.core.Screen)
@@ -102,7 +102,7 @@ class ComponentBounds extends ComponentLayout {
         resizeComponent(value, null);
         return value;
     }
-    
+
     private var _componentHeight:Null<Float>;
     @:allow(haxe.ui.layouts.Layout)
     @:allow(haxe.ui.core.Screen)
@@ -121,7 +121,7 @@ class ComponentBounds extends ComponentLayout {
         resizeComponent(null, value);
         return value;
     }
-    
+
     private var _percentWidth:Null<Float>;
     /**
      What percentage of this components parent to use to calculate its width
@@ -164,7 +164,7 @@ class ComponentBounds extends ComponentLayout {
         }
         return value;
     }
-    
+
     #if ((haxeui_openfl || haxeui_nme) && !haxeui_flixel)
 
     #if flash @:setter(x) #else override #end
@@ -177,7 +177,7 @@ class ComponentBounds extends ComponentLayout {
         left = value;
         #if !flash return value; #end
     }
-    
+
     #if flash @:setter(y) #else override #end
     public function set_y(value:Float): #if flash Void #else Float #end {
         #if flash
@@ -188,7 +188,7 @@ class ComponentBounds extends ComponentLayout {
         top = value;
         #if !flash return value; #end
     }
-    
+
     private var _width:Null<Float>;
     #if flash @:setter(width) #else override #end
     private function set_width(value:Float): #if flash Void #else Float #end {
@@ -317,7 +317,7 @@ class ComponentBounds extends ComponentLayout {
 
     private var _actualWidth:Null<Float>;
     private var _actualHeight:Null<Float>;
-    
+
     private var _hasScreen:Null<Bool> = null;
     public var hasScreen(get, null):Bool;
     private function get_hasScreen():Bool {
@@ -330,7 +330,7 @@ class ComponentBounds extends ComponentLayout {
         }
         return true;
     }
-    
+
     /**
      Whether or not a point is inside this components bounds
 
@@ -338,18 +338,18 @@ class ComponentBounds extends ComponentLayout {
     **/
     @:dox(group = "Size related properties and methods")
     public function hitTest(left:Float, top:Float):Bool { // co-ords must be stage
-        
+
         if (hasScreen == false) {
             return false;
         }
-        
+
         left *= Toolkit.scale;
         top *= Toolkit.scale;
-        
+
         var b:Bool = false;
         var sx:Float = screenLeft;
         var sy:Float = screenTop;
-        
+
         var cx:Float = 0;
         if (componentWidth != null) {
             cx = actualComponentWidth;
@@ -358,7 +358,7 @@ class ComponentBounds extends ComponentLayout {
         if (componentHeight != null) {
             cy = actualComponentHeight;
         }
- 
+
         if (cx <= 0 || cy <= 0) {
             return false;
         }
@@ -369,14 +369,14 @@ class ComponentBounds extends ComponentLayout {
 
         return b;
     }
-    
+
     /**
      Autosize this component based on its children
     **/
     @:dox(group = "Size related properties and methods")
     private function autoSize():Bool {
         if (_ready == false || _layout == null) {
-           return false;
+            return false;
         }
         return _layout.autoSize();
     }
@@ -403,7 +403,7 @@ class ComponentBounds extends ComponentLayout {
             invalidateComponentPosition();
         }
     }
-    
+
     private var _left:Null<Float> = 0;
     /**
      The left co-ord of this component relative to its parent
@@ -417,7 +417,7 @@ class ComponentBounds extends ComponentLayout {
         moveComponent(value, null);
         return value;
     }
-    
+
     private var _top:Null<Float> = 0;
     /**
      The top co-ord of this component relative to its parent
@@ -431,7 +431,7 @@ class ComponentBounds extends ComponentLayout {
         moveComponent(null, value);
         return value;
     }
-    
+
     /**
      The left co-ord of this component relative to the screen
     **/
@@ -455,7 +455,7 @@ class ComponentBounds extends ComponentLayout {
         }
         return xpos;
     }
-    
+
     /**
      The top co-ord of this component relative to the screen
     **/
@@ -479,7 +479,7 @@ class ComponentBounds extends ComponentLayout {
         }
         return ypos;
     }
-    
+
     //***********************************************************************************************************
     // Clip rect
     //***********************************************************************************************************

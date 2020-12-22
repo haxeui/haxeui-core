@@ -1,4 +1,5 @@
 package haxe.ui.parsers.ui.resolvers;
+
 import haxe.io.Path;
 
 class AssetResourceResolver extends ResourceResolver {

@@ -4,7 +4,7 @@ class HelpCommand extends Command {
     public function new() {
         super();
     }
-    
+
     public override function execute(params:Params) {
         if (params.additional.length == 0) {
             displayHelp();
@@ -17,7 +17,7 @@ class HelpCommand extends Command {
             command.displayHelp();
         }
     }
-    
+
     public override function displayHelp() {
         Util.log('Usage : haxeui <create | install | update | build | run | test | custom-component> [${Util.backendString(" | ")}] [options]\n');
         Util.log('Options :');

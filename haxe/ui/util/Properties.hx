@@ -28,7 +28,7 @@ class Properties {
     public function exists(name:String):Bool {
         return _props.exists(name);
     }
-    
+
     public function getProp(name:String, defaultValue = null):String {
         var v:String = defaultValue;
         if (_props.exists(name)) {

@@ -63,7 +63,7 @@ class MacroHelpers {
         }
         return types;
     }
-    
+
     public static function typesFromPackage(pack:String):Array<haxe.macro.Type> {
         var types:Array<haxe.macro.Type> = new Array<haxe.macro.Type>();
 
@@ -105,17 +105,18 @@ class MacroHelpers {
             var value = c.values.get(key);
             builder.add(macro $i{sectionVar}.values.set($v{key}, $v{value}));
         }
-        
+
         for (sectionName in c.sections.keys()) {
             for (section in c.sections.get(sectionName)) {
                 if (depth == 0) {
-                    builder.add(macro var section1 = $i{name}.addSection($v{sectionName}));
+                    var sectionVar = 'section${depth + 1}';
+                    builder.add(macro var $sectionVar = $i{name}.addSection($v{sectionName}));
                 } else {
                     var sectionVar = 'section${depth + 1}';
                     var parentSectionVar = 'section${depth}';
                     builder.add(macro var $sectionVar = $i{parentSectionVar}.addSection($v{sectionName}));
                 }
-                
+
                 buildGenericConfigCode(builder, section, name, depth + 1);
             }
         }
@@ -136,12 +137,12 @@ class MacroHelpers {
             secondaryClassPathExceptions.push(new EReg(line, "gm"));
         }
     }
-    
+
     private static function buildClassPathCache() {
         if (classPathCache != null) {
             return;
         }
-        
+
         classPathCache = [];
         var paths:Array<String> = Context.getClassPath();
         for (path in paths) {
@@ -151,8 +152,7 @@ class MacroHelpers {
                 loadClassPathExclusions(path);
             }
         }
-        
-        
+
         for (path in paths) {
             path = StringTools.trim(path);
             path = Path.normalize(path);
@@ -169,14 +169,14 @@ class MacroHelpers {
             cacheClassPathEntries(path, classPathCache);
         }
     }
-    
+
     private static function cacheClassPathEntries(path, array) {
         path = StringTools.trim(path);
         if (path.length == 0) {
             return;
         }
         path = Path.normalize(path);
-        
+
         var exclude = false;
         for (r in secondaryClassPathExceptions) {
             if (r.match(path) == true) {
@@ -210,9 +210,9 @@ class MacroHelpers {
                 });
             }
         }
-        
+
     }
-    
+
     public static function scanClassPath(processFileFn:String->Bool, searchCriteria:Array<String> = null) {
         buildClassPathCache();
         for (entry in classPathCache) {

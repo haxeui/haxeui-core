@@ -15,21 +15,21 @@ class ImageBase extends ImageSurface {
     private var _imageHeight:Float = 0;
     private var _imageInfo:ImageInfo;
     private var _imageClipRect:Rectangle;
-    
+
     public function dispose() {
     }
-    
+
     //***********************************************************************************************************
     // Validation functions
     //***********************************************************************************************************
-    
+
     private function validateData() {
     }
-    
+
     private function validatePosition() {
     }
-        
+
     private function validateDisplay() {
-        
+
     }
 }

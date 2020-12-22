@@ -14,7 +14,7 @@ class InteractiveComponent extends Component implements IFocusable {
     // Public API
     //***********************************************************************************************************
     @:clonable @:behaviour(DefaultBehaviour, true)      public var allowInteraction:Bool;
-    
+
     private var _focus:Bool = false;
     /**
      Whether this component currently has focus
@@ -36,7 +36,7 @@ class InteractiveComponent extends Component implements IFocusable {
             addClass(":active");
             eventType = FocusEvent.FOCUS_IN;
             FocusManager.instance.focus = cast(this, IFocusable);
-            
+
             // if we are focusing lets see if there is a ancestor scrollview we might want to scroll into view
             var scrollview = findAncestor(ScrollView);
             if (scrollview != null) {

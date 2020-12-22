@@ -21,7 +21,7 @@ class Box extends Component {
      of it should they want to
     **/
     @:clonable @:behaviour(DefaultBehaviour)                public var icon:String;
-    
+
     private var _layoutName:String;
     @:clonable public var layoutName(get, set):String;
     private function get_layoutName():String {
@@ -36,7 +36,7 @@ class Box extends Component {
         layout = LayoutFactory.createFromName(layoutName);
         return value;
     }
-    
+
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************

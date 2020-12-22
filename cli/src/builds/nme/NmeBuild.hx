@@ -1,11 +1,12 @@
 package builds.nme;
+
 import builds.ProcessBuild;
 
 class NmeBuild extends ProcessBuild {
     public function new() {
         super("haxelib", ["project.nmml"]);
     }
-    
+
     private override function args(params:Params):Array<String> {
         var target = "flash";
         if (Util.mapContains("windows", params.additional)) {

@@ -14,14 +14,14 @@ class HorizontalScroll extends Scroll {
         behaviours.register("posFromCoord", PosFromCoord);
         behaviours.register("applyPageFromCoord", ApplyPageFromCoord);
     }
-    
+
     private override function createChildren() { // TODO: this should be min-width / min-height in theme css when the new css engine is done
         super.createChildren();
         if (componentWidth <= 0) {
             componentWidth = 150;
         }
     }
-    
+
     private override function createDefaults() { // TODO: remove this eventually, @:layout(...) or something
         super.createDefaults();
         _defaultLayoutClass = HorizontalScrollLayout;
@@ -38,7 +38,7 @@ private class PosFromCoord extends Behaviour {
         var scroll:Scroll = cast(_component, Scroll);
         var deinc:Button = _component.findComponent("scroll-deinc-button");
         var thumb:Button = _component.findComponent("scroll-thumb-button");
-        
+
         var xpos:Float = p.x;
         var minX:Float = 0;
         if (deinc != null && deinc.hidden == false) {
@@ -59,7 +59,7 @@ private class PosFromCoord extends Behaviour {
         var m:Int = Std.int(scroll.max - scroll.min);
         var v:Float = xpos - minX;
         var value:Float = scroll.min + ((v / ucx) * m);
-        
+
         return value;
     }
 }
@@ -70,13 +70,13 @@ private class ApplyPageFromCoord extends Behaviour {
         var p = cast(pos, Point);
         var scroll:Scroll = cast(_component, Scroll);
         var thumb:Button = _component.findComponent("scroll-thumb-button");
-        
+
         if (p.x < thumb.screenLeft) {
             scroll.pos -= scroll.pageSize;
         } else if (p.x > thumb.screenLeft + thumb.width) {
             scroll.pos += scroll.pageSize;
         }
-        
+
         return null;
     }
 }

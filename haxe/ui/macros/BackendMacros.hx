@@ -8,11 +8,11 @@ import haxe.ui.util.Properties;
 #end
 
 class BackendMacros {
-    
+
     #if macro
     public static var properties:Properties = new Properties();
     #end
-    
+
     macro public static function processBackend():Expr {
         loadBackendProperties();
 
@@ -28,7 +28,7 @@ class BackendMacros {
                 Toolkit.theme = $v{Context.getDefines().get("theme")}
             );
         }
-        
+
         return builder.expr;
     }
 

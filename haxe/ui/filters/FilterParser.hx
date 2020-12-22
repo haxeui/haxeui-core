@@ -109,7 +109,7 @@ class FilterParser {
 
         filterParamDefaults["blur"] = [];
         filterParamDefaults["blur"] = filterParamDefaults["blur"].concat([1]);
-        
+
         filterParamDefaults["outline"] = [];
         filterParamDefaults["outline"] = filterParamDefaults["outline"].concat([0, 1]);
     }

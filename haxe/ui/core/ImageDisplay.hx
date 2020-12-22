@@ -12,7 +12,7 @@ class ImageDisplay extends ImageDisplayImpl {
     private var _invalidationFlags:Map<String, Bool> = new Map<String, Bool>();
     private var _isAllInvalid:Bool = false;
     private var _isValidating:Bool = false;
-    
+
     public function new() {
         super();
     }
@@ -46,7 +46,7 @@ class ImageDisplay extends ImageDisplayImpl {
     }
 
     public var imageWidth(get, set):Float;
-    public function set_imageWidth(value:Float):Float {
+    private function set_imageWidth(value:Float):Float {
         if (_imageWidth == value || value <= 0) {
             return value;
         }
@@ -56,12 +56,12 @@ class ImageDisplay extends ImageDisplayImpl {
         return value;
     }
 
-    public function get_imageWidth():Float {
+    private function get_imageWidth():Float {
         return _imageWidth;
     }
 
     public var imageHeight(get, set):Float;
-    public function set_imageHeight(value:Float):Float {
+    private function set_imageHeight(value:Float):Float {
         if (_imageHeight == value || value <= 0) {
             return value;
         }
@@ -71,7 +71,7 @@ class ImageDisplay extends ImageDisplayImpl {
         return value;
     }
 
-    public function get_imageHeight():Float {
+    private function get_imageHeight():Float {
         return _imageHeight;
     }
 
@@ -94,7 +94,7 @@ class ImageDisplay extends ImageDisplayImpl {
     }
 
     public var imageClipRect(get, set):Rectangle;
-    public function get_imageClipRect():Rectangle {
+    private function get_imageClipRect():Rectangle {
         return _imageClipRect;
     }
     private function set_imageClipRect(value:Rectangle):Rectangle {
@@ -103,7 +103,6 @@ class ImageDisplay extends ImageDisplayImpl {
 
         return value;
     }
-
 
     public function isComponentInvalid(flag:String = InvalidationFlags.ALL):Bool {
         if (_isAllInvalid == true) {

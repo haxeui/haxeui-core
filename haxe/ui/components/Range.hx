@@ -27,12 +27,12 @@ class Range extends InteractiveComponent implements IDirectionalComponent {
     @:clonable @:behaviour(InvalidatingBehaviour)       public var precision:Int;
     @:clonable @:behaviour(InvalidatingBehaviour)       public var step:Float;
     @:clonable @:behaviour(AllowInteraction, false)     public var allowInteraction:Bool;
-    
+
     //***********************************************************************************************************
     // Private API
     //***********************************************************************************************************
     @:call(DefaultBehaviour)                        private function posFromCoord(coord:Point):Float;
-    
+
     //***********************************************************************************************************
     // Overrides
     //***********************************************************************************************************
@@ -79,7 +79,7 @@ private class RangeStart extends DataBehaviour {
         }
         range.start = _value;
         _component.invalidateComponentLayout();
-        
+
         var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
         _component.dispatch(changeEvent);
     }
@@ -96,7 +96,7 @@ private class RangeEnd extends DataBehaviour {
         }
         range.end = _value;
         _component.invalidateComponentLayout();
-        
+
         var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
         _component.dispatch(changeEvent);
     }
@@ -108,12 +108,12 @@ private class AllowInteraction extends DefaultBehaviour {
     public override function get():Variant {
         return (_component._internalEvents != null);
     }
-    
+
     public override function set(value:Variant) {
         if (_component.native == true) {
             return;
         }
-        
+
         if (value == true) {
             _component.registerInternalEvents(Events);
         } else {
@@ -129,52 +129,52 @@ private class AllowInteraction extends DefaultBehaviour {
 @:access(haxe.ui.components.Range)
 private class Events extends haxe.ui.events.Events {
     private var _range:Range;
-    
+
     public function new(range:Range) {
         super(range);
         _range = range;
         register();
     }
-    
+
     public override function register() {
         _range.registerEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
     }
-    
+
     public override function unregister() {
         _range.unregisterEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
     }
-    
+
     private function onMouseDown(e:MouseEvent) {
         var pt:Point = new Point(e.localX, e.localY);
         var pos = _range.posFromCoord(pt);
-        applyPos(pos);        
-        
+        applyPos(pos);
+
         Screen.instance.registerEvent(MouseEvent.MOUSE_UP, onScreenMouseUp);
         Screen.instance.registerEvent(MouseEvent.MOUSE_MOVE, onScreenMouseMove);
     }
-    
+
     private function onScreenMouseUp(e:MouseEvent) {
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_UP, onScreenMouseUp);
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_MOVE, onScreenMouseMove);
     }
-    
+
     private function onScreenMouseMove(e:MouseEvent) {
         var pt:Point = new Point(e.screenX - _range.screenLeft, e.screenY - _range.screenTop);
         var pos:Float = _range.posFromCoord(pt);
         applyPos(pos);
     }
-    
+
     private function applyPos(pos:Float) {
         pos = MathUtil.round(pos, _range.precision);
         if (_range.step > 0) {
             pos = Math.fceil(pos / _range.step) * _range.step;
         }
-        
+
         if (Std.is(_range, Progress)) {
             cast(_range, Progress).pos = pos;
             return;
         }
-        
+
         var d1 = _range.end - _range.start;
         var d2 = pos - _range.start;
 

@@ -16,7 +16,7 @@ class ComponentContainer extends ComponentCommon implements IClonable<ComponentC
     @:clonable @:behaviour(ComponentDisabledBehaviour, false)       public var disabled:Bool;
     @:clonable @:behaviour(ComponentToolTipBehaviour, null)         public var tooltip:Dynamic;
     @:clonable @:behaviour(ComponentToolTipRendererBehaviour, null) public var tooltipRenderer:Component;
-    
+
     private var behaviours:Behaviours;
 
     /**
@@ -24,15 +24,15 @@ class ComponentContainer extends ComponentCommon implements IClonable<ComponentC
     **/
     @:dox(group = "Display tree related properties and methods")
     public var parentComponent:Component = null;
-    
+
     public function new() {
         super();
         behaviours = new Behaviours(cast(this, Component));
     }
-    
+
     public function dispatch(event:UIEvent) {
     }
-    
+
     private var _ready:Bool = false;
     /**
      Whether the framework considers this component ready or not
@@ -41,7 +41,7 @@ class ComponentContainer extends ComponentCommon implements IClonable<ComponentC
     private function get_isReady():Bool {
         return _ready;
     }
-    
+
     private var _children:Array<Component>;
     /**
      A list of this components children
@@ -56,39 +56,39 @@ class ComponentContainer extends ComponentCommon implements IClonable<ComponentC
         }
         return _children;
     }
-    
+
     private function registerBehaviours() {
     }
-    
+
     public function addComponent(child:Component):Component {
         return null;
     }
-    
+
     public function addComponentAt(child:Component, index:Int):Component {
         return null;
     }
-    
+
     public function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
         return null;
     }
-    
+
     public function removeComponentAt(index:Int, dispose:Bool = true, invalidate:Bool = true):Component {
         return null;
     }
-    
+
     //***********************************************************************************************************
     // Layout related
     //***********************************************************************************************************
     // not idea place for them, but ComponentValidation needs them
     private var _layout:Layout = null;
-    
+
     private var _layoutLocked:Bool = false;
-    
+
     //***********************************************************************************************************
     // Style related
     //***********************************************************************************************************
     private var _style:Style;
-    
+
     //***********************************************************************************************************
     // General
     //***********************************************************************************************************
@@ -125,7 +125,7 @@ class ComponentTextBehaviour extends DefaultBehaviour {
         }
 
         _value = value;
-        
+
         super.set(value);
     }
 }
@@ -136,7 +136,7 @@ class ComponentDisabledBehaviour extends DataBehaviour {
     public override function get():Variant {
         return _component.hasClass(":disabled");
     }
-    
+
     public override function validateData() {
         _component.disableInteractivity(_value, true, true);
     }
@@ -176,7 +176,7 @@ class ComponentToolTipBehaviour extends DataBehaviour {
             });
         }
     }
-    
+
     public override function setDynamic(value:Dynamic) {
         if (value == null) {
             ToolTipManager.instance.unregisterTooltip(_component);
@@ -187,7 +187,7 @@ class ComponentToolTipBehaviour extends DataBehaviour {
             });
         }
     }
-    
+
     public override function getDynamic():Dynamic {
         var options = ToolTipManager.instance.getTooltipOptions(_component);
         if (options == null) {

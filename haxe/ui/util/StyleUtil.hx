@@ -1,7 +1,6 @@
 package haxe.ui.util;
 
-class StyleUtil
-{
+class StyleUtil {
     static private var style2ComponentEReg:EReg = ~/-(\w)/g;
     static private var component2StyleEReg:EReg = ~/([A-Z])/g;
 

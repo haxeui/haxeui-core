@@ -22,11 +22,11 @@ class Calendar extends Grid {
     //***********************************************************************************************************
     @:clonable @:behaviour(DateBehaviour)                   public var date:Date;
     @:clonable @:behaviour(SelectedDateBehaviour)           public var selectedDate:Date;
-    @:call(PreviousMonthBehaviour)                          public function previousMonth():Void;
-    @:call(NextMonthBehaviour)                              public function nextMonth():Void;
-    @:call(PreviousYearBehaviour)                           public function previousYear():Void;
-    @:call(NextYearBehaviour)                               public function nextYear():Void;
-    
+    @:call(PreviousMonthBehaviour)                          public function previousMonth();
+    @:call(NextMonthBehaviour)                              public function nextMonth();
+    @:call(PreviousYearBehaviour)                           public function previousYear();
+    @:call(NextYearBehaviour)                               public function nextYear();
+
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************
@@ -74,12 +74,12 @@ private class NextYearBehaviour extends Behaviour {
 private class SelectedDateBehaviour extends DefaultBehaviour {
     public override function set(value:Variant) {
         super.set(value);
-        
+
         var date:Date = value;
         _component.invalidateComponentData();
         var calendar = cast(_component, Calendar);
         calendar.date = date; // TODO: this is wrong, works, but its wrong... need to split up the code into util classes, one to build the month, another to select it
-        
+
         _component.dispatch(new UIEvent(UIEvent.CHANGE));
     }
 }
@@ -88,18 +88,17 @@ private class SelectedDateBehaviour extends DefaultBehaviour {
 private class DateBehaviour extends DataBehaviour {
     private override function validateData() {
         var date:Date = _value;
-        
+
         if (date == null) {
             return;
         }
-        
+
         var year = date.getFullYear();
         var month = date.getMonth();
-        var day = date.getDate();
-        
+
         var startDay:Int = new Date(year, month, 1, 0, 0, 0).getDay();
         var endDay:Int = DateUtils.getEndDay(month, year);
-        
+
         for (child in _component.childComponents) {
             child.opacity = .3;
             child.removeClass("calendar-off-day");
@@ -107,10 +106,10 @@ private class DateBehaviour extends DataBehaviour {
             child.removeClass("calendar-day-selected");
             child.removeClass(":hover"); // bit of a hack, kinda, when use in a dropdown, it never gets the mouseout as the calendar is removed
         }
-        
+
         var prevMonth = DateUtils.previousMonth(date);
         var last = DateUtils.getEndDay(prevMonth.getMonth(), prevMonth.getFullYear());
-        
+
         var n = (startDay - 1);
         for (i in 0...(startDay)) {
             var item = _component.childComponents[n];
@@ -119,7 +118,7 @@ private class DateBehaviour extends DataBehaviour {
             item.text = "" + last;
             last--;
         }
-        
+
         var selectedDate:Date = cast(_component, Calendar).selectedDate;
         if (selectedDate == null) {
             selectedDate = Date.now();
@@ -134,10 +133,10 @@ private class DateBehaviour extends DataBehaviour {
             if (i + 1 == selectedDate.getDate() && month == selectedDate.getMonth() && year == selectedDate.getFullYear()) {
                 item.addClass("calendar-day-selected");
             }
-            
+
             last = i + startDay;
         }
-        
+
         last++;
         var n:Int = 0;
         for (i in last..._component.childComponents.length) {
@@ -146,9 +145,9 @@ private class DateBehaviour extends DataBehaviour {
             item.text = "" + (n + 1);
             n++;
         }
-        
+
         _component.registerInternalEvents(true);
-        
+
         _component.dispatch(new CalendarEvent(CalendarEvent.DATE_CHANGE));
     }
 }
@@ -170,62 +169,62 @@ private class DateUtils {
                 endDay = 30;
             default:
                 endDay = 31;
-                    
+
         }
         return endDay;
     }
-    
+
     public static function previousMonth(date:Date):Date {
         var year = date.getFullYear();
         var month = date.getMonth();
         var day = date.getDate();
-        
-		month--;
-		if (month < 0) {
-			month = 11;
-			year--;
-		}
-		day = cast(Math.min(day, getEndDay(month, year)), Int);
-		date = new Date(year, month, day, 0, 0, 0);
+
+        month--;
+        if (month < 0) {
+            month = 11;
+            year--;
+        }
+        day = cast(Math.min(day, getEndDay(month, year)), Int);
+        date = new Date(year, month, day, 0, 0, 0);
         return date;
     }
-    
+
     public static function nextMonth(date:Date):Date {
         var year = date.getFullYear();
         var month = date.getMonth();
         var day = date.getDate();
-        
-		month++;
-		if (month > 11) {
-			month = 0;
-			year++;
-		}
-		day = cast(Math.min(day, getEndDay(month, year)), Int);
-		date = new Date(year, month, day, 0, 0, 0);
+
+        month++;
+        if (month > 11) {
+            month = 0;
+            year++;
+        }
+        day = cast(Math.min(day, getEndDay(month, year)), Int);
+        date = new Date(year, month, day, 0, 0, 0);
         return date;
     }
-	
-	public static function previousYear(date:Date):Date {
-		var year = date.getFullYear();
+
+    public static function previousYear(date:Date):Date {
+        var year = date.getFullYear();
         var month = date.getMonth();
         var day = date.getDate();
-        
-		year--;
-		day = cast(Math.min(day, getEndDay(month, year)), Int);
-		date = new Date(year, month, day, 0, 0, 0);
+
+        year--;
+        day = cast(Math.min(day, getEndDay(month, year)), Int);
+        date = new Date(year, month, day, 0, 0, 0);
         return date;
-	}
-	
-	public static function nextYear(date:Date):Date {
-		var year = date.getFullYear();
+    }
+
+    public static function nextYear(date:Date):Date {
+        var year = date.getFullYear();
         var month = date.getMonth();
         var day = date.getDate();
-        
-		year++;
-		day = cast(Math.min(day, getEndDay(month, year)), Int);
-		date = new Date(year, month, day, 0, 0, 0);
+
+        year++;
+        day = cast(Math.min(day, getEndDay(month, year)), Int);
+        date = new Date(year, month, day, 0, 0, 0);
         return date;
-	}
+    }
 }
 
 //***********************************************************************************************************
@@ -240,13 +239,13 @@ private class Events extends haxe.ui.events.Events {
             }
         }
     }
-    
+
     public override function unregister() {
         for (child in _target.childComponents) {
             child.unregisterEvent(MouseEvent.CLICK, onDayClicked);
         }
     }
-    
+
     private function onDayClicked(event:MouseEvent) {
         var calendar:Calendar = cast(_target, Calendar);
         var day:Int = Std.parseInt(event.target.text);
@@ -261,15 +260,15 @@ private class Events extends haxe.ui.events.Events {
 //***********************************************************************************************************
 private class Builder extends CompositeBuilder {
     private var _calendar:Calendar;
-    
+
     public function new(calendar:Calendar) {
         super(calendar);
         _calendar = calendar;
     }
-    
+
     public override function create() {
         _calendar.columns = 7; // this is really strange, this does work here!
-        
+
         for (i in 0...6) {
             for (j in 0...7) {
                 var item = new Button();
@@ -277,7 +276,7 @@ private class Builder extends CompositeBuilder {
                 _calendar.addComponent(item);
             }
         }
-        
+
         //_calendar.syncComponentValidation();
         _calendar.date = Date.now();
     }

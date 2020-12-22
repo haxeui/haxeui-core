@@ -12,12 +12,12 @@ import hscript.Parser;
 class PropertyInfo {
     public var name:String;
     public var script:String;
-    
+
     public var objects:Map<String, Array<String>> = new Map<String, Array<String>>();
-    
+
     public function new() {
     }
-    
+
     public function addObject(objectId:String, objectProp:String) {
         var array:Array<String> = objects.get(objectId);
         if (array == null) {
@@ -32,20 +32,20 @@ class PropertyInfo {
 
 class TargetInfo {
     public var props:Map<String, Map<Component, Array<PropertyInfo>>> = new Map<String, Map<Component, Array<PropertyInfo>>>();
-    
+
     public function new() {
     }
-    
+
     public function addBinding(sourceProp:String, target:Component, targetProp:PropertyInfo) {
         var map:Map<Component, Array<PropertyInfo>> = props.get(sourceProp);
         if (map == null) {
             map = new Map<Component, Array<PropertyInfo>>();
             props.set(sourceProp, map);
         }
-        
+
         var array = map.get(target);
         if (array == null) {
-            array = new Array<PropertyInfo>();
+            array = [];
             map.set(target, array);
         }
 
@@ -55,10 +55,10 @@ class TargetInfo {
 
 class BindingInfo {
     public var props:Map<String, PropertyInfo> = new Map<String, PropertyInfo>();
-    
+
     public function new() {
     }
-    
+
     public function addProp(name:String, script:String):PropertyInfo {
         var p = props.get(name);
         if (p == null) {
@@ -80,17 +80,17 @@ class BindingManager {
         }
         return _instance;
     }
-    
+
     //****************************************************************************************************
     // Instance
     //****************************************************************************************************
     private static var bindingInfo:Map<Component, BindingInfo> = new Map<Component, BindingInfo>();
     private static var targets:Map<String, TargetInfo> = new Map<String, TargetInfo>();
-    
+
     private function new() {
         addStaticClass("theme", ThemeManager.instance);
     }
-    
+
     public function refreshAll() {
         for (c in bindingInfo.keys()) {
             var info:BindingInfo = bindingInfo.get(c);
@@ -100,11 +100,11 @@ class BindingManager {
             }
         }
     }
-    
+
     public function addStaticClass(name:String, c:Dynamic) {
         interp.variables.set(name, c);
     }
-    
+
     public function add(c:Component, prop:String, script:String) {
         if (c.isReady == false) {
             Toolkit.callLater(function() {
@@ -112,14 +112,14 @@ class BindingManager {
             });
             return;
         }
-        
+
         var n1:Int = script.indexOf("${");
         while (n1 != -1) {
             var n2:Int = script.indexOf("}", n1);
             var scriptPart:String = script.substr(n1 + 2, n2 - n1 - 2);
             var parser:Parser = new Parser();
             var expr:Expr = parser.parseString(scriptPart);
-            
+
             var info = bindingInfo.get(c);
             if (info == null) {
                 info = new BindingInfo();
@@ -139,21 +139,21 @@ class BindingManager {
                 }
             }
             handleProp(c, propInfo);
-            
+
             n1 = script.indexOf("${", n2);
         }
     }
-    
+
     public function componentPropChanged(c:Component, prop:String) {
         if (c == null || c.id == null) {
             return;
         }
-        
+
         var targetInfo = targets.get(c.id);
         if (targetInfo == null) {
             return;
         }
-        
+
         var map:Map<Component, Array<PropertyInfo>> = targetInfo.props.get(prop);
         if (map == null) {
             return;
@@ -166,7 +166,7 @@ class BindingManager {
             }
         }
     }
-    
+
     private function handleProp(t:Component, prop:PropertyInfo) {
         var result:Dynamic = interpolate(prop.script, prop, t);
         var currentType = Type.typeof(Reflect.getProperty(t, prop.name));
@@ -179,10 +179,10 @@ class BindingManager {
         } else if (TypeMap.getTypeInfo(t.className, prop.name) == "Variant") {
             result = Variant.fromDynamic(result);
         }
-        
+
         Reflect.setProperty(t, prop.name, result);
     }
-    
+
     private function interpolate(s:String, prop:PropertyInfo, t:Component):String {
         var copy:String = s;
         var n1:Int = copy.indexOf("${");
@@ -191,7 +191,7 @@ class BindingManager {
             var before:String = copy.substr(0, n1);
             var after:String = copy.substr(n2 + 1, copy.length);
             var script:String = copy.substr(n1 + 2, n2 - n1 - 2);
-            
+
             var result:Any = exec(script, prop, t);
 
             copy = before + result + after;
@@ -200,8 +200,8 @@ class BindingManager {
         return copy;
     }
 
-    private var interp = new ScriptInterp();
-    private function exec(script:String, prop:PropertyInfo, t:Component) {
+    private var interp:ScriptInterp = new ScriptInterp();
+    private function exec(script:String, prop:PropertyInfo, t:Component):Dynamic {
         var parser = new Parser();
         var expr = parser.parseString(script);
 
@@ -213,7 +213,7 @@ class BindingManager {
             }
         }
         interp.variables.set("this", t);
-        
+
         var result:Dynamic = null;
         try {
             result = interp.expr(expr);
@@ -224,10 +224,10 @@ class BindingManager {
         }
         return result;
     }
-    
+
     private function findRoot(c:Component):Component {
         var root = c;
-        
+
         var ref = c;
         while (ref != null) {
             root = ref;
@@ -236,10 +236,10 @@ class BindingManager {
             }
             ref = ref.parentComponent;
         }
-        
+
         return root;
     }
-    
+
     private function extractFields(expr:Expr, propInfo:PropertyInfo) {
         switch (expr) {
             case ECall(_, params):
@@ -252,10 +252,10 @@ class BindingManager {
                 propInfo.addObject(objectId, fieldId);
             case EIdent(objectId):
                 propInfo.addObject(objectId, "value");
-            case EBinop(_, e1, e2):    
+            case EBinop(_, e1, e2):
                 extractFields(e1, propInfo);
                 extractFields(e2, propInfo);
-            case EUnop(_, _, e):     
+            case EUnop(_, _, e):
                 extractFields(e, propInfo);
             case EArrayDecl(values):
                 for (v in values) {

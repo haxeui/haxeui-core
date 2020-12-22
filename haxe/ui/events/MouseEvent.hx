@@ -8,7 +8,7 @@ class MouseEvent extends UIEvent {
     public static inline var MOUSE_UP:String = "mouseup";
     public static inline var MOUSE_WHEEL:String = "mousewheel";
     public static inline var CLICK:String = "click";
-	public static inline var DBL_CLICK:String = "doubleclick";
+    public static inline var DBL_CLICK:String = "doubleclick";
     public static inline var RIGHT_CLICK:String = "rightclick";
     public static inline var RIGHT_MOUSE_DOWN:String = "rightmousedown";
     public static inline var RIGHT_MOUSE_UP:String = "rightmouseup";
@@ -30,19 +30,19 @@ class MouseEvent extends UIEvent {
         if (target == null) {
             return null;
         }
-        
+
         return ((screenX * Toolkit.scaleX) - target.screenLeft) / Toolkit.scaleX;
     }
-    
+
     public var localY(get, null):Null<Float>;
     private function get_localY():Null<Float> {
         if (target == null) {
             return null;
         }
-        
+
         return ((screenY * Toolkit.scaleY) - target.screenTop) / Toolkit.scaleY;
     }
-    
+
     public override function clone():MouseEvent {
         var c:MouseEvent = new MouseEvent(this.type);
         c.type = this.type;

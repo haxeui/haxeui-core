@@ -25,7 +25,7 @@ class XMLParser extends ConfigParser {
                 return;
             }
         }
-        
+
         var group = parent.addSection(node.nodeName);
         for (attr in node.attributes()) {
             group.values.set(attr, node.get(attr));

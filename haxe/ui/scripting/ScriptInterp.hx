@@ -63,13 +63,13 @@ class ScriptInterp extends Interp {
                 return Std.parseFloat(m2);
             case "Int":
                 return Std.parseInt(m2);
-            case "String":    
+            case "String":
                 return Std.string(m2);
-            case _:    
+            case _:
         }
         return v;
     }
-    
+
     override function set( o : Dynamic, f : String, v : Dynamic ) : Dynamic {
         if ( o == null ) {
             throw error(EInvalidAccess(f));

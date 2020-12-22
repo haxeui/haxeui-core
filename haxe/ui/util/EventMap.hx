@@ -13,7 +13,7 @@ class EventMap  {
     public function keys():Iterator<String> {
         return _map.keys();
     }
-    
+
     public function add(type:String, listener:UIEvent->Void, priority:Int = 0):Bool { // returns true if a new FunctionArray was created
         if (listener == null) {
             return false;
@@ -55,28 +55,28 @@ class EventMap  {
         }
         return b;
     }
-    
+
     public function invoke(type:String, event:UIEvent, target:Component = null) {
-        if (event.bubble && event.target == null) { 
-            event.target = target; 
-        } 
-        
+        if (event.bubble && event.target == null) {
+            event.target = target;
+        }
+
         var arr:FunctionArray<UIEvent->Void> = _map.get(type);
-		if (arr != null && arr.length > 0) {
+        if (arr != null && arr.length > 0) {
             arr = arr.copy();
-			for (listener in arr) {
-				if (event.canceled) { 
-					break; 
-				} 
-				
-				var c = event.clone();
-				if (c.target == null) {
-					c.target = target; 
-				}
-				listener.callback(c);
-				event.canceled = c.canceled; 
-			}
-		}
+            for (listener in arr) {
+                if (event.canceled) {
+                    break;
+                }
+
+                var c = event.clone();
+                if (c.target == null) {
+                    c.target = target;
+                }
+                listener.callback(c);
+                event.canceled = c.canceled;
+            }
+        }
     }
 
     public function listenerCount(type:String):Int {
@@ -87,7 +87,7 @@ class EventMap  {
         }
         return n;
     }
-    
+
     public function listeners(type:String):FunctionArray<UIEvent->Void> {
         var arr:FunctionArray<UIEvent->Void> = _map.get(type);
         if (arr == null) {

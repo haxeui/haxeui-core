@@ -54,7 +54,7 @@ class XMLParser extends ComponentParser {
             if (component.type == "itemrenderer" && component.parent != null) {
                 component.parent.properties.set("native", "false");
             }
-            
+
             component.validate();
             isComponent = true;
         }

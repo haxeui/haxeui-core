@@ -16,48 +16,48 @@ class ComponentBase extends ComponentBounds {
     // Default impl
     //***********************************************************************************************************
     private function handleCreate(native:Bool) {
-        
+
     }
-    
+
     private function handlePosition(left:Null<Float>, top:Null<Float>, style:Style) {
-        
+
     }
-    
+
     private function handleSize(width:Null<Float>, height:Null<Float>, style:Style) {
-        
+
     }
-    
+
     private function handleReady() {
-        
+
     }
-    
+
     private function handleClipRect(value:Rectangle) {
-        
+
     }
-    
+
     private function handleVisibility(show:Bool) {
-        
+
     }
-    
+
     private function getComponentOffset():Point {
         return new Point(0, 0);
     }
-    
+
     private var isNativeScroller(get, null):Bool;
     private function get_isNativeScroller():Bool {
         return false;
     }
-    
+
     private function handleFrameworkProperty(id:String, value:Any) {
-        
+
     }
-    
+
     //***********************************************************************************************************
     // Display tree
     //***********************************************************************************************************
-    
+
     private function handleSetComponentIndex(child:Component, index:Int) {
-        
+
     }
 
     private function handleAddComponent(child:Component):Component {
@@ -78,17 +78,17 @@ class ComponentBase extends ComponentBounds {
 
     private function applyStyle(style:Style) {
     }
-    
+
     //***********************************************************************************************************
     // Events
     //***********************************************************************************************************
     private override function mapEvent(type:String, listener:UIEvent->Void) {
     }
-    
+
     private override function unmapEvent(type:String, listener:UIEvent->Void) {
-        
+
     }
-    
+
     //***********************************************************************************************************
     // Text related
     //***********************************************************************************************************
@@ -114,7 +114,7 @@ class ComponentBase extends ComponentBounds {
     public override function hasTextDisplay():Bool {
         return (_textDisplay != null);
     }
-    
+
     private var _textInput:TextInput;
     @:dox(group = "Backend")
     public function createTextInput(text:String = null):TextInput {
@@ -127,7 +127,7 @@ class ComponentBase extends ComponentBounds {
         }
         return _textInput;
     }
-    
+
     @:dox(group = "Backend")
     public override function getTextInput():TextInput {
         return createTextInput();
@@ -168,11 +168,11 @@ class ComponentBase extends ComponentBounds {
             _imageDisplay = null;
         }
     }
-    
+
     //***********************************************************************************************************
     // Misc
     //***********************************************************************************************************
-    
+
     @:dox(group = "Backend")
     public function handlePreReposition() {
     }
@@ -180,7 +180,7 @@ class ComponentBase extends ComponentBounds {
     @:dox(group = "Backend")
     public function handlePostReposition() {
     }
-    
+
     //***********************************************************************************************************
     // Properties
     //***********************************************************************************************************
@@ -220,7 +220,7 @@ class ComponentBase extends ComponentBounds {
         }
         return _hasNativeEntry;
     }
-    
+
     private function getNativeConfigProperty(query:String, defaultValue:String = null):String {
         query = 'component[id=${nativeClassName}]${query}';
         return Toolkit.nativeConfig.query(query, defaultValue, this);
@@ -245,14 +245,14 @@ class ComponentBase extends ComponentBounds {
         _className = Type.getClassName(Type.getClass(this));
         return _className;
     }
-    
+
     private var _nativeClassName:String = null;
     private var nativeClassName(get, null):String;
     private function get_nativeClassName():String {
         if (_nativeClassName != null) {
             return _nativeClassName;
         }
-        
+
         var r:Class<Dynamic> = Type.getClass(this);
         while (r != null) {
             var c = Type.getClassName(r);
@@ -266,11 +266,11 @@ class ComponentBase extends ComponentBounds {
                 break;
             }
         }
-        
+
         if (_nativeClassName == null) {
             _nativeClassName = className;
         }
-        
+
         return _nativeClassName;
     }
 }

@@ -29,8 +29,7 @@ class VGrid extends Component {
     }
 
     private function set_columns(value:Int):Int {
-        if(_columns != value)
-        {
+        if (_columns != value) {
             _columns = value;
 
             cast(layout, VerticalGridLayout).columns = value;

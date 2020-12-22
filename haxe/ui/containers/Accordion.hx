@@ -28,13 +28,13 @@ private class PageIndex extends DefaultBehaviour {
         if (value == _value) {
             return;
         }
-        
+
         _value = value;
-        
+
         if (_value == -1) {
             return;
         }
-        
+
         var buttons = _component.findComponents(Button, 1);
         var selectedIndex:Int = value;
         var button = buttons[selectedIndex];
@@ -61,12 +61,12 @@ private class PageIndex extends DefaultBehaviour {
 @:access(haxe.ui.containers.Builder)
 private class Events extends haxe.ui.events.Events {
     private var _accordion:Accordion;
-    
+
     private function new(accordion:Accordion) {
         super(accordion);
         _accordion = accordion;
     }
-    
+
     public override function register() {
         var buttons = _target.findComponents(Button, 1);
         for (button in buttons) {
@@ -75,14 +75,14 @@ private class Events extends haxe.ui.events.Events {
             }
         }
     }
-    
+
     public override function unregister() {
         var buttons = _target.findComponents(Button, 1);
         for (button in buttons) {
             button.unregisterEvent(UIEvent.CHANGE, onButtonChanged);
         }
     }
-    
+
     private function onButtonChanged(event:UIEvent) {
         var buttons = _target.findComponents(Button, 1);
         var button = cast(event.target);
@@ -105,19 +105,19 @@ private class Events extends haxe.ui.events.Events {
 @:access(haxe.ui.core.Component)
 private class Builder extends CompositeBuilder {
     private var _accordion:Accordion;
-    
+
     private function new(accordion:Accordion) {
         super(accordion);
         _accordion = accordion;
     }
-    
+
     public override function onReady() {
         super.onReady();
         for (c in _accordion.childComponents) {
             c.animatable = true;
         }
     }
-    
+
     public override function addComponent(child:Component):Component {
         if (!child.hasClass("accordion-button") && !child.hasClass("accordion-page")) {
             var button = new Button();
@@ -126,7 +126,7 @@ private class Builder extends CompositeBuilder {
             button.toggle = true;
             button.scriptAccess = false;
             _accordion.addComponent(button);
-            
+
             child.animatable = false;
             child.percentWidth = 100;
             child.addClass("accordion-page");
@@ -138,15 +138,15 @@ private class Builder extends CompositeBuilder {
             } else {
                 child.hidden = true;
             }
-            
+
             child.onAnimationEnd = function(e) {
                 if (e.target.hasClass(":collapsed")) {
                     e.target.hidden = true;
                 }
             }
-            
+
             _component.registerInternalEvents(true);
-            
+
             var buttonCount = 0;
             var pageCount = 0;
             for (child in _accordion.childComponents) {
@@ -158,7 +158,7 @@ private class Builder extends CompositeBuilder {
                     } else {
                         child.removeClasses(["first", "last"], false);
                     }
-                    
+
                     buttonCount++;
                 } else if (child.hasClass("accordion-page")) {
                     if (pageCount == 0) {
@@ -168,14 +168,14 @@ private class Builder extends CompositeBuilder {
                     } else {
                         child.removeClasses(["first", "last"], false);
                     }
-                    
+
                     pageCount++;
                 }
             }
-            
+
             return c;
         }
-        
+
         return null;
     }
 }

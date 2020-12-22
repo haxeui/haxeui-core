@@ -1,7 +1,6 @@
 package haxe.ui.debug;
 
 import haxe.ui.core.Component;
-import haxe.ui.debug.CallStackHelper;
 
 class DebugCounter {
     public var name:String;

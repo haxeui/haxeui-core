@@ -8,7 +8,7 @@ import haxe.ui.validation.InvalidationFlags;
 class TextDisplayData {
     public var multiline:Bool = false;
     public var wordWrap:Bool = false;
-    
+
     public function new() {
     }
 }
@@ -48,7 +48,7 @@ class TextDisplay extends TextDisplayImpl implements IValidating {
         } else {
             invalidateComponent(InvalidationFlags.STYLE);
         }
-        
+
         _textStyle = value;
         return value;
     }
@@ -82,7 +82,7 @@ class TextDisplay extends TextDisplayImpl implements IValidating {
         invalidateComponent(InvalidationFlags.DATA);
         return value;
     }
-    
+
     public var left(get, set):Float;
     private function get_left():Float {
         return _left;
@@ -112,7 +112,7 @@ class TextDisplay extends TextDisplayImpl implements IValidating {
     }
 
     public var width(get, set):Float;
-    public function set_width(value:Float):Float {
+    private function set_width(value:Float):Float {
         if (_width == value) {
             return value;
         }
@@ -122,12 +122,12 @@ class TextDisplay extends TextDisplayImpl implements IValidating {
         return value;
     }
 
-    public function get_width():Float {
+    private function get_width():Float {
         return _width;
     }
 
     public var height(get, set):Float;
-    public function set_height(value:Float):Float {
+    private function set_height(value:Float):Float {
         if (_height == value) {
             return value;
         }
@@ -137,7 +137,7 @@ class TextDisplay extends TextDisplayImpl implements IValidating {
         return value;
     }
 
-    public function get_height():Float {
+    private function get_height():Float {
         return _height;
     }
 
@@ -146,7 +146,7 @@ class TextDisplay extends TextDisplayImpl implements IValidating {
         if (_text == null && _htmlText == null) {
             return 0;
         }
-        
+
         if (_text != null && _text.length == 0) {
             return 0;
         }
@@ -167,7 +167,7 @@ class TextDisplay extends TextDisplayImpl implements IValidating {
         if (_text == null && _htmlText == null) {
             return 0;
         }
-        
+
         if (_text != null && _text.length == 0) {
             return 0;
         }
@@ -179,7 +179,7 @@ class TextDisplay extends TextDisplayImpl implements IValidating {
         if (isComponentInvalid() == true) {
             validateComponent();
         }
-        
+
         return _textHeight;
     }
 
@@ -255,11 +255,10 @@ class TextDisplay extends TextDisplayImpl implements IValidating {
 
     public function updateComponentDisplay() {
     }
-    
+
     public function validateComponent(nextFrame:Bool = true) {
-        if (_isValidating == true ||    //we were already validating, the existing validation will continue.
-            isComponentInvalid() == false) {     //if none is invalid, exit.
-                return;
+        if (_isValidating == true || isComponentInvalid() == false) {
+            return;
         }
 
         _isValidating = true;
@@ -267,7 +266,7 @@ class TextDisplay extends TextDisplayImpl implements IValidating {
         validateComponentInternal();
 
         _invalidationFlags.clear();
-        
+
         _isAllInvalid = false;
         _isValidating = false;
     }

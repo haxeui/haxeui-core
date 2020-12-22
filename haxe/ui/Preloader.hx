@@ -15,13 +15,13 @@ class Preloader extends Component {
         id = "preloader";
         styleString = "width:auto;height:auto;";
     }
-    
+
     private override function createChildren() {
         var label = new Label();
         label.text = "Loading";
         addComponent(label);
     }
-    
+
     private override function validateComponentLayout():Bool {
         var b = super.validateComponentLayout();
         if (width > 0 && height > 0) {
@@ -30,27 +30,27 @@ class Preloader extends Component {
         }
         return b;
     }
-    
+
     private var _current:Int;
     private var _max:Int;
     public function progress(current:Int, max:Int) {
         _current = current;
         _max = max;
-        
+
         if (current > 0) {
             var label = findComponent(Label);
-            var text = label.text;// + ".";
+            var text = label.text; // + ".";
             if (StringTools.endsWith(text, "....")) {
                 text = "Loading";
             }
             label.text = text;
         }
     }
-    
+
     public function increment() {
         progress(_current + 1, _max);
     }
-    
+
     public function complete() {
         Screen.instance.removeComponent(this);
     }

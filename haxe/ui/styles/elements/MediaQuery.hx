@@ -1,21 +1,21 @@
 package haxe.ui.styles.elements;
-import haxe.ui.core.Platform;
+
 import haxe.ui.core.Screen;
 import haxe.ui.styles.StyleSheet;
 
 class MediaQuery {
     private var _directives:Array<Directive> = [];
     private var _styleSheet:StyleSheet;
-    
+
     public function new(directives:Array<Directive>, styleSheet:StyleSheet) {
         _directives = directives;
         _styleSheet = styleSheet;
     }
-    
+
     public function addDirective(el:Directive) {
         _directives.push(el);
     }
-    
+
     public var relevant(get, null):Bool;
     private function get_relevant():Bool {
         var b = true;
@@ -35,7 +35,7 @@ class MediaQuery {
                 case "max-aspect-ratio":
                     var sr = Screen.instance.width / Screen.instance.height;
                     b = b && (sr < buildRatio(ValueTools.string(d.value)));
-                case "orientation":    
+                case "orientation":
                     var v = ValueTools.string(d.value);
                     if (v == "landscape") {
                         b = b && (Screen.instance.width > Screen.instance.height);
@@ -52,15 +52,15 @@ class MediaQuery {
         }
         return b;
     }
-    
-    private function buildRatio(s:String) {
+
+    private function buildRatio(s:String):Float {
         var p = s.split("/");
         var w = Std.parseInt(StringTools.trim(p[0]));
         var h = Std.parseInt(StringTools.trim(p[1]));
         return w / h;
     }
-    
-    public var styleSheet(get, null):StyleSheet;    
+
+    public var styleSheet(get, null):StyleSheet;
     private function get_styleSheet():StyleSheet {
         return _styleSheet;
     }

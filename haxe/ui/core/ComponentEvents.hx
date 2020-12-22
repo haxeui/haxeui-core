@@ -11,7 +11,7 @@ class ComponentEvents extends ComponentContainer {
     public function new() {
         super();
     }
-    
+
     private var _internalEvents:Events = null;
     private var _internalEventsClass:Class<Events> = null;
     private function registerInternalEvents(eventsClass:Class<Events> = null, reregister:Bool = false) {
@@ -29,7 +29,7 @@ class ComponentEvents extends ComponentContainer {
         _internalEvents.unregister();
         _internalEvents = null;
     }
-    
+
     //***********************************************************************************************************
     // Events
     //***********************************************************************************************************
@@ -43,7 +43,7 @@ class ComponentEvents extends ComponentContainer {
         if (cast(this, Component).hasClass(":mobile") && (type == MouseEvent.MOUSE_OVER || type == MouseEvent.MOUSE_OUT)) {
             return;
         }
-        
+
         if (disabled == true && isInteractiveEvent(type) == true) {
             if (_disabledEvents == null) {
                 _disabledEvents = new EventMap();
@@ -51,7 +51,7 @@ class ComponentEvents extends ComponentContainer {
             _disabledEvents.add(type, listener, priority);
             return;
         }
-        
+
         if (__events == null) {
             __events = new EventMap();
         }
@@ -79,7 +79,7 @@ class ComponentEvents extends ComponentContainer {
         if (_disabledEvents != null && !_interactivityDisabled) {
             _disabledEvents.remove(type, listener);
         }
-        
+
         if (__events != null) {
             if (__events.remove(type, listener) == true) {
                 unmapEvent(type, _onMappedEvent);
@@ -92,17 +92,17 @@ class ComponentEvents extends ComponentContainer {
     **/
     @:dox(group = "Event related properties and methods")
     public override function dispatch(event:UIEvent) {
-		if (event != null) {
-			if (__events != null) {
-				__events.invoke(event.type, event, cast(this, Component));  // TODO: avoid cast
-			}
-			
-			if (event.bubble == true && event.canceled == false && parentComponent != null) {
-				parentComponent.dispatch(event);
-			}
-		}
+        if (event != null) {
+            if (__events != null) {
+                __events.invoke(event.type, event, cast(this, Component));  // TODO: avoid cast
+            }
+
+            if (event.bubble == true && event.canceled == false && parentComponent != null) {
+                parentComponent.dispatch(event);
+            }
+        }
     }
-    
+
     private function dispatchRecursively(event:UIEvent) {
         dispatch(event);
         for (child in childComponents) {
@@ -120,11 +120,11 @@ class ComponentEvents extends ComponentContainer {
         MouseEvent.MOUSE_UP, MouseEvent.MOUSE_WHEEL, MouseEvent.CLICK, MouseEvent.DBL_CLICK, KeyboardEvent.KEY_DOWN,
         KeyboardEvent.KEY_UP
     ];
-    
+
     private function isInteractiveEvent(type:String):Bool {
         return INTERACTIVE_EVENTS.indexOf(type) != -1;
     }
-    
+
     private var _interactivityDisabled:Bool = false;
     private var _interactivityDisabledCounter:Int = 0;
     private function disableInteractivity(disable:Bool, recursive:Bool = true, updateStyle:Bool = false) { // You might want to disable interactivity but NOT actually disable visually
@@ -133,7 +133,7 @@ class ComponentEvents extends ComponentContainer {
         } else {
             _interactivityDisabledCounter--;
         }
-        
+
         if (_interactivityDisabledCounter > 0 && _interactivityDisabled == false) {
             _interactivityDisabled = true;
             if (updateStyle == true) {
@@ -173,14 +173,14 @@ class ComponentEvents extends ComponentContainer {
                 _disabledEvents = null;
             }
         }
-        
+
         if (recursive == true) {
             for (child in childComponents) {
                 child.disableInteractivity(disable, recursive, updateStyle);
             }
         }
     }
-    
+
     private function unregisterEvents() {
         if (__events != null) {
             var copy:Array<String> = [];
@@ -201,11 +201,11 @@ class ComponentEvents extends ComponentContainer {
             }
         }
     }
-    
+
     private function mapEvent(type:String, listener:UIEvent->Void) {
     }
-    
+
     private function unmapEvent(type:String, listener:UIEvent->Void) {
-        
+
     }
 }

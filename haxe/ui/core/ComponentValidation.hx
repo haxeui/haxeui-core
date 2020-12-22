@@ -1,4 +1,5 @@
 package haxe.ui.core;
+
 import haxe.ui.validation.InvalidationFlags;
 import haxe.ui.validation.ValidationManager;
 
@@ -10,7 +11,7 @@ class ComponentValidation extends ComponentEvents {
     private var _isInitialized:Bool = false;
     private var _isDisposed:Bool = false;
     private var _invalidateCount:Int = 0;
-    
+
     private var _depth:Int = -1;
     @:dox(group = "Internal")
     public var depth(get, set):Int;
@@ -26,7 +27,7 @@ class ComponentValidation extends ComponentEvents {
 
         return value;
     }
-    
+
     /**
      Check if the component is invalidated with some `flag`.
     **/
@@ -46,7 +47,7 @@ class ComponentValidation extends ComponentEvents {
 
         return _invalidationFlags.exists(flag);
     }
-    
+
     /**
      Invalidate this components with the `InvalidationFlags` indicated. If it hasn't parameter then the component will be invalidated completely.
     **/
@@ -101,7 +102,7 @@ class ComponentValidation extends ComponentEvents {
         _invalidateCount = 0;
         ValidationManager.instance.add(cast(this, Component)); // TODO: avoid cast
     }
-    
+
     /**
      Invalidate the data of this component
     **/
@@ -109,7 +110,7 @@ class ComponentValidation extends ComponentEvents {
     public inline function invalidateComponentData() {
         invalidateComponent(InvalidationFlags.DATA);
     }
-    
+
     /**
      Invalidate this components layout, may result in multiple calls to `invalidateDisplay` and `invalidateLayout` of its children
     **/
@@ -120,7 +121,7 @@ class ComponentValidation extends ComponentEvents {
         }
         invalidateComponent(InvalidationFlags.LAYOUT);
     }
-    
+
     /**
      Invalidate the position of this component
     **/
@@ -128,7 +129,7 @@ class ComponentValidation extends ComponentEvents {
     public inline function invalidateComponentPosition() {
         invalidateComponent(InvalidationFlags.POSITION);
     }
-    
+
     /**
      Invalidate the visible aspect of this component
     **/
@@ -136,7 +137,7 @@ class ComponentValidation extends ComponentEvents {
     public inline function invalidateComponentDisplay() {
         invalidateComponent(InvalidationFlags.DISPLAY);
     }
-    
+
     /**
      Invalidate and recalculate this components style, may result in a call to `invalidateDisplay`
     **/
@@ -169,9 +170,9 @@ class ComponentValidation extends ComponentEvents {
 
         validateComponentInternal(nextFrame);
         validateInitialSize(isInitialized);
-        
+
         _invalidationFlags.clear();
-        
+
         _isAllInvalid = false;
 
         for (flag in _delayedInvalidationFlags.keys()) {
@@ -182,7 +183,7 @@ class ComponentValidation extends ComponentEvents {
             }
         }
         _delayedInvalidationFlags.clear();
-        
+
         _isValidating = false;
     }
 
@@ -197,14 +198,14 @@ class ComponentValidation extends ComponentEvents {
         invalidateComponent();
         syncComponentValidation(false);
     }
-    
+
     /**
      Validate this component and its children on demand.
     **/
     @:dox(group = "Invalidation related properties and methods")
     public function syncComponentValidation(nextFrame:Bool = true) {
         var count:Int = 0;
-        while(isComponentInvalid()) {
+        while (isComponentInvalid()) {
             validateComponent(nextFrame);
 
             for (child in childComponents) {
@@ -216,7 +217,7 @@ class ComponentValidation extends ComponentEvents {
             }
         }
     }
-    
+
     private function validateComponentInternal(nextFrame:Bool = true) {
         var dataInvalid = isComponentInvalid(InvalidationFlags.DATA);
         var styleInvalid = isComponentInvalid(InvalidationFlags.STYLE);
@@ -259,28 +260,28 @@ class ComponentValidation extends ComponentEvents {
             ValidationManager.instance.addDisplay(cast(this, Component), nextFrame);    //Update the display from all objects at the same time. Avoids UI flashes.
         }
     }
-    
+
     private function initializeComponent() {
-        
+
     }
-    
+
     private function validateInitialSize(isInitialized:Bool) {
-        
+
     }
-    
+
     private function validateComponentData() {
         behaviours.validateData();
     }
-    
+
     private function validateComponentLayout():Bool {
         return false;
     }
-    
+
     private function validateComponentStyle() {
-        
+
     }
-    
+
     private function validateComponentPosition() {
-        
+
     }
 }

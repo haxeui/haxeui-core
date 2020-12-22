@@ -9,7 +9,7 @@ class HorizontalGridLayout extends Layout {
         return _rows;
     }
     private function set_rows(value:Int):Int {
-        if(_rows == value) {
+        if (_rows == value) {
             return value;
         }
 
@@ -29,11 +29,11 @@ class HorizontalGridLayout extends Layout {
         var columnWidths:Array<Float> = calcColumnWidths(size, false);
         var rowHeights:Array<Float> = calcRowHeights(size, false);
 
-        for(columnWidth in columnWidths) {
+        for (columnWidth in columnWidths) {
             size.width -= columnWidth;
         }
 
-        for(rowHeight in rowHeights) {
+        for (rowHeight in rowHeights) {
             size.height -= rowHeight;
         }
 
@@ -59,8 +59,6 @@ class HorizontalGridLayout extends Layout {
         var rowHeights:Array<Float> = calcRowHeights(size, true);
         var explicitWidths:Array<Bool> = calcExplicitWidths();
         var explicitHeights:Array<Bool> = calcExplicitHeights();
-        var totalWidth:Float = 0;
-        var totalHeight:Float = 0;
 
         var rowIndex:Int = 0;
         var columnIndex:Int = 0;
@@ -167,8 +165,8 @@ class HorizontalGridLayout extends Layout {
             columnCount++;
         }
 
-        var columnWidths:Array<Float> = new Array<Float>();
-        for (n in 0...columnCount) {
+        var columnWidths:Array<Float> = [];
+        for (_ in 0...columnCount) {
             columnWidths.push(0);
         }
 
@@ -192,10 +190,7 @@ class HorizontalGridLayout extends Layout {
             }
         }
 
-        if(includePercentage)
-        {
-            var copy = columnWidths.copy();
-
+        if (includePercentage) {
             rowIndex = 0;
             columnIndex = 0;
             for (child in component.childComponents) {
@@ -225,8 +220,8 @@ class HorizontalGridLayout extends Layout {
     }
 
     private function calcRowHeights(usableSize:Size, includePercentage:Bool):Array<Float> {
-        var rowHeights:Array<Float> = new Array<Float>();
-        for (n in 0..._rows) {
+        var rowHeights:Array<Float> = [];
+        for (_ in 0..._rows) {
             rowHeights.push(0);
         }
         var rowIndex:Int = 0;
@@ -250,10 +245,7 @@ class HorizontalGridLayout extends Layout {
             }
         }
 
-        if(includePercentage)
-        {
-            var copy = rowHeights.copy();
-
+        if (includePercentage) {
             rowIndex = 0;
             columnIndex = 0;
             for (child in component.childComponents) {
@@ -291,8 +283,8 @@ class HorizontalGridLayout extends Layout {
         if (visibleChildren % _rows != 0) {
             columnCount++;
         }
-        var explicitWidths:Array<Bool> = new Array<Bool>();
-        for (n in 0...columnCount) {
+        var explicitWidths:Array<Bool> = [];
+        for (_ in 0...columnCount) {
             explicitWidths.push(false);
         }
 
@@ -318,8 +310,8 @@ class HorizontalGridLayout extends Layout {
     }
 
     private function calcExplicitHeights():Array<Bool> {
-        var explicitHeights:Array<Bool> = new Array<Bool>();
-        for (n in 0..._rows) {
+        var explicitHeights:Array<Bool> = [];
+        for (_ in 0..._rows) {
             explicitHeights.push(false);
         }
 

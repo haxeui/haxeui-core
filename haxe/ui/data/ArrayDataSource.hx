@@ -58,5 +58,5 @@ class ArrayDataSource<T> extends DataSource<T> {
         ds._array = source;
         return ds;
     }
-    
+
 }

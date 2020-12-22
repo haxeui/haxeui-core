@@ -13,7 +13,7 @@ class Size {
         width = Math.fround(width);
         height = Math.fround(height);
     }
-    
+
     public function toString():String {
         return '[${width}x${height}]';
     }

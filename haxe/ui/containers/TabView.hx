@@ -24,9 +24,9 @@ class TabView extends Component {
     @:behaviour(TabPosition)        public var tabPosition:String;
     @:behaviour(PageCount)          public var pageCount:Int;
     @:behaviour(Closable, false)    public var closable:Bool;
-    @:call(RemovePage)              public function removePage(index:Int):Void;
+    @:call(RemovePage)              public function removePage(index:Int);
     @:call(GetPage)                 public function getPage(index:Int):Component;
-    @:call(RemoveAllPages)          public function removeAllPages():Void;
+    @:call(RemoveAllPages)          public function removeAllPages();
 }
 
 //***********************************************************************************************************
@@ -44,7 +44,7 @@ private class Layout extends DefaultLayout {
         if (component.hasClass(":bottom")) {
             content.left = paddingLeft;
             content.top = paddingTop;
-            
+
             tabs.left = paddingLeft;
             if (tabs.height != 0) {
                 tabs.top = component.height - tabs.height - paddingBottom + marginTop(tabs);
@@ -69,7 +69,7 @@ private class Layout extends DefaultLayout {
 
         var usableSize = usableSize;
         tabs.width = usableSize.width;
-        
+
         if (component.autoHeight == false) {
             content.height = usableSize.height + 1;
         }
@@ -116,7 +116,7 @@ private class PageIndex extends DataBehaviour {
         }
 
         var builder:Builder = cast(_component._compositeBuilder, Builder);
-        
+
         if (_value < 0) {
             return;
         }
@@ -124,7 +124,7 @@ private class PageIndex extends DataBehaviour {
             _value = builder._views.length - 1;
             return;
         }
-        
+
         builder._tabs.selectedIndex = _value;
         var view:Component = builder._views[_value.toInt()];
         if (view != null) {
@@ -142,7 +142,7 @@ private class PageIndex extends DataBehaviour {
         }
 
         _component.dispatch(new UIEvent(UIEvent.CHANGE));
-        
+
     }
 }
 
@@ -156,7 +156,7 @@ private class SelectedPage extends DefaultBehaviour {
         var view:Component = builder._views[tabview.pageIndex];
         return view;
     }
-    
+
     public override function set(value:Variant) {
         var tabview:TabView = cast(_component, TabView);
         var builder:Builder = cast(_component._compositeBuilder, Builder);
@@ -243,12 +243,12 @@ private class RemoveAllPages extends Behaviour {
 @:access(haxe.ui.containers.Builder)
 private class Events extends haxe.ui.events.Events {
     private var _tabview:TabView;
-    
+
     public function new(tabview:TabView) {
         super(tabview);
         _tabview = tabview;
     }
-    
+
     public override function register() {
         var tabs:TabBar = _tabview.findComponent(TabBar, false);
         if (tabs.hasEvent(UIEvent.CHANGE, onTabChanged) == false) {
@@ -261,26 +261,26 @@ private class Events extends haxe.ui.events.Events {
             tabs.registerEvent(UIEvent.CLOSE, onTabClosed);
         }
     }
-    
+
     public override function unregister() {
         var tabs:TabBar = _tabview.findComponent(TabBar, false);
         tabs.unregisterEvent(UIEvent.CHANGE, onTabChanged);
         tabs.unregisterEvent(UIEvent.BEFORE_CLOSE, onBeforeTabClosed);
     }
-    
+
     private function onBeforeTabClosed(event:UIEvent) {
         _tabview.dispatch(event);
     }
-    
+
     private function onTabClosed(event:UIEvent) {
         var builder:Builder = cast(_tabview._compositeBuilder, Builder);
         var view = builder._views[event.data];
         builder._views.remove(view);
         builder._content.removeComponent(view);
-        
+
         _tabview.dispatch(new UIEvent(UIEvent.CLOSE, event.data));
     }
-    
+
     private function onTabChanged(event:UIEvent) {
         var tabs:TabBar = _tabview.findComponent(TabBar, false);
         _tabview.pageIndex = -1;
@@ -296,18 +296,18 @@ private class Events extends haxe.ui.events.Events {
 @:access(haxe.ui.core.Component)
 private class Builder extends CompositeBuilder {
     private var _tabview:TabView;
-    
+
     private var _tabs:TabBar;
     private var _content:Box;
-    
+
     private var _currentView:Component = null;
     private var _views:Array<Component> = [];
-    
+
     public function new(tabview:TabView) {
         super(tabview);
         _tabview = tabview;
     }
-    
+
     public override function create() {
         if (_content == null) {
             _content = new Box();
@@ -316,7 +316,7 @@ private class Builder extends CompositeBuilder {
             _content.layout = LayoutFactory.createFromName("vertical");
             _tabview.addComponent(_content);
         }
-        
+
         if (_tabs == null) {
             _tabs = new TabBar();
             _tabs.id = "tabview-tabs";
@@ -324,11 +324,11 @@ private class Builder extends CompositeBuilder {
             _tabview.addComponent(_tabs);
         }
     }
-    
-    public override function get_numComponents():Null<Int> {
+
+    private override function get_numComponents():Null<Int> {
         return _views.length;
     }
-    
+
     public override function addComponent(child:Component):Component {
         if (child != _content && child != _tabs) {
             var text:String = child.text;
@@ -342,12 +342,12 @@ private class Builder extends CompositeBuilder {
             button.text = text;
             button.icon = icon;
             _tabs.addComponent(button);
-            
+
             return child;
         }
         return null;
     }
-    
+
     public override function addComponentAt(child:Component, index:Int):Component {
         if (child != _content && child != _tabs) {
             var text:String = child.text;
@@ -365,7 +365,7 @@ private class Builder extends CompositeBuilder {
         }
         return null;
     }
-    
+
     private function onPagePropertyChanged(event:UIEvent) {
         if (event.data == "text") {
             var index = _views.indexOf(event.target);
@@ -381,7 +381,7 @@ private class Builder extends CompositeBuilder {
             }
         }
     }
-    
+
     public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
         if (child != _content && child != _tabs) {
             switch _views.indexOf(child) {
@@ -394,16 +394,16 @@ private class Builder extends CompositeBuilder {
         }
         return null;
     }
-    
+
     public override function removeComponentAt(index:Int, dispose:Bool = true, invalidate:Bool = true):Component {
         _views.splice(index, 1);
         return _tabs.removeComponentAt(index, dispose, invalidate);
     }
-    
+
     public override function getComponentIndex(child:Component):Int {
         return _views.indexOf(child);
     }
-    
+
     public override function setComponentIndex(child:Component, index:Int):Component {
         if (child != _content && child != _tabs) {
             switch _views.indexOf(child) {
@@ -417,12 +417,11 @@ private class Builder extends CompositeBuilder {
         }
         return null;
     }
-    
+
     public override function getComponentAt(index:Int):Component {
         return _views[index];
     }
-    
-    
+
     public override function findComponent<T:Component>(criteria:String, type:Class<T>, recursive:Null<Bool>, searchType:String):Null<T> {
         var match = super.findComponent(criteria, type, recursive, searchType);
         if (match == null) {
@@ -433,7 +432,7 @@ private class Builder extends CompositeBuilder {
                 } else {
                     match = view.findComponent(criteria, type, recursive, searchType);
                 }
-                
+
                 if (match != null) {
                     break;
                 }
