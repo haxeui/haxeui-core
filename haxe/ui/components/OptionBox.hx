@@ -34,7 +34,7 @@ private class GroupBehaviour extends DataBehaviour {
 private class SelectedBehaviour extends DataBehaviour {
     public override function validateData() {
         var optionbox:OptionBox = cast(_component, OptionBox);
-        
+
         if (optionbox.componentGroup != null && _value == false) { // dont allow false if no other group selection
             var arr:Array<OptionBox> = OptionBoxGroups.instance.get(optionbox.componentGroup);
             var hasSelection:Bool = false;
@@ -51,7 +51,7 @@ private class SelectedBehaviour extends DataBehaviour {
                 return;
             }
         }
-        
+
         if (optionbox.componentGroup != null && _value == true) { // set all the others in group
             var arr:Array<OptionBox> = OptionBoxGroups.instance.get(optionbox.componentGroup);
             if (arr != null) {
@@ -63,7 +63,6 @@ private class SelectedBehaviour extends DataBehaviour {
             }
         }
 
-        
         var valueComponent:CheckBoxValue = _component.findComponent("optionbox-value", CheckBoxValue);
         if (valueComponent == null) {
             return;
@@ -75,7 +74,7 @@ private class SelectedBehaviour extends DataBehaviour {
         } else {
             valueComponent.removeClass(":selected");
         }
-        
+
     }
 }
 
@@ -114,35 +113,35 @@ class OptionBoxBuilder extends CheckBoxBuilder {
 class OptionBoxGroups { // singleton
     private static var _instance:OptionBoxGroups;
     public static var instance(get, null):OptionBoxGroups;
-    private static function get_instance() {
+    private static function get_instance():OptionBoxGroups {
         if (_instance == null) {
             _instance = new OptionBoxGroups();
         }
         return _instance;
     }
-    
+
     //***********************************************************************************************************
     // Instance methods
     //***********************************************************************************************************
     private var _groups:StringMap<Array<OptionBox>> = new StringMap<Array<OptionBox>>();
     private function new () {
-        
+
     }
-    
+
     public function get(name:String):Array<OptionBox> {
         return _groups.get(name);
     }
-    
+
     public function set(name:String, options:Array<OptionBox>) {
         _groups.set(name, options);
     }
-    
+
     public function add(name:String, optionbox:OptionBox) {
         var arr:Array<OptionBox> = get(name);
         if (arr == null) {
             arr = [];
         }
-        
+
         if (arr.indexOf(optionbox) == -1) {
             arr.push(optionbox);
         }

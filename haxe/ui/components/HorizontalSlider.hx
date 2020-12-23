@@ -15,12 +15,12 @@ class HorizontalSlider extends Slider {
 class HorizontalSliderLayout extends DefaultLayout {
     public override function repositionChildren() {
         super.repositionChildren();
-        
+
         var range:Range = findComponent(Range);
         var rangeValue:Component = range.findComponent("range-value");
         var startThumb:Button = findComponent("start-thumb");
         var endThumb:Button = findComponent("end-thumb");
-        
+
         if (startThumb != null) {
             startThumb.left =  (range.left + rangeValue.left) - (startThumb.width / 2);
         }
@@ -38,11 +38,11 @@ private class Builder extends SliderBuilder {
         super(slider);
         _slider = slider;
     }
-    
+
     private override function createValueComponent():Range {
         return new HorizontalRange();
     }
-    
+
     public override function getStartOffset():Float {
         var start:Float = 0;
         if (_slider.start != null) {

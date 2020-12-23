@@ -1,19 +1,15 @@
 package haxe.ui.components;
 
-import haxe.ui.behaviours.Behaviour;
+import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
-import haxe.ui.behaviours.DataBehaviour;
-import haxe.ui.events.FocusEvent;
 import haxe.ui.core.InteractiveComponent;
-import haxe.ui.events.MouseEvent;
 import haxe.ui.events.Events;
-import haxe.ui.events.UIEvent;
-import haxe.ui.focus.FocusManager;
-import haxe.ui.focus.IFocusable;
+import haxe.ui.events.FocusEvent;
+import haxe.ui.events.MouseEvent;
+import haxe.ui.geom.Size;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.styles.Style;
-import haxe.ui.geom.Size;
 import haxe.ui.util.Variant;
 
 @:composite(Events, Builder, TextFieldLayout)
@@ -94,7 +90,7 @@ private class TextFieldLayout extends DefaultLayout {
         if (icon != null) {
             size.width -= icon.componentWidth + horizontalSpacing;
         }
-        
+
         return size;
     }
 }
@@ -105,7 +101,7 @@ private class TextFieldLayout extends DefaultLayout {
 @:dox(hide) @:noCompletion
 private class PasswordBehaviour extends DataBehaviour {
     public var originalValue:Variant;
-    
+
     public override function validateData() {
         if (originalValue == null) { // TODO: seems like a crappy way to handle placeholder / password
             originalValue = _value;
@@ -126,28 +122,28 @@ private class MaxCharsBehaviour extends DataBehaviour {
 @:dox(hide) @:noCompletion
 private class RestrictCharsBehaviour extends DataBehaviour {
     public var regexp:EReg;
-    
+
     public override function validateData() {
-		var excludeEReg:EReg = ~/\^(.-.|.)/gu;
-		var excludeChars:String = '';
-		
-		var includeChars:String = excludeEReg.map (_value, function (ereg:EReg) {
-			excludeChars += ereg.matched (1);
-			return '';
-		});
-		
-		var testRegexpParts:Array<String> = [];
-		
-		if (includeChars.length > 0) {
-			testRegexpParts.push ('[^$_value]');
-		}
-		
-		if (excludeChars.length > 0) {
-			testRegexpParts.push ('[$excludeChars]');
-		}
-		
-		regexp = new EReg ('(${testRegexpParts.join(' | ')})', 'g');
-        
+        var excludeEReg:EReg = ~/\^(.-.|.)/gu;
+        var excludeChars:String = '';
+
+        var includeChars:String = excludeEReg.map (_value, function (ereg:EReg) {
+            excludeChars += ereg.matched (1);
+            return '';
+        });
+
+        var testRegexpParts:Array<String> = [];
+
+        if (includeChars.length > 0) {
+            testRegexpParts.push ('[^$_value]');
+        }
+
+        if (excludeChars.length > 0) {
+            testRegexpParts.push ('[$excludeChars]');
+        }
+
+        regexp = new EReg ('(${testRegexpParts.join(' | ')})', 'g');
+
         var textfield:TextField = cast(_component, TextField);
         TextFieldHelper.validateText(textfield, textfield.text);
     }
@@ -200,7 +196,7 @@ private class IconBehaviour extends DataBehaviour {
 private class TextFieldHelper {
     public static function validateText(textfield:TextField, text:String) {
         if (text == null) {
-           text = ""; 
+            text = "";
         }
 
         var placeholderVisible:Bool = text.length == 0;
@@ -210,38 +206,36 @@ private class TextFieldHelper {
         if (textfield.maxChars > 0 && text.length > textfield.maxChars && placeholderVisible == false) {
             text = text.substr(0, textfield.maxChars);
         }
-        
+
         if (regexp != null) {
             text = regexp.replace(text, "");
         }
-        
-       if (textfield.placeholder != null) {
-			if (textfield.focus == false)
-			{
-				if (text.length == 0) {
-					text = textfield.placeholder;
-					textfield.password = false;
-					textfield.addClass(":empty");
-				} else if (text != textfield.placeholder) {
-					textfield.password = password;
-					textfield.removeClass(":empty");
-				}
-			} else {
-				textfield.removeClass(":empty");
-				if (text == textfield.placeholder) {
-					text = "";
-				}
-				textfield.password = password;
-			}
-		} else {
+
+        if (textfield.placeholder != null) {
+            if (textfield.focus == false) {
+                if (text.length == 0) {
+                    text = textfield.placeholder;
+                    textfield.password = false;
+                    textfield.addClass(":empty");
+                } else if (text != textfield.placeholder) {
+                    textfield.password = password;
+                    textfield.removeClass(":empty");
+                }
+            } else {
+                textfield.removeClass(":empty");
+                if (text == textfield.placeholder) {
+                    text = "";
+                }
+                textfield.password = password;
+            }
+        } else {
             textfield.password = password;
 
             if (placeholderVisible == true) {
                 textfield.removeClass(":empty");
             }
-		}
+        }
 
-        
         textfield.getTextInput().text = '${text}';
         textfield.invalidateComponentLayout();
     }
@@ -253,12 +247,12 @@ private class TextFieldHelper {
 @:dox(hide) @:noCompletion
 private class Events extends haxe.ui.events.Events {
     private var _textfield:TextField;
-    
+
     public function new(textfield:TextField) {
         super(textfield);
         _textfield = textfield;
     }
-    
+
     public override function register() {
         if (_textfield.getTextInput().data.onChangedCallback == null) {
             _textfield.getTextInput().multiline = false;
@@ -269,23 +263,23 @@ private class Events extends haxe.ui.events.Events {
                 }
             };
         }
-        
+
         registerEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
         registerEvent(FocusEvent.FOCUS_IN, onFocusChange);
         registerEvent(FocusEvent.FOCUS_OUT, onFocusChange);
     }
-    
+
     public override function unregister() {
         _textfield.getTextInput().data.onChangedCallback = null;
         unregisterEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
         unregisterEvent(FocusEvent.FOCUS_IN, onFocusChange);
         unregisterEvent(FocusEvent.FOCUS_OUT, onFocusChange);
     }
-    
+
     private function onMouseDown(event:MouseEvent) { // TODO: this should happen automatically as part of InteractiveComponent (?)
         _textfield.focus = true;
     }
-    
+
     private function onFocusChange(event:FocusEvent) {
         if (_textfield.focus == true) {
             _textfield.getTextInput().focus();
@@ -302,12 +296,12 @@ private class Events extends haxe.ui.events.Events {
 @:dox(hide) @:noCompletion
 private class Builder extends CompositeBuilder {
     private var _textfield:TextField;
-    
+
     public function new(textfield:TextField) {
         super(textfield);
         _textfield = textfield;
     }
-    
+
     public override function applyStyle(style:Style) {
         if (style.icon != null) {
             _textfield.icon = style.icon;

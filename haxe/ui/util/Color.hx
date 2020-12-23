@@ -5,7 +5,7 @@ abstract Color(Int) from Int {
         if (StringTools.startsWith(s, "0x") || StringTools.startsWith(s, "#")) {
             return Std.parseInt("0x" + s.substring(s.length - 6));
         }
-        return switch(s) {
+        return switch (s) {
             case "black":   0x000000;
             case "red":     0xFF0000;
             case "lime":    0x00FF00;
@@ -67,11 +67,11 @@ abstract Color(Int) from Int {
     public inline function set(r:Int, g:Int, b:Int, a:Int):Int {
         return this = ((a & 0xFF) << 24) | ((r & 0xFF) << 16) | ((g & 0xFF) << 8) | (b & 0xFF);
     }
-    
+
     @:to function toInt():Int {
         return this;
     }
-    
+
     @:op(A | B) static inline function or(a:Color, b:Color):Int {
         return a.toInt() | b.toInt();
     }

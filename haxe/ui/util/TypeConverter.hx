@@ -3,7 +3,7 @@ package haxe.ui.util;
 class TypeConverter {
     public static function convert(input:Any):Any {
         var output = input;
-        
+
         // if its a string (which it always will be if coming from markup rather than code), lets try and convert it
         switch (Type.typeof(input)) {
             case TClass(String):
@@ -18,7 +18,7 @@ class TypeConverter {
             default:
                 // do nothing
         }
-        
+
         return output;
     }
 }

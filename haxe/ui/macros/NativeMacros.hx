@@ -11,12 +11,12 @@ import sys.io.File;
 
 class NativeMacros {
     private static var _nativeProcessed:Bool;
-    
+
     macro public static function processNative():Expr {
         if (_nativeProcessed == true) {
             return macro null;
         }
-        
+
         _nativeProcessed = true;
 
         var nativeConfigs:Array<GenericConfig> = loadNativeConfig();
@@ -24,7 +24,7 @@ class NativeMacros {
         for (config in nativeConfigs) {
             MacroHelpers.buildGenericConfigCode(builder, config, "nativeConfig");
         }
-        
+
         return builder.expr;
     }
 

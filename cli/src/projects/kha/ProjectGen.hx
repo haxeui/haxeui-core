@@ -10,76 +10,76 @@ class ProjectGen extends Post {
         super();
         _cleanUp = cleanUp;
     }
-    
+
     public override function execute(params:Params) {
         Sys.setCwd(params.target);
-        
+
         var target = "html5";
         if (Util.mapContains("windows", params.additional)) {
             target = "windows";
         } else if (Util.mapContains("android", params.additional)) {
             target = "android";
         }
-        
+
         var p = new ProcessHelper();
-        
+
         if (target == "html5") {
             Util.copyDir("assets", "temp/kha/assets");
-        
+
             p.run("node", ["Kha/make", "html5", "--to", "temp/kha"]);
-            
+
             File.copy("temp/kha/project-html5.hxml", "kha-html5.hxml");
             Util.copyDir("temp/kha/html5", "build/kha/html5");
             Util.copyDir("temp/kha/html5-resources", "build/kha/html5-resources");
-            
+
             var hxml = new HxmlFile();
             hxml.load("kha-html5.hxml");
             hxml.changeOutput("build/kha/html5");
         } else if (target == "windows") {
             Util.copyDir("assets", "build/kha/assets");
-            
+
             p.run("node", ["Kha/make", "windows", "--to", "build/kha", "--visualstudio", "vs2015"]);
-            
+
             File.copy("build/kha/project-windows.hxml", "kha-windows.hxml");
-            
+
             var hxml = new HxmlFile();
             hxml.load("kha-windows.hxml");
             hxml.changeOutput("build/kha/windows-build/Sources");
         } else if (target == "android") {
             Util.copyDir("assets", "build/kha/assets");
-            
+
             p.run("node", ["Kha/make", "android-native", "--to", "build/kha"]);
-            
+
             File.copy("build/kha/project-android-native.hxml", "kha-android-native.hxml");
 
             var hxml = new HxmlFile();
             hxml.load("kha-android-native.hxml");
             hxml.changeOutput("build/kha/android-native/Sources");
         }
-        
+
         Sys.setCwd(params.cwd);
-        
+
         if (_cleanUp == true) {
             cleanUp(params);
         }
     }
-    
+
     private function cleanUp(params:Params) {
         Sys.setCwd(params.target);
-        
+
         var target = "html5";
         if (Util.mapContains("windows", params.additional)) {
             target = "windows";
         } else if (Util.mapContains("android", params.additional)) {
             target = "android";
         }
-        
+
         if (target == "html5") {
             Util.removeDir("temp");
         } else if (target == "windows") {
-            
+
         }
-        
+
         Sys.setCwd(params.cwd);
     }
 }

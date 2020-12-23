@@ -1,6 +1,5 @@
 package haxe.ui.components;
 
-import haxe.ui.components.Range;
 import haxe.ui.core.Component;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.core.IDirectionalComponent;
@@ -12,7 +11,7 @@ class Progress extends Range implements IDirectionalComponent {
         super();
          behaviours.updateOrder = ["min", "max", "pos", "indeterminate"];
     }
-    
+
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
@@ -20,7 +19,7 @@ class Progress extends Range implements IDirectionalComponent {
     @:clonable @:behaviour(Pos)                public var pos:Float;
     @:clonable @:behaviour(Min)                public var min:Float;
     @:clonable @:value(pos)                    public var value:Dynamic;
-    
+
     //***********************************************************************************************************
     // Overrides
     //***********************************************************************************************************
@@ -38,7 +37,7 @@ private class Pos extends DefaultBehaviour {
         var progress = cast(_component, Progress);
         return progress.end;
     }
-    
+
     public override function set(value:Variant) {
         var progress = cast(_component, Progress);
         progress.end = value;
@@ -59,26 +58,26 @@ private class Indeterminate extends ValueBehaviour {
     public function new(component:Component) {
         super(component);
     }
-    
+
     public override function get():Variant {
         return _value;
     }
-    
+
     public override function set(value:Variant) {
         if (value == _value) {
             return;
         }
-        
+
         super.set(value);
-        
+
         if (value == false) {
             _component.removeClass(":indeterminate");
         } else {
             _component.addClass(":indeterminate");
         }
-        
+
     }
-    
+
     public override function detatch() {
         super.detatch();
         _component.removeClass(":indeterminate");

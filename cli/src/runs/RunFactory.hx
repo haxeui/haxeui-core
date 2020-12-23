@@ -1,16 +1,16 @@
 package runs;
-import projects.ProjectFactory;
+
 import runs.android.AndroidRun;
 
 class RunFactory {
     public static function get(id:String, params:Params):Run {
         var r:Run = null;
-        
+
         var target = "html5";
         if (Util.mapContains("windows", params.additional)) {
             target = "windows";
         }
-        
+
         switch (id) {
             case "android":
                 r = new AndroidRun();
@@ -33,7 +33,7 @@ class RunFactory {
             case "nme":
                 r = new ProcessRun(["nme", "run"]);
         }
-        
+
         return r;
     }
 }

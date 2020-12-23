@@ -9,7 +9,7 @@ import haxe.ui.styles.elements.Directive;
 class Style {
     @:optional public var left:Null<Float>;
     @:optional public var top:Null<Float>;
-    
+
     @:optional public var autoWidth:Null<Bool>;
     @:optional public var width:Null<Float>;
     @:optional public var percentWidth:Null<Float>;
@@ -17,7 +17,7 @@ class Style {
     @:optional public var initialPercentWidth:Null<Float>;
     @:optional public var minWidth:Null<Float>;
     @:optional public var maxWidth:Null<Float>;
-    
+
     @:optional public var autoHeight:Null<Bool>;
     @:optional public var height:Null<Float>;
     @:optional public var percentHeight:Null<Float>;
@@ -25,7 +25,7 @@ class Style {
     @:optional public var initialPercentHeight:Null<Float>;
     @:optional public var minHeight:Null<Float>;
     @:optional public var maxHeight:Null<Float>;
-    
+
     @:optional public var padding(default, set):Null<Float>;
     private function set_padding(value:Null<Float>):Null<Float> {
         paddingTop = value;
@@ -46,14 +46,14 @@ class Style {
 
     @:optional public var horizontalSpacing:Null<Float>;
     @:optional public var verticalSpacing:Null<Float>;
-    
+
     @:optional public var color:Null<Int>;
-    
+
     @:optional public var backgroundColor:Null<Int>;
     @:optional public var backgroundColorEnd:Null<Int>;
     @:optional public var backgroundGradientStyle:Null<String>;
     @:optional public var backgroundOpacity:Null<Float>;
-    
+
     @:optional public var backgroundImage:Null<String>;
     @:optional public var backgroundImageRepeat:Null<String>;
 
@@ -66,7 +66,7 @@ class Style {
     @:optional public var backgroundImageSliceLeft:Null<Float>;
     @:optional public var backgroundImageSliceBottom:Null<Float>;
     @:optional public var backgroundImageSliceRight:Null<Float>;
-    
+
     @:optional public var borderColor:Null<Int>;
     @:optional public var borderTopColor:Null<Int>;
     @:optional public var borderLeftColor:Null<Int>;
@@ -91,14 +91,14 @@ class Style {
     @:optional public var borderRadiusBottomRight:Null<Float>;
     @:optional public var borderOpacity:Null<Float>;
     @:optional public var borderStyle:Null<String>;
-    
+
     @:optional public var icon:Null<String>;
     @:optional public var iconPosition:Null<String>;
-    
+
     @:optional public var horizontalAlign:Null<String>;
     @:optional public var verticalAlign:Null<String>;
     @:optional public var textAlign:Null<String>;
-    
+
     @:optional public var opacity:Null<Float>;
     @:optional public var clip:Null<Bool>;
     @:optional public var native:Null<Bool>;
@@ -108,34 +108,34 @@ class Style {
     @:optional public var fontBold:Null<Bool>;
     @:optional public var fontUnderline:Null<Bool>;
     @:optional public var fontItalic:Null<Bool>;
-    
+
     @:optional public var cursor:Null<String>;
     @:optional public var hidden:Null<Bool>;
-    
+
     @:optional public var filter:Array<Filter>;
     @:optional public var backdropFilter:Array<Filter>;
-    
+
     @:optional public var resource:String;
-    
+
     @:optional public var animationName:Null<String>;
     @:optional public var animationOptions:AnimationOptions;
-    
+
     @:optional public var mode:String;
     @:optional public var pointerEvents:String;
-    
+
     @:optional public var contentType:String;
     // public function new() {}
-    
+
     public function mergeDirectives(map:Map<String, Directive>) {
         for (key in map.keys()) {
             var v = map.get(key);
-            
+
             switch (key) {
                 case "left":
                     left = ValueTools.calcDimension(v.value);
                 case "top":
                     top = ValueTools.calcDimension(v.value);
-                    
+
                 case "width":
                     autoWidth = ValueTools.constant(v.value, "auto");
                     width = ValueTools.calcDimension(v.value);
@@ -147,7 +147,7 @@ class Style {
                     minWidth = ValueTools.calcDimension(v.value);
                 case "max-width":
                     maxWidth = ValueTools.calcDimension(v.value);
-                    
+
                 case "height":
                     autoHeight = ValueTools.constant(v.value, "auto");
                     height = ValueTools.calcDimension(v.value);
@@ -159,7 +159,7 @@ class Style {
                     minHeight = ValueTools.calcDimension(v.value);
                 case "max-height":
                     maxHeight = ValueTools.calcDimension(v.value);
-                    
+
                 case "padding-top":
                     paddingTop = ValueTools.calcDimension(v.value);
                 case "padding-left":
@@ -182,13 +182,13 @@ class Style {
                     horizontalSpacing = ValueTools.calcDimension(v.value);
                 case "vertical-spacing":
                     verticalSpacing = ValueTools.calcDimension(v.value);
-                    
+
                 case "color":
                     color = ValueTools.int(v.value);
-                    
+
                 case "background-color":
                     switch (v.value) {
-                        default:    
+                        default:
                             backgroundColor = ValueTools.int(v.value);
                             if (map.exists("background-color-end")) {
                                 backgroundColorEnd = ValueTools.int(map.get("background-color-end").value);
@@ -207,7 +207,7 @@ class Style {
                     backgroundImage = ValueTools.string(v.value);
                 case "background-image-repeat":
                     backgroundImageRepeat = ValueTools.string(v.value);
-                    
+
                 case "background-image-clip-top":
                     backgroundImageClipTop = ValueTools.calcDimension(v.value);
                 case "background-image-clip-left":
@@ -216,7 +216,7 @@ class Style {
                     backgroundImageClipRight = ValueTools.calcDimension(v.value);
                 case "background-image-clip-bottom":
                     backgroundImageClipBottom = ValueTools.calcDimension(v.value);
-                    
+
                 case "background-image-slice-top":
                     backgroundImageSliceTop = ValueTools.calcDimension(v.value);
                 case "background-image-slice-left":
@@ -225,7 +225,7 @@ class Style {
                     backgroundImageSliceRight = ValueTools.calcDimension(v.value);
                 case "background-image-slice-bottom":
                     backgroundImageSliceBottom = ValueTools.calcDimension(v.value);
-                    
+
                 case "border-color":
                     borderColor = ValueTools.int(v.value);
                 case "border-top-color":
@@ -236,7 +236,7 @@ class Style {
                     borderRightColor = ValueTools.int(v.value);
                 case "border-bottom-color":
                     borderBottomColor = ValueTools.int(v.value);
-                    
+
                 case "border-top-size" | "border-top-width":
                     if (v.value == VNone) {
                         borderTopSize = 0;
@@ -261,7 +261,7 @@ class Style {
                     } else {
                         borderBottomSize = ValueTools.calcDimension(v.value);
                     }
-                    
+
                 case "border-radius":
                     borderRadius = ValueTools.calcDimension(v.value);
                 case "border-top-left-radius":
@@ -272,12 +272,12 @@ class Style {
                     borderRadiusBottomLeft = ValueTools.calcDimension(v.value);
                 case "border-bottom-right-radius":
                     borderRadiusBottomRight = ValueTools.calcDimension(v.value);
-                    
+
                 case "border-opacity":
                     borderOpacity = ValueTools.float(v.value);
                 case "border-style":
                     borderStyle = ValueTools.string(v.value);
-                    
+
                 case "icon":
                     switch (v.value) {
                         case Value.VNone:
@@ -287,17 +287,17 @@ class Style {
                     }
                 case "icon-position":
                     iconPosition = ValueTools.string(v.value);
-                    
+
                 case "horizontal-align":
                     horizontalAlign = ValueTools.string(v.value);
                 case "vertical-align":
                     verticalAlign = ValueTools.string(v.value);
                 case "text-align":
                     textAlign = ValueTools.string(v.value);
-                    
+
                 case "opacity":
                     opacity = ValueTools.float(v.value);
-                    
+
                 case "font-name":
                     fontName = ValueTools.string(v.value);
                 case "font-size":
@@ -308,17 +308,17 @@ class Style {
                     fontUnderline = ValueTools.bool(v.value);
                 case "font-italic":
                     fontItalic = ValueTools.bool(v.value);
-                    
+
                 case "cursor":
                     cursor = ValueTools.string(v.value);
                 case "hidden":
                     hidden = ValueTools.bool(v.value);
-                    
+
                 case "clip":
                     clip = ValueTools.bool(v.value);
                 case "native":
                     native = ValueTools.bool(v.value);
-                    
+
                 case "filter":
                     switch (v.value) {
                         case Value.VCall(f, vl):
@@ -344,7 +344,7 @@ class Style {
                             backdropFilter = null;
                         case _:
                     }
-                    
+
                 case "resource":
                     resource = ValueTools.string(v.value);
                 case "animation-name":
@@ -378,7 +378,7 @@ class Style {
                     switch (v.value) {
                         case VNone:
                             pointerEvents = "none";
-                        case _:    
+                        case _:
                             pointerEvents = ValueTools.string(v.value);
                     }
                 case "content-type":
@@ -393,7 +393,7 @@ class Style {
 
         if (s.left != null) left = s.left;
         if (s.top != null) top = s.top;
-        
+
         if (s.autoWidth != null) autoWidth = s.autoWidth;
         if (s.autoHeight != null) autoHeight = s.autoHeight;
         if (s.verticalSpacing != null) verticalSpacing = s.verticalSpacing;
@@ -407,7 +407,7 @@ class Style {
         if (s.initialPercentWidth != null) initialPercentWidth = s.initialPercentWidth;
         if (s.minWidth != null) minWidth = s.minWidth;
         if (s.maxWidth != null) maxWidth = s.maxWidth;
-        
+
         if (s.height != null) {
             height = s.height;
             autoHeight = false;
@@ -416,7 +416,7 @@ class Style {
         if (s.initialPercentHeight != null) initialPercentHeight = s.initialPercentHeight;
         if (s.minHeight != null) minHeight = s.minHeight;
         if (s.maxHeight != null) maxHeight = s.maxHeight;
-        
+
         if (s.percentWidth != null) {
             percentWidth = s.percentWidth;
             autoWidth = false;
@@ -504,14 +504,14 @@ class Style {
         if (s.animationName != null) animationName = s.animationName;
         if (s.animationOptions != null) {
             createAnimationOptions();
-            if(s.animationOptions.duration != null) animationOptions.duration = s.animationOptions.duration;
-            if(s.animationOptions.delay != null) animationOptions.delay = s.animationOptions.delay;
-            if(s.animationOptions.iterationCount != null) animationOptions.iterationCount = s.animationOptions.iterationCount;
-            if(s.animationOptions.easingFunction != null) animationOptions.easingFunction = s.animationOptions.easingFunction;
-            if(s.animationOptions.direction != null) animationOptions.direction = s.animationOptions.direction;
-            if(s.animationOptions.fillMode != null) animationOptions.fillMode = s.animationOptions.fillMode;
+            if (s.animationOptions.duration != null) animationOptions.duration = s.animationOptions.duration;
+            if (s.animationOptions.delay != null) animationOptions.delay = s.animationOptions.delay;
+            if (s.animationOptions.iterationCount != null) animationOptions.iterationCount = s.animationOptions.iterationCount;
+            if (s.animationOptions.easingFunction != null) animationOptions.easingFunction = s.animationOptions.easingFunction;
+            if (s.animationOptions.direction != null) animationOptions.direction = s.animationOptions.direction;
+            if (s.animationOptions.fillMode != null) animationOptions.fillMode = s.animationOptions.fillMode;
         }
-        
+
         if (s.mode != null) mode = s.mode;
         if (s.pointerEvents != null) pointerEvents = s.pointerEvents;
         if (s.contentType != null) contentType = s.contentType;
@@ -523,8 +523,7 @@ class Style {
 
         if (s.left != left) return false;
         if (s.top != top) return false;
-        
-        
+
         if (s.autoWidth != autoWidth) return false;
         if (s.autoHeight != autoHeight) return false;
         if (s.verticalSpacing != verticalSpacing) return false;
@@ -535,13 +534,13 @@ class Style {
         if (s.initialPercentWidth != initialPercentWidth) return false;
         if (s.minWidth != minWidth) return false;
         if (s.maxWidth != maxWidth) return false;
-        
+
         if (s.height != height) return false;
         if (s.initialHeight != initialHeight) return false;
         if (s.initialPercentHeight != initialPercentHeight) return false;
         if (s.minHeight != minHeight) return false;
         if (s.maxHeight != maxHeight) return false;
-        
+
         if (s.percentWidth != percentWidth) return false;
         if (s.percentHeight != percentHeight) return false;
 
@@ -620,7 +619,7 @@ class Style {
         if (s.resource != resource) return false;
         if (s.animationName != animationName) return false;
         if (animationOptions != null && animationOptions.compareTo(s.animationOptions) == false) return false;
-        
+
         if (s.mode != mode) return false;
         if (s.pointerEvents != pointerEvents) return false;
         if (s.contentType != contentType) return false;

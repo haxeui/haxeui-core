@@ -29,8 +29,7 @@ class HGrid extends Component {
     }
 
     private function set_rows(value:Int):Int {
-        if(_rows != value)
-        {
+        if (_rows != value) {
             _rows = value;
 
             cast(layout, HorizontalGridLayout).rows = value;

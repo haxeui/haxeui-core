@@ -1,5 +1,5 @@
 package commands;
-import descriptors.DescriptorFactory;
+
 import descriptors.InfoFile;
 import projects.Project;
 
@@ -7,7 +7,7 @@ class CreateCommand extends Command {
     public function new() {
         super();
     }
-    
+
     public override function execute(params:Params) {
         if (params.backend == null) {
             Util.log("ERROR: no backend specified\n");
@@ -15,12 +15,12 @@ class CreateCommand extends Command {
             Util.log("    " + Util.backendString(" | "));
             return;
         }
-        
+
         if (Util.isBackend(params.backend) == false) {
             Util.log('ERROR: backend "${params.backend}" not recognized');
             return;
         }
-        
+
         var force = Util.mapContains("force", params.additional, true);
         var flashDevelop = Util.mapContains("flash-develop", params.additional, true);
         if (!flashDevelop) {
@@ -31,11 +31,11 @@ class CreateCommand extends Command {
         // handle name
         //////////////////////////////////////////////////////
         var name:String = Util.name(params);
-        
+
         var info:InfoFile = new InfoFile();
         info.save(params.target);
         info.name = name;
-        
+
         //////////////////////////////////////////////////////
         // handle pacakge / main
         //////////////////////////////////////////////////////
@@ -45,10 +45,10 @@ class CreateCommand extends Command {
             main = pkg.pop();
         }
         //////////////////////////////////////////////////////
-        
+
         var fullMain = pkg.concat([main]).join(".");
         Util.log('Creating haxeui-${params.backend} files for "${fullMain}"');
-        
+
         if (flashDevelop == true) {
             params.backend += "-flash-develop";
         }
@@ -62,16 +62,16 @@ class CreateCommand extends Command {
             "output" => main,
             "fullMain" => fullMain
         ];
-        
+
         if (force == true) {
             templateParams.set("force", "true");
         }
-        
+
         var project = Project.load(params.backend);
         project.execute(templateParams);
         project.executePost(params);
     }
-    
+
     public override function displayHelp() {
         Util.log('Creates project files for given backend\n');
         Util.log('Usage : haxeui create <${Util.backendString(" | ")}> [options]\n');

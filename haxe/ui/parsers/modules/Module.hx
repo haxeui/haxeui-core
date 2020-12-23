@@ -74,7 +74,7 @@ class ModuleThemeEntry {
 class ModuleThemeStyleEntry {
     public var resource:String;
     public var priority:Float = 0;
-    
+
     public function new() {
     }
 }
@@ -83,7 +83,7 @@ class ModuleThemeImageEntry {
     public var id:String;
     public var resource:String;
     public var priority:Float = 0;
-    
+
     public function new() {
     }
 }
@@ -109,7 +109,7 @@ class ModulePropertyEntry {
 class ModulePreloadEntry {
     public var type(default, default):String;
     public var id(default, default):String;
-    
+
     public function new() {
     }
 }

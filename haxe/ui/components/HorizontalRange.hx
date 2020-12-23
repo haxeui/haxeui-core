@@ -24,18 +24,18 @@ class HorizontalRangePosFromCoord extends Behaviour {
         var range = cast(_component, Range);
         var p = cast(pos, Point);
         p.x -= _component.getComponentOffset().x;
-        
+
         var xpos = p.x - range.layout.paddingLeft;
         var ucx = range.layout.usableWidth;
         if (xpos >= ucx) {
             xpos = ucx;
         }
-        
+
         var m:Float = range.max - range.min;
         var d = (ucx / m);
         var v:Float = xpos + (range.start * d);
         var p:Float = v / d;
-        
+
         return p;
     }
 }
@@ -47,18 +47,18 @@ class HorizontalRangePosFromCoord extends Behaviour {
 class HorizontalRangeLayout extends DefaultLayout {
     public override function resizeChildren() {
         super.resizeChildren();
-        
+
         var range:Range = cast(component, Range);
         var value:Component = findComponent('${range.cssName}-value');
         if (value != null) {
             var ucx:Float = usableWidth;
-            
+
             var m:Float = range.max - range.min;
             var d = (ucx / m);
             var startInPixels = (range.start * d) - (range.min * d);
             var endInPixels = (range.end * d) - (range.min * d);
             var cx:Float = Math.fround(endInPixels - startInPixels);
-            
+
             if (cx < 0) {
                 cx = 0;
             } else if (cx > ucx) {
@@ -77,10 +77,10 @@ class HorizontalRangeLayout extends DefaultLayout {
 
     public override function repositionChildren() {
         super.repositionChildren();
-        
+
         var range:Range = cast(component, Range);
         var value:Component = findComponent('${range.cssName}-value');
-        
+
         var ucx:Float = usableWidth;
         var m:Float = range.max - range.min;
         var d = (ucx / m);
@@ -88,5 +88,5 @@ class HorizontalRangeLayout extends DefaultLayout {
         var startInPixels = (range.start * d) - (range.min * d);
         value.left = paddingLeft + startInPixels;
         value.top = paddingTop;
-    }    
+    }
 }

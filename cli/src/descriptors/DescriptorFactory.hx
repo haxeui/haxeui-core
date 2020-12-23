@@ -19,14 +19,14 @@ class DescriptorFactory {
         }
         return d;
     }
-    
+
     public static function find(path:String, order:Array<String> = null):Descriptor {
         var d = null;
-        
+
         if (order == null) {
             order = ["openfl", "nme", "kha", "hxproj", "hxml", "haxeui"];
         }
-        
+
         for (o in order) {
             var temp = get(o);
             if (o != null && temp.find(path) == true) {
@@ -34,7 +34,7 @@ class DescriptorFactory {
                 break;
             }
         }
-        
+
         return d;
     }
 }

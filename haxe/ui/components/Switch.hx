@@ -6,7 +6,6 @@ import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.events.UIEvent;
-import haxe.ui.events.Events;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.HorizontalLayout;
 import haxe.ui.util.Variant;
@@ -43,15 +42,15 @@ private class TextBehaviour extends DataBehaviour {
             label.id = "switch-label";
             label.scriptAccess = false;
             _component.addComponentAt(label, 0);
-            
+
             var spacer = new Spacer(); // TODO: ugly
             spacer.percentWidth = 100;
             _component.addComponentAt(spacer, 1);
-            
+
             _component.invalidateComponentStyle(true);
-            
+
         }
-        
+
         label.text = _value;
     }
 }
@@ -62,15 +61,15 @@ private class TextBehaviour extends DataBehaviour {
 @:dox(hide) @:noCompletion
 private class Builder extends CompositeBuilder {
     private var _switch:Switch;
-    
+
     private var _button:SwitchButtonSub;
     private var _label:Label;
-    
+
     public function new(s:Switch) {
         super(s);
         _switch = s;
     }
-    
+
     public override function create() {
         if (_button == null) {
             _button = new SwitchButtonSub();
@@ -91,26 +90,26 @@ private class Builder extends CompositeBuilder {
 private class SwitchButtonSub extends InteractiveComponent {
     private var _button:Button;
     private var _label:Label;
-    
+
     private override function createChildren() {
         super.createChildren();
-        
+
         if (_button == null) {
             _label = new Label();
             _label.id = "switch-label";
             _label.addClass("switch-label");
             _label.text = _unselectedText;
             addComponent(_label);
-            
+
             _button = new Button();
             _button.id = "switch-button";
             _button.addClass("switch-button");
             addComponent(_button);
-            
+
             onClick = function(e) {
                 selected = !selected;
             }
-            
+
             var component:Component = new Component();
             component.addClass("switch-button-sub-extra");
             addComponentAt(component, 0);
@@ -133,7 +132,7 @@ private class SwitchButtonSub extends InteractiveComponent {
         invalidateComponentData();
         invalidateComponentLayout();
         _selected = value;
-        
+
         if (_selected == false) {
             _label.text = _unselectedText;
             _label.removeClass(":selected");
@@ -148,7 +147,7 @@ private class SwitchButtonSub extends InteractiveComponent {
 
         var event:UIEvent = new UIEvent(UIEvent.CHANGE);
         dispatch(event);
-        
+
         return value;
     }
 
@@ -164,7 +163,7 @@ private class SwitchButtonSub extends InteractiveComponent {
         }
         return value;
     }
-    
+
     private var _unselectedText:String = "";
     public var unselectedText(get, set):String;
     private function get_unselectedText():String {
@@ -177,7 +176,7 @@ private class SwitchButtonSub extends InteractiveComponent {
         }
         return value;
     }
-    
+
     private var _pos:Float = 0;
     public var pos(get, set):Float;
     private function get_pos():Float {
@@ -187,10 +186,10 @@ private class SwitchButtonSub extends InteractiveComponent {
         if (_pos == value) {
             return value;
         }
-        
+
         _pos = value;
         invalidateComponentLayout();
-        
+
         return value;
     }
 }
@@ -207,28 +206,27 @@ private class SwitchButtonLayout extends DefaultLayout {
         if (button == null || label == null) {
             return;
         }
-        
+
         button.top = paddingTop;
         label.top = (component.componentHeight / 2) - (label.componentHeight / 2);
-        
-        if(switchComp.selected == true) {
+
+        if (switchComp.selected == true) {
             label.left = (button.componentWidth / 2) - (label.componentWidth / 2);
         } else {
             label.left = button.left + button.componentWidth + (button.componentWidth / 2) - (label.componentWidth / 2);
         }
-        
+
         var ucx:Float = usableWidth - button.width;
         var min = 0;
         var max = 100;
         var x = (switchComp.pos - min) / (max - min) * ucx;
 
         button.left = paddingLeft + x;
-        
-        
+
         var extra:Component = switchComp.findComponent("switch-button-sub-extra", "css");
         if (extra != null) {
             extra.top = (_component.height / 2) - (extra.height / 2);
         }
-        
+
     }
 }

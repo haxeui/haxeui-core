@@ -14,14 +14,14 @@ class KeyFrame {
 
     public function new() {
     }
-    
+
     public function stop() {
         if (_actuator != null) {
             _actuator.stop();
             _actuator = null;
         }
     }
-    
+
     public function run(target:Dynamic, cb:Void->Void) {
         if (_actuator != null) {
             return;

@@ -18,7 +18,7 @@ class FunctionArray<T> {
 
     public function push(x:T, priority:Int = 0):Int {
         var listener:Listener<T> = new Listener(x, priority);
-        for(i in 0..._array.length) {
+        for (i in 0..._array.length) {
             if (_array[i].priority < priority) {
                 _array.insert(i, listener);
                 return i;

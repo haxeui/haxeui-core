@@ -43,7 +43,7 @@ private class IconBehaviour extends DataBehaviour {
         if (_value == null || _value.isNull) {
             return;
         }
-        
+
         var icon:Image = _component.findComponent("menuitem-icon", true);
         if (icon == null) {
             icon = new Image();
@@ -86,16 +86,16 @@ private class Events extends haxe.ui.events.Events {
             registerEvent(MouseEvent.MOUSE_OUT, onMouseOut);
         }
     }
-    
+
     public override function unregister() {
         unregisterEvent(MouseEvent.MOUSE_OVER, onMouseOver);
         unregisterEvent(MouseEvent.MOUSE_OUT, onMouseOut);
-    }   
-    
+    }
+
     private function onMouseOver(event:MouseEvent) {
         _target.addClass(":hover", true, true);
     }
-    
+
     private function onMouseOut(event:MouseEvent) {
         _target.removeClass(":hover", true, true);
     }
@@ -109,23 +109,23 @@ private class Events extends haxe.ui.events.Events {
 private class Builder extends CompositeBuilder {
     public override function create() {
         super.create();
-        
+
         var box = new Box();
         box.percentWidth = 100;
         box.verticalAlign = "center";
-        
+
         var label = new Label();
         label.id = "menuitem-label";
         label.styleNames = "menuitem-label";
         label.scriptAccess = false;
         box.addComponent(label);
-        
+
         var label = new Label();
         label.id = "menuitem-shortcut-label";
         label.styleNames = "menuitem-shortcut-label";
         label.scriptAccess = false;
         box.addComponent(label);
-        
+
         _component.addComponent(box);
     }
 }

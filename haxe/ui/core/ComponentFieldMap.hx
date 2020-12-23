@@ -5,7 +5,7 @@ class ComponentFieldMap {
         "group" => "componentGroup",
         "contentLayout" => "contentLayoutName"
     ];
-    
+
     public static inline function mapField(name:String):String {
         if (MAP.exists(name)) {
             return MAP.get(name);

@@ -5,11 +5,10 @@ import haxe.macro.ExprTools;
 
 class CodeBuilder {
     public var expr:Expr = null;
-    
+
     public function new(expr:Expr = null) {
         if (expr == null) {
-            expr = macro {
-            };
+            expr = macro {};
         }
         this.expr = expr;
     }
@@ -38,7 +37,7 @@ class CodeBuilder {
         if (e == null) {
             e = cb.expr;
         }
-        
+
         switch (expr.expr) {
             case EBlock(el):
                 switch (where) {
@@ -60,15 +59,15 @@ class CodeBuilder {
                     case Pos(pos):
                         el.insert(pos, e);
                 }
-            case _:    
+            case _:
                 throw "NOT IMPL! - " + expr;
                 return;
         }
     }
-    
+
     private function isLastLineReturn():Bool {
         var r = false;
-        
+
         switch (expr.expr) {
             case EBlock(el):
                 var l = el[el.length - 1];
@@ -76,17 +75,17 @@ class CodeBuilder {
                     switch (l.expr) {
                         case EReturn(_):
                             r = true;
-                        case _:    
+                        case _:
                     }
                 }
-            case _:    
+            case _:
                 trace("NOT IMPL!");
         }
-        
+
         return r;
     }
-    
-    public function toString() {
+
+    public function toString():String {
         return ExprTools.toString(expr);
     }
 }

@@ -1,5 +1,4 @@
 package haxe.ui.events;
-import haxe.ui.events.UIEvent;
 
 class ValidationEvent extends UIEvent {
     public static inline var START:String = "ValidationStart";

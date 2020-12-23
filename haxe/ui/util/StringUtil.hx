@@ -27,18 +27,18 @@ class StringUtil {
         return r;
     }
 
-    public static function toDashes(s:String, toLower:Bool = true) {
+    public static function toDashes(s:String, toLower:Bool = true):String {
         var s = ~/([a-zA-Z])(?=[A-Z])/g.map(s, function(re:EReg):String {
             return '${re.matched(1)}-' ;
         });
-        
+
         if (toLower == true) {
             s = s.toLowerCase();
         }
-        
+
         return s;
     }
-    
+
     public static function replaceVars(s:String, params:Map<String, Dynamic>):String {
         if (params != null) {
             for (k in params.keys()) {
@@ -47,28 +47,28 @@ class StringUtil {
         }
         return s;
     }
-    
+
     public static function rpad(s:String, count:Int, c:String = " "):String {
         for (i in 0...count) {
             s += c;
         }
         return s;
     }
-    
+
     public static function padDecimal(v:Float, precision:Null<Int>):String {
         var s = Std.string(v);
         if (precision == null || precision <= 0) {
             return s;
         }
-        
+
         var n = s.indexOf(".");
         if (n == -1) {
             n = s.length;
             s += ".";
         }
-        
+
         var delta = precision - (s.length - n - 1);
-        
+
         return rpad(s, delta, "0");
     }
 }

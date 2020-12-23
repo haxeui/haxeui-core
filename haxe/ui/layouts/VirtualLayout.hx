@@ -106,7 +106,7 @@ class VirtualLayout extends ScrollViewLayout {
 
     private var _lastItemRenderer:ItemRenderer = null;
     private function refreshNonVirtualData() {
-        
+
         var comp:IVirtualContainer = cast(_component, IVirtualContainer);
         if (comp.itemRenderer != _lastItemRenderer) {
             _lastItemRenderer = comp.itemRenderer;
@@ -162,7 +162,7 @@ class VirtualLayout extends ScrollViewLayout {
             contents.removeAllComponents();
             _rendererPool = [];
         }
-        
+
         removeInvisibleRenderers();
         calculateRangeVisible();
         updateScroll();
@@ -313,6 +313,6 @@ class VirtualLayout extends ScrollViewLayout {
     }
 
     private inline function isIndexVisible(index:Int):Bool {
-        return index >= _firstIndex && index <=_lastIndex;
+        return index >= _firstIndex && index <= _lastIndex;
     }
 }

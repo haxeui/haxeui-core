@@ -10,7 +10,7 @@ class DataBehaviour extends ValueBehaviour {
         if (value == get()) {
             return;
         }
-        
+
         _value = value;
         invalidateData();
     }
@@ -26,7 +26,7 @@ class DataBehaviour extends ValueBehaviour {
         _dataInvalid = true;
         _component.invalidateComponentData();
     }
-    
+
     private function validateData() {
     }
 }

@@ -5,7 +5,7 @@ import installs.kha.KhaInstall;
 class InstallFactory {
     public static function get(id:String):Install {
         var i:Install = null;
-        
+
         switch (id) {
             case "openfl":
                 i = new HaxeLibInstall(["haxeui-openfl", "openfl", "lime"]);
@@ -17,12 +17,12 @@ class InstallFactory {
                 i = new HaxeLibInstall(["haxeui-hxwidgets", "hxWidgets", "hxcpp"]);
             case "pixijs":
                 i = new HaxeLibInstall(["haxeui-pixijs"]);
-            case "kha": 
+            case "kha":
                 i = new KhaInstall();
             case "winforms":
                 i = new HaxeLibInstall(["haxeui-winforms", "hxcs"]);
         }
-        
+
         return i;
     }
 }

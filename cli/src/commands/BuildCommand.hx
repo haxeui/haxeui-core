@@ -6,7 +6,7 @@ class BuildCommand extends Command {
     public function new() {
         super();
     }
-    
+
     public override function execute(params:Params) {
         if (params.backend == null) {
             Util.log("ERROR: no backend specified\n");
@@ -14,21 +14,20 @@ class BuildCommand extends Command {
             Util.log("    " + Util.backendString(" | "));
             return;
         }
-        
+
         if (Util.isBackend(params.backend) == false) {
             Util.log('ERROR: backend "${params.backend}" not recognized');
             return;
         }
-        
-        
+
         var build = BuildFactory.get(params.backend);
         if (build == null) {
             Util.log("ERROR: no build found");
         }
-        
+
         build.execute(params);
     }
-    
+
     public override function displayHelp() {
         Util.log('Builds project for given backend\n');
         Util.log('Usage : haxeui build <${Util.backendString(" | ")}> [options]\n');

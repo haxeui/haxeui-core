@@ -2,16 +2,16 @@ package haxe.ui.styles.elements;
 
 class SelectorPart {
     public var parent:SelectorPart = null;
-    
+
     public var pseudoClass:String = null;
     public var className:String = null;
     public var id:String = null;
     public var nodeName:String = null;
     public var direct:Bool = false;
-    
+
     public function new() {
     }
-    
+
     private var _parts:Array<String> = null;
     public var classNameParts(get, null):Array<String>;
     private function get_classNameParts():Array<String> {
@@ -23,11 +23,10 @@ class SelectorPart {
         }
         return _parts;
     }
-    
-    
+
     public function toString():String {
         var sb:StringBuf = new StringBuf();
-        
+
         if (id != null) {
             sb.add("#" + id);
         }
@@ -40,7 +39,7 @@ class SelectorPart {
         if (pseudoClass != null) {
             sb.add(":" + pseudoClass);
         }
-        
+
         return sb.toString();
     }
 }

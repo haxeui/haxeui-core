@@ -1,10 +1,6 @@
 package haxe.ui.styles.animation.util;
 
-import haxe.ui.components.Button;
-import haxe.ui.core.ComponentFieldMap;
 import haxe.ui.core.TypeMap;
-import haxe.ui.styles.animation.util.ColorPropertyDetails;
-import haxe.ui.styles.animation.util.PropertyDetails;
 import haxe.ui.styles.EasingFunction;
 import haxe.ui.util.Color;
 import haxe.ui.util.StringUtil;
@@ -24,7 +20,7 @@ class Actuator<T> {
     //***********************************************************************************************************
     // Helpers
     //***********************************************************************************************************
-    public static function tween<T>(target:T, properties:Dynamic, duration:Float, ?options:ActuatorOptions):Actuator<T> {
+    public static function tween<T>(target:T, properties:Dynamic, duration:Float, options:ActuatorOptions = null):Actuator<T> {
         var actuator = new Actuator<T>(target, properties, duration, options);
         actuator.run();
         return actuator;
@@ -54,7 +50,7 @@ class Actuator<T> {
     **/
     public var delay(default, null):Float = 0;
 
-    public function new(target:T, properties:Dynamic, duration:Float, ?options:ActuatorOptions) {
+    public function new(target:T, properties:Dynamic, duration:Float, options:ActuatorOptions = null) {
         this.target = target;
         this.properties = properties;
         this.duration = duration;
@@ -90,7 +86,7 @@ class Actuator<T> {
             _currentTime = Timer.stamp();
 
             if (delay > 0) {
-                haxe.ui.util.Timer.delay(_nextFrame, Std.int(delay*1000));
+                haxe.ui.util.Timer.delay(_nextFrame, Std.int(delay * 1000));
             } else {
                 new CallLater(_nextFrame);
             }
@@ -117,14 +113,14 @@ class Actuator<T> {
 
         for (p in Reflect.fields(properties)) {
             var componentProperty:String = StyleUtil.styleProperty2ComponentProperty(p);
-            
+
             var end:Dynamic = Reflect.getProperty(properties, p);
             switch (end) {
                 case Value.VDimension(Dimension.PERCENT(v)):
                     componentProperty = "percent" + StringUtil.capitalizeFirstLetter(componentProperty);
                 case _:
             }
-            
+
             var start:Dynamic = Reflect.getProperty(target, componentProperty);
             if (start == null) {
                 switch (end) {
@@ -135,26 +131,26 @@ class Actuator<T> {
                     case _:
                 }
             }
-            
+
             var isVariant = false;
             if (start != null) {
                 switch (start) {
                     case VariantType.VT_String(v):
                         start = v;
                         isVariant = true;
-                    case _:    
+                    case _:
                 }
             }
-            
+
             if (end != null) {
                 switch (end) {
                     case VariantType.VT_String(v):
                         end = v;
                         isVariant = true;
-                    case _:    
+                    case _:
                 }
             }
-            
+
             if (start == null || end == null) {
                 continue;
             }
@@ -174,15 +170,15 @@ class Actuator<T> {
                         _colorPropertyDetails = [];
                     }
                     _colorPropertyDetails.push (details);
-                case Value.VDimension(Dimension.PERCENT(v)):    
+                case Value.VDimension(Dimension.PERCENT(v)):
                     var val:Null<Float> = v;
                     if (val != null) {
                         var details:PropertyDetails<T> = new PropertyDetails(target, componentProperty, start, val - start);
                         _propertyDetails.push (details);
                     }
-                    
-                case Value.VString(v): 
-                    
+
+                case Value.VString(v):
+
                     var startVal:String = start;
                     var endVal:String = ValueTools.string(end);
                     if (endVal.indexOf("[[") != -1) {
@@ -195,11 +191,11 @@ class Actuator<T> {
                         var s = StringTools.replace(startVal, before, "");
                         s = StringTools.replace(s, after, "");
                         var startInt = Std.parseInt(s);
-                        
+
                         var s = StringTools.replace(endVal, before + "[[", "");
                         s = StringTools.replace(s, "]]" + after, "");
                         var endInt = Std.parseInt(s);
-                        
+
                         var details:StringPropertyDetails<T> = new StringPropertyDetails(target, componentProperty, startVal, endVal);
                         details.pattern = before + "[[n]]" + after;
                         details.startInt = startInt;
@@ -221,7 +217,7 @@ class Actuator<T> {
                         _propertyDetails.push(details);
                     } else {
                         var details:PropertyDetails<T> = new PropertyDetails(target, componentProperty, start, end - start);
-                        _propertyDetails.push (details); 
+                        _propertyDetails.push (details);
                     }
             }
         }
@@ -260,7 +256,7 @@ class Actuator<T> {
         for (details in _propertyDetails) {
             Reflect.setProperty(target, details.propertyName, details.start + (details.change * position));
         }
-        
+
         for (details in _stringPropertyDetails) {
             if (details.pattern != null) {
                 var newInt = Std.int(details.startInt + (position * details.changeInt));
@@ -299,10 +295,9 @@ class Actuator<T> {
     }
 }
 
-
 private class Ease {
     public static function get(easingFunction:EasingFunction):Float->Float {
-        return switch(easingFunction) {
+        return switch (easingFunction) {
             case EasingFunction.LINEAR:
                 linear;
             case EasingFunction.EASE, EasingFunction.EASE_IN_OUT:

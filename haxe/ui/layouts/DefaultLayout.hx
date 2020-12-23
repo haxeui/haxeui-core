@@ -5,7 +5,7 @@ import haxe.ui.geom.Size;
 class DefaultLayout extends Layout {
     private var _calcFullWidths:Bool = false;
     private var _calcFullHeights:Bool = false;
-    
+
     public function new() {
         super();
     }
@@ -14,7 +14,7 @@ class DefaultLayout extends Layout {
         var usableSize:Size = usableSize;
         var percentWidth:Float = 100;
         var percentHeight:Float = 100;
-        
+
         var fullWidthValue:Float = 100;
         var fullHeightValue:Float = 100;
         if (_calcFullWidths == true || _calcFullHeights == true) {
@@ -24,7 +24,7 @@ class DefaultLayout extends Layout {
                 if (child.includeInLayout == false) {
                     continue;
                 }
-                
+
                 if (_calcFullWidths == true && child.percentWidth != null && child.percentWidth == 100) {
                     n1++;
                 }
@@ -32,7 +32,7 @@ class DefaultLayout extends Layout {
                     n2++;
                 }
             }
-            
+
             if (n1 > 0) {
                 fullWidthValue = 100 / n1;
             }
@@ -40,7 +40,7 @@ class DefaultLayout extends Layout {
                 fullHeightValue = 100 / n2;
             }
         }
-        
+
         for (child in component.childComponents) {
             if (child.includeInLayout == false) {
                 continue;
@@ -70,7 +70,7 @@ class DefaultLayout extends Layout {
             if (fixedMinHeight(child) && child.percentHeight != null) {
                 percentHeight -= child.percentHeight;
             }
-            
+
             child.resizeComponent(cx, cy);
         }
     }

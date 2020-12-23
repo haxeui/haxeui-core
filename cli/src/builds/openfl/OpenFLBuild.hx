@@ -6,7 +6,7 @@ class OpenFLBuild extends ProcessBuild {
     public function new() {
         super("openfl", ["application.xml"]);
     }
-    
+
     private override function args(params:Params):Array<String> {
         var target = "html5";
         if (Util.mapContains("windows", params.additional)) {

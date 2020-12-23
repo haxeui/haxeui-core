@@ -39,11 +39,11 @@ private class PosBehaviour extends DataBehaviour {
 
         preciseValue = MathUtil.clamp(preciseValue, step.min, step.max);
         step.pos = preciseValue;
-        
+
         var textfield:TextField = _component.findComponent("stepper-textfield", TextField);
         var value = StringUtil.padDecimal(preciseValue, step.precision);
         textfield.text = value;
-        
+
         var event = new UIEvent(UIEvent.CHANGE);
         _component.dispatch(event);
     }
@@ -55,7 +55,7 @@ private class StepBehaviour extends DefaultBehaviour {
         var step:Stepper = _component.findComponent("stepper-step", Stepper);
         return step.step;
     }
-    
+
     public override function set(value:Variant) {
         var step:Stepper = _component.findComponent("stepper-step", Stepper);
         step.step = value;
@@ -68,7 +68,7 @@ private class MinBehaviour extends DefaultBehaviour {
         var step:Stepper = _component.findComponent("stepper-step", Stepper);
         return step.min;
     }
-    
+
     public override function set(value:Variant) {
         var step:Stepper = _component.findComponent("stepper-step", Stepper);
         step.min = value;
@@ -81,7 +81,7 @@ private class MaxBehaviour extends DefaultBehaviour {
         var step:Stepper = _component.findComponent("stepper-step", Stepper);
         return step.max;
     }
-    
+
     public override function set(value:Variant) {
         var step:Stepper = _component.findComponent("stepper-step", Stepper);
         step.max = value;
@@ -94,7 +94,7 @@ private class PrecisionBehaviour extends DefaultBehaviour {
         var step:Stepper = _component.findComponent("stepper-step", Stepper);
         return step.precision;
     }
-    
+
     public override function set(value:Variant) {
         var step:Stepper = _component.findComponent("stepper-step", Stepper);
         step.precision = value;
@@ -107,27 +107,27 @@ private class PrecisionBehaviour extends DefaultBehaviour {
 @:dox(hide) @:noCompletion
 private class Builder extends CompositeBuilder {
     private var _stepper:NumberStepper;
-    
+
     public function new(stepper:NumberStepper) {
         super(stepper);
         _stepper = stepper;
     }
-    
+
     public override function create() {
         _stepper.addClass("textfield");
-        
+
         var textfield = new TextField();
         textfield.addClass("stepper-textfield");
         textfield.id = "stepper-textfield";
-		textfield.restrictChars = "0-9\\-\\.\\,";
+        textfield.restrictChars = "0-9\\-\\.\\,";
         _stepper.addComponent(textfield);
-        
+
         var step = new Stepper();
         step.addClass("stepper-step");
         step.id = "stepper-step";
         _stepper.addComponent(step);
     }
-    
+
     public override function applyStyle(style:Style) {
         var textfield:TextField = _stepper.findComponent(TextField);
         if (textfield != null &&
@@ -147,27 +147,26 @@ private class Builder extends CompositeBuilder {
     }
 }
 
-
 //***********************************************************************************************************
 // Composite Events
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
 private class Events extends haxe.ui.events.Events {
     private var _stepper:NumberStepper;
-    
+
     public function new(stepper:NumberStepper) {
         super(stepper);
         _stepper = stepper;
     }
-    
+
     public override function register() {
         if (!hasEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel)) {
             registerEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
         }
-		if (!_stepper.hasEvent(KeyboardEvent.KEY_DOWN, onKeyDown)) {
+        if (!_stepper.hasEvent(KeyboardEvent.KEY_DOWN, onKeyDown)) {
             _stepper.registerEvent(KeyboardEvent.KEY_DOWN, onKeyDown);
         }
-        
+
         var textfield:TextField = _stepper.findComponent("stepper-textfield", TextField);
         if (!textfield.hasEvent(KeyboardEvent.KEY_UP, onTextFieldKeyUp)) {
             textfield.registerEvent(KeyboardEvent.KEY_UP, onTextFieldKeyUp);
@@ -181,7 +180,7 @@ private class Events extends haxe.ui.events.Events {
         if (!textfield.hasEvent(UIEvent.CHANGE, onTextFieldChange)) {
             textfield.registerEvent(UIEvent.CHANGE, onTextFieldChange);
         }
-        
+
         var step:Stepper = _stepper.findComponent("stepper-step", Stepper);
         if (!step.hasEvent(UIEvent.CHANGE, onStepChange)) {
             step.registerEvent(UIEvent.CHANGE, onStepChange);
@@ -190,44 +189,44 @@ private class Events extends haxe.ui.events.Events {
             step.registerEvent(MouseEvent.MOUSE_DOWN, onStepMouseDown);
         }
     }
-    
+
     public override function unregister() {
         unregisterEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
-		_stepper.unregisterEvent(KeyboardEvent.KEY_DOWN, onKeyDown);
-        
+        _stepper.unregisterEvent(KeyboardEvent.KEY_DOWN, onKeyDown);
+
         var textfield:TextField = _stepper.findComponent("stepper-textfield", TextField);
         textfield.unregisterEvent(KeyboardEvent.KEY_UP, onTextFieldKeyUp);
         textfield.unregisterEvent(FocusEvent.FOCUS_IN, onTextFieldFocusIn);
         textfield.unregisterEvent(FocusEvent.FOCUS_OUT, onTextFieldFocusOut);
         textfield.unregisterEvent(UIEvent.CHANGE, onTextFieldChange);
-        
+
         var step:Stepper = _stepper.findComponent("stepper-step", Stepper);
         step.unregisterEvent(UIEvent.CHANGE, onStepChange);
         step.unregisterEvent(MouseEvent.MOUSE_DOWN, onStepMouseDown);
     }
-	
-	private function onKeyDown(event:KeyboardEvent) {
-		var step:Stepper = _stepper.findComponent("stepper-step", Stepper);
-		if (event.keyCode == 38 || event.keyCode == 39 || event.keyCode == 107) { // ArrowUp, ArrowRight, or add(+)
-			step.increment();
-		}
-		if (event.keyCode == 40 || event.keyCode == 37 || event.keyCode == 109) { // ArrowDown, ArrowLeft, or minus(-)
-			step.deincrement();
-		}
-		if (event.keyCode == 36) { // Home
-			step.pos = step.min;
-		}
-		if (event.keyCode == 35) { // End
-			step.pos = step.max;
-		}
-	}
-    
+
+    private function onKeyDown(event:KeyboardEvent) {
+        var step:Stepper = _stepper.findComponent("stepper-step", Stepper);
+        if (event.keyCode == 38 || event.keyCode == 39 || event.keyCode == 107) { // ArrowUp, ArrowRight, or add(+)
+            step.increment();
+        }
+        if (event.keyCode == 40 || event.keyCode == 37 || event.keyCode == 109) { // ArrowDown, ArrowLeft, or minus(-)
+            step.deincrement();
+        }
+        if (event.keyCode == 36) { // Home
+            step.pos = step.min;
+        }
+        if (event.keyCode == 35) { // End
+            step.pos = step.max;
+        }
+    }
+
     private function onMouseWheel(event:MouseEvent) {
         event.cancel();
-        
+
         var textfield:TextField = _stepper.findComponent("stepper-textfield", TextField);
         textfield.focus = true;
-        
+
         var step:Stepper = _stepper.findComponent("stepper-step", Stepper);
         if (event.delta > 0) {
             step.increment();
@@ -235,12 +234,12 @@ private class Events extends haxe.ui.events.Events {
             step.deincrement();
         }
     }
-    
+
     private function onStepChange(event:UIEvent) {
         var step:Stepper = _stepper.findComponent("stepper-step", Stepper);
         _stepper.pos = step.pos;
     }
-    
+
     private function onStepMouseDown(event:MouseEvent) {
         var textfield:TextField = _stepper.findComponent("stepper-textfield", TextField);
         textfield.focus = true;
@@ -253,11 +252,11 @@ private class Events extends haxe.ui.events.Events {
         }
         event.cancel();
     }
-    
+
     private function onTextFieldFocusIn(event:FocusEvent) {
         _stepper.addClass(":active");
     }
-    
+
     private function onTextFieldFocusOut(event:FocusEvent) {
         _stepper.removeClass(":active");
         var textfield:TextField = _stepper.findComponent("stepper-textfield", TextField);
@@ -268,9 +267,8 @@ private class Events extends haxe.ui.events.Events {
             event.cancel();
         }
     }
-    
+
     private function onTextFieldChange(event:UIEvent) {
-        var step:Stepper = _stepper.findComponent("stepper-step", Stepper);
         var textfield:TextField = _stepper.findComponent("stepper-textfield", TextField);
         var lastChar:String = textfield.text.charAt(textfield.text.length - 1);
         var maxCappedVal:Float = Math.min(Std.parseFloat(textfield.text), _stepper.max);

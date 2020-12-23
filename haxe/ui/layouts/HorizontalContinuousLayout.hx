@@ -70,7 +70,7 @@ class HorizontalContinuousLayout extends HorizontalLayout {
                 row--;
                 dimensions[row].pop();
             }
-            
+
             rc.left = xpos;
             rc.top = ypos;
             dimensions[row].push(rc);

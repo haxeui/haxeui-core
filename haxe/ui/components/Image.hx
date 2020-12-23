@@ -56,11 +56,11 @@ private class ImageLayout extends DefaultLayout {
             var imageDisplay = image.getImageDisplay();
             var maxWidth:Float = usableSize.width;
             var maxHeight:Float = usableSize.height;
-            if(component.autoWidth == true) {
+            if (component.autoWidth == true) {
                 maxWidth = -1;
             }
 
-            if(_component.autoHeight == true) {
+            if (_component.autoHeight == true) {
                 maxHeight = -1;
             }
 
@@ -69,7 +69,7 @@ private class ImageLayout extends DefaultLayout {
 
             if (imageScaleMode != ScaleMode.FILL) {
                 var scale:Float;
-                switch(imageScaleMode) {
+                switch (imageScaleMode) {
                     case ScaleMode.FIT_INSIDE:
                         scale = (scaleW < scaleH) ? scaleW : scaleH;
                     case ScaleMode.FIT_OUTSIDE:
@@ -96,7 +96,7 @@ private class ImageLayout extends DefaultLayout {
             var image:Image = cast(_component, Image);
             var imageDisplay:ImageDisplay = _component.getImageDisplay();
 
-            switch(image.imageHorizontalAlign) {
+            switch (image.imageHorizontalAlign) {
                 case HorizontalAlign.CENTER:
                     imageDisplay.left = (_component.componentWidth - imageDisplay.imageWidth) / 2;  //TODO
 
@@ -107,7 +107,7 @@ private class ImageLayout extends DefaultLayout {
                     imageDisplay.left = paddingLeft;
             }
 
-            switch(image.imageVerticalAlign) {
+            switch (image.imageVerticalAlign) {
                 case VerticalAlign.CENTER:
                     imageDisplay.top = (_component.componentHeight - imageDisplay.imageHeight) / 2;  //TODO
 
@@ -142,9 +142,10 @@ private class ImageLayout extends DefaultLayout {
             var rc:Rectangle = imageDisplay.imageClipRect;
 
             if (imageDisplay.imageWidth > usz.width
-            || imageDisplay.imageHeight > usz.height) {
-                if (rc == null)
+                || imageDisplay.imageHeight > usz.height) {
+                if (rc == null) {
                     rc = new Rectangle();
+                }
 
                 rc.top = paddingLeft;
                 rc.left = paddingTop;
@@ -179,7 +180,7 @@ private class ResourceBehaviour extends DataBehaviour {
                     _component.invalidateComponent();
                     return;
                 }
-                
+
                 var image:Image = cast(_component, Image);
                 var display:ImageDisplay = image.getImageDisplay();
                 if (display != null) {
@@ -203,12 +204,12 @@ private class ResourceBehaviour extends DataBehaviour {
 @:dox(hide) @:noCompletion
 private class Builder extends CompositeBuilder {
     private var _image:Image;
-    
+
     public function new(image:Image) {
         super(image);
         _image = image;
     }
-    
+
     public override function applyStyle(style:Style) {
         if (style.resource != null) {
             _image.resource = style.resource;

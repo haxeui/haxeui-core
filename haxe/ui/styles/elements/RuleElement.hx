@@ -7,37 +7,37 @@ import haxe.ui.styles.Value;
 class RuleElement {
     public var selector:Selector;
     public var directives:Map<String, Directive> = new Map<String, Directive>();
-    
+
     public function new(selector:String, directives:Array<Directive>) {
         this.selector = new Selector(selector);
         //this.directives = directives;
-        
+
         for (d in directives) {
             processDirective(d);
         }
     }
-    
+
     public function addDirective(directive:String, value:Value) {
         var d = new Directive(directive, value);
         processDirective(d);
     }
-    
+
     public function match(d:Component):Bool {
         return ruleMatch(selector.parts[selector.parts.length - 1], d);
     }
-    
-    private static function ruleMatch( c : SelectorPart, d : Component ) {
+
+    private static function ruleMatch( c : SelectorPart, d : Component ):Bool {
         if (c.nodeName == "*") {
             return true;
         }
-        
+
         if (c.pseudoClass != null) {
             var pc = ":" + c.pseudoClass;
             if (d.classes.indexOf(pc) == -1) {
                 return false;
             }
         }
-        
+
         if (c.className != null) {
             for (p in c.classNameParts) {
                 if (d.classes.indexOf(p) == -1) {
@@ -45,18 +45,18 @@ class RuleElement {
                 }
             }
         }
-        
+
         if (c.nodeName != null) {
             var className:String = Type.getClassName(Type.getClass(d)).split(".").pop().toLowerCase();    //TODO - the value can be cached
             if (c.nodeName != className) {
                 return false;
             }
         }
-        
+
         if (c.id != null && c.id != d.id) {
             return false;
         }
-        
+
         if (c.parent != null) {
             if (c.direct == true) {
                 var p = d.parentComponent;
@@ -79,10 +79,10 @@ class RuleElement {
                 }
             }
         }
-        
+
         return true;
     }
-    
+
     private function processDirective(d:Directive) {
         switch (d.directive) {
             case "padding":
@@ -117,13 +117,13 @@ class RuleElement {
                 processComposite(d, ["border-bottom-size", "border-bottom-style", "border-bottom-color"]);
             case "border-right":
                 processComposite(d, ["border-right-size", "border-right-style", "border-right-color"]);
-            case "border-size":    
+            case "border-size":
                 processComposite(d, ["border-top-size", "border-left-size", "border-right-size", "border-bottom-size"]);
-            case "border-color": 
+            case "border-color":
                 processComposite(d, ["border-top-color", "border-left-color", "border-right-color", "border-bottom-color"], true);
-            case "background-image-clip": 
+            case "background-image-clip":
                 processComposite(d, ["background-image-clip-top", "background-image-clip-left", "background-image-clip-bottom", "background-image-clip-right"]);
-            case "background-image-slice":    
+            case "background-image-slice":
                 processComposite(d, ["background-image-slice-top", "background-image-slice-left", "background-image-slice-bottom", "background-image-slice-right"]);
             case "animation":
                 processComposite(d, ["animation-name", "animation-duration", "animation-timing-function", "animation-delay", "animation-iteration-count", "animation-direction", "animation-fill-mode"]);
@@ -146,15 +146,15 @@ class RuleElement {
                 directives.set(d.directive, d);
         }
     }
-    
+
     private function processComposite(d:Directive, parts:Array<String>, duplicate:Bool = false) {
         for (p in parts) {
             directives.remove(p);
         }
-        
+
         switch (d.value) {
             case Value.VConstant(_):
-            case Value.VColor(_):    
+            case Value.VColor(_):
                 if (duplicate == false) {
                     directives.set(parts[0], new Directive(parts[0], d.value));
                 } else {
@@ -186,7 +186,7 @@ class RuleElement {
                     processDirective(nd);
                     directives.set(p, nd);
                 }
-            case _:    
+            case _:
         }
     }
 }

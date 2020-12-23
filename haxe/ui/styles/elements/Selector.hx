@@ -2,7 +2,7 @@ package haxe.ui.styles.elements;
 
 class Selector {
     public var parts:Array<SelectorPart> = [];
-    
+
     public function new(s:String) {
         s = StringTools.replace(s, ">", " > ");
         var p = s.split(" ");
@@ -17,19 +17,19 @@ class Selector {
                 nextDirect = true;
                 continue;
             }
-            
+
             var current = new SelectorPart();
             if (nextDirect == true) {
                 current.direct = true;
                 nextDirect = false;
             }
             current.parent = parent;
-            
+
             var p1 = i.split(":");
             current.pseudoClass = p1[1];
-            
+
             var main = p1[0];
-            
+
             if (main.charAt(0) == ".") {
                 current.className = main.substring(1);
             } else {
@@ -41,12 +41,12 @@ class Selector {
                 }
                 current.className = p2[1];
             }
-            
+
             parts.push(current);
             parent = current;
         }
     }
-    
+
     public function toString():String {
         return parts.join(" ");
     }

@@ -53,7 +53,7 @@ class VerticalVirtualLayout extends VirtualLayout {
     private function verticalConstraintModifier():Float {
         return 0;
     }
-    
+
     private override function calculateRangeVisible() {
         var comp:IVirtualContainer = cast(_component, IVirtualContainer);
         var verticalSpacing = contents.layout.verticalSpacing;
@@ -139,7 +139,6 @@ class VerticalVirtualLayout extends VirtualLayout {
         var rc:Rectangle = new Rectangle(0, 0, contents.width, contentsHeight - (paddingTop + paddingBottom));
         contents.componentClipRect = rc;
 
-        
         _lastIndex = _firstIndex + visibleItemsCount + 1;
         if (_lastIndex > dataSource.size) {
             _lastIndex = dataSource.size;

@@ -8,7 +8,6 @@ import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.layouts.HorizontalLayout;
 import haxe.ui.styles.Style;
-import haxe.ui.util.Variant;
 
 @:composite(Events, CheckBoxBuilder, CheckBoxLayout)
 class CheckBox extends InteractiveComponent {
@@ -35,7 +34,7 @@ class CheckBoxValue extends InteractiveComponent {
     private override function onReady() { // use onReady so we have a parentComponent
         createIcon();
     }
-    
+
     private override function applyStyle(style:Style) {
         super.applyStyle(style);
         var icon:Image = findComponent(Image);
@@ -43,7 +42,7 @@ class CheckBoxValue extends InteractiveComponent {
             icon.resource = style.icon;
         }
     }
-    
+
     public function createIcon() {
         var icon:Image = findComponent(Image);
         if (icon == null && parentComponent != null) {
@@ -73,7 +72,7 @@ private class TextBehaviour extends DataBehaviour {
             _component.addComponent(label);
             _component.invalidateComponentStyle(true);
         }
-        
+
         label.text = _value;
     }
 }
@@ -85,12 +84,12 @@ private class SelectedBehaviour extends DataBehaviour {
         var valueComponent:Value = _component.findComponent(Value);
         return valueComponent.hasClass(":selected");
     }
-    
+
     public override function set(value:Variant) {
         if (value == get()) {
             return;
         }
-        
+
         var valueComponent:Value = _component.findComponent(Value);
         _value = value;
         if (_value == true) {
@@ -101,21 +100,21 @@ private class SelectedBehaviour extends DataBehaviour {
         invalidateData();
     }
     */
-    
+
     private override function validateData() {
         var valueComponent:CheckBoxValue = _component.findComponent(CheckBoxValue);
         if (valueComponent == null) {
             return;
         }
-        
+
         valueComponent.createIcon();
-        
+
         if (_value == true) {
             valueComponent.addClass(":selected");
         } else {
             valueComponent.removeClass(":selected");
         }
-        
+
         _component.dispatch(new UIEvent(UIEvent.CHANGE));
     }
 }
@@ -126,7 +125,7 @@ private class SelectedBehaviour extends DataBehaviour {
 @:dox(hide) @:noCompletion
 private class Events extends haxe.ui.events.Events  {
     private var _checkbox:CheckBox;
-    
+
     public function new(checkbox:CheckBox) {
         super(checkbox);
         _checkbox = checkbox;
@@ -142,23 +141,23 @@ private class Events extends haxe.ui.events.Events  {
             registerEvent(MouseEvent.CLICK, onClick);
         }
     }
-    
+
     public override function unregister() {
         unregisterEvent(MouseEvent.MOUSE_OVER, onMouseOver);
         unregisterEvent(MouseEvent.MOUSE_OUT, onMouseOut);
         unregisterEvent(MouseEvent.CLICK, onClick);
     }
-    
+
     private function onMouseOver(event:MouseEvent) {
         _target.addClass(":hover");
         _target.findComponent(CheckBoxValue).addClass(":hover");
     }
-    
+
     private function onMouseOut(event:MouseEvent) {
         _target.removeClass(":hover");
         _target.findComponent(CheckBoxValue).removeClass(":hover");
     }
-    
+
     private function onClick(event:MouseEvent) {
         _checkbox.selected = !_checkbox.selected;
     }
@@ -170,12 +169,12 @@ private class Events extends haxe.ui.events.Events  {
 @:dox(hide) @:noCompletion
 class CheckBoxBuilder extends CompositeBuilder {
     private var _checkbox:CheckBox;
-    
+
     public function new(checkbox:CheckBox) {
         super(checkbox);
         _checkbox = checkbox;
     }
-    
+
     public override function create() {
         if (_checkbox.findComponent(CheckBoxValue) == null) {
             var value = new CheckBoxValue();
@@ -185,7 +184,7 @@ class CheckBoxBuilder extends CompositeBuilder {
             _checkbox.addComponent(value);
         }
     }
-    
+
     public override function applyStyle(style:Style) {
         var label:Label = _checkbox.findComponent(Label);
         if (label != null &&
@@ -201,7 +200,7 @@ class CheckBoxBuilder extends CompositeBuilder {
             label.invalidateComponentStyle();
         }
     }
-    
+
     private override function get_cssName():String {
         return "checkbox";
     }
@@ -213,7 +212,7 @@ class CheckBoxBuilder extends CompositeBuilder {
 private class CheckBoxLayout extends HorizontalLayout {
     public override function repositionChildren() {
         super.repositionChildren();
-        
+
         var icon = _component.findComponent(Image, true);
         if (icon != null) {
             icon.left = Math.fround(icon.left);

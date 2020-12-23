@@ -15,7 +15,7 @@ class ComponentCommon extends ComponentSurface {
     public function hasTextDisplay():Bool {
         return false;
     }
-    
+
     @:dox(group = "Backend")
     public function getTextInput():TextInput {
         return null;
@@ -25,7 +25,7 @@ class ComponentCommon extends ComponentSurface {
     public function hasTextInput():Bool {
         return false;
     }
-    
+
     //***********************************************************************************************************
     // Image related
     //***********************************************************************************************************

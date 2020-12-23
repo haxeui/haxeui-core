@@ -7,24 +7,23 @@ import haxe.ui.core.CompositeBuilder;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.core.Screen;
 import haxe.ui.events.UIEvent;
-import haxe.ui.events.Events;
 
 class MenuEvent extends UIEvent {
     public static inline var MENU_SELECTED:String = "menuselected";
-    
+
     public var menu:Menu = null;
     public var menuItem:MenuItem = null;
-    
+
     public function new(type:String, bubble:Null<Bool> = false, data:Dynamic = null) {
         super(type, true, data);
     }
-    
+
     public override function clone():MenuEvent {
         var c:MenuEvent = new MenuEvent(this.type);
         c.menu = this.menu;
         c.menuItem = this.menuItem;
         c.type = this.type;
-        c.bubble = this.bubble; 
+        c.bubble = this.bubble;
         c.target = this.target;
         c.data = this.data;
         c.canceled = this.canceled;
@@ -36,7 +35,7 @@ class MenuEvent extends UIEvent {
 @:composite(MenuEvents, Builder)
 class Menu extends VBox {
     @:behaviour(DefaultBehaviour)           public var menuStyleNames:String;
-    
+
     private override function onThemeChanged() {
         super.onThemeChanged();
         var builder:Builder = cast(this._compositeBuilder, Builder);
@@ -58,12 +57,12 @@ class MenuEvents extends haxe.ui.events.Events {
     private var _menu:Menu;
     public var currentSubMenu:Menu = null;
     public var parentMenu:Menu = null;
-    
+
     public function new(menu:Menu) {
         super(menu);
         _menu = menu;
     }
-    
+
     public override function register() {
         if (!hasEvent(MouseEvent.MOUSE_OVER, onMouseOver)) {
             registerEvent(MouseEvent.MOUSE_OVER, onMouseOver);
@@ -71,7 +70,7 @@ class MenuEvents extends haxe.ui.events.Events {
         if (!hasEvent(MouseEvent.MOUSE_OUT, onMouseOut)) {
             registerEvent(MouseEvent.MOUSE_OUT, onMouseOut);
         }
-        
+
         for (child in _menu.childComponents) {
             if (Std.is(child, MenuItem)) {
                 var item:MenuItem = cast(child, MenuItem);
@@ -86,12 +85,12 @@ class MenuEvents extends haxe.ui.events.Events {
                 }
             }
         }
-        
+
         if (!hasEvent(UIEvent.HIDDEN, onHidden)) {
             registerEvent(UIEvent.HIDDEN, onHidden);
         }
     }
-    
+
     public override function unregister() {
         unregisterEvent(MouseEvent.MOUSE_OVER, onMouseOver);
         unregisterEvent(MouseEvent.MOUSE_OUT, onMouseOut);
@@ -100,19 +99,19 @@ class MenuEvents extends haxe.ui.events.Events {
             child.unregisterEvent(MouseEvent.MOUSE_OVER, onItemMouseOver);
             child.unregisterEvent(MouseEvent.MOUSE_OUT, onItemMouseOut);
         }
-        
+
         unregisterEvent(UIEvent.HIDDEN, onHidden);
-    }    
-    
+    }
+
     private var _over:Bool = false;
     private function onMouseOver(event:MouseEvent) {
         _over = true;
     }
-    
+
     private function onMouseOut(event:MouseEvent) {
         _over = false;
     }
-    
+
     private function onItemClick(event:MouseEvent) {
         var item:MenuItem = cast(event.target, MenuItem);
         if (!item.expandable) {
@@ -124,7 +123,7 @@ class MenuEvents extends haxe.ui.events.Events {
             findRootMenu().hide();
         }
     }
-    
+
     private function onItemMouseOver(event:MouseEvent) {
         var builder:Builder = cast(_menu._compositeBuilder, Builder);
         var subMenus:Map<MenuItem, Menu> = builder._subMenus;
@@ -135,21 +134,21 @@ class MenuEvents extends haxe.ui.events.Events {
                 child.removeClass(":hover", true, true);
             }
         }
-        
+
         if (subMenus.get(item) != null) {
             showSubMenu(cast(subMenus.get(item), Menu), item);
         } else {
             hideCurrentSubMenu();
         }
     }
-    
+
     private function onItemMouseOut(event:MouseEvent) {
         if (currentSubMenu != null) {
             event.target.addClass(":hover", true, true);
             return;
         }
     }
-    
+
     private function showSubMenu(subMenu:Menu, source:MenuItem) {
         hideCurrentSubMenu();
         subMenu.menuStyleNames = _menu.menuStyleNames;
@@ -163,35 +162,35 @@ class MenuEvents extends haxe.ui.events.Events {
         if (left + subMenu.actualComponentWidth > Screen.instance.width) {
             left = source.screenLeft - subMenu.actualComponentWidth;
         }
-        
+
         subMenu.left = left;
         subMenu.top = top;
-        
+
         currentSubMenu = subMenu;
     }
-    
+
     private function hideCurrentSubMenu() {
         if (currentSubMenu == null) {
             return;
         }
-        
+
         for (child in currentSubMenu.childComponents) {
             child.removeClass(":hover", true, true);
         }
-        
+
         var subMenuEvents:MenuEvents = cast(currentSubMenu._internalEvents, MenuEvents);
         subMenuEvents.hideCurrentSubMenu();
         Screen.instance.removeComponent(currentSubMenu);
         currentSubMenu = null;
     }
-    
+
     private function onHidden(event:UIEvent) {
         for (child in _menu.childComponents) {
             child.removeClass(":hover", true, true);
         }
         hideCurrentSubMenu();
     }
-    
+
     public function findRootMenu():Menu {
         var root:Menu = null;
         var ref = _menu;
@@ -201,10 +200,10 @@ class MenuEvents extends haxe.ui.events.Events {
                 root = events._menu;
                 break;
             }
-            
+
             ref = events.parentMenu;
         }
-        
+
         return root;
     }
 }
@@ -217,12 +216,12 @@ class MenuEvents extends haxe.ui.events.Events {
 private class Builder extends CompositeBuilder {
     private var _menu:Menu;
     private var _subMenus:Map<MenuItem, Menu> = new Map<MenuItem, Menu>();
-    
+
     public function new(menu:Menu) {
         super(menu);
         _menu = menu;
     }
-    
+
     @:access(haxe.ui.core.Screen)
     public function onThemeChanged() {
         for (menuItem in _subMenus.keys()) {
@@ -231,7 +230,7 @@ private class Builder extends CompositeBuilder {
             Screen.instance.onThemeChangedChildren(menu);
         }
     }
-    
+
     public override function addComponent(child:Component):Component {
         if (Std.is(child, Menu)) {
             var menu = cast(child, Menu);
@@ -244,16 +243,16 @@ private class Builder extends CompositeBuilder {
             _subMenus.set(item, menu);
             return child;
         }
-        
+
         return null;
     }
-    
+
     public override function onComponentAdded(child:Component) {
         if (Std.is(child, Menu) || Std.is(child, MenuItem)) {
             _menu.registerInternalEvents(true);
         }
     }
-    
+
     public override function findComponent<T:Component>(criteria:String, type:Class<T>, recursive:Null<Bool>, searchType:String):Null<T> {
         var match = super.findComponent(criteria, type, recursive, searchType);
         if (match == null) {
@@ -264,7 +263,7 @@ private class Builder extends CompositeBuilder {
                 } else {
                     match = menu.findComponent(criteria, type, recursive, searchType);
                 }
-                
+
                 if (match != null) {
                     break;
                 }

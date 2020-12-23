@@ -15,7 +15,7 @@ class VerticalSlider extends Slider {
 class VerticalSliderLayout extends DefaultLayout {
     public override function repositionChildren() {
         super.repositionChildren();
-        
+
         var range:Range = findComponent(Range);
         var rangeValue:Component = range.findComponent("range-value");
         var startThumb:Button = findComponent("start-thumb");
@@ -28,7 +28,6 @@ class VerticalSliderLayout extends DefaultLayout {
         endThumb.top = (range.top + rangeValue.top) - (endThumb.height / 2);
     }
 }
-
 
 //***********************************************************************************************************
 // Composite Builder

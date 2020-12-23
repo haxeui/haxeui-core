@@ -26,12 +26,12 @@ class Property extends HBox implements IDataComponent {
 @:access(haxe.ui.core.Component)
 private class LabelBehaviour extends DefaultBehaviour {
     private var _property:Property;
-    
+
     public function new(property:Property) {
         super(property);
         _property = property;
     }
-    
+
     public override function set(value:Variant) {
         super.set(value);
         var builder = cast(_property._compositeBuilder, PropertyBuilder);
@@ -45,19 +45,19 @@ private class LabelBehaviour extends DefaultBehaviour {
 @:access(haxe.ui.core.Component)
 private class DataSourceBehaviour extends DefaultBehaviour {
     private var _property:Property;
-    
+
     public function new(property:Property) {
         super(property);
         _property = property;
     }
-    
+
     public override function get():Variant {
         if (_value == null) {
             _value = new ArrayDataSource<Dynamic>();
         }
         return _value;
     }
-    
+
     public override function set(value:Variant) {
         super.set(value);
         var builder = cast(_property._compositeBuilder, PropertyBuilder);
@@ -71,12 +71,12 @@ private class DataSourceBehaviour extends DefaultBehaviour {
 @:access(haxe.ui.core.Component)
 private class PropertyValueBehaviour extends ComponentValueBehaviour {
     private var _property:Property;
-    
+
     public function new(property:Property) {
         super(property);
         _property = property;
     }
-    
+
     public override function set(value:Variant) {
         super.set(value);
         var builder = cast(_property._compositeBuilder, PropertyBuilder);
@@ -84,7 +84,7 @@ private class PropertyValueBehaviour extends ComponentValueBehaviour {
             builder.editor.value = Variant.toDynamic(value);
         }
     }
-    
+
     public override function get():Variant {
         var builder = cast(_property._compositeBuilder, PropertyBuilder);
         if (builder.editor != null) {
@@ -92,7 +92,7 @@ private class PropertyValueBehaviour extends ComponentValueBehaviour {
         }
         return null;
     }
-    
+
     public override function getDynamic():Dynamic {
         var builder = cast(_property._compositeBuilder, PropertyBuilder);
         if (builder.editor != null) {

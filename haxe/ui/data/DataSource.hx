@@ -13,7 +13,7 @@ class DataSource<T> {
     public var onUpdate:Int->T->Void = null;
     public var onRemove:T->Void = null;
     public var onClear:Void->Void = null;
-    
+
     public function new(transformer:IItemTransformer<T> = null) {
         this.transformer = transformer;
         _allowCallbacks = true;
@@ -53,7 +53,7 @@ class DataSource<T> {
     }
 
     public function indexOf(item:T):Int {
-        if(transformer != null) {
+        if (transformer != null) {
             item = transformer.transformFrom(item);
         }
 
@@ -106,7 +106,7 @@ class DataSource<T> {
             onClear();
         }
     }
-    
+
     private function handleChanged() {
         _changed = true;
         if (_allowCallbacks == true && onChange != null) {

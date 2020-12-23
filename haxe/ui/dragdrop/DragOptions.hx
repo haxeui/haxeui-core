@@ -33,13 +33,13 @@ typedef DragOptions = {
      * Default: screen's bounds
      */
     var ?dragBounds:Rectangle;
-    
+
     /**
      * A style name to add to draggable components
      * Default: draggable
      */
     var ?draggableStyleName:String;
-    
+
     /**
      * A style name to add to draggable components while being dragged
      * Default: dragging
