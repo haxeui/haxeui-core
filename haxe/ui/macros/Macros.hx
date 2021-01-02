@@ -144,9 +144,26 @@ class Macros {
                     _style = {};
                 }
                 $p{["customStyle", f.name]} = value;
-                invalidateComponentStyle();
                 return value;
             });
+            
+            if (f.name == "borderColor") {
+                codeBuilder.add(macro {
+                    customStyle.borderTopColor = value;
+                    customStyle.borderLeftColor = value;
+                    customStyle.borderBottomColor = value;
+                    customStyle.borderRightColor = value;
+                });
+            } else if (f.name == "borderSize") {
+                codeBuilder.add(macro {
+                    customStyle.borderTopSize = value;
+                    customStyle.borderLeftSize = value;
+                    customStyle.borderBottomSize = value;
+                    customStyle.borderRightSize = value;
+                });
+            }
+            codeBuilder.add(macro invalidateComponentStyle());
+            
             if (f.hasMetaParam("style", "layout")) {
                 codeBuilder.add(macro
                     invalidateComponentLayout()
