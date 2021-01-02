@@ -67,12 +67,25 @@ class Style {
     @:optional public var backgroundImageSliceBottom:Null<Float>;
     @:optional public var backgroundImageSliceRight:Null<Float>;
 
-    @:optional public var borderColor:Null<Int>;
+    @:optional public var borderColor(get, set):Null<Int>;
+    private function get_borderColor():Null<Int> {
+        return borderTopColor;
+    }
+    private function set_borderColor(value:Null<Int>):Null<Int> {
+        borderTopColor = value;
+        borderLeftColor = value;
+        borderBottomColor = value;
+        borderRightColor = value;
+        return value;
+    }
     @:optional public var borderTopColor:Null<Int>;
     @:optional public var borderLeftColor:Null<Int>;
     @:optional public var borderBottomColor:Null<Int>;
     @:optional public var borderRightColor:Null<Int>;
-    @:optional public var borderSize(default, set):Null<Float>;
+    @:optional public var borderSize(get, set):Null<Float>;
+    private function get_borderSize():Null<Float> {
+        return borderLeftSize;
+    }
     private function set_borderSize(value:Null<Float>):Null<Float> {
         borderTopSize = value;
         borderLeftSize = value;
@@ -459,13 +472,13 @@ class Style {
         if (s.backgroundImageSliceBottom != null) backgroundImageSliceBottom = s.backgroundImageSliceBottom;
         if (s.backgroundImageSliceRight != null) backgroundImageSliceRight = s.backgroundImageSliceRight;
 
-        if (s.borderColor != null) borderColor = s.borderColor;
+        //if (s.borderColor != null) borderColor = s.borderColor;
         if (s.borderTopColor != null) borderTopColor = s.borderTopColor;
         if (s.borderLeftColor != null) borderLeftColor = s.borderLeftColor;
         if (s.borderBottomColor != null) borderBottomColor = s.borderBottomColor;
         if (s.borderRightColor != null) borderRightColor = s.borderRightColor;
 
-        if (s.borderSize != null) borderSize = s.borderSize;
+        //if (s.borderSize != null) borderSize = s.borderSize;
         if (s.borderTopSize != null) borderTopSize = s.borderTopSize;
         if (s.borderLeftSize != null) borderLeftSize = s.borderLeftSize;
         if (s.borderBottomSize != null) borderBottomSize = s.borderBottomSize;
@@ -574,13 +587,13 @@ class Style {
         if (s.backgroundImageSliceBottom != backgroundImageSliceBottom) return false;
         if (s.backgroundImageSliceRight != backgroundImageSliceRight) return false;
 
-        if (s.borderColor != borderColor) return false;
+        //if (s.borderColor != borderColor) return false;
         if (s.borderTopColor != borderTopColor) return false;
         if (s.borderLeftColor != borderLeftColor) return false;
         if (s.borderBottomColor != borderBottomColor) return false;
         if (s.borderRightColor != borderRightColor) return false;
 
-        if (s.borderSize != borderSize) return false;
+        //if (s.borderSize != borderSize) return false;
         if (s.borderTopSize != borderTopSize) return false;
         if (s.borderLeftSize != borderLeftSize) return false;
         if (s.borderBottomSize != borderBottomSize) return false;
