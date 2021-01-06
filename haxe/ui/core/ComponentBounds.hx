@@ -41,24 +41,6 @@ class ComponentBounds extends ComponentLayout {
     public function resizeComponent(w:Null<Float>, h:Null<Float>) {
         var invalidate:Bool = false;
 
-        if (style != null) {
-            if (w != null) {
-                if (style.minWidth != null && w < style.minWidth) {
-                    w = style.minWidth;
-                } else if (style.maxWidth != null && w > style.maxWidth) {
-                    w = style.maxWidth;
-                }
-            }
-
-            if (h != null) {
-                if (style.minHeight != null && h < style.minHeight) {
-                    h = style.minHeight;
-                } else if (style.maxHeight != null && h > style.maxHeight) {
-                    h = style.maxHeight;
-                }
-            }
-        }
-
         if (w != null && _componentWidth != w) {
             _componentWidth = w;
             invalidate = true;

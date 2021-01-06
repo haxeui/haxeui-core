@@ -16,7 +16,9 @@ class Style {
     @:optional public var initialWidth:Null<Float>;
     @:optional public var initialPercentWidth:Null<Float>;
     @:optional public var minWidth:Null<Float>;
+    @:optional public var minPercentWidth:Null<Float>;
     @:optional public var maxWidth:Null<Float>;
+    @:optional public var maxPercentWidth:Null<Float>;
 
     @:optional public var autoHeight:Null<Bool>;
     @:optional public var height:Null<Float>;
@@ -24,7 +26,9 @@ class Style {
     @:optional public var initialHeight:Null<Float>;
     @:optional public var initialPercentHeight:Null<Float>;
     @:optional public var minHeight:Null<Float>;
+    @:optional public var minPercentHeight:Null<Float>;
     @:optional public var maxHeight:Null<Float>;
+    @:optional public var maxPercentHeight:Null<Float>;
 
     @:optional public var padding(default, set):Null<Float>;
     private function set_padding(value:Null<Float>):Null<Float> {
@@ -138,8 +142,10 @@ class Style {
                     initialPercentWidth = ValueTools.percent(v.value);
                 case "min-width":
                     minWidth = ValueTools.calcDimension(v.value);
+                    minPercentWidth = ValueTools.percent(v.value);
                 case "max-width":
                     maxWidth = ValueTools.calcDimension(v.value);
+                    maxPercentWidth = ValueTools.percent(v.value);
 
                 case "height":
                     autoHeight = ValueTools.constant(v.value, "auto");
@@ -150,8 +156,10 @@ class Style {
                     initialPercentHeight = ValueTools.calcDimension(v.value);
                 case "min-height":
                     minHeight = ValueTools.calcDimension(v.value);
+                    minPercentHeight = ValueTools.percent(v.value);
                 case "max-height":
                     maxHeight = ValueTools.calcDimension(v.value);
+                    maxPercentHeight = ValueTools.percent(v.value);
 
                 case "padding-top":
                     paddingTop = ValueTools.calcDimension(v.value);
@@ -399,7 +407,9 @@ class Style {
         if (s.initialWidth != null) initialWidth = s.initialWidth;
         if (s.initialPercentWidth != null) initialPercentWidth = s.initialPercentWidth;
         if (s.minWidth != null) minWidth = s.minWidth;
+        if (s.minPercentWidth != null) minPercentWidth = s.minPercentWidth;
         if (s.maxWidth != null) maxWidth = s.maxWidth;
+        if (s.maxPercentWidth != null) maxPercentWidth = s.maxPercentWidth;
 
         if (s.height != null) {
             height = s.height;
@@ -408,7 +418,9 @@ class Style {
         if (s.initialHeight != null) initialHeight = s.initialHeight;
         if (s.initialPercentHeight != null) initialPercentHeight = s.initialPercentHeight;
         if (s.minHeight != null) minHeight = s.minHeight;
+        if (s.minPercentHeight != null) minPercentHeight = s.minPercentHeight;
         if (s.maxHeight != null) maxHeight = s.maxHeight;
+        if (s.maxPercentHeight != null) maxPercentHeight = s.maxPercentHeight;
 
         if (s.percentWidth != null) {
             percentWidth = s.percentWidth;
@@ -526,13 +538,17 @@ class Style {
         if (s.initialWidth != initialWidth) return false;
         if (s.initialPercentWidth != initialPercentWidth) return false;
         if (s.minWidth != minWidth) return false;
+        if (s.minPercentWidth != minPercentWidth) return false;
         if (s.maxWidth != maxWidth) return false;
+        if (s.maxPercentWidth != maxPercentWidth) return false;
 
         if (s.height != height) return false;
         if (s.initialHeight != initialHeight) return false;
         if (s.initialPercentHeight != initialPercentHeight) return false;
         if (s.minHeight != minHeight) return false;
+        if (s.minPercentHeight != minPercentHeight) return false;
         if (s.maxHeight != maxHeight) return false;
+        if (s.maxPercentHeight != maxPercentHeight) return false;
 
         if (s.percentWidth != percentWidth) return false;
         if (s.percentHeight != percentHeight) return false;
