@@ -1,7 +1,6 @@
 package haxe.ui.core;
 
 import haxe.ui.backend.ComponentImpl;
-import haxe.ui.debug.CallStackHelper;
 import haxe.ui.dragdrop.DragManager;
 import haxe.ui.events.AnimationEvent;
 import haxe.ui.events.MouseEvent;
@@ -1378,7 +1377,6 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
                 #else
                 trace("Problem initializing script: " + e);
                 #end
-                CallStackHelper.traceExceptionStack();
             }
         }
     }
