@@ -36,6 +36,16 @@ class DataSource<T> {
         return value;
     }
 
+    public var data(get, set):Any;
+    private function get_data():Any {
+        return handleGetData();
+    }
+    private function set_data(value:Any):Any {
+        handleSetData(value);
+        handleChanged();
+        return value;
+    }
+    
     public var size(get, null):Int;
     private function get_size():Int {
         return handleGetSize();
@@ -140,6 +150,14 @@ class DataSource<T> {
         return null;
     }
 
+    private function handleGetData():Any {
+        return null;
+    }
+    
+    private function handleSetData(v:Any) {
+        
+    }
+    
     private function handleClear() {
         var cachedTransformer = transformer;
         transformer = null;

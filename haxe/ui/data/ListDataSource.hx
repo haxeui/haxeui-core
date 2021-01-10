@@ -71,6 +71,14 @@ class ListDataSource<T> extends DataSource<T> {
         _array.clear();
     }
 
+    private override function handleGetData():Any {
+        return _array;
+    }
+    
+    private override function handleSetData(v:Any) {
+        _array = v;
+    }
+    
     private override function handleUpdateItem(index:Int, item:T):T {
         var i = 0;
         for (x in _array) {
