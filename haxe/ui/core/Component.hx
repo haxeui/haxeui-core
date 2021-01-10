@@ -1318,9 +1318,6 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
                 }
             }
         } catch (e:Dynamic) {
-            #if debug
-            CallStackHelper.traceExceptionStack();
-            #end
             #if !allow_script_errors
             trace("Problem executing scriptlet: " + e);
             #end
