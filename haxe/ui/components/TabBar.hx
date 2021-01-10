@@ -330,7 +330,9 @@ private class Builder extends CompositeBuilder {
 
         button.id = child.id;
         button.text = child.text;
-        button.icon = cast(child, Button).icon;
+        if (Std.is(child, Button)) {
+            button.icon = cast(child, Button).icon;
+        }
         button.closable = _tabbar.closable;
 
         return button;
