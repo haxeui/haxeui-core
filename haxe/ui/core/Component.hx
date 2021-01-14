@@ -1560,6 +1560,11 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
 
     private function enforceSizeConstraints() {
         if (style != null) {
+            // enforce min width
+            if (style.minWidth != null && _componentWidth < style.minWidth) {
+                _componentWidth = _actualWidth = _width = style.minWidth;
+            }
+            
             // enforce max width
             if (style.maxWidth != null && style.maxPercentWidth == null && _componentWidth > style.maxWidth) {
                 _componentWidth = _actualWidth = _width = style.maxWidth;
@@ -1580,6 +1585,11 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
                 if (max > 0 && _componentWidth > max) {
                     _componentWidth = _actualWidth = _width = max;
                 }
+            }
+            
+            // enforce min height
+            if (style.minHeight != null && _componentHeight < style.minHeight) {
+                _componentHeight = _actualHeight = _height = style.minHeight;
             }
             
             // enforce max height
