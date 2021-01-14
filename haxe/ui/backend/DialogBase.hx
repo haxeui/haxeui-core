@@ -6,6 +6,7 @@ import haxe.ui.containers.dialogs.Dialog;
 import haxe.ui.core.Component;
 import haxe.ui.core.Screen;
 import haxe.ui.events.MouseEvent;
+import haxe.ui.styles.Style;
 
 @:dox(hide) @:noCompletion
 class DialogBase extends Box {
@@ -55,7 +56,6 @@ class DialogBase extends Box {
         dialogContainer.addComponent(dialogContent);
 
         dialogFooterContainer = new haxe.ui.containers.Box();
-        dialogFooterContainer.percentWidth = 100;
         dialogFooterContainer.id = "dialog-footer-container";
         dialogFooterContainer.styleNames = "dialog-footer-container";
         dialogContainer.addComponent(dialogFooterContainer);
@@ -71,6 +71,13 @@ class DialogBase extends Box {
         }
     }
 
+    private override function applyStyle(style:Style) {
+        super.applyStyle(style);
+        if (this.autoWidth == false) {
+            dialogFooterContainer.percentWidth = 100;
+        }
+    }
+    
     private var _dialogParent:Component = null;
     public var dialogParent(get, set):Component;
     private function get_dialogParent():Component {
