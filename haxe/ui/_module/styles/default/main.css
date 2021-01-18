@@ -59,6 +59,10 @@
     height: auto;
     content-type: auto;
 }
+    
+.label:disabled {
+    color: #909090;
+}
 
 /************************************************************************
 ** IMAGE
@@ -66,6 +70,10 @@
 .image {
     width: auto;
     height: auto;
+}
+
+.image:disabled {
+    filter: grayscale;
 }
 
 /************************************************************************

@@ -11,6 +11,8 @@ class FilterParser {
             filter = parseBlur(filterDetails);
         } else if (filterDetails[0] == "outline") {
             filter = parseOutline(filterDetails);
+        } else if (filterDetails[0] == "grayscale") {
+            filter = parseGrayscale(filterDetails);
         }
         return filter;
     }
@@ -98,6 +100,24 @@ class FilterParser {
         return copy;
     }
 
+    public static function parseGrayscale(filterDetails:Array<Dynamic>):Grayscale {
+        if (filterDetails == null || filterDetails.length == 0) {
+            return null;
+        }
+
+        var copy:Array<Dynamic> = filterDetails.copy();
+        buildDefaults();
+
+        var filterName = copy[0];
+        copy.remove(filterName);
+
+        copy = copyFilterDefaults(filterName, copy);
+
+        var grayscale:Grayscale = new Grayscale();
+        grayscale.amount = copy[0];
+        return grayscale;
+    }
+    
     private static function buildDefaults() {
         if (filterParamDefaults != null) {
             return;
@@ -112,5 +132,9 @@ class FilterParser {
 
         filterParamDefaults["outline"] = [];
         filterParamDefaults["outline"] = filterParamDefaults["outline"].concat([0, 1]);
+        
+        filterParamDefaults["grayscale"] = [];
+        filterParamDefaults["grayscale"] = filterParamDefaults["grayscale"].concat([100]);
+
     }
 }
