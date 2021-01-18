@@ -58,6 +58,7 @@
     width: auto;
     height: auto;
     content-type: auto;
+    color: black;
 }
     
 .label:disabled {

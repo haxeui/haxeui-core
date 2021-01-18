@@ -133,6 +133,13 @@ class ComponentTextBehaviour extends DefaultBehaviour {
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 class ComponentDisabledBehaviour extends DataBehaviour {
+    public override function set(value:Variant) {
+        if (_component.isReady == false) {
+            _value = value;
+        }
+        super.set(value);
+    }
+    
     public override function get():Variant {
         return _component.hasClass(":disabled");
     }

@@ -207,6 +207,8 @@ class DialogBase extends Box {
         dialogTitle.width = this.layout.innerWidth;
         if (autoWidth == false) {
             dialogContent.width = this.layout.innerWidth;
+        } else if (dialogFooterContainer.width < this.layout.innerWidth) {
+            dialogFooterContainer.width = this.layout.innerWidth;
         }
         return b;
     }
