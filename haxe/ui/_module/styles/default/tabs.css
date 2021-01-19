@@ -2,9 +2,8 @@
 ** TABBAR (TOP)
 *************************************************************************/
 .tabbar {
-    horizontal-spacing: 5px;
-    padding-left: 5px;
-    padding-right: 5px;
+    padding-left: 0px;
+    padding-right: 0px;
     height: auto;
     width: auto;
     border-bottom-width: 1px;
@@ -17,13 +16,19 @@
     border: none;
     border-bottom-width: 1px;
     border-bottom-color: #ABABAB;
+    spacing: 0;
 }
 
 .tabbar-button {
     border-radius: 0px;
     background: #EDEDED #E6E6E6 vertical;
-    padding: 6px;
+    padding: 6px 8px;
     vertical-align: bottom;
+    border-left-width: 0px;
+}
+
+.tabbar-button.first {
+    border-left-width: 1px;
 }
 
 .tabbar-button:hover {
@@ -31,17 +36,21 @@
 }
 
 .tabbar-button:down {
+    border: 1px solid #ABABAB;
 }
 
 .tabbar-button-selected {
     border-radius: 0px;
 
-    border: 1px solid #ABABAB;
     border-bottom-width: 1px;
     border-bottom-color: white;
     background-color: white;
+    border-left-width: 0px;
 }
 
+.tabbar-button-selected.first {
+    border-left-width: 1px;
+}
 
 .tabbar-scroll-left {
     icon: "haxeui-core/styles/default/left_arrow.png";
