@@ -7,7 +7,7 @@ class InvalidatingBehaviour extends ValueBehaviour {
     public override function get():Variant {
         return _value;
     }
-    
+
     public override function set(value:Variant) {
         if (value == _value) {
             return;

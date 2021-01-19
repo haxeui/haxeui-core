@@ -37,12 +37,21 @@ class ArrayDataSource<T> extends DataSource<T> {
         _array.remove(item);
         return item;
     }
+    
     private override function handleClear() {
         while (_array.length > 0) {
             _array.pop();
         }
     }
 
+    private override function handleGetData():Any {
+        return _array;
+    }
+    
+    private override function handleSetData(v:Any) {
+        _array = v;
+    }
+    
     private override function handleUpdateItem(index:Int, item:T):T {
         return _array[index] = item;
     }
@@ -58,5 +67,5 @@ class ArrayDataSource<T> extends DataSource<T> {
         ds._array = source;
         return ds;
     }
-    
+
 }

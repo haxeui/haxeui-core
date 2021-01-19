@@ -10,12 +10,12 @@ import haxe.macro.ExprTools;
 class FieldBuilder {
     public var field:Field;
     public var classBuilder:ClassBuilder;
-    
+
     public function new(field:Field, classBuilder:ClassBuilder) {
         this.field = field;
         this.classBuilder = classBuilder;
     }
-    
+
     public var name(get, set):String;
     private function get_name():String {
         return field.name;
@@ -24,7 +24,7 @@ class FieldBuilder {
         field.name = value;
         return value;
     }
-    
+
     public var access(get, set):Array<Access>;
     private function get_access():Array<Access> {
         return field.access;
@@ -33,11 +33,11 @@ class FieldBuilder {
         field.access = value;
         return value;
     }
-    
+
     public function remove() {
         classBuilder.fields.remove(field);
     }
-    
+
     public var typePath(get, null):TypePath;
     private function get_typePath():TypePath {
         switch (field.kind) {
@@ -45,13 +45,13 @@ class FieldBuilder {
                 switch (t) {
                     case TPath(p):
                         return p;
-                    case _:    
+                    case _:
                 }
-            case _:    
+            case _:
         }
         return null;
     }
-    
+
     public var type(get, null):ComplexType;
     private function get_type():ComplexType {
         switch (field.kind) {
@@ -59,7 +59,7 @@ class FieldBuilder {
                 return t;
             case FProp(_, _, t, _):
                 return t;
-            case _: 
+            case _:
         }
         return null;
     }
@@ -75,7 +75,7 @@ class FieldBuilder {
         }
         return true;
     }
-    
+
     public var isBool(get, null):Bool;
     private function get_isBool():Bool {
         switch (this.type) {
@@ -87,7 +87,7 @@ class FieldBuilder {
         }
         return false;
     }
-    
+
     public var isNumeric(get, null):Bool;
     private function get_isNumeric():Bool {
         switch (this.type) {
@@ -99,12 +99,12 @@ class FieldBuilder {
         }
         return false;
     }
-    
+
     public var meta(get, null):Metadata;
     private function get_meta():Metadata {
         return field.meta;
     }
-    
+
     public var expr(get, null):Expr;
     private function get_expr():Expr {
         switch (field.kind) {
@@ -114,7 +114,7 @@ class FieldBuilder {
         }
         return null;
     }
-    
+
     public function addMeta(name:String, params:Array<Expr> = null) {
         if (params == null) {
             params = [];
@@ -151,7 +151,7 @@ class FieldBuilder {
         }
         return null;
     }
-    
+
     public function getMetaValueString(name:String, paramIndex:Int = 0, metaIndex:Int = 0):String {
         var n = 0;
         for (m in field.meta) {
@@ -162,13 +162,13 @@ class FieldBuilder {
                     }
                     return ExprTools.toString(m.params[paramIndex]);
                 }
-                
+
                 n++;
             }
         }
         return null;
     }
-    
+
     public function getMetaValueExpr(name:String, paramIndex:Int = 0):Expr {
         for (m in field.meta) {
             if (m.name == name || m.name == ':${name}') {
@@ -180,7 +180,7 @@ class FieldBuilder {
         }
         return null;
     }
-    
+
     public function hasMetaParam(name:String, param:String):Bool {
         for (m in field.meta) {
             if (m.name == name || m.name == ':${name}') {
@@ -191,10 +191,10 @@ class FieldBuilder {
                 }
             }
         }
-        
+
         return false;
     }
-    
+
     public function mergeMeta(source:Metadata, exceptions:Array<String>) {
         for (m in source) {
             var use = true;
@@ -212,7 +212,7 @@ class FieldBuilder {
             }
         }
     }
-    
+
     public var doc(get, set):String;
     private function get_doc():String {
         return field.doc;
@@ -221,27 +221,27 @@ class FieldBuilder {
         field.doc = value;
         return value;
     }
-    
+
     public var isDynamic(get, null):Bool;
     private function get_isDynamic():Bool {
         switch (type) {
             case TPath(p):
                 return (p.name == "Dynamic");
-            case _:    
+            case _:
         }
         return false;
     }
-    
+
     public var isVariant(get, null):Bool;
     private function get_isVariant():Bool {
         switch (type) {
             case TPath(p):
                 return (p.name == "Variant");
-            case _:    
+            case _:
         }
         return false;
     }
-    
+
     public function hasMeta(name:String):Bool {
         for (m in field.meta) {
             if (m.name == name || m.name == ':${name}') {

@@ -7,20 +7,20 @@ import haxe.ui.validation.InvalidationFlags;
 
 class TextInputData {
     public var password:Bool = false;
-    
+
     public var hscrollPos:Float = 0;
     public var hscrollMax:Float = 0;
     public var hscrollPageSize:Float = 0;
-    
+
     public var vscrollPos:Float = 0;
     public var vscrollMax:Float = 0;
     public var vscrollPageSize:Float = 0;
     public var vscrollPageStep:Null<Float> = null;
     public var vscrollNativeWheel:Bool = false;
-    
+
     public var onScrollCallback:Void->Void = null;
     public var onChangedCallback:Void->Void = null;
-    
+
     public function new() {
     }
 }
@@ -42,11 +42,11 @@ class TextInput extends TextInputImpl implements IValidating {
     public override function focus() {
         super.focus();
     }
-    
+
     public override function blur() {
         super.blur();
     }
-    
+
     /**
      The style to use for this text
     **/
@@ -68,7 +68,7 @@ class TextInput extends TextInputImpl implements IValidating {
         } else {
             invalidateComponent(InvalidationFlags.STYLE);
         }
-        
+
         _textStyle = value;
         return value;
     }
@@ -77,7 +77,7 @@ class TextInput extends TextInputImpl implements IValidating {
     private function get_data():TextInputData {
         return _inputData;
     }
-    
+
     public var text(get, set):String;
     private function get_text():String {
         return _text;
@@ -135,7 +135,7 @@ class TextInput extends TextInputImpl implements IValidating {
     }
 
     public var width(get, set):Float;
-    public function set_width(value:Float):Float {
+    private function set_width(value:Float):Float {
         if (_width == value) {
             return value;
         }
@@ -145,12 +145,12 @@ class TextInput extends TextInputImpl implements IValidating {
         return value;
     }
 
-    public function get_width():Float {
+    private function get_width():Float {
         return _width;
     }
 
     public var height(get, set):Float;
-    public function set_height(value:Float):Float {
+    private function set_height(value:Float):Float {
         if (_height == value) {
             return value;
         }
@@ -160,7 +160,7 @@ class TextInput extends TextInputImpl implements IValidating {
         return value;
     }
 
-    public function get_height():Float {
+    private function get_height():Float {
         return _height;
     }
 
@@ -235,12 +235,12 @@ class TextInput extends TextInputImpl implements IValidating {
     private function get_hscrollMax():Float {
         return _inputData.hscrollMax;
     }
-    
+
     public var hscrollPageSize(get, null):Float;
     private function get_hscrollPageSize():Float {
         return _inputData.hscrollPageSize;
     }
-    
+
     public var vscrollPos(get, set):Float;
     private function get_vscrollPos():Float {
         return _inputData.vscrollPos;
@@ -259,12 +259,12 @@ class TextInput extends TextInputImpl implements IValidating {
     private function get_vscrollMax():Float {
         return _inputData.vscrollMax;
     }
-    
+
     public var vscrollPageSize(get, null):Float;
     private function get_vscrollPageSize():Float {
         return _inputData.vscrollPageSize;
     }
-    
+
     public function isComponentInvalid(flag:String = InvalidationFlags.ALL):Bool {
         if (_isAllInvalid == true) {
             return true;
@@ -309,7 +309,7 @@ class TextInput extends TextInputImpl implements IValidating {
 
     public function updateComponentDisplay() {
     }
-    
+
     public function validateComponent(nextFrame:Bool = true) {
         if (_isValidating == true ||    //we were already validating, the existing validation will continue.
             isComponentInvalid() == false) {     //if none is invalid, exit.
@@ -327,7 +327,7 @@ class TextInput extends TextInputImpl implements IValidating {
         _isAllInvalid = false;
         _isValidating = false;
     }
-    
+
     private function validateComponentInternal() {
         var dataInvalid = isComponentInvalid(InvalidationFlags.DATA);
         var styleInvalid = isComponentInvalid(InvalidationFlags.STYLE);

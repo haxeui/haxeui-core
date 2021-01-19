@@ -7,8 +7,8 @@ import haxe.ui.util.EventMap;
 
 class ValidationManager {
     static public var instance(get, null):ValidationManager;
-    static public function get_instance():ValidationManager {
-        if(instance == null) {
+    static private function get_instance():ValidationManager {
+        if (instance == null) {
             instance = new ValidationManager();
         }
         return instance;
@@ -92,8 +92,8 @@ class ValidationManager {
         }
     }
 
-    public function addDisplay(item:Component, nextFrame:Bool = true):Void {
-        if(_displayQueue.indexOf(item) == -1) {
+    public function addDisplay(item:Component, nextFrame:Bool = true) {
+        if (_displayQueue.indexOf(item) == -1) {
             _displayQueue.push(item);
         }
         if (nextFrame == false) {
@@ -122,7 +122,7 @@ class ValidationManager {
         //check length every time because add() might have added a new item during the last validation
         while (_queue.length > 0) {
             var item:IValidating = _queue.shift();
-            if(item.depth < 0) {
+            if (item.depth < 0) {
                 continue;   //no longer on the display list
             }
             item.validateComponent();
@@ -143,9 +143,7 @@ class ValidationManager {
     private function queueSortFunction(first:IValidating, second:IValidating):Int {
         var difference:Int = second.depth - first.depth;
         //Down to top
-        return if (difference > 0)           1;
-                else if (difference < 0)     -1;
-                else                         0;
+        return if (difference > 0) 1; else if (difference < 0) -1; else 0;
 
         //Top to down
 //        return if(difference > 0)           -1;

@@ -1,4 +1,5 @@
 package haxe.ui.parsers.modules;
+
 import haxe.ui.parsers.modules.Module.ModuleThemeImageEntry;
 import haxe.ui.parsers.modules.Module.ModuleThemeStyleEntry;
 
@@ -71,7 +72,7 @@ class XMLParser extends ModuleParser {
                     if (checkCondition(classNode, defines) == false) {
                         continue;
                     }
-                    
+
                     var scriptletEntry:Module.ModuleScriptletEntry = new Module.ModuleScriptletEntry();
                     scriptletEntry.classPackage = classNode.get("package");
                     scriptletEntry.className = classNode.get("class");
@@ -85,11 +86,11 @@ class XMLParser extends ModuleParser {
                     if (checkCondition(themeNode, defines) == false) {
                         continue;
                     }
-                    
+
                     var theme:Module.ModuleThemeEntry = new Module.ModuleThemeEntry();
                     theme.name = themeNode.nodeName;
                     theme.parent = themeNode.get("parent");
-                    
+
                     // style entries
                     var lastPriority:Null<Float> = null;
                     for (styleNodes in themeNode.elementsNamed("style")) {
@@ -115,7 +116,7 @@ class XMLParser extends ModuleParser {
                         }
                         theme.styles.push(styleEntry);
                     }
-                    
+
                     // image entries
                     var lastPriority:Null<Float> = null;
                     for (imageNodes in themeNode.elements()) {
@@ -126,7 +127,7 @@ class XMLParser extends ModuleParser {
                         if (imageNodes.nodeName != "image" && imageNodes.nodeName != "icon") {
                             continue;
                         }
-                        
+
                         var imageEntry:ModuleThemeImageEntry = new ModuleThemeImageEntry();
                         imageEntry.id = imageNodes.get("id");
                         imageEntry.resource = imageNodes.get("resource");
@@ -147,7 +148,7 @@ class XMLParser extends ModuleParser {
                         }
                         theme.images.push(imageEntry);
                     }
-                    
+
                     module.themeEntries.set(theme.name, theme);
                 }
             } else if (nodeName == "plugins" && checkCondition(el, defines) == true) {
@@ -203,7 +204,7 @@ class XMLParser extends ModuleParser {
             var condition = node.get("unless");
             return !defines.exists(condition);
         }
-        
+
         return true;
     }
 }

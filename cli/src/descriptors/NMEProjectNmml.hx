@@ -1,11 +1,12 @@
 package descriptors;
+
 import sys.FileSystem;
 
 class NMEProjectNmml extends OpenFlApplicationXml {
     public function new() {
         super();
     }
-    
+
     public override function find(path:String):Bool {
         var contents = FileSystem.readDirectory(path);
         for (c in contents) {

@@ -29,7 +29,6 @@ private class TextBehaviour extends DataBehaviour {
     }
 }
 
-
 //***********************************************************************************************************
 // Events
 //***********************************************************************************************************
@@ -41,12 +40,12 @@ private class Events extends haxe.ui.events.Events {
             header.registerEvent(MouseEvent.CLICK, onHeaderClicked);
         }
     }
-    
+
     public override function unregister() {
         var header = _target.findComponent("property-group-header", Component);
         header.unregisterEvent(MouseEvent.CLICK, onHeaderClicked);
     }
-    
+
     private function onHeaderClicked(event:MouseEvent) {
         var header = _target.findComponent("property-group-header", Component);
         var contents = _target.findComponent("property-group-contents", Component);
@@ -67,59 +66,59 @@ private class Events extends haxe.ui.events.Events {
 @:access(haxe.ui.core.Component)
 private class Builder extends CompositeBuilder {
     private var _propertyGroup:PropertyGroup;
-    
+
     private var _propertyGroupHeader:HBox;
     private var _propertyGroupContents:Grid;
     private var _editorMap:Map<Component, Property> = new Map<Component, Property>();
-    
+
     public function new(propertyGroup:PropertyGroup) {
         super(propertyGroup);
         _propertyGroup = propertyGroup;
     }
-    
+
     public override function onReady() {
         var propGrid = _component.findAncestor(PropertyGrid);
         for (c in _propertyGroupContents.findComponents(DropDown)) {
             c.handlerStyleNames = propGrid.popupStyleNames;
         }
     }
-    
+
     public override function create() {
         _propertyGroupHeader = new HBox();
         _propertyGroupHeader.scriptAccess = false;
         _propertyGroupHeader.addClass("property-group-header");
         _propertyGroupHeader.addClass(":expanded");
         _propertyGroupHeader.id = "property-group-header";
-        
+
         var image = new Image();
         image.addClass("property-group-header-icon");
         image.scriptAccess = false;
         _propertyGroupHeader.addComponent(image);
-        
+
         var label = new Label();
         label.addClass("property-group-header-label");
         label.id = "property-group-header-label";
         label.scriptAccess = false;
         _propertyGroupHeader.addComponent(label);
-        
+
         _propertyGroup.addComponent(_propertyGroupHeader);
-        
+
         _propertyGroupContents = new Grid();
         _propertyGroupContents.scriptAccess = false;
         _propertyGroupContents.addClass("property-group-contents");
         _propertyGroupContents.id = "property-group-contents";
         _propertyGroup.addComponent(_propertyGroupContents);
     }
-    
+
     public override function addComponent(child:Component):Component {
         if (Std.is(child, Property)) {
             var prop = cast(child, Property);
-            
+
             var labelContainer = new Box();
             labelContainer.scriptAccess = false;
             labelContainer.addClass("property-group-item-label-container");
             _propertyGroupContents.addComponent(labelContainer);
-            
+
             var label = new Label();
             label.scriptAccess = false;
             label.text = prop.label;
@@ -131,7 +130,7 @@ private class Builder extends CompositeBuilder {
             editorContainer.scriptAccess = false;
             editorContainer.addClass("property-group-item-editor-container");
             _propertyGroupContents.addComponent(editorContainer);
-            
+
             var editor = buildEditor(prop);
             editor.scriptAccess = false;
             editor.id = child.id;
@@ -142,13 +141,13 @@ private class Builder extends CompositeBuilder {
 
             _propertyGroup.registerInternalEvents(Events, true);
             _editorMap.set(editor, prop);
-            
+
             return editor;
         }
-        
+
         return null;
     }
-    
+
     private function onPropertyEditorChange(event:UIEvent) {
         var newEvent = new UIEvent(UIEvent.CHANGE);
         newEvent.target = event.target;
@@ -160,12 +159,12 @@ private class Builder extends CompositeBuilder {
         _component.dispatch(newEvent);
         _component.findAncestor(PropertyGrid).dispatch(newEvent);
     }
-    
+
     private function buildEditor(property:Property):Component {
         var type = property.type;
-        
+
         var c:Component = null;
-        
+
         switch (type) {
             case "text":
                 c = new TextField();
@@ -194,12 +193,12 @@ private class Builder extends CompositeBuilder {
             case "date":
                 c = new DropDown();
                 cast(c, DropDown).type = "date";
-                
-            default:     
+
+            default:
                 c = new TextField();
                 c.value = property.value;
         }
-        
+
         return c;
     }
 }

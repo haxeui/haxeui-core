@@ -1,12 +1,13 @@
 package descriptors;
+
 import sys.FileSystem;
 import sys.io.File;
 
 class KhaFile extends Descriptor {
-    private var _path = null;
-    
+    private var _path:String = null;
+
     private var _contents:String;
-    
+
     public function new() {
         super();
     }
@@ -17,16 +18,16 @@ class KhaFile extends Descriptor {
         var n2 = _contents.indexOf("'", n1);
         return _contents.substring(n1, n2);
     }
-    
+
     public function load(path:String = null) {
         if (path == null) {
             path = _path;
         }
-        
+
         _contents = File.getContent(path);
         _path = path;
     }
-    
+
     public override function find(path:String):Bool {
         var contents = FileSystem.readDirectory(path);
         for (c in contents) {

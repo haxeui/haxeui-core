@@ -24,7 +24,7 @@ class ToolkitAssets extends AssetsImpl {
     // Instance
     //***********************************************************************************************************
     public var preloadList:Array<PreloadItem> = [];
-    
+
     public var options:ToolkitOptions = null;
 
     private var _fontCache:Map<String, FontInfo>;

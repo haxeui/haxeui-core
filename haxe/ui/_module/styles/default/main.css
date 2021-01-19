@@ -58,6 +58,11 @@
     width: auto;
     height: auto;
     content-type: auto;
+    color: black;
+}
+    
+.label:disabled {
+    color: #909090;
 }
 
 /************************************************************************
@@ -66,6 +71,10 @@
 .image {
     width: auto;
     height: auto;
+}
+
+.image:disabled {
+    filter: grayscale;
 }
 
 /************************************************************************

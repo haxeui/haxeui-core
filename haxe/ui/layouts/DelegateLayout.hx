@@ -25,7 +25,7 @@ class DelegateLayout extends DefaultLayout {
         return size;
     }
 
-    public override function get_usableSize():Size {
+    private override function get_usableSize():Size {
         var size:Size = super.get_usableSize();
         _size.component = component;
         size.width -= _size.usableWidthModifier;
@@ -37,7 +37,7 @@ class DelegateLayout extends DefaultLayout {
 class DelegateLayoutSize {
     public function new() {
     }
-    
+
     public var component:Component;
     public var config:Map<String, String>;
 

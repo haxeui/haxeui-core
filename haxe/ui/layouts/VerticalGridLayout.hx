@@ -13,7 +13,7 @@ class VerticalGridLayout extends Layout {
         return _columns;
     }
     private function set_columns(value:Int):Int {
-        if(_columns == value) {
+        if (_columns == value) {
             return value;
         }
 
@@ -29,11 +29,11 @@ class VerticalGridLayout extends Layout {
         var columnWidths:Array<Float> = calcColumnWidths(size, false);
         var rowHeights:Array<Float> = calcRowHeights(size, false);
 
-        for(columnWidth in columnWidths) {
+        for (columnWidth in columnWidths) {
             size.width -= columnWidth;
         }
 
-        for(rowHeight in rowHeights) {
+        for (rowHeight in rowHeights) {
             size.height -= rowHeight;
         }
 
@@ -151,7 +151,7 @@ class VerticalGridLayout extends Layout {
     }
 
     private function calcColumnWidths(usableSize:Size, includePercentage:Bool):Array<Float> {
-        var columnWidths:Array<Float> = new Array<Float>();
+        var columnWidths:Array<Float> = [];
         for (_ in 0..._columns) {
             columnWidths.push(0);
         }
@@ -187,7 +187,7 @@ class VerticalGridLayout extends Layout {
                 if (child.percentWidth != null && child.percentWidth == 100) {
                     fullWidthsCounts[rowIndex]++;
                 }
-                
+
                 columnIndex++;
                 if (columnIndex >= _columns) {
                     columnIndex = 0;
@@ -195,14 +195,14 @@ class VerticalGridLayout extends Layout {
                     fullWidthsCounts.push(0);
                 }
             }
-            
+
             rowIndex = 0;
             columnIndex = 0;
             for (child in component.childComponents) {
                 if (child.includeInLayout == false) {
                     continue;
                 }
-                
+
                 if (child.percentWidth != null) {
                     var childPercentWidth = child.percentWidth;
                     if (childPercentWidth == 100 && fullWidthsCounts[rowIndex] != 0) {
@@ -242,7 +242,7 @@ class VerticalGridLayout extends Layout {
             rowCount++;
         }
 
-        var rowHeights:Array<Float> = new Array<Float>();
+        var rowHeights:Array<Float> = [];
         for (_ in 0...rowCount) {
             rowHeights.push(0);
         }
@@ -275,14 +275,14 @@ class VerticalGridLayout extends Layout {
                 if (child.includeInLayout == false) {
                     continue;
                 }
-                
+
                 if (child.percentHeight != null && child.percentHeight == 100) {
                     if (newRow == true) {
                         newRow = false;
                         fullHeightRowCount++;
                     }
                 }
-                
+
                 columnIndex++;
                 if (columnIndex >= _columns) {
                     columnIndex = 0;
@@ -323,7 +323,7 @@ class VerticalGridLayout extends Layout {
     }
 
     private function calcExplicitWidths():Array<Bool> {
-        var explicitWidths:Array<Bool> = new Array<Bool>();
+        var explicitWidths:Array<Bool> = [];
         for (_ in 0..._columns) {
             explicitWidths.push(false);
         }
@@ -361,7 +361,7 @@ class VerticalGridLayout extends Layout {
         if (visibleChildren % _columns != 0) {
             rowCount++;
         }
-        var explicitHeights:Array<Bool> = new Array<Bool>();
+        var explicitHeights:Array<Bool> = [];
         for (_ in 0...rowCount) {
             explicitHeights.push(false);
         }

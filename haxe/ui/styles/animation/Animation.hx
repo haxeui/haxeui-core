@@ -23,6 +23,7 @@ class AnimationOptions {
     @:optional public var fillMode:AnimationFillMode;
 
     public function compareTo(op:AnimationOptions):Bool {
+        @SuppressWarnings("checkstyle:Indentation")
         return op != null &&
             op.duration == duration &&
             op.delay == delay &&
@@ -33,6 +34,7 @@ class AnimationOptions {
     }
 
     public function compareToAnimation(anim:Animation):Bool {
+        @SuppressWarnings("checkstyle:Indentation")
         return ((duration == null && anim.duration == DEFAULT_DURATION)  || (duration != null && anim.duration == duration)) &&
             ((delay == null && anim.delay == DEFAULT_DELAY)  || (delay != null && anim.delay == delay)) &&
             ((iterationCount == null && anim.iterationCount == DEFAULT_ITERATION_COUNT)  || (iterationCount != null && anim.iterationCount == iterationCount)) &&
@@ -47,7 +49,7 @@ class Animation {
     //***********************************************************************************************************
     // Helpers
     //***********************************************************************************************************
-    public static function createWithKeyFrames(animationKeyFrames:AnimationKeyFrames, target:Dynamic, ?options:AnimationOptions):Animation {
+    public static function createWithKeyFrames(animationKeyFrames:AnimationKeyFrames, target:Dynamic, options:AnimationOptions = null):Animation {
         var animation:Animation = new Animation(target, options);
         animation.name = animationKeyFrames.id;
 
@@ -140,7 +142,7 @@ class Animation {
     **/
     public var target(default, null):Dynamic;
 
-    public function new(target:Dynamic, ?options:AnimationOptions) {
+    public function new(target:Dynamic, options:AnimationOptions = null) {
         this.target = target;
 
         if (options != null) {
@@ -247,12 +249,12 @@ class Animation {
             while (_keyframes.length > 0) {
                 var keyframe:KeyFrame = _keyframes[0];
                 currentTime -= keyframe.time;
-                if(currentTime >= delay) {
+                if (currentTime >= delay) {
                     lastKeyframe = keyframe;
                     _keyframes.splice(0, 1);
                 } else {
                     keyframe.delay = -(currentTime - delay + keyframe.time);
-                    if(lastKeyframe != null) {
+                    if (lastKeyframe != null) {
                         lastKeyframe.time = 0;
                         _keyframes.unshift(lastKeyframe);
                     }
@@ -290,7 +292,7 @@ class Animation {
 
     private function _addAlternateKeyframes() {
         var i:Int = _keyframes.length;
-        while(--i >= 0) {
+        while (--i >= 0) {
             var keyframe:KeyFrame = _keyframes[i];
             var newKeyframe:KeyFrame = new KeyFrame();
             newKeyframe.time = 1 - keyframe.time;
@@ -303,13 +305,13 @@ class Animation {
     private function _reverseCurrentKeyframes() {
         _keyframes.reverse();
         var func = _getReverseEasingFunction(easingFunction);
-        for(keyframe in _keyframes) {
+        for (keyframe in _keyframes) {
             keyframe.easingFunction = func;
         }
     }
 
-    private function _getReverseEasingFunction(easingFunction:EasingFunction) {
-        return switch(easingFunction) {
+    private function _getReverseEasingFunction(easingFunction:EasingFunction):EasingFunction {
+        return switch (easingFunction) {
             case EasingFunction.EASE_OUT:   EasingFunction.EASE_IN;
             case EasingFunction.EASE_IN:    EasingFunction.EASE_OUT;
             case _:                         easingFunction;
@@ -350,6 +352,7 @@ class Animation {
     }
 
     private function _shouldRestoreState():Bool {
+        @SuppressWarnings("checkstyle:Indentation")
         return fillMode == AnimationFillMode.NONE ||
                (fillMode == AnimationFillMode.FORWARDS && direction != AnimationDirection.NORMAL && direction != AnimationDirection.ALTERNATE) ||
                (fillMode == AnimationFillMode.BACKWARDS && direction != AnimationDirection.REVERSE && direction != AnimationDirection.ALTERNATE_REVERSE);

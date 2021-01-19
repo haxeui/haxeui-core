@@ -1,7 +1,5 @@
 package haxe.ui.events;
 
-import haxe.ui.events.UIEvent;
-
 class FocusEvent extends UIEvent {
     public static inline var FOCUS_IN:String = "focusin";
     public static inline var FOCUS_OUT:String = "focusout";

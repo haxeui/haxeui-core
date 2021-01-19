@@ -38,7 +38,7 @@ private class IconBehaviour extends DataBehaviour {
             icon.includeInLayout = false;
             _component.addComponent(icon);
         }
-        
+
         icon.resource = _value;
     }
 }
@@ -52,38 +52,38 @@ private class Builder extends CompositeBuilder {
     private var _frame:Frame;
     private var _contents:Box;
     private var _label:Label;
-    
+
     public function new(frame:Frame) {
         super(frame);
         _frame = frame;
     }
-    
+
     public override function create() {
         _contents = new Box();
         _contents.id = "frame-contents";
         _contents.addClass("frame-contents");
         _frame.addComponent(_contents);
-        
+
         _label = new Label();
         _label.text = "My Frame";
         _label.id = "frame-title";
         _label.addClass("frame-title");
         _label.includeInLayout = false;
         _frame.addComponent(_label);
-        
+
         var line = new Component();
         line.id = "frame-left-line";
         line.addClass("frame-left-line");
         line.includeInLayout = false;
         _frame.addComponent(line);
-        
+
         var line = new Component();
         line.id = "frame-right-line";
         line.addClass("frame-right-line");
         line.includeInLayout = false;
         _frame.addComponent(line);
     }
-    
+
     public override function addComponent(child:Component):Component {
         if (child.id != "frame-contents" && child.id != "frame-title"  && child.id != "frame-icon" && child.id != "frame-left-line" && child.id != "frame-right-line") {
             return _contents.addComponent(child);
@@ -111,7 +111,7 @@ private class Layout extends DefaultLayout {
         }
         var offset = 2;
         #if haxeui_openfl
-            offset = 0;
+        offset = 0;
         #end
         line1.width = paddingLeft - offset;
         var cx = label.width;
@@ -120,18 +120,18 @@ private class Layout extends DefaultLayout {
         }
         line2.width = _component.width - (paddingLeft + cx) - offset;
     }
-    
+
     public override function repositionChildren() {
         var contents = findComponent("frame-contents", Box, false);
         var label = findComponent("frame-title", Label, false);
         var icon = findComponent("frame-icon", Image, false);
         var line1 = findComponent("frame-left-line", Component, false);
         var line2 = findComponent("frame-right-line", Component, false);
-        
+
         contents.top = _component.height - contents.height;
         var offset = 2;
         #if haxeui_openfl
-            offset = 0;
+        offset = 0;
         #end
         var x = paddingLeft;
         if (icon != null) {
@@ -144,7 +144,7 @@ private class Layout extends DefaultLayout {
         line2.left = _component.width - line2.width;
         line2.top = contents.top;
     }
-    
+
     public override function calcAutoSize(exclusions:Array<Component> = null):Size {
         var label = findComponent("frame-title", Label, false);
         var size = super.calcAutoSize(exclusions);

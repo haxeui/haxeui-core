@@ -20,18 +20,18 @@ class Scroll extends InteractiveComponent implements IDirectionalComponent {
     @:behaviour(LayoutBehaviour, 0)             public var pageSize:Float;
     @:behaviour(ScrollValueBehaviour, 0)        public var pos:Float;
     @:behaviour(DefaultBehaviour, 20)           public var increment:Float; // TODO: should calc, 20 is too high if there are, say, 30 items
-    
+
     //***********************************************************************************************************
     // Private API
     //***********************************************************************************************************
     private function posFromCoord(coord:Point):Float {
-        return behaviours.call("posFromCoord", coord); 
+        return behaviours.call("posFromCoord", coord);
     }
-    
+
     private function applyPageFromCoord(coord:Point):Float {
-        return behaviours.call("applyPageFromCoord", coord); 
+        return behaviours.call("applyPageFromCoord", coord);
     }
-    
+
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************
@@ -39,10 +39,10 @@ class Scroll extends InteractiveComponent implements IDirectionalComponent {
         createButton("deinc").repeater = true;
         createButton("inc").repeater = true;
         createButton("thumb").remainPressed = true;
-        
+
         registerInternalEvents(Events);
     }
-    
+
     //***********************************************************************************************************
     // Helpers
     //***********************************************************************************************************
@@ -71,7 +71,7 @@ private class Events extends haxe.ui.events.Events  {
     private var _deincButton:Button;
     private var _incButton:Button;
     private var _thumb:Button;
-    
+
     public function new(scroll:Scroll) {
         super(scroll);
         _scroll = scroll;
@@ -79,7 +79,7 @@ private class Events extends haxe.ui.events.Events  {
         _incButton = _scroll.findComponent("scroll-inc-button");
         _thumb = _scroll.findComponent("scroll-thumb-button");
     }
-    
+
     public override function register() {
         if (hasEvent(MouseEvent.MOUSE_DOWN, onMouseDown) == false) {
             registerEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
@@ -94,7 +94,7 @@ private class Events extends haxe.ui.events.Events  {
             _thumb.registerEvent(MouseEvent.MOUSE_DOWN, onThumbMouseDown);
         }
     }
-    
+
     public override function unregister() {
         unregisterEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
         if (_deincButton != null) {
@@ -107,47 +107,47 @@ private class Events extends haxe.ui.events.Events  {
             _thumb.unregisterEvent(MouseEvent.MOUSE_DOWN, onThumbMouseDown);
         }
     }
-    
+
     private function onMouseDown(event:MouseEvent) {
-		// if mouse isn't pressing _deincButton or _incButton...
+        // if mouse isn't pressing _deincButton or _incButton...
         var componentOffset = _scroll.getComponentOffset();
-		if (_deincButton.hitTest(event.screenX - componentOffset.x, event.screenY - componentOffset.y) == false
+        if (_deincButton.hitTest(event.screenX - componentOffset.x, event.screenY - componentOffset.y) == false
             && _incButton.hitTest(event.screenX - componentOffset.x, event.screenY - componentOffset.y) == false) {
-			_scroll.applyPageFromCoord(new Point(event.screenX - componentOffset.x, event.screenY - componentOffset.y));
-		}
+            _scroll.applyPageFromCoord(new Point(event.screenX - componentOffset.x, event.screenY - componentOffset.y));
+        }
     }
-    
+
     private function onDeinc(event:MouseEvent) {
         _scroll.pos -= _scroll.increment;
     }
-    
+
     private function onInc(event:MouseEvent) {
         _scroll.pos += _scroll.increment;
     }
-    
+
     private var _mouseDownOffset:Point;
     private function onThumbMouseDown(event:MouseEvent) {
         event.cancel();
-        
+
         _mouseDownOffset = new Point();
         _mouseDownOffset.x = event.screenX - _thumb.left + _scroll.layout.paddingLeft;
         _mouseDownOffset.y = event.screenY - _thumb.top + _scroll.layout.paddingTop;
-        
+
         _scroll.screen.registerEvent(MouseEvent.MOUSE_UP, onScreenMouseUp);
         _scroll.screen.registerEvent(MouseEvent.MOUSE_MOVE, onScreenMouseMove);
     }
-    
+
     private function onScreenMouseUp(event:MouseEvent) {
         _mouseDownOffset = null;
         _scroll.screen.unregisterEvent(MouseEvent.MOUSE_UP, onScreenMouseUp);
         _scroll.screen.unregisterEvent(MouseEvent.MOUSE_MOVE, onScreenMouseMove);
     }
-    
+
     private function onScreenMouseMove(event:MouseEvent) {
         if (_mouseDownOffset == null) {
             return;
         }
-        
+
         var coord = new Point(event.screenX - _mouseDownOffset.x, event.screenY - _mouseDownOffset.y);
         _scroll.pos = _scroll.posFromCoord(coord);
     }

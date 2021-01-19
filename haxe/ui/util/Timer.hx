@@ -3,9 +3,9 @@ package haxe.ui.util;
 import haxe.ui.backend.TimerImpl;
 
 class Timer extends TimerImpl {
-    public static function delay( f : Void -> Void, time_ms : Int ):Timer {
+    public static function delay( f : Void -> Void, timeMs : Int ):Timer {
         var t:Timer = null;
-        t = new Timer(time_ms, function() {
+        t = new Timer(timeMs, function() {
             t.stop();
             f();
         });

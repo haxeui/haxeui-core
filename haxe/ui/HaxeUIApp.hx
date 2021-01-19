@@ -9,7 +9,7 @@ import haxe.ui.core.Screen;
 @:keep
 class HaxeUIApp extends AppImpl {
     public static var instance:HaxeUIApp;
-    
+
     private var _options:ToolkitOptions;
     public function new(options:ToolkitOptions = null) {
         super();
@@ -28,27 +28,27 @@ class HaxeUIApp extends AppImpl {
             Toolkit.theme = Toolkit.backendProperties.getProp("haxe.ui.theme");
         }
 
-       if (_options == null) {
+        if (_options == null) {
             Toolkit.init(getToolkitInit());
         } else { // TODO: consider: https://code.haxe.org/category/macros/combine-objects.html
             Toolkit.init(_options);
         }
-        
+
         var preloadList:Array<PreloadItem> = null;
         var preloader = null;
-        
+
         #if (!haxeui_hxwidgets && !haxeui_kha && !haxeui_qt) // TODO: needs some work here
 
-        preloadList = buildPreloadList();        
+        preloadList = buildPreloadList();
         if (preloadList != null && preloadList.length > 0) {
             preloader = new Preloader();
             preloader.progress(0, preloadList.length);
             addComponent(preloader);
             preloader.validateComponent();
         }
-        
+
         #end
-        
+
         handlePreload(preloadList, onReady, onEnd, preloader);
     }
 
@@ -60,9 +60,9 @@ class HaxeUIApp extends AppImpl {
             super.init(onReady, onEnd);
             return;
         }
-        
+
         var item = list.shift();
-        switch(item.type) {
+        switch (item.type) {
             case "font":
                 ToolkitAssets.instance.getFont(item.resourceId, function(f) {
                     if (preloader != null) {
@@ -85,7 +85,7 @@ class HaxeUIApp extends AppImpl {
                 handlePreload(list, onReady, onEnd, preloader);
         }
     }
-    
+
     public function addComponent(component:Component):Component {
         return Screen.instance.addComponent(component);
     }
@@ -97,16 +97,16 @@ class HaxeUIApp extends AppImpl {
     public function setComponentIndex(child:Component, index:Int):Component {
         return Screen.instance.setComponentIndex(child, index);
     }
-    
+
     private override function buildPreloadList():Array<PreloadItem> {
         var list = super.buildPreloadList();
-        
+
         if (list == null) {
             list = [];
         }
-        
+
         list = list.concat(ToolkitAssets.instance.preloadList);
-        
+
         return list;
     }
 }

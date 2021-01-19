@@ -21,10 +21,10 @@ private class VerticalSplitterEvents extends SplitterEvents {
     private override function onGripperMouseDown(event:MouseEvent) {
         super.onGripperMouseDown(event);
         #if haxeui_html5
-            js.Browser.document.body.style.cursor = "row-resize";
+        js.Browser.document.body.style.cursor = "row-resize";
         #end
     }
-    
+
     private override function handleResize(prev:Component, next:Component, event:MouseEvent) {
         var delta = event.screenY - _currentOffset.y;
         var prevCY = prev.height += delta;
@@ -35,7 +35,7 @@ private class VerticalSplitterEvents extends SplitterEvents {
         } else {
             prev.height = prevCY;
         }
-        
+
         if (next.percentHeight != null) {
             next.percentHeight = (nextCY / ucy) * 100;
         } else {

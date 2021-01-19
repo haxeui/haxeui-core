@@ -10,10 +10,10 @@ import haxe.ui.styles.Style;
 @:dox(hide) @:noCompletion
 class TextBase {
     public var parentComponent:Component;
-    
+
     private var _displayData:TextDisplayData = new TextDisplayData();
     private var _inputData:TextInputData = new TextInputData();
-    
+
     private var _text:String;
     private var _htmlText:String = null;
     private var _left:Float = 0;
@@ -24,16 +24,16 @@ class TextBase {
     private var _textHeight:Float = 0;
     private var _textStyle:Style;
     private var _fontInfo:FontInfo;
-    
+
     public function new() {
     }
-    
+
     public function focus() {
     }
-    
+
     public function blur() {
     }
-    
+
     private var _dataSource:DataSource<String>;
     public var dataSource(get, set):DataSource<String>;
     private function get_dataSource():DataSource<String> {
@@ -43,29 +43,29 @@ class TextBase {
         _dataSource = value;
         return value;
     }
-    
+
     public var supportsHtml(get, null):Bool;
     private function get_supportsHtml():Bool {
         return false;
     }
-    
+
     //***********************************************************************************************************
     // Validation functions
     //***********************************************************************************************************
 
     private function validateData() {
     }
-    
+
     private function validateStyle():Bool {
         return false;
     }
-    
+
     private function validatePosition() {
     }
-    
+
     private function validateDisplay() {
     }
-    
+
     private function measureText() {
     }
 }

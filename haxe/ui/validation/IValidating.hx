@@ -5,8 +5,7 @@ package haxe.ui.validation;
     will delay updating after property changes until just before the renderer
     renders the display list to avoid running redundant code.
 **/
-interface IValidating
-{
+interface IValidating {
     /**
         The component's depth in the display list, relative to the stage. If
         the component isn't on the stage or it isn't a component,

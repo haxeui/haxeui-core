@@ -31,23 +31,23 @@ class DataSourceFactory<T> {
 
         return ds;
     }
-	
-	private function xml2Object(el:Xml, addId:Bool = true):Dynamic {
-		var o = {};
-		
-		if (addId == true) {
-			Reflect.setField(o, "id", el.nodeName);
-		}
-		
-		for (attr in el.attributes()) {
-			Reflect.setField(o, attr, el.get(attr));
-		}
-		
-		for (childEl in el.elements()) {
-			var childObject = xml2Object(childEl, false);
-			Reflect.setField(o, childEl.nodeName, childObject);
-		}
-		
-		return o;
-	}
+
+    private function xml2Object(el:Xml, addId:Bool = true):Dynamic {
+        var o = {};
+
+        if (addId == true) {
+            Reflect.setField(o, "id", el.nodeName);
+        }
+
+        for (attr in el.attributes()) {
+            Reflect.setField(o, attr, el.get(attr));
+        }
+
+        for (childEl in el.elements()) {
+            var childObject = xml2Object(childEl, false);
+            Reflect.setField(o, childEl.nodeName, childObject);
+        }
+
+        return o;
+    }
 }

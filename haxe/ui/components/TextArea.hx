@@ -25,7 +25,7 @@ class TextArea extends InteractiveComponent implements IFocusable {
     //***********************************************************************************************************
     // Styles
     //***********************************************************************************************************
-    
+
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
@@ -35,10 +35,10 @@ class TextArea extends InteractiveComponent implements IFocusable {
     @:behaviour(WrapBehaviour, true)        public var wrap:Bool;
     @:behaviour(DataSourceBehaviour)        public var dataSource:DataSource<String>;
     @:behaviour(DefaultBehaviour)           public var autoScrollToBottom:Bool;
-    
+
     @:call(ScrollToTop)                     public function scrollToTop();
     @:call(ScrollToBottom)                  public function scrollToBottom();
-    
+
     //***********************************************************************************************************
     // Validation
     //***********************************************************************************************************
@@ -99,11 +99,11 @@ private class TextAreaLayout extends DefaultLayout {
         if (hscroll != null && hidden(hscroll) == false) {
             hscroll.width = usableSize.width;
         }
-        
+
         if (vscroll != null && hidden(vscroll) == false) {
             vscroll.height = usableSize.height;
         }
-        
+
         if (component.hasTextInput() == true) {
             var size:Size = usableSize;
             #if !pixijs
@@ -139,7 +139,7 @@ private class DataSourceBehaviour extends DataBehaviour {
         _value = value;
         _component.getTextInput().dataSource = value;
     }
-    
+
     public override function get():Variant {
         if (_value == null || _value.isNull) {
             _value = new ArrayDataSource<String>();
@@ -204,7 +204,7 @@ private class ScrollToBottom extends Behaviour {
 private class TextAreaHelper {
     public static function validateText(textarea:TextArea, text:String) {
         if (text == null) {
-           text = ""; 
+            text = "";
         }
 
         if (textarea.focus == false && textarea.placeholder != null) {
@@ -221,7 +221,7 @@ private class TextAreaHelper {
                 textarea.removeClass(":empty");
             }
         }
-        
+
         textarea.getTextInput().text = '${text}';
         textarea.getTextInput().invalidateComponent(InvalidationFlags.MEASURE);
         textarea.invalidateComponentLayout();
@@ -234,12 +234,12 @@ private class TextAreaHelper {
 @:access(haxe.ui.core.Component)
 private class Events extends haxe.ui.events.Events {
     private var _textarea:TextArea;
-    
+
     public function new(textarea:TextArea) {
         super(textarea);
         _textarea = textarea;
     }
-    
+
     public override function register() {
         if (_textarea.getTextInput().data.onChangedCallback == null) {
             _textarea.getTextInput().multiline = true;
@@ -250,7 +250,7 @@ private class Events extends haxe.ui.events.Events {
                 }
             };
         }
-        
+
         if (_textarea.getTextInput().data.onScrollCallback == null) {
             _textarea.getTextInput().data.onScrollCallback = function() {
                 var hscroll:HorizontalScroll = _textarea.findComponent(HorizontalScroll, false);
@@ -263,17 +263,17 @@ private class Events extends haxe.ui.events.Events {
                 }
             }
         }
-        
+
         var hscroll:HorizontalScroll = _textarea.findComponent(HorizontalScroll, false);
         if (hscroll != null && hscroll.hasEvent(UIEvent.CHANGE, onScrollChange) == false) {
             hscroll.registerEvent(UIEvent.CHANGE, onScrollChange);
         }
-        
+
         var vscroll:VerticalScroll = _textarea.findComponent(VerticalScroll, false);
         if (vscroll != null && vscroll.hasEvent(UIEvent.CHANGE, onScrollChange) == false) {
             vscroll.registerEvent(UIEvent.CHANGE, onScrollChange);
         }
-        
+
         if (hasEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel) == false) {
             registerEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
         }
@@ -287,27 +287,27 @@ private class Events extends haxe.ui.events.Events {
             registerEvent(FocusEvent.FOCUS_OUT, onFocusChange);
         }
     }
-    
+
     public override function unregister() {
         _textarea.getTextInput().data.onChangedCallback = null;
         _textarea.getTextInput().data.onScrollCallback = null;
-        
+
         var hscroll:HorizontalScroll = _textarea.findComponent(HorizontalScroll, false);
         if (hscroll != null) {
             hscroll.unregisterEvent(UIEvent.CHANGE, onScrollChange);
         }
-        
+
         var vscroll:VerticalScroll = _textarea.findComponent(VerticalScroll, false);
         if (vscroll != null) {
             vscroll.unregisterEvent(UIEvent.CHANGE, onScrollChange);
         }
-        
+
         unregisterEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
         unregisterEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
         unregisterEvent(FocusEvent.FOCUS_IN, onFocusChange);
         unregisterEvent(FocusEvent.FOCUS_OUT, onFocusChange);
     }
-    
+
     private function onMouseWheel(event:MouseEvent) {
         if (_textarea.getTextInput().data.vscrollNativeWheel == true) {
             return;
@@ -327,23 +327,23 @@ private class Events extends haxe.ui.events.Events {
             }
         }
     }
-    
+
     private function onScrollChange(event:UIEvent) {
         var hscroll:HorizontalScroll = _textarea.findComponent(HorizontalScroll, false);
         if (hscroll != null) {
             _textarea.getTextInput().hscrollPos = hscroll.pos;
         }
-        
+
         var vscroll:VerticalScroll = _textarea.findComponent(VerticalScroll, false);
         if (vscroll != null) {
             _textarea.getTextInput().vscrollPos = vscroll.pos;
         }
     }
-    
+
     private function onMouseDown(event:MouseEvent) { // TODO: this should happen automatically as part of InteractiveComponent (?)
         _textarea.focus = true;
     }
-    
+
     private function onFocusChange(event:MouseEvent) {
         if (_textarea.focus == true) {
             _textarea.getTextInput().focus();
@@ -362,25 +362,25 @@ private class Events extends haxe.ui.events.Events {
 @:access(haxe.ui.core.Component)
 private class TextAreaBuilder extends CompositeBuilder {
     private var _textarea:TextArea;
-    
+
     public function new(textarea:TextArea) {
         super(textarea);
         _textarea = textarea;
     }
-    
+
     public function checkScrolls() {
         if (_textarea.native == true) {
             return;
         }
-        
+
         var textInput:TextInput = _textarea.getTextInput();
-        
+
         var hscroll:HorizontalScroll = _component.findComponent(HorizontalScroll, false);
         if (textInput.textWidth - textInput.width > 1) {
             if (hscroll == null) {
                 hscroll = createHScroll();
             }
-            
+
             hscroll.max = textInput.hscrollMax;
             hscroll.pos = textInput.hscrollPos;
             hscroll.pageSize = textInput.hscrollPageSize;
@@ -389,17 +389,17 @@ private class TextAreaBuilder extends CompositeBuilder {
                 _component.removeComponent(hscroll);
             }
         }
-        
+
         var vscroll:VerticalScroll = _component.findComponent(VerticalScroll, false);
         if (textInput.textHeight - textInput.height > 1) {
             if (vscroll == null) {
                 vscroll = createVScroll();
             }
-            
+
             vscroll.max = textInput.vscrollMax;
             vscroll.pos = textInput.vscrollPos;
             vscroll.pageSize = textInput.vscrollPageSize;
-            
+
             if (_textarea.autoScrollToBottom == true) {
                 _textarea.scrollToBottom();
             }
@@ -409,7 +409,7 @@ private class TextAreaBuilder extends CompositeBuilder {
             }
         }
     }
-    
+
     public function createHScroll():HorizontalScroll {
         var hscroll = new HorizontalScroll();
         hscroll.percentWidth = 100;
@@ -418,7 +418,7 @@ private class TextAreaBuilder extends CompositeBuilder {
         _component.registerInternalEvents(true);
         return hscroll;
     }
-    
+
     public function createVScroll():VerticalScroll {
         var vscroll = new VerticalScroll();
         if (_textarea.getTextInput().data.vscrollPageStep != null) {
@@ -430,7 +430,7 @@ private class TextAreaBuilder extends CompositeBuilder {
         _component.registerInternalEvents(true);
         return vscroll;
     }
-    
+
     public override function applyStyle(style:Style) {
         super.applyStyle(style);
         if (_component.hasTextInput() == true) {

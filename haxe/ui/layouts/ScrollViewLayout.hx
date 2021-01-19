@@ -36,7 +36,7 @@ class ScrollViewLayout extends DefaultLayout {
 
         var hscroll = component.findComponent(HorizontalScroll, false);
         var vscroll = component.findComponent(VerticalScroll, false);
-        
+
         var usableSize:Size = usableSize;
         var percentWidth:Float = 100;
         var percentHeight:Float = 100;
@@ -61,11 +61,11 @@ class ScrollViewLayout extends DefaultLayout {
             if (fixedMinHeight(child) && child.percentHeight != null) {
                 percentHeight -= child.percentHeight;
             }
-            
+
             child.resizeComponent(cx, cy);
         }
     }
-    
+
     @:access(haxe.ui.backend.ComponentBase)
     private override function get_usableSize():Size {
         var size:Size = super.get_usableSize();

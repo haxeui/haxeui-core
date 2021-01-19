@@ -1,5 +1,5 @@
 package haxe.ui.filters;
 
-class Blur extends Filter {
+class Grayscale extends Filter {
     public var amount:Float;
 }

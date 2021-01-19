@@ -12,7 +12,7 @@ import builds.winforms.WinFormsBuild;
 class BuildFactory {
     public static function get(backend:String):Build {
         var b:Build = null;
-        
+
         switch (backend) {
             case "android":
                 b = new AndroidBuild();
@@ -30,9 +30,9 @@ class BuildFactory {
                 b = new KhaBuild();
             case "winforms":
                 b = new WinFormsBuild();
-            case _:    
+            case _:
         }
-        
+
         return b;
     }
 }

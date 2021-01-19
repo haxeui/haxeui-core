@@ -27,7 +27,7 @@ class Layout implements ILayout {
         }
         return _component.findComponent(criteria, type, recursive, searchType);
     }
-    
+
     @:access(haxe.ui.core.Component)
     public function refresh() {
         if (_component != null && _component.isReady == true) {
@@ -131,7 +131,7 @@ class Layout implements ILayout {
         }
         return fixedMinHeight;
     }
-    
+
     //******************************************************************************************
     // Helper props
     //******************************************************************************************
@@ -292,12 +292,12 @@ class Layout implements ILayout {
 
         var w:Float = (x2 - x1) + (paddingLeft + paddingRight);
         var h:Float = (y2 - y1) + (paddingTop + paddingBottom);
-        
+
         if (Std.is(this, AbsoluteLayout)) {
             w += x1;
             h += y1;
         }
-        
+
         return new Size(w, h);
     }
 

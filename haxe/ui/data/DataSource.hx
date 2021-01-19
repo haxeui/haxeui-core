@@ -13,7 +13,7 @@ class DataSource<T> {
     public var onUpdate:Int->T->Void = null;
     public var onRemove:T->Void = null;
     public var onClear:Void->Void = null;
-    
+
     public function new(transformer:IItemTransformer<T> = null) {
         this.transformer = transformer;
         _allowCallbacks = true;
@@ -36,6 +36,16 @@ class DataSource<T> {
         return value;
     }
 
+    public var data(get, set):Any;
+    private function get_data():Any {
+        return handleGetData();
+    }
+    private function set_data(value:Any):Any {
+        handleSetData(value);
+        handleChanged();
+        return value;
+    }
+    
     public var size(get, null):Int;
     private function get_size():Int {
         return handleGetSize();
@@ -53,7 +63,7 @@ class DataSource<T> {
     }
 
     public function indexOf(item:T):Int {
-        if(transformer != null) {
+        if (transformer != null) {
             item = transformer.transformFrom(item);
         }
 
@@ -106,7 +116,7 @@ class DataSource<T> {
             onClear();
         }
     }
-    
+
     private function handleChanged() {
         _changed = true;
         if (_allowCallbacks == true && onChange != null) {
@@ -140,6 +150,14 @@ class DataSource<T> {
         return null;
     }
 
+    private function handleGetData():Any {
+        return null;
+    }
+    
+    private function handleSetData(v:Any) {
+        
+    }
+    
     private function handleClear() {
         var cachedTransformer = transformer;
         transformer = null;

@@ -37,7 +37,7 @@ class DragManager {
 
     /**
      * Returns the current DragOptions for a given component previously registered
-     * @param component 
+     * @param component
      * @return DragOptions
      */
     public function getDragOptions(component:Component):DragOptions {
@@ -47,15 +47,15 @@ class DragManager {
 
     /**
      * Registers a component for drag-drop management
-     * @param component 
-     * @param dragOptions 
+     * @param component
+     * @param dragOptions
      * @return DragOptions
      */
-    public function registerDraggable(component:Component, ?dragOptions:DragOptions):DragOptions {
+    public function registerDraggable(component:Component, dragOptions:DragOptions = null):DragOptions {
         if (isRegisteredDraggable(component)) {
             return null;
         }
-        
+
         // Set default DragOptions if not present //
         if (dragOptions == null) dragOptions = {};
         if (dragOptions.mouseTarget == null) dragOptions.mouseTarget = component;
@@ -74,7 +74,7 @@ class DragManager {
         if (!dragOptions.mouseTarget.hasEvent(MouseEvent.MOUSE_DOWN, onMouseDown)) {
             dragOptions.mouseTarget.registerEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
         }
-        
+
         // add styles
         if (dragOptions.draggableStyleName != null) {
             dragOptions.mouseTarget.addClass(dragOptions.draggableStyleName);
@@ -84,13 +84,13 @@ class DragManager {
 
     /**
      * Unregisters a previously registered component from drag-drop management
-     * @param component 
+     * @param component
      */
-    public function unregisterDraggable(component:Component):Void {
+    public function unregisterDraggable(component:Component) {
         if (!isRegisteredDraggable(component)) {
             return;
         }
-        
+
         var dragOptions:DragOptions = getDragOptions(component);
 
         // Unregister events //
@@ -102,79 +102,78 @@ class DragManager {
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_MOVE, onScreenCheckForDrag);
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_MOVE, onScreenDrag);
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_UP, onScreenMouseUp);
-        
+
         // remove component from map
         _dragComponents.remove(component);
     }
 
     /**
      * If a component is registered to be draggable
-     * @param component 
+     * @param component
      * @return Bool
      */
     public function isRegisteredDraggable(component:Component):Bool {
         return _dragComponents.exists(component);
     }
-    
+
     // Listeners //
     ///////////////
 
-    private function onMouseDown(e:MouseEvent):Void {
+    private function onMouseDown(e:MouseEvent) {
         // set current pending dragging component
         _currentComponent = _mouseTargetToDragTarget.get(e.target);
         _currentOptions = getDragOptions(_currentComponent);
 
         // set _mouseOffset to current mouse position
         _mouseOffset = new Point(e.screenX - _currentComponent.left, e.screenY - _currentComponent.top);
-        
-		// register screen events
+
+        // register screen events
         Screen.instance.registerEvent(MouseEvent.MOUSE_UP, onScreenMouseUp);
-		Screen.instance.registerEvent(MouseEvent.MOUSE_MOVE, onScreenCheckForDrag);
+        Screen.instance.registerEvent(MouseEvent.MOUSE_MOVE, onScreenCheckForDrag);
     }
-    
-    private function onScreenCheckForDrag(e:MouseEvent):Void {
+
+    private function onScreenCheckForDrag(e:MouseEvent) {
         // if the distance the mouse has traveled is greater than the dragTolerance...
-		if (MathUtil.distance(e.screenX - _currentComponent.left, e.screenY - _currentComponent.top, _mouseOffset.x, _mouseOffset.y) > _currentOptions.dragTolerance) {
-			// stop listening for drag check
-			Screen.instance.unregisterEvent(MouseEvent.MOUSE_MOVE, onScreenCheckForDrag);
-			// add drag listener
+        if (MathUtil.distance(e.screenX - _currentComponent.left, e.screenY - _currentComponent.top, _mouseOffset.x, _mouseOffset.y) > _currentOptions.dragTolerance) {
+            // stop listening for drag check
+            Screen.instance.unregisterEvent(MouseEvent.MOUSE_MOVE, onScreenCheckForDrag);
+            // add drag listener
             Screen.instance.registerEvent(MouseEvent.MOUSE_MOVE, onScreenDrag);
-            
+
             // Adjust mouseOffset //
             _mouseOffset.x -= _currentOptions.dragOffsetX;
             _mouseOffset.y -= _currentOptions.dragOffsetY;
-            
+
             if (_currentOptions.draggingStyleName != null) {
                 _currentComponent.addClass(_currentOptions.draggingStyleName);
             }
             _currentComponent.dispatch(new UIEvent(UIEvent.DRAG_START));
-		}
+        }
     }
-    
-    private function onScreenDrag(e:MouseEvent):Void {
+
+    private function onScreenDrag(e:MouseEvent) {
         // Calculate bounds //
-		var boundX = MathUtil.clamp(e.screenX, _currentOptions.dragBounds.left + _mouseOffset.x, _currentOptions.dragBounds.right - _currentComponent.width + _mouseOffset.x);
+        var boundX = MathUtil.clamp(e.screenX, _currentOptions.dragBounds.left + _mouseOffset.x, _currentOptions.dragBounds.right - _currentComponent.width + _mouseOffset.x);
         var boundY = MathUtil.clamp(e.screenY, _currentOptions.dragBounds.top + _mouseOffset.y, _currentOptions.dragBounds.bottom - _currentComponent.height + _mouseOffset.y);
-        
+
         _currentComponent.moveComponent(boundX - _mouseOffset.x, boundY - _mouseOffset.y);
-	}
-	
-	private function onScreenMouseUp(e:MouseEvent):Void {
+    }
+
+    private function onScreenMouseUp(e:MouseEvent) {
         if (_currentOptions.draggingStyleName != null) {
             _currentComponent.removeClass(_currentOptions.draggingStyleName);
         }
         _currentComponent.dispatch(new UIEvent(UIEvent.DRAG_END));
-            
+
         // Clear data //
         _currentComponent = null;
         _currentOptions = null;
         _mouseOffset.x = 0;
         _mouseOffset.y = 0;
 
-		// Unregister events //
-		Screen.instance.unregisterEvent(MouseEvent.MOUSE_UP, onScreenMouseUp);
-		Screen.instance.unregisterEvent(MouseEvent.MOUSE_MOVE, onScreenCheckForDrag);
-		Screen.instance.unregisterEvent(MouseEvent.MOUSE_MOVE, onScreenDrag);
-	}
-
+        // Unregister events //
+        Screen.instance.unregisterEvent(MouseEvent.MOUSE_UP, onScreenMouseUp);
+        Screen.instance.unregisterEvent(MouseEvent.MOUSE_MOVE, onScreenCheckForDrag);
+        Screen.instance.unregisterEvent(MouseEvent.MOUSE_MOVE, onScreenDrag);
+    }
 }

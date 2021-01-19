@@ -23,7 +23,7 @@ class TabBar extends Component {
     @:behaviour(TabPosition, "top")     public var tabPosition:String;
     @:behaviour(TabCount)               public var tabCount:Int;
     @:behaviour(Closable, false)        public var closable:Bool;
-    @:call(RemoveTab)                   public function removeTab(index:Int):Void;
+    @:call(RemoveTab)                   public function removeTab(index:Int);
     @:call(GetTab)                      public function getTab(index:Int):Component;
 }
 
@@ -34,7 +34,7 @@ class TabBar extends Component {
 private class Layout extends DefaultLayout {
     private override function repositionChildren() {
         super.repositionChildren();
-        
+
         var left:Button = _component.findComponent("tabbar-scroll-left", false);
         var right:Button = _component.findComponent("tabbar-scroll-right", false);
         if (left != null && hidden(left) == false) {
@@ -45,7 +45,7 @@ private class Layout extends DefaultLayout {
             left.left = x + 1;
             left.top = (_component.height / 2) - (left.height / 2);
         }
-        
+
         if (right != null && hidden(right) == false) {
             right.left = _component.width - right.width;
             right.top = (_component.height / 2) - (right.height / 2);
@@ -65,7 +65,7 @@ private class Closable extends DataBehaviour {
         if (builder._container == null) {
             return;
         }
-        
+
         var buttons = builder._container.findComponents(TabBarButton, 1);
         for (b in buttons) {
             b.closable = _value;
@@ -97,7 +97,7 @@ private class SelectedIndex extends DataBehaviour {
                 selectedTab.removeClass("tabbar-button-selected");
             }
             tab.addClass("tabbar-button-selected");
-            
+
             var rangeMin = Math.abs(builder._container.left);
             var rangeMax = rangeMin + _component.width;
 
@@ -110,7 +110,7 @@ private class SelectedIndex extends DataBehaviour {
             if (right != null && right.hidden == false) {
                 rangeMax -= right.width;
             }
-            
+
             if (tab.left < rangeMin || (tab.left + tab.width) > rangeMax) {
                 var max = -(builder._container.width - _component.width);
                 var x = -tab.left + _component.layout.paddingLeft;
@@ -121,15 +121,15 @@ private class SelectedIndex extends DataBehaviour {
                 if (right != null && right.hidden == false) {
                     max -= right.width;
                 }
-                
+
                 if (x < max) {
                     x = max;
                 }
-                
+
                 builder._containerPosition = x;
                 builder._container.left = x;
             }
-            
+
             _component.invalidateComponentLayout();
             _component.dispatch(new UIEvent(UIEvent.CHANGE));
         }
@@ -195,10 +195,10 @@ private class RemoveTab extends Behaviour {
                     newSelectedIndex = builder._container.childComponents.length - 2;
                 }
             }
-            
+
             builder._container.removeComponentAt(index);
             _component.dispatch(new UIEvent(UIEvent.CLOSE, index));
-            
+
             cast(_component, TabBar).selectedIndex = newSelectedIndex;
         }
         return null;
@@ -227,12 +227,12 @@ private class GetTab extends Behaviour {
 @:access(haxe.ui.components.Builder)
 private class Events extends haxe.ui.events.Events {
     private var _tabbar:TabBar;
-    
+
     public function new(tabbar:TabBar) {
         super(tabbar);
         _tabbar = tabbar;
     }
-    
+
     public override function register() {
         var builder:Builder = cast(_tabbar._compositeBuilder, Builder);
         for (t in builder._container.childComponents) {
@@ -242,20 +242,20 @@ private class Events extends haxe.ui.events.Events {
         }
         registerEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
     }
-    
+
     public override function unregister() {
         unregisterEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
     }
-    
+
     private function onMouseWheel(event:MouseEvent) {
         var builder:Builder = cast(_tabbar._compositeBuilder, Builder);
         if (event.delta < 0) {
-           builder.scrollLeft();
+            builder.scrollLeft();
         } else {
-           builder.scrollRight();
+            builder.scrollRight();
         }
     }
-    
+
     private function onTabMouseDown(event:MouseEvent) {
         var builder:Builder = cast(_tabbar._compositeBuilder, Builder);
         var button = event.target;
@@ -279,17 +279,17 @@ private class Events extends haxe.ui.events.Events {
 private class Builder extends CompositeBuilder {
     private var _tabbar:TabBar;
     private var _container:HBox;
-    
+
     public function new(tabbar:TabBar) {
         super(tabbar);
         _tabbar = tabbar;
         createContainer();
     }
-    
+
     public override function create() {
         createContainer();
     }
-    
+
     private function createContainer() {
         if (_container == null) {
             _container = new HBox();
@@ -298,62 +298,64 @@ private class Builder extends CompositeBuilder {
             _tabbar.addComponent(_container);
         }
     }
-    
+
     private function addTab(child:Component):Component {
         var button = createTabBarButton(child);
-        var v = _container.addComponent(button); 
+        var v = _container.addComponent(button);
         _tabbar.registerInternalEvents(Events, true);
         if (_tabbar.selectedIndex < 0) {
             _tabbar.selectedIndex = 0;
         }
         return v;
     }
-    
+
     private function addTabAt(child:Component, index:Int):Component {
         var button = createTabBarButton(child);
-        var v = _container.addComponentAt(button, index); 
+        var v = _container.addComponentAt(button, index);
         _tabbar.registerInternalEvents(Events, true);
         if (_tabbar.selectedIndex < 0) {
             _tabbar.selectedIndex = 0;
         }
         return v;
-        
+
     }
-    
+
     private function createTabBarButton(child:Component):TabBarButton {
         var button = new TabBarButton();
-        
+
         button.addClass("tabbar-button");
         if (_tabbar.tabPosition == "bottom") {
             button.addClass(":bottom");
         }
-        
+
         button.id = child.id;
         button.text = child.text;
-        button.icon = cast(child, Button).icon;
+        if (Std.is(child, Button)) {
+            button.icon = cast(child, Button).icon;
+        }
         button.closable = _tabbar.closable;
-        
+
         return button;
     }
-    
-    public override function get_numComponents():Null<Int> {
+
+    private override function get_numComponents():Null<Int> {
         return _container.numComponents;
     }
-    
+
     public override function addComponent(child:Component):Component {
         if (child != _container && child != _scrollLeft && child != _scrollRight) {
             return addTab(child);
         }
         return null;
     }
-    
+
     public override function addComponentAt(child:Component, index:Int):Component {
         if (child != _container && child != _scrollLeft && child != _scrollRight) {
             return addTabAt(child, index);
         }
         return null;
     }
-    
+
     public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
         if (child != _container && child != _scrollLeft && child != _scrollRight) {
             var index = _container.getComponentIndex(child);
@@ -364,7 +366,7 @@ private class Builder extends CompositeBuilder {
         }
         return null;
     }
-    
+
     public override function removeComponentAt(index:Int, dispose:Bool = true, invalidate:Bool = true):Component {
         var child = _container.getComponentAt(index);
         if (child != null) {
@@ -372,34 +374,34 @@ private class Builder extends CompositeBuilder {
         }
         return child;
     }
-    
+
     public override function getComponentIndex(child:Component):Int {
         if (child != _container && child != _scrollLeft && child != _scrollRight) {
             return _container.getComponentIndex(child);
         }
         return -1;
     }
-    
+
     public override function setComponentIndex(child:Component, index:Int):Component {
         if (child != _container && child != _scrollLeft && child != _scrollRight) {
             return _container.setComponentIndex(child, index);
         }
         return null;
     }
-    
+
     public override function getComponentAt(index:Int):Component {
         return _container.getComponentAt(index);
     }
-    
+
     public override function validateComponentLayout():Bool {
         if (_tabbar.native == true || _container == null) {
             return false;
         }
-        
+
         if (_containerPosition == null) {
             _containerPosition = _tabbar.layout.paddingLeft;
         }
-        
+
         if (_container.width > _tabbar.layout.usableWidth && _tabbar.layout.usableWidth > 0) {
             showScrollButtons();
             _container.left = _containerPosition;
@@ -407,10 +409,10 @@ private class Builder extends CompositeBuilder {
             hideScrollButtons();
             _containerPosition = null;
         }
-        
+
         return true;
     }
-    
+
     private var _scrollLeft:Button;
     private var _scrollRight:Button;
     private function showScrollButtons() {
@@ -427,7 +429,7 @@ private class Builder extends CompositeBuilder {
         } else {
             _scrollLeft.show();
         }
-        
+
         if (_scrollRight == null) {
             _scrollRight = new Button();
             _scrollRight.id = "tabbar-scroll-right";
@@ -442,30 +444,30 @@ private class Builder extends CompositeBuilder {
             _scrollRight.show();
         }
     }
-    
+
     private var _containerPosition:Null<Float>;
     private static inline var SCROLL_INCREMENT:Int = 20; // todo: calc based on button width?
     private function scrollLeft() {
         if (_scrollLeft == null || _scrollLeft.hidden == true) {
             return;
         }
-        
-        var x = _container.left + SCROLL_INCREMENT; 
+
+        var x = _container.left + SCROLL_INCREMENT;
         if (x > _tabbar.layout.paddingLeft) {
             x = _tabbar.layout.paddingLeft;
         }
         _containerPosition = x;
         _container.left = x;
     }
-    
+
     private function scrollRight() {
         if (_scrollLeft == null || _scrollLeft.hidden == true) {
             return;
         }
-        
+
         var x = _container.left - SCROLL_INCREMENT;
         var max = -(_container.width - _tabbar.width);
-        
+
         var left:Button = _tabbar.findComponent("tabbar-scroll-left", Button);
         var right:Button = _tabbar.findComponent("tabbar-scroll-right", Button);
         if (left != null && left.hidden == false) {
@@ -475,14 +477,14 @@ private class Builder extends CompositeBuilder {
         if (right != null && right.hidden == false) {
             max -= right.width;
         }
-        
+
         if (x < max) {
             x = max;
         }
         _containerPosition = x;
         _container.left = x;
     }
-    
+
     private function hideScrollButtons() {
         if (_scrollLeft != null) {
             _scrollLeft.hide();
@@ -505,10 +507,10 @@ private class TabBarButton extends Button {
         if (_closable == value) {
             return value;
         }
-        
+
         _closable = value;
         var existing = findComponent("tab-close-button", Image, false);
-        
+
         if (_closable == true && existing == null) {
             iconPosition = "far-left";
             var image = new Image();
@@ -521,13 +523,13 @@ private class TabBarButton extends Button {
         } else if (existing != null) {
             removeComponent(existing);
         }
-        
+
         return value;
     }
-    
+
     private function onCloseClicked(e:MouseEvent) {
         var tabbar = findAncestor(TabBar);
-        
+
         var builder:Builder = cast(tabbar._compositeBuilder, Builder);
         var index = builder._container.getComponentIndex(this);
         var event = new UIEvent(UIEvent.BEFORE_CLOSE, index);
@@ -543,22 +545,22 @@ private class TabBarButton extends Button {
 private class TabBarButtonLayout extends ButtonLayout {
     private override function repositionChildren() {
         super.repositionChildren();
-        
+
         var image = _component.findComponent("tab-close-button", Image, false);
         if (image != null && component.componentWidth > 0) {
             image.top = Std.int((component.componentHeight / 2) - (image.componentHeight / 2)) + marginTop(image) - marginBottom(image);
             image.left = component.componentWidth - image.componentWidth - paddingRight + marginLeft(image) - marginRight(image);
         }
     }
-    
+
     public override function calcAutoSize(exclusions:Array<Component> = null):Size {
         var size = super.calcAutoSize(exclusions);
-        
+
         var image = _component.findComponent("tab-close-button", Image, false);
         if (image != null) {
             size.width += image.width + horizontalSpacing;
         }
-        
+
         return size;
     }
 }

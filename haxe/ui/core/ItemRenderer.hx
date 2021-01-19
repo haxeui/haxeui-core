@@ -2,7 +2,6 @@ package haxe.ui.core;
 
 import haxe.ui.components.Button;
 import haxe.ui.containers.Box;
-import haxe.ui.core.InteractiveComponent;
 import haxe.ui.events.ItemEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
@@ -89,13 +88,13 @@ class ItemRenderer extends Box {
                     } else {
                         _fieldList = ["text"];
                     }
-                case _:    
+                case _:
                     _fieldList = ["text"];
             }
         }
-        
+
         updateValues(_data, _fieldList);
-        
+
         var components = findComponents(InteractiveComponent);
         for (c in components) {
             if (Std.is(c, Button)) {
@@ -109,7 +108,7 @@ class ItemRenderer extends Box {
             }
         }
     }
-    
+
     private function onItemChange(event:UIEvent) {
         var v = event.target.value;
         if (_data != null) {
@@ -123,7 +122,7 @@ class ItemRenderer extends Box {
         e.data = _data;
         dispatch(e);
     }
-    
+
     private function onItemClick(event:UIEvent) {
         var e = new ItemEvent(ItemEvent.COMPONENT_EVENT);
         e.bubble = true;
@@ -133,12 +132,12 @@ class ItemRenderer extends Box {
         e.data = _data;
         dispatch(e);
     }
-    
+
     private function updateValues(value:Dynamic, fieldList:Array<String> = null) {
         if (fieldList == null) {
             fieldList = Reflect.fields(value);
         }
-        
+
         var valueObject = null;
         switch (Type.typeof(value)) {
             case TObject | TClass(_):
@@ -160,7 +159,7 @@ class ItemRenderer extends Box {
                 if (c != null && v != null) {
                     var propValue:Dynamic = TypeConverter.convert(v);
                     c.value = propValue;
-                    
+
                     if (Std.is(c, InteractiveComponent)) {
                         if (c.hasEvent(UIEvent.CHANGE, onItemChange) == false) {
                             c.registerEvent(UIEvent.CHANGE, onItemChange);
@@ -169,14 +168,14 @@ class ItemRenderer extends Box {
                             c.registerEvent(MouseEvent.CLICK, onItemClick);
                         }
                     }
-                    
+
                     c.show();
                 } else if (c != null) {
                     c.hide();
                 } else if (f != "id") {
                     try {
                         Reflect.setProperty(this, f, v);
-                    } catch (e) { }
+                    } catch (e) {}
                 }
             }
         }

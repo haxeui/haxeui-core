@@ -7,40 +7,40 @@ import haxe.macro.ExprTools;
 class FunctionBuilder {
     public var field:Field;
     public var fn:Function;
-    
+
     public function new(field:Field, fn:Function) {
         this.field = field;
         this.fn = fn;
     }
-    
+
     public var name(get, null):String;
     private function get_name():String {
         return field.name;
     }
-    
+
     public var returnType(get, null):String;
     private function get_returnType():String {
         var r = null;
         switch (fn.ret) {
             case TPath(p):
                 r = p.name;
-            case _:    
+            case _:
         }
         return r;
     }
-    
+
     public var isVoid(get, null):Bool;
     private function get_isVoid():Bool {
         return (returnType == "Void");
     }
-    
+
     public function getArgName(index:Int):String {
         if (fn.args != null && fn.args.length > index) {
             return fn.args[index].name;
         }
         return null;
     }
-    
+
     public function add(e:Expr = null, cb:CodeBuilder = null, where:CodePos = null) {
         if (where == null) {
             where = CodePos.End;
@@ -49,18 +49,18 @@ class FunctionBuilder {
         current.add(e, cb, where);
         fn.expr = current.expr;
     }
-    
+
     public function set(e:Expr = null, cb:CodeBuilder = null) {
         if (e == null) {
             e = cb.expr;
         }
         fn.expr = e;
     }
-    
+
     public function arg(index):FunctionArg {
         return fn.args[index];
     }
-    
+
     public var argCount(get, null):Int;
     private function get_argCount():Int {
         if (fn.args == null) {
@@ -68,7 +68,7 @@ class FunctionBuilder {
         }
         return fn.args.length;
     }
-    
+
     public function getMetaValueString(name:String, paramIndex:Int = 0):String {
         for (m in field.meta) {
             if (m.name == name || m.name == ':${name}') {
@@ -80,7 +80,7 @@ class FunctionBuilder {
         }
         return null;
     }
-    
+
     public function getMetaValueExpr(name:String, paramIndex:Int = 0):Expr {
         for (m in field.meta) {
             if (m.name == name || m.name == ':${name}') {
@@ -92,7 +92,7 @@ class FunctionBuilder {
         }
         return null;
     }
-    
+
     public function printString():String {
         return ExprTools.toString(fn.expr);
     }

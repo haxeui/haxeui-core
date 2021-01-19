@@ -18,7 +18,6 @@ import haxe.ui.util.TypeConverter;
 #if macro
 import haxe.ui.macros.helpers.ClassBuilder;
 import haxe.ui.macros.helpers.CodeBuilder;
-import sys.FileSystem;
 import sys.io.File;
 #end
 
@@ -36,17 +35,17 @@ class ComponentMacros {
         if (builder.hasSuperClass("haxe.ui.core.Component") == false) {
             Context.error("Must have a superclass of haxe.ui.core.Component", Context.currentPos());
         }
-        
+
         if (builder.constructor == null) {
             Context.error("A class building component must have a constructor", Context.currentPos());
         }
-        
+
         var originalRes = resourcePath;
         resourcePath = MacroHelpers.resolveFile(resourcePath);
         if (resourcePath == null || sys.FileSystem.exists(resourcePath) == false) {
             Context.error('UI markup file "${originalRes}" not found', Context.currentPos());
         }
-        
+
         var namedComponents:Map<String, NamedComponentDescription> = new Map<String, NamedComponentDescription>();
         var codeBuilder = new CodeBuilder();
         var bindingExprs:Array<Expr> = [];
@@ -56,7 +55,7 @@ class ComponentMacros {
         if (superClass != rootType) {
             Context.warning("The super class of '" + builder.name + "' does not match the root node of '" + resourcePath + "' (" + superClass + " != " + rootType + ") - this may have unintended consequences", pos);
         }
-        
+
         for (id in namedComponents.keys()) {
             var safeId:String = StringUtil.capitalizeHyphens(id);
             var varDescription = namedComponents.get(id);
@@ -73,13 +72,13 @@ class ComponentMacros {
         }
         alias = alias.toLowerCase();
         ComponentClassMap.register(alias, resolvedClass);
-        
+
         for (expr in bindingExprs) {
             codeBuilder.add(expr);
         }
 
         builder.constructor.add(codeBuilder, AfterSuper);
-        
+
         return builder.fields;
     }
 
@@ -101,9 +100,9 @@ class ComponentMacros {
         }
         return macro new $t();
     }
-    
+
     #if macro
-    
+
     public static function buildComponentFromFile(builder:CodeBuilder, filePath:String, namedComponents:Map<String, NamedComponentDescription> = null, bindingExprs:Array<Expr> = null, params:Map<String, Dynamic> = null, rootVarName:String = "this", buildRoot:Bool = true):ComponentInfo {
         var f = MacroHelpers.resolveFile(filePath);
         if (f == null) {
@@ -111,7 +110,7 @@ class ComponentMacros {
         }
 
         Context.registerModuleDependency(Context.getLocalModule(), f);
-        
+
         var fileContent:String = StringUtil.replaceVars(File.getContent(f), params);
         var c:ComponentInfo = ComponentParser.get(MacroHelpers.extension(f)).parse(fileContent, new FileResourceResolver(f, params));
         for (s in c.styles) {
@@ -119,12 +118,12 @@ class ComponentMacros {
                 builder.add(macro haxe.ui.Toolkit.styleSheet.parse($v{s.style}, "user"));
             }
         }
-        
+
         if (buildRoot == true) {
             buildComponentNode(builder, c, 0, -1, namedComponents, bindingExprs, false);
             builder.add(macro var $rootVarName = c0);
         }
-        
+
         var fullScript = "";
         for (scriptString in c.scriptlets) {
             fullScript += scriptString;
@@ -149,16 +148,16 @@ class ComponentMacros {
         builder.add(macro $i{rootVarName}.bindingRoot = true);
         return c;
     }
-    
+
     public static function buildComponentFromString(builder:CodeBuilder, source:String, namedComponents:Map<String, NamedComponentDescription> = null, bindingExprs:Array<Expr> = null, params:Map<String, Dynamic> = null, rootVarName:String = "this"):ComponentInfo {
         source = StringUtil.replaceVars(source, params);
         var c:ComponentInfo = ComponentParser.get("xml").parse(source);
         for (s in c.styles) {
-            if (s.scope == "global") { 
+            if (s.scope == "global") {
                 builder.add(macro haxe.ui.Toolkit.styleSheet.parse($v{s.style}, "user"));
             }
         }
-        
+
         var fullScript = "";
         for (scriptString in c.scriptlets) {
             fullScript += scriptString;
@@ -181,14 +180,14 @@ class ComponentMacros {
         builder.add(macro $i{rootVarName}.bindingRoot = true);
         return c;
     }
-    
+
     private static function buildComponentFromInfo(builder:CodeBuilder, c:ComponentInfo, namedComponents:Map<String, NamedComponentDescription> = null, bindingExprs:Array<Expr> = null, params:Map<String, Dynamic> = null, cb:ComponentInfo->CodeBuilder->Void = null, firstId:Int = 0) {
         ModuleMacros.populateClassMap();
-        
+
         if (namedComponents == null) {
             namedComponents = new Map<String, NamedComponentDescription>();
         }
-        
+
         for (s in c.styles) {
             if (s.scope == "global") {
                 builder.add(macro haxe.ui.Toolkit.styleSheet.parse($v{s.style}, "user"));
@@ -199,11 +198,11 @@ class ComponentMacros {
             bindingExprs = [];
         }
         var r = buildComponentNode(builder, c, firstId, -1, namedComponents, bindingExprs);
-        
+
         if (cb != null) {
             cb(c, builder);
         }
-        
+
         return r;
     }
 
@@ -212,13 +211,13 @@ class ComponentMacros {
         if (c.condition != null && new ConditionEvaluator().evaluate(c.condition) == false) {
             return id;
         }
-        
+
         var className:String = ComponentClassMap.get(c.type);
         if (className == null) {
             Context.warning("no class found for component: " + c.type, Context.currentPos());
             return id;
         }
-        
+
         var classInfo = new ClassBuilder(Context.getModule(className)[0]);
         var useNamedComponents = true;
         if (classInfo.hasSuperClass("haxe.ui.core.ItemRenderer")) { // we dont really want to create variable instances of contents of item renderers
@@ -234,11 +233,11 @@ class ComponentMacros {
                 trace("WARNING: no direction class found for component: " + c.type + " (" + (direction + c.type.toLowerCase()) + ")");
                 return id;
             }
-            
+
             className = directionalClassName;
         }
         c.resolvedClassName = className;
-        
+
         var typePath = {
             var split = className.split(".");
             { name: split.pop(), pack: split }
@@ -246,7 +245,7 @@ class ComponentMacros {
         var componentVarName = 'c${id}';
 
         builder.add(macro var $componentVarName = new $typePath());
-        
+
         if (c.styles.length > 0) {
             builder.add(macro $i{componentVarName}.styleSheet = new haxe.ui.styles.StyleSheet());
             for (s in c.styles) {
@@ -255,12 +254,12 @@ class ComponentMacros {
                 }
             }
         }
-        
+
         assignComponentProperties(builder, c, componentVarName, bindingExprs);
         if (c.layout != null) {
             buildLayoutCode(builder, c.layout, id);
         }
-        
+
         if (classInfo.hasInterface("haxe.ui.core.IDataComponent") == true && c.data != null) {
             var ds = new haxe.ui.data.DataSourceFactory<Dynamic>().fromString(c.dataString, haxe.ui.data.ListDataSource);
             var dsVarName = 'ds${id}';
@@ -279,7 +278,7 @@ class ComponentMacros {
             };
             namedComponents.set(c.id, varDescription);
         }
-        
+
         var childId = id + 1;
         if (recurseChildren == true) {
             for (child in c.children) {
@@ -289,7 +288,7 @@ class ComponentMacros {
                 }
                 childId = buildComponentNode(builder, child, childId, id, nc, bindingExprs);
             }
-            
+
             if (parentId != -1) {
                 builder.add(macro $i{"c" + (parentId)}.addComponent($i{componentVarName}));
             }
@@ -303,21 +302,21 @@ class ComponentMacros {
             Context.warning("no class found for layout: " + l.type, Context.currentPos());
             return;
         }
-        
+
         var layoutVarName = 'l${id}';
         var typePath = {
             var split = className.split(".");
             { name: split.pop(), pack: split }
         };
-        
+
         builder.add(macro var $layoutVarName = new $typePath());
         assignProperties(builder, layoutVarName, l.properties);
-        
+
         if (id != 0) {
             builder.add(macro $i{"c" + (id)}.layout = $i{"l" + id});
         }
     }
-    
+
     private static function assignComponentProperties(builder:CodeBuilder, c:ComponentInfo, componentVarName:String, bindingExprs:Array<Expr>) {
         if (c.id != null)                       assignField(builder, componentVarName, "id", c.id, bindingExprs, c);
         if (c.left != null)                     assignField(builder, componentVarName, "left", c.left, bindingExprs, c);
@@ -333,10 +332,10 @@ class ComponentMacros {
         if (c.text != null)                     assignField(builder, componentVarName, "text", c.text, bindingExprs, c);
         if (c.styleNames != null)               assignField(builder, componentVarName, "styleNames", c.styleNames, bindingExprs, c);
         if (c.style != null)                    assignField(builder, componentVarName, "styleString", c.styleString, bindingExprs, c);
-        
+
         assignProperties(builder, componentVarName, c.properties);
     }
-    
+
     // We'll re-use the same code for properties and components
     // certain things dont actually apply to layouts (namely "ComponentFieldMap", "on" and "${")
     // but they shouldnt cause any issues with layouts and the reuse is useful
@@ -364,7 +363,7 @@ class ComponentMacros {
             }
         }
     }
-    
+
     private static function assignField(builder:CodeBuilder, varName:String, field:String, value:Any, bindingExprs:Array<Expr>, c:ComponentInfo) {
         var stringValue = Std.string(value);
         if (stringValue.indexOf("${") != -1) {
@@ -376,7 +375,7 @@ class ComponentMacros {
                 switch (typeInfo) {
                     case "String":
                         bindingExprs.push(macro $i{varName}.$field = "" + $e{e});
-                    default:     
+                    default:
                         bindingExprs.push(macro $i{varName}.$field = $e{e});
                 }
             }

@@ -1,10 +1,9 @@
 package commands;
-import commands.UpdateCommand;
 
 class CommandFactory {
     public static function get(id:String):Command {
         var c:Command = null;
-        
+
         switch (id) {
             case "setup":
                 c = new SetupCommand();
@@ -29,7 +28,7 @@ class CommandFactory {
 
         return c;
     }
-    
+
     public static function has(id:String):Bool {
         return (get(id) != null);
     }
