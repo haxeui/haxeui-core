@@ -319,6 +319,7 @@ class Macros {
                 }
             }
         });
+        cloneFn.add(macro haxe.ui.binding.BindingManager.instance.cloneBinding(cast this, cast c));
         cloneFn.add(macro return c);
 
         var hasOverriddenSelf = (builder.findFunction("self") != null);
@@ -409,6 +410,16 @@ class Macros {
                     if (f.isDynamic == true) {
                         newField = builder.addSetter(f.name, f.type, macro { // add a normal (Variant) setter
                             behaviours.setDynamic($v{f.name}, value);
+                            dispatch(new haxe.ui.events.UIEvent(haxe.ui.events.UIEvent.PROPERTY_CHANGE, $v{f.name}));
+                            return value;
+                        }, f.access);
+                    } else if (f.name == "text" || f.name == "htmlText") {
+                        newField = builder.addSetter(f.name, f.type, macro { // add a normal (Variant) setter
+                            if (value.indexOf("${") != -1 && value.indexOf("}") != -1) {
+                                haxe.ui.binding.BindingManager.instance.add(cast this, $v{f.name}, value);
+                                return value;
+                            }
+                            behaviours.set($v{f.name}, value);
                             dispatch(new haxe.ui.events.UIEvent(haxe.ui.events.UIEvent.PROPERTY_CHANGE, $v{f.name}));
                             return value;
                         }, f.access);

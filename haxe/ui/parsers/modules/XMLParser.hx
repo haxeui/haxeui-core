@@ -190,6 +190,23 @@ class XMLParser extends ModuleParser {
                     entry.id = propertyNode.get("id");
                     module.preload.push(entry);
                 }
+            } else if (nodeName == "locales" && checkCondition(el, defines) == true) {
+                for (propertyNode in el.elements()) {
+                    if (checkCondition(propertyNode, defines) == false) {
+                        continue;
+                    }
+                    var entry:Module.ModuleLocaleEntry = new Module.ModuleLocaleEntry();
+                    entry.id = propertyNode.get("id");
+                    if (propertyNode.get("resource") != null) {
+                        entry.resources.push(propertyNode.get("resource"));
+                    }
+                    for (resourceNode in propertyNode.elementsNamed("resource")) {
+                        if (resourceNode.get("path") != null) {
+                            entry.resources.push(resourceNode.get("path"));
+                        }
+                    }
+                    module.locales.push(entry);
+                }
             }
         }
 

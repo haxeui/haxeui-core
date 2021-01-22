@@ -5,6 +5,7 @@ import haxe.ui.core.Component;
 
 class UIEvent extends EventImpl {
     public static inline var READY:String = "ready";
+    public static inline var DESTROY:String = "destroy";    
     public static inline var RESIZE:String = "resize";
     public static inline var CHANGE:String = "change";
     public static inline var BEFORE_CHANGE:String = "beforeChange";

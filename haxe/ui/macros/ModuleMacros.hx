@@ -52,7 +52,7 @@ class ModuleMacros {
                 if (r.path != null) {
                     var resolvedPaths = resolvePaths(r.path);
                     if (resolvedPaths == null || resolvedPaths.length == 0) {
-                        trace("WARNING: Could not find resolve " + r.path);
+                        trace("WARNING: Could not resolve resource path " + r.path);
                     } else {
                         for (resolvedPath in resolvedPaths) {
                             addResources(resolvedPath, resolvedPath, r.prefix);
@@ -150,6 +150,20 @@ class ModuleMacros {
                 builder.add(macro
                     haxe.ui.ToolkitAssets.instance.preloadList.push({type: $v{p.type}, resourceId: $v{p.id}})
                 );
+            }
+            
+            for (l in m.locales) {
+                var localeId = l.id;
+                if (localeId == null) {
+                    continue;
+                }
+                for (r in l.resources) {
+                    if (r != null) {
+                        builder.add(macro
+                            haxe.ui.locale.LocaleManager.instance.parseResource($v{localeId}, $v{r})
+                        );
+                    }
+                }
             }
         }
 

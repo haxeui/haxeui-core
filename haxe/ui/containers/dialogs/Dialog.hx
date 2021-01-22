@@ -4,13 +4,13 @@ import haxe.ui.backend.DialogBase;
 import haxe.ui.events.UIEvent;
 
 abstract DialogButton(String) from String {
-    public static inline var SAVE:DialogButton = "Save";
-    public static inline var YES:DialogButton = "Yes";
-    public static inline var NO:DialogButton = "No";
-    public static inline var CLOSE:DialogButton = "Close";
-    public static inline var OK:DialogButton = "OK";
-    public static inline var CANCEL:DialogButton = "Cancel";
-    public static inline var APPLY:DialogButton = "Apply";
+    public static inline var SAVE:DialogButton = "${dialog.save}";
+    public static inline var YES:DialogButton = "${dialog.yes}";
+    public static inline var NO:DialogButton = "${dialog.no}";
+    public static inline var CLOSE:DialogButton = "${dialog.close}";
+    public static inline var OK:DialogButton = "${dialog.ok}";
+    public static inline var CANCEL:DialogButton = "${dialog.cancel}";
+    public static inline var APPLY:DialogButton = "${dialog.apply}";
 
     @:op(A | B)
     private static inline function bitOr(lhs:DialogButton, rhs:DialogButton):DialogButton {
