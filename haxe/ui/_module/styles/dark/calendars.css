@@ -1,0 +1,85 @@
+/************************************************************************
+** CALENDAR
+*************************************************************************/
+.calendar {
+    background-color: #252728;
+    padding: 5px;
+    border: 1px solid #181a1b;
+    border-radius: 1px;
+}
+
+.calendar .button {
+    padding: 8px;
+}
+
+.calendar .calendar-off-day {
+    border: none;
+    background-color: #252728;
+    cursor: default;
+}
+
+.calendar .calendar-day {
+    border: none;
+    background-color: #2f3746;
+}
+
+.calendar .calendar-day:hover {
+    border: none;
+    background-color: #415982;
+}
+
+.calendar .calendar-day-selected {
+    border: none;
+    background-color: #415982;
+    color: white;
+}
+
+
+/************************************************************************
+** CALENDARVIEW
+*************************************************************************/
+.calendar-view {
+    background-color: #252728;
+    padding: 5px;
+    border: 1px solid #181a1b;
+    border-radius: 1px;
+}
+
+.calendar-view .calendar {
+    border: none;
+    padding: 0px;
+}
+
+.calendar-view .hbox {
+	spacing: 0;
+}
+
+.calendar-view #prev-month {
+    icon: "haxeui-core/styles/default/left_arrow.png";
+    vertical-align: center;
+    border: none;
+    background-color: #252728;
+}
+
+.calendar-view #next-month {
+    icon: "haxeui-core/styles/default/right_arrow.png";
+    vertical-align: center;
+    border: none;
+    background-color: #252728;
+}
+
+.calendar-view #current-month {
+    vertical-align: center;
+}
+
+.calendar-view #current-year {
+    text-align: right;
+    vertical-align: center;
+	border: none;
+	padding-top: 1px;
+	background-color: #252728;
+}
+.calendar-view #current-year .button {
+	background-color: #252728;
+	border: none;
+}

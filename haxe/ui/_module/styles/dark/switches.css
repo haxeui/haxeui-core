@@ -1,0 +1,76 @@
+/************************************************************************
+** SWITCH (DEFAULT)
+*************************************************************************/
+.switch {
+    width: auto;
+    height: auto;
+    horizontal-spacing: 5px;
+}
+
+.switch-label {
+    color: black;
+    vertical-align: center;
+}
+
+.switch-button-sub {
+    border: none;
+    filter: none;
+    background-color: none;
+    border-radius: 2px;
+    cursor: pointer;
+    padding: 0px;
+    initial-height: 20px;
+    initial-width: 40px;
+}
+
+.switch-button-sub-extra {
+    height: 14px;
+    width: 100%;
+    background-color: #252728;
+    border: 1px solid #181a1b;
+    vertical-align: center;
+    border-radius: 10px;
+    filter: drop-shadow(1, 45, #000000, 0.2, 2, 2, 1, 3, true);
+}
+
+.switch-button-sub .button {
+    width: 20px;
+    height: 20px;
+    border-radius: 50px;
+    filter: drop-shadow(1, 45, #000000, 0.2, 0, 0, 0, 3, false);
+}
+
+@keyframes switchAnimateSelected {
+    0% {
+        pos: 0;
+    }
+    100% {
+        pos: 100;
+    }
+}
+
+.switch-button-sub:selected {
+    animation: switchAnimateSelected 0.2s ease 0s 1;
+}
+ 
+.switch-button-sub:unselected {
+    animation: switchAnimateSelected 0.2s ease 0s 1 reverse backwards;
+}
+
+
+@keyframes switchAnimateExtraSelected {
+    0% {
+        background-color: #252728;
+    }
+    100% {
+        background-color: #415982;
+    }
+}
+
+.switch-button-sub-extra:selected {
+    animation: switchAnimateExtraSelected 0.2s ease 0s 1;
+}
+
+.switch-button-sub-extra:unselected {
+    animation: switchAnimateExtraSelected 0.2s ease 0s 1 reverse backwards;
+}

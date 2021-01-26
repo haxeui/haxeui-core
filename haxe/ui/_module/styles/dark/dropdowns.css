@@ -1,0 +1,11 @@
+/************************************************************************
+** DROPDOWNS
+*************************************************************************/
+.dropdown {
+    icon: "haxeui-core/styles/dark/up_down_arrows.png";
+}
+
+.dropdown-popup {
+    background-color: #252728;
+    border: 1px solid #181a1b;
+}

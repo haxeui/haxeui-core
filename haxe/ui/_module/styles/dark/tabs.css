@@ -7,7 +7,7 @@
     height: auto;
     width: auto;
     border-bottom-width: 1px;
-    border-bottom-color: #ABABAB;
+    border-bottom-color: #181a1b;
     border-top-width: 0px;
     clip: true;
 }
@@ -15,16 +15,17 @@
 .tabbar > .tabbar-contents {
     border: none;
     border-bottom-width: 1px;
-    border-bottom-color: #ABABAB;
+    border-bottom-color: #181a1b;
     spacing: 0;
 }
 
 .tabbar-button {
     border-radius: 0px;
-    background: #EDEDED #E6E6E6 vertical;
+    background: #313335 #313335 vertical;
     padding: 6px 8px;
     vertical-align: bottom;
     border-left-width: 0px;
+    color: #b4b4b4;
 }
 
 .tabbar-button.first {
@@ -32,46 +33,26 @@
 }
 
 .tabbar-button:hover {
-    background: #F5F5F5 #F1F1F1 vertical;
+    background: #393b3c #393b3c vertical;
 }
 
 .tabbar-button:down {
-    border: 1px solid #ABABAB;
+    border: 1px solid #181a1b;
 }
 
 .tabbar-button-selected {
     border-radius: 0px;
 
     border-bottom-width: 1px;
-    border-bottom-color: white;
-    background-color: white;
+    border-bottom-color: #3D3F41;
+    background-color: #3D3F41;
     border-left-width: 0px;
+    color: #d4d4d4;
 }
+
 
 .tabbar-button-selected.first {
     border-left-width: 1px;
-}
-
-.tabbar-scroll-left {
-    icon: "haxeui-core/styles/default/left_arrow.png";
-    border-radius: 0;
-    padding: 5px;
-}
-
-.tabbar-scroll-right {
-    icon: "haxeui-core/styles/default/right_arrow.png";
-    border-radius: 0;
-    padding: 5px;
-}
-
-.tabbar-button-selected .label {
-}
-
-.tabbar-button-selected .icon {
-}
-
-.tabbar-button .tab-close-button {
-    resource: "haxeui-core/styles/default/tiny-close-button.png";
 }
 
 /************************************************************************
@@ -84,7 +65,7 @@
     width: auto;
     border-bottom-width: 0px;
     border-top-width: 1px;
-    border-top-color: #ABABAB;
+    border-top-color: #181a1b;
     clip: true;
 }
 
@@ -92,7 +73,7 @@
     border: none;
     border-bottom-width: 0px;
     border-top-width: 1px;
-    border-top-color: #ABABAB;
+    border-top-color: #181a1b;
     spacing: 0;
 }
 
@@ -108,10 +89,10 @@
 .tabbar-button-selected:bottom {
     border-radius: 0px;
 
-    border: 1px solid #ABABAB;
+    border: 1px solid #181a1b;
     border-top-width: 1px;
-    border-top-color: white;
-    background-color: white;
+    border-top-color: #3D3F41;
+    background-color: #3D3F41;
     border-left-width: 0px;
 }
 
@@ -122,22 +103,25 @@
 /************************************************************************
 ** TABVIEW
 *************************************************************************/
-.tabview {
-    border: none;
-    width: auto;
-    height: auto;
-}
-
-.tabview > .tabview-tabs {
-    margin-top: 1px;
-}
-
-.tabview:bottom > .tabview-tabs {
-    margin-top: 0px;
-}
 
 .tabview > .tabview-content {
-    border: 1px solid #ABABAB;
+    border: 1px solid #181a1b;
+    background-color: #3D3F41;
+}
+
+
+.tabbar-scroll-left {
+    icon: "haxeui-core/styles/dark/left_arrow.png";
+    border-radius: 0;
     padding: 5px;
-    background-color: white;
+}
+
+.tabbar-scroll-right {
+    icon: "haxeui-core/styles/dark/right_arrow.png";
+    border-radius: 0;
+    padding: 5px;
+}
+
+.tabbar-button .tab-close-button {
+    resource: "haxeui-core/styles/dark/tiny-close-button.png";
 }

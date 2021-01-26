@@ -1,0 +1,18 @@
+.button {
+    background: #3e4142 #36383a;
+    border-color: #181a1b;
+    color: #b4b4b4;
+}
+
+.button:hover {
+    background: #434647 #393b3c;
+    border-color: #181a1b;
+    color: #d4d4d4;
+}
+
+.button:down {
+    background: #3e4142 #3e4142;
+    border-color: #181a1b;
+    color: #d4d4d4;
+}
+
