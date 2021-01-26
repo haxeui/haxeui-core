@@ -26,6 +26,9 @@ class LocaleManager {
         return _language;
     }
     private function set_language(value:String):String {
+        if (value == null) {
+            return value;
+        }
         if (_language == value) {
             return value;
         }
@@ -71,6 +74,7 @@ class LocaleManager {
             stringMap.set(k, v);
         }
         
+        localeId = StringTools.replace(localeId, "-", "_");
         var parts = localeId.split("_");
         if (parts.length > 1) {
             var parent = _localeMap.get(parts[0]);
@@ -90,6 +94,7 @@ class LocaleManager {
             return strings;
         }
         
+        localeId = StringTools.replace(localeId, "-", "_");
         var parts = localeId.split("_");
         return _localeMap.get(parts[0]);
     }
@@ -102,7 +107,7 @@ class LocaleManager {
         return strings.exists(id);
     }
     
-    public function lookupString(id:String, param0:Any = null, param1:Any = null, param2:Any = null, param3:Any = null, param4:Any = null, param5:Any = null, param6:Any = null, param7:Any = null, param8:Any = null, param9:Any = null) {
+    public function lookupString(id:String, param0:Any = null, param1:Any = null, param2:Any = null, param3:Any = null) {
         var strings = getStrings(language);
         if (strings == null) {
             return id;
@@ -116,12 +121,6 @@ class LocaleManager {
         if (param1 != null) value = StringTools.replace(value, "{1}", param1);
         if (param2 != null) value = StringTools.replace(value, "{2}", param2);
         if (param3 != null) value = StringTools.replace(value, "{3}", param3);
-        if (param4 != null) value = StringTools.replace(value, "{4}", param4);
-        if (param5 != null) value = StringTools.replace(value, "{5}", param5);
-        if (param6 != null) value = StringTools.replace(value, "{6}", param6);
-        if (param7 != null) value = StringTools.replace(value, "{7}", param7);
-        if (param8 != null) value = StringTools.replace(value, "{8}", param8);
-        if (param9 != null) value = StringTools.replace(value, "{9}", param9);
         
         return value;
     }
