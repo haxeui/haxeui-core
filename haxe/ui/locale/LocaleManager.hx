@@ -1,7 +1,9 @@
 package haxe.ui.locale;
 import haxe.ui.ToolkitAssets;
 import haxe.ui.binding.BindingManager;
+import haxe.ui.locale.LocaleEvent;
 import haxe.ui.parsers.locale.LocaleParser;
+import haxe.ui.util.EventMap;
 
 class LocaleManager {
     private static var _instance:LocaleManager;
@@ -16,6 +18,8 @@ class LocaleManager {
     //***********************************************************************************************************
     // Instance
     //***********************************************************************************************************
+    
+    private var _eventMap:EventMap = null;
     
     private function new() {
     }
@@ -39,7 +43,32 @@ class LocaleManager {
         
         _language = value;
         BindingManager.instance.refreshAll();
+        if (_eventMap != null) {
+            var event = new LocaleEvent(LocaleEvent.LOCALE_CHANGED);
+            _eventMap.invoke(LocaleEvent.LOCALE_CHANGED, event);
+        }
         return value;
+    }
+    
+    public function registerEvent(type:String, listener:Dynamic->Void, priority:Int = 0) {
+        if (_eventMap == null) {
+            _eventMap = new EventMap();
+        }
+        _eventMap.add(type, listener, priority);
+    }
+
+    public function hasEvent(type:String, listener:Dynamic->Void = null):Bool {
+        if (_eventMap == null) {
+            return false;
+        }
+        return _eventMap.contains(type, listener);
+    }
+    
+
+    public function unregisterEvent(type:String, listener:Dynamic->Void) {
+        if (_eventMap != null) {
+            _eventMap.remove(type, listener);
+        }
     }
     
     public function parseResource(localeId:String, resourceId:String) {
