@@ -415,8 +415,8 @@ class Macros {
                         }, f.access);
                     } else if (f.name == "text" || f.name == "htmlText") {
                         newField = builder.addSetter(f.name, f.type, macro { // add a normal (Variant) setter
-                            if (value.indexOf("${") != -1 && value.indexOf("}") != -1) {
-                                haxe.ui.binding.BindingManager.instance.add(cast this, $v{f.name}, value);
+                            if (value.indexOf("{{") != -1 && value.indexOf("}}") != -1) {
+                                haxe.ui.binding.BindingManager.instance.addLanguageBinding(cast this, $v{f.name}, value);
                                 return value;
                             }
                             behaviours.set($v{f.name}, value);

@@ -153,6 +153,52 @@ class BindingManager {
         }
     }
 
+    public function addLanguageBinding(c:Component, prop:String, script:String) {
+        if (c.isReady == false) {
+            Toolkit.callLater(function() {
+                addLanguageBinding(c, prop, script);
+            });
+            return;
+        }
+
+        if (hasBindingInfo(c, prop, script) == true) {
+            return;
+        }
+        
+        var n1:Int = script.indexOf("{{");
+        while (n1 != -1) {
+            var n2:Int = script.indexOf("}}", n1);
+            var scriptPart:String = script.substr(n1 + 2, n2 - n1 - 2);
+            if (isLocaleString(scriptPart)) {
+                scriptPart = buildLocaleScript(scriptPart);
+            }
+            var parser:Parser = new Parser();
+            var expr:Expr = parser.parseString(scriptPart);
+
+            var info = bindingInfo.get(c);
+            if (info == null) {
+                info = new BindingInfo();
+                bindingInfo.set(c, info);
+            }
+
+            var propInfo:PropertyInfo = info.addProp(prop, script);
+            extractFields(expr, propInfo);
+            for (objectId in propInfo.objects.keys()) {
+                for (fieldId in propInfo.objects.get(objectId)) {
+                    var targetInfo = targets.get(objectId);
+                    if (targetInfo == null) {
+                        targetInfo = new TargetInfo();
+                        targets.set(objectId, targetInfo);
+                    }
+                    targetInfo.addBinding(fieldId, c, propInfo);
+                }
+            }
+            handleProp(c, propInfo);
+
+            n1 = script.indexOf("{{", n2);
+        }
+    }
+
     public function cloneBinding(from:Component, to:Component) {
         var info = bindingInfo.get(from);
         if (info == null) {
@@ -235,6 +281,8 @@ class BindingManager {
 
     private function interpolate(s:String, prop:PropertyInfo, t:Component):String {
         var copy:String = s;
+        copy = StringTools.replace(copy, "{{", "${");
+        copy = StringTools.replace(copy, "}}", "}");
         var n1:Int = copy.indexOf("${");
         while (n1 != -1) {
             var n2:Int = copy.indexOf("}", n1);
