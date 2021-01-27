@@ -13,6 +13,7 @@ import hscript.Parser;
 class PropertyInfo {
     public var name:String;
     public var script:String;
+    public var languageBinding:Bool = false;
 
     public var objects:Map<String, Array<String>> = new Map<String, Array<String>>();
 
@@ -154,13 +155,6 @@ class BindingManager {
     }
 
     public function addLanguageBinding(c:Component, prop:String, script:String) {
-        if (c.isReady == false) {
-            Toolkit.callLater(function() {
-                addLanguageBinding(c, prop, script);
-            });
-            return;
-        }
-
         if (hasBindingInfo(c, prop, script) == true) {
             return;
         }
@@ -182,6 +176,7 @@ class BindingManager {
             }
 
             var propInfo:PropertyInfo = info.addProp(prop, script);
+            propInfo.languageBinding = true;
             extractFields(expr, propInfo);
             for (objectId in propInfo.objects.keys()) {
                 for (fieldId in propInfo.objects.get(objectId)) {
@@ -206,7 +201,12 @@ class BindingManager {
         }
         
         for (prop in info.props.keys()) {
-            add(to, prop, info.props.get(prop).script);
+            var propInfo = info.props.get(prop);
+            if (propInfo.languageBinding == false) {
+                add(to, prop, propInfo.script);
+            } else {
+                addLanguageBinding(to, prop, propInfo.script);
+            }
         }
     }
     
