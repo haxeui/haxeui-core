@@ -188,6 +188,10 @@ class BindingManager {
         }
     }
 
+    public function remove(c:Component) {
+        bindingInfo.remove(c);
+    }
+    
     public function cloneBinding(from:Component, to:Component) {
         var info = bindingInfo.get(from);
         if (info == null) {
