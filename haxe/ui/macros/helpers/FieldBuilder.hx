@@ -88,6 +88,18 @@ class FieldBuilder {
         return false;
     }
 
+    public var isString(get, null):Bool;
+    private function get_isString():Bool {
+        switch (this.type) {
+            case TPath(p):
+                if (p.name == "String") {
+                    return true;
+                }
+            case _:
+        }
+        return false;
+    }
+
     public var isNumeric(get, null):Bool;
     private function get_isNumeric():Bool {
         switch (this.type) {

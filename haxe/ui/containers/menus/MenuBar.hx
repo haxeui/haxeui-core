@@ -1,6 +1,7 @@
 package haxe.ui.containers.menus;
 
 import haxe.ui.behaviours.DefaultBehaviour;
+import haxe.ui.binding.BindingManager;
 import haxe.ui.components.Button;
 import haxe.ui.containers.HBox;
 import haxe.ui.containers.menus.Menu.MenuEvent;
@@ -245,6 +246,7 @@ private class Builder extends CompositeBuilder {
             button.text = menu.text;
             button.icon = menu.icon;
             button.toggle = true;
+            BindingManager.instance.cloneBinding(child, button);
             _buttons.push(button);
             _menubar.addComponent(button);
             _menubar.registerInternalEvents(true);

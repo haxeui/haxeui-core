@@ -1,16 +1,20 @@
 package haxe.ui.backend;
 
+import haxe.ui.Toolkit;
+import haxe.ui.binding.BindingManager;
 import haxe.ui.components.Button;
 import haxe.ui.containers.Box;
 import haxe.ui.containers.dialogs.Dialog;
 import haxe.ui.core.Component;
 import haxe.ui.core.Screen;
 import haxe.ui.events.MouseEvent;
-import haxe.ui.styles.Style;
+import haxe.ui.events.UIEvent;
+import haxe.ui.locale.LocaleManager;
 
 @:dox(hide) @:noCompletion
 class DialogBase extends Box {
     public var modal:Bool = true;
+    public var autoCenterDialog:Bool = true;
     public var buttons:DialogButton = null;
     public var centerDialog:Bool = true;
     public var button:DialogButton = null;
@@ -53,6 +57,7 @@ class DialogBase extends Box {
         dialogContent = new haxe.ui.containers.VBox();
         dialogContent.id = "dialog-content";
         dialogContent.styleNames = "dialog-content";
+        dialogContent.registerEvent(UIEvent.RESIZE, onContentResize);
         dialogContainer.addComponent(dialogContent);
 
         dialogFooterContainer = new haxe.ui.containers.Box();
@@ -63,6 +68,7 @@ class DialogBase extends Box {
         dialogFooter = new haxe.ui.containers.HBox();
         dialogFooter.id = "dialog-footer";
         dialogFooter.styleNames = "dialog-footer";
+        dialogFooter.registerEvent(UIEvent.RESIZE, onFooterResize);
         dialogFooterContainer.addComponent(dialogFooter);
 
         dialogFooterContainer.hide();
@@ -71,11 +77,10 @@ class DialogBase extends Box {
         }
     }
 
-    private override function applyStyle(style:Style) {
-        super.applyStyle(style);
-        if (this.autoWidth == false) {
-            dialogFooterContainer.percentWidth = 100;
-        }
+    private var _autoSizeDialog:Bool = false;
+    private override function onReady() {
+        super.onReady();
+        _autoSizeDialog = this.autoWidth;
     }
     
     private var _dialogParent:Component = null;
@@ -94,6 +99,7 @@ class DialogBase extends Box {
     }
 
     public override function show() {
+        handleVisibility(false);
         var dp = dialogParent;
         if (modal) {
             _overlay = new Component();
@@ -121,6 +127,15 @@ class DialogBase extends Box {
         if (centerDialog) {
             centerDialogComponent(cast(this, Dialog));
         }
+        
+        Toolkit.callLater(function() {
+            if (centerDialog) {
+                centerDialogComponent(cast(this, Dialog));
+            }
+            Toolkit.callLater(function() {
+                handleVisibility(true);
+            });
+        });
     }
 
     private var _buttonsCreated:Bool = false;
@@ -131,7 +146,17 @@ class DialogBase extends Box {
         if (buttons != null) {
             for (button in buttons.toArray()) {
                 var buttonComponent = new Button();
-                buttonComponent.text = button.toString();
+                buttonComponent.id = button.toString();
+                var text = buttonComponent.id;
+                if (text.indexOf("{{") == 0 && text.indexOf("}}") == text.length - 2) {
+                    BindingManager.instance.addLanguageBinding(buttonComponent, "text", text);
+                    text = text.substr(2, text.length - 4);
+                }
+                var translatedText = LocaleManager.instance.lookupString(text);
+                if (translatedText != null) {
+                    text = translatedText;
+                }
+                buttonComponent.text = text;
                 buttonComponent.userData = button;
                 buttonComponent.registerEvent(MouseEvent.CLICK, onFooterButtonClick);
                 addFooterComponent(buttonComponent);
@@ -205,24 +230,75 @@ class DialogBase extends Box {
     public override function validateComponentLayout():Bool {
         var b = super.validateComponentLayout();
         dialogTitle.width = this.layout.innerWidth;
-        if (autoWidth == false) {
-            dialogContent.width = this.layout.innerWidth;
-        } else if (dialogFooterContainer.width < this.layout.innerWidth) {
-            dialogFooterContainer.width = this.layout.innerWidth;
+        if (_autoSizeDialog == false) {
+            var offset = this.layout.paddingLeft + this.layout.paddingRight;
+            if (dialogFooterContainer.width != this.width - offset) {
+                dialogFooterContainer.width = this.width - offset;
+            }
         }
+        
         return b;
     }
 
+    private function onContentResize(e) {
+        if (dialogFooter.width <= 0 || dialogFooterContainer.width <= 0 || _autoSizeDialog == false) {
+            return;
+        }
+
+        var cx = Math.max(dialogFooter.width, dialogContent.width);
+        var offset = this.layout.paddingLeft + this.layout.paddingRight;
+        var recenter:Bool = false;
+        
+        if (cx > 0 && cx != this.width + offset) {
+            this.width = cx + offset;
+            recenter = true;
+        }
+        
+        if (dialogFooterContainer.width != this.width - offset) {
+            dialogFooterContainer.width = this.width - offset;
+        }
+        
+        if (recenter == true && autoCenterDialog == true) {
+            centerDialogComponent(cast(this, Dialog), false);
+        }
+    }
+    
+    private function onFooterResize(e) {
+        if (dialogFooter.width <= 0 || dialogFooterContainer.width <= 0 || _autoSizeDialog == false) {
+            return;
+        }
+        var cx = Math.max(dialogFooter.width, dialogContent.width);
+        var offset = this.layout.paddingLeft + this.layout.paddingRight;
+        var recenter:Bool = false;
+        
+        if (cx > 0 && cx != this.width + offset) {
+            this.width = cx + offset;
+            recenter = true;
+        }
+        
+        if (dialogFooterContainer.width != this.width - offset) {
+            dialogFooterContainer.width = this.width - offset;
+        }
+        
+        if (recenter == true && autoCenterDialog == true) {
+            centerDialogComponent(cast(this, Dialog), false);
+        }
+    }
+    
     public function addFooterComponent(c:Component) {
         dialogFooterContainer.show();
         dialogFooter.addComponent(c);
     }
 
-    public function centerDialogComponent(dialog:Dialog) {
-        dialog.syncComponentValidation();
+    public function centerDialogComponent(dialog:Dialog, validate:Bool = true) {
+        if (validate == true) {
+            dialog.syncComponentValidation();
+        }
         var dp = dialogParent;
         if (dp != null) {
-            dp.syncComponentValidation();
+            if (validate == true) {
+                dp.syncComponentValidation();
+            }
             var x = (dp.width / 2) - (dialog.componentWidth / 2);
             var y = (dp.height / 2) - (dialog.componentHeight / 2);
             dialog.moveComponent(x, y);

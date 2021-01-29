@@ -13,6 +13,7 @@ class Module {
     public var plugins(default, default):Array<ModulePluginEntry>;
     public var properties(default, default):Array<ModulePropertyEntry>;
     public var preload(default, default):Array<ModulePreloadEntry>;
+    public var locales(default, default):Array<ModuleLocaleEntry>;
 
     public function new() {
         resourceEntries = [];
@@ -23,6 +24,7 @@ class Module {
         plugins = [];
         properties = [];
         preload = [];
+        locales = [];
     }
 
     public function validate() {
@@ -110,6 +112,21 @@ class ModulePreloadEntry {
     public var type(default, default):String;
     public var id(default, default):String;
 
+    public function new() {
+    }
+}
+
+class ModuleLocaleEntry {
+    public var id(default, default):String;
+    public var resources(default, default):Array<String> = [];
+    
+    public function new() {
+    }
+}
+
+class ModuleLocaleResourceEntry {
+    public var path(default, default):String;
+    
     public function new() {
     }
 }
