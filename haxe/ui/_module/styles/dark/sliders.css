@@ -1,0 +1,53 @@
+/************************************************************************
+** SLIDERS
+*************************************************************************/
+.horizontal-slider {
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    height: auto;
+    initial-width: 150px;
+}
+
+.horizontal-slider .slider-value {
+    width: 100%;
+    height: 8px;
+    border-radius: 2px;
+    vertical-align: center;
+    cursor: pointer;
+}
+
+.horizontal-slider .button {
+    width: 10px;
+    height: 20px;
+    border-radius: 2px;
+    vertical-align: center;
+    filter: none;
+}
+    
+.vertical-slider {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 0px;
+    padding-right: 0px;
+    width: auto;
+    initial-height: 150px;
+}
+
+.vertical-slider .slider-value {
+    height: 100%;
+    width: 8px;
+    border-radius: 2px;
+    horizontal-align: center;
+    cursor: pointer;
+}
+
+.vertical-slider .button {
+    width: 20px;
+    height: 10px;
+    border-radius: 2px;
+    horizontal-align: center;
+    filter: none;
+}
+

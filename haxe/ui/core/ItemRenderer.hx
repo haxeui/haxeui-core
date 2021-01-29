@@ -175,7 +175,7 @@ class ItemRenderer extends Box {
                 } else if (f != "id") {
                     try {
                         Reflect.setProperty(this, f, v);
-                    } catch (e) {}
+                    } catch (e:Dynamic) {}
                 }
             }
         }

@@ -1,0 +1,49 @@
+/************************************************************************
+** PROGRESS
+*************************************************************************/
+@keyframes indeterminate {
+    0% {
+        start: 0;
+        end: 25;
+    }
+    50% {
+        start: 75;
+        end: 100;
+    }
+    100% {
+        start: 0;
+        end: 25;
+    }
+}
+
+.progress:indeterminate {
+    animation: indeterminate 1s ease 0s infinite;
+}
+
+.progress-value {
+    border: none;
+    border-radius: 2px;
+}
+
+.horizontal-progress {
+    background: #252728 #252728 vertical;
+    initial-width: 150px;
+    initial-height: 20px;
+}
+
+.horizontal-progress .progress-value {
+    background: #415982 #2f3746 vertical;
+    height: 100%;
+}
+
+.vertical-progress {
+    background: #252728 #252728 horizontal;
+    initial-width: 20px;
+    initial-height: 150px;
+}
+
+.vertical-progress .progress-value {
+    background: #415982 #2f3746 horizontal;
+    width: 100%;
+}
+

@@ -1,0 +1,22 @@
+.frame {
+    padding-left: 10px;
+    width: auto;
+    height: auto;
+}
+
+.frame-contents {
+    border-right: 1px solid #252728;
+    border-left: 1px solid #252728;
+    border-bottom: 1px solid #252728;
+    padding: 10px;
+    padding-top: 15px;
+}
+
+.frame-title {
+    color: #b4b4b4;
+}
+
+.frame-left-line, .frame-right-line {
+    background-color: #252728;
+    height: 1px;
+}

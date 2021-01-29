@@ -1,0 +1,71 @@
+.accordion {
+    border: 1px solid #ababab;
+    spacing: 0;
+    padding: 1px;
+    padding-bottom: 0px;
+    clip: true;
+}
+
+.accordion-button {
+    border-radius: 0;
+    border: 0px solid #ababab;
+    width: 100%;
+    text-align: left;
+    icon: "haxeui-core/styles/default/right_arrow_square.png";
+    icon-position: left;
+    border: none;
+    border-color: #ababab;
+    border-bottom-width: 1px;
+}
+
+.accordion-button:down {
+    icon: "haxeui-core/styles/default/down_arrow_square.png";
+}
+
+.accordion-page {
+    width: 100%;
+    clip: true;
+    width: 100%;
+    border-color: #ababab;
+    border-bottom-width: 1px;
+    opacity: 1;
+    padding: 5px;
+}
+
+.accordion-page:expanded {
+    animation: accordionAnimateExpand 0.3s ease 0s 1;
+}
+
+.accordion-page:collapsed {
+    animation: accordionAnimateCollpase 0.3s ease 0s 1;
+}
+
+@keyframes accordionAnimateExpand {
+    0% {
+        opacity: 0;
+        height: 0%;
+    }
+    100% {
+        opacity: 1;
+        height: 100%;
+    }
+}
+
+@keyframes accordionAnimateCollpase {
+    0% {
+        opacity: 1;
+        height: 100%;
+    }
+    100% {
+        opacity: 0;
+        height: 0%;
+    }
+}
+
+.accordion-page .scrollview {
+    border: none;
+    padding-top: 0;
+    padding-right: 0;
+    padding-left: 0;
+    padding-bottom: 0;
+}

@@ -21,12 +21,12 @@
 ** TABLEVIEW
 *************************************************************************/
 .tableview {
-    border: 1px solid #ABABAB;
+    border: 1px solid #181a1b;
     border-radius: 1px;
     padding: 1px;
     width: auto;
     height: auto;
-    background-color: #FFFFFF;
+    background-color: #252728;
     spacing: 0;
 }
 
@@ -37,12 +37,12 @@
 }
 
 .tableview .even {
-    background-color: white;
+    background-color: #252728;
     cursor: pointer;
 }
 
 .tableview .odd {
-    background-color: #f8f8f8;
+    background-color: #2a2c2d;
     cursor: pointer;
 }
 
@@ -52,19 +52,19 @@
 }
 
 .tableview .even:hover {
-    background-color: #d9e5f2;
+    background-color: #2f3746;
 }
 
 .tableview .odd:hover {
-    background-color: #d9e5f2;
+    background-color: #2f3746;
 }
 
 .tableview .compounditemrenderer .label {
-    color: black;
+    color: #d4d4d4;
 }
 
 .tableview .compounditemrenderer:selected {
-    background-color: #a7c4e2;
+    background-color: #415982;
     color: white;
 }
 

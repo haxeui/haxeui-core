@@ -1,0 +1,83 @@
+/************************************************************************
+** MENUBAR
+*************************************************************************/
+.menubar {
+    background-color: #3D3F41;
+    padding: 5px;
+    border-bottom-width: 1px;
+    border-bottom-color: #181a1b;
+    filter: drop-shadow(2, 45, #000000, 0.15, 6, 1, 30, 35, false);
+}
+
+.menubar-button {
+    background-color: #3D3F41;
+    border: none;
+    color: #b4b4b4;
+    vertical-align: center;
+}
+
+.menubar-button:hover {
+    background-color: #CCCCCC;
+    color: #444444;
+}
+
+.menubar-button:down {
+    background-color: #ABABAB;
+    color: #EEEEEE;
+}
+
+/************************************************************************
+** MENU
+*************************************************************************/
+.menu {
+    background-color: #EEEEEE;
+    padding: 1px;
+    border: 1px solid #ABABAB;
+    filter: drop-shadow(2, 45, #000000, 0.15, 6, 1, 30, 35, false);
+    spacing: 0;
+    width: 200px;
+}
+
+/************************************************************************
+** MENUITEMS
+*************************************************************************/
+.menuitem {
+    background-color: #EEEEEE;
+    width: 100%;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.menuitem-label, .menuitem-checkbox, .menuitem-optionbox, .menuitem-shortcut-label {
+    vertical-align: center;
+}
+
+.menuitem-shortcut-label {
+    text-align: right;
+    vertical-align: center;
+    horizontal-align: right;
+}
+
+.menuitem-icon {
+    vertical-align: center;
+}
+
+.menuitem:hover, .menuitem:selected {
+    background-color: #CCCCCC;
+}
+
+.menuitem .label:hover, .menuitem .label:selected {
+    color: #222222;
+}
+
+.menuitem-expandable {
+    resource: "haxeui-core/styles/default/right_arrow.png";
+    vertical-align: "center";
+}
+
+.menuseparator {
+    height: 1px;
+    width: 100%;
+    background-color: #ABABAB;
+    horizontal-align: "center";
+}

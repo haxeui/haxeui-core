@@ -1,0 +1,11 @@
+/************************************************************************
+** SCROLLVIEW
+*************************************************************************/
+.scrollview {
+    border: 1px solid #181a1b;
+    border-radius: 1px;
+    padding: 1px;
+    width: auto;
+    height: auto;
+    background-color: #252728;
+}

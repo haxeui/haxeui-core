@@ -1,0 +1,36 @@
+/************************************************************************
+** RANGE
+*************************************************************************/
+.range {
+    border: 1px solid #181a1b;
+    padding: 1px;
+    border-radius: 2px;
+    filter: drop-shadow(1, 45, #000000, 0.2, 2, 2, 1, 3, true);
+}
+
+.range-value {
+    border: none;
+    border-radius: 2px;
+}
+
+.horizontal-range {
+    background: #252728 #252728 vertical;
+    initial-width: 150px;
+    initial-height: 20px;
+}    
+
+.horizontal-range .range-value {
+    background: #415982 #2f3746 vertical;
+    height: 100%;
+}
+
+.vertical-range {
+    background: #252728 #252728 horizontal;
+    initial-width: 20px;
+    initial-height: 150px;
+}
+
+.vertical-range .range-value {
+    background: #415982 #2f3746 horizontal;
+    width: 100%;
+}

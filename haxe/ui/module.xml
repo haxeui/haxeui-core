@@ -72,6 +72,32 @@
             <style resource="haxeui-core/styles/default/splitters.css" />
             <style resource="haxeui-core/styles/default/tooltips.css" />
         </default>
+        <dark parent="default">
+            <style resource="haxeui-core/styles/dark/main.css" priority="-2" />
+            <style resource="haxeui-core/styles/dark/buttons.css" />
+            <style resource="haxeui-core/styles/dark/dialogs.css" />
+            <style resource="haxeui-core/styles/dark/textinputs.css" />
+            <style resource="haxeui-core/styles/dark/scrollbars.css" />
+            <style resource="haxeui-core/styles/dark/scrollview.css" />
+            <style resource="haxeui-core/styles/dark/checkboxes.css" />
+            <style resource="haxeui-core/styles/dark/optionboxes.css" />
+            <style resource="haxeui-core/styles/dark/ranges.css" />
+            <style resource="haxeui-core/styles/dark/progressbars.css" />
+            <style resource="haxeui-core/styles/dark/sliders.css" />
+            <style resource="haxeui-core/styles/dark/steppers.css" />
+            <style resource="haxeui-core/styles/dark/tabs.css" />
+            <style resource="haxeui-core/styles/dark/listview.css" />
+            <style resource="haxeui-core/styles/dark/dropdowns.css" />
+            <style resource="haxeui-core/styles/dark/tableview.css" />
+            <style resource="haxeui-core/styles/dark/switches.css" />
+            <style resource="haxeui-core/styles/dark/calendars.css" />
+            <style resource="haxeui-core/styles/dark/menus.css" />
+            <style resource="haxeui-core/styles/dark/accordion.css" />
+            <style resource="haxeui-core/styles/dark/propertygrids.css" />
+            <style resource="haxeui-core/styles/dark/frames.css" />
+            <style resource="haxeui-core/styles/dark/splitters.css" />
+            <style resource="haxeui-core/styles/dark/tooltips.css" />
+        </dark>
         <native parent="default">
             <style resource="haxeui-core/styles/native/main.css" priority="-3" />
         </native>
