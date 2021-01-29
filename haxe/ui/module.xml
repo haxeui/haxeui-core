@@ -2,8 +2,18 @@
 <module id="haxeui-core" priority="-2">
     <resources>
         <resource path="/haxe/ui/_module/styles" prefix="haxeui-core/styles" />
+        <resource path="/haxe/ui/_module/locale" prefix="haxeui-core/locale" />
     </resources>
 
+    <locales>
+        <locale id="en">
+            <resource path="haxeui-core/locale/en/dialog.properties" />
+        </locale>
+        <locale id="es">
+            <resource path="haxeui-core/locale/es/dialog.properties" />
+        </locale>
+    </locales>
+    
     <components>
         <class name="haxe.ui.core.Component" />
         <class name="haxe.ui.core.ItemRenderer" />
@@ -25,26 +35,11 @@
         <import package="haxe.ui.components" />
         <import package="haxe.ui.containers" />
         <import package="haxe.ui.containers.menus" />
-        <!--
-        <import package="haxe.ui.containers.dialogs" />
-            -->
         <import class="Std" keep="true" static="true" />
-        <!--
-        TODO: Under neko & haxe 3.3 importing 'Math' like this causes this error: Class<Math> has no field MathImpl
-        -->
         <import class="Math" keep="true" static="true" />
         <import class="StringTools" keep="true" static="true" />
         <import class="haxe.ui.core.Screen" keep="true" static="true" />
         <import class="haxe.ui.containers.dialogs.MessageBox" keep="true" static="true" />
-        <!--
-        <import class="haxe.ui.core.UIEvent" keep="true" static="true" />
-        <import class="haxe.ui.core.MouseEvent" keep="true" static="true" />
-            -->
-        <!--
-        <import class="haxe.ui.containers.dialogs.Dialog" keep="true" static="true" />
-        <import class="haxe.ui.containers.dialogs.DialogOptions" keep="true" static="true" />
-        <import class="haxe.ui.containers.dialogs.DialogButton" keep="true" static="true" />
-            -->
     </scriptlets>
 
     <themes>

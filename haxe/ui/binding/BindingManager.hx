@@ -3,6 +3,7 @@ package haxe.ui.binding;
 import haxe.ui.Toolkit;
 import haxe.ui.core.Component;
 import haxe.ui.core.TypeMap;
+import haxe.ui.locale.LocaleManager;
 import haxe.ui.scripting.ScriptInterp;
 import haxe.ui.themes.ThemeManager;
 import haxe.ui.util.Variant;
@@ -12,6 +13,7 @@ import hscript.Parser;
 class PropertyInfo {
     public var name:String;
     public var script:String;
+    public var languageBinding:Bool = false;
 
     public var objects:Map<String, Array<String>> = new Map<String, Array<String>>();
 
@@ -89,6 +91,7 @@ class BindingManager {
 
     private function new() {
         addStaticClass("theme", ThemeManager.instance);
+        addStaticClass("lookupLocaleString", LocaleManager.instance.lookupString);
     }
 
     public function refreshAll() {
@@ -113,6 +116,10 @@ class BindingManager {
             return;
         }
 
+        if (hasBindingInfo(c, prop, script) == true) {
+            return;
+        }
+        
         var n1:Int = script.indexOf("${");
         while (n1 != -1) {
             var n2:Int = script.indexOf("}", n1);
@@ -144,6 +151,93 @@ class BindingManager {
         }
     }
 
+    public function addLanguageBinding(c:Component, prop:String, script:String) {
+        if (hasBindingInfo(c, prop, script) == true) {
+            return;
+        }
+        
+        var n1:Int = script.indexOf("{{");
+        while (n1 != -1) {
+            var n2:Int = script.indexOf("}}", n1);
+            var scriptPart:String = script.substr(n1 + 2, n2 - n1 - 2);
+            var parser:Parser = new Parser();
+            var expr:Expr = parser.parseString(scriptPart);
+
+            var info = bindingInfo.get(c);
+            if (info == null) {
+                info = new BindingInfo();
+                bindingInfo.set(c, info);
+            }
+
+            var propInfo:PropertyInfo = info.addProp(prop, script);
+            propInfo.languageBinding = true;
+            extractFields(expr, propInfo);
+            for (objectId in propInfo.objects.keys()) {
+                for (fieldId in propInfo.objects.get(objectId)) {
+                    var targetInfo = targets.get(objectId);
+                    if (targetInfo == null) {
+                        targetInfo = new TargetInfo();
+                        targets.set(objectId, targetInfo);
+                    }
+                    targetInfo.addBinding(fieldId, c, propInfo);
+                }
+            }
+            handleProp(c, propInfo);
+
+            n1 = script.indexOf("{{", n2);
+        }
+    }
+
+    public function remove(c:Component) {
+        bindingInfo.remove(c);
+    }
+    
+    public function cloneBinding(from:Component, to:Component) {
+        var info = bindingInfo.get(from);
+        if (info == null) {
+            return;
+        }
+        
+        for (prop in info.props.keys()) {
+            var propInfo = info.props.get(prop);
+            if (propInfo.languageBinding == false) {
+                add(to, prop, propInfo.script);
+            } else {
+                addLanguageBinding(to, prop, propInfo.script);
+            }
+        }
+    }
+    
+    private function hasBindingInfo(c:Component, prop:String, script:String):Bool {
+        var info = bindingInfo.get(c);
+        if (info == null) {
+            return false;
+        }
+        
+        if (info.props.exists(prop) == false) {
+            return false;
+        }
+        
+        var bindingScript = info.props.get(prop);
+        return bindingScript.script == script;
+    }
+    
+    private function isLocaleString(script:String):Bool {
+        return LocaleManager.instance.hasString(StringTools.trim(script.split(",")[0]));
+    }
+    
+    private function buildLocaleScript(script:String):String {
+        var params = script.split(",");
+        script = "lookupLocaleString('" + params[0] + "'";
+        params.shift();
+        if (params.length > 0) {
+            script += ",";
+            script += params.join(",");
+        }
+        script += ")";
+        return script;
+    }
+    
     public function componentPropChanged(c:Component, prop:String) {
         if (c == null || c.id == null) {
             return;
@@ -185,6 +279,8 @@ class BindingManager {
 
     private function interpolate(s:String, prop:PropertyInfo, t:Component):String {
         var copy:String = s;
+        copy = StringTools.replace(copy, "{{", "${");
+        copy = StringTools.replace(copy, "}}", "}");
         var n1:Int = copy.indexOf("${");
         while (n1 != -1) {
             var n2:Int = copy.indexOf("}", n1);
@@ -202,6 +298,9 @@ class BindingManager {
 
     private var interp:ScriptInterp = new ScriptInterp();
     private function exec(script:String, prop:PropertyInfo, t:Component):Dynamic {
+        if (isLocaleString(script)) {
+            script = buildLocaleScript(script);
+        }
         var parser = new Parser();
         var expr = parser.parseString(script);
 

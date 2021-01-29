@@ -1,6 +1,7 @@
 package haxe.ui.core;
 
 import haxe.ui.backend.ComponentImpl;
+import haxe.ui.binding.BindingManager;
 import haxe.ui.dragdrop.DragManager;
 import haxe.ui.events.AnimationEvent;
 import haxe.ui.events.MouseEvent;
@@ -529,11 +530,15 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         if (_compositeBuilder != null) {
             _compositeBuilder.destroy();
         }
+        BindingManager.instance.remove(this);
         onDestroy();
     }
 
     private function onDestroy() {
-
+        for (child in childComponents) {
+            child.onDestroy();
+        }
+        dispatch(new UIEvent(UIEvent.DESTROY));
     }
 
     /**

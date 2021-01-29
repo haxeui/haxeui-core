@@ -11,4 +11,8 @@ class PlatformBase {
     public function getColor(id:String):Null<Int> {
         return null;
     }
+    
+    public function getSystemLocale():String {
+        return null;
+    }
 }

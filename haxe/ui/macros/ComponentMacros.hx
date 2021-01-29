@@ -379,6 +379,8 @@ class ComponentMacros {
                         bindingExprs.push(macro $i{varName}.$field = $e{e});
                 }
             }
+        } else if (stringValue.indexOf("{{") != -1 && stringValue.indexOf("}}") != -1) {
+            builder.add(macro haxe.ui.binding.BindingManager.instance.addLanguageBinding($i{varName}, $v{field}, $v{value}));
         } else {
             builder.add(macro $i{varName}.$field = $v{value});
         }
