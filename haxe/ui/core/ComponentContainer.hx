@@ -76,6 +76,64 @@ class ComponentContainer extends ComponentCommon implements IClonable<ComponentC
         return null;
     }
 
+    public function moveComponentToBack() {
+        if (parentComponent == null && parentComponent.numComponents <= 1) {
+            return;
+        }
+        
+        parentComponent.setComponentIndex(cast this, 0);
+    }
+
+    public function moveComponentBackward() {
+        if (parentComponent == null && parentComponent.numComponents <= 1) {
+            return;
+        }
+        
+        var index = parentComponent.getComponentIndex(cast this);
+        if (index == 0) {
+            return;
+        }
+        
+        parentComponent.setComponentIndex(cast this, index - 1);
+    }
+    
+    public function moveComponentToFront() {
+        if (parentComponent == null && parentComponent.numComponents <= 1) {
+            return;
+        }
+        
+        parentComponent.setComponentIndex(cast this, parentComponent.numComponents - 1);
+    }
+
+    public function moveComponentFrontward() {
+        if (parentComponent == null && parentComponent.numComponents <= 1) {
+            return;
+        }
+        
+        var index = parentComponent.getComponentIndex(cast this);
+        if (index == parentComponent.numComponents - 1) {
+            return;
+        }
+        
+        parentComponent.setComponentIndex(cast this, index + 1);
+    }
+    
+    public var bottomComponent(get, null):Component;
+    private function get_bottomComponent():Component {
+        if (_children == null || _children.length == 0) {
+            return null;
+        }
+        return cast _children[0];
+    }
+    
+    public var topComponent(get, null):Component;
+    private function get_topComponent():Component {
+        if (_children == null || _children.length == 0) {
+            return null;
+        }
+        return cast _children[_children.length - 1];
+    }
+    
     //***********************************************************************************************************
     // Layout related
     //***********************************************************************************************************
