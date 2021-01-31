@@ -1,0 +1,18 @@
+/************************************************************************
+** RULE
+*************************************************************************/
+.rule {
+    background-color: #181a1b;
+}
+
+.horizontal-rule {
+    height: 1px;
+    width: 100%;
+    horizontal-align: "center";
+}
+
+.vertical-rule {
+    height: 100%;
+    width: 1px;
+    vertical-align: "center";
+}
