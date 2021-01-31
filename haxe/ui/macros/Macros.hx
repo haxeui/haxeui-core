@@ -413,11 +413,15 @@ class Macros {
                             dispatch(new haxe.ui.events.UIEvent(haxe.ui.events.UIEvent.PROPERTY_CHANGE, $v{f.name}));
                             return value;
                         }, f.access);
-                    } else if (f.name == "text" || f.name == "htmlText") {
+                    } else if (f.isString == true) {
                         newField = builder.addSetter(f.name, f.type, macro { // add a normal (Variant) setter
-                            if (value != null && value.indexOf("{{") != -1 && value.indexOf("}}") != -1) {
-                                haxe.ui.binding.BindingManager.instance.addLanguageBinding(cast this, $v{f.name}, value);
-                                return value;
+                            switch (Type.typeof(value)) {
+                                case TClass(String):
+                                    if (value != null && value.indexOf("{{") != -1 && value.indexOf("}}") != -1) {
+                                        haxe.ui.binding.BindingManager.instance.addLanguageBinding(cast this, $v{f.name}, value);
+                                        return value;
+                                    }
+                                case _:    
                             }
                             behaviours.set($v{f.name}, value);
                             dispatch(new haxe.ui.events.UIEvent(haxe.ui.events.UIEvent.PROPERTY_CHANGE, $v{f.name}));
