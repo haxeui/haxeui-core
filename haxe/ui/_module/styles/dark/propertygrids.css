@@ -26,7 +26,7 @@
 }
 
 .property-group-header:hover {
-    background-color: #F5F5F5;
+    background-color: #434647;
 }
 
 .property-group-header-icon {
@@ -34,11 +34,11 @@
 }
 
 .property-group-header:expanded .property-group-header-icon {
-    resource: "haxeui-core/styles/default/down_arrow_square.png";
+    resource: "haxeui-core/styles/dark/down_arrow_square.png";
 }
 
 .property-group-header:collapsed .property-group-header-icon {
-    resource: "haxeui-core/styles/default/right_arrow_square.png";
+    resource: "haxeui-core/styles/dark/right_arrow_square.png";
 }
 
 .property-group-header-label {

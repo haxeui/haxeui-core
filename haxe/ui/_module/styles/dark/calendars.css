@@ -55,14 +55,14 @@
 }
 
 .calendar-view #prev-month {
-    icon: "haxeui-core/styles/default/left_arrow.png";
+    icon: "haxeui-core/styles/dark/left_arrow.png";
     vertical-align: center;
     border: none;
     background-color: #252728;
 }
 
 .calendar-view #next-month {
-    icon: "haxeui-core/styles/default/right_arrow.png";
+    icon: "haxeui-core/styles/dark/right_arrow.png";
     vertical-align: center;
     border: none;
     background-color: #252728;

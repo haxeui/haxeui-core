@@ -39,6 +39,10 @@
     animation: animationFadeIn 0.1s linear 0s 1 reverse;
 }
 
+.default-background {
+    background-color: white;
+}
+
 /************************************************************************
 ** CONTAINERS
 *************************************************************************/

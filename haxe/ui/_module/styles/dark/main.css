@@ -1,3 +1,12 @@
 .label, .button, .textfield, .textarea {
     color: #b4b4b4;
 }
+
+.default-background {
+    background-color: #2c2f30;
+}
+
+.modal-background {
+    background-color: black;
+    opacity: 0.85;
+}

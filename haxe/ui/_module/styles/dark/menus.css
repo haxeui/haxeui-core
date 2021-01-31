@@ -30,9 +30,9 @@
 ** MENU
 *************************************************************************/
 .menu {
-    background-color: #EEEEEE;
+    background-color: #252728;
     padding: 1px;
-    border: 1px solid #ABABAB;
+    border: 1px solid #181a1b;
     filter: drop-shadow(2, 45, #000000, 0.15, 6, 1, 30, 35, false);
     spacing: 0;
     width: 200px;
@@ -42,7 +42,7 @@
 ** MENUITEMS
 *************************************************************************/
 .menuitem {
-    background-color: #EEEEEE;
+    background-color: #252728;
     width: 100%;
     padding: 5px;
     cursor: pointer;
@@ -63,21 +63,21 @@
 }
 
 .menuitem:hover, .menuitem:selected {
-    background-color: #CCCCCC;
+    background-color: #2f3746;
 }
 
 .menuitem .label:hover, .menuitem .label:selected {
-    color: #222222;
+    color: #d4d4d4;
 }
 
 .menuitem-expandable {
-    resource: "haxeui-core/styles/default/right_arrow.png";
+    resource: "haxeui-core/styles/dark/right_arrow.png";
     vertical-align: "center";
 }
 
 .menuseparator {
     height: 1px;
     width: 100%;
-    background-color: #ABABAB;
+    background-color: #252728;
     horizontal-align: "center";
 }
