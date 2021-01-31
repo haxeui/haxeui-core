@@ -145,7 +145,7 @@ private class Events extends haxe.ui.events.Events {
         var cx = menu.width - _currentButton.width;
         var filler:Component = menu.findComponent("menu-filler", false);
         if (cx > 0 && filler != null) {
-            cx += 2;
+            cx += 1;
             filler.width = cx;
             filler.left = menu.width - cx;
             filler.hidden = false;

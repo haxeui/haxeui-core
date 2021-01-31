@@ -17,13 +17,16 @@
 }
 
 .menubar-button:hover {
-    background-color: #CCCCCC;
-    color: #444444;
+    background-color: #252728;
+    color: #d4d4d4;
 }
 
 .menubar-button:down {
-    background-color: #ABABAB;
-    color: #EEEEEE;
+    background-color: #252728;
+    color: #d4d4d4;
+    border: 1px solid #181a1b;
+    border-bottom-width: 0px;
+    border-bottom-size: 0px;
 }
 
 /************************************************************************
@@ -36,6 +39,16 @@
     filter: drop-shadow(2, 45, #000000, 0.15, 6, 1, 30, 35, false);
     spacing: 0;
     width: 200px;
+}
+
+.menu.expanded {
+    border-top-width: 0px;
+    border-top-size: 0px;
+}
+
+.menu-filler {
+    background-color: #181a1b;
+    height: 1px;
 }
 
 /************************************************************************
