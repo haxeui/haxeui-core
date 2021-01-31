@@ -232,6 +232,9 @@ class DialogBase extends Box {
         dialogTitle.width = this.layout.innerWidth;
         if (_autoSizeDialog == false) {
             var offset = this.layout.paddingLeft + this.layout.paddingRight;
+            if (dialogContent.width != this.width - offset) {
+                dialogContent.width = this.width - offset;
+            }
             if (dialogFooterContainer.width != this.width - offset) {
                 dialogFooterContainer.width = this.width - offset;
             }
