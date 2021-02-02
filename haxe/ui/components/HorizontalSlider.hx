@@ -22,10 +22,14 @@ class HorizontalSliderLayout extends DefaultLayout {
         var endThumb:Button = findComponent("end-thumb");
 
         if (startThumb != null) {
-            startThumb.left =  (range.left + rangeValue.left) - (startThumb.width / 2);
+            startThumb.left = (range.left + rangeValue.left) - (startThumb.width / 2);
         }
 
-        endThumb.left =  (range.left + rangeValue.left + rangeValue.width) - (endThumb.width / 2);
+        var cx = rangeValue.width;
+        if (rangeValue.hidden == true) {
+            cx = 0;
+        }
+        endThumb.left = (range.left + rangeValue.left + cx) - (endThumb.width / 2);
     }
 }
 
