@@ -1215,6 +1215,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
 
             invalidateComponent();
 
+            behaviours.ready();
             behaviours.update();
             Toolkit.callLater(function() {
                 invalidateComponentData();

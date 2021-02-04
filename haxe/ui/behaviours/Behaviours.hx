@@ -1,5 +1,6 @@
 package haxe.ui.behaviours;
 
+import haxe.ui.binding.BindingManager;
 import haxe.ui.core.Component;
 import haxe.ui.events.UIEvent;
 import haxe.ui.util.Variant;
@@ -227,31 +228,33 @@ class Behaviours {
 
         unlock();
 
-        /*
-        var autoDispatch = b.getConfigValue("autoDispatch", null);
-        if (autoDispatch != null) {
-            var arr = autoDispatch.split(".");
-            var eventName = arr.pop().toLowerCase();
-            var cls = arr.join(".");
-
-            #if hxcs // hxcs issue
-            var event:UIEvent = Type.createInstance(Type.resolveClass(cls), [null]);
-            event.type = eventName;
-            #else
-            var event = Type.createInstance(Type.resolveClass(cls), [eventName]);
-            #end
-
-            if (eventName != UIEvent.CHANGE) {
-                b._component.dispatch(event);
-            } else if (changed == true || changed == null) {
-                b._component.dispatch(event);
-            }
-        }
-        */
         performAutoDispatch(b, changed);
     }
 
+    public function ready() {
+        if (_autoDispatch == null) {
+            return;
+        }
+        
+        for (b in _autoDispatch.keys()) {
+            var changed = _autoDispatch.get(b);
+            performAutoDispatch(b, changed);
+        }
+        
+        _autoDispatch = null;
+        BindingManager.instance.refreshAll();
+    }
+    
+    private var _autoDispatch:Map<Behaviour, Null<Bool>>;
     private function performAutoDispatch(b:Behaviour, changed:Null<Bool>) {
+        if (_component.isReady == false) {
+            if (_autoDispatch == null) {
+                _autoDispatch = new Map<Behaviour, Null<Bool>>();
+            }
+            _autoDispatch.set(b, changed);
+            return;
+        }
+
         var autoDispatch = b.getConfigValue("autoDispatch", null);
         if (autoDispatch != null) {
             var arr = autoDispatch.split(".");

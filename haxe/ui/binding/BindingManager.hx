@@ -96,11 +96,19 @@ class BindingManager {
 
     public function refreshAll() {
         for (c in bindingInfo.keys()) {
-            var info:BindingInfo = bindingInfo.get(c);
-            for (propName in info.props.keys()) {
-                var propInfo:PropertyInfo = info.props.get(propName);
-                handleProp(c, propInfo);
-            }
+            refreshFor(c);
+        }
+    }
+    
+    public function refreshFor(c:Component) {
+        if (bindingInfo.exists(c) == false) {
+            return;
+        }
+        
+        var info:BindingInfo = bindingInfo.get(c);
+        for (propName in info.props.keys()) {
+            var propInfo:PropertyInfo = info.props.get(propName);
+            handleProp(c, propInfo);
         }
     }
 
