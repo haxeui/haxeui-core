@@ -228,6 +228,15 @@ class BindingManager {
     }
     
     private function buildLocaleScript(script:String):String {
+        if (script == null) {
+            return null;
+        }
+        if (script.length == 0) {
+            return script;
+        }
+        if (StringTools.startsWith(script, "lookupLocaleString(")) {
+            return script;
+        }
         var params = script.split(",");
         script = "lookupLocaleString('" + params[0] + "'";
         params.shift();
