@@ -160,6 +160,7 @@ class BindingManager {
         while (n1 != -1) {
             var n2:Int = script.indexOf("}}", n1);
             var scriptPart:String = script.substr(n1 + 2, n2 - n1 - 2);
+            scriptPart = buildLocaleScript(scriptPart);
             var parser:Parser = new Parser();
             var expr:Expr = parser.parseString(scriptPart);
 
