@@ -36,9 +36,9 @@ private class Layout extends DefaultLayout {
     private override function repositionChildren() {
         super.repositionChildren();
 
-        var filler = _component.findComponent("tabbar-filler", false);
+        var filler:Box = _component.findComponent("tabbar-filler", false);
         if (filler != null) {
-            var container = _component.findComponent("tabbar-contents", false);
+            var container:Box = _component.findComponent("tabbar-contents", false);
             filler.width = _component.width - container.width;
             filler.height = _component.height;
             filler.left = container.width;
