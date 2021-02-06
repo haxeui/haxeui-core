@@ -3,6 +3,7 @@ package haxe.ui.components;
 import haxe.ui.behaviours.Behaviour;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.components.Button.ButtonLayout;
+import haxe.ui.containers.Box;
 import haxe.ui.containers.HBox;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
@@ -35,6 +36,14 @@ private class Layout extends DefaultLayout {
     private override function repositionChildren() {
         super.repositionChildren();
 
+        var filler = _component.findComponent("tabbar-filler", false);
+        if (filler != null) {
+            var container = _component.findComponent("tabbar-contents", false);
+            filler.width = _component.width - container.width;
+            filler.height = _component.height;
+            filler.left = container.width;
+        }
+        
         var left:Button = _component.findComponent("tabbar-scroll-left", false);
         var right:Button = _component.findComponent("tabbar-scroll-right", false);
         if (left != null && hidden(left) == false) {
@@ -279,6 +288,7 @@ private class Events extends haxe.ui.events.Events {
 private class Builder extends CompositeBuilder {
     private var _tabbar:TabBar;
     private var _container:HBox;
+    private var _filler:Box;
 
     public function new(tabbar:TabBar) {
         super(tabbar);
@@ -291,6 +301,12 @@ private class Builder extends CompositeBuilder {
     }
 
     private function createContainer() {
+        if (_filler == null) {
+            _filler = new Box();
+            _filler.id = "tabbar-filler";
+            _filler.addClass("tabbar-filler");
+            _tabbar.addComponent(_filler);
+        }
         if (_container == null) {
             _container = new HBox();
             _container.id = "tabbar-contents";
@@ -343,21 +359,21 @@ private class Builder extends CompositeBuilder {
     }
 
     public override function addComponent(child:Component):Component {
-        if (child != _container && child != _scrollLeft && child != _scrollRight) {
+        if (child != _container && child != _scrollLeft && child != _scrollRight && child != _filler) {
             return addTab(child);
         }
         return null;
     }
 
     public override function addComponentAt(child:Component, index:Int):Component {
-        if (child != _container && child != _scrollLeft && child != _scrollRight) {
+        if (child != _container && child != _scrollLeft && child != _scrollRight && child != _filler) {
             return addTabAt(child, index);
         }
         return null;
     }
 
     public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
-        if (child != _container && child != _scrollLeft && child != _scrollRight) {
+        if (child != _container && child != _scrollLeft && child != _scrollRight && child != _filler) {
             var index = _container.getComponentIndex(child);
             if (index != -1) {
                 _tabbar.removeTab(index);
@@ -376,14 +392,14 @@ private class Builder extends CompositeBuilder {
     }
 
     public override function getComponentIndex(child:Component):Int {
-        if (child != _container && child != _scrollLeft && child != _scrollRight) {
+        if (child != _container && child != _scrollLeft && child != _scrollRight && child != _filler) {
             return _container.getComponentIndex(child);
         }
         return -1;
     }
 
     public override function setComponentIndex(child:Component, index:Int):Component {
-        if (child != _container && child != _scrollLeft && child != _scrollRight) {
+        if (child != _container && child != _scrollLeft && child != _scrollRight && child != _filler) {
             return _container.setComponentIndex(child, index);
         }
         return null;
