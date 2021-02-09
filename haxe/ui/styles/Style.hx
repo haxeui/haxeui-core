@@ -299,7 +299,7 @@ class Style {
                 case "opacity":
                     opacity = ValueTools.float(v.value);
 
-                case "font-name":
+                case "font-name" | "font-family":
                     fontName = ValueTools.string(v.value);
                 case "font-size":
                     fontSize = ValueTools.calcDimension(v.value);
