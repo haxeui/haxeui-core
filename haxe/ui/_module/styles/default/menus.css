@@ -29,6 +29,24 @@
     border-bottom-size: 0px;
 }
 
+.menubar-button-no-children {
+    background-color: #EEEEEE;
+    border: none;
+    color: #666666;
+    vertical-align: center;
+}
+
+.menubar-button-no-children:hover {
+    background-color: #CCCCCC;
+    color: #444444;
+}
+
+.menubar-button-no-children:down {
+    background-color: white;
+    color: black;
+    border: 1px solid #ABABAB;
+}
+
 /************************************************************************
 ** MENU
 *************************************************************************/

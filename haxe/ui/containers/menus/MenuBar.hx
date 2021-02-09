@@ -72,9 +72,17 @@ private class Events extends haxe.ui.events.Events {
         var builder:Builder = cast(_menubar._compositeBuilder, Builder);
         var target:Button = cast(event.target, Button);
         var index = builder._buttons.indexOf(target);
+        if (target.toggle == false) {
+            var menu = builder._menus[index];
+            var newEvent = new MenuEvent(MenuEvent.MENU_SELECTED);
+            newEvent.menu = menu;
+            _menubar.dispatch(newEvent);
+            return;
+        }
+        
         if (target.selected == true) {
             showMenu(index);
-        } else {
+        } else if (_currentButton != null) {
             cast(_currentButton._internalEvents, ButtonEvents).lastMouseEvent = event;
             hideCurrentMenu();
         }
@@ -97,8 +105,13 @@ private class Events extends haxe.ui.events.Events {
 
     private function showMenu(index:Int) {
         var builder:Builder = cast(_menubar._compositeBuilder, Builder);
-        var target:Button = builder._buttons[index];
         var menu:Menu = builder._menus[index];
+        if (menu.childComponents.length <= 1) {
+            return;
+        }
+        trace(menu.childComponents.length);
+        
+        var target:Button = builder._buttons[index];
         if (_currentMenu == menu) {
             return;
         }
@@ -246,10 +259,15 @@ private class Builder extends CompositeBuilder {
         if (Std.is(child, Menu)) {
             var menu = cast(child, Menu);
             var button = new Button();
-            button.styleNames = "menubar-button";
+            var hasChildren = (menu.childComponents.length > 0);
+            if (hasChildren == true) {
+                button.styleNames = "menubar-button";
+            } else {
+                button.styleNames = "menubar-button-no-children";
+            }
             button.text = menu.text;
             button.icon = menu.icon;
-            button.toggle = true;
+            button.toggle = hasChildren;
             BindingManager.instance.cloneBinding(child, button);
             _buttons.push(button);
             _menubar.addComponent(button);
