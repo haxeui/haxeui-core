@@ -22,15 +22,18 @@
 }
 
 .menubar-button:down {
-    background-color: #ABABAB;
-    color: #EEEEEE;
+    background-color: white;
+    color: black;
+    border: 1px solid #ABABAB;
+    border-bottom-width: 0px;
+    border-bottom-size: 0px;
 }
 
 /************************************************************************
 ** MENU
 *************************************************************************/
 .menu {
-    background-color: #EEEEEE;
+    background-color: white;
     padding: 1px;
     border: 1px solid #ABABAB;
     filter: drop-shadow(2, 45, #000000, 0.15, 6, 1, 30, 35, false);
@@ -38,11 +41,21 @@
     width: 200px;
 }
 
+.menu.expanded {
+    border-top-width: 0px;
+    border-top-size: 0px;
+}
+
+.menu-filler {
+    background-color: #ABABAB;
+    height: 1px;
+}
+
 /************************************************************************
 ** MENUITEMS
 *************************************************************************/
 .menuitem {
-    background-color: #EEEEEE;
+    background-color: white;
     width: 100%;
     padding: 5px;
     cursor: pointer;
@@ -63,7 +76,7 @@
 }
 
 .menuitem:hover, .menuitem:selected {
-    background-color: #CCCCCC;
+    background-color: #d9e5f2;
 }
 
 .menuitem .label:hover, .menuitem .label:selected {
