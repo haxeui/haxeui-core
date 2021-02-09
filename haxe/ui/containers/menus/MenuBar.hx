@@ -109,7 +109,6 @@ private class Events extends haxe.ui.events.Events {
         if (menu.childComponents.length <= 1) {
             return;
         }
-        trace(menu.childComponents.length);
         
         var target:Button = builder._buttons[index];
         if (_currentMenu == menu) {
