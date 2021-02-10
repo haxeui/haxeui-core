@@ -2,6 +2,7 @@ package haxe.ui.components;
 
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
+import haxe.ui.binding.BindingManager;
 import haxe.ui.components.Button.ButtonBuilder;
 import haxe.ui.components.Button.ButtonEvents;
 import haxe.ui.containers.Box;
@@ -295,6 +296,20 @@ class ListDropDownHandler extends DropDownHandler {
                 }
             }
         }
+        
+        if (index == -1 && _dropdown.dataSource != null) {
+            var info = BindingManager.instance.findLanguageBinding(_dropdown, "text");
+            if (info != null && info.script != null) {
+                text = info.script;
+                for (i in 0..._dropdown.dataSource.size) {
+                    var item:Dynamic = _dropdown.dataSource.get(i);
+                    if (item == text || item.value == text || item.text == text) {
+                        index = i;
+                    }
+                }
+            }
+        }
+        
         return index;
     }
 

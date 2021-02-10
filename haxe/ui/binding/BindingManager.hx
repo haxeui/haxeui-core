@@ -30,6 +30,10 @@ class PropertyInfo {
             array.push(objectProp);
         }
     }
+    
+    public function reset() {
+        objects = new Map<String, Array<String>>();
+    }
 }
 
 class TargetInfo {
@@ -159,8 +163,18 @@ class BindingManager {
         }
     }
 
-    public function addLanguageBinding(c:Component, prop:String, script:String) {
-        if (hasBindingInfo(c, prop, script) == true) {
+    public function findLanguageBinding(c:Component, prop:String):PropertyInfo {
+        var info = bindingInfo.get(c);
+        if (info == null) {
+            return null;
+        }
+        
+        var propInfo:PropertyInfo = info.props.get(prop);
+        return propInfo;
+    }
+    
+    public function addLanguageBinding(c:Component, prop:String, script:String, overwrite:Bool = true) {
+        if (hasBindingInfo(c, prop, script) == true && overwrite == false) {
             return;
         }
         
@@ -177,8 +191,14 @@ class BindingManager {
                 info = new BindingInfo();
                 bindingInfo.set(c, info);
             }
+            var propInfo:PropertyInfo = info.props.get(prop);
+            if (propInfo == null) {
+                propInfo = info.addProp(prop, script);
+            } else {
+                propInfo.reset();
+                propInfo.script = script;
+            }
 
-            var propInfo:PropertyInfo = info.addProp(prop, script);
             propInfo.languageBinding = true;
             extractFields(expr, propInfo);
             for (objectId in propInfo.objects.keys()) {
