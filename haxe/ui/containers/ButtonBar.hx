@@ -1,0 +1,113 @@
+package haxe.ui.containers;
+
+import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.behaviours.DefaultBehaviour;
+import haxe.ui.components.Button;
+import haxe.ui.containers.Box;
+import haxe.ui.core.Component;
+import haxe.ui.core.CompositeBuilder;
+import haxe.ui.core.IDirectionalComponent;
+import haxe.ui.events.UIEvent;
+
+@:composite(Events, Builder)
+class ButtonBar extends Box implements IDirectionalComponent {
+    @:behaviour(DefaultBehaviour, true)     public var toggle:Bool;
+    @:behaviour(SelectedIndex)              public var selectedIndex:Int;
+}
+
+//***********************************************************************************************************
+// Behaviours
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+@:access(haxe.ui.containers.Builder)
+private class SelectedIndex extends DataBehaviour {
+    private override function validateData() {
+        var builder:Builder = cast(_component._compositeBuilder, Builder);
+        var currentButton = builder._currentButton;
+        var button = cast(_component.getComponentAt(_value), Button);
+        if (currentButton == button) {
+            return;
+        }
+        
+        if (currentButton != null) {
+            builder._currentButton.selected = false;
+        }
+        
+        button.selected = true;
+        builder._currentButton = button;
+        
+        _component.dispatch(new UIEvent(UIEvent.CHANGE));
+    }
+}
+
+//***********************************************************************************************************
+// Events
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class Events extends haxe.ui.events.Events {
+    private var _bar:ButtonBar;
+
+    private function new(bar:ButtonBar) {
+        super(bar);
+        _bar = bar;
+    }
+    
+    public override function register() {
+        var buttons = _target.findComponents(Button, 1);
+        for (button in buttons) {
+            if (button.hasEvent(UIEvent.CHANGE, onButtonChanged) == false) {
+                button.registerEvent(UIEvent.CHANGE, onButtonChanged);
+            }
+        }
+    }
+
+    public override function unregister() {
+        var buttons = _target.findComponents(Button, 1);
+        for (button in buttons) {
+            button.unregisterEvent(UIEvent.CHANGE, onButtonChanged);
+        }
+    }
+
+    private function onButtonChanged(event:UIEvent) {
+        var button = cast(event.target, Button);
+        var index = _bar.getComponentIndex(button);
+        if (index == _bar.selectedIndex && button.selected == false) {
+            button.selected = true;
+            return;
+        }
+        if (button.selected == true) {
+            _bar.selectedIndex = index;
+        }
+    }
+}
+
+//***********************************************************************************************************
+// Composite Builder
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class Builder extends CompositeBuilder {
+    private var _bar:ButtonBar;
+    private var _currentButton:Button;
+    
+    private function new(bar:ButtonBar) {
+        super(bar);
+        _bar = bar;
+    }
+    
+    public override function addComponent(child:Component):Component {
+        if (Std.is(child, Button)) {
+            cast(child, Button).toggle = _bar.toggle;
+        }
+        
+        _component.registerInternalEvents(true);
+        
+        return null;
+    }
+    
+    public override function onReady() {
+        _component.registerInternalEvents(true);
+    }
+}

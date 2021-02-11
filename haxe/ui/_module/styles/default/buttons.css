@@ -53,3 +53,36 @@
 .button .label {
     pointer-events: none;
 }
+
+/************************************************************************
+** BUTTON BARS
+*************************************************************************/
+.button-bar {
+    spacing: 0;
+}
+
+.button-bar .button {
+    border-radius: 0;
+    border-color: #ABABAB;
+}
+
+.button-bar .button:down {
+    background-color: #a7c4e2;
+    color: white;
+}
+
+.horizontal-button-bar .button {
+    border-left-size: 0;
+}
+
+.horizontal-button-bar .button.first {
+    border-left-size: 1;
+}
+
+.vertical-button-bar .button {
+    border-top-size: 0;
+}
+
+.vertical-button-bar .button.first {
+    border-top-size: 1;
+}
