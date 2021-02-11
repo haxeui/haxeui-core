@@ -1,5 +1,6 @@
 package haxe.ui.containers.menus;
 
+import haxe.ui.Toolkit;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.binding.BindingManager;
 import haxe.ui.components.Button;
@@ -68,6 +69,12 @@ private class Events extends haxe.ui.events.Events {
         }
     }
 
+    private function onCompleteButton(event:MouseEvent) {
+        var target:Button = cast(event.target, Button);
+        target.unregisterEvent(MouseEvent.MOUSE_OUT, onCompleteButton);
+        hideCurrentMenu();
+    }
+    
     private function onButtonClick(event:MouseEvent) {
         var builder:Builder = cast(_menubar._compositeBuilder, Builder);
         var target:Button = cast(event.target, Button);
@@ -77,6 +84,7 @@ private class Events extends haxe.ui.events.Events {
             var newEvent = new MenuEvent(MenuEvent.MENU_SELECTED);
             newEvent.menu = menu;
             _menubar.dispatch(newEvent);
+            target.registerEvent(MouseEvent.MOUSE_OUT, onCompleteButton);
             return;
         }
         
@@ -106,9 +114,7 @@ private class Events extends haxe.ui.events.Events {
     private function showMenu(index:Int) {
         var builder:Builder = cast(_menubar._compositeBuilder, Builder);
         var menu:Menu = builder._menus[index];
-        if (menu.childComponents.length == 0) {
-            return;
-        }
+        var hasChildren = (menu.childComponents.length > 0);
         
         var target:Button = builder._buttons[index];
         if (_currentMenu == menu) {
@@ -123,60 +129,78 @@ private class Events extends haxe.ui.events.Events {
         target.selected = true;
 
         hideCurrentMenu();
-        var componentOffset = target.getComponentOffset();
-        var left = target.screenLeft + componentOffset.x;
-        var marginTop:Float = 0;
-        if (menu.style != null && menu.style.marginTop != null) {
-            marginTop = menu.style.marginTop;
+        
+        for (button in builder._buttons) {
+            if (button.hasClass("menubar-button-no-children")) {
+                button.swapClass("menubar-button-no-children-active", "menubar-button-no-children");
+            }
         }
-        var top = target.screenTop + (target.actualComponentHeight - Toolkit.scaleY) + componentOffset.y + marginTop;
-        menu.menuStyleNames = _menubar.menuStyleNames;
-        menu.addClasses([_menubar.menuStyleNames, "expanded"]);
-        if (menu.findComponent("menu-filler", false) == null) {
-            var filler = new Component();
-            filler.horizontalAlign = "right";
-            filler.includeInLayout = false;
-            filler.addClass("menu-filler");
-            filler.id = "menu-filler";
-            menu.addComponent(filler);
-        }
-        menu.show();
-        Screen.instance.addComponent(menu);
-        menu.syncComponentValidation();
-
+        
         var rtl = false;
-        if (left + menu.actualComponentWidth > Screen.instance.width) {
-            left = target.screenLeft - menu.actualComponentWidth + target.actualComponentWidth;
-            rtl = true;
-        }
+        if (hasChildren == true) {
+            var componentOffset = target.getComponentOffset();
+            var left = target.screenLeft + componentOffset.x;
+            var marginTop:Float = 0;
+            if (menu.style != null && menu.style.marginTop != null) {
+                marginTop = menu.style.marginTop;
+            }
+            var top = target.screenTop + (target.actualComponentHeight - Toolkit.scaleY) + componentOffset.y + marginTop;
+            menu.menuStyleNames = _menubar.menuStyleNames;
+            menu.addClasses([_menubar.menuStyleNames, "expanded"]);
+            if (menu.findComponent("menu-filler", false) == null) {
+                var filler = new Component();
+                filler.horizontalAlign = "right";
+                filler.includeInLayout = false;
+                filler.addClass("menu-filler");
+                filler.id = "menu-filler";
+                menu.addComponent(filler);
+            }
+            menu.show();
+            Screen.instance.addComponent(menu);
+            menu.syncComponentValidation();
 
-        menu.left = left;
-        menu.top = top - Toolkit.scaleY;
+            if (left + menu.actualComponentWidth > Screen.instance.width) {
+                left = target.screenLeft - menu.actualComponentWidth + target.actualComponentWidth;
+                rtl = true;
+            }
+
+            menu.left = left;
+            menu.top = top - Toolkit.scaleY;
+        }
 
         _currentButton = target;
         _currentMenu = menu;
 
-        var cx = menu.width - _currentButton.width;
-        var filler:Component = menu.findComponent("menu-filler", false);
-        if (cx > 0 && filler != null) {
-            cx += 1;
-            filler.width = cx;
-            if (rtl == false) {
-                filler.left = menu.width - cx;
+        if (hasChildren == true) {
+            var cx = menu.width - _currentButton.width;
+            var filler:Component = menu.findComponent("menu-filler", false);
+            if (cx > 0 && filler != null) {
+                cx += 1;
+                filler.width = cx;
+                if (rtl == false) {
+                    filler.left = menu.width - cx;
+                }
+                filler.hidden = false;
+            } else if (filler != null) {
+                filler.hidden = true;
             }
-            filler.hidden = false;
-        } else if (filler != null) {
-            filler.hidden = true;
-        }
 
-        Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
-        if (!_currentMenu.hasEvent(MenuEvent.MENU_SELECTED, onMenuSelected)) {
-            _currentMenu.registerEvent(MenuEvent.MENU_SELECTED, onMenuSelected);
+            Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
+            if (!_currentMenu.hasEvent(MenuEvent.MENU_SELECTED, onMenuSelected)) {
+                _currentMenu.registerEvent(MenuEvent.MENU_SELECTED, onMenuSelected);
+            }
         }
     }
 
     private function hideCurrentMenu() {
         if (_currentMenu != null) {
+            var builder:Builder = cast(_menubar._compositeBuilder, Builder);
+            for (button in builder._buttons) {
+                if (button.hasClass("menubar-button-no-children-active")) {
+                    button.swapClass("menubar-button-no-children", "menubar-button-no-children-active");
+                }
+            }
+            
             _currentMenu.unregisterEvent(MenuEvent.MENU_SELECTED, onMenuSelected);
             _currentMenu.hide();
             _currentButton.selected = false;

@@ -47,6 +47,25 @@
     border: 1px solid #ABABAB;
 }
 
+.menubar-button-no-children-active {
+    background-color: #EEEEEE;
+    border: none;
+    color: #666666;
+    vertical-align: center;
+}
+
+.menubar-button-no-children-active:hover {
+    background-color: white;
+    color: black;
+    border: 1px solid #ABABAB;
+}
+
+.menubar-button-no-children-active:down {
+    background-color: #CCCCCC;
+    color: #444444;
+    border: none;
+}
+
 /************************************************************************
 ** MENU
 *************************************************************************/
