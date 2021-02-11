@@ -134,6 +134,10 @@ class ToolTipManager {
     }
 
     private function showToolTip() {
+        if (_currentComponent == null) {
+            return;
+        }
+        
         createToolTip();
 
         _toolTip.hide();
