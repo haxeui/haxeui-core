@@ -13,6 +13,7 @@ class Header extends HBox {
 private class Layout extends HorizontalLayout {
     private override function resizeChildren() {
         super.resizeChildren();
+
         var max:Float = 0;
         for (child in component.childComponents) {
             if (child.includeInLayout == false) {
@@ -29,7 +30,9 @@ private class Layout extends HorizontalLayout {
                 continue;
             }
             
-            child.height = max;
+            if (child.text == null || child.text.length == 0) {
+                child.height = max;
+            }
         }
     }
 }
