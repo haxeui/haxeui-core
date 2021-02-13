@@ -508,7 +508,13 @@ private class Layout extends VerticalVirtualLayout {
 
         header.left = paddingLeft; // + marginLeft(header);
         header.top = paddingTop; // + marginTop(header);
-        var rc:Rectangle = new Rectangle(cast(_component, ScrollView).hscrollPos + 1, 1, usableWidth, header.height);
+        var vscroll = _component.findComponent(VerticalScroll);
+        if (vscroll != null && vscroll.hidden == false) {
+            header.addClass("scrolling");
+        } else {
+            header.removeClass("scrolling");
+        }
+        var rc:Rectangle = new Rectangle(cast(_component, ScrollView).hscrollPos, 1, usableWidth, header.height);
         header.componentClipRect = rc;
 
         var data = findComponent("tableview-contents", Box, true, "css");

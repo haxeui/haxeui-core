@@ -26,5 +26,5 @@
 }
 
 .dialog:native {
-    padding-top: 0px !important;
+    padding-top: 0px;
 }

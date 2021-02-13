@@ -10,6 +10,16 @@
 .header .column {
     border-radius: 0;
     icon-position: far-right;
+    border-left-width: 0;
+    text-align: left;
+}
+
+.header .column.last {
+    border-right-width: 0;
+}
+
+.header.scrolling .column.last {
+    border-right-width: 1px;
 }
 
 .header .sortable {
