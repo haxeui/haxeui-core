@@ -261,9 +261,9 @@ class ComponentMacros {
         }
 
         if (classInfo.hasInterface("haxe.ui.core.IDataComponent") == true && c.data != null) {
-            var ds = new haxe.ui.data.DataSourceFactory<Dynamic>().fromString(c.dataString, haxe.ui.data.ListDataSource);
+            var ds = new haxe.ui.data.DataSourceFactory<Dynamic>().fromString(c.dataString, haxe.ui.data.ArrayDataSource);
             var dsVarName = 'ds${id}';
-            builder.add(macro var $dsVarName = new haxe.ui.data.ListDataSource<Dynamic>());
+            builder.add(macro var $dsVarName = new haxe.ui.data.ArrayDataSource<Dynamic>());
             for (i in 0...ds.size) {
                 var item = ds.get(i);
                 builder.add(macro $i{dsVarName}.add($v{item}));
