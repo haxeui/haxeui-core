@@ -205,7 +205,7 @@ class ComponentEvents extends ComponentContainer {
 
     private var _pausedEvents:Map<String, Array<UIEvent->Void>> = null;
     public function pauseEvent(type:String) {
-        if (__events.contains(type) == false) {
+        if (__events == null || __events.contains(type) == false) {
             return;
         }
         
@@ -227,6 +227,10 @@ class ComponentEvents extends ComponentContainer {
     }
     
     public function resumeEvent(type:String) {
+        if (__events == null) {
+            return;
+        }
+        
         if (_pausedEvents == null) {
             return;
         }
