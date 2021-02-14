@@ -39,6 +39,7 @@ class ListView extends ScrollView implements IDataComponent implements IVirtualC
     @:behaviour(SelectedItemsBehaviour)                         public var selectedItems:Array<Dynamic>;
     @:behaviour(SelectionModeBehaviour, SelectionMode.ONE_ITEM) public var selectionMode:SelectionMode;
     @:behaviour(DefaultBehaviour, 500)                          public var longPressSelectionTime:Int;  //ms
+    @:clonable @:value(selectedIndex)                           public var value:Dynamic;
 
     @:event(ItemEvent.COMPONENT_EVENT)                          public var onComponentEvent:ItemEvent->Void;
 
