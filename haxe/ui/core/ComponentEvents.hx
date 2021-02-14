@@ -1,5 +1,6 @@
 package haxe.ui.core;
 
+import haxe.ui.Toolkit;
 import haxe.ui.events.Events;
 import haxe.ui.events.KeyboardEvent;
 import haxe.ui.events.MouseEvent;
@@ -202,6 +203,47 @@ class ComponentEvents extends ComponentContainer {
         }
     }
 
+    private var _pausedEvents:Map<String, Array<UIEvent->Void>> = null;
+    public function pauseEvent(type:String) {
+        if (__events.contains(type) == false) {
+            return;
+        }
+        
+        if (_pausedEvents == null) {
+            _pausedEvents = new Map<String, Array<UIEvent->Void>>();
+        }
+        
+        var pausedList = _pausedEvents.get(type);
+        if (pausedList == null) {
+            pausedList = new Array<UIEvent->Void>();
+            _pausedEvents.set(type, pausedList);
+        }
+        
+        var listeners = __events.listeners(type).copy();
+        for (l in listeners) {
+            pausedList.push(l);
+            unregisterEvent(type, l);
+        }
+    }
+    
+    public function resumeEvent(type:String) {
+        if (_pausedEvents == null) {
+            return;
+        }
+        
+        if (_pausedEvents.exists(type) == false) {
+            return;
+        }
+        
+        Toolkit.callLater(function() {
+            var pausedList = _pausedEvents.get(type);
+            for (l in pausedList) {
+                registerEvent(type, l);
+            }
+            _pausedEvents.remove(type);
+        });
+    }
+    
     private function mapEvent(type:String, listener:UIEvent->Void) {
     }
 
