@@ -55,6 +55,7 @@ class Menu extends VBox {
 @:access(haxe.ui.containers.menus.Builder)
 class MenuEvents extends haxe.ui.events.Events {
     private var _menu:Menu;
+    private var _currentItem:MenuItem = null;
     public var currentSubMenu:Menu = null;
     public var parentMenu:Menu = null;
 
@@ -136,6 +137,7 @@ class MenuEvents extends haxe.ui.events.Events {
         }
 
         if (subMenus.get(item) != null) {
+            _currentItem = item;
             showSubMenu(cast(subMenus.get(item), Menu), item);
         } else {
             hideCurrentSubMenu();
@@ -144,8 +146,10 @@ class MenuEvents extends haxe.ui.events.Events {
 
     private function onItemMouseOut(event:MouseEvent) {
         if (currentSubMenu != null) {
-            event.target.addClass(":hover", true, true);
+            _currentItem.addClass(":hover", true, true);
             return;
+        } else {
+            _currentItem = null;
         }
     }
 
