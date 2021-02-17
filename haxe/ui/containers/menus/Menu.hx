@@ -241,6 +241,7 @@ private class Builder extends CompositeBuilder {
             var item = new MenuItem();
             item.text = child.text;
             item.icon = menu.icon;
+            item.tooltip = child.tooltip;
             item.expandable = true;
             _menu.addComponent(item);
             cast(menu._internalEvents, MenuEvents).parentMenu = _menu;
