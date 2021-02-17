@@ -1,16 +1,16 @@
 package haxe.ui.components;
 
 import haxe.ui.behaviours.Behaviour;
-import haxe.ui.core.CompositeBuilder;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
+import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.focus.FocusManager;
+import haxe.ui.geom.Size;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.styles.Style;
-import haxe.ui.geom.Size;
 import haxe.ui.util.Timer;
 import haxe.ui.util.Variant;
 /**
@@ -372,6 +372,9 @@ class ButtonEvents extends haxe.ui.events.Events {
         if (hasEvent(MouseEvent.MOUSE_DOWN, onMouseDown) == false) {
             registerEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
         }
+        if (hasEvent(UIEvent.MOVE, onMove) == false) {
+            registerEvent(UIEvent.MOVE, onMove);
+        }
 
         if (_button.toggle == true) {
             registerEvent(MouseEvent.CLICK, onMouseClick);
@@ -383,6 +386,7 @@ class ButtonEvents extends haxe.ui.events.Events {
         unregisterEvent(MouseEvent.MOUSE_OUT, onMouseOut);
         unregisterEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
         unregisterEvent(MouseEvent.CLICK, onMouseClick);
+        unregisterEvent(UIEvent.MOVE, onMove);
     }
 
     private function onMouseOver(event:MouseEvent) {
@@ -438,6 +442,7 @@ class ButtonEvents extends haxe.ui.events.Events {
         _repeater = _button.repeater;
     }
 
+    private var _lastScreenEvent:MouseEvent = null;
     private function onMouseUp(event:MouseEvent) {
         //event.cancel();
         _down = _repeater = false;
@@ -448,15 +453,14 @@ class ButtonEvents extends haxe.ui.events.Events {
             return;
         }
 
+        _lastScreenEvent = event;
         _button.removeClass(":down", true, true);
-        Toolkit.callLater(function() { // lets wait a frame as button could have moved (edge case)
-            var over = _button.hitTest(event.screenX, event.screenY);
-            if (event.touchEvent == false && over == true) {
-                _button.addClass(":hover", true, true);
-            } else if (over == false) {
-                _button.removeClass(":hover", true, true);
-            }
-        });
+        var over = _button.hitTest(event.screenX, event.screenY);
+        if (event.touchEvent == false && over == true) {
+            _button.addClass(":hover", true, true);
+        } else if (over == false) {
+            _button.removeClass(":hover", true, true);
+        }
 
         if (_repeatTimer != null) {
             _repeatTimer.stop();
@@ -464,6 +468,21 @@ class ButtonEvents extends haxe.ui.events.Events {
         }
     }
 
+    private function onMove(event:UIEvent) {
+        if (_lastScreenEvent == null) {
+            return;
+        }
+
+        var over = _button.hitTest(_lastScreenEvent.screenX, _lastScreenEvent.screenY);
+        if (_lastScreenEvent.touchEvent == false && over == true) {
+            _button.addClass(":hover", true, true);
+        } else if (over == false) {
+            _button.removeClass(":hover", true, true);
+        }
+        
+        _lastScreenEvent = null;
+    }
+    
     private function onRepeatTimer() {
         if (_button.hasClass(":hover") && _down == true) {
             var event:MouseEvent = new MouseEvent(MouseEvent.CLICK);
