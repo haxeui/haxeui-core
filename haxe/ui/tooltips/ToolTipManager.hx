@@ -154,6 +154,7 @@ class ToolTipManager {
         renderer.data = options.tipData;
 
         Screen.instance.addComponent(_toolTip);
+        Screen.instance.setComponentIndex(_toolTip, Screen.instance.rootComponents.length - 1);
         _toolTip.validateNow();
 
         positionToolTip();
