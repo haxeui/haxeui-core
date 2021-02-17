@@ -14,7 +14,7 @@ import haxe.ui.geom.Size;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.util.Variant;
 
-@:composite(Builder, Events, Layout)
+@:composite(Builder, Events, TabBarLayout)
 class TabBar extends Component {
     //***********************************************************************************************************
     // Public API
@@ -32,7 +32,7 @@ class TabBar extends Component {
 // Composite Layout
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
-private class Layout extends DefaultLayout {
+class TabBarLayout extends DefaultLayout {
     private override function repositionChildren() {
         super.repositionChildren();
 
