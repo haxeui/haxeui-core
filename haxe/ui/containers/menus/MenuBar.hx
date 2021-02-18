@@ -290,6 +290,7 @@ private class Builder extends CompositeBuilder {
             }
             button.text = menu.text;
             button.icon = menu.icon;
+            button.tooltip = menu.tooltip;
             button.toggle = hasChildren;
             BindingManager.instance.cloneBinding(child, button);
             _buttons.push(button);
