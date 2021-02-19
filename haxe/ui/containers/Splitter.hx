@@ -119,7 +119,7 @@ class SplitterBuilder extends CompositeBuilder {
         var children = _splitter.childComponents.copy();
         for (c in children) {
             if (c.hidden == true) {
-                if (Std.is(c, SizerGripper)) {
+                if ((c is SizerGripper)) {
                     c.show();
                 }
                 break;
@@ -129,7 +129,7 @@ class SplitterBuilder extends CompositeBuilder {
         children.reverse();
         for (c in children) {
             if (c.hidden == true) {
-                if (Std.is(c, SizerGripper)) {
+                if ((c is SizerGripper)) {
                     c.show();
                 }
                 break;
@@ -141,7 +141,7 @@ class SplitterBuilder extends CompositeBuilder {
         var children = _splitter.childComponents.copy();
         for (c in children) {
             if (c.hidden == false) {
-                if (Std.is(c, SizerGripper)) {
+                if ((c is SizerGripper)) {
                     c.hide();
                 }
                 break;
@@ -151,7 +151,7 @@ class SplitterBuilder extends CompositeBuilder {
         children.reverse();
         for (c in children) {
             if (c.hidden == false) {
-                if (Std.is(c, SizerGripper)) {
+                if ((c is SizerGripper)) {
                     c.hide();
                 }
                 break;

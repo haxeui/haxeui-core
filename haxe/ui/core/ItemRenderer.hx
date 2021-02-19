@@ -74,7 +74,7 @@ class ItemRenderer extends Box {
         if (_data != null && (_fieldList == null || _fieldList.length == 0)) {
             switch (Type.typeof(_data)) {
                 case TObject | TClass(_):
-                    if (Std.is(_data, String) == false) {
+                    if ((_data is String) == false) {
                         var fieldList:Array<String> = Reflect.fields(_data);
                         if (Type.getClass(_data) != null) {
                             var instanceFields = Type.getInstanceFields(Type.getClass(_data));
@@ -97,7 +97,7 @@ class ItemRenderer extends Box {
 
         var components = findComponents(InteractiveComponent);
         for (c in components) {
-            if (Std.is(c, Button)) {
+            if ((c is Button)) {
                 if (c.hasEvent(MouseEvent.CLICK, onItemClick) == false) {
                     c.registerEvent(MouseEvent.CLICK, onItemClick);
                 }
@@ -141,7 +141,7 @@ class ItemRenderer extends Box {
         var valueObject = null;
         switch (Type.typeof(value)) {
             case TObject | TClass(_):
-                if (Std.is(value, String) == false) {
+                if ((value is String) == false) {
                     valueObject = value;
                 } else {
                     valueObject = {text: value};
@@ -160,7 +160,7 @@ class ItemRenderer extends Box {
                     var propValue:Dynamic = TypeConverter.convert(v);
                     c.value = propValue;
 
-                    if (Std.is(c, InteractiveComponent)) {
+                    if ((c is InteractiveComponent)) {
                         if (c.hasEvent(UIEvent.CHANGE, onItemChange) == false) {
                             c.registerEvent(UIEvent.CHANGE, onItemChange);
                         }

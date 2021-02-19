@@ -53,7 +53,7 @@ class DataSource<T> {
 
     public function get(index:Int):T {
         var r:T = handleGetItem(index);
-        if (Std.is(r, IDataItem)) {
+        if ((r is IDataItem)) {
             cast(r, IDataItem).onDataSourceChanged = onChange;
         }
         if (transformer != null) {

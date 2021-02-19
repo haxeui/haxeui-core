@@ -98,7 +98,7 @@ private class Builder extends CompositeBuilder {
     }
     
     public override function addComponent(child:Component):Component {
-        if (Std.is(child, Button)) {
+        if ((child is Button)) {
             cast(child, Button).toggle = _bar.toggle;
         }
         

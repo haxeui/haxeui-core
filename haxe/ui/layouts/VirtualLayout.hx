@@ -8,6 +8,12 @@ import haxe.ui.core.ItemRenderer;
 import haxe.ui.events.UIEvent;
 import haxe.ui.data.DataSource;
 
+#if (haxe_ver >= 4.2)
+import Std.isOfType;
+#else
+import Std.is as isOfType;
+#end
+
 class VirtualLayout extends ScrollViewLayout {
     private var _firstIndex:Int = -1;
     private var _lastIndex:Int = -1;
@@ -126,7 +132,7 @@ class VirtualLayout extends ScrollViewLayout {
                 }
 
                 var cls = itemClass(n, data);
-                if (Std.is(item, cls)) {
+                if (isOfType(item, cls)) {
                 } else {
                     removeRenderer(item);
                     item = getRenderer(cls, n);
@@ -181,7 +187,7 @@ class VirtualLayout extends ScrollViewLayout {
                 item = cast(contents.childComponents[i], ItemRenderer);
 
                 //Renderers are always ordered
-                if (!Std.is(item, cls)) {
+                if (!isOfType(item, cls)) {
                     item = getRenderer(cls, n);
                     contents.addComponentAt(item, i);
                 } else if (item.itemIndex != n) {
@@ -243,7 +249,7 @@ class VirtualLayout extends ScrollViewLayout {
         if (comp.virtual == true) {
             for (i in 0..._rendererPool.length) {
                 var renderer = _rendererPool[i];
-                if (Std.is(renderer, cls)) {
+                if (isOfType(renderer, cls)) {
                     _rendererPool.splice(i, 1);
                     instance = renderer;
                     break;

@@ -67,7 +67,7 @@ class FocusManager {
         return focusInfo.currentFocus;
     }
     private function set_focus(value:IFocusable):IFocusable {
-        if (value != null && Std.is(value, IFocusable) == false) {
+        if (value != null && (value is IFocusable) == false) {
             throw "Component does not implement IFocusable";
         }
 
@@ -139,7 +139,7 @@ class FocusManager {
 
     private function buildFocusableList(c:Component, list:Array<IFocusable>):IFocusable {
         var currentFocus = null;
-        if (Std.is(c, IFocusable)) {
+        if ((c is IFocusable)) {
             var f:IFocusable = cast c;
             if (f.allowFocus == true) {
                 if (f.focus == true) {

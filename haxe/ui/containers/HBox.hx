@@ -15,7 +15,7 @@ class HBox extends Box {
 
     @:clonable public var continuous(get, set):Bool;
     private function get_continuous():Bool {
-        return Std.is(_layout, HorizontalContinuousLayout);
+        return (_layout is HorizontalContinuousLayout);
     }
     private function set_continuous(value:Bool):Bool {
         if (value == true) {

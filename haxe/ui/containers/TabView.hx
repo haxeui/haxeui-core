@@ -333,7 +333,7 @@ private class Builder extends CompositeBuilder {
         if (child != _content && child != _tabs) {
             var text:String = child.text;
             var icon:String = null;
-            if (Std.is(child, Box)) {
+            if ((child is Box)) {
                 icon = cast(child, Box).icon;
             }
             child.registerEvent(UIEvent.PROPERTY_CHANGE, onPagePropertyChanged);
@@ -352,7 +352,7 @@ private class Builder extends CompositeBuilder {
         if (child != _content && child != _tabs) {
             var text:String = child.text;
             var icon:String = null;
-            if (Std.is(child, Box)) {
+            if ((child is Box)) {
                 icon = cast(child, Box).icon;
             }
             child.registerEvent(UIEvent.PROPERTY_CHANGE, onPagePropertyChanged);

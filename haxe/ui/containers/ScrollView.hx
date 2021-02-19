@@ -844,21 +844,21 @@ class ScrollViewBuilder extends CompositeBuilder {
     }
 
     public override function addComponent(child:Component):Component {
-        if (Std.is(child, HorizontalScroll) == false && Std.is(child, VerticalScroll) == false && child.hasClass("scrollview-contents") == false) {
+        if ((child is HorizontalScroll) == false && (child is VerticalScroll) == false && child.hasClass("scrollview-contents") == false) {
             return _contents.addComponent(child);
         }
         return null;
     }
 
     public override function addComponentAt(child:Component, index:Int):Component {
-        if (Std.is(child, HorizontalScroll) == false && Std.is(child, VerticalScroll) == false && child.hasClass("scrollview-contents") == false) {
+        if ((child is HorizontalScroll) == false && (child is VerticalScroll) == false && child.hasClass("scrollview-contents") == false) {
             return _contents.addComponentAt(child, index);
         }
         return null;
     }
 
     public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
-        if (Std.is(child, HorizontalScroll) == false && Std.is(child, VerticalScroll) == false && child.hasClass("scrollview-contents") == false) {
+        if ((child is HorizontalScroll) == false && (child is VerticalScroll) == false && child.hasClass("scrollview-contents") == false) {
             return _contents.removeComponent(child, dispose, invalidate);
         }
         return null;
@@ -873,7 +873,7 @@ class ScrollViewBuilder extends CompositeBuilder {
     }
 
     public override function setComponentIndex(child:Component, index:Int):Component {
-        if (Std.is(child, HorizontalScroll) == false && Std.is(child, VerticalScroll) == false && child.hasClass("scrollview-contents") == false) {
+        if ((child is HorizontalScroll) == false && (child is VerticalScroll) == false && child.hasClass("scrollview-contents") == false) {
             return _contents.setComponentIndex(child, index);
         }
         return null;

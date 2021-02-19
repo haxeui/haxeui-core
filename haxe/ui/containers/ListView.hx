@@ -224,7 +224,7 @@ class ListViewEvents extends ScrollViewEvents {
 
         var components = e.target.findComponentsUnderPoint(e.screenX, e.screenY);
         for (component in components) {
-            if (Std.is(component, InteractiveComponent) && cast(component, InteractiveComponent).allowInteraction == true) {
+            if ((component is InteractiveComponent) && cast(component, InteractiveComponent).allowInteraction == true) {
                 return;
             }
         }
@@ -317,7 +317,7 @@ private class ListViewBuilder extends ScrollViewBuilder {
     @:access(haxe.ui.backend.ComponentImpl)
     public override function addComponent(child:Component):Component {
         var r = null;
-        if (Std.is(child, ItemRenderer) && (_listview.itemRenderer == null && _listview.itemRendererFunction == null && _listview.itemRendererClass == null)) {
+        if ((child is ItemRenderer) && (_listview.itemRenderer == null && _listview.itemRendererFunction == null && _listview.itemRendererClass == null)) {
             _listview.itemRenderer = cast(child, ItemRenderer);
             _listview.itemRenderer.ready();
             _listview.itemRenderer.handleVisibility(false);
@@ -334,7 +334,7 @@ private class ListViewBuilder extends ScrollViewBuilder {
 
     public function addItemRendererClass(child:Component, className:String, add:Bool = true) {
         child.walkComponents(function(c) {
-            if (Std.is(c, ItemRenderer)) {
+            if ((c is ItemRenderer)) {
                 if (add == true) {
                     c.addClass(className);
                     Toolkit.callLater(function() {

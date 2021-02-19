@@ -29,7 +29,7 @@ class AssetNamePlugin extends AssetPlugin {
     }
 
     public override function invoke(asset:Dynamic):Dynamic {
-        if (Std.is(asset, String)) {
+        if ((asset is String)) {
             var stringAsset:String = asset;
             var match:Bool = true;
             if (startsWith != null) {

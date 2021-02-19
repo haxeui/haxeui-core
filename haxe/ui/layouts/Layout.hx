@@ -293,7 +293,7 @@ class Layout implements ILayout {
         var w:Float = (x2 - x1) + (paddingLeft + paddingRight);
         var h:Float = (y2 - y1) + (paddingTop + paddingBottom);
 
-        if (Std.is(this, AbsoluteLayout)) {
+        if ((this is AbsoluteLayout)) {
             w += x1;
             h += y1;
         }

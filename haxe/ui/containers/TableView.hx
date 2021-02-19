@@ -239,7 +239,7 @@ private class Events extends ScrollViewEvents {
 
         var components = e.target.findComponentsUnderPoint(e.screenX, e.screenY);
         for (component in components) {
-            if (Std.is(component, InteractiveComponent) && cast(component, InteractiveComponent).allowInteraction == true) {
+            if ((component is InteractiveComponent) && cast(component, InteractiveComponent).allowInteraction == true) {
                 return;
             }
         }
@@ -356,7 +356,7 @@ private class Builder extends ScrollViewBuilder {
 
     public override function addComponent(child:Component):Component {
         var r = null;
-        if (Std.is(child, ItemRenderer)) {
+        if ((child is ItemRenderer)) {
             var itemRenderer = _tableview.itemRenderer;
             if (itemRenderer == null) {
                 itemRenderer = new CompoundItemRenderer();
@@ -365,7 +365,7 @@ private class Builder extends ScrollViewBuilder {
             itemRenderer.addComponent(child);
 
             return child;
-        } else if (Std.is(child, Header)) {
+        } else if ((child is Header)) {
             _header = cast(child, Header);
             _header.registerEvent(UIEvent.COMPONENT_ADDED, onColumnAdded);
 
@@ -395,7 +395,7 @@ private class Builder extends ScrollViewBuilder {
     }
 
     public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
-        if (Std.is(child, Header) == true) {
+        if ((child is Header) == true) {
             _header = null;
             return null;
         }
@@ -440,7 +440,7 @@ private class Builder extends ScrollViewBuilder {
                     if (existing == null) {
                         var temp = _tableview.itemRenderer.findComponent(column.id, Component);
                         var renderer:ItemRenderer = null;
-                        if (Std.is(temp, ItemRenderer)) {
+                        if ((temp is ItemRenderer)) {
                             renderer = cast(temp, ItemRenderer);
                         } else {
                             renderer = temp.findAncestor(ItemRenderer);
@@ -476,7 +476,7 @@ private class Builder extends ScrollViewBuilder {
 
     public function addItemRendererClass(child:Component, className:String, add:Bool = true) {
         child.walkComponents(function(c) {
-            if (Std.is(c, ItemRenderer)) {
+            if ((c is ItemRenderer)) {
                 if (add == true) {
                     c.addClass(className);
                 } else {
@@ -525,7 +525,7 @@ private class Layout extends VerticalVirtualLayout {
                 for (column in headerChildComponents) {
                     var isLast = (headerChildComponents.indexOf(column) == (headerChildComponents.length - 1));
                     var itemRenderer = item.findComponent(column.id, Component);
-                    if (itemRenderer != null && Std.is(itemRenderer, ItemRenderer) == false) {
+                    if (itemRenderer != null && (itemRenderer is ItemRenderer) == false) {
                         itemRenderer = itemRenderer.findAncestor(ItemRenderer);
                     }
                     if (itemRenderer != null) {
