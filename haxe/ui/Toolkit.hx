@@ -236,7 +236,7 @@ class Toolkit {
             component.layout = layout;
         }
 
-        if (Std.is(component, haxe.ui.containers.ScrollView)) { // special properties for scrollview and derived classes
+        if ((component is haxe.ui.containers.ScrollView)) { // special properties for scrollview and derived classes
             var scrollview:haxe.ui.containers.ScrollView = cast(component, haxe.ui.containers.ScrollView);
             if (c.contentWidth != null)             scrollview.contentWidth = c.contentWidth;
             if (c.contentHeight != null)            scrollview.contentHeight = c.contentHeight;
@@ -255,7 +255,7 @@ class Toolkit {
             }
         }
 
-        if (Std.is(component, IDataComponent) && c.data != null) {
+        if ((component is IDataComponent) && c.data != null) {
             cast(component, IDataComponent).dataSource = new haxe.ui.data.DataSourceFactory<Dynamic>().fromString(c.dataString, haxe.ui.data.ArrayDataSource);
         }
 

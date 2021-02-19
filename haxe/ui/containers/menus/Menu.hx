@@ -73,7 +73,7 @@ class MenuEvents extends haxe.ui.events.Events {
         }
 
         for (child in _menu.childComponents) {
-            if (Std.is(child, MenuItem)) {
+            if ((child is MenuItem)) {
                 var item:MenuItem = cast(child, MenuItem);
                 if (!item.hasEvent(MouseEvent.CLICK, onItemClick)) {
                     item.registerEvent(MouseEvent.CLICK, onItemClick);
@@ -236,7 +236,7 @@ private class Builder extends CompositeBuilder {
     }
 
     public override function addComponent(child:Component):Component {
-        if (Std.is(child, Menu)) {
+        if ((child is Menu)) {
             var menu = cast(child, Menu);
             var item = new MenuItem();
             item.text = child.text;
@@ -253,7 +253,7 @@ private class Builder extends CompositeBuilder {
     }
 
     public override function onComponentAdded(child:Component) {
-        if (Std.is(child, Menu) || Std.is(child, MenuItem)) {
+        if ((child is Menu) || (child is MenuItem)) {
             _menu.registerInternalEvents(true);
         }
     }

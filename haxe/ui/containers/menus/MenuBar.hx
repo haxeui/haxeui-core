@@ -279,7 +279,7 @@ private class Builder extends CompositeBuilder {
     }
 
     public override function addComponent(child:Component):Component {
-        if (Std.is(child, Menu)) {
+        if ((child is Menu)) {
             var menu = cast(child, Menu);
             var button = new Button();
             var hasChildren = (menu.childComponents.length > 0);

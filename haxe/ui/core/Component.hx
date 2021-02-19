@@ -24,6 +24,12 @@ import haxe.ui.util.StringUtil;
 import haxe.ui.validation.IValidating;
 import haxe.ui.validation.ValidationManager;
 
+#if (haxe_ver >= 4.2)
+import Std.isOfType;
+#else
+import Std.is as isOfType;
+#end
+
 /**
  Base class of all HaxeUI controls
 **/
@@ -586,7 +592,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         if (criteria != null) {
             return searchType == "id" && id == criteria || searchType == "css" && hasClass(criteria) == true;
         } else if (type != null) {
-            return Std.is(this, type) == true;
+            return isOfType(this, type) == true;
         }
         return false;
     }
@@ -651,7 +657,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             if (styleName != null && child.hasClass(styleName) == false) {
                 match = false;
             }
-            if (type != null && Std.is(child, type) == false) {
+            if (type != null && isOfType(child, type) == false) {
                 match = false;
             }
 
@@ -701,7 +707,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             for (child in childComponents) {
                 if (child.hitTest(screenX, screenY)) {
                     var match = true;
-                    if (type != null && Std.is(child, type) == false) {
+                    if (type != null && isOfType(child, type) == false) {
                         match = false;
                     }
                     if (match == true) {

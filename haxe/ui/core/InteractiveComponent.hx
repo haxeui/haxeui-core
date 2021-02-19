@@ -67,7 +67,7 @@ class InteractiveComponent extends Component implements IFocusable {
 
         _allowFocus = value;
         for (child in childComponents) {
-            if (Std.is(child, IFocusable)) {
+            if ((child is IFocusable)) {
                 cast(child, IFocusable).allowFocus = value;
             }
         }

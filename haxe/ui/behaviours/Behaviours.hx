@@ -86,7 +86,7 @@ class Behaviours {
     public function validateData() {
         for (key in actualUpdateOrder) {
             var b = _instances.get(key);
-            if (Std.is(b, DataBehaviour)) {
+            if ((b is DataBehaviour)) {
                 cast(b, DataBehaviour).validate();
             }
         }
@@ -198,7 +198,7 @@ class Behaviours {
 
         var b = find(id);
         var changed:Null<Bool> = null;
-        if (Std.is(b, ValueBehaviour)) {
+        if ((b is ValueBehaviour)) {
             var v = @:privateAccess cast(b, ValueBehaviour)._value;
             changed = (v != value);
         }
@@ -217,7 +217,7 @@ class Behaviours {
 
         var b = find(id);
         var changed:Null<Bool> = null;
-        if (Std.is(b, ValueBehaviour)) {
+        if ((b is ValueBehaviour)) {
             var v = @:privateAccess cast(b, ValueBehaviour)._value;
             changed = (v != value);
         }

@@ -41,7 +41,7 @@ private class Builder extends CompositeBuilder {
     }
 
     private function childAdd(child:Component) {
-        if (Std.is(child, InteractiveComponent)) {
+        if ((child is InteractiveComponent)) {
             processGroupChild(child);
         } else {
             var interactiveChildren = child.findComponents(InteractiveComponent);
@@ -52,7 +52,7 @@ private class Builder extends CompositeBuilder {
     }
 
     private function processGroupChild(child:Component) {
-        if (Std.is(child, OptionBox)) {
+        if ((child is OptionBox)) {
             // set group name
             if (_group.componentGroup == null) {
                 _group.componentGroup = "group" + GUID.uuid();

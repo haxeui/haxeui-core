@@ -111,7 +111,7 @@ private class Builder extends CompositeBuilder {
     }
 
     public override function addComponent(child:Component):Component {
-        if (Std.is(child, Property)) {
+        if ((child is Property)) {
             var prop = cast(child, Property);
 
             var labelContainer = new Box();

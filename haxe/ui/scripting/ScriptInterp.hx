@@ -44,7 +44,7 @@ class ScriptInterp extends Interp {
             return v;
         }
         #if !macro
-        if (Std.is(v, Component) || Std.is(v, Array)) {
+        if ((v is Component) || (v is Array)) {
             return v;
         }
         #end

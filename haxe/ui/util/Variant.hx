@@ -483,17 +483,17 @@ abstract Variant(VariantType) from VariantType {
                 }
             } else if ((("" + r) == "true" || (r + "") == "false")) {
                 v = (("" + r) == "true");
-            } else if (Std.is(r, String)) {
+            } else if ((r is String)) {
                 v = cast(r, String);
-            } else if (Std.is(r, Component)) {
+            } else if ((r is Component)) {
                 v = cast(r, Component);
-            } else if (Std.is(r, DataSource)) {
+            } else if ((r is DataSource)) {
                 v = cast r;
-            } else if (Std.is(r, Array)) {
+            } else if ((r is Array)) {
                 v = cast r;
-            } else if (Std.is(r, Date)) {
+            } else if ((r is Date)) {
                 v = cast(r, Date);
-            } else if (Std.is(r, ImageData)) {
+            } else if ((r is ImageData)) {
                 v = cast(r, ImageData);
             } else {
                 v = r;
@@ -503,7 +503,7 @@ abstract Variant(VariantType) from VariantType {
     }
 
     private static function containsOnlyDigits(s:Dynamic):Bool {
-        if (Std.is(s, Int) || Std.is(s, Float)) {
+        if ((s is Int) || (s is Float)) {
             return true;
         }
 

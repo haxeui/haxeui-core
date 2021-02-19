@@ -170,7 +170,7 @@ private class Events extends haxe.ui.events.Events {
             pos = Math.fceil(pos / _range.step) * _range.step;
         }
 
-        if (Std.is(_range, Progress)) {
+        if ((_range is Progress)) {
             cast(_range, Progress).pos = pos;
             return;
         }
