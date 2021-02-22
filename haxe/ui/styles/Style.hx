@@ -321,6 +321,8 @@ class Style {
                     native = ValueTools.bool(v.value);
 
                 case "filter":
+                    #if !haxeui_nofilters
+                    
                     switch (v.value) {
                         case Value.VCall(f, vl):
                             var arr = ValueTools.array(vl);
@@ -332,8 +334,12 @@ class Style {
                             filter = null;
                         case _:
                     }
+                    
+                    #end
 
                 case "backdrop-filter":
+                    #if !haxeui_nofilters
+                    
                     switch (v.value) {
                         case Value.VCall(f, vl):
                             var arr = ValueTools.array(vl);
@@ -345,6 +351,8 @@ class Style {
                             backdropFilter = null;
                         case _:
                     }
+                    
+                    #end
 
                 case "resource":
                     resource = ValueTools.string(v.value);
