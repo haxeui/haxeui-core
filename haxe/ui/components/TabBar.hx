@@ -362,6 +362,7 @@ private class Builder extends CompositeBuilder {
 
         button.id = child.id;
         button.text = child.text;
+        button.tooltip = child.tooltip;
         if ((child is Button)) {
             button.icon = cast(child, Button).icon;
         }

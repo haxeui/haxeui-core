@@ -341,6 +341,7 @@ private class Builder extends CompositeBuilder {
             var button:Button = new Button();
             button.text = text;
             button.icon = icon;
+            button.tooltip = child.tooltip;
             if (child.id != null) {
                 button.id = child.id + "_button";
             }
@@ -363,6 +364,7 @@ private class Builder extends CompositeBuilder {
             var button:Button = new Button();
             button.text = text;
             button.icon = icon;
+            button.tooltip = child.tooltip;
             if (child.id != null) {
                 button.id = child.id + "_button";
             }
