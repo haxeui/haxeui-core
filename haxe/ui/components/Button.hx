@@ -146,7 +146,13 @@ class ButtonLayout extends DefaultLayout {
         super.repositionChildren();
 
         var label:Label = component.findComponent(Label, false);
+        if (label != null && label.hidden == true) {
+            label = null;
+        }
         var icon:Image = component.findComponent("button-icon", false);
+        if (icon != null && icon.hidden == true) {
+            icon = null;
+        }
         switch (iconPosition) {
             case "far-right":
                 if (label != null && icon != null) {
