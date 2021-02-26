@@ -104,8 +104,24 @@ private class SelectedIndex extends DataBehaviour {
             var selectedTab:Component = cast(_component, TabBar).selectedTab;
             if (selectedTab != null) {
                 selectedTab.removeClass("tabbar-button-selected");
+                var label = selectedTab.findComponent(Label);
+                if (label != null) {
+                    label.invalidateComponent();
+                }
+                var icon = selectedTab.findComponent(Image);
+                if (icon != null) {
+                    icon.invalidateComponent();
+                }
             }
             tab.addClass("tabbar-button-selected");
+            var label = tab.findComponent(Label);
+            if (label != null) {
+                label.invalidateComponent();
+            }
+            var icon = tab.findComponent(Image);
+            if (icon != null) {
+                icon.invalidateComponent();
+            }
 
             var rangeMin = Math.abs(builder._container.left);
             var rangeMax = rangeMin + _component.width;
