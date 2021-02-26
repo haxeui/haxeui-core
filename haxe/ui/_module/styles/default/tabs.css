@@ -141,3 +141,14 @@
     padding: 5px;
     background-color: white;
 }
+
+/************************************************************************
+** TABVIEW ALT STYLES
+*************************************************************************/
+.collapsible-labels .tabbar-button .label {
+    hidden: true;
+}
+
+.collapsible-labels .tabbar-button-selected .label {
+    hidden: false;
+}
