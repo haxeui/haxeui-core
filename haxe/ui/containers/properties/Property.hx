@@ -79,6 +79,39 @@ private class PropertyValueBehaviour extends DataBehaviour {
         super(property);
         _property = property;
     }
+    
+    public override function set(value:Variant) {
+        var builder = cast(_property._compositeBuilder, PropertyBuilder);
+        _value = value;
+        if (builder.editor != null) {
+            builder.editor.value = Variant.toDynamic(_value);
+        }
+        
+        invalidateData();
+    }
+
+    public override function get():Variant {
+        var builder = cast(_property._compositeBuilder, PropertyBuilder);
+        if (builder.editor != null) {
+            return builder.editor.value;
+        }
+        return _value;
+    }
+    
+    public override function getDynamic():Dynamic {
+        var builder = cast(_property._compositeBuilder, PropertyBuilder);
+        if (builder.editor != null) {
+            return builder.editor.value;
+        }
+        return Variant.toDynamic(_value);
+    }
+    
+    public override function validateData() {
+        var builder = cast(_property._compositeBuilder, PropertyBuilder);
+        if (builder.editor != null) {
+            builder.editor.value = Variant.toDynamic(_value);
+        }
+    }
 }
 
 //***********************************************************************************************************
