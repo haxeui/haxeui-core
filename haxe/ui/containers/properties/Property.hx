@@ -61,8 +61,8 @@ private class DataSourceBehaviour extends DefaultBehaviour {
     public override function set(value:Variant) {
         super.set(value);
         var builder = cast(_property._compositeBuilder, PropertyBuilder);
-        if (builder.editor != null && (builder.editor is DropDown)) {
-            cast(builder.editor, DropDown).dataSource = value;
+        if (builder.editor != null && (builder.editor is IDataComponent)) {
+            cast(builder.editor, IDataComponent).dataSource = value;
         }
     }
 }
