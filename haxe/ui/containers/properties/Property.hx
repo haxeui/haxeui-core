@@ -1,10 +1,9 @@
 package haxe.ui.containers.properties;
 
+import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
-import haxe.ui.components.DropDown;
 import haxe.ui.components.Label;
 import haxe.ui.core.Component;
-import haxe.ui.core.ComponentContainer.ComponentValueBehaviour;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.data.ArrayDataSource;
@@ -69,36 +68,12 @@ private class DataSourceBehaviour extends DefaultBehaviour {
 
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
-private class PropertyValueBehaviour extends ComponentValueBehaviour {
+private class PropertyValueBehaviour extends DataBehaviour {
     private var _property:Property;
 
     public function new(property:Property) {
         super(property);
         _property = property;
-    }
-
-    public override function set(value:Variant) {
-        super.set(value);
-        var builder = cast(_property._compositeBuilder, PropertyBuilder);
-        if (builder.editor != null) {
-            builder.editor.value = Variant.toDynamic(value);
-        }
-    }
-
-    public override function get():Variant {
-        var builder = cast(_property._compositeBuilder, PropertyBuilder);
-        if (builder.editor != null) {
-            return builder.editor.value;
-        }
-        return null;
-    }
-
-    public override function getDynamic():Dynamic {
-        var builder = cast(_property._compositeBuilder, PropertyBuilder);
-        if (builder.editor != null) {
-            return builder.editor.value;
-        }
-        return null;
     }
 }
 

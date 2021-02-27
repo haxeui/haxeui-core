@@ -124,6 +124,7 @@ private class Builder extends CompositeBuilder {
             label.text = prop.label;
             label.addClass("property-group-item-label");
             labelContainer.addComponent(label);
+            labelContainer.hidden = prop.hidden;
             cast(prop._compositeBuilder, PropertyBuilder).label = label;
 
             var editorContainer = new Box();
@@ -132,10 +133,15 @@ private class Builder extends CompositeBuilder {
             _propertyGroupContents.addComponent(editorContainer);
 
             var editor = buildEditor(prop);
+            editor.registerEvent(UIEvent.SHOWN, onPropertyShown);
+            editor.registerEvent(UIEvent.HIDDEN, onPropertyHidden);
+            editor.registerEvent(UIEvent.ENABLED, onPropertyEnabled);
+            editor.registerEvent(UIEvent.DISABLED, onPropertyDisabled);
             editor.scriptAccess = false;
             editor.id = child.id;
             editor.addClass("property-group-item-editor");
             editorContainer.addComponent(editor);
+            editorContainer.hidden = prop.hidden;
             editor.registerEvent(UIEvent.CHANGE, onPropertyEditorChange);
             cast(prop._compositeBuilder, PropertyBuilder).editor = editor;
 
@@ -148,6 +154,36 @@ private class Builder extends CompositeBuilder {
         return null;
     }
 
+    private function onPropertyShown(event:UIEvent) {
+        var container = event.target.findAncestor("property-group-item-editor-container", Box, "css");
+        var index = _propertyGroupContents.getComponentIndex(container);
+        var label = _propertyGroupContents.getComponentAt(index - 1);
+        label.show();
+        container.show();
+    }
+    
+    private function onPropertyHidden(event:UIEvent) {
+        var container = event.target.findAncestor("property-group-item-editor-container", Box, "css");
+        var index = _propertyGroupContents.getComponentIndex(container);
+        var label = _propertyGroupContents.getComponentAt(index - 1);
+        label.hide();
+        container.hide();
+    }
+
+    private function onPropertyEnabled(event:UIEvent) {
+        var container = event.target.findAncestor("property-group-item-editor-container", Box, "css");
+        var index = _propertyGroupContents.getComponentIndex(container);
+        var label = _propertyGroupContents.getComponentAt(index - 1);
+        label.disabled = false;
+    }
+    
+    private function onPropertyDisabled(event:UIEvent) {
+        var container = event.target.findAncestor("property-group-item-editor-container", Box, "css");
+        var index = _propertyGroupContents.getComponentIndex(container);
+        var label = _propertyGroupContents.getComponentAt(index - 1);
+        label.disabled = true;
+    }
+    
     private function onPropertyEditorChange(event:UIEvent) {
         var newEvent = new UIEvent(UIEvent.CHANGE);
         newEvent.target = event.target;
@@ -181,14 +217,12 @@ private class Builder extends CompositeBuilder {
             case "list":
                 c = new DropDown();
                 cast(c, DropDown).dataSource = property.dataSource;
-                var indexToSelect = 0;
-                for (i in 0...property.dataSource.size) {
-                    if (property.dataSource.get(i).value == property.value) {
-                        indexToSelect = i;
-                        break;
-                    }
+                switch (Type.typeof(property.value)) {
+                    case TInt:
+                        cast(c, DropDown).selectedIndex = property.value;
+                    case _:   
+                        c.value = property.value;
                 }
-                cast(c, DropDown).selectedIndex = indexToSelect;
 
             case "date":
                 c = new DropDown();
