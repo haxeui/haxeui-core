@@ -125,6 +125,7 @@ private class Builder extends CompositeBuilder {
             label.addClass("property-group-item-label");
             labelContainer.addComponent(label);
             labelContainer.hidden = prop.hidden;
+            labelContainer.disabled = prop.disabled;
             cast(prop._compositeBuilder, PropertyBuilder).label = label;
 
             var editorContainer = new Box();
@@ -133,6 +134,7 @@ private class Builder extends CompositeBuilder {
             _propertyGroupContents.addComponent(editorContainer);
 
             var editor = buildEditor(prop);
+            editor.disabled = prop.disabled;
             editor.registerEvent(UIEvent.SHOWN, onPropertyShown);
             editor.registerEvent(UIEvent.HIDDEN, onPropertyHidden);
             editor.registerEvent(UIEvent.ENABLED, onPropertyEnabled);
