@@ -14,7 +14,7 @@
 
 .checkbox:disabled {
     cursor: default;
-    color: #909090;
+    color: #595959;
 }
 
 .checkbox-value {
@@ -38,7 +38,7 @@
 }
 
 .checkbox-value:disabled {
-    background: #D4D4D4 #CCCCCC vertical;
+    background: #2c2f30 #2c2f30 vertical;
     cursor: default;
 }
 

@@ -27,7 +27,7 @@
 
 .stepper-button:disabled {
     opacity: 0.5;
-    background-color: #CCCCCC;
+    background-color: #333738;
 }
 
 .stepper-inc {
@@ -55,6 +55,10 @@
     vertical-align: center;
     filter: none;
     background-color: #252728;
+}
+
+.stepper-textfield:disabled {
+    background-color: #2c2f30;
 }
 
 .stepper-step {

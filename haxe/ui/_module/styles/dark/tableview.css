@@ -71,3 +71,11 @@
 .tableview .compounditemrenderer:selected .label {
     color: white;
 }
+
+.tableview .compounditemrenderer:disabled {
+    color: #595959;
+}
+
+.tableview .compounditemrenderer:disabled .label {
+    color: #595959;
+}

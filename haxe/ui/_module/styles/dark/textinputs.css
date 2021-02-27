@@ -23,8 +23,8 @@
 }
 
 .textfield:disabled {
-    color: #909090;
-    background: #D4D4D4 #CCCCCC vertical;
+    color: #595959;
+    background: #2c2f30 #2c2f30 vertical;
 }
 
 /************************************************************************
@@ -47,4 +47,9 @@
 
 .textarea:empty {
     color: #444444;
+}
+
+.textarea:disabled {
+    color: #595959;
+    background: #2c2f30 #2c2f30 vertical;
 }

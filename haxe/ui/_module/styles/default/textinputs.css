@@ -48,3 +48,8 @@
 .textarea:empty {
     color: #A0A0A0;
 }
+
+.textarea:disabled {
+    color: #909090;
+    background: #D4D4D4 #CCCCCC vertical;
+}

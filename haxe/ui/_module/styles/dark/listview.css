@@ -54,3 +54,11 @@
 .listview .itemrenderer:selected .label {
     color: white;
 }
+
+.listview .itemrenderer:disabled {
+    color: #595959;
+}
+
+.listview .itemrenderer:disabled .label {
+    color: #595959;
+}
