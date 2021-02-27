@@ -4,7 +4,7 @@ import haxe.ui.util.Variant;
 
 @:dox(hide) @:noCompletion
 class DefaultBehaviour extends Behaviour {
-    private var _value:Variant;
+    private var _value:Variant = null;
 
     public override function get():Variant {
         return _value;

@@ -207,18 +207,20 @@ private class Events extends haxe.ui.events.Events {
 
     private function onKeyDown(event:KeyboardEvent) {
         var step:Stepper = _stepper.findComponent("stepper-step", Stepper);
-        if (event.keyCode == 38 || event.keyCode == 39 || event.keyCode == 107) { // ArrowUp, ArrowRight, or add(+)
+        if (event.keyCode == 38 /*|| event.keyCode == 39 */ || event.keyCode == 107) { // ArrowUp, ArrowRight, or add(+)
             step.increment();
         }
-        if (event.keyCode == 40 || event.keyCode == 37 || event.keyCode == 109) { // ArrowDown, ArrowLeft, or minus(-)
+        if (event.keyCode == 40 /*|| event.keyCode == 37 */ || event.keyCode == 109) { // ArrowDown, ArrowLeft, or minus(-)
             step.deincrement();
         }
+        /*
         if (event.keyCode == 36) { // Home
             step.pos = step.min;
         }
         if (event.keyCode == 35) { // End
             step.pos = step.max;
         }
+        */
     }
 
     private function onMouseWheel(event:MouseEvent) {
@@ -269,13 +271,21 @@ private class Events extends haxe.ui.events.Events {
     }
 
     private function onTextFieldChange(event:UIEvent) {
+        var step:Stepper = _stepper.findComponent("stepper-step", Stepper);
         var textfield:TextField = _stepper.findComponent("stepper-textfield", TextField);
         var lastChar:String = textfield.text.charAt(textfield.text.length - 1);
-        var maxCappedVal:Float = Math.min(Std.parseFloat(textfield.text), _stepper.max);
+        var max:Float = MathUtil.MAX_INT;
+        if (step.max != null) {
+            max = step.max;
+        }
+        var maxCappedVal:Float = Math.min(Std.parseFloat(textfield.text), max);
+        /*
         textfield.text = Std.string(maxCappedVal);
         // if lastChar was not a digit, it was an allowed chars and should be added back (ex: decimal, dash, comma)
         if (Std.parseInt(lastChar) == null) {
             textfield.text += lastChar;
         }
+        */
+        _stepper.pos = maxCappedVal;
     }
 }
