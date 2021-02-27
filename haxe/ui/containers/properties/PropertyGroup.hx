@@ -212,7 +212,7 @@ private class Builder extends CompositeBuilder {
                 c = new CheckBox();
                 c.value = property.value;
 
-            case "int":
+            case "int" | "float" | "number":
                 var stepper = new NumberStepper();
                 c = stepper;
                 c.value = property.value;
