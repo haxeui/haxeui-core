@@ -157,6 +157,7 @@ class ComponentEvents extends ComponentContainer {
                     }
                 }
             }
+            dispatch(new UIEvent(UIEvent.DISABLED));
         } else if (_interactivityDisabledCounter < 1 && _interactivityDisabled == true) {
             _interactivityDisabled = false;
             if (updateStyle == true) {
@@ -173,6 +174,7 @@ class ComponentEvents extends ComponentContainer {
                 }
                 _disabledEvents = null;
             }
+            dispatch(new UIEvent(UIEvent.ENABLED));
         }
 
         if (recursive == true) {
