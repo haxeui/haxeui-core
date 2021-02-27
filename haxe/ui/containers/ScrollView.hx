@@ -4,6 +4,7 @@ import haxe.ui.behaviours.Behaviour;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.components.HorizontalScroll;
+import haxe.ui.components.TextField;
 import haxe.ui.components.VerticalScroll;
 import haxe.ui.constants.ScrollMode;
 import haxe.ui.core.Component;
@@ -521,6 +522,14 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         }
         if (vscroll != null && vscroll.hitTest(event.screenX - componentOffset.x, event.screenY - componentOffset.y) == true) {
             return;
+        }
+        
+        // we want to disallow mouse scrolling if we are under a textfield as this stops selection of data in textfield
+        var under = _scrollview.findComponentsUnderPoint(event.screenX - componentOffset.x, event.screenY - componentOffset.y);
+        for (c in under) {
+            if ((c is TextField)) {
+                return;
+            }
         }
 
         event.cancel();
