@@ -16,6 +16,10 @@ class Property extends HBox implements IDataComponent {
     @:clonable @:behaviour(DefaultBehaviour, "text")    public var type:String;
     @:behaviour(DataSourceBehaviour)                    public var dataSource:DataSource<Dynamic>;
     @:clonable @:behaviour(PropertyValueBehaviour)      public var value:Dynamic;
+    @:clonable @:behaviour(DefaultBehaviour)            public var step:Null<Float>;
+    @:clonable @:behaviour(DefaultBehaviour)            public var min:Null<Float>;
+    @:clonable @:behaviour(DefaultBehaviour)            public var max:Null<Float>;
+    @:clonable @:behaviour(DefaultBehaviour)            public var precision:Null<Int>;
 }
 
 //***********************************************************************************************************

@@ -213,8 +213,21 @@ private class Builder extends CompositeBuilder {
                 c.value = property.value;
 
             case "int":
-                c = new NumberStepper();
+                var stepper = new NumberStepper();
+                c = stepper;
                 c.value = property.value;
+                if (property.min != null) {
+                    stepper.min = property.min;
+                }
+                if (property.max != null) {
+                    stepper.max = property.max;
+                }
+                if (property.step != null) {
+                    stepper.step = property.step;
+                }
+                if (property.precision != null) {
+                    stepper.precision = property.precision;
+                }
 
             case "list":
                 c = new DropDown();
