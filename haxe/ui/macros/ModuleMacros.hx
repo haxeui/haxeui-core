@@ -219,7 +219,7 @@ class ModuleMacros {
                 c = Sys.getCwd();
             }
             var p = Path.normalize(c + "/" + path);
-            var isDir = FileSystem.isDirectory(p) && FileSystem.exists(p);
+            var isDir = FileSystem.exists(p) && FileSystem.isDirectory(p);
             if (isDir == true) {
                 paths.push(p);
             }
