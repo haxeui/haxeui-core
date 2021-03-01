@@ -13,7 +13,7 @@ import haxe.ui.util.Variant;
 @:build(haxe.ui.macros.Macros.buildBehaviours())
 @:autoBuild(haxe.ui.macros.Macros.buildBehaviours())
 class ComponentContainer extends ComponentCommon implements IClonable<ComponentContainer> {
-    @:clonable @:behaviour(ComponentDisabledBehaviour, false)       public var disabled:Bool;
+    @:clonable @:behaviour(ComponentDisabledBehaviour)              public var disabled:Bool;
     @:clonable @:behaviour(ComponentToolTipBehaviour, null)         public var tooltip:Dynamic;
     @:clonable @:behaviour(ComponentToolTipRendererBehaviour, null) public var tooltipRenderer:Component;
 
@@ -191,19 +191,15 @@ class ComponentTextBehaviour extends DefaultBehaviour {
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 class ComponentDisabledBehaviour extends DataBehaviour {
-    public override function set(value:Variant) {
-        if (_component.isReady == false) {
-            _value = value;
-        }
-        super.set(value);
+    public function new(component:Component) {
+        super(component);
+        _value = false;
     }
     
-    public override function get():Variant {
-        return _component.hasClass(":disabled");
-    }
-
     public override function validateData() {
-        _component.disableInteractivity(_value, true, true);
+        if (_value != null && _value.isNull == false) {
+            _component.disableInteractivity(_value, true, true);
+        }
     }
 }
 
