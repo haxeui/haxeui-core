@@ -714,7 +714,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
                         c.push(child);
                     }
                 }
-                c = c.concat(child.findComponentsUnderPoint(screenX, screenY));
+                c = c.concat(child.findComponentsUnderPoint(screenX, screenY, type));
             }
         }
         return c;

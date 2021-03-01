@@ -1,6 +1,15 @@
 package haxe.ui.focus;
 
 import haxe.ui.core.Component;
+import haxe.ui.core.Screen;
+import haxe.ui.events.MouseEvent;
+import haxe.ui.focus.IFocusable;
+
+#if (haxe_ver >= 4.2)
+import Std.isOfType;
+#else
+import Std.is as isOfType;
+#end
 
 class FocusInfo {
     public function new() {
@@ -29,8 +38,20 @@ class FocusManager {
     public function new() {
         _views = [];
         _focusInfo = new Map<Component, FocusInfo>();
+        Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
     }
 
+    private function onScreenMouseDown(event:MouseEvent) {
+        var list = Screen.instance.findComponentsUnderPoint(event.screenX, event.screenY);
+        for (l in list) {
+            if (isOfType(l, IFocusable)) {
+                return;
+            }
+        }
+        
+        focus = null;
+    }
+    
     public function pushView(component:Component) {
         _views.push(component);
     }
