@@ -123,6 +123,7 @@ private class Builder extends CompositeBuilder {
             var label = new Label();
             label.scriptAccess = false;
             label.text = prop.label;
+            label.disabled = prop.disabled;
             label.addClass("property-group-item-label");
             labelContainer.addComponent(label);
             labelContainer.hidden = prop.hidden;
