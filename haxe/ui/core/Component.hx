@@ -796,6 +796,29 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         }
     }
 
+    private function hideInternal(dispatchChildren:Bool = false) {
+        if (_compositeBuilder != null) {
+            var v = _compositeBuilder.hide();
+            if (v == true) {
+                return;
+            }
+        }
+
+        if (_hidden == false) {
+            handleVisibility(false);
+            _hidden = true;
+            if (parentComponent != null) {
+                parentComponent.invalidateComponentLayout();
+            }
+
+            if (dispatchChildren == true) {
+                dispatchRecursively(new UIEvent(UIEvent.HIDDEN));
+            } else {
+                dispatch(new UIEvent(UIEvent.HIDDEN));
+            }
+        }
+    }
+    
     /**
      Shows this component and all its children
     **/
@@ -820,6 +843,30 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         }
     }
 
+    private function showInternal(dispatchChildren:Bool = false) {
+        if (_compositeBuilder != null) {
+            var v = _compositeBuilder.show();
+            if (v == true) {
+                return;
+            }
+        }
+
+        if (_hidden == true) {
+            handleVisibility(true);
+            _hidden = false;
+            invalidateComponentLayout();
+            if (parentComponent != null) {
+                parentComponent.invalidateComponentLayout();
+            }
+
+            if (dispatchChildren == true) {
+                dispatchRecursively(new UIEvent(UIEvent.SHOWN));
+            } else {
+                dispatch(new UIEvent(UIEvent.SHOWN));
+            }
+        }
+    }
+    
     public function fadeIn(onEnd:Void->Void = null, show:Bool = true) {
         if (onEnd != null || show == true) {
             var prevStart = onAnimationStart;

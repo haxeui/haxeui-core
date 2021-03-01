@@ -33,6 +33,7 @@ private class TextBehaviour extends DataBehaviour {
 // Events
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
 private class Events extends haxe.ui.events.Events {
     public override function register() {
         var header = _target.findComponent("property-group-header", Component);
@@ -51,10 +52,10 @@ private class Events extends haxe.ui.events.Events {
         var contents = _target.findComponent("property-group-contents", Component);
         if (header.hasClass(":expanded")) {
             header.swapClass(":collapsed", ":expanded", true, true);
-            contents.hidden = true;
+            contents.hideInternal();
         } else {
             header.swapClass(":expanded", ":collapsed", true, true);
-            contents.hidden = false;
+            contents.showInternal();
         }
     }
 }

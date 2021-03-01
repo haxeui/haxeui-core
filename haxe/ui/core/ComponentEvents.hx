@@ -111,6 +111,17 @@ class ComponentEvents extends ComponentContainer {
         }
     }
 
+    private function dispatchRecursivelyWhen(event:UIEvent, condition:Component->Bool) {
+        if (condition(cast this) == true) {
+            dispatch(event);
+        }
+        for (child in childComponents) {
+            if (condition(child) == true) {
+                child.dispatchRecursivelyWhen(event, condition);
+            }
+        }
+    }
+    
     private function _onMappedEvent(event:UIEvent) {
         dispatch(event);
     }
@@ -206,7 +217,7 @@ class ComponentEvents extends ComponentContainer {
     }
 
     private var _pausedEvents:Map<String, Array<UIEvent->Void>> = null;
-    public function pauseEvent(type:String) {
+    public function pauseEvent(type:String, recursive:Bool = false) {
         if (__events == null || __events.contains(type) == false) {
             return;
         }
@@ -226,9 +237,15 @@ class ComponentEvents extends ComponentContainer {
             pausedList.push(l);
             unregisterEvent(type, l);
         }
+        
+        if (recursive == true) {
+            for (c in childComponents) {
+                c.pauseEvent(type, recursive);
+            }
+        }
     }
     
-    public function resumeEvent(type:String) {
+    public function resumeEvent(type:String, recursive:Bool = false) {
         if (__events == null) {
             return;
         }
@@ -248,6 +265,12 @@ class ComponentEvents extends ComponentContainer {
             }
             _pausedEvents.remove(type);
         });
+        
+        if (recursive == true) {
+            for (c in childComponents) {
+                c.resumeEvent(type, recursive);
+            }
+        }
     }
     
     private function mapEvent(type:String, listener:UIEvent->Void) {
