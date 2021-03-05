@@ -13,6 +13,17 @@ import haxe.ui.util.Variant;
 
 class CalendarEvent extends UIEvent {
     public static inline var DATE_CHANGE:String = "datechange";
+
+    public override function clone():CalendarEvent {
+        var c:CalendarEvent = new CalendarEvent(this.type);
+        c.type = this.type;
+        c.bubble = this.bubble;
+        c.target = this.target;
+        c.data = this.data;
+        c.canceled = this.canceled;
+        postClone(c);
+        return c;
+    }
 }
 
 @:composite(Events, Builder, Layout)
@@ -111,7 +122,7 @@ private class DateBehaviour extends DataBehaviour {
         var last = DateUtils.getEndDay(prevMonth.getMonth(), prevMonth.getFullYear());
 
         var n = (startDay - 1);
-        for (i in 0...(startDay)) {
+        for (_ in 0...(startDay)) {
             var item = _component.childComponents[n];
             item.addClass("calendar-off-day");
             n--;
@@ -269,8 +280,8 @@ private class Builder extends CompositeBuilder {
     public override function create() {
         _calendar.columns = 7; // this is really strange, this does work here!
 
-        for (i in 0...6) {
-            for (j in 0...7) {
+        for (_ in 0...6) {
+            for (_ in 0...7) {
                 var item = new Button();
                 item.scriptAccess = false;
                 _calendar.addComponent(item);

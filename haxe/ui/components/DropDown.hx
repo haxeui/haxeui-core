@@ -128,7 +128,7 @@ private class SelectedItemBehaviour extends DataBehaviour  {
             super.set(value);
             return;
         }
-        if (value == getDynamic()) {
+        if (Variant.toDynamic(value) == getDynamic()) {
             return;
         }
         _value = value;

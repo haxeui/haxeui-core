@@ -4,15 +4,3 @@
 .rule {
     background-color: #252728;
 }
-
-.horizontal-rule {
-    height: 1px;
-    width: 100%;
-    horizontal-align: "center";
-}
-
-.vertical-rule {
-    height: 100%;
-    width: 1px;
-    vertical-align: "center";
-}

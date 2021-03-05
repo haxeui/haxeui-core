@@ -199,7 +199,7 @@ class Behaviours {
         var b = find(id);
         var changed:Null<Bool> = null;
         if ((b is ValueBehaviour)) {
-            var v = @:privateAccess cast(b, ValueBehaviour)._value;
+            var v = Variant.toDynamic(@:privateAccess cast(b, ValueBehaviour)._value);
             changed = (v != value);
         }
 

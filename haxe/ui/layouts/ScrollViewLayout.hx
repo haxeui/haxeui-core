@@ -90,6 +90,8 @@ class ScrollViewLayout extends DefaultLayout {
             }
         }
 
+        size.width += 1;
+        
         return size;
     }
 
