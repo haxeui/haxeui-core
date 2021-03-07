@@ -111,6 +111,13 @@ class Rectangle {
         return r;
     }
 
+    public function toInts() {
+        left = Std.int(left);
+        top = Std.int(top);
+        width = Std.int(width);
+        height = Std.int(height);
+    }
+    
     public function copy():Rectangle {
         return new Rectangle(left, top, width, height);
     }

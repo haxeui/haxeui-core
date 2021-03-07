@@ -23,6 +23,11 @@
     cursor: pointer;
 }
 
+.property-group-header.scrolling {
+    border-right-width: 1px;
+    border-right-size: 1px;
+}
+
 .property-group-header:hover {
     background-color: #434647;
 }
