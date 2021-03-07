@@ -4,6 +4,7 @@ import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.components.VerticalScroll;
 import haxe.ui.containers.ScrollView.ScrollViewBuilder;
 import haxe.ui.containers.ScrollView.ScrollViewEvents;
+import haxe.ui.core.Component;
 
 @:composite(Events, Builder)
 class PropertyGrid extends ScrollView {
@@ -25,16 +26,16 @@ private class Events extends ScrollViewEvents {
 private class Builder extends ScrollViewBuilder {
     public override function createVScroll():VerticalScroll {
         for (g in _component.findComponents(PropertyGroup)) {
-            g.findComponent("property-group-header").addClass("scrolling");
-            g.findComponent("property-group-contents").addClass("scrolling");
+            g.findComponent("property-group-header", Component).addClass("scrolling");
+            g.findComponent("property-group-contents", Component).addClass("scrolling");
         }
         return super.createVScroll();
     }
     
     public override function destroyVScroll() {
         for (g in _component.findComponents(PropertyGroup)) {
-            g.findComponent("property-group-header").removeClass("scrolling");
-            g.findComponent("property-group-contents").removeClass("scrolling");
+            g.findComponent("property-group-header", Component).removeClass("scrolling");
+            g.findComponent("property-group-contents", Component).removeClass("scrolling");
         }
         super.destroyVScroll();
     }
