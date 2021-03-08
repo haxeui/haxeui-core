@@ -1,5 +1,6 @@
 package haxe.ui.components;
 
+import haxe.ui.Toolkit;
 import haxe.ui.behaviours.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.layouts.DefaultLayout;
@@ -26,7 +27,7 @@ class VerticalRangePosFromCoord extends Behaviour {
         p.y -= _component.getComponentOffset().y;
 
         var ypos = p.y - range.layout.paddingTop;
-        var ucy = range.layout.usableHeight;
+        var ucy = range.layout.usableHeight * Toolkit.scaleY;
         if (ypos >= ucy) {
             ypos = ucy;
         }

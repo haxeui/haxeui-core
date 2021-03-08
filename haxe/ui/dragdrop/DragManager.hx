@@ -1,5 +1,6 @@
 package haxe.ui.dragdrop;
 
+import haxe.ui.Toolkit;
 import haxe.ui.events.UIEvent;
 import haxe.ui.geom.Point;
 import haxe.ui.util.MathUtil;
@@ -61,7 +62,7 @@ class DragManager {
         if (dragOptions.mouseTarget == null) dragOptions.mouseTarget = component;
         if (dragOptions.dragOffsetX == null) dragOptions.dragOffsetX = 0;
         if (dragOptions.dragOffsetY == null) dragOptions.dragOffsetY = 0;
-        if (dragOptions.dragTolerance == null) dragOptions.dragTolerance = 1;
+        if (dragOptions.dragTolerance == null) dragOptions.dragTolerance = Std.int(Toolkit.scale);
         if (dragOptions.dragBounds == null) dragOptions.dragBounds = new Rectangle(0, 0, Screen.instance.width, Screen.instance.height);
         if (dragOptions.draggableStyleName == null) dragOptions.draggableStyleName = "draggable";
         if (dragOptions.draggingStyleName == null) dragOptions.draggingStyleName = "dragging";
@@ -120,6 +121,8 @@ class DragManager {
     ///////////////
 
     private function onMouseDown(e:MouseEvent) {
+        e.screenX *= Toolkit.scaleX;
+        e.screenY *= Toolkit.scaleY;
         // set current pending dragging component
         _currentComponent = _mouseTargetToDragTarget.get(e.target);
         _currentOptions = getDragOptions(_currentComponent);
@@ -133,6 +136,8 @@ class DragManager {
     }
 
     private function onScreenCheckForDrag(e:MouseEvent) {
+        e.screenX *= Toolkit.scaleX;
+        e.screenY *= Toolkit.scaleY;
         // if the distance the mouse has traveled is greater than the dragTolerance...
         if (MathUtil.distance(e.screenX - _currentComponent.left, e.screenY - _currentComponent.top, _mouseOffset.x, _mouseOffset.y) > _currentOptions.dragTolerance) {
             // stop listening for drag check
@@ -153,8 +158,10 @@ class DragManager {
 
     private function onScreenDrag(e:MouseEvent) {
         // Calculate bounds //
-        var boundX = MathUtil.clamp(e.screenX, _currentOptions.dragBounds.left + _mouseOffset.x, _currentOptions.dragBounds.right - _currentComponent.width + _mouseOffset.x);
-        var boundY = MathUtil.clamp(e.screenY, _currentOptions.dragBounds.top + _mouseOffset.y, _currentOptions.dragBounds.bottom - _currentComponent.height + _mouseOffset.y);
+        e.screenX *= Toolkit.scaleX;
+        e.screenY *= Toolkit.scaleY;
+        var boundX = MathUtil.clamp(e.screenX, _currentOptions.dragBounds.left + _mouseOffset.x, _currentOptions.dragBounds.right - _currentComponent.actualComponentWidth + _mouseOffset.x);
+        var boundY = MathUtil.clamp(e.screenY, _currentOptions.dragBounds.top + _mouseOffset.y, _currentOptions.dragBounds.bottom - _currentComponent.actualComponentHeight + _mouseOffset.y);
 
         _currentComponent.moveComponent(boundX - _mouseOffset.x, boundY - _mouseOffset.y);
     }

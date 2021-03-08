@@ -1,5 +1,6 @@
 package haxe.ui.components;
 
+import haxe.ui.Toolkit;
 import haxe.ui.behaviours.Behaviour;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
@@ -190,16 +191,18 @@ private class Events extends haxe.ui.events.Events  {
             return;
         }
 
+        e.screenX *= Toolkit.scaleX;
+        e.screenY *= Toolkit.scaleY;
         e.cancel();
 
         var coord:Point = new Point();
-        coord.x = (e.screenX - _slider.screenLeft) - _slider.paddingLeft;
-        coord.y = (e.screenY - _slider.screenTop) - _slider.paddingTop;
+        coord.x = (e.screenX - _slider.screenLeft) - _slider.paddingLeft * Toolkit.scaleX;
+        coord.y = (e.screenY - _slider.screenTop) - _slider.paddingTop * Toolkit.scaleY;
         var pos:Float = _slider.posFromCoord(coord);
 
         if (_startThumb == null) {
             _slider.pos = pos;
-            startDrag(_endThumb, (_endThumb.width / 2), (_endThumb.height / 2));
+            startDrag(_endThumb, (_endThumb.actualComponentWidth / 2), (_endThumb.actualComponentHeight / 2));
             return;
         }
 
@@ -209,24 +212,24 @@ private class Events extends haxe.ui.events.Events  {
         if (d2 < d1 / 2) {
             pos -= builder.getStartOffset();
             _slider.start = pos;
-            startDrag(_startThumb, (_startThumb.width / 2), (_startThumb.height / 2));
+            startDrag(_startThumb, (_startThumb.actualComponentWidth / 2), (_startThumb.actualComponentHeight / 2));
         } else if (d2 >= d1 / 2) {
             pos -= builder.getStartOffset();
             _slider.end = pos;
-            startDrag(_endThumb, (_endThumb.width / 2), (_endThumb.height / 2));
+            startDrag(_endThumb, (_endThumb.actualComponentWidth / 2), (_endThumb.actualComponentHeight / 2));
         } else if (pos > _slider.start) {
             _slider.end = pos;
-            startDrag(_endThumb, (_endThumb.width / 2), (_endThumb.height / 2));
+            startDrag(_endThumb, (_endThumb.actualComponentWidth / 2), (_endThumb.actualComponentHeight / 2));
         } else if (pos < _slider.end) {
             _slider.start = pos;
-            startDrag(_startThumb, (_startThumb.width / 2), (_startThumb.height / 2));
+            startDrag(_startThumb, (_startThumb.actualComponentWidth / 2), (_startThumb.actualComponentHeight / 2));
         }
     }
 
     private var _offset:Point = null;
     private function onThumbMouseDown(e:MouseEvent) {
         e.cancel();
-        startDrag(cast(e.target, Button), e.localX, e.localY);
+        startDrag(cast(e.target, Button), e.localX * Toolkit.scaleX, e.localY * Toolkit.scaleX);
     }
 
     private function startDrag(thumb:Button, offsetX:Float, offsetY:Float) {
@@ -243,9 +246,11 @@ private class Events extends haxe.ui.events.Events  {
     }
 
     private function onScreenMouseMove(e:MouseEvent) {
+        e.screenX *= Toolkit.scaleX;
+        e.screenY *= Toolkit.scaleY;
         var coord:Point = new Point();
-        coord.x = (e.screenX - _slider.screenLeft - _offset.x) - _slider.paddingLeft +  (_activeThumb.width / 2);
-        coord.y = (e.screenY - _slider.screenTop - _offset.y) - _slider.paddingTop +  (_activeThumb.height / 2);
+        coord.x = (e.screenX - _slider.screenLeft - _offset.x) - (_slider.paddingLeft * Toolkit.scaleX) +  (_activeThumb.actualComponentWidth / 2);
+        coord.y = (e.screenY - _slider.screenTop - _offset.y) - (_slider.paddingTop * Toolkit.scaleX) +  (_activeThumb.actualComponentHeight / 2);
         var pos:Float = _slider.posFromCoord(coord);
 
         var builder:SliderBuilder = cast(_slider._compositeBuilder, SliderBuilder);

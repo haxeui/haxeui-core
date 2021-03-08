@@ -1,5 +1,6 @@
 package haxe.ui.components;
 
+import haxe.ui.Toolkit;
 import haxe.ui.behaviours.Behaviour;
 import haxe.ui.core.Component;
 import haxe.ui.layouts.DefaultLayout;
@@ -26,7 +27,7 @@ class HorizontalRangePosFromCoord extends Behaviour {
         p.x -= _component.getComponentOffset().x;
 
         var xpos = p.x - range.layout.paddingLeft;
-        var ucx = range.layout.usableWidth;
+        var ucx = range.layout.usableWidth * Toolkit.scaleX;
         if (xpos >= ucx) {
             xpos = ucx;
         }
