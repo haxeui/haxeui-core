@@ -110,6 +110,9 @@ class ItemRenderer extends Box {
     }
 
     private function onItemChange(event:UIEvent) {
+        if (itemIndex < 0) {
+            return; 
+        }
         var v = event.target.value;
         if (_data != null) {
             Reflect.setProperty(_data, event.target.id, v);
@@ -124,6 +127,9 @@ class ItemRenderer extends Box {
     }
 
     private function onItemClick(event:UIEvent) {
+        if (itemIndex < 0) {
+            return; 
+        }
         var e = new ItemEvent(ItemEvent.COMPONENT_EVENT);
         e.bubble = true;
         e.source = event.target;
