@@ -67,6 +67,7 @@ class XMLParser extends ComponentParser {
             if (source == null) {
                 source = xml.get("resource");
             }
+            var omitRoot = xml.get("omitRoot") == "true";
             var sourceData:String = resourceResolver.getResourceData(source);
             if (sourceData != null) {
                 var extension:String = resourceResolver.extension(source);
@@ -78,8 +79,15 @@ class XMLParser extends ComponentParser {
                 component.findRootComponent().scriptlets = component.findRootComponent().scriptlets.concat(c.scriptlets);
                 c.scriptlets = [];
 
-                c.parent = component;
-                component.children.push(c);
+                if (omitRoot == false) {
+                    c.parent = component;
+                    component.children.push(c);
+                } else {
+                    for (child in c.children) {
+                        child.parent = component;
+                        component.children.push(child);
+                    }
+                }
             }
         }
     }
