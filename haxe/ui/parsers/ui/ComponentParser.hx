@@ -2,6 +2,20 @@ package haxe.ui.parsers.ui;
 
 import haxe.ui.parsers.ui.resolvers.ResourceResolver;
 
+#if (haxe_ver >= 4.1)
+
+class ComponentParserException extends haxe.Exception {
+    public var fileName:String = null;
+    public var original:haxe.Exception = null;
+    public function new(message:String, fileName:String, original:haxe.Exception, ?previous:haxe.Exception, ?native:Any):Void {
+        this.fileName = fileName;
+        this.original = original;
+        super(message, previous, native);
+    }
+}
+
+#end
+
 class ComponentParser {
     private static var _parsers:Map<String, Class<ComponentParser>>;
 
@@ -10,7 +24,7 @@ class ComponentParser {
     public function new() {
     }
 
-    public function parse(data:String, resourceResolver:ResourceResolver = null):ComponentInfo {
+    public function parse(data:String, resourceResolver:ResourceResolver = null, fileName:String = null):ComponentInfo {
         throw "Component parser not implemented!";
     }
 

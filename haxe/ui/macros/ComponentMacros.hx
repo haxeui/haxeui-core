@@ -112,7 +112,7 @@ class ComponentMacros {
         Context.registerModuleDependency(Context.getLocalModule(), f);
 
         var fileContent:String = StringUtil.replaceVars(File.getContent(f), params);
-        var c:ComponentInfo = ComponentParser.get(MacroHelpers.extension(f)).parse(fileContent, new FileResourceResolver(f, params));
+        var c:ComponentInfo = ComponentParser.get(MacroHelpers.extension(f)).parse(fileContent, new FileResourceResolver(f, params), filePath);
         for (s in c.styles) {
             if (s.scope == "global") {
                 builder.add(macro haxe.ui.Toolkit.styleSheet.parse($v{s.style}, "user"));

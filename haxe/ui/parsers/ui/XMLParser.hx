@@ -7,17 +7,28 @@ class XMLParser extends ComponentParser {
         super();
     }
 
-    public override function parse(data:String, resourceResolver:ResourceResolver = null):ComponentInfo {
+    public override function parse(data:String, resourceResolver:ResourceResolver = null, fileName:String = null):ComponentInfo {
         _resourceResolver = resourceResolver;
 
         var component:ComponentInfo = new ComponentInfo();
 
+        #if (haxe_ver >= 4.1)
+        
+        try {
+            var xml:Xml = Xml.parse(data).firstElement();
+            parseComponent(component, xml, resourceResolver);
+        } catch (e:haxe.ui.parsers.ui.ComponentParser.ComponentParserException) {
+            throw new haxe.ui.parsers.ui.ComponentParser.ComponentParserException('while parsing "${e.fileName}": ${e.original.message}', e.fileName, e.original, e);
+        } catch (e:Exception) {
+            throw new haxe.ui.parsers.ui.ComponentParser.ComponentParserException('while parsing "${fileName}": ${e.message}', fileName, e, e);
+        }
+        
+        #else
+        
         var xml:Xml = Xml.parse(data).firstElement();
-        /*
-        parseDetails(component, xml);
-        parseAttributes(component, xml);
-        */
         parseComponent(component, xml, resourceResolver);
+            
+        #end
 
         return component;
     }
@@ -71,7 +82,7 @@ class XMLParser extends ComponentParser {
             var sourceData:String = resourceResolver.getResourceData(source);
             if (sourceData != null) {
                 var extension:String = resourceResolver.extension(source);
-                var c:ComponentInfo = ComponentParser.get(extension).parse(sourceData, resourceResolver);
+                var c:ComponentInfo = ComponentParser.get(extension).parse(sourceData, resourceResolver, source);
 
                 component.findRootComponent().styles = component.findRootComponent().styles.concat(c.styles);
                 c.styles = [];
