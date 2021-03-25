@@ -102,7 +102,6 @@ private class Builder extends CompositeBuilder {
             if (_initialValues == null) {
                 _initialValues = new Map<Component, Variant>();
             }
-            trace(c.className + " > " + c.value);
             _initialValues.set(c, c.value);
         }
     }
