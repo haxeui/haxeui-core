@@ -72,6 +72,10 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
 
     }
 
+    #if !haxeui_openfl
+    public var tabIndex:Int = 0;
+    #end
+    
     //***********************************************************************************************************
     // Construction
     //***********************************************************************************************************
@@ -1689,9 +1693,16 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             if (parentComponent != null && _style != null) {
                 marginsChanged = _style.marginLeft != s.marginLeft || _style.marginRight != s.marginRight ||  _style.marginTop != s.marginTop ||  _style.marginBottom != s.marginBottom;
             }
+            var bordersChanged = false;
+            if (_style != null && _style.fullBorderSize != s.fullBorderSize) {
+                bordersChanged = true;
+            }
 
             _style = s;
             applyStyle(s);
+            if (bordersChanged == true) {
+                invalidateComponentLayout();
+            }
             if (marginsChanged == true) {
                 parentComponent.invalidateComponentLayout();
             }

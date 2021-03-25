@@ -173,8 +173,12 @@ private class TabPosition extends DataBehaviour {
     public override function validateData() {
         if (_value == "bottom") {
             _component.addClass(":bottom");
+            _component.findComponent(TabBar, false).tabIndex = 1;
+            _component.findComponent("tabview-content", false).tabIndex = 0;
         } else {
             _component.removeClass(":bottom");
+            _component.findComponent(TabBar, false).tabIndex = 0;
+            _component.findComponent("tabview-content", false).tabIndex = 1;
         }
         _component.findComponent(TabBar, false).tabPosition = _value;
     }
@@ -314,6 +318,7 @@ private class Builder extends CompositeBuilder {
             _content.id = "tabview-content";
             _content.addClass("tabview-content");
             _content.layout = LayoutFactory.createFromName("vertical");
+            _content.tabIndex = 1;
             _tabview.addComponent(_content);
         }
 
@@ -321,6 +326,7 @@ private class Builder extends CompositeBuilder {
             _tabs = new TabBar();
             _tabs.id = "tabview-tabs";
             _tabs.addClass("tabview-tabs");
+            _tabs.tabIndex = 0;
             _tabview.addComponent(_tabs);
         }
     }

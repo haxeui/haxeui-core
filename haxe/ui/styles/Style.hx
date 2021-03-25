@@ -5,6 +5,13 @@ import haxe.ui.filters.FilterParser;
 import haxe.ui.styles.animation.Animation.AnimationOptions;
 import haxe.ui.styles.elements.Directive;
 
+enum StyleBorderType {
+    None;
+    Full;
+    Compound;
+}
+
+
 @:structInit
 class Style {
     @:optional public var left:Null<Float>;
@@ -123,6 +130,30 @@ class Style {
     @:optional public var contentType:String;
     // public function new() {}
 
+    @:optional public var borderType(get, null):StyleBorderType;
+    private function get_borderType():StyleBorderType {
+        var t = StyleBorderType.Compound;
+        if (borderLeftSize != null && borderLeftSize == borderRightSize && borderLeftSize == borderBottomSize && borderLeftSize == borderTopSize) { // full border
+            t = StyleBorderType.Full;
+        } else if (borderLeftSize == null && borderRightSize == null && borderBottomSize == null && borderTopSize == null) {
+            t = StyleBorderType.None;
+        }
+        return t;
+    }
+
+    @:optional public var hasBorder(get, null):Bool;
+    private function get_hasBorder():Bool {
+        return borderType != StyleBorderType.None;
+    }
+    
+    @:optional public var fullBorderSize(get, null):Null<Float>;
+    private function get_fullBorderSize():Null<Float> {
+        if (borderType == StyleBorderType.Full) {
+            return borderLeftSize;
+        }
+        return 0;
+    }    
+    
     public function mergeDirectives(map:Map<String, Directive>) {
         for (key in map.keys()) {
             var v = map.get(key);

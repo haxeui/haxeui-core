@@ -133,6 +133,7 @@ class Actuator<T> {
             }
 
             var isVariant = false;
+            trace(componentProperty, start, Type.typeof(start), start == null);
             if (start != null) {
                 switch (start) {
                     case VariantType.VT_String(v):

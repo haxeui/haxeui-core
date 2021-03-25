@@ -9,6 +9,7 @@ import haxe.ui.components.VerticalScroll;
 import haxe.ui.constants.ScrollMode;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
+import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.Screen;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.ScrollEvent;
@@ -24,7 +25,7 @@ import haxe.ui.util.Variant;
 import haxe.ui.validation.InvalidationFlags;
 
 @:composite(ScrollViewEvents, ScrollViewBuilder, ScrollViewLayout)
-class ScrollView extends Component {
+class ScrollView extends InteractiveComponent {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
@@ -63,7 +64,7 @@ class ScrollView extends Component {
     }
 
     public function ensureVisible(component:Component) {
-        return; // TODO: causes issues, needs to be enhanced / re-implemented (specifically in propertygrids)
+        //return; // TODO: causes issues, needs to be enhanced / re-implemented (specifically in propertygrids)
         var contents:Component = findComponent("scrollview-contents", false, "css");
 
         var hscroll:HorizontalScroll = findComponent(HorizontalScroll);
@@ -816,6 +817,49 @@ class ScrollViewEvents extends haxe.ui.events.Events {
                     _fadeTimer.stop();
                     _fadeTimer = null;
                 });
+            }
+        }
+    }
+    
+    private var _timer:Timer;
+    public override function actionStart(action:String) {
+        if (action == "up") {
+            if (_timer != null) {
+                _timer.stop();
+                _timer = null;
+            }
+            var vscroll:VerticalScroll = _scrollview.findComponent(VerticalScroll, false);
+            vscroll.pos -= 10;
+            _timer = new Timer(50, function() {
+                if (vscroll != null) {
+                    vscroll.pos -= 10;
+                }
+            });
+        } else if (action == "down") {
+            if (_timer != null) {
+                _timer.stop();
+                _timer = null;
+            }
+            var vscroll:VerticalScroll = _scrollview.findComponent(VerticalScroll, false);
+            vscroll.pos += 10;
+            _timer = new Timer(50, function() {
+                if (vscroll != null) {
+                    vscroll.pos += 10;
+                }
+            });
+        }
+    }
+    
+    public override function actionEnd(action:String) {
+        if (action == "up") {
+            if (_timer != null) {
+                _timer.stop();
+                _timer = null;
+            }
+        } else if (action == "down") {
+            if (_timer != null) {
+                _timer.stop();
+                _timer = null;
             }
         }
     }

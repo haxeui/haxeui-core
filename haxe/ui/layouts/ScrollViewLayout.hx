@@ -8,6 +8,19 @@ import haxe.ui.core.Platform;
 import haxe.ui.geom.Size;
 
 class ScrollViewLayout extends DefaultLayout {
+    private var borderSize(get, null):Float;
+    private function get_borderSize():Float {
+        if (_component.style == null) {
+            return 0;
+        }
+
+        var n = _component.style.fullBorderSize;
+        if (n > 0) {
+            n--;
+        }
+        return n;
+    }
+    
     private override function repositionChildren() {
         var contents:Component = component.findComponent("scrollview-contents", false, "css");
         if (contents == null) {
@@ -18,16 +31,16 @@ class ScrollViewLayout extends DefaultLayout {
         var vscroll = component.findComponent(VerticalScroll, false);
 
         if (hscroll != null && hidden(hscroll) == false) {
-            hscroll.moveComponent(paddingLeft, Math.fround(component.componentHeight - hscroll.componentHeight - paddingBottom + marginTop(hscroll)));
+            hscroll.moveComponent(paddingLeft + borderSize, Math.fround(component.componentHeight - hscroll.componentHeight - paddingBottom + marginTop(hscroll)) - borderSize);
         }
 
         if (vscroll != null && hidden(vscroll) == false) {
-            vscroll.moveComponent(Math.fround(component.componentWidth - vscroll.componentWidth - paddingRight + marginLeft(vscroll)), paddingTop);
+            vscroll.moveComponent(Math.fround(component.componentWidth - vscroll.componentWidth - paddingRight + marginLeft(vscroll)) - borderSize, paddingTop + borderSize);
         }
 
         var contents:Component = component.findComponent("scrollview-contents", false, "css");
         if (contents != null) {
-            contents.moveComponent(paddingLeft, paddingTop);
+            contents.moveComponent(paddingLeft + borderSize, paddingTop + borderSize);
         }
     }
 
@@ -91,6 +104,9 @@ class ScrollViewLayout extends DefaultLayout {
         }
 
         size.width += 1;
+        
+        size.width -= borderSize * 2;
+        size.height -= borderSize * 2;
         
         return size;
     }

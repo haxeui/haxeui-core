@@ -420,7 +420,7 @@ class ButtonEvents extends haxe.ui.events.Events {
 
     private function onMouseDown(event:MouseEvent) {
         if (_button.allowFocus == true && FocusManager.instance.focusInfo != null && FocusManager.instance.focusInfo.currentFocus != null) {
-            FocusManager.instance.focusInfo.currentFocus.focus = false;
+            //FocusManager.instance.focusInfo.currentFocus.focus = false;
         }
         if (_button.repeater == true && _repeatInterval == 0) {
             _repeatInterval = (_button.easeInRepeater) ? _button.repeatInterval * 2 : _button.repeatInterval;
@@ -448,6 +448,53 @@ class ButtonEvents extends haxe.ui.events.Events {
         _repeater = _button.repeater;
     }
 
+    private function down() {
+        if (_button.allowFocus == true && FocusManager.instance.focusInfo != null && FocusManager.instance.focusInfo.currentFocus != null) {
+            FocusManager.instance.focusInfo.currentFocus.focus = false;
+        }
+        if (_button.repeater == true && _repeatInterval == 0) {
+            _repeatInterval = (_button.easeInRepeater) ? _button.repeatInterval * 2 : _button.repeatInterval;
+        }
+        _down = true;
+        _button.addClass(":down", true, true);
+        if (_repeater == true && _repeatInterval == _button.repeatInterval) {
+            _repeatTimer = new Timer(_repeatInterval, onRepeatTimer);
+        } else if (_button.repeater == true) {
+            if (_repeatTimer != null) {
+                _repeatTimer.stop();
+                _repeatTimer = null;
+            }
+            /*
+            Timer.delay(function():Void {
+                if (_repeater == true && _repeatTimer == null) {
+                    if (_button.easeInRepeater == true && _repeatInterval > _button.repeatInterval) {
+                        _repeatInterval = Std.int(_repeatInterval - (_repeatInterval - _button.repeatInterval) / 2);
+                        onRepeatTimer();
+                    }
+                    onMouseDown(event);
+                }
+            }, _repeatInterval);
+            */
+        }
+        _repeater = _button.repeater;
+    }
+    
+    private function up() {
+        //event.cancel();
+        _down = _repeater = false;
+        _repeatInterval = (_button.easeInRepeater) ? _button.repeatInterval * 2 : _button.repeatInterval;
+
+        if (_button.toggle == true) {
+            return;
+        }
+
+        _button.removeClass(":down", true, true);
+        if (_repeatTimer != null) {
+            _repeatTimer.stop();
+            _repeatTimer = null;
+        }
+    }
+    
     private var _lastScreenEvent:MouseEvent = null;
     private function onMouseUp(event:MouseEvent) {
         //event.cancel();
@@ -508,6 +555,22 @@ class ButtonEvents extends haxe.ui.events.Events {
 
     private function dispatchChanged() {
         _button.dispatch(new UIEvent(UIEvent.CHANGE));
+    }
+    
+    public override function actionStart(action:String) {
+        if (action == "press") {
+            down();
+        } else  if (action == "action") {
+            dispatch(new MouseEvent(MouseEvent.MOUSE_DOWN));
+        }
+    }
+    
+    public override function actionEnd(action:String) {
+        if (action == "press") {
+            up();
+        } else if (action == "action") {
+            dispatch(new MouseEvent(MouseEvent.MOUSE_UP));
+        }
     }
 }
 

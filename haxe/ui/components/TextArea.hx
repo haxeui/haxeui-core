@@ -414,6 +414,8 @@ private class TextAreaBuilder extends CompositeBuilder {
         var hscroll = new HorizontalScroll();
         hscroll.percentWidth = 100;
         hscroll.id = "textarea-hscroll";
+        hscroll.allowFocus = false;
+        hscroll.scriptAccess = false;
         _component.addComponent(hscroll);
         _component.registerInternalEvents(true);
         return hscroll;
@@ -426,6 +428,8 @@ private class TextAreaBuilder extends CompositeBuilder {
         }
         vscroll.percentHeight = 100;
         vscroll.id = "textarea-vscroll";
+        vscroll.allowFocus = false;
+        vscroll.scriptAccess = false;
         _component.addComponent(vscroll);
         _component.registerInternalEvents(true);
         return vscroll;

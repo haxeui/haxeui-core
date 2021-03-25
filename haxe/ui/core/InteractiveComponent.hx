@@ -73,4 +73,24 @@ class InteractiveComponent extends Component implements IFocusable {
         }
         return value;
     }
+    
+    private var _action:String = null;
+    public function actionStart(action:String) {
+        if (_action == action) {
+            return;
+        }
+        _action = action;
+        trace("action start: " + _action);
+        if (_internalEvents != null) {
+            _internalEvents.actionStart(_action);
+        }
+        
+    }
+    public function actionEnd(action:String) {
+        trace("action end: " + _action);
+        if (_internalEvents != null) {
+            _internalEvents.actionEnd(_action);
+        }
+        _action = null;
+    }
 }

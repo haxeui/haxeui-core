@@ -55,6 +55,19 @@ class CheckBoxValue extends InteractiveComponent {
             addComponent(icon);
         }
     }
+    
+    public override function actionStart(action:String) {
+        if (action == "press") {
+        } else  if (action == "action") {
+        }
+    }
+    
+    public override function actionEnd(action:String) {
+        if (action == "press") {
+        } else if (action == "action") {
+            findAncestor(CheckBox).selected = !findAncestor(CheckBox).selected;
+        }
+    }
 }
 
 //***********************************************************************************************************
@@ -173,6 +186,7 @@ class CheckBoxBuilder extends CompositeBuilder {
     public function new(checkbox:CheckBox) {
         super(checkbox);
         _checkbox = checkbox;
+        _checkbox.allowFocus = false;
     }
 
     public override function create() {

@@ -17,6 +17,14 @@ class Events {
 
     }
 
+    public function actionStart(action:String) {
+        
+    }
+    
+    public function actionEnd(action:String) {
+        
+    }
+    
     private function registerEvent(type:String, listener:Dynamic->Void, priority:Int = 0) {
         if (hasEvent(type, listener) == false) {
             _target.registerEvent(type, listener, priority);

@@ -22,6 +22,7 @@ import haxe.ui.events.UIEvent;
 import haxe.ui.layouts.VerticalVirtualLayout;
 import haxe.ui.util.MathUtil;
 import haxe.ui.util.Variant;
+import haxe.ui.util.Timer;
 
 @:composite(ListViewEvents, ListViewBuilder, VerticalVirtualLayout)
 class ListView extends ScrollView implements IDataComponent implements IVirtualContainer {
@@ -288,6 +289,68 @@ class ListViewEvents extends ScrollViewEvents {
 
     private function selectRange(fromIndex:Int, toIndex:Int) {
         _listview.selectedIndices = [for (i in fromIndex...toIndex + 1) i];
+    }
+    
+    public override function actionStart(action:String) {
+        if (action == "up") {
+            if (_timer != null) {
+                _timer.stop();
+                _timer = null;
+            }
+            selectPrev();
+            _timer = new Timer(150, function() {
+                selectPrev();
+            });
+        } else if (action == "down") {
+            if (_timer != null) {
+                _timer.stop();
+                _timer = null;
+            }
+            selectNext();
+            _timer = new Timer(150, function() {
+                selectNext();
+            });
+        }
+    }
+    
+    public override function actionEnd(action:String) {
+        if (action == "up") {
+            if (_timer != null) {
+                _timer.stop();
+                _timer = null;
+            }
+        } else if (action == "down") {
+            if (_timer != null) {
+                _timer.stop();
+                _timer = null;
+            }
+        }
+    }
+    
+    private function selectNext() {
+        var i = _listview.selectedIndex;
+        if (i < 0) {
+            i = 0;
+        } else {
+            i++;
+        }
+        if (i > _listview.dataSource.size - 1) {
+            i = 0;
+        }
+        _listview.selectedIndex = i;
+    }
+    
+    private function selectPrev() {
+        var i = _listview.selectedIndex;
+        if (i < 0) {
+            i = 0;
+        } else {
+            i--;
+        }
+        if (i < 0) {
+            i = _listview.dataSource.size - 1;
+        }
+        _listview.selectedIndex = i;
     }
 }
 

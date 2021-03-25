@@ -2,6 +2,12 @@ package haxe.ui.events;
 
 class KeyboardEvent extends UIEvent {
     public static inline var KEY_TAB:Int = 9;
+    public static inline var KEY_CODE_UP:Int = 38;
+    public static inline var KEY_CODE_DOWN:Int = 40;
+    public static inline var KEY_CODE_LEFT:Int = 37;
+    public static inline var KEY_CODE_RIGHT:Int = 39;
+    public static inline var KEY_CODE_SPACE:Int = 32;
+    public static inline var KEY_CODE_ENTER:Int = 13;
 
     public static inline var KEY_DOWN:String = "keydown";
     public static inline var KEY_UP:String = "keyup";
