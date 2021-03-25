@@ -50,6 +50,9 @@ class ModuleMacros {
             // add resources as haxe resources (plus prefix)
             for (r in m.resourceEntries) {
                 if (r.path != null) {
+                    if (r.prefix == null) {
+                        r.prefix = r.path;
+                    }
                     var resolvedPaths = resolvePaths(r.path);
                     if (resolvedPaths == null || resolvedPaths.length == 0) {
                         trace("WARNING: Could not resolve resource path " + r.path);
