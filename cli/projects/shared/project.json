@@ -7,6 +7,7 @@
     ],
     "templates": [
         { "src": "Main.hx", "dst": "${target}/src/${packagePath}/${main}.hx"},
+        { "src": "MainView.hx", "dst": "${target}/src/${packagePath}/MainView.hx"},
         { "src": "assets/main-view.xml", "dst": "${target}/assets/main-view.xml"}
     ]
 }
