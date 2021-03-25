@@ -90,8 +90,7 @@ class OptionBoxBuilder extends CheckBoxBuilder {
                 }
             }
             if (hasSelection == false && allowDeselection == false) {
-                optionbox.behaviours.find("selected").set(true);
-                value = true;
+                optionbox.behaviours.softSet("selected", true);
                 return;
             }
         }
