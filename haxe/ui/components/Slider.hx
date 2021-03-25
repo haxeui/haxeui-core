@@ -110,6 +110,9 @@ private class MaxBehaviour extends DataBehaviour {
 @:dox(hide) @:noCompletion
 private class PosBehaviour extends DataBehaviour {
     public override function get():Variant {
+        if (_component.isReady == false) {
+            return _value;
+        }
         return cast(_component, Slider).end;
     }
 
