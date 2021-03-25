@@ -231,6 +231,13 @@ class Behaviours {
         performAutoDispatch(b, changed);
     }
 
+    public function softSet(id:String, value:Variant) {
+        var b = find(id);
+        if ((b is ValueBehaviour)) {
+            @:privateAccess cast(b, ValueBehaviour)._value = value;
+        }
+    }
+    
     public function ready() {
         if (_autoDispatch == null) {
             return;

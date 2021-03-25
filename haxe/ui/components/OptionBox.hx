@@ -78,7 +78,7 @@ class OptionBoxBuilder extends CheckBoxBuilder {
     }
     
     public function setSelection(optionbox:OptionBox, value:Bool, allowDeselection:Bool = false) {
-        if (optionbox.componentGroup != null && value == false) { // dont allow false if no other group selection
+        if (optionbox.componentGroup != null && value == false && allowDeselection == false) { // dont allow false if no other group selection
             var arr:Array<OptionBox> = OptionBoxGroups.instance.get(optionbox.componentGroup);
             var hasSelection:Bool = false;
             if (arr != null) {
@@ -90,6 +90,7 @@ class OptionBoxBuilder extends CheckBoxBuilder {
                 }
             }
             if (hasSelection == false && allowDeselection == false) {
+                optionbox.behaviours.find("selected").set(true);
                 value = true;
                 return;
             }
@@ -107,7 +108,7 @@ class OptionBoxBuilder extends CheckBoxBuilder {
         }
 
         if (allowDeselection == true && value == false) {
-            @:privateAccess optionbox.behaviours.find("selected").set(false);
+            optionbox.behaviours.softSet("selected", false);
         }
         
         var valueComponent:CheckBoxValue = optionbox.findComponent("optionbox-value", CheckBoxValue);
