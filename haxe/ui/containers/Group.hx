@@ -94,6 +94,9 @@ private class Builder extends CompositeBuilder {
             var optionbox = cast(c, OptionBox);
             if (optionbox.selected == true) {
                 _initialResets.remove(optionbox.componentGroup);
+                if (_initialValues == null) {
+                    _initialValues = new Map<Component, Variant>();
+                }
                 _initialValues.set(c, c.value);
             } else {
                 _initialResets.set(optionbox.componentGroup, true);
