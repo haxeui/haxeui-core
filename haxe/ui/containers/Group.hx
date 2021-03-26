@@ -73,7 +73,7 @@ private class Builder extends CompositeBuilder {
                 _group.componentGroup = "group" + GUID.uuid();
             }
             var optionbox = cast(child, OptionBox);
-            if (optionbox.componentGroup == null) {
+            if (optionbox.componentGroup == null || optionbox.componentGroup == "defaultGroup") {
                 optionbox.componentGroup = _group.componentGroup;
             }
         }
