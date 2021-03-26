@@ -11,8 +11,9 @@ import haxe.ui.events.UIEvent;
 
 @:composite(Events, Builder)
 class ButtonBar extends Box implements IDirectionalComponent {
-    @:behaviour(DefaultBehaviour, true)     public var toggle:Bool;
-    @:behaviour(SelectedIndex)              public var selectedIndex:Int;
+    @:clonable @:behaviour(DefaultBehaviour, true)      public var toggle:Bool;
+    @:clonable @:behaviour(SelectedIndex)               public var selectedIndex:Int;
+    @:clonable @:value(selectedIndex)                   public var value:Dynamic;
 }
 
 //***********************************************************************************************************
