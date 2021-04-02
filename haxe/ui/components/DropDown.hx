@@ -328,12 +328,10 @@ class ListDropDownHandler extends DropDownHandler {
     private var _cachedSelectedItem:Dynamic = null;
     private override function set_selectedItem(value:Dynamic):Dynamic {
         var v:Variant = value;
-        if (v.isNumber) {
-            var n:Int = v;
-            selectedIndex = n;
-            return value;
+        var index:Int = indexOfItem(v);
+        if (index == -1 && v.isNumber) {
+            index = v;
         }
-        var index = indexOfItem(v);
         selectedIndex = index;
         return value;
     }
