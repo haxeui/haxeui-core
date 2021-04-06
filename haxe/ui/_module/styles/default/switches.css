@@ -127,7 +127,7 @@
 ** SWITCH (PILL)
 *************************************************************************/
 .pill-switch .switch-button-sub {
-    border-radius: 50px;
+    border-radius: 20px;
     initial-width: 40px;
     initial-height: 20px;
     padding: 0px;
