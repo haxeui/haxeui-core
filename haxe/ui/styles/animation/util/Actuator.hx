@@ -134,21 +134,25 @@ class Actuator<T> {
 
             var isVariant = false;
             if (start != null) {
-                switch (start) {
-                    case VariantType.VT_String(v):
-                        start = v;
-                        isVariant = true;
-                    case _:
-                }
+                try { // some neko strangness here with exception being thrown on the switch
+                    switch (start) {
+                        case VariantType.VT_String(v):
+                            start = v;
+                            isVariant = true;
+                        case _:
+                    }
+                } catch (e:Dynamic) { }
             }
 
             if (end != null) {
-                switch (end) {
-                    case VariantType.VT_String(v):
-                        end = v;
-                        isVariant = true;
-                    case _:
-                }
+                try { // some neko strangness here with exception being thrown on the switch
+                    switch (end) {
+                        case VariantType.VT_String(v):
+                            end = v;
+                            isVariant = true;
+                        case _:
+                    }
+                } catch (e:Dynamic) { }
             }
 
             if (start == null || end == null) {
