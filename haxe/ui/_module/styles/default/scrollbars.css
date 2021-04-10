@@ -136,7 +136,7 @@
 
 .horizontal-scroll:mobile .thumb {
     height: 4px;
-    border-radius: 2px;
+    border-radius: 4px;
 }
 
 .vertical-scroll:mobile {
@@ -148,5 +148,5 @@
 
 .vertical-scroll:mobile .thumb {
     width: 4px;
-    border-radius: 2px;
+    border-radius: 4px;
 }
