@@ -240,12 +240,16 @@ private class Events extends haxe.ui.events.Events  {
         _activeThumb = thumb;
         Screen.instance.registerEvent(MouseEvent.MOUSE_MOVE, onScreenMouseMove);
         Screen.instance.registerEvent(MouseEvent.MOUSE_UP, onScreenMouseUp);
+        
+        _slider.dispatch(new UIEvent(UIEvent.DRAG_START));
     }
 
     private function onScreenMouseUp(e:MouseEvent) {
         _activeThumb = null;
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_UP, onScreenMouseUp);
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_MOVE, onScreenMouseMove);
+        
+        _slider.dispatch(new UIEvent(UIEvent.DRAG_END));
     }
 
     private function onScreenMouseMove(e:MouseEvent) {
