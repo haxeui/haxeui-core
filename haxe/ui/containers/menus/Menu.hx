@@ -8,6 +8,12 @@ import haxe.ui.events.MouseEvent;
 import haxe.ui.core.Screen;
 import haxe.ui.events.UIEvent;
 
+#if (haxe_ver >= 4.2)
+import Std.isOfType;
+#else
+import Std.is as isOfType;
+#end
+
 class MenuEvent extends UIEvent {
     public static inline var MENU_SELECTED:String = "menuselected";
 
@@ -239,6 +245,7 @@ private class Builder extends CompositeBuilder {
         if ((child is Menu)) {
             var menu = cast(child, Menu);
             var item = new MenuItem();
+            item.id = child.id + "Item";
             item.text = child.text;
             item.icon = menu.icon;
             item.tooltip = child.tooltip;
@@ -275,5 +282,28 @@ private class Builder extends CompositeBuilder {
             }
         }
         return cast match;
+    }
+    
+    public override function findComponents<T:Component>(styleName:String = null, type:Class<T> = null, maxDepth:Int = 5):Array<T> {
+        var r:Array<T> = [];
+        for (menu in _subMenus) {
+            var match = true;
+            if (styleName != null && menu.hasClass(styleName) == false) {
+                match = false;
+            }
+            if (type != null && isOfType(menu, type) == false) {
+                match = false;
+            }
+            
+            if (match == true) {
+                r.push(cast menu);
+            } else {
+                var childArray = menu.findComponents(styleName, type, maxDepth);
+                for (c in childArray) { // r.concat caused issues here on hxcpp
+                    r.push(c);
+                }
+            }
+        }
+        return r;
     }
 }

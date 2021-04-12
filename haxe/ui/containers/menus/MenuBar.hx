@@ -13,6 +13,12 @@ import haxe.ui.core.Screen;
 import haxe.ui.events.Events;
 import haxe.ui.events.MouseEvent;
 
+#if (haxe_ver >= 4.2)
+import Std.isOfType;
+#else
+import Std.is as isOfType;
+#end
+
 @:composite(Events, Builder)
 class MenuBar extends HBox {
     @:behaviour(DefaultBehaviour)           public var menuStyleNames:String;
@@ -341,5 +347,28 @@ private class Builder extends CompositeBuilder {
             }
         }
         return cast match;
+    }
+    
+    public override function findComponents<T:Component>(styleName:String = null, type:Class<T> = null, maxDepth:Int = 5):Array<T> {
+        var r:Array<T> = [];
+        for (menu in _menus) {
+            var match = true;
+            if (styleName != null && menu.hasClass(styleName) == false) {
+                match = false;
+            }
+            if (type != null && isOfType(menu, type) == false) {
+                match = false;
+            }
+            
+            if (match == true) {
+                r.push(cast menu);
+            }
+            
+            var childArray = menu.findComponents(styleName, type, maxDepth);
+            for (c in childArray) { // r.concat caused issues here on hxcpp
+                r.push(c);
+            }
+        }
+        return r;
     }
 }

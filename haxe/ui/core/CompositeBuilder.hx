@@ -89,4 +89,8 @@ class CompositeBuilder {
         }
         return null;
     }
+    
+    public function findComponents<T:Component>(styleName:String = null, type:Class<T> = null, maxDepth:Int = 5):Array<T> {
+        return null;
+    }
 }

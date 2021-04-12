@@ -652,6 +652,15 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         maxDepth--;
 
         var r:Array<T> = [];
+        if (_compositeBuilder != null) {
+            var childArray = _compositeBuilder.findComponents(styleName, type, maxDepth);
+            if (childArray != null) {
+                for (c in childArray) { // r.concat caused issues here on hxcpp
+                    r.push(c);
+                }
+            }
+        }
+        
         for (child in childComponents) {
             var match = true;
             if (styleName != null && child.hasClass(styleName) == false) {
@@ -670,6 +679,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
                 }
             }
         }
+        
         return r;
     }
 
