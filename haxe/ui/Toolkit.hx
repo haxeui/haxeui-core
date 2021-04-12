@@ -306,6 +306,7 @@ class Toolkit {
         return value;
     }
 
+    public static var roundScale:Bool = true;
     public static var autoScale:Bool = true;
     public static var autoScaleDPIThreshold(get, null):Int;
     private static function get_autoScaleDPIThreshold():Int {
@@ -322,7 +323,11 @@ class Toolkit {
             if (autoScale == true) {
                 var dpi:Float = Screen.instance.dpi;
                 if (dpi > autoScaleDPIThreshold) {
-                    _scaleX = Math.fround(dpi / autoScaleDPIThreshold);
+                    if (roundScale == true) {
+                        _scaleX = Math.fround(dpi / autoScaleDPIThreshold);
+                    } else {
+                        _scaleX = dpi / autoScaleDPIThreshold;
+                    }
                 } else {
                     _scaleX = 1;
                 }
@@ -348,7 +353,11 @@ class Toolkit {
             if (autoScale == true) {
                 var dpi:Float = Screen.instance.dpi;
                 if (dpi > autoScaleDPIThreshold) {
-                    _scaleY = Math.fround(dpi / autoScaleDPIThreshold);
+                    if (roundScale == true) {
+                        _scaleY = Math.fround(dpi / autoScaleDPIThreshold);
+                    } else {
+                        _scaleY = dpi / autoScaleDPIThreshold;
+                    }
                 } else {
                     _scaleY = 1;
                 }
