@@ -110,12 +110,13 @@ private class Builder extends CompositeBuilder {
     public override function create() {
         super.create();
 
-        var box = new Box();
+        var box = new HBox();
         box.percentWidth = 100;
         box.verticalAlign = "center";
 
         var label = new Label();
         label.id = "menuitem-label";
+        label.percentWidth = 100;
         label.styleNames = "menuitem-label";
         label.scriptAccess = false;
         box.addComponent(label);
