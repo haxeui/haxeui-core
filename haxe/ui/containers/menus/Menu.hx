@@ -255,6 +255,7 @@ class MenuEvents extends haxe.ui.events.Events {
         if (events.hasScreenMouseDown == false) {
             events.hasScreenMouseDown = true;
             Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
+            Screen.instance.registerEvent(MouseEvent.RIGHT_MOUSE_DOWN, onScreenMouseDown);
         }
     }
     
@@ -263,6 +264,7 @@ class MenuEvents extends haxe.ui.events.Events {
         var events:MenuEvents = cast(root._internalEvents, MenuEvents);
         events.hasScreenMouseDown = false;
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
+        Screen.instance.unregisterEvent(MouseEvent.RIGHT_MOUSE_DOWN, onScreenMouseDown);
     }
     
     private function onScreenMouseDown(event:MouseEvent) {
