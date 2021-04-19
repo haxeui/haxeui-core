@@ -32,9 +32,10 @@ class Screen extends ScreenImpl {
     }
 
     public override function addComponent(component:Component):Component {
+        var wasReady = component.isReady;
         @:privateAccess component._hasScreen = true;
         super.addComponent(component);
-        #if !haxeui_android
+        #if !(haxeui_javafx || haxeui_android)
         component.ready();
         #end
         if (rootComponents.indexOf(component) == -1) {
@@ -42,6 +43,11 @@ class Screen extends ScreenImpl {
             FocusManager.instance.pushView(component);
             component.registerEvent(UIEvent.RESIZE, _onRootComponentResize);    //refresh vh & vw
         }
+        
+        if (wasReady && component.hidden == false) {
+            component.dispatch(new UIEvent(UIEvent.SHOWN));
+        }
+        
         return component;
     }
 

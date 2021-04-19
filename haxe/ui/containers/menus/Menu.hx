@@ -1,6 +1,7 @@
 package haxe.ui.containers.menus;
 
 import haxe.ui.behaviours.DefaultBehaviour;
+import haxe.ui.components.Button;
 import haxe.ui.containers.VBox;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
@@ -65,6 +66,8 @@ class MenuEvents extends haxe.ui.events.Events {
     public var currentSubMenu:Menu = null;
     public var parentMenu:Menu = null;
 
+    public var button:Button = null;
+    
     public function new(menu:Menu) {
         super(menu);
         _menu = menu;
@@ -96,6 +99,9 @@ class MenuEvents extends haxe.ui.events.Events {
         if (!hasEvent(UIEvent.HIDDEN, onHidden)) {
             registerEvent(UIEvent.HIDDEN, onHidden);
         }
+        if (!hasEvent(UIEvent.SHOWN, onShown)) {
+            registerEvent(UIEvent.SHOWN, onShown);
+        }
     }
 
     public override function unregister() {
@@ -108,6 +114,7 @@ class MenuEvents extends haxe.ui.events.Events {
         }
 
         unregisterEvent(UIEvent.HIDDEN, onHidden);
+        unregisterEvent(UIEvent.SHOWN, onShown);
     }
 
     private var _over:Bool = false;
@@ -126,8 +133,10 @@ class MenuEvents extends haxe.ui.events.Events {
             event.menu = _menu;
             event.menuItem = item;
             findRootMenu().dispatch(event);
-            hideCurrentSubMenu();
-            findRootMenu().hide();
+            
+            hideMenu();
+            removeScreenMouseDown();
+            _menu.dispatch(new UIEvent(UIEvent.CLOSE));
         }
     }
 
@@ -179,6 +188,24 @@ class MenuEvents extends haxe.ui.events.Events {
         currentSubMenu = subMenu;
     }
 
+    private function hideMenu() {
+        var root = findRootMenu();
+        if (root == null) {
+            return;
+        }
+        
+        var events:MenuEvents = cast(root._internalEvents, MenuEvents);
+        
+        if (events.button == null) {
+            for (child in root.childComponents) {
+                child.removeClass(":hover", true, true);
+            }
+            
+            events.hideCurrentSubMenu();
+            Screen.instance.removeComponent(root);
+        }
+    }
+    
     private function hideCurrentSubMenu() {
         if (currentSubMenu == null) {
             return;
@@ -201,6 +228,10 @@ class MenuEvents extends haxe.ui.events.Events {
         hideCurrentSubMenu();
     }
 
+    private function onShown(event:UIEvent) {
+        addScreenMouseDown();
+    }
+
     public function findRootMenu():Menu {
         var root:Menu = null;
         var ref = _menu;
@@ -215,6 +246,52 @@ class MenuEvents extends haxe.ui.events.Events {
         }
 
         return root;
+    }
+
+    public var hasScreenMouseDown:Bool = false;
+    private function addScreenMouseDown() {
+        var root = findRootMenu();
+        var events:MenuEvents = cast(root._internalEvents, MenuEvents);
+        if (events.hasScreenMouseDown == false) {
+            events.hasScreenMouseDown = true;
+            Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
+        }
+    }
+    
+    private function removeScreenMouseDown() {
+        var root = findRootMenu();
+        var events:MenuEvents = cast(root._internalEvents, MenuEvents);
+        events.hasScreenMouseDown = false;
+        Screen.instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
+    }
+    
+    private function onScreenMouseDown(event:MouseEvent) {
+        var close:Bool = true;
+        if (_menu.hitTest(event.screenX, event.screenY)) {
+            close = false;
+        } else if (button != null && button.hitTest(event.screenX, event.screenY)) {
+            close = false;
+        } else {
+            var ref = _menu;
+            var refEvents:MenuEvents = cast(ref._internalEvents, MenuEvents);
+            var refSubMenu = refEvents.currentSubMenu;
+            while (refSubMenu != null) {
+                if (refSubMenu.hitTest(event.screenX, event.screenY)) {
+                    close = false;
+                    break;
+                }
+
+                ref = refSubMenu;
+                refEvents = cast(ref._internalEvents, MenuEvents);
+                refSubMenu = refEvents.currentSubMenu;
+            }
+        }
+        
+        if (close) {
+            hideMenu();
+            removeScreenMouseDown();
+            _menu.dispatch(new UIEvent(UIEvent.CLOSE));
+        }
     }
 }
 

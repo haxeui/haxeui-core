@@ -1291,6 +1291,9 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
                 onReady();
 
                 dispatch(new UIEvent(UIEvent.READY));
+                if (_hidden == false) {
+                    dispatch(new UIEvent(UIEvent.SHOWN));
+                }
             });
         }
     }
