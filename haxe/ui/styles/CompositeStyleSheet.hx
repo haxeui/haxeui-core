@@ -30,6 +30,16 @@ class CompositeStyleSheet {
         return _animations;
     }
 
+    public function findAnimation(id:String) {
+        for (a in animations) {
+            if (a.id == id) {
+                return a;
+            }
+        }
+        
+        return null;
+    }
+    
     public function addStyleSheet(styleSheet:StyleSheet) {
         _styleSheets.push(styleSheet);
     }
