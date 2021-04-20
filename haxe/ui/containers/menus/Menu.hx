@@ -43,6 +43,11 @@ class MenuEvent extends UIEvent {
 class Menu extends VBox {
     @:behaviour(DefaultBehaviour)           public var menuStyleNames:String;
 
+    /**
+     Utility property to add a single `MenuEvent.MENU_SELECTED` event
+    **/
+    @:event(MenuEvent.MENU_SELECTED)        public var onMenuSelected:MenuEvent->Void;
+    
     private override function onThemeChanged() {
         super.onThemeChanged();
         var builder:Builder = cast(this._compositeBuilder, Builder);
