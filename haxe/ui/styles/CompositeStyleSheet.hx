@@ -40,6 +40,19 @@ class CompositeStyleSheet {
         return null;
     }
     
+    public function getAnimation(id:String, create:Bool = true):AnimationKeyFrames {
+        var a = findAnimation(id);
+        if (a == null) {
+            a = new AnimationKeyFrames(id, []);
+            addAnimation(a);
+        }
+        return a;
+    }
+    
+    public function addAnimation(animation:AnimationKeyFrames) {
+        _styleSheets[0].addAnimation(animation);
+    }
+    
     public function addStyleSheet(styleSheet:StyleSheet) {
         _styleSheets.push(styleSheet);
     }

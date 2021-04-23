@@ -1,0 +1,132 @@
+.sidebar-modal-background {
+    background-color: white;
+    opacity: 0.60;
+}
+
+.sidebar {
+    margin: 50px;
+    background-color: #EEEEEE;
+    padding: 5px;
+    filter: drop-shadow(1, 45, #000000, 0.1, 30, 2, 1, 3, false);
+}
+    
+.sidebar:left {
+    border-right: 1px solid #ABABAB;
+}
+
+.sidebar:right {
+    border-left: 1px solid #ABABAB;
+}
+
+.sidebar:top {
+    border-bottom: 1px solid #ABABAB;
+}
+
+.sidebar:bottom {
+    border-top: 1px solid #ABABAB;
+}
+
+
+.sidebar:left #closeSideBar {
+    resource: "haxeui-core/styles/default/left_arrow_circled.png ";
+    cursor: pointer;
+}
+
+.sidebar:right #closeSideBar {
+    resource: "haxeui-core/styles/default/right_arrow_circled.png ";
+    cursor: pointer;
+}
+
+.sidebar:top #closeSideBar {
+    resource: "haxeui-core/styles/default/up_arrow_circled.png ";
+    cursor: pointer;
+}
+
+.sidebar:bottom #closeSideBar {
+    resource: "haxeui-core/styles/default/down_arrow_circled.png ";
+    cursor: pointer;
+}
+
+/****************************************************************************/
+/* ANIMATIONS                                                               */
+/****************************************************************************/
+
+.sideBarModifyContent {
+    animation: sideBarModifyContent 0.3s ease 0s 1;
+}
+
+.sideBarRestoreContent {
+    animation: sideBarRestoreContent 0.3s ease 0s 1;
+}
+
+    
+@keyframes sideBarModifyContent {
+    0% {
+    }
+    100% {
+    }
+}
+    
+@keyframes sideBarRestoreContent {
+    0% {
+    }
+    100% {
+    }
+}
+    
+.showSideBarLeft {
+    animation: showSideBarLeft 0.3s ease 0s 1;
+}
+.hideSideBarLeft {
+    animation: showSideBarLeft 0.3s ease 0s 1 reverse backwards;
+}
+    
+@keyframes showSideBarLeft {
+    0% {
+    }
+    100% {
+    }
+}
+
+.showSideBarRight {
+    animation: showSideBarRight 0.3s ease 0s 1;
+}
+
+.hideSideBarRight {
+    animation: showSideBarRight 0.3s ease 0s 1 reverse backwards;
+}
+    
+@keyframes showSideBarRight {
+    0% {
+    }
+    100% {
+    }
+}
+    
+.showSideBarTop {
+    animation: showSideBarTop 0.3s ease 0s 1;
+}
+.hideSideBarTop {
+    animation: showSideBarTop 0.3s ease 0s 1 reverse backwards;
+}
+    
+@keyframes showSideBarTop {
+    0% {
+    }
+    100% {
+    }
+}
+    
+.showSideBarBottom {
+    animation: showSideBarBottom 0.3s ease 0s 1;
+}
+.hideSideBarBottom {
+    animation: showSideBarBottom 0.3s ease 0s 1 reverse backwards;
+}
+    
+@keyframes showSideBarBottom {
+    0% {
+    }
+    100% {
+    }
+}
