@@ -273,7 +273,7 @@ class Macros {
                                 } else {
                                     trace("WARNING: could not find component to regsiter event (" + $v{ExprTools.toString(component)} + ")");
                                 }
-                            }, AfterSuper);
+                            }, End);
                         default:
                             haxe.macro.Context.error("Unsupported bind format, expected bind(component.field) or bind(component, event)", meta.pos);
                     }
