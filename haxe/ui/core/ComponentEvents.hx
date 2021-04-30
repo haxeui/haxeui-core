@@ -40,7 +40,7 @@ class ComponentEvents extends ComponentContainer {
      Register a listener for a certain `UIEvent`
     **/
     @:dox(group = "Event related properties and methods")
-    public function registerEvent(type:String, listener:Dynamic->Void, priority:Int = 0) {
+    public function registerEvent<T:UIEvent>(type:String, listener:T->Void, priority:Int = 0) {
         if (cast(this, Component).hasClass(":mobile") && (type == MouseEvent.MOUSE_OVER || type == MouseEvent.MOUSE_OUT)) {
             return;
         }
@@ -65,7 +65,7 @@ class ComponentEvents extends ComponentContainer {
      Returns if this component has a certain event and listener
     **/
     @:dox(group = "Event related properties and methods")
-    public function hasEvent(type:String, listener:Dynamic->Void = null):Bool {
+    public function hasEvent<T:UIEvent>(type:String, listener:T->Void = null):Bool {
         if (__events == null) {
             return false;
         }
@@ -76,7 +76,7 @@ class ComponentEvents extends ComponentContainer {
      Unregister a listener for a certain `UIEvent`
     **/
     @:dox(group = "Event related properties and methods")
-    public function unregisterEvent(type:String, listener:Dynamic->Void) {
+    public function unregisterEvent<T:UIEvent>(type:String, listener:T->Void) {
         if (_disabledEvents != null && !_interactivityDisabled) {
             _disabledEvents.remove(type, listener);
         }

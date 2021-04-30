@@ -14,7 +14,7 @@ class EventMap  {
         return _map.keys();
     }
 
-    public function add(type:String, listener:UIEvent->Void, priority:Int = 0):Bool { // returns true if a new FunctionArray was created
+    public function add<T:UIEvent>(type:String, listener:T->Void, priority:Int = 0):Bool { // returns true if a new FunctionArray was created
         if (listener == null) {
             return false;
         }
@@ -22,23 +22,23 @@ class EventMap  {
         var arr:FunctionArray<UIEvent->Void> = _map.get(type);
         if (arr == null) {
             arr = new FunctionArray<UIEvent->Void>();
-            arr.push(listener, priority);
+            arr.push(cast listener, priority);
             _map.set(type, arr);
             b = true;
-        } else if (arr.contains(listener) == false) {
-            arr.push(listener, priority);
+        } else if (arr.contains(cast listener) == false) {
+            arr.push(cast listener, priority);
         }
         return b;
     }
 
-    public function remove(type:String, listener:UIEvent->Void):Bool { // returns true if a FunctionArray was removed
+    public function remove<T:UIEvent>(type:String, listener:T->Void):Bool { // returns true if a FunctionArray was removed
         if (listener == null) {
             return false;
         }
         var b:Bool = false;
         var arr:FunctionArray<UIEvent->Void> = _map.get(type);
         if (arr != null) {
-            arr.remove(listener);
+            arr.remove(cast listener);
             if (arr.length == 0) {
                 _map.remove(type);
                 b = true;
@@ -47,11 +47,11 @@ class EventMap  {
         return b;
     }
 
-    public function contains(type:String, listener:UIEvent->Void = null):Bool {
+    public function contains<T:UIEvent>(type:String, listener:T->Void = null):Bool {
         var b:Bool = false;
         var arr:FunctionArray<UIEvent->Void> = _map.get(type);
         if (arr != null) {
-            b = (listener != null) ? arr.contains(listener) : true;
+            b = (listener != null) ? arr.contains(cast listener) : true;
         }
         return b;
     }
