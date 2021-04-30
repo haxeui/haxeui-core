@@ -25,6 +25,28 @@ class AssetsBase {
         callback(null);
     }
 
+    public function imageFromFile(filename:String, callback:ImageInfo->Void) {
+        #if sys
+
+        if (sys.FileSystem.exists(filename) == false) {
+            callback(null);
+        }
+
+        try {
+            Toolkit.assets.imageFromBytes(sys.io.File.getBytes(filename), callback);
+        } catch (e:Dynamic) {
+            trace("Problem loading image file: " + e);
+            callback(null);
+        }
+
+        #else
+
+        trace('WARNING: cant load from file system on non-sys targets [${filename}]');
+        callback(null);
+
+        #end
+    }
+
     private function getFontInternal(resourceId:String, callback:FontInfo->Void) {
         callback(null);
     }

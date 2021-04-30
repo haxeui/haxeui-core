@@ -18,7 +18,7 @@ class ImageLoader {
             if (StringTools.startsWith(stringResource, "http://") || StringTools.startsWith(stringResource, "https://")) {
                 loadFromHttp(stringResource, callback);
             } else if (StringTools.startsWith(stringResource, "file://")) {
-                loadFromFile(stringResource.substr(7), callback);
+                Toolkit.assets.imageFromFile(stringResource.substr(7), callback);
             } else { // assume asset
                 Toolkit.assets.getImage(stringResource, callback);
             }
@@ -108,28 +108,6 @@ class ImageLoader {
             callback(null);
         }
         http.request();
-
-        #end
-    }
-
-    private function loadFromFile(filename, callback:ImageInfo->Void) {
-        #if sys
-
-        if (sys.FileSystem.exists(filename) == false) {
-            callback(null);
-        }
-
-        try {
-            Toolkit.assets.imageFromBytes(sys.io.File.getBytes(filename), callback);
-        } catch (e:Dynamic) {
-            trace("Problem loading image file: " + e);
-            callback(null);
-        }
-
-        #else
-
-        trace('WARNING: cant load from file system on non-sys targets [${filename}]');
-        callback(null);
 
         #end
     }
