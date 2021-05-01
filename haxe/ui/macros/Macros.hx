@@ -192,14 +192,14 @@ class Macros {
                 var c = findComponent($v{variable});
                 if (c == null) {
                     trace("WARNING: no child component found: " + $v{variable});
-                    return Reflect.getProperty(c, $v{field});
+                    return haxe.ui.util.Variant.fromDynamic(c.$field);
                 }
                 var fieldIndex = Type.getInstanceFields(Type.getClass(c)).indexOf("get_" + $v{field});
                 if (fieldIndex == -1) {
                     trace("WARNING: no component getter found: " + $v{field});
-                    return Reflect.getProperty(c, $v{field});
+                    return haxe.ui.util.Variant.fromDynamic(c.$field);
                 }
-                return Reflect.getProperty(c, $v{field});
+                return haxe.ui.util.Variant.fromDynamic(c.$field);
             });
         }
 
@@ -216,7 +216,7 @@ class Macros {
                         trace("WARNING: no component setter found: " + $v{field});
                         return value;
                     }
-                    Reflect.setProperty(c, $v{field}, value);
+                    c.$field = haxe.ui.util.Variant.fromDynamic(value);
                 }
                 return value;
             });
