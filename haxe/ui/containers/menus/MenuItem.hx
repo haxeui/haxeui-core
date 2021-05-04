@@ -50,6 +50,7 @@ private class IconBehaviour extends DataBehaviour {
             icon.scriptAccess = false;
             icon.id = "menuitem-icon";
             icon.addClass("menuitem-icon");
+            icon.addClass("icon");
             _component.addComponentAt(icon, 0);
         }
         icon.resource = _value;
