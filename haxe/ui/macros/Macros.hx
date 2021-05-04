@@ -143,7 +143,11 @@ class Macros {
                 if (_style == null) {
                     _style = {};
                 }
-                $p{["customStyle", f.name]} = value;
+                if (value == null) {
+                    $p{["customStyle", f.name]} = null;
+                } else {
+                    $p{["customStyle", f.name]} = value;
+                }
                 return value;
             });
             
