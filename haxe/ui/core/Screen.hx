@@ -84,6 +84,12 @@ class Screen extends ScreenImpl {
         }
     }
 
+    public function resizeRootComponents() {
+        for (component in rootComponents) {
+            resizeComponent(component);
+        }
+    }
+
     @:access(haxe.ui.core.Component)
     private function _refreshStyleComponent(component:Component) {
         for (child in component.childComponents) {

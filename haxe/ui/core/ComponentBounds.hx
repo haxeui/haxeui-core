@@ -122,6 +122,8 @@ class ComponentBounds extends ComponentLayout {
 
         if (parentComponent != null) {
             parentComponent.invalidateComponentLayout();
+        } else {
+            Screen.instance.resizeRootComponents();
         }
         return value;
     }
@@ -143,6 +145,8 @@ class ComponentBounds extends ComponentLayout {
 
         if (parentComponent != null) {
             parentComponent.invalidateComponentLayout();
+        } else {
+            Screen.instance.resizeRootComponents();
         }
         return value;
     }
