@@ -1,5 +1,6 @@
 package haxe.ui.core;
 
+import haxe.CallStack;
 import haxe.ui.geom.Rectangle;
 import haxe.ui.validation.InvalidationFlags;
 
@@ -151,6 +152,32 @@ class ComponentBounds extends ComponentLayout {
         return value;
     }
 
+    private var _cachedPercentWidth:Null<Float> = null;
+    private var _cachedPercentHeight:Null<Float> = null;
+    private function cachePercentSizes(clearExisting:Bool = true) {
+        if (_percentWidth != null) {
+            _cachedPercentWidth = _percentWidth;
+            if (clearExisting == true) {
+                _percentWidth = null;
+            }
+        }
+        if (_percentHeight != null) {
+            _cachedPercentHeight = _percentHeight;
+            if (clearExisting == true) {
+                _percentHeight = null;
+            }
+        }
+    }
+    
+    private function restorePercentSizes() {
+        if (_cachedPercentWidth != null) {
+            percentWidth = _cachedPercentWidth;
+        }
+        if (_cachedPercentHeight != null) {
+            percentHeight = _cachedPercentHeight;
+        }
+    }
+    
     #if ((haxeui_openfl || haxeui_nme) && !haxeui_flixel)
 
     #if flash @:setter(x) #else override #end

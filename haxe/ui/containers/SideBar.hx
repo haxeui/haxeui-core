@@ -5,6 +5,7 @@ import haxe.ui.containers.Box;
 import haxe.ui.core.Component;
 import haxe.ui.core.Screen;
 import haxe.ui.events.MouseEvent;
+import haxe.ui.events.UIEvent;
 import haxe.ui.styles.Dimension;
 import haxe.ui.styles.Value;
 import haxe.ui.styles.elements.AnimationKeyFrame;
@@ -25,6 +26,11 @@ class SideBar extends Box {
         super.hide();
         this.position = "left";
         animatable = false;
+        Screen.instance.registerEvent(UIEvent.RESIZE, function(_) {
+            if (activeSideBar == this) {
+                setEndPos();
+            }
+        });
     }
     
     private var _position:String = null;
@@ -87,19 +93,33 @@ class SideBar extends Box {
         _modalOverlay.hide();
     }
     
+    private function setStartPos() {
+        if (position == "left") {
+            this.left = -this.actualComponentWidth;
+        } else if (position == "right") {
+            this.left = Screen.instance.actualWidth;
+        } else if (position == "top") {
+            this.top = -this.actualComponentHeight;
+        } else if (position == "bottom") {
+            this.top = Screen.instance.actualHeight;
+        }
+    }
+    
+    private function setEndPos() {
+        if (position == "left") {
+            this.left = 0;
+        } else if (position == "right") {
+            this.left = Screen.instance.actualWidth - this.actualComponentWidth;
+        } else if (position == "top") {
+            this.top = 0;
+        } else if (position == "bottom") {
+            this.top = Screen.instance.actualHeight - this.actualComponentHeight;
+        }
+    }
+    
     public override function show() {
         if (activeSideBar == this) {
             return;
-        }
-        
-        if (position == "left") {
-            this.left = -this.width;
-        } else if (position == "right") {
-            this.left = Screen.instance.width;
-        } else if (position == "top") {
-            this.top = -this.height;
-        } else if (position == "bottom") {
-            this.top = Screen.instance.height;
         }
         
         if (Screen.instance.rootComponents.indexOf(this) == -1) {
@@ -107,14 +127,19 @@ class SideBar extends Box {
                 showModalOverlay();
             }
             Screen.instance.addComponent(this);
+            this.validateNow();
             Toolkit.callLater(function() {
+                setStartPos();
                 show();
             });
             return;
         } else {
+            
             if (modal == true) {
                 showModalOverlay();
             }
+            this.validateNow();
+            setStartPos();
         }
         
         var animation = Toolkit.styleSheet.findAnimation("sideBarModifyContent");
@@ -140,10 +165,6 @@ class SideBar extends Box {
         }
         buildContentAnimation(animation);
         
-        rootComponent.onAnimationEnd = function(_) {
-            rootComponent.removeClass("sideBarModifyContent");
-        }
-        
         var showSideBarClass = null;
         var hideSideBarClass = null;
         if (position == "left") {
@@ -152,7 +173,7 @@ class SideBar extends Box {
             var animation = Toolkit.styleSheet.findAnimation("showSideBarLeft");
             var first:AnimationKeyFrame = animation.keyFrames[0];
             var last:AnimationKeyFrame = animation.keyFrames[animation.keyFrames.length - 1];
-            first.set(new Directive("left", Value.VDimension(Dimension.PX(-this.width - getAppropriateMargin()))));
+            first.set(new Directive("left", Value.VDimension(Dimension.PX(-this.actualComponentWidth - getAppropriateMargin()))));
             last.set(new Directive("left", Value.VDimension(Dimension.PX(0))));
         } else if (position == "right") {
             showSideBarClass = "showSideBarRight";
@@ -160,15 +181,15 @@ class SideBar extends Box {
             var animation = Toolkit.styleSheet.findAnimation("showSideBarRight");
             var first:AnimationKeyFrame = animation.keyFrames[0];
             var last:AnimationKeyFrame = animation.keyFrames[animation.keyFrames.length - 1];
-            first.set(new Directive("left", Value.VDimension(Dimension.PX(Screen.instance.width + getAppropriateMargin()))));
-            last.set(new Directive("left", Value.VDimension(Dimension.PX(Screen.instance.width - this.width))));
+            first.set(new Directive("left", Value.VDimension(Dimension.PX(Screen.instance.actualWidth + getAppropriateMargin()))));
+            last.set(new Directive("left", Value.VDimension(Dimension.PX(Screen.instance.actualWidth - this.actualComponentWidth))));
         } else if (position == "top") {
             showSideBarClass = "showSideBarTop";
             hideSideBarClass = "hideSideBarTop";
             var animation = Toolkit.styleSheet.findAnimation("showSideBarTop");
             var first:AnimationKeyFrame = animation.keyFrames[0];
             var last:AnimationKeyFrame = animation.keyFrames[animation.keyFrames.length - 1];
-            first.set(new Directive("top", Value.VDimension(Dimension.PX(-this.height - getAppropriateMargin()))));
+            first.set(new Directive("top", Value.VDimension(Dimension.PX(-this.actualComponentHeight - getAppropriateMargin()))));
             last.set(new Directive("top", Value.VDimension(Dimension.PX(0))));
         } else if (position == "bottom") {
             showSideBarClass = "showSideBarBottom";
@@ -176,8 +197,8 @@ class SideBar extends Box {
             var animation = Toolkit.styleSheet.findAnimation("showSideBarBottom");
             var first:AnimationKeyFrame = animation.keyFrames[0];
             var last:AnimationKeyFrame = animation.keyFrames[animation.keyFrames.length - 1];
-            first.set(new Directive("top", Value.VDimension(Dimension.PX(Screen.instance.height + getAppropriateMargin()))));
-            last.set(new Directive("top", Value.VDimension(Dimension.PX(Screen.instance.height - this.height))));
+            first.set(new Directive("top", Value.VDimension(Dimension.PX(Screen.instance.actualHeight + getAppropriateMargin()))));
+            last.set(new Directive("top", Value.VDimension(Dimension.PX(Screen.instance.actualHeight - this.actualComponentHeight))));
         }
         
         
@@ -191,6 +212,7 @@ class SideBar extends Box {
         
         for (r in Screen.instance.rootComponents) {
             if (r.classes.indexOf("sidebar") == -1) {
+                r.cachePercentSizes();
                 r.swapClass("sideBarModifyContent", "sideBarRestoreContent");
                 r.onAnimationEnd = function(_) {
                     r.onAnimationEnd = null;
@@ -206,6 +228,7 @@ class SideBar extends Box {
     }
     
     private function getAppropriateMargin():Float {
+        return 0;
         var m = null;
         
         if (position == "left") {
@@ -222,7 +245,7 @@ class SideBar extends Box {
             return 0;
         }
         
-        return m;
+        return m * Toolkit.scale;
     }
     
     private function buildHideContentAnimation(animation:AnimationKeyFrames) {
@@ -262,26 +285,26 @@ class SideBar extends Box {
         
         if (method == "shift") {
             if (position == "left") {
-                last.set(new Directive("left", Value.VDimension(Dimension.PX(this.width))));
+                last.set(new Directive("left", Value.VDimension(Dimension.PX(this.actualComponentWidth))));
             } else if (position == "right") {
-                last.set(new Directive("left", Value.VDimension(Dimension.PX(-this.width))));
+                last.set(new Directive("left", Value.VDimension(Dimension.PX(-this.actualComponentWidth))));
             }
             
             if (position == "top") {
-                last.set(new Directive("top", Value.VDimension(Dimension.PX(this.height))));
+                last.set(new Directive("top", Value.VDimension(Dimension.PX(this.actualComponentHeight))));
             } else if (position == "bottom") {
-                last.set(new Directive("top", Value.VDimension(Dimension.PX(-this.height))));
+                last.set(new Directive("top", Value.VDimension(Dimension.PX(-this.actualComponentHeight))));
             }
         } else if (method == "squash") {
             if (position == "left") {
-                last.set(new Directive("left", Value.VDimension(Dimension.PX(this.width))));
+                last.set(new Directive("left", Value.VDimension(Dimension.PX(this.actualComponentWidth))));
                 last.set(new Directive("width", Value.VDimension(Dimension.PX(Screen.instance.width - this.width))));
             } else if (position == "right") {
                 last.set(new Directive("width", Value.VDimension(Dimension.PX(Screen.instance.width - this.width))));
             }
             
             if (position == "top") {
-                last.set(new Directive("top", Value.VDimension(Dimension.PX(this.height))));
+                last.set(new Directive("top", Value.VDimension(Dimension.PX(this.actualComponentHeight))));
                 last.set(new Directive("height", Value.VDimension(Dimension.PX(Screen.instance.height - this.height))));
             } else if (position == "bottom") {
                 last.set(new Directive("height", Value.VDimension(Dimension.PX(Screen.instance.height - this.height))));
@@ -308,6 +331,7 @@ class SideBar extends Box {
         
         this.onAnimationEnd = function(_) {
             this.removeClass(hideSideBarClass);
+            onHideAnimationEnd();
         }
         
         this.swapClass(hideSideBarClass, showSideBarClass);
@@ -315,6 +339,10 @@ class SideBar extends Box {
         if (modal == true) {
             hideModalOverlay();
         }
+    }
+    
+    private function onHideAnimationEnd() {
+        super.hide();
     }
     
     public override function hide() {
@@ -342,6 +370,7 @@ class SideBar extends Box {
             if (r.classes.indexOf("sidebar") == -1) {
                 r.swapClass("sideBarRestoreContent", "sideBarModifyContent");
                 r.onAnimationEnd = function(_) {
+                    r.restorePercentSizes();
                     r.onAnimationEnd = null;
                     rootComponent.removeClass("sideBarRestoreContent");
                 }

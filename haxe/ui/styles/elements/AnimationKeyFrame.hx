@@ -23,6 +23,15 @@ class AnimationKeyFrame {
         }
     }
     
+    public function find(id:String) {
+        for (d in directives) {
+            if (d.directive == id) {
+                return d;
+            }
+        }
+        return null;
+    }
+    
     public function clear() {
         directives = [];
     }

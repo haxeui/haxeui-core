@@ -1,5 +1,6 @@
 package haxe.ui.backend;
 
+import haxe.ui.Toolkit;
 import haxe.ui.core.Component;
 import haxe.ui.events.UIEvent;
 
@@ -50,6 +51,16 @@ class ScreenBase {
         return 0;
     }
 
+    public var actualWidth(get, null):Float;
+    private function get_actualWidth():Float {
+        return width * Toolkit.scaleX;
+    }
+
+    public var actualHeight(get, null):Float;
+    private function get_actualHeight():Float {
+        return height * Toolkit.scaleY;
+    }
+    
     public var isRetina(get, null):Bool;
     private function get_isRetina():Bool {
         return false;
