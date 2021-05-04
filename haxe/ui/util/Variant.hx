@@ -85,7 +85,7 @@ abstract Variant(VariantType) from VariantType {
         return switch (this) {
             case VT_Int(s): s;
             case VT_Float(s): Std.int(s);
-            default: throw "Variant Type Error";
+            default: throw "Variant Type Error " + this;
         }
     }
 
@@ -510,7 +510,7 @@ abstract Variant(VariantType) from VariantType {
         var t:String = Std.string(s);
         for (i in 0...t.length) {
             var c = t.charAt(i);
-            if (c != "0" && c != "1" && c != "2" && c != "3" && c != "4" && c != "5" && c != "6" && c != "7" && c != "8" && c != "9" && c != ".") {
+            if (c != "0" && c != "1" && c != "2" && c != "3" && c != "4" && c != "5" && c != "6" && c != "7" && c != "8" && c != "9" && c != "." && c != "-") {
                 return false;
             }
         }
