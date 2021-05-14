@@ -130,6 +130,7 @@ private class Events extends haxe.ui.events.Events  {
         super(checkbox);
         _checkbox = checkbox;
     }
+    
     public override function register() {
         if (hasEvent(MouseEvent.MOUSE_OVER, onMouseOver) == false) {
             registerEvent(MouseEvent.MOUSE_OVER, onMouseOver);

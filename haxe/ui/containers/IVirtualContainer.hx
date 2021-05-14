@@ -1,6 +1,5 @@
 package haxe.ui.containers;
 
-import haxe.ui.containers.ListView.ItemRendererFunction2;
 import haxe.ui.core.ItemRenderer;
 
 interface IVirtualContainer {
@@ -18,6 +17,5 @@ interface IVirtualContainer {
     public var vscrollPageSize(get, set):Float;
 
     public var itemRenderer(get, set):ItemRenderer;
-    public var itemRendererFunction(get, set):ItemRendererFunction2;
     public var itemRendererClass(get, set):Class<ItemRenderer>;
 }

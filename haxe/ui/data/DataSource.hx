@@ -122,6 +122,13 @@ class DataSource<T> {
         }
     }
 
+    public function clearFilter() {
+    }
+    
+    // callback (fn) should return true if the element should not be filtered out
+    public function filter(fn:Int->T->Bool) {
+    }
+    
     private function handleChanged() {
         _changed = true;
         if (_allowCallbacks == true && onChange != null) {

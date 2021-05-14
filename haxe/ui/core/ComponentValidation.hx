@@ -52,7 +52,7 @@ class ComponentValidation extends ComponentEvents {
      Invalidate this components with the `InvalidationFlags` indicated. If it hasn't parameter then the component will be invalidated completely.
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public function invalidateComponent(flag:String = InvalidationFlags.ALL) {
+    public function invalidateComponent(flag:String = InvalidationFlags.ALL, recursive:Bool = false) {
         if (_ready == false) {
             return;     //it should be added into the queue later
         }
@@ -101,49 +101,55 @@ class ComponentValidation extends ComponentEvents {
 
         _invalidateCount = 0;
         ValidationManager.instance.add(cast(this, Component)); // TODO: avoid cast
+        
+        if (recursive == true) {
+            for (child in childComponents) {
+                child.invalidateComponent(flag, recursive);
+            }
+        }
     }
 
     /**
      Invalidate the data of this component
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public inline function invalidateComponentData() {
-        invalidateComponent(InvalidationFlags.DATA);
+    public inline function invalidateComponentData(recursive:Bool = false) {
+        invalidateComponent(InvalidationFlags.DATA, recursive);
     }
 
     /**
      Invalidate this components layout, may result in multiple calls to `invalidateDisplay` and `invalidateLayout` of its children
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public inline function invalidateComponentLayout() {
+    public inline function invalidateComponentLayout(recursive:Bool = false) {
         if (_layout == null || _layoutLocked == true) {
             return;
         }
-        invalidateComponent(InvalidationFlags.LAYOUT);
+        invalidateComponent(InvalidationFlags.LAYOUT, recursive);
     }
 
     /**
      Invalidate the position of this component
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public inline function invalidateComponentPosition() {
-        invalidateComponent(InvalidationFlags.POSITION);
+    public inline function invalidateComponentPosition(recursive:Bool = false) {
+        invalidateComponent(InvalidationFlags.POSITION, recursive);
     }
 
     /**
      Invalidate the visible aspect of this component
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public inline function invalidateComponentDisplay() {
-        invalidateComponent(InvalidationFlags.DISPLAY);
+    public inline function invalidateComponentDisplay(recursive:Bool = false) {
+        invalidateComponent(InvalidationFlags.DISPLAY, recursive);
     }
 
     /**
      Invalidate and recalculate this components style, may result in a call to `invalidateDisplay`
     **/
     @:dox(group = "Invalidation related properties and methods")
-    public inline function invalidateComponentStyle(force:Bool = false) {
-        invalidateComponent(InvalidationFlags.STYLE);
+    public inline function invalidateComponentStyle(force:Bool = false, recursive:Bool = false) {
+        invalidateComponent(InvalidationFlags.STYLE, recursive);
         if (force == true) {
             _style = null;
         }

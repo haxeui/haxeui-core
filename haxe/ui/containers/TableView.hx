@@ -53,21 +53,6 @@ class TableView extends ScrollView implements IDataComponent implements IVirtual
 
     @:event(ItemEvent.COMPONENT_EVENT)                          public var onComponentEvent:ItemEvent->Void;
 
-    //TODO - error with Behaviour
-    private var _itemRendererFunction:ItemRendererFunction4;
-    public var itemRendererFunction(get, set):ItemRendererFunction4;
-    private function get_itemRendererFunction():ItemRendererFunction4 {
-        return _itemRendererFunction;
-    }
-    private function set_itemRendererFunction(value:ItemRendererFunction4):ItemRendererFunction4 {
-        if (_itemRendererFunction != value) {
-            _itemRendererFunction = value;
-            invalidateComponentLayout();
-        }
-
-        return value;
-    }
-
     private var _itemRendererClass:Class<ItemRenderer>;
     public var itemRendererClass(get, set):Class<ItemRenderer>;
     private function get_itemRendererClass():Class<ItemRenderer> {
@@ -96,9 +81,6 @@ class TableView extends ScrollView implements IDataComponent implements IVirtual
         return value;
     }
 }
-
-@:dox(hide) @:noCompletion
-typedef ItemRendererFunction4 = Dynamic->Int->Class<ItemRenderer>;    //(data, index):Class<ItemRenderer>
 
 private class CompoundItemRenderer extends ItemRenderer {
     public function new() {
@@ -511,8 +493,10 @@ private class Layout extends VerticalVirtualLayout {
         var vscroll = _component.findComponent(VerticalScroll);
         if (vscroll != null && vscroll.hidden == false) {
             header.addClass("scrolling");
+            header.invalidateComponent(true);
         } else {
             header.removeClass("scrolling");
+            header.invalidateComponent(true);
         }
         var rc:Rectangle = new Rectangle(cast(_component, ScrollView).hscrollPos + 1, 1, usableWidth, header.height);
         header.componentClipRect = rc;

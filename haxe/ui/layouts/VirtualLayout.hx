@@ -231,9 +231,7 @@ class VirtualLayout extends ScrollViewLayout {
 
     private function itemClass(index:Int, data:Dynamic):Class<ItemRenderer> {
         var comp:IVirtualContainer = cast(_component, IVirtualContainer);
-        if (comp.itemRendererFunction != null) {
-            return comp.itemRendererFunction(data, index);
-        } else if (comp.itemRendererClass != null) {
+        if (comp.itemRendererClass != null) {
             return comp.itemRendererClass;
         } else if (comp.itemRenderer != null) {
             return Type.getClass(comp.itemRenderer);

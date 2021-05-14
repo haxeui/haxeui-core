@@ -43,21 +43,6 @@ class ListView extends ScrollView implements IDataComponent implements IVirtualC
 
     @:event(ItemEvent.COMPONENT_EVENT)                          public var onComponentEvent:ItemEvent->Void;
 
-    //TODO - error with Behaviour
-    private var _itemRendererFunction:ItemRendererFunction2;
-    public var itemRendererFunction(get, set):ItemRendererFunction2;
-    private function get_itemRendererFunction():ItemRendererFunction2 {
-        return _itemRendererFunction;
-    }
-    private function set_itemRendererFunction(value:ItemRendererFunction2):ItemRendererFunction2 {
-        if (_itemRendererFunction != value) {
-            _itemRendererFunction = value;
-            invalidateComponentLayout();
-        }
-
-        return value;
-    }
-
     private var _itemRendererClass:Class<ItemRenderer>;
     public var itemRendererClass(get, set):Class<ItemRenderer>;
     private function get_itemRendererClass():Class<ItemRenderer> {
@@ -86,9 +71,6 @@ class ListView extends ScrollView implements IDataComponent implements IVirtualC
         return value;
     }
 }
-
-@:dox(hide) @:noCompletion
-typedef ItemRendererFunction2 = Dynamic->Int->Class<ItemRenderer>;    //(data, index):Class<ItemRenderer>
 
 //***********************************************************************************************************
 // Events
@@ -317,7 +299,7 @@ private class ListViewBuilder extends ScrollViewBuilder {
     @:access(haxe.ui.backend.ComponentImpl)
     public override function addComponent(child:Component):Component {
         var r = null;
-        if ((child is ItemRenderer) && (_listview.itemRenderer == null && _listview.itemRendererFunction == null && _listview.itemRendererClass == null)) {
+        if ((child is ItemRenderer) && (_listview.itemRenderer == null && _listview.itemRendererClass == null)) {
             _listview.itemRenderer = cast(child, ItemRenderer);
             _listview.itemRenderer.ready();
             _listview.itemRenderer.handleVisibility(false);
