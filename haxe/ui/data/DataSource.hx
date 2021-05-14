@@ -97,6 +97,11 @@ class DataSource<T> {
         return r;
     }
 
+    public function removeAt(index:Int):T {
+        var item = get(index);
+        return remove(item);
+    }
+    
     public function update(index:Int, item:T):T {
         var r = handleUpdateItem(index, item);
         handleChanged();
