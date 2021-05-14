@@ -89,7 +89,7 @@ class ComponentValidation extends ComponentEvents {
             _invalidateCount++;
 
             //we track the invalidate count to check if we are in an infinite loop or serious bug because it affects performance
-            if (this._invalidateCount >= 10) {
+            if (this._invalidateCount >= 100) {
                 throw 'The validation queue returned too many times during validation. This may be an infinite loop. Try to avoid doing anything that calls invalidate() during validation.';
             }
 
