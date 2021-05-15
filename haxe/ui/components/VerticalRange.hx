@@ -45,6 +45,7 @@ class VerticalRangePosFromCoord extends Behaviour {
 // Composite Layout
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
+@:access(haxe.ui.components.Range)
 class VerticalRangeLayout extends DefaultLayout {
     public override function resizeChildren() {
         super.resizeChildren();
@@ -54,11 +55,21 @@ class VerticalRangeLayout extends DefaultLayout {
         if (value != null) {
             var ucy:Float = usableHeight;
 
+            var start = range.start;
+            var end = range.end;
+            
+            if (range.virtualStart != null) {
+                start = range.virtualStart;
+            }
+            if (range.virtualEnd != null) {
+                end = range.virtualEnd;
+            }
+            
             var m:Float = range.max - range.min;
             var d = (ucy / m);
-            var startInPixels = (range.start * d) - (range.min * d);
-            var endInPixels = (range.end * d) - (range.min * d);
-            var cy:Float = Math.fround(endInPixels - startInPixels);
+            var startInPixels = (start * d) - (range.min * d);
+            var endInPixels = (end * d) - (range.min * d);
+            var cy:Float = Math.fceil(endInPixels - startInPixels);
 
             if (cy < 0) {
                 cy = 0;
@@ -82,12 +93,17 @@ class VerticalRangeLayout extends DefaultLayout {
         var range:Range = cast(component, Range);
         var value:Component = findComponent('${range.cssName}-value');
 
+        var start = range.start;
+        if (range.virtualStart != null) {
+            start = range.virtualStart;
+        }
+        
         var ucy:Float = usableHeight;
         var m:Float = range.max - range.min;
         var d = (ucy / m);
 
-        var startInPixels = (ucy - value.height) - ((range.start * d) - (range.min * d));
+        var startInPixels = (ucy - value.height) - ((start * d) - (range.min * d));
         value.left = paddingLeft;
-        value.top = paddingTop + startInPixels;
+        value.top = Math.ffloor(paddingTop + startInPixels);
     }
 }

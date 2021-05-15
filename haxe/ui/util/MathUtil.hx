@@ -12,6 +12,14 @@ class MathUtil {
         return Math.round(v * Math.pow(10, precision)) / Math.pow(10, precision);
     }
 
+    public static inline function roundToNearest(v:Float, n:Float):Float {
+        var r = v % n;
+        if (r <= n / 2) {
+            return Math.fround(v - r);
+        }
+        return Math.fround(v + n - r);
+    }
+    
     public static inline function clamp(v:Null<Float>, min:Null<Float>, max:Null<Float>):Float {
         if (v == null || Math.isNaN(v)) {
             return min;

@@ -18,8 +18,20 @@
     cursor: pointer;
 }
 
+.horizontal-slider.with-center .range-value {
+    border-radius: 0px;
+}
+
+.horizontal-slider .minor-tick {
+    background-color: #181a1b;
+}
+
+.horizontal-slider .major-tick {
+    background-color: #181a1b;
+}
+
 .horizontal-slider .button {
-    width: 10px;
+    width: 11px;
     height: 20px;
     border-radius: 2px;
     vertical-align: center;
@@ -43,9 +55,21 @@
     cursor: pointer;
 }
 
+.vertical-slider.with-center .range-value {
+    border-radius: 0px;
+}
+
+.vertical-slider .minor-tick {
+    background-color: #181a1b;
+}
+
+.vertical-slider .major-tick {
+    background-color: #181a1b;
+}
+
 .vertical-slider .button {
     width: 20px;
-    height: 10px;
+    height: 11px;
     border-radius: 2px;
     horizontal-align: center;
     filter: none;

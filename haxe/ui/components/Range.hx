@@ -28,6 +28,9 @@ class Range extends InteractiveComponent implements IDirectionalComponent {
     @:clonable @:behaviour(InvalidatingBehaviour)       public var step:Float;
     @:clonable @:behaviour(AllowInteraction, false)     public var allowInteraction:Bool;
 
+    private var virtualStart:Null<Float>;
+    private var virtualEnd:Null<Float>;
+    
     //***********************************************************************************************************
     // Private API
     //***********************************************************************************************************
@@ -94,6 +97,7 @@ private class RangeEnd extends DataBehaviour {
         } else if (_value != null && _value > range.max) {
             _value = range.max;
         }
+
         range.end = _value;
         _component.invalidateComponentLayout();
 

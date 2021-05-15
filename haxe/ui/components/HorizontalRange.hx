@@ -45,6 +45,7 @@ class HorizontalRangePosFromCoord extends Behaviour {
 // Composite Layout
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
+@:access(haxe.ui.components.Range)
 class HorizontalRangeLayout extends DefaultLayout {
     public override function resizeChildren() {
         super.resizeChildren();
@@ -54,11 +55,21 @@ class HorizontalRangeLayout extends DefaultLayout {
         if (value != null) {
             var ucx:Float = usableWidth;
 
+            var start = range.start;
+            var end = range.end;
+            
+            if (range.virtualStart != null) {
+                start = range.virtualStart;
+            }
+            if (range.virtualEnd != null) {
+                end = range.virtualEnd;
+            }
+            
             var m:Float = range.max - range.min;
             var d = (ucx / m);
-            var startInPixels = (range.start * d) - (range.min * d);
-            var endInPixels = (range.end * d) - (range.min * d);
-            var cx:Float = Math.fround(endInPixels - startInPixels);
+            var startInPixels = (start * d) - (range.min * d);
+            var endInPixels = (end * d) - (range.min * d);
+            var cx:Float = Math.fceil(endInPixels - startInPixels);
 
             if (cx < 0) {
                 cx = 0;
@@ -82,12 +93,17 @@ class HorizontalRangeLayout extends DefaultLayout {
         var range:Range = cast(component, Range);
         var value:Component = findComponent('${range.cssName}-value');
 
+        var start = range.start;
+        if (range.virtualStart != null) {
+            start = range.virtualStart;
+        }
+        
         var ucx:Float = usableWidth;
         var m:Float = range.max - range.min;
         var d = (ucx / m);
 
-        var startInPixels = (range.start * d) - (range.min * d);
-        value.left = paddingLeft + startInPixels;
+        var startInPixels = (start * d) - (range.min * d);
+        value.left = Math.ffloor(paddingLeft + startInPixels);
         value.top = paddingTop;
     }
 }

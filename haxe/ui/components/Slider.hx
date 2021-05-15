@@ -4,6 +4,7 @@ import haxe.ui.Toolkit;
 import haxe.ui.behaviours.Behaviour;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
+import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.IDirectionalComponent;
 import haxe.ui.core.InteractiveComponent;
@@ -26,6 +27,10 @@ class Slider extends InteractiveComponent implements IDirectionalComponent {
     @:clonable @:behaviour(StartBehaviour, null)    public var start:Null<Float>;
     @:clonable @:behaviour(EndBehaviour, 0)         public var end:Float;
     @:clonable @:behaviour(PosBehaviour)            public var pos:Float;
+    @:clonable @:behaviour(CenterBehaviour, null)   public var center:Null<Float>;
+    @:clonable @:behaviour(DefaultBehaviour, null)  public var step:Null<Float>;
+    @:clonable @:behaviour(MinorTicks, null)        public var minorTicks:Null<Float>;
+    @:clonable @:behaviour(MajorTicks, null)        public var majorTicks:Null<Float>;
     @:clonable @:value(pos)                         public var value:Dynamic;
 
     
@@ -67,6 +72,10 @@ private class StartBehaviour extends DataBehaviour {
             _value = MathUtil.round(_value, slider.precision);
         }
 
+        if (slider.step != null) {
+            _value = MathUtil.roundToNearest(_value, slider.step);
+        }
+        
         _component.findComponent(Range).start = _value;
         _component.invalidateComponentLayout();
     }
@@ -74,6 +83,7 @@ private class StartBehaviour extends DataBehaviour {
 
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.components.Slider)
+@:access(haxe.ui.components.Range)
 private class EndBehaviour extends DataBehaviour {
     private override function validateData() {
         var slider:Slider = cast(_component, Slider);
@@ -89,6 +99,22 @@ private class EndBehaviour extends DataBehaviour {
             _value = MathUtil.round(_value, slider.precision);
         }
 
+        if (slider.step != null) {
+            _value = MathUtil.roundToNearest(_value, slider.step);
+        }
+        
+        if (slider.center != null) {
+            if (_value >= slider.center) {
+                var r = slider.findComponent(Range);
+                r.virtualStart = slider.center;
+                r.virtualEnd = _value;
+            } else if (_value < slider.center) {
+                var r = slider.findComponent(Range);
+                r.virtualStart = _value;
+                r.virtualEnd = slider.center;
+            }
+        }
+        
         _component.findComponent(Range).end = _value;
         cast(_component, Slider).pos = _value;
         _component.invalidateComponentLayout();
@@ -125,6 +151,70 @@ private class PosBehaviour extends DataBehaviour {
 
     private override function validateData() {
         cast(_component, Slider).end = _value;
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.components.Range)
+private class CenterBehaviour extends DefaultBehaviour {
+    public override function set(value:Variant) {
+        super.set(value);
+        if (value != null && value.isNull == false) {
+            var slider:Slider = cast(_component, Slider);
+            slider.pos = _value;
+            var v = _component.findComponent(Range);
+            if (v != null) {
+                v.virtualStart = _value;
+            }
+            
+            _component.addClass("with-center");
+        } else {
+            _component.removeClass("with-center");
+        }
+    }
+}
+
+private class MinorTicks extends DataBehaviour {
+    public override function validateData() {
+        if (_value != null && _value.isNull == false) {
+            var slider:Slider = cast(_component, Slider);
+            var ticks = slider.findComponents("minor-tick", 1);
+            if (ticks == null || ticks.length == 0) {
+                var m:Float = slider.max - slider.min;
+                var v:Float = _value;
+                var n:Int = Std.int(m / v);
+                var index = slider.getComponentIndex(slider.findComponent(Range));
+                for (_ in 0...n + 1) {
+                    var tick = new Component();
+                    tick.addClass("minor-tick");
+                    tick.scriptAccess = false;
+                    slider.addComponentAt(tick, index + 1);
+                }
+            }
+        } else {
+        }
+    }
+}
+
+private class MajorTicks extends DataBehaviour {
+    public override function validateData() {
+        if (_value != null && _value.isNull == false) {
+            var slider:Slider = cast(_component, Slider);
+            var ticks = slider.findComponents("major-tick", 1);
+            if (ticks == null || ticks.length == 0) {
+                var m:Float = slider.max - slider.min;
+                var v:Float = _value;
+                var n:Int = Std.int(m / v);
+                var index = slider.getComponentIndex(slider.findComponent(Range));
+                for (_ in 0...n + 1) {
+                    var tick = new Component();
+                    tick.addClass("major-tick");
+                    tick.scriptAccess = false;
+                    slider.addComponentAt(tick, index + 1);
+                }
+            }
+        } else {
+        }
     }
 }
 
@@ -287,6 +377,13 @@ private class Events extends haxe.ui.events.Events  {
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 class SliderBuilder extends CompositeBuilder {
+    private var _slider:Slider;
+    
+    public function new(slider:Slider) {
+        super(slider);
+        _slider = slider;
+    }
+    
     public override function create() {
         if (_component.findComponent("range") == null) {
             var v = createValueComponent();
@@ -294,12 +391,16 @@ class SliderBuilder extends CompositeBuilder {
             v.id = "range";
             v.addClass("slider-value");
             v.start = v.end = 0;
+            if (_slider.center != null) {
+                _slider.pos = _slider.center;
+                v.virtualStart = _slider.center;
+            }
             _component.addComponent(v);
         }
 
         createThumb("end-thumb");
     }
-
+    
     public function getStartOffset():Float {
         return 0;
     }

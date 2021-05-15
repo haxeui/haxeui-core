@@ -28,6 +28,13 @@ class Layout implements ILayout {
         return _component.findComponent(criteria, type, recursive, searchType);
     }
 
+    private function findComponents<T:Component>(styleName:String = null, type:Class<T> = null, maxDepth:Int = 5):Array<T> {
+        if (_component == null) {
+            return null;
+        }
+        return _component.findComponents(styleName, type, maxDepth);
+    }
+    
     @:access(haxe.ui.core.Component)
     public function refresh() {
         if (_component != null && _component.isReady == true) {
