@@ -58,7 +58,7 @@ class HorizontalSliderLayout extends DefaultLayout {
         }
         
         if (slider.minorTicks != null && range != null && range.layout != null) {
-            var minorTicks = findComponents("minor-tick", 1);
+            var minorTicks = findComponents("minor-tick", Component, 1);
             if (minorTicks != null && minorTicks.length > 0) {
                 var m:Float = slider.max - slider.min;
                 var v:Float = slider.minorTicks;
@@ -76,7 +76,7 @@ class HorizontalSliderLayout extends DefaultLayout {
         }
         
         if (slider.majorTicks != null && range != null && range.layout != null) {
-            var majorTicks = findComponents("major-tick", 1);
+            var majorTicks = findComponents("major-tick", Component, 1);
             if (majorTicks != null && majorTicks.length > 0) {
                 var m:Float = slider.max - slider.min;
                 var v:Float = slider.majorTicks;
