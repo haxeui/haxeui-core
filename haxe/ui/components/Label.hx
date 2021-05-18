@@ -3,6 +3,7 @@ package haxe.ui.components;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.events.UIEvent;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.styles.Style;
 import haxe.ui.geom.Size;
@@ -90,6 +91,7 @@ private class TextBehaviour extends DataBehaviour {
             _component.invalidateComponentStyle(true);
         }
         _component.getTextDisplay().text = '${_value}';
+        _component.dispatch(new UIEvent(UIEvent.CHANGE));
     }
 }
 
@@ -100,6 +102,7 @@ private class HtmlTextBehaviour extends DataBehaviour {
             _component.invalidateComponentStyle(true);
         }
         _component.getTextDisplay().htmlText = '${_value}';
+        _component.dispatch(new UIEvent(UIEvent.CHANGE));
     }
 }
 
