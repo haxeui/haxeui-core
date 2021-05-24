@@ -796,8 +796,8 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         }
 
         if (_hidden == false) {
-            handleVisibility(false);
             _hidden = true;
+            handleVisibility(false);
             if (parentComponent != null) {
                 parentComponent.invalidateComponentLayout();
             }
@@ -815,8 +815,8 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         }
 
         if (_hidden == false) {
-            handleVisibility(false);
             _hidden = true;
+            handleVisibility(false);
             if (parentComponent != null) {
                 parentComponent.invalidateComponentLayout();
             }
@@ -842,8 +842,8 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         }
 
         if (_hidden == true) {
-            handleVisibility(true);
             _hidden = false;
+            handleVisibility(true);
             invalidateComponentLayout();
             if (parentComponent != null) {
                 parentComponent.invalidateComponentLayout();
@@ -862,8 +862,8 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         }
 
         if (_hidden == true) {
-            handleVisibility(true);
             _hidden = false;
+            handleVisibility(true);
             invalidateComponentLayout();
             if (parentComponent != null) {
                 parentComponent.invalidateComponentLayout();
