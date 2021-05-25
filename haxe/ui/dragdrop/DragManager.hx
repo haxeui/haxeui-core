@@ -63,7 +63,7 @@ class DragManager {
         if (dragOptions.dragOffsetX == null) dragOptions.dragOffsetX = 0;
         if (dragOptions.dragOffsetY == null) dragOptions.dragOffsetY = 0;
         if (dragOptions.dragTolerance == null) dragOptions.dragTolerance = Std.int(Toolkit.scale);
-        if (dragOptions.dragBounds == null) dragOptions.dragBounds = new Rectangle(0, 0, Screen.instance.width, Screen.instance.height);
+        //if (dragOptions.dragBounds == null) dragOptions.dragBounds = new Rectangle(0, 0, Screen.instance.width, Screen.instance.height);
         if (dragOptions.draggableStyleName == null) dragOptions.draggableStyleName = "draggable";
         if (dragOptions.draggingStyleName == null) dragOptions.draggingStyleName = "dragging";
 
@@ -160,10 +160,15 @@ class DragManager {
         // Calculate bounds //
         e.screenX *= Toolkit.scaleX;
         e.screenY *= Toolkit.scaleY;
-        var boundX = MathUtil.clamp(e.screenX, _currentOptions.dragBounds.left + _mouseOffset.x, _currentOptions.dragBounds.right - _currentComponent.actualComponentWidth + _mouseOffset.x);
-        var boundY = MathUtil.clamp(e.screenY, _currentOptions.dragBounds.top + _mouseOffset.y, _currentOptions.dragBounds.bottom - _currentComponent.actualComponentHeight + _mouseOffset.y);
-
-        _currentComponent.moveComponent(boundX - _mouseOffset.x, boundY - _mouseOffset.y);
+        if (_currentOptions.dragBounds != null) {
+            var boundX = MathUtil.clamp(e.screenX, _currentOptions.dragBounds.left + _mouseOffset.x, _currentOptions.dragBounds.right - _currentComponent.actualComponentWidth + _mouseOffset.x);
+            var boundY = MathUtil.clamp(e.screenY, _currentOptions.dragBounds.top + _mouseOffset.y, _currentOptions.dragBounds.bottom - _currentComponent.actualComponentHeight + _mouseOffset.y);
+            _currentComponent.moveComponent(boundX - _mouseOffset.x, boundY - _mouseOffset.y);
+        } else {
+            var xpos = e.screenX;
+            var ypos = e.screenY;
+            _currentComponent.moveComponent(xpos - _mouseOffset.x, ypos - _mouseOffset.y);
+        }
     }
 
     private function onScreenMouseUp(e:MouseEvent) {
