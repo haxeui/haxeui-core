@@ -314,6 +314,8 @@ class Style {
                     cursor = ValueTools.string(v.value);
                 case "hidden":
                     hidden = ValueTools.bool(v.value);
+                case "display":
+                    hidden = ValueTools.none(v.value);
 
                 case "clip":
                     clip = ValueTools.bool(v.value);

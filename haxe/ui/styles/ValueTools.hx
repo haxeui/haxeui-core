@@ -212,6 +212,19 @@ class ValueTools {
         }
     }
 
+    public static function none(value:Value):Null<Bool> {
+        if (value == null) {
+            return null;
+        }
+
+        switch (value) {
+            case Value.VNone:
+                return true;
+            case _:
+                return null;
+        }
+    }
+    
     public static function int(value:Value):Null<Int> {
         if (value == null) {
             return null;
