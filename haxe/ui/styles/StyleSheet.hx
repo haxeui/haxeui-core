@@ -45,6 +45,11 @@ class StyleSheet {
         return r;
     }
 
+    public var hasMediaQueries(get, null):Bool;
+    private function get_hasMediaQueries():Bool {
+        return _mediaQueries.length > 0;
+    }
+    
     public function findRule(selector:String):RuleElement {
         for (r in rules) {
             if (r.selector.toString() == selector) {

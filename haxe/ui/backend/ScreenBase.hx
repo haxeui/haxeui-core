@@ -78,12 +78,16 @@ class ScreenBase {
     }
 
     private function resizeComponent(c:Component) {
+        var cx:Null<Float> = null;
+        var cy:Null<Float> = null;
+
         if (c.percentWidth > 0) {
-            c.width = (this.width * c.percentWidth) / 100;
+            cx = (this.width * c.percentWidth) / 100;
         }
         if (c.percentHeight > 0) {
-            c.height = (this.height * c.percentHeight) / 100;
+            cy = (this.height * c.percentHeight) / 100;
         }
+        c.resizeComponent(cx, cy);
     }
 
     //***********************************************************************************************************

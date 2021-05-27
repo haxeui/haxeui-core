@@ -40,6 +40,16 @@ class CompositeStyleSheet {
         return null;
     }
     
+    public var hasMediaQueries(get, null):Bool;
+    private function get_hasMediaQueries():Bool {
+        for (styleSheet in _styleSheets) {
+            if (styleSheet.hasMediaQueries == true) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public function getAnimation(id:String, create:Bool = true):AnimationKeyFrames {
         var a = findAnimation(id);
         if (a == null) {

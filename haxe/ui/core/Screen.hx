@@ -7,6 +7,7 @@ import haxe.ui.containers.dialogs.MessageBox.MessageBoxType;
 import haxe.ui.events.UIEvent;
 import haxe.ui.focus.FocusManager;
 import haxe.ui.util.EventMap;
+import haxe.ui.validation.InvalidationFlags;
 
 class Screen extends ScreenImpl {
 
@@ -112,17 +113,17 @@ class Screen extends ScreenImpl {
         return Toolkit.dialog(contents, title, buttons, modal, callback);
     }
 
-    public function invalidateAll() {
+    public function invalidateAll(flag:String = InvalidationFlags.ALL) {
         for (c in rootComponents) {
-            invalidateChildren(c);
+            invalidateChildren(c, flag);
         }
     }
 
-    private function invalidateChildren(c:Component) {
+    private function invalidateChildren(c:Component, flag:String = InvalidationFlags.ALL) {
         for (child in c.childComponents) {
-            invalidateChildren(child);
+            invalidateChildren(child, flag);
         }
-        c.invalidateComponent();
+        c.invalidateComponent(flag);
     }
 
     private function onThemeChanged() {
