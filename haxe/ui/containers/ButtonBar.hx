@@ -8,6 +8,8 @@ import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.IDirectionalComponent;
 import haxe.ui.events.UIEvent;
+import haxe.ui.layouts.LayoutFactory;
+import haxe.ui.styles.Style;
 
 @:composite(Events, Builder)
 class ButtonBar extends Box implements IDirectionalComponent {
@@ -110,5 +112,17 @@ private class Builder extends CompositeBuilder {
     
     public override function onReady() {
         _component.registerInternalEvents(true);
+    }
+    
+    public override function applyStyle(style:Style) {
+        if (style.direction != null) {
+            var direction = style.direction;
+            if (direction == "vertical") {
+                _component.swapClass("vertical-button-bar", "horizontal-button-bar");
+            } else if (direction == "horizontal") {
+                _component.swapClass("horizontal-button-bar", "vertical-button-bar");
+            }
+            _component.layout = LayoutFactory.createFromName(direction);
+        }
     }
 }

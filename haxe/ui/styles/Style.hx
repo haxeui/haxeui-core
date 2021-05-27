@@ -121,7 +121,7 @@ class Style {
     @:optional public var pointerEvents:String;
 
     @:optional public var contentType:String;
-    // public function new() {}
+    @:optional public var direction:String;
 
     public function mergeDirectives(map:Map<String, Directive>) {
         for (key in map.keys()) {
@@ -394,6 +394,8 @@ class Style {
                     }
                 case "content-type":
                     contentType = ValueTools.string(v.value);
+                case "direction":
+                    direction = ValueTools.string(v.value);
             }
         }
     }
@@ -530,6 +532,7 @@ class Style {
         if (s.mode != null) mode = s.mode;
         if (s.pointerEvents != null) pointerEvents = s.pointerEvents;
         if (s.contentType != null) contentType = s.contentType;
+        if (s.direction != null) direction = s.direction;
     }
 
     public function equalTo(s:Style):Bool {
@@ -642,6 +645,7 @@ class Style {
         if (s.mode != mode) return false;
         if (s.pointerEvents != pointerEvents) return false;
         if (s.contentType != contentType) return false;
+        if (s.direction != direction) return false;
         return true;
     }
 
