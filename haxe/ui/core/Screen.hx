@@ -7,7 +7,6 @@ import haxe.ui.containers.dialogs.MessageBox.MessageBoxType;
 import haxe.ui.events.UIEvent;
 import haxe.ui.focus.FocusManager;
 import haxe.ui.util.EventMap;
-import haxe.ui.validation.InvalidationFlags;
 
 class Screen extends ScreenImpl {
 
@@ -41,8 +40,12 @@ class Screen extends ScreenImpl {
         #end
         if (rootComponents.indexOf(component) == -1) {
             rootComponents.push(component);
+        }
+        if (FocusManager.instance.hasView(component) == false) {
             FocusManager.instance.pushView(component);
-            component.registerEvent(UIEvent.RESIZE, _onRootComponentResize);    //refresh vh & vw
+        }
+        if (component.hasEvent(UIEvent.RESIZE, _onRootComponentResize) == false) {
+            component.registerEvent(UIEvent.RESIZE, _onRootComponentResize);
         }
         
         if (wasReady && component.hidden == false) {
@@ -79,51 +82,12 @@ class Screen extends ScreenImpl {
         return c;
     }
     
-    public function refreshStyleRootComponents() {
-        for (component in rootComponents) {
-            _refreshStyleComponent(component);
-        }
-    }
-
-    public function resizeRootComponents() {
-        for (component in rootComponents) {
-            resizeComponent(component);
-        }
-    }
-
-    @:access(haxe.ui.core.Component)
-    private function _refreshStyleComponent(component:Component) {
-        for (child in component.childComponents) {
-//            child.applyStyle(child.style);
-            child.invalidateComponentStyle();
-            child.invalidateComponentDisplay();
-            _refreshStyleComponent(child);
-        }
-    }
-
-    private function _onRootComponentResize(e:UIEvent) {
-        _refreshStyleComponent(e.target);
-    }
-
     public function messageBox(message:String, title:String = null, type:MessageBoxType = null, modal:Bool = true, callback:DialogButton->Void = null):Dialog {
         return Toolkit.messageBox(message, title, type, modal, callback);
     }
 
     public function dialog(contents:Component, title:String = null, buttons:DialogButton = null, modal:Bool = true, callback:DialogButton->Void = null):Dialog {
         return Toolkit.dialog(contents, title, buttons, modal, callback);
-    }
-
-    public function invalidateAll(flag:String = InvalidationFlags.ALL) {
-        for (c in rootComponents) {
-            invalidateChildren(c, flag);
-        }
-    }
-
-    private function invalidateChildren(c:Component, flag:String = InvalidationFlags.ALL) {
-        for (child in c.childComponents) {
-            invalidateChildren(child, flag);
-        }
-        c.invalidateComponent(flag);
     }
 
     private function onThemeChanged() {

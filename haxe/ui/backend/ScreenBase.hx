@@ -3,9 +3,9 @@ package haxe.ui.backend;
 import haxe.ui.Toolkit;
 import haxe.ui.core.Component;
 import haxe.ui.events.UIEvent;
+import haxe.ui.validation.InvalidationFlags;
 
 class ScreenBase {
-    private var _topLevelComponents:Array<Component> = [];
     public var rootComponents:Array<Component>;
 
     private var _focus:Component = null;
@@ -88,6 +88,45 @@ class ScreenBase {
             cy = (this.height * c.percentHeight) / 100;
         }
         c.resizeComponent(cx, cy);
+    }
+
+    public function refreshStyleRootComponents() {
+        for (component in rootComponents) {
+            _refreshStyleComponent(component);
+        }
+    }
+
+    public function resizeRootComponents() {
+        for (component in rootComponents) {
+            resizeComponent(component);
+        }
+    }
+
+    @:access(haxe.ui.core.Component)
+    private function _refreshStyleComponent(component:Component) {
+        for (child in component.childComponents) {
+//            child.applyStyle(child.style);
+            child.invalidateComponentStyle();
+            child.invalidateComponentDisplay();
+            _refreshStyleComponent(child);
+        }
+    }
+
+    private function _onRootComponentResize(e:UIEvent) {
+        _refreshStyleComponent(e.target);
+    }
+
+    public function invalidateAll(flag:String = InvalidationFlags.ALL) {
+        for (c in rootComponents) {
+            invalidateChildren(c, flag);
+        }
+    }
+
+    private function invalidateChildren(c:Component, flag:String = InvalidationFlags.ALL) {
+        for (child in c.childComponents) {
+            invalidateChildren(child, flag);
+        }
+        c.invalidateComponent(flag);
     }
 
     //***********************************************************************************************************

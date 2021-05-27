@@ -56,6 +56,10 @@ class FocusManager {
         _views.push(component);
     }
 
+    public function hasView(component:Component):Bool {
+        return _views.indexOf(component) != -1;
+    }
+    
     public function popView() {
         var c = _views.pop();
         _focusInfo.remove(c);
