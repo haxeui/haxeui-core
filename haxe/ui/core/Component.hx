@@ -1789,20 +1789,20 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         }
 
         if (style.percentWidth != null) {
-            width = null;
+            componentWidth = null;
             percentWidth = style.percentWidth;
         }
         if (style.percentHeight != null) {
-            height = null;
+            componentHeight = null;
             percentHeight = style.percentHeight;
         }
         if (style.width != null) {
             percentWidth = null;
-            width = style.width;
+            componentWidth = style.width;
         }
         if (style.height != null) {
             percentHeight = null;
-            height = style.height;
+            componentHeight = style.height;
         }
 
         if (style.native != null) {
