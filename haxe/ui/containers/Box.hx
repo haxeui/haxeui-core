@@ -4,6 +4,7 @@ import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.core.Component;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.LayoutFactory;
+import haxe.ui.styles.Style;
 
 /**
  Base `Layout` that allows a container to specify an `icon`. How that icon resource is used depends on subclasses, like `TabView`
@@ -44,6 +45,16 @@ class Box extends Component {
         super.createDefaults();
         if (_defaultLayoutClass == null) {
             _defaultLayoutClass = DefaultLayout;
+        }
+    }
+    
+    private var _direction:String = null;
+    private override function applyStyle(style:Style) {
+        super.applyStyle(style);
+        
+        if (style.direction != null && style.direction != _direction) {
+            _direction = style.direction;
+            this.layout = LayoutFactory.createFromName(_direction);
         }
     }
 }
