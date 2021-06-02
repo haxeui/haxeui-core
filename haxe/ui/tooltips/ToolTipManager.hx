@@ -138,6 +138,11 @@ class ToolTipManager {
             return;
         }
         
+        if (_currentComponent.disabled == true || _currentComponent.hidden == true) {
+            stopCurrent();
+            return;
+        }
+        
         createToolTip();
 
         _toolTip.hide();
