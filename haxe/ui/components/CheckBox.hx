@@ -160,6 +160,7 @@ private class Events extends haxe.ui.events.Events  {
     }
 
     private function onClick(event:MouseEvent) {
+        event.cancel();
         _checkbox.selected = !_checkbox.selected;
     }
 }

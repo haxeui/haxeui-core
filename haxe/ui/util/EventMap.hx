@@ -47,6 +47,17 @@ class EventMap  {
         return b;
     }
 
+    public function changePriority<T:UIEvent>(type:String, listener:T->Void, priority:Int) {
+        if (listener == null) {
+            return;
+        }
+        
+        var arr:FunctionArray<UIEvent->Void> = _map.get(type);
+        if (arr != null) {
+            arr.changePriority(cast listener, priority);
+        }
+    }
+    
     public function contains<T:UIEvent>(type:String, listener:T->Void = null):Bool {
         var b:Bool = false;
         var arr:FunctionArray<UIEvent->Void> = _map.get(type);

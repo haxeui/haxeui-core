@@ -31,6 +31,10 @@ class Events {
         _target.unregisterEvent(type, listener);
     }
 
+    private function changeEventPriority(type:String, listener:Dynamic->Void, priority:Int) {
+        _target.changeEventPriority(type, listener, priority);
+    }
+
     private function dispatch(event:UIEvent) {
         _target.dispatch(event);
     }

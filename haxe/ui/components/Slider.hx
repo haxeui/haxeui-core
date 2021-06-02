@@ -264,6 +264,9 @@ private class Events extends haxe.ui.events.Events  {
         if (_range.hasEvent(UIEvent.CHANGE, onRangeChange) == false) {
             _range.registerEvent(UIEvent.CHANGE, onRangeChange);
         }
+        if (_slider.hasEvent(MouseEvent.CLICK, onMouseClick) == false) {
+            _slider.registerEvent(MouseEvent.CLICK, onMouseClick, UIEvent.PRIORITY_LOWEST);
+        }
     }
 
     public override function unregister() {
@@ -277,8 +280,13 @@ private class Events extends haxe.ui.events.Events  {
 
         _range.unregisterEvent(MouseEvent.MOUSE_DOWN, onRangeMouseDown);
         _range.unregisterEvent(UIEvent.CHANGE, onRangeChange);
+        _slider.unregisterEvent(MouseEvent.CLICK, onMouseClick);
     }
 
+    private function onMouseClick(e:UIEvent) {
+        e.cancel();
+    }
+    
     private function onRangeChange(e:UIEvent) {
         _slider.dispatch(new UIEvent(UIEvent.CHANGE));
     }

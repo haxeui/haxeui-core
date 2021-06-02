@@ -18,16 +18,19 @@ class FunctionArray<T> {
 
     public function push(x:T, priority:Int = 0):Int {
         var listener:Listener<T> = new Listener(x, priority);
-        for (i in 0..._array.length) {
-            if (_array[i].priority < priority) {
-                _array.insert(i, listener);
-                return i;
-            }
-        }
-
-        return _array.push(listener);
+        var r = _array.push(listener);
+        sortByPriority();
+        return r;
     }
 
+    public function changePriority(x:T, priority:Int) {
+        var index = indexOf(x);
+        if (index != -1) {
+            _array[index].priority = priority;
+            sortByPriority();
+        }
+    }
+    
     public function pop():Null<T> {
         return _array.pop().callback;
     }
@@ -90,4 +93,12 @@ class FunctionArray<T> {
         return s;
     }
 
+    public function sortByPriority() {
+        _array.sort(function(a, b) {
+            if (a.priority < b.priority) return 1;
+            else if (a.priority > b.priority) return -1;
+            return 0;
+        });
+    }
+    
 }

@@ -102,11 +102,13 @@ private class SwitchButtonSub extends InteractiveComponent {
             addComponent(_label);
 
             _button = new Button();
+            _button.cancelMouseEvent = false;
             _button.id = "switch-button";
             _button.addClass("switch-button");
             addComponent(_button);
 
             onClick = function(e) {
+                e.cancel();
                 selected = !selected;
             }
 
