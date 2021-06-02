@@ -341,7 +341,7 @@ private class Events extends haxe.ui.events.Events {
     }
 
     private function onMouseDown(event:MouseEvent) { // TODO: this should happen automatically as part of InteractiveComponent (?)
-        event.cancel();
+        //event.cancel();
         _textarea.focus = true;
     }
 
