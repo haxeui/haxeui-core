@@ -88,12 +88,6 @@ class ComponentEvents extends ComponentContainer {
         }
     }
 
-    public function changeEventPriority<T:UIEvent>(type:String, listener:T->Void, priority:Int) {
-        if (__events != null) {
-            __events.changePriority(type, listener, priority);
-        }
-    }
-    
     /**
      Dispatch a certain `UIEvent`
     **/

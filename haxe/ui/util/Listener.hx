@@ -25,7 +25,7 @@ abstract Listener<T>(ListenerInternal<T>) {
 
 private class ListenerInternal<T> {
     public var callback(default, null):T;
-    public var priority(default, default):Int;
+    public var priority(default, null):Int;
 
     public function new (callback:T, priority:Int) {
         this.callback = callback;

@@ -32,10 +32,6 @@ class UIEvent extends EventImpl {
     public static inline var DRAG_START:String = "dragStart";
     public static inline var DRAG_END:String = "dragEnd";
 
-    public static inline var PRIORITY_LOWEST:Int = -10000;
-    public static inline var PRIORITY_DEFAULT:Int = 0;
-    public static inline var PRIORITY_HIGHEST:Int = 10000;
-    
     public var bubble(default, default):Bool;
     public var type(default, default):String;
     public var target(default, default):Component;

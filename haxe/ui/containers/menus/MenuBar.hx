@@ -273,7 +273,6 @@ private class Builder extends CompositeBuilder {
         if ((child is Menu)) {
             var menu = cast(child, Menu);
             var button = new Button();
-            button.cancelMouseEvent = false;
             var hasChildren = (menu.childComponents.length > 0);
             if (hasChildren == true) {
                 button.styleNames = "menubar-button";

@@ -101,8 +101,6 @@ class Button extends InteractiveComponent {
     **/
     @:clonable @:behaviour(IconBehaviour)              public var icon:Variant;
 
-    public var cancelMouseEvent:Bool = true;
-    
     //***********************************************************************************************************
     // Overrides
     //***********************************************************************************************************
@@ -383,14 +381,9 @@ class ButtonEvents extends haxe.ui.events.Events {
         if (hasEvent(UIEvent.MOVE, onMove) == false) {
             registerEvent(UIEvent.MOVE, onMove);
         }
-        var priority = UIEvent.PRIORITY_LOWEST;
+
         if (_button.toggle == true) {
-            priority = UIEvent.PRIORITY_DEFAULT;
-        }
-        if (hasEvent(MouseEvent.CLICK, onMouseClick) == false) {
-            registerEvent(MouseEvent.CLICK, onMouseClick, priority);
-        } else {
-            changeEventPriority(MouseEvent.CLICK, onMouseClick, priority);
+            registerEvent(MouseEvent.CLICK, onMouseClick);
         }
     }
 
@@ -504,17 +497,12 @@ class ButtonEvents extends haxe.ui.events.Events {
     }
 
     private function onMouseClick(event:MouseEvent) {
-        if (_button.cancelMouseEvent == true) {
-            event.cancel();
+        _button.selected = !_button.selected;
+        if (_button.selected == false) {
+            _button.removeClass(":down", true, true);
         }
-        if (_button.toggle == true) {
-            _button.selected = !_button.selected;
-            if (_button.selected == false) {
-                _button.removeClass(":down", true, true);
-            }
-            if (_button.hitTest(event.screenX, event.screenY)) {
-                _button.addClass(":hover", true, true);
-            }
+        if (_button.hitTest(event.screenX, event.screenY)) {
+            _button.addClass(":hover", true, true);
         }
     }
 
