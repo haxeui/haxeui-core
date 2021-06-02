@@ -532,7 +532,7 @@ class ScrollViewEvents extends haxe.ui.events.Events {
             }
         }
 
-        event.cancel();
+        //event.cancel();
 
         _offset = new Point();
         if (hscroll != null) {
