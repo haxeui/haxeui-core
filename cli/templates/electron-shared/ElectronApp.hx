@@ -33,11 +33,11 @@ class ElectronApp {
             submitURL : "https://haxeui.org"
         });
 
-        electron.main.App.on(ready, function(e) {
+        electron.main.App.on('ready', function(e) {
             createWindow();
         });
 
-        electron.main.App.on(window_all_closed, function(e) {
+        electron.main.App.on('window_all_closed', function(e) {
             if (Node.process.platform != 'darwin') {
                 electron.main.App.quit();
             }
