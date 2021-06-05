@@ -30,10 +30,10 @@ class ScrollView extends Component {
     //***********************************************************************************************************
     @:behaviour(Virtual)                                public var virtual:Bool;
     @:behaviour(ContentLayoutName, "vertical")          public var contentLayoutName:String;
-    @:behaviour(ContentWidth)                           public var contentWidth:Float;
-    @:behaviour(PercentContentWidth)                    public var percentContentWidth:Float;
-    @:behaviour(ContentHeight)                          public var contentHeight:Float;
-    @:behaviour(PercentContentHeight)                   public var percentContentHeight:Float;
+    @:behaviour(ContentWidth)                           public var contentWidth:Null<Float>;
+    @:behaviour(PercentContentWidth)                    public var percentContentWidth:Null<Float>;
+    @:behaviour(ContentHeight)                          public var contentHeight:Null<Float>;
+    @:behaviour(PercentContentHeight)                   public var percentContentHeight:Null<Float>;
     @:behaviour(HScrollPos)                             public var hscrollPos:Float;
     @:behaviour(HScrollMax)                             public var hscrollMax:Float;
     @:behaviour(HScrollPageSize)                        public var hscrollPageSize:Float;
@@ -1098,6 +1098,22 @@ class ScrollViewBuilder extends CompositeBuilder {
             autoHideScrolls = true;
         } else {
             autoHideScrolls = false;
+        }
+        
+        if (style.contentWidth != null && style.contentWidth != _scrollview.contentWidth) {
+            _scrollview.percentContentWidth = null;
+            _scrollview.contentWidth = style.contentWidth;
+        } else if (style.contentWidthPercent != null && style.contentWidthPercent != _scrollview.percentContentWidth) {
+            _scrollview.contentWidth = null;
+            _scrollview.percentContentWidth = style.contentWidthPercent;
+        }
+        
+        if (style.contentHeight != null && style.contentHeight != _scrollview.contentHeight) {
+            _scrollview.percentContentHeight = null;
+            _scrollview.contentHeight = style.contentHeight;
+        } else if (style.contentHeightPercent != null && style.contentHeightPercent != _scrollview.percentContentHeight) {
+            _scrollview.contentHeight = null;
+            _scrollview.percentContentHeight = style.contentHeightPercent;
         }
     }
 }

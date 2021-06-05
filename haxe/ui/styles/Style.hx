@@ -123,6 +123,11 @@ class Style {
     @:optional public var contentType:String;
     @:optional public var direction:String;
 
+    @:optional public var contentWidth:Null<Float>;
+    @:optional public var contentWidthPercent:Null<Float>;
+    @:optional public var contentHeight:Null<Float>;
+    @:optional public var contentHeightPercent:Null<Float>;
+    
     public function mergeDirectives(map:Map<String, Directive>) {
         for (key in map.keys()) {
             var v = map.get(key);
@@ -396,6 +401,13 @@ class Style {
                     contentType = ValueTools.string(v.value);
                 case "direction":
                     direction = ValueTools.string(v.value);
+                    
+                case "content-width":
+                    contentWidth = ValueTools.calcDimension(v.value);
+                    contentWidthPercent = ValueTools.percent(v.value);
+                case "content-height":
+                    contentHeight = ValueTools.calcDimension(v.value);
+                    contentHeightPercent = ValueTools.percent(v.value);
             }
         }
     }
@@ -533,6 +545,11 @@ class Style {
         if (s.pointerEvents != null) pointerEvents = s.pointerEvents;
         if (s.contentType != null) contentType = s.contentType;
         if (s.direction != null) direction = s.direction;
+        
+        if (s.contentWidth != null) contentWidth = s.contentWidth;
+        if (s.contentWidthPercent != null) contentWidthPercent = s.contentWidthPercent;
+        if (s.contentHeight != null) contentHeight = s.contentHeight;
+        if (s.contentHeightPercent != null) contentHeightPercent = s.contentHeightPercent;
     }
 
     public function equalTo(s:Style):Bool {
@@ -646,6 +663,12 @@ class Style {
         if (s.pointerEvents != pointerEvents) return false;
         if (s.contentType != contentType) return false;
         if (s.direction != direction) return false;
+        
+        if (s.contentWidth != contentWidth) return false;
+        if (s.contentWidthPercent != contentWidthPercent) return false;
+        if (s.contentHeight != contentHeight) return false;
+        if (s.contentHeightPercent != contentHeightPercent) return false;
+        
         return true;
     }
 
