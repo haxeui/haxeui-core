@@ -140,12 +140,14 @@ private class ContentWidth extends Behaviour {
     public override function set(value:Variant) {
         var contents:Component = _component.findComponent("scrollview-contents", false, "css");
         if (contents != null) {
+            contents.percentWidth = null;
             contents.width = value;
         }
     }
 }
 
 @:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
 private class PercentContentWidth extends Behaviour {
     public override function get():Variant {
         var contents:Component = _component.findComponent("scrollview-contents", false, "css");
@@ -158,6 +160,7 @@ private class PercentContentWidth extends Behaviour {
     public override function set(value:Variant) {
         var contents:Component = _component.findComponent("scrollview-contents", false, "css");
         if (contents != null) {
+            contents.componentWidth = null;
             contents.percentWidth = value;
         }
     }
@@ -176,12 +179,14 @@ private class ContentHeight extends Behaviour {
     public override function set(value:Variant) {
         var contents:Component = _component.findComponent("scrollview-contents", false, "css");
         if (contents != null) {
+            contents.percentHeight = null;
             contents.height = value;
         }
     }
 }
 
 @:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
 private class PercentContentHeight extends Behaviour {
     public override function get():Variant {
         var contents:Component = _component.findComponent("scrollview-contents", false, "css");
@@ -194,6 +199,7 @@ private class PercentContentHeight extends Behaviour {
     public override function set(value:Variant) {
         var contents:Component = _component.findComponent("scrollview-contents", false, "css");
         if (contents != null) {
+            contents.componentHeight = null;
             contents.percentHeight = value;
         }
     }
@@ -1101,18 +1107,14 @@ class ScrollViewBuilder extends CompositeBuilder {
         }
         
         if (style.contentWidth != null && style.contentWidth != _scrollview.contentWidth) {
-            _scrollview.percentContentWidth = null;
             _scrollview.contentWidth = style.contentWidth;
         } else if (style.contentWidthPercent != null && style.contentWidthPercent != _scrollview.percentContentWidth) {
-            _scrollview.contentWidth = null;
             _scrollview.percentContentWidth = style.contentWidthPercent;
         }
         
         if (style.contentHeight != null && style.contentHeight != _scrollview.contentHeight) {
-            _scrollview.percentContentHeight = null;
             _scrollview.contentHeight = style.contentHeight;
         } else if (style.contentHeightPercent != null && style.contentHeightPercent != _scrollview.percentContentHeight) {
-            _scrollview.contentHeight = null;
             _scrollview.percentContentHeight = style.contentHeightPercent;
         }
     }
