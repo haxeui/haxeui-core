@@ -522,8 +522,8 @@ class DropDownEvents extends ButtonEvents {
             _wrapper.addClass("popup");
             _wrapper.addClass("dropdown-popup");
             if (_button.id != null) {
-                _wrapper.addClass(_button.id + "-handler");
-                _wrapper.id = _button.id + "_handler";
+                _wrapper.addClass(_button.id + "-popup");
+                _wrapper.id = _button.id + "_popup";
             }
             _wrapper.styleNames = _dropdown.handlerStyleNames;
             _wrapper.addComponent(handler.component);
