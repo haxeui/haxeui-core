@@ -341,6 +341,10 @@ class ListDropDownHandler extends DropDownHandler {
             _listview = new ListView();
             _listview.virtual = _dropdown.virtual;
             _listview.dataSource = _dropdown.dataSource;
+            if (_dropdown.id != null) {
+                _listview.addClass(_dropdown.id + "-listview");
+                _listview.id = _dropdown.id + "_listview";
+            }
         }
     }
 
@@ -391,6 +395,10 @@ class CalendarDropDownHandler extends DropDownHandler {
     private override function get_component():Component {
         if (_calendar == null) {
             _calendar = new CalendarView();
+            if (_dropdown.id != null) {
+                _calendar.addClass(_dropdown.id + "-calendar");
+                _calendar.id = _dropdown.id + "_calendar";
+            }
             _calendar.registerEvent(UIEvent.CHANGE, onCalendarChange);
         }
         return _calendar;
@@ -513,6 +521,10 @@ class DropDownEvents extends ButtonEvents {
             _wrapper = new Box();
             _wrapper.addClass("popup");
             _wrapper.addClass("dropdown-popup");
+            if (_button.id != null) {
+                _wrapper.addClass(_button.id + "-handler");
+                _wrapper.id = _button.id + "_handler";
+            }
             _wrapper.styleNames = _dropdown.handlerStyleNames;
             _wrapper.addComponent(handler.component);
 
