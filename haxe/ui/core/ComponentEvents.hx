@@ -139,7 +139,10 @@ class ComponentEvents extends ComponentContainer {
 
     private var _interactivityDisabled:Bool = false;
     private var _interactivityDisabledCounter:Int = 0;
-    private function disableInteractivity(disable:Bool, recursive:Bool = true, updateStyle:Bool = false) { // You might want to disable interactivity but NOT actually disable visually
+    private function disableInteractivity(disable:Bool, recursive:Bool = true, updateStyle:Bool = false, force:Bool = false) { // You might want to disable interactivity but NOT actually disable visually
+        if (force == true) {
+            _interactivityDisabledCounter = 0;
+        }
         if (disable == true) {
             _interactivityDisabledCounter++;
         } else {
