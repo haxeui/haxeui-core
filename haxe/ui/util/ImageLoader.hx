@@ -31,6 +31,13 @@ class ImageLoader {
     }
 
     private function loadFromHttp(url:String, callback:ImageInfo->Void) {
+        #if haxeui_no_network
+        
+        callback(null);
+        return;
+        
+        #end
+        
         #if js // cant use haxe.Http because we need responseType
 
         var request = new js.html.XMLHttpRequest();
