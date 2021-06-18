@@ -36,9 +36,7 @@ class ImageLoader {
         callback(null);
         return;
         
-        #end
-        
-        #if js // cant use haxe.Http because we need responseType
+        #elseif js // cant use haxe.Http because we need responseType
 
         var request = new js.html.XMLHttpRequest();
         request.open("GET", url);
