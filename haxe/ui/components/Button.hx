@@ -100,16 +100,6 @@ class Button extends InteractiveComponent {
      The image resource to use as the buttons icon
     **/
     @:clonable @:behaviour(IconBehaviour)              public var icon:Variant;
-
-    //***********************************************************************************************************
-    // Overrides
-    //***********************************************************************************************************
-    private override function applyStyle(style:Style) { // TODO: is this the only one? Is it really worth a macro??
-        super.applyStyle(style);
-        if (style.icon != null) {
-            icon = style.icon;
-        }
-    }
 }
 
 //***********************************************************************************************************
@@ -541,10 +531,19 @@ class ButtonBuilder extends CompositeBuilder {
             label.invalidateComponentStyle();
         }
 
+        if (style.icon != null) {
+            _button.icon = style.icon;
+        }
+        
         var icon:Image = _button.findComponent("button-icon", false);
         if (icon != null && (icon.customStyle.cursor != style.cursor)) {
             icon.customStyle.cursor = style.cursor;
             icon.invalidateComponentStyle();
+        }
+
+        if (icon != null && style.iconPosition != null) {
+            trace(style.iconPosition);
+            _button.iconPosition = style.iconPosition;
         }
     }
 }
