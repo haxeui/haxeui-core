@@ -1756,9 +1756,17 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         return invalidate;
     }
 
+    // sometimes in responsive css we want to flip between auto and % or px
+    // however, % or px can also be set as an property on the actual component
+    // so we want to see if the style was set from a style specifically in case
+    // another style sets it to auto
+    private var _fixedWidthFromStyle:Bool = false;
+    private var _fixedHeightFromStyle:Bool = false;
     private override function applyStyle(style:Style) {
         super.applyStyle(style);
 
+        var invalidateParent = false;
+        
         if (style != null && _initialSizeApplied == false) {
             if ((style.initialWidth != null || style.initialPercentWidth != null) && (width <= 0 && percentWidth == null)) {
                 if (style.initialWidth != null) {
@@ -1791,20 +1799,41 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         if (style.percentWidth != null) {
             componentWidth = null;
             percentWidth = style.percentWidth;
+            _fixedWidthFromStyle = true;
+            invalidateParent = true;
         }
         if (style.percentHeight != null) {
             componentHeight = null;
             percentHeight = style.percentHeight;
+            _fixedHeightFromStyle = true;
+            invalidateParent = true;
         }
         if (style.width != null) {
             percentWidth = null;
             width = style.width;
+            _fixedWidthFromStyle = true;
+            invalidateParent = true;
         }
         if (style.height != null) {
             percentHeight = null;
             height = style.height;
+            _fixedHeightFromStyle = true;
+            invalidateParent = true;
         }
 
+        if (style.autoWidth == true && _fixedWidthFromStyle == true) {
+            componentWidth = null;
+            percentWidth = null;
+            _fixedWidthFromStyle = false;
+            invalidateParent = true;
+        }
+        if (style.autoHeight == true && _fixedHeightFromStyle == true) {
+            componentHeight = null;
+            percentHeight = null;
+            _fixedHeightFromStyle = false;
+            invalidateParent = true;
+        }
+        
         if (style.native != null) {
             native = style.native;
         }
@@ -1812,7 +1841,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         if (style.hidden != null) {
             hidden = style.hidden;
         }
-
+        
         if (style.animationName != null) {
             var animationKeyFrames:AnimationKeyFrames = Toolkit.styleSheet.animations.get(style.animationName);
             applyAnimationKeyFrame(animationKeyFrames, style.animationOptions);
@@ -1852,30 +1881,13 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             handleFrameworkProperty("allowMouseInteraction", false);
         }
 
-        /*
-        if (style.clip != null) {
-            clipContent = style.clip;
-        }
-
-        if (style.native != null) {
-            if (style.backgroundImageSliceTop == null
-                && style.backgroundImageSliceLeft == null
-                && style.backgroundImageSliceBottom == null
-                && style.backgroundImageSliceRight == null) {
-                native = style.native;
-            }
-        }
-
-        if (style.backgroundImageSliceTop != null
-            && style.backgroundImageSliceLeft != null
-            && style.backgroundImageSliceBottom != null
-            && style.backgroundImageSliceRight != null) {
-            native = false;
-        }
-        */
-
         if (_compositeBuilder != null) {
             _compositeBuilder.applyStyle(style);
+        }
+        
+        invalidateParent = true;
+        if (parentComponent != null) {
+            parentComponent.invalidateComponentLayout();
         }
     }
 
