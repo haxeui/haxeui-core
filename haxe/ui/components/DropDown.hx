@@ -549,8 +549,8 @@ class DropDownEvents extends ButtonEvents {
 
             handler.prepare(_wrapper);
             Screen.instance.addComponent(_wrapper);
-            _wrapper.left = (Screen.instance.width / 2) - (_wrapper.actualComponentWidth / 2);
-            _wrapper.top = (Screen.instance.height / 2) - (_wrapper.actualComponentHeight / 2);
+            _wrapper.left = (Screen.instance.actualWidth / 2) - (_wrapper.actualComponentWidth / 2);
+            _wrapper.top = (Screen.instance.actualHeight / 2) - (_wrapper.actualComponentHeight / 2);
         } else {
             _wrapper.left = _dropdown.screenLeft + componentOffset.x;
             _wrapper.top = _dropdown.screenTop + (_dropdown.actualComponentHeight - Toolkit.scaleY) + componentOffset.y;
@@ -571,10 +571,10 @@ class DropDownEvents extends ButtonEvents {
                 _wrapper.removeClass("dropdown-popup-expanded");
             }
 
-            if (_wrapper.screenLeft + _wrapper.actualComponentWidth > Screen.instance.width) {
+            if (_wrapper.screenLeft + _wrapper.actualComponentWidth > Screen.instance.actualWidth) {
                 _wrapper.left = _wrapper.screenLeft - _wrapper.actualComponentWidth + _dropdown.actualComponentWidth;
             }
-            if (_wrapper.screenTop + _wrapper.actualComponentHeight > Screen.instance.height) {
+            if (_wrapper.screenTop + _wrapper.actualComponentHeight > Screen.instance.actualHeight) {
                 _wrapper.top = _dropdown.screenTop - _wrapper.actualComponentHeight;
             }
         }
