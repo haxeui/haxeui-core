@@ -306,8 +306,8 @@ class DialogBase extends Box {
             var y = (dp.actualComponentHeight / 2) - (dialog.actualComponentHeight / 2);
             dialog.moveComponent(x, y);
         } else {
-            var x = (Screen.instance.width / 2) - (dialog.actualComponentWidth / 2);
-            var y = (Screen.instance.height / 2) - (dialog.actualComponentHeight / 2);
+            var x = (Screen.instance.actualWidth / 2) - (dialog.actualComponentWidth / 2);
+            var y = (Screen.instance.actualHeight / 2) - (dialog.actualComponentHeight / 2);
             dialog.moveComponent(x, y);
         }
     }
