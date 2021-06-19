@@ -172,7 +172,7 @@ private class Events extends haxe.ui.events.Events {
             Screen.instance.addComponent(menu);
             menu.syncComponentValidation();
 
-            if (left + menu.actualComponentWidth > Screen.instance.width) {
+            if (left + menu.actualComponentWidth > Screen.instance.actualWidth) {
                 left = target.screenLeft - menu.actualComponentWidth + target.actualComponentWidth;
                 rtl = true;
             }
