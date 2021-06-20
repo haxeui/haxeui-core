@@ -30,7 +30,7 @@ Currently, HaxeUI supports the following `backends`. Please refer to each `backe
     <th>Backend Library</th>
     <th>Dependencies</th>
     <th>Platforms</th>
-    <th>Native Components</th>
+    <th>Components</th>
     <th>Build Status</th>
   </thead>
     
@@ -38,57 +38,78 @@ Currently, HaxeUI supports the following `backends`. Please refer to each `backe
     <td valign="top"><a href="https://github.com/haxeui/haxeui-html5">haxeui-html5</a></td>
     <td valign="top"><i>none</i></td>
     <td valign="top" align="left"><img src="https://raw.githubusercontent.com/haxeui/haxeui-core/master/mobile.png" title="Mobile"> <img src="https://raw.githubusercontent.com/haxeui/haxeui-core/master/browser.png" title="Browser"></td>
-    <td valign="top" align="center"><img src="https://raw.githubusercontent.com/haxeui/haxeui-core/master/tick.png"></td>
+    <td valign="top" align="left"><a href="http://haxeui.org/getting-started/native-backends/">Native</a>,<br><a href="http://haxeui.org/getting-started/composite-backends/">Composite</a></td>
     <td valign="top"><img src="https://github.com/haxeui/haxeui-html5/actions/workflows/build.yml/badge.svg"></td>
   </tr>
   <tr>
     <td valign="top"><a href="https://github.com/haxeui/haxeui-kha">haxeui-kha</a></td>
     <td valign="top"><a href="https://github.com/Kode/Kha">Kha</a></td>
     <td valign="top" align="left"><img src="https://raw.githubusercontent.com/haxeui/haxeui-core/master/mobile.png" title="Mobile"> <img src="https://raw.githubusercontent.com/haxeui/haxeui-core/master/browser.png" title="Browser"> <img src="https://raw.githubusercontent.com/haxeui/haxeui-core/master/desktop.png" title="Desktop"></td>
-    <td valign="top" align="center"><img src="https://raw.githubusercontent.com/haxeui/haxeui-core/master/cross.png"></td>
+    <td valign="top" align="left"><a href="http://haxeui.org/getting-started/composite-backends/">Composite</a></td>
     <td valign="top"><img src="https://github.com/haxeui/haxeui-kha/actions/workflows/build.yml/badge.svg"></td>
   </tr>
   <tr>
     <td valign="top"><a href="https://github.com/haxeui/haxeui-openfl">haxeui-openfl</a></td>
     <td valign="top"><a href="https://github.com/openfl/openfl">OpenFL</a>, <a href="https://github.com/haxelime/lime">Lime</a></td>
     <td valign="top" align="left"><img src="https://raw.githubusercontent.com/haxeui/haxeui-core/master/mobile.png" title="Mobile"> <img src="https://raw.githubusercontent.com/haxeui/haxeui-core/master/browser.png" title="Browser"> <img src="https://raw.githubusercontent.com/haxeui/haxeui-core/master/desktop.png" title="Desktop"></td>
-    <td valign="top" align="center"><img src="https://raw.githubusercontent.com/haxeui/haxeui-core/master/cross.png"></td>
+    <td valign="top" align="left"><a href="http://haxeui.org/getting-started/composite-backends/">Composite</a></td>
     <td valign="top"><img src="https://github.com/haxeui/haxeui-openfl/actions/workflows/build.yml/badge.svg"></td>
   </tr>
   <tr>
     <td valign="top"><a href="https://github.com/haxeui/haxeui-flixel">haxeui-flixel</a></td>
     <td valign="top"><a href="https://github.com/HaxeFlixel/flixel">Flixel</a>, <a href="https://github.com/openfl/openfl">OpenFL</a>, <a href="https://github.com/haxelime/lime">Lime</a></td>
     <td valign="top" align="left"><img src="https://raw.githubusercontent.com/haxeui/haxeui-core/master/mobile.png" title="Mobile"> <img src="https://raw.githubusercontent.com/haxeui/haxeui-core/master/browser.png" title="Browser"> <img src="https://raw.githubusercontent.com/haxeui/haxeui-core/master/desktop.png" title="Desktop"></td>
-    <td valign="top" align="center"><img src="https://raw.githubusercontent.com/haxeui/haxeui-core/master/cross.png"></td>
+    <td valign="top" align="left"><a href="http://haxeui.org/getting-started/composite-backends/">Composite</a></td>
     <td valign="top"><img src="https://github.com/haxeui/haxeui-flixel/actions/workflows/build.yml/badge.svg"></td>
   </tr>
   <tr>
     <td valign="top"><a href="https://github.com/haxeui/haxeui-heaps">haxeui-heaps</a></td>
     <td valign="top"><a href="https://github.com/HeapsIO/heaps">Heaps</a></td>
     <td valign="top" align="left"><img src="https://raw.githubusercontent.com/haxeui/haxeui-core/master/browser.png" title="Browser"> <img src="https://raw.githubusercontent.com/haxeui/haxeui-core/master/desktop.png" title="Desktop"></td>
-    <td valign="top" align="center"><img src="https://raw.githubusercontent.com/haxeui/haxeui-core/master/cross.png"></td>
-    <td valign="top"> </td>
+    <td valign="top" align="left"><a href="http://haxeui.org/getting-started/composite-backends/">Composite</a></td>
+    <td valign="top">...</td>
   </tr>
   <tr>
     <td valign="top"><a href="https://github.com/haxeui/haxeui-nme">haxeui-nme</a></td>
     <td valign="top"><a href="https://github.com/haxenme/nme">NME</a></td>
     <td valign="top" align="left"><img src="https://raw.githubusercontent.com/haxeui/haxeui-core/master/mobile.png" title="Mobile"> <img src="https://raw.githubusercontent.com/haxeui/haxeui-core/master/desktop.png" title="Desktop"></td>
-    <td valign="top" align="center"><img src="https://raw.githubusercontent.com/haxeui/haxeui-core/master/cross.png"></td>
+    <td valign="top" align="left"><a href="http://haxeui.org/getting-started/composite-backends/">Composite</a></td>
     <td valign="top"><img src="https://github.com/haxeui/haxeui-nme/actions/workflows/build.yml/badge.svg"></td>
   </tr>
   <tr>
     <td valign="top"><a href="https://github.com/haxeui/haxeui-hxwidgets">haxeui-hxwidgets</a></td>
     <td valign="top"><a href="https://github.com/haxeui/hxWidgets">hxWidgets</a>, <a href="https://github.com/wxWidgets">wxWidgets</a></td>
     <td valign="top" align="left"><img src="https://raw.githubusercontent.com/haxeui/haxeui-core/master/desktop.png" title="Desktop"></td>
-    <td valign="top" align="center"><img src="https://raw.githubusercontent.com/haxeui/haxeui-core/master/tick.png"></td>
-    <td valign="top"><img src="https://github.com/haxeui/hxwidgets/actions/workflows/build-windows.yml/badge.svg"><br><img src="https://github.com/haxeui/hxwidgets/actions/workflows/build-windows.yml/badge.svg"><br><img src="https://github.com/haxeui/hxwidgets/actions/workflows/build-windows.yml/badge.svg"></td>
+    <td valign="top" align="left"><a href="http://haxeui.org/getting-started/native-backends/">Native</a></td>
+    <td valign="top"><img src="https://github.com/haxeui/hxwidgets/actions/workflows/build-linux.yml/badge.svg"><br><img src="https://github.com/haxeui/hxwidgets/actions/workflows/build-windows.yml/badge.svg"><br><img src="https://github.com/haxeui/hxwidgets/actions/workflows/build-osx.yml/badge.svg"></td>
   </tr>
   <tr>
     <td valign="top"><a href="https://github.com/haxeui/haxeui-winforms">haxeui-winforms</a></td>
     <td valign="top"><i>none</i></td>
     <td valign="top" align="left"><img src="https://raw.githubusercontent.com/haxeui/haxeui-core/master/desktop.png" title="Desktop"></td>
-    <td valign="top" align="center"><img src="https://raw.githubusercontent.com/haxeui/haxeui-core/master/tick.png"></td>
-    <td valign="top"></td>
+    <td valign="top" align="left"><a href="http://haxeui.org/getting-started/native-backends/">Native</a></td>
+    <td valign="top">...</td>
+  </tr>
+  <tr>
+    <td valign="top"><a href="https://github.com/haxeui/haxeui-pixijs">haxeui-pixijs</a></td>
+    <td valign="top"><a href="https://github.com/pixijs/pixi-haxe">PixiJS</a></td>
+    <td valign="top" align="left"><img src="https://raw.githubusercontent.com/haxeui/haxeui-core/master/browser.png" title="Browser"></td>
+    <td valign="top" align="left"><a href="http://haxeui.org/getting-started/composite-backends/">Composite</a></td>
+    <td valign="top">...</td>
+  </tr>
+  <tr>
+    <td valign="top"><a href="https://github.com/haxeui/haxeui-android">haxeui-android</a></td>
+    <td valign="top"><i>none</i></td>
+    <td valign="top" align="left"><img src="https://raw.githubusercontent.com/haxeui/haxeui-core/master/mobile.png" title="Mobile"></td>
+    <td valign="top" align="left"><a href="http://haxeui.org/getting-started/native-backends/">Native</a></td>
+    <td valign="top">...</td>
+  </tr>
+  <tr>
+    <td valign="top"><a href="https://github.com/haxeui/haxeui-pdcurses">haxeui-pdcurses</a></td>
+    <td valign="top"><a href="https://github.com/wmcbrine/PDCurses">PDCurses</a></td>
+    <td valign="top" align="left"><img src="https://raw.githubusercontent.com/haxeui/haxeui-core/master/desktop.png" title="Desktop"></td>
+    <td valign="top" align="left"><a href="http://haxeui.org/getting-started/composite-backends/">Composite</a></td>
+    <td valign="top">...</td>
   </tr>
 </table>
 
