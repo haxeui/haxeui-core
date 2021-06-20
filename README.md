@@ -24,7 +24,8 @@ In general, using a HaxeUI `backend` is as simple as just including `haxeui-core
 
 Currently, HaxeUI supports the following `backends`. Please refer to each `backend` for specific instructions on how to set-up and initialise the host framework (if required).
 
-<table>
+<br>
+<table align="center">
   <thead>
     <th>Backend Library</th>
     <th>Dependencies</th>
