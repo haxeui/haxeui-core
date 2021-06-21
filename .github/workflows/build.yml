@@ -9,7 +9,7 @@ jobs:
 
     strategy:
       matrix:
-        backend: [haxeui-html5, haxeui-openfl, haxeui-kha, haxeui-hxwidgets]
+        backend: [haxeui-html5, haxeui-openfl, haxeui-kha, haxeui-hxwidgets, haxeui-nme, haxeui-flixel]
 
     steps:
     - uses: actions/checkout@v1
