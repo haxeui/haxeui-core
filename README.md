@@ -81,7 +81,7 @@ Currently, HaxeUI supports the following `backends`. Please refer to each `backe
     <td valign="top"><a href="https://github.com/haxeui/hxWidgets">hxWidgets</a>, <a href="https://github.com/wxWidgets">wxWidgets</a></td>
     <td valign="top" align="left"><img src="https://raw.githubusercontent.com/haxeui/haxeui-core/master/.github/images/desktop.png" title="Desktop"></td>
     <td valign="top" align="left"><a href="http://haxeui.org/getting-started/native-backends/">Native</a></td>
-    <td valign="top"><a href="https://github.com/haxeui/hxwidgets/actions/workflows/build-linux.yml"><img src="https://github.com/haxeui/hxwidgets/actions/workflows/build-linux.yml/badge.svg"></a><br><a href="https://github.com/haxeui/hxwidgets/actions/workflows/build-windows.yml"><img src="https://github.com/haxeui/hxwidgets/actions/workflows/build-windows.yml/badge.svg"></a><br><a href="https://github.com/haxeui/hxwidgets/actions/workflows/build-osx.yml"><img src="https://github.com/haxeui/hxwidgets/actions/workflows/build-osx.yml/badge.svg"></a></td>
+    <td valign="top"><a href="https://github.com/haxeui/haxeui-hxwidgets/actions/workflows/build-linux.yml"><img src="https://github.com/haxeui/haxeui-hxwidgets/actions/workflows/build-linux.yml/badge.svg"></a><br><a href="https://github.com/haxeui/haxeui-hxwidgets/actions/workflows/build-windows.yml"><img src="https://github.com/haxeui/haxeui-hxwidgets/actions/workflows/build-windows.yml/badge.svg"></a><br><a href="https://github.com/haxeui/haxeui-hxwidgets/actions/workflows/build-osx.yml"><img src="https://github.com/haxeui/haxeui-hxwidgets/actions/workflows/build-osx.yml/badge.svg"></a></td>
   </tr>
   <tr>
     <td valign="top"><a href="https://github.com/haxeui/haxeui-winforms">haxeui-winforms</a></td>
