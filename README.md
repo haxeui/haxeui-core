@@ -67,7 +67,7 @@ Currently, HaxeUI supports the following `backends`. Please refer to each `backe
     <td valign="top"><a href="https://github.com/HeapsIO/heaps">Heaps</a></td>
     <td valign="top" align="left"><img src="https://raw.githubusercontent.com/haxeui/haxeui-core/master/.github/images/browser.png" title="Browser"> <img src="https://raw.githubusercontent.com/haxeui/haxeui-core/master/.github/images/desktop.png" title="Desktop"></td>
     <td valign="top" align="left"><a href="http://haxeui.org/getting-started/composite-backends/">Composite</a></td>
-    <td valign="top">...</td>
+    <td valign="top"><a href="https://github.com/haxeui/haxeui-heaps/actions/workflows/build.yml"><img src="https://github.com/haxeui/haxeui-heaps/actions/workflows/build.yml/badge.svg"></td>
   </tr>
   <tr>
     <td valign="top"><a href="https://github.com/haxeui/haxeui-nme">haxeui-nme</a></td>
