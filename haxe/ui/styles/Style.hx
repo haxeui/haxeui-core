@@ -7,6 +7,9 @@ import haxe.ui.styles.elements.Directive;
 
 @:structInit
 class Style {
+    public function new() {
+    }
+    
     @:optional public var left:Null<Float>;
     @:optional public var top:Null<Float>;
 
