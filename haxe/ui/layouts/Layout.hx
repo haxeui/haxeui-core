@@ -142,6 +142,19 @@ class Layout implements ILayout {
     //******************************************************************************************
     // Helper props
     //******************************************************************************************
+    private var borderSize(get, null):Float;
+    private function get_borderSize():Float {
+        if (_component.style == null) {
+            return 0;
+        }
+
+        var n = _component.style.fullBorderSize;
+        if (n > 0) {
+            n--;
+        }
+        return n;
+    }
+    
     public var paddingLeft(get, null):Float;
     private function get_paddingLeft():Float {
         if (_component == null || _component.style == null || _component.style.paddingLeft == null) {

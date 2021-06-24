@@ -16,18 +16,19 @@ class ScrollViewLayout extends DefaultLayout {
 
         var hscroll = component.findComponent(HorizontalScroll, false);
         var vscroll = component.findComponent(VerticalScroll, false);
-
+        var borderSize = this.borderSize;
+        
         if (hscroll != null && hidden(hscroll) == false) {
-            hscroll.moveComponent(paddingLeft, Math.fround(component.componentHeight - hscroll.componentHeight - paddingBottom + marginTop(hscroll)));
+            hscroll.moveComponent(paddingLeft + borderSize, Math.fround(component.componentHeight - hscroll.componentHeight - paddingBottom + marginTop(hscroll) - borderSize));
         }
 
         if (vscroll != null && hidden(vscroll) == false) {
-            vscroll.moveComponent(Math.fround(component.componentWidth - vscroll.componentWidth - paddingRight + marginLeft(vscroll)), paddingTop);
+            vscroll.moveComponent(Math.fround(component.componentWidth - vscroll.componentWidth - paddingRight + marginLeft(vscroll)) - borderSize, paddingTop + borderSize);
         }
 
         var contents:Component = component.findComponent("scrollview-contents", false, "css");
         if (contents != null) {
-            contents.moveComponent(paddingLeft, paddingTop);
+            contents.moveComponent(paddingLeft + borderSize, paddingTop + borderSize);
         }
     }
 
@@ -91,6 +92,10 @@ class ScrollViewLayout extends DefaultLayout {
         }
 
         size.width += 1;
+        
+        var borderSize = this.borderSize;
+        size.width -= borderSize * 2;
+        size.height -= borderSize * 2;
         
         return size;
     }
