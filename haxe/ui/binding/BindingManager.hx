@@ -344,7 +344,7 @@ class BindingManager {
 
         var root = findRoot(t);
         for (objectId in prop.objects.keys()) {
-            var object = root.findComponent(objectId);
+            var object = root.findComponent(objectId, Component);
             if (object != null) {
                 interp.variables.set(objectId, object);
             }
