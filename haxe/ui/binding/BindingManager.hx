@@ -378,15 +378,46 @@ class BindingManager {
     }
 
     private function extractFields(expr:Expr, propInfo:PropertyInfo) {
-        switch (expr) {
+        #if hscriptPos
+        var ex = expr.e;
+        #else
+        var ex = expr;
+        #end
+        switch (ex) {
             case ECall(_, params):
                 for (p in params) {
                     extractFields(p, propInfo);
                 }
+            case EField(o, fieldId):
+                #if hscriptPos
+                var oe = o.e;
+                #else
+                var oe = o;
+                #end
+                switch (oe) {
+                    case EIdent(objectId):
+                        propInfo.addObject(objectId, fieldId);
+                    case EField(o, fieldId):    
+                        #if hscriptPos
+                        var oe = o.e;
+                        #else
+                        var oe = o;
+                        #end
+                        switch (oe) {
+                            case EIdent(objectId):
+                                propInfo.addObject(objectId, fieldId);
+                            case _:    
+                        }
+                    case _:    
+                }
+                /*
             case EField(EIdent(objectId), fieldId):
                 propInfo.addObject(objectId, fieldId);
+                */
+                /*
             case EField(EField(EIdent(objectId), fieldId), _):
                 propInfo.addObject(objectId, fieldId);
+               */
             case EIdent(objectId):
                 propInfo.addObject(objectId, "value");
             case EBinop(_, e1, e2):
