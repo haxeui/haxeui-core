@@ -278,8 +278,9 @@ private class TextBehaviour extends DataBehaviour {
 private class IconBehaviour extends DataBehaviour {
     private override function validateData() {
         var icon:Image = _component.findComponent("button-icon", false);
-        
+
         if ((_value == null || _value.isNull) && icon != null) {
+            _component.customStyle.icon = null;
             _component.removeComponent(icon);
             return;
         }
@@ -293,6 +294,7 @@ private class IconBehaviour extends DataBehaviour {
             _component.invalidateComponentStyle(true);
         }
 
+        _component.customStyle.icon = _value;
         icon.resource = _value;
     }
 }
