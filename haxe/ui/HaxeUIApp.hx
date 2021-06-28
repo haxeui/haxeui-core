@@ -37,7 +37,7 @@ class HaxeUIApp extends AppImpl {
         var preloadList:Array<PreloadItem> = null;
         var preloader = null;
 
-        #if (!haxeui_hxwidgets && !haxeui_kha && !haxeui_qt) // TODO: needs some work here
+        #if (!haxeui_hxwidgets && !haxeui_kha && !haxeui_qt && !haxeui_raylib) // TODO: needs some work here
 
         preloadList = buildPreloadList();
         if (preloadList != null && preloadList.length > 0) {

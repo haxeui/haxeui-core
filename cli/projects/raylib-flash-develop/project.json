@@ -1,0 +1,11 @@
+{
+    "name": "raylib-flash-develop",
+    "type": "template",
+    "subProjects": [
+        "shared", "raylib-shared"
+    ],
+    "templates": [
+        { "src": "raylib.hxproj", "dst": "${target}/raylib.hxproj"},
+        { "src": "run-raylib.bat", "dst": "${target}/run-raylib.bat"}
+    ]
+}

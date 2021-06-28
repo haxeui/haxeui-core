@@ -1,0 +1,10 @@
+{
+    "name": "raylib",
+    "type": "template",
+    "subProjects": [
+        "shared", "raylib-shared"
+    ],
+    "templates": [
+        { "src": "raylib.hxml", "dst": "${target}/raylib.hxml"}
+    ]
+}
