@@ -4,6 +4,7 @@ class KeyboardEvent extends UIEvent {
     public static inline var KEY_TAB:Int = 9;
 
     public static inline var KEY_DOWN:String = "keydown";
+    public static inline var KEY_PRESS:String = "keypress";
     public static inline var KEY_UP:String = "keyup";
 
     public var keyCode:Int;
