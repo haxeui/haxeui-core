@@ -111,6 +111,13 @@ Currently, HaxeUI supports the following `backends`. Please refer to each `backe
     <td valign="top" align="left"><a href="http://haxeui.org/getting-started/composite-backends/">Composite</a></td>
     <td valign="top">...</td>
   </tr>
+  <tr>
+    <td valign="top"><a href="https://github.com/haxeui/haxeui-raylib">haxeui-raylib</a></td>
+    <td valign="top"><a href="https://github.com/haxeui/raylib-haxe">raylib-haxe</a>, <a href="https://github.com/raysan5/raylib">RayLib</a></td>
+    <td valign="top" align="left"><img src="https://raw.githubusercontent.com/haxeui/haxeui-core/master/.github/images/desktop.png" title="Desktop"></td>
+    <td valign="top" align="left"><a href="http://haxeui.org/getting-started/composite-backends/">Composite</a></td>
+    <td valign="top">...</td>
+  </tr>
 </table>
 
 ## Usage
