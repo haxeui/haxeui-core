@@ -1,0 +1,9 @@
+-cp src
+-main ::fullMain::
+
+-lib haxeui-core
+-lib haxeui-raylib
+-lib raylib-haxe
+-lib hscript
+
+-cpp build/raylib

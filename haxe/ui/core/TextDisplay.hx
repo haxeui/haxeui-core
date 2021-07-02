@@ -265,7 +265,11 @@ class TextDisplay extends TextDisplayImpl implements IValidating {
 
         validateComponentInternal();
 
+        #if (haxe_ver < 4)
+        _invalidationFlags = new Map<String, Bool>();
+        #else
         _invalidationFlags.clear();
+        #end
 
         _isAllInvalid = false;
         _isValidating = false;

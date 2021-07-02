@@ -177,7 +177,11 @@ class ComponentValidation extends ComponentEvents {
         validateComponentInternal(nextFrame);
         validateInitialSize(isInitialized);
 
+        #if (haxe_ver < 4)
+        _invalidationFlags = new Map<String, Bool>();
+        #else
         _invalidationFlags.clear();
+        #end
 
         _isAllInvalid = false;
 
@@ -188,7 +192,11 @@ class ComponentValidation extends ComponentEvents {
                 _invalidationFlags.set(flag, true);
             }
         }
+        #if (haxe_ver < 4)
+        _delayedInvalidationFlags = new Map<String, Bool>();
+        #else
         _delayedInvalidationFlags.clear();
+        #end
 
         _isValidating = false;
     }

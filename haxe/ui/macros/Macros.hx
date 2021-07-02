@@ -193,7 +193,7 @@ class Macros {
         var variable = ExprTools.toString(variable);
         if (hasGetter == false) {
             builder.addGetter(f.name, f.type, macro {
-                var c = findComponent($v{variable});
+                var c = findComponent($v{variable}, haxe.ui.core.Component);
                 if (c == null) {
                     trace("WARNING: no child component found: " + $v{variable});
                     return haxe.ui.util.Variant.fromDynamic(c.$field);
@@ -210,7 +210,7 @@ class Macros {
         if (hasSetter == false) {
             builder.addSetter(f.name, f.type, macro {
                 if (value != $i{f.name}) {
-                    var c = findComponent($v{variable});
+                    var c = findComponent($v{variable}, haxe.ui.core.Component);
                     if (c == null) {
                         trace("WARNING: no child component found: " + $v{variable});
                         return value;

@@ -97,7 +97,7 @@ class ClassBuilder {
 
     public function hasField(name:String, recursive:Bool = false):Bool {
         if (recursive == true) {
-            #if ((haxe_ver < 4) || haxeui_heaps)
+            #if (haxe_ver < 4)
             // TODO: this is a really ugly haxe3 hack / workaround - once haxe4 stabalises this *MUST* be removed - its likely brittle and ill conceived!
             if (findField(name) != null) {
                 return true;
@@ -110,7 +110,7 @@ class ClassBuilder {
         return (findField(name) != null);
     }
 
-    #if ((haxe_ver < 4) || haxeui_heaps)
+    #if (haxe_ver < 4)
     // TODO: this is a really ugly haxe3 hack / workaround - once haxe4 stabalises this *MUST* be removed - its likely brittle and ill conceived!
     private function haxe3FindField(c:ClassType, name:String) {
         var fullPath = c.pack.join(".") + "." + c.name;

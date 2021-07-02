@@ -278,6 +278,13 @@ private class TextBehaviour extends DataBehaviour {
 private class IconBehaviour extends DataBehaviour {
     private override function validateData() {
         var icon:Image = _component.findComponent("button-icon", false);
+
+        if ((_value == null || _value.isNull) && icon != null) {
+            _component.customStyle.icon = null;
+            _component.removeComponent(icon);
+            return;
+        }
+        
         if (icon == null) {
             icon = new Image();
             icon.addClass("icon");
@@ -287,6 +294,7 @@ private class IconBehaviour extends DataBehaviour {
             _component.invalidateComponentStyle(true);
         }
 
+        _component.customStyle.icon = _value;
         icon.resource = _value;
     }
 }
@@ -540,10 +548,11 @@ class ButtonBuilder extends CompositeBuilder {
             icon.customStyle.cursor = style.cursor;
             icon.invalidateComponentStyle();
         }
-
-        if (icon != null && style.iconPosition != null) {
-            trace(style.iconPosition);
-            _button.iconPosition = style.iconPosition;
+        
+        if (style.icon != null) {
+            _button.icon = style.icon;
+        } else if (icon != null) {
+            _button.icon = null;
         }
     }
 }
