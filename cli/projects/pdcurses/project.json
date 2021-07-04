@@ -1,0 +1,10 @@
+{
+    "name": "pdcurses",
+    "type": "template",
+    "subProjects": [
+        "shared", "pdcurses-shared"
+    ],
+    "templates": [
+        { "src": "pdcurses.hxml", "dst": "${target}/pdcurses.hxml"}
+    ]
+}

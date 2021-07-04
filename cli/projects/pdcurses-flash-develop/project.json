@@ -1,0 +1,11 @@
+{
+    "name": "pdcurses-flash-develop",
+    "type": "template",
+    "subProjects": [
+        "shared", "pdcurses-shared"
+    ],
+    "templates": [
+        { "src": "pdcurses.hxproj", "dst": "${target}/pdcurses.hxproj"},
+        { "src": "run-pdcurses.bat", "dst": "${target}/run-pdcurses.bat"}
+    ]
+}

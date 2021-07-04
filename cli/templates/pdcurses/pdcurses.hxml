@@ -1,0 +1,8 @@
+-cp src
+-main ::fullMain::
+
+-lib haxeui-core
+-lib haxeui-pdcurses
+-lib hscript
+
+-cpp build/pdcurses

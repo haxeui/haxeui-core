@@ -1,0 +1,7 @@
+{
+    "name": "pdcurses-shared",
+    "type": "template",
+    "templates": [
+        { "src": "haxeui-pdcurses.properties", "dst": "${target}/src/haxeui-pdcurses.properties"}
+    ]
+}
