@@ -135,9 +135,13 @@ class ValidationManager {
         _displayQueue.splice(0, _displayQueue.length);
 
         isValidating = false;
+        
+        #if haxeui_flixel
         if (_queue.length > 0) { // lets process any stragglers - items maybe have been added while processing other parts
             process();
         }
+        #end
+        
         isPending = false;
 
         dispatch(new ValidationEvent(ValidationEvent.STOP));
