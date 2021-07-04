@@ -73,10 +73,10 @@ class ScrollViewLayout extends DefaultLayout {
         var hscroll = component.findComponent(HorizontalScroll, false);
         var vscroll = component.findComponent(VerticalScroll, false);
         if (hscroll != null && hscroll.includeInLayout == true && hidden(hscroll) == false) {
-            size.height -= hscroll.componentHeight;
+            size.height -= hscroll.componentHeight - marginTop(hscroll);
         }
         if (vscroll != null && vscroll.includeInLayout == true && hidden(vscroll) == false) {
-            size.width -= vscroll.componentWidth;
+            size.width -= vscroll.componentWidth - marginLeft(vscroll);
         }
 
         if (cast(component, ScrollView).native == true || _component.isNativeScroller == true) {
