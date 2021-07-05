@@ -137,6 +137,8 @@ class Style {
     @:optional public var contentHeight:Null<Float>;
     @:optional public var contentHeightPercent:Null<Float>;
     
+    @:optional public var wordWrap:Null<Bool>;
+    
     @:optional public var borderType(get, null):StyleBorderType;
     private function get_borderType():StyleBorderType {
         var t = StyleBorderType.Compound;
@@ -441,6 +443,8 @@ class Style {
                 case "content-height":
                     contentHeight = ValueTools.calcDimension(v.value);
                     contentHeightPercent = ValueTools.percent(v.value);
+                case "word-wrap":
+                    wordWrap = ValueTools.bool(v.value);
             }
         }
     }
@@ -583,6 +587,8 @@ class Style {
         if (s.contentWidthPercent != null) contentWidthPercent = s.contentWidthPercent;
         if (s.contentHeight != null) contentHeight = s.contentHeight;
         if (s.contentHeightPercent != null) contentHeightPercent = s.contentHeightPercent;
+        
+        if (s.wordWrap != null) wordWrap = s.wordWrap;
     }
 
     public function equalTo(s:Style):Bool {
@@ -701,6 +707,8 @@ class Style {
         if (s.contentWidthPercent != contentWidthPercent) return false;
         if (s.contentHeight != contentHeight) return false;
         if (s.contentHeightPercent != contentHeightPercent) return false;
+
+        if (s.wordWrap != wordWrap) return false;
         
         return true;
     }

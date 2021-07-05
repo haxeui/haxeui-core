@@ -14,6 +14,7 @@ class Label extends Component {
     // Styles
     //***********************************************************************************************************
     @:style(layout)                             public var textAlign:Null<String>;
+    @:style(layout)                             public var wordWrap:Null<Bool>;
 
     //***********************************************************************************************************
     // Public API
@@ -32,19 +33,24 @@ private class LabelLayout extends DefaultLayout {
         if (component.autoWidth == false) {
             component.getTextDisplay().width = component.componentWidth - paddingLeft - paddingRight;
 
-             // TODO: make not specific - need to check all backends first
+            var wordWrap = true;
+            if (_component.style != null && _component.style.wordWrap != null) {
+                wordWrap = _component.style.wordWrap;
+            }
+            
+            // TODO: make not specific - need to check all backends first - update: can move to backends!
             #if (haxeui_flixel)
-            component.getTextDisplay().wordWrap = true;
-            component.getTextDisplay().tf.autoSize = false;
+            component.getTextDisplay().wordWrap = wordWrap;
+            component.getTextDisplay().tf.autoSize = !wordWrap;
             #elseif (haxeui_openfl)
-            component.getTextDisplay().textField.autoSize = openfl.text.TextFieldAutoSize.NONE;
-            component.getTextDisplay().multiline = true;
-            component.getTextDisplay().wordWrap = true;
+            component.getTextDisplay().textField.autoSize = wordWrap == true ? openfl.text.TextFieldAutoSize.NONE : openfl.text.TextFieldAutoSize.LEFT;
+            component.getTextDisplay().multiline = wordWrap;
+            component.getTextDisplay().wordWrap = wordWrap;
             #elseif (haxeui_pixijs)
             component.getTextDisplay().textField.style.wordWrapWidth = component.getTextDisplay().width;
-            component.getTextDisplay().wordWrap = true;
+            component.getTextDisplay().wordWrap = wordWrap;
             #else
-            component.getTextDisplay().wordWrap = true;
+            component.getTextDisplay().wordWrap = wordWrap;
             #end
         } else {
             component.getTextDisplay().width = component.getTextDisplay().textWidth;
