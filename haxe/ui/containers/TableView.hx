@@ -421,12 +421,16 @@ private class Builder extends ScrollViewBuilder {
     }
 
     public function fillExistingRenderer() {
+        var i = 0;
         for (column in _header.childComponents) {
             var existing = _tableview.itemRenderer.findComponent(column.id, ItemRenderer, true);
             if (existing == null) {
                 var itemRenderer = createRenderer(column.id);
-                _tableview.itemRenderer.addComponent(itemRenderer);
+                _tableview.itemRenderer.addComponentAt(itemRenderer, i);
+            } else {
+                _tableview.itemRenderer.setComponentIndex(existing, i);
             }
+            i++;
         }
 
         var data = _component.findComponent("tableview-contents", Box, true, "css");
