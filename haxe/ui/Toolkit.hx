@@ -250,7 +250,7 @@ class Toolkit {
             if (StringTools.startsWith(propName, "on")) {
                 component.addScriptEvent(propName, propValue);
             } else {
-                propValue = TypeConverter.convert(propValue);
+                propValue = TypeConverter.convertFrom(propValue);
                 Reflect.setProperty(component, propName, propValue);
             }
         }

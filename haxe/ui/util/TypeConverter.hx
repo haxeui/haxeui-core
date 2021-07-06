@@ -1,7 +1,7 @@
 package haxe.ui.util;
 
 class TypeConverter {
-    public static function convert(input:Any):Any {
+    public static function convertFrom(input:Any):Any {
         var output = input;
 
         // if its a string (which it always will be if coming from markup rather than code), lets try and convert it
@@ -20,5 +20,17 @@ class TypeConverter {
         }
 
         return output;
+    }
+    
+    public static function convertTo(input:Any, type:String):Any {
+        if (type == null) {
+            return input;
+        }
+        switch (type.toLowerCase()) {
+            case "string":
+                return Std.string(input);
+        }
+        
+        return input;
     }
 }

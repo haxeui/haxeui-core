@@ -2,6 +2,7 @@ package haxe.ui.core;
 
 import haxe.ui.components.Button;
 import haxe.ui.containers.Box;
+import haxe.ui.core.TypeMap;
 import haxe.ui.events.ItemEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
@@ -168,7 +169,7 @@ class ItemRenderer extends Box {
             } else {
                 var c:Component = findComponent(f, null, true);
                 if (c != null && v != null) {
-                    var propValue:Dynamic = TypeConverter.convert(v);
+                    var propValue = TypeConverter.convertTo(v, TypeMap.getTypeInfo(c.className, "value"));
                     c.value = propValue;
 
                     if ((c is InteractiveComponent)) {
