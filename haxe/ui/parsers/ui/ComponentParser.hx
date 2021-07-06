@@ -5,12 +5,12 @@ import haxe.ui.parsers.ui.resolvers.ResourceResolver;
 #if (haxe_ver >= 4.1)
 
 class ComponentParserException extends haxe.Exception {
-    public var fileName:String = null;
-    public var original:haxe.Exception = null;
+    public var fileName:String;
+    public var original:haxe.Exception;
     public function new(message:String, fileName:String, original:haxe.Exception, ?previous:haxe.Exception, ?native:Any):Void {
+        super(message, previous, native);
         this.fileName = fileName;
         this.original = original;
-        super(message, previous, native);
     }
 }
 
