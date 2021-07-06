@@ -89,6 +89,13 @@ private class CompoundItemRenderer extends ItemRenderer {
         this.styleString = "spacing: 2px;";
         removeClass("itemrenderer");
     }
+    
+    private override function onDataChanged(data:Dynamic) {
+        var renderers = findComponents(ItemRenderer);
+        for (r in renderers) {
+            r.onDataChanged(data);
+        }
+    }
 }
 
 //***********************************************************************************************************

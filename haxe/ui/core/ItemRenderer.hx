@@ -107,8 +107,13 @@ class ItemRenderer extends Box {
                 }
             }
         }
+        
+        onDataChanged(_data);
     }
 
+    private function onDataChanged(data:Dynamic) {
+    }
+    
     private function onItemChange(event:UIEvent) {
         if (itemIndex < 0) {
             return; 
