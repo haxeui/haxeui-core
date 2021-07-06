@@ -395,13 +395,16 @@ private class Builder extends ScrollViewBuilder {
         var itemRenderer:ItemRenderer = null;
         if (_tableview.itemRendererClass == null) {
             itemRenderer = new ItemRenderer();
+        } else {
+            itemRenderer = Type.createInstance(_tableview.itemRendererClass, []);
+        }
+        
+        if (itemRenderer.childComponents.length == 0) {
             var label = new Label();
             label.id = id;
             label.percentWidth = 100;
             label.verticalAlign = "center";
             itemRenderer.addComponent(label);
-        } else {
-            itemRenderer = Type.createInstance(_tableview.itemRendererClass, []);
         }
         return itemRenderer;
     }
