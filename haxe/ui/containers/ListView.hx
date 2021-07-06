@@ -333,7 +333,7 @@ private class ListViewBuilder extends ScrollViewBuilder {
     }
 
     private function ensureVisible(itemToEnsure:ItemRenderer) {
-        if (itemToEnsure != null && _listview.virtual == false) { // TODO: virtual scroll into view
+        if (itemToEnsure != null && _listview.virtual == false) {
             var vscroll:VerticalScroll = _listview.findComponent(VerticalScroll);
             if (vscroll != null) {
                 var vpos:Float = vscroll.pos;
@@ -344,6 +344,23 @@ private class ListViewBuilder extends ScrollViewBuilder {
                     vscroll.pos = itemToEnsure.top;
                 }
             }
+        }
+    }
+    
+    @:access(haxe.ui.layouts.VerticalVirtualLayout)
+    private function ensureVirtualItemVisible(index:Int) {
+        var vscroll:VerticalScroll = _listview.findComponent(VerticalScroll);
+        if (vscroll != null) {
+            var layout = cast(_listview.layout, VerticalVirtualLayout);
+            var itemHeight = layout.itemHeight;
+            var itemTop = index * itemHeight;
+                var vpos:Float = vscroll.pos;
+                var contents:Component = _listview.findComponent("listview-contents", "css");
+                if (itemTop + itemHeight > vpos + contents.componentClipRect.height) {
+                    vscroll.pos = ((itemTop + itemHeight) - contents.componentClipRect.height);
+                } else if (itemTop < vpos) {
+                    vscroll.pos = itemTop;
+                }
         }
     }
 }
@@ -434,6 +451,12 @@ private class SelectedIndicesBehaviour extends DataBehaviour {
             }
         }
 
+        if (listView.virtual == true) {
+            for (i in selectedIndices) {
+                @:privateAccess builder.ensureVirtualItemVisible(i);
+            }
+        }
+        
         if (listView.selectedIndex != -1 && listView.selectedIndices.length != 0) {
             _component.dispatch(new UIEvent(UIEvent.CHANGE));
         }
