@@ -391,16 +391,26 @@ private class Builder extends ScrollViewBuilder {
         return super.removeComponent(child, dispose, invalidate);
     }
 
+    private function createRenderer(id:String):ItemRenderer {
+        var itemRenderer:ItemRenderer = null;
+        if (_tableview.itemRendererClass == null) {
+            itemRenderer = new ItemRenderer();
+            var label = new Label();
+            label.id = id;
+            label.percentWidth = 100;
+            label.verticalAlign = "center";
+            itemRenderer.addComponent(label);
+        } else {
+            itemRenderer = Type.createInstance(_tableview.itemRendererClass, []);
+        }
+        return itemRenderer;
+    }
+    
     public function buildDefaultRenderer() {
         var r = new CompoundItemRenderer();
         if (_header != null) {
             for (column in _header.childComponents) {
-                var itemRenderer = new ItemRenderer();
-                var label = new Label();
-                label.id = column.id;
-                label.percentWidth = 100;
-                label.verticalAlign = "center";
-                itemRenderer.addComponent(label);
+                var itemRenderer = createRenderer(column.id);
                 r.addComponent(itemRenderer);
             }
         }
@@ -411,12 +421,7 @@ private class Builder extends ScrollViewBuilder {
         for (column in _header.childComponents) {
             var existing = _tableview.itemRenderer.findComponent(column.id, ItemRenderer, true);
             if (existing == null) {
-                var itemRenderer = new ItemRenderer();
-                var label = new Label();
-                label.id = column.id;
-                label.percentWidth = 100;
-                label.verticalAlign = "center";
-                itemRenderer.addComponent(label);
+                var itemRenderer = createRenderer(column.id);
                 _tableview.itemRenderer.addComponent(itemRenderer);
             }
         }
