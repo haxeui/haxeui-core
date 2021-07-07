@@ -10,11 +10,13 @@ import haxe.ui.core.IDirectionalComponent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.layouts.LayoutFactory;
 import haxe.ui.styles.Style;
+import haxe.ui.util.Variant;
 
 @:composite(Events, Builder)
 class ButtonBar extends Box implements IDirectionalComponent {
     @:clonable @:behaviour(DefaultBehaviour, true)      public var toggle:Bool;
     @:clonable @:behaviour(SelectedIndex)               public var selectedIndex:Int;
+    @:clonable @:behaviour(SelectedButton)              public var selectedButton:Component;
     @:clonable @:value(selectedIndex)                   public var value:Dynamic;
 }
 
@@ -41,6 +43,18 @@ private class SelectedIndex extends DataBehaviour {
         builder._currentButton = button;
         
         _component.dispatch(new UIEvent(UIEvent.CHANGE));
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class SelectedButton extends DataBehaviour {
+    public override function get():Variant {
+        for (child in _component.childComponents) {
+            if ((child is Button) && cast(child, Button).selected == true) {
+                return child;
+            }
+        }
+        return null;
     }
 }
 
