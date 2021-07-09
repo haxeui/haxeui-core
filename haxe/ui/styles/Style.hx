@@ -716,4 +716,10 @@ class Style {
     private inline function createAnimationOptions() {
         if (animationOptions == null) animationOptions = {};
     }
+    
+    public function clone():Style {
+        var c = new Style();
+        c.apply(this);
+        return c;
+    }
 }
