@@ -1943,6 +1943,13 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         }
     }
 
+    private override function get_isComponentClipped():Bool {
+        if (_compositeBuilder != null) {
+            return _compositeBuilder.isComponentClipped;
+        }
+        return (componentClipRect != null);
+    }
+    
     //***********************************************************************************************************
     // Properties
     //***********************************************************************************************************

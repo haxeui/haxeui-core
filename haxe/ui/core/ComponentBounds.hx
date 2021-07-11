@@ -502,6 +502,9 @@ class ComponentBounds extends ComponentLayout {
     **/
     public var componentClipRect(get, set):Rectangle;
     private function get_componentClipRect():Rectangle {
+        if (style != null && style.clip != null && style.clip == true) {
+            return new Rectangle(0, 0, componentWidth, componentHeight);
+        }
         return _componentClipRect;
     }
     private function set_componentClipRect(value:Rectangle):Rectangle {
@@ -510,4 +513,8 @@ class ComponentBounds extends ComponentLayout {
         return value;
     }
 
+    public var isComponentClipped(get, null):Bool;
+    private function get_isComponentClipped():Bool {
+        return (componentClipRect != null);
+    }
 }

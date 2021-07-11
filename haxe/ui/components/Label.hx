@@ -138,4 +138,13 @@ private class Builder extends CompositeBuilder {
     public static inline function isHtml(v:String):Bool {
         return v == null ? false : v.indexOf("<font ") != -1;
     }
+    
+    public override function get_isComponentClipped():Bool {
+        var componentClipRect = _component.componentClipRect;
+        if (componentClipRect == null) {
+            return false;
+        }
+        
+        return _label.getTextDisplay().measureTextWidth() > componentClipRect.width;
+    }
 }

@@ -2,6 +2,7 @@ package haxe.ui.backend;
 
 import haxe.ui.assets.FontInfo;
 import haxe.ui.core.Component;
+import haxe.ui.core.TextDisplay;
 import haxe.ui.core.TextDisplay.TextDisplayData;
 import haxe.ui.core.TextInput.TextInputData;
 import haxe.ui.data.DataSource;
@@ -67,5 +68,23 @@ class TextBase {
     }
 
     private function measureText() {
+    }
+    
+    // this default implementation is probably quite expensive, it would make sense for 
+    // backends to override this method and us something more effecient (if possible)
+    // but as a fall back its OK - plus it will usually never be called anyway (only
+    // for Label::isComponentClipped)
+    public function measureTextWidth():Float {
+        var textDisplay = new TextDisplay();
+        
+        textDisplay._textStyle = this._textStyle;
+        textDisplay._fontInfo = this._fontInfo;
+        textDisplay.validateStyle();
+        
+        textDisplay._text = this._text;
+        textDisplay.validateData();
+        
+        textDisplay.measureText();
+        return textDisplay._textWidth;
     }
 }
