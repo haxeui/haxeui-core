@@ -59,6 +59,16 @@ class StyleSheet {
         return null;
     }
 
+    public function findMatchingRules(selector:String):Array<RuleElement> {
+        var m = [];
+        for (r in rules) {
+            if (r.selector.toString() == selector) {
+                m.push(r);
+            }
+        }
+        return m;
+    }
+    
     public function removeRule(selector:String) {
         var r = findRule(selector);
         if (r != null) {

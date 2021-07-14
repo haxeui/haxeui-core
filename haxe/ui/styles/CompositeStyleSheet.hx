@@ -2,6 +2,7 @@ package haxe.ui.styles;
 
 import haxe.ui.core.Component;
 import haxe.ui.core.Screen;
+import haxe.ui.styles.Style;
 import haxe.ui.styles.elements.AnimationKeyFrames;
 import haxe.ui.styles.elements.RuleElement;
 
@@ -107,6 +108,22 @@ class CompositeStyleSheet {
         return null;
     }
 
+    public function findMatchingRules(selector:String):Array<RuleElement> {
+        var m = [];
+        for (s in _styleSheets) {
+            m = m.concat(s.findMatchingRules(selector));
+        }
+        return m;
+    }
+    
+    public function getAllRules():Array<RuleElement> {
+        var r = [];
+        for (s in _styleSheets) {
+            r = r.concat(s.rules);
+        }
+        return r;
+    }
+    
     public function buildStyleFor(c:Component):Style {
         var style:Style = {};
 

@@ -592,6 +592,33 @@ class Style {
     }
 
     public function equalTo(s:Style):Bool {
+        if (s.backgroundColor != backgroundColor) return false;
+        if (s.backgroundColorEnd != backgroundColorEnd) return false;
+        if (s.backgroundGradientStyle != backgroundGradientStyle) return false;
+        if (s.backgroundOpacity != backgroundOpacity) return false;
+
+        if (s.borderColor != borderColor) return false;
+        if (s.borderTopColor != borderTopColor) return false;
+        if (s.borderLeftColor != borderLeftColor) return false;
+        if (s.borderBottomColor != borderBottomColor) return false;
+        if (s.borderRightColor != borderRightColor) return false;
+
+        if (s.borderSize != borderSize) return false;
+        if (s.borderTopSize != borderTopSize) return false;
+        if (s.borderLeftSize != borderLeftSize) return false;
+        if (s.borderBottomSize != borderBottomSize) return false;
+        if (s.borderRightSize != borderRightSize) return false;
+
+        if (s.borderRadius != borderRadius) return false;
+        if (s.borderRadiusTopLeft != borderRadiusTopLeft) return false;
+        if (s.borderRadiusTopRight != borderRadiusTopRight) return false;
+        if (s.borderRadiusBottomLeft != borderRadiusBottomLeft) return false;
+        if (s.borderRadiusBottomRight != borderRadiusBottomRight) return false;
+        if (s.borderOpacity != borderOpacity) return false;
+        if (s.borderStyle != borderStyle) return false;
+        
+        if (s.color != color) return false;
+
         if (s.cursor != cursor) return false;
         if (s.hidden != hidden) return false;
 
@@ -632,13 +659,6 @@ class Style {
         if (s.marginRight != marginRight) return false;
         if (s.marginBottom != marginBottom) return false;
 
-        if (s.color != color) return false;
-
-        if (s.backgroundColor != backgroundColor) return false;
-        if (s.backgroundColorEnd != backgroundColorEnd) return false;
-        if (s.backgroundGradientStyle != backgroundGradientStyle) return false;
-        if (s.backgroundOpacity != backgroundOpacity) return false;
-
         if (s.backgroundImage != backgroundImage) return false;
         if (s.backgroundImageRepeat != backgroundImageRepeat) return false;
 
@@ -651,26 +671,6 @@ class Style {
         if (s.backgroundImageSliceLeft != backgroundImageSliceLeft) return false;
         if (s.backgroundImageSliceBottom != backgroundImageSliceBottom) return false;
         if (s.backgroundImageSliceRight != backgroundImageSliceRight) return false;
-
-        if (s.borderColor != borderColor) return false;
-        if (s.borderTopColor != borderTopColor) return false;
-        if (s.borderLeftColor != borderLeftColor) return false;
-        if (s.borderBottomColor != borderBottomColor) return false;
-        if (s.borderRightColor != borderRightColor) return false;
-
-        if (s.borderSize != borderSize) return false;
-        if (s.borderTopSize != borderTopSize) return false;
-        if (s.borderLeftSize != borderLeftSize) return false;
-        if (s.borderBottomSize != borderBottomSize) return false;
-        if (s.borderRightSize != borderRightSize) return false;
-
-        if (s.borderRadius != borderRadius) return false;
-        if (s.borderRadiusTopLeft != borderRadiusTopLeft) return false;
-        if (s.borderRadiusTopRight != borderRadiusTopRight) return false;
-        if (s.borderRadiusBottomLeft != borderRadiusBottomLeft) return false;
-        if (s.borderRadiusBottomRight != borderRadiusBottomRight) return false;
-        if (s.borderOpacity != borderOpacity) return false;
-        if (s.borderStyle != borderStyle) return false;
 
         if (s.filter != filter) return false;
         if (s.backdropFilter != backdropFilter) return false;

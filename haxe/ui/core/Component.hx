@@ -1055,7 +1055,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
      Whether or not this component has a css class associated with it
     **/
     @:dox(group = "Style related properties and methods")
-    public function hasClass(name:String):Bool {
+    public inline function hasClass(name:String):Bool {
         return (classes.indexOf(name) != -1);
     }
 

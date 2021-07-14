@@ -33,25 +33,27 @@ class RuleElement {
 
         if (c.pseudoClass != null) {
             var pc = ":" + c.pseudoClass;
-            if (d.classes.indexOf(pc) == -1) {
+            if (d.hasClass(pc) == false) {
                 return false;
             }
         }
 
         if (c.className != null) {
             for (p in c.classNameParts) {
-                if (d.classes.indexOf(p) == -1) {
+                if (d.hasClass(p) == false) {
                     return false;
                 }
             }
         }
 
+        /*
         if (c.nodeName != null) {
             var className:String = Type.getClassName(Type.getClass(d)).split(".").pop().toLowerCase();    //TODO - the value can be cached
             if (c.nodeName != className) {
                 return false;
             }
         }
+        */
 
         if (c.id != null && c.id != d.id) {
             return false;
