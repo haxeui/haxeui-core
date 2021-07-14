@@ -19,11 +19,11 @@ class SideBar extends Box {
     public static var activeSideBar:SideBar = null;
     
     private var _lastMethod:String = null;
-    private static var _modalOverlay:Component = null;
+    private var _modalOverlay:Component = null;
     
     public function new() {
         super();
-        super.hide();
+        //super.hide();
         this.position = "left";
         animatable = false;
         Screen.instance.registerEvent(UIEvent.RESIZE, function(_) {
