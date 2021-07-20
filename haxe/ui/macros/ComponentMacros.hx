@@ -2,11 +2,14 @@ package haxe.ui.macros;
 
 import haxe.macro.Context;
 import haxe.macro.Expr;
+import haxe.macro.ExprTools;
 import haxe.macro.TypeTools;
 import haxe.ui.core.ComponentClassMap;
 import haxe.ui.core.ComponentFieldMap;
 import haxe.ui.core.LayoutClassMap;
 import haxe.ui.core.TypeMap;
+import haxe.ui.macros.helpers.CodePos;
+import haxe.ui.macros.helpers.FunctionBuilder;
 import haxe.ui.parsers.ui.ComponentInfo;
 import haxe.ui.parsers.ui.ComponentParser;
 import haxe.ui.parsers.ui.LayoutInfo;
@@ -25,6 +28,12 @@ typedef NamedComponentDescription = {
     generatedVarName:String,
     type:String
 };
+
+typedef ScriptHandlerDescription = {
+    generatedVarName:String,
+    eventName:String,
+    code:String
+}
 
 class ComponentMacros {
     macro public static function build(resourcePath:String, params:Expr = null, alias:String = null):Array<Field> {
@@ -49,7 +58,7 @@ class ComponentMacros {
         var namedComponents:Map<String, NamedComponentDescription> = new Map<String, NamedComponentDescription>();
         var codeBuilder = new CodeBuilder();
         var bindingExprs:Array<Expr> = [];
-        var c:ComponentInfo = buildComponentFromFile(codeBuilder, resourcePath, namedComponents, bindingExprs, MacroHelpers.exprToMap(params), "this", false);
+        var c:ComponentInfo = buildComponentFromFile(builder, codeBuilder, resourcePath, namedComponents, bindingExprs, MacroHelpers.exprToMap(params), "this", false);
         var superClass:String = builder.superClass.t.toString();
         var rootType = ComponentClassMap.get(c.type);
         if (superClass != rootType) {
@@ -84,8 +93,10 @@ class ComponentMacros {
 
     macro public static function buildComponent(filePath:String, params:Expr = null):Expr {
         var builder = new CodeBuilder();
-        buildComponentFromFile(builder, filePath, null, MacroHelpers.exprToMap(params), "rootComponent");
+        var namedComponents:Map<String, NamedComponentDescription> = new Map<String, NamedComponentDescription>();
+        buildComponentFromFile(null, builder, filePath, namedComponents, MacroHelpers.exprToMap(params), "rootComponent");
         builder.add(macro rootComponent);
+        trace(builder.toString());
         return builder.expr;
     }
 
@@ -103,7 +114,7 @@ class ComponentMacros {
 
     #if macro
 
-    public static function buildComponentFromFile(builder:CodeBuilder, filePath:String, namedComponents:Map<String, NamedComponentDescription> = null, bindingExprs:Array<Expr> = null, params:Map<String, Dynamic> = null, rootVarName:String = "this", buildRoot:Bool = true):ComponentInfo {
+    public static function buildComponentFromFile(classBuilder:ClassBuilder, builder:CodeBuilder, filePath:String, namedComponents:Map<String, NamedComponentDescription> = null, bindingExprs:Array<Expr> = null, params:Map<String, Dynamic> = null, rootVarName:String = "this", buildRoot:Bool = true):ComponentInfo {
         var f = MacroHelpers.resolveFile(filePath);
         if (f == null) {
             throw "Could not resolve: " + filePath;
@@ -119,8 +130,9 @@ class ComponentMacros {
             }
         }
 
+        var scriptHandlers:Array<ScriptHandlerDescription> = [];
         if (buildRoot == true) {
-            buildComponentNode(builder, c, 0, -1, namedComponents, bindingExprs, false);
+            buildComponentNode(builder, c, 0, -1, namedComponents, bindingExprs, scriptHandlers, false);
             builder.add(macro var $rootVarName = c0);
         }
 
@@ -128,6 +140,12 @@ class ComponentMacros {
         for (scriptString in c.scriptlets) {
             fullScript += scriptString;
         }
+        if (classBuilder != null) {
+            buildScriptFunctions(classBuilder, builder, namedComponents, fullScript);   
+        } else {
+            buildScriptFunctionForwardDeclarations(builder, fullScript);
+        }
+        
         var n = 0;
         for (child in c.children) {
             var componentId = "c" + n;
@@ -140,12 +158,20 @@ class ComponentMacros {
             n = r;
         }
         if (buildRoot == false) {
-            assignComponentProperties(builder, c, rootVarName, bindingExprs);
+            assignComponentProperties(builder, c, rootVarName, bindingExprs, scriptHandlers);
         }
+        
+        if (classBuilder == null) {
+            buildScriptFunctions(classBuilder, builder, namedComponents, fullScript);   
+        }
+        
+        /*
         if (StringTools.trim(fullScript).length > 0) {
             builder.add(macro $i{rootVarName}.script = $v{fullScript});
         }
+        */
         builder.add(macro $i{rootVarName}.bindingRoot = true);
+        
         return c;
     }
 
@@ -162,6 +188,7 @@ class ComponentMacros {
         for (scriptString in c.scriptlets) {
             fullScript += scriptString;
         }
+
         var n = 0;
         for (child in c.children) {
             var componentId = "c" + n;
@@ -173,7 +200,8 @@ class ComponentMacros {
             }, n);
             n = r;
         }
-        assignComponentProperties(builder, c, rootVarName, bindingExprs);
+        var scriptHandlers:Array<ScriptHandlerDescription> = [];
+        assignComponentProperties(builder, c, rootVarName, bindingExprs, scriptHandlers);
         if (StringTools.trim(fullScript).length > 0) {
             builder.add(macro $i{rootVarName}.script = $v{fullScript});
         }
@@ -197,8 +225,11 @@ class ComponentMacros {
         if (bindingExprs == null) {
             bindingExprs = [];
         }
-        var r = buildComponentNode(builder, c, firstId, -1, namedComponents, bindingExprs);
+        var scriptHandlers:Array<ScriptHandlerDescription> = [];
+        var r = buildComponentNode(builder, c, firstId, -1, namedComponents, bindingExprs, scriptHandlers);
 
+        buildScriptHandlers(builder, namedComponents, scriptHandlers);
+        
         if (cb != null) {
             cb(c, builder);
         }
@@ -206,8 +237,115 @@ class ComponentMacros {
         return r;
     }
 
+    private static function buildScriptFunctionForwardDeclarations(builder:CodeBuilder, script:String) {
+        var expr = Context.parseInlineString("{" + script + "}", Context.currentPos());
+        switch (expr.expr) {
+            case EBlock(exprs):
+                for (e in exprs) {
+                    switch (e.expr) {
+                        case EFunction(kind, f):
+                            switch (kind) {
+                                case FNamed(name, inlined):
+                                    builder.add(macro var $name = null);
+                                case _:
+                                    trace("unsupported " + kind);
+                            }
+                        case EVars(vars):
+                            for (v in vars) {
+                                var varName = v.name;
+                                builder.add(macro var $varName); 
+                            }
+                        case _:
+                            trace("unsupported " + e);
+                    }
+                }
+            case _:
+                trace("unsupported " + expr);
+                
+        }
+    }
+    
+    private static function buildScriptFunctions(classBuilder:ClassBuilder, builder:CodeBuilder, namedComponents:Map<String, NamedComponentDescription>, script:String) {
+        var expr = Context.parseInlineString("{" + script + "}", Context.currentPos());
+        switch (expr.expr) {
+            case EBlock(exprs):
+                for (e in exprs) {
+                    switch (e.expr) {
+                        case EFunction(kind, f):
+                            switch (kind) {
+                                case FNamed(name, inlined):
+                                    if (classBuilder != null) {
+                                        classBuilder.addFunction(name, f.expr, f.args, f.ret);
+                                    } else {
+                                        var functionBuilder = new FunctionBuilder(null, f);
+                                        if (namedComponents != null) {
+                                            for (namedComponent in namedComponents.keys()) {
+                                                var details = namedComponents.get(namedComponent);
+                                                functionBuilder.addToStart(macro var $namedComponent = $i{details.generatedVarName});
+                                            }
+                                        }
+
+                                        var anonFunc:Expr = {
+                                            expr: EFunction(FAnonymous, functionBuilder.fn),
+                                            pos: Context.currentPos()
+                                        }
+                                        builder.add(macro $i{name} = $e{anonFunc});
+                                    }
+                                case _:
+                                    trace("unsupported " + kind);
+                            }
+                        case EVars(vars):
+                            for (v in vars) {
+                                if (classBuilder != null) {
+                                    var vtype = v.type;
+                                    if (vtype == null) {
+                                        vtype = macro: Dynamic;
+                                    }
+                                    classBuilder.addVar(v.name, vtype, v.expr);
+                                } else {
+                                    if (v.expr != null) {
+                                        builder.add(macro $i{v.name} = $e{v.expr});
+                                    }
+                                }
+                            }
+                        case _:
+                            trace("unsupported " + e);
+                    }
+                }
+            case _:
+                trace("unsupported " + expr);
+                
+        }
+    }
+    
+    private static function buildScriptHandlers(builder:CodeBuilder, namedComponents:Map<String, NamedComponentDescription>, scriptHandlers:Array<ScriptHandlerDescription>) {
+        // generate macro code for event handlers
+        for (sh in scriptHandlers) {
+            if (sh.eventName != null && sh.generatedVarName != null) {
+                var fixedCode = StringTools.replace(sh.code, "this.", "__this__.");
+                if (StringTools.endsWith(fixedCode, ";") == false) {
+                    fixedCode += ";";
+                }
+                fixedCode = "{" + fixedCode + "}";
+                var event = sh.eventName.substr(2);
+                var scriptBuilder = new CodeBuilder(macro {
+                    var __this__ = $i{sh.generatedVarName};
+                });
+                
+                for (namedComponent in namedComponents.keys()) {
+                    var details = namedComponents.get(namedComponent);
+                    scriptBuilder.add(macro var $namedComponent = $i{details.generatedVarName});
+                }
+
+                scriptBuilder.add(Context.parseInlineString(fixedCode, Context.currentPos()));
+                // TODO: typed "event" param based on event name
+                builder.add(macro $i{sh.generatedVarName}.registerEvent($v{event}, function(event) { $e{scriptBuilder.expr} }));
+            }
+        }
+    }
+    
     // returns next free id
-    private static function buildComponentNode(builder:CodeBuilder, c:ComponentInfo, id:Int, parentId:Int, namedComponents:Map<String, NamedComponentDescription>, bindingExprs:Array<Expr>, recurseChildren:Bool = true) {
+    private static function buildComponentNode(builder:CodeBuilder, c:ComponentInfo, id:Int, parentId:Int, namedComponents:Map<String, NamedComponentDescription>, bindingExprs:Array<Expr>, scriptHandlers:Array<ScriptHandlerDescription>, recurseChildren:Bool = true) {
         if (c.condition != null && new ConditionEvaluator().evaluate(c.condition) == false) {
             return id;
         }
@@ -255,7 +393,7 @@ class ComponentMacros {
             }
         }
 
-        assignComponentProperties(builder, c, componentVarName, bindingExprs);
+        assignComponentProperties(builder, c, componentVarName, bindingExprs, scriptHandlers);
         if (c.layout != null) {
             buildLayoutCode(builder, c.layout, id);
         }
@@ -286,13 +424,14 @@ class ComponentMacros {
                 if (useNamedComponents == false) {
                     nc = null;
                 }
-                childId = buildComponentNode(builder, child, childId, id, nc, bindingExprs);
+                childId = buildComponentNode(builder, child, childId, id, nc, bindingExprs, scriptHandlers);
             }
 
             if (parentId != -1) {
                 builder.add(macro $i{"c" + (parentId)}.addComponent($i{componentVarName}));
             }
         }
+        
         return childId;
     }
 
@@ -310,14 +449,14 @@ class ComponentMacros {
         };
 
         builder.add(macro var $layoutVarName = new $typePath());
-        assignProperties(builder, layoutVarName, l.properties);
+        assignProperties(builder, layoutVarName, l.properties, []);
 
         if (id != 0) {
             builder.add(macro $i{"c" + (id)}.layout = $i{"l" + id});
         }
     }
 
-    private static function assignComponentProperties(builder:CodeBuilder, c:ComponentInfo, componentVarName:String, bindingExprs:Array<Expr>) {
+    private static function assignComponentProperties(builder:CodeBuilder, c:ComponentInfo, componentVarName:String, bindingExprs:Array<Expr>, scriptHandlers:Array<ScriptHandlerDescription>) {
         if (c.id != null)                       assignField(builder, componentVarName, "id", c.id, bindingExprs, c);
         if (c.left != null)                     assignField(builder, componentVarName, "left", c.left, bindingExprs, c);
         if (c.top != null)                      assignField(builder, componentVarName, "top", c.top, bindingExprs, c);
@@ -333,20 +472,26 @@ class ComponentMacros {
         if (c.styleNames != null)               assignField(builder, componentVarName, "styleNames", c.styleNames, bindingExprs, c);
         if (c.style != null)                    assignField(builder, componentVarName, "styleString", c.styleString, bindingExprs, c);
 
-        assignProperties(builder, componentVarName, c.properties);
+        assignProperties(builder, componentVarName, c.properties, scriptHandlers);
     }
 
     // We'll re-use the same code for properties and components
     // certain things dont actually apply to layouts (namely "ComponentFieldMap", "on" and "${")
     // but they shouldnt cause any issues with layouts and the reuse is useful
-    private static function assignProperties(builder:CodeBuilder, varName:String, properties:Map<String, String>) {
+    private static function assignProperties(builder:CodeBuilder, varName:String, properties:Map<String, String>, scriptHandlers:Array<ScriptHandlerDescription>) {
         for (propName in properties.keys()) {
             var propValue = properties.get(propName);
             propName = ComponentFieldMap.mapField(propName);
             var propExpr = macro $v{TypeConverter.convertFrom(propValue)};
 
             if (StringTools.startsWith(propName, "on")) {
-                builder.add(macro $i{varName}.addScriptEvent($v{propName}, $propExpr));
+                //builder.add(macro $i{varName}.addScriptEvent($v{propName}, $propExpr));
+                
+                scriptHandlers.push({
+                    generatedVarName: varName,
+                    eventName: propName,
+                    code: propValue
+                });
             } else if (Std.string(propValue).indexOf("${") != -1) {
                 builder.add(macro haxe.ui.binding.BindingManager.instance.add($i{varName}, $v{propName}, $v{propValue}));
                 // Basically, if you try to apply a bound variable to something that isnt

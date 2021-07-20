@@ -50,6 +50,13 @@ class FunctionBuilder {
         fn.expr = current.expr;
     }
 
+    public function addToStart(e:Expr = null, cb:CodeBuilder = null) {
+        var where = CodePos.Start;
+        var current = new CodeBuilder(fn.expr);
+        current.add(e, cb, where);
+        fn.expr = current.expr;
+    }
+    
     public function set(e:Expr = null, cb:CodeBuilder = null) {
         if (e == null) {
             e = cb.expr;
