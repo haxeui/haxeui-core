@@ -13,9 +13,6 @@ enum StyleBorderType {
 
 @:structInit
 class Style {
-    public function new() {
-    }
-    
     @:optional public var left:Null<Float>;
     @:optional public var top:Null<Float>;
 
@@ -718,7 +715,7 @@ class Style {
     }
     
     public function clone():Style {
-        var c = new Style();
+        var c:Style = {};
         c.apply(this);
         return c;
     }

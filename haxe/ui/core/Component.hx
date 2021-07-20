@@ -947,16 +947,24 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     //***********************************************************************************************************
     // Style related
     //***********************************************************************************************************
+    private var _customStyle:Style = null;
     /**
      A custom style object that will appled to this component after any css rules have been matched and applied
     **/
     @:dox(group = "Style related properties and methods")
-    public var customStyle(default, set):Style = new Style();
-    function set_customStyle(v:Style):Style {
-        if (v != customStyle) {
+    public var customStyle(get, set):Style;
+    private function get_customStyle():Style {
+        if (_customStyle == null) {
+            _customStyle = {};
+        }
+        return _customStyle;
+    }
+    private function set_customStyle(value:Style):Style {
+        if (value != _customStyle) {
             invalidateComponentStyle();
         }
-        return customStyle = v;
+        _customStyle = value;
+        return value;
     }
     @:dox(group = "Style related properties and methods")
     private var classes:Array<String> = [];
