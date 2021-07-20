@@ -243,6 +243,7 @@ class ComponentMacros {
             case EBlock(exprs):
                 for (e in exprs) {
                     switch (e.expr) {
+                        #if haxe4
                         case EFunction(kind, f):
                             switch (kind) {
                                 case FNamed(name, inlined):
@@ -250,6 +251,10 @@ class ComponentMacros {
                                 case _:
                                     trace("unsupported " + kind);
                             }
+                        #else
+                        case EFunction(name, f):
+                            builder.add(macro var $name = null);
+                        #end
                         case EVars(vars):
                             for (v in vars) {
                                 var varName = v.name;
@@ -271,6 +276,7 @@ class ComponentMacros {
             case EBlock(exprs):
                 for (e in exprs) {
                     switch (e.expr) {
+                        #if haxe4
                         case EFunction(kind, f):
                             switch (kind) {
                                 case FNamed(name, inlined):
@@ -294,6 +300,28 @@ class ComponentMacros {
                                 case _:
                                     trace("unsupported " + kind);
                             }
+                        #else
+                        case EFunction(name, f):
+                            if (classBuilder != null) {
+                                classBuilder.addFunction(name, f.expr, f.args, f.ret);
+                            } else {
+                                var functionBuilder = new FunctionBuilder(null, f);
+                                if (namedComponents != null) {
+                                    for (namedComponent in namedComponents.keys()) {
+                                        var details = namedComponents.get(namedComponent);
+                                        functionBuilder.addToStart(macro var $namedComponent = $i{details.generatedVarName});
+                                    }
+                                }
+
+                                /* TODO - not sure how to do this in 3.4.7
+                                var anonFunc:Expr = {
+                                    expr: EFunction(FAnonymous, functionBuilder.fn),
+                                    pos: Context.currentPos()
+                                }
+                                builder.add(macro $i{name} = $e{anonFunc});
+                                */
+                            }
+                        #end
                         case EVars(vars):
                             for (v in vars) {
                                 if (classBuilder != null) {
