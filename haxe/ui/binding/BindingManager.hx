@@ -251,9 +251,9 @@ class BindingManager {
         return bindingScript.script == script;
     }
     
-    private function isLocaleString(script:String):Bool {
-        return LocaleManager.instance.hasString(StringTools.trim(script.split(",")[0]));
-    }
+//    private function isLocaleString(script:String):Bool {
+//        return LocaleManager.instance.hasString(StringTools.trim(script.split(",")[0]));
+//    }
     
     private function buildLocaleScript(script:String):String {
         if (script == null) {
@@ -326,7 +326,7 @@ class BindingManager {
             var after:String = copy.substr(n2 + 1, copy.length);
             var script:String = copy.substr(n1 + 2, n2 - n1 - 2);
 
-            var result:Any = exec(script, prop, t);
+            var result:Any = exec(script, prop, t, prop.languageBinding);
 
             copy = before + result + after;
             n1 = copy.indexOf("${");
@@ -335,8 +335,8 @@ class BindingManager {
     }
 
     private var interp:ScriptInterp = new ScriptInterp();
-    private function exec(script:String, prop:PropertyInfo, t:Component):Dynamic {
-        if (isLocaleString(script)) {
+    private function exec(script:String, prop:PropertyInfo, t:Component, isLocaleString:Bool):Dynamic {
+        if (isLocaleString) {
             script = buildLocaleScript(script);
         }
         var parser = new Parser();
