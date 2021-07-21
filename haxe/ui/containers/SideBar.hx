@@ -23,7 +23,7 @@ class SideBar extends Box {
     
     public function new() {
         super();
-        //super.hide();
+        super.hide();
         this.position = "left";
         animatable = false;
         Screen.instance.registerEvent(UIEvent.RESIZE, function(_) {
@@ -62,6 +62,10 @@ class SideBar extends Box {
                 hide();
             });
         }
+        
+        Toolkit.callLater(function() {
+            this.invalidateComponent(true);
+        });
     }
     
     private function showModalOverlay() {
