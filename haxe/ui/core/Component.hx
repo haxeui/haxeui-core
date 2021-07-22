@@ -488,21 +488,23 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             }
         }
 
-        handleRemoveComponentAt(index, dispose);
         var child = _children[index];
-        if (_children != null) {
+        if (child != null) {
             if (_children.remove(child)) {
                 child.parentComponent = null;
                 child.depth = -1;
             }
+            if (dispose == true) {
+                child._isDisposed = true;
+                child.removeAllComponents(true);
+                child.unregisterEvents();
+                child.destroyComponent();
+            }
+
+            handleRemoveComponent(child, dispose);
             assignPositionClasses(invalidate);
             if (invalidate == true) {
                 invalidateComponentLayout();
-            }
-            if (dispose == true) {
-                child._isDisposed = true;
-                child.unregisterEvents();
-                child.destroyComponent();
             }
         }
 
