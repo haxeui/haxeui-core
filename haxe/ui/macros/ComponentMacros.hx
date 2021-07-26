@@ -8,7 +8,6 @@ import haxe.ui.core.ComponentClassMap;
 import haxe.ui.core.ComponentFieldMap;
 import haxe.ui.core.LayoutClassMap;
 import haxe.ui.core.TypeMap;
-import haxe.ui.macros.helpers.CodePos;
 import haxe.ui.macros.helpers.FunctionBuilder;
 import haxe.ui.parsers.ui.ComponentInfo;
 import haxe.ui.parsers.ui.ComponentParser;
@@ -272,6 +271,7 @@ class ComponentMacros {
     
     private static function buildScriptFunctions(classBuilder:ClassBuilder, builder:CodeBuilder, namedComponents:Map<String, NamedComponentDescription>, script:String) {
         var expr = Context.parseInlineString("{" + script + "}", Context.currentPos());
+        expr = ExprTools.map(expr, replaceShortClassNames);
         switch (expr.expr) {
             case EBlock(exprs):
                 for (e in exprs) {
@@ -367,6 +367,7 @@ class ComponentMacros {
 
                 var expr = Context.parseInlineString(fixedCode, Context.currentPos());
                 expr = ExprTools.map(expr, replaceThis);
+                expr = ExprTools.map(expr, replaceShortClassNames);
                 scriptBuilder.add(expr);
                 // TODO: typed "event" param based on event name
                 builder.add(macro $i{sh.generatedVarName}.registerEvent($v{event}, function(event) { $e{scriptBuilder.expr} }));
@@ -380,6 +381,21 @@ class ComponentMacros {
                 {expr: EConst(CIdent("__this__")), pos: e.pos };
             case _:
                 ExprTools.map(e, replaceThis);
+        }
+    }
+    
+    private static function replaceShortClassNames(e:Expr):Expr {
+        return switch (e.expr) {
+            case ENew(t, params):
+                var fullPath = t.pack.concat([t.name]).join(".");
+                var registeredClass = ComponentClassMap.get(fullPath);
+                var r = e;
+                if (registeredClass != null) {
+                    r = { expr: ENew({ pack: ["haxe", "ui", "components"], name: "Button", params: t.params, sub: t.sub}, params), pos: e.pos};
+                }
+                r;
+            case _:
+                ExprTools.map(e, replaceShortClassNames);
         }
     }
     
