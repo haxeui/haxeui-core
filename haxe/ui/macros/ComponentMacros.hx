@@ -350,7 +350,7 @@ class ComponentMacros {
         // generate macro code for event handlers
         for (sh in scriptHandlers) {
             if (sh.eventName != null && sh.generatedVarName != null) {
-                var fixedCode = StringTools.replace(sh.code, "this.", "__this__.");
+                var fixedCode = sh.code;
                 if (StringTools.endsWith(fixedCode, ";") == false) {
                     fixedCode += ";";
                 }
@@ -365,10 +365,21 @@ class ComponentMacros {
                     scriptBuilder.add(macro var $namedComponent = $i{details.generatedVarName});
                 }
 
-                scriptBuilder.add(Context.parseInlineString(fixedCode, Context.currentPos()));
+                var expr = Context.parseInlineString(fixedCode, Context.currentPos());
+                expr = ExprTools.map(expr, replaceThis);
+                scriptBuilder.add(expr);
                 // TODO: typed "event" param based on event name
                 builder.add(macro $i{sh.generatedVarName}.registerEvent($v{event}, function(event) { $e{scriptBuilder.expr} }));
             }
+        }
+    }
+    
+    private static function replaceThis(e:Expr):Expr {
+        return switch (e.expr) {
+            case EConst(CIdent("this")):
+                {expr: EConst(CIdent("__this__")), pos: e.pos };
+            case _:
+                ExprTools.map(e, replaceThis);
         }
     }
     
