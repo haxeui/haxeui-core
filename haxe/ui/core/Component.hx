@@ -1726,12 +1726,28 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         dispatch(new UIEvent(UIEvent.MOVE));
     }
 
+    private var _zeroSize:Bool = false;
     @:dox(group = "Internal")
     public function updateComponentDisplay() {
-        if (componentWidth == null || componentHeight == null || componentWidth <= 0 || componentHeight <= 0) {
+        if (componentWidth == null || componentHeight == null) {
             return;
         }
 
+        if (componentWidth <= 0 || componentHeight <= 0) {
+            _zeroSize = true;
+            if (_hidden == false) {
+                handleVisibility(false);
+            }
+            return;
+        }
+        
+        if (_zeroSize = true) {
+            _zeroSize = false;
+            if (_hidden == false) {
+                handleVisibility(true);
+            }
+        }
+        
         handleSize(componentWidth, componentHeight, _style);
 
         if (_componentClipRect != null ||
