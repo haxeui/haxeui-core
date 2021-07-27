@@ -44,7 +44,7 @@ class ComponentMacros {
             Context.error("Must have a superclass of haxe.ui.core.Component", Context.currentPos());
         }
 
-        if (builder.constructor == null) {
+        if (builder.ctor == null) {
             Context.error("A class building component must have a constructor", Context.currentPos());
         }
 
@@ -85,7 +85,7 @@ class ComponentMacros {
             codeBuilder.add(expr);
         }
 
-        builder.constructor.add(codeBuilder, AfterSuper);
+        builder.ctor.add(codeBuilder, AfterSuper);
 
         return builder.fields;
     }

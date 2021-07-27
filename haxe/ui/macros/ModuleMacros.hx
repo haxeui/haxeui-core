@@ -442,7 +442,7 @@ class ModuleMacros {
             }
 
             classBuilder.addVar(name, ComplexType.TPath(t));
-            classBuilder.constructor.add(macro $i{name} = findComponent($v{name}, $p{typeClass.split(".")}));
+            classBuilder.ctor.add(macro $i{name} = findComponent($v{name}, $p{typeClass.split(".")}));
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////

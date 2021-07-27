@@ -515,8 +515,8 @@ class ClassBuilder {
     // Functions
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public var constructor(get, null):FunctionBuilder;
-    private function get_constructor():FunctionBuilder {
+    public var ctor(get, null):FunctionBuilder;
+    private function get_ctor():FunctionBuilder {
         return findFunction("new");
     }
 

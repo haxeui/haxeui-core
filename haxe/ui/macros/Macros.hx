@@ -39,7 +39,7 @@ class Macros {
             Context.error("Must have a superclass of haxe.ui.core.Component", Context.currentPos());
         }
 
-        if (builder.constructor == null) {
+        if (builder.ctor == null) {
             Context.error("A class building component must have a constructor", Context.currentPos());
         }
 
@@ -62,7 +62,7 @@ class Macros {
             codeBuilder.add(expr);
         }
 
-        builder.constructor.add(codeBuilder, AfterSuper);
+        builder.ctor.add(codeBuilder, AfterSuper);
     }
 
     static function buildComposite(builder:ClassBuilder) {
@@ -227,11 +227,11 @@ class Macros {
         }
 
         if (f.expr != null) {
-            builder.constructor.add(macro $i{f.name} = $e{f.expr}, AfterSuper);
+            builder.ctor.add(macro $i{f.name} = $e{f.expr}, AfterSuper);
         }
 
         if (hasSetter == true) {
-            builder.constructor.add(macro {
+            builder.ctor.add(macro {
                 $i{variable}.registerEvent(haxe.ui.events.UIEvent.CHANGE, function(e) {
                     $i{f.name} = Reflect.getProperty($i{variable}, $v{field});
                 });
@@ -256,7 +256,7 @@ class Macros {
                 Context.error("Must have a superclass of haxe.ui.core.Component", Context.currentPos());
             }
 
-            if (builder.constructor == null) {
+            if (builder.ctor == null) {
                 Context.error("A class building component must have a constructor", Context.currentPos());
             }
 
@@ -269,7 +269,7 @@ class Macros {
                         case [param1]:
                             buildPropertyBinding(builder, f, param1, "value"); // input component that has value
                         case [component, event]: // two params, lets assume event binding
-                            builder.constructor.add(macro {
+                            builder.ctor.add(macro {
                                 @:pos(component.pos)
                                 var c:haxe.ui.core.Component = ${component};
                                 if (c != null) {
