@@ -27,6 +27,10 @@ class CodeBuilder {
         return result;
     }
 
+    public function addToStart(e:Expr = null, cb:CodeBuilder = null) {
+        add(e, cb, CodePos.Start);
+    }
+    
     public function add(e:Expr = null, cb:CodeBuilder = null, where:CodePos = null) {
         if (where == null) {
             where = CodePos.End;

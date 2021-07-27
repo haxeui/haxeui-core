@@ -34,6 +34,13 @@ typedef ScriptHandlerDescription = {
     code:String
 }
 
+typedef BindingDescription = {
+    generatedVarName:String,
+    varProp:String,
+    bindingExpr:String,
+    propType:String
+}
+
 class ComponentMacros {
     macro public static function build(resourcePath:String, params:Expr = null, alias:String = null):Array<Field> {
         var pos = haxe.macro.Context.currentPos();
@@ -57,7 +64,8 @@ class ComponentMacros {
         var namedComponents:Map<String, NamedComponentDescription> = new Map<String, NamedComponentDescription>();
         var codeBuilder = new CodeBuilder();
         var bindingExprs:Array<Expr> = [];
-        var c:ComponentInfo = buildComponentFromFile(builder, codeBuilder, resourcePath, namedComponents, bindingExprs, MacroHelpers.exprToMap(params), "this", false);
+        var bindings:Array<BindingDescription> = [];
+        var c:ComponentInfo = buildComponentFromFile(builder, codeBuilder, resourcePath, namedComponents, bindingExprs, bindings, MacroHelpers.exprToMap(params), "this", false);
         var superClass:String = builder.superClass.t.toString();
         var rootType = ComponentClassMap.get(c.type);
         if (superClass != rootType) {
@@ -85,6 +93,8 @@ class ComponentMacros {
             codeBuilder.add(expr);
         }
 
+        buildInlineBindings(codeBuilder, namedComponents, bindings);
+        
         builder.ctor.add(codeBuilder, AfterSuper);
 
         return builder.fields;
@@ -93,9 +103,10 @@ class ComponentMacros {
     macro public static function buildComponent(filePath:String, params:Expr = null):Expr {
         var builder = new CodeBuilder();
         var namedComponents:Map<String, NamedComponentDescription> = new Map<String, NamedComponentDescription>();
-        buildComponentFromFile(null, builder, filePath, namedComponents, MacroHelpers.exprToMap(params), "rootComponent");
+        var bindings = [];
+        buildComponentFromFile(null, builder, filePath, namedComponents, null, bindings, MacroHelpers.exprToMap(params), "rootComponent");
+        buildInlineBindings(builder, namedComponents, bindings, true);
         builder.add(macro rootComponent);
-        trace(builder.toString());
         return builder.expr;
     }
 
@@ -113,7 +124,7 @@ class ComponentMacros {
 
     #if macro
 
-    public static function buildComponentFromFile(classBuilder:ClassBuilder, builder:CodeBuilder, filePath:String, namedComponents:Map<String, NamedComponentDescription> = null, bindingExprs:Array<Expr> = null, params:Map<String, Dynamic> = null, rootVarName:String = "this", buildRoot:Bool = true):ComponentInfo {
+    public static function buildComponentFromFile(classBuilder:ClassBuilder, builder:CodeBuilder, filePath:String, namedComponents:Map<String, NamedComponentDescription> = null, bindingExprs:Array<Expr> = null, bindings:Array<BindingDescription> = null, params:Map<String, Dynamic> = null, rootVarName:String = "this", buildRoot:Bool = true):ComponentInfo {
         var f = MacroHelpers.resolveFile(filePath);
         if (f == null) {
             throw "Could not resolve: " + filePath;
@@ -130,8 +141,12 @@ class ComponentMacros {
         }
 
         var scriptHandlers:Array<ScriptHandlerDescription> = [];
+        if (bindings == null) {
+            bindings = [];
+        }
+
         if (buildRoot == true) {
-            buildComponentNode(builder, c, 0, -1, namedComponents, bindingExprs, scriptHandlers, false);
+            buildComponentNode(builder, c, 0, -1, namedComponents, bindingExprs, scriptHandlers, bindings, false);
             builder.add(macro var $rootVarName = c0);
         }
 
@@ -148,7 +163,7 @@ class ComponentMacros {
         var n = 0;
         for (child in c.children) {
             var componentId = "c" + n;
-            var r = buildComponentFromInfo(builder, child, namedComponents, bindingExprs, params, function(componentInfo:ComponentInfo, codeBuilder:CodeBuilder) {
+            var r = buildComponentFromInfo(builder, child, namedComponents, bindingExprs, bindings, params, function(componentInfo:ComponentInfo, codeBuilder:CodeBuilder) {
                 codeBuilder.add(macro $i{rootVarName}.addComponent($i{componentId}));
                 for (scriptString in componentInfo.scriptlets) {
                     fullScript += scriptString;
@@ -157,7 +172,7 @@ class ComponentMacros {
             n = r;
         }
         if (buildRoot == false) {
-            assignComponentProperties(builder, c, rootVarName, bindingExprs, scriptHandlers);
+            assignComponentProperties(builder, c, rootVarName, bindingExprs, scriptHandlers, bindings);
         }
         
         if (classBuilder == null) {
@@ -174,7 +189,7 @@ class ComponentMacros {
         return c;
     }
 
-    public static function buildComponentFromString(builder:CodeBuilder, source:String, namedComponents:Map<String, NamedComponentDescription> = null, bindingExprs:Array<Expr> = null, params:Map<String, Dynamic> = null, rootVarName:String = "this"):ComponentInfo {
+    public static function buildComponentFromString(builder:CodeBuilder, source:String, namedComponents:Map<String, NamedComponentDescription> = null, bindingExprs:Array<Expr> = null, bindings:Array<BindingDescription> = null, params:Map<String, Dynamic> = null, rootVarName:String = "this"):ComponentInfo {
         source = StringUtil.replaceVars(source, params);
         var c:ComponentInfo = ComponentParser.get("xml").parse(source);
         for (s in c.styles) {
@@ -191,7 +206,7 @@ class ComponentMacros {
         var n = 0;
         for (child in c.children) {
             var componentId = "c" + n;
-            var r = buildComponentFromInfo(builder, child, namedComponents, bindingExprs, params, function(componentInfo:ComponentInfo, codeBuilder:CodeBuilder) {
+            var r = buildComponentFromInfo(builder, child, namedComponents, bindingExprs, bindings, params, function(componentInfo:ComponentInfo, codeBuilder:CodeBuilder) {
                 codeBuilder.add(macro $i{rootVarName}.addComponent($i{componentId}));
                 for (scriptString in componentInfo.scriptlets) {
                     fullScript += scriptString;
@@ -200,7 +215,8 @@ class ComponentMacros {
             n = r;
         }
         var scriptHandlers:Array<ScriptHandlerDescription> = [];
-        assignComponentProperties(builder, c, rootVarName, bindingExprs, scriptHandlers);
+        var bindings:Array<BindingDescription> = [];
+        assignComponentProperties(builder, c, rootVarName, bindingExprs, scriptHandlers, bindings);
         if (StringTools.trim(fullScript).length > 0) {
             builder.add(macro $i{rootVarName}.script = $v{fullScript});
         }
@@ -208,7 +224,7 @@ class ComponentMacros {
         return c;
     }
 
-    private static function buildComponentFromInfo(builder:CodeBuilder, c:ComponentInfo, namedComponents:Map<String, NamedComponentDescription> = null, bindingExprs:Array<Expr> = null, params:Map<String, Dynamic> = null, cb:ComponentInfo->CodeBuilder->Void = null, firstId:Int = 0) {
+    private static function buildComponentFromInfo(builder:CodeBuilder, c:ComponentInfo, namedComponents:Map<String, NamedComponentDescription> = null, bindingExprs:Array<Expr> = null, bindings:Array<BindingDescription> = null, params:Map<String, Dynamic> = null, cb:ComponentInfo->CodeBuilder->Void = null, firstId:Int = 0) {
         ModuleMacros.populateClassMap();
 
         if (namedComponents == null) {
@@ -224,8 +240,12 @@ class ComponentMacros {
         if (bindingExprs == null) {
             bindingExprs = [];
         }
+        if (bindings == null) {
+            trace("it was null");
+            bindings = [];
+        }
         var scriptHandlers:Array<ScriptHandlerDescription> = [];
-        var r = buildComponentNode(builder, c, firstId, -1, namedComponents, bindingExprs, scriptHandlers);
+        var r = buildComponentNode(builder, c, firstId, -1, namedComponents, bindingExprs, scriptHandlers, bindings);
 
         buildScriptHandlers(builder, namedComponents, scriptHandlers);
         
@@ -346,6 +366,12 @@ class ComponentMacros {
         }
     }
     
+    private static function buildInlineBindings(builder:CodeBuilder, namedComponents:Map<String, NamedComponentDescription>, bindings:Array<BindingDescription>, addLocalVars:Bool = false) {
+        for (binding in bindings) {
+            assignBinding(builder, binding.generatedVarName, binding.varProp, binding.bindingExpr, binding.propType, namedComponents, addLocalVars);
+        }
+    }
+    
     private static function buildScriptHandlers(builder:CodeBuilder, namedComponents:Map<String, NamedComponentDescription>, scriptHandlers:Array<ScriptHandlerDescription>) {
         // generate macro code for event handlers
         for (sh in scriptHandlers) {
@@ -400,7 +426,7 @@ class ComponentMacros {
     }
     
     // returns next free id
-    private static function buildComponentNode(builder:CodeBuilder, c:ComponentInfo, id:Int, parentId:Int, namedComponents:Map<String, NamedComponentDescription>, bindingExprs:Array<Expr>, scriptHandlers:Array<ScriptHandlerDescription>, recurseChildren:Bool = true) {
+    private static function buildComponentNode(builder:CodeBuilder, c:ComponentInfo, id:Int, parentId:Int, namedComponents:Map<String, NamedComponentDescription>, bindingExprs:Array<Expr>, scriptHandlers:Array<ScriptHandlerDescription>, bindings:Array<BindingDescription>, recurseChildren:Bool = true) {
         if (c.condition != null && new ConditionEvaluator().evaluate(c.condition) == false) {
             return id;
         }
@@ -448,7 +474,7 @@ class ComponentMacros {
             }
         }
 
-        assignComponentProperties(builder, c, componentVarName, bindingExprs, scriptHandlers);
+        assignComponentProperties(builder, c, componentVarName, bindingExprs, scriptHandlers, bindings);
         if (c.layout != null) {
             buildLayoutCode(builder, c.layout, id);
         }
@@ -479,7 +505,7 @@ class ComponentMacros {
                 if (useNamedComponents == false) {
                     nc = null;
                 }
-                childId = buildComponentNode(builder, child, childId, id, nc, bindingExprs, scriptHandlers);
+                childId = buildComponentNode(builder, child, childId, id, nc, bindingExprs, scriptHandlers, bindings);
             }
 
             if (parentId != -1) {
@@ -504,36 +530,36 @@ class ComponentMacros {
         };
 
         builder.add(macro var $layoutVarName = new $typePath());
-        assignProperties(builder, layoutVarName, l.properties, []);
+        assignProperties(builder, layoutVarName, l.properties, [], [], null);
 
         if (id != 0) {
             builder.add(macro $i{"c" + (id)}.layout = $i{"l" + id});
         }
     }
 
-    private static function assignComponentProperties(builder:CodeBuilder, c:ComponentInfo, componentVarName:String, bindingExprs:Array<Expr>, scriptHandlers:Array<ScriptHandlerDescription>) {
-        if (c.id != null)                       assignField(builder, componentVarName, "id", c.id, bindingExprs, c);
-        if (c.left != null)                     assignField(builder, componentVarName, "left", c.left, bindingExprs, c);
-        if (c.top != null)                      assignField(builder, componentVarName, "top", c.top, bindingExprs, c);
-        if (c.width != null)                    assignField(builder, componentVarName, "width", c.width, bindingExprs, c);
-        if (c.height != null)                   assignField(builder, componentVarName, "height", c.height, bindingExprs, c);
-        if (c.percentWidth != null)             assignField(builder, componentVarName, "percentWidth", c.percentWidth, bindingExprs, c);
-        if (c.percentHeight != null)            assignField(builder, componentVarName, "percentHeight", c.percentHeight, bindingExprs, c);
-        if (c.contentWidth != null)             assignField(builder, componentVarName, "contentWidth", c.contentWidth, bindingExprs, c);
-        if (c.contentHeight != null)            assignField(builder, componentVarName, "contentHeight", c.contentHeight, bindingExprs, c);
-        if (c.percentContentWidth != null)      assignField(builder, componentVarName, "percentContentWidth", c.percentContentWidth, bindingExprs, c);
-        if (c.percentContentHeight != null)     assignField(builder, componentVarName, "percentContentHeight", c.percentContentHeight, bindingExprs, c);
-        if (c.text != null)                     assignField(builder, componentVarName, "text", c.text, bindingExprs, c);
-        if (c.styleNames != null)               assignField(builder, componentVarName, "styleNames", c.styleNames, bindingExprs, c);
-        if (c.style != null)                    assignField(builder, componentVarName, "styleString", c.styleString, bindingExprs, c);
+    private static function assignComponentProperties(builder:CodeBuilder, c:ComponentInfo, componentVarName:String, bindingExprs:Array<Expr>, scriptHandlers:Array<ScriptHandlerDescription>, bindings:Array<BindingDescription>) {
+        if (c.id != null)                       assignField(builder, componentVarName, "id", c.id, bindingExprs, bindings, c);
+        if (c.left != null)                     assignField(builder, componentVarName, "left", c.left, bindingExprs, bindings, c);
+        if (c.top != null)                      assignField(builder, componentVarName, "top", c.top, bindingExprs, bindings, c);
+        if (c.width != null)                    assignField(builder, componentVarName, "width", c.width, bindingExprs, bindings, c);
+        if (c.height != null)                   assignField(builder, componentVarName, "height", c.height, bindingExprs, bindings, c);
+        if (c.percentWidth != null)             assignField(builder, componentVarName, "percentWidth", c.percentWidth, bindingExprs, bindings, c);
+        if (c.percentHeight != null)            assignField(builder, componentVarName, "percentHeight", c.percentHeight, bindingExprs, bindings, c);
+        if (c.contentWidth != null)             assignField(builder, componentVarName, "contentWidth", c.contentWidth, bindingExprs, bindings, c);
+        if (c.contentHeight != null)            assignField(builder, componentVarName, "contentHeight", c.contentHeight, bindingExprs, bindings, c);
+        if (c.percentContentWidth != null)      assignField(builder, componentVarName, "percentContentWidth", c.percentContentWidth, bindingExprs, bindings, c);
+        if (c.percentContentHeight != null)     assignField(builder, componentVarName, "percentContentHeight", c.percentContentHeight, bindingExprs, bindings, c);
+        if (c.text != null)                     assignField(builder, componentVarName, "text", c.text, bindingExprs, bindings, c);
+        if (c.styleNames != null)               assignField(builder, componentVarName, "styleNames", c.styleNames, bindingExprs, bindings, c);
+        if (c.style != null)                    assignField(builder, componentVarName, "styleString", c.styleString, bindingExprs, bindings, c);
 
-        assignProperties(builder, componentVarName, c.properties, scriptHandlers);
+        assignProperties(builder, componentVarName, c.properties, scriptHandlers, bindings, c);
     }
 
     // We'll re-use the same code for properties and components
     // certain things dont actually apply to layouts (namely "ComponentFieldMap", "on" and "${")
     // but they shouldnt cause any issues with layouts and the reuse is useful
-    private static function assignProperties(builder:CodeBuilder, varName:String, properties:Map<String, String>, scriptHandlers:Array<ScriptHandlerDescription>) {
+    private static function assignProperties(builder:CodeBuilder, varName:String, properties:Map<String, String>, scriptHandlers:Array<ScriptHandlerDescription>, bindings:Array<BindingDescription>, c:ComponentInfo) {
         for (propName in properties.keys()) {
             var propValue = properties.get(propName);
             propName = ComponentFieldMap.mapField(propName);
@@ -548,7 +574,14 @@ class ComponentMacros {
                     code: propValue
                 });
             } else if (Std.string(propValue).indexOf("${") != -1) {
-                builder.add(macro haxe.ui.binding.BindingManager.instance.add($i{varName}, $v{propName}, $v{propValue}));
+                //assignBinding(builder, varName, propName, propValue);
+                bindings.push({
+                    generatedVarName: varName,
+                    varProp: propName,
+                    bindingExpr: propValue,
+                    propType: TypeMap.getTypeInfo(c.resolvedClassName, propName)
+                });
+                //builder.add(macro haxe.ui.binding.BindingManager.instance.add($i{varName}, $v{propName}, $v{propValue}));
                 // Basically, if you try to apply a bound variable to something that isnt
                 // a string, then we cant assign it as normal, ie:
                 //     c5.selectedIndex = ${something}
@@ -557,16 +590,17 @@ class ComponentMacros {
                 // the following expr:
                 //     c5.fakeComponentProperty = c5.fakeComponentProperty
                 // which will result in a compile time error
-                builder.add(macro $i{varName}.$propName = $i{varName}.$propName);
+                //builder.add(macro $i{varName}.$propName = $i{varName}.$propName);
             } else {
                 builder.add(macro $i{varName}.$propName = $propExpr);
             }
         }
     }
 
-    private static function assignField(builder:CodeBuilder, varName:String, field:String, value:Any, bindingExprs:Array<Expr>, c:ComponentInfo) {
+    private static function assignField(builder:CodeBuilder, varName:String, field:String, value:Any, bindingExprs:Array<Expr>, bindings:Array<BindingDescription>, c:ComponentInfo) {
         var stringValue = Std.string(value);
         if (stringValue.indexOf("${") != -1) {
+            /*
             builder.add(macro haxe.ui.binding.BindingManager.instance.add($i{varName}, $v{field}, $v{value}));
             if (stringValue.indexOf("${") == 0 && stringValue.indexOf("}") == stringValue.length - 1) {
                 var extractedValue = stringValue.substring(2, stringValue.length - 1);
@@ -579,11 +613,93 @@ class ComponentMacros {
                         bindingExprs.push(macro $i{varName}.$field = $e{e});
                 }
             }
+            */
+            bindings.push({
+                generatedVarName: varName,
+                varProp: field,
+                bindingExpr: value,
+                propType: TypeMap.getTypeInfo(c.resolvedClassName, field)
+            });
+            
         } else if (stringValue.indexOf("{{") != -1 && stringValue.indexOf("}}") != -1) {
             builder.add(macro haxe.ui.binding.BindingManager.instance.addLanguageBinding($i{varName}, $v{field}, $v{value}));
         } else {
             builder.add(macro $i{varName}.$field = $v{value});
         }
+    }
+    
+    private static function assignBinding(builder:CodeBuilder, varName:String, varProp:String, bindingExpr:String, propType:String, namedComponents:Map<String, NamedComponentDescription>, addLocalVars:Bool = false) {
+        if (propType == "String") {
+            bindingExpr = StringTools.replace(bindingExpr, "'", "\"");
+            bindingExpr = "'" + bindingExpr + "'";
+        } else if (StringTools.startsWith(bindingExpr, "${") && StringTools.endsWith(bindingExpr, "}")) {
+            bindingExpr = bindingExpr.substr(2, bindingExpr.length - 1);
+        }
+        var expr = Context.parseInlineString(bindingExpr, Context.currentPos());
+        
+        var dependants = getDependants(expr);
+        var target = varName;
+        for (dependantName in dependants.keys()) {
+            if (namedComponents.exists(dependantName) == false) {
+                continue;
+            }
+            
+            var generatedDependantName = namedComponents.get(dependantName).generatedVarName;
+            
+            var ifBuilder = new CodeBuilder(macro {
+            });
+            
+            var propList = dependants.get(dependantName);
+            for (dependantProp in propList) {
+                ifBuilder.add(macro if (e.data == $v{dependantProp}) {
+                    $i{target}.$varProp = $e{expr};
+                });
+            }
+            
+            if (addLocalVars == true) {
+                for (namedComponent in namedComponents.keys()) {
+                    var namedComponentData = namedComponents.get(namedComponent);
+                    ifBuilder.addToStart(macro var $namedComponent = $i{namedComponentData.generatedVarName});
+                }
+            }
+            
+            builder.add(macro {
+                $i{generatedDependantName}.registerEvent(haxe.ui.events.UIEvent.PROPERTY_CHANGE, function(e:haxe.ui.events.UIEvent) {
+                    $e{ifBuilder.expr}
+                });
+            });
+        }
+    }
+    
+    private static function getDependants(expr:Expr):Map<String, Array<String>> {
+        var dependants:Map<String, Array<String>> = new Map<String, Array<String>>();
+        var iterateExprs = null;
+        iterateExprs = function(e:Expr) {
+            switch (e.expr) {
+                case EField({ expr: EConst(CIdent(varName)), pos: _}, varField):
+                    
+                    var list = dependants.get(varName);
+                    if (list == null) {
+                        list = [];
+                        dependants.set(varName, list);
+                    }
+                    if (list.indexOf(varField) == -1) {
+                        list.push(varField);
+                    }
+                case EConst(CString(s, SingleQuotes)):   
+                    var n1 = s.indexOf("${");
+                    while (n1 != -1) {
+                        var n2 = s.indexOf("}", n1);
+                        var code = s.substring(n1 + 2, n2);
+                        iterateExprs(Context.parseInlineString(code, Context.currentPos()));
+                        n1 = s.indexOf("${", n2);
+                    }
+                case _:
+                    ExprTools.iter(e, iterateExprs);
+            }
+        }
+        iterateExprs(expr);
+        return dependants;
     }
     #end
 }
