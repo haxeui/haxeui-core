@@ -12,6 +12,10 @@ import haxe.ui.events.UIEvent;
 import haxe.ui.geom.Point;
 
 class Scroll extends InteractiveComponent implements IDirectionalComponent {
+    private function new() {
+        super();
+    }
+
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************

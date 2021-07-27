@@ -17,6 +17,10 @@ import haxe.ui.util.Variant;
 
 @:composite(Builder)
 class Range extends InteractiveComponent implements IDirectionalComponent {
+    private function new() {
+        super();
+    }
+
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************

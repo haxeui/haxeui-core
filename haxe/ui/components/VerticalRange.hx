@@ -9,6 +9,10 @@ import haxe.ui.util.Variant;
 
 @:composite(VerticalRangeLayout)
 class VerticalRange extends Range {
+    public function new() {
+        super();
+    }
+
     //***********************************************************************************************************
     // Private API
     //***********************************************************************************************************

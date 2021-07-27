@@ -12,6 +12,9 @@ import haxe.ui.geom.Point;
 
 @:composite(SplitterEvents, SplitterBuilder)
 class Splitter extends Box implements IDirectionalComponent {
+    private function new() {
+        super();
+    }
 }
 
 //***********************************************************************************************************

@@ -6,6 +6,9 @@ import haxe.ui.layouts.DefaultLayout;
 
 @:composite(HorizontalSliderLayout, Builder)
 class HorizontalSlider extends Slider {
+    public function new() {
+        super();
+    }
 }
 
 //***********************************************************************************************************

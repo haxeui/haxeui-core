@@ -4,4 +4,7 @@ import haxe.ui.layouts.VerticalLayout;
 
 @:composite(VerticalLayout)
 class VerticalButtonBar extends ButtonBar {
+    public function new() {
+        super();
+    }
 }

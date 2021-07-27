@@ -14,6 +14,10 @@ import haxe.ui.util.Variant;
 
 @:composite(Events, Builder)
 class ButtonBar extends Box implements IDirectionalComponent {
+    private function new() {
+        super();
+    }
+    
     @:clonable @:behaviour(DefaultBehaviour, true)      public var toggle:Bool;
     @:clonable @:behaviour(SelectedIndex)               public var selectedIndex:Int;
     @:clonable @:behaviour(SelectedButton)              public var selectedButton:Component;

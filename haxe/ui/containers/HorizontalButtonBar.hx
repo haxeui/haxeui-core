@@ -4,4 +4,7 @@ import haxe.ui.layouts.HorizontalLayout;
 
 @:composite(HorizontalLayout)
 class HorizontalButtonBar extends ButtonBar {
+    public function new() {
+        super();
+    }
 }

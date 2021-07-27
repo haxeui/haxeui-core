@@ -18,6 +18,10 @@ import haxe.ui.util.Variant;
 
 @:composite(SliderBuilder)
 class Slider extends InteractiveComponent implements IDirectionalComponent {
+    private function new() {
+        super();
+    }
+
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************

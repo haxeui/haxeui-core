@@ -6,6 +6,10 @@ import haxe.ui.geom.Point;
 import haxe.ui.util.Variant;
 
 class HorizontalScroll extends Scroll {
+    public function new() {
+        super();
+    }
+    
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************

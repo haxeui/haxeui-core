@@ -4,6 +4,10 @@ import haxe.ui.geom.Point;
 
 @:composite(HorizontalRange.HorizontalRangeLayout)
 class HorizontalProgress extends Progress {
+    public function new() {
+        super();
+    }
+
     //***********************************************************************************************************
     // Private API
     //***********************************************************************************************************
