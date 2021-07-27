@@ -633,7 +633,7 @@ class ComponentMacros {
             bindingExpr = StringTools.replace(bindingExpr, "'", "\"");
             bindingExpr = "'" + bindingExpr + "'";
         } else if (StringTools.startsWith(bindingExpr, "${") && StringTools.endsWith(bindingExpr, "}")) {
-            bindingExpr = bindingExpr.substr(2, bindingExpr.length - 1);
+            bindingExpr = bindingExpr.substring(2, bindingExpr.length - 1);
         }
         var expr = Context.parseInlineString(bindingExpr, Context.currentPos());
         
@@ -686,7 +686,11 @@ class ComponentMacros {
                     if (list.indexOf(varField) == -1) {
                         list.push(varField);
                     }
+                #if haxe4    
                 case EConst(CString(s, SingleQuotes)):   
+                #else
+                case EConst(CString(s)):
+                #end
                     var n1 = s.indexOf("${");
                     while (n1 != -1) {
                         var n2 = s.indexOf("}", n1);
