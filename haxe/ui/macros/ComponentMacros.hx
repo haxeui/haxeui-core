@@ -241,7 +241,6 @@ class ComponentMacros {
             bindingExprs = [];
         }
         if (bindings == null) {
-            trace("it was null");
             bindings = [];
         }
         var scriptHandlers:Array<ScriptHandlerDescription> = [];
