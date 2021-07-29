@@ -1,7 +1,5 @@
 package haxe.ui.util;
 
-import haxe.ui.scripting.ScriptInterp;
-
 class GenericConfig {
     public var values:Map<String, String>;
     public var sections:Map<String, Array<GenericConfig>>;
@@ -93,22 +91,6 @@ class GenericConfig {
             }
         }
 
-        if (conditionRef != null) {
-            var n = q.indexOf("]");
-            var nq = q.substring(0, n + 1) + ".@condition";
-            var condition = query(nq, null, null);
-            if (condition != null) {
-                var interp:ScriptInterp = new ScriptInterp();
-                var parser = new hscript.Parser();
-                var line = parser.parseString(condition);
-                interp.variables.set("this", conditionRef);
-                var r:Bool = interp.expr(line);
-                if (r == false) {
-                    return defaultValue;
-                }
-            }
-        }
-
         if (value == null) {
             value = defaultValue;
         }
@@ -140,22 +122,6 @@ class GenericConfig {
 
             if (ref == null) {
                 return null;
-            }
-        }
-
-        if (conditionRef != null) {
-            var n = q.indexOf("]");
-            var nq = q.substring(0, n + 1) + ".@condition";
-            var condition = query(nq, null, null);
-            if (condition != null) {
-                var interp:ScriptInterp = new ScriptInterp();
-                var parser = new hscript.Parser();
-                var line = parser.parseString(condition);
-                interp.variables.set("this", conditionRef);
-                var r:Bool = interp.expr(line);
-                if (r == false) {
-                    return null;
-                }
             }
         }
 
