@@ -184,12 +184,7 @@ class ComponentMacros {
         if (classBuilder == null) {
             buildScriptFunctions(classBuilder, builder, buildData.namedComponents, fullScript);   
         }
-        
-        /*
-        if (StringTools.trim(fullScript).length > 0) {
-            builder.add(macro $i{rootVarName}.script = $v{fullScript});
-        }
-        */
+
         builder.add(macro $i{rootVarName}.bindingRoot = true);
         
         return c;
@@ -596,31 +591,18 @@ class ComponentMacros {
             var propExpr = macro $v{TypeConverter.convertFrom(propValue)};
 
             if (StringTools.startsWith(propName, "on")) {
-                //builder.add(macro $i{varName}.addScriptEvent($v{propName}, $propExpr));
-                
                 buildData.scripts.push({
                     generatedVarName: varName,
                     eventName: propName,
                     code: propValue
                 });
             } else if (Std.string(propValue).indexOf("${") != -1) {
-                //assignBinding(builder, varName, propName, propValue);
                 buildData.bindings.push({
                     generatedVarName: varName,
                     varProp: propName,
                     bindingExpr: propValue,
                     propType: TypeMap.getTypeInfo(c.resolvedClassName, propName)
                 });
-                //builder.add(macro haxe.ui.binding.BindingManager.instance.add($i{varName}, $v{propName}, $v{propValue}));
-                // Basically, if you try to apply a bound variable to something that isnt
-                // a string, then we cant assign it as normal, ie:
-                //     c5.selectedIndex = ${something}
-                // but, if we skip it, then you can use non-existing xml attributes in the xml (eg: fakeComponentProperty)
-                // and they will go unchecked and you wont get an error. This is a way around that, so it essentially generates
-                // the following expr:
-                //     c5.fakeComponentProperty = c5.fakeComponentProperty
-                // which will result in a compile time error
-                //builder.add(macro $i{varName}.$propName = $i{varName}.$propName);
             } else {
                 builder.add(macro $i{varName}.$propName = $propExpr);
             }
@@ -630,20 +612,6 @@ class ComponentMacros {
     private static function assignField(builder:CodeBuilder, varName:String, field:String, value:Any, buildData:BuildData, c:ComponentInfo) {
         var stringValue = Std.string(value);
         if (stringValue.indexOf("${") != -1) {
-            /*
-            builder.add(macro haxe.ui.binding.BindingManager.instance.add($i{varName}, $v{field}, $v{value}));
-            if (stringValue.indexOf("${") == 0 && stringValue.indexOf("}") == stringValue.length - 1) {
-                var extractedValue = stringValue.substring(2, stringValue.length - 1);
-                var e = Context.parse(extractedValue, Context.currentPos());
-                var typeInfo = TypeMap.getTypeInfo(c.resolvedClassName, field);
-                switch (typeInfo) {
-                    case "String":
-                        bindingExprs.push(macro $i{varName}.$field = "" + $e{e});
-                    default:
-                        bindingExprs.push(macro $i{varName}.$field = $e{e});
-                }
-            }
-            */
             buildData.bindings.push({
                 generatedVarName: varName,
                 varProp: field,
