@@ -2,6 +2,7 @@ package haxe.ui.macros;
 
 import haxe.ds.ArraySort;
 import haxe.ui.core.TypeMap;
+import haxe.ui.macros.ComponentMacros.BuildData;
 
 #if macro
 import haxe.io.Path;
@@ -402,9 +403,9 @@ class ModuleMacros {
         */
 
         var xml = sys.io.File.getContent(fullPath);
-        var namedComponents:Map<String, ComponentMacros.NamedComponentDescription> = new Map<String, ComponentMacros.NamedComponentDescription>();
+        var buildData:BuildData = { };
         var codeBuilder = new CodeBuilder();
-        var c = ComponentMacros.buildComponentFromString(codeBuilder, xml, namedComponents);
+        var c = ComponentMacros.buildComponentFromString(codeBuilder, xml, buildData);
 
         var superClassString = "haxe.ui.containers.Box";
         var superClassLookup:String = ComponentClassMap.get(c.type);
@@ -432,8 +433,8 @@ class ModuleMacros {
 
         var classBuilder = new ClassBuilder(newClass.fields, Context.currentPos());
 
-        for (name in namedComponents.keys()) {
-            var typeClass = namedComponents.get(name).type;
+        for (name in buildData.namedComponents.keys()) {
+            var typeClass = buildData.namedComponents.get(name).type;
             var typeParts = typeClass.split(".");
             var typeName = typeParts.pop();
             var t:TypePath = {

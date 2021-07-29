@@ -12,6 +12,7 @@ import haxe.ui.macros.helpers.CodePos;
 import haxe.ui.macros.helpers.FieldBuilder;
 import haxe.ui.util.StringUtil;
 import haxe.ui.macros.ComponentMacros.NamedComponentDescription;
+import haxe.ui.macros.ComponentMacros.BuildData;
 import haxe.macro.ExprTools;
 #end
 
@@ -44,21 +45,20 @@ class Macros {
         }
 
         var xml = builder.getClassMetaValue("xml");
-        var namedComponents:Map<String, NamedComponentDescription> = new Map<String, NamedComponentDescription>();
         var codeBuilder = new CodeBuilder();
-        var bindingExprs:Array<Expr> = [];
-        ComponentMacros.buildComponentFromString(codeBuilder, xml, namedComponents, bindingExprs);
+        var buildData:BuildData = { };
+        ComponentMacros.buildComponentFromString(codeBuilder, xml, buildData);
 
-        for (id in namedComponents.keys()) {
+        for (id in buildData.namedComponents.keys()) {
             var safeId:String = StringUtil.capitalizeHyphens(id);
-            var info:NamedComponentDescription = namedComponents.get(id);
+            var info:NamedComponentDescription = buildData.namedComponents.get(id);
             builder.addVar(safeId, TypeTools.toComplexType(Context.getType(info.type)));
             codeBuilder.add(macro
                 $i{safeId} = $i{info.generatedVarName}
             );
         }
 
-        for (expr in bindingExprs) {
+        for (expr in buildData.bindingExprs) {
             codeBuilder.add(expr);
         }
 
