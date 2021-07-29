@@ -440,8 +440,8 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             if (dispose == true) {
                 child._isDisposed = true;
                 child.removeAllComponents(true);
-                child.unregisterEvents();
                 child.destroyComponent();
+                child.unregisterEvents();
             }
         }
         handleRemoveComponent(child, dispose);
@@ -501,8 +501,8 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             }
             if (dispose == true) {
                 child._isDisposed = true;
-                child.unregisterEvents();
                 child.destroyComponent();
+                child.unregisterEvents();
             }
         }
 
