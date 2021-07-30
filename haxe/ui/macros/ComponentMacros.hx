@@ -257,10 +257,9 @@ class ComponentMacros {
             }
         }
 
-        var scripts:Array<ScriptData> = [];
         var r = buildComponentNode(builder, c, firstId, -1, buildData);
 
-        buildScriptHandlers(builder, buildData.namedComponents, scripts);
+        buildScriptHandlers(builder, buildData.namedComponents, buildData.scripts);
         
         if (cb != null) {
             cb(c, builder);
