@@ -444,6 +444,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
                 child.unregisterEvents();
             }
         }
+
         handleRemoveComponent(child, dispose);
         assignPositionClasses(invalidate);
         if (_children != null && invalidate == true) {
@@ -488,22 +489,27 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             }
         }
 
-        handleRemoveComponentAt(index, dispose);
         var child = _children[index];
-        if (_children != null) {
-            if (_children.remove(child)) {
-                child.parentComponent = null;
-                child.depth = -1;
-            }
-            assignPositionClasses(invalidate);
-            if (invalidate == true) {
-                invalidateComponentLayout();
-            }
-            if (dispose == true) {
-                child._isDisposed = true;
-                child.destroyComponent();
-                child.unregisterEvents();
-            }
+        if (child == null) {
+            return null;
+        }
+        
+        if (dispose == true) {
+            child._isDisposed = true;
+            child.unregisterEvents();
+        }
+        handleRemoveComponentAt(index, dispose);
+        if (_children.remove(child)) {
+            child.parentComponent = null;
+            child.depth = -1;
+        }
+        if (dispose == true) {
+            child.destroyComponent();
+        }
+        
+        assignPositionClasses(invalidate);
+        if (invalidate == true) {
+            invalidateComponentLayout();
         }
 
         if (_compositeBuilder != null) {
