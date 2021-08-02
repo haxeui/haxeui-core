@@ -2,7 +2,7 @@
 ** DROPDOWNS
 *************************************************************************/
 .dropdown {
-    icon: "haxeui-core/styles/default/up_down_arrows.png";
+    icon: "haxeui-core/styles/default/sortable_arrows.png";
     icon-position: far-right;
     text-align: left;
     padding: 5px;

@@ -1,0 +1,21 @@
+package haxe.ui.events;
+
+import haxe.ui.constants.SortDirection;
+
+class SortEvent extends UIEvent {
+    public static inline var SORT_CHANGED:String = "sortchanged";
+    
+    public var direction:SortDirection;
+    
+    public override function clone():SortEvent {
+        var c:SortEvent = new SortEvent(this.type);
+        c.type = this.type;
+        c.bubble = this.bubble;
+        c.target = this.target;
+        c.data = this.data;
+        c.canceled = this.canceled;
+        c.direction = this.direction;
+        postClone(c);
+        return c;
+    }
+}

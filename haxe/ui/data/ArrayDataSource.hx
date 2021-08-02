@@ -32,6 +32,11 @@ class ArrayDataSource<T> extends DataSource<T> {
         handleChanged();
     }
     
+    public override function sortCustom(fn:T->T->Int) {
+        _array.sort(fn);
+        handleChanged();
+    }
+    
     private override function handleGetSize():Int {
         if (_filteredArray != null) {
             return _filteredArray.length;

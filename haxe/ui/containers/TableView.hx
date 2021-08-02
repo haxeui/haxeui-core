@@ -21,6 +21,7 @@ import haxe.ui.data.transformation.NativeTypeTransformer;
 import haxe.ui.events.ItemEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.ScrollEvent;
+import haxe.ui.events.SortEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.geom.Rectangle;
 import haxe.ui.layouts.LayoutFactory;
@@ -357,6 +358,7 @@ private class Builder extends ScrollViewBuilder {
         } else if ((child is Header)) {
             _header = cast(child, Header);
             _header.registerEvent(UIEvent.COMPONENT_ADDED, onColumnAdded);
+            _header.registerEvent(SortEvent.SORT_CHANGED, onSortChanged);
 
             /*
             if (_tableview.itemRenderer == null) {
@@ -383,6 +385,15 @@ private class Builder extends ScrollViewBuilder {
         _component.invalidateComponentLayout();
     }
 
+    private function onSortChanged(e:SortEvent) {
+        var column = cast(e.target, Column);
+        var field = column.id;
+        if (column.sortField != null) {
+            field = column.sortField;
+        }
+        _tableview.dataSource.sort(field, e.direction);
+    }
+    
     public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
         if ((child is Header) == true) {
             _header = null;

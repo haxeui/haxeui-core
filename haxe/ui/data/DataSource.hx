@@ -1,5 +1,6 @@
 package haxe.ui.data;
 
+import haxe.ui.constants.SortDirection;
 import haxe.ui.data.transformation.IItemTransformer;
 
 class DataSource<T> {
@@ -137,6 +138,54 @@ class DataSource<T> {
         }
     }
 
+    public function sortCustom(fn:T->T->Int) {
+        
+    }
+    
+    public function sort(field:String = null, direction:SortDirection = null) {
+        sortCustom(sortByFn.bind(_, _, field, direction));
+    }
+    
+    private static var regexAlpha = new EReg("[^a-zA-Z]", "g");
+    private static var regexNumeric = new EReg("[^0-9]", "g");
+    private function sortByFn(o1:T, o2:T, field:String, direction:SortDirection):Int {
+        var f1:Dynamic = o1;
+        var f2:Dynamic = o2;
+        
+        if (field != null) {
+            f1 = Reflect.field(o1, field);
+            f2 = Reflect.field(o2, field);
+        }
+        
+        if (f1 == null || f2 == null) {
+            return 0;
+        }
+        
+        f1 = Std.string(f1);
+        f2 = Std.string(f2);
+        
+        if (direction == null) {
+            direction = SortDirection.ASCENDING;
+        }
+        
+        var high = 1;
+        var low = -1;
+        if (direction == SortDirection.DESCENDING) {
+            high = -1;
+            low = 1;
+        }
+        
+        var alpha1 = regexAlpha.replace(f1, "");
+        var alpha2 = regexAlpha.replace(f2, "");
+        if (alpha1 == alpha2) {
+            var numeric1 = Std.parseInt(regexNumeric.replace(f1, ""));
+            var numeric2 = Std.parseInt(regexNumeric.replace(f2, ""));
+            return numeric1 == numeric2 ? 0 : numeric1 > numeric2 ? high : low;
+        }
+        
+        return alpha1 > alpha2 ? high : low;
+    }
+    
     // overrides
     private function handleGetSize():Int {
         return 0;

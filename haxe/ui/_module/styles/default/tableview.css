@@ -22,9 +22,17 @@
     border-right-width: 1px;
 }
 
-.header .sortable {
-    icon: "haxeui-core/styles/default/up_down_arrows.png";
+.column.sortable {
+    icon: "haxeui-core/styles/default/sortable_arrows.png";
     icon-position: far-right;
+}
+
+.column.sort-asc {
+    icon: "haxeui-core/styles/default/sortable_asc.png";
+}
+
+.column.sort-desc {
+    icon: "haxeui-core/styles/default/sortable_desc.png";
 }
 
 /************************************************************************
