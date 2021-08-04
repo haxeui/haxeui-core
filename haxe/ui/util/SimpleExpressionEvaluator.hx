@@ -159,8 +159,18 @@ class SimpleExpressionEvaluator {
                 if (trimmedCall.length > 0) {
                     var callParts = trimmedCall.split(".");
                     var ref:Dynamic = context;
+                    var prevRef:Dynamic = null;
                     for (callPart in callParts) {
-                        ref = Reflect.field(ref, callPart);
+                        prevRef = ref;
+                        if (Reflect.hasField(ref, callPart)) {
+                            ref = Reflect.field(ref, callPart);
+                        } else {
+                            ref = Reflect.getProperty(ref, callPart);
+                        }
+                        
+                        if (ref == null) {
+                            throw callPart + " not found";
+                        }
                     }
                     
                     if (ref != null && Reflect.isFunction(ref)) {
@@ -169,7 +179,7 @@ class SimpleExpressionEvaluator {
                             var paramResult = eval(param, context);
                             paramValues.push(paramResult);
                         }
-                        result = Reflect.callMethod(null, ref, paramValues);
+                        result = Reflect.callMethod(prevRef, ref, paramValues);
                     }
                 }
             } else if (prop != null) {
