@@ -14,6 +14,7 @@ import haxe.ui.parsers.ui.ComponentParser;
 import haxe.ui.parsers.ui.LayoutInfo;
 import haxe.ui.parsers.ui.resolvers.FileResourceResolver;
 import haxe.ui.scripting.ConditionEvaluator;
+import haxe.ui.util.ExpressionUtil;
 import haxe.ui.util.StringUtil;
 import haxe.ui.util.TypeConverter;
 
@@ -41,11 +42,18 @@ typedef BindingData = {
     var propType:String;
 }
 
+typedef LanguageBindingData = {
+    var generatedVarName:String;
+    var varProp:String;
+    var bindingExpr:String;
+}
+
 typedef BuildData = {
     @:optional var namedComponents:Map<String, NamedComponentDescription>;
     @:optional var bindingExprs:Array<Expr>;
     @:optional var scripts:Array<ScriptData>;
     @:optional var bindings:Array<BindingData>;
+    @:optional var languageBindings:Array<LanguageBindingData>;
     @:optional var params:Map<String, Dynamic>;
 }
 
@@ -101,7 +109,8 @@ class ComponentMacros {
             codeBuilder.add(expr);
         }
 
-        buildInlineBindings(codeBuilder, buildData);
+        buildBindings(codeBuilder, buildData);
+        buildLanguageBindings(codeBuilder, buildData);
         
         builder.ctor.add(codeBuilder, AfterSuper);
 
@@ -114,7 +123,8 @@ class ComponentMacros {
             params: MacroHelpers.exprToMap(params)
         };
         buildComponentFromFile(null, builder, filePath, buildData, "rootComponent");
-        buildInlineBindings(builder, buildData, true);
+        buildBindings(builder, buildData, true);
+        buildLanguageBindings(builder, buildData, true);
         builder.add(macro rootComponent);
         return builder.expr;
     }
@@ -202,6 +212,9 @@ class ComponentMacros {
         }
         if (buildData.bindings == null) {
             buildData.bindings = [];
+        }
+        if (buildData.languageBindings == null) {
+            buildData.languageBindings = [];
         }
         if (buildData.bindingExprs == null) {
             buildData.bindingExprs = [];
@@ -378,7 +391,53 @@ class ComponentMacros {
         }
     }
     
-    private static function buildInlineBindings(builder:CodeBuilder, buildData:BuildData, addLocalVars:Bool = false) {
+    private static function buildLanguageBindings(builder:CodeBuilder, buildData:BuildData, addLocalVars:Bool = false) {
+        for (languageBinding in buildData.languageBindings) {
+            assignLanguageBinding(builder, languageBinding, buildData.namedComponents, addLocalVars);
+        }
+    }
+    
+    private static function assignLanguageBinding(builder:CodeBuilder, languageBinding:LanguageBindingData, namedComponents:Map<String, NamedComponentDescription>, addLocalVars:Bool = false) {
+        var fixedExpr = ExpressionUtil.stringToLanguageExpression(languageBinding.bindingExpr);
+        if (StringTools.endsWith(fixedExpr, ";") == false) {
+            fixedExpr += ";";
+        }
+        var varName = languageBinding.generatedVarName;
+        var field = languageBinding.varProp;
+        var expr = Context.parseInlineString(fixedExpr, Context.currentPos());
+        
+        var dependants:Map<String, Array<String>> = getDependants(expr);
+        for (dependantName in dependants.keys()) {
+            if (namedComponents.exists(dependantName) == false) {
+                continue;
+            }
+            
+            var generatedDependantName = namedComponents.get(dependantName).generatedVarName;
+            var ifBuilder = new CodeBuilder(macro {
+            });
+            
+            var propList = dependants.get(dependantName);
+            for (dependantProp in propList) {
+                ifBuilder.add(macro if (e.data == $v{dependantProp}) {
+                    //haxe.ui.locale.LocaleManager.instance.refreshFor($i{varName});
+                    haxe.ui.locale.LocaleManager.instance.refreshAll();
+                });
+            }
+            
+            builder.add(macro {
+                $i{generatedDependantName}.registerEvent(haxe.ui.events.UIEvent.PROPERTY_CHANGE, function(e:haxe.ui.events.UIEvent) {
+                    $e{ifBuilder.expr}
+                });
+            });
+        }
+        
+        builder.add(macro $i{varName}.$field = $e{expr});
+        builder.add(macro haxe.ui.locale.LocaleManager.instance.registerComponent($i{varName}, $v{field}, function() {
+            return $e{expr};
+        }));
+    }
+    
+    private static function buildBindings(builder:CodeBuilder, buildData:BuildData, addLocalVars:Bool = false) {
         for (binding in buildData.bindings) {
             assignBinding(builder, binding, buildData.namedComponents, addLocalVars);
         }
@@ -521,6 +580,7 @@ class ComponentMacros {
                     namedComponents: nc,
                     bindingExprs: buildData.bindingExprs,
                     bindings: buildData.bindings,
+                    languageBindings: buildData.languageBindings,
                     scripts: buildData.scripts
                 });
             }
@@ -619,7 +679,12 @@ class ComponentMacros {
             });
             
         } else if (stringValue.indexOf("{{") != -1 && stringValue.indexOf("}}") != -1) {
-            builder.add(macro haxe.ui.binding.BindingManager.instance.addLanguageBinding($i{varName}, $v{field}, $v{value}));
+            buildData.languageBindings.push({
+                generatedVarName: varName,
+                varProp: field,
+                bindingExpr: value,
+            });
+            builder.add(macro $i{varName}.$field = $v{value});
         } else {
             builder.add(macro $i{varName}.$field = $v{value});
         }

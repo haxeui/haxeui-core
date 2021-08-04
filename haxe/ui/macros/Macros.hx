@@ -243,11 +243,6 @@ class Macros {
         for (f in builder.getFieldsWithMeta("bindable")) {
             var setFn = builder.findFunction("set_" + f.name);
             TypeMap.addTypeInfo(builder.fullPath, f.name, ComplexTypeTools.toString(f.type));
-            if (setFn != null) {
-                setFn.add(macro
-                    haxe.ui.binding.BindingManager.instance.componentPropChanged(cast this, $v{f.name})
-                );
-            }
         }
 
         var bindFields = builder.getFieldsWithMeta("bind");
@@ -323,7 +318,6 @@ class Macros {
                 }
             }
         });
-        cloneFn.add(macro haxe.ui.binding.BindingManager.instance.cloneBinding(cast this, cast c));
         cloneFn.add(macro return c);
 
         var hasOverriddenSelf = (builder.findFunction("self") != null);
@@ -400,14 +394,12 @@ class Macros {
                     if (f.isDynamic == true) {
                         newField = builder.addSetter(f.name, f.type, macro { // add a normal (Variant) setter but let the binding manager know that the value has changed
                             behaviours.setDynamic($v{f.name}, value);
-                            haxe.ui.binding.BindingManager.instance.componentPropChanged(this, "value");
                             dispatch(new haxe.ui.events.UIEvent(haxe.ui.events.UIEvent.PROPERTY_CHANGE, $v{f.name}));
                             return value;
                         }, f.access);
                     } else {
                         newField = builder.addSetter(f.name, f.type, macro { // add a normal (Variant) setter but let the binding manager know that the value has changed
                             behaviours.set($v{f.name}, value);
-                            haxe.ui.binding.BindingManager.instance.componentPropChanged(this, "value");
                             dispatch(new haxe.ui.events.UIEvent(haxe.ui.events.UIEvent.PROPERTY_CHANGE, $v{f.name}));
                             return value;
                         }, f.access);
@@ -425,7 +417,7 @@ class Macros {
                             switch (Type.typeof(value)) {
                                 case TClass(String):
                                     if (value != null && value.indexOf("{{") != -1 && value.indexOf("}}") != -1) {
-                                        haxe.ui.binding.BindingManager.instance.addLanguageBinding(cast this, $v{f.name}, value);
+                                        haxe.ui.locale.LocaleManager.instance.registerComponent(cast this, $v{f.name}, value);
                                         return value;
                                     }
                                 case _:    
@@ -494,7 +486,6 @@ class Macros {
 
                 builder.addSetter(f.name, macro: Dynamic, macro {
                     $i{propName} = haxe.ui.util.Variant.fromDynamic(value);
-                    haxe.ui.binding.BindingManager.instance.componentPropChanged(this, $v{propName});
                     return value;
                 }, false, true);
             } else {
@@ -504,7 +495,6 @@ class Macros {
 
                 builder.addSetter(f.name, macro: Dynamic, macro {
                     $i{propName} = value;
-                    haxe.ui.binding.BindingManager.instance.componentPropChanged(this, $v{propName});
                     return value;
                 }, false, true);
             }

@@ -148,14 +148,6 @@ class DialogBase extends Box {
                 var buttonComponent = new Button();
                 buttonComponent.id = button.toString();
                 var text = buttonComponent.id;
-                if (text.indexOf("{{") == 0 && text.indexOf("}}") == text.length - 2) {
-                    BindingManager.instance.addLanguageBinding(buttonComponent, "text", text);
-                    text = text.substr(2, text.length - 4);
-                }
-                var translatedText = LocaleManager.instance.lookupString(text);
-                if (translatedText != null) {
-                    text = translatedText;
-                }
                 buttonComponent.text = text;
                 buttonComponent.userData = button;
                 buttonComponent.registerEvent(MouseEvent.CLICK, onFooterButtonClick);

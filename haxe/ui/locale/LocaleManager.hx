@@ -1,9 +1,19 @@
 package haxe.ui.locale;
+
 import haxe.ui.ToolkitAssets;
-import haxe.ui.binding.BindingManager;
+import haxe.ui.core.Component;
+import haxe.ui.events.UIEvent;
 import haxe.ui.locale.LocaleEvent;
 import haxe.ui.parsers.locale.LocaleParser;
 import haxe.ui.util.EventMap;
+import haxe.ui.util.ExpressionUtil;
+import haxe.ui.util.MathUtil;
+import haxe.ui.util.SimpleExpressionEvaluator;
+
+typedef ComponentLocaleEntry = {
+    @:optional var callback:Void->Dynamic;
+    @:optional var expr:String;
+}
 
 class LocaleManager {
     private static var _instance:LocaleManager;
@@ -24,6 +34,96 @@ class LocaleManager {
     private function new() {
     }
     
+    private static var _registeredComponents:Map<Component, Map<String, ComponentLocaleEntry>> = new Map<Component, Map<String, ComponentLocaleEntry>>();
+    public function registerComponent(component:Component, prop:String, callback:Void->Dynamic = null, expr:String = null, fix:Bool = true) {
+        if (callback == null && expr == null) {
+            return;
+        }
+        
+        var fixedExpr:String = null;
+        if (fix == true) {
+            if (expr != null) {
+                fixedExpr = ExpressionUtil.stringToLanguageExpression(expr, "LocaleManager");
+                if (StringTools.endsWith(fixedExpr, ";") == true) {
+                    fixedExpr = fixedExpr.substr(0, fixedExpr.length - 1);
+                }
+            }
+        } else {
+            fixedExpr = expr;
+        }
+        
+        var propMap = _registeredComponents.get(component);
+        if (propMap == null) {
+            propMap = new Map<String, ComponentLocaleEntry>();
+            _registeredComponents.set(component, propMap);
+        }
+        propMap.set(prop, {
+            callback: callback,
+            expr: fixedExpr
+        });
+        refreshFor(component);
+    }
+    
+    public function cloneForComponent(from:Component, to:Component) {
+        var propMap = _registeredComponents.get(from);
+        if (propMap == null) {
+            return;
+        }
+        
+        for (prop in propMap.keys()) {
+            var entry = propMap.get(prop);
+            registerComponent(to, prop, entry.callback, entry.expr, false);
+        }
+    }
+    
+    private function onComponentReady(e:UIEvent) {
+        e.target.unregisterEvent(UIEvent.INITIALIZE, onComponentReady);
+        refreshFor(e.target);
+    }
+    
+    public function refreshFor(component:Component) {
+        if (component.isReady == false) {
+            component.registerEvent(UIEvent.INITIALIZE, onComponentReady);
+            return;
+        }
+        
+        var propMap = _registeredComponents.get(component);
+        if (propMap == null) {
+            return;
+        }
+
+        var context = {
+            LocaleManager: LocaleManager,
+            MathUtil: MathUtil
+        }
+
+        var root = findRoot(component);
+        for (k in root.namedComponents) {
+            if (k.scriptAccess == false) {
+                continue;
+            }
+            Reflect.setField(context, k.id, k);
+        }
+        
+        
+        for (prop in propMap.keys()) {
+            var entry = propMap.get(prop);
+            if (entry.callback != null) {
+                var value = entry.callback();
+                Reflect.setProperty(component, prop, value);
+            } else if (entry.expr != null) {
+                var value = SimpleExpressionEvaluator.eval(entry.expr, context);
+                Reflect.setProperty(component, prop, value);
+            }
+        }
+    }
+    
+    public function refreshAll() {
+        for (c in _registeredComponents.keys()) {
+            refreshFor(c);
+        }
+    }
+    
     private var _language:String = "en";
     public var language(get, set):String;
     private function get_language():String {
@@ -42,7 +142,7 @@ class LocaleManager {
         }
         
         _language = value;
-        BindingManager.instance.refreshAll();
+        refreshAll();
         if (_eventMap != null) {
             var event = new LocaleEvent(LocaleEvent.LOCALE_CHANGED);
             _eventMap.invoke(LocaleEvent.LOCALE_CHANGED, event);
@@ -152,5 +252,20 @@ class LocaleManager {
         if (param3 != null) value = StringTools.replace(value, "{3}", param3);
         
         return value;
+    }
+    
+    private function findRoot(c:Component):Component {
+        var root = c;
+
+        var ref = c;
+        while (ref != null) {
+            root = ref;
+            if (root.bindingRoot) {
+                break;
+            }
+            ref = ref.parentComponent;
+        }
+
+        return root;
     }
 }

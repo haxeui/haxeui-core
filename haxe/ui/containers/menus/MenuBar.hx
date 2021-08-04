@@ -14,6 +14,7 @@ import haxe.ui.core.Screen;
 import haxe.ui.events.Events;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
+import haxe.ui.locale.LocaleManager;
 
 #if (haxe_ver >= 4.2)
 import Std.isOfType;
@@ -283,7 +284,7 @@ private class Builder extends CompositeBuilder {
             button.icon = menu.icon;
             button.tooltip = menu.tooltip;
             button.toggle = hasChildren;
-            BindingManager.instance.cloneBinding(child, button);
+            LocaleManager.instance.cloneForComponent(child, button);
             _buttons.push(button);
             _menubar.addComponent(button);
             _menubar.registerInternalEvents(true);

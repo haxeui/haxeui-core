@@ -173,7 +173,7 @@ class BindingManager {
         return propInfo;
     }
     
-    public function addLanguageBinding(c:Component, prop:String, script:String, overwrite:Bool = true) {
+    public function addLanguageBinding_old(c:Component, prop:String, script:String, overwrite:Bool = true) {
         if (hasBindingInfo(c, prop, script) == true && overwrite == false) {
             return;
         }
@@ -221,7 +221,7 @@ class BindingManager {
         bindingInfo.remove(c);
     }
     
-    public function cloneBinding(from:Component, to:Component) {
+    public function cloneBinding_old(from:Component, to:Component) {
         var info = bindingInfo.get(from);
         if (info == null) {
             return;
@@ -232,7 +232,7 @@ class BindingManager {
             if (propInfo.languageBinding == false) {
                 add(to, prop, propInfo.script);
             } else {
-                addLanguageBinding(to, prop, propInfo.script);
+                addLanguageBinding_old(to, prop, propInfo.script);
             }
         }
     }
