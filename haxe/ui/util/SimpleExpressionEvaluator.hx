@@ -13,6 +13,8 @@ enum SimpleExpressionEvaluatorOperation {
     GreaterThanOrEquals;    // >=
     LessThan;               // <
     LessThanOrEquals;       // <=
+    LogicalAnd;             // &&
+    LogicalOr;              // ||
 }
 
 class SimpleExpressionEvaluator {
@@ -69,6 +71,14 @@ class SimpleExpressionEvaluator {
                     break;
                 } else if (ch == "<" && next == "=") {
                     operation = LessThanOrEquals;
+                    s = s.substr(i + 2);
+                    break;
+                } else if (ch == "&" && next == "&") {
+                    operation = LogicalAnd;
+                    s = s.substr(i + 2);
+                    break;
+                } else if (ch == "|" && next == "|") {
+                    operation = LogicalOr;
                     s = s.substr(i + 2);
                     break;
                 }
@@ -222,6 +232,10 @@ class SimpleExpressionEvaluator {
                     result = result < r;
                 case LessThanOrEquals:
                     result = result <= r;
+                case LogicalAnd:
+                    result = result && r;
+                case LogicalOr:
+                    result = result || r;
             }
         }
         
