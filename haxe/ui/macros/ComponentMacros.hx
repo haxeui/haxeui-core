@@ -13,8 +13,8 @@ import haxe.ui.parsers.ui.ComponentInfo;
 import haxe.ui.parsers.ui.ComponentParser;
 import haxe.ui.parsers.ui.LayoutInfo;
 import haxe.ui.parsers.ui.resolvers.FileResourceResolver;
-import haxe.ui.scripting.ConditionEvaluator;
 import haxe.ui.util.ExpressionUtil;
+import haxe.ui.util.SimpleExpressionEvaluator;
 import haxe.ui.util.StringUtil;
 import haxe.ui.util.TypeConverter;
 
@@ -180,6 +180,9 @@ class ComponentMacros {
         for (child in c.children) {
             var componentId = "c" + n;
             var r = buildComponentFromInfo(builder, child, buildData, function(componentInfo:ComponentInfo, codeBuilder:CodeBuilder) {
+                if (componentInfo.condition != null && SimpleExpressionEvaluator.evalCondition(componentInfo.condition) == false) {
+                    return;
+                }
                 codeBuilder.add(macro $i{rootVarName}.addComponent($i{componentId}));
                 for (scriptString in componentInfo.scriptlets) {
                     fullScript += scriptString;
@@ -498,7 +501,7 @@ class ComponentMacros {
     
     // returns next free id
     private static function buildComponentNode(builder:CodeBuilder, c:ComponentInfo, id:Int, parentId:Int, buildData:BuildData, recurseChildren:Bool = true) {
-        if (c.condition != null && new ConditionEvaluator().evaluate(c.condition) == false) {
+        if (c.condition != null && SimpleExpressionEvaluator.evalCondition(c.condition) == false) {
             return id;
         }
 

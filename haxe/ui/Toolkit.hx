@@ -22,11 +22,11 @@ import haxe.ui.parsers.ui.ComponentParser;
 import haxe.ui.parsers.ui.LayoutInfo;
 import haxe.ui.parsers.ui.resolvers.AssetResourceResolver;
 import haxe.ui.parsers.ui.resolvers.ResourceResolver;
-import haxe.ui.scripting.ConditionEvaluator;
 import haxe.ui.styles.CompositeStyleSheet;
 import haxe.ui.themes.ThemeManager;
 import haxe.ui.util.GenericConfig;
 import haxe.ui.util.Properties;
+import haxe.ui.util.SimpleExpressionEvaluator;
 import haxe.ui.util.TypeConverter;
 import haxe.ui.util.Variant;
 
@@ -205,7 +205,7 @@ class Toolkit {
     }
 
     private static function buildComponentFromInfo(c:ComponentInfo, callback:Component->Void):Component {
-        if (c.condition != null && new ConditionEvaluator().evaluate(c.condition) == false) {
+        if (c.condition != null && SimpleExpressionEvaluator.evalCondition(c.condition) == false) {
             return null;
         }
 

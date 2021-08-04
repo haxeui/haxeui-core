@@ -18,6 +18,13 @@ enum SimpleExpressionEvaluatorOperation {
 }
 
 class SimpleExpressionEvaluator {
+    public static function evalCondition(condition:String):Bool {
+        return eval(condition, {
+            Backend: Backend,
+            backend: Backend.id
+        });
+    }
+    
     public static function eval(s:String, context:Dynamic = null):Dynamic {
         var result:Dynamic = null;
 
