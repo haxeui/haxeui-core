@@ -11,7 +11,6 @@ import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.DelegateLayout;
 import haxe.ui.layouts.Layout;
 import haxe.ui.locale.LocaleManager;
-import haxe.ui.scripting.ScriptInterp;
 import haxe.ui.styles.Parser;
 import haxe.ui.styles.Style;
 import haxe.ui.styles.StyleSheet;
@@ -1282,8 +1281,6 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             _ready = true;
             handleReady();
 
-            initScript();
-
             if (childComponents != null) {
                 for (child in childComponents) {
                     child.ready();
@@ -1364,138 +1361,6 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     **/
     @:dox(group = "Script related properties and methods")
     public var scriptAccess:Bool = true;
-
-    private var _interp:ScriptInterp;
-    private var _script:String;
-    /**
-     A script string to associate with this component
-
-     *Note*: setting this to non-null will cause this component to create and maintain its own script interpreter during initialsation
-    **/
-    @:dox(group = "Script related properties and methods")
-    public var script(null, set):String;
-    private function set_script(value:String):String {
-        _script = value;
-        return value;
-    }
-
-    /**
-     Execute a script call
-
-     *Note*: this component will first attempt to use its own script interpreter if its avialable otherwise it will scan its parents until it finds one
-    **/
-    @:dox(group = "Script related properties and methods")
-    public function executeScriptCall(expr:String, variables:Map<String, Any> = null) {
-        try {
-            var parser = new hscript.Parser();
-            var line = parser.parseString(expr);
-            var interp:ScriptInterp = findScriptInterp();
-            interp.variables.set("this", this);
-            if (variables != null) {
-                for (k in variables.keys()) {
-                    interp.variables.set(k, variables.get(k));
-                }
-            }
-            interp.expr(line);
-            interp.variables.remove("this");
-            if (variables != null) {
-                for (k in variables.keys()) {
-                    interp.variables.remove(k);
-                }
-            }
-        } catch (e:Dynamic) {
-            #if !allow_script_errors
-            trace("Problem executing scriptlet: " + e);
-            #end
-        }
-    }
-
-    private function findScriptInterp(refreshNamedComponents:Bool = true):ScriptInterp {
-        var interp:ScriptInterp = null;
-        var c:Component = this;
-        while (c != null && interp == null) {
-            if (c._interp != null) {
-                interp = c._interp;
-                break;
-            }
-            c = c.parentComponent;
-        }
-
-        if (interp == null) {
-            c = rootComponent;
-            c._interp = new ScriptInterp();
-            interp = c._interp;
-        }
-
-        if (refreshNamedComponents == true && c != null) {
-            var comps:Array<Component> = c.namedComponents;
-            for (comp in comps) {
-                var safeId = StringUtil.capitalizeHyphens(comp.id);
-                interp.variables.set(safeId, comp);
-            }
-        }
-
-        return interp;
-    }
-
-    private function initScript() {
-        if (_script != null) {
-            try {
-                var parser = new hscript.Parser();
-                var program = parser.parseString(_script);
-                _interp = new ScriptInterp();
-
-                var comps:Array<Component> = namedComponents;
-                for (comp in comps) {
-                    if (comp.scriptAccess == true) {
-                        var safeId = StringUtil.capitalizeHyphens(comp.id);
-                        _interp.variables.set(safeId, comp);
-                    }
-                }
-
-                _interp.execute(program);
-            } catch (e:Dynamic) {
-                #if neko
-                trace("Problem initializing script");
-                #else
-                trace("Problem initializing script: " + e);
-                #end
-            }
-        }
-    }
-
-    private var _scriptEvents:Map<String, String>;
-
-    public var scriptEvents(get, null):Map<String, String>;
-    private function get_scriptEvents():Map<String, String> {
-        return _scriptEvents;
-    }
-
-    /**
-     Registers a piece of hscript to be execute when a certain `UIEvent` is fired
-    **/
-    @:dox(group = "Script related properties and methods")
-    public function addScriptEvent(event:String, script:String) {
-        event = event.toLowerCase();
-        var eventName = StringTools.startsWith(event, "on") ? event.substring(2, event.length) : event;
-        if (_scriptEvents == null) {
-            _scriptEvents = new Map<String, String>();
-        }
-        _scriptEvents.set(event, script);
-        registerEvent(eventName, _onScriptEvent.bind(event, _));
-    }
-
-    private function _onScriptEvent(eventId:String, event:UIEvent) {
-        if (_scriptEvents != null) {
-            var script:String = _scriptEvents.get(eventId);
-            if (script != null) {
-                event.cancel();
-                var variables = new Map<String, Any>();
-                variables.set("event", event);
-                executeScriptCall(script, variables);
-            }
-        }
-    }
 
     /**
      Recursively generates list of all child components that have specified an `id`
@@ -1959,11 +1824,6 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         }
         if (autoHeight == false && this.height > 0) {
             c.height = this.height;
-        }
-        if (_scriptEvents != null) {
-            for (k in _scriptEvents.keys()) {
-                c.addScriptEvent(k, _scriptEvents.get(k));
-            }
         }
         if (customStyle != null) {
             if (c.customStyle == null) {

@@ -1,7 +1,4 @@
--lib hscript
-#-lib actuate
 -lib haxeui-blank
-#-lib yaml
 
 #-main haxe.ui.Dox
 -cp .

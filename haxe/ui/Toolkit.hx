@@ -197,7 +197,7 @@ class Toolkit {
             fullScript += scriptString;
         }
 
-        component.script = fullScript;
+        //component.script = fullScript;
 
         return component;
     }
@@ -246,7 +246,7 @@ class Toolkit {
             var propValue:Dynamic = c.properties.get(propName);
             propName = ComponentFieldMap.mapField(propName);
             if (StringTools.startsWith(propName, "on")) {
-                component.addScriptEvent(propName, propValue);
+                //component.addScriptEvent(propName, propValue);
             } else {
                 propValue = TypeConverter.convertFrom(propValue);
                 Reflect.setProperty(component, propName, propValue);

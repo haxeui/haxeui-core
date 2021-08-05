@@ -4,7 +4,6 @@
 -lib haxeui-core
 -lib haxeui-qt
 -lib hxQt
--lib hscript
 
 -D HXCPP_M64
 

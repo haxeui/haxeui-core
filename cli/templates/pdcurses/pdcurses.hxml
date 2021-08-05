@@ -3,6 +3,5 @@
 
 -lib haxeui-core
 -lib haxeui-pdcurses
--lib hscript
 
 -cpp build/pdcurses

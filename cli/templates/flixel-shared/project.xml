@@ -46,7 +46,6 @@
 	<!--In case you want to use nape with flixel-->
 	<!-- <haxelib name="nape" />     -->
 	
-	<haxelib name="hscript" />
 	<haxelib name="haxeui-core" />
 	<haxelib name="haxeui-flixel" />
 	

@@ -29,7 +29,6 @@
   <!-- haxelib libraries -->
   <haxelib>
     <library name="hxWidgets" />
-    <library name="hscript" />
     <library name="haxeui-core" />
     <library name="haxeui-hxwidgets" />
   </haxelib>

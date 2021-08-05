@@ -3,6 +3,5 @@
 
 -lib haxeui-core
 -lib haxeui-winforms
--lib hscript
 
 -cs build/winforms

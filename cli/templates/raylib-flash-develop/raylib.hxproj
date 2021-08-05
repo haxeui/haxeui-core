@@ -29,7 +29,6 @@
   <!-- haxelib libraries -->
   <haxelib>
     <library name="raylib-haxe" />
-    <library name="hscript" />
     <library name="haxeui-core" />
     <library name="haxeui-raylib" />
   </haxelib>

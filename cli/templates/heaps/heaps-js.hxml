@@ -4,7 +4,6 @@
 -lib heaps
 -lib haxeui-core
 -lib haxeui-heaps
--lib hscript
 
 -D resourcesPath=assets
 

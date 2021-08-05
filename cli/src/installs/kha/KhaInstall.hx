@@ -6,8 +6,7 @@ class KhaInstall extends HaxeLibInstall {
     public function new() {
         super([
             "haxeui-core",
-            "haxeui-kha",
-            "hscript"
+            "haxeui-kha"
         ]);
     }
 

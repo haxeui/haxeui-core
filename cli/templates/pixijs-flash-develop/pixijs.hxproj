@@ -31,7 +31,6 @@
     <library name="pixijs" />
     <library name="haxeui-core" />
     <library name="haxeui-pixijs" />
-    <library name="hscript" />
     <library name="actuate" />
   </haxelib>
   <!-- Class files to compile (other referenced classes will automatically be included) -->

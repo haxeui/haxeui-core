@@ -11,7 +11,6 @@
 
     <haxelib name="nme" />
     <haxelib name="actuate" />
-    <haxelib name="hscript" />
 
     <haxelib name="haxeui-core" />
     <haxelib name="haxeui-nme" />

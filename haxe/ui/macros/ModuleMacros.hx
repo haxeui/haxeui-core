@@ -90,16 +90,6 @@ class ModuleMacros {
                             continue;
                         }
 
-                        builder.add(macro
-                            haxe.ui.scripting.ScriptInterp.addClassAlias($v{classAlias}, $v{resolvedClass})
-                        );
-
-                        if (s.staticClass == true || s.keep == true) {
-                            builder.add(macro
-                                haxe.ui.scripting.ScriptInterp.addStaticClass($v{classAlias}, $p{resolvedClass.split(".")})
-                            );
-                        }
-
                         if (skipRest == true) {
                             break;
                         }

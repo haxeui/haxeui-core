@@ -13,7 +13,6 @@
     ],
     "releasenote": "Tweaks and fixes",
     "dependencies": {
-        "hscript": ""
     },
     "name": "haxeui-core",
     "description": "The core library of the HaxeUI framework",
