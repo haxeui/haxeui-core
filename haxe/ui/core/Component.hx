@@ -1,7 +1,6 @@
 package haxe.ui.core;
 
 import haxe.ui.backend.ComponentImpl;
-import haxe.ui.binding.BindingManager;
 import haxe.ui.dragdrop.DragManager;
 import haxe.ui.events.AnimationEvent;
 import haxe.ui.events.MouseEvent;
@@ -11,6 +10,7 @@ import haxe.ui.geom.Size;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.DelegateLayout;
 import haxe.ui.layouts.Layout;
+import haxe.ui.locale.LocaleManager;
 import haxe.ui.scripting.ScriptInterp;
 import haxe.ui.styles.Parser;
 import haxe.ui.styles.Style;
@@ -542,7 +542,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         if (_compositeBuilder != null) {
             _compositeBuilder.destroy();
         }
-        BindingManager.instance.remove(this);
+        LocaleManager.instance.unregisterComponent(this);
         onDestroy();
     }
 

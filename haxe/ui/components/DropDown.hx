@@ -2,7 +2,6 @@ package haxe.ui.components;
 
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
-import haxe.ui.binding.BindingManager;
 import haxe.ui.components.Button.ButtonBuilder;
 import haxe.ui.components.Button.ButtonEvents;
 import haxe.ui.containers.Box;
@@ -15,6 +14,7 @@ import haxe.ui.data.ArrayDataSource;
 import haxe.ui.data.DataSource;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
+import haxe.ui.locale.LocaleManager;
 import haxe.ui.util.Variant;
 
 @:composite(DropDownEvents, DropDownBuilder)
@@ -298,9 +298,9 @@ class ListDropDownHandler extends DropDownHandler {
         }
         
         if (index == -1 && _dropdown.dataSource != null) {
-            var info = BindingManager.instance.findLanguageBinding(_dropdown, "text");
-            if (info != null && info.script != null) {
-                text = info.script;
+            var expr = LocaleManager.instance.findBindingExpr(_dropdown, "text");
+            if (expr != null) {
+                text = expr;
                 for (i in 0..._dropdown.dataSource.size) {
                     var item:Dynamic = _dropdown.dataSource.get(i);
                     if (item == text || item.value == text || item.text == text) {

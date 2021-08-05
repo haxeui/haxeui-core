@@ -64,6 +64,20 @@ class LocaleManager {
         refreshFor(component);
     }
     
+    public function unregisterComponent(component:Component) {
+        _registeredComponents.remove(component);
+    }
+    
+    public function findBindingExpr(component:Component, prop:String):String {
+        var propMap = _registeredComponents.get(component);
+        if (propMap == null) {
+            return null;
+        }
+        
+        var entry = propMap.get(prop);
+        return entry.expr;
+    }
+    
     public function cloneForComponent(from:Component, to:Component) {
         var propMap = _registeredComponents.get(from);
         if (propMap == null) {

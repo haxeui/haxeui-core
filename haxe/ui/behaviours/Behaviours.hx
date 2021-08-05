@@ -1,6 +1,5 @@
 package haxe.ui.behaviours;
 
-import haxe.ui.binding.BindingManager;
 import haxe.ui.core.Component;
 import haxe.ui.events.UIEvent;
 import haxe.ui.util.Variant;
@@ -249,7 +248,6 @@ class Behaviours {
         }
         
         _autoDispatch = null;
-        BindingManager.instance.refreshAll();
     }
     
     private var _autoDispatch:Map<Behaviour, Null<Bool>>;

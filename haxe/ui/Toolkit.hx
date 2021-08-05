@@ -1,7 +1,6 @@
 package haxe.ui;
 
 import haxe.ui.backend.ToolkitOptions;
-import haxe.ui.binding.BindingManager;
 import haxe.ui.containers.dialogs.Dialog;
 import haxe.ui.containers.dialogs.MessageBox;
 import haxe.ui.containers.dialogs.MessageBox.MessageBoxType;
@@ -50,7 +49,6 @@ class Toolkit {
         _theme = value;
         if (_initialized == true) {
             ThemeManager.instance.applyTheme(_theme);
-            BindingManager.instance.refreshAll();
             Screen.instance.onThemeChanged();
             Screen.instance.invalidateAll();
         }

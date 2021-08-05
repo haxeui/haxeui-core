@@ -2,7 +2,6 @@ package haxe.ui.containers.menus;
 
 import haxe.ui.Toolkit;
 import haxe.ui.behaviours.DefaultBehaviour;
-import haxe.ui.binding.BindingManager;
 import haxe.ui.components.Button;
 import haxe.ui.containers.HBox;
 import haxe.ui.containers.menus.Menu;

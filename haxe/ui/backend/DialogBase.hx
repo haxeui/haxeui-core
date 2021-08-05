@@ -1,7 +1,6 @@
 package haxe.ui.backend;
 
 import haxe.ui.Toolkit;
-import haxe.ui.binding.BindingManager;
 import haxe.ui.components.Button;
 import haxe.ui.containers.Box;
 import haxe.ui.containers.dialogs.Dialog;

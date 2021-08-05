@@ -4,7 +4,6 @@ import haxe.ui.behaviours.Behaviour;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.behaviours.LayoutBehaviour;
-import haxe.ui.binding.BindingManager;
 import haxe.ui.components.VerticalScroll;
 import haxe.ui.constants.SelectionMode;
 import haxe.ui.containers.ScrollView.ScrollViewBuilder;
@@ -382,7 +381,6 @@ private class DataSourceBehaviour extends DataBehaviour {
                     _firstPass = false;
                     _component.invalidateComponentLayout();
                 }
-                BindingManager.instance.componentPropChanged(_component, "dataSource");
             }
             _component.invalidateComponentLayout();
         } else {
