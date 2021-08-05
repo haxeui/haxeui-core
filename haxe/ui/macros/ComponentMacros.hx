@@ -407,7 +407,7 @@ class ComponentMacros {
         }
         var varName = languageBinding.generatedVarName;
         var field = languageBinding.varProp;
-        var expr = Context.parseInlineString(fixedExpr, Context.currentPos());
+        var expr = Context.parseInlineString("{" + fixedExpr + "}", Context.currentPos());
         
         var dependants:Map<String, Array<String>> = getDependants(expr);
         for (dependantName in dependants.keys()) {
