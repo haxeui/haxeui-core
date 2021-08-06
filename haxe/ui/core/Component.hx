@@ -151,9 +151,6 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         return l;
     }
 
-    // TODO: these functions should be removed and components should use behaviours.get/set/call/defaults direction
-    //private var _behaviourUpdateOrder:Array<String> = [];
-
     private var _native:Null<Bool> = null;
     /**
      Whether to try to use a native version of this component
@@ -1746,28 +1743,6 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             }
             handleFrameworkProperty("allowMouseInteraction", false);
         }
-
-        /*
-        if (style.clip != null) {
-            clipContent = style.clip;
-        }
-
-        if (style.native != null) {
-            if (style.backgroundImageSliceTop == null
-                && style.backgroundImageSliceLeft == null
-                && style.backgroundImageSliceBottom == null
-                && style.backgroundImageSliceRight == null) {
-                native = style.native;
-            }
-        }
-
-        if (style.backgroundImageSliceTop != null
-            && style.backgroundImageSliceLeft != null
-            && style.backgroundImageSliceBottom != null
-            && style.backgroundImageSliceRight != null) {
-            native = false;
-        }
-        */
 
         if (_compositeBuilder != null) {
             _compositeBuilder.applyStyle(style);
