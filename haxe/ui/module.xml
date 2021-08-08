@@ -15,15 +15,12 @@
     </locales>
     
     <components>
-        <class name="haxe.ui.core.Component" />
-        <class name="haxe.ui.core.ItemRenderer" />
-        <class name="haxe.ui.core.BasicItemRenderer" />
-        <class name="haxe.ui.containers.dialogs.Dialog" />
+        <class package="haxe.ui.core" />
         <class package="haxe.ui.components" />
         <class package="haxe.ui.containers" />
+        <class package="haxe.ui.containers.dialogs" />
         <class package="haxe.ui.containers.menus" />
         <class package="haxe.ui.containers.properties" />
-        <class name="haxe.ui.components.Label" alias="text" />
     </components>
 
     <layouts>
@@ -94,7 +91,4 @@
             <style resource="haxeui-core/styles/native/main.css" priority="-3" />
         </native>
     </themes>
-
-    <properties>
-    </properties>
 </module>

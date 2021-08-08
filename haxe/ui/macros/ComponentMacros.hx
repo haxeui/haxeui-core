@@ -8,6 +8,7 @@ import haxe.ui.core.ComponentClassMap;
 import haxe.ui.core.ComponentFieldMap;
 import haxe.ui.core.LayoutClassMap;
 import haxe.ui.core.TypeMap;
+import haxe.ui.macros.ModuleMacros;
 import haxe.ui.macros.helpers.FunctionBuilder;
 import haxe.ui.parsers.ui.ComponentInfo;
 import haxe.ui.parsers.ui.ComponentParser;
@@ -58,7 +59,7 @@ typedef BuildData = {
 }
 
 class ComponentMacros {
-    macro public static function build(resourcePath:String, params:Expr = null, alias:String = null):Array<Field> {
+    macro public static function build(resourcePath:String, params:Expr = null):Array<Field> {
         var pos = haxe.macro.Context.currentPos();
         var fields = haxe.macro.Context.getBuildFields();
 
@@ -99,10 +100,7 @@ class ComponentMacros {
         }
 
         var resolvedClass:String = "" + Context.getLocalClass();
-        if (alias == null) {
-            alias = resolvedClass.substr(resolvedClass.lastIndexOf(".") + 1, resolvedClass.length);
-        }
-        alias = alias.toLowerCase();
+        var alias = resolvedClass.substr(resolvedClass.lastIndexOf(".") + 1, resolvedClass.length).toLowerCase();
         ComponentClassMap.register(alias, resolvedClass);
 
         for (expr in buildData.bindingExprs) {
@@ -256,16 +254,13 @@ class ComponentMacros {
         }
 
         assignComponentProperties(builder, c, rootVarName, buildData);
-        if (StringTools.trim(fullScript).length > 0) {
-            builder.add(macro $i{rootVarName}.script = $v{fullScript});
-        }
+        
         builder.add(macro $i{rootVarName}.bindingRoot = true);
         return c;
     }
 
     private static function buildComponentFromInfo(builder:CodeBuilder, c:ComponentInfo, buildData:BuildData, cb:ComponentInfo->CodeBuilder->Void = null, firstId:Int = 0) {
         populateBuildData(buildData);
-        ModuleMacros.populateClassMap();
 
         for (s in c.styles) {
             if (s.scope == "global") {
@@ -408,6 +403,7 @@ class ComponentMacros {
         var varName = languageBinding.generatedVarName;
         var field = languageBinding.varProp;
         var expr = Context.parseInlineString("{" + fixedExpr + "}", Context.currentPos());
+        var exprBuilder = new CodeBuilder(expr);
         
         var dependants:Map<String, Array<String>> = getDependants(expr);
         for (dependantName in dependants.keys()) {
@@ -425,6 +421,14 @@ class ComponentMacros {
                     //haxe.ui.locale.LocaleManager.instance.refreshFor($i{varName});
                     haxe.ui.locale.LocaleManager.instance.refreshAll();
                 });
+            }
+            
+            if (addLocalVars == true) {
+                for (namedComponent in namedComponents.keys()) {
+                    var namedComponentData = namedComponents.get(namedComponent);
+                    ifBuilder.addToStart(macro var $namedComponent = $i{namedComponentData.generatedVarName});
+                    exprBuilder.addToStart(macro var $namedComponent = $i{namedComponentData.generatedVarName});
+                }
             }
             
             builder.add(macro {
@@ -505,7 +509,7 @@ class ComponentMacros {
             return id;
         }
 
-        var className:String = ComponentClassMap.get(c.type);
+        var className = ModuleMacros.resolveComponentClass(c.type);
         if (className == null) {
             Context.warning("no class found for component: " + c.type, Context.currentPos());
             return id;

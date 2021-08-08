@@ -8,9 +8,7 @@ class Module {
     public var resourceEntries(default, default):Array<ModuleResourceEntry>;
     public var componentEntries(default, default):Array<ModuleComponentEntry>;
     public var layoutEntries(default, default):Array<ModuleLayoutEntry>;
-    public var scriptletEntries(default, default):Array<ModuleScriptletEntry>;
     public var themeEntries(default, default):Map<String, ModuleThemeEntry>;
-    public var plugins(default, default):Array<ModulePluginEntry>;
     public var properties(default, default):Array<ModulePropertyEntry>;
     public var preload(default, default):Array<ModulePreloadEntry>;
     public var locales(default, default):Array<ModuleLocaleEntry>;
@@ -19,9 +17,7 @@ class Module {
         resourceEntries = [];
         componentEntries = [];
         layoutEntries = [];
-        scriptletEntries = [];
         themeEntries = new Map<String, ModuleThemeEntry>();
-        plugins = [];
         properties = [];
         preload = [];
         locales = [];
@@ -44,7 +40,6 @@ class ModuleClassEntry {
     public var className(default, default):String;
     public var classFolder(default, default):String;
     public var classFile(default, default):String;
-    public var classAlias(default, default):String;
 
     public function new() {
     }
@@ -54,11 +49,6 @@ class ModuleComponentEntry extends ModuleClassEntry {
 }
 
 class ModuleLayoutEntry extends ModuleClassEntry {
-}
-
-class ModuleScriptletEntry extends ModuleClassEntry {
-    public var keep(default, default):Bool;
-    public var staticClass(default, default):Bool;
 }
 
 class ModuleThemeEntry {
@@ -87,16 +77,6 @@ class ModuleThemeImageEntry {
     public var priority:Float = 0;
 
     public function new() {
-    }
-}
-
-class ModulePluginEntry {
-    public var type(default, default):String;
-    public var className(default, default):String;
-    public var config(default, default):Map<String, String>;
-
-    public function new() {
-        config = new Map<String, String>();
     }
 }
 

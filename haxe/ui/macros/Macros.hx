@@ -16,6 +16,7 @@ import haxe.ui.macros.ComponentMacros.BuildData;
 import haxe.macro.ExprTools;
 #end
 
+@:access(haxe.ui.macros.ComponentMacros)
 class Macros {
     #if macro
 
@@ -62,6 +63,9 @@ class Macros {
             codeBuilder.add(expr);
         }
 
+        ComponentMacros.buildBindings(codeBuilder, buildData);
+        ComponentMacros.buildLanguageBindings(codeBuilder, buildData);
+        
         builder.ctor.add(codeBuilder, AfterSuper);
     }
 

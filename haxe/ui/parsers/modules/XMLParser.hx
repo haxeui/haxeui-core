@@ -41,7 +41,6 @@ class XMLParser extends ModuleParser {
                     classEntry.className = classNode.get("name");
                     classEntry.classFolder = classNode.get("folder");
                     classEntry.classFile = classNode.get("file");
-                    classEntry.classAlias = classNode.get("alias");
                     module.componentEntries.push(classEntry);
                 }
                 for (classNode in el.elementsNamed("component")) {
@@ -53,7 +52,6 @@ class XMLParser extends ModuleParser {
                     classEntry.className = classNode.get("class");
                     classEntry.classFolder = classNode.get("folder");
                     classEntry.classFile = classNode.get("file");
-                    classEntry.classAlias = classNode.get("alias");
                     module.componentEntries.push(classEntry);
                 }
             } else if (nodeName == "layouts" && checkCondition(el, defines) == true) {
@@ -64,22 +62,7 @@ class XMLParser extends ModuleParser {
                     var classEntry:Module.ModuleLayoutEntry = new Module.ModuleLayoutEntry();
                     classEntry.classPackage = classNode.get("package");
                     classEntry.className = classNode.get("name");
-                    classEntry.classAlias = classNode.get("alias");
                     module.layoutEntries.push(classEntry);
-                }
-            } else if (nodeName == "scriptlets" && checkCondition(el, defines) == true) {
-                for (classNode in el.elementsNamed("import")) {
-                    if (checkCondition(classNode, defines) == false) {
-                        continue;
-                    }
-
-                    var scriptletEntry:Module.ModuleScriptletEntry = new Module.ModuleScriptletEntry();
-                    scriptletEntry.classPackage = classNode.get("package");
-                    scriptletEntry.className = classNode.get("class");
-                    scriptletEntry.classAlias = classNode.get("alias");
-                    scriptletEntry.keep = (classNode.get("keep") == "true");
-                    scriptletEntry.staticClass = (classNode.get("static") == "true");
-                    module.scriptletEntries.push(scriptletEntry);
                 }
             } else if (nodeName == "themes" && checkCondition(el, defines) == true) {
                 for (themeNode in el.elements()) {
@@ -150,25 +133,6 @@ class XMLParser extends ModuleParser {
                     }
 
                     module.themeEntries.set(theme.name, theme);
-                }
-            } else if (nodeName == "plugins" && checkCondition(el, defines) == true) {
-                for (pluginNode in el.elementsNamed("plugin")) {
-                    if (checkCondition(pluginNode, defines) == false) {
-                        continue;
-                    }
-                    var plugin:Module.ModulePluginEntry = new Module.ModulePluginEntry();
-                    for (attr in pluginNode.attributes()) {
-                        var value = pluginNode.get(attr);
-                        switch (attr) {
-                            case "type":
-                                plugin.type = value;
-                            case "class":
-                                plugin.className = value;
-                            default:
-                                plugin.config.set(attr, value);
-                        }
-                    }
-                    module.plugins.push(plugin);
                 }
             } else if (nodeName == "properties" && checkCondition(el, defines) == true) {
                 for (propertyNode in el.elementsNamed("property")) {
