@@ -19,6 +19,7 @@ import sys.FileSystem;
 import sys.io.File;
 #end
 
+@:access(haxe.ui.macros.ComponentMacros)
 class ModuleMacros {
 
     #if macro
@@ -355,7 +356,7 @@ class ModuleMacros {
         var xml = sys.io.File.getContent(fullPath);
         var buildData:BuildData = { };
         var codeBuilder = new CodeBuilder();
-        var c = ComponentMacros.buildComponentFromString(codeBuilder, xml, buildData);
+        var c = ComponentMacros.buildComponentFromStringCommon(codeBuilder, xml, buildData);
 
         var superClassString = "haxe.ui.containers.Box";
         var superClassLookup:String = ComponentClassMap.get(c.type);

@@ -1,7 +1,9 @@
 package haxe.ui.macros;
 
-import haxe.macro.Context;
 import haxe.macro.Expr;
+
+#if macro
+import haxe.macro.Context;
 import haxe.macro.ExprTools;
 import haxe.macro.TypeTools;
 import haxe.ui.core.ComponentClassMap;
@@ -9,6 +11,8 @@ import haxe.ui.core.ComponentFieldMap;
 import haxe.ui.core.LayoutClassMap;
 import haxe.ui.core.TypeMap;
 import haxe.ui.macros.ModuleMacros;
+import haxe.ui.macros.helpers.ClassBuilder;
+import haxe.ui.macros.helpers.CodeBuilder;
 import haxe.ui.macros.helpers.FunctionBuilder;
 import haxe.ui.parsers.ui.ComponentInfo;
 import haxe.ui.parsers.ui.ComponentParser;
@@ -18,12 +22,7 @@ import haxe.ui.util.ExpressionUtil;
 import haxe.ui.util.SimpleExpressionEvaluator;
 import haxe.ui.util.StringUtil;
 import haxe.ui.util.TypeConverter;
-
-#if macro
-import haxe.ui.macros.helpers.ClassBuilder;
-import haxe.ui.macros.helpers.CodeBuilder;
 import sys.io.File;
-#end
 
 typedef NamedComponentDescription = {
     var generatedVarName:String;
@@ -57,9 +56,59 @@ typedef BuildData = {
     @:optional var languageBindings:Array<LanguageBindingData>;
     @:optional var params:Map<String, Dynamic>;
 }
+#end
 
 class ComponentMacros {
     macro public static function build(resourcePath:String, params:Expr = null):Array<Field> {
+        return buildCommon(resourcePath, params);
+    }
+    
+    macro public static function buildComponent(filePath:String, params:Expr = null):Expr {
+        return buildComponentCommon(filePath, params);
+    }
+
+    macro public  static function buildComponentFromString(source:String, params:Expr = null):Expr {
+        return buildFromStringCommon(source, params);
+    }
+    
+    macro public static function createInstance(filePath:String):Expr {
+        var cls = ModuleMacros.createDynamicClass(filePath);
+
+        var parts = cls.split(".");
+        var name:String = parts.pop();
+        var t:TypePath = {
+            pack: parts,
+            name: name
+        }
+        return macro new $t();
+    }
+
+    #if macro
+    private static function buildFromStringCommon(source:String, params:Expr = null):Expr {
+        var builder = new CodeBuilder();
+        var buildData:BuildData = {
+            params: MacroHelpers.exprToMap(params)
+        };
+        buildComponentFromStringCommon(builder, source, buildData, "rootComponent", true);
+        buildBindings(builder, buildData, true);
+        buildLanguageBindings(builder, buildData, true);
+        builder.add(macro rootComponent);
+        return builder.expr;
+    }
+    
+    private static function buildComponentCommon(filePath:String, params:Expr = null):Expr {
+        var builder = new CodeBuilder();
+        var buildData:BuildData = {
+            params: MacroHelpers.exprToMap(params)
+        };
+        buildComponentFromFile(null, builder, filePath, buildData, "rootComponent");
+        buildBindings(builder, buildData, true);
+        buildLanguageBindings(builder, buildData, true);
+        builder.add(macro rootComponent);
+        return builder.expr;
+    }
+    
+    private static function buildCommon(resourcePath:String, params:Expr = null):Array<Field> {
         var pos = haxe.macro.Context.currentPos();
         var fields = haxe.macro.Context.getBuildFields();
 
@@ -115,33 +164,7 @@ class ComponentMacros {
         return builder.fields;
     }
 
-    macro public static function buildComponent(filePath:String, params:Expr = null):Expr {
-        var builder = new CodeBuilder();
-        var buildData:BuildData = {
-            params: MacroHelpers.exprToMap(params)
-        };
-        buildComponentFromFile(null, builder, filePath, buildData, "rootComponent");
-        buildBindings(builder, buildData, true);
-        buildLanguageBindings(builder, buildData, true);
-        builder.add(macro rootComponent);
-        return builder.expr;
-    }
-
-    macro public static function createInstance(filePath:String):Expr {
-        var cls = ModuleMacros.createDynamicClass(filePath);
-
-        var parts = cls.split(".");
-        var name:String = parts.pop();
-        var t:TypePath = {
-            pack: parts,
-            name: name
-        }
-        return macro new $t();
-    }
-
-    #if macro
-
-    public static function buildComponentFromFile(classBuilder:ClassBuilder, builder:CodeBuilder, filePath:String, buildData:BuildData = null, rootVarName:String = "this", buildRoot:Bool = true):ComponentInfo {
+    private static function buildComponentFromFile(classBuilder:ClassBuilder, builder:CodeBuilder, filePath:String, buildData:BuildData = null, rootVarName:String = "this", buildRoot:Bool = true):ComponentInfo {
         populateBuildData(buildData);        
         
         var f = MacroHelpers.resolveFile(filePath);
@@ -225,7 +248,7 @@ class ComponentMacros {
         }
     }
     
-    public static function buildComponentFromString(builder:CodeBuilder, source:String, buildData:BuildData = null, rootVarName:String = "this"):ComponentInfo {
+    private static function buildComponentFromStringCommon(builder:CodeBuilder, source:String, buildData:BuildData = null, rootVarName:String = "this", buildRoot:Bool = false):ComponentInfo {
         populateBuildData(buildData);
         
         source = StringUtil.replaceVars(source, buildData.params);
@@ -236,6 +259,11 @@ class ComponentMacros {
             }
         }
 
+        if (buildRoot == true) {
+            buildComponentNode(builder, c, 0, -1, buildData, false);
+            builder.add(macro var $rootVarName = c0);
+        }
+        
         var fullScript = "";
         for (scriptString in c.scriptlets) {
             fullScript += scriptString;

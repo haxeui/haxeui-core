@@ -48,7 +48,7 @@ class Macros {
         var xml = builder.getClassMetaValue("xml");
         var codeBuilder = new CodeBuilder();
         var buildData:BuildData = { };
-        ComponentMacros.buildComponentFromString(codeBuilder, xml, buildData);
+        ComponentMacros.buildComponentFromStringCommon(codeBuilder, xml, buildData);
 
         for (id in buildData.namedComponents.keys()) {
             var safeId:String = StringUtil.capitalizeHyphens(id);
