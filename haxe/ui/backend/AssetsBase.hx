@@ -28,6 +28,12 @@ class AssetsBase {
     public function imageFromFile(filename:String, callback:ImageInfo->Void) {
         #if sys
 
+        if (isAbsolutePath(filename) == false) {
+            var parts = haxe.io.Path.normalize(Sys.programPath()).split("/");
+            parts.pop();
+            filename = parts.join("/") + "/" + filename;
+        }
+        filename = haxe.io.Path.normalize(filename);
         if (sys.FileSystem.exists(filename) == false) {
             callback(null);
         }
@@ -47,6 +53,19 @@ class AssetsBase {
         #end
     }
 
+	private static function isAbsolutePath(path:String):Bool {
+		if (StringTools.startsWith(path, '/')) {
+			return true;
+        }
+		if (path.charAt(1) == ':') {
+			return true;
+        }
+		if (StringTools.startsWith(path, '\\\\')) {
+			return true;
+        }
+		return false;
+	}
+    
     private function getFontInternal(resourceId:String, callback:FontInfo->Void) {
         callback(null);
     }
