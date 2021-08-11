@@ -1,20 +1,17 @@
 /************************************************************************
 ** HEADER
 *************************************************************************/
-.header {
-    width: auto;
-    height: auto;
-    spacing: 0;
-}
-
-.header .column {
-    border-radius: 0;
+.column.sortable {
+    icon: "haxeui-core/styles/default/sortable_arrows.png";
     icon-position: far-right;
 }
 
-.header .sortable {
-    icon: "haxeui-core/styles/default/up_down_arrows.png";
-    icon-position: far-right;
+.column.sort-asc {
+    icon: "haxeui-core/styles/default/sortable_asc.png";
+}
+
+.column.sort-desc {
+    icon: "haxeui-core/styles/default/sortable_desc.png";
 }
 
 /************************************************************************
