@@ -92,6 +92,21 @@ class TextInput extends TextInputImpl implements IValidating {
         return value;
     }
 
+    public var htmlText(get, set):String;
+    private function get_htmlText():String {
+        return _htmlText;
+    }
+    private function set_htmlText(value:String):String {
+        if (value == _htmlText) {
+            return value;
+        }
+
+        _htmlText = value;
+        _text = null;
+        invalidateComponent(InvalidationFlags.DATA);
+        return value;
+    }
+    
     public var password(get, set):Bool;
     private function get_password():Bool {
         return _inputData.password;

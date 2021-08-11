@@ -30,6 +30,7 @@ class TextArea extends InteractiveComponent implements IFocusable {
     // Public API
     //***********************************************************************************************************
     @:behaviour(TextBehaviour)              public var text:String;
+    @:behaviour(HtmlTextBehaviour)          public var htmlText:String;
     @:clonable @:value(text)                public var value:Dynamic;
     @:behaviour(PlaceholderBehaviour)       public var placeholder:String;
     @:behaviour(WrapBehaviour, true)        public var wrap:Bool;
@@ -170,6 +171,18 @@ private class TextBehaviour extends DataBehaviour {
 }
 
 @:dox(hide) @:noCompletion
+private class HtmlTextBehaviour extends DataBehaviour {
+    public override function validateData() {
+        var textarea:TextArea = cast(_component, TextArea);
+        var htmlText:String = _value != null ? _value : "";
+        TextAreaHelper.validateHtmlText(textarea, htmlText);
+        if (textarea.autoScrollToBottom == true) {
+            textarea.scrollToBottom();
+        }
+    }
+}
+
+@:dox(hide) @:noCompletion
 private class WrapBehaviour extends DataBehaviour {
     public override function validateData() {
         var textarea:TextArea = cast(_component, TextArea);
@@ -223,6 +236,31 @@ private class TextAreaHelper {
         }
 
         textarea.getTextInput().text = '${text}';
+        textarea.getTextInput().invalidateComponent(InvalidationFlags.MEASURE);
+        textarea.invalidateComponentLayout();
+    }
+    
+    public static function validateHtmlText(textarea:TextArea, htmlText:String) {
+        if (htmlText == null) {
+            htmlText = "";
+        }
+
+        if (textarea.focus == false && textarea.placeholder != null) {
+            if (htmlText == "") {
+                htmlText = textarea.placeholder;
+                textarea.addClass(":empty");
+            } else {
+                textarea.removeClass(":empty");
+            }
+        } else {
+            var placeholderVisible:Bool = htmlText.length == 0;
+            if (placeholderVisible == true) {
+                htmlText = "";
+                textarea.removeClass(":empty");
+            }
+        }
+
+        textarea.getTextInput().htmlText = '${htmlText}';
         textarea.getTextInput().invalidateComponent(InvalidationFlags.MEASURE);
         textarea.invalidateComponentLayout();
     }

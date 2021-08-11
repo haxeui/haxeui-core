@@ -22,6 +22,7 @@ class TextField extends InteractiveComponent {
     @:clonable @:behaviour(RestrictCharsBehaviour)     public var restrictChars:String;
     @:clonable @:behaviour(PlaceholderBehaviour)       public var placeholder:String;
     @:clonable @:behaviour(TextBehaviour)              public var text:String;
+    @:clonable @:behaviour(HtmlTextBehaviour)          public var htmlText:String;
     @:clonable @:value(text)                           public var value:Dynamic;
     @:clonable @:behaviour(IconBehaviour)              public var icon:String;
 }
@@ -170,6 +171,18 @@ private class TextBehaviour extends DataBehaviour {
 }
 
 @:dox(hide) @:noCompletion
+private class HtmlTextBehaviour extends DataBehaviour {
+    public override function validateData() {
+        var textfield:TextField = cast(_component, TextField);
+        TextFieldHelper.validateHtmlText(textfield, _value);
+
+        if (_value != null && _value != "") {
+            _value = textfield.getTextInput().htmlText;
+        }
+    }
+}
+
+@:dox(hide) @:noCompletion
 private class IconBehaviour extends DataBehaviour {
     public override function validateData() {
         var textfield:TextField = cast(_component, TextField);
@@ -237,6 +250,52 @@ private class TextFieldHelper {
         }
 
         textfield.getTextInput().text = '${text}';
+        textfield.invalidateComponentLayout();
+    }
+    
+    public static function validateHtmlText(textfield:TextField, htmlText:String) {
+        if (htmlText == null) {
+            htmlText = "";
+        }
+
+        var placeholderVisible:Bool = htmlText.length == 0;
+        var password:Variant = cast(textfield.behaviours.find("password"), PasswordBehaviour).originalValue;  // TODO: seems like a crappy way to handle placeholder / password
+        var regexp:EReg = cast(textfield.behaviours.find("restrictChars"), RestrictCharsBehaviour).regexp;  // TODO: seems like a crappy way to handle restrict chars
+
+        if (textfield.maxChars > 0 && htmlText.length > textfield.maxChars && placeholderVisible == false) {
+            htmlText = htmlText.substr(0, textfield.maxChars);
+        }
+
+        if (regexp != null) {
+            htmlText = regexp.replace(htmlText, "");
+        }
+
+        if (textfield.placeholder != null) {
+            if (textfield.focus == false) {
+                if (htmlText.length == 0) {
+                    htmlText = textfield.placeholder;
+                    textfield.password = false;
+                    textfield.addClass(":empty");
+                } else if (htmlText != textfield.placeholder) {
+                    textfield.password = password;
+                    textfield.removeClass(":empty");
+                }
+            } else {
+                textfield.removeClass(":empty");
+                if (htmlText == textfield.placeholder) {
+                    htmlText = "";
+                }
+                textfield.password = password;
+            }
+        } else {
+            textfield.password = password;
+
+            if (placeholderVisible == true) {
+                textfield.removeClass(":empty");
+            }
+        }
+
+        textfield.getTextInput().htmlText = '${htmlText}';
         textfield.invalidateComponentLayout();
     }
 }
