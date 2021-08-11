@@ -368,6 +368,14 @@ private class Builder extends CompositeBuilder {
         }
         if (_textfield.hasTextInput() == true) {
             _textfield.getTextInput().textStyle = style;
+            
+            if ((style.contentType == "auto" || style.contentType == "html") && _textfield.getTextInput().supportsHtml && isHtml(Std.string(_textfield.text))) {
+                _textfield.htmlText = _textfield.text;
+            }
         }
+    }
+    
+    public static inline function isHtml(v:String):Bool {
+        return v == null ? false : v.indexOf("<font ") != -1;
     }
 }

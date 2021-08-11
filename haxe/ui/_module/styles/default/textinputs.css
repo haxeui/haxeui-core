@@ -12,6 +12,7 @@
     height: auto;
     spacing: 5px;
     icon-position: right;
+    content-type: auto;
 }
 
 .textfield:active {
@@ -39,6 +40,7 @@
     background-color: white;
     initial-width: 150px;
     initial-height: 100px;
+    content-type: auto;
 }
 
 .textarea:active {

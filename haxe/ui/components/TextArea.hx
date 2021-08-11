@@ -472,8 +472,16 @@ private class TextAreaBuilder extends CompositeBuilder {
 
     public override function applyStyle(style:Style) {
         super.applyStyle(style);
-        if (_component.hasTextInput() == true) {
-            _component.getTextInput().textStyle = style;
+        if (_textarea.hasTextInput() == true) {
+            _textarea.getTextInput().textStyle = style;
+            
+            if ((style.contentType == "auto" || style.contentType == "html") && _textarea.getTextInput().supportsHtml && isHtml(Std.string(_textarea.text))) {
+                _textarea.htmlText = _textarea.text;
+            }
         }
+    }
+    
+    public static inline function isHtml(v:String):Bool {
+        return v == null ? false : v.indexOf("<font ") != -1;
     }
 }
