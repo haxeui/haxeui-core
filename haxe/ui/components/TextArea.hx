@@ -85,8 +85,8 @@ private class TextAreaLayout extends DefaultLayout {
         }
 
         if (component.hasTextInput() == true) {
-            component.getTextInput().left = paddingLeft;
-            component.getTextInput().top = paddingTop;
+            component.getTextInput().left = paddingLeft + 2;
+            component.getTextInput().top = paddingTop + 2;
         }
     }
 
@@ -389,7 +389,6 @@ private class Events extends haxe.ui.events.Events {
         } else {
             _textarea.getTextInput().blur();
         }
-        TextAreaHelper.validateText(_textarea, _textarea.text);
     }
 }
 
