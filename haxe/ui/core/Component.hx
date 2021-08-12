@@ -1393,6 +1393,11 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     @:event(MouseEvent.CLICK)           public var onClick:MouseEvent->Void;
 
     /**
+     Utility property to add a single `MouseEvent.DBL_CLICK` event
+    **/
+    @:event(MouseEvent.DBL_CLICK)       public var onDblClick:MouseEvent->Void;
+
+    /**
      Utility property to add a single `MouseEvent.RIGHT_CLICK` event
     **/
     @:event(MouseEvent.RIGHT_CLICK)     public var onRightClick:MouseEvent->Void;
