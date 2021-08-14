@@ -211,6 +211,9 @@ class ComponentMacros {
             }, n);
             n = r;
         }
+        
+        buildScriptHandlers(builder, buildData.namedComponents, buildData.scripts);
+        
         if (buildRoot == false) {
             assignComponentProperties(builder, c, rootVarName, buildData);
         }
@@ -272,7 +275,11 @@ class ComponentMacros {
         var n = 0;
         for (child in c.children) {
             var componentId = "c" + n;
+            trace(componentId);
             var r = buildComponentFromInfo(builder, child, buildData, function(componentInfo:ComponentInfo, codeBuilder:CodeBuilder) {
+                if (componentInfo.condition != null && SimpleExpressionEvaluator.evalCondition(componentInfo.condition) == false) {
+                    return;
+                }
                 codeBuilder.add(macro $i{rootVarName}.addComponent($i{componentId}));
                 for (scriptString in componentInfo.scriptlets) {
                     fullScript += scriptString;
@@ -281,6 +288,7 @@ class ComponentMacros {
             n = r;
         }
 
+        buildScriptHandlers(builder, buildData.namedComponents, buildData.scripts);
         assignComponentProperties(builder, c, rootVarName, buildData);
         
         builder.add(macro $i{rootVarName}.bindingRoot = true);
@@ -297,8 +305,6 @@ class ComponentMacros {
         }
 
         var r = buildComponentNode(builder, c, firstId, -1, buildData);
-
-        buildScriptHandlers(builder, buildData.namedComponents, buildData.scripts);
         
         if (cb != null) {
             cb(c, builder);
