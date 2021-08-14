@@ -108,8 +108,8 @@ private class TextAreaLayout extends DefaultLayout {
         if (component.hasTextInput() == true) {
             var size:Size = usableSize;
             #if !pixijs
-            component.getTextInput().width = size.width - 1;
-            component.getTextInput().height = size.height - 1;
+            component.getTextInput().width = size.width - 4;
+            component.getTextInput().height = size.height - 4;
             #end
 
         }
