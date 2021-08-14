@@ -48,6 +48,11 @@ class ComponentBase extends ComponentBounds {
         return false;
     }
 
+    private var isScroller(get, null):Bool;
+    private function get_isScroller():Bool {
+        return false;
+    }
+
     private function handleFrameworkProperty(id:String, value:Any) {
 
     }

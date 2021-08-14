@@ -9,6 +9,7 @@ import haxe.ui.components.VerticalScroll;
 import haxe.ui.constants.ScrollMode;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
+import haxe.ui.core.IScrollView;
 import haxe.ui.core.Screen;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.ScrollEvent;
@@ -24,7 +25,7 @@ import haxe.ui.util.Variant;
 import haxe.ui.validation.InvalidationFlags;
 
 @:composite(ScrollViewEvents, ScrollViewBuilder, ScrollViewLayout)
-class ScrollView extends Component {
+class ScrollView extends Component implements IScrollView {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
@@ -96,6 +97,10 @@ class ScrollView extends Component {
                 vscroll.pos = component.top;
             }
         }
+    }
+    
+    private override function get_isScroller():Bool {
+        return true;
     }
 }
 

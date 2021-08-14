@@ -1,7 +1,6 @@
 package haxe.ui.core;
 
 import haxe.ui.behaviours.DefaultBehaviour;
-import haxe.ui.containers.ScrollView;
 import haxe.ui.events.FocusEvent;
 import haxe.ui.focus.FocusManager;
 import haxe.ui.focus.IFocusable;
@@ -38,7 +37,7 @@ class InteractiveComponent extends Component implements IFocusable {
             FocusManager.instance.focus = cast(this, IFocusable);
 
             // if we are focusing lets see if there is a ancestor scrollview we might want to scroll into view
-            var scrollview = findAncestor(ScrollView);
+            var scrollview = findScroller();
             if (scrollview != null) {
                 scrollview.ensureVisible(this);
             }
@@ -72,5 +71,18 @@ class InteractiveComponent extends Component implements IFocusable {
             }
         }
         return value;
+    }
+    
+    private function findScroller():IScrollView {
+        var view:IScrollView = null;
+        var ref:Component = this;
+        while (ref != null) {
+            if ((ref is IScrollView)) {
+                view = cast(ref, IScrollView);
+                break;
+            }
+            ref = ref.parentComponent;
+        }
+        return view;
     }
 }
