@@ -1,10 +1,6 @@
 package haxe.ui;
 
 import haxe.ui.backend.ToolkitOptions;
-import haxe.ui.containers.dialogs.Dialog;
-import haxe.ui.containers.dialogs.MessageBox;
-import haxe.ui.containers.dialogs.MessageBox.MessageBoxType;
-import haxe.ui.core.Component;
 import haxe.ui.core.Screen;
 import haxe.ui.events.KeyboardEvent;
 import haxe.ui.focus.FocusManager;
@@ -89,54 +85,6 @@ class Toolkit {
                 FocusManager.instance.focusPrev();
             }
         }
-    }
-
-    public static function messageBox(message:String, title:String = null, type:MessageBoxType = null, modal:Bool = true, callback:DialogButton->Void = null):Dialog {
-        if (type == null) {
-            type = MessageBoxType.TYPE_INFO;
-        } else if (type == "info") {
-            type = MessageBoxType.TYPE_INFO;
-        } else if (type == "question") {
-            type = MessageBoxType.TYPE_QUESTION;
-        } else if (type == "warning") {
-            type = MessageBoxType.TYPE_WARNING;
-        } else if (type == "error") {
-            type = MessageBoxType.TYPE_ERROR;
-        }
-
-        var messageBox = new MessageBox();
-        messageBox.type = type;
-        messageBox.message = message;
-        messageBox.modal = modal;
-        if (title != null) {
-            messageBox.title = title;
-        }
-        messageBox.show();
-        if (callback != null) {
-            messageBox.registerEvent(DialogEvent.DIALOG_CLOSED, function(e:DialogEvent) {
-                callback(e.button);
-            });
-        }
-        return messageBox;
-    }
-
-    public static function dialog(contents:Component, title:String = null, buttons:DialogButton = null, modal:Bool = true, callback:DialogButton->Void = null):Dialog {
-        var dialog = new Dialog();
-        dialog.modal = modal;
-        if (title != null) {
-            dialog.title = title;
-        }
-        if (buttons != null) {
-            dialog.buttons = buttons;
-        }
-        dialog.addComponent(contents);
-        dialog.show();
-        if (callback != null) {
-            dialog.registerEvent(DialogEvent.DIALOG_CLOSED, function(e:DialogEvent) {
-                callback(e.button);
-            });
-        }
-        return dialog;
     }
 
     public static var assets(get, null):ToolkitAssets;

@@ -15,6 +15,7 @@ typedef ComponentLocaleEntry = {
     @:optional var expr:String;
 }
 
+@:keep
 class LocaleManager {
     private static var _instance:LocaleManager;
     public static var instance(get, never):LocaleManager;

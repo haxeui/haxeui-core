@@ -1,9 +1,6 @@
 package haxe.ui.core;
 
 import haxe.ui.backend.ScreenImpl;
-import haxe.ui.containers.dialogs.Dialog;
-import haxe.ui.containers.dialogs.Dialog.DialogButton;
-import haxe.ui.containers.dialogs.MessageBox.MessageBoxType;
 import haxe.ui.events.UIEvent;
 import haxe.ui.focus.FocusManager;
 import haxe.ui.util.EventMap;
@@ -82,14 +79,6 @@ class Screen extends ScreenImpl {
         return c;
     }
     
-    public function messageBox(message:String, title:String = null, type:MessageBoxType = null, modal:Bool = true, callback:DialogButton->Void = null):Dialog {
-        return Toolkit.messageBox(message, title, type, modal, callback);
-    }
-
-    public function dialog(contents:Component, title:String = null, buttons:DialogButton = null, modal:Bool = true, callback:DialogButton->Void = null):Dialog {
-        return Toolkit.dialog(contents, title, buttons, modal, callback);
-    }
-
     private function onThemeChanged() {
         for (c in rootComponents) {
             onThemeChangedChildren(c);
