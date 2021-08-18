@@ -58,6 +58,10 @@
     resource: "haxeui-core/styles/default/dialogs/question.png";
 }
 
+.dialog #iconImage.yesno {
+    resource: "haxeui-core/styles/default/dialogs/question.png";
+}
+
 .dialog #iconImage.warning {
     resource: "haxeui-core/styles/default/dialogs/exclamation.png";
 }

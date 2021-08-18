@@ -17,6 +17,8 @@ class Dialogs {
             type = MessageBoxType.TYPE_WARNING;
         } else if (type == "error") {
             type = MessageBoxType.TYPE_ERROR;
+        } else if (type == "yesno") {
+            type = MessageBoxType.TYPE_YESNO;
         }
 
         var messageBox = new MessageBox();

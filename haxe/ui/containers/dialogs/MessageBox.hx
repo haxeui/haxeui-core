@@ -8,6 +8,7 @@ abstract MessageBoxType(String) from String {
     public static inline var TYPE_QUESTION:MessageBoxType = "question";
     public static inline var TYPE_WARNING:MessageBoxType = "warning";
     public static inline var TYPE_ERROR:MessageBoxType = "error";
+    public static inline var TYPE_YESNO:MessageBoxType = "yesno";
 
     public function toString():String {
         return Std.string(this);
@@ -32,6 +33,8 @@ class MessageBox extends MessageBoxBase {
                     buttons = DialogButton.CLOSE;
                 case MessageBoxType.TYPE_ERROR:
                     buttons = DialogButton.CLOSE;
+                case MessageBoxType.TYPE_YESNO:
+                    buttons = DialogButton.YES | DialogButton.NO;
             }
             createButtons();
         }
@@ -45,6 +48,8 @@ class MessageBox extends MessageBoxBase {
                     title = "Warning";
                 case MessageBoxType.TYPE_ERROR:
                     title = "Error";
+                case MessageBoxType.TYPE_YESNO:
+                    title = "Question";
             }
         }
     }
