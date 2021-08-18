@@ -688,7 +688,6 @@ class ComponentMacros {
         for (propName in properties.keys()) {
             var propValue = properties.get(propName);
             propName = ComponentFieldMap.mapField(propName);
-            var propExpr = macro $v{TypeConverter.convertFrom(propValue)};
 
             if (StringTools.startsWith(propName, "on")) {
                 buildData.scripts.push({
@@ -704,6 +703,7 @@ class ComponentMacros {
                     propType: TypeMap.getTypeInfo(c.resolvedClassName, propName)
                 });
             } else {
+                var propExpr = macro $v{TypeConverter.convertFrom(propValue)};
                 builder.add(macro $i{varName}.$propName = $propExpr);
             }
         }
@@ -776,6 +776,18 @@ class ComponentMacros {
                     $e{ifBuilder.expr}
                 });
             });
+        }
+        
+        for (dependantName in dependants.keys()) {
+            if (dependantName == "theme") { // special case for themes - may need to expand on this for other parts of core
+                builder.add(macro {
+                    var theme = haxe.ui.themes.ThemeManager.instance;
+                    haxe.ui.themes.ThemeManager.instance.registerEvent(haxe.ui.events.ThemeEvent.THEME_CHANGED, function(_) {
+                        $i{target}.$varProp = $e{expr};
+                    });
+                    $i{target}.$varProp = $e{expr};
+                });
+            }
         }
     }
     

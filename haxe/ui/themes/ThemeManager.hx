@@ -2,6 +2,8 @@ package haxe.ui.themes;
 
 import haxe.ds.ArraySort;
 import haxe.ui.Toolkit;
+import haxe.ui.events.ThemeEvent;
+import haxe.ui.util.EventMap;
 
 class ThemeManager {
     private static var _instance:ThemeManager;
@@ -18,11 +20,36 @@ class ThemeManager {
     //****************************************************************************************************
     private var _themes:Map<String, Theme>;
     private var _themeImages:Map<String, ThemeImageEntry>;
+    private var _eventMap:EventMap = null;
 
     public function new() {
         _themes = new Map<String, Theme>();
     }
 
+    public function registerEvent<T:ThemeEvent>(type:String, listener:T->Void, priority:Int = 0) {
+        if (_eventMap == null) {
+            _eventMap = new EventMap();
+        }
+        
+        _eventMap.add(type, listener);
+    }
+    
+    public function unregisterEvent<T:ThemeEvent>(type:String, listener:T->Void) {
+        if (_eventMap == null) {
+            return;
+        }
+        
+        _eventMap.remove(type, listener);
+    }
+    
+    private function dispatch(event:ThemeEvent) {
+        if (_eventMap == null) {
+            return;
+        }
+        
+        _eventMap.invoke(event.type, new ThemeEvent(ThemeEvent.THEME_CHANGED));
+    }
+    
     public function getTheme(themeName):Theme {
         var theme:Theme = _themes.get(themeName);
         if (theme == null) {
@@ -81,6 +108,8 @@ class ThemeManager {
             }
             _themeImages.set(i.id, i);
         }
+        
+        dispatch(new ThemeEvent(ThemeEvent.THEME_CHANGED));
     }
 
     public function applyResource(resourceId:String) {
