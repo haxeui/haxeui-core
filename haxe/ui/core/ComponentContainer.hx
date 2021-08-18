@@ -77,7 +77,7 @@ class ComponentContainer extends ComponentCommon implements IClonable<ComponentC
     }
 
     public function moveComponentToBack() {
-        if (parentComponent == null && parentComponent.numComponents <= 1) {
+        if (parentComponent == null || parentComponent.numComponents <= 1) {
             return;
         }
         
@@ -85,7 +85,7 @@ class ComponentContainer extends ComponentCommon implements IClonable<ComponentC
     }
 
     public function moveComponentBackward() {
-        if (parentComponent == null && parentComponent.numComponents <= 1) {
+        if (parentComponent == null || parentComponent.numComponents <= 1) {
             return;
         }
         
@@ -98,7 +98,7 @@ class ComponentContainer extends ComponentCommon implements IClonable<ComponentC
     }
     
     public function moveComponentToFront() {
-        if (parentComponent == null && parentComponent.numComponents <= 1) {
+        if (parentComponent == null || parentComponent.numComponents <= 1) {
             return;
         }
         
@@ -106,7 +106,7 @@ class ComponentContainer extends ComponentCommon implements IClonable<ComponentC
     }
 
     public function moveComponentFrontward() {
-        if (parentComponent == null && parentComponent.numComponents <= 1) {
+        if (parentComponent == null || parentComponent.numComponents <= 1) {
             return;
         }
         
