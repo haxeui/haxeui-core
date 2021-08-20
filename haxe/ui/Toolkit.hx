@@ -66,6 +66,11 @@ class Toolkit {
     }
 
     private static var _initialized:Bool = false;
+    public static var initialized(get, null):Bool;
+    private static function get_initialized():Bool {
+        return _initialized;
+    }
+    
     public static function init(options:ToolkitOptions = null) {
         build();
         ThemeManager.instance.applyTheme(_theme);

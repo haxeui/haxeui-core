@@ -69,6 +69,11 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             create();
         }
 
+        #if !haxeui_suppress_warnings
+        if (Toolkit.initialized == false) {
+            trace("WARNING: You are trying to create a component before the toolkit has been initialized. This could have undefined results.");
+        }
+        #end
     }
 
     //***********************************************************************************************************
