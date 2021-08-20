@@ -283,7 +283,17 @@ private class Events extends haxe.ui.events.Events  {
         _range.unregisterEvent(UIEvent.CHANGE, onRangeChange);
     }
 
+    private var _rangeSynced:Bool = false;
     private function onRangeChange(e:UIEvent) {
+        if (_rangeSynced == false && _range.end == _slider.end) {
+            _rangeSynced = true;
+            if (_slider.end == 0) {
+                return;
+            }
+        }
+        if (_rangeSynced == false) {
+            return;
+        }
         _slider.dispatch(new UIEvent(UIEvent.CHANGE));
     }
 
