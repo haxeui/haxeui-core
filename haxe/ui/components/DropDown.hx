@@ -218,7 +218,7 @@ class ListDropDownHandler extends DropDownHandler {
             itemCount = _listview.dataSource.size;
         }
 
-        if (itemCount > 0) {
+        if (itemCount > 0 && _dropdown.dropdownHeight == null) {
             _listview.itemCount = itemCount;
         }
 
