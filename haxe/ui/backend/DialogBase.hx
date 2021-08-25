@@ -109,6 +109,7 @@ class DialogBase extends Box {
                 dp.addComponent(_overlay);
             } else {
                 Screen.instance.addComponent(_overlay);
+                Screen.instance.setComponentIndex(_overlay, Screen.instance.rootComponents.length);
             }
         }
         createButtons();
@@ -117,6 +118,7 @@ class DialogBase extends Box {
             dp.addComponent(this);
         } else {
             Screen.instance.addComponent(this);
+            Screen.instance.setComponentIndex(this, Screen.instance.rootComponents.length);
         }
         this.syncComponentValidation();
         if (autoHeight == false) {

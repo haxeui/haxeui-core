@@ -579,6 +579,16 @@ class DropDownEvents extends ButtonEvents {
             }
         }
 
+        // bug: dropdowns don't actually appear if there's multiple root components re-ordered on Screen.instance?
+        // solution: force overlay and wrapper to actually be on top
+        if (_overlay != null) {
+            Screen.instance.setComponentIndex(_overlay, Screen.instance.rootComponents.length);
+        }
+        if (_wrapper != null) {
+            Screen.instance.setComponentIndex(_wrapper, Screen.instance.rootComponents.length);
+        }
+
+
         Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
         Screen.instance.registerEvent(MouseEvent.RIGHT_MOUSE_DOWN, onScreenMouseDown);
     }
