@@ -1666,7 +1666,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         super.applyStyle(style);
 
         if (style != null && _initialSizeApplied == false) {
-            if ((style.initialWidth != null || style.initialPercentWidth != null) && (width <= 0 && percentWidth == null)) {
+            if (style.autoWidth != true && (style.initialWidth != null || style.initialPercentWidth != null) && (width <= 0 && percentWidth == null)) {
                 if (style.initialWidth != null) {
                     width = style.initialWidth;
                     _initialSizeApplied = true;
@@ -1676,7 +1676,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
                 }
             }
 
-            if ((style.initialHeight != null || style.initialPercentHeight != null) && (height <= 0 && percentHeight == null)) {
+            if (style.autoHeight != true && (style.initialHeight != null || style.initialPercentHeight != null) && (height <= 0 && percentHeight == null)) {
                 if (style.initialHeight != null) {
                     height = style.initialHeight;
                     _initialSizeApplied = true;
@@ -1711,6 +1711,16 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             height = style.height;
         }
 
+        if (style.autoWidth == true) {
+            componentWidth = null;
+            percentWidth = null;
+        }
+
+        if (style.autoHeight == true) {
+            componentHeight = null;
+            percentHeight = null;
+        }
+        
         if (style.native != null) {
             native = style.native;
         }
