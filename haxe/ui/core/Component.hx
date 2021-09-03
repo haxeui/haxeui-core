@@ -1711,16 +1711,6 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             height = style.height;
         }
 
-        if (style.autoWidth == true) {
-            //componentWidth = null;
-            //percentWidth = null;
-        }
-
-        if (style.autoHeight == true) {
-            //componentHeight = null;
-            //percentHeight = null;
-        }
-        
         if (style.native != null) {
             native = style.native;
         }
