@@ -1712,13 +1712,13 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         }
 
         if (style.autoWidth == true) {
-            componentWidth = null;
-            percentWidth = null;
+            //componentWidth = null;
+            //percentWidth = null;
         }
 
         if (style.autoHeight == true) {
-            componentHeight = null;
-            percentHeight = null;
+            //componentHeight = null;
+            //percentHeight = null;
         }
         
         if (style.native != null) {
