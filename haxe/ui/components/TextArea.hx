@@ -284,6 +284,14 @@ private class Events extends haxe.ui.events.Events {
             _textarea.getTextInput().data.onChangedCallback = function() {
                 if (_textarea.hasClass(":empty") == false) {
                     _textarea.text = _textarea.getTextInput().text;
+                    if (_textarea.style.autoHeight == true) {
+                        var maxHeight = _textarea.style.maxHeight;
+                        var newHeight = _textarea.getTextInput().textHeight + 8; // TODO: where does this magic number come from, seems to work across all backends - doesnt seem to be padding
+                        if (maxHeight == null || newHeight < maxHeight) {
+                            _textarea.height = newHeight;
+                        }
+                    }
+
                     cast(_textarea._compositeBuilder, TextAreaBuilder).checkScrolls();
                 }
             };
