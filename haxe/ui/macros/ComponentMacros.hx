@@ -275,7 +275,6 @@ class ComponentMacros {
         var n = 0;
         for (child in c.children) {
             var componentId = "c" + n;
-            trace(componentId);
             var r = buildComponentFromInfo(builder, child, buildData, function(componentInfo:ComponentInfo, codeBuilder:CodeBuilder) {
                 if (componentInfo.condition != null && SimpleExpressionEvaluator.evalCondition(componentInfo.condition) == false) {
                     return;
