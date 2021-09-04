@@ -391,7 +391,7 @@ private class Events extends haxe.ui.events.Events {
         _textarea.focus = true;
     }
 
-    private function onFocusChange(event:MouseEvent) {
+    private function onFocusChange(event:FocusEvent) {
         if (_textarea.focus == true) {
             _textarea.getTextInput().focus();
         } else {
