@@ -1361,9 +1361,25 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     /**
      Whether or not this component is allowed to be exposed to script interpreters (defaults to _true_)
     **/
+    private var _scriptAccess:Bool = true;
     @:dox(group = "Script related properties and methods")
-    public var scriptAccess:Bool = true;
-
+    public var scriptAccess(get, set):Bool;
+    private function get_scriptAccess():Bool {
+        return _scriptAccess;
+    }
+    private function set_scriptAccess(value:Bool):Bool {
+        if (value == _scriptAccess) {
+            return value;
+        }
+        
+        _scriptAccess = value;
+        for (child in childComponents) {
+            child.scriptAccess = value;
+        }
+        
+        return value;
+    }
+    
     /**
      Recursively generates list of all child components that have specified an `id`
     **/
