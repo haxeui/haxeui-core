@@ -326,6 +326,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         if (_compositeBuilder != null) {
             var v = _compositeBuilder.addComponent(child);
             if (v != null) {
+                v.scriptAccess = this.scriptAccess;
                 return v;
             }
         }
@@ -363,6 +364,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         onComponentAdded(child);
         dispatch(new UIEvent(UIEvent.COMPONENT_ADDED));
 
+        child.scriptAccess = this.scriptAccess;
         return child;
     }
 
@@ -374,6 +376,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         if (_compositeBuilder != null) {
             var v = _compositeBuilder.addComponentAt(child, index);
             if (v != null) {
+                v.scriptAccess = this.scriptAccess;
                 return v;
             }
         }
@@ -411,6 +414,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         onComponentAdded(child);
         dispatch(new UIEvent(UIEvent.COMPONENT_ADDED));
 
+        child.scriptAccess = this.scriptAccess;
         return child;
     }
 
