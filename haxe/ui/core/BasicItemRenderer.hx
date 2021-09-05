@@ -8,10 +8,8 @@ class BasicItemRenderer extends ItemRenderer {
     public function new() {
         super();
 
-        this.percentWidth = 100;
-
         var hbox:HBox = new HBox();
-        hbox.percentWidth = 100;
+        hbox.addClass("basic-renderer-container");
 
         var icon:Image = new Image();
         icon.id = "icon";
@@ -23,7 +21,6 @@ class BasicItemRenderer extends ItemRenderer {
         var label:Label = new Label();
         label.id = "text";
         label.addClass("basic-renderer-label");
-        label.percentWidth = 100;
         label.verticalAlign = "center";
         label.hide();
         hbox.addComponent(label);
