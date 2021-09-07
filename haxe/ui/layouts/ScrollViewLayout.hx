@@ -35,6 +35,8 @@ class ScrollViewLayout extends DefaultLayout {
     private override function resizeChildren() {
         super.resizeChildren();
 
+        var scrollview = cast(_component, ScrollView);
+        
         var hscroll = component.findComponent(HorizontalScroll, false);
         var vscroll = component.findComponent(VerticalScroll, false);
 
@@ -63,6 +65,14 @@ class ScrollViewLayout extends DefaultLayout {
                 percentHeight -= child.percentHeight;
             }
 
+            if (scrollview.autoHideScrolls == true) {
+                if (child == hscroll && vscroll != null && vscroll.hidden == false) {
+                    cx -= vscroll.width;
+                } else if (child == vscroll && hscroll != null && hscroll.hidden == false) {
+                    cy -= hscroll.height;
+                }
+            }
+            
             child.resizeComponent(cx, cy);
         }
     }

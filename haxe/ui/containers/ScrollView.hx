@@ -43,6 +43,7 @@ class ScrollView extends Component implements IScrollView {
     @:behaviour(VScrollPageSize)                        public var vscrollPageSize:Float;
     @:behaviour(ScrollModeBehaviour, ScrollMode.DRAG)   public var scrollMode:ScrollMode;
     @:behaviour(GetContents)                            public var contents:Component;
+    @:behaviour(DefaultBehaviour)                       public var autoHideScrolls:Bool;
 
     //***********************************************************************************************************
     // Validation
@@ -642,8 +643,7 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         var hscroll = _scrollview.findComponent(HorizontalScroll, false);
         var vscroll = _scrollview.findComponent(VerticalScroll, false);
         if (hscroll != null || vscroll != null) {
-            var builder = cast(_scrollview._compositeBuilder, ScrollViewBuilder);
-            if (builder.autoHideScrolls == true) {
+            if (_scrollview.autoHideScrolls == true) {
                 if (_containerEventsPaused == true) {
                     if (hscroll != null) {
                         //hscroll.hidden = false;
@@ -803,8 +803,7 @@ class ScrollViewEvents extends haxe.ui.events.Events {
     private function onMouseWheel(event:MouseEvent) {
         var vscroll:VerticalScroll = _scrollview.findComponent(VerticalScroll, false);
         if (vscroll != null) {
-            var builder = cast(_scrollview._compositeBuilder, ScrollViewBuilder);
-            if (builder.autoHideScrolls == true && _fadeTimer == null) {
+            if (_scrollview.autoHideScrolls == true && _fadeTimer == null) {
                 vscroll.fadeIn();
             }
             event.cancel();
@@ -817,7 +816,7 @@ class ScrollViewEvents extends haxe.ui.events.Events {
             } else if (event.delta < 0) {
                 vscroll.pos += amount;
             }
-            if (builder.autoHideScrolls == true) {
+            if (_scrollview.autoHideScrolls == true) {
                 if (_fadeTimer != null) {
                     _fadeTimer.stop();
                     _fadeTimer = null;
@@ -987,10 +986,10 @@ class ScrollViewBuilder extends CompositeBuilder {
         }
 
         if (vcw > usableSize.width && hscroll == null) {
-            var builder = cast(_scrollview._compositeBuilder, ScrollViewBuilder);
             hscroll = new HorizontalScroll();
-            hscroll.includeInLayout = !builder.autoHideScrolls;
-            hscroll.hidden = builder.autoHideScrolls;
+            hscroll.scriptAccess = false;
+            hscroll.includeInLayout = !_scrollview.autoHideScrolls;
+            hscroll.hidden = _scrollview.autoHideScrolls;
             hscroll.percentWidth = 100;
             hscroll.allowFocus = false;
             hscroll.id = "scrollview-hscroll";
@@ -1017,10 +1016,10 @@ class ScrollViewBuilder extends CompositeBuilder {
         }
 
         if (vch > usableSize.height && vscroll == null) {
-            var builder = cast(_scrollview._compositeBuilder, ScrollViewBuilder);
             vscroll = new VerticalScroll();
-            vscroll.includeInLayout = !builder.autoHideScrolls;
-            vscroll.hidden = builder.autoHideScrolls;
+            vscroll.scriptAccess = false;
+            vscroll.includeInLayout = !_scrollview.autoHideScrolls;
+            vscroll.hidden = _scrollview.autoHideScrolls;
             vscroll.percentHeight = 100;
             vscroll.allowFocus = false;
             vscroll.id = "scrollview-vscroll";
@@ -1102,13 +1101,12 @@ class ScrollViewBuilder extends CompositeBuilder {
 
     }
 
-    public var autoHideScrolls:Bool = false;
     public override function applyStyle(style:Style) {
         super.applyStyle(style);
         if (style.mode != null && style.mode == "mobile") {
-            autoHideScrolls = true;
+            _scrollview.autoHideScrolls = true;
         } else {
-            autoHideScrolls = false;
+            _scrollview.autoHideScrolls = false;
         }
         
         if (style.contentWidth != null && style.contentWidth != _scrollview.contentWidth) {
