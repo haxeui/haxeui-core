@@ -26,6 +26,8 @@ class ModuleMacros {
     private static var _modules:Array<Module> = [];
     private static var _modulesProcessed:Bool;
     private static var _resourceIds:Array<String> = [];
+    
+    public static var properties:Map<String, String> = new Map<String, String>();
     #end
 
     macro public static function processModules():Expr {
@@ -451,6 +453,12 @@ class ModuleMacros {
             return 0;
         });
 
+        for (m in _modules) {
+            for (p in m.properties) {
+                properties.set(p.name, p.value);
+            }
+        }
+        
         _modulesLoaded = true;
         return _modules;
     }

@@ -1,4 +1,5 @@
 package haxe.ui.macros;
+import haxe.ui.macros.ModuleMacros;
 
 #if macro
 import haxe.macro.ComplexTypeTools;
@@ -21,6 +22,9 @@ class Macros {
     #if macro
 
     macro static function build():Array<Field> {
+        ModuleMacros.loadModules();
+        
+        
         var builder = new ClassBuilder(Context.getBuildFields(), Context.getLocalType(), Context.currentPos());
 
         if (builder.hasClassMeta(["xml"])) {
@@ -32,10 +36,30 @@ class Macros {
         }
 
         buildEvents(builder);
-
+        applyProperties(builder);
+        
         return builder.fields;
     }
 
+    static function applyProperties(builder:ClassBuilder) {
+        var propPrefix = builder.fullPath.toLowerCase();
+        if (ModuleMacros.properties.exists(propPrefix + ".style")) {
+            var styleNames = ModuleMacros.properties.get(propPrefix + ".style");
+            var createDefaultsFn = builder.findFunction("createDefaults");
+            if (createDefaultsFn == null) {
+                createDefaultsFn = builder.addFunction("createDefaults", macro {
+                    super.createDefaults();
+                }, null, null, [AOverride, APrivate]);
+            }
+            for (n in styleNames.split(" ")) {
+                if (StringTools.trim(n).length == 0) {
+                    continue;
+                }
+                createDefaultsFn.add(macro addClass($v{n}));
+            }
+        }
+    }
+    
     static function buildFromXmlMeta(builder:ClassBuilder) {
         if (builder.hasSuperClass("haxe.ui.core.Component") == false) {
             Context.error("Must have a superclass of haxe.ui.core.Component", Context.currentPos());
