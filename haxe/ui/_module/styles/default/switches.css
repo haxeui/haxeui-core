@@ -13,6 +13,54 @@
 }
 
 .switch-button-sub {
+    background-color: #FFFFFF;
+    border: 1px solid #ABABAB;
+    border-radius: 2px;
+    cursor: pointer;
+    padding: 0px;
+    initial-width: 40px;
+    initial-height: 20px;
+    filter: drop-shadow(1, 45, #888888, 0.3, 1, 1, 1, 3, true);
+}
+
+.switch-button-sub .button {
+    height: 100%;
+    width: 50%;
+    border-radius: 2px;
+    filter: none;
+}
+
+.switch-button-sub-extra {
+    height: 0;
+    width: 0;
+    background-color: none;
+    border: none;
+    filter: none;
+}
+
+@keyframes switchAnimateSelected {
+    0% {
+        pos: 0;
+        background-color: #FFFFFF;
+    }
+    100% {
+        pos: 100;
+        background-color: #98c4e6;
+    }
+}
+
+.switch-button-sub:selected {
+    animation: switchAnimateSelected 0.2s ease 0s 1;
+}
+
+.switch-button-sub:unselected {
+    animation: switchAnimateSelected 0.2s ease 0s 1 reverse backwards;
+}
+
+/************************************************************************
+** SWITCH (CIRCLE)
+*************************************************************************/
+.circle-switch .switch-button-sub {
     border: none;
     filter: none;
     background-color: none;
@@ -23,7 +71,7 @@
     initial-width: 40px;
 }
 
-.switch-button-sub-extra {
+.circle-switch .switch-button-sub-extra {
     height: 14px;
     width: 100%;
     background-color: #FFFFFF;
@@ -33,14 +81,14 @@
     filter: drop-shadow(1, 45, #888888, 0.3, 1, 1, 1, 3, true);
 }
 
-.switch-button-sub .button {
+.circle-switch .switch-button-sub .button {
     width: 20px;
     height: 20px;
     border-radius: 50px;
     filter: drop-shadow(1, 45, #000000, 0.2, 0, 0, 0, 3, false);
 }
 
-@keyframes switchAnimateSelected {
+@keyframes switchAnimateSelectedCircle {
     0% {
         pos: 0;
     }
@@ -49,16 +97,16 @@
     }
 }
 
-.switch-button-sub:selected {
-    animation: switchAnimateSelected 0.2s ease 0s 1;
+.circle-switch .switch-button-sub:selected {
+    animation: switchAnimateSelectedCircle 0.2s ease 0s 1;
 }
  
-.switch-button-sub:unselected {
-    animation: switchAnimateSelected 0.2s ease 0s 1 reverse backwards;
+.circle-switch .switch-button-sub:unselected {
+    animation: switchAnimateSelectedCircle 0.2s ease 0s 1 reverse backwards;
 }
 
 
-@keyframes switchAnimateExtraSelected {
+@keyframes switchAnimateExtraSelectedCircle {
     0% {
         background-color: #FFFFFF;
     }
@@ -67,60 +115,12 @@
     }
 }
 
-.switch-button-sub-extra:selected {
-    animation: switchAnimateExtraSelected 0.2s ease 0s 1;
+.circle-switch .switch-button-sub-extra:selected {
+    animation: switchAnimateExtraSelectedCircle 0.2s ease 0s 1;
 }
 
-.switch-button-sub-extra:unselected {
-    animation: switchAnimateExtraSelected 0.2s ease 0s 1 reverse backwards;
-}
-
-/************************************************************************
-** SWITCH (SQUARE)
-*************************************************************************/
-.square-switch .switch-button-sub {
-    background-color: #FFFFFF;
-    border: 1px solid #ABABAB;
-    border-radius: 2px;
-    cursor: pointer;
-    padding: 0px;
-    initial-width: 40px;
-    initial-height: 20px;
-    filter: drop-shadow(1, 45, #888888, 0.3, 1, 1, 1, 3, true);
-}
-
-.square-switch .switch-button-sub .button {
-    height: 100%;
-    width: 50%;
-    border-radius: 2px;
-    filter: none;
-}
-
-.square-switch .switch-button-sub-extra {
-    height: 0;
-    width: 0;
-    background-color: none;
-    border: none;
-    filter: none;
-}
-
-@keyframes switchAnimateSelectedSquare {
-    0% {
-        pos: 0;
-        background-color: #FFFFFF;
-    }
-    100% {
-        pos: 100;
-        background-color: #98c4e6;
-    }
-}
-
-.square-switch .switch-button-sub:selected {
-    animation: switchAnimateSelectedSquare 0.2s ease 0s 1;
-}
-
-.square-switch .switch-button-sub:unselected {
-    animation: switchAnimateSelectedSquare 0.2s ease 0s 1 reverse backwards;
+.circle-switch .switch-button-sub-extra:unselected {
+    animation: switchAnimateExtraSelectedCircle 0.2s ease 0s 1 reverse backwards;
 }
 
 /************************************************************************

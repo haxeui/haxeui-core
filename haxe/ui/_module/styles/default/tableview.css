@@ -18,9 +18,11 @@
     border-right-width: 0;
 }
 
+/*
 .header.scrolling .column.last {
     border-right-width: 1px;
 }
+*/
 
 .column.sortable {
     icon: "haxeui-core/styles/default/sortable_arrows.png";

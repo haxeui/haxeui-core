@@ -40,8 +40,8 @@ class Scroll extends InteractiveComponent implements IDirectionalComponent {
     // Internals
     //***********************************************************************************************************
     private override function createChildren() {
-        createButton("deinc").repeater = true;
-        createButton("inc").repeater = true;
+        createButton("deinc", true).repeater = true;
+        createButton("inc", true).repeater = true;
         createButton("thumb").remainPressed = true;
 
         registerInternalEvents(Events);
@@ -50,10 +50,11 @@ class Scroll extends InteractiveComponent implements IDirectionalComponent {
     //***********************************************************************************************************
     // Helpers
     //***********************************************************************************************************
-    private function createButton(type:String):Button {
+    private function createButton(type:String, hidden:Bool = false):Button {
         var b = findComponent('scroll-${type}-button', Button);
         if (b == null) {
             b = new Button();
+            b.hidden = hidden;
             b.scriptAccess = false;
             b.customStyle.native = false;
             b.id = 'scroll-${type}-button';

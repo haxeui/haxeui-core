@@ -2,121 +2,137 @@
 ** SCROLL
 *************************************************************************/
 .scroll {
-    background-color: #E9E9E9;
+    background-color: none;
+    padding: 0px;
 }
 
 .scroll .button {
+    width: 5px;
+    height: 5px;
+    background-color: #C6C6C6;
+    border-radius: 0;
+    border: none;
+    opacity: .4;
+    filter: none;
+}
+
+.scroll .button:hover {
+    opacity: .6;
+}
+
+.vertical-scroll {
+    width: 6px;
+    padding-left: 1px;
+    border-left: 1px solid #ababab;
+}
+
+.horizontal-scroll {
+    height: 6px;
+    padding-top: 1px;
+    border-top: 1px solid #ababab;
+}
+
+/************************************************************************
+** CLASSIC VARIANTS
+*************************************************************************/
+.classic-scrolls .scroll,
+.scroll.classic-scrolls {
+    background-color: #E9E9E9;
+    border:none;
+    padding: 0;
+}
+
+.classic-scrolls .scroll .button,
+.scroll.classic-scrolls .button{
     border-radius: 0;
     border: none;
     background-color: #E9E9E9;
     padding: 0;
     filter: none;
+    hidden: false;
+    width: 17px;
+    height: 17px;
+    opacity: 1;
 }
 
-.scroll .button:hover {
+.classic-scrolls .scroll .button:hover,
+.scroll.classic-scrolls .button:hover {
     background-color: #D7D7D7;
 }
 
-.scroll .button:down {
+.classic-scrolls .scroll .button:down,
+.scroll.classic-scrolls .button:down {
     background-color: #525252;
     filter: none;
 }
 
-.scroll .deinc {
-    height: 17px;
-    width: 17px;
-    opacity: 1;
-}
-
-.scroll deinc:disabled {
-    opacity: 0.5;
-}
-
-.scroll deinc:down {
-}
-
-.scroll .inc {
-    height: 17px;
-    width: 17px;
-    opacity: 1;
-}
-
-.scroll .inc:disabled {
-    opacity: 0.5;
-}
-
-.scroll .inc:down {
-}
-
-.scroll .thumb {
+.classic-scrolls .scroll .thumb,
+.scroll.classic-scrolls .thumb {
     background-color: #C6C6C6;
 }
 
-.scroll .thumb:hover {
+.classic-scrolls .scroll .thumb:hover,
+.scroll.classic-scrolls .thumb:hover {
     background-color: #AAAAAA;
 }
 
-.scroll .thumb:down {
+.classic-scrolls .scroll .thumb:down,
+.scroll.classic-scrolls .thumb:down {
     background-color: #525252;
 }
 
-.scroll .thumb:disabled {
+.classic-scrolls .scroll .thumb:disabled,
+.scroll.classic-scrolls .thumb:disabled {
     background-color: #DDDDDD;
 }
 
-/************************************************************************
-** VERTICAL SCROLL
-*************************************************************************/
-.vertical-scroll {
+.classic-scrolls .vertical-scroll,
+.vertical-scroll.classic-scrolls {
     width: 17px;
 }
 
-.vertical-scroll .thumb {
-    width: 17px;
-    height: 17px;
-}
-
-.vertical-scroll .deinc {
+.classic-scrolls .vertical-scroll .deinc,
+.vertical-scroll.classic-scrolls .deinc {
     icon: "haxeui-core/styles/default/up_arrow.png";
 }
 
-.vertical-scroll .deinc:down {
+.classic-scrolls .vertical-scroll .deinc:down,
+.vertical-scroll.classic-scrolls .deinc:down {
     icon: "haxeui-core/styles/default/up_arrow_white.png";
 }
 
-.vertical-scroll .inc {
+.classic-scrolls .vertical-scroll .inc,
+.vertical-scroll.classic-scrolls .inc {
     icon: "haxeui-core/styles/default/down_arrow.png";
 }
 
-.vertical-scroll .inc:down {
+.classic-scrolls .vertical-scroll .inc:down,
+.vertical-scroll.classic-scrolls .inc:down {
     icon: "haxeui-core/styles/default/down_arrow_white.png";
 }
 
-/************************************************************************
-** HORIZONTAL SCROLL
-*************************************************************************/
-.horizontal-scroll {
+.classic-scrolls .horizontal-scroll,
+.horizontal-scroll.classic-scrolls {
     height: 17px;
 }
 
-.horizontal-scroll .thumb {
-    width: 17px;
-    height: 17px;
-}
-
-.horizontal-scroll .deinc {
+.classic-scrolls .horizontal-scroll .deinc,
+.horizontal-scroll.classic-scrolls .deinc {
     icon: "haxeui-core/styles/default/left_arrow.png";
 }
 
-.horizontal-scroll .deinc:down {
+.classic-scrolls .horizontal-scroll .deinc:down,
+.horizontal-scroll.classic-scrolls .deinc:down {
     icon: "haxeui-core/styles/default/left_arrow_white.png";
 }
 
-.horizontal-scroll .inc {
+.classic-scrolls .horizontal-scroll .inc,
+.horizontal-scroll.classic-scrolls .inc {
     icon: "haxeui-core/styles/default/right_arrow.png";
 }
 
-.horizontal-scroll .inc:down {
+.classic-scrolls .horizontal-scroll .inc:down,
+.horizontal-scroll.classic-scrolls .inc:down {
     icon: "haxeui-core/styles/default/right_arrow_white.png";
 }
 

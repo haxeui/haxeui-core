@@ -22,28 +22,28 @@
 
 .progress-value {
     border: none;
-    border-radius: 2px;
+    border-radius: 1px;
 }
 
 .horizontal-progress {
     background: #F1F1F1 #FFFFFF vertical;
     initial-width: 150px;
-    initial-height: 20px;
+    initial-height: 8px;
 }
 
 .horizontal-progress .progress-value {
-    background: #6CAADB #216AAE vertical;
+    background: #98c4e6 #549bde vertical;
     height: 100%;
 }
 
 .vertical-progress {
     background: #F1F1F1 #FFFFFF horizontal;
-    initial-width: 20px;
+    initial-width: 8px;
     initial-height: 150px;
 }
 
 .vertical-progress .progress-value {
-    background: #6CAADB #216AAE horizontal;
+    background: #98c4e6 #549bde horizontal;
     width: 100%;
 }
 

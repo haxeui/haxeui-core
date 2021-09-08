@@ -1,113 +1,95 @@
 /************************************************************************
 ** SCROLL
 *************************************************************************/
-.scroll {
-    background-color: #2c2f30;
-}
-
 .scroll .button {
-    border-radius: 0;
-    border: none;
-    background-color: #2c2f30;
-    padding: 0;
-    filter: none;
+    background-color: #3e4142;
+    opacity: .7;
 }
 
 .scroll .button:hover {
-    background-color: #45484a;
+    opacity: .9;
 }
 
-.scroll .button:down {
-    background-color: #45484a;
-    filter: none;
+.vertical-scroll {
+    border-left: 1px solid #181a1b;
 }
 
-.scroll .deinc {
-    height: 17px;
-    width: 17px;
-    opacity: 1;
+.horizontal-scroll {
+    border-top: 1px solid #181a1b;
 }
 
-.scroll deinc:disabled {
-    opacity: 0.5;
+/************************************************************************
+** CLASSIC VARIANTS
+*************************************************************************/
+.classic-scrolls .scroll,
+.scroll.classic-scrolls {
+    background-color: #2c2f30;
+    border:none;
 }
 
-.scroll deinc:down {
+.classic-scrolls .scroll .button,
+.scroll.classic-scrolls .button{
+    background-color: #2c2f30;
+    border:none;
 }
 
-.scroll .inc {
-    height: 17px;
-    width: 17px;
-    opacity: 1;
-}
-
-.scroll .inc:disabled {
-    opacity: 0.5;
-}
-
-.scroll .inc:down {
-}
-
-.scroll .thumb {
+.classic-scrolls .scroll .thumb,
+.scroll.classic-scrolls .thumb {
     background-color: #3d4042;
 }
 
-.scroll .thumb:hover {
+.classic-scrolls .scroll .thumb:hover,
+.scroll.classic-scrolls .thumb:hover {
     background-color: #45484a;
 }
 
-.scroll .thumb:down {
+.classic-scrolls .scroll .thumb:down,
+.scroll.classic-scrolls .thumb:down {
     background-color: #45484a;
 }
 
-.scroll .thumb:disabled {
+.classic-scrolls .scroll .thumb:disabled,
+.scroll.classic-scrolls .thumb:disabled {
     background-color: #333738;
 }
 
-/************************************************************************
-** VERTICAL SCROLL
-*************************************************************************/
-.vertical-scroll .deinc {
+.classic-scrolls .vertical-scroll .deinc,
+.vertical-scroll.classic-scrolls .deinc {
     icon: "haxeui-core/styles/dark/up_arrow.png";
 }
 
-.vertical-scroll .deinc:down {
+.classic-scrolls .vertical-scroll .deinc:down,
+.vertical-scroll.classic-scrolls .deinc:down {
     icon: "haxeui-core/styles/dark/up_arrow_white.png";
 }
 
-.vertical-scroll .inc {
+.classic-scrolls .vertical-scroll .inc,
+.vertical-scroll.classic-scrolls .inc {
     icon: "haxeui-core/styles/dark/down_arrow.png";
 }
 
-.vertical-scroll .inc:down {
+.classic-scrolls .vertical-scroll .inc:down,
+.vertical-scroll.classic-scrolls .inc:down {
     icon: "haxeui-core/styles/dark/down_arrow_white.png";
 }
 
-/************************************************************************
-** HORIZONTAL SCROLL
-*************************************************************************/
-.horizontal-scroll {
-    height: 17px;
-}
-
-.horizontal-scroll .thumb {
-    width: 17px;
-    height: 17px;
-}
-
-.horizontal-scroll .deinc {
+.classic-scrolls .horizontal-scroll .deinc,
+.horizontal-scroll.classic-scrolls .deinc {
     icon: "haxeui-core/styles/dark/left_arrow.png";
 }
 
-.horizontal-scroll .deinc:down {
+.classic-scrolls .horizontal-scroll .deinc:down,
+.horizontal-scroll.classic-scrolls .deinc:down {
     icon: "haxeui-core/styles/dark/left_arrow_white.png";
 }
 
-.horizontal-scroll .inc {
+.classic-scrolls .horizontal-scroll .inc,
+.horizontal-scroll.classic-scrolls .inc {
     icon: "haxeui-core/styles/dark/right_arrow.png";
 }
 
-.horizontal-scroll .inc:down {
+.classic-scrolls .horizontal-scroll .inc:down,
+.horizontal-scroll.classic-scrolls .inc:down {
     icon: "haxeui-core/styles/dark/right_arrow_white.png";
 }
 

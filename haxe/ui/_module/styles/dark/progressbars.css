@@ -22,13 +22,13 @@
 
 .progress-value {
     border: none;
-    border-radius: 2px;
+    border-radius: 1px;
 }
 
 .horizontal-progress {
     background: #252728 #252728 vertical;
     initial-width: 150px;
-    initial-height: 20px;
+    initial-height: 8px;
 }
 
 .horizontal-progress .progress-value {
@@ -38,7 +38,7 @@
 
 .vertical-progress {
     background: #252728 #252728 horizontal;
-    initial-width: 20px;
+    initial-width: 8px;
     initial-height: 150px;
 }
 
