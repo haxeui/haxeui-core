@@ -1686,7 +1686,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         super.applyStyle(style);
 
         if (style != null && _initialSizeApplied == false) {
-            if (style.autoWidth != true && (style.initialWidth != null || style.initialPercentWidth != null) && (width <= 0 && percentWidth == null)) {
+            if ((style.initialWidth != null || style.initialPercentWidth != null) && (width <= 0 && percentWidth == null)) {
                 if (style.initialWidth != null) {
                     width = style.initialWidth;
                     _initialSizeApplied = true;
