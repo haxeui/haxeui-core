@@ -443,10 +443,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
                 child.depth = -1;
             }
             if (dispose == true) {
-                child._isDisposed = true;
-                child.removeAllComponents(true);
-                child.destroyComponent();
-                child.unregisterEvents();
+                disposeComponent();
             }
         }
 
@@ -466,6 +463,13 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         return child;
     }
 
+    public function disposeComponent() {
+        this._isDisposed = true;
+        this.removeAllComponents(true);
+        this.destroyComponent();
+        this.unregisterEvents();
+    }
+    
     /**
      Removes the child component from this component instance
     **/

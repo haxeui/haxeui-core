@@ -70,7 +70,7 @@ class ScreenBase {
         return component;
     }
 
-    public function removeComponent(component:Component):Component {
+    public function removeComponent(component:Component, dispose:Bool = true):Component {
         return component;
     }
 
