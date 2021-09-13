@@ -4,30 +4,31 @@
 .scroll {
     background-color: none;
     padding: 0px;
+    background-color: #E9E9E9;
 }
 
 .scroll .button {
-    width: 5px;
-    height: 5px;
+    width: 7px;
+    height: 7px;
     background-color: #C6C6C6;
     border-radius: 0;
     border: none;
-    opacity: .4;
+    opacity: .8;
     filter: none;
 }
 
 .scroll .button:hover {
-    opacity: .6;
+    opacity: 1;
 }
 
 .vertical-scroll {
-    width: 6px;
+    width: 8px;
     padding-left: 1px;
     border-left: 1px solid #ababab;
 }
 
 .horizontal-scroll {
-    height: 6px;
+    height: 8px;
     padding-top: 1px;
     border-top: 1px solid #ababab;
 }
