@@ -1034,7 +1034,7 @@ class ScrollViewBuilder extends CompositeBuilder {
     public function destroyHScroll() {
         var hscroll:HorizontalScroll = _component.findComponent(HorizontalScroll, false);
         if (hscroll != null) {
-            _component.removeComponent(hscroll);
+            _component.removeComponent(hscroll, false);
         }
     }
 
@@ -1042,7 +1042,7 @@ class ScrollViewBuilder extends CompositeBuilder {
     public function destroyVScroll() {
         var vscroll:VerticalScroll = _component.findComponent(VerticalScroll, false);
         if (vscroll != null) {
-            _component.removeComponent(vscroll);
+            _component.removeComponent(vscroll, false);
         }
     }
 
