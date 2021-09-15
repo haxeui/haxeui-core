@@ -7,6 +7,7 @@ import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.events.UIEvent;
+import haxe.ui.layouts.HorizontalLayout;
 import haxe.ui.util.GUID;
 import haxe.ui.util.Variant;
 
@@ -41,6 +42,7 @@ private class Builder extends CompositeBuilder {
     public function new(group:Group) {
         super(group);
         _group = group;
+        _component.layout = new HorizontalLayout();
     }
 
     public override function addComponent(child:Component):Component { // addComponentAt too
