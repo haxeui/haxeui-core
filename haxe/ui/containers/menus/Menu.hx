@@ -207,7 +207,7 @@ class MenuEvents extends haxe.ui.events.Events {
             }
             
             events.hideCurrentSubMenu();
-            Screen.instance.removeComponent(root);
+            Screen.instance.removeComponent(root, false);
         }
     }
     
@@ -222,7 +222,7 @@ class MenuEvents extends haxe.ui.events.Events {
 
         var subMenuEvents:MenuEvents = cast(currentSubMenu._internalEvents, MenuEvents);
         subMenuEvents.hideCurrentSubMenu();
-        Screen.instance.removeComponent(currentSubMenu);
+        Screen.instance.removeComponent(currentSubMenu, false);
         currentSubMenu = null;
     }
 

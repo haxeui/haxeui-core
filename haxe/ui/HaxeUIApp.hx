@@ -90,8 +90,8 @@ class HaxeUIApp extends AppImpl {
         return Screen.instance.addComponent(component);
     }
 
-    public function removeComponent(component:Component):Component {
-        return Screen.instance.removeComponent(component);
+    public function removeComponent(component:Component, dispose:Bool = true):Component {
+        return Screen.instance.removeComponent(component, dispose);
     }
 
     public function setComponentIndex(child:Component, index:Int):Component {

@@ -28,6 +28,8 @@ class DialogBase extends Box {
     public var dialogFooterContainer:haxe.ui.containers.Box;
     public var dialogFooter:haxe.ui.containers.HBox;
 
+    public var disposeOnClose:Bool = true;
+    
     public function new() {
         super();
 
@@ -185,9 +187,9 @@ class DialogBase extends Box {
                     }
                 }
                 if (dp != null) {
-                    dp.removeComponent(this, false);
+                    dp.removeComponent(this, disposeOnClose);
                 } else {
-                    Screen.instance.removeComponent(this);
+                    Screen.instance.removeComponent(this, disposeOnClose);
                 }
 
                 var event = new DialogEvent(DialogEvent.DIALOG_CLOSED);

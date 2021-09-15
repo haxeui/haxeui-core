@@ -597,7 +597,7 @@ class DropDownEvents extends ButtonEvents {
         _dropdown.selected = false;
 
         if (_wrapper != null) {
-            Screen.instance.removeComponent(_wrapper);
+            Screen.instance.removeComponent(_wrapper, false);
         }
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
         Screen.instance.unregisterEvent(MouseEvent.RIGHT_MOUSE_DOWN, onScreenMouseDown);
