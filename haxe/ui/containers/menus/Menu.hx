@@ -390,4 +390,14 @@ private class Builder extends CompositeBuilder {
         }
         return r;
     }
+    
+    public override function destroy() {
+        super.destroy();
+        if (_menu != null && _menu._isDisposed == false) {
+            Screen.instance.removeComponent(_menu);
+        }
+        for (subMenu in _subMenus) {
+            Screen.instance.removeComponent(subMenu);
+        }
+    }
 }

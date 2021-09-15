@@ -669,8 +669,9 @@ class DropDownBuilder extends ButtonBuilder {
     public override function destroy() {
         var events:DropDownEvents = cast(_dropdown._internalEvents, DropDownEvents);
         events.hideDropDown();
-        if (_handler != null && _handler.component != null) {
-            _handler.component.destroyComponent();
+        if (events._wrapper != null) {
+            Screen.instance.removeComponent(events._wrapper);
+            events._wrapper = null;
         }
     }
 

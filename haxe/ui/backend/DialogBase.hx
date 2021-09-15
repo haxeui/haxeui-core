@@ -236,6 +236,14 @@ class DialogBase extends Box {
         return b;
     }
 
+    private override function onDestroy() {
+        super.onDestroy();
+        if (_overlay != null) {
+            Screen.instance.removeComponent(_overlay);
+            _overlay = null;
+        }
+    }
+    
     private function onContentResize(e) {
         if (dialogFooter.width <= 0 || dialogFooterContainer.width <= 0 || _autoSizeDialog == false) {
             return;

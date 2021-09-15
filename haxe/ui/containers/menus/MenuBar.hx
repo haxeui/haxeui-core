@@ -267,6 +267,11 @@ private class Builder extends CompositeBuilder {
     }
 
     public override function destroy() {
+        super.destroy();
+        for (menu in _menus) {
+            Screen.instance.removeComponent(menu);
+        }
+        _menus = null;
     }
 
     public override function addComponent(child:Component):Component {
