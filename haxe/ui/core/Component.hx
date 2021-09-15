@@ -443,7 +443,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
                 child.depth = -1;
             }
             if (dispose == true) {
-                disposeComponent();
+                child.disposeComponent();
             }
         }
 
