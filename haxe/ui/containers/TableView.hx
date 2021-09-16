@@ -433,7 +433,7 @@ private class Builder extends ScrollViewBuilder {
     public function fillExistingRenderer() {
         var i = 0;
         for (column in _header.childComponents) {
-            var existing = _tableview.itemRenderer.findComponent(column.id, ItemRenderer, true);
+            var existing = _tableview.itemRenderer.findComponent(column.id, Component, true);
             if (existing == null) {
                 var itemRenderer = createRenderer(column.id);
                 _tableview.itemRenderer.addComponentAt(itemRenderer, i);
@@ -447,7 +447,7 @@ private class Builder extends ScrollViewBuilder {
         if (data != null) {
             for (item in data.childComponents) {
                 for (column in _header.childComponents) {
-                    var existing = item.findComponent(column.id, ItemRenderer, true);
+                    var existing = item.findComponent(column.id, Component, true);
                     if (existing == null) {
                         var temp = _tableview.itemRenderer.findComponent(column.id, Component);
                         var renderer:ItemRenderer = null;
