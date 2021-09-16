@@ -223,7 +223,6 @@ private class TextAreaHelper {
         var placeholderVisible:Bool = text.length == 0;
         if (textarea.placeholder != null) {
             if (textarea.focus == false) {
-                trace("'" + text + "'");
                 if (text.length == 0) {
                     text = textarea.placeholder;
                     textarea.addClass(":empty");
