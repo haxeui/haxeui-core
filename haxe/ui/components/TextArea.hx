@@ -220,17 +220,24 @@ private class TextAreaHelper {
             text = "";
         }
 
-        if (textarea.focus == false && textarea.placeholder != null) {
-            if (text == "") {
-                text = textarea.placeholder;
-                textarea.addClass(":empty");
+        var placeholderVisible:Bool = text.length == 0;
+        if (textarea.placeholder != null) {
+            if (textarea.focus == false) {
+                trace("'" + text + "'");
+                if (text.length == 0) {
+                    text = textarea.placeholder;
+                    textarea.addClass(":empty");
+                } else if (text != textarea.placeholder) {
+                    textarea.removeClass(":empty");
+                }
             } else {
                 textarea.removeClass(":empty");
+                if (text == textarea.placeholder) {
+                    text = "";
+                }
             }
         } else {
-            var placeholderVisible:Bool = text.length == 0;
             if (placeholderVisible == true) {
-                text = "";
                 textarea.removeClass(":empty");
             }
         }
@@ -245,17 +252,23 @@ private class TextAreaHelper {
             htmlText = "";
         }
 
-        if (textarea.focus == false && textarea.placeholder != null) {
-            if (htmlText == "") {
-                htmlText = textarea.placeholder;
-                textarea.addClass(":empty");
+        var placeholderVisible:Bool = htmlText.length == 0;
+        if (textarea.placeholder != null) {
+            if (textarea.focus == false) {
+                if (htmlText.length == 0) {
+                    htmlText = textarea.placeholder;
+                    textarea.addClass(":empty");
+                } else if (htmlText != textarea.placeholder) {
+                    textarea.removeClass(":empty");
+                }
             } else {
                 textarea.removeClass(":empty");
+                if (htmlText == textarea.placeholder) {
+                    htmlText = "";
+                }
             }
         } else {
-            var placeholderVisible:Bool = htmlText.length == 0;
             if (placeholderVisible == true) {
-                htmlText = "";
                 textarea.removeClass(":empty");
             }
         }
@@ -397,6 +410,7 @@ private class Events extends haxe.ui.events.Events {
         } else {
             _textarea.getTextInput().blur();
         }
+        TextAreaHelper.validateText(_textarea, _textarea.text);
     }
 }
 
