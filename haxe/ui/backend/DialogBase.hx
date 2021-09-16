@@ -28,7 +28,7 @@ class DialogBase extends Box {
     public var dialogFooterContainer:haxe.ui.containers.Box;
     public var dialogFooter:haxe.ui.containers.HBox;
 
-    public var disposeOnClose:Bool = true;
+    public var destroyOnClose:Bool = true;
     
     public function new() {
         super();
@@ -179,6 +179,14 @@ class DialogBase extends Box {
         validateDialog(this.button, function(result) {
             if (result == true) {
                 var dp = dialogParent;
+                
+                var event = new DialogEvent(DialogEvent.DIALOG_CLOSED);
+                event.button = this.button;
+                dispatch(event);
+                if (event.canceled == true) {
+                    return;
+                }
+                
                 if (modal && _overlay != null) {
                     if (dp != null) {
                         dp.removeComponent(_overlay);
@@ -187,14 +195,10 @@ class DialogBase extends Box {
                     }
                 }
                 if (dp != null) {
-                    dp.removeComponent(this, disposeOnClose);
+                    dp.removeComponent(this, destroyOnClose);
                 } else {
-                    Screen.instance.removeComponent(this, disposeOnClose);
+                    Screen.instance.removeComponent(this, destroyOnClose);
                 }
-
-                var event = new DialogEvent(DialogEvent.DIALOG_CLOSED);
-                event.button = this.button;
-                dispatch(event);
             }
         });
     }
