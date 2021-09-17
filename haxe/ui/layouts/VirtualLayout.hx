@@ -258,6 +258,11 @@ class VirtualLayout extends ScrollViewLayout {
         if (instance == null) {
             if (comp.itemRenderer != null && Type.getClass(comp.itemRenderer) == cls) {
                 instance = comp.itemRenderer.cloneComponent();
+                // when a custom renderer is added its set to invisible and not actually added
+                // this is because its never used, but only ever cloned, however, when we clone
+                // it we also (on some backends) clone the fact that its hidden, so we want to 
+                // reset that
+                @:privateAccess instance.handleVisibility(true);
             } else {
                 instance = Type.createInstance(cls, []);
             }
