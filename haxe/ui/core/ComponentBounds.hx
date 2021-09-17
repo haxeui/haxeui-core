@@ -350,7 +350,7 @@ class ComponentBounds extends ComponentLayout {
      *Note*: `left` and `top` must be stage (screen) co-ords
     **/
     @:dox(group = "Size related properties and methods")
-    public function hitTest(left:Float, top:Float):Bool { // co-ords must be stage
+    public function hitTest(left:Float, top:Float, allowZeroSized:Bool = false):Bool { // co-ords must be stage
 
         if (hasScreen == false) {
             return false;
@@ -372,8 +372,14 @@ class ComponentBounds extends ComponentLayout {
             cy = actualComponentHeight;
         }
 
-        if (cx <= 0 || cy <= 0) {
-            return false;
+        if (allowZeroSized == true) {
+            var c = cast(this, Component);
+            if (c.layout != null) {
+                var us = c.layout.usableSize;
+                if (us.width <= 0 || us.height <= 0) {
+                    return true;
+                }
+            }
         }
 
         if (left >= sx && left < sx + cx && top >= sy && top < sy + cy) {

@@ -728,9 +728,9 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
 
     public function findComponentsUnderPoint<T:Component>(screenX:Float, screenY:Float, type:Class<T> = null):Array<Component> {
         var c:Array<Component> = [];
-        if (hitTest(screenX, screenY)) {
+        if (hitTest(screenX, screenY, true)) {
             for (child in childComponents) {
-                if (child.hitTest(screenX, screenY)) {
+                if (child.hitTest(screenX, screenY, true)) {
                     var match = true;
                     if (type != null && isOfType(child, type) == false) {
                         match = false;
