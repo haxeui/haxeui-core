@@ -55,6 +55,12 @@ class DefaultLayout extends Layout {
                     childPercentWidth = fullWidthValue;
                 }
                 cx = (usableSize.width * childPercentWidth) / percentWidth - marginLeft(child) - marginRight(child);
+                
+                #if debug
+                if (_component.autoWidth && usableSize.width <= 0) {
+                    trace("WARNING: trying to use a % width in a child (id: " + child.id + ") with autosized parent (id: " + _component.id + ")");
+                }
+                #end
             }
             if (child.percentHeight != null) {
                 var childPercentHeight = child.percentHeight;
@@ -62,6 +68,12 @@ class DefaultLayout extends Layout {
                     childPercentHeight = fullHeightValue;
                 }
                 cy = (usableSize.height * childPercentHeight) / percentHeight - marginTop(child) - marginBottom(child);
+                
+                #if debug
+                if (_component.autoHeight && usableSize.height <= 0) {
+                    trace("WARNING: trying to use a % width in a child (id: " + child.id + ") with autosized parent (id: " + _component.id + ")");
+                }
+                #end
             }
 
             if (fixedMinWidth(child) && child.percentWidth != null) {
