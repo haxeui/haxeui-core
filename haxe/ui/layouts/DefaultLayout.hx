@@ -71,7 +71,7 @@ class DefaultLayout extends Layout {
                 
                 #if debug
                 if (_component.autoHeight && usableSize.height <= 0) {
-                    trace("WARNING: trying to use a % width in a child (id: " + child.id + ") with autosized parent (id: " + _component.id + ")");
+                    trace("WARNING: trying to use a % height in a child (id: " + child.id + ") with autosized parent (id: " + _component.id + ")");
                 }
                 #end
             }
