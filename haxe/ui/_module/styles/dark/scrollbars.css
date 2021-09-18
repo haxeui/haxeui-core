@@ -1,13 +1,17 @@
 /************************************************************************
 ** SCROLL
 *************************************************************************/
+.scroll {
+    background-color: #2c2f30;
+}
+
 .scroll .button {
     background-color: #3e4142;
-    opacity: .7;
+    opacity: .8;
 }
 
 .scroll .button:hover {
-    opacity: .9;
+    opacity: 1;
 }
 
 .vertical-scroll {
