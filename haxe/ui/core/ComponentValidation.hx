@@ -227,7 +227,11 @@ class ComponentValidation extends ComponentEvents {
             }
 
             if (++count >= 10) {
-                throw 'The syncValidation returned too many times during validation. This may be an infinite loop. Try to avoid doing anything that calls invalidate() during validation.';
+                if (this._isDisposed) {
+                    throw 'There was a problem validating this component as it has already been destroyed';
+                } else {
+                    throw 'The syncValidation returned too many times during validation. This may be an infinite loop. Try to avoid doing anything that calls invalidate() during validation.';
+                }
             }
         }
     }
