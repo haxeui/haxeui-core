@@ -505,7 +505,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         
         if (dispose == true) {
             child._isDisposed = true;
-            child.unregisterEvents();
+            child.removeAllComponents(true);
         }
         handleRemoveComponentAt(index, dispose);
         if (_children.remove(child)) {
@@ -514,6 +514,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         }
         if (dispose == true) {
             child.destroyComponent();
+            child.unregisterEvents();
         }
         
         assignPositionClasses(invalidate);
