@@ -9,6 +9,7 @@ import haxe.ui.constants.VerticalAlign;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.ImageDisplay;
+import haxe.ui.events.UIEvent;
 import haxe.ui.geom.Rectangle;
 import haxe.ui.geom.Size;
 import haxe.ui.layouts.DefaultLayout;
@@ -208,6 +209,11 @@ private class Builder extends CompositeBuilder {
     public function new(image:Image) {
         super(image);
         _image = image;
+        _image.registerEvent(UIEvent.SHOWN, function(_) {
+            if (_image.parentComponent != null) {
+                _image.parentComponent.invalidateComponentLayout();
+            }
+        });
     }
 
     public override function applyStyle(style:Style) {
