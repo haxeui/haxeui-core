@@ -23,7 +23,7 @@ class Box extends Component {
     **/
     @:clonable @:behaviour(DefaultBehaviour)                public var icon:String;
 
-    private var _layoutName:String;
+    @:noCompletion private var _layoutName:String;
     @:clonable public var layoutName(get, set):String;
     private function get_layoutName():String {
         return _layoutName;
@@ -48,7 +48,7 @@ class Box extends Component {
         }
     }
     
-    private var _direction:String = null;
+    @:noCompletion private var _direction:String = null;
     private override function applyStyle(style:Style) {
         super.applyStyle(style);
         

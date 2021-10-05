@@ -67,7 +67,7 @@ class ComponentBounds extends ComponentLayout {
         return componentHeight * Toolkit.scaleY;
     }
 
-    private var _componentWidth:Null<Float>;
+    @:noCompletion private var _componentWidth:Null<Float>;
     @:allow(haxe.ui.layouts.Layout)
     @:allow(haxe.ui.core.Screen)
     /**
@@ -86,7 +86,7 @@ class ComponentBounds extends ComponentLayout {
         return value;
     }
 
-    private var _componentHeight:Null<Float>;
+    @:noCompletion private var _componentHeight:Null<Float>;
     @:allow(haxe.ui.layouts.Layout)
     @:allow(haxe.ui.core.Screen)
     /**
@@ -105,7 +105,7 @@ class ComponentBounds extends ComponentLayout {
         return value;
     }
 
-    private var _percentWidth:Null<Float>;
+    @:noCompletion private var _percentWidth:Null<Float>;
     /**
      What percentage of this components parent to use to calculate its width
     **/
@@ -129,7 +129,7 @@ class ComponentBounds extends ComponentLayout {
         return value;
     }
 
-    private var _percentHeight:Null<Float>;
+    @:noCompletion private var _percentHeight:Null<Float>;
     /**
      What percentage of this components parent to use to calculate its height
     **/
@@ -152,8 +152,8 @@ class ComponentBounds extends ComponentLayout {
         return value;
     }
 
-    private var _cachedPercentWidth:Null<Float> = null;
-    private var _cachedPercentHeight:Null<Float> = null;
+    @:noCompletion private var _cachedPercentWidth:Null<Float> = null;
+    @:noCompletion private var _cachedPercentHeight:Null<Float> = null;
     private function cachePercentSizes(clearExisting:Bool = true) {
         if (_percentWidth != null) {
             _cachedPercentWidth = _percentWidth;
@@ -202,7 +202,7 @@ class ComponentBounds extends ComponentLayout {
         #if !flash return value; #end
     }
 
-    private var _width:Null<Float>;
+    @:noCompletion private var _width:Null<Float>;
     #if flash @:setter(width) #else override #end
     private function set_width(value:Float): #if flash Void #else Float #end {
         if (_width == value) {
@@ -224,7 +224,7 @@ class ComponentBounds extends ComponentLayout {
         return f;
     }
 
-    private var _height:Null<Float>;
+    @:noCompletion private var _height:Null<Float>;
     #if flash @:setter(height) #else override #end
     private function set_height(value:Float): #if flash Void #else Float #end {
         if (_height == value) {
@@ -248,7 +248,7 @@ class ComponentBounds extends ComponentLayout {
 
     #elseif (haxeui_flixel)
 
-    private var _width:Null<Float>;
+    @:noCompletion private var _width:Null<Float>;
     private override function set_width(value:Float):Float {
         if (value == 0) {
             return value;
@@ -266,7 +266,7 @@ class ComponentBounds extends ComponentLayout {
         return f;
     }
 
-    private var _height:Null<Float>;
+    @:noCompletion private var _height:Null<Float>;
     private override function set_height(value:Float):Float {
         if (value == 0) {
             return value;
@@ -291,7 +291,7 @@ class ComponentBounds extends ComponentLayout {
     **/
     @:dox(group = "Size related properties and methods")
     @bindable public var width(get, set):Null<Float>;
-    private var _width:Null<Float>;
+    @:noCompletion private var _width:Null<Float>;
     private function set_width(value:Null<Float>):Null<Float> {
         if (_width == value) {
             return value;
@@ -311,7 +311,7 @@ class ComponentBounds extends ComponentLayout {
     **/
     @:dox(group = "Size related properties and methods")
     @bindable public var height(get, set):Null<Float>;
-    private var _height:Null<Float>;
+    @:noCompletion private var _height:Null<Float>;
     private function set_height(value:Null<Float>):Null<Float> {
         if (_height == value) {
             return value;
@@ -328,10 +328,10 @@ class ComponentBounds extends ComponentLayout {
 
     #end
 
-    private var _actualWidth:Null<Float>;
-    private var _actualHeight:Null<Float>;
+    @:noCompletion private var _actualWidth:Null<Float>;
+    @:noCompletion private var _actualHeight:Null<Float>;
 
-    private var _hasScreen:Null<Bool> = null;
+    @:noCompletion private var _hasScreen:Null<Bool> = null;
     public var hasScreen(get, null):Bool;
     private function get_hasScreen():Bool {
         var p = this;
@@ -423,7 +423,7 @@ class ComponentBounds extends ComponentLayout {
         }
     }
 
-    private var _left:Null<Float> = 0;
+    @:noCompletion private var _left:Null<Float> = 0;
     /**
      The left co-ord of this component relative to its parent
     **/
@@ -437,7 +437,7 @@ class ComponentBounds extends ComponentLayout {
         return value;
     }
 
-    private var _top:Null<Float> = 0;
+    @:noCompletion private var _top:Null<Float> = 0;
     /**
      The top co-ord of this component relative to its parent
     **/
@@ -502,7 +502,7 @@ class ComponentBounds extends ComponentLayout {
     //***********************************************************************************************************
     // Clip rect
     //***********************************************************************************************************
-    private var _componentClipRect:Rectangle = null;
+    @:noCompletion private var _componentClipRect:Rectangle = null;
     /**
      Whether to clip the display of this component
     **/

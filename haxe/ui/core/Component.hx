@@ -79,7 +79,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     //***********************************************************************************************************
     // Construction
     //***********************************************************************************************************
-    private var _defaultLayoutClass:Class<Layout> = null;
+    @:noCompletion private var _defaultLayoutClass:Class<Layout> = null;
     private function create() {
         if (native == false || native == null) {
             registerComposite();
@@ -113,8 +113,8 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         behaviours.applyDefaults();
     }
 
-    private var _compositeBuilderClass:Class<CompositeBuilder>;
-    private var _compositeBuilder:CompositeBuilder;
+    @:noCompletion private var _compositeBuilderClass:Class<CompositeBuilder>;
+    @:noCompletion private var _compositeBuilder:CompositeBuilder;
     private function registerComposite() {
     }
 
@@ -156,7 +156,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         return l;
     }
 
-    private var _native:Null<Bool> = null;
+    @:noCompletion private var _native:Null<Bool> = null;
     /**
      Whether to try to use a native version of this component
     **/
@@ -196,7 +196,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         return value;
     }
 
-    private var _animatable:Bool = true;
+    @:noCompletion private var _animatable:Bool = true;
     /**
      Whether this component is allowed to animate
     **/
@@ -222,7 +222,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         return value;
     }
 
-    private var _componentAnimation:Animation;
+    @:noCompletion private var _componentAnimation:Animation;
     /**
      Current animation running
     **/
@@ -275,7 +275,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         return value;
     }
 
-    private var _dragInitiator:Component = null;
+    @:noCompletion private var _dragInitiator:Component = null;
     public var dragInitiator(get, set):Component;
     private function get_dragInitiator():Component {
         return _dragInitiator;
@@ -933,7 +933,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         swapClass("fade-out", "fade-in");
     }
 
-    private var _hidden:Bool = false;
+    @:noCompletion private var _hidden:Bool = false;
     /**
      Whether this component is hidden or not
     **/
@@ -963,7 +963,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     //***********************************************************************************************************
     // Style related
     //***********************************************************************************************************
-    private var _customStyle:Style = null;
+    @:noCompletion private var _customStyle:Style = null;
     /**
      A custom style object that will appled to this component after any css rules have been matched and applied
     **/
@@ -1129,7 +1129,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         return value;
     }
 
-    private var _styleString:String;
+    @:noCompletion private var _styleString:String;
     /**
      An inline css string that will be parsed and applied as a custom style
     **/
@@ -1160,9 +1160,9 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
 
     // were going to cache the ref (which may be null) so we dont have to
     // perform a parent based lookup each for a performance tweak
-    private var _useCachedStyleSheetRef:Bool = false;
-    private var _cachedStyleSheetRef:StyleSheet = null;
-    private var _styleSheet:StyleSheet = null;
+    @:noCompletion private var _useCachedStyleSheetRef:Bool = false;
+    @:noCompletion private var _cachedStyleSheetRef:StyleSheet = null;
+    @:noCompletion private var _styleSheet:StyleSheet = null;
     public var styleSheet(get, set):StyleSheet;
     private function get_styleSheet():StyleSheet {
         if (_useCachedStyleSheetRef == true) {
@@ -1200,7 +1200,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     //***********************************************************************************************************
     // Layout related
     //***********************************************************************************************************
-    private var _includeInLayout:Bool = true;
+    @:noCompletion private var _includeInLayout:Bool = true;
     /**
      Whether to use this component as part of its part layout
 
@@ -1219,7 +1219,6 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         return value;
     }
 
-    //private var _layout:Layout;
     /**
      The layout of this component
     **/
@@ -1370,7 +1369,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     /**
      Whether or not this component is allowed to be exposed to script interpreters (defaults to _true_)
     **/
-    private var _scriptAccess:Bool = true;
+    @:noCompletion private var _scriptAccess:Bool = true;
     @:dox(group = "Script related properties and methods")
     public var scriptAccess(get, set):Bool;
     private function get_scriptAccess():Bool {
@@ -1481,7 +1480,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         }
     }
 
-    private var _initialSizeApplied:Bool = false;
+    @:noCompletion private var _initialSizeApplied:Bool = false;
     private override function validateInitialSize(isInitialized:Bool) {
         if (isInitialized == false && _style != null && _initialSizeApplied == false) {
             if ((_style.initialWidth != null || _style.initialPercentWidth != null) && (width <= 0 && percentWidth == null)) {
@@ -1629,7 +1628,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         dispatch(new UIEvent(UIEvent.MOVE));
     }
 
-    private var _zeroSize:Bool = false;
+    @:noCompletion private var _zeroSize:Bool = false;
     @:dox(group = "Internal")
     public function updateComponentDisplay() {
         if (componentWidth == null || componentHeight == null) {

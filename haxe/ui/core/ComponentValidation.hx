@@ -4,15 +4,15 @@ import haxe.ui.validation.InvalidationFlags;
 import haxe.ui.validation.ValidationManager;
 
 class ComponentValidation extends ComponentEvents {
-    private var _invalidationFlags:Map<String, Bool> = new Map<String, Bool>();
-    private var _delayedInvalidationFlags:Map<String, Bool> = new Map<String, Bool>();
-    private var _isAllInvalid:Bool = false;
-    private var _isValidating:Bool = false;
-    private var _isInitialized:Bool = false;
-    private var _isDisposed:Bool = false;
-    private var _invalidateCount:Int = 0;
+    @:noCompletion private var _invalidationFlags:Map<String, Bool> = new Map<String, Bool>();
+    @:noCompletion private var _delayedInvalidationFlags:Map<String, Bool> = new Map<String, Bool>();
+    @:noCompletion private var _isAllInvalid:Bool = false;
+    @:noCompletion private var _isValidating:Bool = false;
+    @:noCompletion private var _isInitialized:Bool = false;
+    @:noCompletion private var _isDisposed:Bool = false;
+    @:noCompletion private var _invalidateCount:Int = 0;
 
-    private var _depth:Int = -1;
+    @:noCompletion private var _depth:Int = -1;
     @:dox(group = "Internal")
     public var depth(get, set):Int;
     private function get_depth():Int {

@@ -13,8 +13,8 @@ class ComponentEvents extends ComponentContainer {
         super();
     }
 
-    private var _internalEvents:Events = null;
-    private var _internalEventsClass:Class<Events> = null;
+    @:noCompletion private var _internalEvents:Events = null;
+    @:noCompletion private var _internalEventsClass:Class<Events> = null;
     private function registerInternalEvents(eventsClass:Class<Events> = null, reregister:Bool = false) {
         if (_internalEvents == null && eventsClass != null) {
             _internalEvents = Type.createInstance(eventsClass, [this]);
@@ -34,7 +34,7 @@ class ComponentEvents extends ComponentContainer {
     //***********************************************************************************************************
     // Events
     //***********************************************************************************************************
-    private var __events:EventMap;
+    @:noCompletion private var __events:EventMap;
 
     /**
      Register a listener for a certain `UIEvent`
@@ -122,11 +122,12 @@ class ComponentEvents extends ComponentContainer {
         }
     }
     
+    @:noCompletion 
     private function _onMappedEvent(event:UIEvent) {
         dispatch(event);
     }
 
-    private var _disabledEvents:EventMap;
+    @:noCompletion private var _disabledEvents:EventMap;
     private static var INTERACTIVE_EVENTS:Array<String> = [
         MouseEvent.MOUSE_MOVE, MouseEvent.MOUSE_OVER, MouseEvent.MOUSE_OUT, MouseEvent.MOUSE_DOWN,
         MouseEvent.MOUSE_UP, MouseEvent.MOUSE_WHEEL, MouseEvent.CLICK, MouseEvent.DBL_CLICK, KeyboardEvent.KEY_DOWN,
@@ -137,8 +138,8 @@ class ComponentEvents extends ComponentContainer {
         return INTERACTIVE_EVENTS.indexOf(type) != -1;
     }
 
-    private var _interactivityDisabled:Bool = false;
-    private var _interactivityDisabledCounter:Int = 0;
+    @:noCompletion private var _interactivityDisabled:Bool = false;
+    @:noCompletion private var _interactivityDisabledCounter:Int = 0;
     private function disableInteractivity(disable:Bool, recursive:Bool = true, updateStyle:Bool = false, force:Bool = false) { // You might want to disable interactivity but NOT actually disable visually
         if (force == true) {
             _interactivityDisabledCounter = 0;
@@ -219,7 +220,7 @@ class ComponentEvents extends ComponentContainer {
         }
     }
 
-    private var _pausedEvents:Map<String, Array<UIEvent->Void>> = null;
+    @:noCompletion private var _pausedEvents:Map<String, Array<UIEvent->Void>> = null;
     public function pauseEvent(type:String, recursive:Bool = false) {
         if (__events == null || __events.contains(type) == false) {
             return;

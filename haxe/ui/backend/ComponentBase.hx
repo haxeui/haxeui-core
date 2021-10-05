@@ -97,7 +97,7 @@ class ComponentBase extends ComponentBounds {
     //***********************************************************************************************************
     // Text related
     //***********************************************************************************************************
-    private var _textDisplay:TextDisplay;
+    @:noCompletion private var _textDisplay:TextDisplay;
     @:dox(group = "Backend")
     public function createTextDisplay(text:String = null):TextDisplay {
         if (_textDisplay == null) {
@@ -120,7 +120,7 @@ class ComponentBase extends ComponentBounds {
         return (_textDisplay != null);
     }
 
-    private var _textInput:TextInput;
+    @:noCompletion private var _textInput:TextInput;
     @:dox(group = "Backend")
     public function createTextInput(text:String = null):TextInput {
         if (_textInput == null) {
@@ -146,7 +146,7 @@ class ComponentBase extends ComponentBounds {
     //***********************************************************************************************************
     // Image related
     //***********************************************************************************************************
-    private var _imageDisplay:ImageDisplay;
+    @:noCompletion private var _imageDisplay:ImageDisplay;
     @:dox(group = "Backend")
     public function createImageDisplay():ImageDisplay {
         if (_imageDisplay == null) {
@@ -205,7 +205,7 @@ class ComponentBase extends ComponentBounds {
         return v;
     }
 
-    private var _classProperties:Map<String, String>;
+    @:noCompletion private var _classProperties:Map<String, String>;
     /**
      Sets a property that is associated with all classes of this type
     **/
@@ -217,7 +217,7 @@ class ComponentBase extends ComponentBounds {
         _classProperties.set(name, value);
     }
 
-    private var _hasNativeEntry:Null<Bool>;
+    @:noCompletion private var _hasNativeEntry:Null<Bool>;
     private var hasNativeEntry(get, null):Bool;
     private function get_hasNativeEntry():Bool {
         if (_hasNativeEntry == null) {
@@ -241,7 +241,7 @@ class ComponentBase extends ComponentBounds {
         return Toolkit.nativeConfig.queryValues(query, this);
     }
 
-    private var _className:String = null;
+    @:noCompletion private var _className:String = null;
     public var className(get, null):String;
     private function get_className():String {
         if (_className != null) {
@@ -251,7 +251,7 @@ class ComponentBase extends ComponentBounds {
         return _className;
     }
 
-    private var _nativeClassName:String = null;
+    @:noCompletion private var _nativeClassName:String = null;
     private var nativeClassName(get, null):String;
     private function get_nativeClassName():String {
         if (_nativeClassName != null) {

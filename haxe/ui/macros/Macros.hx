@@ -124,7 +124,7 @@ class Macros {
             f.remove();
             var eventExpr = f.getMetaValueExpr("event");
             var varName = '__${f.name}';
-            builder.addVar(varName, f.type);
+            builder.addVar(varName, f.type, null, null, [{name: ":noCompletion", pos: Context.currentPos()}]);
             var setter = builder.addSetter(f.name, f.type, macro {
                 if ($i{varName} != null) {
                     unregisterEvent($e{eventExpr}, $i{varName});
@@ -551,7 +551,7 @@ class Macros {
             builder.removeVar(f.name);
 
             var name = '_${f.name}';
-            builder.addVar(name, f.type);
+            builder.addVar(name, f.type, null, null, [{name: ":noCompletion", pos: Context.currentPos()}]);
             var newField = builder.addGetter(f.name, f.type, macro {
                 return $i{name};
             });

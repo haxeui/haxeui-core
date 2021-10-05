@@ -33,7 +33,7 @@ class ComponentContainer extends ComponentCommon implements IClonable<ComponentC
     public function dispatch(event:UIEvent) {
     }
 
-    private var _ready:Bool = false;
+    @:noCompletion private var _ready:Bool = false;
     /**
      Whether the framework considers this component ready or not
     **/
@@ -42,7 +42,7 @@ class ComponentContainer extends ComponentCommon implements IClonable<ComponentC
         return _ready;
     }
 
-    private var _children:Array<Component>;
+    @:noCompletion private var _children:Array<Component>;
     /**
      A list of this components children
 
@@ -138,14 +138,14 @@ class ComponentContainer extends ComponentCommon implements IClonable<ComponentC
     // Layout related
     //***********************************************************************************************************
     // not idea place for them, but ComponentValidation needs them
-    private var _layout:Layout = null;
+    @:noCompletion private var _layout:Layout = null;
 
-    private var _layoutLocked:Bool = false;
+    @:noCompletion private var _layoutLocked:Bool = false;
 
     //***********************************************************************************************************
     // Style related
     //***********************************************************************************************************
-    private var _style:Style;
+    @:noCompletion private var _style:Style;
 
     //***********************************************************************************************************
     // General
@@ -153,7 +153,7 @@ class ComponentContainer extends ComponentCommon implements IClonable<ComponentC
     @:clonable @:behaviour(ComponentTextBehaviour)                  public var text:String;
     @:clonable @:behaviour(ComponentValueBehaviour)                 public var value:Dynamic;
 
-    private var _id:String = null;
+    @:noCompletion private var _id:String = null;
     /**
      The identifier of this component
     **/
