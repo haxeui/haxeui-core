@@ -110,6 +110,15 @@ private class Closable extends DataBehaviour {
 @:access(haxe.ui.core.Component)
 @:access(haxe.ui.containers.Builder)
 private class PageIndex extends DataBehaviour {
+	public override function set(value:Variant) {
+		if (_component.isReady == false) {
+			var builder:Builder = cast(_component._compositeBuilder, Builder);
+			builder._tabs.selectedIndex = value;
+			return;			
+		}
+		super.set(value);
+	}
+	
     public override function validateData() {
         if (_component.native == true) {
             return;
