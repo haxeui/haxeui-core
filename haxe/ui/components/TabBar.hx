@@ -347,6 +347,8 @@ private class Builder extends CompositeBuilder {
         _tabbar.registerInternalEvents(Events, true);
         if (_tabbar.selectedIndex < 0) {
             _tabbar.selectedIndex = 0;
+        } else if (index <= _tabbar.selectedIndex) {
+            _tabbar.selectedIndex++;
         }
         return v;
 
