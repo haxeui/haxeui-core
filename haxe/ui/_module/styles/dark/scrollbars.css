@@ -16,10 +16,12 @@
 
 .vertical-scroll {
     border-left: 1px solid #181a1b;
+    background-color: #2c2f30;
 }
 
 .horizontal-scroll {
     border-top: 1px solid #181a1b;
+    background-color: #2c2f30;
 }
 
 /************************************************************************
