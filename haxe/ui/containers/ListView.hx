@@ -506,7 +506,7 @@ private class SelectionModeBehaviour extends DataBehaviour {
     private override function validateData() {
         var listView:ListView = cast(_component, ListView);
         var selectedIndices:Array<Int> = listView.selectedIndices;
-        if (selectedIndices.length == 0) {
+        if (selectedIndices == null || selectedIndices.length == 0) {
             return;
         }
 
