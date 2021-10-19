@@ -36,7 +36,12 @@ class VerticalRangePosFromCoord extends Behaviour {
             ypos = ucy;
         }
 
-        var m:Float = range.max - range.min;
+        var min = range.min;
+        if (min == null) {
+            min = 0;
+        }
+        
+        var m:Float = range.max - min;
         var d = (ucy / m);
         var v:Float = ypos; // - (range.start * d);
         var p:Float = v / d;
@@ -60,6 +65,9 @@ class VerticalRangeLayout extends DefaultLayout {
             var ucy:Float = usableHeight;
 
             var start = range.start;
+            if (start == null) {
+                start = 0;
+            }
             var end = range.end;
             
             if (range.virtualStart != null) {
@@ -69,10 +77,15 @@ class VerticalRangeLayout extends DefaultLayout {
                 end = range.virtualEnd;
             }
             
-            var m:Float = range.max - range.min;
+            var min = range.min;
+            if (min == null) {
+                min = 0;
+            }
+            
+            var m:Float = range.max - min;
             var d = (ucy / m);
-            var startInPixels = (start * d) - (range.min * d);
-            var endInPixels = (end * d) - (range.min * d);
+            var startInPixels = (start * d) - (min * d);
+            var endInPixels = (end * d) - (min * d);
             var cy:Float = Math.fceil(endInPixels - startInPixels);
 
             if (cy < 0) {
@@ -98,15 +111,23 @@ class VerticalRangeLayout extends DefaultLayout {
         var value:Component = findComponent('${range.cssName}-value');
 
         var start = range.start;
+        if (start == null) {
+            start = 0;
+        }
         if (range.virtualStart != null) {
             start = range.virtualStart;
         }
         
+        var min = range.min;
+        if (min == null) {
+            min = 0;
+        }
+        
         var ucy:Float = usableHeight;
-        var m:Float = range.max - range.min;
+        var m:Float = range.max - min;
         var d = (ucy / m);
 
-        var startInPixels = (ucy - value.height) - ((start * d) - (range.min * d));
+        var startInPixels = (ucy - value.height) - ((start * d) - (min * d));
         value.left = paddingLeft;
         value.top = Math.ffloor(paddingTop + startInPixels);
     }
