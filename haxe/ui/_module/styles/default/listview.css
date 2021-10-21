@@ -53,3 +53,88 @@
 .listview .itemrenderer:selected .label {
     color: white;
 }
+
+/************************************************************************
+** LIST VIEW - LEFT MENU ALTERNATE
+*************************************************************************/
+
+.listview.left-menu {
+    border: none;
+    padding: 0px;
+    border-radius: 0;
+    background-color: #EEEEEE;
+    mode: mobile;
+    border-right: 1px solid #ABABAB;
+}
+
+.listview.left-menu .vertical-scroll .deinc, .listview.left-menu .vertical-scroll .inc {
+    hidden: true;
+}
+
+.listview.left-menu .vertical-scroll {
+    background-color: none;
+    width: 9px;
+    padding: 2px;
+}
+
+.listview.left-menu .vertical-scroll .thumb {
+    background-opacity: .3;
+    width: 5px;
+    border-radius: 4px;
+}
+
+.listview.left-menu .listview-contents {
+}
+        
+.listview.left-menu .even {
+    background-color: #EEEEEE;
+    border-right: 1px solid #ABABAB;
+    border-bottom: 1px solid #ABABAB;
+    
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.listview.left-menu .even:hover {
+    background-color: #F5F5F5;
+    border-right: 1px solid #ABABAB;
+    
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.listview.left-menu .odd {
+    background-color: #EEEEEE;
+    border-right: 1px solid #ABABAB;
+    border-bottom: 1px solid #ABABAB;
+    
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.listview.left-menu .odd:hover {
+    background-color: #F5F5F5;
+    border-right: 1px solid #ABABAB;
+    
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.listview.left-menu .itemrenderer:selected {
+    background-color: #ffffff;
+    color: #222222;
+    border-right: 1px solid white;
+}
+
+
+.listview.left-menu .itemrenderer:selected .label {
+    color: #222222;
+}
+    
+.listview.left-menu .vertical-scroll {
+    opacity: .5;
+    width: 8px;
+    padding: 2px;
+    background-color: none;
+    border: none;
+}
