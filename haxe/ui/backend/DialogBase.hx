@@ -148,7 +148,7 @@ class DialogBase extends Box {
             for (button in buttons.toArray()) {
                 var buttonComponent = new Button();
                 buttonComponent.id = button.toString().toLowerCase();
-                var text = buttonComponent.id;
+                var text = button.toString();
                 buttonComponent.text = text;
                 buttonComponent.userData = button;
                 buttonComponent.registerEvent(MouseEvent.CLICK, onFooterButtonClick);
