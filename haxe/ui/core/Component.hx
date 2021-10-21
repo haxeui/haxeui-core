@@ -315,7 +315,18 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     @:dox(group = "Display tree related properties and methods")
     public var numComponents(get, never):Int;
     private function get_numComponents():Int {
-        return _compositeBuilder != null ? _compositeBuilder.numComponents : _children == null ? 0 : _children.length;
+        var n = 0;
+        if (_compositeBuilder != null) {
+            var builderCount = _compositeBuilder.numComponents;
+            if (builderCount != null) {
+                n = builderCount;
+            } else if (_children != null) {
+                n = _children.length;
+            }
+        } else if (_children != null) {
+            n = _children.length;
+        }
+        return n;
     }
 
     /**
