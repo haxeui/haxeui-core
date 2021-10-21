@@ -53,3 +53,74 @@
 .vertical-button-bar .button.first {
     border-top-size: 1;
 }
+
+/************************************************************************
+** BUTTON BAR - LEFT MENU ALTERNATE
+*************************************************************************/
+.button-bar.left-menu {
+    background-color: #3D3F41;
+    border-right: 1px solid #181a1b;
+}
+
+.button-bar.left-menu .button {
+    background-color: #3D3F41;
+    border-left:  1px solid #3D3F41;
+}
+
+.button-bar.left-menu.with-bottom-button .button.last {
+    border-top:  1px solid #181a1b;
+    border-bottom:  1px solid #3D3F41;
+}
+
+.button-bar.left-menu .button:hover {
+    background-color: #434647;
+}
+
+.button-bar.left-menu .button:down {
+    background-color: #2c2f30;
+    border-right: 1px solid #2c2f30;
+    
+    border-top:  1px solid #2c2f30;
+    border-left:  1px solid #2c2f30;
+}
+
+.button-bar.left-menu.with-bottom-button .button.last:down {
+    border-top:  1px solid #181a1b;
+    border-bottom:  1px solid #2c2f30;
+}
+
+
+/************************************************************************
+** BUTTON BAR - RIGHT MENU ALTERNATE
+*************************************************************************/
+.button-bar.right-menu {
+    background-color: #3D3F41;
+    border-left: 1px solid #181a1b;
+}
+
+.button-bar.right-menu .button {
+    background-color: #3D3F41;
+    border-right:  1px solid #3D3F41;
+}
+
+.button-bar.right-menu.with-bottom-button .button.last {
+    border-top:  1px solid #181a1b;
+    border-bottom:  1px solid #3D3F41;
+}
+
+.button-bar.right-menu .button:hover {
+    background-color: #434647;
+}
+
+.button-bar.right-menu .button:down {
+    background-color: #2c2f30;
+    border-left: 1px solid #2c2f30;
+    
+    border-top:  1px solid #2c2f30;
+    border-right:  1px solid #2c2f30;
+}
+
+.button-bar.right-menu.with-bottom-button .button.last:down {
+    border-top:  1px solid #181a1b;
+    border-bottom:  1px solid #2c2f30;
+}

@@ -86,3 +86,81 @@
 .vertical-button-bar .button.first {
     border-top-size: 1;
 }
+
+/************************************************************************
+** BUTTON BAR - LEFT MENU ALTERNATE
+*************************************************************************/
+.button-bar.left-menu {
+    background-color: #EEEEEE;
+    border-right: 1px solid #ABABAB;
+}
+
+.button-bar.left-menu .button {
+    background-color: #EEEEEE;
+    border-left:  1px solid #EEEEEE;
+    width: 100px;
+    height: 100px;
+    icon-position: "top";
+}
+
+.button-bar.left-menu.with-bottom-button .button.last {
+    border-top:  1px solid #ABABAB;
+    border-bottom:  1px solid #EEEEEE;
+}
+
+.button-bar.left-menu .button:hover {
+    background-color: #F5F5F5;
+}
+
+.button-bar.left-menu .button:down {
+    background-color: white;
+    color: #222222;
+    border-right: 1px solid white;
+    
+    border-top:  1px solid white;
+    border-left:  1px solid white;
+}
+
+.button-bar.left-menu.with-bottom-button .button.last:down {
+    border-top:  1px solid #ABABAB;
+    border-bottom:  1px solid white;
+}
+
+/************************************************************************
+** BUTTON BAR - RIGHT MENU ALTERNATE
+*************************************************************************/
+.button-bar.right-menu {
+    background-color: #EEEEEE;
+    border-left: 1px solid #ABABAB;
+}
+
+.button-bar.right-menu .button {
+    background-color: #EEEEEE;
+    border-right:  1px solid #EEEEEE;
+    width: 100px;
+    height: 100px;
+    icon-position: "top";
+}
+
+.button-bar.right-menu.with-bottom-button .button.last {
+    border-top:  1px solid #ABABAB;
+    border-bottom:  1px solid #EEEEEE;
+}
+
+.button-bar.right-menu .button:hover {
+    background-color: #F5F5F5;
+}
+
+.button-bar.right-menu .button:down {
+    background-color: white;
+    color: #222222;
+    border-left: 1px solid white;
+    
+    border-top:  1px solid white;
+    border-right:  1px solid white;
+}
+
+.button-bar.right-menu.with-bottom-button .button.last:down {
+    border-top:  1px solid #ABABAB;
+    border-bottom:  1px solid white;
+}
