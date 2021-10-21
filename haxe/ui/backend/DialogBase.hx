@@ -147,7 +147,7 @@ class DialogBase extends Box {
         if (buttons != null) {
             for (button in buttons.toArray()) {
                 var buttonComponent = new Button();
-                buttonComponent.id = button.toString();
+                buttonComponent.id = button.toString().toLowerCase();
                 var text = buttonComponent.id;
                 buttonComponent.text = text;
                 buttonComponent.userData = button;
