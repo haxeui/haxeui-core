@@ -11,6 +11,7 @@ import haxe.ui.core.CompositeBuilder;
 @:composite(Builder)
 class Stack extends Box {
     @:behaviour(SelectedIndex, -1)      public var selectedIndex:Int;
+    @:behaviour(SelectedId)             public var selectedId:String;
     
     public function new() {
         super();
@@ -41,6 +42,27 @@ private class SelectedIndex extends DataBehaviour {
         
         builder._currentPage = _component.childComponents[_value.toInt()];
         builder._currentPage.show();
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+@:access(haxe.ui.containers.Builder)
+private class SelectedId extends DataBehaviour {
+    private var _stack:Stack;
+    
+    public function new(stack:Stack) {
+        super(stack);
+        _stack = stack;
+    }
+    
+    private override function validateData() {
+        var builder:Builder = cast(_component._compositeBuilder, Builder);
+        
+        var item = _component.findComponent(_value, Component, false);
+        if (item != null) {
+            _stack.selectedIndex = _component.getComponentIndex(item);
+        }
     }
 }
 
