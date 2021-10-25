@@ -104,6 +104,7 @@
 *************************************************************************/
 .horizontal-scroll:mobile {
     background-color: none;
+    border: none;
 }
 
 .horizontal-scroll:mobile .thumb {
@@ -113,6 +114,7 @@
 
 .vertical-scroll:mobile {
     background-color: none;
+    border: none;
 }
 
 .vertical-scroll:mobile .thumb {

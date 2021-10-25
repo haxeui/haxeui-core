@@ -149,6 +149,7 @@
     height: 8px;
     padding: 2px;
     background-color: none;
+    border: none;
 }
 
 .horizontal-scroll:mobile .thumb {
@@ -161,6 +162,7 @@
     width: 8px;
     padding: 2px;
     background-color: none;
+    border: none;
 }
 
 .vertical-scroll:mobile .thumb {
