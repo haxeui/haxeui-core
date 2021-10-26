@@ -411,6 +411,7 @@ private class Builder extends ScrollViewBuilder {
         
         if (itemRenderer.childComponents.length == 0) {
             var label = new Label();
+            label.getTextDisplay().forceStaticSize = _tableview.virtual;
             label.id = id;
             label.percentWidth = 100;
             label.verticalAlign = "center";
