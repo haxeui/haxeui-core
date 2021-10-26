@@ -85,7 +85,6 @@ private class Builder extends CompositeBuilder {
         if (_stack.selectedIndex < 0) {
             _stack.selectedIndex = 0;
         }
-        trace(_stack.numComponents);
         if (_stack.numComponents > 0) {
             child.hide();
         }
