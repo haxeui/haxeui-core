@@ -6,6 +6,7 @@ class AssetNamePlugin extends AssetPlugin {
     public var replaceWith:String;
     public var removeExtension:Bool;
     public var findChars:String;
+    public var endsWith:String;
 
     public function new() {
         super();
@@ -23,6 +24,8 @@ class AssetNamePlugin extends AssetPlugin {
                 removeExtension = (value == "true");
             case "findChars":
                 findChars = value;
+            case "endsWith":
+                endsWith = value;
             default:
                 super.setProperty(name, value);
         }
@@ -32,8 +35,16 @@ class AssetNamePlugin extends AssetPlugin {
         if ((asset is String)) {
             var stringAsset:String = asset;
             var match:Bool = true;
+            var compare:String = null;
+
             if (startsWith != null) {
                 match = StringTools.startsWith(stringAsset, startsWith);
+                compare = startsWith;
+            }
+
+            if (endsWith != null) {
+                match = StringTools.endsWith(stringAsset, endsWith);
+                compare = endsWith;
             }
 
             if (match == true) {
@@ -41,7 +52,7 @@ class AssetNamePlugin extends AssetPlugin {
                     asset = prefix + stringAsset;
                 }
                 if (replaceWith != null) {
-                    asset = StringTools.replace(stringAsset, startsWith, replaceWith);
+                    asset = StringTools.replace(stringAsset, compare, replaceWith);
                     if (findChars != null) {
                         for (n in 0...findChars.length) {
                             asset = StringTools.replace(asset, findChars.charAt(n), replaceWith);
