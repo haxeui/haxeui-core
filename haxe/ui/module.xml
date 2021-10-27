@@ -12,8 +12,11 @@
         <locale id="es">
             <resource path="haxeui-core/locale/es/dialog.properties" />
         </locale>
+        <locale id="de">
+            <resource path="haxeui-core/locale/de/dialog.properties" />
+        </locale>
     </locales>
-    
+
     <components>
         <class package="haxe.ui.core" />
         <class package="haxe.ui.components" />
