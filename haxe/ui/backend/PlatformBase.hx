@@ -17,6 +17,6 @@ class PlatformBase {
     }
     
     public function perf():Float {
-        return haxe.Timer.stamp();
+        return haxe.Timer.stamp() * 1000;
     }
 }
