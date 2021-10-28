@@ -57,7 +57,7 @@ class ComponentValidation extends ComponentEvents {
             return;     //it should be added into the queue later
         }
 
-        var isAlreadyInvalid:Bool = isComponentInvalid();
+        var isAlreadyInvalid:Bool = isComponentInvalid(flag);
         var isAlreadyDelayedInvalid:Bool = false;
         if (_isValidating == true) {
             for (value in _delayedInvalidationFlags) {
