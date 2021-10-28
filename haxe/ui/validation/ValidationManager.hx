@@ -101,6 +101,14 @@ class ValidationManager {
         }
     }
 
+    #if profile_validation
+    private var _profileCount:Int = 0;
+    private var _profileMin:Float = 0xffffff;
+    private var _profileMax:Float = 0;
+    private var _profileAvg:Float = 0;
+    private var _profileTot:Float = 0;
+    #end
+    
     public function process() {
         if (isValidating == true || isPending == false) {
             return;
@@ -149,9 +157,21 @@ class ValidationManager {
         isPending = false;
 
         #if profile_validation
+        _profileCount++;
+        
         var end = haxe.ui.core.Platform.instance.perf();
         var delta = end - start;
-        trace("InvalidationManager.process - took " + delta + "ms");
+        
+        if (delta < _profileMin) {
+            _profileMin = delta;
+        }
+        if (delta > _profileMax) {
+            _profileMax = delta;
+        }
+        _profileTot += delta;
+        _profileAvg = _profileTot / _profileCount;
+        
+        trace("InvalidationManager.process: current=" + haxe.ui.util.MathUtil.round(delta, 2) + "ms, avg=" + haxe.ui.util.MathUtil.round(_profileAvg, 2) + "ms, count=" + _profileCount + ", min=" + haxe.ui.util.MathUtil.round(_profileMin, 2) + "ms, max=" + haxe.ui.util.MathUtil.round(_profileMax, 2) + "ms, tot=" + haxe.ui.util.MathUtil.round(_profileTot, 2) + "ms");
         #end
         
         dispatch(new ValidationEvent(ValidationEvent.STOP));
