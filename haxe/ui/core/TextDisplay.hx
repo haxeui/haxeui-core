@@ -26,6 +26,22 @@ class TextDisplay extends TextDisplayImpl implements IValidating {
         super();
     }
 
+    public var id(get, set):String;
+    private function get_id():String {
+        if (parentComponent == null) {
+            return null;
+        }
+        return parentComponent.id + "_textdisplay";
+    }
+    private function set_id(value:String):String {
+        return value;
+    }
+    
+    public var isComponentOffscreen(get, null):Bool;
+    private function get_isComponentOffscreen():Bool {
+        return false;
+    }
+    
     /**
      The style to use for this text
     **/

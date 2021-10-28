@@ -15,6 +15,8 @@ interface IValidating {
     **/
     var depth(get, set):Int;
 
+    var id(get, set):String;
+    
     /**
         Immediately validates the object, if it is invalid. The
         validation system exists to postpone updating a object after
@@ -29,4 +31,6 @@ interface IValidating {
         same time.
     **/
     function updateComponentDisplay():Void;
+    
+    var isComponentOffscreen(get, null):Bool;
 }

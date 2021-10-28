@@ -39,6 +39,22 @@ class TextInput extends TextInputImpl implements IValidating {
         _isAllInvalid = true;
     }
 
+    public var id(get, set):String;
+    private function get_id():String {
+        if (parentComponent == null) {
+            return null;
+        }
+        return parentComponent.id + "_textinput";
+    }
+    private function set_id(value:String):String {
+        return value;
+    }
+    
+    public var isComponentOffscreen(get, null):Bool;
+    private function get_isComponentOffscreen():Bool {
+        return false;
+    }
+    
     public override function focus() {
         super.focus();
     }

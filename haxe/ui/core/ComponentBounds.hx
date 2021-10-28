@@ -523,4 +523,19 @@ class ComponentBounds extends ComponentLayout {
     private function get_isComponentClipped():Bool {
         return (componentClipRect != null);
     }
+    
+    public var isComponentOffscreen(get, null):Bool;
+    private function get_isComponentOffscreen():Bool {
+        if (this.width == 0 && this.height == 0) {
+            return false;
+        }
+        var x:Float = screenLeft;
+        var y:Float = screenTop;
+        var w:Float = this.width;
+        var h:Float = this.height;
+        
+        var thisRect = new Rectangle(x, y, w, h);
+        var screenRect = new Rectangle(0, 0, Screen.instance.width, Screen.instance.height);
+        return !screenRect.intersects(thisRect);
+    }
 }
