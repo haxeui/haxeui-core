@@ -112,6 +112,10 @@ class ValidationManager {
             return;
         }
 
+        #if profile_validation
+        var start = haxe.ui.core.Platform.instance.perf();
+        #end
+        
         isValidating = true;
         if (queueLength > 1) {
             _queue.sort(queueSortFunction);
@@ -144,7 +148,14 @@ class ValidationManager {
         
         isPending = false;
 
+        #if profile_validation
+        var end = haxe.ui.core.Platform.instance.perf();
+        var delta = end - start;
+        trace("InvalidationManager.process - took " + delta + "ms");
+        #end
+        
         dispatch(new ValidationEvent(ValidationEvent.STOP));
+        
     }
 
     private function queueSortFunction(first:IValidating, second:IValidating):Int {
