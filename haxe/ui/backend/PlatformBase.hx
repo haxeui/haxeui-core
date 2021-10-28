@@ -15,4 +15,8 @@ class PlatformBase {
     public function getSystemLocale():String {
         return null;
     }
+    
+    public function perf():Float {
+        return haxe.Timer.stamp();
+    }
 }
