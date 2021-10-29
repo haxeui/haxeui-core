@@ -278,28 +278,38 @@ private class Builder extends CompositeBuilder {
         if ((child is Menu)) {
             var menu = cast(child, Menu);
             var button = new Button();
-            var hasChildren = (menu.childComponents.length > 0);
-            if (hasChildren == true) {
-                button.styleNames = "menubar-button";
-            } else {
-                button.styleNames = "menubar-button-no-children";
-            }
             button.text = menu.text;
             button.icon = menu.icon;
             button.tooltip = menu.tooltip;
-            button.toggle = hasChildren;
             LocaleManager.instance.cloneForComponent(child, button);
             _buttons.push(button);
             _menubar.addComponent(button);
             _menubar.registerInternalEvents(true);
 
             _menus.push(menu);
+            styleMenuButton(menu, button);
+            menu.registerEvent(UIEvent.COMPONENT_ADDED, onChildAdded);
+            menu.registerEvent(UIEvent.COMPONENT_REMOVED, onChildRemoved);
 
             return menu;
         }
         return null;
     }
 
+    private function onChildAdded(event:UIEvent) {
+        var menu = cast(event.target, Menu);
+        var index = _menus.indexOf(menu);
+        var button = _buttons[index];
+        styleMenuButton(menu, button);
+    }
+    
+    private function onChildRemoved(event:UIEvent) {
+        var menu = cast(event.target, Menu);
+        var index = _menus.indexOf(menu);
+        var button = _buttons[index];
+        styleMenuButton(menu, button);
+    }
+    
     public override function addComponentAt(child:Component, index:Int):Component {
         return null;
     }
@@ -308,6 +318,17 @@ private class Builder extends CompositeBuilder {
         return null;
     }
 
+    private function styleMenuButton(menu:Menu, button:Button) {
+        var hasChildren = (menu.childComponents.length > 0);
+        if (hasChildren == true) {
+            button.swapClass("menubar-button", "menubar-button-no-children");
+        } else {
+            button.swapClass("menubar-button-no-children", "menubar-button");
+        }
+        button.toggle = hasChildren;
+        _menubar.registerInternalEvents(true);
+    }
+    
     public override function getComponentIndex(child:Component):Int {
         return -1;
     }
