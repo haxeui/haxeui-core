@@ -3,6 +3,7 @@ package haxe.ui.components;
 import haxe.ui.behaviours.Behaviour;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
+import haxe.ui.constants.Priority;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.events.MouseEvent;
@@ -381,7 +382,10 @@ class ButtonEvents extends haxe.ui.events.Events {
         }
 
         if (_button.toggle == true) {
-            registerEvent(MouseEvent.CLICK, onMouseClick);
+            // we want to add the event as high so it gets called first before any user handlers
+            // this is because if its a toggle we want the .selected property to refect the actual
+            // value which is set as part of this handler
+            registerEvent(MouseEvent.CLICK, onMouseClick, Priority.HIGH);
         }
     }
 
