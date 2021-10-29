@@ -1,7 +1,7 @@
 package haxe.ui;
 
 import haxe.ui.components.Label;
-import haxe.ui.core.Component;
+import haxe.ui.containers.Box;
 import haxe.ui.core.Screen;
 
 typedef PreloadItem = {
@@ -9,24 +9,27 @@ typedef PreloadItem = {
     resourceId:String
 }
 
-class Preloader extends Component {
+class Preloader extends Box {
     public function new() {
         super();
         id = "preloader";
-        styleString = "width:auto;height:auto;";
+        styleString = "width:100%;height:100%;";
+        styleNames = "default-background";
     }
 
     private override function createChildren() {
         var label = new Label();
         label.text = "Loading";
+        label.verticalAlign = "center";
+        label.horizontalAlign = "center";
         addComponent(label);
     }
 
     private override function validateComponentLayout():Bool {
         var b = super.validateComponentLayout();
         if (actualComponentWidth > 0 && actualComponentHeight > 0) {
-            left = (Screen.instance.actualWidth / 2) - (actualComponentWidth / 2);
-            top = (Screen.instance.actualHeight / 2) - (actualComponentHeight / 2);
+            //left = (Screen.instance.actualWidth / 2) - (actualComponentWidth / 2);
+            //top = (Screen.instance.actualHeight / 2) - (actualComponentHeight / 2);
         }
         return b;
     }
