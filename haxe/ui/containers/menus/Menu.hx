@@ -17,6 +17,8 @@ import Std.is as isOfType;
 
 class MenuEvent extends UIEvent {
     public static inline var MENU_SELECTED:String = "menuselected";
+    public static inline var MENU_OPENED:String = "menuopened";
+    public static inline var MENU_CLOSED:String = "menuclosed";
 
     public var menu:Menu = null;
     public var menuItem:MenuItem = null;
