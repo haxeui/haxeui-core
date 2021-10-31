@@ -15,6 +15,12 @@
         <locale id="de">
             <resource path="haxeui-core/locale/de/dialog.properties" />
         </locale>
+	<locale id="fr">
+            <resource path="haxeui-core/locale/fr/dialog.properties" />
+        </locale>
+	<locale id="it">
+            <resource path="haxeui-core/locale/it/dialog.properties" />
+        </locale>
     </locales>
 
     <components>
