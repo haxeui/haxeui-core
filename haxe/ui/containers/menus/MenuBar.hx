@@ -203,6 +203,8 @@ private class Events extends haxe.ui.events.Events {
                 _currentMenu.registerEvent(MenuEvent.MENU_SELECTED, onMenuSelected);
             }
         }
+        
+        menu.dispatch(new MouseEvent(MouseEvent.CLICK));
     }
 
     private function hideCurrentMenu() {
