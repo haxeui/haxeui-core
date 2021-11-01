@@ -788,7 +788,7 @@ private class AddColumn extends Behaviour {
         }
         var column = new Column();
         column.text = param;
-        column.id = StringTools.replace(StringUtil.uncapitalizeFirstLetter(StringUtil.capitalizeHyphens(param)), " ", "");
+        column.id = StringTools.replace(param, " ", "_");
         header.addComponent(column);
         return column;
     }
