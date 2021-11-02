@@ -139,7 +139,7 @@ class VerticalVirtualLayout extends VirtualLayout {
         var rc:Rectangle = new Rectangle(0, 0, contents.width, contentsHeight - (paddingTop + paddingBottom));
         contents.componentClipRect = rc;
 
-        _lastIndex = _firstIndex + visibleItemsCount + 1;
+        _lastIndex = _firstIndex + visibleItemsCount + 0;
         if (_lastIndex > dataSource.size) {
             _lastIndex = dataSource.size;
         }

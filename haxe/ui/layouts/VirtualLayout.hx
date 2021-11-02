@@ -195,7 +195,7 @@ class VirtualLayout extends ScrollViewLayout {
                         _component.dispatch(new UIEvent(UIEvent.RENDERER_DESTROYED, item));
                     }
 
-                    _component.setComponentIndex(item, i);
+                    //_component.setComponentIndex(item, i);
                     item.itemIndex = n;
 
                     if (_component.hasEvent(UIEvent.RENDERER_CREATED)) {

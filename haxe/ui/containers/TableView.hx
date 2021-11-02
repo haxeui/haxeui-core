@@ -93,7 +93,9 @@ private class CompoundItemRenderer extends ItemRenderer {
     private override function onDataChanged(data:Dynamic) {
         var renderers = findComponents(ItemRenderer);
         for (r in renderers) {
-            r.onDataChanged(data);
+            if (r.isComponentOffscreen == false) {
+                r.onDataChanged(data);
+            }
         }
     }
 }
@@ -533,7 +535,34 @@ private class Layout extends VerticalVirtualLayout {
 
         var data = findComponent("tableview-contents", Box, true, "css");
         if (data != null) {
-            data.lockLayout(true);
+            //data.lockLayout(true);
+            
+            //resizeItems();
+            
+            data.left = paddingLeft;
+            data.top = header.top + header.height - 1;
+            data.componentWidth = header.width;
+            
+            //data.unlockLayout(true);
+        }
+    }
+
+    private var _columnToRenderer:Map<Component, Array<Component>> = null;
+    private function resizeItems() {
+        var header = findComponent(Header, true);
+        if (header == null) {
+            return;
+        }
+        
+        var data = findComponent("tableview-contents", Box, true, "css");
+        if (data == null) {
+            return;
+        }
+        
+        data.lockLayout(true);
+        if (_columnToRenderer == null) {
+            _columnToRenderer = new Map<Component, Array<Component>>();
+            
             for (item in data.childComponents) {
                 var headerChildComponents = header.childComponents;
                 for (column in headerChildComponents) {
@@ -550,16 +579,28 @@ private class Layout extends VerticalVirtualLayout {
                             itemRenderer.width = column.width;
                         }
                     }
+              
+                    var list = _columnToRenderer.get(column);
+                    if (list == null) {
+                        list = [];
+                        _columnToRenderer.set(column, list);
+                    }
+                    list.push(itemRenderer);
                 }
             }
-
-            data.left = paddingLeft;
-            data.top = header.top + header.height - 1;
-            data.componentWidth = header.width;
-            data.unlockLayout(true);
+        } else {
+            for (column in _columnToRenderer.keys()) {
+                var list = _columnToRenderer.get(column);
+                for (itemRenderer in list) {
+                    itemRenderer.percentWidth = null;
+                    itemRenderer.width = column.width;
+                }
+            }
         }
+        
+        data.unlockLayout(true);
     }
-
+    
     private override function resizeChildren() {
         var header = findComponent(Header, true);
         if (header == null) {
@@ -567,6 +608,8 @@ private class Layout extends VerticalVirtualLayout {
         }
 
         super.resizeChildren();
+        
+        resizeItems();
     }
 
     private override function verticalConstraintModifier():Float {
