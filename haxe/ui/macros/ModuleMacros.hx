@@ -257,7 +257,7 @@ class ModuleMacros {
                                 }
                             }
                             
-                            ComponentClassMap.register(resolvedClassName, resolvedClass);
+                            ComponentClassMap.register(resolvedClassName.toLowerCase(), resolvedClass);
                             return resolvedClass;
                         }
                     }
