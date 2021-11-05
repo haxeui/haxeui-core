@@ -82,6 +82,15 @@ class Screen extends ScreenImpl {
         return c;
     }
     
+    public function hasComponentUnderPoint<T:Component>(screenX:Float, screenY:Float, type:Class<T> = null):Bool {
+        for (r in rootComponents) {
+            if (r.hasComponentUnderPoint(screenX, screenY, type) == true) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     private function onThemeChanged() {
         for (c in rootComponents) {
             onThemeChangedChildren(c);

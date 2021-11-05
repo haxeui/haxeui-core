@@ -757,6 +757,28 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         return c;
     }
 
+    public function hasComponentUnderPoint<T:Component>(screenX:Float, screenY:Float, type:Class<T> = null):Bool {
+        var b = false;
+        if (hitTest(screenX, screenY, true)) {
+            for (child in childComponents) {
+                if (child.hitTest(screenX, screenY, true)) {
+                    var match = true;
+                    if (type != null && isOfType(child, type) == false) {
+                        match = false;
+                    }
+                    if (match == false) {
+                        match = child.hasComponentUnderPoint(screenX, screenY, type);
+                    }
+                    if (match == true) {
+                        b = match;
+                        break;
+                    }
+                }
+            }
+        }
+        return b;
+    }
+    
     /**
      Gets the index of a child component
     **/
