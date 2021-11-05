@@ -760,6 +760,9 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     public function hasComponentUnderPoint<T:Component>(screenX:Float, screenY:Float, type:Class<T> = null):Bool {
         var b = false;
         if (hitTest(screenX, screenY, true)) {
+            if (type == null) {
+                return true;
+            }
             for (child in childComponents) {
                 if (child.hitTest(screenX, screenY, true)) {
                     var match = true;
