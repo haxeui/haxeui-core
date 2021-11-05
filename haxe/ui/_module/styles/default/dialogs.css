@@ -45,7 +45,7 @@
 }
 
 .dialog-close-button {
-    resource: "haxeui-core/styles/default/small-close-button.png";
+    resource: "haxeui-core/styles/default/tiny-close-button.png";
     vertical-align: "center";
     cursor: "pointer";
 }
