@@ -616,13 +616,15 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     }
 
     private function matchesSearch<T>(criteria:String = null, type:Class<T> = null, searchType:String = "id"):Bool {
-        if (criteria != null) {
-            return searchType == "id" && id == criteria || searchType == "css" && hasClass(criteria) == true;
-        } else if (type != null) {
-            return isOfType(this, type) == true;
-        }
-        return false;
-    }
+     if (criteria != null && type == null) {
+       return searchType == "id" && id == criteria || searchType == "css" && hasClass(criteria) == true;
+     } else if (criteria != null && type != null) {
+       return isOfType(this, type) == true && searchType == "id" && id == criteria || searchType == "css" && hasClass(criteria) == true;
+     } else if (type != null) {
+       return isOfType(this, type) == true;
+     }
+    return false;
+   }
 
     /**
      Finds a specific child in this components display tree (recusively if desired) and can optionally cast the result
