@@ -617,9 +617,14 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
 
     private function matchesSearch<T>(criteria:String = null, type:Class<T> = null, searchType:String = "id"):Bool {
         if (criteria != null) {
-            return searchType == "id" && id == criteria || searchType == "css" && hasClass(criteria) == true;
+            if (searchType == "id" && id == criteria ||  searchType == "css" && hasClass(criteria) == true) {
+                if (type != null) {
+                    return isOfType(this, type);
+                }
+                return true;
+            }
         } else if (type != null) {
-            return isOfType(this, type) == true;
+            return isOfType(this, type);
         }
         return false;
     }
