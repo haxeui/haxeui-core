@@ -67,6 +67,7 @@
             <style resource="haxeui-core/styles/default/tooltips.css" />
 			<style resource="haxeui-core/styles/default/rules.css" />
 			<style resource="haxeui-core/styles/default/sidebars.css" />
+			<style resource="haxeui-core/styles/default/cards.css" />
         </default>
         <dark parent="default">
             <style resource="haxeui-core/styles/dark/main.css" priority="-2" />
@@ -95,6 +96,7 @@
             <style resource="haxeui-core/styles/dark/tooltips.css" />
             <style resource="haxeui-core/styles/dark/rules.css" />
 			<style resource="haxeui-core/styles/dark/sidebars.css" />
+			<style resource="haxeui-core/styles/dark/cards.css" />
         </dark>
         <native parent="default">
             <style resource="haxeui-core/styles/native/main.css" priority="-3" />
