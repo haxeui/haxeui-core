@@ -26,8 +26,6 @@ class TextBase {
     private var _textStyle:Style;
     private var _fontInfo:FontInfo;
 
-    public var forceStaticSize:Bool = false; // stops having to ever remeasurment of text extends (which can be expensive)
-    
     public function new() {
     }
 
