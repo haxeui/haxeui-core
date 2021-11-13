@@ -23,14 +23,14 @@
 
 .vertical-scroll {
     width: 8px;
-    padding-left: 1px;
-    border-left: 1px solid #ababab;
+    __padding-left: 1px;
+    __border-left: 1px solid #ababab;
 }
 
 .horizontal-scroll {
     height: 8px;
-    padding-top: 1px;
-    border-top: 1px solid #ababab;
+    __padding-top: 1px;
+    __border-top: 1px solid #ababab;
 }
 
 /************************************************************************
