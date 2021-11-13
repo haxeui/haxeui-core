@@ -387,14 +387,16 @@ private class Events extends haxe.ui.events.Events {
     }
 
     private function onScrollChange(event:UIEvent) {
-        var maxHeight = _textarea.style.maxHeight;
-		var newHeight = _textarea.getTextInput()
-			.textHeight + 8; // TODO: where does this magic number come from, seems to work across all backends - doesnt seem to be padding
-		if (maxHeight == null || newHeight < maxHeight)
-			_textarea.height = newHeight;
-		if (maxHeight != null && newHeight > maxHeight) {
-			_textarea.height = maxHeight;
-		}
+        if (_textarea.style.autoHeight == true) {
+            var maxHeight = _textarea.style.maxHeight;
+            var newHeight = _textarea.getTextInput().textHeight + 8; // TODO: where does this magic number come from, seems to work across all backends - doesnt seem to be padding
+            if (maxHeight == null || newHeight < maxHeight) {
+                _textarea.height = newHeight;
+            }
+            if (maxHeight != null && newHeight > maxHeight) {
+                _textarea.height = maxHeight;
+            }
+        }
         var hscroll:HorizontalScroll = _textarea.findComponent(HorizontalScroll, false);
         if (hscroll != null) {
             _textarea.getTextInput().hscrollPos = hscroll.pos;
