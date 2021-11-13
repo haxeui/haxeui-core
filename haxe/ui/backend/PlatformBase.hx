@@ -29,38 +29,38 @@ class PlatformBase {
     }
     
     // shortcuts for key code lookups
-    public var KEY_TAB(get, null):Int;
-    private inline function get_KEY_TAB():Int {
+    public var KeyTab(get, null):Int;
+    private inline function get_KeyTab():Int {
         return getKeyCode("tab");
     }
 
-    public var KEY_UP(get, null):Int;
-    private inline function get_KEY_UP():Int {
+    public var KeyUp(get, null):Int;
+    private inline function get_KeyUp():Int {
         return getKeyCode("up");
     }
 
-    public var KEY_DOWN(get, null):Int;
-    private inline function get_KEY_DOWN():Int {
+    public var KeyDown(get, null):Int;
+    private inline function get_KeyDown():Int {
         return getKeyCode("down");
     }
     
-    public var KEY_LEFT(get, null):Int;
-    private inline function get_KEY_LEFT():Int {
+    public var KeyLeft(get, null):Int;
+    private inline function get_KeyLeft():Int {
         return getKeyCode("left");
     }
     
-    public var KEY_RIGHT(get, null):Int;
-    private inline function get_KEY_RIGHT():Int {
+    public var KeyRight(get, null):Int;
+    private inline function get_KeyRight():Int {
         return getKeyCode("right");
     }
     
-    public var KEY_SPACE(get, null):Int;
-    private inline function get_KEY_SPACE():Int {
+    public var KeySpace(get, null):Int;
+    private inline function get_KeySpace():Int {
         return getKeyCode("space");
     }
     
-    public var KEY_ENTER(get, null):Int;
-    private inline function get_KEY_ENTER():Int {
+    public var KeyEnter(get, null):Int;
+    private inline function get_KeyEnter():Int {
         return getKeyCode("enter");
     }
     

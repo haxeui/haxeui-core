@@ -84,7 +84,7 @@ class Toolkit {
     }
 
     private static function onKeyDown(event:KeyboardEvent) {
-        if (event.keyCode == Platform.instance.KEY_TAB) {
+        if (event.keyCode == Platform.instance.KeyTab) {
             if (event.shiftKey == false) {
                 FocusManager.instance.focusNext();
             } else {
