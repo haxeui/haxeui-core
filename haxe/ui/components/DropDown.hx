@@ -22,17 +22,17 @@ class DropDown extends Button implements IDataComponent {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:behaviour(DefaultBehaviour)                    public var handlerStyleNames:String;
-    @:behaviour(DataSourceBehaviour)                 public var dataSource:DataSource<Dynamic>;
-    @:behaviour(DefaultBehaviour, "list")            public var type:String;
-    @:behaviour(DefaultBehaviour, false)             public var virtual:Bool;
-    @:behaviour(DefaultBehaviour)                    public var dropdownWidth:Null<Float>;
-    @:behaviour(DefaultBehaviour)                    public var dropdownHeight:Null<Float>;
-    @:behaviour(DefaultBehaviour)                    public var dropdownSize:Null<Int>;
-    @:behaviour(SelectedIndexBehaviour, -1)          public var selectedIndex:Int;
-    @:behaviour(SelectedItemBehaviour)               public var selectedItem:Dynamic;
-    @:call(HideDropDown)                             public function hideDropDown();
-    @:clonable @:value(selectedItem)                 public var value:Dynamic;
+    @:clonable @:behaviour(DefaultBehaviour)            public var handlerStyleNames:String;
+    @:clonable @:behaviour(DataSourceBehaviour)         public var dataSource:DataSource<Dynamic>;
+    @:clonable @:behaviour(DefaultBehaviour, "list")    public var type:String;
+    @:clonable @:behaviour(DefaultBehaviour, false)     public var virtual:Bool;
+    @:clonable @:behaviour(DefaultBehaviour)            public var dropdownWidth:Null<Float>;
+    @:clonable @:behaviour(DefaultBehaviour)            public var dropdownHeight:Null<Float>;
+    @:clonable @:behaviour(DefaultBehaviour)            public var dropdownSize:Null<Int>;
+    @:clonable @:behaviour(SelectedIndexBehaviour, -1)  public var selectedIndex:Int;
+    @:clonable @:behaviour(SelectedItemBehaviour)       public var selectedItem:Dynamic;
+    @:call(HideDropDown)                                public function hideDropDown();
+    @:clonable @:value(selectedItem)                    public var value:Dynamic;
 
     private override function onThemeChanged() {
         super.onThemeChanged();
