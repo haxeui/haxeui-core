@@ -518,7 +518,7 @@ abstract Variant(VariantType) from VariantType {
     }
 
     public static function toDynamic(v:Variant):Dynamic {
-        var d:Dynamic = null;
+        var d:Dynamic = v;
         if (v != null) {
             switch (v) {
                 case VariantType.VT_Int(y):            d = y;
