@@ -141,9 +141,9 @@ class Style {
     @:optional public var borderType(get, null):StyleBorderType;
     private function get_borderType():StyleBorderType {
         var t = StyleBorderType.Compound;
-        if (borderLeftSize != null && borderLeftSize == borderRightSize && borderLeftSize == borderBottomSize && borderLeftSize == borderTopSize) { // full border
+        if (borderLeftSize != null && borderLeftSize > 0 && borderLeftSize == borderRightSize && borderLeftSize == borderBottomSize && borderLeftSize == borderTopSize) { // full border
             t = StyleBorderType.Full;
-        } else if (borderLeftSize == null && borderRightSize == null && borderBottomSize == null && borderTopSize == null) {
+        } else if ((borderLeftSize == null || borderLeftSize <= 0) && (borderRightSize == null || borderRightSize <= 0)  && (borderBottomSize == null || borderRightSize <= 0) && (borderTopSize == null || borderTopSize <= 0)) {
             t = StyleBorderType.None;
         }
         return t;
