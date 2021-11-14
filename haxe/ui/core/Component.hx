@@ -1802,7 +1802,13 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             }
             handleFrameworkProperty("allowMouseInteraction", false);
         }
-
+        
+        if (style.borderType == StyleBorderType.None) {
+            addClass("borderless");
+        } else {
+            removeClass("borderless");
+        }
+        
         if (_compositeBuilder != null) {
             _compositeBuilder.applyStyle(style);
         }
