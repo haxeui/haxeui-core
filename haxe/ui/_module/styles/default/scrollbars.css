@@ -23,14 +23,32 @@
 
 .vertical-scroll {
     width: 8px;
-    __padding-left: 1px;
-    __border-left: 1px solid #ababab;
+    padding-left: 1px;
+    border-left: 1px solid #ababab;
 }
 
 .horizontal-scroll {
     height: 8px;
-    __padding-top: 1px;
-    __border-top: 1px solid #ababab;
+    padding-top: 1px;
+    border-top: 1px solid #ababab;
+}
+
+/************************************************************************
+** BORDERLESS VARIANTS
+*************************************************************************/
+.scrollview.borderless .scroll .button, .textarea.borderless .scroll .button {
+    width: 8px;
+    height: 8px;
+}
+
+.scrollview.borderless .vertical-scroll, .textarea.borderless .vertical-scroll {
+    padding-left: 0px;
+    border-left: none;
+}
+
+.scrollview.borderless .horizontal-scroll, .textarea.borderless .horizontal-scroll {
+    padding-top: 0px;
+    border-top: none;
 }
 
 /************************************************************************
