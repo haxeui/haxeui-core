@@ -435,8 +435,18 @@ private class Builder extends ScrollViewBuilder {
         for (column in _header.childComponents) {
             var existing = _tableview.itemRenderer.findComponent(column.id, ItemRenderer, true);
             if (existing == null) {
-                var itemRenderer = createRenderer(column.id);
-                _tableview.itemRenderer.addComponentAt(itemRenderer, i);
+                var temp = _tableview.itemRenderer.findComponent(column.id, Component, true);
+                if (temp != null) {
+                    if ((temp is ItemRenderer)) {
+                        existing = cast(temp, ItemRenderer);
+                    } else {
+                        existing = temp.findAncestor(ItemRenderer);
+                    }
+                    _tableview.itemRenderer.setComponentIndex(existing, i);
+                } else {
+                    var itemRenderer = createRenderer(column.id);
+                    _tableview.itemRenderer.addComponentAt(itemRenderer, i);
+                }
             } else {
                 _tableview.itemRenderer.setComponentIndex(existing, i);
             }
@@ -449,7 +459,7 @@ private class Builder extends ScrollViewBuilder {
                 for (column in _header.childComponents) {
                     var existing = item.findComponent(column.id, ItemRenderer, true);
                     if (existing == null) {
-                        var temp = _tableview.itemRenderer.findComponent(column.id, Component);
+                        var temp = _tableview.itemRenderer.findComponent(column.id, Component, true);
                         var renderer:ItemRenderer = null;
                         if ((temp is ItemRenderer)) {
                             renderer = cast(temp, ItemRenderer);
