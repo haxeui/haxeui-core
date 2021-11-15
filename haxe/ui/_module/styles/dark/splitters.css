@@ -1,17 +1,15 @@
 .splitter {
     spacing: 0;
-    background-color: #252728
 }
 
 .vertical-splitter-gripper {
     width: 100%;
     height: 6px;
     cursor: row-resize;
-    __background-color: #252728;
 }
 
 .vertical-splitter-gripper:hover {
-    background-color: #98a6aa;
+    background-color: #434647;
 }
 
 .vertical-splitter-gripper .image {
@@ -24,11 +22,10 @@
     width: 6px;
     height: 100%;
     cursor: col-resize;
-    __background-color: #252728;
 }
 
 .horizontal-splitter-gripper:hover {
-    background-color: #98a6aa;
+    background-color: #434647;
 }
 
 .horizontal-splitter-gripper .image {
