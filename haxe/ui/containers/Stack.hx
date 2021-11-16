@@ -1,5 +1,6 @@
 package haxe.ui.containers;
 
+import haxe.ui.events.UIEvent;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
@@ -42,6 +43,7 @@ private class SelectedIndex extends DataBehaviour {
         
         builder._currentPage = _component.childComponents[_value.toInt()];
         builder._currentPage.show();
+        _component.dispatch(new UIEvent(UIEvent.CHANGE));
     }
 }
 
