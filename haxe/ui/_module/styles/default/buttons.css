@@ -25,10 +25,6 @@
     border-color: #7F7F7F;
 }
 
-.button:active {
-    border: 2px solid #77C6FF;
-}
-
 .button.emphasized {
     background: #DAE4EE #D4DEE8 vertical;
     border-color: #6CA1D7;
