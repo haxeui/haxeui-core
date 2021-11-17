@@ -76,7 +76,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         #end
     }
 
-    #if !haxeui_openfl
+    #if !(haxeui_openfl || haxeui_flixel)
     public var tabIndex:Int = 0;
     #end
     
