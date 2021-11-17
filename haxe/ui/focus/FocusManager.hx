@@ -164,6 +164,10 @@ class FocusManager {
 
     private function buildFocusableList(c:Component, list:Array<IFocusable>):IFocusable {
         var currentFocus = null;
+        if (c.hidden == true) {
+            return null;
+        }
+        
         if ((c is IFocusable)) {
             var f:IFocusable = cast c;
             if (f.allowFocus == true) {
@@ -174,7 +178,12 @@ class FocusManager {
             }
         }
 
-        for (child in c.childComponents) {
+        var childList = c.childComponents;
+        childList.sort(function(c1, c2) {
+            return c1.tabIndex - c2.tabIndex;
+        });
+        
+        for (child in childList) {
             var f:IFocusable = buildFocusableList(child, list);
             if (f != null) {
                 currentFocus = f;
