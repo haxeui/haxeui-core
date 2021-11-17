@@ -182,11 +182,11 @@ private class TabPosition extends DataBehaviour {
         if (_value == "bottom") {
             _component.addClass(":bottom");
             _component.findComponent(TabBar, false).tabIndex = 1;
-            _component.findComponent("tabview-content", false).tabIndex = 0;
+            _component.findComponent("tabview-content", Box, false).tabIndex = 0;
         } else {
             _component.removeClass(":bottom");
             _component.findComponent(TabBar, false).tabIndex = 0;
-            _component.findComponent("tabview-content", false).tabIndex = 1;
+            _component.findComponent("tabview-content", Box, false).tabIndex = 1;
         }
         _component.findComponent(TabBar, false).tabPosition = _value;
     }
