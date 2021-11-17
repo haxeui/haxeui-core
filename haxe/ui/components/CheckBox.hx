@@ -174,6 +174,7 @@ class CheckBoxBuilder extends CompositeBuilder {
     public function new(checkbox:CheckBox) {
         super(checkbox);
         _checkbox = checkbox;
+        _checkbox.allowFocus = false;
     }
 
     public override function create() {
