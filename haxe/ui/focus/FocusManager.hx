@@ -180,7 +180,7 @@ class FocusManager {
 
         var childList = c.childComponents;
         childList.sort(function(c1, c2) {
-            return c1.tabIndex - c2.tabIndex;
+            return c1.componentTabIndex - c2.componentTabIndex;
         });
         
         for (child in childList) {
