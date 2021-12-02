@@ -77,6 +77,9 @@ class Screen extends ScreenImpl {
     public function findComponentsUnderPoint<T:Component>(screenX:Float, screenY:Float, type:Class<T> = null):Array<Component> {
         var c:Array<Component> = [];
         for (r in rootComponents) {
+            if (r.hitTest(screenX, screenY)) {
+                c.push(r);
+            }
             c = c.concat(r.findComponentsUnderPoint(screenX, screenY, type));
         }
         return c;
