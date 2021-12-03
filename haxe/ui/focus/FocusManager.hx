@@ -11,12 +11,9 @@ import Std.isOfType;
 import Std.is as isOfType;
 #end
 
-class FocusInfo {
-    public function new() {
-
-    }
-    public var view:Component;
-    public var currentFocus:IFocusable;
+typedef FocusInfo = { // focus info for a given view (component)
+    var view:Component;
+    var currentFocus:IFocusable;
 }
 
 class FocusManager {
@@ -54,6 +51,13 @@ class FocusManager {
     
     public function pushView(component:Component) {
         _views.push(component);
+        var info = _focusInfo.get(component);
+        if (info == null) {
+            _focusInfo.set(component, {
+                view: component,
+                currentFocus: null
+            });
+        }
     }
 
     public function hasView(component:Component):Bool {
@@ -76,11 +80,6 @@ class FocusManager {
         }
         var c:Component = _views[_views.length - 1];
         var info = _focusInfo.get(c);
-        if (info == null) {
-            info = new FocusInfo();
-            info.view = c;
-            _focusInfo.set(c, info);
-        }
         return info;
     }
 
@@ -96,10 +95,6 @@ class FocusManager {
             throw "Component does not implement IFocusable";
         }
 
-        if (focusInfo == null) { // TODO: just a patch for now, this all needs reworking
-            return value;
-        }
-
         if (focusInfo.currentFocus != null && focusInfo.currentFocus != value) {
             focusInfo.currentFocus.focus = false;
             focusInfo.currentFocus = null;
@@ -109,6 +104,7 @@ class FocusManager {
             focusInfo.currentFocus.focus = true;
         }
 
+        // TODO: move this function to be part of this manager, not Screen (will mean a new FocusManagerBase / FocusManangerImpl)
         Toolkit.screen.focus = cast value;
 
         return focusInfo.currentFocus;
