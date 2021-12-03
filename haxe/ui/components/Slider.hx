@@ -402,6 +402,7 @@ class SliderBuilder extends CompositeBuilder {
         if (_component.findComponent("range") == null) {
             var v = createValueComponent();
             v.scriptAccess = false;
+            v.allowFocus = false;
             v.id = "range";
             v.addClass("slider-value");
             v.start = v.end = 0;
@@ -430,6 +431,7 @@ class SliderBuilder extends CompositeBuilder {
 
         var b = new Button();
         b.scriptAccess = false;
+        b.allowFocus = false;
         b.id = id;
         b.addClass(id);
         b.remainPressed = true;
