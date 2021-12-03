@@ -9,6 +9,7 @@ import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.IDirectionalComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.Screen;
+import haxe.ui.events.DragEvent;
 import haxe.ui.events.Events;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
@@ -37,13 +38,6 @@ class Slider extends InteractiveComponent implements IDirectionalComponent {
     @:clonable @:behaviour(MajorTicks, null)        public var majorTicks:Null<Float>;
     @:clonable @:value(pos)                         public var value:Dynamic;
 
-    
-    //***********************************************************************************************************
-    // Public Events
-    //***********************************************************************************************************
-    @:event(UIEvent.DRAG_START)                     public var onDragStart:UIEvent->Void;    
-    @:event(UIEvent.DRAG_END)                       public var onDragEnd:UIEvent->Void;    
-    
     //***********************************************************************************************************
     // Private API
     //***********************************************************************************************************
@@ -352,7 +346,7 @@ private class Events extends haxe.ui.events.Events  {
         Screen.instance.registerEvent(MouseEvent.MOUSE_MOVE, onScreenMouseMove);
         Screen.instance.registerEvent(MouseEvent.MOUSE_UP, onScreenMouseUp);
         
-        _slider.dispatch(new UIEvent(UIEvent.DRAG_START));
+        _slider.dispatch(new DragEvent(DragEvent.DRAG_START));
     }
 
     private function onScreenMouseUp(e:MouseEvent) {
@@ -360,7 +354,7 @@ private class Events extends haxe.ui.events.Events  {
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_UP, onScreenMouseUp);
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_MOVE, onScreenMouseMove);
         
-        _slider.dispatch(new UIEvent(UIEvent.DRAG_END));
+        _slider.dispatch(new DragEvent(DragEvent.DRAG_END));
     }
 
     private function onScreenMouseMove(e:MouseEvent) {

@@ -29,9 +29,6 @@ class UIEvent extends EventImpl {
     public static inline var COMPONENT_ADDED:String = "componentAdded";
     public static inline var COMPONENT_REMOVED:String = "componentRemoved";
 
-    public static inline var DRAG_START:String = "dragStart";
-    public static inline var DRAG_END:String = "dragEnd";
-
     public var bubble(default, default):Bool;
     public var type(default, default):String;
     public var target(default, default):Component;
@@ -59,5 +56,9 @@ class UIEvent extends EventImpl {
         c.canceled = this.canceled;
         postClone(c);
         return c;
+    }
+    
+    public function copyFrom(c:UIEvent) {
+        
     }
 }
