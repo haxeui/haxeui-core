@@ -1,6 +1,7 @@
 package haxe.ui.components;
 
 import haxe.ui.Toolkit;
+import haxe.ui.actions.ActionType;
 import haxe.ui.behaviours.Behaviour;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
@@ -375,6 +376,19 @@ private class Events extends haxe.ui.events.Events  {
         } else if (_activeThumb == _endThumb) {
             pos -= builder.getStartOffset();
             _slider.end = pos;
+        }
+    }
+    
+    private override function actionStart(type:ActionType):Bool {
+        return switch (type) {
+            case ActionType.RIGHT | ActionType.UP:
+                _slider.value += 2; // TODO: calculate this somehow
+                true;
+            case ActionType.LEFT | ActionType.DOWN:
+                _slider.value -= 2; // TODO: calculate this somehow
+                true;
+            case _:
+                false;
         }
     }
 }

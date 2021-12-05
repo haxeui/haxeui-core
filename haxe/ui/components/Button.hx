@@ -1,5 +1,6 @@
 package haxe.ui.components;
 
+import haxe.ui.actions.ActionType;
 import haxe.ui.behaviours.Behaviour;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
@@ -510,6 +511,39 @@ class ButtonEvents extends haxe.ui.events.Events {
 
     private function dispatchChanged() {
         _button.dispatch(new UIEvent(UIEvent.CHANGE));
+    }
+    
+    private function press() {
+        _down = true;
+        _button.addClass(":down", true, true);
+    }
+    
+    private function release() {
+        if (_down == true) {
+            _down = false;
+            _button.removeClass(":down", true, true);
+            _button.dispatch(new MouseEvent(MouseEvent.CLICK));
+        }
+    }
+    
+    private override function actionStart(type:ActionType):Bool {
+        return switch (type) {
+            case ActionType.PRESS:
+                press();
+                false;
+            case _:
+                false;
+        }
+    }
+    
+    private override function actionEnd(type:ActionType):Bool {
+        return switch (type) {
+            case ActionType.PRESS:
+                release();
+                false;
+            case _:
+                false;
+        }
     }
 }
 

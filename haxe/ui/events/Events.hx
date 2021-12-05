@@ -1,5 +1,6 @@
 package haxe.ui.events;
 
+import haxe.ui.actions.ActionType;
 import haxe.ui.core.Component;
 
 class Events {
@@ -33,5 +34,13 @@ class Events {
 
     private function dispatch(event:UIEvent) {
         _target.dispatch(event);
+    }
+    
+    private function actionStart(type:ActionType):Bool {
+        return false;
+    }
+    
+    private function actionEnd(type:ActionType):Bool {
+        return false;
     }
 }
