@@ -502,6 +502,7 @@ class DropDownEvents extends ButtonEvents {
     }
 
     private function onClick(event:MouseEvent) {
+        trace("onclick");
         _dropdown.selected = !_dropdown.selected;
         if (_dropdown.selected == true) {
             showDropDown();
@@ -623,6 +624,17 @@ class DropDownEvents extends ButtonEvents {
 
     // override and do nothing
     private override function dispatchChanged() {
+    }
+    
+    private override function release() {
+        if (_down == true) {
+            super.release();
+            if (_dropdown.selected == true) {
+                showDropDown();
+            } else {
+                hideDropDown();
+            }
+        }
     }
 }
 

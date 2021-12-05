@@ -1,5 +1,6 @@
 package haxe.ui.components;
 
+import haxe.ui.actions.ActionType;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.InteractiveComponent;
@@ -53,6 +54,35 @@ class CheckBoxValue extends InteractiveComponent {
                 icon.resource = style.icon;
             }
             addComponent(icon);
+        }
+    }
+
+    private var _down:Bool = true;
+    private override function actionStart(action:ActionType):Bool {
+        super.actionStart(action);
+        return switch (action) {
+            case ActionType.PRESS:
+                _down = true;
+                true;
+            case _:
+                false;
+        }
+    }
+    
+    private override function actionEnd(action:ActionType):Bool {
+        super.actionEnd(action);
+        return switch (action) {
+            case ActionType.PRESS:
+                if (_down == true) {
+                    _down = false;
+                    if (parentComponent != null) {
+                        var checkbox = cast(parentComponent, CheckBox);
+                        checkbox.selected = !checkbox.selected;
+                    }
+                }
+                true;
+            case _:
+                false;
         }
     }
 }

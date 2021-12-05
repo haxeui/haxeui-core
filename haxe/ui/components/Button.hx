@@ -515,14 +515,23 @@ class ButtonEvents extends haxe.ui.events.Events {
     
     private function press() {
         _down = true;
-        _button.addClass(":down", true, true);
+        if (_button.toggle == true) {
+            _button.addClass(":down", true, true);
+        } else {
+            _button.addClass(":down", true, true);
+        }
     }
     
     private function release() {
         if (_down == true) {
             _down = false;
-            _button.removeClass(":down", true, true);
-            _button.dispatch(new MouseEvent(MouseEvent.CLICK));
+            if (_button.toggle == true) {
+                _button.selected = !_button.selected;
+                _button.dispatch(new MouseEvent(MouseEvent.CLICK));
+            } else {
+                _button.removeClass(":down", true, true);
+                _button.dispatch(new MouseEvent(MouseEvent.CLICK));
+            }
         }
     }
     

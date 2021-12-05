@@ -1,5 +1,6 @@
 package haxe.ui.containers;
 
+import haxe.ui.actions.ActionType;
 import haxe.ui.behaviours.Behaviour;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
@@ -269,6 +270,37 @@ class ListViewEvents extends ScrollViewEvents {
 
     private function selectRange(fromIndex:Int, toIndex:Int) {
         _listview.selectedIndices = [for (i in fromIndex...toIndex + 1) i];
+    }
+    
+    private override function actionStart(action:ActionType):Bool {
+        return switch (action) {
+            case ActionType.DOWN:
+                if (_listview.selectedIndex < 0) {
+                    _listview.selectedIndex = 0;
+                } else {
+                    var n:Int = _listview.selectedIndex;
+                    n++;
+                    if (n > _listview.dataSource.size - 1) {
+                        n = 0;
+                    }
+                    _listview.selectedIndex = n;
+                }
+                true;
+            case ActionType.UP:    
+                if (_listview.selectedIndex < 0) {
+                    _listview.selectedIndex = _listview.dataSource.size - 1;
+                } else {
+                    var n:Int = _listview.selectedIndex;
+                    n--;
+                    if (n < 0) {
+                        n = _listview.selectedIndex = _listview.dataSource.size - 1;
+                    }
+                    _listview.selectedIndex = n;
+                }
+                true;
+            case _:
+                false;
+        }
     }
 }
 
