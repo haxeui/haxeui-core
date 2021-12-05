@@ -30,10 +30,6 @@ class ActionManager {
     private var _repeatActions:Map<ActionType, RepeatActionInfo> = new Map<ActionType, RepeatActionInfo>();
     
     public function new() {
-        registerInputSource(new KeyboardActionInputSource());
-    }
-    
-    public function init() {
     }
     
     public function registerEvent(type:String, listener:ActionEvent->Void, priority:Int = 0) {

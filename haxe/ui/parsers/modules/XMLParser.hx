@@ -171,6 +171,16 @@ class XMLParser extends ModuleParser {
                     }
                     module.locales.push(entry);
                 }
+            } else if (nodeName == "actions" && checkCondition(el, defines) == true) {
+                for (sourceNode in el.elementsNamed("source")) {
+                    if (checkCondition(sourceNode, defines) == false) {
+                        continue;
+                    }
+                    
+                    var entry:Module.ModuleActionInputSourceEntry = new Module.ModuleActionInputSourceEntry();
+                    entry.className = sourceNode.get("class");
+                    module.actionInputSources.push(entry);
+                }
             }
         }
 

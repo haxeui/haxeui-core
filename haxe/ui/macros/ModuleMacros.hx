@@ -112,6 +112,20 @@ class ModuleMacros {
                     }
                 }
             }
+            
+            for (is in m.actionInputSources) {
+                var className = is.className;
+                var parts = className.split(".");
+                var name:String = parts.pop();
+                var t:TypePath = {
+                    pack: parts,
+                    name: name
+                }
+                
+                builder.add(macro
+                    haxe.ui.actions.ActionManager.instance.registerInputSource(new $t())
+                );
+            }
         }
 
         if (preloadAll) {

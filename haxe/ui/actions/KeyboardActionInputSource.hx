@@ -1,4 +1,5 @@
 package haxe.ui.actions;
+
 import haxe.ui.actions.ActionManager;
 import haxe.ui.actions.ActionType;
 import haxe.ui.core.Platform;

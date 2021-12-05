@@ -104,4 +104,8 @@
             <style resource="haxeui-core/styles/native/main.css" priority="-3" />
         </native>
     </themes>
+    
+    <actions>
+        <source class="haxe.ui.actions.KeyboardActionInputSource" />
+    </actions>
 </module>
