@@ -99,6 +99,23 @@ class ModuleMacros {
                 );
             }
             
+            for (c in m.componentEntries) {
+                if (c.loadAll == true) { // loadAll means will be populate the classmap - this means a ref will be made to EACH of these components
+                    var types = MacroHelpers.typesFromClassOrPackage(c.className, c.classPackage);
+                    if (types != null) {
+                        for (t in types) {
+                            var classInfo = new ClassBuilder(t);
+                            if (classInfo.hasSuperClass("haxe.ui.core.Component")) {
+                                var fullPath = classInfo.fullPath;
+                                builder.add(macro
+                                    haxe.ui.core.ComponentClassMap.register($v{classInfo.name}, $v{fullPath})
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+            
             for (l in m.locales) {
                 var localeId = l.id;
                 if (localeId == null) {

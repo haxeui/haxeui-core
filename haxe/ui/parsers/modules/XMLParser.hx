@@ -41,6 +41,9 @@ class XMLParser extends ModuleParser {
                     classEntry.className = classNode.get("name");
                     classEntry.classFolder = classNode.get("folder");
                     classEntry.classFile = classNode.get("file");
+                    if (classNode.get("loadAll") != null) {
+                        classEntry.loadAll = (classNode.get("loadAll") == "true");
+                    }
                     module.componentEntries.push(classEntry);
                 }
                 for (classNode in el.elementsNamed("component")) {
@@ -52,6 +55,9 @@ class XMLParser extends ModuleParser {
                     classEntry.className = classNode.get("class");
                     classEntry.classFolder = classNode.get("folder");
                     classEntry.classFile = classNode.get("file");
+                    if (classNode.get("loadAll") != null) {
+                        classEntry.loadAll = (classNode.get("loadAll") == "true");
+                    }
                     module.componentEntries.push(classEntry);
                 }
             } else if (nodeName == "layouts" && checkCondition(el, defines) == true) {

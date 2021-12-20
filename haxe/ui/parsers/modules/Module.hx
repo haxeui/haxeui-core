@@ -42,6 +42,7 @@ class ModuleClassEntry {
     public var className(default, default):String;
     public var classFolder(default, default):String;
     public var classFile(default, default):String;
+    public var loadAll(default, default):Bool;
 
     public function new() {
     }
