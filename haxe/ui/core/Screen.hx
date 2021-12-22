@@ -5,6 +5,12 @@ import haxe.ui.events.UIEvent;
 import haxe.ui.focus.FocusManager;
 import haxe.ui.util.EventMap;
 
+#if (haxe_ver >= 4.2)
+import Std.isOfType;
+#else
+import Std.is as isOfType;
+#end
+
 class Screen extends ScreenImpl {
 
     private static var _instance:Screen;
@@ -78,7 +84,13 @@ class Screen extends ScreenImpl {
         var c:Array<Component> = [];
         for (r in rootComponents) {
             if (r.hitTest(screenX, screenY)) {
-                c.push(r);
+                var match = true;
+                if (type != null && isOfType(r, type) == false) {
+                    match = false;
+                }
+                if (match == true) {
+                    c.push(r);
+                }
             }
             c = c.concat(r.findComponentsUnderPoint(screenX, screenY, type));
         }
