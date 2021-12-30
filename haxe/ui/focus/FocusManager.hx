@@ -95,7 +95,7 @@ class FocusManager {
             throw "Component does not implement IFocusable";
         }
 
-        if (focusInfo.currentFocus != null && focusInfo.currentFocus != value) {
+        if (focusInfo != null && focusInfo.currentFocus != null && focusInfo.currentFocus != value) {
             focusInfo.currentFocus.focus = false;
             focusInfo.currentFocus = null;
         }
@@ -107,6 +107,9 @@ class FocusManager {
         // TODO: move this function to be part of this manager, not Screen (will mean a new FocusManagerBase / FocusManangerImpl)
         Toolkit.screen.focus = cast value;
 
+        if (focusInfo == null) {
+            return value;
+        }
         return focusInfo.currentFocus;
     }
 
