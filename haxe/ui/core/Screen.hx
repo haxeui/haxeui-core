@@ -59,6 +59,9 @@ class Screen extends ScreenImpl {
     }
 
     public override function removeComponent(component:Component, dispose:Bool = true):Component {
+        if (rootComponents.indexOf(component) == -1) {
+            return component;
+        }
         @:privateAccess component._hasScreen = false;
         super.removeComponent(component, dispose);
         component.depth = -1;
