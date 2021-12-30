@@ -100,7 +100,9 @@ class DialogBase extends Box {
     }
 
     public override function show() {
+        #if !haxeui_flixel
         handleVisibility(false);
+        #end
         var dp = dialogParent;
         if (modal) {
             _overlay = new Component();
