@@ -28,7 +28,7 @@ class SimpleExpressionEvaluator {
     public static function eval(s:String, context:Dynamic = null):Dynamic {
         var r:Dynamic = null;
         
-        if (s.contains("||")) {
+        if (s.indexOf("||") != -1) {
             var parts = s.split("||");
             for (p in parts) {
                 if (r == null) {
@@ -37,7 +37,7 @@ class SimpleExpressionEvaluator {
                     r = r || evalSingle(p.trim(), context);
                 }
             }
-        } else if (s.contains("&&")) {
+        } else if (s.indexOf("&&") != -1) {
             var parts = s.split("&&");
             for (p in parts) {
                 if (r == null) {
