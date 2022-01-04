@@ -303,7 +303,7 @@ private class Builder extends CompositeBuilder {
             styleMenuButton(menu, button);
             menu.registerEvent(UIEvent.COMPONENT_ADDED, onChildAdded);
             menu.registerEvent(UIEvent.COMPONENT_REMOVED, onChildRemoved);
-
+            menu.registerEvent(UIEvent.PROPERTY_CHANGE, onMenuPropertyChanged);
             return menu;
         }
         return null;
@@ -321,6 +321,15 @@ private class Builder extends CompositeBuilder {
         var index = _menus.indexOf(menu);
         var button = _buttons[index];
         styleMenuButton(menu, button);
+    }
+    
+    private function onMenuPropertyChanged(event:UIEvent) {
+        if (event.data == "text") {
+            var menu = cast(event.target, Menu);
+            var index = _menus.indexOf(menu);
+            var button = _buttons[index];
+            button.text = event.target.text;
+        }
     }
     
     public override function addComponentAt(child:Component, index:Int):Component {
