@@ -123,7 +123,7 @@ class Macros {
         for (f in builder.getFieldsWithMeta("event")) {
             f.remove();
             var eventExpr = f.getMetaValueExpr("event");
-            var varName = '__${f.name}';
+            var varName = '_internal__${f.name}';
             builder.addVar(varName, f.type, null, null, [{name: ":noCompletion", pos: Context.currentPos()}]);
             var setter = builder.addSetter(f.name, f.type, macro {
                 if ($i{varName} != null) {
