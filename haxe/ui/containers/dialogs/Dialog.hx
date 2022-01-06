@@ -74,7 +74,7 @@ class Dialog extends DialogBase {
     public var onDialogClosed(null, set):DialogEvent->Void;
     private function set_onDialogClosed(value:DialogEvent->Void):DialogEvent->Void {
         if (__onDialogClosed != null) {
-            unregisterEvent(DialogEvent.DIALOG_CLOSED, __onClick);
+            unregisterEvent(DialogEvent.DIALOG_CLOSED, __onDialogClosed);
             __onDialogClosed = null;
         }
         registerEvent(DialogEvent.DIALOG_CLOSED, value);
