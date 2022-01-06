@@ -1815,7 +1815,9 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
 
         if (style.pointerEvents != null && style.pointerEvents != "none") {
             if (hasEvent(MouseEvent.MOUSE_OVER, onPointerEventsMouseOver) == false) {
-                customStyle.cursor = "pointer";
+                if (style.cursor == null) {
+                    customStyle.cursor = "pointer";
+                }
                 registerEvent(MouseEvent.MOUSE_OVER, onPointerEventsMouseOver);
             }
             if (hasEvent(MouseEvent.MOUSE_OUT, onPointerEventsMouseOut) == false) {
