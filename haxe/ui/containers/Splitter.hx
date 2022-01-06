@@ -166,18 +166,18 @@ class SplitterBuilder extends CompositeBuilder {
 private class SizerGripper extends InteractiveComponent {
     public function new() {
         super();
-        registerEvent(MouseEvent.MOUSE_OVER, onMouseOver);
-        registerEvent(MouseEvent.MOUSE_OUT, onMouseOut);
+        registerEvent(MouseEvent.MOUSE_OVER, _onMouseOver);
+        registerEvent(MouseEvent.MOUSE_OUT, _onMouseOut);
 
         var image = new Image();
         addComponent(image);
     }
 
-    private function onMouseOver(event:MouseEvent) {
+    private function _onMouseOver(event:MouseEvent) {
         addClass(":hover");
     }
 
-    private function onMouseOut(event:MouseEvent) {
+    private function _onMouseOut(event:MouseEvent) {
         removeClass(":hover");
     }
 }
