@@ -19,6 +19,7 @@ class ButtonBar extends Box implements IDirectionalComponent {
     }
     
     @:clonable @:behaviour(DefaultBehaviour, true)      public var toggle:Bool;
+    @:clonable @:behaviour(DefaultBehaviour, false)     public var allowUnselection:Bool;
     @:clonable @:behaviour(SelectedIndex)               public var selectedIndex:Int;
     @:clonable @:behaviour(SelectedButton)              public var selectedButton:Component;
     @:clonable @:value(selectedIndex)                   public var value:Dynamic;
@@ -107,7 +108,7 @@ private class Events extends haxe.ui.events.Events {
     private function onButtonChanged(event:UIEvent) {
         var button = cast(event.target, Button);
         var index = _bar.getComponentIndex(button);
-        if (index == _bar.selectedIndex && button.selected == false) {
+        if (_bar.allowUnselection == false && index == _bar.selectedIndex && button.selected == false) {
             button.selected = true;
             return;
         }
