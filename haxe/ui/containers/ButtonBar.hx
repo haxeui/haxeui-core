@@ -40,7 +40,7 @@ private class SelectedIndex extends DataBehaviour {
             return;
         }
         
-        if (currentButton != null) {
+        if (currentButton != null && _value.toInt() < _component.numComponents) {
             builder._currentButton.selected = false;
         }
         
