@@ -43,8 +43,10 @@ private class SelectedIndex extends DataBehaviour {
             builder._currentButton.selected = false;
         }
         
-        button.selected = true;
-        builder._currentButton = button;
+        if (button != null) {
+	        button.selected = true;
+	        builder._currentButton = button;
+		}
         
         _component.dispatch(new UIEvent(UIEvent.CHANGE));
     }
