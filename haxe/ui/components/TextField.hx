@@ -7,6 +7,7 @@ import haxe.ui.core.InteractiveComponent;
 import haxe.ui.events.Events;
 import haxe.ui.events.FocusEvent;
 import haxe.ui.events.MouseEvent;
+import haxe.ui.events.UIEvent;
 import haxe.ui.geom.Size;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.styles.Style;
@@ -318,7 +319,7 @@ private class Events extends haxe.ui.events.Events {
             _textfield.getTextInput().data.onChangedCallback = function() {
                 if (_textfield.hasClass(":empty") == false) {
                     _textfield.text = _textfield.getTextInput().text;
-                    //_textfield.dispatch(new UIEvent(UIEvent.CHANGE));
+                    _textfield.dispatch(new UIEvent(UIEvent.CHANGE));
                 }
             };
         }
