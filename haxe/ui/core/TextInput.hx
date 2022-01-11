@@ -384,6 +384,9 @@ class TextInput extends TextInputImpl implements IValidating {
 
         if (dataInvalid || displayInvalid || measureInvalid) {
             measureText();
+        }
+        
+        if (dataInvalid) {
             if (_inputData.onChangedCallback != null) {
                 _inputData.onChangedCallback();
             }
