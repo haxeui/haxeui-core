@@ -24,8 +24,8 @@
 }
 
 .property-group-header.scrolling {
-    border-right-width: 1px;
-    border-right-size: 1px;
+    border-right-width: 0px;
+    border-right-size: 0px;
 }
 
 .property-group-header:hover {
@@ -87,6 +87,15 @@
 
 .property-group .number-stepper {
     padding: 0;
+    border: none;
+}
+
+.property-group .number-stepper .stepper-deinc {
+    border-right: 1px solid #181a1b;
+}
+
+.property-group .number-stepper .stepper-inc {
+    border-left: 1px solid #181a1b;
 }
 
 .property-group .dropdown {
