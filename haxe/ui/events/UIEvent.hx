@@ -34,6 +34,9 @@ class UIEvent extends EventImpl {
     public var target(default, default):Component;
     public var data(default, default):Dynamic;
     public var canceled(default, default):Bool;
+    // an event might have a related event, for example, a change event might
+    // contain a related event as to where the event came from (mouse, keyboard, action)
+    public var relatedEvent(default, default):UIEvent = null;
 
     public function new(type:String, bubble:Null<Bool> = false, data:Dynamic = null) {
         this.type = type;
@@ -54,6 +57,7 @@ class UIEvent extends EventImpl {
         c.target = this.target;
         c.data = this.data;
         c.canceled = this.canceled;
+        c.relatedEvent = this.relatedEvent;
         postClone(c);
         return c;
     }
