@@ -137,6 +137,8 @@ class Style {
     @:optional public var wordWrap:Null<Bool>;
 
     @:optional public var imageRendering:String;
+
+    @:optional public var layout:String;
     
     @:optional public var borderType(get, null):StyleBorderType;
     private function get_borderType():StyleBorderType {
@@ -451,6 +453,13 @@ class Style {
                         case _:    
                             imageRendering = ValueTools.string(v.value);
                     }
+                case "layout":
+                    switch (v.value) {
+                        case VNone:
+                            layout = null;
+                        case _:    
+                            layout = ValueTools.string(v.value);
+                    }
             }
         }
     }
@@ -596,6 +605,7 @@ class Style {
         
         if (s.wordWrap != null) wordWrap = s.wordWrap;
         if (s.imageRendering != null) imageRendering = s.imageRendering;
+        if (s.layout != null) layout = s.layout;
     }
 
     public function equalTo(s:Style):Bool {
@@ -717,6 +727,7 @@ class Style {
 
         if (s.wordWrap != wordWrap) return false;
         if (s.imageRendering != imageRendering) return false;
+        if (s.layout != layout) return false;
         
         return true;
     }
