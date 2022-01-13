@@ -1,8 +1,6 @@
-.numberstepper {
-    padding: 1px;
-    spacing: 0;
-}
-
+/************************************************************************
+** UNATTACHED STEPPER
+*************************************************************************/
 .stepper {
     spacing: 0;
 }
@@ -46,25 +44,110 @@
     icon: "haxeui-core/styles/default/down_arrow_white.png";
 }
 
-.stepper-textfield, .stepper-textfield:active {
-    border: none;
-    width: 100%;
-    padding: 4px;
-    padding-top: 5px;
-    padding-bottom: 3px;
-    vertical-align: center;
-    filter: drop-shadow(1, 45, #888888, 0.2, 1, 1, 1, 3, true);
-    background-color: none;
-}
-
-.stepper-step {
-    height: 100%;
-}
-
 .stepper-step .stepper-inc, .stepper-step .stepper-deinc {
     height: 50%;
 }
 
+/************************************************************************
+** NUMBER STEPPER - STANDARD LAYOUT
+*************************************************************************/
 .number-stepper {
-    initial-width: 60px;
+    padding: 0px;
+    height: auto;
+    initial-width: 70px;
+    border: 1px solid #ABABAB;
+    border-radius: 2px;
+    filter: drop-shadow(1, 45, #888888, 0.2, 1, 1, 1, 3, true);
+    background-color: white;
+}
+
+.number-stepper .stepper-value {
+    text-align: center;
+    border: none;
+    background-color: none;
+    filter: none;
+    margin-top: 0px;
+}
+
+.number-stepper .stepper-deinc {
+    icon: "haxeui-core/styles/default/left_arrow.png";
+    padding-left: 4px;
+    padding-right: 4px;
+    border: none;
+    background-color: #E6E6E6;
+    border-radius: 0;
+}
+
+.number-stepper .stepper-deinc:hover {
+    background-color: #F1F1F1;
+}
+
+.number-stepper .stepper-deinc:down {
+    background-color: #C2C2C2;
+    icon: "haxeui-core/styles/default/left_arrow_white.png";
+}
+
+.number-stepper .stepper-deinc:disabled {
+    opacity: 0.5;
+    background-color: #CCCCCC;
+}
+
+.number-stepper .stepper-inc {
+    icon: "haxeui-core/styles/default/right_arrow.png";
+    padding-left: 4px;
+    padding-right: 4px;
+    border: none;
+    background-color: #E6E6E6;
+    border-radius: 0;
+}
+
+.number-stepper .stepper-inc:hover {
+    background-color: #F1F1F1;
+}
+
+.number-stepper .stepper-inc:down {
+    background-color: #C2C2C2;
+    icon: "haxeui-core/styles/default/right_arrow_white.png";
+}
+
+.number-stepper .stepper-inc:disabled {
+    opacity: 0.5;
+    background-color: #CCCCCC;
+}
+
+.number-stepper.invalid-value {
+    color: red;
+    background-color: #ffdddd;
+}
+
+.number-stepper:active {
+    border: 1px solid #216AAE;
+}
+
+/************************************************************************
+** NUMBER STEPPER - CLASS LAYOUT
+*************************************************************************/
+.number-stepper.classic-stepper {
+    layout: classic;
+}
+
+.number-stepper.classic-stepper .stepper-deinc {
+    icon: "haxeui-core/styles/default/down_arrow.png";
+}
+
+.number-stepper.classic-stepper .stepper-inc {
+    icon: "haxeui-core/styles/default/up_arrow.png";
+}
+
+.number-stepper.classic-stepper .stepper-deinc:down {
+    icon: "haxeui-core/styles/default/down_arrow_white.png";
+}
+
+.number-stepper.classic-stepper .stepper-inc:down {
+    icon: "haxeui-core/styles/default/up_arrow_white.png";
+}
+
+.number-stepper.classic-stepper .stepper-value {
+    text-align: left;
+    margin-top: 0px;
 }

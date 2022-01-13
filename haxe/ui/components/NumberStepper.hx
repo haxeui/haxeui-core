@@ -2,102 +2,56 @@ package haxe.ui.components;
 
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
+import haxe.ui.components.Button;
+import haxe.ui.components.TextField;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.InteractiveComponent;
-import haxe.ui.events.Events;
+import haxe.ui.core.Platform;
 import haxe.ui.events.FocusEvent;
 import haxe.ui.events.KeyboardEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
-import haxe.ui.layouts.HorizontalLayout;
+import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.styles.Style;
 import haxe.ui.util.MathUtil;
 import haxe.ui.util.StringUtil;
-import haxe.ui.util.Variant;
+import haxe.ui.util.Timer;
 
-@:composite(Events, Builder, HorizontalLayout)
+@:composite(Events, Builder)
 class NumberStepper extends InteractiveComponent {
-    @:clonable @:behaviour(PosBehaviour, 0)             public var pos:Float;
+    @:clonable @:behaviour(PosBehaviour, 0)             public var pos:Null<Float>;
     @:clonable @:value(pos)                             public var value:Dynamic;
-    @:clonable @:behaviour(StepBehaviour, 1)            public var step:Float;
-    @:clonable @:behaviour(MinBehaviour, null)          public var min:Null<Float>;
-    @:clonable @:behaviour(MaxBehaviour, null)          public var max:Null<Float>;
-    @:clonable @:behaviour(PrecisionBehaviour, null)    public var precision:Null<Int>;
+    @:clonable @:behaviour(DefaultBehaviour, 1)         public var step:Float;
+    @:clonable @:behaviour(DefaultBehaviour, null)      public var max:Null<Float>;
+    @:clonable @:behaviour(DefaultBehaviour, null)      public var min:Null<Float>;
+    @:clonable @:behaviour(DefaultBehaviour, null)      public var precision:Null<Int>;
+    @:clonable @:behaviour(DefaultBehaviour, false)     public var autoCorrect:Bool;
 }
 
 //***********************************************************************************************************
-// Composite Builder
+// Behaviours
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
 private class PosBehaviour extends DataBehaviour {
     public override function validateData() {
-        var step:Stepper = _component.findComponent("stepper-step", Stepper);
-        var preciseValue:Float = _value;
-        if (step.precision != null) {
-            preciseValue = MathUtil.round(preciseValue, step.precision);
+        var stepper = cast(_component, NumberStepper);
+        var preciseValue:Null<Float> = _value;
+        if (preciseValue == null) {
+            preciseValue = stepper.min;
         }
-
-        preciseValue = MathUtil.clamp(preciseValue, step.min, step.max);
-        step.pos = preciseValue;
-
-        var textfield:TextField = _component.findComponent("stepper-textfield", TextField);
-        var value = StringUtil.padDecimal(preciseValue, step.precision);
-        textfield.text = value;
-
+        
+        preciseValue = MathUtil.clamp(preciseValue, stepper.min, stepper.max);
+        if (stepper.precision != null) {
+            preciseValue = MathUtil.round(preciseValue, stepper.precision);
+        }
+        _value = preciseValue;
+        
+        var stringValue = StringUtil.padDecimal(preciseValue, stepper.precision);
+        var value:TextField = stepper.findComponent("value", TextField);
+        value.text = stringValue;
+        
         var event = new UIEvent(UIEvent.CHANGE);
         _component.dispatch(event);
-    }
-}
-
-@:dox(hide) @:noCompletion
-private class StepBehaviour extends DefaultBehaviour {
-    public override function get():Variant {
-        var step:Stepper = _component.findComponent("stepper-step", Stepper);
-        return step.step;
-    }
-
-    public override function set(value:Variant) {
-        var step:Stepper = _component.findComponent("stepper-step", Stepper);
-        step.step = value;
-    }
-}
-
-@:dox(hide) @:noCompletion
-private class MinBehaviour extends DefaultBehaviour {
-    public override function get():Variant {
-        var step:Stepper = _component.findComponent("stepper-step", Stepper);
-        return step.min;
-    }
-
-    public override function set(value:Variant) {
-        var step:Stepper = _component.findComponent("stepper-step", Stepper);
-        step.min = value;
-    }
-}
-
-@:dox(hide) @:noCompletion
-private class MaxBehaviour extends DefaultBehaviour {
-    public override function get():Variant {
-        var step:Stepper = _component.findComponent("stepper-step", Stepper);
-        return step.max;
-    }
-
-    public override function set(value:Variant) {
-        var step:Stepper = _component.findComponent("stepper-step", Stepper);
-        step.max = value;
-    }
-}
-
-@:dox(hide) @:noCompletion
-private class PrecisionBehaviour extends DefaultBehaviour {
-    public override function get():Variant {
-        var step:Stepper = _component.findComponent("stepper-step", Stepper);
-        return step.precision;
-    }
-
-    public override function set(value:Variant) {
-        var step:Stepper = _component.findComponent("stepper-step", Stepper);
-        step.precision = value;
     }
 }
 
@@ -111,38 +65,56 @@ private class Builder extends CompositeBuilder {
     public function new(stepper:NumberStepper) {
         super(stepper);
         _stepper = stepper;
+        _stepper.layout = new StandardLayout();
     }
-
+    
     public override function create() {
-        _stepper.addClass("textfield");
+        var value = new TextField();
+        value.id = "value";
+        value.addClass("stepper-value");
+        value.scriptAccess = false;
+        value.allowFocus = false;
+        value.restrictChars = "0-9\\-\\.\\,";
+        _stepper.addComponent(value);
+        
+        var deinc = new Button();
+        deinc.id = "deinc";
+        deinc.addClass("stepper-deinc");
+        deinc.allowFocus = false;
+        deinc.scriptAccess = false;
+        deinc.repeater = true;
+        _stepper.addComponent(deinc);
 
-        var textfield = new TextField();
-        textfield.addClass("stepper-textfield");
-        textfield.id = "stepper-textfield";
-        textfield.restrictChars = "0-9\\-\\.\\,";
-        _stepper.addComponent(textfield);
-
-        var step = new Stepper();
-        step.addClass("stepper-step");
-        step.id = "stepper-step";
-        _stepper.addComponent(step);
+        var inc = new Button();
+        inc.id = "inc";
+        inc.addClass("stepper-inc");
+        inc.allowFocus = false;
+        inc.scriptAccess = false;
+        inc.repeater = true;
+        _stepper.addComponent(inc);
     }
-
+    
     public override function applyStyle(style:Style) {
-        var textfield:TextField = _stepper.findComponent(TextField);
-        if (textfield != null &&
-            (textfield.customStyle.color != style.color ||
-            textfield.customStyle.fontName != style.fontName ||
-            textfield.customStyle.fontSize != style.fontSize ||
-            textfield.customStyle.cursor != style.cursor ||
-            textfield.customStyle.textAlign != style.textAlign)) {
+        if (style.layout == "classic") {
+            _stepper.layout = new ClassicLayout();
+        } else if (style.layout == null && !(_stepper.layout is StandardLayout)) {
+            _stepper.layout = new StandardLayout();
+        }
+        
+        var value:TextField = _stepper.findComponent("value", TextField);
+        if (value != null &&
+            (value.customStyle.color != style.color ||
+            value.customStyle.fontName != style.fontName ||
+            value.customStyle.fontSize != style.fontSize ||
+            value.customStyle.cursor != style.cursor ||
+            value.customStyle.textAlign != style.textAlign)) {
 
-            textfield.customStyle.color = style.color;
-            textfield.customStyle.fontName = style.fontName;
-            textfield.customStyle.fontSize = style.fontSize;
-            textfield.customStyle.cursor = style.cursor;
-            textfield.customStyle.textAlign = style.textAlign;
-            textfield.invalidateComponentStyle();
+            value.customStyle.color = style.color;
+            value.customStyle.fontName = style.fontName;
+            value.customStyle.fontSize = style.fontSize;
+            value.customStyle.cursor = style.cursor;
+            value.customStyle.textAlign = style.textAlign;
+            value.invalidateComponentStyle();
         }
     }
 }
@@ -158,137 +130,275 @@ private class Events extends haxe.ui.events.Events {
         super(stepper);
         _stepper = stepper;
     }
-
+    
     public override function register() {
-        if (!hasEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel)) {
-            registerEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
+        if (!_stepper.hasEvent(FocusEvent.FOCUS_IN, onFocusIn)) {
+            _stepper.registerEvent(FocusEvent.FOCUS_IN, onFocusIn);
         }
-        if (!_stepper.hasEvent(KeyboardEvent.KEY_DOWN, onKeyDown)) {
-            _stepper.registerEvent(KeyboardEvent.KEY_DOWN, onKeyDown);
+        if (!_stepper.hasEvent(FocusEvent.FOCUS_OUT, onFocusOut)) {
+            _stepper.registerEvent(FocusEvent.FOCUS_OUT, onFocusOut);
         }
-
-        var textfield:TextField = _stepper.findComponent("stepper-textfield", TextField);
-        if (!textfield.hasEvent(KeyboardEvent.KEY_UP, onTextFieldKeyUp)) {
-            textfield.registerEvent(KeyboardEvent.KEY_UP, onTextFieldKeyUp);
+        if (!_stepper.hasEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel)) {
+            _stepper.registerEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
         }
-        if (!textfield.hasEvent(FocusEvent.FOCUS_IN, onTextFieldFocusIn)) {
-            textfield.registerEvent(FocusEvent.FOCUS_IN, onTextFieldFocusIn);
+        
+        var value:TextField = _stepper.findComponent("value", TextField);
+        if (!value.hasEvent(UIEvent.CHANGE, onValueFieldChange)) {
+            value.registerEvent(UIEvent.CHANGE, onValueFieldChange);
         }
-        if (!textfield.hasEvent(FocusEvent.FOCUS_OUT, onTextFieldFocusOut)) {
-            textfield.registerEvent(FocusEvent.FOCUS_OUT, onTextFieldFocusOut);
+        if (!value.hasEvent(KeyboardEvent.KEY_UP, onValueKeyUp)) {
+            value.registerEvent(KeyboardEvent.KEY_UP, onValueKeyUp);
         }
-        if (!textfield.hasEvent(UIEvent.CHANGE, onTextFieldChange)) {
-            textfield.registerEvent(UIEvent.CHANGE, onTextFieldChange);
+        
+        var deinc:Button = _stepper.findComponent("deinc", Button);
+        if (!deinc.hasEvent(MouseEvent.CLICK, onDeinc)) {
+            deinc.registerEvent(MouseEvent.CLICK, onDeinc);
         }
-
-        var step:Stepper = _stepper.findComponent("stepper-step", Stepper);
-        if (!step.hasEvent(UIEvent.CHANGE, onStepChange)) {
-            step.registerEvent(UIEvent.CHANGE, onStepChange);
-        }
-        if (!step.hasEvent(MouseEvent.MOUSE_DOWN, onStepMouseDown)) {
-            step.registerEvent(MouseEvent.MOUSE_DOWN, onStepMouseDown);
+        
+        var inc:Button = _stepper.findComponent("inc", Button);
+        if (!inc.hasEvent(MouseEvent.CLICK, onInc)) {
+            inc.registerEvent(MouseEvent.CLICK, onInc);
         }
     }
-
+    
     public override function unregister() {
-        unregisterEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
-        _stepper.unregisterEvent(KeyboardEvent.KEY_DOWN, onKeyDown);
-
-        var textfield:TextField = _stepper.findComponent("stepper-textfield", TextField);
-        textfield.unregisterEvent(KeyboardEvent.KEY_UP, onTextFieldKeyUp);
-        textfield.unregisterEvent(FocusEvent.FOCUS_IN, onTextFieldFocusIn);
-        textfield.unregisterEvent(FocusEvent.FOCUS_OUT, onTextFieldFocusOut);
-        textfield.unregisterEvent(UIEvent.CHANGE, onTextFieldChange);
-
-        var step:Stepper = _stepper.findComponent("stepper-step", Stepper);
-        step.unregisterEvent(UIEvent.CHANGE, onStepChange);
-        step.unregisterEvent(MouseEvent.MOUSE_DOWN, onStepMouseDown);
+        _stepper.unregisterEvent(FocusEvent.FOCUS_IN, onFocusIn);
+        _stepper.unregisterEvent(FocusEvent.FOCUS_OUT, onFocusOut);
+        _stepper.unregisterEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
+            
+        var value:TextField = _stepper.findComponent("value", TextField);
+        value.unregisterEvent(UIEvent.CHANGE, onValueFieldChange);
+        value.unregisterEvent(KeyboardEvent.KEY_UP, onValueKeyUp);
+        
+        var deinc:Button = _stepper.findComponent("deinc", Button);
+        deinc.unregisterEvent(MouseEvent.CLICK, onDeinc);
+        
+        var inc:Button = _stepper.findComponent("inc", Button);
+        inc.unregisterEvent(MouseEvent.CLICK, onInc);
     }
-
-    private function onKeyDown(event:KeyboardEvent) {
-        var step:Stepper = _stepper.findComponent("stepper-step", Stepper);
-        if (event.keyCode == 38 /*|| event.keyCode == 39 */ || event.keyCode == 107) { // ArrowUp, ArrowRight, or add(+)
-            step.increment();
-        }
-        if (event.keyCode == 40 /*|| event.keyCode == 37 */ || event.keyCode == 109) { // ArrowDown, ArrowLeft, or minus(-)
-            step.deincrement();
-        }
-        /*
-        if (event.keyCode == 36) { // Home
-            step.pos = step.min;
-        }
-        if (event.keyCode == 35) { // End
-            step.pos = step.max;
-        }
-        */
-    }
-
-    private function onMouseWheel(event:MouseEvent) {
-        var textfield:TextField = _stepper.findComponent("stepper-textfield", TextField);
-        if (textfield.focus == false) {
-            return;
-        }
-        event.cancel();
-
-        textfield.focus = true;
-
-        var step:Stepper = _stepper.findComponent("stepper-step", Stepper);
-        if (event.delta > 0) {
-            step.increment();
+    
+    private var _autoCorrectTimer:Timer = null;
+    private function onValueFieldChange(event:UIEvent) {
+        if (_stepper.autoCorrect == true) {
+            if (_autoCorrectTimer != null) {
+               _autoCorrectTimer.stop();
+               _autoCorrectTimer = null;
+            }
+            
+            _autoCorrectTimer = new Timer(350, onAutoCorrectTimer);
         } else {
-            step.deincrement();
+            var newValue = ValueHelper.validateValue(_stepper);
+            if (newValue != null) {
+                _stepper.pos = newValue;
+            }
         }
     }
-
-    private function onStepChange(event:UIEvent) {
-        var step:Stepper = _stepper.findComponent("stepper-step", Stepper);
-        _stepper.pos = step.pos;
+    
+    private function onAutoCorrectTimer() {
+        _autoCorrectTimer.stop();
+        _autoCorrectTimer = null;
+        
+        var value:TextField = _stepper.findComponent("value", TextField);
+        var parsedValue = Std.parseFloat(value.text);
+        _stepper.pos = MathUtil.clamp(parsedValue, _stepper.min, _stepper.max);
+        var stringValue = StringUtil.padDecimal(_stepper.pos, _stepper.precision);
+        value.text = stringValue;
     }
-
-    private function onStepMouseDown(event:MouseEvent) {
-        var textfield:TextField = _stepper.findComponent("stepper-textfield", TextField);
-        textfield.focus = true;
+    
+    private function onDeinc(event:MouseEvent) {
+        ValueHelper.deincrementValue(_stepper);
     }
-
-    private function onTextFieldKeyUp(event:KeyboardEvent) {
-        if (event.keyCode == 13) { // Enter
-            var textfield:TextField = _stepper.findComponent("stepper-textfield", TextField);
-            textfield.focus = false;
-        }
-        event.cancel();
+    
+    private function onInc(event:MouseEvent) {
+        ValueHelper.incrementValue(_stepper);
     }
-
-    private function onTextFieldFocusIn(event:FocusEvent) {
-        _stepper.addClass(":active");
-    }
-
-    private function onTextFieldFocusOut(event:FocusEvent) {
-        _stepper.removeClass(":active");
-        var textfield:TextField = _stepper.findComponent("stepper-textfield", TextField);
-        if (textfield != null) {
-            _stepper.pos = MathUtil.clamp(Std.parseFloat(textfield.text), _stepper.min, _stepper.max);
-            textfield.text = Std.string(_stepper.pos);
-        } else {
+    
+    private function onValueKeyUp(event:KeyboardEvent) {
+        if (event.keyCode == Platform.instance.KeyUp) {
             event.cancel();
+            ValueHelper.incrementValue(_stepper);
+        } else if (event.keyCode == Platform.instance.KeyDown) {
+            event.cancel();
+            ValueHelper.deincrementValue(_stepper);
         }
     }
+    
+    private function onMouseWheel(event:MouseEvent) {
+        event.cancel();
+        _stepper.focus = true;
+        if (event.delta > 0) {
+            ValueHelper.incrementValue(_stepper);
+        } else {
+            ValueHelper.deincrementValue(_stepper);
+        }
+    }
+    
+    private function onFocusIn(event:FocusEvent) {
+        var value:TextField = _stepper.findComponent("value", TextField);
+        value.getTextInput().focus();
+    }
+    
+    private function onFocusOut(event:FocusEvent) {
+        var value:TextField = _stepper.findComponent("value", TextField);
+        value.getTextInput().blur();
+    }
+}
 
-    private function onTextFieldChange(event:UIEvent) {
-        var step:Stepper = _stepper.findComponent("stepper-step", Stepper);
-        var textfield:TextField = _stepper.findComponent("stepper-textfield", TextField);
-        var lastChar:String = textfield.text.charAt(textfield.text.length - 1);
-        var max:Float = MathUtil.MAX_INT;
-        if (step.max != null) {
-            max = step.max;
+//***********************************************************************************************************
+// Layouts
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+private class StandardLayout extends DefaultLayout {
+    private override function resizeChildren() {
+        var value = findComponent("value", TextField);
+        var deinc = findComponent("deinc", Button);
+        var inc = findComponent("inc", Button);
+        
+        var u = usableSize;
+        
+        deinc.height = u.height - (borderSize * 2);
+        value.width = u.width - (deinc.width + inc.width);
+        inc.height = u.height - (borderSize * 2);
+    }
+    
+    private override function repositionChildren() {
+        var value = findComponent("value", TextField);
+        var deinc = findComponent("deinc", Button);
+        var inc = findComponent("inc", Button);
+        
+        deinc.left = paddingLeft + borderSize;
+        deinc.top = paddingTop + borderSize;
+        
+        value.left = deinc.left + deinc.width;
+        value.top = paddingTop + marginTop(value);
+        
+        inc.left = value.left + value.width - borderSize - borderSize;
+        inc.top = paddingTop + borderSize;
+    }
+    
+    private override function get_borderSize():Float {
+        if (_component.style == null) {
+            return 0;
         }
-        var maxCappedVal:Float = Math.min(Std.parseFloat(textfield.text), max);
-        /*
-        textfield.text = Std.string(maxCappedVal);
-        // if lastChar was not a digit, it was an allowed chars and should be added back (ex: decimal, dash, comma)
-        if (Std.parseInt(lastChar) == null) {
-            textfield.text += lastChar;
+
+        var n = _component.style.fullBorderSize;
+        return n;
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class ClassicLayout extends DefaultLayout {
+    private override function resizeChildren() {
+        var value = findComponent("value", TextField);
+        var deinc = findComponent("deinc", Button);
+        var inc = findComponent("inc", Button);
+        
+        var u = usableSize;
+        
+        deinc.height = u.height / 2;
+        value.width = u.width - deinc.width;
+        inc.height = u.height / 2;
+    }
+    
+    private override function repositionChildren() {
+        var value = findComponent("value", TextField);
+        var deinc = findComponent("deinc", Button);
+        var inc = findComponent("inc", Button);
+        
+        var u = usableSize;
+        
+        deinc.left = u.width - deinc.width - paddingRight - borderSize;
+        deinc.top = u.height - inc.height - paddingBottom - borderSize + marginTop(deinc);
+        
+        value.left = paddingLeft;
+        value.top = paddingTop + marginTop(value);
+        
+        inc.left = u.width - deinc.width - paddingRight - borderSize;
+        inc.top = paddingTop + borderSize;
+    }
+    
+    private override function get_borderSize():Float {
+        var n = super.get_borderSize() + 1;
+        return n;
+    }
+}
+
+private class ValueHelper {
+    public static function validateValue(stepper:NumberStepper):Null<Float> {
+        var value = stepper.findComponent("value", TextField);
+        var textValue = value.text;
+        var min = stepper.min;
+        var max = stepper.max;
+        
+        var parsedValue:Null<Float> = Std.parseFloat(textValue);
+        
+        var valid = true;
+        if (textValue == null || StringTools.trim(textValue) == "") {
+            valid = false;
         }
-        */
-        _stepper.pos = maxCappedVal;
+        
+        if (Math.isNaN(parsedValue)) {
+            valid = false;
+        }
+        
+        if (min != null && parsedValue < min) {
+            valid = false;
+        }
+        
+        if (max != null && parsedValue > max) {
+            valid = false;
+        }
+        
+        if (valid == false) {
+            parsedValue = null;
+            stepper.addClass("invalid-value");
+        } else {
+            stepper.removeClass("invalid-value");
+        }
+        
+        return parsedValue;
+    }
+    
+    public static function incrementValue(stepper:NumberStepper) {
+        var value = stepper.findComponent("value", TextField);
+        var textValue = value.text;
+        var min = stepper.min;
+        var max = stepper.max;
+        var newValue:Float = stepper.pos;
+        
+        if (textValue == null || StringTools.trim(textValue) == "") {
+            if (min != null) {
+                newValue = min;
+            }
+        } else {
+            newValue += stepper.step;
+        }
+        
+        if (max != null && newValue > max) {
+            newValue = max;
+        }
+        
+        stepper.pos = newValue;
+    }
+    
+    public static function deincrementValue(stepper:NumberStepper) {
+        var value = stepper.findComponent("value", TextField);
+        var textValue = value.text;
+        var min = stepper.min;
+        var newValue:Float = stepper.pos;
+        
+        if (textValue == null || StringTools.trim(textValue) == "") {
+            if (min != null) {
+                newValue = min;
+            }
+        } else {
+            newValue -= stepper.step;
+        }
+        
+        if (min != null && newValue < min) {
+            newValue = min;
+        }
+        
+        stepper.pos = newValue;
     }
 }
