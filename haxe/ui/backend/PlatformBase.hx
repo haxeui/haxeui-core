@@ -1,13 +1,14 @@
 package haxe.ui.backend;
 
 class PlatformBase {
-    private static inline var KEY_CODE_TAB:Int   = 9;
-    private static inline var KEY_CODE_UP:Int    = 38;
-    private static inline var KEY_CODE_DOWN:Int  = 40;
-    private static inline var KEY_CODE_LEFT:Int  = 37;
-    private static inline var KEY_CODE_RIGHT:Int = 39;
-    private static inline var KEY_CODE_SPACE:Int = 32;
-    private static inline var KEY_CODE_ENTER:Int = 13;
+    private static inline var KEY_CODE_TAB:Int    = 9;
+    private static inline var KEY_CODE_UP:Int     = 38;
+    private static inline var KEY_CODE_DOWN:Int   = 40;
+    private static inline var KEY_CODE_LEFT:Int   = 37;
+    private static inline var KEY_CODE_RIGHT:Int  = 39;
+    private static inline var KEY_CODE_SPACE:Int  = 32;
+    private static inline var KEY_CODE_ENTER:Int  = 13;
+    private static inline var KEY_CODE_ESCAPE:Int = 27;
     
     public function new() {
     }
@@ -64,18 +65,24 @@ class PlatformBase {
         return getKeyCode("enter");
     }
     
+    public var KeyEscape(get, null):Int;
+    private inline function get_KeyEscape():Int {
+        return getKeyCode("escape");
+    }
+    
     // keycodes can be frameworks specific, having them here
     // means that each PlatformImpl has the ability to override
     // this function and substitute any differences
     public function getKeyCode(keyId:String):Int {
         return switch (keyId) {
-            case "tab":   KEY_CODE_TAB;
-            case "up":    KEY_CODE_UP;
-            case "down":  KEY_CODE_DOWN;
-            case "left":  KEY_CODE_LEFT;
-            case "right": KEY_CODE_RIGHT;
-            case "space": KEY_CODE_SPACE;
-            case "enter": KEY_CODE_ENTER;
+            case "tab":    KEY_CODE_TAB;
+            case "up":     KEY_CODE_UP;
+            case "down":   KEY_CODE_DOWN;
+            case "left":   KEY_CODE_LEFT;
+            case "right":  KEY_CODE_RIGHT;
+            case "space":  KEY_CODE_SPACE;
+            case "enter":  KEY_CODE_ENTER;
+            case "escape": KEY_CODE_ESCAPE;
             case _: keyId.charCodeAt(0);
         }
     }
