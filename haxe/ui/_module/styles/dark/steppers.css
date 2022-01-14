@@ -62,16 +62,16 @@
     padding-left: 4px;
     padding-right: 4px;
     border: none;
-    background-color: #2c2f30;
+    background-color: #3e4142;
     border-radius: 0;
 }
 
 .number-stepper .stepper-deinc:hover {
-    background-color: #45484a;
+    background-color: #434647;
 }
 
 .number-stepper .stepper-deinc:down {
-    background-color: #45484a;
+    background-color: #2f3132;
     icon: "haxeui-core/styles/dark/left_arrow_white.png";
 }
 
@@ -85,16 +85,16 @@
     padding-left: 4px;
     padding-right: 4px;
     border: none;
-    background-color: #2c2f30;
+    background-color: #3e4142;
     border-radius: 0;
 }
 
 .number-stepper .stepper-inc:hover {
-    background-color: #45484a;
+    background-color: #434647;
 }
 
 .number-stepper .stepper-inc:down {
-    background-color: #45484a;
+    background-color: #2f3132;
     icon: "haxeui-core/styles/dark/right_arrow_white.png";
 }
 
