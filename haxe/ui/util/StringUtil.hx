@@ -76,6 +76,6 @@ class StringUtil {
         if (s == null || s == "") {
             return 0;
         }
-        return s.split(token).length;
+        return s.split(token).length - 1;
     }
 }
