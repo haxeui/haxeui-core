@@ -332,7 +332,8 @@ private class ValueHelper {
         
         var parsedValue:Null<Float> = Std.parseFloat(textValue);
         
-        var valid = true;
+        trace(textValue, StringUtil.countTokens(textValue, "."));
+        var valid = StringUtil.countTokens(textValue, ".") <= 1;
         if (textValue == null || StringTools.trim(textValue) == "") {
             valid = false;
         }
