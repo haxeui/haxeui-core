@@ -1,8 +1,11 @@
 package haxe.ui.containers.dialogs;
 
+import haxe.ui.backend.SelectFileDialogBase.SelectFileDialogOptions;
+import haxe.ui.backend.SelectFileDialogBase.SelectedFileInfo;
 import haxe.ui.containers.dialogs.Dialog.DialogButton;
 import haxe.ui.containers.dialogs.Dialog.DialogEvent;
 import haxe.ui.containers.dialogs.MessageBox.MessageBoxType;
+import haxe.ui.containers.dialogs.SelectFileDialog;
 import haxe.ui.core.Component;
 
 class Dialogs {
@@ -54,5 +57,12 @@ class Dialogs {
             });
         }
         return dialog;
+    }
+    
+    public static function selectFile(callback:DialogButton->Array<SelectedFileInfo>->Void, options:SelectFileDialogOptions = null) {
+        var dialog = new SelectFileDialog();
+        dialog.callback = callback;
+        dialog.options = options;
+        dialog.show();
     }
 }
