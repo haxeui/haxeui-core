@@ -131,3 +131,75 @@
 .number-stepper.classic-stepper .stepper-inc:down {
     icon: "haxeui-core/styles/dark/up_arrow_white.png";
 }
+
+/************************************************************************
+** OPTION STEPPER
+*************************************************************************/
+.option-stepper {
+    border: 1px solid #181a1b;
+    filter: drop-shadow(1, 45, #000000, 0.2, 2, 2, 1, 3, true);
+    background-color: #252728;
+}
+
+.option-stepper .stepper-value {
+    text-align: center;
+    border: none;
+    background-color: none;
+    filter: none;
+    margin-top: 0px;
+}
+
+.option-stepper .stepper-deinc {
+    icon: "haxeui-core/styles/dark/left_arrow.png";
+    padding-left: 4px;
+    padding-right: 4px;
+    border: none;
+    background-color: #3e4142;
+    border-radius: 0;
+}
+
+.option-stepper .stepper-deinc:hover {
+    background-color: #434647;
+}
+
+.option-stepper .stepper-deinc:down {
+    background-color: #2f3132;
+    icon: "haxeui-core/styles/dark/left_arrow_white.png";
+}
+
+.option-stepper .stepper-deinc:disabled {
+    opacity: 0.5;
+    background-color: #333738;
+}
+
+.option-stepper .stepper-inc {
+    icon: "haxeui-core/styles/dark/right_arrow.png";
+    padding-left: 4px;
+    padding-right: 4px;
+    border: none;
+    background-color: #3e4142;
+    border-radius: 0;
+}
+
+.option-stepper .stepper-inc:hover {
+    background-color: #434647;
+}
+
+.option-stepper .stepper-inc:down {
+    background-color: #2f3132;
+    icon: "haxeui-core/styles/dark/right_arrow_white.png";
+}
+
+.option-stepper .stepper-inc:disabled {
+    opacity: 0.5;
+    background-color: #333738;
+}
+
+.option-stepper.invalid-value {
+    color: red;
+    background-color: #663333;
+}
+
+.option-stepper:active {
+    border: 1px solid #252728;
+}
