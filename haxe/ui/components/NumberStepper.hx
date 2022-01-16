@@ -206,10 +206,12 @@ private class Events extends haxe.ui.events.Events {
     }
     
     private function onDeinc(event:MouseEvent) {
+        _stepper.focus = true;
         ValueHelper.deincrementValue(_stepper);
     }
     
     private function onInc(event:MouseEvent) {
+        _stepper.focus = true;
         ValueHelper.incrementValue(_stepper);
     }
     
