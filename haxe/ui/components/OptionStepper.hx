@@ -49,7 +49,7 @@ private class SelectedIndexBehaviour extends DataBehaviour {
         if (Reflect.hasField(v, "value")) {
             v = Std.string(v.value);
         } else if (Reflect.hasField(v, "text")) {
-            v = Std.string(value.text);
+            v = Std.string(v.text);
         }
         #else
         if (v.value != null) {
