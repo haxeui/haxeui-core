@@ -500,6 +500,15 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         this.removeAllComponents(true);
         this.destroyComponent();
         this.unregisterEvents();
+        if (this.hasTextDisplay()) {
+            this.getTextDisplay().dispose();
+        }
+        if (this.hasTextInput()) {
+            this.getTextInput().dispose();
+        }
+        if (this.hasImageDisplay()) {
+            this.getImageDisplay().dispose();
+        }
     }
     
     /**
