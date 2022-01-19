@@ -35,6 +35,10 @@ class TextBase {
     public function blur() {
     }
 
+    public function dispose() {
+        
+    }
+    
     private var _dataSource:DataSource<String>;
     public var dataSource(get, set):DataSource<String>;
     private function get_dataSource():DataSource<String> {
