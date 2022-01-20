@@ -1,0 +1,11 @@
+.treeview .itemrenderer:hover {
+    background-color: #2f3746;
+}
+
+.treeview .itemrenderer:node-selected {
+    background-color: #415982;
+}
+
+.treeview .itemrenderer:node-selected .label {
+    color: white;
+}

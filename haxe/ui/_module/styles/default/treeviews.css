@@ -1,0 +1,82 @@
+.treeview .scrollview-contents {
+    spacing: 0;
+}
+
+.treeviewnode {
+    spacing: 0;
+}
+
+.treeviewnode .itemrenderer {
+    width: auto;
+    padding: 5px;
+    border-radius: 2px;
+}
+
+.treeview .itemrenderer:hover {
+    background-color: #d9e5f2;
+}
+
+.treeview .itemrenderer:node-selected {
+    background-color: #a7c4e2;
+}
+
+.treeview .itemrenderer:node-selected .label {
+    color: white;
+}
+
+.treeviewnode .basic-renderer-container {
+    width: auto;
+}
+    
+.treeviewnode .basic-renderer-label {
+    width: auto;
+}
+    
+.treenode-container {
+    spacing: 0;
+}
+    
+.treenode-child-container {
+    padding-left: 16px;
+    spacing: 0;
+}
+    
+.treenode-expand-collapse-icon {
+    resource: none;
+}
+
+.treenode-expand-collapse-icon {
+    resource: "haxeui-core/styles/default/blank.png";
+    cursor: none;
+    vertical-align: center;
+}
+    
+.treenode-expand-collapse-icon.node-expanded {
+    resource: "haxeui-core/styles/default/expanded.png";
+    cursor: pointer;
+}
+    
+.treenode-expand-collapse-icon.node-collapsed {
+    resource: "haxeui-core/styles/default/collapsed.png";
+    cursor: pointer;
+}
+
+.treeview.full-width .itemrenderer {
+    width: 100%;
+}
+
+.treeview.full-width .scrollview-contents {
+    width: 100%;
+}
+
+.treeview.full-width .treeviewnode {
+    width: 100%;
+}
+
+.treeview.full-width .treenode-container {
+    width: 100%
+}
+
+.treeview.full-width .treenode-child-container {
+    width: 100%;
+}
