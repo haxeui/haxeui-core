@@ -60,6 +60,7 @@ class VirtualLayout extends ScrollViewLayout {
         return result;
     }
 
+    private var _firstPass:Bool = true;
     private var itemHeight(get, null):Float;
     private function get_itemHeight():Float {
         var comp:IVirtualContainer = cast(_component, IVirtualContainer);
@@ -76,10 +77,20 @@ class VirtualLayout extends ScrollViewLayout {
                 result = childComponents[0].height;
             }
         }
-
         if (result <= 0) {
             result = 25; // more sensible default? Other wise you can get 100's of item renderers for 0 length datasource which will then be removed on 2nd pass
                          // may be ill-concieved
+        } else { // we'll try to guess the item height, but lets do it after a second pass to get more accurate results
+            if (_firstPass == false) {
+                comp.itemHeight = result;
+                #if debug
+                trace("NOTE: since no itemHeight was not specified it was guessed as " + result + "px");
+                #end
+            }
+            
+            if (_firstPass == true) {
+                _firstPass = false;
+            }
         }
 
         return result;
