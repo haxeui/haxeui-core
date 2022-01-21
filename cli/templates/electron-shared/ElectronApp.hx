@@ -10,7 +10,8 @@ class ElectronApp {
         window = new BrowserWindow({
             show: false,
             webPreferences: {
-                nodeIntegration: true
+                nodeIntegration: true,
+                contextIsolation: false
             }
         });
         window.setMenu(null);
