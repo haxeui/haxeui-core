@@ -1,4 +1,5 @@
 package haxe.ui.macros;
+import haxe.ui.util.Defines;
 
 #if macro
 import haxe.macro.Context;
@@ -29,6 +30,11 @@ class BackendMacros {
             );
         }
 
+        for (k in Defines.getAll().keys()) {
+            var v = Defines.getAll().get(k);
+            builder.add(macro haxe.ui.util.Defines.set($v{k}, $v{v}));
+        }
+        
         return builder.expr;
     }
 
