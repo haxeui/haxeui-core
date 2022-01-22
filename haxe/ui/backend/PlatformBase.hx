@@ -13,6 +13,36 @@ class PlatformBase {
     public function new() {
     }
 
+    public var isWindows(get, null):Bool;
+    private function get_isWindows():Bool {
+        #if sys
+        return Sys.systemName().toLowerCase().indexOf("windows") != -1;
+        #elseif js
+        return js.Browser.window.navigator.userAgent.toLowerCase().indexOf("windows") != -1;
+        #end
+        return false;
+    }
+    
+    public var isLinux(get, null):Bool;
+    private function get_isLinux():Bool {
+        #if sys
+        return Sys.systemName().toLowerCase().indexOf("linux") != -1;
+        #elseif js
+        return js.Browser.window.navigator.userAgent.toLowerCase().indexOf("linux") != -1;
+        #end
+        return false;
+    }
+    
+    public var isMac(get, null):Bool;
+    private function get_isMac():Bool {
+        #if sys
+        return Sys.systemName().toLowerCase().indexOf("mac") != -1;
+        #elseif js
+        return js.Browser.window.navigator.userAgent.toLowerCase().indexOf("mac") != -1;
+        #end
+        return false;
+    }
+    
     public function getMetric(id:String):Float {
         return 0;
     }
