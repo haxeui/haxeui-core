@@ -1,4 +1,5 @@
 package haxe.ui.util;
+import haxe.ui.util.Defines;
 
 using StringTools;
 
@@ -21,8 +22,13 @@ class SimpleExpressionEvaluator {
     public static function evalCondition(condition:String):Bool {
         return eval(condition, {
             Backend: Backend,
-            backend: Backend.id
+            backend: Backend.id,
+            defined: defined
         });
+    }
+
+    public static function defined(key:String):Bool {
+        return return Defines.getAll().exists(key);
     }
     
     public static function eval(s:String, context:Dynamic = null):Dynamic {
