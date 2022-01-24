@@ -4,9 +4,12 @@ import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.components.Button.ButtonBuilder;
 import haxe.ui.components.Button.ButtonEvents;
+import haxe.ui.components.TextField;
 import haxe.ui.containers.Box;
 import haxe.ui.containers.CalendarView;
+import haxe.ui.containers.HBox;
 import haxe.ui.containers.ListView;
+import haxe.ui.containers.VBox;
 import haxe.ui.core.Component;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.Screen;
@@ -31,6 +34,8 @@ class DropDown extends Button implements IDataComponent {
     @:clonable @:behaviour(DefaultBehaviour)            public var dropdownSize:Null<Int>;
     @:clonable @:behaviour(SelectedIndexBehaviour, -1)  public var selectedIndex:Int;
     @:clonable @:behaviour(SelectedItemBehaviour)       public var selectedItem:Dynamic;
+    @:clonable @:behaviour(DefaultBehaviour, false)     public var searchable:Bool;
+    @:clonable @:behaviour(DefaultBehaviour, "Search")  public var searchPrompt:String;
     @:call(HideDropDown)                                public function hideDropDown();
     @:clonable @:value(selectedItem)                    public var value:Dynamic;
 
@@ -512,7 +517,6 @@ class DropDownEvents extends ButtonEvents {
     }
 
     private function onClick(event:MouseEvent) {
-        trace("onclick");
         _dropdown.selected = !_dropdown.selected;
         if (_dropdown.selected == true) {
             showDropDown();
@@ -544,7 +548,32 @@ class DropDownEvents extends ButtonEvents {
                 _wrapper.id = "dropdown_popup";
             }
             _wrapper.styleNames = _dropdown.handlerStyleNames;
-            _wrapper.addComponent(handler.component);
+            
+            if (_dropdown.searchable == true) {
+                var searchContainer = new VBox();
+                searchContainer.id = "dropdown-search-container";
+                searchContainer.addClass("dropdown-search-container");
+                searchContainer.scriptAccess = false;
+
+                var searchField = new TextField();
+                searchField.id = "dropdown-search-field";
+                searchField.addClass("dropdown-search-field");
+                searchField.placeholder = _dropdown.searchPrompt;
+                searchField.scriptAccess = false;
+                searchField.registerEvent(UIEvent.CHANGE, onSearchChange);
+                
+                var searchFieldContainer = new HBox();
+                searchFieldContainer.id = "dropdown-search-field-container";
+                searchFieldContainer.addClass("dropdown-search-field-container");
+                searchFieldContainer.scriptAccess = false;
+                searchFieldContainer.addComponent(searchField);
+                
+                searchContainer.addComponent(searchFieldContainer);
+                searchContainer.addComponent(handler.component);
+                _wrapper.addComponent(searchContainer);
+            } else {
+                _wrapper.addComponent(handler.component);
+            }
 
             var filler = new Component();
             filler.horizontalAlign = "right";
@@ -601,6 +630,26 @@ class DropDownEvents extends ButtonEvents {
         Screen.instance.registerEvent(MouseEvent.RIGHT_MOUSE_DOWN, onScreenMouseDown);
     }
 
+    private function onSearchChange(event:UIEvent) {
+        if (_wrapper == null) {
+            return;
+        }
+        var searchField = _wrapper.findComponent("dropdown-search-field", TextField);
+        if (searchField == null) {
+            return;
+        }
+        
+        var searchTerm = searchField.text;
+        if (searchTerm == null || StringTools.trim(searchTerm).length == 0) {
+            _dropdown.dataSource.clearFilter();
+        } else {
+            _dropdown.dataSource.filter(function(index, data) {
+                var v = data.text;
+                return Std.string(v).indexOf(searchTerm) > -1;
+            });
+        }
+    }
+    
     public function hideDropDown() {
         var handler:IDropDownHandler = cast(_dropdown._compositeBuilder, DropDownBuilder).handler;
         if (handler == null) {

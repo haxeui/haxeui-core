@@ -13,6 +13,22 @@
     border: 1px solid #ABABAB;
 }
 
+.dropdown-search-container {
+    spacing: 0;
+}
+
+.dropdown-search-field-container {
+    width: 100%;
+    padding: 1px;
+}
+
+.dropdown-search-field {
+    width: 100%;
+    border: none;
+    border-radius: 0px;
+    icon: "haxeui-core/styles/default/search.png";
+}
+
 /************************************************************************
 ** MOBILE VARIANTS
 *************************************************************************/
