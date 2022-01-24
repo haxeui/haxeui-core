@@ -7,6 +7,7 @@ import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.constants.Priority;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.InteractiveComponent;
+import haxe.ui.events.ActionEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.focus.FocusManager;
@@ -381,6 +382,12 @@ class ButtonEvents extends haxe.ui.events.Events {
         if (hasEvent(UIEvent.MOVE, onMove) == false) {
             registerEvent(UIEvent.MOVE, onMove);
         }
+        if (hasEvent(ActionEvent.ACTION_START, onActionStart) == false) {
+            registerEvent(ActionEvent.ACTION_START, onActionStart);
+        }
+        if (hasEvent(ActionEvent.ACTION_END, onActionEnd) == false) {
+            registerEvent(ActionEvent.ACTION_END, onActionEnd);
+        }
 
         if (_button.toggle == true) {
             // we want to add the event as high so it gets called first before any user handlers
@@ -396,6 +403,8 @@ class ButtonEvents extends haxe.ui.events.Events {
         unregisterEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
         unregisterEvent(MouseEvent.CLICK, onMouseClick);
         unregisterEvent(UIEvent.MOVE, onMove);
+        unregisterEvent(ActionEvent.ACTION_START, onActionStart);
+        unregisterEvent(ActionEvent.ACTION_END, onActionEnd);
     }
 
     private function onMouseOver(event:MouseEvent) {
@@ -516,7 +525,7 @@ class ButtonEvents extends haxe.ui.events.Events {
     private function press() {
         _down = true;
         if (_button.toggle == true) {
-            _button.addClass(":down", true, true);
+            //_button.addClass(":down", true, true);
         } else {
             _button.addClass(":down", true, true);
         }
@@ -526,6 +535,7 @@ class ButtonEvents extends haxe.ui.events.Events {
         if (_down == true) {
             _down = false;
             if (_button.toggle == true) {
+                trace(_button.selected);
                 _button.selected = !_button.selected;
                 _button.dispatch(new MouseEvent(MouseEvent.CLICK));
             } else {
@@ -535,6 +545,7 @@ class ButtonEvents extends haxe.ui.events.Events {
         }
     }
     
+    /*
     private override function actionStart(type:ActionType):Bool {
         return switch (type) {
             case ActionType.PRESS:
@@ -552,6 +563,25 @@ class ButtonEvents extends haxe.ui.events.Events {
                 false;
             case _:
                 false;
+        }
+    }
+    */
+    
+    private function onActionStart(event:ActionEvent) {
+        trace("--- action start: " + event.action);
+        switch (event.action) {
+            case ActionType.PRESS | ActionType.CONFIRM:
+                press();
+            case _:    
+        }
+    }
+    
+    private function onActionEnd(event:ActionEvent) {
+        trace("--- action end: " + event.action);
+        switch (event.action) {
+            case ActionType.PRESS | ActionType.CONFIRM:
+                release();
+            case _:    
         }
     }
 }

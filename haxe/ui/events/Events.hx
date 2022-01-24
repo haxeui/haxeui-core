@@ -36,6 +36,7 @@ class Events {
         _target.dispatch(event);
     }
     
+    /*
     private function actionStart(type:ActionType):Bool {
         return false;
     }
@@ -43,4 +44,5 @@ class Events {
     private function actionEnd(type:ActionType):Bool {
         return false;
     }
+    */
 }

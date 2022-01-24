@@ -1,5 +1,6 @@
 package haxe.ui.core;
 
+import haxe.ui.actions.ActionManager;
 import haxe.ui.actions.ActionType;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.events.FocusEvent;
@@ -16,17 +17,46 @@ class InteractiveComponent extends Component implements IFocusable {
     //***********************************************************************************************************
     @:clonable @:behaviour(DefaultBehaviour, true)      public var allowInteraction:Bool;
 
+    /*
     private function actionStart(type:ActionType):Bool {
         if (_internalEvents != null) {
             return _internalEvents.actionStart(type);
         }
         return false;
     }
+    */
     
+    /*
     private function actionEnd(type:ActionType):Bool {
         if (_internalEvents != null) {
             return _internalEvents.actionEnd(type);
         }
+        return false;
+    }
+    */
+    
+    private var _activated:Bool = false;
+    private var activated(get, set):Bool;
+    private function get_activated():Bool {
+        return _activated;
+    }
+    private function set_activated(value:Bool):Bool {
+        if (value == _activated) {
+            return value;
+        }
+        _activated = value;
+        if (_activated == true) {
+            @:privateAccess ActionManager.instance._activatedComponent = this;
+            swapClass(":active", ":activatable");
+        } else{
+            @:privateAccess ActionManager.instance._activatedComponent = null;
+            removeClass(":active");
+        }
+        return value;
+    }
+    
+    private var requiresActivation(get, null):Bool;
+    private function get_requiresActivation():Bool {
         return false;
     }
     
@@ -48,7 +78,11 @@ class InteractiveComponent extends Component implements IFocusable {
         _focus = value;
         var eventType = null;
         if (_focus == true) {
-            addClass(":active");
+            if (ActionManager.instance.navigationMethod == NavigationMethod.REMOTE && requiresActivation == true) {
+                addClass(":activatable");
+            } else {
+                addClass(":active");
+            }
             eventType = FocusEvent.FOCUS_IN;
             FocusManager.instance.focus = cast(this, IFocusable);
 
@@ -58,9 +92,14 @@ class InteractiveComponent extends Component implements IFocusable {
                 scrollview.ensureVisible(this);
             }
         } else {
-            removeClass(":active");
+            if (ActionManager.instance.navigationMethod == NavigationMethod.REMOTE && requiresActivation == true) {
+                removeClass(":activatable");
+            } else {
+                removeClass(":active");
+            }
             eventType = FocusEvent.FOCUS_OUT;
             FocusManager.instance.focus = null;
+            activated = false;
         }
         invalidateComponentData();
         dispatch(new FocusEvent(eventType));

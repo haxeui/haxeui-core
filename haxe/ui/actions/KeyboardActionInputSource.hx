@@ -29,20 +29,19 @@ class KeyboardActionInputSource implements IActionInputSource {
         }
         _downKeys.set(keyCode, true);
         if (keyCode == Platform.instance.KeySpace) {
-            ActionManager.instance.actionStart(ActionType.PRESS);
-            ActionManager.instance.dispatch(new ActionEvent(ActionEvent.ACTION_START, ActionType.PRESS, false, "KeyboardActionInputSource"));
+            ActionManager.instance.actionStart(ActionType.PRESS, this);
         } else if (keyCode == Platform.instance.KeyLeft) {
-            ActionManager.instance.actionStart(ActionType.LEFT);
-            ActionManager.instance.dispatch(new ActionEvent(ActionEvent.ACTION_START, ActionType.LEFT, false, "KeyboardActionInputSource"));
+            ActionManager.instance.actionStart(ActionType.LEFT, this);
         } else if (keyCode == Platform.instance.KeyRight) {
-            ActionManager.instance.actionStart(ActionType.RIGHT);
-            ActionManager.instance.dispatch(new ActionEvent(ActionEvent.ACTION_START, ActionType.RIGHT, false, "KeyboardActionInputSource"));
+            ActionManager.instance.actionStart(ActionType.RIGHT, this);
         } else if (keyCode == Platform.instance.KeyUp) {
-            ActionManager.instance.actionStart(ActionType.UP);
-            ActionManager.instance.dispatch(new ActionEvent(ActionEvent.ACTION_START, ActionType.UP, false, "KeyboardActionInputSource"));
+            ActionManager.instance.actionStart(ActionType.UP, this);
         } else if (keyCode == Platform.instance.KeyDown) {
-            ActionManager.instance.actionStart(ActionType.DOWN);
-            ActionManager.instance.dispatch(new ActionEvent(ActionEvent.ACTION_START, ActionType.DOWN, false, "KeyboardActionInputSource"));
+            ActionManager.instance.actionStart(ActionType.DOWN, this);
+        } else if (keyCode == Platform.instance.KeyEscape) {
+            ActionManager.instance.actionStart(ActionType.BACK, this);
+        } else if (keyCode == Platform.instance.KeyEnter) {
+            ActionManager.instance.actionStart(ActionType.CONFIRM, this);
         }
     }
     
@@ -54,20 +53,19 @@ class KeyboardActionInputSource implements IActionInputSource {
         _downKeys.remove(keyCode);
         
         if (keyCode == Platform.instance.KeySpace) {
-            ActionManager.instance.actionEnd(ActionType.PRESS);
-            ActionManager.instance.dispatch(new ActionEvent(ActionEvent.ACTION_END, ActionType.PRESS, false, "KeyboardActionInputSource"));
+            ActionManager.instance.actionEnd(ActionType.PRESS, this);
         } else if (keyCode == Platform.instance.KeyLeft) {
-            ActionManager.instance.actionEnd(ActionType.LEFT);
-            ActionManager.instance.dispatch(new ActionEvent(ActionEvent.ACTION_END, ActionType.LEFT, false, "KeyboardActionInputSource"));
+            ActionManager.instance.actionEnd(ActionType.LEFT, this);
         } else if (keyCode == Platform.instance.KeyRight) {
-            ActionManager.instance.actionEnd(ActionType.RIGHT);
-            ActionManager.instance.dispatch(new ActionEvent(ActionEvent.ACTION_END, ActionType.RIGHT, false, "KeyboardActionInputSource"));
+            ActionManager.instance.actionEnd(ActionType.RIGHT, this);
         } else if (keyCode == Platform.instance.KeyUp) {
-            ActionManager.instance.actionEnd(ActionType.UP);
-            ActionManager.instance.dispatch(new ActionEvent(ActionEvent.ACTION_END, ActionType.UP, false, "KeyboardActionInputSource"));
+            ActionManager.instance.actionEnd(ActionType.UP, this);
         } else if (keyCode == Platform.instance.KeyDown) {
-            ActionManager.instance.actionEnd(ActionType.DOWN);
-            ActionManager.instance.dispatch(new ActionEvent(ActionEvent.ACTION_END, ActionType.DOWN, false, "KeyboardActionInputSource"));
+            ActionManager.instance.actionEnd(ActionType.DOWN, this);
+        } else if (keyCode == Platform.instance.KeyEscape) {
+            ActionManager.instance.actionEnd(ActionType.BACK, this);
+        } else if (keyCode == Platform.instance.KeyEnter) {
+            ActionManager.instance.actionEnd(ActionType.CONFIRM, this);
         }
     }
 }

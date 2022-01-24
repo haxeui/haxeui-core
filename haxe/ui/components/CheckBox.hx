@@ -4,6 +4,7 @@ import haxe.ui.actions.ActionType;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.InteractiveComponent;
+import haxe.ui.events.ActionEvent;
 import haxe.ui.events.Events;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
@@ -18,6 +19,18 @@ class CheckBox extends InteractiveComponent {
     @:clonable @:behaviour(TextBehaviour)              public var text:String;
     @:clonable @:behaviour(SelectedBehaviour)          public var selected:Bool;
     @:clonable @:value(selected)                       public var value:Dynamic;
+    
+    public override function set_focus(value:Bool):Bool {
+        findComponent(CheckBoxValue).focus = value;
+        return value;
+    }
+    
+    /*
+    public override function set_allowFocus(value:Bool):Bool {
+        findComponent(CheckBoxValue).allowFocus = value;
+        return value;
+    }
+    */
 }
 
 //***********************************************************************************************************
@@ -34,6 +47,8 @@ class CheckBoxValue extends InteractiveComponent {
 
     private override function onReady() { // use onReady so we have a parentComponent
         createIcon();
+        registerEvent(ActionEvent.ACTION_START, onActionStart);
+        registerEvent(ActionEvent.ACTION_END, onActionEnd);
     }
 
     private override function applyStyle(style:Style) {
@@ -58,6 +73,29 @@ class CheckBoxValue extends InteractiveComponent {
     }
 
     private var _down:Bool = true;
+    private function onActionStart(event:ActionEvent) {
+        switch (event.action) {
+            case ActionType.PRESS:
+                _down = true;
+            case _:    
+        }
+    }
+
+    private function onActionEnd(event:ActionEvent) {
+        switch (event.action) {
+            case ActionType.PRESS:
+                if (_down == true) {
+                    _down = false;
+                    if (parentComponent != null) {
+                        var checkbox = cast(parentComponent, CheckBox);
+                        checkbox.selected = !checkbox.selected;
+                    }
+                }
+            case _:    
+        }
+    }
+    
+    /*
     private override function actionStart(action:ActionType):Bool {
         super.actionStart(action);
         return switch (action) {
@@ -85,6 +123,7 @@ class CheckBoxValue extends InteractiveComponent {
                 false;
         }
     }
+    */
 }
 
 //***********************************************************************************************************
@@ -213,6 +252,7 @@ class CheckBoxBuilder extends CompositeBuilder {
             value.id = '${_checkbox.cssName}-value';
             value.addClass('${_checkbox.cssName}-value');
             value.scriptAccess = false;
+            value.allowFocus = _checkbox.allowFocus;
             _checkbox.addComponent(value);
         }
     }

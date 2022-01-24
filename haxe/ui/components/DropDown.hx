@@ -1,5 +1,7 @@
 package haxe.ui.components;
 
+import haxe.ui.Toolkit;
+import haxe.ui.actions.ActionType;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.components.Button.ButtonBuilder;
@@ -9,9 +11,11 @@ import haxe.ui.containers.CalendarView;
 import haxe.ui.containers.ListView;
 import haxe.ui.core.Component;
 import haxe.ui.core.IDataComponent;
+import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.Screen;
 import haxe.ui.data.ArrayDataSource;
 import haxe.ui.data.DataSource;
+import haxe.ui.events.ActionEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.locale.LocaleManager;
@@ -148,12 +152,11 @@ interface IDropDownHandler {
     var selectedIndex(get, set):Int;
     var selectedItem(get, set):Dynamic;
     function applyDefault():Void;
-
 }
 
 class DropDownHandler implements IDropDownHandler {
     private var _dropdown:DropDown;
-
+    
     public function new(dropdown:DropDown) {
         _dropdown = dropdown;
     }
@@ -190,7 +193,7 @@ class DropDownHandler implements IDropDownHandler {
 }
 
 @:access(haxe.ui.core.Component)
-class ListDropDownHandler extends DropDownHandler {
+private class ListDropDownHandler extends DropDownHandler {
     private var _listview:ListView;
 
     private override function get_component():Component {
@@ -360,10 +363,25 @@ class ListDropDownHandler extends DropDownHandler {
                 _listview.addClass(_dropdown.id + "-listview");
                 _listview.id = _dropdown.id + "_listview";
             }
+            _listview.registerEvent(ActionEvent.ACTION_START, function(e:ActionEvent) {
+                switch (e.action) {
+                    case ActionType.BACK:
+                        cast(_dropdown._internalEvents, DropDownEvents).hideDropDown();
+                    case ActionType.CONFIRM:
+                        applySelection();
+                    case _:    
+                }
+            });
         }
     }
 
     private function onListChange(event:UIEvent) {
+        if ((event.relatedEvent is MouseEvent)) {
+            applySelection();
+        }
+    }
+    
+    private function applySelection() {
         if (_listview.selectedItem == null) {
             return;
         }
@@ -384,7 +402,6 @@ class ListDropDownHandler extends DropDownHandler {
         _dropdown.text = text;
         //_dropdown.selectedIndex = _listview.selectedIndex;
         cast(_dropdown._internalEvents, DropDownEvents).hideDropDown();
-
         _dropdown.dispatch(new UIEvent(UIEvent.CHANGE, false, selectedItem));
     }
 
@@ -615,6 +632,10 @@ class DropDownEvents extends ButtonEvents {
         _dropdown.selected = false;
 
         if (_wrapper != null) {
+            var interactive = _wrapper.findComponent(InteractiveComponent, true);
+            if (interactive != null) {
+                interactive.activated = false;
+            }
             Screen.instance.removeComponent(_wrapper, false);
         }
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
@@ -643,6 +664,14 @@ class DropDownEvents extends ButtonEvents {
             super.release();
             if (_dropdown.selected == true) {
                 showDropDown();
+                var interactive = _wrapper.findComponent(InteractiveComponent, true);
+                if (interactive != null) {
+                    interactive.focus = true;
+                    
+                    Toolkit.callLater(function() {
+                        interactive.activated = true;    
+                    });
+                }
             } else {
                 hideDropDown();
             }

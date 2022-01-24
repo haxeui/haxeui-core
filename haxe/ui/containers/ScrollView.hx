@@ -832,6 +832,7 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         }
     }
     
+    /*
     private override function actionStart(action:ActionType):Bool {
         return switch (action) {
             case ActionType.DOWN:
@@ -849,6 +850,7 @@ class ScrollViewEvents extends haxe.ui.events.Events {
                 false;
         }
     }
+    */
 }
 
 //***********************************************************************************************************
