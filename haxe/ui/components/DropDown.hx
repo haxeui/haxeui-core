@@ -190,7 +190,7 @@ class DropDownHandler implements IDropDownHandler {
 }
 
 @:access(haxe.ui.core.Component)
-class ListDropDownHandler extends DropDownHandler {
+private class ListDropDownHandler extends DropDownHandler {
     private var _listview:ListView;
 
     private override function get_component():Component {
