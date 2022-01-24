@@ -622,8 +622,10 @@ class DropDownEvents extends ButtonEvents {
     }
 
     private function onScreenMouseDown(event:MouseEvent) {
-        var handler:IDropDownHandler = cast(_dropdown._compositeBuilder, DropDownBuilder).handler;
-        if (handler.component.hitTest(event.screenX, event.screenY) == true) {
+        if (_wrapper == null) {
+            return;
+        }
+        if (_wrapper.hitTest(event.screenX, event.screenY) == true) {
             return;
         }
         var componentOffset = _dropdown.getComponentOffset();
