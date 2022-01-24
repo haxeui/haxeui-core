@@ -648,6 +648,13 @@ class DropDownEvents extends ButtonEvents {
                 return Std.string(v).indexOf(searchTerm) > -1;
             });
         }
+        
+        var handler:IDropDownHandler = cast(_dropdown._compositeBuilder, DropDownBuilder).handler;
+        if (handler == null) {
+            return;
+        }
+        
+        handler.prepare(_wrapper);
     }
     
     public function hideDropDown() {
