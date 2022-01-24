@@ -1,5 +1,6 @@
 package haxe.ui.components;
 
+import haxe.ui.Toolkit;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.components.Button.ButtonBuilder;
@@ -153,6 +154,8 @@ interface IDropDownHandler {
     var selectedIndex(get, set):Int;
     var selectedItem(get, set):Dynamic;
     function applyDefault():Void;
+    function pauseEvents():Void;
+    function resumeEvents():Void;
 
 }
 
@@ -191,6 +194,17 @@ class DropDownHandler implements IDropDownHandler {
     }
 
     public function applyDefault() {
+    }
+    
+    private var eventsPaused:Bool = false;
+    public function pauseEvents() {
+        eventsPaused = true;
+    }
+    
+    public function resumeEvents() {
+        Toolkit.callLater(function() {
+            eventsPaused = false;
+        });
     }
 }
 
@@ -388,9 +402,11 @@ private class ListDropDownHandler extends DropDownHandler {
         }
         _dropdown.text = text;
         //_dropdown.selectedIndex = _listview.selectedIndex;
-        cast(_dropdown._internalEvents, DropDownEvents).hideDropDown();
-
-        _dropdown.dispatch(new UIEvent(UIEvent.CHANGE, false, selectedItem));
+        
+        if (eventsPaused == false) {
+            cast(_dropdown._internalEvents, DropDownEvents).hideDropDown();
+            _dropdown.dispatch(new UIEvent(UIEvent.CHANGE, false, selectedItem));
+        }
     }
 
     public override function applyDefault() {
@@ -639,6 +655,7 @@ class DropDownEvents extends ButtonEvents {
             return;
         }
         
+        var selectedItem = _dropdown.selectedItem;
         var searchTerm = searchField.text;
         if (searchTerm == null || StringTools.trim(searchTerm).length == 0) {
             _dropdown.dataSource.clearFilter();
@@ -655,6 +672,11 @@ class DropDownEvents extends ButtonEvents {
         }
         
         handler.prepare(_wrapper);
+        if (selectedItem != null) {
+            handler.pauseEvents();
+            _dropdown.selectedItem = selectedItem;
+            handler.resumeEvents();
+        }
     }
     
     public function hideDropDown() {
@@ -663,6 +685,11 @@ class DropDownEvents extends ButtonEvents {
             return;
         }
 
+        var searchField = _wrapper.findComponent("dropdown-search-field", TextField);
+        if (searchField != null) {
+            searchField.focus = false;
+        }
+        
         if (_overlay != null) {
             Screen.instance.removeComponent(_overlay);
             _overlay = null;
