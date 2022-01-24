@@ -623,7 +623,7 @@ class DropDownEvents extends ButtonEvents {
             _wrapper.top = _dropdown.screenTop + (_dropdown.actualComponentHeight - Toolkit.scaleY) + componentOffset.y;
             Screen.instance.addComponent(_wrapper);
             handler.prepare(_wrapper);
-            _wrapper.syncComponentValidation();
+            _wrapper.validateNow();
 
             var cx = _wrapper.width - _dropdown.width;
             var filler:Component = _wrapper.findComponent("dropdown-filler", false);
