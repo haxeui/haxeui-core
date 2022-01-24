@@ -119,9 +119,10 @@ private class SelectedIndexBehaviour extends DataBehaviour {
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 private class SelectedItemBehaviour extends DataBehaviour  {
+    private var _dynamicValue:Dynamic = null;
     private override function validateData() {
         var handler:IDropDownHandler = cast(_component._compositeBuilder, DropDownBuilder).handler;
-        handler.selectedItem = _value;
+        handler.selectedItem = _dynamicValue;
     }
 
     public override function getDynamic():Dynamic {
@@ -130,14 +131,20 @@ private class SelectedItemBehaviour extends DataBehaviour  {
     }
 
     public override function set(value:Variant) {
+        setDynamic(Variant.toDynamic(value));
+    }
+    
+    public override function setDynamic(value:Dynamic) {
         if (_component.isReady == false) {
+            _dynamicValue = value;
             super.set(value);
             return;
         }
-        if (Variant.toDynamic(value) == getDynamic()) {
+        if (value == getDynamic()) {
             return;
         }
         _value = value;
+        _dynamicValue = value;
         invalidateData();
         var handler:IDropDownHandler = cast(_component._compositeBuilder, DropDownBuilder).handler;
         handler.selectedItem = value;
