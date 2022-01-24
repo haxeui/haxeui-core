@@ -346,6 +346,10 @@ private class ListDropDownHandler extends DropDownHandler {
 
     private var _cachedSelectedItem:Dynamic = null;
     private override function set_selectedItem(value:Dynamic):Dynamic {
+        if (value == null) {
+            return value;
+        }
+
         var v:Variant = value;
 
         #if hl
