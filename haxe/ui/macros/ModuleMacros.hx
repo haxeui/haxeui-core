@@ -173,17 +173,6 @@ class ModuleMacros {
             );
         }
 
-        // add code to populate typemap
-        for (className in TypeMap.typeInfo.keys()) {
-            var classTypeMap = TypeMap.typeInfo.get(className);
-            for (property in classTypeMap.keys()) {
-                var type = classTypeMap.get(property);
-                builder.add(macro
-                    haxe.ui.core.TypeMap.addTypeInfo($v{className}, $v{property}, $v{type})
-                );
-            }
-        }
-
         _modulesProcessed = true;
         return builder.expr;
     }

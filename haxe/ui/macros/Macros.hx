@@ -1,5 +1,6 @@
 package haxe.ui.macros;
 import haxe.ui.macros.ModuleMacros;
+import haxe.ui.util.RTTI;
 
 #if macro
 import haxe.macro.ComplexTypeTools;
@@ -270,7 +271,7 @@ class Macros {
     static function buildBindings(builder:ClassBuilder) {
         for (f in builder.getFieldsWithMeta("bindable")) {
             var setFn = builder.findFunction("set_" + f.name);
-            TypeMap.addTypeInfo(builder.fullPath, f.name, ComplexTypeTools.toString(f.type));
+            RTTI.addClassProperty(builder.fullPath, f.name, ComplexTypeTools.toString(f.type));
         }
 
         var bindFields = builder.getFieldsWithMeta("bind");
@@ -400,9 +401,9 @@ class Macros {
         var valueField = builder.getFieldMetaValue("value");
         var resolvedValueField = null;
         for (f in builder.getFieldsWithMeta("behaviour")) {
-            TypeMap.addTypeInfo(builder.fullPath, f.name, ComplexTypeTools.toString(f.type));
+            RTTI.addClassProperty(builder.fullPath, f.name, ComplexTypeTools.toString(f.type));
             if (f.name == valueField) {
-                TypeMap.addTypeInfo(builder.fullPath, "value", ComplexTypeTools.toString(f.type));
+                RTTI.addClassProperty(builder.fullPath, "value", ComplexTypeTools.toString(f.type));
             }
             
             f.remove();
@@ -541,6 +542,8 @@ class Macros {
         _cachedFields.set(builder.fullPath, builder.fields);
         #end
 
+        RTTI.save();
+        
         return builder.fields;
     }
 

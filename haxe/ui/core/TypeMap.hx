@@ -1,31 +1,23 @@
 package haxe.ui.core;
 
+import haxe.ui.util.RTTI;
+
 class TypeMap {
-    public static var typeInfo:Map<String, Map<String, String>> = null;
-    public static function addTypeInfo(className:String, property:String, type:String) {
-        if (typeInfo == null) {
-            typeInfo = new Map<String, Map<String, String>>();
-        }
-
-        var classTypeMap = typeInfo.get(className);
-        if (classTypeMap == null) {
-            classTypeMap = new Map<String, String>();
-            typeInfo.set(className, classTypeMap);
-        }
-
-        classTypeMap.set(property, type);
-    }
-
     public static function getTypeInfo(className:String, property:String):String {
-        if (typeInfo == null) {
+        var entry = RTTI.getClassInfo(className);
+        if (entry == null) {
             return null;
         }
-
-        var classTypeMap = typeInfo.get(className);
-        if (classTypeMap == null) {
+        
+        if (entry.properties == null) {
             return null;
         }
-
-        return classTypeMap.get(property);
+        
+        var propInfo = entry.properties.get(property.toLowerCase());
+        if (propInfo == null) {
+            return null;
+        }
+        
+        return propInfo.propertyType;
     }
 }
