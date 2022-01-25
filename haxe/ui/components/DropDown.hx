@@ -674,7 +674,7 @@ class DropDownEvents extends ButtonEvents {
         } else {
             _dropdown.dataSource.filter(function(index, data) {
                 var v = data.text;
-                return Std.string(v).indexOf(searchTerm) > -1;
+                return Std.string(v).toLowerCase().indexOf(searchTerm.toLowerCase()) > -1;
             });
         }
         
