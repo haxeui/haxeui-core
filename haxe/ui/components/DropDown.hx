@@ -696,9 +696,11 @@ class DropDownEvents extends ButtonEvents {
             return;
         }
 
-        var searchField = _wrapper.findComponent("dropdown-search-field", TextField);
-        if (searchField != null) {
-            searchField.focus = false;
+        if (_wrapper != null) {
+            var searchField = _wrapper.findComponent("dropdown-search-field", TextField);
+            if (searchField != null) {
+                searchField.focus = false;
+            }
         }
         
         if (_overlay != null) {
