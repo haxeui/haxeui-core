@@ -131,7 +131,7 @@ class TreeViewNode extends VBox {
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
 private class TreeViewNodeEvents extends haxe.ui.events.Events {
-    private var _node:TreeViewNode;
+    @:keep private var _node:TreeViewNode;
     
     public function new(node:TreeViewNode) {
         super(node);
