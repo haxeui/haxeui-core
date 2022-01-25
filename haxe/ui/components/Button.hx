@@ -296,7 +296,7 @@ private class IconBehaviour extends DataBehaviour {
             _component.invalidateComponentStyle(true);
         }
 
-        _component.customStyle.icon = _value;
+        //_component.customStyle.icon = _value;
         icon.resource = _value;
     }
 }
