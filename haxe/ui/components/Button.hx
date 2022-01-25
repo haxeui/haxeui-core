@@ -594,8 +594,8 @@ class ButtonBuilder extends CompositeBuilder {
         
         if (style.icon != null) {
             _button.icon = style.icon;
-        } else if (icon != null) {
-            _button.icon = null;
+        } else {
+            //_button.icon = null;
         }
     }
 }
