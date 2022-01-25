@@ -3,7 +3,6 @@
     spacing: 0;
     padding: 1px;
     padding-bottom: 0px;
-    clip: true;
 }
 
 .accordion-button {
@@ -24,7 +23,6 @@
 
 .accordion-page {
     width: 100%;
-    clip: true;
     width: 100%;
     border-color: #ababab;
     border-bottom-width: 1px;
