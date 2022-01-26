@@ -1,13 +1,10 @@
 package haxe.ui.behaviours;
 
-import haxe.ui.util.Variant;
-
-@:dox(hide) @:noCompletion
-class DataBehaviour extends ValueBehaviour implements IValidatingBehaviour {
+class DynamicDataBehaviour extends DynamicBehaviour implements IValidatingBehaviour {
     private var _dataInvalid:Bool;
 
-    public override function set(value:Variant) {
-        if (value == get()) {
+    public override function setDynamic(value:Dynamic) {
+        if (value == getDynamic()) {
             return;
         }
 

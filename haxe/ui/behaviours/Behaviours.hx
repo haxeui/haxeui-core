@@ -85,8 +85,8 @@ class Behaviours {
     public function validateData() {
         for (key in actualUpdateOrder) {
             var b = _instances.get(key);
-            if ((b is DataBehaviour)) {
-                cast(b, DataBehaviour).validate();
+            if ((b is IValidatingBehaviour)) {
+                cast(b, IValidatingBehaviour).validate();
             }
         }
     }

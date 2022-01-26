@@ -3,6 +3,7 @@ package haxe.ui.components;
 import haxe.ui.Toolkit;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
+import haxe.ui.behaviours.DynamicDataBehaviour;
 import haxe.ui.components.Button.ButtonBuilder;
 import haxe.ui.components.Button.ButtonEvents;
 import haxe.ui.components.TextField;
@@ -118,11 +119,10 @@ private class SelectedIndexBehaviour extends DataBehaviour {
 
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
-private class SelectedItemBehaviour extends DataBehaviour  {
-    private var _dynamicValue:Dynamic = null;
+private class SelectedItemBehaviour extends DynamicDataBehaviour  {
     private override function validateData() {
         var handler:IDropDownHandler = cast(_component._compositeBuilder, DropDownBuilder).handler;
-        handler.selectedItem = _dynamicValue;
+        handler.selectedItem = _value;
     }
 
     public override function getDynamic():Dynamic {
@@ -130,21 +130,13 @@ private class SelectedItemBehaviour extends DataBehaviour  {
         return handler.selectedItem;
     }
 
-    public override function set(value:Variant) {
-        setDynamic(Variant.toDynamic(value));
-    }
-    
     public override function setDynamic(value:Dynamic) {
         if (_component.isReady == false) {
-            _dynamicValue = value;
-            super.set(value);
+            super.setDynamic(value);
             return;
         }
-        if (value == getDynamic()) {
-            return;
-        }
+        
         _value = value;
-        _dynamicValue = value;
         invalidateData();
         var handler:IDropDownHandler = cast(_component._compositeBuilder, DropDownBuilder).handler;
         handler.selectedItem = value;
@@ -313,6 +305,9 @@ private class ListDropDownHandler extends DropDownHandler {
     }
 
     private function indexOfItem(text:String):Int {
+        if (text == null) {
+            return -1;
+        }
         var index = -1;
         if (_dropdown.dataSource != null) {
             for (i in 0..._dropdown.dataSource.size) {
@@ -357,26 +352,7 @@ private class ListDropDownHandler extends DropDownHandler {
             return value;
         }
 
-        var v:Variant = value;
-
-        #if hl
-        if (Reflect.hasField(value, "value")) {
-            v = Std.string(value.value);
-        } else if (Reflect.hasField(value, "text")) {
-            v = Std.string(value.text);
-        }
-        #else
-        if (value.value != null) {
-            v = Std.string(value.value);
-        } else if (value.text != null) {
-            v = Std.string(value.text);
-        }
-        #end
-        
-        var index:Int = indexOfItem(v);
-        if (index == -1 && v.isNumber) {
-            index = v;
-        }
+        var index:Int = indexOfItem(value);
         selectedIndex = index;
         return value;
     }
@@ -423,8 +399,7 @@ private class ListDropDownHandler extends DropDownHandler {
     public override function applyDefault() {
         var indexToSelect = 0;
         if (_cachedSelectedItem != null) {
-            var v:Variant = _cachedSelectedItem;
-            var index = indexOfItem(v);
+            var index = indexOfItem(_cachedSelectedItem);
             if (index != -1) {
                 indexToSelect = index;
             }
