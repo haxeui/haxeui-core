@@ -30,15 +30,17 @@ class TreeViewNode extends VBox {
         return (childContainer != null && childContainer.numComponents > 0);
     }
     
+    private var _expanded:Bool = false;
     public var expanded(get, set):Bool;
     private function get_expanded():Bool {
         var childContainer = findComponent("treenode-child-container", Box);
         if (childContainer == null) {
-            return false;
+            return _expanded;
         }
         return !childContainer.hidden;
     }
     private function set_expanded(value:Bool):Bool {
+        _expanded = value;
         var childContainer = findComponent("treenode-child-container", Box);
         if (childContainer == null) {
             return value;
@@ -48,29 +50,6 @@ class TreeViewNode extends VBox {
             childContainer.show();
         } else {
             childContainer.hide();
-        }
-        
-        return value;
-    }
-    
-    public var collapsed(get, set):Bool;
-    private function get_collapsed():Bool {
-        var childContainer = findComponent("treenode-child-container", Box);
-        if (childContainer == null) {
-            return false;
-        }
-        return childContainer.hidden;
-    }
-    private function set_collapsed(value:Bool):Bool {
-        var childContainer = findComponent("treenode-child-container", Box);
-        if (childContainer == null) {
-            return value;
-        }
-        
-        if (value == true) {
-            childContainer.hide();
-        } else {
-            childContainer.show();
         }
         
         return value;
@@ -247,7 +226,11 @@ private class TreeViewNodeBuilder extends CompositeBuilder {
         if ((child is TreeViewNode)) {
             if (_childContainer == null) {
                 _childContainer = new VBox();
-                _childContainer.hide();
+                if (_node.expanded == true) {
+                    _childContainer.show();
+                } else {
+                    _childContainer.hide();
+                }
                 _childContainer.addClass("treenode-child-container");
                 _childContainer.id = "treenode-child-container";
                 _node.addComponent(_childContainer);
