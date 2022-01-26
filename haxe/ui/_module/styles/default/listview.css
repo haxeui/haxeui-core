@@ -1,15 +1,6 @@
 /************************************************************************
 ** LISTVIEW
 *************************************************************************/
-.listview {
-    border: 1px solid #ABABAB;
-    border-radius: 1px;
-    padding: 1px;
-    width: auto;
-    height: auto;
-    background-color: #FFFFFF;
-}
-
 .listview .listview-contents {
     spacing: 0;
     width: 100%;

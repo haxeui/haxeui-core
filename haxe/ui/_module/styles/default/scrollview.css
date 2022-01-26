@@ -4,9 +4,10 @@
 .scrollview {
     border: 1px solid #ABABAB;
     border-radius: 1px;
-    padding: 1px;
+    padding: 0px;
     width: auto;
     height: auto;
+    background-color: white;
 }
 
 .scrollview .scrollview-contents {
