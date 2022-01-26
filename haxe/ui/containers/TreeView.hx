@@ -139,7 +139,7 @@ class TreeView extends ScrollView implements IDataComponent {
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
 private class TreeViewEvents extends ScrollViewEvents {
-    private var _treeview:TreeView;
+    @:keep private var _treeview:TreeView;
     
     public function new(treeview:TreeView) {
         super(treeview);
