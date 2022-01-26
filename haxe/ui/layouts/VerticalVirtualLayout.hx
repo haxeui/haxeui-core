@@ -187,11 +187,7 @@ class VerticalVirtualLayout extends VirtualLayout {
                     contentsPadding = layout.paddingTop + layout.paddingBottom;
                 }
             }
-            var borderSize:Float = 0;
-            if (_component.layout != null) {
-                borderSize = _component.layout.borderSize * 2;
-            }
-            size.height = (itemHeight * comp.itemCount) + paddingTop + paddingBottom + contentsPadding + borderSize;
+            size.height = (itemHeight * comp.itemCount) + paddingTop + paddingBottom + contentsPadding + (borderSize * 2);
         }
 
         return size;

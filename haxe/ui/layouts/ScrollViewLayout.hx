@@ -134,6 +134,8 @@ class ScrollViewLayout extends DefaultLayout {
             }
         }
 
+        size.height += borderSize * 2;
+        
         return size;
     }
 }
