@@ -527,8 +527,8 @@ private class Layout extends VerticalVirtualLayout {
 
         super.repositionChildren();
 
-        header.left = paddingLeft; // + marginLeft(header);
-        header.top = paddingTop; // + marginTop(header);
+        header.left = paddingLeft + borderSize; // + marginLeft(header);
+        header.top = paddingTop + borderSize; // + marginTop(header);
         var vscroll = _component.findComponent(VerticalScroll);
         if (vscroll != null && vscroll.hidden == false) {
             header.addClass("scrolling");
@@ -562,7 +562,7 @@ private class Layout extends VerticalVirtualLayout {
                 }
             }
 
-            data.left = paddingLeft;
+            data.left = paddingLeft + borderSize;
             data.top = header.top + header.height - 1;
             data.componentWidth = header.width;
             //data.unlockLayout(true);
