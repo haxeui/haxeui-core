@@ -456,12 +456,12 @@ class CalendarDropDownHandler extends DropDownHandler {
         if (value == null) {
             return value;
         }
-        var v:Variant = value;
+
         var date:Date = null;
-        if (v.isString == true) {
-            date = Date.fromString(v);
-        } else if (v.isDate) {
-            date = v;
+        if ((value is Date)) {
+            date = cast(value, Date);
+        } else {
+            date = Date.fromString(Std.string(value));
         }
 
         if (_calendar != null && date != null) {
