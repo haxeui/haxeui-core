@@ -18,19 +18,19 @@ class ItemRenderer extends Box {
     }
 
     private function _onItemMouseOver(event:MouseEvent) {
-        addClass(":hover");
+        addClass(":hover", true, true);
     }
 
     private function _onItemMouseOut(event:MouseEvent) {
-        removeClass(":hover");
+        removeClass(":hover", true, true);
     }
 
     private function _onItemMouseDown(event:MouseEvent) {
-        addClass(":down");
+        addClass(":down", true, true);
     }
 
     private function _onItemMouseUp(event:MouseEvent) {
-        removeClass(":down");
+        removeClass(":down", true, true);
     }
 
     private var _allowHover:Bool = true;
