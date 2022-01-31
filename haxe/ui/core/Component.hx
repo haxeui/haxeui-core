@@ -37,7 +37,7 @@ import Std.is as isOfType;
 @:allow(haxe.ui.backend.ComponentImpl)
 @:build(haxe.ui.macros.Macros.build())
 @:autoBuild(haxe.ui.macros.Macros.build())
-class Component extends ComponentImpl implements IComponentBase implements IValidating {
+class Component extends ComponentImpl implements IValidating {
     public function new() {
         super();
 
