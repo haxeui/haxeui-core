@@ -60,7 +60,9 @@ class TreeView extends ScrollView implements IDataComponent {
         }
         
         _selectedNode = value;
-        _selectedNode.findComponent(ItemRenderer, true).addClass(":node-selected", true, true);
+        if (_selectedNode != null) {
+            _selectedNode.findComponent(ItemRenderer, true).addClass(":node-selected", true, true);
+        }
         
         var event:UIEvent = new UIEvent(UIEvent.CHANGE);
         this.dispatch(event);
@@ -130,6 +132,7 @@ class TreeView extends ScrollView implements IDataComponent {
     }
 
     public function clearNodes() {
+        selectedNode = null;
         var nodes = findComponents(TreeViewNode, 3);
         for (n in nodes) {
             removeComponent(n);
