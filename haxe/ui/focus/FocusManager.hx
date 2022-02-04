@@ -66,11 +66,12 @@ class FocusManager {
     
     public function popView() {
         var c = _views.pop();
-        _focusInfo.remove(c);
+        removeView(c);
     }
 
     public function removeView(component:Component) {
         _views.remove(component);
+        _focusInfo.remove(component);
     }
 
     public var focusInfo(get, null):FocusInfo;

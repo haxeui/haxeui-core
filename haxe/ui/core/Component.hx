@@ -509,6 +509,19 @@ class Component extends ComponentImpl implements IValidating {
         if (this.hasImageDisplay()) {
             this.getImageDisplay().dispose();
         }
+        if (behaviours != null) {
+            behaviours.dispose();
+            behaviours = null;
+        }
+        if (_layout != null) {
+            _layout.component = null;
+            _layout = null;
+        }
+        if (_internalEvents != null) {
+            @:privateAccess _internalEvents._target = null;
+            _internalEvents = null;
+        }
+        parentComponent = null;
     }
     
     /**

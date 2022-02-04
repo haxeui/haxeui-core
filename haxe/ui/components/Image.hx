@@ -183,6 +183,9 @@ private class ResourceBehaviour extends DataBehaviour {
                 }
 
                 var image:Image = cast(_component, Image);
+                if (image == null) {
+                    return;
+                }
                 var display:ImageDisplay = image.getImageDisplay();
                 if (display != null) {
                     display.imageInfo = imageInfo;

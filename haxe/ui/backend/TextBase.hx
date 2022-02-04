@@ -36,7 +36,9 @@ class TextBase {
     }
 
     public function dispose() {
-        
+        if (parentComponent != null) {
+            parentComponent = null;
+        }
     }
     
     private var _dataSource:DataSource<String>;
