@@ -590,6 +590,10 @@ class Component extends ComponentImpl implements IValidating {
     }
 
     private function assignPositionClasses(invalidate:Bool = true) {
+        if (childComponents.length == 1) {
+            childComponents[0].addClasses(["first", "last"], invalidate);
+            return;
+        }
         for (i in 0...childComponents.length) {
             var c = childComponents[i];
             if (i == 0) {
