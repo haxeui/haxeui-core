@@ -1,5 +1,6 @@
 package haxe.ui.styles.animation.util;
 
+import haxe.ui.core.Component;
 import haxe.ui.core.TypeMap;
 import haxe.ui.styles.EasingFunction;
 import haxe.ui.util.Color;
@@ -69,6 +70,7 @@ class Actuator<T> {
     **/
     public function stop() {
         _stopped = true;
+        target = null;
     }
 
     /**
@@ -107,6 +109,11 @@ class Actuator<T> {
     private var _stringPropertyDetails:Array<StringPropertyDetails<T>>;
 
     private function _initialize() {
+        if (_isValid() == false) {
+            stop();
+            return;
+        }
+        
         _propertyDetails = [];
         _colorPropertyDetails = [];
         _stringPropertyDetails = [];
@@ -255,7 +262,27 @@ class Actuator<T> {
         }
     }
 
+    private function _isValid() {
+        if (target == null) {
+            return false;
+        }
+        
+        if ((target is Component)) {
+            var c:Component = cast target;
+            if (@:privateAccess c._isDisposed == true) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
     private function _apply(position:Float) {
+        if (_isValid() == false) {
+            stop();
+            return;
+        }
+        
         position = _easeFunc(position);
         for (details in _propertyDetails) {
             Reflect.setProperty(target, details.propertyName, details.start + (details.change * position));
@@ -293,6 +320,7 @@ class Actuator<T> {
 
     private function _finish() {
         _stopped = true;
+        target = null;
         if (_onComplete != null) {
             _onComplete();
         }
