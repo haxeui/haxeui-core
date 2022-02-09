@@ -190,16 +190,24 @@ class ComponentTextBehaviour extends DefaultBehaviour {
 
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
-class ComponentDisabledBehaviour extends DataBehaviour {
+class ComponentDisabledBehaviour extends DefaultBehaviour {
     public function new(component:Component) {
         super(component);
         _value = false;
     }
     
-    public override function validateData() {
-        if (_value != null && _value.isNull == false) {
-            _component.disableInteractivity(_value, true, true);
+    public override function set(value:Variant) {
+        if (value == _value) {
+            return;
         }
+        _value = value;
+        if (value != null && value.isNull == false) {
+            _component.disableInteractivity(value, true, true);
+        }
+    }
+    
+    public override function get():Variant {
+        return _component.hasClass(":disabled");
     }
 }
 
