@@ -206,11 +206,11 @@ class ListViewEvents extends ScrollViewEvents {
 
         var components = e.target.findComponentsUnderPoint(e.screenX, e.screenY);
         for (component in components) {
-            if ((component is InteractiveComponent) && cast(component, InteractiveComponent).allowInteraction == true) {
+            if (component != e.target && (component is InteractiveComponent) && cast(component, InteractiveComponent).allowInteraction == true) {
                 return;
             }
         }
-
+        
         var renderer:ItemRenderer = cast(e.target, ItemRenderer);
         switch (_listview.selectionMode) {
             case SelectionMode.DISABLED:
