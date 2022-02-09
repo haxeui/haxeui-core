@@ -2,6 +2,7 @@ package haxe.ui.components;
 
 import haxe.ui.behaviours.Behaviour;
 import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.components.Button.ButtonEvents;
 import haxe.ui.components.Button.ButtonLayout;
 import haxe.ui.containers.Box;
 import haxe.ui.containers.HBox;
@@ -546,6 +547,8 @@ private class TabBarButton extends Button {
         _closable = value;
         var existing = findComponent("tab-close-button", Image, false);
 
+        var events:ButtonEvents = cast(this._internalEvents, ButtonEvents);
+        events.recursiveStyling = false;
         if (_closable == true && existing == null) {
             iconPosition = "far-left";
             var image = new Image();
