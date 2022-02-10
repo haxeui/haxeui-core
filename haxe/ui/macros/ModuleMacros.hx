@@ -84,6 +84,12 @@ class ModuleMacros {
                         haxe.ui.themes.ThemeManager.instance.addImageResource($v{t.name}, $v{r.id}, $v{r.resource}, $v{r.priority})
                     );
                 }
+                for (r in t.vars.keys()) {
+                    var v = t.vars.get(r);
+                    builder.add(macro
+                        haxe.ui.themes.ThemeManager.instance.setThemeVar($v{t.name}, $v{r}, $v{v})
+                    );
+                }
             }
 
             // set toolkit properties

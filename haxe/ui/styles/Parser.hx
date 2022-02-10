@@ -6,9 +6,11 @@ import haxe.ui.styles.elements.Directive;
 import haxe.ui.styles.elements.ImportElement;
 import haxe.ui.styles.elements.MediaQuery;
 import haxe.ui.styles.elements.RuleElement;
+import haxe.ui.themes.ThemeManager;
 
 // based on: https://github.com/jotform/css.js/blob/master/css.js
 
+@:access(haxe.ui.themes.ThemeManager)
 class Parser {
     static var cssKeyframesRegex:EReg = ~/@keyframes\s*(\w+?)\s*\{([\s\S]*?\}\s*?)\}/gi;
     static var cssKeyframeSelectorRegex:EReg = ~/([\w%]+)\s*\{\s*([\s\S]*?)\s*\}/gi;
@@ -22,6 +24,13 @@ class Parser {
     }
 
     public function parse(source:String):StyleSheet {
+        if (source.indexOf("$") != -1) {
+            for (key in ThemeManager.instance.currentThemeVars.keys()) {
+                var value = ThemeManager.instance.currentThemeVars.get(key);
+                source = StringTools.replace(source, "$" + key, value);
+            }
+        }
+        
         source = cssCommentsRegex.replace(source, "");
 
         var styleSheet = new StyleSheet();

@@ -66,6 +66,18 @@ class ThemeManager {
         });
     }
 
+    public function setThemeVar(themeName:String, varName:String, varValue:String) {
+        var theme = getTheme(themeName);
+        if (theme == null) {
+            return;
+        }
+        theme.vars.set(varName, varValue);
+    }
+    
+    public function setCurrentThemeVar(varName:String, varValue:String) {
+        setThemeVar(Toolkit.theme, varName, varValue);
+    }
+    
     public function addImageResource(themeName:String, id:String, resourceId:String, priority:Float = 0) {
         getTheme(themeName).images.push({
             id: id,
@@ -74,9 +86,21 @@ class ThemeManager {
         });
     }
 
+    private var currentThemeVars:Map<String, String> = new Map<String, String>();
+    
     public function applyTheme(themeName:String) {
         Toolkit.styleSheet.clear("default");
 
+        // vars
+        var finalVars:Map<String, String> = new Map<String, String>();
+        buildThemeVars("global", finalVars);
+        buildThemeVars(themeName, finalVars);
+        currentThemeVars = new Map<String, String>();
+        for (k in finalVars.keys()) {
+            currentThemeVars.set(k, finalVars.get(k));
+        }
+
+        
         // stylesheet entries
         var entries:Array<ThemeEntry> = [];
         buildThemeEntries("global", entries);
@@ -127,6 +151,21 @@ class ThemeManager {
         Toolkit.styleSheet.parse(style);
     }
 
+    private function buildThemeVars(themeName:String, vars:Map<String, String>) {
+        var theme:Theme = _themes.get(themeName);
+        if (theme == null) {
+            return;
+        }
+        if (theme.parent != null) {
+            buildThemeVars(theme.parent, vars);
+        }
+        
+        for (k in theme.vars.keys()) {
+            var v = theme.vars.get(k);
+            vars.set(k, v);
+        }
+    }
+    
     private function buildThemeEntries(themeName:String, arr:Array<ThemeEntry>) {
         var theme:Theme = _themes.get(themeName);
         if (theme == null) {

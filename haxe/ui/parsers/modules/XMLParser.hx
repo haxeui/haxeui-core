@@ -105,6 +105,13 @@ class XMLParser extends ModuleParser {
                         }
                         theme.styles.push(styleEntry);
                     }
+                    
+                    for (varNode in themeNode.elementsNamed("var")) {
+                        if (checkCondition(varNode, defines) == false) {
+                            continue;
+                        }
+                        theme.vars.set(varNode.get("name"), varNode.get("value"));
+                    }
 
                     // image entries
                     var lastPriority:Null<Float> = null;

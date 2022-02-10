@@ -59,10 +59,12 @@ class ModuleThemeEntry {
     public var parent(default, default):String;
     public var styles(default, default):Array<ModuleThemeStyleEntry>;
     public var images(default, default):Array<ModuleThemeImageEntry>;
+    public var vars(default, default):Map<String, String>;
 
     public function new() {
         styles = [];
         images = [];
+        vars = new Map<String, String>();
     }
 }
 
