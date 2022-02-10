@@ -13,6 +13,9 @@ class ArrayDataSource<T> extends DataSource<T> {
     // overrides
     private var _filteredArray:Array<T> = null;
     public override function clearFilter() {
+        if (_filteredArray == null) {
+            return;
+        }
         _filterFn = null;
         _filteredArray = null;
         handleChanged();
