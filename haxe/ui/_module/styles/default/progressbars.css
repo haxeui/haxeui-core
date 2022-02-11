@@ -26,24 +26,39 @@
 }
 
 .horizontal-progress {
-    background: #F1F1F1 #FFFFFF vertical;
+    background: $normal-background-color-end $normal-background-color-start vertical;
     initial-width: 150px;
     initial-height: 8px;
 }
 
 .horizontal-progress .progress-value {
-    background: #98c4e6 #549bde vertical;
+    background: $accent-gradient-start $accent-gradient-end vertical;
     height: 100%;
 }
 
+.horizontal-progress:disabled {
+    border-color: $disabled-border-color;
+}
+
+.horizontal-progress:disabled .progress-value {
+    background: $disabled-background-color-start $disabled-background-color-end vertical;
+}
+
 .vertical-progress {
-    background: #F1F1F1 #FFFFFF horizontal;
+    background: $normal-background-color-end $normal-background-color-start horizontal;
     initial-width: 8px;
     initial-height: 150px;
 }
 
 .vertical-progress .progress-value {
-    background: #98c4e6 #549bde horizontal;
+    background: $accent-gradient-start $accent-gradient-end horizontal;
     width: 100%;
 }
 
+.vertical-progress:disabled .progress-value {
+    background: $disabled-background-color-start $disabled-background-color-end horizontal;
+}
+
+.vertical-progress:disabled {
+    border-color: $disabled-border-color;
+}

@@ -2,15 +2,23 @@
 ** DROPDOWNS
 *************************************************************************/
 .dropdown {
-    icon: "haxeui-core/styles/default/sortable_arrows.png";
+    icon: $arrow-up-down;
     icon-position: far-right;
     text-align: left;
-    padding: 5px;
+    padding: 6px 8px;
 }
 
 .dropdown-popup {
-    background-color: white;
-    border: 1px solid #ABABAB;
+    background-color: $default-background-color;
+    border: 1px solid $normal-border-color;
+}
+
+.dropdown-popup .listview .itemrenderer {
+    padding: 6px 8px;
+}
+
+.dropdown-popup > .scrollview, .dropdown-popup > dropdown-search-container > .scrollview  {
+    border: 1px solid $normal-border-color;
 }
 
 .dropdown-search-container {
@@ -26,7 +34,7 @@
     width: 100%;
     border: none;
     border-radius: 0px;
-    icon: "haxeui-core/styles/default/search.png";
+    icon: $search;
 }
 
 /************************************************************************

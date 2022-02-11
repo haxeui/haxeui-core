@@ -4,33 +4,37 @@
 .scroll {
     background-color: none;
     padding: 0px;
-    background-color: #E9E9E9;
+    background-color: $scrollbar-background-color;
 }
 
 .scroll .button {
     width: 7px;
     height: 7px;
-    background-color: #C6C6C6;
+    background-color: $scrollbar-button-color;
     border-radius: 0;
     border: none;
-    opacity: .8;
     filter: none;
+    opacity: 0.6;
 }
 
 .scroll .button:hover {
     opacity: 1;
 }
 
+.scroll:disabled .button {
+    opacity: .3;
+}
+
 .vertical-scroll {
     width: 8px;
     padding-left: 1px;
-    border-left: 1px solid #ababab;
+    border-left: 1px solid $normal-border-color;
 }
 
 .horizontal-scroll {
     height: 8px;
     padding-top: 1px;
-    border-top: 1px solid #ababab;
+    border-top: 1px solid $normal-border-color;
 }
 
 /************************************************************************
@@ -112,22 +116,22 @@
 
 .classic-scrolls .vertical-scroll .deinc,
 .vertical-scroll.classic-scrolls .deinc {
-    icon: "haxeui-core/styles/default/up_arrow.png";
+    icon: "haxeui-core/styles/shared/up-arrow-dark.png";
 }
 
 .classic-scrolls .vertical-scroll .deinc:down,
 .vertical-scroll.classic-scrolls .deinc:down {
-    icon: "haxeui-core/styles/default/up_arrow_white.png";
+    icon: "haxeui-core/styles/shared/up-arrow-bright.png";
 }
 
 .classic-scrolls .vertical-scroll .inc,
 .vertical-scroll.classic-scrolls .inc {
-    icon: "haxeui-core/styles/default/down_arrow.png";
+    icon: "haxeui-core/styles/shared/down-arrow-dark.png";
 }
 
 .classic-scrolls .vertical-scroll .inc:down,
 .vertical-scroll.classic-scrolls .inc:down {
-    icon: "haxeui-core/styles/default/down_arrow_white.png";
+    icon: "haxeui-core/styles/shared/down-arrow-bright.png";
 }
 
 .classic-scrolls .horizontal-scroll,
@@ -137,22 +141,22 @@
 
 .classic-scrolls .horizontal-scroll .deinc,
 .horizontal-scroll.classic-scrolls .deinc {
-    icon: "haxeui-core/styles/default/left_arrow.png";
+    icon: "haxeui-core/styles/shared/left-arrow-dark.png";
 }
 
 .classic-scrolls .horizontal-scroll .deinc:down,
 .horizontal-scroll.classic-scrolls .deinc:down {
-    icon: "haxeui-core/styles/default/left_arrow_white.png";
+    icon: "haxeui-core/styles/shared/left-arrow-bright.png";
 }
 
 .classic-scrolls .horizontal-scroll .inc,
 .horizontal-scroll.classic-scrolls .inc {
-    icon: "haxeui-core/styles/default/right_arrow.png";
+    icon: "haxeui-core/styles/shared/right-arrow-dark.png";
 }
 
 .classic-scrolls .horizontal-scroll .inc:down,
 .horizontal-scroll.classic-scrolls .inc:down {
-    icon: "haxeui-core/styles/default/right_arrow_white.png";
+    icon: "haxeui-core/styles/shared/right-arrow-bright.png";
 }
 
 /************************************************************************

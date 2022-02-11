@@ -1,8 +1,8 @@
 .component:active {
-    __border: 1px solid #216AAE;
+    __border: 1px solid $accent-color;
 }
 
 .component:activatable {
-    border: 1px solid #a7c4e2;
+    border: 1px solid $accent-color;
 }
 

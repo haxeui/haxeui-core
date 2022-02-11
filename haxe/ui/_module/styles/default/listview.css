@@ -8,41 +8,46 @@
 }
 
 .listview .itemrenderer {
-    cursor: pointer;    
+    cursor: pointer;  
 }
 
 .listview .itemrenderer .label {
-    color: black;
+    color: $normal-text-color;
+    cursor: pointer;
 }
 
 .listview .even {
-    background-color: #FFFFFF;
+    background-color: $tertiary-background-color;
 }
 
 .listview .even:hover {
-    background-color: #d9e5f2;
+    background-color: $selection-background-color-hover;
 }
 
 .listview .odd {
-    background-color: #f8f8f8;
+    background-color: $solid-background-color-alt;
 }
 
 .listview .odd:hover {
-    background-color: #d9e5f2;
+    background-color: $selection-background-color-hover;
 }
 
 .listview .itemrenderer {
     height: auto;
-    padding: 5px;
+    padding: 6px;
 }
 
 .listview .itemrenderer:selected {
-    background-color: #a7c4e2;
-    color: white;
+    background-color: $selection-background-color;
+    color: $selection-text-color;
 }
 
 .listview .itemrenderer:selected .label {
-    color: white;
+    color: $selection-text-color;
+}
+
+.listview:disabled .label {
+    color: $disabled-text-color;
 }
 
 /************************************************************************
@@ -53,9 +58,9 @@
     border: none;
     padding: 0px;
     border-radius: 0;
-    background-color: #EEEEEE;
+    background-color: $solid-background-color;
     mode: mobile;
-    border-right: 1px solid #ABABAB;
+    border-right: 1px solid $normal-border-color;
 }
 
 .listview.left-menu .vertical-scroll .deinc, .listview.left-menu .vertical-scroll .inc {
@@ -78,48 +83,48 @@
 }
         
 .listview.left-menu .even {
-    background-color: #EEEEEE;
-    border-right: 1px solid #ABABAB;
-    border-bottom: 1px solid #ABABAB;
+    background-color: $solid-background-color;
+    border-right: 1px solid $normal-border-color;
+    border-bottom: 1px solid $normal-border-color;
     
     padding-top: 8px;
     padding-bottom: 8px;
 }
 
 .listview.left-menu .even:hover {
-    background-color: #F5F5F5;
-    border-right: 1px solid #ABABAB;
+    background-color: $solid-background-color-hover;
+    border-right: 1px solid $normal-border-color;
     
     padding-top: 8px;
     padding-bottom: 8px;
 }
 
 .listview.left-menu .odd {
-    background-color: #EEEEEE;
-    border-right: 1px solid #ABABAB;
-    border-bottom: 1px solid #ABABAB;
+    background-color: $solid-background-color;
+    border-right: 1px solid $normal-border-color;
+    border-bottom: 1px solid $normal-border-color;
     
     padding-top: 8px;
     padding-bottom: 8px;
 }
 
 .listview.left-menu .odd:hover {
-    background-color: #F5F5F5;
-    border-right: 1px solid #ABABAB;
+    background-color: $solid-background-color-hover;
+    border-right: 1px solid $normal-border-color;
     
     padding-top: 8px;
     padding-bottom: 8px;
 }
 
 .listview.left-menu .itemrenderer:selected {
-    background-color: #ffffff;
-    color: #222222;
-    border-right: 1px solid white;
+    background-color: $default-background-color;
+    color: $normal-text-color;
+    border-right: 1px solid $default-background-color;
 }
 
 
 .listview.left-menu .itemrenderer:selected .label {
-    color: #222222;
+    color: $normal-text-color;
 }
     
 .listview.left-menu .vertical-scroll {

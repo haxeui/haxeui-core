@@ -1,5 +1,5 @@
 .accordion {
-    border: 1px solid #ababab;
+    border: 1px solid $normal-border-color;
     spacing: 0;
     padding: 1px;
     padding-bottom: 0px;
@@ -7,24 +7,30 @@
 
 .accordion-button {
     border-radius: 0;
-    border: 0px solid #ababab;
+    border: 0px solid $normal-border-color;
     width: 100%;
     text-align: left;
-    icon: "haxeui-core/styles/default/right_arrow_square.png";
+    icon: $arrow-right-square;
     icon-position: left;
     border: none;
-    border-color: #ababab;
+    border-color: $normal-border-color;
     border-bottom-width: 1px;
+    padding: 6px;
+    background-color: $solid-background-color;
+}
+
+.accordion-button:hover {
+    background-color: $solid-background-color-hover;
 }
 
 .accordion-button:down {
-    icon: "haxeui-core/styles/default/down_arrow_square.png";
+    icon: $arrow-down-square;
 }
 
 .accordion-page {
     width: 100%;
     width: 100%;
-    border-color: #ababab;
+    border-color: $normal-border-color;
     border-bottom-width: 1px;
     opacity: 1;
     padding: 5px;

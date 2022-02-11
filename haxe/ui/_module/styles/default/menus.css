@@ -2,78 +2,78 @@
 ** MENUBAR
 *************************************************************************/
 .menubar {
-    background-color: #EEEEEE;
-    padding: 5px;
+    background-color: $solid-background-color;
+    padding: 6px;
     border-bottom-width: 1px;
-    border-bottom-color: #ABABAB;
-    filter: drop-shadow(2, 45, #000000, 0.15, 6, 1, 30, 35, false);
+    border-bottom-color: $normal-border-color;
+    filter: $menu-shadow;
 }
 
 .menubar-button {
-    background-color: #EEEEEE;
+    background-color: $solid-background-color;
     border: none;
-    color: #666666;
+    color: $normal-text-color;
     vertical-align: center;
 }
 
 .menubar-button:hover {
-    background-color: #CCCCCC;
-    color: #444444;
+    background-color: $selection-background-color-hover;
+    color: $hover-text-color;
 }
 
 .menubar-button:down {
-    background-color: white;
-    color: black;
-    border: 1px solid #ABABAB;
+    background-color: $secondary-background-color;
+    color: $down-text-color;
+    border: 1px solid $normal-border-color;
     border-bottom-width: 0px;
     border-bottom-size: 0px;
 }
 
 .menubar-button-no-children {
-    background-color: #EEEEEE;
+    background-color: $solid-background-color;
     border: none;
-    color: #666666;
+    color: $normal-text-color;
     vertical-align: center;
 }
 
 .menubar-button-no-children:hover {
-    background-color: #CCCCCC;
-    color: #444444;
+    background-color: $selection-background-color-hover;
+    color: $hover-text-color;
 }
 
 .menubar-button-no-children:down {
-    background-color: white;
-    color: black;
-    border: 1px solid #ABABAB;
+    background-color: $secondary-background-color;
+    color: $down-text-color;
+    border: 1px solid $normal-border-color;
 }
 
 .menubar-button-no-children-active {
-    background-color: #EEEEEE;
+    background-color: $solid-background-color;
     border: none;
-    color: #666666;
+    color: $normal-text-color;
     vertical-align: center;
 }
 
 .menubar-button-no-children-active:hover {
-    background-color: white;
-    color: black;
-    border: 1px solid #ABABAB;
+    background-color: $secondary-background-color;
+    color: $down-text-color;
+    border: 1px solid $normal-border-color;
 }
 
 .menubar-button-no-children-active:down {
-    background-color: #CCCCCC;
-    color: #444444;
-    border: none;
+    background-color: $secondary-background-color;
+    color: $down-text-color;
+    border: 1px solid $normal-border-color;
 }
 
 /************************************************************************
 ** MENU
 *************************************************************************/
 .menu {
-    background-color: white;
+    background-color: $secondary-background-color;
     padding: 1px;
-    border: 1px solid #ABABAB;
-    filter: drop-shadow(2, 45, #000000, 0.15, 6, 1, 30, 35, false);
+    border: 1px solid $normal-border-color;
+    filter: $menu-shadow;
     spacing: 0;
     width: 200px;
 }
@@ -84,7 +84,7 @@
 }
 
 .menu-filler {
-    background-color: #ABABAB;
+    background-color: $normal-border-color;
     height: 1px;
 }
 
@@ -92,14 +92,19 @@
 ** MENUITEMS
 *************************************************************************/
 .menuitem {
-    background-color: white;
+    background-color: $secondary-background-color;
     width: 100%;
-    padding: 5px;
+    padding: 6px;
+    padding-left: 12px;
     cursor: pointer;
 }
 
 .menuitem-label, .menuitem-checkbox, .menuitem-optionbox, .menuitem-shortcut-label {
     vertical-align: center;
+}
+
+.menuitem-label:disabled, .menuitem-shortcut-label:disabled {
+    color: $disabled-text-color;
 }
 
 .menuitem-shortcut-label {
@@ -113,21 +118,21 @@
 }
 
 .menuitem:hover, .menuitem:selected {
-    background-color: #d9e5f2;
+    background-color: $selection-background-color-hover;
 }
 
 .menuitem .label:hover, .menuitem .label:selected {
-    color: #222222;
+    color: $hover-text-color;
 }
 
 .menuitem-expandable {
-    resource: "haxeui-core/styles/default/right_arrow.png";
+    resource: $arrow-right;
     vertical-align: "center";
 }
 
 .menuseparator {
     height: 1px;
     width: 100%;
-    background-color: #ABABAB;
+    background-color: $normal-border-color;
     horizontal-align: "center";
 }

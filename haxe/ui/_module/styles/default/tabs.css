@@ -7,7 +7,7 @@
     height: auto;
     width: auto;
     border-bottom-width: 1px;
-    border-bottom-color: #ABABAB;
+    border-bottom-color: $normal-border-color;
     border-top-width: 0px;
     clip: true;
 }
@@ -15,14 +15,14 @@
 .tabbar > .tabbar-contents {
     border: none;
     border-bottom-width: 1px;
-    border-bottom-color: #ABABAB;
+    border-bottom-color: $normal-border-color;
     spacing: 0;
 }
 
 .tabbar-button {
     border-radius: 0px;
-    background: #EDEDED #E6E6E6 vertical;
-    padding: 6px 8px;
+    background: $solid-background-color-down $solid-background-color-down vertical;
+    padding: 7px 8px;
     vertical-align: bottom;
     border-left-width: 0px;
 }
@@ -32,20 +32,23 @@
 }
 
 .tabbar-button:hover {
-    background: #F5F5F5 #F1F1F1 vertical;
+    background: $solid-background-color $solid-background-color vertical;
+    border-color: $normal-border-color;
 }
 
 .tabbar-button:down {
-    border: 1px solid #ABABAB;
+    border: 1px solid $normal-border-color;
 }
 
 .tabbar-button-selected {
     border-radius: 0px;
 
     border-bottom-width: 1px;
-    border-bottom-color: white;
-    background-color: white;
+    border-bottom-color: $secondary-background-color;
+    background-color: $secondary-background-color;
     border-left-width: 0px;
+    
+    border-top: 2px solid $accent-color;
 }
 
 .tabbar-button-selected.first {
@@ -53,13 +56,13 @@
 }
 
 .tabbar-scroll-left {
-    icon: "haxeui-core/styles/default/left_arrow.png";
+    icon: $arrow-left;
     border-radius: 0;
     padding: 5px;
 }
 
 .tabbar-scroll-right {
-    icon: "haxeui-core/styles/default/right_arrow.png";
+    icon: $arrow-right;
     border-radius: 0;
     padding: 5px;
 }
@@ -71,7 +74,22 @@
 }
 
 .tabbar-button .tab-close-button {
-    resource: "haxeui-core/styles/default/tiny-close-button.png";
+    resource: $close;
+    vertical-align: "center";
+    cursor: "pointer";
+    pointer-events: true;
+    padding: 3px;
+    border-radius: 2px;
+}
+
+.tabbar-button .tab-close-button:hover {
+    resource: $close-hover;
+    background-color: $selection-background-color;
+}
+
+.tabbar .tabbar-button-selected:disabled {
+    border-color: $disabled-border-color;
+    border-bottom-color: $secondary-background-color;
 }
 
 /************************************************************************
@@ -84,7 +102,7 @@
     width: auto;
     border-bottom-width: 0px;
     border-top-width: 1px;
-    border-top-color: #ABABAB;
+    border-top-color: $normal-border-color;
     clip: true;
 }
 
@@ -92,7 +110,7 @@
     border: none;
     border-bottom-width: 0px;
     border-top-width: 1px;
-    border-top-color: #ABABAB;
+    border-top-color: $normal-border-color;
     spacing: 0;
 }
 
@@ -108,15 +126,22 @@
 .tabbar-button-selected:bottom {
     border-radius: 0px;
 
-    border: 1px solid #ABABAB;
+    border: 1px solid $normal-border-color;
     border-top-width: 1px;
-    border-top-color: white;
-    background-color: white;
+    border-top-color: $secondary-background-color;
+    background-color: $secondary-background-color;
     border-left-width: 0px;
+    
+    border-bottom: 2px solid $accent-color;
 }
 
 .tabbar-button-selected.first {
     border-left-width: 1px;
+}
+
+.tabbar:bottom .tabbar-button-selected:disabled {
+    border-color: $disabled-border-color;
+    border-top-color: $secondary-background-color;
 }
 
 /************************************************************************
@@ -137,11 +162,14 @@
 }
 
 .tabview > .tabview-content {
-    border: 1px solid #ABABAB;
-    padding: 5px;
-    background-color: white;
+    border: 1px solid $normal-border-color;
+    padding: 8px;
+    background-color: $secondary-background-color;
 }
 
+.tabview-content:disabled {
+    border-color: $disabled-border-color;
+}
 /************************************************************************
 ** TABVIEW ALT STYLES
 *************************************************************************/

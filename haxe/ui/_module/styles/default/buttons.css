@@ -2,11 +2,11 @@
 ** BUTTONS
 *************************************************************************/
 .button {
-    background: #EDEDED #E6E6E6 vertical;
-    color: #222222;
-    border: 1px solid #ABABAB;
-    border-radius: 2px;
-    padding: 5px 8px;
+    background: $normal-background-color-start $normal-background-color-end vertical;
+    color: $normal-text-color;
+    border: $normal-border-size solid $normal-border-color;
+    border-radius: $normal-border-radius;
+    padding: 6px 14px;
     cursor: pointer;
     width: auto;
     height: auto;
@@ -15,34 +15,21 @@
 }
 
 .button:hover {
-    background: #F5F5F5 #F1F1F1 vertical;
-    color: #000000;
+    background: $hover-background-color-start $hover-background-color-end vertical;
+    color: $hover-text-color;
+    border: $normal-border-size solid $hover-border-color;
 }
 
 .button:down {
-    background: #D2D2D2 #C2C2C2 vertical;
-    color: #000000;
-    border-color: #7F7F7F;
-}
-
-.button.emphasized {
-    background: #DAE4EE #D4DEE8 vertical;
-    border-color: #6CA1D7;
-}
-
-.button.emphasized:hover {
-    background: #E2ECF6 #DEE8F2 vertical;
-    border-color: #6CA1D7;
-}
-
-.button.emphasized:down {
-    background: #C2CCD6 #B4BEC8 vertical;
-    border-color: #568CC1;
+    background: $down-background-color-start $down-background-color-end vertical;
+    color: $down-text-color;
+    border-color: $down-border-color;
 }
 
 .button:disabled {
-    background: #D4D4D4 #CCCCCC vertical;
-    color: #909090;
+    background: $disabled-background-color-start $disabled-background-color-end vertical;
+    color: $disabled-text-color;
+    border-color: $disabled-border-color;
     cursor: default;
 }
 
@@ -59,12 +46,13 @@
 
 .button-bar .button {
     border-radius: 0;
-    border-color: #ABABAB;
+    border: $normal-border-size solid $normal-border-color;
 }
 
 .button-bar .button:down {
-    background-color: #a7c4e2;
-    color: white;
+    background-color: $selection-background-color;
+    color: $selection-text-color;
+    filter: $normal-inner-shadow;
 }
 
 .horizontal-button-bar .button {
@@ -72,7 +60,14 @@
 }
 
 .horizontal-button-bar .button.first {
-    border-left-size: 1;
+    border-left-size: $normal-border-size;
+    border-top-left-radius: $normal-border-radius;
+    border-bottom-left-radius: $normal-border-radius;
+}
+
+.horizontal-button-bar .button.last {
+    border-top-right-radius: $normal-border-radius;
+    border-bottom-right-radius: $normal-border-radius;
 }
 
 .vertical-button-bar .button {
@@ -80,151 +75,182 @@
 }
 
 .vertical-button-bar .button.first {
-    border-top-size: 1;
+    border-top-size: $normal-border-size;
+    border-top-left-radius: $normal-border-radius;
+    border-top-right-radius: $normal-border-radius;
+}
+
+.vertical-button-bar .button.last {
+    border-bottom-left-radius: $normal-border-radius;
+    border-bottom-right-radius: $normal-border-radius;
 }
 
 /************************************************************************
 ** BUTTON BAR - LEFT MENU ALTERNATE
 *************************************************************************/
 .button-bar.left-menu {
-    background-color: #EEEEEE;
-    border-right: 1px solid #ABABAB;
+    background-color: $solid-background-color;
+    border-right: $normal-border-size solid $normal-border-color;
 }
 
 .button-bar.left-menu .button {
-    background-color: #EEEEEE;
-    border-left:  1px solid #EEEEEE;
+    background-color: $solid-background-color;
+    border-left: $normal-border-size solid $solid-background-color;
     width: 100px;
     height: 100px;
     icon-position: "top";
+    border-radius: 0px;
 }
 
 .button-bar.left-menu.with-bottom-button .button.last {
-    border-top:  1px solid #ABABAB;
-    border-bottom:  1px solid #EEEEEE;
+    border-top: $normal-border-size solid $normal-border-color;
+    border-bottom: $normal-border-size solid $solid-background-color;
 }
 
 .button-bar.left-menu .button:hover {
-    background-color: #F5F5F5;
+    background-color: $solid-background-color-hover;
+    border-left: $normal-border-size solid $solid-background-color-hover;
 }
 
 .button-bar.left-menu .button:down {
-    background-color: white;
-    color: #222222;
-    border-right: 1px solid white;
+    background-color: $default-background-color;
+    color: $normal-text-color;
+    border-right: $normal-border-size solid $default-background-color;
     
-    border-top:  1px solid white;
-    border-left:  1px solid white;
+    border-top: $normal-border-size solid $default-background-color;
+    border-left: $normal-border-size solid $default-background-color;
+    
+    filter: none;
+}
+
+.button-bar.left-menu .button.first:down {
+    border-top: $normal-border-size solid $normal-border-color;
 }
 
 .button-bar.left-menu.with-bottom-button .button.last:down {
-    border-top:  1px solid #ABABAB;
-    border-bottom:  1px solid white;
+    border-top:  $normal-border-size solid $normal-border-color;
+    border-bottom: $normal-border-size solid $default-background-color;
 }
 
 /************************************************************************
 ** BUTTON BAR - RIGHT MENU ALTERNATE
 *************************************************************************/
 .button-bar.right-menu {
-    background-color: #EEEEEE;
-    border-left: 1px solid #ABABAB;
+    background-color: $solid-background-color;
+    border-left: $normal-border-size solid $normal-border-color;
 }
 
 .button-bar.right-menu .button {
-    background-color: #EEEEEE;
-    border-right:  1px solid #EEEEEE;
+    background-color: $solid-background-color;
+    border-right: $normal-border-size solid $solid-background-color;
     width: 100px;
     height: 100px;
     icon-position: "top";
+    border-radius: 0px;
 }
 
 .button-bar.right-menu.with-bottom-button .button.last {
-    border-top:  1px solid #ABABAB;
-    border-bottom:  1px solid #EEEEEE;
+    border-top:  $normal-border-size solid $normal-border-color;
+    border-bottom: $normal-border-size solid $solid-background-color;
 }
 
 .button-bar.right-menu .button:hover {
-    background-color: #F5F5F5;
+    background-color: $solid-background-color-hover;
+    border-right: $normal-border-size solid $solid-background-color-hover;
 }
 
 .button-bar.right-menu .button:down {
-    background-color: white;
-    color: #222222;
-    border-left: 1px solid white;
+    background-color: $default-background-color;
+    color: $normal-text-color;
+    border-left: $normal-border-size solid $default-background-color;
     
-    border-top:  1px solid white;
-    border-right:  1px solid white;
+    border-top: $normal-border-size solid $default-background-color;
+    border-right: $normal-border-size solid $default-background-color;
+    
+    filter: none;
+}
+
+.button-bar.right-menu .button.first:down {
+    border-top: $normal-border-size solid $normal-border-color;
 }
 
 .button-bar.right-menu.with-bottom-button .button.last:down {
-    border-top:  1px solid #ABABAB;
-    border-bottom:  1px solid white;
+    border-top:  $normal-border-size solid $normal-border-color;
+    border-bottom: $normal-border-size solid $default-background-color;
 }
 
 /************************************************************************
 ** BUTTON BAR - TOP MENU ALTERNATE
 *************************************************************************/
 .button-bar.top-menu {
-    background-color: #EEEEEE;
-    border-bottom: 1px solid #ABABAB;
+    background-color: $solid-background-color;
+    border-bottom: $normal-border-size solid $normal-border-color;
 }
 
 .button-bar.top-menu .button {
-    background-color: #EEEEEE;
-    border-top:  1px solid #EEEEEE;
+    background-color: $solid-background-color;
+    border-top: $normal-border-size solid $solid-background-color;
     width: 100px;
     height: 100px;
     icon-position: "top";
+    border-radius: 0px;
 }
 
 .button-bar.top-menu .button:hover {
-    background-color: #F5F5F5;
+    background-color: $solid-background-color-hover;
+    border-top: $normal-border-size solid $solid-background-color-hover;
 }
 
 .button-bar.top-menu .button:down {
-    background-color: white;
-    color: #222222;
+    background-color: $default-background-color;
+    color: $normal-text-color;
     
-    border-left: 1px solid white;
-    border-bottom: 1px solid white;
+    border-left: $normal-border-size solid $default-background-color;
+    border-bottom: $normal-border-size solid $default-background-color;
     
-    border-top:  1px solid white;
+    border-top: $normal-border-size solid $default-background-color;
+    
+    filter: none;
 }
 
 .button-bar.top-menu .button.first:down {
-    border-left: 1px solid #ABABAB;
+    border-left: $normal-border-size solid $normal-border-color;
 }
 
 /************************************************************************
 ** BUTTON BAR - BOTTOM MENU ALTERNATE
 *************************************************************************/
 .button-bar.bottom-menu {
-    background-color: #EEEEEE;
-    border-top: 1px solid #ABABAB;
+    background-color: $solid-background-color;
+    border-top: $normal-border-size solid $normal-border-color;
 }
 
 .button-bar.bottom-menu .button {
-    background-color: #EEEEEE;
-    border-bottom:  1px solid #EEEEEE;
+    background-color: $solid-background-color;
+    border-bottom: $normal-border-size solid $solid-background-color;
     width: 100px;
     height: 100px;
     icon-position: "top";
+    border-radius: 0px;
 }
 
 .button-bar.bottom-menu .button:hover {
-    background-color: #F5F5F5;
+    background-color: $solid-background-color-hover;
+    border-bottom: $normal-border-size solid $solid-background-color-hover;
 }
 
 .button-bar.bottom-menu .button:down {
-    background-color: white;
-    color: #222222;
+    background-color: $default-background-color;
+    color: $normal-text-color;
     
-    border-left: 1px solid white;
-    border-bottom: 1px solid white;
+    border-left: $normal-border-size solid $default-background-color;
+    border-bottom: $normal-border-size solid $default-background-color;
     
-    border-top:  1px solid white;
+    border-top: $normal-border-size solid $default-background-color;
+    
+    filter: none;
 }
 
 .button-bar.bottom-menu .button.first:down {
-    border-left: 1px solid #ABABAB;
+    border-left: $normal-border-size solid $normal-border-color;
 }

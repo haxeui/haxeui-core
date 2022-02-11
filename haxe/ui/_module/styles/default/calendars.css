@@ -2,9 +2,9 @@
 ** CALENDAR
 *************************************************************************/
 .calendar {
-    background-color: #FFFFFF;
+    background-color: $default-background-color;
     padding: 5px;
-    border: 1px solid #ABABAB;
+    border: 1px solid $normal-border-color;
     border-radius: 1px;
 }
 
@@ -14,24 +14,24 @@
 
 .calendar .calendar-off-day {
     border: none;
-    background-color: white;
+    background-color: $default-background-color;
     cursor: default;
 }
 
 .calendar .calendar-day {
     border: none;
-    background-color: #ecf2f9;
+    background-color: $accent-color-lighter;
 }
 
 .calendar .calendar-day:hover {
     border: none;
-    background-color: #a7c4e2;
+    background-color: $selection-background-color-hover;
 }
 
 .calendar .calendar-day-selected {
     border: none;
-    background-color: #a7c4e2;
-    color: white;
+    background-color: $selection-background-color;
+    color: $selection-text-color;
 }
 
 
@@ -39,9 +39,9 @@
 ** CALENDARVIEW
 *************************************************************************/
 .calendar-view {
-    background-color: #FFFFFF;
+    background-color: $default-background-color;
     padding: 5px;
-    border: 1px solid #ABABAB;
+    border: 1px solid $normal-border-color;
     border-radius: 1px;
 }
 
@@ -55,17 +55,17 @@
 }
 
 .calendar-view #prev-month {
-    icon: "haxeui-core/styles/default/left_arrow.png";
+    icon: $arrow-left;
     vertical-align: center;
     border: none;
-    background-color: white;
+    background-color: $default-background-color;
 }
 
 .calendar-view #next-month {
-    icon: "haxeui-core/styles/default/right_arrow.png";
+    icon: $arrow-right;
     vertical-align: center;
     border: none;
-    background-color: white;
+    background-color: $default-background-color;
 }
 
 .calendar-view #current-month {
@@ -77,9 +77,9 @@
     vertical-align: center;
 	border: none;
 	padding-top: 1px;
-	background-color: white;
+	background-color: $default-background-color;
 }
 .calendar-view #current-year .button {
-	background-color: white;
+	background-color: $default-background-color;
 	border: none;
 }

@@ -10,7 +10,7 @@
 }
 
 .modal-background {
-    background-color: white;
+    background-color: $modal-background-color;
     opacity: 0.75;
 }
 
@@ -40,11 +40,11 @@
 }
 
 .default-background {
-    background-color: white;
+    background-color: $default-background-color;
 }
 
 .default-background-solid {
-    background-color: #f0f0f0;
+    background-color: $solid-background-color;
 }
 
 /************************************************************************
@@ -66,21 +66,33 @@
     width: auto;
     height: auto;
     content-type: auto;
-    color: black;
+    color: $normal-text-color;
 }
     
 .label:disabled {
-    color: #909090;
+    color: $disabled-text-color;
 }
 
 /************************************************************************
 ** LINK
 *************************************************************************/
 .link {
-    color: #407dbf;
+    color: $accent-color-darker;
     font-underline: true;
     cursor: pointer;
     pointer-events: true;
+}
+
+.link:hover {
+    color: $accent-color;
+}
+
+.link:down {
+    color: $accent-color-darker;
+}
+    
+.link:disabled {
+    color: $disabled-text-color;
 }
 
 /************************************************************************
@@ -89,10 +101,12 @@
 .image {
     width: auto;
     height: auto;
+    opacity: 1;
 }
 
 .image:disabled {
     filter: grayscale;
+    opacity: .3;
 }
 
 /************************************************************************
@@ -118,4 +132,28 @@
 
 .basic-renderer-label {
     width: 100%;
+}
+
+/************************************************************************
+** SECTION HEADERS
+*************************************************************************/
+.section-header {
+    width: 100%;
+    padding-bottom: 5px;
+    padding-top: 15px;
+}
+
+.section-header .label {
+    color: $normal-text-color;
+}
+
+.section-header .line {
+    height: 1px;
+    width: 100%;
+    background-color: $normal-border-color;
+}
+
+.section-header.first {
+    padding-top: 0px;
+   
 }

@@ -2,12 +2,12 @@
 ** SCROLLVIEW
 *************************************************************************/
 .scrollview {
-    border: 1px solid #ABABAB;
-    border-radius: 1px;
+    border: 1px solid $normal-border-color;
+    border-radius: 2px;
     padding: 0px;
     width: auto;
     height: auto;
-    background-color: white;
+    background-color: $tertiary-background-color;
 }
 
 .scrollview .scrollview-contents {

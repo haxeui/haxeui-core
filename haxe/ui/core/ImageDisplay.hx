@@ -121,6 +121,9 @@ class ImageDisplay extends ImageDisplayImpl {
     }
 
     public function invalidateComponent(flag:String = InvalidationFlags.ALL) {
+        if (parentComponent == null) {
+            return;
+        }
         if (flag == InvalidationFlags.ALL) {
             _isAllInvalid = true;
             parentComponent.invalidateComponent(InvalidationFlags.IMAGE_DISPLAY);

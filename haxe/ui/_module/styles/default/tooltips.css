@@ -1,6 +1,6 @@
 .tooltip {
-    background-color: #fffff8;
-    border: 1px solid #ABABAB;
+    background-color: $tooltip-background-color;
+    border: 1px solid $normal-border-color;
     filter: drop-shadow(1, 45, #000000, 0.05, 6, 1, 30, 35, false);
     border-radius: 2px;
     padding: 4px 5px;

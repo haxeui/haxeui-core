@@ -1,29 +1,29 @@
 .sidebar-modal-background {
-    background-color: white;
+    background-color: $modal-background-color;
     opacity: 0.60;
 }
 
 .sidebar {
     margin: 50px;
-    background-color: #EEEEEE;
+    background-color: $solid-background-color;
     padding: 5px;
     filter: drop-shadow(1, 45, #000000, 0.1, 30, 2, 1, 3, false);
 }
     
 .sidebar:left {
-    border-right: 1px solid #ABABAB;
+    border-right: 1px solid $normal-border-color;
 }
 
 .sidebar:right {
-    border-left: 1px solid #ABABAB;
+    border-left: 1px solid $normal-border-color;
 }
 
 .sidebar:top {
-    border-bottom: 1px solid #ABABAB;
+    border-bottom: 1px solid $normal-border-color;
 }
 
 .sidebar:bottom {
-    border-top: 1px solid #ABABAB;
+    border-top: 1px solid $normal-border-color;
 }
 
 

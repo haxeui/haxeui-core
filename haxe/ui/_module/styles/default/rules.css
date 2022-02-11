@@ -2,7 +2,7 @@
 ** RULE
 *************************************************************************/
 .rule {
-    background-color: #DDDDDD;
+    background-color: $normal-border-color;
 }
 
 .horizontal-rule {

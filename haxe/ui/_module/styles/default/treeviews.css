@@ -14,15 +14,15 @@
 }
 
 .treeview .itemrenderer:hover {
-    background-color: #d9e5f2;
+    background-color: $selection-background-color-hover;
 }
 
 .treeview .itemrenderer:node-selected {
-    background-color: #a7c4e2;
+    background-color: $selection-background-color;
 }
 
 .treeview .itemrenderer:node-selected .label {
-    color: white;
+    color: $selection-text-color;
 }
 
 .treeviewnode .basic-renderer-container {
@@ -47,18 +47,18 @@
 }
 
 .treenode-expand-collapse-icon {
-    resource: "haxeui-core/styles/default/blank.png";
+    resource: $blank;
     cursor: none;
     vertical-align: center;
 }
     
 .treenode-expand-collapse-icon.node-expanded {
-    resource: "haxeui-core/styles/default/expanded.png";
+    resource: $collapsed;
     cursor: pointer;
 }
     
 .treenode-expand-collapse-icon.node-collapsed {
-    resource: "haxeui-core/styles/default/collapsed.png";
+    resource: $expanded;
     cursor: pointer;
 }
 
