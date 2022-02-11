@@ -80,8 +80,14 @@ class ItemRenderer extends Box {
                         if (Type.getClass(_data) != null) {
                             var instanceFields = Type.getInstanceFields(Type.getClass(_data));
                             for (i in instanceFields) {
-                                if (Reflect.isFunction(Reflect.getProperty(_data, i)) == false && fieldList.indexOf(i) == -1) {
+                                var isFunction = Reflect.isFunction(Reflect.getProperty(_data, i));
+                                if (isFunction == false && fieldList.indexOf(i) == -1) {
                                     fieldList.push(i);
+                                } else if (isFunction == true && StringTools.startsWith(i, "get_")) {
+                                    var propertyName = i.substr(4);
+                                    if (fieldList.indexOf(propertyName) == -1) {
+                                        fieldList.push(propertyName);
+                                    }
                                 }
                             }
                             _fieldList = fieldList;
