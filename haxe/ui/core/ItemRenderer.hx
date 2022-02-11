@@ -82,11 +82,8 @@ class ItemRenderer extends Box {
                             for (i in instanceFields) {
                                 if (fieldList.indexOf(i) == -1 && Reflect.isFunction(Reflect.getProperty(_data, i)) == false) {
                                     fieldList.push(i);
-                                } else if (StringTools.startsWith(i, "get_") && Reflect.isFunction(Reflect.getProperty(_data, i)) == true) {
-                                    var propertyName = i.substr(4);
-                                    if (fieldList.indexOf(propertyName) == -1) {
-                                        fieldList.push(propertyName);
-                                    }
+                                } else if (StringTools.startsWith(i, "get_") && fieldList.indexOf(i.substr(4)) == -1 && Reflect.isFunction(Reflect.getProperty(_data, i)) == true) {
+                                    fieldList.push(i.substr(4));
                                 }
                             }
                             _fieldList = fieldList;
