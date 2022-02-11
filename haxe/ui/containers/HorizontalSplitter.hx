@@ -30,6 +30,11 @@ private class HorizontalSplitterEvents extends SplitterEvents {
         var prevCX = prev.width += delta;
         var nextCX = next.width -= delta;
         var ucx = _splitter.layout.usableWidth;
+        
+        if (prevCX <= 0 || nextCX <= 0) {
+            return;
+        }
+        
         if (prev.percentWidth != null) {
             prev.percentWidth = (prevCX / ucx) * 100;
         } else {

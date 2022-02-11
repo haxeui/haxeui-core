@@ -30,6 +30,11 @@ private class VerticalSplitterEvents extends SplitterEvents {
         var prevCY = prev.height += delta;
         var nextCY = next.height -= delta;
         var ucy = _splitter.layout.usableHeight;
+        
+        if (prevCY <= 0 || nextCY <= 0) {
+            return;
+        }
+        
         if (prev.percentHeight != null) {
             prev.percentHeight = (prevCY / ucy) * 100;
         } else {
