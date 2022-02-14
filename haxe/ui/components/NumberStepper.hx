@@ -4,6 +4,7 @@ import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.components.Button;
 import haxe.ui.components.TextField;
+import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.Platform;
@@ -123,6 +124,7 @@ private class Builder extends CompositeBuilder {
 // Composite Events
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
 private class Events extends haxe.ui.events.Events {
     private var _stepper:NumberStepper;
 
@@ -132,6 +134,9 @@ private class Events extends haxe.ui.events.Events {
     }
     
     public override function register() {
+        if (!_stepper.hasEvent(MouseEvent.CLICK, onClick)) {
+            _stepper.registerEvent(MouseEvent.CLICK, onClick);
+        }
         if (!_stepper.hasEvent(FocusEvent.FOCUS_IN, onFocusIn)) {
             _stepper.registerEvent(FocusEvent.FOCUS_IN, onFocusIn);
         }
@@ -162,6 +167,7 @@ private class Events extends haxe.ui.events.Events {
     }
     
     public override function unregister() {
+        _stepper.unregisterEvent(MouseEvent.CLICK, onClick);
         _stepper.unregisterEvent(FocusEvent.FOCUS_IN, onFocusIn);
         _stepper.unregisterEvent(FocusEvent.FOCUS_OUT, onFocusOut);
         _stepper.unregisterEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
@@ -225,7 +231,24 @@ private class Events extends haxe.ui.events.Events {
         }
     }
     
+    private function isInScroller():Bool {
+        var p = _stepper.parentComponent;
+        while (p != null) {
+            if (p.isScroller) {
+                var vscroll = p.findComponent("scrollview-vscroll", Component);
+                if (vscroll != null && vscroll.hidden == false) {
+                    return true;
+                }
+            }
+            p = p.parentComponent;
+        }
+        return false;
+    }
+    
     private function onMouseWheel(event:MouseEvent) {
+        if (isInScroller() && _stepper.focus == false) {
+            return;
+        }
         event.cancel();
         _stepper.focus = true;
         if (event.delta > 0) {
@@ -233,6 +256,10 @@ private class Events extends haxe.ui.events.Events {
         } else {
             ValueHelper.deincrementValue(_stepper);
         }
+    }
+    
+    private function onClick(_) {
+        _stepper.focus = true;
     }
     
     private function onFocusIn(event:FocusEvent) {

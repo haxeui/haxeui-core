@@ -4,6 +4,7 @@ import haxe.ui.behaviours.Behaviour;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.components.Label;
+import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.InteractiveComponent;
@@ -133,6 +134,7 @@ private class Builder extends CompositeBuilder {
 // Composite Events
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
 private class Events extends haxe.ui.events.Events {
     private var _stepper:OptionStepper;
 
@@ -142,6 +144,9 @@ private class Events extends haxe.ui.events.Events {
     }
     
     public override function register() {
+        if (!_stepper.hasEvent(MouseEvent.CLICK, onClick)) {
+            _stepper.registerEvent(MouseEvent.CLICK, onClick);
+        }
         if (!_stepper.hasEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel)) {
             _stepper.registerEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
         }
@@ -158,6 +163,7 @@ private class Events extends haxe.ui.events.Events {
     }
     
     public override function unregister() {
+        _stepper.unregisterEvent(MouseEvent.CLICK, onClick);
         _stepper.unregisterEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
             
         var deinc:Button = _stepper.findComponent("deinc", Button);
@@ -165,6 +171,10 @@ private class Events extends haxe.ui.events.Events {
         
         var inc:Button = _stepper.findComponent("inc", Button);
         inc.unregisterEvent(MouseEvent.CLICK, onInc);
+    }
+    
+    private function onClick(_) {
+        _stepper.focus = true;
     }
     
     private function onDeinc(event:MouseEvent) {
@@ -176,8 +186,26 @@ private class Events extends haxe.ui.events.Events {
         _stepper.focus = true;
         incrementValue();
     }
+
+    private function isInScroller():Bool {
+        var p = _stepper.parentComponent;
+        while (p != null) {
+            if (p.isScroller) {
+                var vscroll = p.findComponent("scrollview-vscroll", Component);
+                if (vscroll != null && vscroll.hidden == false) {
+                    return true;
+                }
+            }
+            p = p.parentComponent;
+        }
+        return false;
+    }
     
     private function onMouseWheel(event:MouseEvent) {
+        if (isInScroller() && _stepper.focus == false) {
+            return;
+        }
+        
         event.cancel();
         _stepper.focus = true;
         if (event.delta > 0) {
