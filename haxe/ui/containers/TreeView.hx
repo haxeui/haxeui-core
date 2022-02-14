@@ -56,12 +56,18 @@ class TreeView extends ScrollView implements IDataComponent {
         }
         
         if (_selectedNode != null) {
-            _selectedNode.findComponent(ItemRenderer, true).removeClass(":node-selected", true, true);
+            var renderer = _selectedNode.findComponent(ItemRenderer, true);
+            if (renderer != null) {
+                renderer.removeClass(":node-selected", true, true);
+            }
         }
         
         _selectedNode = value;
         if (_selectedNode != null) {
-            _selectedNode.findComponent(ItemRenderer, true).addClass(":node-selected", true, true);
+            var renderer = _selectedNode.findComponent(ItemRenderer, true);
+            if (renderer != null) {
+                renderer.addClass(":node-selected", true, true);
+            }
         }
         
         var event:UIEvent = new UIEvent(UIEvent.CHANGE);
