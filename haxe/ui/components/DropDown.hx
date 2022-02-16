@@ -601,7 +601,7 @@ class DropDownEvents extends ButtonEvents {
             _wrapper.left = (Screen.instance.actualWidth / 2) - (_wrapper.actualComponentWidth / 2);
             _wrapper.top = (Screen.instance.actualHeight / 2) - (_wrapper.actualComponentHeight / 2);
         } else {
-            _wrapper.left = _dropdown.screenLeft + componentOffset.x + 1;
+            _wrapper.left = _dropdown.screenLeft + componentOffset.x;
             _wrapper.top = _dropdown.screenTop + (_dropdown.actualComponentHeight - Toolkit.scaleY) + componentOffset.y;
             Screen.instance.addComponent(_wrapper);
             handler.prepare(_wrapper);

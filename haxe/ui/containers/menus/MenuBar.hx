@@ -179,7 +179,7 @@ private class Events extends haxe.ui.events.Events {
                 rtl = true;
             }
 
-            menu.left = left + 1;
+            menu.left = left;
             menu.top = top - Toolkit.scaleY;
         }
 
