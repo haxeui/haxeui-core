@@ -27,7 +27,7 @@ class FieldBuilder {
 
     public var isStatic(get, null):Bool;
     private function get_isStatic():Bool {
-        return field.access.contains(AStatic);
+        return field.access.indexOf(AStatic) != -1;
     }
     
     public var access(get, set):Array<Access>;
