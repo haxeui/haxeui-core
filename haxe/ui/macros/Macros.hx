@@ -551,6 +551,9 @@ class Macros {
         var builder = new ClassBuilder(haxe.macro.Context.getBuildFields(), Context.getLocalType(), Context.currentPos());
 
         for (f in builder.vars) {
+            if (f.isStatic) {
+                continue;
+            }
             builder.removeVar(f.name);
 
             var name = '_${f.name}';
