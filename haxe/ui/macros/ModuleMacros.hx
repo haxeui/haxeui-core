@@ -387,7 +387,7 @@ class ModuleMacros {
         var c = ComponentMacros.buildComponentFromStringCommon(codeBuilder, xml, buildData);
 
         var superClassString = "haxe.ui.containers.Box";
-        var superClassLookup:String = ComponentClassMap.get(c.type);
+        var superClassLookup:String = ModuleMacros.resolveComponentClass(c.type);
         if (superClassLookup != null) {
             superClassString = superClassLookup;
         }
