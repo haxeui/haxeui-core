@@ -24,14 +24,43 @@ class Parser {
     }
 
     public function parse(source:String):StyleSheet {
+        source = cssCommentsRegex.replace(source, "");
+        
         if (source.indexOf("$") != -1) {
-            for (key in ThemeManager.instance.currentThemeVars.keys()) {
-                var value = ThemeManager.instance.currentThemeVars.get(key);
-                source = StringTools.replace(source, "$" + key, value);
+            var n1 = source.indexOf("$");
+            while (n1 != -1) {
+                var n2 = n1;
+                while (n2 <= source.length - 1) {
+                    var c = source.charAt(n2);
+                    if (c == " " || c == ";" || c == "\n" || c == ",") {
+                        break;
+                    }
+                    n2++;
+                }
+
+                if (n2 != source.length - 1) {
+                    var key = source.substring(n1 + 1, n2);
+                    var value = ThemeManager.instance.currentThemeVars.get(key);
+                    if (value != null) {
+                        var before = source.substring(0, n1);
+                        var after = source.substring(n2);
+                        source = before + value + after;
+                        n2 = n1 + value.length;
+                    } else {
+                        trace("WARNING: css variable '" + key + "' not defined");
+                    }
+                }
+                
+                n1 = source.indexOf("$", n2);
             }
         }
         
-        source = cssCommentsRegex.replace(source, "");
+        #if debug
+        if (source.indexOf("$") != -1) {
+            trace("WARNING: some css variables not resolved");
+        }
+        #end
+        
 
         var styleSheet = new StyleSheet();
 
