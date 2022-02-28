@@ -10,7 +10,7 @@
 
 .dropdown-popup {
     background-color: $default-background-color;
-    border: 1px solid $normal-border-color;
+    border: 1px solid $accent-color;
 }
 
 .dropdown-popup .listview .itemrenderer {
@@ -18,7 +18,7 @@
 }
 
 .dropdown-popup > .scrollview, .dropdown-popup > dropdown-search-container > .scrollview  {
-    border: 1px solid $normal-border-color;
+    border: 1px solid $accent-color;
 }
 
 .dropdown-search-container {

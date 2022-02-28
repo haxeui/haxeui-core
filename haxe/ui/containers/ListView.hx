@@ -126,6 +126,7 @@ class ListViewEvents extends ScrollViewEvents {
     }
 
     private function onRendererMouseDown(e:MouseEvent) {
+        _listview.focus = true;
         switch (_listview.selectionMode) {
             case SelectionMode.MULTIPLE_LONG_PRESS:
                 if (_listview.selectedIndices.length == 0) {
