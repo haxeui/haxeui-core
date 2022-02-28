@@ -37,7 +37,7 @@ class DropDown extends Button implements IDataComponent {
     @:clonable @:behaviour(SelectedIndexBehaviour, -1)  public var selectedIndex:Int;
     @:clonable @:behaviour(SelectedItemBehaviour)       public var selectedItem:Dynamic;
     @:clonable @:behaviour(DefaultBehaviour, false)     public var searchable:Bool;
-    @:clonable @:behaviour(DefaultBehaviour, "Search")  public var searchPrompt:String;
+    @:clonable @:behaviour(DefaultBehaviour, "{{dropdown.search}}")  public var searchPrompt:String;
     @:call(HideDropDown)                                public function hideDropDown();
     @:clonable @:value(selectedItem)                    public var value:Dynamic;
 
