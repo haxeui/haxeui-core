@@ -27,19 +27,19 @@ class DropDown extends Button implements IDataComponent {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:clonable @:behaviour(DefaultBehaviour)            public var handlerStyleNames:String;
-    @:clonable @:behaviour(DataSourceBehaviour)         public var dataSource:DataSource<Dynamic>;
-    @:clonable @:behaviour(DefaultBehaviour, "list")    public var type:String;
-    @:clonable @:behaviour(DefaultBehaviour, false)     public var virtual:Bool;
-    @:clonable @:behaviour(DefaultBehaviour)            public var dropdownWidth:Null<Float>;
-    @:clonable @:behaviour(DefaultBehaviour)            public var dropdownHeight:Null<Float>;
-    @:clonable @:behaviour(DefaultBehaviour)            public var dropdownSize:Null<Int>;
-    @:clonable @:behaviour(SelectedIndexBehaviour, -1)  public var selectedIndex:Int;
-    @:clonable @:behaviour(SelectedItemBehaviour)       public var selectedItem:Dynamic;
-    @:clonable @:behaviour(DefaultBehaviour, false)     public var searchable:Bool;
-    @:clonable @:behaviour(DefaultBehaviour, "{{dropdown.search}}")  public var searchPrompt:String;
-    @:call(HideDropDown)                                public function hideDropDown();
-    @:clonable @:value(selectedItem)                    public var value:Dynamic;
+    @:clonable @:behaviour(DefaultBehaviour)                        public var handlerStyleNames:String;
+    @:clonable @:behaviour(DataSourceBehaviour)                     public var dataSource:DataSource<Dynamic>;
+    @:clonable @:behaviour(DefaultBehaviour, "list")                public var type:String;
+    @:clonable @:behaviour(DefaultBehaviour, false)                 public var virtual:Bool;
+    @:clonable @:behaviour(DefaultBehaviour)                        public var dropdownWidth:Null<Float>;
+    @:clonable @:behaviour(DefaultBehaviour)                        public var dropdownHeight:Null<Float>;
+    @:clonable @:behaviour(DefaultBehaviour)                        public var dropdownSize:Null<Int>;
+    @:clonable @:behaviour(SelectedIndexBehaviour, -1)              public var selectedIndex:Int;
+    @:clonable @:behaviour(SelectedItemBehaviour)                   public var selectedItem:Dynamic;
+    @:clonable @:behaviour(DefaultBehaviour, false)                 public var searchable:Bool;
+    @:clonable @:behaviour(DefaultBehaviour, "{{dropdown.search}}") public var searchPrompt:String;
+    @:call(HideDropDown)                                            public function hideDropDown();
+    @:clonable @:value(selectedItem)                                public var value:Dynamic;
 
     private override function onThemeChanged() {
         super.onThemeChanged();
