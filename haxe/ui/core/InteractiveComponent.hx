@@ -48,7 +48,6 @@ class InteractiveComponent extends Component implements IFocusable {
         _focus = value;
         var eventType = null;
         if (_focus == true) {
-            addClass(":active");
             eventType = FocusEvent.FOCUS_IN;
             FocusManager.instance.focus = cast(this, IFocusable);
 
@@ -58,7 +57,6 @@ class InteractiveComponent extends Component implements IFocusable {
                 scrollview.ensureVisible(this);
             }
         } else {
-            removeClass(":active");
             eventType = FocusEvent.FOCUS_OUT;
             FocusManager.instance.focus = null;
         }

@@ -1073,6 +1073,7 @@ class Component extends ComponentImpl implements IValidating {
     @:dox(group = "Style related properties and methods")
     private var classes:Array<String> = [];
 
+    public var cascadeActive:Bool = false;
     /**
      Adds a css style name to this component
     **/
@@ -1085,7 +1086,7 @@ class Component extends ComponentImpl implements IValidating {
             }
         }
 
-        if (recursive == true) {
+        if (recursive == true || (cascadeActive == true && name == ":active")) {
             for (child in childComponents) {
                 child.addClass(name, invalidate, recursive);
             }
@@ -1130,7 +1131,7 @@ class Component extends ComponentImpl implements IValidating {
             }
         }
 
-        if (recursive == true) {
+        if (recursive == true || (cascadeActive == true && name == ":active")) {
             for (child in childComponents) {
                 child.removeClass(name, invalidate, recursive);
             }

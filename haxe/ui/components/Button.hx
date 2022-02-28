@@ -424,8 +424,8 @@ class ButtonEvents extends haxe.ui.events.Events {
     }
 
     private function onMouseDown(event:MouseEvent) {
-        if (_button.allowFocus == true && FocusManager.instance.focusInfo != null && FocusManager.instance.focusInfo.currentFocus != null) {
-            FocusManager.instance.focusInfo.currentFocus.focus = false;
+        if (_button.allowFocus == true) {
+            FocusManager.instance.focus = _button;
         }
         if (_button.repeater == true && _repeatInterval == 0) {
             _repeatInterval = (_button.easeInRepeater) ? _button.repeatInterval * 2 : _button.repeatInterval;

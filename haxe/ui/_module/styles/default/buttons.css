@@ -26,6 +26,10 @@
     border-color: $down-border-color;
 }
 
+.button:active {
+    border: 1px solid $accent-color;
+}
+
 .button:disabled {
     background: $disabled-background-color-start $disabled-background-color-end vertical;
     color: $disabled-text-color;

@@ -8,6 +8,7 @@ import haxe.ui.containers.Box;
 import haxe.ui.containers.HBox;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
+import haxe.ui.core.InteractiveComponent;
 import haxe.ui.events.Events;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
@@ -104,6 +105,7 @@ private class SelectedIndex extends DataBehaviour {
         if (tab != null) {
             var selectedTab:Component = cast(_component, TabBar).selectedTab;
             if (selectedTab != null) {
+                //cast(selectedTab, InteractiveComponent).allowFocus = true;
                 selectedTab.removeClass("tabbar-button-selected");
                 var label = selectedTab.findComponent(Label);
                 if (label != null) {
@@ -115,6 +117,7 @@ private class SelectedIndex extends DataBehaviour {
                 }
             }
             tab.addClass("tabbar-button-selected");
+            //cast(tab, InteractiveComponent).allowFocus = false;
             var label = tab.findComponent(Label);
             if (label != null) {
                 label.invalidateComponent();

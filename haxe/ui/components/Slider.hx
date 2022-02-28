@@ -22,6 +22,7 @@ import haxe.ui.util.Variant;
 class Slider extends InteractiveComponent implements IDirectionalComponent {
     private function new() {
         super();
+        cascadeActive = true;
     }
 
     //***********************************************************************************************************
@@ -300,6 +301,8 @@ private class Events extends haxe.ui.events.Events  {
             return;
         }
 
+        _slider.focus = true;
+        
         e.screenX *= Toolkit.scaleX;
         e.screenY *= Toolkit.scaleY;
         e.cancel();
@@ -338,6 +341,7 @@ private class Events extends haxe.ui.events.Events  {
     private var _offset:Point = null;
     private function onThumbMouseDown(e:MouseEvent) {
         e.cancel();
+        _slider.focus = true;
         startDrag(cast(e.target, Button), e.localX * Toolkit.scaleX, e.localY * Toolkit.scaleX);
     }
 

@@ -8,16 +8,6 @@ import haxe.ui.validation.InvalidationFlags;
 class ScreenBase {
     public var rootComponents:Array<Component>;
 
-    private var _focus:Component = null;
-    public var focus(get, set):Component;
-    private function get_focus():Component {
-        return _focus;
-    }
-    private function set_focus(value:Component):Component {
-        _focus = value;
-        return _focus;
-    }
-
     private var _options:ToolkitOptions;
     public var options(get, set):ToolkitOptions;
     private function get_options():ToolkitOptions {

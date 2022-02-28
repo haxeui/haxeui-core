@@ -55,6 +55,17 @@
     border-left-width: 1px;
 }
 
+.tabbar-button:active {
+    border-top: 2px solid $accent-color;
+    border-right: 1px solid $normal-border-color;
+    border-bottom: 1px solid $normal-border-color;
+    border-left-color: $normal-border-color;
+}
+
+.tabbar-button-selected:active {
+    border-bottom-color: $secondary-background-color;
+}
+
 .tabbar-scroll-left {
     icon: $arrow-left;
     border-radius: 0;
@@ -133,6 +144,17 @@
     border-left-width: 0px;
     
     border-bottom: 2px solid $accent-color;
+}
+
+.tabbar:bottom .tabbar-button:active {
+    border-bottom: 2px solid $accent-color;
+    border-right: 1px solid $normal-border-color;
+    border-top: 1px solid $normal-border-color;
+    border-left-color: $normal-border-color;
+}
+
+.tabbar:bottom .tabbar-button-selected:active {
+    border-top-color: $secondary-background-color;
 }
 
 .tabbar-button-selected.first {
