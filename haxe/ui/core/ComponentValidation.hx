@@ -228,9 +228,15 @@ class ComponentValidation extends ComponentEvents {
 
             if (++count >= 10) {
                 if (this._isDisposed) {
-                    throw 'There was a problem validating this component as it has already been destroyed';
+                    #if debug
+                    trace('There was a problem validating this component as it has already been destroyed (${Type.getClassName(Type.getClass(this))}#${this.id})');
+                    #end
+                    throw 'There was a problem validating this component as it has already been destroyed (${Type.getClassName(Type.getClass(this))}#${this.id})';
                 } else {
-                    throw 'The syncValidation returned too many times during validation. This may be an infinite loop. Try to avoid doing anything that calls invalidate() during validation.';
+                    #if debug
+                    trace('The syncValidation returned too many times during validation. This may be an infinite loop. Try to avoid doing anything that calls invalidate() during validation (${Type.getClassName(Type.getClass(this))}#${this.id}).');
+                    #end
+                    throw 'The syncValidation returned too many times during validation. This may be an infinite loop. Try to avoid doing anything that calls invalidate() during validation (${Type.getClassName(Type.getClass(this))}#${this.id}).';
                 }
             }
         }

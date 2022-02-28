@@ -135,13 +135,17 @@ class Style {
     @:optional public var contentHeightPercent:Null<Float>;
     
     @:optional public var wordWrap:Null<Bool>;
+
+    @:optional public var imageRendering:String;
+
+    @:optional public var layout:String;
     
     @:optional public var borderType(get, null):StyleBorderType;
     private function get_borderType():StyleBorderType {
         var t = StyleBorderType.Compound;
-        if (borderLeftSize != null && borderLeftSize == borderRightSize && borderLeftSize == borderBottomSize && borderLeftSize == borderTopSize) { // full border
+        if (borderLeftSize != null && borderLeftSize > 0 && borderLeftSize == borderRightSize && borderLeftSize == borderBottomSize && borderLeftSize == borderTopSize) { // full border
             t = StyleBorderType.Full;
-        } else if (borderLeftSize == null && borderRightSize == null && borderBottomSize == null && borderTopSize == null) {
+        } else if ((borderLeftSize == null || borderLeftSize <= 0) && (borderRightSize == null || borderRightSize <= 0)  && (borderBottomSize == null || borderRightSize <= 0) && (borderTopSize == null || borderTopSize <= 0)) {
             t = StyleBorderType.None;
         }
         return t;
@@ -442,6 +446,20 @@ class Style {
                     contentHeightPercent = ValueTools.percent(v.value);
                 case "word-wrap":
                     wordWrap = ValueTools.bool(v.value);
+                case "image-rendering":
+                    switch (v.value) {
+                        case VNone:
+                            imageRendering = null;
+                        case _:    
+                            imageRendering = ValueTools.string(v.value);
+                    }
+                case "layout":
+                    switch (v.value) {
+                        case VNone:
+                            layout = null;
+                        case _:    
+                            layout = ValueTools.string(v.value);
+                    }
             }
         }
     }
@@ -586,6 +604,8 @@ class Style {
         if (s.contentHeightPercent != null) contentHeightPercent = s.contentHeightPercent;
         
         if (s.wordWrap != null) wordWrap = s.wordWrap;
+        if (s.imageRendering != null) imageRendering = s.imageRendering;
+        if (s.layout != null) layout = s.layout;
     }
 
     public function equalTo(s:Style):Bool {
@@ -706,6 +726,8 @@ class Style {
         if (s.contentHeightPercent != contentHeightPercent) return false;
 
         if (s.wordWrap != wordWrap) return false;
+        if (s.imageRendering != imageRendering) return false;
+        if (s.layout != layout) return false;
         
         return true;
     }

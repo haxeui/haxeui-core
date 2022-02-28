@@ -4,6 +4,7 @@ import haxe.ui.core.Platform;
 import haxe.ui.constants.UnitTime;
 import haxe.ui.core.Screen;
 import haxe.ui.themes.ThemeManager;
+import haxe.ui.util.Color;
 
 class ValueTools {
     private static var timeEReg:EReg = ~/^(-?\d+(?:\.\d+)?)(s|ms)$/gi;
@@ -396,8 +397,9 @@ class ValueTools {
             case "platform-color":
                 return Platform.instance.getColor(ValueTools.string(vl[0]));
             case "theme-icon" | "theme-image":
-                trace("here");
                 return ThemeManager.instance.image(ValueTools.string(vl[0]));
+            case "rgb":
+                return Color.fromComponents(ValueTools.int(vl[0]), ValueTools.int(vl[1]), ValueTools.int(vl[2]), 0).toInt();
             case _:
                 return null;
         }

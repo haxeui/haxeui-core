@@ -12,6 +12,8 @@
     icon-position: far-right;
     border-left-width: 0;
     text-align: left;
+    padding: 6px;
+    border-color: $normal-border-color;
 }
 
 .header .column.last {
@@ -25,28 +27,22 @@
 */
 
 .column.sortable {
-    icon: "haxeui-core/styles/default/sortable_arrows.png";
+    icon: $arrow-up-down;
     icon-position: far-right;
 }
 
 .column.sort-asc {
-    icon: "haxeui-core/styles/default/sortable_asc.png";
+    icon: $sort-asc;
 }
 
 .column.sort-desc {
-    icon: "haxeui-core/styles/default/sortable_desc.png";
+    icon: $sort-desc;
 }
 
 /************************************************************************
 ** TABLEVIEW
 *************************************************************************/
 .tableview {
-    border: 1px solid #ABABAB;
-    border-radius: 1px;
-    padding: 1px;
-    width: auto;
-    height: auto;
-    background-color: #FFFFFF;
     spacing: 0;
 }
 
@@ -57,37 +53,41 @@
 }
 
 .tableview .even {
-    background-color: white;
+    background-color: $tertiary-background-color;
     cursor: pointer;
 }
 
 .tableview .odd {
-    background-color: #f8f8f8;
+    background-color: $solid-background-color-alt;
     cursor: pointer;
 }
 
 .tableview .compounditemrenderer .itemrenderer {
     height: auto;
-    padding: 5px;
+    padding: 6px;
 }
 
 .tableview .even:hover {
-    background-color: #d9e5f2;
+    background-color: $selection-background-color-hover;
 }
 
 .tableview .odd:hover {
-    background-color: #d9e5f2;
+    background-color: $selection-background-color-hover;
 }
 
 .tableview .compounditemrenderer .label {
-    color: black;
+    color: $normal-text-color;
+}
+
+.tableview:disabled .label {
+    color: $disabled-text-color;
 }
 
 .tableview .compounditemrenderer:selected {
-    background-color: #a7c4e2;
-    color: white;
+    background-color: $selection-background-color;
+    color: $selection-text-color;
 }
 
 .tableview .compounditemrenderer:selected .label {
-    color: white;
+    color: $selection-text-color;
 }

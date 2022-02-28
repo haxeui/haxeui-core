@@ -80,8 +80,10 @@ class ItemRenderer extends Box {
                         if (Type.getClass(_data) != null) {
                             var instanceFields = Type.getInstanceFields(Type.getClass(_data));
                             for (i in instanceFields) {
-                                if (Reflect.isFunction(Reflect.getProperty(_data, i)) == false && fieldList.indexOf(i) == -1) {
+                                if (fieldList.indexOf(i) == -1 && Reflect.isFunction(Reflect.getProperty(_data, i)) == false) {
                                     fieldList.push(i);
+                                } else if (StringTools.startsWith(i, "get_") && fieldList.indexOf(i.substr(4)) == -1 && Reflect.isFunction(Reflect.getProperty(_data, i)) == true) {
+                                    fieldList.push(i.substr(4));
                                 }
                             }
                             _fieldList = fieldList;
@@ -164,31 +166,29 @@ class ItemRenderer extends Box {
 
         for (f in fieldList) {
             var v = Reflect.getProperty(valueObject, f);
-            if (Type.typeof(v) == TObject) {
-                updateValues(v);
-            } else {
-                var c:Component = findComponent(f, null, true);
-                if (c != null && v != null) {
-                    var propValue = TypeConverter.convertTo(v, TypeMap.getTypeInfo(c.className, "value"));
-                    c.value = propValue;
+            var c:Component = findComponent(f, null, true);
+            if (c != null && v != null) {
+                var propValue = TypeConverter.convertTo(v, TypeMap.getTypeInfo(c.className, "value"));
+                c.value = propValue;
 
-                    if ((c is InteractiveComponent)) {
-                        if (c.hasEvent(UIEvent.CHANGE, onItemChange) == false) {
-                            c.registerEvent(UIEvent.CHANGE, onItemChange);
-                        }
-                        if (c.hasEvent(MouseEvent.CLICK, onItemClick) == false) {
-                            c.registerEvent(MouseEvent.CLICK, onItemClick);
-                        }
+                if ((c is InteractiveComponent)) {
+                    if (c.hasEvent(UIEvent.CHANGE, onItemChange) == false) {
+                        c.registerEvent(UIEvent.CHANGE, onItemChange);
                     }
-
-                    c.show();
-                } else if (c != null) {
-                    c.hide();
-                } else if (f != "id") {
-                    try {
-                        Reflect.setProperty(this, f, v);
-                    } catch (e:Dynamic) {}
+                    if (c.hasEvent(MouseEvent.CLICK, onItemClick) == false) {
+                        c.registerEvent(MouseEvent.CLICK, onItemClick);
+                    }
                 }
+
+                c.show();
+            } else if (c != null) {
+                c.hide();
+            } else if (f != "id") {
+                try {
+                    Reflect.setProperty(this, f, v);
+                } catch (e:Dynamic) {}
+            } else if (Type.typeof(v) == TObject) {
+                updateValues(v);
             }
         }
     }

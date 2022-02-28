@@ -69,6 +69,7 @@ class XMLParser extends ComponentParser {
             component.validate();
             isComponent = true;
         }
+        
         return isComponent;
     }
 
@@ -190,13 +191,13 @@ class XMLParser extends ComponentParser {
                 case "if":
                     var condition = [];
                     for (t in attrValue.split(",")) {
-                        condition.push('backend == "${StringTools.trim(t)}"');
+                        condition.push('defined("${StringTools.trim(t)}") == true');
                     }
                     component.condition = condition.join(" || ");
                 case "unless":
                     var condition = [];
                     for (t in attrValue.split(",")) {
-                        condition.push('backend != "${StringTools.trim(t)}"');
+                        condition.push('defined("${StringTools.trim(t)}") == false');
                     }
                     component.condition = condition.join(" && ");
                 case "id":

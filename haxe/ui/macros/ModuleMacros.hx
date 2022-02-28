@@ -84,6 +84,12 @@ class ModuleMacros {
                         haxe.ui.themes.ThemeManager.instance.addImageResource($v{t.name}, $v{r.id}, $v{r.resource}, $v{r.priority})
                     );
                 }
+                for (r in t.vars.keys()) {
+                    var v = t.vars.get(r);
+                    builder.add(macro
+                        haxe.ui.themes.ThemeManager.instance.setThemeVar($v{t.name}, $v{r}, $v{v})
+                    );
+                }
             }
 
             // set toolkit properties
@@ -99,6 +105,23 @@ class ModuleMacros {
                 );
             }
             
+            for (c in m.componentEntries) {
+                if (c.loadAll == true) { // loadAll means will be populate the classmap - this means a ref will be made to EACH of these components
+                    var types = MacroHelpers.typesFromClassOrPackage(c.className, c.classPackage);
+                    if (types != null) {
+                        for (t in types) {
+                            var classInfo = new ClassBuilder(t);
+                            if (classInfo.hasSuperClass("haxe.ui.core.Component")) {
+                                var fullPath = classInfo.fullPath;
+                                builder.add(macro
+                                    haxe.ui.core.ComponentClassMap.register($v{classInfo.name}, $v{fullPath})
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+            
             for (l in m.locales) {
                 var localeId = l.id;
                 if (localeId == null) {
@@ -111,6 +134,20 @@ class ModuleMacros {
                         );
                     }
                 }
+            }
+            
+            for (is in m.actionInputSources) {
+                var className = is.className;
+                var parts = className.split(".");
+                var name:String = parts.pop();
+                var t:TypePath = {
+                    pack: parts,
+                    name: name
+                }
+                
+                builder.add(macro
+                    haxe.ui.actions.ActionManager.instance.registerInputSource(new $t())
+                );
             }
         }
 
@@ -140,17 +177,6 @@ class ModuleMacros {
             builder.add(macro
                 haxe.ui.core.LayoutClassMap.register($v{alias}, $v{LayoutClassMap.get(alias)})
             );
-        }
-
-        // add code to populate typemap
-        for (className in TypeMap.typeInfo.keys()) {
-            var classTypeMap = TypeMap.typeInfo.get(className);
-            for (property in classTypeMap.keys()) {
-                var type = classTypeMap.get(property);
-                builder.add(macro
-                    haxe.ui.core.TypeMap.addTypeInfo($v{className}, $v{property}, $v{type})
-                );
-            }
         }
 
         _modulesProcessed = true;
@@ -257,7 +283,7 @@ class ModuleMacros {
                                 }
                             }
                             
-                            ComponentClassMap.register(resolvedClassName, resolvedClass);
+                            ComponentClassMap.register(resolvedClassName.toLowerCase(), resolvedClass);
                             return resolvedClass;
                         }
                     }
@@ -361,7 +387,7 @@ class ModuleMacros {
         var c = ComponentMacros.buildComponentFromStringCommon(codeBuilder, xml, buildData);
 
         var superClassString = "haxe.ui.containers.Box";
-        var superClassLookup:String = ComponentClassMap.get(c.type);
+        var superClassLookup:String = ModuleMacros.resolveComponentClass(c.type);
         if (superClassLookup != null) {
             superClassString = superClassLookup;
         }

@@ -13,23 +13,23 @@
 }
 
 .property-group-header {
-    background-color: #EDEDED;
+    background-color: $solid-background-color;
     pointer-events: true;
     width: 100%;
     padding: 5px;
-    border-color: #ABABAB;
+    border-color: $normal-border-color;
     border-bottom-width: 1px;
     border-bottom-size: 1px;
     cursor: pointer;
 }
 
 .property-group-header.scrolling {
-    border-right-width: 1px;
-    border-right-size: 1px;
+    border-right-width: 0px;
+    border-right-size: 0px;
 }
 
 .property-group-header:hover {
-    background-color: #F5F5F5;
+    background-color: $solid-background-color-hover;
 }
 
 .property-group-header-icon {
@@ -37,11 +37,11 @@
 }
 
 .property-group-header:expanded .property-group-header-icon {
-    resource: "haxeui-core/styles/default/down_arrow_square.png";
+    resource: $arrow-down-square;
 }
 
 .property-group-header:collapsed .property-group-header-icon {
-    resource: "haxeui-core/styles/default/right_arrow_square.png";
+    resource: $arrow-right-square;
 }
 
 .property-group-header-label {
@@ -50,7 +50,7 @@
 .property-group-contents {
     width: 100%;
     spacing: 1;
-    background-color: #ABABAB;
+    background-color: $normal-border-color;
     padding-bottom: 1px;
 }
 
@@ -59,19 +59,19 @@
 }
 
 .property-group-contents.scrolling {
-    padding-right: 1px;
+    padding-right: 0px;
 }
 
 .property-group-item-label-container {
     width: 50%;
-    background-color: white;
+    background-color: $secondary-background-color;
     height: 100%;
     padding-left: 5px;
 }
 
 .property-group-item-editor-container {
     width: 50%;
-    background-color: white;
+    background-color: $secondary-background-color;
 }        
 
 .property-group-item-label {
@@ -95,6 +95,19 @@
 
 .property-group .number-stepper {
     padding: 0;
+    border: none;
+}
+
+.property-group .number-stepper .stepper-value {
+    filter: none;
+}
+
+.property-group .number-stepper .stepper-deinc {
+    border-right: 1px solid $normal-border-color;
+}
+
+.property-group .number-stepper .stepper-inc {
+    border-left: 1px solid $normal-border-color;
 }
 
 .property-group .dropdown {

@@ -74,6 +74,7 @@ class EventMap  {
                     c.target = target;
                 }
                 listener.callback(c);
+                event.copyFrom(c);
                 event.canceled = c.canceled;
             }
         }

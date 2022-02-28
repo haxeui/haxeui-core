@@ -41,6 +41,84 @@
             <style resource="haxeui-core/styles/global.css" priority="-4" />
         </global>
         <default>
+            <!-- normal -->
+            <var name="normal-background-color-start" value="#fdfdfd" />
+            <var name="normal-background-color-end" value="#f6f6f6" />
+            <var name="normal-border-color" value="#d2d2d2" />
+            <var name="normal-text-color" value="#666666" />
+            <var name="normal-border-size" value="1px" />
+            <var name="normal-border-radius" value="2px" />
+            <var name="normal-inner-shadow" value="drop-shadow(1, 45, #888888, 0.1, 1, 1, 1, 3, true)" />
+            <!-- hover -->
+            <var name="hover-background-color-start" value="#f2f2f2" />
+            <var name="hover-background-color-end" value="#e1e1e1" />
+            <var name="hover-text-color" value="#444444" />
+            <var name="hover-border-color" value="#c0c0c0" />
+            <!-- down -->
+            <var name="down-background-color-start" value="#e6e6e6" />
+            <var name="down-background-color-end" value="#cccccc" />
+            <var name="down-text-color" value="#444444" />
+            <var name="down-border-color" value="#b3b3b3" />
+            <!-- disabled -->
+            <var name="disabled-background-color-start" value="#fdfdfd" />
+            <var name="disabled-background-color-end" value="#f6f6f6" />
+            <var name="disabled-text-color" value="#cccccc" />
+            <var name="disabled-border-color" value="#e4e4e4" />
+            <!-- selection -->
+            <var name="selection-background-color" value="#b4cbe4" />
+            <var name="selection-text-color" value="#ffffff" />
+            <var name="selection-background-color-hover" value="#d9e5f2" />
+            <!-- accent -->
+            <var name="accent-color" value="#83aad4" />
+            <var name="accent-color-darker" value="#407dbf" />
+            <var name="accent-color-lighter" value="#ecf2f9" />
+            <var name="accent-gradient-start" value="#98c4e6" />
+            <var name="accent-gradient-end" value="#549bde" />
+            <!-- misc -->
+            <var name="default-background-color" value="#ffffff" />
+            <var name="secondary-background-color" value="#ffffff" />
+            <var name="tertiary-background-color" value="#ffffff" />
+            <var name="solid-background-color" value="#f6f6f6" />
+            <var name="solid-background-color-alt" value="#fafafa" />
+            <var name="solid-background-color-hover" value="#fcfcfc" />
+            <var name="solid-background-color-down" value="#f0f0f0" />
+            <var name="solid-background-color-disabled" value="#fefefe" />
+            <var name="lighter-text-color" value="#a0a0a0" />
+            <var name="error-background-color" value="#ffdddd" />
+            <var name="error-text-color" value="#ff0000" />
+            <var name="modal-background-color" value="#ffffff" />
+            <!-- special cases -->
+            <var name="scrollbar-background-color" value="#f0f0f0" />
+            <var name="scrollbar-button-color" value="#d6d6d6" />
+            <var name="dialog-title-color" value="#aaaaaa" />
+            <var name="tooltip-background-color" value="#fffff8" />
+            <var name="dialog-shadow" value="drop-shadow(1, 45, #888888, 0.2, 30, 2, 1, 3, false)" />
+            <var name="menu-shadow" value="drop-shadow(2, 45, #888888, 0.1, 4, 1, 30, 35, false)" />
+            <!-- images -->
+            <var name="arrow-left" value="haxeui-core/styles/shared/left-arrow-blue.png" />
+            <var name="arrow-right" value="haxeui-core/styles/shared/right-arrow-blue.png" />
+            <var name="arrow-up" value="haxeui-core/styles/shared/up-arrow-blue.png" />
+            <var name="arrow-down" value="haxeui-core/styles/shared/down-arrow-blue.png" />
+            <var name="arrow-right-square" value="haxeui-core/styles/shared/right-arrow-square-blue.png" />
+            <var name="arrow-down-square" value="haxeui-core/styles/shared/down-arrow-square-blue.png" />
+            <var name="close" value="haxeui-core/styles/shared/close-button-blue.png" />
+            <var name="close-hover" value="haxeui-core/styles/shared/close-button-white.png" />
+            <var name="check-selected" value="haxeui-core/styles/shared/check-blue.png" />
+            <var name="option-selected" value="haxeui-core/styles/shared/option-blue.png" />
+            <var name="arrow-up-down" value="haxeui-core/styles/shared/sortable-arrows-blue.png" />
+            <var name="sort-asc" value="haxeui-core/styles/shared/sortable-asc-blue.png" />
+            <var name="sort-desc" value="haxeui-core/styles/shared/sortable-desc-blue.png" />
+            <var name="blank" value="haxeui-core/styles/shared/blank.png" />
+            <var name="collapsed" value="haxeui-core/styles/shared/expanded-blue.png" />
+            <var name="expanded" value="haxeui-core/styles/shared/collapsed-blue.png" />
+            <var name="info-large" value="haxeui-core/styles/shared/info-large.png" />
+            <var name="question-large" value="haxeui-core/styles/shared/help-large.png" />
+            <var name="warning-large" value="haxeui-core/styles/shared/warning-large.png" />
+            <var name="error-large" value="haxeui-core/styles/shared/error-large.png" />
+            <var name="gripper-vertical" value="haxeui-core/styles/shared/gripper-vertical.png" />
+            <var name="gripper-horizontal" value="haxeui-core/shared/default/gripper-horizontal.png" />
+            <var name="search" value="haxeui-core/styles/shared/search.png" />
+            
             <style resource="haxeui-core/styles/default/main.css" priority="-3" />
             <style resource="haxeui-core/styles/default/buttons.css" />
             <style resource="haxeui-core/styles/default/dialogs.css" />
@@ -67,37 +145,71 @@
             <style resource="haxeui-core/styles/default/tooltips.css" />
 			<style resource="haxeui-core/styles/default/rules.css" />
 			<style resource="haxeui-core/styles/default/sidebars.css" />
+			<style resource="haxeui-core/styles/default/cards.css" />
+			<style resource="haxeui-core/styles/default/treeviews.css" />
+			<style resource="haxeui-core/styles/default/last.css" />
         </default>
         <dark parent="default">
-            <style resource="haxeui-core/styles/dark/main.css" priority="-2" />
-            <style resource="haxeui-core/styles/dark/buttons.css" />
-            <style resource="haxeui-core/styles/dark/dialogs.css" />
-            <style resource="haxeui-core/styles/dark/textinputs.css" />
-            <style resource="haxeui-core/styles/dark/scrollbars.css" />
-            <style resource="haxeui-core/styles/dark/scrollview.css" />
-            <style resource="haxeui-core/styles/dark/checkboxes.css" />
-            <style resource="haxeui-core/styles/dark/optionboxes.css" />
-            <style resource="haxeui-core/styles/dark/ranges.css" />
-            <style resource="haxeui-core/styles/dark/progressbars.css" />
-            <style resource="haxeui-core/styles/dark/sliders.css" />
-            <style resource="haxeui-core/styles/dark/steppers.css" />
-            <style resource="haxeui-core/styles/dark/tabs.css" />
-            <style resource="haxeui-core/styles/dark/listview.css" />
-            <style resource="haxeui-core/styles/dark/dropdowns.css" />
-            <style resource="haxeui-core/styles/dark/tableview.css" />
-            <style resource="haxeui-core/styles/dark/switches.css" />
-            <style resource="haxeui-core/styles/dark/calendars.css" />
-            <style resource="haxeui-core/styles/dark/menus.css" />
-            <style resource="haxeui-core/styles/dark/accordion.css" />
-            <style resource="haxeui-core/styles/dark/propertygrids.css" />
-            <style resource="haxeui-core/styles/dark/frames.css" />
-            <style resource="haxeui-core/styles/dark/splitters.css" />
-            <style resource="haxeui-core/styles/dark/tooltips.css" />
-            <style resource="haxeui-core/styles/dark/rules.css" />
-			<style resource="haxeui-core/styles/dark/sidebars.css" />
+            <!-- normal  -->
+            <var name="normal-background-color-start" value="#3e4142" />
+            <var name="normal-background-color-end" value="#36383a" />
+            <var name="normal-border-color" value="#222426" />
+            <var name="normal-text-color" value="#aaaaaa" />
+            <var name="normal-border-size" value="1px" />
+            <var name="normal-border-radius" value="2px" />
+            <var name="normal-inner-shadow" value="drop-shadow(1, 45, #000000, 0.2, 2, 2, 1, 3, true)" />
+            <!-- hover -->
+            <var name="hover-background-color-start" value="#434647" />
+            <var name="hover-background-color-end" value="#393b3c" />
+            <var name="hover-text-color" value="#bbbbbb" />
+            <var name="hover-border-color" value="#222426" />
+            <!-- down -->
+            <var name="down-background-color-start" value="#2f3132" />
+            <var name="down-background-color-end" value="#27292a" />
+            <var name="down-text-color" value="#aaaaaa" />
+            <var name="down-border-color" value="#222426" />
+            <!-- disabled -->
+            <var name="disabled-background-color-start" value="#36393a" />
+            <var name="disabled-background-color-end" value="#313335" />
+            <var name="disabled-text-color" value="#595959" />
+            <var name="disabled-border-color" value="#26292b" />
+            <!-- selection -->
+            <var name="selection-background-color" value="#415982" />
+            <var name="selection-text-color" value="#d4d4d4" />
+            <var name="selection-background-color-hover" value="#323e52" />
+            <!-- accent -->
+            <var name="accent-color" value="#415982" />
+            <var name="accent-color-darker" value="#407dbf" />
+            <var name="accent-color-lighter" value="#323e52" />
+            <var name="accent-gradient-start" value="#334666" />
+            <var name="accent-gradient-end" value="#2f3746" />
+            <!-- misc -->
+            <var name="default-background-color" value="#2c2f30" />
+            <var name="secondary-background-color" value="#3d3f41" />
+            <var name="tertiary-background-color" value="#313435" />
+            <var name="solid-background-color" value="#3d3f41" />
+            <var name="solid-background-color-alt" value="#2d2e2f" />
+            <var name="solid-background-color-hover" value="#393b3c" />
+            <var name="solid-background-color-down" value="#313335" />
+            <var name="solid-background-color-disabled" value="#2f3132" />
+            <var name="lighter-text-color" value="#737373" />
+            <var name="error-background-color" value="#ffdddd" />
+            <var name="error-text-color" value="#ff0000" />
+            <var name="modal-background-color" value="#181a1b" />
+            <!-- special cases -->
+            <var name="scrollbar-background-color" value="#2c2f30" />
+            <var name="scrollbar-button-color" value="#3e4142" />
+            <var name="dialog-title-color" value="#aaaaaa" />
+            <var name="tooltip-background-color" value="#2c2f30" />
+            <var name="dialog-shadow" value="drop-shadow(1, 45, #000000, 0.2, 30, 2, 1, 3, false)" />
+            <var name="menu-shadow" value="drop-shadow(2, 45, #000000, 0.15, 6, 1, 30, 35, false)" />
         </dark>
         <native parent="default">
             <style resource="haxeui-core/styles/native/main.css" priority="-3" />
         </native>
     </themes>
+    
+    <actions>
+        <source class="haxe.ui.actions.KeyboardActionInputSource" />
+    </actions>
 </module>

@@ -29,14 +29,14 @@ class UIEvent extends EventImpl {
     public static inline var COMPONENT_ADDED:String = "componentAdded";
     public static inline var COMPONENT_REMOVED:String = "componentRemoved";
 
-    public static inline var DRAG_START:String = "dragStart";
-    public static inline var DRAG_END:String = "dragEnd";
-
     public var bubble(default, default):Bool;
     public var type(default, default):String;
     public var target(default, default):Component;
     public var data(default, default):Dynamic;
     public var canceled(default, default):Bool;
+    // an event might have a related event, for example, a change event might
+    // contain a related event as to where the event came from (mouse, keyboard, action)
+    public var relatedEvent(default, default):UIEvent = null;
 
     public function new(type:String, bubble:Null<Bool> = false, data:Dynamic = null) {
         this.type = type;
@@ -57,7 +57,12 @@ class UIEvent extends EventImpl {
         c.target = this.target;
         c.data = this.data;
         c.canceled = this.canceled;
+        c.relatedEvent = this.relatedEvent;
         postClone(c);
         return c;
+    }
+    
+    public function copyFrom(c:UIEvent) {
+        
     }
 }

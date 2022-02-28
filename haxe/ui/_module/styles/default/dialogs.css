@@ -2,13 +2,13 @@
 ** DIALOGS
 *************************************************************************/
 .dialog {
-    border: 1px solid #ABABAB;
-    filter: drop-shadow(1, 45, #000000, 0.2, 30, 2, 1, 3, false);
-    border-radius: 2px;
+    border: 1px solid $normal-border-color;
+    filter: $dialog-shadow;
+    border-radius: 4px;
     width: auto;
     height: auto;
-    background-color: white;
-    padding: 1px;
+    background-color: $default-background-color;
+    padding: 2px;
 }
 
 .dialog-container {
@@ -16,27 +16,32 @@
 }
 
 .dialog-title {
-    background-color: #EEEEEE;
-    padding: 5px;
-    border-bottom-width: 1px;
-    border-bottom-color: #ABABAB;
+    background-color: none;
+    padding: 10px;
+    background-color: $solid-background-color;
+    border: none;
 }
 
 .dialog-title-label {
     width: 100%;
     vertical-align: center;
-    color: #888888;
+    color: $dialog-title-color;
     vertical-align: "center";
 }
 
 .dialog-content {
-    padding: 5px;
+    padding: 10px;
+}
+
+.dialog.no-padding .dialog-content {
+    padding: 0px;
 }
 
 .dialog-footer-container {
-    border-top-width: 1px;
-    border-top-color: #ABABAB;
-    background-color: #EEEEEE;
+    padding: 5px;
+    border: none;
+    background-color: none;
+    background-color: $solid-background-color;
 }
 
 .dialog-footer {
@@ -45,29 +50,37 @@
 }
 
 .dialog-close-button {
-    resource: "haxeui-core/styles/default/small-close-button.png";
+    resource: $close;
     vertical-align: "center";
     cursor: "pointer";
+    pointer-events: true;
+    padding: 3px;
+    border-radius: 2px;
+}
+
+.dialog-close-button:hover {
+    resource: $close-hover;
+    background-color: $selection-background-color;
 }
 
 .dialog #iconImage.info {
-    resource: "haxeui-core/styles/default/dialogs/information.png";
+    resource: $info-large;
 }
 
 .dialog #iconImage.question {
-    resource: "haxeui-core/styles/default/dialogs/question.png";
+    resource: $question-large;
 }
 
 .dialog #iconImage.yesno {
-    resource: "haxeui-core/styles/default/dialogs/question.png";
+    resource: $question-large;
 }
 
 .dialog #iconImage.warning {
-    resource: "haxeui-core/styles/default/dialogs/exclamation.png";
+    resource: $warning-large;
 }
 
 .dialog #iconImage.error {
-    resource: "haxeui-core/styles/default/dialogs/cross-circle.png";
+    resource: $error-large;
 }
 
 .messagebox {

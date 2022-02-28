@@ -507,7 +507,7 @@ class ComponentMacros {
                 expr = ExprTools.map(expr, replaceShortClassNames);
                 scriptBuilder.add(expr);
                 // TODO: typed "event" param based on event name
-                builder.add(macro $i{sh.generatedVarName}.registerEvent($v{event}, function(event) { $e{scriptBuilder.expr} }));
+                builder.add(macro $i{sh.generatedVarName}.registerEvent($v{event}, function(event:haxe.ui.events.UIEvent) { $e{scriptBuilder.expr} }));
             }
         }
     }

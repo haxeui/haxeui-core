@@ -22,12 +22,6 @@ class Label extends Component {
     @:clonable @:behaviour(TextBehaviour)       public var text:String;
     @:clonable @:behaviour(HtmlTextBehaviour)   public var htmlText:String;
     @:clonable @:value(text)                    public var value:Dynamic;
-    
-    public override function cloneComponent() {
-        super.cloneComponent();
-        c.getTextDisplay().forceStaticSize = this.getTextDisplay().forceStaticSize;
-        return c;
-    }
 }
 
 //***********************************************************************************************************

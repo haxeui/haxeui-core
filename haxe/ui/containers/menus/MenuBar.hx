@@ -29,6 +29,8 @@ class MenuBar extends HBox {
      Utility property to add a single `MenuEvent.MENU_SELECTED` event
     **/
     @:event(MenuEvent.MENU_SELECTED)        public var onMenuSelected:MenuEvent->Void;
+    @:event(MenuEvent.MENU_OPENED)          public var onMenuOpened:MenuEvent->Void;
+    @:event(MenuEvent.MENU_CLOSED)          public var onMenuClosed:MenuEvent->Void;
 
     private override function onThemeChanged() {
         super.onThemeChanged();
@@ -203,6 +205,12 @@ private class Events extends haxe.ui.events.Events {
                 _currentMenu.registerEvent(MenuEvent.MENU_SELECTED, onMenuSelected);
             }
         }
+        
+        _currentMenu.dispatch(new MouseEvent(MouseEvent.CLICK));
+        var menuEvent = new MenuEvent(MenuEvent.MENU_OPENED);
+        menuEvent.menu = _currentMenu;
+        _currentMenu.dispatch(menuEvent);
+        this.dispatch(menuEvent);
     }
 
     private function hideCurrentMenu() {
@@ -213,6 +221,11 @@ private class Events extends haxe.ui.events.Events {
                     button.swapClass("menubar-button-no-children", "menubar-button-no-children-active");
                 }
             }
+            
+            var menuEvent = new MenuEvent(MenuEvent.MENU_CLOSED);
+            menuEvent.menu = _currentMenu;
+            _currentMenu.dispatch(menuEvent);
+            this.dispatch(menuEvent);
             
             _currentMenu.unregisterEvent(MenuEvent.MENU_SELECTED, onMenuSelected);
             _currentMenu.hide();
@@ -290,7 +303,7 @@ private class Builder extends CompositeBuilder {
             styleMenuButton(menu, button);
             menu.registerEvent(UIEvent.COMPONENT_ADDED, onChildAdded);
             menu.registerEvent(UIEvent.COMPONENT_REMOVED, onChildRemoved);
-
+            menu.registerEvent(UIEvent.PROPERTY_CHANGE, onMenuPropertyChanged);
             return menu;
         }
         return null;
@@ -308,6 +321,15 @@ private class Builder extends CompositeBuilder {
         var index = _menus.indexOf(menu);
         var button = _buttons[index];
         styleMenuButton(menu, button);
+    }
+    
+    private function onMenuPropertyChanged(event:UIEvent) {
+        if (event.data == "text") {
+            var menu = cast(event.target, Menu);
+            var index = _menus.indexOf(menu);
+            var button = _buttons[index];
+            button.text = event.target.text;
+        }
     }
     
     public override function addComponentAt(child:Component, index:Int):Component {

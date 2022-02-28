@@ -85,8 +85,8 @@ class Behaviours {
     public function validateData() {
         for (key in actualUpdateOrder) {
             var b = _instances.get(key);
-            if ((b is DataBehaviour)) {
-                cast(b, DataBehaviour).validate();
+            if ((b is IValidatingBehaviour)) {
+                cast(b, IValidatingBehaviour).validate();
             }
         }
     }
@@ -164,6 +164,19 @@ class Behaviours {
         }
     }
 
+    public function dispose() {
+        _component = null;
+        _registry = null;
+        for (key in _instances.keys()) {
+            var inst = _instances.get(key);
+            @:privateAccess inst._component = null;
+        }
+        _instances = null;
+        _cache = null;
+        _actualUpdateOrder = null;
+        _updateOrder = null;
+    }
+    
     public function detatch() {
         for (b in _instances) {
             b.detatch();

@@ -192,7 +192,7 @@ abstract Color(Int) from Int {
         return this = ((a & 0xFF) << 24) | ((r & 0xFF) << 16) | ((g & 0xFF) << 8) | (b & 0xFF);
     }
 
-    @:to function toInt():Int {
+    @:to public function toInt():Int {
         return this;
     }
 

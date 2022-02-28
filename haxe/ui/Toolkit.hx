@@ -1,6 +1,7 @@
 package haxe.ui;
 
 import haxe.ui.backend.ToolkitOptions;
+import haxe.ui.core.Platform;
 import haxe.ui.core.Screen;
 import haxe.ui.events.KeyboardEvent;
 import haxe.ui.focus.FocusManager;
@@ -83,7 +84,7 @@ class Toolkit {
     }
 
     private static function onKeyDown(event:KeyboardEvent) {
-        if (event.keyCode == KeyboardEvent.KEY_TAB) {
+        if (event.keyCode == Platform.instance.KeyTab) {
             if (event.shiftKey == false) {
                 FocusManager.instance.focusNext();
             } else {

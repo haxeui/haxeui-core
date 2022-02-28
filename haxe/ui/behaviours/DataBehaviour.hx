@@ -3,7 +3,7 @@ package haxe.ui.behaviours;
 import haxe.ui.util.Variant;
 
 @:dox(hide) @:noCompletion
-class DataBehaviour extends ValueBehaviour {
+class DataBehaviour extends ValueBehaviour implements IValidatingBehaviour {
     private var _dataInvalid:Bool;
 
     public override function set(value:Variant) {

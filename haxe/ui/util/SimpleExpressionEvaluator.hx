@@ -1,4 +1,5 @@
 package haxe.ui.util;
+import haxe.ui.util.Defines;
 
 using StringTools;
 
@@ -21,11 +22,43 @@ class SimpleExpressionEvaluator {
     public static function evalCondition(condition:String):Bool {
         return eval(condition, {
             Backend: Backend,
-            backend: Backend.id
+            backend: Backend.id,
+            defined: defined
         });
+    }
+
+    public static function defined(key:String):Bool {
+        return return Defines.getAll().exists(key);
     }
     
     public static function eval(s:String, context:Dynamic = null):Dynamic {
+        var r:Dynamic = null;
+        
+        if (s.indexOf("||") != -1) {
+            var parts = s.split("||");
+            for (p in parts) {
+                if (r == null) {
+                    r = evalSingle(p.trim(), context);
+                } else {
+                    r = r || evalSingle(p.trim(), context);
+                }
+            }
+        } else if (s.indexOf("&&") != -1) {
+            var parts = s.split("&&");
+            for (p in parts) {
+                if (r == null) {
+                    r = evalSingle(p.trim(), context);
+                } else {
+                    r = r && evalSingle(p.trim(), context);
+                }
+            }
+        } else {
+            r = evalSingle(s, context);
+        }
+        return r;
+    }
+    
+    private static function evalSingle(s:String, context:Dynamic = null):Dynamic {
         var result:Dynamic = null;
 
         var operation:SimpleExpressionEvaluatorOperation = null;
@@ -100,7 +133,7 @@ class SimpleExpressionEvaluator {
         
         var r:Dynamic = null;
         if (s.length > 0) {
-            r = eval(s, context);
+            r = evalSingle(s, context);
         }
         
         var trimmedToken = token.trim();
@@ -193,7 +226,7 @@ class SimpleExpressionEvaluator {
                     if (ref != null && Reflect.isFunction(ref)) {
                         var paramValues = [];
                         for (param in parsedCallParams) {
-                            var paramResult = eval(param, context);
+                            var paramResult = evalSingle(param, context);
                             paramValues.push(paramResult);
                         }
                         result = Reflect.callMethod(prevRef, ref, paramValues);

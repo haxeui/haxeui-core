@@ -71,4 +71,11 @@ class StringUtil {
 
         return rpad(s, delta, "0");
     }
+    
+    public static inline function countTokens(s:String, token:String):Int {
+        if (s == null || s == "") {
+            return 0;
+        }
+        return s.split(token).length - 1;
+    }
 }

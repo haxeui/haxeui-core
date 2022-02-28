@@ -411,7 +411,6 @@ private class Builder extends ScrollViewBuilder {
         
         if (itemRenderer.childComponents.length == 0) {
             var label = new Label();
-            label.getTextDisplay().forceStaticSize = _tableview.virtual;
             label.id = id;
             label.percentWidth = 100;
             label.verticalAlign = "center";
@@ -436,8 +435,18 @@ private class Builder extends ScrollViewBuilder {
         for (column in _header.childComponents) {
             var existing = _tableview.itemRenderer.findComponent(column.id, ItemRenderer, true);
             if (existing == null) {
-                var itemRenderer = createRenderer(column.id);
-                _tableview.itemRenderer.addComponentAt(itemRenderer, i);
+                var temp = _tableview.itemRenderer.findComponent(column.id, Component, true);
+                if (temp != null) {
+                    if ((temp is ItemRenderer)) {
+                        existing = cast(temp, ItemRenderer);
+                    } else {
+                        existing = temp.findAncestor(ItemRenderer);
+                    }
+                    _tableview.itemRenderer.setComponentIndex(existing, i);
+                } else {
+                    var itemRenderer = createRenderer(column.id);
+                    _tableview.itemRenderer.addComponentAt(itemRenderer, i);
+                }
             } else {
                 _tableview.itemRenderer.setComponentIndex(existing, i);
             }
@@ -450,7 +459,7 @@ private class Builder extends ScrollViewBuilder {
                 for (column in _header.childComponents) {
                     var existing = item.findComponent(column.id, ItemRenderer, true);
                     if (existing == null) {
-                        var temp = _tableview.itemRenderer.findComponent(column.id, Component);
+                        var temp = _tableview.itemRenderer.findComponent(column.id, Component, true);
                         var renderer:ItemRenderer = null;
                         if ((temp is ItemRenderer)) {
                             renderer = cast(temp, ItemRenderer);
@@ -518,8 +527,8 @@ private class Layout extends VerticalVirtualLayout {
 
         super.repositionChildren();
 
-        header.left = paddingLeft; // + marginLeft(header);
-        header.top = paddingTop; // + marginTop(header);
+        header.left = paddingLeft + borderSize; // + marginLeft(header);
+        header.top = paddingTop + borderSize; // + marginTop(header);
         var vscroll = _component.findComponent(VerticalScroll);
         if (vscroll != null && vscroll.hidden == false) {
             header.addClass("scrolling");
@@ -533,7 +542,7 @@ private class Layout extends VerticalVirtualLayout {
 
         var data = findComponent("tableview-contents", Box, true, "css");
         if (data != null) {
-            data.lockLayout(true);
+            //data.lockLayout(true);
             for (item in data.childComponents) {
                 var headerChildComponents = header.childComponents;
                 for (column in headerChildComponents) {
@@ -553,10 +562,10 @@ private class Layout extends VerticalVirtualLayout {
                 }
             }
 
-            data.left = paddingLeft;
+            data.left = paddingLeft + borderSize;
             data.top = header.top + header.height - 1;
             data.componentWidth = header.width;
-            data.unlockLayout(true);
+            //data.unlockLayout(true);
         }
     }
 
@@ -788,7 +797,7 @@ private class AddColumn extends Behaviour {
         }
         var column = new Column();
         column.text = param;
-        column.id = StringTools.replace(StringUtil.uncapitalizeFirstLetter(StringUtil.capitalizeHyphens(param)), " ", "");
+        column.id = StringTools.replace(param, " ", "_");
         header.addComponent(column);
         return column;
     }

@@ -1,5 +1,6 @@
 package haxe.ui.containers;
 
+import haxe.ui.actions.ActionType;
 import haxe.ui.behaviours.Behaviour;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
@@ -10,6 +11,7 @@ import haxe.ui.constants.ScrollMode;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.IScrollView;
+import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.Screen;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.ScrollEvent;
@@ -25,7 +27,7 @@ import haxe.ui.util.Variant;
 import haxe.ui.validation.InvalidationFlags;
 
 @:composite(ScrollViewEvents, ScrollViewBuilder, ScrollViewLayout)
-class ScrollView extends Component implements IScrollView {
+class ScrollView extends InteractiveComponent implements IScrollView {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
@@ -827,6 +829,24 @@ class ScrollViewEvents extends haxe.ui.events.Events {
                     _fadeTimer = null;
                 });
             }
+        }
+    }
+    
+    private override function actionStart(action:ActionType):Bool {
+        return switch (action) {
+            case ActionType.DOWN:
+                true;
+            case ActionType.UP:    
+                true;
+            case _:
+                false;
+        }
+    }
+    
+    private override function actionEnd(action:ActionType):Bool {
+        return switch (action) {
+            case _:
+                false;
         }
     }
 }

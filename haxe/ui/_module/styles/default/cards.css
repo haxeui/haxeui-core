@@ -1,0 +1,23 @@
+.card {
+    background-color: $tertiary-background-color;
+    filter: drop-shadow(0, 45, #000000, 0.1, 5, 1, 1, 3, false);
+    border-radius: 4px;
+    padding: 15px;
+}
+
+.card-title-label {
+    font-size: 16px;
+    color: $normal-text-color;
+    font-bold: true;
+}
+
+.card-title-container {
+    padding-bottom: 5px;
+    width: 100%;
+}
+
+.card-title-line {
+    height: 1px;
+    width: 100%;
+    background-color: $normal-border-color;
+}

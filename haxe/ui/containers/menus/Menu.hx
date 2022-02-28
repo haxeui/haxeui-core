@@ -17,6 +17,8 @@ import Std.is as isOfType;
 
 class MenuEvent extends UIEvent {
     public static inline var MENU_SELECTED:String = "menuselected";
+    public static inline var MENU_OPENED:String = "menuopened";
+    public static inline var MENU_CLOSED:String = "menuclosed";
 
     public var menu:Menu = null;
     public var menuItem:MenuItem = null;
@@ -336,6 +338,7 @@ private class Builder extends CompositeBuilder {
             item.expandable = true;
             _menu.addComponent(item);
             cast(menu._internalEvents, MenuEvents).parentMenu = _menu;
+            menu.registerEvent(UIEvent.PROPERTY_CHANGE, onMenuPropertyChanged);
             _subMenus.set(item, menu);
             return child;
         }
@@ -343,6 +346,19 @@ private class Builder extends CompositeBuilder {
         return null;
     }
 
+    private function onMenuPropertyChanged(event:UIEvent) {
+        if (event.data == "text") {
+            var menu:Menu = cast(event.target, Menu);
+            for (item in _subMenus.keys()) {
+                var subMenu = _subMenus.get(item);
+                if (subMenu == menu) {
+                    item.text = event.target.text;
+                    break;
+                }
+            }
+        }
+    }
+    
     public override function onComponentAdded(child:Component) {
         if ((child is Menu) || (child is MenuItem)) {
             _menu.registerInternalEvents(true);

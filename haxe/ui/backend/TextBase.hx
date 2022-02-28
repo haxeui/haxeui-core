@@ -26,8 +26,6 @@ class TextBase {
     private var _textStyle:Style;
     private var _fontInfo:FontInfo;
 
-    public var forceStaticSize:Bool = false; // stops having to ever remeasurment of text extends (which can be expensive)
-    
     public function new() {
     }
 
@@ -37,6 +35,12 @@ class TextBase {
     public function blur() {
     }
 
+    public function dispose() {
+        if (parentComponent != null) {
+            parentComponent = null;
+        }
+    }
+    
     private var _dataSource:DataSource<String>;
     public var dataSource(get, set):DataSource<String>;
     private function get_dataSource():DataSource<String> {

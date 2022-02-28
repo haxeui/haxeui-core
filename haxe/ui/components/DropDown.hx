@@ -1,12 +1,17 @@
 package haxe.ui.components;
 
+import haxe.ui.Toolkit;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
+import haxe.ui.behaviours.DynamicDataBehaviour;
 import haxe.ui.components.Button.ButtonBuilder;
 import haxe.ui.components.Button.ButtonEvents;
+import haxe.ui.components.TextField;
 import haxe.ui.containers.Box;
 import haxe.ui.containers.CalendarView;
+import haxe.ui.containers.HBox;
 import haxe.ui.containers.ListView;
+import haxe.ui.containers.VBox;
 import haxe.ui.core.Component;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.Screen;
@@ -22,17 +27,19 @@ class DropDown extends Button implements IDataComponent {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:behaviour(DefaultBehaviour)                    public var handlerStyleNames:String;
-    @:behaviour(DataSourceBehaviour)                 public var dataSource:DataSource<Dynamic>;
-    @:behaviour(DefaultBehaviour, "list")            public var type:String;
-    @:behaviour(DefaultBehaviour, false)             public var virtual:Bool;
-    @:behaviour(DefaultBehaviour)                    public var dropdownWidth:Null<Float>;
-    @:behaviour(DefaultBehaviour)                    public var dropdownHeight:Null<Float>;
-    @:behaviour(DefaultBehaviour)                    public var dropdownSize:Null<Int>;
-    @:behaviour(SelectedIndexBehaviour, -1)          public var selectedIndex:Int;
-    @:behaviour(SelectedItemBehaviour)               public var selectedItem:Dynamic;
-    @:call(HideDropDown)                             public function hideDropDown();
-    @:clonable @:value(selectedItem)                 public var value:Dynamic;
+    @:clonable @:behaviour(DefaultBehaviour)            public var handlerStyleNames:String;
+    @:clonable @:behaviour(DataSourceBehaviour)         public var dataSource:DataSource<Dynamic>;
+    @:clonable @:behaviour(DefaultBehaviour, "list")    public var type:String;
+    @:clonable @:behaviour(DefaultBehaviour, false)     public var virtual:Bool;
+    @:clonable @:behaviour(DefaultBehaviour)            public var dropdownWidth:Null<Float>;
+    @:clonable @:behaviour(DefaultBehaviour)            public var dropdownHeight:Null<Float>;
+    @:clonable @:behaviour(DefaultBehaviour)            public var dropdownSize:Null<Int>;
+    @:clonable @:behaviour(SelectedIndexBehaviour, -1)  public var selectedIndex:Int;
+    @:clonable @:behaviour(SelectedItemBehaviour)       public var selectedItem:Dynamic;
+    @:clonable @:behaviour(DefaultBehaviour, false)     public var searchable:Bool;
+    @:clonable @:behaviour(DefaultBehaviour, "Search")  public var searchPrompt:String;
+    @:call(HideDropDown)                                public function hideDropDown();
+    @:clonable @:value(selectedItem)                    public var value:Dynamic;
 
     private override function onThemeChanged() {
         super.onThemeChanged();
@@ -112,7 +119,7 @@ private class SelectedIndexBehaviour extends DataBehaviour {
 
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
-private class SelectedItemBehaviour extends DataBehaviour  {
+private class SelectedItemBehaviour extends DynamicDataBehaviour  {
     private override function validateData() {
         var handler:IDropDownHandler = cast(_component._compositeBuilder, DropDownBuilder).handler;
         handler.selectedItem = _value;
@@ -123,14 +130,12 @@ private class SelectedItemBehaviour extends DataBehaviour  {
         return handler.selectedItem;
     }
 
-    public override function set(value:Variant) {
+    public override function setDynamic(value:Dynamic) {
         if (_component.isReady == false) {
-            super.set(value);
+            super.setDynamic(value);
             return;
         }
-        if (Variant.toDynamic(value) == getDynamic()) {
-            return;
-        }
+        
         _value = value;
         invalidateData();
         var handler:IDropDownHandler = cast(_component._compositeBuilder, DropDownBuilder).handler;
@@ -148,6 +153,8 @@ interface IDropDownHandler {
     var selectedIndex(get, set):Int;
     var selectedItem(get, set):Dynamic;
     function applyDefault():Void;
+    function pauseEvents():Void;
+    function resumeEvents():Void;
 
 }
 
@@ -187,10 +194,21 @@ class DropDownHandler implements IDropDownHandler {
 
     public function applyDefault() {
     }
+    
+    private var eventsPaused:Bool = false;
+    public function pauseEvents() {
+        eventsPaused = true;
+    }
+    
+    public function resumeEvents() {
+        Toolkit.callLater(function() {
+            eventsPaused = false;
+        });
+    }
 }
 
 @:access(haxe.ui.core.Component)
-class ListDropDownHandler extends DropDownHandler {
+private class ListDropDownHandler extends DropDownHandler {
     private var _listview:ListView;
 
     private override function get_component():Component {
@@ -287,6 +305,9 @@ class ListDropDownHandler extends DropDownHandler {
     }
 
     private function indexOfItem(text:String):Int {
+        if (text == null) {
+            return -1;
+        }
         var index = -1;
         if (_dropdown.dataSource != null) {
             for (i in 0..._dropdown.dataSource.size) {
@@ -327,11 +348,11 @@ class ListDropDownHandler extends DropDownHandler {
 
     private var _cachedSelectedItem:Dynamic = null;
     private override function set_selectedItem(value:Dynamic):Dynamic {
-        var v:Variant = value;
-        var index:Int = indexOfItem(v);
-        if (index == -1 && v.isNumber) {
-            index = v;
+        if (value == null) {
+            return value;
         }
+
+        var index:Int = indexOfItem(value);
         selectedIndex = index;
         return value;
     }
@@ -368,16 +389,17 @@ class ListDropDownHandler extends DropDownHandler {
         }
         _dropdown.text = text;
         //_dropdown.selectedIndex = _listview.selectedIndex;
-        cast(_dropdown._internalEvents, DropDownEvents).hideDropDown();
-
-        _dropdown.dispatch(new UIEvent(UIEvent.CHANGE, false, selectedItem));
+        
+        if (eventsPaused == false) {
+            cast(_dropdown._internalEvents, DropDownEvents).hideDropDown();
+            _dropdown.dispatch(new UIEvent(UIEvent.CHANGE, false, selectedItem));
+        }
     }
 
     public override function applyDefault() {
         var indexToSelect = 0;
         if (_cachedSelectedItem != null) {
-            var v:Variant = _cachedSelectedItem;
-            var index = indexOfItem(v);
+            var index = indexOfItem(_cachedSelectedItem);
             if (index != -1) {
                 indexToSelect = index;
             }
@@ -434,12 +456,12 @@ class CalendarDropDownHandler extends DropDownHandler {
         if (value == null) {
             return value;
         }
-        var v:Variant = value;
+
         var date:Date = null;
-        if (v.isString == true) {
-            date = Date.fromString(v);
-        } else if (v.isDate) {
-            date = v;
+        if ((value is Date)) {
+            date = cast(value, Date);
+        } else {
+            date = Date.fromString(Std.string(value));
         }
 
         if (_calendar != null && date != null) {
@@ -524,9 +546,36 @@ class DropDownEvents extends ButtonEvents {
             if (_button.id != null) {
                 _wrapper.addClass(_button.id + "-popup");
                 _wrapper.id = _button.id + "_popup";
+            } else {
+                _wrapper.id = "dropdown_popup";
             }
             _wrapper.styleNames = _dropdown.handlerStyleNames;
-            _wrapper.addComponent(handler.component);
+            
+            if (_dropdown.searchable == true) {
+                var searchContainer = new VBox();
+                searchContainer.id = "dropdown-search-container";
+                searchContainer.addClass("dropdown-search-container");
+                searchContainer.scriptAccess = false;
+
+                var searchField = new TextField();
+                searchField.id = "dropdown-search-field";
+                searchField.addClass("dropdown-search-field");
+                searchField.placeholder = _dropdown.searchPrompt;
+                searchField.scriptAccess = false;
+                searchField.registerEvent(UIEvent.CHANGE, onSearchChange);
+                
+                var searchFieldContainer = new HBox();
+                searchFieldContainer.id = "dropdown-search-field-container";
+                searchFieldContainer.addClass("dropdown-search-field-container");
+                searchFieldContainer.scriptAccess = false;
+                searchFieldContainer.addComponent(searchField);
+                
+                searchContainer.addComponent(searchFieldContainer);
+                searchContainer.addComponent(handler.component);
+                _wrapper.addComponent(searchContainer);
+            } else {
+                _wrapper.addComponent(handler.component);
+            }
 
             var filler = new Component();
             filler.horizontalAlign = "right";
@@ -557,6 +606,7 @@ class DropDownEvents extends ButtonEvents {
             Screen.instance.addComponent(_wrapper);
             handler.prepare(_wrapper);
             _wrapper.syncComponentValidation();
+            _wrapper.validateNow();
 
             var cx = _wrapper.width - _dropdown.width;
             var filler:Component = _wrapper.findComponent("dropdown-filler", false);
@@ -583,12 +633,52 @@ class DropDownEvents extends ButtonEvents {
         Screen.instance.registerEvent(MouseEvent.RIGHT_MOUSE_DOWN, onScreenMouseDown);
     }
 
+    private function onSearchChange(event:UIEvent) {
+        if (_wrapper == null) {
+            return;
+        }
+        var searchField = _wrapper.findComponent("dropdown-search-field", TextField);
+        if (searchField == null) {
+            return;
+        }
+        
+        var selectedItem = _dropdown.selectedItem;
+        var searchTerm = searchField.text;
+        if (searchTerm == null || StringTools.trim(searchTerm).length == 0) {
+            _dropdown.dataSource.clearFilter();
+        } else {
+            _dropdown.dataSource.filter(function(index, data) {
+                var v = data.text;
+                return Std.string(v).toLowerCase().indexOf(searchTerm.toLowerCase()) > -1;
+            });
+        }
+        
+        var handler:IDropDownHandler = cast(_dropdown._compositeBuilder, DropDownBuilder).handler;
+        if (handler == null) {
+            return;
+        }
+        
+        handler.prepare(_wrapper);
+        if (selectedItem != null) {
+            handler.pauseEvents();
+            _dropdown.selectedItem = selectedItem;
+            handler.resumeEvents();
+        }
+    }
+    
     public function hideDropDown() {
         var handler:IDropDownHandler = cast(_dropdown._compositeBuilder, DropDownBuilder).handler;
         if (handler == null) {
             return;
         }
 
+        if (_wrapper != null) {
+            var searchField = _wrapper.findComponent("dropdown-search-field", TextField);
+            if (searchField != null) {
+                searchField.focus = false;
+            }
+        }
+        
         if (_overlay != null) {
             Screen.instance.removeComponent(_overlay);
             _overlay = null;
@@ -604,8 +694,10 @@ class DropDownEvents extends ButtonEvents {
     }
 
     private function onScreenMouseDown(event:MouseEvent) {
-        var handler:IDropDownHandler = cast(_dropdown._compositeBuilder, DropDownBuilder).handler;
-        if (handler.component.hitTest(event.screenX, event.screenY) == true) {
+        if (_wrapper == null) {
+            return;
+        }
+        if (_wrapper.hitTest(event.screenX, event.screenY) == true) {
             return;
         }
         var componentOffset = _dropdown.getComponentOffset();
@@ -618,6 +710,17 @@ class DropDownEvents extends ButtonEvents {
 
     // override and do nothing
     private override function dispatchChanged() {
+    }
+    
+    private override function release() {
+        if (_down == true) {
+            super.release();
+            if (_dropdown.selected == true) {
+                showDropDown();
+            } else {
+                hideDropDown();
+            }
+        }
     }
 }
 

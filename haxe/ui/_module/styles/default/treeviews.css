@@ -1,0 +1,83 @@
+.treeview .scrollview-contents {
+    spacing: 0;
+}
+
+.treeviewnode {
+    spacing: 0;
+}
+
+.treeviewnode .itemrenderer {
+    width: auto;
+    padding: 5px;
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+.treeview .itemrenderer:hover {
+    background-color: $selection-background-color-hover;
+}
+
+.treeview .itemrenderer:node-selected {
+    background-color: $selection-background-color;
+}
+
+.treeview .itemrenderer:node-selected .label {
+    color: $selection-text-color;
+}
+
+.treeviewnode .basic-renderer-container {
+    width: auto;
+}
+    
+.treeviewnode .basic-renderer-label {
+    width: auto;
+}
+    
+.treenode-container {
+    spacing: 0;
+}
+    
+.treenode-child-container {
+    padding-left: 16px;
+    spacing: 0;
+}
+    
+.treenode-expand-collapse-icon {
+    resource: none;
+}
+
+.treenode-expand-collapse-icon {
+    resource: $blank;
+    cursor: none;
+    vertical-align: center;
+}
+    
+.treenode-expand-collapse-icon.node-expanded {
+    resource: $collapsed;
+    cursor: pointer;
+}
+    
+.treenode-expand-collapse-icon.node-collapsed {
+    resource: $expanded;
+    cursor: pointer;
+}
+
+.treeview.full-width .itemrenderer {
+    width: 100%;
+}
+
+.treeview.full-width .scrollview-contents {
+    width: 100%;
+}
+
+.treeview.full-width .treeviewnode {
+    width: 100%;
+}
+
+.treeview.full-width .treenode-container {
+    width: 100%
+}
+
+.treeview.full-width .treenode-child-container {
+    width: 100%;
+}

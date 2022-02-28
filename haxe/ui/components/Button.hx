@@ -1,5 +1,6 @@
 package haxe.ui.components;
 
+import haxe.ui.actions.ActionType;
 import haxe.ui.behaviours.Behaviour;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
@@ -295,7 +296,7 @@ private class IconBehaviour extends DataBehaviour {
             _component.invalidateComponentStyle(true);
         }
 
-        _component.customStyle.icon = _value;
+        //_component.customStyle.icon = _value;
         icon.resource = _value;
     }
 }
@@ -362,6 +363,8 @@ class ButtonEvents extends haxe.ui.events.Events {
 
     public var lastMouseEvent:MouseEvent = null;
 
+    public var recursiveStyling:Bool = true;
+    
     public function new(button:Button) {
         super(button);
         _button = button;
@@ -403,9 +406,9 @@ class ButtonEvents extends haxe.ui.events.Events {
         }
 
         if (event.buttonDown == false || _down == false) {
-            _button.addClass(":hover", true, true);
+            _button.addClass(":hover", true, recursiveStyling);
         } else {
-            _button.addClass(":down", true, true);
+            _button.addClass(":down", true, recursiveStyling);
         }
     }
 
@@ -415,20 +418,20 @@ class ButtonEvents extends haxe.ui.events.Events {
         }
 
         if (_button.remainPressed == false) {
-            _button.removeClass(":down", true, true);
+            _button.removeClass(":down", true, recursiveStyling);
         }
-        _button.removeClass(":hover", true, true);
+        _button.removeClass(":hover", true, recursiveStyling);
     }
 
     private function onMouseDown(event:MouseEvent) {
-        if (_button.allowFocus == true && FocusManager.instance.focusInfo != null && FocusManager.instance.focusInfo.currentFocus != null) {
-            FocusManager.instance.focusInfo.currentFocus.focus = false;
+        if (_button.allowFocus == true) {
+            FocusManager.instance.focus = _button;
         }
         if (_button.repeater == true && _repeatInterval == 0) {
             _repeatInterval = (_button.easeInRepeater) ? _button.repeatInterval * 2 : _button.repeatInterval;
         }
         _down = true;
-        _button.addClass(":down", true, true);
+        _button.addClass(":down", true, recursiveStyling);
         _button.screen.registerEvent(MouseEvent.MOUSE_UP, onMouseUp);
         if (_repeater == true && _repeatInterval == _button.repeatInterval) {
             _repeatTimer = new Timer(_repeatInterval, onRepeatTimer);
@@ -462,12 +465,12 @@ class ButtonEvents extends haxe.ui.events.Events {
         }
 
         _lastScreenEvent = event;
-        _button.removeClass(":down", true, true);
+        _button.removeClass(":down", true, recursiveStyling);
         var over = _button.hitTest(event.screenX, event.screenY);
         if (event.touchEvent == false && over == true) {
-            _button.addClass(":hover", true, true);
+            _button.addClass(":hover", true, recursiveStyling);
         } else if (over == false) {
-            _button.removeClass(":hover", true, true);
+            _button.removeClass(":hover", true, recursiveStyling);
         }
 
         if (_repeatTimer != null) {
@@ -483,9 +486,9 @@ class ButtonEvents extends haxe.ui.events.Events {
 
         var over = _button.hitTest(_lastScreenEvent.screenX, _lastScreenEvent.screenY);
         if (_lastScreenEvent.touchEvent == false && over == true) {
-            _button.addClass(":hover", true, true);
+            _button.addClass(":hover", true, recursiveStyling);
         } else if (over == false) {
-            _button.removeClass(":hover", true, true);
+            _button.removeClass(":hover", true, recursiveStyling);
         }
         
         _lastScreenEvent = null;
@@ -501,15 +504,57 @@ class ButtonEvents extends haxe.ui.events.Events {
     private function onMouseClick(event:MouseEvent) {
         _button.selected = !_button.selected;
         if (_button.selected == false) {
-            _button.removeClass(":down", true, true);
+            _button.removeClass(":down", true, recursiveStyling);
         }
         if (_button.hitTest(event.screenX, event.screenY)) {
-            _button.addClass(":hover", true, true);
+            _button.addClass(":hover", true, recursiveStyling);
         }
     }
 
     private function dispatchChanged() {
         _button.dispatch(new UIEvent(UIEvent.CHANGE));
+    }
+    
+    private function press() {
+        _down = true;
+        if (_button.toggle == true) {
+            _button.addClass(":down", true, recursiveStyling);
+        } else {
+            _button.addClass(":down", true, recursiveStyling);
+        }
+    }
+    
+    private function release() {
+        if (_down == true) {
+            _down = false;
+            if (_button.toggle == true) {
+                _button.selected = !_button.selected;
+                _button.dispatch(new MouseEvent(MouseEvent.CLICK));
+            } else {
+                _button.removeClass(":down", true, recursiveStyling);
+                _button.dispatch(new MouseEvent(MouseEvent.CLICK));
+            }
+        }
+    }
+    
+    private override function actionStart(type:ActionType):Bool {
+        return switch (type) {
+            case ActionType.PRESS:
+                press();
+                false;
+            case _:
+                false;
+        }
+    }
+    
+    private override function actionEnd(type:ActionType):Bool {
+        return switch (type) {
+            case ActionType.PRESS:
+                release();
+                false;
+            case _:
+                false;
+        }
     }
 }
 
@@ -551,8 +596,8 @@ class ButtonBuilder extends CompositeBuilder {
         
         if (style.icon != null) {
             _button.icon = style.icon;
-        } else if (icon != null) {
-            _button.icon = null;
+        } else {
+            //_button.icon = null;
         }
     }
 }

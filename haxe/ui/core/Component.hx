@@ -2,7 +2,9 @@ package haxe.ui.core;
 
 import haxe.ui.backend.ComponentImpl;
 import haxe.ui.dragdrop.DragManager;
+import haxe.ui.dragdrop.DragOptions;
 import haxe.ui.events.AnimationEvent;
+import haxe.ui.events.DragEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.geom.Rectangle;
@@ -35,7 +37,7 @@ import Std.is as isOfType;
 @:allow(haxe.ui.backend.ComponentImpl)
 @:build(haxe.ui.macros.Macros.build())
 @:autoBuild(haxe.ui.macros.Macros.build())
-class Component extends ComponentImpl implements IComponentBase implements IValidating {
+class Component extends ComponentImpl implements IValidating {
     public function new() {
         super();
 
@@ -76,6 +78,8 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         #end
     }
 
+    public var componentTabIndex:Int = 0;
+    
     //***********************************************************************************************************
     // Construction
     //***********************************************************************************************************
@@ -268,7 +272,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     }
     private function set_draggable(value:Bool):Bool {
         if (value == true) {
-            DragManager.instance.registerDraggable(this, { mouseTarget: _dragInitiator } );
+            DragManager.instance.registerDraggable(this, dragOptions);
         } else {
             DragManager.instance.unregisterDraggable(this);
         }
@@ -282,10 +286,27 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     }
     private function set_dragInitiator(value:Component):Component {
         _dragInitiator = value;
+        if (_dragOptions != null) {
+            _dragOptions.mouseTarget = value;
+        }
         draggable = true;
         return value;
     }
 
+    @:noCompletion private var _dragOptions:DragOptions = null;
+    public var dragOptions(get, set):DragOptions;
+    private function get_dragOptions():DragOptions {
+        if (_dragOptions == null) {
+            _dragOptions = { mouseTarget: _dragInitiator };
+        }
+        return _dragOptions;
+    }
+    private function set_dragOptions(value:DragOptions):DragOptions {
+        _dragOptions = value;
+        draggable = true;
+        return value;
+    }
+    
     //***********************************************************************************************************
     // Binding related
     //***********************************************************************************************************
@@ -479,6 +500,28 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         this.removeAllComponents(true);
         this.destroyComponent();
         this.unregisterEvents();
+        if (this.hasTextDisplay()) {
+            this.getTextDisplay().dispose();
+        }
+        if (this.hasTextInput()) {
+            this.getTextInput().dispose();
+        }
+        if (this.hasImageDisplay()) {
+            this.getImageDisplay().dispose();
+        }
+        if (behaviours != null) {
+            behaviours.dispose();
+            behaviours = null;
+        }
+        if (_layout != null) {
+            _layout.component = null;
+            _layout = null;
+        }
+        if (_internalEvents != null) {
+            @:privateAccess _internalEvents._target = null;
+            _internalEvents = null;
+        }
+        parentComponent = null;
     }
     
     /**
@@ -547,6 +590,10 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     }
 
     private function assignPositionClasses(invalidate:Bool = true) {
+        if (childComponents.length == 1) {
+            childComponents[0].addClasses(["first", "last"], invalidate);
+            return;
+        }
         for (i in 0...childComponents.length) {
             var c = childComponents[i];
             if (i == 0) {
@@ -617,9 +664,14 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
 
     private function matchesSearch<T>(criteria:String = null, type:Class<T> = null, searchType:String = "id"):Bool {
         if (criteria != null) {
-            return searchType == "id" && id == criteria || searchType == "css" && hasClass(criteria) == true;
+            if (searchType == "id" && id == criteria ||  searchType == "css" && hasClass(criteria) == true) {
+                if (type != null) {
+                    return isOfType(this, type);
+                }
+                return true;
+            }
         } else if (type != null) {
-            return isOfType(this, type) == true;
+            return isOfType(this, type);
         }
         return false;
     }
@@ -757,6 +809,31 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         return c;
     }
 
+    public function hasComponentUnderPoint<T:Component>(screenX:Float, screenY:Float, type:Class<T> = null):Bool {
+        var b = false;
+        if (hitTest(screenX, screenY, true)) {
+            if (type == null) {
+                return true;
+            }
+            for (child in childComponents) {
+                if (child.hitTest(screenX, screenY, true)) {
+                    var match = true;
+                    if (type != null && isOfType(child, type) == false) {
+                        match = false;
+                    }
+                    if (match == false) {
+                        match = child.hasComponentUnderPoint(screenX, screenY, type);
+                    }
+                    if (match == true) {
+                        b = match;
+                        break;
+                    }
+                }
+            }
+        }
+        return b;
+    }
+    
     /**
      Gets the index of a child component
     **/
@@ -996,6 +1073,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     @:dox(group = "Style related properties and methods")
     private var classes:Array<String> = [];
 
+    public var cascadeActive:Bool = false;
     /**
      Adds a css style name to this component
     **/
@@ -1008,7 +1086,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             }
         }
 
-        if (recursive == true) {
+        if (recursive == true || (cascadeActive == true && name == ":active")) {
             for (child in childComponents) {
                 child.addClass(name, invalidate, recursive);
             }
@@ -1053,7 +1131,7 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             }
         }
 
-        if (recursive == true) {
+        if (recursive == true || (cascadeActive == true && name == ":active")) {
             for (child in childComponents) {
                 child.removeClass(name, invalidate, recursive);
             }
@@ -1424,6 +1502,10 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         }
     }
 
+    @:event(DragEvent.DRAG_START)       public var onDragStart:DragEvent->Void;    
+    @:event(DragEvent.DRAG)             public var onDrag:DragEvent->Void;    
+    @:event(DragEvent.DRAG_END)         public var onDragEnd:DragEvent->Void;    
+    
     @:event(AnimationEvent.START)       public var onAnimationStart:AnimationEvent->Void;
     @:event(AnimationEvent.END)         public var onAnimationEnd:AnimationEvent->Void;
 
@@ -1432,6 +1514,16 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
     **/
     @:event(MouseEvent.CLICK)           public var onClick:MouseEvent->Void;
 
+    /**
+     Utility property to add a single `MouseEvent.MOUSE_OVER` event
+    **/
+    @:event(MouseEvent.MOUSE_OVER)      public var onMouseOver:MouseEvent->Void;
+
+    /**
+     Utility property to add a single `MouseEvent.MOUSE_OUT` event
+    **/
+    @:event(MouseEvent.MOUSE_OUT)       public var onMouseOut:MouseEvent->Void;
+    
     /**
      Utility property to add a single `MouseEvent.DBL_CLICK` event
     **/
@@ -1623,9 +1715,16 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             if (parentComponent != null && _style != null) {
                 marginsChanged = _style.marginLeft != s.marginLeft || _style.marginRight != s.marginRight ||  _style.marginTop != s.marginTop ||  _style.marginBottom != s.marginBottom;
             }
+            var bordersChanged = false;
+            if (_style != null && _style.fullBorderSize != s.fullBorderSize) {
+                bordersChanged = true;
+            }
 
             _style = s;
             applyStyle(s);
+            if (bordersChanged == true) {
+                invalidateComponentLayout();
+            }
             if (marginsChanged == true) {
                 parentComponent.invalidateComponentLayout();
             }
@@ -1639,32 +1738,12 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
         dispatch(new UIEvent(UIEvent.MOVE));
     }
 
-    @:noCompletion private var _zeroSize:Bool = false;
     @:dox(group = "Internal")
     public function updateComponentDisplay() {
         if (componentWidth == null || componentHeight == null) {
             return;
         }
 
-        #if haxeui_hxwidgets
-        
-        if (componentWidth <= 0 || componentHeight <= 0) {
-            _zeroSize = true;
-            if (_hidden == false) {
-                handleVisibility(false);
-            }
-            return;
-        }
-        
-        if (_zeroSize = true) {
-            _zeroSize = false;
-            if (_hidden == false) {
-                handleVisibility(true);
-            }
-        }
-        
-        #end
-        
         handleSize(componentWidth, componentHeight, _style);
 
         if (_componentClipRect != null ||
@@ -1763,7 +1842,9 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
 
         if (style.pointerEvents != null && style.pointerEvents != "none") {
             if (hasEvent(MouseEvent.MOUSE_OVER, onPointerEventsMouseOver) == false) {
-                customStyle.cursor = "pointer";
+                if (style.cursor == null) {
+                    customStyle.cursor = "pointer";
+                }
                 registerEvent(MouseEvent.MOUSE_OVER, onPointerEventsMouseOver);
             }
             if (hasEvent(MouseEvent.MOUSE_OUT, onPointerEventsMouseOut) == false) {
@@ -1792,7 +1873,15 @@ class Component extends ComponentImpl implements IComponentBase implements IVali
             }
             handleFrameworkProperty("allowMouseInteraction", false);
         }
-
+        
+        if (hasClass("listview") || hasClass("tableview") || hasClass("treeview")) {       
+            if (style.borderType == StyleBorderType.None) {
+                addClass("borderless");
+            } else {
+                removeClass("borderless");
+            }
+        }
+        
         if (_compositeBuilder != null) {
             _compositeBuilder.applyStyle(style);
         }

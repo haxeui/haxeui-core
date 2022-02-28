@@ -5,18 +5,18 @@
 }
 
 .frame-contents {
-    border-right: 1px solid #DDDDDD;
-    border-left: 1px solid #DDDDDD;
-    border-bottom: 1px solid #DDDDDD;
+    border-right: 1px solid $normal-border-color;
+    border-left: 1px solid $normal-border-color;
+    border-bottom: 1px solid $normal-border-color;
     padding: 10px;
     padding-top: 15px;
 }
 
 .frame-title {
-    color: #222222;
+    color: $normal-text-color;
 }
 
 .frame-left-line, .frame-right-line {
-    background-color: #DDDDDD;
+    background-color: $normal-border-color;
     height: 1px;
 }

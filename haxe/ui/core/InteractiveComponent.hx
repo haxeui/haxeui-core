@@ -1,5 +1,6 @@
 package haxe.ui.core;
 
+import haxe.ui.actions.ActionType;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.events.FocusEvent;
 import haxe.ui.focus.FocusManager;
@@ -8,12 +9,27 @@ import haxe.ui.focus.IFocusable;
 /**
  A component that can be interacted with and gain input focus via either mouse or keyboard
 **/
+@:access(haxe.ui.events.Events)
 class InteractiveComponent extends Component implements IFocusable {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
     @:clonable @:behaviour(DefaultBehaviour, true)      public var allowInteraction:Bool;
 
+    private function actionStart(type:ActionType):Bool {
+        if (_internalEvents != null) {
+            return _internalEvents.actionStart(type);
+        }
+        return false;
+    }
+    
+    private function actionEnd(type:ActionType):Bool {
+        if (_internalEvents != null) {
+            return _internalEvents.actionEnd(type);
+        }
+        return false;
+    }
+    
     private var _focus:Bool = false;
     /**
      Whether this component currently has focus
@@ -32,7 +48,6 @@ class InteractiveComponent extends Component implements IFocusable {
         _focus = value;
         var eventType = null;
         if (_focus == true) {
-            addClass(":active");
             eventType = FocusEvent.FOCUS_IN;
             FocusManager.instance.focus = cast(this, IFocusable);
 
@@ -42,7 +57,6 @@ class InteractiveComponent extends Component implements IFocusable {
                 scrollview.ensureVisible(this);
             }
         } else {
-            removeClass(":active");
             eventType = FocusEvent.FOCUS_OUT;
             FocusManager.instance.focus = null;
         }

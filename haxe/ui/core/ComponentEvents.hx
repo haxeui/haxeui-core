@@ -138,23 +138,8 @@ class ComponentEvents extends ComponentContainer {
         return INTERACTIVE_EVENTS.indexOf(type) != -1;
     }
 
-    @:noCompletion private var _interactivityDisabled:Bool = false;
-    @:noCompletion private var _interactivityDisabledCounter:Int = 0;
-    private function disableInteractivity(disable:Bool, recursive:Bool = true, updateStyle:Bool = false, force:Bool = false) { // You might want to disable interactivity but NOT actually disable visually
-        if (force == true) {
-            _interactivityDisabledCounter = 0;
-        }
+    private function disableInteractiveEvents(disable:Bool) {
         if (disable == true) {
-            _interactivityDisabledCounter++;
-        } else {
-            _interactivityDisabledCounter--;
-        }
-
-        if (_interactivityDisabledCounter > 0 && _interactivityDisabled == false) {
-            _interactivityDisabled = true;
-            if (updateStyle == true) {
-                cast(this, Component).swapClass(":disabled", ":hover");
-            }
             if (__events != null) {
                 for (eventType in __events.keys()) {
                     if (!isInteractiveEvent(eventType)) {
@@ -172,12 +157,7 @@ class ComponentEvents extends ComponentContainer {
                     }
                 }
             }
-            dispatch(new UIEvent(UIEvent.DISABLED));
-        } else if (_interactivityDisabledCounter < 1 && _interactivityDisabled == true) {
-            _interactivityDisabled = false;
-            if (updateStyle == true) {
-                cast(this, Component).removeClass(":disabled");
-            }
+        } else {
             if (_disabledEvents != null) {
                 for (eventType in _disabledEvents.keys()) {
                     var listeners:FunctionArray<UIEvent->Void> = _disabledEvents.listeners(eventType);
@@ -189,6 +169,34 @@ class ComponentEvents extends ComponentContainer {
                 }
                 _disabledEvents = null;
             }
+        }
+    }
+    
+    @:noCompletion private var _interactivityDisabled:Bool = false;
+    @:noCompletion private var _interactivityDisabledCounter:Int = 0;
+    private function disableInteractivity(disable:Bool, recursive:Bool = true, updateStyle:Bool = false, force:Bool = false) { // You might want to disable interactivity but NOT actually disable visually
+        if (force == true) {
+            _interactivityDisabledCounter = 0;
+        }
+        if (disable == true) {
+            _interactivityDisabledCounter++;
+        } else {
+            _interactivityDisabledCounter--;
+        }
+
+        if (_interactivityDisabledCounter > 0 && _interactivityDisabled == false) {
+            _interactivityDisabled = true;
+            if (updateStyle == true) {
+                cast(this, Component).swapClass(":disabled", ":hover");
+            }
+            disableInteractiveEvents(true);
+            dispatch(new UIEvent(UIEvent.DISABLED));
+        } else if (_interactivityDisabledCounter < 1 && _interactivityDisabled == true) {
+            _interactivityDisabled = false;
+            if (updateStyle == true) {
+                cast(this, Component).removeClass(":disabled");
+            }
+            disableInteractiveEvents(false);
             dispatch(new UIEvent(UIEvent.ENABLED));
         }
 

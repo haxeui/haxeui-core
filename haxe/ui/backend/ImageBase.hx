@@ -17,6 +17,9 @@ class ImageBase extends ImageSurface {
     private var _imageClipRect:Rectangle;
 
     public function dispose() {
+        if (parentComponent != null) {
+            parentComponent = null;
+        }
     }
 
     //***********************************************************************************************************

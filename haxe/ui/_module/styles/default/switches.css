@@ -8,19 +8,22 @@
 }
 
 .switch-label {
-    color: black;
     vertical-align: center;
 }
 
 .switch-button-sub {
-    background-color: #FFFFFF;
-    border: 1px solid #ABABAB;
+    background-color: $default-background-color;
+    border: 1px solid $normal-border-color;
     border-radius: 2px;
     cursor: pointer;
     padding: 0px;
     initial-width: 40px;
     initial-height: 20px;
-    filter: drop-shadow(1, 45, #888888, 0.3, 1, 1, 1, 3, true);
+    filter: $normal-inner-shadow;
+}
+
+.switch-button-sub:disabled {
+    border-color: $disabled-border-color;
 }
 
 .switch-button-sub .button {
@@ -28,6 +31,11 @@
     width: 50%;
     border-radius: 2px;
     filter: none;
+}
+
+.switch-button-sub .button:disabled {
+    background: $disabled-background-color-start $disabled-background-color-end vertical;
+    border-color: $disabled-border-color;
 }
 
 .switch-button-sub-extra {
@@ -41,11 +49,11 @@
 @keyframes switchAnimateSelected {
     0% {
         pos: 0;
-        background-color: #FFFFFF;
+        background-color: $default-background-color;
     }
     100% {
         pos: 100;
-        background-color: #98c4e6;
+        background-color: $selection-background-color;
     }
 }
 
@@ -74,18 +82,21 @@
 .circle-switch .switch-button-sub-extra {
     height: 14px;
     width: 100%;
-    background-color: #FFFFFF;
-    border: 1px solid #ABABAB;
+    background-color: $default-background-color;
+    border: 1px solid $normal-border-color;
     vertical-align: center;
     border-radius: 10px;
-    filter: drop-shadow(1, 45, #888888, 0.3, 1, 1, 1, 3, true);
+    filter: $normal-inner-shadow;
+}
+
+.circle-switch .switch-button-sub-extra:disabled {
+    border-color: $disabled-border-color;    
 }
 
 .circle-switch .switch-button-sub .button {
     width: 20px;
     height: 20px;
     border-radius: 50px;
-    filter: drop-shadow(1, 45, #000000, 0.2, 0, 0, 0, 3, false);
 }
 
 @keyframes switchAnimateSelectedCircle {
@@ -108,10 +119,10 @@
 
 @keyframes switchAnimateExtraSelectedCircle {
     0% {
-        background-color: #FFFFFF;
+        background-color: $default-background-color;
     }
     100% {
-        background-color: #98c4e6;
+        background-color: $selection-background-color;
     }
 }
 
@@ -131,10 +142,14 @@
     initial-width: 40px;
     initial-height: 20px;
     padding: 0px;
-    background-color: #FFFFFF;
-    border: 1px solid #ABABAB;
+    background-color: $default-background-color;
+    border: 1px solid $normal-border-color;
     cursor: pointer;
-    filter: drop-shadow(1, 45, #888888, 0.3, 1, 1, 1, 3, true);
+    filter: $normal-inner-shadow;
+}
+
+.pill-switch .switch-button-sub:disabled {
+    border-color: $disabled-border-color; 
 }
 
 .pill-switch .switch-button-sub .button {
@@ -155,11 +170,11 @@
 @keyframes switchAnimateSelectedPill {
     0% {
         pos: 0;
-        background-color: #FFFFFF;
+        background-color: $default-background-color;
     }
     100% {
         pos: 100;
-        background-color: #98c4e6;
+        background-color: $selection-background-color;
     }
 }
 

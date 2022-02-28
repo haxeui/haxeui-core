@@ -122,6 +122,12 @@ class OptionBoxBuilder extends CheckBoxBuilder {
             valueComponent.removeClass(":selected");
         }
     }
+    
+    public override function destroy() {
+        super.destroy();
+        var optionbox:OptionBox = cast(_component, OptionBox);
+        OptionBoxGroups.instance.remove(optionbox.componentGroup, optionbox);        
+    }
 }
 
 //***********************************************************************************************************
@@ -165,6 +171,18 @@ class OptionBoxGroups { // singleton
             arr.push(optionbox);
         }
         set(name, arr);
+    }
+    
+    public function remove(name:String, optionbox:OptionBox) {
+        var arr:Array<OptionBox> = get(name);
+        if (arr == null) {
+            return;
+        }
+        
+        arr.remove(optionbox);
+        if (arr.length == 0) {
+            _groups.remove(name);
+        }
     }
     
     public function reset(name:String) {

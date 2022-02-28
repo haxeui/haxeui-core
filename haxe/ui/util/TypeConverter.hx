@@ -29,6 +29,8 @@ class TypeConverter {
         switch (type.toLowerCase()) {
             case "string":
                 return Std.string(input);
+            case "bool":
+                return Std.string(input) == "true";
         }
         
         return input;

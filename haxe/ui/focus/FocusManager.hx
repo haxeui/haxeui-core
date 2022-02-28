@@ -1,6 +1,8 @@
 package haxe.ui.focus;
 
+import haxe.ui.backend.FocusManagerImpl;
 import haxe.ui.core.Component;
+import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.Screen;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.focus.IFocusable;
@@ -11,15 +13,12 @@ import Std.isOfType;
 import Std.is as isOfType;
 #end
 
-class FocusInfo {
-    public function new() {
-
-    }
-    public var view:Component;
-    public var currentFocus:IFocusable;
+typedef FocusInfo = { // focus info for a given view (component)
+    var view:Component;
+    var currentFocus:IFocusable;
 }
 
-class FocusManager {
+class FocusManager extends FocusManagerImpl {
     private static var _instance:FocusManager;
     public static var instance(get, null):FocusManager;
     private static function get_instance():FocusManager {
@@ -32,16 +31,21 @@ class FocusManager {
     //****************************************************************************************************
     // Instance
     //****************************************************************************************************
-    private var _views:Array<Component>;
-    private var _focusInfo:Map<Component, FocusInfo>;
+    public var autoFocus:Bool = true; // whether or not to automatically set focus to the first interactive component in a view when its added
+    
+    private var _applicators:Array<IFocusApplicator> = [];
+    
+    private var _viewStack:Array<FocusInfo> = [];
 
     public function new() {
-        _views = [];
-        _focusInfo = new Map<Component, FocusInfo>();
-        Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
+        super();
+        _applicators.push(new StyleFocusApplicator());
+        //_applicators.push(new BoxFocusApplicator());
+        //Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
     }
 
     private function onScreenMouseDown(event:MouseEvent) {
+        return;
         var list = Screen.instance.findComponentsUnderPoint(event.screenX, event.screenY);
         for (l in list) {
             if (isOfType(l, IFocusable)) {
@@ -52,35 +56,58 @@ class FocusManager {
         focus = null;
     }
     
-    public function pushView(component:Component) {
-        _views.push(component);
+    public function pushView(view:Component) {
+        if (hasView(view) == false) {
+            _viewStack.push({
+                view: view,
+                currentFocus: null
+            });
+            
+            if (autoFocus == true) {
+                var interactiveComponents = view.findComponents(InteractiveComponent, -1);
+                if (interactiveComponents != null && interactiveComponents.length > 0) {
+                    for (i in interactiveComponents) {
+                        if (i.allowFocus == true) {
+                            focus = i;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        
     }
 
-    public function hasView(component:Component):Bool {
-        return _views.indexOf(component) != -1;
+    public function hasView(view:Component):Bool {
+        for (info in _viewStack) {
+            if (info.view == view) {
+                return true;
+            }
+        }
+        return false;
     }
     
     public function popView() {
-        var c = _views.pop();
-        _focusInfo.remove(c);
+        var info = _viewStack.pop();
+        removeView(info.view);
     }
 
-    public function removeView(component:Component) {
-        _views.remove(component);
+    public function removeView(view:Component) {
+        for (info in _viewStack) {
+            if (info.view == view) {
+                _viewStack.remove(info);
+                break;
+            }
+        }
     }
 
     public var focusInfo(get, null):FocusInfo;
     private function get_focusInfo():FocusInfo {
-        if (_views.length == 0) {
+        if (_viewStack.length == 0) {
             return null;
         }
-        var c:Component = _views[_views.length - 1];
-        var info = _focusInfo.get(c);
-        if (info == null) {
-            info = new FocusInfo();
-            info.view = c;
-            _focusInfo.set(c, info);
-        }
+        
+        var info = _viewStack[_viewStack.length - 1];
         return info;
     }
 
@@ -95,27 +122,27 @@ class FocusManager {
         if (value != null && (value is IFocusable) == false) {
             throw "Component does not implement IFocusable";
         }
-
-        if (focusInfo == null) { // TODO: just a patch for now, this all needs reworking
+        if (value != null && (value.allowFocus == false || value.disabled == true)) {
             return value;
         }
 
-        if (focusInfo.currentFocus != null && focusInfo.currentFocus != value) {
-            focusInfo.currentFocus.focus = false;
+        if (focusInfo != null && focusInfo.currentFocus != null && focusInfo.currentFocus != value) {
+            unapplyFocus(cast focusInfo.currentFocus);
             focusInfo.currentFocus = null;
         }
         if (value != null) {
             focusInfo.currentFocus = value;
-            focusInfo.currentFocus.focus = true;
+            applyFocus(cast focusInfo.currentFocus);
         }
 
-        Toolkit.screen.focus = cast value;
-
+        if (focusInfo == null) {
+            return value;
+        }
         return focusInfo.currentFocus;
     }
 
     public function focusNext():Component {
-        if (_views.length == 0) {
+        if (_viewStack.length == 0) {
             return null;
         }
 
@@ -139,7 +166,7 @@ class FocusManager {
     }
 
     public function focusPrev():Component {
-        if (_views.length == 0) {
+        if (_viewStack.length == 0) {
             return null;
         }
 
@@ -164,9 +191,13 @@ class FocusManager {
 
     private function buildFocusableList(c:Component, list:Array<IFocusable>):IFocusable {
         var currentFocus = null;
+        if (c.hidden == true) {
+            return null;
+        }
+        
         if ((c is IFocusable)) {
             var f:IFocusable = cast c;
-            if (f.allowFocus == true) {
+            if (f.allowFocus == true && f.disabled == false) {
                 if (f.focus == true) {
                     currentFocus = f;
                 }
@@ -174,12 +205,37 @@ class FocusManager {
             }
         }
 
-        for (child in c.childComponents) {
+        var childList = c.childComponents;
+        childList.sort(function(c1, c2) {
+            return c1.componentTabIndex - c2.componentTabIndex;
+        });
+        
+        for (child in childList) {
             var f:IFocusable = buildFocusableList(child, list);
             if (f != null) {
                 currentFocus = f;
             }
         }
         return cast currentFocus;
+    }
+    
+    private override function applyFocus(c:Component) {
+        super.applyFocus(c);
+        cast(c, IFocusable).focus = true;
+        for (a in _applicators) {
+            if (a.enabled == true) {
+                a.apply(c);
+            }
+        }
+    }
+    
+    private override function unapplyFocus(c:Component) {
+        super.unapplyFocus(c);
+        cast(c, IFocusable).focus = false;
+        for (a in _applicators) {
+            if (a.enabled == true) {
+                a.unapply(c);
+            }
+        }
     }
 }

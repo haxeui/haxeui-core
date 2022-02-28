@@ -1,6 +1,7 @@
 package haxe.ui.components;
 
 import haxe.ui.Toolkit;
+import haxe.ui.actions.ActionType;
 import haxe.ui.behaviours.Behaviour;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
@@ -9,6 +10,7 @@ import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.IDirectionalComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.Screen;
+import haxe.ui.events.DragEvent;
 import haxe.ui.events.Events;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
@@ -20,6 +22,7 @@ import haxe.ui.util.Variant;
 class Slider extends InteractiveComponent implements IDirectionalComponent {
     private function new() {
         super();
+        cascadeActive = true;
     }
 
     //***********************************************************************************************************
@@ -37,13 +40,6 @@ class Slider extends InteractiveComponent implements IDirectionalComponent {
     @:clonable @:behaviour(MajorTicks, null)        public var majorTicks:Null<Float>;
     @:clonable @:value(pos)                         public var value:Dynamic;
 
-    
-    //***********************************************************************************************************
-    // Public Events
-    //***********************************************************************************************************
-    @:event(UIEvent.DRAG_START)                     public var onDragStart:UIEvent->Void;    
-    @:event(UIEvent.DRAG_END)                       public var onDragEnd:UIEvent->Void;    
-    
     //***********************************************************************************************************
     // Private API
     //***********************************************************************************************************
@@ -305,6 +301,8 @@ private class Events extends haxe.ui.events.Events  {
             return;
         }
 
+        _slider.focus = true;
+        
         e.screenX *= Toolkit.scaleX;
         e.screenY *= Toolkit.scaleY;
         e.cancel();
@@ -343,6 +341,7 @@ private class Events extends haxe.ui.events.Events  {
     private var _offset:Point = null;
     private function onThumbMouseDown(e:MouseEvent) {
         e.cancel();
+        _slider.focus = true;
         startDrag(cast(e.target, Button), e.localX * Toolkit.scaleX, e.localY * Toolkit.scaleX);
     }
 
@@ -352,7 +351,7 @@ private class Events extends haxe.ui.events.Events  {
         Screen.instance.registerEvent(MouseEvent.MOUSE_MOVE, onScreenMouseMove);
         Screen.instance.registerEvent(MouseEvent.MOUSE_UP, onScreenMouseUp);
         
-        _slider.dispatch(new UIEvent(UIEvent.DRAG_START));
+        _slider.dispatch(new DragEvent(DragEvent.DRAG_START));
     }
 
     private function onScreenMouseUp(e:MouseEvent) {
@@ -360,7 +359,7 @@ private class Events extends haxe.ui.events.Events  {
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_UP, onScreenMouseUp);
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_MOVE, onScreenMouseMove);
         
-        _slider.dispatch(new UIEvent(UIEvent.DRAG_END));
+        _slider.dispatch(new DragEvent(DragEvent.DRAG_END));
     }
 
     private function onScreenMouseMove(e:MouseEvent) {
@@ -383,6 +382,19 @@ private class Events extends haxe.ui.events.Events  {
             _slider.end = pos;
         }
     }
+    
+    private override function actionStart(type:ActionType):Bool {
+        return switch (type) {
+            case ActionType.RIGHT | ActionType.UP:
+                _slider.value += 2; // TODO: calculate this somehow
+                true;
+            case ActionType.LEFT | ActionType.DOWN:
+                _slider.value -= 2; // TODO: calculate this somehow
+                true;
+            case _:
+                false;
+        }
+    }
 }
 
 //***********************************************************************************************************
@@ -402,6 +414,7 @@ class SliderBuilder extends CompositeBuilder {
         if (_component.findComponent("range") == null) {
             var v = createValueComponent();
             v.scriptAccess = false;
+            v.allowFocus = false;
             v.id = "range";
             v.addClass("slider-value");
             v.start = v.end = 0;
@@ -430,6 +443,7 @@ class SliderBuilder extends CompositeBuilder {
 
         var b = new Button();
         b.scriptAccess = false;
+        b.allowFocus = false;
         b.id = id;
         b.addClass(id);
         b.remainPressed = true;

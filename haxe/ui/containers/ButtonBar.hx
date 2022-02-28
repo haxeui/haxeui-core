@@ -19,6 +19,7 @@ class ButtonBar extends Box implements IDirectionalComponent {
     }
     
     @:clonable @:behaviour(DefaultBehaviour, true)      public var toggle:Bool;
+    @:clonable @:behaviour(DefaultBehaviour, false)     public var allowUnselection:Bool;
     @:clonable @:behaviour(SelectedIndex)               public var selectedIndex:Int;
     @:clonable @:behaviour(SelectedButton)              public var selectedButton:Component;
     @:clonable @:value(selectedIndex)                   public var value:Dynamic;
@@ -39,12 +40,14 @@ private class SelectedIndex extends DataBehaviour {
             return;
         }
         
-        if (currentButton != null) {
+        if (currentButton != null && _value.toInt() < _component.numComponents) {
             builder._currentButton.selected = false;
         }
         
-        button.selected = true;
-        builder._currentButton = button;
+        if (button != null) {
+	        button.selected = true;
+	        builder._currentButton = button;
+		}
         
         _component.dispatch(new UIEvent(UIEvent.CHANGE));
     }
@@ -52,6 +55,13 @@ private class SelectedIndex extends DataBehaviour {
 
 @:dox(hide) @:noCompletion
 private class SelectedButton extends DataBehaviour {
+	private var _bar:ButtonBar;
+	
+	public function new(bar:ButtonBar) {
+		super(bar);
+		_bar = bar;
+	}
+	
     public override function get():Variant {
         for (child in _component.childComponents) {
             if ((child is Button) && cast(child, Button).selected == true) {
@@ -60,6 +70,10 @@ private class SelectedButton extends DataBehaviour {
         }
         return null;
     }
+    
+    public override function set(value:Variant) {
+		_bar.selectedIndex = _component.getComponentIndex(value);
+	}
 }
 
 //***********************************************************************************************************
@@ -94,7 +108,7 @@ private class Events extends haxe.ui.events.Events {
     private function onButtonChanged(event:UIEvent) {
         var button = cast(event.target, Button);
         var index = _bar.getComponentIndex(button);
-        if (index == _bar.selectedIndex && button.selected == false) {
+        if (_bar.allowUnselection == false && index == _bar.selectedIndex && button.selected == false) {
             button.selected = true;
             return;
         }

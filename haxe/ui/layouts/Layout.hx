@@ -150,7 +150,7 @@ class Layout implements ILayout {
 
         var n = _component.style.fullBorderSize;
         if (n > 0) {
-            n--;
+            //n--;
         }
         return n;
     }

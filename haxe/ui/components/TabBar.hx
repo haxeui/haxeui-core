@@ -2,11 +2,13 @@ package haxe.ui.components;
 
 import haxe.ui.behaviours.Behaviour;
 import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.components.Button.ButtonEvents;
 import haxe.ui.components.Button.ButtonLayout;
 import haxe.ui.containers.Box;
 import haxe.ui.containers.HBox;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
+import haxe.ui.core.InteractiveComponent;
 import haxe.ui.events.Events;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
@@ -103,6 +105,7 @@ private class SelectedIndex extends DataBehaviour {
         if (tab != null) {
             var selectedTab:Component = cast(_component, TabBar).selectedTab;
             if (selectedTab != null) {
+                //cast(selectedTab, InteractiveComponent).allowFocus = true;
                 selectedTab.removeClass("tabbar-button-selected");
                 var label = selectedTab.findComponent(Label);
                 if (label != null) {
@@ -114,6 +117,7 @@ private class SelectedIndex extends DataBehaviour {
                 }
             }
             tab.addClass("tabbar-button-selected");
+            //cast(tab, InteractiveComponent).allowFocus = false;
             var label = tab.findComponent(Label);
             if (label != null) {
                 label.invalidateComponent();
@@ -546,6 +550,8 @@ private class TabBarButton extends Button {
         _closable = value;
         var existing = findComponent("tab-close-button", Image, false);
 
+        var events:ButtonEvents = cast(this._internalEvents, ButtonEvents);
+        events.recursiveStyling = false;
         if (_closable == true && existing == null) {
             iconPosition = "far-left";
             var image = new Image();

@@ -12,6 +12,7 @@ class Module {
     public var properties(default, default):Array<ModulePropertyEntry>;
     public var preload(default, default):Array<ModulePreloadEntry>;
     public var locales(default, default):Array<ModuleLocaleEntry>;
+    public var actionInputSources(default, default):Array<ModuleActionInputSourceEntry>;
 
     public function new() {
         resourceEntries = [];
@@ -21,6 +22,7 @@ class Module {
         properties = [];
         preload = [];
         locales = [];
+        actionInputSources = [];
     }
 
     public function validate() {
@@ -40,6 +42,7 @@ class ModuleClassEntry {
     public var className(default, default):String;
     public var classFolder(default, default):String;
     public var classFile(default, default):String;
+    public var loadAll(default, default):Bool;
 
     public function new() {
     }
@@ -56,10 +59,12 @@ class ModuleThemeEntry {
     public var parent(default, default):String;
     public var styles(default, default):Array<ModuleThemeStyleEntry>;
     public var images(default, default):Array<ModuleThemeImageEntry>;
+    public var vars(default, default):Map<String, String>;
 
     public function new() {
         styles = [];
         images = [];
+        vars = new Map<String, String>();
     }
 }
 
@@ -106,6 +111,13 @@ class ModuleLocaleEntry {
 
 class ModuleLocaleResourceEntry {
     public var path(default, default):String;
+    
+    public function new() {
+    }
+}
+
+class ModuleActionInputSourceEntry {
+    public var className(default, default):String;
     
     public function new() {
     }

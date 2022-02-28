@@ -373,12 +373,17 @@ class ComponentBounds extends ComponentLayout {
         }
 
         if (allowZeroSized == true) {
+            /*
             var c = cast(this, Component);
             if (c.layout != null) {
                 var us = c.layout.usableSize;
                 if (us.width <= 0 || us.height <= 0) {
                     return true;
                 }
+            }
+            */
+            if (this.width <= 0 || this.height <= 0) {
+                return true;
             }
         }
 

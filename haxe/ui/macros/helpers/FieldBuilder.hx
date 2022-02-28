@@ -25,6 +25,11 @@ class FieldBuilder {
         return value;
     }
 
+    public var isStatic(get, null):Bool;
+    private function get_isStatic():Bool {
+        return field.access.indexOf(AStatic) != -1;
+    }
+    
     public var access(get, set):Array<Access>;
     private function get_access():Array<Access> {
         return field.access;

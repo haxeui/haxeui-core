@@ -1,6 +1,7 @@
 package haxe.ui.dragdrop;
 
 import haxe.ui.Toolkit;
+import haxe.ui.events.DragEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.geom.Point;
 import haxe.ui.util.MathUtil;
@@ -152,7 +153,7 @@ class DragManager {
             if (_currentOptions.draggingStyleName != null) {
                 _currentComponent.addClass(_currentOptions.draggingStyleName);
             }
-            _currentComponent.dispatch(new UIEvent(UIEvent.DRAG_START));
+            _currentComponent.dispatch(new DragEvent(DragEvent.DRAG_START));
         }
     }
 
@@ -160,22 +161,31 @@ class DragManager {
         // Calculate bounds //
         e.screenX *= Toolkit.scaleX;
         e.screenY *= Toolkit.scaleY;
+        
+        var event = new DragEvent(DragEvent.DRAG);
         if (_currentOptions.dragBounds != null) {
             var boundX = MathUtil.clamp(e.screenX, _currentOptions.dragBounds.left + _mouseOffset.x, _currentOptions.dragBounds.right - _currentComponent.actualComponentWidth + _mouseOffset.x);
             var boundY = MathUtil.clamp(e.screenY, _currentOptions.dragBounds.top + _mouseOffset.y, _currentOptions.dragBounds.bottom - _currentComponent.actualComponentHeight + _mouseOffset.y);
-            _currentComponent.moveComponent(boundX - _mouseOffset.x, boundY - _mouseOffset.y);
+            event.left = boundX - _mouseOffset.x;
+            event.top = boundY - _mouseOffset.y;
         } else {
             var xpos = e.screenX;
             var ypos = e.screenY;
-            _currentComponent.moveComponent(xpos - _mouseOffset.x, ypos - _mouseOffset.y);
+            event.left = xpos - _mouseOffset.x;
+            event.top = ypos - _mouseOffset.y;
         }
+        _currentComponent.dispatch(event);
+        if (event.canceled == true) {
+            return;
+        }
+        _currentComponent.moveComponent(event.left, event.top);
     }
 
     private function onScreenMouseUp(e:MouseEvent) {
         if (_currentOptions.draggingStyleName != null) {
             _currentComponent.removeClass(_currentOptions.draggingStyleName);
         }
-        _currentComponent.dispatch(new UIEvent(UIEvent.DRAG_END));
+        _currentComponent.dispatch(new DragEvent(DragEvent.DRAG_END));
 
         // Clear data //
         _currentComponent = null;

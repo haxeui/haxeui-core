@@ -5,6 +5,12 @@ import haxe.ui.events.UIEvent;
 import haxe.ui.focus.FocusManager;
 import haxe.ui.util.EventMap;
 
+#if (haxe_ver >= 4.2)
+import Std.isOfType;
+#else
+import Std.is as isOfType;
+#end
+
 class Screen extends ScreenImpl {
 
     private static var _instance:Screen;
@@ -53,6 +59,9 @@ class Screen extends ScreenImpl {
     }
 
     public override function removeComponent(component:Component, dispose:Bool = true):Component {
+        if (rootComponents.indexOf(component) == -1) {
+            return component;
+        }
         @:privateAccess component._hasScreen = false;
         super.removeComponent(component, dispose);
         component.depth = -1;
@@ -75,11 +84,33 @@ class Screen extends ScreenImpl {
     }
 
     public function findComponentsUnderPoint<T:Component>(screenX:Float, screenY:Float, type:Class<T> = null):Array<Component> {
+        var copy = rootComponents.copy();
+        copy.reverse();
         var c:Array<Component> = [];
-        for (r in rootComponents) {
+        for (r in copy) {
+            if (r.hitTest(screenX, screenY)) {
+                var match = true;
+                if (type != null && isOfType(r, type) == false) {
+                    match = false;
+                }
+                if (match == true) {
+                    c.push(r);
+                }
+            }
             c = c.concat(r.findComponentsUnderPoint(screenX, screenY, type));
         }
         return c;
+    }
+    
+    public function hasComponentUnderPoint<T:Component>(screenX:Float, screenY:Float, type:Class<T> = null):Bool {
+        var copy = rootComponents.copy();
+        copy.reverse();
+        for (r in copy) {
+            if (r.hasComponentUnderPoint(screenX, screenY, type) == true) {
+                return true;
+            }
+        }
+        return false;
     }
     
     private function onThemeChanged() {

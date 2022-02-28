@@ -6,15 +6,15 @@
     width: 100%;
     height: 6px;
     cursor: row-resize;
-    __background-color: #EEEEEE;
+    pointer-events: true;
 }
 
 .vertical-splitter-gripper:hover {
-    background-color: #DDDDDD;
+    background-color: $solid-background-color-down;
 }
 
 .vertical-splitter-gripper .image {
-    resource: "haxeui-core/styles/default/sizer_gripper_horizontal.png";
+    resource: $gripper-horizontal;
     horizontal-align: center;
     vertical-align: center;
 }
@@ -23,15 +23,15 @@
     width: 6px;
     height: 100%;
     cursor: col-resize;
-    __background-color: #EEEEEE;
+    pointer-events: true;
 }
 
 .horizontal-splitter-gripper:hover {
-    background-color: #DDDDDD;
+    background-color: $solid-background-color-down;
 }
 
 .horizontal-splitter-gripper .image {
-    resource: "haxeui-core/styles/default/sizer_gripper_vertical.png";
+    resource: $gripper-vertical;
     horizontal-align: center;
     vertical-align: center;
 }
