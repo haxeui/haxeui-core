@@ -2,15 +2,12 @@ package haxe.ui.focus;
 
 import haxe.ui.core.Component;
 
-class StyleFocusApplicator implements IFocusApplicator {
-    public function new() {
-    }
-    
-    public function apply(target:Component):Void {
+class StyleFocusApplicator extends FocusApplicator {
+    public override function apply(target:Component):Void {
         target.addClass(":active");
     }
     
-    public function unapply(target:Component):Void {
+    public override function unapply(target:Component):Void {
         target.removeClass(":active");
     }
 }

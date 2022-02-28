@@ -40,7 +40,8 @@ class FocusManager extends FocusManagerImpl {
     public function new() {
         super();
         _applicators.push(new StyleFocusApplicator());
-        Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
+        //_applicators.push(new BoxFocusApplicator());
+        //Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
     }
 
     private function onScreenMouseDown(event:MouseEvent) {
@@ -222,7 +223,9 @@ class FocusManager extends FocusManagerImpl {
         super.applyFocus(c);
         cast(c, IFocusable).focus = true;
         for (a in _applicators) {
-            a.apply(c);
+            if (a.enabled == true) {
+                a.apply(c);
+            }
         }
     }
     
@@ -230,7 +233,9 @@ class FocusManager extends FocusManagerImpl {
         super.unapplyFocus(c);
         cast(c, IFocusable).focus = false;
         for (a in _applicators) {
-            a.unapply(c);
+            if (a.enabled == true) {
+                a.unapply(c);
+            }
         }
     }
 }
