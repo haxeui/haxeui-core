@@ -121,7 +121,7 @@ class FocusManager extends FocusManagerImpl {
         if (value != null && (value is IFocusable) == false) {
             throw "Component does not implement IFocusable";
         }
-        if (value != null && value.allowFocus == false) {
+        if (value != null && (value.allowFocus == false || value.disabled == true)) {
             return value;
         }
 
@@ -196,7 +196,7 @@ class FocusManager extends FocusManagerImpl {
         
         if ((c is IFocusable)) {
             var f:IFocusable = cast c;
-            if (f.allowFocus == true) {
+            if (f.allowFocus == true && f.disabled == false) {
                 if (f.focus == true) {
                     currentFocus = f;
                 }
