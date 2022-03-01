@@ -76,7 +76,7 @@ class ModuleMacros {
                 }
                 for (r in t.styles) {
                     builder.add(macro
-                        haxe.ui.themes.ThemeManager.instance.addStyleResource($v{t.name}, $v{r.resource}, $v{r.priority})
+                        haxe.ui.themes.ThemeManager.instance.addStyleResource($v{t.name}, $v{r.resource}, $v{r.priority}, $v{r.styleData})
                     );
                 }
                 for (r in t.images) {

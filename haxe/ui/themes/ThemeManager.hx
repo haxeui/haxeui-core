@@ -59,10 +59,11 @@ class ThemeManager {
         return theme;
     }
 
-    public function addStyleResource(themeName:String, resourceId:String, priority:Float = 0) {
+    public function addStyleResource(themeName:String, resourceId:String, priority:Float = 0, styleData:String = null) {
         getTheme(themeName).styles.push({
             resourceId: resourceId,
-            priority: priority
+            priority: priority,
+            styleData: styleData
         });
     }
 
@@ -113,7 +114,7 @@ class ThemeManager {
         });
 
         for (e in entries) {
-            applyResource(e.resourceId);
+            applyResource(e.resourceId, e.styleData);
         }
 
         // images
@@ -136,8 +137,11 @@ class ThemeManager {
         dispatch(new ThemeEvent(ThemeEvent.THEME_CHANGED));
     }
 
-    public function applyResource(resourceId:String) {
+    public function applyResource(resourceId:String, styleData:String = null) {
         var style:String = Toolkit.assets.getText(resourceId);
+        if (styleData != null) {
+            style += "\n" + styleData;
+        }
         if (style != null) {
             addStyleString(style);
         } else {

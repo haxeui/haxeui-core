@@ -70,6 +70,7 @@ class ModuleThemeEntry {
 
 class ModuleThemeStyleEntry {
     public var resource:String;
+    public var styleData:String;
     public var priority:Float = 0;
 
     public function new() {
