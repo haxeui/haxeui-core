@@ -35,9 +35,6 @@ class BoxFocusApplicator extends FocusApplicator {
                     }
                 ', false);
                 animation = Toolkit.styleSheet.findAnimation(STYLE_NAME);
-                for (k in Toolkit.styleSheet.animations.keys()) {
-                    trace(k);
-                }
             }
             var first:AnimationKeyFrame = animation.keyFrames[0];
             var last:AnimationKeyFrame = animation.keyFrames[animation.keyFrames.length - 1];
