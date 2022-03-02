@@ -62,7 +62,7 @@ class FocusManager extends FocusManagerImpl {
                 view: view,
                 currentFocus: null
             });
-            
+
             if (autoFocus == true) {
                 var list = [];
                 buildFocusableList(view, list);
@@ -201,7 +201,7 @@ class FocusManager extends FocusManagerImpl {
             }
         }
 
-        var childList = c.childComponents;
+        var childList = c.childComponents.copy();
         childList.sort(function(c1, c2) {
             return c1.componentTabIndex - c2.componentTabIndex;
         });
