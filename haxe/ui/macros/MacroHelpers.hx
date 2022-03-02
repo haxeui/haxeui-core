@@ -173,6 +173,9 @@ class MacroHelpers {
     private static function cacheClassPathEntries(path, array) {
         path = StringTools.trim(path);
         if (path.length == 0) {
+            #if classpath_scan_verbose
+            trace("classpath cache: skipping 0 length path");
+            #end
             return;
         }
         path = Path.normalize(path);
@@ -185,6 +188,9 @@ class MacroHelpers {
             }
         }
         if (exclude == true || ! sys.FileSystem.exists(path)) {
+            #if classpath_scan_verbose            
+            trace("classpath cache: excluding '" + path + "'");
+            #end
             return;
         }
 
@@ -204,6 +210,9 @@ class MacroHelpers {
                     cacheClassPathEntries(fullPath, array);
                 }
             } else if (isDir == false) {
+                #if classpath_scan_verbose
+                trace("classpath cache: adding '" + fullPath + "'");
+                #end    
                 array.push({
                     path: fullPath,
                     priority: 0
@@ -216,6 +225,10 @@ class MacroHelpers {
     public static function scanClassPath(processFileFn:String->Bool, searchCriteria:Array<String> = null) {
         buildClassPathCache();
         for (entry in classPathCache) {
+            #if classpath_scan_verbose
+            trace("  looking for '" + searchCriteria + "' in '" + entry.path + "'");
+            #end
+            
             var parts = entry.path.split("/");
             var fileName = parts[parts.length - 1];
             if (searchCriteria == null) {
