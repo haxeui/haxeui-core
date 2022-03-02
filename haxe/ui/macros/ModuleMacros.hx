@@ -438,7 +438,14 @@ class ModuleMacros {
             return _modules;
         }
 
+        #if module_resolution_verbose
+        trace("scanning class path for modules");
+        #end
         MacroHelpers.scanClassPath(function(filePath:String) {
+            #if module_resolution_verbose
+            trace("    module found at '" + filePath + "'");
+            #end
+            
             var moduleParser = ModuleParser.get(MacroHelpers.extension(filePath));
             if (moduleParser != null) {
                 try {
@@ -453,7 +460,10 @@ class ModuleMacros {
             }
             return false;
         }, ["module."]);
-
+        #if module_resolution_verbose
+        trace(_modules.length + " module(s) found");
+        #end
+        
         ArraySort.sort(_modules, function(a, b):Int {
             if (a.priority < b.priority) return -1;
             else if (a.priority > b.priority) return 1;
