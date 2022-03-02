@@ -360,6 +360,7 @@ private class ListDropDownHandler extends DropDownHandler {
     private function createListView() {
         if (_listview == null) {
             _listview = new ListView();
+            _listview.componentTabIndex = -1;
             _listview.virtual = _dropdown.virtual;
             _listview.dataSource = _dropdown.dataSource;
             if (_dropdown.id != null) {
