@@ -5,7 +5,6 @@ import haxe.ui.containers.Box;
 import haxe.ui.core.Component;
 import haxe.ui.core.Screen;
 import haxe.ui.focus.FocusManager;
-import haxe.ui.styles.StyleSheet;
 import haxe.ui.styles.elements.AnimationKeyFrame;
 import haxe.ui.styles.elements.Directive;
 
