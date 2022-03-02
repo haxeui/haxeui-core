@@ -17,6 +17,8 @@ class BoxFocusApplicator extends FocusApplicator {
     public override function apply(target:Component):Void {
         createBox();
 
+        Screen.instance.setComponentIndex(_box, Screen.instance.rootComponents.length - 1);
+        
         Toolkit.callLater(function() {
             var animation = Toolkit.styleSheet.findAnimation(STYLE_NAME);
             if (animation == null) {
