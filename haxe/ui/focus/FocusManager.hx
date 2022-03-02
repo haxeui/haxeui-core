@@ -64,14 +64,10 @@ class FocusManager extends FocusManagerImpl {
             });
             
             if (autoFocus == true) {
-                var interactiveComponents = view.findComponents(InteractiveComponent, -1);
-                if (interactiveComponents != null && interactiveComponents.length > 0) {
-                    for (i in interactiveComponents) {
-                        if (i.allowFocus == true) {
-                            focus = i;
-                            break;
-                        }
-                    }
+                var list = [];
+                buildFocusableList(view, list);
+                if (list.length > 0) {
+                    list[0].focus = true;
                 }
             }
         }
