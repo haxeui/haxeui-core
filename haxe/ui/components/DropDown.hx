@@ -633,6 +633,7 @@ class DropDownEvents extends ButtonEvents {
         Screen.instance.registerEvent(MouseEvent.RIGHT_MOUSE_DOWN, onScreenMouseDown);
     }
 
+    private var _lastSearchTerm = "";
     private function onSearchChange(event:UIEvent) {
         if (_wrapper == null) {
             return;
@@ -645,6 +646,13 @@ class DropDownEvents extends ButtonEvents {
         var selectedItem = _dropdown.selectedItem;
         var searchTerm = searchField.text;
         if (searchTerm == null || StringTools.trim(searchTerm).length == 0) {
+            searchTerm = "";
+        }
+        if (_lastSearchTerm == searchTerm) {
+            return;
+        }
+        _lastSearchTerm = searchTerm;
+        if (searchTerm.length == 0) {
             _dropdown.dataSource.clearFilter();
         } else {
             _dropdown.dataSource.filter(function(index, data) {
@@ -652,7 +660,7 @@ class DropDownEvents extends ButtonEvents {
                 return Std.string(v).toLowerCase().indexOf(searchTerm.toLowerCase()) > -1;
             });
         }
-        
+
         var handler:IDropDownHandler = cast(_dropdown._compositeBuilder, DropDownBuilder).handler;
         if (handler == null) {
             return;
