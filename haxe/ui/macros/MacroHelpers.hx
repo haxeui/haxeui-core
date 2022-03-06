@@ -35,6 +35,26 @@ class MacroHelpers {
         return map;
     }
 
+    public static function exprToArray(params:Expr):Array<Any> {
+        if (params == null) {
+            return null;
+        }
+        
+        var array = new Array<Any>();
+        switch (params.expr) {
+            case EArrayDecl(values):
+                for (v in values) {
+                    switch (v.expr) {
+                        case EConst(CString(z)) | EConst(CInt(z))  | EConst(CFloat(z))  | EConst(CIdent(z)) :
+                            array.push(z);
+                        case _:    
+                    }
+                }
+            case _:    
+        }
+        return array;
+    }
+    
     public static function resolveFile(file:String):String {
         var resolvedPath:String = null;
         if (sys.FileSystem.exists(file) == false) {

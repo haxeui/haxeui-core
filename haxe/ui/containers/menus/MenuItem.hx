@@ -7,6 +7,7 @@ import haxe.ui.core.CompositeBuilder;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.Events;
+import haxe.ui.styles.Style;
 
 @:composite(Events, Builder)
 class MenuItem extends HBox {
@@ -129,5 +130,9 @@ private class Builder extends CompositeBuilder {
         box.addComponent(label);
 
         _component.addComponent(box);
+    }
+    
+    public override function applyStyle(style:Style) {
+        haxe.ui.macros.ComponentMacros.cascacdeStylesTo("menuitem-label", [color, fontName, fontSize, cursor, textAlign]);
     }
 }

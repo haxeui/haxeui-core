@@ -83,6 +83,45 @@ class ComponentMacros {
         return macro new $t();
     }
 
+    macro public static function cascacdeStylesTo(id:Expr, styleProperties:Expr = null, recursiveFind:Null<Bool> = null):Expr {
+        if (styleProperties == null) {
+            return macro null;
+        }
+        
+        var stylePropertiesArray = MacroHelpers.exprToArray(styleProperties);
+        if (stylePropertiesArray == null || stylePropertiesArray.length == 0) {
+            return macro null;
+        }
+
+        var builder = new CodeBuilder();
+        if (recursiveFind != null) {
+            builder.add(macro var c = _component.findComponent($e{id}, haxe.ui.core.Component, $v{recursiveFind}));
+        } else {
+            builder.add(macro var c = _component.findComponent($e{id}, haxe.ui.core.Component));
+        }
+        var propertyExprs = [];
+        for (prop in stylePropertiesArray) {
+            propertyExprs.push(macro {
+                if (c.customStyle.$prop != style.$prop) {
+                    c.customStyle.$prop = style.$prop;
+                    invalidate = true;
+                }
+            });
+        }
+        
+        builder.add(macro if (c != null) {
+            var invalidate = false;
+            
+            $b{propertyExprs}
+            
+            if (invalidate == true) {
+                c.invalidateComponentStyle();
+            }
+        });
+        
+        return builder.expr;
+    }
+    
     #if macro
     private static function buildFromStringCommon(source:String, params:Expr = null):Expr {
         var builder = new CodeBuilder();

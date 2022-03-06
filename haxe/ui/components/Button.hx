@@ -424,9 +424,7 @@ class ButtonEvents extends haxe.ui.events.Events {
     }
 
     private function onMouseDown(event:MouseEvent) {
-        if (_button.allowFocus == true) {
-            FocusManager.instance.focus = _button;
-        }
+        _button.focus = true;
         if (_button.repeater == true && _repeatInterval == 0) {
             _repeatInterval = (_button.easeInRepeater) ? _button.repeatInterval * 2 : _button.repeatInterval;
         }
@@ -440,7 +438,7 @@ class ButtonEvents extends haxe.ui.events.Events {
                 _repeatTimer.stop();
                 _repeatTimer = null;
             }
-            Timer.delay(function():Void {
+            Timer.delay(function() {
                 if (_repeater == true && _repeatTimer == null) {
                     if (_button.easeInRepeater == true && _repeatInterval > _button.repeatInterval) {
                         _repeatInterval = Std.int(_repeatInterval - (_repeatInterval - _button.repeatInterval) / 2);
@@ -572,27 +570,8 @@ class ButtonBuilder extends CompositeBuilder {
     }
 
     public override function applyStyle(style:Style) {
-        var label:Label = _button.findComponent(Label);
-        if (label != null &&
-            (label.customStyle.color != style.color ||
-            label.customStyle.fontName != style.fontName ||
-            label.customStyle.fontSize != style.fontSize ||
-            label.customStyle.cursor != style.cursor ||
-            label.customStyle.textAlign != style.textAlign)) {
-
-            label.customStyle.color = style.color;
-            label.customStyle.fontName = style.fontName;
-            label.customStyle.fontSize = style.fontSize;
-            label.customStyle.cursor = style.cursor;
-            label.customStyle.textAlign = style.textAlign;
-            label.invalidateComponentStyle();
-        }
-
-        var icon:Image = _button.findComponent("button-icon", false);
-        if (icon != null && (icon.customStyle.cursor != style.cursor)) {
-            icon.customStyle.cursor = style.cursor;
-            icon.invalidateComponentStyle();
-        }
+        haxe.ui.macros.ComponentMacros.cascacdeStylesTo("button-label", [color, fontName, fontSize, cursor, textAlign], false);
+        haxe.ui.macros.ComponentMacros.cascacdeStylesTo("button-icon", [cursor], false);
         
         if (style.icon != null) {
             _button.icon = style.icon;

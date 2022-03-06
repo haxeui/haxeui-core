@@ -218,19 +218,7 @@ class CheckBoxBuilder extends CompositeBuilder {
     }
 
     public override function applyStyle(style:Style) {
-        var label:Label = _checkbox.findComponent(Label);
-        if (label != null &&
-            (label.customStyle.color != style.color ||
-            label.customStyle.fontName != style.fontName ||
-            label.customStyle.fontSize != style.fontSize ||
-            label.customStyle.cursor != style.cursor)) {
-
-            label.customStyle.color = style.color;
-            label.customStyle.fontName = style.fontName;
-            label.customStyle.fontSize = style.fontSize;
-            label.customStyle.cursor = style.cursor;
-            label.invalidateComponentStyle();
-        }
+        haxe.ui.macros.ComponentMacros.cascacdeStylesTo('${_checkbox.cssName}-label', [color, fontName, fontSize, cursor, textAlign]);
     }
 
     private override function get_cssName():String {
