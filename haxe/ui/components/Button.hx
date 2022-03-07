@@ -1,5 +1,6 @@
 package haxe.ui.components;
 
+import haxe.ds.StringMap;
 import haxe.ui.actions.ActionType;
 import haxe.ui.behaviours.Behaviour;
 import haxe.ui.behaviours.DataBehaviour;
@@ -102,6 +103,8 @@ class Button extends InteractiveComponent {
      The image resource to use as the buttons icon
     **/
     @:clonable @:behaviour(IconBehaviour)              public var icon:Variant;
+    
+    @:clonable @:behaviour(GroupBehaviour)             public var componentGroup:String;
 }
 
 //***********************************************************************************************************
@@ -261,6 +264,13 @@ class ButtonLayout extends DefaultLayout {
 // Behaviours
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
+private class GroupBehaviour extends DataBehaviour {
+    public override function validateData() {
+        ButtonGroups.instance.add(_value, cast _component);
+    }
+}
+
+@:dox(hide) @:noCompletion
 private class TextBehaviour extends DataBehaviour {
     private override function validateData() {
         var label:Label = _component.findComponent(Label, false);
@@ -334,6 +344,8 @@ private class SelectedBehaviour extends DataBehaviour {
             return;
         }
 
+        cast(button._compositeBuilder, ButtonBuilder).setSelection(button, _value);
+        
         if (_value == false) {
             button.removeClass(":down", true, true);
         } else {
@@ -578,5 +590,115 @@ class ButtonBuilder extends CompositeBuilder {
         } else {
             //_button.icon = null;
         }
+    }
+    
+    public function setSelection(button:Button, value:Bool, allowDeselection:Bool = false) {
+        if (button.componentGroup != null && value == false && allowDeselection == false) { // dont allow false if no other group selection
+            var arr:Array<Button> = ButtonGroups.instance.get(button.componentGroup);
+            var hasSelection:Bool = false;
+            if (arr != null) {
+                for (b in arr) {
+                    if (b != button && b.selected == true) {
+                        hasSelection = true;
+                        break;
+                    }
+                }
+            }
+            if (hasSelection == false && allowDeselection == false) {
+                button.behaviours.softSet("selected", true);
+                return;
+            }
+        }
+
+        if (button.componentGroup != null && value == true) { // set all the others in group
+            var arr:Array<Button> = ButtonGroups.instance.get(button.componentGroup);
+            if (arr != null) {
+                for (b in arr) {
+                    if (b != button) {
+                        b.selected = false;
+                    }
+                }
+            }
+        }
+
+        if (allowDeselection == true && value == false) {
+            button.behaviours.softSet("selected", false);
+        }
+    }
+}
+
+//***********************************************************************************************************
+// Util classes
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class ButtonGroups { // singleton
+    private static var _instance:ButtonGroups;
+    public static var instance(get, null):ButtonGroups;
+    private static function get_instance():ButtonGroups {
+        if (_instance == null) {
+            _instance = new ButtonGroups();
+        }
+        return _instance;
+    }
+
+    //***********************************************************************************************************
+    // Instance methods
+    //***********************************************************************************************************
+    private var _groups:StringMap<Array<Button>> = new StringMap<Array<Button>>();
+    private function new () {
+    }
+
+    public function get(name:String):Array<Button> {
+        return _groups.get(name);
+    }
+
+    public function set(name:String, buttons:Array<Button>) {
+        _groups.set(name, buttons);
+    }
+
+    public function add(name:String, button:Button) {
+        var arr:Array<Button> = get(name);
+        if (arr == null) {
+            arr = [];
+        }
+
+        if (arr.indexOf(button) == -1) {
+            arr.push(button);
+        }
+        set(name, arr);
+    }
+    
+    public function remove(name:String, button:Button) {
+        var arr:Array<Button> = get(name);
+        if (arr == null) {
+            return;
+        }
+        
+        arr.remove(button);
+        if (arr.length == 0) {
+            _groups.remove(name);
+        }
+    }
+    
+    public function reset(name:String) {
+        var arr:Array<Button> = get(name);
+        if (arr == null) {
+            return;
+        }
+        
+        var selection = null;
+        for (item in arr) {
+            if (item.selected == true) {
+                selection = item;
+                break;
+            }
+        }
+        
+        if (selection == null) {
+            return;
+        }
+        
+        cast(selection._compositeBuilder, ButtonBuilder).setSelection(selection, false, true);
     }
 }
