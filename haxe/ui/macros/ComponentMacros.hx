@@ -785,6 +785,7 @@ class ComponentMacros {
         
         var dependants = getDependants(expr);
         var target = varName;
+        var dependantCount = 0;
         for (dependantName in dependants.keys()) {
             if (namedComponents.exists(dependantName) == false) {
                 continue;
@@ -814,6 +815,8 @@ class ComponentMacros {
                     $e{ifBuilder.expr}
                 });
             });
+            
+            dependantCount++;
         }
         
         for (dependantName in dependants.keys()) {
@@ -825,6 +828,14 @@ class ComponentMacros {
                     });
                     $i{target}.$varProp = $e{expr};
                 });
+            }
+        }
+        
+        if (dependantCount == 0) {
+            if (propType == "string") {
+                builder.add(macro $i{target}.$varProp = Std.string($e{expr}));
+            } else {
+                builder.add(macro $i{target}.$varProp = $e{expr});
             }
         }
     }
