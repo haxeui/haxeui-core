@@ -144,6 +144,15 @@ class TreeView extends ScrollView implements IDataComponent {
             removeComponent(n);
         }
     }
+    
+    private override function onReady() {
+        super.onReady();
+        if (_selectedNode != null) {
+            var node = _selectedNode;
+            _selectedNode = null;
+            selectedNode = node;
+        }
+    }
 }
 
 //***********************************************************************************************************
