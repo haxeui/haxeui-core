@@ -243,7 +243,10 @@ private class CheckBoxLayout extends HorizontalLayout {
     public override function calcAutoSize(exclusions:Array<Component> = null):Size {
         var size = super.calcAutoSize(exclusions);
         if (_component.autoWidth == false) {
-            _component.findComponent(Label).percentWidth = 100;
+            var label = _component.findComponent(Label, false);
+            if (label != null) {
+                label.percentWidth = 100;
+            }
         }
         return size;
     }
