@@ -101,8 +101,6 @@ class ScrollViewLayout extends DefaultLayout {
             }
         }
 
-        size.width += 1;
-        
         var borderSize = this.borderSize;
         size.width -= borderSize * 2;
         size.height -= borderSize * 2;
@@ -134,6 +132,7 @@ class ScrollViewLayout extends DefaultLayout {
             }
         }
 
+        size.width += borderSize * 2;
         size.height += borderSize * 2;
         
         return size;
