@@ -1,6 +1,9 @@
 package haxe.ui.containers.dialogs;
 
+import haxe.ui.actions.ActionManager;
+import haxe.ui.actions.ActionType;
 import haxe.ui.backend.DialogBase;
+import haxe.ui.events.ActionEvent;
 import haxe.ui.events.UIEvent;
 
 abstract DialogButton(String) from String {
@@ -68,6 +71,11 @@ class DialogEvent extends UIEvent {
 class Dialog extends DialogBase {
     public function new() {
         super();
+        ActionManager.instance.registerEvent(ActionEvent.ACTION_START, function(event) { // global action listener
+            if (event.action == ActionType.CANCEL || event.action == ActionType.BACK) {
+                hideDialog(DialogButton.CANCEL);
+            }
+        });
     }
 
     private var __onDialogClosed:DialogEvent->Void;

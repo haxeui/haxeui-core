@@ -372,8 +372,10 @@ private class ListDropDownHandler extends DropDownHandler {
             _listview.registerEvent(ActionEvent.ACTION_START, function(e:ActionEvent) {
                 switch (e.action) {
                     case ActionType.BACK | ActionType.CANCEL:
+                        e.cancel();
                         cast(_dropdown._internalEvents, DropDownEvents).hideDropDown();
                     case ActionType.CONFIRM | ActionType.PRESS:
+                        e.cancel();
                         applySelection();
                     case _:    
                 }

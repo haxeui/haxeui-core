@@ -85,7 +85,9 @@ class ActionManager {
         var actionEvent = new ActionEvent(ActionEvent.ACTION_START, action);
         var c = cast(currentFocus, InteractiveComponent);
         c.dispatch(actionEvent);
-        dispatch(new ActionEvent(ActionEvent.ACTION_START, action, false, Type.getClassName(Type.getClass(source))));
+        if (actionEvent.canceled == false) {
+            dispatch(new ActionEvent(ActionEvent.ACTION_START, action, false, Type.getClassName(Type.getClass(source))));
+        }
         if (actionEvent.repeater == true  && _repeatActions.exists(action) == false) {
             _repeatActions.set(action, {
                 type: action,
@@ -112,7 +114,9 @@ class ActionManager {
         var actionEvent = new ActionEvent(ActionEvent.ACTION_END, action);
         var c = cast(currentFocus, InteractiveComponent);
         c.dispatch(actionEvent);
-        dispatch(new ActionEvent(ActionEvent.ACTION_END, action, false, Type.getClassName(Type.getClass(source))));
+        if (actionEvent.canceled == false) {
+            dispatch(new ActionEvent(ActionEvent.ACTION_END, action, false, Type.getClassName(Type.getClass(source))));
+        }
         if (_repeatActions.exists(action)) {
             var info = _repeatActions.get(action);
             info.timer.stop();
