@@ -77,6 +77,9 @@ class FocusManager extends FocusManagerImpl {
     public function removeView(view:Component) {
         _lastFocuses.remove(view);
         var top = Screen.instance.topComponent;
+        if (top == null) {
+            return;
+        }
         if (_lastFocuses.exists(top)) {
             focus = _lastFocuses.get(top);
         }
