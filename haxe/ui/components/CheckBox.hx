@@ -63,7 +63,7 @@ class CheckBoxValue extends InteractiveComponent {
     private var _down:Bool = true;
     private function onActionStart(event:ActionEvent) {
         switch (event.action) {
-            case ActionType.PRESS:
+            case ActionType.PRESS | ActionType.CONFIRM:
                 _down = true;
             case _:    
         }
@@ -71,7 +71,7 @@ class CheckBoxValue extends InteractiveComponent {
 
     private function onActionEnd(event:ActionEvent) {
         switch (event.action) {
-            case ActionType.PRESS:
+            case ActionType.PRESS | ActionType.CONFIRM:
                 if (_down == true) {
                     _down = false;
                     if (parentComponent != null) {
@@ -187,6 +187,7 @@ private class Events extends haxe.ui.events.Events  {
     }
 
     private function onClick(event:MouseEvent) {
+        _checkbox.findComponent(CheckBoxValue).focus = true;
         _checkbox.selected = !_checkbox.selected;
     }
 }
