@@ -34,6 +34,10 @@
     border: 1px solid $accent-color;
 }
 
+.checkbox-value:active {
+    border: 1px solid $accent-color;
+}
+
 .checkbox-value:selected {
     icon: $check-selected;
 }

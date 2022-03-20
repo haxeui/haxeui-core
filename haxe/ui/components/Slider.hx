@@ -10,6 +10,7 @@ import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.IDirectionalComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.Screen;
+import haxe.ui.events.ActionEvent;
 import haxe.ui.events.DragEvent;
 import haxe.ui.events.Events;
 import haxe.ui.events.MouseEvent;
@@ -264,6 +265,9 @@ private class Events extends haxe.ui.events.Events  {
         if (_range.hasEvent(UIEvent.CHANGE, onRangeChange) == false) {
             _range.registerEvent(UIEvent.CHANGE, onRangeChange);
         }
+        if (hasEvent(ActionEvent.ACTION_START, onActionStart) == false) {
+            registerEvent(ActionEvent.ACTION_START, onActionStart);
+        }
     }
 
     public override function unregister() {
@@ -277,6 +281,7 @@ private class Events extends haxe.ui.events.Events  {
 
         _range.unregisterEvent(MouseEvent.MOUSE_DOWN, onRangeMouseDown);
         _range.unregisterEvent(UIEvent.CHANGE, onRangeChange);
+        unregisterEvent(ActionEvent.ACTION_START, onActionStart);
     }
 
     private var _rangeSynced:Bool = false;
@@ -383,16 +388,15 @@ private class Events extends haxe.ui.events.Events  {
         }
     }
     
-    private override function actionStart(type:ActionType):Bool {
-        return switch (type) {
+    private function onActionStart(event:ActionEvent) {
+        switch (event.action) {
             case ActionType.RIGHT | ActionType.UP:
-                _slider.value += 2; // TODO: calculate this somehow
-                true;
-            case ActionType.LEFT | ActionType.DOWN:
-                _slider.value -= 2; // TODO: calculate this somehow
-                true;
-            case _:
-                false;
+                event.repeater = true;
+                _slider.value += 1; // TODO: calculate this somehow
+            case ActionType.LEFT | ActionType.DOWN:    
+                event.repeater = true;
+                _slider.value -= 1; // TODO: calculate this somehow
+            case _:    
         }
     }
 }

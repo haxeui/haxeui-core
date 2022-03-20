@@ -4,6 +4,7 @@ import haxe.ui.actions.ActionType;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.InteractiveComponent;
+import haxe.ui.events.ActionEvent;
 import haxe.ui.events.Events;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
@@ -34,6 +35,8 @@ class CheckBoxValue extends InteractiveComponent {
 
     private override function onReady() { // use onReady so we have a parentComponent
         createIcon();
+        registerEvent(ActionEvent.ACTION_START, onActionStart);
+        registerEvent(ActionEvent.ACTION_END, onActionEnd);
     }
 
     private override function applyStyle(style:Style) {
@@ -58,20 +61,16 @@ class CheckBoxValue extends InteractiveComponent {
     }
 
     private var _down:Bool = true;
-    private override function actionStart(action:ActionType):Bool {
-        super.actionStart(action);
-        return switch (action) {
+    private function onActionStart(event:ActionEvent) {
+        switch (event.action) {
             case ActionType.PRESS:
                 _down = true;
-                true;
-            case _:
-                false;
+            case _:    
         }
     }
-    
-    private override function actionEnd(action:ActionType):Bool {
-        super.actionEnd(action);
-        return switch (action) {
+
+    private function onActionEnd(event:ActionEvent) {
+        switch (event.action) {
             case ActionType.PRESS:
                 if (_down == true) {
                     _down = false;
@@ -80,9 +79,7 @@ class CheckBoxValue extends InteractiveComponent {
                         checkbox.selected = !checkbox.selected;
                     }
                 }
-                true;
-            case _:
-                false;
+            case _:    
         }
     }
 }
