@@ -56,6 +56,30 @@ class ScreenBase {
         return false;
     }
 
+    public var topComponent(get, null):Component;
+    private function get_topComponent():Component {
+        if (rootComponents.length == 0) {
+            return null;
+        }
+
+        // lets make a little "hack": if the "top" component has
+        // 'pointer-events:none' lets assume that it shouldnt
+        // be considered "top" 
+        var n = rootComponents.length - 1;
+        var c = null;
+        while (n >= 0) {
+            c = rootComponents[n];
+            if (c.style == null) {
+                break;
+            }
+            if (c.style.pointerEvents != "none") {
+                break;
+            }
+            n--;
+        }
+        return c;
+    }
+    
     public function addComponent(component:Component):Component {
         return component;
     }

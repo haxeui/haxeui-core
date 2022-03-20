@@ -1,6 +1,7 @@
 package haxe.ui.core;
 
 import haxe.ui.backend.ScreenImpl;
+import haxe.ui.core.Component;
 import haxe.ui.events.UIEvent;
 import haxe.ui.focus.FocusManager;
 import haxe.ui.util.EventMap;
@@ -44,9 +45,7 @@ class Screen extends ScreenImpl {
         if (rootComponents.indexOf(component) == -1) {
             rootComponents.push(component);
         }
-        if (FocusManager.instance.hasView(component) == false) {
-            FocusManager.instance.pushView(component);
-        }
+        FocusManager.instance.pushView(component);
         if (component.hasEvent(UIEvent.RESIZE, _onRootComponentResize) == false) {
             component.registerEvent(UIEvent.RESIZE, _onRootComponentResize);
         }
@@ -83,6 +82,12 @@ class Screen extends ScreenImpl {
         return child;
     }
 
+    public function moveComponentToFront(child:Component) {
+        if (rootComponents.indexOf(child) != -1) {
+            setComponentIndex(child, rootComponents.length - 1);
+        }
+    }
+    
     public function findComponentsUnderPoint<T:Component>(screenX:Float, screenY:Float, type:Class<T> = null):Array<Component> {
         var copy = rootComponents.copy();
         copy.reverse();

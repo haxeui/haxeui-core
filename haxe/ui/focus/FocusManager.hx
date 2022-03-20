@@ -2,9 +2,9 @@ package haxe.ui.focus;
 
 import haxe.ui.backend.FocusManagerImpl;
 import haxe.ui.core.Component;
-import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.Screen;
 import haxe.ui.events.MouseEvent;
+import haxe.ui.events.UIEvent;
 import haxe.ui.focus.IFocusable;
 
 #if (haxe_ver >= 4.2)
@@ -12,11 +12,6 @@ import Std.isOfType;
 #else
 import Std.is as isOfType;
 #end
-
-typedef FocusInfo = { // focus info for a given view (component)
-    var view:Component;
-    var currentFocus:IFocusable;
-}
 
 class FocusManager extends FocusManagerImpl {
     private static var _instance:FocusManager;
@@ -35,8 +30,6 @@ class FocusManager extends FocusManagerImpl {
     
     private var _applicators:Array<IFocusApplicator> = [];
     
-    private var _viewStack:Array<FocusInfo> = [];
-
     public function new() {
         super();
         _applicators.push(new StyleFocusApplicator());
@@ -57,94 +50,78 @@ class FocusManager extends FocusManagerImpl {
     }
     
     public function pushView(view:Component) {
-        if (hasView(view) == false) {
-            _viewStack.push({
-                view: view,
-                currentFocus: null
-            });
-
-            if (autoFocus == true) {
-                var list = [];
-                buildFocusableList(view, list);
-                if (list.length > 0) {
-                    list[0].focus = true;
-                }
-            }
+        for (k in _lastFocuses.keys()) {
+            _lastFocuses.get(k).focus = false;
+            unapplyFocus(cast _lastFocuses.get(k));
         }
-        
+        if (autoFocus == true) {
+            focusOnFirstInteractive(view);
+            view.registerEvent(UIEvent.READY, onViewReady);
+        }
     }
 
-    public function hasView(view:Component):Bool {
-        for (info in _viewStack) {
-            if (info.view == view) {
-                return true;
-            }
-        }
-        return false;
+    private function onViewReady(e:UIEvent) {
+        e.target.unregisterEvent(UIEvent.READY, onViewReady);
+        focusOnFirstInteractive(e.target);
+        
     }
     
-    public function popView() {
-        var info = _viewStack.pop();
-        removeView(info.view);
+    private function focusOnFirstInteractive(view:Component) {
+        var list = [];
+        buildFocusableList(view, list);
+        if (list.length > 0) {
+            list[0].focus = true;
+        }
     }
-
+    
     public function removeView(view:Component) {
-        for (info in _viewStack) {
-            if (info.view == view) {
-                _viewStack.remove(info);
-                break;
-            }
+        _lastFocuses.remove(view);
+        var top = Screen.instance.topComponent;
+        if (_lastFocuses.exists(top)) {
+            focus = _lastFocuses.get(top);
         }
-    }
-
-    public var focusInfo(get, null):FocusInfo;
-    private function get_focusInfo():FocusInfo {
-        if (_viewStack.length == 0) {
-            return null;
-        }
-        
-        var info = _viewStack[_viewStack.length - 1];
-        return info;
     }
 
     public var focus(get, set):IFocusable;
     private function get_focus():IFocusable {
-        if (focusInfo == null) {
+        var top = Screen.instance.topComponent;
+        if (top == null) {
             return null;
         }
-        return focusInfo.currentFocus;
+        return buildFocusableList(top, null);
     }
+    
+    private var _lastFocuses:Map<Component, IFocusable> = new Map<Component, IFocusable>();
     private function set_focus(value:IFocusable):IFocusable {
-        if (value != null && (value is IFocusable) == false) {
-            throw "Component does not implement IFocusable";
-        }
-        if (value != null && (value.allowFocus == false || value.disabled == true)) {
-            return value;
-        }
-
-        if (focusInfo != null && focusInfo.currentFocus != null && focusInfo.currentFocus != value) {
-            unapplyFocus(cast focusInfo.currentFocus);
-            focusInfo.currentFocus = null;
-        }
         if (value != null) {
-            focusInfo.currentFocus = value;
-            applyFocus(cast focusInfo.currentFocus);
-        }
+            var c = cast(value, Component);
+            var root = c.rootComponent;
+            var currentFocus = buildFocusableList(root, null);
+            if (currentFocus != null && currentFocus != value) {
+                unapplyFocus(cast currentFocus);
+                currentFocus.focus = false;
+            }
+            if (_lastFocuses.exists(root) && _lastFocuses.get(root) != value) {
+                _lastFocuses.get(root).focus = false;
+                unapplyFocus(cast _lastFocuses.get(root));
+            }
 
-        if (focusInfo == null) {
-            return value;
+            _lastFocuses.set(root, value);
+            applyFocus(cast value);
+        } else {
+            var top = Screen.instance.topComponent;
+            if (_lastFocuses.exists(top)) {
+                _lastFocuses.get(top).focus = false;
+                unapplyFocus(cast _lastFocuses.get(top));
+            }
         }
-        return focusInfo.currentFocus;
+        return value;
     }
 
     public function focusNext():Component {
-        if (_viewStack.length == 0) {
-            return null;
-        }
-
+        var top = Screen.instance.topComponent;
         var list:Array<IFocusable> = [];
-        var info = focusInfo;
-        var currentFocus = buildFocusableList(info.view, list);
+        var currentFocus = buildFocusableList(top, list);
 
         var index = -1;
         if (currentFocus != null) {
@@ -162,13 +139,9 @@ class FocusManager extends FocusManagerImpl {
     }
 
     public function focusPrev():Component {
-        if (_viewStack.length == 0) {
-            return null;
-        }
-
+        var top = Screen.instance.topComponent;
         var list:Array<IFocusable> = [];
-        var info = focusInfo;
-        var currentFocus = buildFocusableList(info.view, list);
+        var currentFocus = buildFocusableList(top, list);
 
         var index = -1;
         if (currentFocus != null) {
@@ -197,7 +170,9 @@ class FocusManager extends FocusManagerImpl {
                 if (f.focus == true) {
                     currentFocus = f;
                 }
-                list.push(f);
+                if (list != null) {
+                    list.push(f);
+                }
             }
         }
 
