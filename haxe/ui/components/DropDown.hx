@@ -1,6 +1,7 @@
 package haxe.ui.components;
 
 import haxe.ui.Toolkit;
+import haxe.ui.actions.ActionType;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.behaviours.DynamicDataBehaviour;
@@ -17,6 +18,7 @@ import haxe.ui.core.IDataComponent;
 import haxe.ui.core.Screen;
 import haxe.ui.data.ArrayDataSource;
 import haxe.ui.data.DataSource;
+import haxe.ui.events.ActionEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.locale.LocaleManager;
@@ -367,10 +369,25 @@ private class ListDropDownHandler extends DropDownHandler {
                 _listview.addClass(_dropdown.id + "-listview");
                 _listview.id = _dropdown.id + "_listview";
             }
+            _listview.registerEvent(ActionEvent.ACTION_START, function(e:ActionEvent) {
+                switch (e.action) {
+                    case ActionType.BACK | ActionType.CANCEL:
+                        cast(_dropdown._internalEvents, DropDownEvents).hideDropDown();
+                    case ActionType.CONFIRM | ActionType.PRESS:
+                        applySelection();
+                    case _:    
+                }
+            });
         }
     }
 
     private function onListChange(event:UIEvent) {
+        if ((event.relatedEvent is MouseEvent)) {
+            applySelection();
+        }
+    }
+    
+    private function applySelection() {
         if (_listview.selectedItem == null) {
             return;
         }
@@ -410,7 +427,7 @@ private class ListDropDownHandler extends DropDownHandler {
 }
 
 @:access(haxe.ui.core.Component)
-class CalendarDropDownHandler extends DropDownHandler {
+private class CalendarDropDownHandler extends DropDownHandler {
     public static var DATE_FORMAT:String = "%d/%m/%Y";
 
     private var _calendar:CalendarView;

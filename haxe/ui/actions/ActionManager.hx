@@ -11,6 +11,12 @@ typedef RepeatActionInfo = {
     var timer:Timer;
 }
 
+@:enum
+abstract NavigationMethod(String) from String to String {
+    var DESKTOP:String = "navigationDesktop";
+    var DPAD:String = "navigationDPad";
+}
+
 @:access(haxe.ui.core.InteractiveComponent)
 class ActionManager {
     private static var _instance:ActionManager;
@@ -25,6 +31,8 @@ class ActionManager {
     //****************************************************************************************************
     // Instance
     //****************************************************************************************************
+    public var navigationMethod:NavigationMethod = NavigationMethod.DESKTOP;
+    
     private var _events:EventMap = null;
     private var _inputSources:Array<IActionInputSource> = [];
     private var _repeatActions:Map<ActionType, RepeatActionInfo> = new Map<ActionType, RepeatActionInfo>();
@@ -58,7 +66,7 @@ class ActionManager {
         _inputSources.push(source);
     }
     
-    public function actionStart(action:ActionType) {
+    public function actionStart(action:ActionType, source:IActionInputSource) {
         var currentFocus = FocusManager.instance.focus;
         if (currentFocus == null) {
             #if debug
@@ -74,32 +82,37 @@ class ActionManager {
             return;
         }
 
+        var actionEvent = new ActionEvent(ActionEvent.ACTION_START, action);
         var c = cast(currentFocus, InteractiveComponent);
-        var repeat = c.actionStart(action);
-        if (repeat == true && _repeatActions.exists(action) == false) {
+        c.dispatch(actionEvent);
+        dispatch(new ActionEvent(ActionEvent.ACTION_START, action, false, Type.getClassName(Type.getClass(source))));
+        if (actionEvent.repeater == true  && _repeatActions.exists(action) == false) {
             _repeatActions.set(action, {
                 type: action,
                 timer: new Timer(100, function() { // TODO: 100ms should probably be configurable
-                    actionStart(action);
+                    actionStart(action, source);
                 })
             });
         }
     }
     
-    public function actionEnd(action:ActionType) {
+    public function actionEnd(action:ActionType, source:IActionInputSource) {
         var currentFocus = FocusManager.instance.focus;
         if (currentFocus == null) {
             return;
         }
         
         if (!(currentFocus is InteractiveComponent)) {
+            #if debug
             trace("current focus not interactive: " + action);
+            #end
             return;
         }
         
+        var actionEvent = new ActionEvent(ActionEvent.ACTION_END, action);
         var c = cast(currentFocus, InteractiveComponent);
-        c.actionEnd(action);
-        
+        c.dispatch(actionEvent);
+        dispatch(new ActionEvent(ActionEvent.ACTION_END, action, false, Type.getClassName(Type.getClass(source))));
         if (_repeatActions.exists(action)) {
             var info = _repeatActions.get(action);
             info.timer.stop();

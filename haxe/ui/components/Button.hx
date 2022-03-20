@@ -8,6 +8,7 @@ import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.constants.Priority;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.InteractiveComponent;
+import haxe.ui.events.ActionEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.focus.FocusManager;
@@ -395,6 +396,12 @@ class ButtonEvents extends haxe.ui.events.Events {
         if (hasEvent(UIEvent.MOVE, onMove) == false) {
             registerEvent(UIEvent.MOVE, onMove);
         }
+        if (hasEvent(ActionEvent.ACTION_START, onActionStart) == false) {
+            registerEvent(ActionEvent.ACTION_START, onActionStart);
+        }
+        if (hasEvent(ActionEvent.ACTION_END, onActionEnd) == false) {
+            registerEvent(ActionEvent.ACTION_END, onActionEnd);
+        }
 
         if (_button.toggle == true) {
             // we want to add the event as high so it gets called first before any user handlers
@@ -410,6 +417,8 @@ class ButtonEvents extends haxe.ui.events.Events {
         unregisterEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
         unregisterEvent(MouseEvent.CLICK, onMouseClick);
         unregisterEvent(UIEvent.MOVE, onMove);
+        unregisterEvent(ActionEvent.ACTION_START, onActionStart);
+        unregisterEvent(ActionEvent.ACTION_END, onActionEnd);
     }
 
     private function onMouseOver(event:MouseEvent) {
@@ -547,23 +556,19 @@ class ButtonEvents extends haxe.ui.events.Events {
         }
     }
     
-    private override function actionStart(type:ActionType):Bool {
-        return switch (type) {
-            case ActionType.PRESS:
+    private function onActionStart(event:ActionEvent) {
+        switch (event.action) {
+            case ActionType.PRESS | ActionType.CONFIRM:
                 press();
-                false;
-            case _:
-                false;
+            case _:    
         }
     }
     
-    private override function actionEnd(type:ActionType):Bool {
-        return switch (type) {
-            case ActionType.PRESS:
+    private function onActionEnd(event:ActionEvent) {
+        switch (event.action) {
+            case ActionType.PRESS | ActionType.CONFIRM:
                 release();
-                false;
-            case _:
-                false;
+            case _:    
         }
     }
 }

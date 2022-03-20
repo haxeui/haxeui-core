@@ -15,6 +15,7 @@ import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.ItemRenderer;
 import haxe.ui.data.ArrayDataSource;
 import haxe.ui.data.DataSource;
+import haxe.ui.events.ActionEvent;
 import haxe.ui.events.ItemEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.ScrollEvent;
@@ -79,7 +80,8 @@ class ListView extends ScrollView implements IDataComponent implements IVirtualC
 @:access(haxe.ui.core.Component)
 class ListViewEvents extends ScrollViewEvents {
     private var _listview:ListView;
-
+    public var lastEvent:UIEvent;
+    
     public function new(listview:ListView) {
         super(listview);
         _listview = listview;
@@ -90,6 +92,7 @@ class ListViewEvents extends ScrollViewEvents {
         registerEvent(ScrollEvent.CHANGE, onScrollChange);
         registerEvent(UIEvent.RENDERER_CREATED, onRendererCreated);
         registerEvent(UIEvent.RENDERER_DESTROYED, onRendererDestroyed);
+        registerEvent(ActionEvent.ACTION_START, onActionStart);
     }
 
     public override function unregister() {
@@ -97,6 +100,7 @@ class ListViewEvents extends ScrollViewEvents {
         unregisterEvent(ScrollEvent.CHANGE, onScrollChange);
         unregisterEvent(UIEvent.RENDERER_CREATED, onRendererCreated);
         unregisterEvent(UIEvent.RENDERER_DESTROYED, onRendererDestroyed);
+        unregisterEvent(ActionEvent.ACTION_START, onActionStart);
     }
 
     private function onScrollChange(e:ScrollEvent) {
@@ -212,6 +216,8 @@ class ListViewEvents extends ScrollViewEvents {
             }
         }
         
+        lastEvent = e;
+        
         var renderer:ItemRenderer = cast(e.target, ItemRenderer);
         switch (_listview.selectionMode) {
             case SelectionMode.DISABLED:
@@ -273,8 +279,9 @@ class ListViewEvents extends ScrollViewEvents {
         _listview.selectedIndices = [for (i in fromIndex...toIndex + 1) i];
     }
     
-    private override function actionStart(action:ActionType):Bool {
-        return switch (action) {
+    private function onActionStart(event:ActionEvent) {
+        lastEvent = event;
+        switch (event.action) {
             case ActionType.DOWN:
                 if (_listview.selectedIndex < 0) {
                     _listview.selectedIndex = 0;
@@ -286,8 +293,8 @@ class ListViewEvents extends ScrollViewEvents {
                     }
                     _listview.selectedIndex = n;
                 }
-                true;
-            case ActionType.UP:    
+                event.repeater = true;
+            case ActionType.UP:
                 if (_listview.selectedIndex < 0) {
                     _listview.selectedIndex = _listview.dataSource.size - 1;
                 } else {
@@ -298,9 +305,8 @@ class ListViewEvents extends ScrollViewEvents {
                     }
                     _listview.selectedIndex = n;
                 }
-                true;
-            case _:
-                false;
+                event.repeater = true;
+            case _:    
         }
     }
 }
@@ -473,6 +479,7 @@ private class SelectedIndicesBehaviour extends DataBehaviour {
         var selectedIndices:Array<Int> = listView.selectedIndices;
         var contents:Component = _component.findComponent("scrollview-contents", false, "css");
         var builder:ListViewBuilder = cast(_component._compositeBuilder, ListViewBuilder);
+        var events:ListViewEvents = cast(_component._internalEvents, ListViewEvents);
 
         for (child in contents.childComponents) {
             if (selectedIndices.indexOf(cast(child, ItemRenderer).itemIndex) != -1) {
@@ -489,7 +496,9 @@ private class SelectedIndicesBehaviour extends DataBehaviour {
         }
         
         if (listView.selectedIndex != -1 && listView.selectedIndices.length != 0) {
-            _component.dispatch(new UIEvent(UIEvent.CHANGE));
+            var event = new UIEvent(UIEvent.CHANGE);
+            event.relatedEvent = events.lastEvent;
+            _component.dispatch(event);
         }
     }
 }

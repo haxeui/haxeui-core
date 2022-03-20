@@ -15,4 +15,6 @@ abstract ActionType(String) from String to String {
     var PREVIOUS = "actionPrevious";
     var BACK = "actionBack";
     var OK = "actionOK";
+    var CONFIRM = "actionConfirm";
+    var CANCEL = "actionCancel";
 }

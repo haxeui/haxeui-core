@@ -16,20 +16,6 @@ class InteractiveComponent extends Component implements IFocusable {
     //***********************************************************************************************************
     @:clonable @:behaviour(DefaultBehaviour, true)      public var allowInteraction:Bool;
 
-    private function actionStart(type:ActionType):Bool {
-        if (_internalEvents != null) {
-            return _internalEvents.actionStart(type);
-        }
-        return false;
-    }
-    
-    private function actionEnd(type:ActionType):Bool {
-        if (_internalEvents != null) {
-            return _internalEvents.actionEnd(type);
-        }
-        return false;
-    }
-    
     private var _focus:Bool = false;
     /**
      Whether this component currently has focus

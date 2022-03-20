@@ -831,24 +831,6 @@ class ScrollViewEvents extends haxe.ui.events.Events {
             }
         }
     }
-    
-    private override function actionStart(action:ActionType):Bool {
-        return switch (action) {
-            case ActionType.DOWN:
-                true;
-            case ActionType.UP:    
-                true;
-            case _:
-                false;
-        }
-    }
-    
-    private override function actionEnd(action:ActionType):Bool {
-        return switch (action) {
-            case _:
-                false;
-        }
-    }
 }
 
 //***********************************************************************************************************
