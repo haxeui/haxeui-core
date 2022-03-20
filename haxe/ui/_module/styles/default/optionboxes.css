@@ -23,7 +23,7 @@
     background-color: $default-background-color;
     width: 18px;
     height: 18px;
-    vertical-align: center;
+    vertical-align: top;
     border-radius: 18px;
     icon: none;
     filter: $normal-inner-shadow;
