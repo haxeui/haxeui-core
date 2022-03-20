@@ -2,12 +2,14 @@ package haxe.ui.components;
 
 import haxe.ui.actions.ActionType;
 import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.events.ActionEvent;
 import haxe.ui.events.Events;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
+import haxe.ui.geom.Size;
 import haxe.ui.layouts.HorizontalLayout;
 import haxe.ui.styles.Style;
 
@@ -236,5 +238,13 @@ private class CheckBoxLayout extends HorizontalLayout {
             icon.left = Math.fround(icon.left);
             icon.top = Math.fround(icon.top);
         }
+    }
+    
+    public override function calcAutoSize(exclusions:Array<Component> = null):Size {
+        var size = super.calcAutoSize(exclusions);
+        if (_component.autoWidth == false) {
+            _component.findComponent(Label).percentWidth = 100;
+        }
+        return size;
     }
 }
