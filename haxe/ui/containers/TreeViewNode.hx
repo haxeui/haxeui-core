@@ -19,7 +19,7 @@ import Std.is as isOfType;
 class TreeViewNode extends VBox {
     public var parentNode:TreeViewNode = null;
     
-    public function path(field:String = null):String {
+    public function nodePath(field:String = null):String {
         if (field == null) { // lets try to guess a field to use in the path
             if (Reflect.hasField(this.data, "id")) {
                 field = "id";
