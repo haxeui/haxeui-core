@@ -11,6 +11,7 @@ import haxe.ui.focus.IFocusable;
 **/
 @:access(haxe.ui.events.Events)
 class InteractiveComponent extends Component implements IFocusable {
+    public var actionRepeatInterval = 100;
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************

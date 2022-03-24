@@ -24,6 +24,7 @@ class Slider extends InteractiveComponent implements IDirectionalComponent {
     private function new() {
         super();
         cascadeActive = true;
+        actionRepeatInterval = 10;
     }
 
     //***********************************************************************************************************

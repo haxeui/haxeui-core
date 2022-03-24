@@ -91,7 +91,7 @@ class ActionManager {
         if (actionEvent.repeater == true  && _repeatActions.exists(action) == false) {
             _repeatActions.set(action, {
                 type: action,
-                timer: new Timer(100, function() { // TODO: 100ms should probably be configurable
+                timer: new Timer(c.actionRepeatInterval, function() { // TODO: 100ms should probably be configurable
                     actionStart(action, source);
                 })
             });
