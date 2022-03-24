@@ -64,7 +64,7 @@ class TreeView extends ScrollView implements IDataComponent {
         
         _selectedNode = value;
         if (_selectedNode != null) {
-            var p = _selectedNode;
+            var p = _selectedNode.parentNode;
             while (p != null) {
                 p.expanded = true;
                 p = p.parentNode;
