@@ -11,6 +11,7 @@ class DataBehaviour extends ValueBehaviour implements IValidatingBehaviour {
             return;
         }
 
+        _previousValue = _value;
         _value = value;
         invalidateData();
     }

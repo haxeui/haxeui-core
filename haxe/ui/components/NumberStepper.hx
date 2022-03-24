@@ -52,6 +52,8 @@ private class PosBehaviour extends DataBehaviour {
         value.text = stringValue;
         
         var event = new UIEvent(UIEvent.CHANGE);
+        event.previousValue = _previousValue;
+        event.value = _value;
         _component.dispatch(event);
     }
 }

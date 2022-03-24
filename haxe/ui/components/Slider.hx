@@ -296,7 +296,10 @@ private class Events extends haxe.ui.events.Events  {
         if (_rangeSynced == false) {
             return;
         }
-        _slider.dispatch(new UIEvent(UIEvent.CHANGE));
+        var event = new UIEvent(UIEvent.CHANGE);
+        event.previousValue = e.previousValue;
+        event.value = e.value;
+        _slider.dispatch(event);
     }
 
     private function onRangeMouseDown(e:MouseEvent) {

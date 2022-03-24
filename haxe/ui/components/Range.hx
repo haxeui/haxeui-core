@@ -88,6 +88,8 @@ private class RangeStart extends DataBehaviour {
         _component.invalidateComponentLayout();
 
         var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
+        changeEvent.previousValue = _previousValue;
+        changeEvent.value = _value;
         _component.dispatch(changeEvent);
     }
 }
@@ -106,6 +108,8 @@ private class RangeEnd extends DataBehaviour {
         _component.invalidateComponentLayout();
 
         var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
+        changeEvent.previousValue = _previousValue;
+        changeEvent.value = _value;
         _component.dispatch(changeEvent);
     }
 }

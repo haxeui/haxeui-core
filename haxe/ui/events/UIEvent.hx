@@ -2,6 +2,7 @@ package haxe.ui.events;
 
 import haxe.ui.backend.EventImpl;
 import haxe.ui.core.Component;
+import haxe.ui.util.Variant;
 
 class UIEvent extends EventImpl {
     public static inline var READY:String = "ready";
@@ -38,6 +39,9 @@ class UIEvent extends EventImpl {
     // contain a related event as to where the event came from (mouse, keyboard, action)
     public var relatedEvent(default, default):UIEvent = null;
 
+    public var value:Variant;
+    public var previousValue:Variant;
+    
     public function new(type:String, bubble:Null<Bool> = false, data:Dynamic = null) {
         this.type = type;
         this.bubble = bubble;
@@ -56,6 +60,8 @@ class UIEvent extends EventImpl {
         c.bubble = this.bubble;
         c.target = this.target;
         c.data = this.data;
+        c.value = this.value;
+        c.previousValue = this.previousValue;
         c.canceled = this.canceled;
         c.relatedEvent = this.relatedEvent;
         postClone(c);

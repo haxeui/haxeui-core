@@ -144,7 +144,10 @@ private class SelectedBehaviour extends DataBehaviour {
             valueComponent.removeClass(":selected");
         }
 
-        _component.dispatch(new UIEvent(UIEvent.CHANGE));
+        var event = new UIEvent(UIEvent.CHANGE);
+        event.previousValue = _previousValue;
+        event.value = _value;
+        _component.dispatch(event);
     }
 }
 
