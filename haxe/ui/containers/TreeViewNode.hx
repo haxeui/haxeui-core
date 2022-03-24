@@ -17,17 +17,94 @@ import Std.is as isOfType;
 
 @:composite(TreeViewNodeEvents, TreeViewNodeBuilder)
 class TreeViewNode extends VBox {
+    public var parentNode:TreeViewNode = null;
+    
+    public function path(field:String = null):String {
+        if (field == null) { // lets try to guess a field to use in the path
+            if (Reflect.hasField(this.data, "id")) {
+                field = "id";
+            } else if (Reflect.hasField(this.data, "nodeId")) {
+                field = "nodeId";
+            } else {
+                field = "text";
+            }
+        }
+        var parts = [];
+        var p = this;
+        while (p != null) {
+            parts.push(Reflect.field(p.data, field));
+            p = p.parentNode;
+        }
+        parts.reverse();
+        return parts.join("/");
+    }
+    
+    public function findNodeByPath(path:String, field:String = null):TreeViewNode {
+        var foundNode = null;
+        
+        var parts = path.split("/");
+        var part = parts.shift();
+        
+        var nodes = getNodes();
+        for (node in nodes) {
+            if (node.matchesPathPart(part, field)) {
+                if (parts.length == 0) {
+                    foundNode = node;
+                } else {
+                    foundNode = node.findNodeByPath(parts.join("/"), field);
+                }
+                break;
+            }
+        }
+        
+        return foundNode;
+    }
+    
+    public function matchesPathPart(part:String, field:String = null):Bool {
+        if (field == null) { // lets try to guess a field to use in the path
+            if (Reflect.hasField(this.data, "id")) {
+                field = "id";
+            } else if (Reflect.hasField(this.data, "nodeId")) {
+                field = "nodeId";
+            } else {
+                field = "text";
+            }
+        }
+        
+        if (Reflect.hasField(this.data, field) == false) {
+            return false;
+        }
+        
+        return Std.string(Reflect.field(this.data, field)) == part;
+    }
+    
     public function addNode(data:Dynamic):TreeViewNode {
         var node = new TreeViewNode();
+        node.parentNode = this;
         node.data = data;
         addComponent(node);
         return node;
+    }
+    
+    private function getNodes():Array<TreeViewNode> {
+        return findComponents(TreeViewNode, 3); // TODO: is this brittle? Will it always be 3?
     }
     
     public var expandable(get, null):Bool;
     private function get_expandable():Bool {
         var childContainer = findComponent("treenode-child-container", Box);
         return (childContainer != null && childContainer.numComponents > 0);
+    }
+    
+    public var selected(get, set):Bool;
+    private function get_selected():Bool {
+        var treeview = findAncestor(TreeView);
+        return treeview.selectedNode == this;
+    }
+    private function set_selected(value:Bool):Bool {
+        var treeview = findAncestor(TreeView);
+        treeview.selectedNode = this;
+        return value;
     }
     
     private var _expanded:Bool = false;
@@ -287,6 +364,7 @@ private class TreeViewNodeBuilder extends CompositeBuilder {
     
     public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true) {
         if ((child is TreeViewNode)) {
+            cast(child, TreeViewNode).parentNode = null;
             var c = _childContainer.removeComponent(child, dispose, invalidate);
             if (_childContainer.numComponents == 0) {
                 changeToNonExpandableRenderer();

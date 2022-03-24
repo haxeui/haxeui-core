@@ -64,6 +64,11 @@ class TreeView extends ScrollView implements IDataComponent {
         
         _selectedNode = value;
         if (_selectedNode != null) {
+            var p = _selectedNode;
+            while (p != null) {
+                p.expanded = true;
+                p = p.parentNode;
+            }
             var renderer = _selectedNode.findComponent(ItemRenderer, true);
             if (renderer != null) {
                 renderer.addClass(":node-selected", true, true);
@@ -152,6 +157,27 @@ class TreeView extends ScrollView implements IDataComponent {
             _selectedNode = null;
             selectedNode = node;
         }
+    }
+    
+    public function findNodeByPath(path:String, field:String = null):TreeViewNode {
+        var foundNode = null;
+        
+        var parts = path.split("/");
+        var part = parts.shift();
+        
+        var nodes = getNodes();
+        for (node in nodes) {
+            if (node.matchesPathPart(part, field)) {
+                if (parts.length == 0) {
+                    foundNode = node;
+                } else {
+                    foundNode = node.findNodeByPath(parts.join("/"), field);
+                }
+                break;
+            }
+        }
+        
+        return foundNode;
     }
 }
 
