@@ -82,9 +82,11 @@ class TreeView extends ScrollView implements IDataComponent {
     }
     
     private function onDataChanged() {
+        syncNodes();
     }
     
     private function syncNodes() {
+        clearNodes();
         for (i in 0..._dataSource.size) {
             var item = _dataSource.get(i);
             syncNode(i, item);
