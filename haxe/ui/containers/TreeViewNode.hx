@@ -99,6 +99,13 @@ class TreeViewNode extends VBox {
     private function getChildNodes():Array<TreeViewNode> {
         return findComponents(TreeViewNode, 3); // TODO: is this brittle? Will it always be 3?
     }
+    
+    public function clearNodes() {
+        var nodes = findComponents(TreeViewNode, 3);
+        for (n in nodes) {
+            removeComponent(n);
+        }
+    }
 }
 
 //***********************************************************************************************************
@@ -195,6 +202,37 @@ private class TreeViewNodeBuilder extends CompositeBuilder {
         makeExpandableRendererChanges();
     }
     
+    private function changeToNonExpandableRenderer() {
+        if (_isExpandable == false) {
+            return;
+        }
+        
+        _isExpandable = false;
+        makeNonExpandableRendererChanges();
+    }
+    
+    private function makeNonExpandableRendererChanges() {
+        var treeview = _node.findAncestor(TreeView);
+        
+        if (_expandCollapseIcon != null) {
+            _expandCollapseIcon.removeClasses(["node-collapsed", "node-expanded"]);
+        }
+        
+        if (_renderer != null) {
+            var wasSelected = (treeview.selectedNode == _node);
+            var data = _renderer.data;
+            var newRenderer = treeview.itemRenderer.cloneComponent();
+            newRenderer.data = data;
+            _nodeContainer.removeComponent(_renderer);
+            _renderer = newRenderer;
+            _nodeContainer.addComponent(newRenderer);
+            if (wasSelected == true) {
+                treeview.selectedNode = null;
+                treeview.selectedNode = _node;
+            }
+        }
+    }
+    
     private function makeExpandableRendererChanges() {
         var treeview = _node.findAncestor(TreeView);
         
@@ -209,12 +247,17 @@ private class TreeViewNodeBuilder extends CompositeBuilder {
         }
         
         if (_renderer != null) {
+            var wasSelected = (treeview.selectedNode == _node);
             var data = _renderer.data;
             var newRenderer = treeview.expandableItemRenderer.cloneComponent();
             newRenderer.data = data;
             _nodeContainer.removeComponent(_renderer);
             _renderer = newRenderer;
             _nodeContainer.addComponent(newRenderer);
+            if (wasSelected == true) {
+                treeview.selectedNode = null;
+                treeview.selectedNode = _node;
+            }
         }
     }
     
@@ -239,6 +282,17 @@ private class TreeViewNodeBuilder extends CompositeBuilder {
             return _childContainer.addComponent(child);
         }
         
+        return null;
+    }
+    
+    public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true) {
+        if ((child is TreeViewNode)) {
+            var c = _childContainer.removeComponent(child, dispose, invalidate);
+            if (_childContainer.numComponents == 0) {
+                changeToNonExpandableRenderer();
+            }
+            return c;
+        }
         return null;
     }
 }
