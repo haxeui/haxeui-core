@@ -54,13 +54,8 @@ class TreeView extends ScrollView implements IDataComponent {
         if (value == _selectedNode) {
             return value;
         }
-        
-        if (_selectedNode != null) {
-            var renderer = _selectedNode.findComponent(ItemRenderer, true);
-            if (renderer != null) {
-                renderer.removeClass(":node-selected", true, true);
-            }
-        }
+
+        clearSelection();
         
         _selectedNode = value;
         if (_selectedNode != null) {
@@ -79,6 +74,16 @@ class TreeView extends ScrollView implements IDataComponent {
         this.dispatch(event);
         
         return value;
+    }
+    
+    public function clearSelection() {
+        if (_selectedNode != null) {
+            var renderer = _selectedNode.findComponent(ItemRenderer, true);
+            if (renderer != null) {
+                renderer.removeClass(":node-selected", true, true);
+            }
+            _selectedNode = null;
+        }
     }
     
     private function onDataChanged() {

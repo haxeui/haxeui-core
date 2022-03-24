@@ -304,7 +304,7 @@ private class TreeViewNodeBuilder extends CompositeBuilder {
             _renderer = newRenderer;
             _nodeContainer.addComponent(newRenderer);
             if (wasSelected == true) {
-                treeview.selectedNode = null;
+                treeview.clearSelection();
                 treeview.selectedNode = _node;
             }
         }
@@ -332,7 +332,7 @@ private class TreeViewNodeBuilder extends CompositeBuilder {
             _renderer = newRenderer;
             _nodeContainer.addComponent(newRenderer);
             if (wasSelected == true) {
-                treeview.selectedNode = null;
+                treeview.clearSelection();
                 treeview.selectedNode = _node;
             }
         }
