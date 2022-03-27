@@ -11,10 +11,6 @@
     border-radius: $normal-border-radius;
 }
 
-.horizontal-slider:active {
-    __border: 1px solid $accent-color;
-}
-
 .horizontal-slider:active .button {
     border: 1px solid $accent-color;
 }
@@ -66,6 +62,14 @@
     padding-right: 3px;
     width: auto;
     initial-height: 150px;
+}
+
+.vertical-slider:active .button {
+    border: 1px solid $accent-color;
+}
+
+.vertical-slider:active .range {
+    border: 1px solid $accent-color;
 }
 
 .vertical-slider .slider-value {
