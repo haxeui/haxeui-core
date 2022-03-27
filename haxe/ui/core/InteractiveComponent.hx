@@ -1,6 +1,5 @@
 package haxe.ui.core;
 
-import haxe.ui.actions.ActionType;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.events.FocusEvent;
 import haxe.ui.focus.FocusManager;

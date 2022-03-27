@@ -1,6 +1,5 @@
 package haxe.ui.containers;
 
-import haxe.ui.actions.ActionType;
 import haxe.ui.behaviours.Behaviour;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
@@ -46,6 +45,8 @@ class ScrollView extends InteractiveComponent implements IScrollView {
     @:behaviour(ScrollModeBehaviour, ScrollMode.DRAG)   public var scrollMode:ScrollMode;
     @:behaviour(GetContents)                            public var contents:Component;
     @:behaviour(DefaultBehaviour)                       public var autoHideScrolls:Bool;
+    @:behaviour(DefaultBehaviour, true)                 public var allowAutoScroll:Bool;
+    @:call(EnsureVisible)                               public function ensureVisible(component:Component):Void;
 
     //***********************************************************************************************************
     // Validation
@@ -65,42 +66,6 @@ class ScrollView extends InteractiveComponent implements IScrollView {
             cast(_compositeBuilder, ScrollViewBuilder).updateScrollRect(); // TODO: or this
         }
     }
-
-    public function ensureVisible(component:Component) {
-        return; // TODO: causes issues, needs to be enhanced / re-implemented (specifically in propertygrids)
-        var contents:Component = findComponent("scrollview-contents", false, "css");
-
-        var hscroll:HorizontalScroll = findComponent(HorizontalScroll);
-        var vscroll:VerticalScroll = findComponent(VerticalScroll);
-
-        var rect = new Rectangle(contents.componentClipRect.left, contents.componentClipRect.top, contents.componentClipRect.width, contents.componentClipRect.height);
-        if (hscroll != null && hscroll.hidden == false) {
-            rect.height -= hscroll.height;
-        }
-        if (vscroll != null && vscroll.hidden == false) {
-            rect.width -= vscroll.width;
-        }
-
-        if (hscroll != null) {
-            var hpos:Float = hscroll.pos;
-            if (component.left + component.width > hpos + rect.width) {
-                hscroll.pos = ((component.left + component.width) - rect.width);
-            } else if (component.left < hpos) {
-                hscroll.pos = component.left;
-            }
-        }
-
-        if (vscroll != null) {
-            var vpos:Float = vscroll.pos;
-            if (component.top + component.height > vpos + rect.height) {
-                // offset calc may be incorrect
-                var offset = (contents.layout.paddingTop + contents.layout.paddingBottom);
-                vscroll.pos = ((component.top + component.height) - rect.height) + offset;
-            } else if (component.top < vpos) {
-                vscroll.pos = component.top;
-            }
-        }
-    }
     
     private override function get_isScroller():Bool {
         return true;
@@ -110,6 +75,110 @@ class ScrollView extends InteractiveComponent implements IScrollView {
 //***********************************************************************************************************
 // Behaviours
 //***********************************************************************************************************
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class EnsureVisible extends DefaultBehaviour {
+    public override function call(param:Any = null):Variant {
+        var scrollview:ScrollView = cast(_component, ScrollView);
+        if (scrollview.allowAutoScroll == false) {
+            return null;
+        }
+        
+        var c:Component = cast(param, Component);
+        if (c == scrollview) {
+            return null;
+        }
+
+        var hscroll:HorizontalScroll = scrollview.findComponent(HorizontalScroll, false);
+        var hscrollPos:Float = 0;
+        if (hscroll != null) {
+            hscrollPos = hscroll.pos;
+        }
+        
+        var vscroll:VerticalScroll = scrollview.findComponent(VerticalScroll, false);
+        var vscrollPos:Float = 0;
+        if (vscroll != null) {
+            vscrollPos = vscroll.pos;
+        }
+        
+        var componentScreenRect = new Rectangle(c.screenLeft, c.screenTop, c.width, c.height);
+        var componentRect = new Rectangle(c.screenLeft + hscrollPos, c.screenTop + vscrollPos, c.width, c.height);
+        var scrollRect = new Rectangle(scrollview.screenLeft, scrollview.screenTop, scrollview.width, scrollview.height);
+        
+        var scrollRectFixed = scrollRect.copy();
+        var usableSize = scrollview.layout.usableSize;
+        scrollRectFixed.width = usableSize.width;
+        scrollRectFixed.height = usableSize.height;
+
+        if (scrollRectFixed.containsRect(componentScreenRect)) { // fully contains child rect, do nothing
+            return null;
+        }
+        
+        var newHScrollPos = hscrollPos;
+        var newVScrollPos = vscrollPos;
+        
+        var fixedRight = componentRect.right - scrollRect.left;
+        var fixedLeft = componentRect.left - scrollRect.left;
+        var fixedBottom = componentRect.bottom - scrollRect.top;
+        var fixedTop = componentRect.top - scrollRect.top;
+        var offsetLeft = 1;// contentsRect.left - scrollRect.left;
+        var offsetTop = 1;// contentsRect.top - scrollRect.top;
+        
+        if (scrollRectFixed.containsPoint(componentScreenRect.right, componentScreenRect.top) == false) {
+            newHScrollPos = fixedRight - (usableSize.width) + (calcOffset(c, "right") - offsetLeft);
+        } else if (scrollRectFixed.containsPoint(componentScreenRect.left, componentScreenRect.top) == false) {
+            newHScrollPos = fixedLeft - (calcOffset(c, "left") + offsetLeft);
+        }
+        
+        if (scrollRectFixed.containsPoint(componentScreenRect.left, componentScreenRect.bottom) == false) {
+            newVScrollPos = fixedBottom - (usableSize.height) + (calcOffset(c, "bottom") - offsetTop);
+        } else if (scrollRectFixed.containsPoint(componentScreenRect.left, componentScreenRect.top) == false) {
+            newVScrollPos = fixedTop - (calcOffset(c, "top") + offsetTop);
+        }
+        
+        if (hscroll != null) {
+            hscroll.pos = newHScrollPos;
+        }
+        if (vscroll != null) {
+            vscroll.pos = newVScrollPos;
+        }
+        
+        return null;
+    }
+    
+    private function calcOffset(c:Component, which:String) {
+        var p:Float = 0;
+        var r = c.parentComponent;
+        while (r != null) {
+            if (r.style != null) {
+                switch (which) {
+                    case "left":
+                        if (r.paddingLeft != null) {
+                            p += r.paddingLeft;
+                        }
+                    case "right":
+                        if (r.paddingRight != null) {
+                            p += r.paddingRight;
+                        }
+                    case "top":
+                        if (r.paddingTop != null) {
+                            p += r.paddingTop;
+                        }
+                    case "bottom":
+                        if (r.paddingBottom != null) {
+                            p += r.paddingBottom;
+                        }
+                }
+            }
+            r = r.parentComponent;
+            if (r == _component) {
+                break;
+            }
+        }
+        return p;
+    }
+}
+
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 private class Virtual extends DefaultBehaviour {
