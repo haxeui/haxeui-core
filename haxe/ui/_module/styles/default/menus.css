@@ -61,9 +61,9 @@
 }
 
 .menubar-button-no-children-active:down {
-    background-color: $secondary-background-color;
+    background-color: $selection-background-color-hover;
     color: $down-text-color;
-    border: 1px solid $normal-border-color;
+    border: none;
 }
 
 /************************************************************************

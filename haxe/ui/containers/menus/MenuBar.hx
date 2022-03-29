@@ -95,6 +95,7 @@ private class Events extends haxe.ui.events.Events {
             newEvent.menu = menu;
             _menubar.dispatch(newEvent);
             target.registerEvent(MouseEvent.MOUSE_OUT, onCompleteButton);
+            menu.dispatch(new MouseEvent(MouseEvent.CLICK));
             return;
         }
         
@@ -136,6 +137,7 @@ private class Events extends haxe.ui.events.Events {
                 button.selected = false;
             }
         }
+        
         target.selected = true;
 
         hideCurrentMenu();
@@ -206,11 +208,13 @@ private class Events extends haxe.ui.events.Events {
             }
         }
         
-        _currentMenu.dispatch(new MouseEvent(MouseEvent.CLICK));
-        var menuEvent = new MenuEvent(MenuEvent.MENU_OPENED);
-        menuEvent.menu = _currentMenu;
-        _currentMenu.dispatch(menuEvent);
-        this.dispatch(menuEvent);
+        if (hasChildren == true) {
+            _currentMenu.dispatch(new MouseEvent(MouseEvent.CLICK));
+            var menuEvent = new MenuEvent(MenuEvent.MENU_OPENED);
+            menuEvent.menu = _currentMenu;
+            _currentMenu.dispatch(menuEvent);
+            this.dispatch(menuEvent);
+        }
     }
 
     private function hideCurrentMenu() {
