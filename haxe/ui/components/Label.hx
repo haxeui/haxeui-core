@@ -41,9 +41,9 @@ private class LabelLayout extends DefaultLayout {
             // TODO: make not specific - need to check all backends first - update: can move to backends!
             #if (haxeui_flixel)
             component.getTextDisplay().wordWrap = wordWrap;
-            component.getTextDisplay().tf.autoSize = !wordWrap;
+            component.getTextDisplay().tf.autoSize = false;
             #elseif (haxeui_openfl)
-            component.getTextDisplay().textField.autoSize = wordWrap == true ? openfl.text.TextFieldAutoSize.NONE : openfl.text.TextFieldAutoSize.LEFT;
+            component.getTextDisplay().textField.autoSize = openfl.text.TextFieldAutoSize.NONE;
             component.getTextDisplay().multiline = wordWrap;
             component.getTextDisplay().wordWrap = wordWrap;
             #elseif (haxeui_pixijs)
