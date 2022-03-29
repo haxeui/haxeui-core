@@ -136,7 +136,7 @@ class VerticalVirtualLayout extends VirtualLayout {
         }
 
 //        var rc:Rectangle = new Rectangle(0, 0, contents.width - (paddingRight + paddingLeft), contentsHeight - (paddingTop + paddingBottom));
-        var rc:Rectangle = new Rectangle(0, 0, contents.width, contentsHeight - (paddingTop + paddingBottom));
+        var rc:Rectangle = new Rectangle(0, 0, contents.width, contentsHeight - (paddingTop + paddingBottom) - (borderSize * 2));
         contents.componentClipRect = rc;
 
         _lastIndex = _firstIndex + visibleItemsCount + 1;
