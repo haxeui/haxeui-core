@@ -654,6 +654,7 @@ class ScrollViewEvents extends haxe.ui.events.Events {
     private var _movementThreshold:Int = 3;
     private var _lastMousePos:Point = null;
     private function onMouseMove(event:MouseEvent) {
+        event.cancel();
         var hscroll:HorizontalScroll = _scrollview.findComponent(HorizontalScroll, false);
         if (hscroll != null) {
             hscroll.pos = _offset.x - event.screenX;
