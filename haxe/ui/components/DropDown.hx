@@ -429,7 +429,7 @@ private class ListDropDownHandler extends DropDownHandler {
 }
 
 @:access(haxe.ui.core.Component)
-private class CalendarDropDownHandler extends DropDownHandler {
+class CalendarDropDownHandler extends DropDownHandler {
     public static var DATE_FORMAT:String = "%d/%m/%Y";
 
     private var _calendar:CalendarView;
