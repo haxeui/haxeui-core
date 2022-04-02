@@ -20,7 +20,7 @@
 
 .checkbox-value {
     border: 1px solid $normal-border-color;
-    background-color: $default-background-color;
+    background-color: $tertiary-background-color;
     width: 18px;
     height: 18px;
     vertical-align: top;
