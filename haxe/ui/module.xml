@@ -164,9 +164,9 @@
             <var name="hover-text-color" value="#bbbbbb" />
             <var name="hover-border-color" value="#222426" />
             <!-- down -->
-            <var name="down-background-color-start" value="#2f3132" />
-            <var name="down-background-color-end" value="#27292a" />
-            <var name="down-text-color" value="#aaaaaa" />
+            <var name="down-background-color-start" value="#393c3c" />
+            <var name="down-background-color-end" value="#313335" />
+            <var name="down-text-color" value="#999999" />
             <var name="down-border-color" value="#222426" />
             <!-- disabled -->
             <var name="disabled-background-color-start" value="#36393a" />
@@ -178,7 +178,7 @@
             <var name="selection-text-color" value="#d4d4d4" />
             <var name="selection-background-color-hover" value="#323e52" />
             <!-- accent -->
-            <var name="accent-color" value="#415982" />
+            <var name="accent-color" value="#3c5177" />
             <var name="accent-color-darker" value="#407dbf" />
             <var name="accent-color-lighter" value="#323e52" />
             <var name="accent-gradient-start" value="#334666" />
