@@ -21,6 +21,11 @@
     color: $hover-text-color;
 }
 
+.menubar-button:active {
+    background-color: $selection-background-color-hover;
+    color: $hover-text-color;
+}
+
 .menubar-button:down {
     background-color: $secondary-background-color;
     color: $down-text-color;
