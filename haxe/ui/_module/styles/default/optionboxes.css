@@ -24,7 +24,7 @@
     width: 18px;
     height: 18px;
     vertical-align: top;
-    border-radius: 18px;
+    border-radius: 9px;
     icon: none;
     filter: $normal-inner-shadow;
     cursor: pointer;
