@@ -53,6 +53,10 @@
     border: $normal-border-size solid $normal-border-color;
 }
 
+.button-bar .button:active {
+    background-color: $selection-background-color-hover;
+}
+
 .button-bar .button:down {
     background-color: $selection-background-color;
     color: $selection-text-color;
