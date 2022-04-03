@@ -104,7 +104,7 @@ class RuntimeComponentBuilder {
                 //component.addScriptEvent(propName, propValue);
             } else {
                 propValue = TypeConverter.convertFrom(propValue);
-                Reflect.setProperty(component, propName, propValue);
+                Reflect.setProperty(component, propName, Variant.fromDynamic(propValue));
             }
         }
 
