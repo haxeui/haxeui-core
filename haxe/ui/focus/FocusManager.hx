@@ -169,7 +169,7 @@ class FocusManager extends FocusManagerImpl {
         
         if ((c is IFocusable)) {
             var f:IFocusable = cast c;
-            if (f.allowFocus == true && f.disabled == false && @:privateAccess c._isDisposed == false) {
+            if (@:privateAccess c._isDisposed == false && f.allowFocus == true && f.disabled == false) {
                 if (f.focus == true) {
                     currentFocus = f;
                 }
