@@ -164,7 +164,7 @@ class FocusManager extends FocusManagerImpl {
     private function buildFocusableList(c:Component, list:Array<IFocusable>):IFocusable {
         var currentFocus = null;
         
-        if (@:privateAccess c._isDisposed = true) {
+        if (@:privateAccess c._isDisposed == true) {
             return null;
         }
         
