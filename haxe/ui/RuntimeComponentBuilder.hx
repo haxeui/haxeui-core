@@ -1,6 +1,8 @@
 package haxe.ui;
 
 import haxe.ui.Toolkit;
+import haxe.ui.components.Button;
+import haxe.ui.components.Image;
 import haxe.ui.core.Component;
 import haxe.ui.core.ComponentClassMap;
 import haxe.ui.core.ComponentFieldMap;
@@ -103,8 +105,15 @@ class RuntimeComponentBuilder {
             if (StringTools.startsWith(propName, "on")) {
                 //component.addScriptEvent(propName, propValue);
             } else {
-                propValue = TypeConverter.convertFrom(propValue);
-                Reflect.setProperty(component, propName, Variant.fromDynamic(propValue));
+                // TODO: weirdly, for Images (also icons) setProperty doesnt work correctly - or the behaviour...... misbehaves
+                if (propName == "resource" && (component is Image)) {
+                    cast(component, Image).resource = Variant.fromDynamic(propValue);
+                } else if (propName == "icon" && (component is Button)) {
+                    cast(component, Button).icon = Variant.fromDynamic(propValue);
+                } else {
+                    propValue = TypeConverter.convertFrom(propValue);
+                    Reflect.setProperty(component, propName, propValue);
+                }
             }
         }
 
