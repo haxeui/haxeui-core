@@ -163,13 +163,18 @@ class FocusManager extends FocusManagerImpl {
 
     private function buildFocusableList(c:Component, list:Array<IFocusable>):IFocusable {
         var currentFocus = null;
+        
+        if (@:privateAccess c._isDisposed = true) {
+            return null;
+        }
+        
         if (c.hidden == true) {
             return null;
         }
         
         if ((c is IFocusable)) {
             var f:IFocusable = cast c;
-            if (@:privateAccess c._isDisposed == false && f.allowFocus == true && f.disabled == false) {
+            if (f.allowFocus == true && f.disabled == false) {
                 if (f.focus == true) {
                     currentFocus = f;
                 }
