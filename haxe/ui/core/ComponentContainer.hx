@@ -236,9 +236,8 @@ class ComponentValueBehaviour extends ValueBehaviour {
 @:access(haxe.ui.core.Component)
 class ComponentToolTipBehaviour extends DataBehaviour {
     public override function validateData() {
-        if (_value == null || _value.isNull) {
-            ToolTipManager.instance.unregisterTooltip(_component);
-        } else {
+        ToolTipManager.instance.unregisterTooltip(_component);
+        if (_value != null && !_value.isNull) {
             ToolTipManager.instance.registerTooltip(_component, {
                 tipData: Variant.toDynamic(_value),
                 renderer: cast _component.tooltipRenderer
