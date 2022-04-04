@@ -400,6 +400,20 @@ class Component extends ComponentImpl implements IValidating {
         return child;
     }
 
+    public function containsComponent(child:Component):Bool {
+        if (child == null) {
+            return false;
+        }
+        var contains = false;
+        this.walkComponents(function(c) {
+            if (child == c) {
+                contains = true;
+            }
+            return !contains;
+        });
+        return contains;
+    }
+    
     /**
      Adds a child component to this component instance
     **/
