@@ -538,7 +538,8 @@ class ComponentMacros {
                 
                 for (namedComponent in namedComponents.keys()) {
                     var details = namedComponents.get(namedComponent);
-                    scriptBuilder.add(macro var $namedComponent = $i{details.generatedVarName});
+                    var safeId:String = StringUtil.capitalizeHyphens(namedComponent);
+                    scriptBuilder.add(macro var $safeId = $i{details.generatedVarName});
                 }
 
                 var expr = Context.parseInlineString(fixedCode, Context.currentPos());
