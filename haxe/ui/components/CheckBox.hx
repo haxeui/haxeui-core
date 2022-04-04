@@ -173,12 +173,16 @@ private class Events extends haxe.ui.events.Events  {
         if (hasEvent(MouseEvent.CLICK, onClick) == false) {
             registerEvent(MouseEvent.CLICK, onClick);
         }
+        if (hasEvent(MouseEvent.MOUSE_DOWN, onMouseDown) == false) {
+            registerEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
+        }
     }
 
     public override function unregister() {
         unregisterEvent(MouseEvent.MOUSE_OVER, onMouseOver);
         unregisterEvent(MouseEvent.MOUSE_OUT, onMouseOut);
         unregisterEvent(MouseEvent.CLICK, onClick);
+        unregisterEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
     }
 
     private function onMouseOver(event:MouseEvent) {
@@ -192,8 +196,11 @@ private class Events extends haxe.ui.events.Events  {
     }
 
     private function onClick(event:MouseEvent) {
-        _checkbox.findComponent(CheckBoxValue).focus = true;
         _checkbox.selected = !_checkbox.selected;
+    }
+    
+    private function onMouseDown(event:MouseEvent) {
+        _checkbox.findComponent(CheckBoxValue).focus = true;
     }
 }
 
