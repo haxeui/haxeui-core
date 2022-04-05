@@ -52,11 +52,11 @@ class HorizontalContinuousLayout extends HorizontalLayout {
             rc.component = child;
             usedCX += rc.width;
 
-            if (usedCX > ucx) {
+            if (usedCX - horizontalSpacing > ucx) {
                 heights.push(rowCY);
                 ypos += rowCY + verticalSpacing;
                 xpos = paddingLeft;
-                usedCX = rc.width;
+                usedCX = rc.width + horizontalSpacing;
                 rowCY = 0;
                 row++;
             }
