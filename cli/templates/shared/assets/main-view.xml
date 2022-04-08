@@ -1,7 +1,7 @@
 <vbox style="padding: 5px;">
     <style>
         .button {
-            font-size: 24px;
+            font-size: 20px;
         }
     </style>
     <hbox>
