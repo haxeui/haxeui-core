@@ -52,3 +52,9 @@
 -resource projects/heaps/project.json@projects/heaps/project.json
 -resource projects/heaps-shared/project.json@projects/heaps-shared/project.json
 -resource projects/heaps-flash-develop/project.json@projects/heaps-flash-develop/project.json
+-resource projects/raylib/project.json@projects/raylib/project.json
+-resource projects/raylib-shared/project.json@projects/raylib-shared/project.json
+-resource projects/raylib-flash-develop/project.json@projects/raylib-flash-develop/project.json
+-resource projects/pdcurses/project.json@projects/pdcurses/project.json
+-resource projects/pdcurses-shared/project.json@projects/pdcurses-shared/project.json
+-resource projects/pdcurses-flash-develop/project.json@projects/pdcurses-flash-develop/project.json
