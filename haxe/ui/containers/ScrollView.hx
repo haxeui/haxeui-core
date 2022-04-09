@@ -917,6 +917,7 @@ class ScrollViewBuilder extends CompositeBuilder {
     public function new(scrollview:ScrollView) {
         super(scrollview);
         _scrollview = scrollview;
+        _scrollview.cascadeActive = true;
     }
 
     public override function create() {
