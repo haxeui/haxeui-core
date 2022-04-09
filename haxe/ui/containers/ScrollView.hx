@@ -1175,10 +1175,8 @@ class ScrollViewBuilder extends CompositeBuilder {
 
     public override function applyStyle(style:Style) {
         super.applyStyle(style);
-        if (style.mode != null && style.mode == "mobile") {
+        if (style.mode == "mobile") {
             _scrollview.autoHideScrolls = true;
-        } else {
-            _scrollview.autoHideScrolls = false;
         }
         
         if (style.contentWidth != null && style.contentWidth != _scrollview.contentWidth) {
