@@ -1,4 +1,5 @@
 package haxe.ui.macros;
+
 import haxe.ui.macros.ModuleMacros;
 import haxe.ui.util.RTTI;
 
@@ -407,6 +408,12 @@ class Macros {
             }
             
             f.remove();
+            var defVal:Dynamic = null;
+            if (f.isBool) {
+                defVal = false;
+            } else if (f.isNumeric) {
+                defVal = 0;
+            }
             if (builder.hasField(f.name, true) == false) { // check to see if it already exists, possibly in a super class
                 var newField:FieldBuilder = null;
                 if (f.isDynamic == true) { // add a getter that can return dynamic
@@ -415,6 +422,9 @@ class Macros {
                     }, f.access);
                 } else { // add a normal (Variant) getter
                     newField = builder.addGetter(f.name, f.type, macro {
+                        if (behaviours == null) {
+                            return $v{defVal};
+                        }
                         return behaviours.get($v{f.name});
                     }, f.access);
                 }
@@ -457,6 +467,9 @@ class Macros {
                         }, f.access);
                     } else {
                         newField = builder.addSetter(f.name, f.type, macro { // add a normal (Variant) setter
+                            if (behaviours == null) {
+                                return value;
+                            }
                             behaviours.set($v{f.name}, value);
                             dispatch(new haxe.ui.events.UIEvent(haxe.ui.events.UIEvent.PROPERTY_CHANGE, $v{f.name}));
                             return value;
@@ -485,10 +498,16 @@ class Macros {
             var arg0 = '${f.getArgName(0)}';
             if (f.isVoid == true) {
                 f.set(macro {
+                    if (behaviours == null) {
+                        return;
+                    }
                     behaviours.call($v{f.name}, $i{arg0});
                 });
             } else {
                 f.set(macro {
+                    if (behaviours == null) {
+                        return null;
+                    }
                     return behaviours.call($v{f.name}, $i{arg0});
                 });
             }
