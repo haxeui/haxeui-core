@@ -1,5 +1,6 @@
 package haxe.ui.components;
 
+import haxe.ui.actions.ActionType;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.components.Button;
@@ -8,6 +9,7 @@ import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.Platform;
+import haxe.ui.events.ActionEvent;
 import haxe.ui.events.FocusEvent;
 import haxe.ui.events.KeyboardEvent;
 import haxe.ui.events.MouseEvent;
@@ -166,6 +168,9 @@ private class Events extends haxe.ui.events.Events {
         if (!inc.hasEvent(MouseEvent.CLICK, onInc)) {
             inc.registerEvent(MouseEvent.CLICK, onInc);
         }
+        if (!hasEvent(ActionEvent.ACTION_START, onActionStart)) {
+            registerEvent(ActionEvent.ACTION_START, onActionStart);
+        }
     }
     
     public override function unregister() {
@@ -183,6 +188,7 @@ private class Events extends haxe.ui.events.Events {
         
         var inc:Button = _stepper.findComponent("inc", Button);
         inc.unregisterEvent(MouseEvent.CLICK, onInc);
+        unregisterEvent(ActionEvent.ACTION_START, onActionStart);
     }
     
     private var _autoCorrectTimer:Timer = null;
@@ -272,6 +278,24 @@ private class Events extends haxe.ui.events.Events {
     private function onFocusOut(event:FocusEvent) {
         var value:TextField = _stepper.findComponent("value", TextField);
         value.getTextInput().blur();
+    }
+    
+    private function onActionStart(event:ActionEvent) {
+        switch (event.action) {
+            case ActionType.DOWN:
+                ValueHelper.deincrementValue(_stepper);
+                event.repeater = true;
+            case ActionType.UP:
+                ValueHelper.incrementValue(_stepper);
+                event.repeater = true;
+            case ActionType.LEFT:    
+                ValueHelper.deincrementValue(_stepper);
+                event.repeater = true;
+            case ActionType.RIGHT:    
+                ValueHelper.incrementValue(_stepper);
+                event.repeater = true;
+            case _:      
+        }
     }
 }
 
