@@ -92,7 +92,6 @@ class ListViewEvents extends ScrollViewEvents {
         registerEvent(ScrollEvent.CHANGE, onScrollChange);
         registerEvent(UIEvent.RENDERER_CREATED, onRendererCreated);
         registerEvent(UIEvent.RENDERER_DESTROYED, onRendererDestroyed);
-        registerEvent(ActionEvent.ACTION_START, onActionStart);
     }
 
     public override function unregister() {
@@ -100,7 +99,6 @@ class ListViewEvents extends ScrollViewEvents {
         unregisterEvent(ScrollEvent.CHANGE, onScrollChange);
         unregisterEvent(UIEvent.RENDERER_CREATED, onRendererCreated);
         unregisterEvent(UIEvent.RENDERER_DESTROYED, onRendererDestroyed);
-        unregisterEvent(ActionEvent.ACTION_START, onActionStart);
     }
 
     private function onScrollChange(e:ScrollEvent) {
@@ -279,7 +277,7 @@ class ListViewEvents extends ScrollViewEvents {
         _listview.selectedIndices = [for (i in fromIndex...toIndex + 1) i];
     }
     
-    private function onActionStart(event:ActionEvent) {
+    private override function onActionStart(event:ActionEvent) {
         lastEvent = event;
         switch (event.action) {
             case ActionType.DOWN:

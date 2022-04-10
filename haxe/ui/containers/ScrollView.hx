@@ -1,5 +1,6 @@
 package haxe.ui.containers;
 
+import haxe.ui.actions.ActionType;
 import haxe.ui.behaviours.Behaviour;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
@@ -12,6 +13,7 @@ import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.IScrollView;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.Screen;
+import haxe.ui.events.ActionEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.ScrollEvent;
 import haxe.ui.events.UIEvent;
@@ -534,6 +536,7 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         }
 
         registerEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
+        registerEvent(ActionEvent.ACTION_START, onActionStart);
     }
 
     public override function unregister() {
@@ -555,6 +558,7 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         unregisterEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
         unregisterEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
         unregisterEvent(UIEvent.SHOWN, onShown);
+        unregisterEvent(ActionEvent.ACTION_START, onActionStart);
     }
 
     private function onShown(event:UIEvent) {
@@ -899,6 +903,24 @@ class ScrollViewEvents extends haxe.ui.events.Events {
                     _fadeTimer = null;
                 });
             }
+        }
+    }
+    
+    private function onActionStart(event:ActionEvent) {
+        switch (event.action) {
+            case ActionType.DOWN:
+                _scrollview.vscrollPos++;
+                event.repeater = true;
+            case ActionType.UP:
+                _scrollview.vscrollPos--;
+                event.repeater = true;
+            case ActionType.LEFT:    
+                _scrollview.hscrollPos--;
+                event.repeater = true;
+            case ActionType.RIGHT:    
+                _scrollview.hscrollPos++;
+                event.repeater = true;
+            case _:      
         }
     }
 }
