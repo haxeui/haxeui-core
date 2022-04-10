@@ -34,6 +34,42 @@ class FunctionBuilder {
         return (returnType == "Void");
     }
 
+    public var isBool(get, null):Bool;
+    private function get_isBool():Bool {
+        switch (fn.ret) {
+            case TPath(p):
+                if (p.name == "Bool") {
+                    return true;
+                }
+            case _:
+        }
+        return false;
+    }
+
+    public var isString(get, null):Bool;
+    private function get_isString():Bool {
+        switch (fn.ret) {
+            case TPath(p):
+                if (p.name == "String") {
+                    return true;
+                }
+            case _:
+        }
+        return false;
+    }
+
+    public var isNumeric(get, null):Bool;
+    private function get_isNumeric():Bool {
+        switch (fn.ret) {
+            case TPath(p):
+                if (p.name == "Int" || p.name == "Float") {
+                    return true;
+                }
+            case _:
+        }
+        return false;
+    }
+    
     public function getArgName(index:Int):String {
         if (fn.args != null && fn.args.length > index) {
             return fn.args[index].name;

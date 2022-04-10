@@ -495,6 +495,12 @@ class Macros {
         }
 
         for (f in builder.findFunctionsWithMeta("call")) {
+            var defVal:Dynamic = null;
+            if (f.isBool) {
+                defVal = false;
+            } else if (f.isNumeric) {
+                defVal = 0;
+            }
             var arg0 = '${f.getArgName(0)}';
             if (f.isVoid == true) {
                 f.set(macro {
@@ -506,7 +512,7 @@ class Macros {
             } else {
                 f.set(macro {
                     if (behaviours == null) {
-                        return null;
+                        return $v{defVal};
                     }
                     return behaviours.call($v{f.name}, $i{arg0});
                 });
