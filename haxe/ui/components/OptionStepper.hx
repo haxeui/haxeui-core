@@ -1,5 +1,6 @@
 package haxe.ui.components;
 
+import haxe.ui.actions.ActionType;
 import haxe.ui.behaviours.Behaviour;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
@@ -9,6 +10,7 @@ import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.data.DataSource;
+import haxe.ui.events.ActionEvent;
 import haxe.ui.events.FocusEvent;
 import haxe.ui.events.KeyboardEvent;
 import haxe.ui.events.MouseEvent;
@@ -160,6 +162,9 @@ private class Events extends haxe.ui.events.Events {
         if (!inc.hasEvent(MouseEvent.CLICK, onInc)) {
             inc.registerEvent(MouseEvent.CLICK, onInc);
         }
+        if (!hasEvent(ActionEvent.ACTION_START, onActionStart)) {
+            registerEvent(ActionEvent.ACTION_START, onActionStart);
+        }
     }
     
     public override function unregister() {
@@ -171,6 +176,7 @@ private class Events extends haxe.ui.events.Events {
         
         var inc:Button = _stepper.findComponent("inc", Button);
         inc.unregisterEvent(MouseEvent.CLICK, onInc);
+        unregisterEvent(ActionEvent.ACTION_START, onActionStart);
     }
     
     private function onClick(_) {
@@ -212,6 +218,25 @@ private class Events extends haxe.ui.events.Events {
             incrementValue();
         } else {
             deincrementValue();
+        }
+    }
+    
+    
+    private function onActionStart(event:ActionEvent) {
+        switch (event.action) {
+            case ActionType.DOWN:
+                deincrementValue();
+                event.repeater = true;
+            case ActionType.UP:
+                incrementValue();
+                event.repeater = true;
+            case ActionType.LEFT:    
+                deincrementValue();
+                event.repeater = true;
+            case ActionType.RIGHT:    
+                incrementValue();
+                event.repeater = true;
+            case _:      
         }
     }
     
