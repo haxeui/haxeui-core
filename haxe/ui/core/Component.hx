@@ -484,6 +484,10 @@ class Component extends ComponentImpl implements IValidating {
         }
 
         if (_children != null) {
+            if (_children.indexOf(child) == -1) {
+                trace("WARNING: trying to remove a child that is not a child of this component");
+                return child;
+            }
             if (_children.remove(child)) {
                 child.parentComponent = null;
                 child.depth = -1;
