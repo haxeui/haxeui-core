@@ -652,7 +652,7 @@ class ComponentMacros {
                 buildData.namedComponents.set(c.id, varDescription);
             } else {
                 if (classInfo.hasSuperClass("haxe.ui.components.Column") == false) {
-                    trace('WARNING: skipped adding a member variable (${c.id}) that confliced with a property found root component (${rootClassName})');
+                    trace('WARNING: skipped adding a member variable (${c.id}) that conflicted with a property found on root component (${rootClassName})');
                 }
             }
         }
