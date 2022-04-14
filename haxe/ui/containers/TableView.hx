@@ -23,6 +23,7 @@ import haxe.ui.events.ScrollEvent;
 import haxe.ui.events.SortEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.geom.Rectangle;
+import haxe.ui.geom.Size;
 import haxe.ui.layouts.LayoutFactory;
 import haxe.ui.layouts.VerticalVirtualLayout;
 import haxe.ui.util.MathUtil;
@@ -585,6 +586,12 @@ private class Layout extends VerticalVirtualLayout {
         }
 
         return header.height;
+    }
+    
+    public override function calcAutoSize(exclusions:Array<Component> = null):Size {
+        var size = super.calcAutoSize();
+        size.height += 1;
+        return size;
     }
 }
 
