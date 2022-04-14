@@ -86,10 +86,12 @@ class ClassBuilder {
 
     public function findField(name:String):Field {
         var r = null;
-        for (f in fields) {
-            if (f.name == name) {
-                r = f;
-                break;
+        if (fields != null) {
+            for (f in fields) {
+                if (f.name == name) {
+                    r = f;
+                    break;
+                }
             }
         }
         return r;

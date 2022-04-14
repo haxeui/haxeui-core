@@ -41,6 +41,20 @@ class RTTI {
         });
     }
     
+    public static function hasClassProperty(className:String, propertyName:String) {
+        if (classInfo == null) {
+            return false;
+        }
+        if (classInfo.exists(className)) {
+            return false;
+        }
+        var entry = classInfo.get(className);
+        if (entry == null || entry.properties == null) {
+            return false;
+        }
+        return entry.properties.exists(propertyName);
+    }
+    
     public static function load() {
         if (classInfo != null) {
             return;

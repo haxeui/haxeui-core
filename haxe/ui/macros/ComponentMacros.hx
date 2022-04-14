@@ -642,11 +642,19 @@ class ComponentMacros {
         }
 
         if (c.id != null && buildData.namedComponents != null && useNamedComponents == true) {
-            var varDescription = {
-                generatedVarName: componentVarName,
-                type: className
-            };
-            buildData.namedComponents.set(c.id, varDescription);
+            var rootClassName = ModuleMacros.resolveComponentClass(c.findRootComponent().type);
+            var rootClassInfo = new ClassBuilder(Context.getModule(rootClassName)[0]);
+            if (rootClassInfo.hasField(c.id, true) == false) {
+                var varDescription = {
+                    generatedVarName: componentVarName,
+                    type: className
+                };
+                buildData.namedComponents.set(c.id, varDescription);
+            } else {
+                if (classInfo.hasSuperClass("haxe.ui.components.Column") == false) {
+                    trace('WARNING: skipped adding a member variable (${c.id}) that confliced with a property found root component (${rootClassName})');
+                }
+            }
         }
 
         var childId = id + 1;
