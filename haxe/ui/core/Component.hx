@@ -671,6 +671,13 @@ class Component extends ComponentImpl implements IValidating {
     **/
     @:dox(group = "Display tree related properties and methods")
     public function removeAllComponents(dispose:Bool = true) {
+        if (_compositeBuilder != null) {
+            var b = _compositeBuilder.removeAllComponents(dispose);
+            if (b == true) {
+                return;
+            }
+        }
+        
         if (_children != null) {
             while (_children.length > 0) {
                 _children[0].removeAllComponents(dispose);

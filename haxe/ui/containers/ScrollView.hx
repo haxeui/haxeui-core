@@ -978,6 +978,11 @@ class ScrollViewBuilder extends CompositeBuilder {
         return null;
     }
 
+    public override function removeAllComponents(dispose:Bool = true):Bool {
+        _contents.removeAllComponents(dispose);
+        return true;
+    }
+    
     public override function removeComponentAt(index:Int, dispose:Bool = true, invalidate:Bool = true):Component {
         return _contents.removeComponentAt(index, dispose, invalidate);
     }
