@@ -98,6 +98,9 @@ class ClassBuilder {
     }
 
     public function hasField(name:String, recursive:Bool = false):Bool {
+        if (classType == null) {
+            return false;
+        }
         if (recursive == true) {
             #if (haxe_ver < 4)
             // TODO: this is a really ugly haxe3 hack / workaround - once haxe4 stabalises this *MUST* be removed - its likely brittle and ill conceived!
