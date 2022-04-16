@@ -3,12 +3,12 @@ package haxe.ui.containers;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.components.Label;
 import haxe.ui.containers.HBox;
-import haxe.ui.containers.VBox;
+import haxe.ui.containers.Box;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 
 @:composite(Builder)
-class Card extends VBox {
+class Card extends Box {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
@@ -46,6 +46,7 @@ private class Builder extends CompositeBuilder {
         var titleContainer = getTitleContainer();
         var titleLabel = titleContainer.findComponent("card-title-label", Label);
         if (titleLabel == null) {
+            _card.layoutName = "vertical";
             var hbox = titleContainer.findComponent("card-title-box", HBox);
             if (hbox == null) {
                 hbox = new HBox();
