@@ -183,7 +183,7 @@ class ItemRenderer extends Box {
                 c.show();
             } else if (c != null) {
                 c.hide();
-            } else if (f != "id") {
+            } else if (f != "id" && f != "layout") {
                 try {
                     Reflect.setProperty(this, f, v);
                 } catch (e:Dynamic) {}
