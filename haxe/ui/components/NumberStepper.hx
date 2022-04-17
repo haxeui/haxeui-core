@@ -77,10 +77,14 @@ private class PosBehaviour extends DataBehaviour {
     public override function validateData() {
         var stepper = cast(_component, NumberStepper);
         var preciseValue:Null<Float> = _value;
-        if (preciseValue == null) preciseValue = stepper.min;
+        if (preciseValue == null) {
+            preciseValue = stepper.min;
+        }
         
         preciseValue = MathUtil.clamp(preciseValue, stepper.min, stepper.max);
-        if (stepper.precision != null) preciseValue = MathUtil.round(preciseValue, stepper.precision);
+        if (stepper.precision != null) {
+            preciseValue = MathUtil.round(preciseValue, stepper.precision);
+        }
         _value = preciseValue;
         
         var stringValue = StringUtil.padDecimal(preciseValue, stepper.precision);

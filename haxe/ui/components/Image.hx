@@ -93,52 +93,72 @@ private class ImageLayout extends DefaultLayout {
     }
 
     private override function resizeChildren() {
-        if (!component.hasImageDisplay()) return;
-        var image:Image = cast(_component, Image);
-        var imageDisplay = image.getImageDisplay();
-        var maxWidth:Float = usableSize.width;
-        var maxHeight:Float = usableSize.height;
-
-        if (component.autoWidth) maxWidth = -1;
-        if (_component.autoHeight) maxHeight = -1;
-
-        var scaleW:Float = maxWidth != -1 ? maxWidth / image.originalWidth : 1;
-        var scaleH:Float = maxHeight != -1 ? maxHeight / image.originalHeight : 1;
-
-        if (imageScaleMode != ScaleMode.FILL) {
-            var scale:Float;
-            switch (imageScaleMode) {
-                case ScaleMode.FIT_INSIDE: scale = (scaleW < scaleH) ? scaleW : scaleH;
-                case ScaleMode.FIT_OUTSIDE: scale = (scaleW > scaleH) ? scaleW : scaleH;
-                case ScaleMode.FIT_WIDTH: scale = scaleW;
-                case ScaleMode.FIT_HEIGHT: scale = scaleH;
-                default: scale = 1; //ScaleMode.NONE
+        if (component.hasImageDisplay()) {
+            var image:Image = cast(_component, Image);
+            var imageDisplay = image.getImageDisplay();
+            var maxWidth:Float = usableSize.width;
+            var maxHeight:Float = usableSize.height;
+            if (component.autoWidth == true) {
+                maxWidth = -1;
             }
 
-            imageDisplay.imageWidth = image.originalWidth * scale;
-            imageDisplay.imageHeight = image.originalHeight * scale;
-        } else {
-            imageDisplay.imageWidth = image.originalWidth * scaleW;
-            imageDisplay.imageHeight = image.originalHeight * scaleH;
+            if (_component.autoHeight == true) {
+                maxHeight = -1;
+            }
+
+            var scaleW:Float = maxWidth != -1 ? maxWidth / image.originalWidth : 1;
+            var scaleH:Float = maxHeight != -1 ? maxHeight / image.originalHeight : 1;
+
+            if (imageScaleMode != ScaleMode.FILL) {
+                var scale:Float;
+                switch (imageScaleMode) {
+                    case ScaleMode.FIT_INSIDE:
+                        scale = (scaleW < scaleH) ? scaleW : scaleH;
+                    case ScaleMode.FIT_OUTSIDE:
+                        scale = (scaleW > scaleH) ? scaleW : scaleH;
+                    case ScaleMode.FIT_WIDTH:
+                        scale = scaleW;
+                    case ScaleMode.FIT_HEIGHT:
+                        scale = scaleH;
+                    default:    //ScaleMode.NONE
+                        scale = 1;
+                }
+
+                imageDisplay.imageWidth = image.originalWidth * scale;
+                imageDisplay.imageHeight = image.originalHeight * scale;
+            } else {
+                imageDisplay.imageWidth = image.originalWidth * scaleW;
+                imageDisplay.imageHeight = image.originalHeight * scaleH;
+            }
         }
     }
 
     private override function repositionChildren() {
-        if (!component.hasImageDisplay()) return;
+        if (component.hasImageDisplay()) {
+            var image:Image = cast(_component, Image);
+            var imageDisplay:ImageDisplay = _component.getImageDisplay();
 
-        var image:Image = cast(_component, Image);
-        var imageDisplay:ImageDisplay = _component.getImageDisplay();
+            switch (image.imageHorizontalAlign) {
+                case HorizontalAlign.CENTER:
+                    imageDisplay.left = (_component.componentWidth - imageDisplay.imageWidth) / 2;  //TODO
 
-        switch (image.imageHorizontalAlign) {
-            case HorizontalAlign.CENTER: imageDisplay.left = (_component.componentWidth - imageDisplay.imageWidth) / 2;  //TODO
-            case HorizontalAlign.RIGHT: imageDisplay.left = _component.componentWidth - imageDisplay.imageWidth - paddingRight;
-            case HorizontalAlign.LEFT: imageDisplay.left = paddingLeft;
-        }
+                case HorizontalAlign.RIGHT:
+                    imageDisplay.left = _component.componentWidth - imageDisplay.imageWidth - paddingRight;
 
-        switch (image.imageVerticalAlign) {
-            case VerticalAlign.CENTER: imageDisplay.top = (_component.componentHeight - imageDisplay.imageHeight) / 2;  //TODO
-            case VerticalAlign.BOTTOM: imageDisplay.top = _component.componentHeight - imageDisplay.imageHeight - paddingBottom;
-            case VerticalAlign.TOP: imageDisplay.top = paddingTop;
+                case HorizontalAlign.LEFT:
+                    imageDisplay.left = paddingLeft;
+            }
+
+            switch (image.imageVerticalAlign) {
+                case VerticalAlign.CENTER:
+                    imageDisplay.top = (_component.componentHeight - imageDisplay.imageHeight) / 2;  //TODO
+
+                case VerticalAlign.BOTTOM:
+                    imageDisplay.top = _component.componentHeight - imageDisplay.imageHeight - paddingBottom;
+
+                case VerticalAlign.TOP:
+                    imageDisplay.top = paddingTop;
+            }
         }
     }
 
@@ -153,28 +173,32 @@ private class ImageLayout extends DefaultLayout {
 
     public override function refresh() {
         super.refresh();
+
         updateClipRect();
     }
 
     private function updateClipRect() {
-        if (!component.hasImageDisplay()) return;
-        var usz:Size = usableSize;
-        var imageDisplay:ImageDisplay = component.getImageDisplay();
-        var rc:Rectangle = imageDisplay.imageClipRect;
+        if (component.hasImageDisplay()) {
+            var usz:Size = usableSize;
+            var imageDisplay:ImageDisplay = component.getImageDisplay();
+            var rc:Rectangle = imageDisplay.imageClipRect;
 
-        if (imageDisplay.imageWidth > usz.width || imageDisplay.imageHeight > usz.height) {
-            if (rc == null) rc = new Rectangle();
+            if (imageDisplay.imageWidth > usz.width
+                || imageDisplay.imageHeight > usz.height) {
+                if (rc == null) {
+                    rc = new Rectangle();
+                }
 
-            rc.top = paddingLeft;
-            rc.left = paddingTop;
-            rc.width = usz.width;
-            rc.height = usz.height;
-        } else {
-            rc = null;
+                rc.top = paddingLeft;
+                rc.left = paddingTop;
+                rc.width = usz.width;
+                rc.height = usz.height;
+            } else {
+                rc = null;
+            }
+
+            imageDisplay.imageClipRect = rc;
         }
-
-        imageDisplay.imageClipRect = rc;
-        
     }
 }
 //***********************************************************************************************************
@@ -200,8 +224,9 @@ private class ResourceBehaviour extends DataBehaviour {
                 }
 
                 var image:Image = cast(_component, Image);
-                if (image == null) return;
-
+                if (image == null) {
+                    return;
+                }
                 var display:ImageDisplay = image.getImageDisplay();
                 if (display != null) {
                     display.imageInfo = imageInfo;
@@ -229,13 +254,15 @@ private class Builder extends CompositeBuilder {
         super(image);
         _image = image;
         _image.registerEvent(UIEvent.SHOWN, function(_) {
-            if (_image.parentComponent == null) return;
-            _image.parentComponent.invalidateComponentLayout();
+            if (_image.parentComponent != null) {
+                _image.parentComponent.invalidateComponentLayout();
+            }
         });
     }
 
     public override function applyStyle(style:Style) {
-        if (style.resource == null) return;
-        _image.resource = style.resource;
+        if (style.resource != null) {
+            _image.resource = style.resource;
+        }
     }
 }

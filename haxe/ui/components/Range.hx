@@ -122,9 +122,15 @@ private class AllowInteraction extends DefaultBehaviour {
     }
 
     public override function set(value:Variant) {
-        if (_component.native == true) return;
+        if (_component.native == true) {
+            return;
+        }
 
-        value ? _component.registerInternalEvents(Events) : _component.unregisterInternalEvents();
+        if (value == true) {
+            _component.registerInternalEvents(Events);
+        } else {
+            _component.unregisterInternalEvents();
+        }
     }
 }
 

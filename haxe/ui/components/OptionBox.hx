@@ -43,16 +43,17 @@ private class SelectedBehaviour extends DataBehaviour {
 @:dox(hide) @:noCompletion
 private class SelectedOptionBehaviour extends DataBehaviour {
     public override function get():Variant {
-        var arr:Array<OptionBox> = OptionBoxGroups.instance.get(cast(_component, OptionBox).componentGroup);
+        var optionbox:OptionBox = cast(_component, OptionBox);
+        var arr:Array<OptionBox> = OptionBoxGroups.instance.get(optionbox.componentGroup);
         var selectionOption:OptionBox = null;
-        if (arr == null) return selectionOption;
-
-        for (test in arr) {
-            if (!test.selected) continue;
-            selectionOption = test;
-            break; 
+        if (arr != null) {
+            for (test in arr) {
+                if (test.selected == true) {
+                    selectionOption = test;
+                    break;
+                }
+            }
         }
-        
         return selectionOption;
     }
 }
