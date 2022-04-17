@@ -411,7 +411,7 @@ private class ClassicLayout extends DefaultLayout {
     }
     
     private override function get_borderSize():Float {
-        var n = super.get_borderSize() + 1;
+        var n = super.get_borderSize();
         return n;
     }
 }
