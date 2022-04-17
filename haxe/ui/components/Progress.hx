@@ -34,13 +34,11 @@ class Progress extends Range implements IDirectionalComponent {
 @:dox(hide) @:noCompletion
 private class Pos extends DefaultBehaviour {
     public override function get():Variant {
-        var progress = cast(_component, Progress);
-        return progress.end;
+        return cast(_component, Progress).end;
     }
 
     public override function set(value:Variant) {
-        var progress = cast(_component, Progress);
-        progress.end = value;
+        cast(_component, Progress).end = value;
     }
 }
 
@@ -64,18 +62,10 @@ private class Indeterminate extends ValueBehaviour {
     }
 
     public override function set(value:Variant) {
-        if (value == _value) {
-            return;
-        }
+        if (value == _value) return;
 
         super.set(value);
-
-        if (value == false) {
-            _component.removeClass(":indeterminate");
-        } else {
-            _component.addClass(":indeterminate");
-        }
-
+        !value ? _component.removeClass(":indeterminate") : _component.addClass(":indeterminate");
     }
 
     public override function detatch() {

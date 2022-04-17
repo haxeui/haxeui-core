@@ -59,7 +59,7 @@ class Label extends Component {
 @:dox(hide) @:noCompletion
 private class LabelLayout extends DefaultLayout {
     private override function resizeChildren() {
-        if (component.autoWidth == false) {
+        if (!component.autoWidth) {
             component.getTextDisplay().width = component.componentWidth - paddingLeft - paddingRight;
 
             var wordWrap = true;
@@ -85,7 +85,7 @@ private class LabelLayout extends DefaultLayout {
             component.getTextDisplay().width = component.getTextDisplay().textWidth;
         }
 
-        if (component.autoHeight == true) {
+        if (component.autoHeight) {
             component.getTextDisplay().height = component.getTextDisplay().textHeight;
         } else {
             component.getTextDisplay().height = component.height;
@@ -93,10 +93,9 @@ private class LabelLayout extends DefaultLayout {
     }
 
     private override function repositionChildren() {
-        if (component.hasTextDisplay() == true) {
-            component.getTextDisplay().left = paddingLeft;
-            component.getTextDisplay().top = paddingTop;
-        }
+        if (!component.hasTextDisplay()) return;
+        component.getTextDisplay().left = paddingLeft;
+        component.getTextDisplay().top = paddingTop;
     }
 
     public override function calcAutoSize(exclusions:Array<Component> = null):Size {
@@ -109,9 +108,7 @@ private class LabelLayout extends DefaultLayout {
     }
 
     private function textAlign(child:Component):String {
-        if (child == null || child.style == null || child.style.textAlign == null) {
-            return "left";
-        }
+        if (child == null || child.style == null || child.style.textAlign == null) return "left";
         return child.style.textAlign;
     }
 }
@@ -154,14 +151,14 @@ private class Builder extends CompositeBuilder {
     }
 
     public override function applyStyle(style:Style) {
-        if (_label.hasTextDisplay() == true) {
-            _label.getTextDisplay().textStyle = style;
+        if (!_label.hasTextDisplay()) return;
+        
+        _label.getTextDisplay().textStyle = style;
 
-            if ((style.contentType == "auto" || style.contentType == "html") && _label.getTextDisplay().supportsHtml && isHtml(Std.string(_component.text))) {
-                _label.htmlText = _label.text;
-            }
+        if ((style.contentType == "auto" || style.contentType == "html") && _label.getTextDisplay().supportsHtml && isHtml(Std.string(_component.text))) {
+            _label.htmlText = _label.text;
         }
-
+        
     }
 
     public static inline function isHtml(v:String):Bool {
@@ -170,9 +167,7 @@ private class Builder extends CompositeBuilder {
     
     public override function get_isComponentClipped():Bool {
         var componentClipRect = _component.componentClipRect;
-        if (componentClipRect == null) {
-            return false;
-        }
+        if (componentClipRect == null) return false;
         
         return _label.getTextDisplay().measureTextWidth() > componentClipRect.width;
     }

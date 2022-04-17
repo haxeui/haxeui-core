@@ -66,14 +66,9 @@ private class DataSourceBehaviour extends DefaultBehaviour {
 private class SelectedIndexBehaviour extends DataBehaviour {
     private override function validateData() {
         var stepper:OptionStepper = cast(_component, OptionStepper);
-        var ds = stepper.dataSource;
-        if (ds == null) {
-            return;
-        }
-        var v:Dynamic = ds.get(_value);
-        if (v == null) {
-            return;
-        }
+        if (stepper.dataSource == null) return;
+        var v:Dynamic = stepper.dataSource.get(_value);
+        if (v == null) return;
         
         #if hl
         if (Reflect.hasField(v, "value")) {
@@ -89,9 +84,7 @@ private class SelectedIndexBehaviour extends DataBehaviour {
         }
         #end
         
-        var value:Label = stepper.findComponent("value", Label);
-        value.text = v;
-        
+        stepper.findComponent("value", Label).text = v; 
     }
 }
 
