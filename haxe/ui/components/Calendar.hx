@@ -26,16 +26,46 @@ class CalendarEvent extends UIEvent {
     }
 }
 
+/**
+ * A grid style calendar display, that allows ou to scroll date, month and year.
+ */
 @:composite(Events, Builder, Layout)
 class Calendar extends Grid {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
+
+    /**
+     * Most of the time the same as `selectedDate`, But its always visible to the calendar.
+     * 
+     * That means, if you move the calendar to the next month, the `date` will be the first day of the next month,
+     * because the `selectedDate` is no longer visible.
+     */
     @:clonable @:behaviour(DateBehaviour)                   public var date:Date;
+
+    /**
+     * The selected date.
+     */
     @:clonable @:behaviour(SelectedDateBehaviour)           public var selectedDate:Date;
+
+    /**
+     * Moves the calendar a month backwards.
+     */
     @:call(PreviousMonthBehaviour)                          public function previousMonth();
+
+    /**
+     * Moves the calendar a month forward.
+     */
     @:call(NextMonthBehaviour)                              public function nextMonth();
+
+    /**
+     * Moves the calendar a year backwards.
+     */
     @:call(PreviousYearBehaviour)                           public function previousYear();
+
+    /**
+     * Moves the calendar a year forward.
+     */
     @:call(NextYearBehaviour)                               public function nextYear();
 
     //***********************************************************************************************************

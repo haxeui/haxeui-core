@@ -13,13 +13,30 @@ import haxe.ui.geom.Size;
 import haxe.ui.layouts.HorizontalLayout;
 import haxe.ui.styles.Style;
 
+/**
+ * A basic checkbox component.
+ */
 @:composite(Events, CheckBoxBuilder, CheckBoxLayout)
 class CheckBox extends InteractiveComponent {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
+
+    /**
+     * The text for the label of this checkbox
+     */
     @:clonable @:behaviour(TextBehaviour)              public var text:String;
+
+    /**
+     * Whether this checkbox is checked or not
+     */
     @:clonable @:behaviour(SelectedBehaviour)          public var selected:Bool;
+
+    /**
+     * similar to `selected`, and for casual use you should use `selected` instead.
+     * 
+     * `value` is a universal way to access the value a component is based on.
+     */
     @:clonable @:value(selected)                       public var value:Dynamic;
 }
 

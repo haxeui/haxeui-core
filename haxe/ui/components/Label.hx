@@ -8,19 +8,48 @@ import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.styles.Style;
 import haxe.ui.geom.Size;
 
+/**
+ * A way to display static (uneditable) text.
+ */
 @:composite(Builder, LabelLayout)
 class Label extends Component {
     //***********************************************************************************************************
     // Styles
     //***********************************************************************************************************
+    /**
+     * The alignment of the text inside the label. can be one of:
+     * 
+     *  - "left"
+     *  - "right"
+     *  - "center"
+     *  - "justify"
+     */
     @:style(layout)                             public var textAlign:Null<String>;
+
+    /**
+     * Wether or not the label should escape text to the next line if its wider then the width of the label.
+     */
     @:style(layout)                             public var wordWrap:Null<Bool>;
 
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
+
+    /**
+     * The actual text that is displayed inside the label.
+     */
     @:clonable @:behaviour(TextBehaviour)       public var text:String;
+
+    /**
+     * A string containing HTML markup to be displayed inside the text field.
+     */
     @:clonable @:behaviour(HtmlTextBehaviour)   public var htmlText:String;
+
+    /**
+     * The text displayed inside of the label.
+     * 
+     * `value` is used as a universal way to access the value a component is based on. in this case its the text inside of the label.
+     */
     @:clonable @:value(text)                    public var value:Dynamic;
 }
 

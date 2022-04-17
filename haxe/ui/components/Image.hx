@@ -17,17 +17,58 @@ import haxe.ui.styles.Style;
 import haxe.ui.util.ImageLoader;
 import haxe.ui.util.Variant;
 
+/**
+ * Displays an image from either a path, resource id or raw image data.
+ */
 @:composite(ImageLayout, Builder)
 class Image extends Component {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
+
+    /**
+     * The resource from which the image is loaded. This can be:
+     * 
+     *  - A path to a file
+     *  - A web address
+     *  - A resource id
+     *  - Raw image data
+     */
     @:clonable @:behaviour(ResourceBehaviour)                              public var resource:Variant;
+
+    /**
+     * The path to the image file/data. Similar to the resource property.
+     * 
+     * `value` is a universal way to access the value a component is based on. in this
+     * case its the `resource` property, which can appear in "multiple formats". For more information, check out the `resource` property.
+     */
     @:clonable @:value(resource)                                           public var value:Dynamic;
+
+    /**
+     * The image scaling mode to use, defaults to `ScaleMode.FILL`.
+     */
     @:clonable @:behaviour(InvalidatingBehaviour, ScaleMode.FILL)          public var scaleMode:ScaleMode;
+
+    /**
+     * The horizontal alignment of the image, defaults to `HorizontalAlign.CENTER`. Used
+     * when the width property of the image is larger than the width of the actual graphic.
+     */
     @:clonable @:behaviour(InvalidatingBehaviour, HorizontalAlign.CENTER)  public var imageHorizontalAlign:HorizontalAlign;
+
+    /**
+     * The vertical alignment of the image, defaults to `VerticalAlign.CENTER`. Used
+     * when the height property of the image is larger than the height of the actual graphic.
+     */
     @:clonable @:behaviour(InvalidatingBehaviour, VerticalAlign.CENTER)    public var imageVerticalAlign:VerticalAlign;
+
+    /**
+     * The original width of the image graphic.
+     */
     @:clonable @:behaviour(DefaultBehaviour)                               public var originalWidth:Float;
+
+    /**
+     * The original height of the image graphic.
+     */
     @:clonable @:behaviour(DefaultBehaviour)                               public var originalHeight:Float;
 }
 
