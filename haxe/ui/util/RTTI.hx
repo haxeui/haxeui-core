@@ -72,6 +72,10 @@ class RTTI {
     public static function getClassInfo(className:String):RTTIEntry {
         load();
         
+        if (classInfo == null) {
+            return null;
+        }
+        
         className = className.toLowerCase();
         
         var entry = classInfo.get(className);
