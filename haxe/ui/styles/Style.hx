@@ -344,6 +344,10 @@ class Style {
                     fontName = ValueTools.string(v.value);
                 case "font-size":
                     fontSize = ValueTools.calcDimension(v.value);
+                case "font-weight":
+                    if (ValueTools.string(v.value) != null) {
+                        fontBold = ValueTools.string(v.value).toLowerCase() == "bold";
+                    }
                 case "font-bold":
                     fontBold = ValueTools.bool(v.value);
                 case "font-underline":
