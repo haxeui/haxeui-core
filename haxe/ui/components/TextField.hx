@@ -13,18 +13,67 @@ import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.styles.Style;
 import haxe.ui.util.Variant;
 
+
+/**
+ * A single line text input box. for multiline text input use `TextArea`.
+ */
 @:composite(Events, Builder, TextFieldLayout)
 class TextField extends InteractiveComponent {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
+
+    /**
+     * Whether or not the text inside the text field is fully visible,
+     * or displayed as a password, with every character replaced by a `*`.
+     */
     @:clonable @:behaviour(PasswordBehaviour)          public var password:Bool;
+
+    /**
+     * The maximum number of characters that can be entered in the text field.  
+     * **Note** - this doesnt apply to text added via code.
+     */
     @:clonable @:behaviour(MaxCharsBehaviour, -1)      public var maxChars:Int;
+
+    /**
+     * A string, containing a pattern of characters that the user can enter. When unspecified, the text field accepts all characters.
+     * 
+     * Usage:
+     * 
+     *  - type out lone characters to include them specifically - `"abcde047"`
+     *  - use the `-` character to represent a range of characters - `"a-zA-Z0-9"` will accept characters from `a` to `z`, `A` to `Z` and `0` to `9`.
+     *  - prefix the string with a `^` for it to only accept characters that do not match the string's pattern - `"^abc"` will accept any character except `a`, `b` and `c`.
+     */
     @:clonable @:behaviour(RestrictCharsBehaviour)     public var restrictChars:String;
+
+    /**
+     * Displayed only when the text is empty.
+     */
     @:clonable @:behaviour(PlaceholderBehaviour)       public var placeholder:String;
+
+    /**
+     * The actual text that is displayed inside the text field.
+     */
     @:clonable @:behaviour(TextBehaviour)              public var text:String;
+
+    /**
+     * A string containing HTML markup to be displayed inside the text field.
+     */
     @:clonable @:behaviour(HtmlTextBehaviour)          public var htmlText:String;
+
+    /**
+     * The text displayed inside of the stepper.
+     * 
+     * `value` is used as a universal way to access the value a component is based on. in this case its the text inside of the text field.
+     */
     @:clonable @:value(text)                           public var value:Dynamic;
+
+    /**
+     * An icon that is displayed to the left of the text field.
+     *
+     * To display an icon, set the `icon` property to a path to an image file.
+     * If no icon is set, the text field will be displayed without any icon. The default is no icon.
+     */
     @:clonable @:behaviour(IconBehaviour)              public var icon:String;
 }
 
