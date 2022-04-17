@@ -16,27 +16,32 @@ class Style {
     @:optional public var left:Null<Float>;
     @:optional public var top:Null<Float>;
 
-    @:optional public var autoWidth:Null<Bool>;
-    @:optional public var width:Null<Float>;
-    @:optional public var percentWidth:Null<Float>;
-    @:optional public var initialWidth:Null<Float>;
-    @:optional public var initialPercentWidth:Null<Float>;
-    @:optional public var minWidth:Null<Float>;
-    @:optional public var minPercentWidth:Null<Float>;
-    @:optional public var maxWidth:Null<Float>;
-    @:optional public var maxPercentWidth:Null<Float>;
+    /** Whether or not the object's width is decided by its children's width **/    @:optional public var autoWidth:Null<Bool>;
+    /** A hard-coded value for the object's width **/                               @:optional public var width:Null<Float>;
+    /** Sets the width of the object to `X` percent of the parent's width **/       @:optional public var percentWidth:Null<Float>;
+    /** The thinest this object can get **/                                         @:optional public var minWidth:Null<Float>;
+    /** The thinest this object can get, by percentage of its parent's width**/     @:optional public var minPercentWidth:Null<Float>;
+    /** The widest this object can get **/                                          @:optional public var maxWidth:Null<Float>;
+    /** The widest this object can get, by percentage of its parent's width**/      @:optional public var maxPercentWidth:Null<Float>;
+    /** The starting, automatically assigned `width` of this object **/             @:optional public var initialWidth:Null<Float>;
+    /** The starting, automatically assigned `percentWidth` of this object **/      @:optional public var initialPercentWidth:Null<Float>;
 
-    @:optional public var autoHeight:Null<Bool>;
-    @:optional public var height:Null<Float>;
-    @:optional public var percentHeight:Null<Float>;
-    @:optional public var initialHeight:Null<Float>;
-    @:optional public var initialPercentHeight:Null<Float>;
-    @:optional public var minHeight:Null<Float>;
-    @:optional public var minPercentHeight:Null<Float>;
-    @:optional public var maxHeight:Null<Float>;
-    @:optional public var maxPercentHeight:Null<Float>;
+    /** Whether or not the object's height is decided by its children's height **/  @:optional public var autoHeight:Null<Bool>;
+    /** A hard-coded value for the object's height **/                              @:optional public var height:Null<Float>;
+    /** sets the width of the object to `X` percent of the parent's height **/      @:optional public var percentHeight:Null<Float>;  
+    /** The shorteset this object can get **/                                       @:optional public var minHeight:Null<Float>;
+    /** The shortest this object can get, by percentage of its parent's height **/  @:optional public var minPercentHeight:Null<Float>;
+    /** The tallest this object can get **/                                         @:optional public var maxHeight:Null<Float>;
+    /** The tallest this object can get, by percentage of its parent's height **/   @:optional public var maxPercentHeight:Null<Float>;
+    /** The starting, automatically assigned `height` of this object **/            @:optional public var initialHeight:Null<Float>;
+    /** The starting, automatically assigned `heightWidth` of this object **/       @:optional public var initialPercentHeight:Null<Float>;
 
-    @:optional public var padding(default, set):Null<Float>;
+    /** The gap between the container's children, on all sides **/                  @:optional public var padding(default, set):Null<Float>;
+    /** The gap between the container's children, on their top **/                  @:optional public var paddingTop:Null<Float>;
+    /** The gap between the container's children, on their left side **/            @:optional public var paddingLeft:Null<Float>;
+    /** The gap between the container's children, on their right side **/           @:optional public var paddingRight:Null<Float>;
+    /** The gap between the container's children, on their bottom **/               @:optional public var paddingBottom:Null<Float>;
+
     private function set_padding(value:Null<Float>):Null<Float> {
         paddingTop = value;
         paddingLeft = value;
@@ -44,25 +49,21 @@ class Style {
         paddingBottom = value;
         return value;
     }
-    @:optional public var paddingTop:Null<Float>;
-    @:optional public var paddingLeft:Null<Float>;
-    @:optional public var paddingRight:Null<Float>;
-    @:optional public var paddingBottom:Null<Float>;
+    
+    /** The amount of offseting to apply for text from the top in pixels **/        @:optional public var marginTop:Null<Float>;
+    /** The amount of offseting to apply for text from the left in pixels **/       @:optional public var marginLeft:Null<Float>;
+    /** The amount of offseting to apply for text from the right in pixels **/      @:optional public var marginRight:Null<Float>;
+    /** The amount of offseting to apply for text from the bottom in pixels **/     @:optional public var marginBottom:Null<Float>;
 
-    @:optional public var marginTop:Null<Float>;
-    @:optional public var marginLeft:Null<Float>;
-    @:optional public var marginRight:Null<Float>;
-    @:optional public var marginBottom:Null<Float>;
+    /** The anount of spacing between children horizontally, in pixels **/          @:optional public var horizontalSpacing:Null<Float>;
+    /** The anount of spacing between children vertically, in pixels **/            @:optional public var verticalSpacing:Null<Float>;
 
-    @:optional public var horizontalSpacing:Null<Float>;
-    @:optional public var verticalSpacing:Null<Float>;
+    /** A color to tint the object with **/                                         @:optional public var color:Null<Int>;
 
-    @:optional public var color:Null<Int>;
-
-    @:optional public var backgroundColor:Null<Int>;
+    /** The color of the object's background **/                                    @:optional public var backgroundColor:Null<Int>;
+    /** A value between 0 and 1 deciding the object's background transparency **/   @:optional public var backgroundOpacity:Null<Float>;
     @:optional public var backgroundColorEnd:Null<Int>;
     @:optional public var backgroundGradientStyle:Null<String>;
-    @:optional public var backgroundOpacity:Null<Float>;
 
     @:optional public var backgroundImage:Null<String>;
     @:optional public var backgroundImageRepeat:Null<String>;
@@ -77,40 +78,40 @@ class Style {
     @:optional public var backgroundImageSliceBottom:Null<Float>;
     @:optional public var backgroundImageSliceRight:Null<Float>;
 
-    @:optional public var borderColor:Null<Int>;
-    @:optional public var borderTopColor:Null<Int>;
-    @:optional public var borderLeftColor:Null<Int>;
-    @:optional public var borderBottomColor:Null<Int>;
-    @:optional public var borderRightColor:Null<Int>;
-    @:optional public var borderSize:Null<Float>;
-    @:optional public var borderTopSize:Null<Float>;
-    @:optional public var borderLeftSize:Null<Float>;
-    @:optional public var borderBottomSize:Null<Float>;
-    @:optional public var borderRightSize:Null<Float>;
-    @:optional public var borderRadius:Null<Float>;
-    @:optional public var borderRadiusTopLeft:Null<Float>;
-    @:optional public var borderRadiusTopRight:Null<Float>;
-    @:optional public var borderRadiusBottomLeft:Null<Float>;
-    @:optional public var borderRadiusBottomRight:Null<Float>;
-    @:optional public var borderOpacity:Null<Float>;
-    @:optional public var borderStyle:Null<String>;
+    /** The color of the border **/                                                 @:optional public var borderColor:Null<Int>;
+    /** The color of the upper side of the border **/                               @:optional public var borderTopColor:Null<Int>;
+    /** The color of the left side of the border **/                                @:optional public var borderLeftColor:Null<Int>;
+    /** The color of the lower side of the border **/                               @:optional public var borderBottomColor:Null<Int>;
+    /** The color of the righ side of the border **/                                @:optional public var borderRightColor:Null<Int>;
+    /** The size of the border, in pixels **/                                       @:optional public var borderSize:Null<Float>;
+    /** The size of the upper of the border, in pixels **/                          @:optional public var borderTopSize:Null<Float>;
+    /** The size of the left side of the border, in pixels **/                      @:optional public var borderLeftSize:Null<Float>;
+    /** The size of the lower side of the border, in pixels **/                     @:optional public var borderBottomSize:Null<Float>;
+    /** The size of the right side of the border, in pixels **/                     @:optional public var borderRightSize:Null<Float>;
+    /** The amount of rounding to apply to the border **/                           @:optional public var borderRadius:Null<Float>;
+    /** The amount of rounding to apply to the top-left of the border **/           @:optional public var borderRadiusTopLeft:Null<Float>;
+    /** The amount of rounding to apply to the top-right of the border **/          @:optional public var borderRadiusTopRight:Null<Float>;
+    /** The amount of rounding to apply to the bottom-left of the border **/        @:optional public var borderRadiusBottomLeft:Null<Float>;
+    /** The amount of rounding to apply to the bottom-right of the border **/       @:optional public var borderRadiusBottomRight:Null<Float>;
+    /** A value between 0 and 1 deciding the object's border transparency **/       @:optional public var borderOpacity:Null<Float>;
+    /** The style to use for this border's design **/                               @:optional public var borderStyle:Null<String>;
 
-    @:optional public var icon:Null<String>;
-    @:optional public var iconPosition:Null<String>;
+    /** A path to an image file to be shown as an icon inside of the object **/     @:optional public var icon:Null<String>;
+    /** The position of the icon inside the object - `left`, `right`... **/         @:optional public var iconPosition:Null<String>;
 
-    @:optional public var horizontalAlign:Null<String>;
-    @:optional public var verticalAlign:Null<String>;
-    @:optional public var textAlign:Null<String>;
+    /** Alignment to use for this object: `right`, `center`, `left` **/             @:optional public var horizontalAlign:Null<String>;
+    /** Alignment to use for this object: `top`, `center`, `bottom` **/             @:optional public var verticalAlign:Null<String>;
+    /** Alignment to use for this object: `right`, `center`, `left`, `justify` **/  @:optional public var textAlign:Null<String>;
 
-    @:optional public var opacity:Null<Float>;
+    /** A value between 0 and 1, deciding the transparency of this object **/       @:optional public var opacity:Null<Float>;
     @:optional public var clip:Null<Bool>;
     @:optional public var native:Null<Bool>;
 
-    @:optional public var fontName:Null<String>;
-    @:optional public var fontSize:Null<Float>;
-    @:optional public var fontBold:Null<Bool>;
-    @:optional public var fontUnderline:Null<Bool>;
-    @:optional public var fontItalic:Null<Bool>;
+    /** A path to a font file to be used for the text inside the object **/         @:optional public var fontName:Null<String>;
+    /** The visual size of the font **/                                             @:optional public var fontSize:Null<Float>;
+    /** Whether or not this text should use the **bold** variation of it's font **/ @:optional public var fontBold:Null<Bool>;
+    /** Whether or not to underline the text **/ @:optional public var fontUnderline:Null<Bool>;
+    /** Whether or not this text should use the *italic* variation of it's font **/ @:optional public var fontItalic:Null<Bool>;
 
     @:optional public var cursor:Null<String>;
     @:optional public var hidden:Null<Bool>;
@@ -129,18 +130,18 @@ class Style {
     @:optional public var contentType:String;
     @:optional public var direction:String;
 
-    @:optional public var contentWidth:Null<Float>;
-    @:optional public var contentWidthPercent:Null<Float>;
-    @:optional public var contentHeight:Null<Float>;
-    @:optional public var contentHeightPercent:Null<Float>;
+    /** The width of the children inside this container **/                         @:optional public var contentWidth:Null<Float>;
+    /** The width of the children, in relation to the width of the container **/    @:optional public var contentWidthPercent:Null<Float>;
+    /** The height of the children inside this container **/                        @:optional public var contentHeight:Null<Float>;
+    /** The width of the children, in relation to the width of the container **/    @:optional public var contentHeightPercent:Null<Float>;
     
-    @:optional public var wordWrap:Null<Bool>;
+    /** Whether or not the text inside this object should be wrapped **/            @:optional public var wordWrap:Null<Bool>;
 
     @:optional public var imageRendering:String;
 
     @:optional public var layout:String;
     
-    @:optional public var borderType(get, null):StyleBorderType;
+    /** The type of the border. can be `Compound`, `Full` or `None` **/             @:optional public var borderType(get, null):StyleBorderType;
     private function get_borderType():StyleBorderType {
         var t = StyleBorderType.Compound;
         if (borderLeftSize != null && borderLeftSize > 0 && borderLeftSize == borderRightSize && borderLeftSize == borderBottomSize && borderLeftSize == borderTopSize) { // full border
@@ -151,12 +152,12 @@ class Style {
         return t;
     }
 
-    @:optional public var hasBorder(get, null):Bool;
+    /** Whether or not this object has a visible border **/                         @:optional public var hasBorder(get, null):Bool;
     private function get_hasBorder():Bool {
         return borderType != StyleBorderType.None;
     }
     
-    @:optional public var fullBorderSize(get, null):Null<Float>;
+    /** The size of the border. should only be used when `borderType` is `Full` **/ @:optional public var fullBorderSize(get, null):Null<Float>;
     private function get_fullBorderSize():Null<Float> {
         if (borderType == StyleBorderType.Full) {
             return borderLeftSize;

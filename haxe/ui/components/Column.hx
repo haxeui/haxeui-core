@@ -8,12 +8,19 @@ import haxe.ui.events.SortEvent;
 
 @:composite(Events)
 class Column extends Button {
+
     public function new() {
         super();
     }
 
+    /**
+     * The field on which the sortings will be based on.
+     */
     public var sortField:String;
     
+    /**
+     * Whether or not this column should allow sorting
+     */
     public var sortable(get, set):Bool;
     private function get_sortable():Bool {
         return hasClass("sortable");
@@ -28,6 +35,14 @@ class Column extends Button {
     }
     
     private var _sortDirection:String = null;
+
+    /**
+     * When sorting is enabled, this is the direction of the sort - can be either:
+     * 
+     *  - `SortDirection.ASCENDING`, `"asc"`
+     *  - `SortDirection.DESCENDING`, `"desc"`
+     *
+     */
     public var sortDirection(get, set):SortDirection;
     private function get_sortDirection():String {
         return _sortDirection;
