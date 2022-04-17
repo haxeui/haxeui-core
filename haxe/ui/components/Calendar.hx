@@ -26,16 +26,36 @@ class CalendarEvent extends UIEvent {
     }
 }
 
+/**
+ * A grid style calendar display, that allows ou to scroll date, month and year.
+ */
 @:composite(Events, Builder, Layout)
 class Calendar extends Grid {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
+
     @:clonable @:behaviour(DateBehaviour)                   public var date:Date;
     @:clonable @:behaviour(SelectedDateBehaviour)           public var selectedDate:Date;
+
+    /**
+     * Moves the calendar a month backwards.
+     */
     @:call(PreviousMonthBehaviour)                          public function previousMonth();
+
+    /**
+     * Moves the calendar a month forward.
+     */
     @:call(NextMonthBehaviour)                              public function nextMonth();
+
+    /**
+     * Moves the calendar a year backwards.
+     */
     @:call(PreviousYearBehaviour)                           public function previousYear();
+
+    /**
+     * Moves the calendar a year forward.
+     */
     @:call(NextYearBehaviour)                               public function nextYear();
 
     //***********************************************************************************************************
