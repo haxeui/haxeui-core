@@ -387,6 +387,7 @@ private class ClassicLayout extends DefaultLayout {
         var inc = findComponent("inc", Button);
         
         var u = usableSize;
+        u.height -= borderSize * 2;
         
         deinc.height = u.height / 2;
         value.width = u.width - deinc.width;
@@ -399,9 +400,10 @@ private class ClassicLayout extends DefaultLayout {
         var inc = findComponent("inc", Button);
         
         var u = usableSize;
+        u.height -= borderSize * 2;
         
         deinc.left = u.width - deinc.width - paddingRight - borderSize;
-        deinc.top = u.height - inc.height - paddingBottom - borderSize + marginTop(deinc);
+        deinc.top = u.height - inc.height - paddingBottom - borderSize + marginTop(deinc) + (borderSize * 2);
         
         value.left = paddingLeft;
         value.top = paddingTop + marginTop(value);
