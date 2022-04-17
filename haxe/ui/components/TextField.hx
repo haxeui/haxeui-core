@@ -62,7 +62,7 @@ class TextField extends InteractiveComponent {
     @:clonable @:behaviour(HtmlTextBehaviour)          public var htmlText:String;
 
     /**
-     * The text displayed inside of the stepper.
+     * The text displayed inside of the `TextField`.
      * 
      * `value` is used as a universal way to access the value a component is based on. in this case its the text inside of the text field.
      */
