@@ -20,14 +20,52 @@ import haxe.ui.util.MathUtil;
 import haxe.ui.util.StringUtil;
 import haxe.ui.util.Timer;
 
+/**
+ * A normal stepper that can be used to increment or decrement a number with the 
+ * visual arrow buttons, arrow keys or by normally typing in the stepper's text field.
+ */
 @:composite(Events, Builder)
 class NumberStepper extends InteractiveComponent {
+
+    /**
+     * The actual value of the number stepper.
+     */
     @:clonable @:behaviour(PosBehaviour, 0)             public var pos:Null<Float>;
+
+    /**
+     * The number displayed inside of the stepper.
+     * 
+     * `value` is used as a universal way to access the value a component is based on. in this case its the number inside of the stepper.
+     */
     @:clonable @:value(pos)                             public var value:Dynamic;
+
+    /**
+     * The amount by which the value is increased or decreased when the user presses the up or down button.
+     */
     @:clonable @:behaviour(DefaultBehaviour, 1)         public var step:Float;
+
+    /**
+     * The Highest value this stepper can get to, even when set through code.
+     */
     @:clonable @:behaviour(DefaultBehaviour, null)      public var max:Null<Float>;
+
+    /**
+     * The lowest value this stepper can get to, even when set through code.
+     */
     @:clonable @:behaviour(DefaultBehaviour, null)      public var min:Null<Float>;
+
+    /**
+     * The amount of numbers displayed after the decimal point.
+     * 
+     * `0` or `null` means that no decimal point is displayed. defaults to `null`.
+     */
     @:clonable @:behaviour(DefaultBehaviour, null)      public var precision:Null<Int>;
+
+    /**
+     * If true, overflowing values will be fixed to the closest valid value.
+     * 
+     * for example, if the user types `20`, but the maximum is `10`, the value will automatically be set to `10`.
+     */
     @:clonable @:behaviour(DefaultBehaviour, false)     public var autoCorrect:Bool;
 }
 
