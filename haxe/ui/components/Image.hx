@@ -37,10 +37,10 @@ class Image extends Component {
     @:clonable @:behaviour(ResourceBehaviour)                              public var resource:Variant;
 
     /**
-     * The path to the image file / the image data. Similar to the resource property.
+     * The path to the image file/data. Similar to the resource property.
      * 
      * `value` is a universal way to access the value a component is based on. in this
-     * case its the `resource`, which can appear in "multiple formats". check out the `resource` property.
+     * case its the `resource` property, which can appear in "multiple formats". For more information, check out the `resource` property.
      */
     @:clonable @:value(resource)                                           public var value:Dynamic;
 
