@@ -7,6 +7,7 @@ import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.components.HorizontalScroll;
 import haxe.ui.components.TextField;
 import haxe.ui.components.VerticalScroll;
+import haxe.ui.constants.Priority;
 import haxe.ui.constants.ScrollMode;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
@@ -536,7 +537,7 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         }
 
         registerEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
-        registerEvent(ActionEvent.ACTION_START, onActionStart);
+        registerEvent(ActionEvent.ACTION_START, onActionStart, Priority.LOW);
     }
 
     public override function unregister() {
