@@ -6,7 +6,14 @@ import haxe.ui.core.IDirectionalComponent;
 import haxe.ui.behaviours.ValueBehaviour;
 import haxe.ui.util.Variant;
 
+/**
+ * A progress bar that starts from 0 and ends at 100.
+ */
 class Progress extends Range implements IDirectionalComponent {
+
+    /**
+     * Creates a new progress bar.
+     */
     private function new() {
         super();
         behaviours.updateOrder = ["min", "max", "pos", "indeterminate"];
@@ -15,9 +22,25 @@ class Progress extends Range implements IDirectionalComponent {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
+
     @:clonable @:behaviour(Indeterminate)      public var indeterminate:Bool;
+
+    /**
+     * The current position of the progress bar. the bar will be filled from 0 to this value.
+     */
     @:clonable @:behaviour(Pos)                public var pos:Float;
+
+    /**
+     * The minimum value of the progress bar.
+     */
     @:clonable @:behaviour(Min)                public var min:Float;
+
+    /**
+     * The current position of the progress bar.
+     *
+     * `value` is a universal way to access the value a component is based on.
+     * In this case, value represents the current position of the progress bar.
+     */
     @:clonable @:value(pos)                    public var value:Dynamic;
 
     //***********************************************************************************************************

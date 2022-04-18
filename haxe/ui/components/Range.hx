@@ -15,8 +15,17 @@ import haxe.ui.util.MathUtil;
 import haxe.ui.geom.Point;
 import haxe.ui.util.Variant;
 
+/**
+ * A range bar component, that starts from `min` and ends at `max`, defaults to 0-100.
+ */
 @:composite(Builder)
 class Range extends InteractiveComponent implements IDirectionalComponent {
+
+    /**
+     * Creates a new range bar.
+     * 
+     * The position of the filled section is determined by the `start` and `end` properties.
+     */
     private function new() {
         super();
     }
@@ -24,12 +33,48 @@ class Range extends InteractiveComponent implements IDirectionalComponent {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
+
+    /**
+     * The value this range bar starts from, used to calculate 
+     * the starting position of the filled section.
+     */
     @:clonable @:behaviour(RangeMin, 0)                 public var min:Null<Float>;
+
+    /**
+     * The value this range bar ends at to, used calculate 
+     * the ending position of the filled section.
+     */
     @:clonable @:behaviour(RangeMax, 100)               public var max:Null<Float>;
+
+    /**
+     * The value this range bar's filled section is currently starting at.
+     */
     @:clonable @:behaviour(RangeStart, null)            public var start:Null<Float>;
+
+    /**
+     * The value this range bar's filled section is currently ending at.
+     */
     @:clonable @:behaviour(RangeEnd, 0)                 public var end:Float;
+
+    /**
+     * The amount of numbers after the decimal points that should be taken
+     * into account when calculating the position of the filled section.
+     */
     @:clonable @:behaviour(InvalidatingBehaviour)       public var precision:Int;
+
+    /**
+     * The amount of "offsetting" that should be applied to the position of the filled section.
+     * 
+     * for example: 
+     * the range bar starts at 0 and ends at 100, and the offset is set to step is set to 10.
+     * 
+     * if we set the start to 6 and the end to 54, the visually filled range would be from 10 to 50.
+     */
     @:clonable @:behaviour(InvalidatingBehaviour)       public var step:Float;
+
+    /**
+     * Whether or not to allow the uer to interact with the range bar.
+     */
     @:clonable @:behaviour(AllowInteraction, false)     public var allowInteraction:Bool;
 
     private var virtualStart:Null<Float>;

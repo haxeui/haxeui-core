@@ -5,7 +5,14 @@ import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.geom.Point;
 import haxe.ui.util.Variant;
 
+/**
+ * A horizontal scrollbar, like the one you see in a web browser.
+ */
 class HorizontalScroll extends Scroll {
+
+    /**
+     * Creates a new horizontal scroll component.
+     */
     public function new() {
         super();
     }

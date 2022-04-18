@@ -7,8 +7,17 @@ import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.geom.Point;
 import haxe.ui.util.Variant;
 
+/**
+ * A horizontal range bar.
+ * 
+ * **Note** - A range bar is like a prgress bar, but isnt forced to start from 0.
+ */
 @:composite(HorizontalRangeLayout)
 class HorizontalRange extends Range {
+
+    /**
+     * Creates a new horizontal range bar.
+     */
     public function new() {
         super();
     }
