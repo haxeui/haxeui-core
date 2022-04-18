@@ -22,6 +22,7 @@ import haxe.ui.util.Color;
 import haxe.ui.util.ComponentUtil;
 import haxe.ui.util.MathUtil;
 import haxe.ui.util.StringUtil;
+import haxe.ui.util.Variant;
 import haxe.ui.validation.IValidating;
 import haxe.ui.validation.ValidationManager;
 
@@ -1455,7 +1456,7 @@ class Component extends ComponentImpl implements IValidating {
     @:style                 public var color:Null<Color>;
     #end
     @:style                 public var backgroundColor:Null<Color>;
-    @:style                 public var backgroundImage:String;
+    @:style                 public var backgroundImage:Variant;
     @:style                 public var borderColor:Null<Color>;
     @:style                 public var borderSize:Null<Float>;
     @:style                 public var borderRadius:Null<Float>;

@@ -4,6 +4,7 @@ import haxe.ui.filters.Filter;
 import haxe.ui.filters.FilterParser;
 import haxe.ui.styles.animation.Animation.AnimationOptions;
 import haxe.ui.styles.elements.Directive;
+import haxe.ui.util.Variant;
 
 enum StyleBorderType {
     None;
@@ -65,7 +66,7 @@ class Style {
     @:optional public var backgroundColorEnd:Null<Int>;
     @:optional public var backgroundGradientStyle:Null<String>;
 
-    @:optional public var backgroundImage:Null<String>;
+    @:optional public var backgroundImage:Variant;
     @:optional public var backgroundImageRepeat:Null<String>;
 
     @:optional public var backgroundImageClipTop:Null<Float>;
