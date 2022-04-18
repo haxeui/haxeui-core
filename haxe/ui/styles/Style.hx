@@ -69,6 +69,9 @@ class Style {
     @:optional public var backgroundImage:Variant;
     @:optional public var backgroundImageRepeat:Null<String>;
 
+    @:optional public var backgroundPositionX:Null<Float>;
+    @:optional public var backgroundPositionY:Null<Float>;
+    
     @:optional public var backgroundImageClipTop:Null<Float>;
     @:optional public var backgroundImageClipLeft:Null<Float>;
     @:optional public var backgroundImageClipBottom:Null<Float>;
@@ -111,7 +114,7 @@ class Style {
     /** A path to a font file to be used for the text inside the object **/         @:optional public var fontName:Null<String>;
     /** The visual size of the font **/                                             @:optional public var fontSize:Null<Float>;
     /** Whether or not this text should use the **bold** variation of it's font **/ @:optional public var fontBold:Null<Bool>;
-    /** Whether or not to underline the text **/ @:optional public var fontUnderline:Null<Bool>;
+    /** Whether or not to underline the text **/                                    @:optional public var fontUnderline:Null<Bool>;
     /** Whether or not this text should use the *italic* variation of it's font **/ @:optional public var fontItalic:Null<Bool>;
 
     @:optional public var cursor:Null<String>;
@@ -252,6 +255,11 @@ class Style {
                 case "background-image-repeat":
                     backgroundImageRepeat = ValueTools.string(v.value);
 
+                case "background-position-x":
+                    backgroundPositionX = ValueTools.calcDimension(v.value);
+                case "background-position-y":
+                    backgroundPositionY = ValueTools.calcDimension(v.value);
+                    
                 case "background-image-clip-top":
                     backgroundImageClipTop = ValueTools.calcDimension(v.value);
                 case "background-image-clip-left":

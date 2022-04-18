@@ -105,6 +105,8 @@ class RuleElement {
                     processComposite(new Directive("", vl[0]), ["margin-top", "margin-bottom"]);
                     processComposite(new Directive("", vl[1]), ["margin-left", "margin-right"]);
                 }
+            case "background-position":
+                processComposite(d, ["background-position-x", "background-position-y"]);
             case "spacing":
                 processComposite(d, ["horizontal-spacing", "vertical-spacing"]);
             case "background":
