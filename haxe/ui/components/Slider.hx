@@ -19,8 +19,15 @@ import haxe.ui.geom.Point;
 import haxe.ui.util.MathUtil;
 import haxe.ui.util.Variant;
 
+/**
+ * A slider component, containing a thumb and a track to move the thumb along.
+ */
 @:composite(SliderBuilder)
 class Slider extends InteractiveComponent implements IDirectionalComponent {
+    
+    /**
+     * Creates a new Slider.
+     */
     private function new() {
         super();
         cascadeActive = true;
@@ -30,16 +37,75 @@ class Slider extends InteractiveComponent implements IDirectionalComponent {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
+
+    /**
+     * The minimum value of the slider. used to calculate the thumb's position.
+     */
     @:clonable @:behaviour(MinBehaviour, 0)         public var min:Float;
+
+    /**
+     * The maximum value of the slider. used to calculate the thumb's position.
+     */
     @:clonable @:behaviour(MaxBehaviour, 100)       public var max:Float;
+
+    /**
+     * How many numbers after the decimal points are calculated for the position of the thumb.
+     */
     @:clonable @:behaviour(DefaultBehaviour, null)  public var precision:Null<Int>;
+
+    /**
+     * The value the fill of the slider starts from.
+     * 
+     * When `end` is defined, another moveable thumb will appear at the position `start`.
+     */
     @:clonable @:behaviour(StartBehaviour, null)    public var start:Null<Float>;
+
+    /**
+     * The value the fill of the slider ends at.
+     * 
+     * When `start` is defined, another moveable thumb will appear at the position `end`.
+     */
     @:clonable @:behaviour(EndBehaviour, 0)         public var end:Float;
+
+    /**
+     * The value the thumb is currently at.
+     */
     @:clonable @:behaviour(PosBehaviour)            public var pos:Float;
+
+    /**
+     * When defined & two thumbs are present, provides an offset to the actual center:
+     * 
+     * the leftmost thumb will always be before the center, and the rightmost thumb will always be after the center.
+     */
     @:clonable @:behaviour(CenterBehaviour, null)   public var center:Null<Float>;
+
+    /**
+     * When defined, snaps the thumb to the nearest step, example:
+     * 
+     * if pos is 6 and step is 10, the thumb will be moved to 10.
+     */
     @:clonable @:behaviour(DefaultBehaviour, null)  public var step:Null<Float>;
+
+    /**
+     * When defined, creates little ticks each time a value divisible by `minorTicks` is reached. 
+     * 
+     * in horizontal sliders, by default, the ticks apper below slider
+     */
     @:clonable @:behaviour(MinorTicks, null)        public var minorTicks:Null<Float>;
+
+    /**
+     * When defined, creates ticks each time a value divisible by `majorTicks` is reached. 
+     * 
+     * in horizontal sliders, by default, the ticks apper below slider
+     */
     @:clonable @:behaviour(MajorTicks, null)        public var majorTicks:Null<Float>;
+
+    /**
+     * The current value of the slider.
+     *
+     * `value` is a universal way to access the value a component is based on.
+     * In this case, value represents the current position of the thumb inside the slider.
+     */
     @:clonable @:value(pos)                         public var value:Dynamic;
 
     //***********************************************************************************************************
