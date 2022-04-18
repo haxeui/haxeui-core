@@ -70,6 +70,20 @@ class ToolkitAssets extends AssetsImpl {
         _fontCallbacks.invokeAndRemove(resourceId, font);
     }
 
+    public function cacheImage(resourceId:String, imageInfo:ImageInfo) {
+        if (_imageCache == null) {
+            _imageCache = new Map<String, ImageInfo>();
+        }
+        _imageCache.set(resourceId, imageInfo);
+    }
+    
+    public function getCachedImage(resourceId:String):ImageInfo {
+        if (_imageCache == null) {
+            return null;
+        }
+        return _imageCache.get(resourceId);
+    }
+    
     public function getImage(resourceId:String, callback:ImageInfo->Void, useCache:Bool = true) {
         var orginalResourceId = resourceId;
         resourceId = runPlugins(resourceId);

@@ -1,6 +1,8 @@
 package haxe.ui.util;
 
 import haxe.io.Bytes;
+import haxe.ui.Toolkit;
+import haxe.ui.ToolkitAssets;
 import haxe.ui.assets.ImageInfo;
 import haxe.ui.backend.ImageData;
 
@@ -11,17 +13,31 @@ class ImageLoader {
         _resource = resource;
     }
 
-    public function load(callback:ImageInfo->Void) {
+    public function load(callback:ImageInfo->Void, useCache:Bool = true) {
         if (_resource.isString) {
             var stringResource:String = _resource;
+            if (useCache == true) {
+                var cachedImage = ToolkitAssets.instance.getCachedImage(stringResource);
+                if (cachedImage != null) {
+                    callback(cachedImage);
+                    return;
+                }
+            }
             stringResource = StringTools.trim(stringResource);
             if (StringTools.startsWith(stringResource, "http://") || StringTools.startsWith(stringResource, "https://")) {
-                loadFromHttp(stringResource, callback);
+                loadFromHttp(stringResource, function(imageInfo) {
+                    ToolkitAssets.instance.cacheImage(stringResource, imageInfo);
+                    callback(imageInfo);
+                });
             } else if (StringTools.startsWith(stringResource, "file://")) {
-                Toolkit.assets.imageFromFile(stringResource.substr(7), callback);
+                Toolkit.assets.imageFromFile(stringResource.substr(7), function(imageInfo) {
+                    ToolkitAssets.instance.cacheImage(stringResource, imageInfo);
+                    callback(imageInfo);
+                });
             } else { // assume asset
                 Toolkit.assets.getImage(stringResource, callback);
             }
+            
         } else if (_resource.isImageData) {
             var imageData:ImageData = _resource;
             if (callback != null) {
