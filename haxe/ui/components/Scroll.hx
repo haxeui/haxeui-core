@@ -11,7 +11,14 @@ import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.geom.Point;
 
+/**
+ * A scrollbar component, like the ones you see in a browser.
+ */
 class Scroll extends InteractiveComponent implements IDirectionalComponent {
+
+    /**
+     * Creates a new scrollbar.
+     */
     private function new() {
         super();
         cascadeActive = true;
@@ -20,10 +27,40 @@ class Scroll extends InteractiveComponent implements IDirectionalComponent {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
+
+    /**
+     * A minimum value to calculate the position of the thumb from. defaults to 0.
+     */
     @:behaviour(ScrollValueBehaviour, 0)        public var min:Float;
+
+    /**
+     * A maximum value to calculate the position of the thumb from. defaults to 100.
+     */
     @:behaviour(ScrollValueBehaviour, 100)      public var max:Float;
+
+    /**
+     * When pressing on the scrollbar itself, decides how much should the thumb jump towards the mouse's position:
+     * 
+     * 0 - no jump (default)
+     * 5 - jump 5 pixels towards the mouse's position
+     * -5 - jump 5 pixels away from the mouse's position
+     *
+     * 
+     * also decides the width/height of the thumb itself, depending on the orientation. when values are below 0, 
+     * the default thumb is used
+     */
     @:behaviour(LayoutBehaviour, 0)             public var pageSize:Float;
+
+    /**
+     * The current position of the thumb inside the scrollbar.
+     */
     @:behaviour(ScrollValueBehaviour, 0)        public var pos:Float;
+
+    /**
+     * a stepping value to snap the thumb to, visually:
+     * 
+     * if pos is 7 and step is 2, the thumb will be moved to 8
+     */
     @:behaviour(DefaultBehaviour, 20)           public var increment:Float; // TODO: should calc, 20 is too high if there are, say, 30 items
 
     //***********************************************************************************************************
