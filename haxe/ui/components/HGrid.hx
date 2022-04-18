@@ -4,7 +4,14 @@ import haxe.ui.core.Component;
 import haxe.ui.layouts.HorizontalGridLayout;
 
 //@:dox(icon="")  //TODO
+/**
+ * A grid that lays out its children horizontally.
+ */
 class HGrid extends Component {
+
+    /**
+     * Creates a new horizontal grid with a sinle row.
+     */
     public function new() {
         super();
 
@@ -23,6 +30,10 @@ class HGrid extends Component {
     // Public API
     //***********************************************************************************************************
     private var _rows:Int;
+
+    /**
+     * The number of rows in the grid. Defaults to `1`.
+     */
     @:clonable public var rows(get, set):Int;
     private function get_rows():Int {
         return _rows;

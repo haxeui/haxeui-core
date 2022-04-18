@@ -4,8 +4,15 @@ import haxe.ui.components.Slider.SliderBuilder;
 import haxe.ui.core.Component;
 import haxe.ui.layouts.DefaultLayout;
 
+/**
+ * A horizontal slider component, controlled by a "stopper" that can be dragged around.
+ */
 @:composite(HorizontalSliderLayout, Builder)
 class HorizontalSlider extends Slider {
+
+    /**
+     * Creates a new, horizontally laid slider.
+     */
     public function new() {
         super();
     }

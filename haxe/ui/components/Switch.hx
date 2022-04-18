@@ -10,15 +10,38 @@ import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.HorizontalLayout;
 import haxe.ui.util.Variant;
 
+/**
+ * A switch component that can be used to toggle between two states.
+ */
 @:composite(Builder, HorizontalLayout)
 class Switch extends Component {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
+
+    /**
+     * Whether the switch is in the on state.
+     * 
+     * true if it is, false otherwise.
+     */
     @:clonable @:behaviour(SelectedBehaviour)         public var selected:Bool;
+
+
     @:clonable @:behaviour(DefaultBehaviour)          public var value:Variant;
+
+    /**
+     * The text that appears on the switch when created
+     */
     @:clonable @:behaviour(TextBehaviour)             public var text:String;
+
+    /**
+     * The text that appears on the switch when it is in the on state
+     */
     @:clonable @:behaviour(DefaultBehaviour)          public var textOn:String;
+
+    /**
+     * The text that appears on the switch when it is in the off state
+     */
     @:clonable @:behaviour(DefaultBehaviour)          public var textOff:String;
 }
 
