@@ -74,6 +74,9 @@ class ToolkitAssets extends AssetsImpl {
         if (_imageCache == null) {
             _imageCache = new Map<String, ImageInfo>();
         }
+        if (imageInfo == null || resourceId == null) {
+            return;
+        }
         _imageCache.set(resourceId, imageInfo);
     }
     
