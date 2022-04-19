@@ -86,6 +86,11 @@ class TreeViewNode extends VBox {
         return node;
     }
     
+    public function removeNode(node:TreeViewNode):TreeViewNode {
+        removeComponent(node);
+        return node;
+    }
+    
     private function getNodes():Array<TreeViewNode> {
         return findComponents(TreeViewNode, 3); // TODO: is this brittle? Will it always be 3?
     }

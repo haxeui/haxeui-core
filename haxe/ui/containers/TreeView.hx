@@ -147,6 +147,11 @@ class TreeView extends ScrollView implements IDataComponent {
         return node;
     }
 
+    public function removeNode(node:TreeViewNode):TreeViewNode {
+        removeComponent(node);
+        return node;
+    }
+    
     public function clearNodes() {
         selectedNode = null;
         var nodes = findComponents(TreeViewNode, 3);
