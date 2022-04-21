@@ -1,6 +1,5 @@
 package haxe.ui.core;
 
-import haxe.CallStack;
 import haxe.ui.geom.Rectangle;
 import haxe.ui.validation.InvalidationFlags;
 
@@ -14,9 +13,14 @@ class ComponentBounds extends ComponentLayout {
     @:dox(group = "Size related properties and methods")
     public var autoWidth(get, null):Bool;
     private function get_autoWidth():Bool {
-        if (_percentWidth != null || _width != null || style == null) {
+        if (_percentWidth != null || _width != null) {
             return false;
         }
+        
+        if (style == null) {
+            return true;
+        }
+        
         if (style.autoWidth == null) {
             return false;
         }

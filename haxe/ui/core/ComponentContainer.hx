@@ -145,7 +145,7 @@ class ComponentContainer extends ComponentCommon implements IClonable<ComponentC
     //***********************************************************************************************************
     // Style related
     //***********************************************************************************************************
-    @:noCompletion private var _style:Style;
+    @:noCompletion private var _style:Style = null;
 
     //***********************************************************************************************************
     // General
