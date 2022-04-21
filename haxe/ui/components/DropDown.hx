@@ -13,8 +13,10 @@ import haxe.ui.containers.CalendarView;
 import haxe.ui.containers.HBox;
 import haxe.ui.containers.ListView;
 import haxe.ui.containers.VBox;
+import haxe.ui.core.BasicItemRenderer;
 import haxe.ui.core.Component;
 import haxe.ui.core.IDataComponent;
+import haxe.ui.core.ItemRenderer;
 import haxe.ui.core.Screen;
 import haxe.ui.data.ArrayDataSource;
 import haxe.ui.data.DataSource;
@@ -281,30 +283,40 @@ private class ListDropDownHandler extends DropDownHandler {
     }
 
     private override function set_selectedIndex(value:Int):Int {
+        var data = null;
+        var dispatchChanged:Bool = false;
         if (_listview != null && _cachedSelectedIndex != value) {
             _cachedSelectedIndex = value;
             _listview.selectedIndex = value;
         } else if (_cachedSelectedIndex != value) {
             _cachedSelectedIndex = value;
-            var data = null;
             if (_dropdown.dataSource != null && value >= 0 && value < _dropdown.dataSource.size) {
                 data = _dropdown.dataSource.get(value);
             }
-            _dropdown.dispatch(new UIEvent(UIEvent.CHANGE, false, data));
+            dispatchChanged = true;
         }
 
         if (_dropdown.dataSource != null && value >= 0 && value < _dropdown.dataSource.size) {
             var data = _dropdown.dataSource.get(value);
-            var text = null;
-            if (Type.typeof(data) == TObject) {
-                text = data.text;
-                if (text == null) {
-                    text = data.value;
+            var itemRenderer = _dropdown.findComponent(ItemRenderer);
+            if (itemRenderer == null) {
+                var text = null;
+                if (Type.typeof(data) == TObject) {
+                    text = data.text;
+                    if (text == null) {
+                        text = data.value;
+                    }
+                } else {
+                    text = Std.string(data);
                 }
+                _dropdown.text = text;
             } else {
-                text = Std.string(data);
+                itemRenderer.data = data;
             }
-            _dropdown.text = text;
+        }
+        
+        if (dispatchChanged) {
+            _dropdown.dispatch(new UIEvent(UIEvent.CHANGE, false, data));
         }
 
         return value;
@@ -365,14 +377,21 @@ private class ListDropDownHandler extends DropDownHandler {
 
     private function createListView() {
         if (_listview == null) {
+            var builder = cast(_dropdown._compositeBuilder, DropDownBuilder);
+            
             _listview = new ListView();
+            if (builder.itemRenderer != null) {
+                _listview.addComponent(builder.itemRenderer);
+            }
             _listview.componentTabIndex = -1;
             _listview.virtual = _dropdown.virtual;
             _listview.dataSource = _dropdown.dataSource;
+            
             if (_dropdown.id != null) {
                 _listview.addClass(_dropdown.id + "-listview");
                 _listview.id = _dropdown.id + "_listview";
             }
+
             _listview.registerEvent(ActionEvent.ACTION_START, function(e:ActionEvent) {
                 switch (e.action) {
                     case ActionType.BACK | ActionType.CANCEL:
@@ -402,16 +421,22 @@ private class ListDropDownHandler extends DropDownHandler {
             currentHover.removeClass(":hover");
         }
         var selectedItem = _listview.selectedItem;
-        var text = null;
-        if (Type.typeof(selectedItem) == TObject) {
-            text = _listview.selectedItem.text;
-            if (text == null) {
-                text = _listview.selectedItem.value;
+        var itemRenderer = _dropdown.findComponent(ItemRenderer);
+        if (itemRenderer == null) {
+            var text = null;
+            if (Type.typeof(selectedItem) == TObject) {
+                text = _listview.selectedItem.text;
+                if (text == null) {
+                    text = _listview.selectedItem.value;
+                }
+            } else {
+                text = Std.string(selectedItem);
             }
+            _dropdown.text = text;
         } else {
-            text = Std.string(selectedItem);
+            itemRenderer.data = selectedItem;
         }
-        _dropdown.text = text;
+        
         //_dropdown.selectedIndex = _listview.selectedIndex;
         
         if (eventsPaused == false) {
@@ -801,6 +826,9 @@ class DropDownBuilder extends ButtonBuilder {
 
     public override function create() {
         _dropdown.toggle = true;
+        if (_dropdown.findComponent(ItemRenderer) == null) {
+            _dropdown.addComponent(new BasicItemRenderer());
+        }
     }
 
     public override function destroy() {
@@ -812,6 +840,15 @@ class DropDownBuilder extends ButtonBuilder {
         }
     }
 
+    public var itemRenderer:ItemRenderer = null;
+    public override function addComponent(child:Component):Component {
+        if ((child is ItemRenderer)) {
+            itemRenderer = cast child.cloneComponent();
+        }
+        var r = super.addComponent(child);
+        return r;
+    }
+    
     @:access(haxe.ui.core.Screen)
     public function onThemeChanged() {
         if (_handler != null) {

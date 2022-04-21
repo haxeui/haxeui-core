@@ -134,6 +134,18 @@
     width: 100%;
 }
 
+.basicitemrenderer.auto-size {
+    width: auto;
+}
+
+.basicitemrenderer.auto-size .basic-renderer-container {
+    width: auto;
+}
+
+.basicitemrenderer.auto-size .basic-renderer-label {
+    width: auto;
+}
+
 /************************************************************************
 ** SECTION HEADERS
 *************************************************************************/

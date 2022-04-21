@@ -6,12 +6,13 @@ import haxe.ui.behaviours.Behaviour;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.constants.Priority;
+import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.InteractiveComponent;
+import haxe.ui.core.ItemRenderer;
 import haxe.ui.events.ActionEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
-import haxe.ui.focus.FocusManager;
 import haxe.ui.geom.Size;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.styles.Style;
@@ -133,20 +134,49 @@ class ButtonLayout extends DefaultLayout {
     private override function resizeChildren() {
         super.resizeChildren();
 
-        var label:Label = component.findComponent(Label, false);
-        var icon:Image = component.findComponent("button-icon", false);
         if (_component.autoWidth == false) {
+            var label:Label = component.findComponent(Label, false);
             var ucx:Size = usableSize;
+            var cx = ucx.width;
             if (label != null) {
-                var cx = ucx.width;
-                if (icon != null && (iconPosition == "far-right" || iconPosition == "far-left" || iconPosition == "left" || iconPosition == "right")) {
-                    cx -= icon.width + verticalSpacing;
-                }
                 label.width = cx;
+            }
+            
+            var itemRenderer = component.findComponent(ItemRenderer);
+            if (itemRenderer != null) {
+                itemRenderer.width = cx;
             }
         }
     }
 
+    private override function get_usableSize():Size {
+        var size = super.get_usableSize();
+        var icon:Image = component.findComponent("button-icon", false);
+        if (icon != null && (iconPosition == "far-right" || iconPosition == "far-left" || iconPosition == "left" || iconPosition == "right")) {
+            size.width -= icon.width + verticalSpacing;
+        }
+        return size;
+    }
+    
+    public override function calcAutoSize(exclusions:Array<Component> = null):Size {
+        var exclusions:Array<Component> = [];
+        var itemRenderer = component.findComponent(ItemRenderer);
+        var icon:Image = component.findComponent("button-icon", false);
+        if (itemRenderer != null && isIconRelevant()) {
+            exclusions.push(icon);
+        }
+        var size = super.calcAutoSize(exclusions);
+        if (itemRenderer != null && isIconRelevant()) {
+            size.width += icon.width + verticalSpacing;
+        }
+        return size;
+    }
+    
+    private inline function isIconRelevant() {
+        var icon:Image = component.findComponent("button-icon", false);
+        return icon != null && (iconPosition == "far-right" || iconPosition == "far-left" || iconPosition == "left" || iconPosition == "right");
+    }
+    
     private override function repositionChildren() {
         super.repositionChildren();
 
@@ -182,7 +212,7 @@ class ButtonLayout extends DefaultLayout {
                     label.left = paddingLeft;
                     label.top = Std.int((component.componentHeight / 2) - (label.componentHeight / 2)) + marginTop(label) - marginBottom(label);
                 } else if (icon != null) {
-                    icon.left = Std.int((component.componentWidth / 2) - (icon.componentWidth / 2)); // + marginLeft(icon) - marginRight(icon);
+                    icon.left = (component.componentWidth - icon.componentWidth - paddingRight) + marginLeft(icon) - marginRight(icon);
                     icon.top = Std.int((component.componentHeight / 2) - (icon.componentHeight / 2)) + marginTop(icon) - marginBottom(icon);
                 }
             case "far-left":
@@ -282,17 +312,54 @@ private class GroupBehaviour extends DataBehaviour {
 
 @:dox(hide) @:noCompletion
 private class TextBehaviour extends DataBehaviour {
-    private override function validateData() {
-        var label:Label = _component.findComponent(Label, false);
-        if (label == null) {
-            label = new Label();
-            label.id = "button-label";
-            label.scriptAccess = false;
-            _component.addComponent(label);
-            _component.invalidateComponentStyle(true);
+    public override function get():Variant {
+        var itemRenderer = _component.findComponent(ItemRenderer);
+        if (itemRenderer == null) {
+            return super.get();
+        } else {
+            if (!_component.isReady) {
+                return super.get();
+            } else {
+                var data:Dynamic = itemRenderer.data;
+                var text = null;
+                if (data != null) {
+                    if (Type.typeof(data) == TObject) {
+                        text = data.text;
+                        if (text == null) {
+                            text = data.value;
+                        }
+                    } else {
+                        text = Std.string(data);
+                    }
+                }
+                return text;
+            }
         }
+    }
+    
+    private override function validateData() {
+        var itemRenderer = _component.findComponent(ItemRenderer);
+        if (itemRenderer != null) {
+            var data:Dynamic = itemRenderer.data;
+            if (data == null) {
+                data = {};
+            } else {
+                data = Reflect.copy(data);
+            }
+            data.text = _value.toString();
+            itemRenderer.data = data;
+        } else {
+            var label:Label = _component.findComponent(Label, false);
+            if (label == null) {
+                label = new Label();
+                label.id = "button-label";
+                label.scriptAccess = false;
+                _component.addComponent(label);
+                _component.invalidateComponentStyle(true);
+            }
 
-        label.text = _value;
+            label.text = _value;
+        }
     }
 }
 
@@ -595,6 +662,19 @@ class ButtonBuilder extends CompositeBuilder {
         _button = button;
     }
 
+    public override function onReady() {
+        super.onReady();
+        
+        var renderer = _button.findComponent(ItemRenderer);
+        if (renderer != null) {
+            if (!_button.autoWidth) {
+                renderer.removeClass("auto-size");
+            } else {
+                renderer.addClass("auto-size");
+            }
+        }
+    }
+    
     public override function applyStyle(style:Style) {
         haxe.ui.macros.ComponentMacros.cascacdeStylesTo("button-label", [color, fontName, fontSize, cursor, textAlign], false);
         haxe.ui.macros.ComponentMacros.cascacdeStylesTo("button-icon", [cursor], false);
@@ -638,6 +718,17 @@ class ButtonBuilder extends CompositeBuilder {
         if (allowDeselection == true && value == false) {
             button.behaviours.softSet("selected", false);
         }
+    }
+    
+    public override function addComponent(child:Component):Component {
+        if ((child is ItemRenderer)) {
+            var existingRenderer = _component.findComponent(ItemRenderer);
+            if (existingRenderer != null) {
+                _component.removeComponent(existingRenderer);
+            }
+            child.addClass("auto-size");
+        }
+        return null;
     }
 }
 
