@@ -244,7 +244,11 @@ private class ListDropDownHandler extends DropDownHandler {
 
         if (_dropdown.dropdownWidth == null) {
             wrapper.syncComponentValidation();
-            _listview.width = _dropdown.width - (wrapper.layout.paddingLeft + wrapper.layout.paddingRight);
+            var offset:Float = 0;
+            if (wrapper.layout != null) {
+                offset = wrapper.layout.paddingLeft + wrapper.layout.paddingRight;
+            }
+            _listview.width = _dropdown.width - offset;
         } else {
             _listview.width = _dropdown.dropdownWidth;
         }
@@ -616,8 +620,10 @@ class DropDownEvents extends ButtonEvents {
             }
             Screen.instance.addComponent(_overlay);
 
-            handler.prepare(_wrapper);
             Screen.instance.addComponent(_wrapper);
+            handler.prepare(_wrapper);
+            _wrapper.syncComponentValidation();
+            _wrapper.validateNow();
             _wrapper.left = (Screen.instance.actualWidth / 2) - (_wrapper.actualComponentWidth / 2);
             _wrapper.top = (Screen.instance.actualHeight / 2) - (_wrapper.actualComponentHeight / 2);
         } else {
