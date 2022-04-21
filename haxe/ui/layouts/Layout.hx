@@ -322,7 +322,7 @@ class Layout implements ILayout {
     }
 
     private function excluded(exclusions:Array<Component>, child:Component):Bool {
-        if (exclusions == null) {
+        if (exclusions == null || child == null) {
             return false;
         }
         return exclusions.indexOf(child) != -1;
