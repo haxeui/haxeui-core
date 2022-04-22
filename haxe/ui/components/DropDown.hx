@@ -844,6 +844,9 @@ class DropDownBuilder extends ButtonBuilder {
     public override function addComponent(child:Component):Component {
         if ((child is ItemRenderer)) {
             itemRenderer = cast child.cloneComponent();
+            if (child.id == "dropdown-renderer" || child.id == "dropdownRenderer") {
+                return child;
+            }
         }
         var r = super.addComponent(child);
         return r;
