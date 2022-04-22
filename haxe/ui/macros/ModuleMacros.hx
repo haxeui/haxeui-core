@@ -89,7 +89,11 @@ class ModuleMacros {
                     );
                 }
                 for (r in t.styles) {
-                    if (resourceList.indexOf(r.resource) != -1) {
+                    var useResource = true;
+                    if (r.resource != null && r.resource != "" && resourceList.indexOf(r.resource) == -1) {
+                        useResource = false;
+                    }
+                    if (useResource) {
                         builder.add(macro
                             haxe.ui.themes.ThemeManager.instance.addStyleResource($v{t.name}, $v{r.resource}, $v{r.priority}, $v{r.styleData})
                         );
