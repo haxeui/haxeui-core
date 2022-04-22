@@ -454,6 +454,9 @@ private class Builder extends ScrollViewBuilder {
             i++;
         }
 
+        /* NOT SURE WHAT THIS IS, OR WHY ITS HERE, IT SEEMS LIKE TEST CODE THAT
+         * HAS BEEN LEFT IN, COMMENTING FOR NOW, BUT LOOK TO REMOVE LATER IF
+         * NO USE HAS BEEN FOUND
         var data = _component.findComponent("tableview-contents", Box, true, "css");
         if (data != null) {
             for (item in data.childComponents) {
@@ -478,6 +481,7 @@ private class Builder extends ScrollViewBuilder {
                 }
             }
         }
+        */
     }
 
     private override function verticalConstraintModifier():Float {
