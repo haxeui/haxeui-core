@@ -51,6 +51,13 @@ class ModuleMacros {
             }
 
             // add resources as haxe resources (plus prefix)
+            #if resource_resolution_verbose
+            var moduleId = m.id;
+            if (moduleId == null) {
+                moduleId = "unamed";
+            }
+            Sys.println("adding resources for module '" + moduleId +"'");
+            #end
             for (r in m.resourceEntries) {
                 if (r.path != null) {
                     if (r.prefix == null) {
@@ -66,6 +73,9 @@ class ModuleMacros {
                     }
                 }
             }
+            #if resource_resolution_verbose
+            Sys.println("");
+            #end
 
             // setup themes
             for (t in m.themeEntries) {
@@ -439,11 +449,11 @@ class ModuleMacros {
         }
 
         #if module_resolution_verbose
-        trace("scanning class path for modules");
+        Sys.println("scanning class path for modules");
         #end
         MacroHelpers.scanClassPath(function(filePath:String) {
             #if module_resolution_verbose
-            trace("    module found at '" + filePath + "'");
+            Sys.println("    module found at '" + filePath + "'");
             #end
             
             var moduleParser = ModuleParser.get(MacroHelpers.extension(filePath));
@@ -461,7 +471,7 @@ class ModuleMacros {
             return false;
         }, ["module."]);
         #if module_resolution_verbose
-        trace(_modules.length + " module(s) found");
+        Sys.println(_modules.length + " module(s) found\n");
         #end
         
         ArraySort.sort(_modules, function(a, b):Int {
@@ -517,7 +527,7 @@ class ModuleMacros {
                 _resourceIds.push(resourceName);
                 
                 #if resource_resolution_verbose
-                trace("adding resource: " + resourceName);
+                Sys.println("    adding resource '" + resourceName + "' (" + file + ")");
                 #end
                 
                 Context.addResource(resourceName, File.getBytes(file));

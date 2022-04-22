@@ -194,7 +194,7 @@ class MacroHelpers {
         path = StringTools.trim(path);
         if (path.length == 0) {
             #if classpath_scan_verbose
-            trace("classpath cache: skipping 0 length path");
+            Sys.println("classpath cache: skipping 0 length path");
             #end
             return;
         }
@@ -209,7 +209,7 @@ class MacroHelpers {
         }
         if (exclude == true || ! sys.FileSystem.exists(path)) {
             #if classpath_scan_verbose            
-            trace("classpath cache: excluding '" + path + "'");
+            Sys.println("classpath cache: excluding '" + path + "'");
             #end
             return;
         }
@@ -231,7 +231,7 @@ class MacroHelpers {
                 }
             } else if (isDir == false) {
                 #if classpath_scan_verbose
-                trace("classpath cache: adding '" + fullPath + "'");
+                Sys.println("classpath cache: adding '" + fullPath + "'");
                 #end    
                 array.push({
                     path: fullPath,
@@ -246,7 +246,7 @@ class MacroHelpers {
         buildClassPathCache();
         for (entry in classPathCache) {
             #if classpath_scan_verbose
-            trace("  looking for '" + searchCriteria + "' in '" + entry.path + "'");
+            Sys.println("  looking for '" + searchCriteria + "' in '" + entry.path + "'");
             #end
             
             var parts = entry.path.split("/");
