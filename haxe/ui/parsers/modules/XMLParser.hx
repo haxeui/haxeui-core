@@ -22,6 +22,32 @@ class XMLParser extends ModuleParser {
             var nodeName:String = el.nodeName;
 
             if (nodeName == "resources" && checkCondition(el, defines) == true) {
+                // parse global exclusions
+                if (el.get("exclude") != null) {
+                    Module.ModuleResourceEntry.globalExclusions.push(el.get("exclude"));
+                }
+                for (excludeNode in el.elementsNamed("exclude")) {
+                    if (checkCondition(excludeNode, defines) == false) {
+                        continue;
+                    }
+                    if (excludeNode.get("pattern") != null) {
+                        Module.ModuleResourceEntry.globalExclusions.push(excludeNode.get("pattern"));
+                    }
+                }
+                
+                // parse blobal inclusions
+                if (el.get("include") != null) {
+                    Module.ModuleResourceEntry.globalInclusions.push(el.get("include"));
+                }
+                for (includeNode in el.elementsNamed("include")) {
+                    if (checkCondition(includeNode, defines) == false) {
+                        continue;
+                    }
+                    if (includeNode.get("pattern") != null) {
+                        Module.ModuleResourceEntry.globalInclusions.push(includeNode.get("pattern"));
+                    }
+                }
+                
                 for (resourceNode in el.elementsNamed("resource")) {
                     if (checkCondition(resourceNode, defines) == false) {
                         continue;
@@ -29,6 +55,33 @@ class XMLParser extends ModuleParser {
                     var resourceEntry:Module.ModuleResourceEntry = new Module.ModuleResourceEntry();
                     resourceEntry.path = resourceNode.get("path");
                     resourceEntry.prefix = resourceNode.get("prefix");
+                    
+                    // parse exclusions
+                    if (resourceNode.get("exclude") != null) {
+                        resourceEntry.exclusions.push(resourceNode.get("exclude"));
+                    }
+                    for (excludeNode in resourceNode.elementsNamed("exclude")) {
+                        if (checkCondition(excludeNode, defines) == false) {
+                            continue;
+                        }
+                        if (excludeNode.get("pattern") != null) {
+                            resourceEntry.exclusions.push(excludeNode.get("pattern"));
+                        }
+                    }
+                    
+                    // parse inclusions
+                    if (resourceNode.get("include") != null) {
+                        resourceEntry.inclusions.push(resourceNode.get("include"));
+                    }
+                    for (includeNode in resourceNode.elementsNamed("include")) {
+                        if (checkCondition(includeNode, defines) == false) {
+                            continue;
+                        }
+                        if (includeNode.get("pattern") != null) {
+                            resourceEntry.inclusions.push(includeNode.get("pattern"));
+                        }
+                    }
+                    
                     module.resourceEntries.push(resourceEntry);
                 }
             } else if (nodeName == "components" && checkCondition(el, defines) == true) {

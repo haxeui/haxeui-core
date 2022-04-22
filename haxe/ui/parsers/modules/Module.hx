@@ -30,10 +30,17 @@ class Module {
 }
 
 class ModuleResourceEntry {
+    public static var globalExclusions(default, default):Array<String> = [];
+    public static var globalInclusions(default, default):Array<String> = [];
+    
     public var path(default, default):String;
     public var prefix(default, default):String;
+    public var exclusions(default, default):Array<String>;
+    public var inclusions(default, default):Array<String>;
 
     public function new() {
+        exclusions = [];
+        inclusions = [];
     }
 }
 

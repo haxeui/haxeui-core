@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <module id="haxeui-core" priority="-2">
     <resources>
+        <exclude pattern="haxeui-core/styles/.*.png" if="haxeui_no_theme" />
+        <exclude pattern="haxeui-core/styles/.*.css" if="haxeui_no_theme" />
+        
         <resource path="/haxe/ui/_module/styles" prefix="haxeui-core/styles" />
         <resource path="/haxe/ui/_module/locale" prefix="haxeui-core/locale" />
     </resources>

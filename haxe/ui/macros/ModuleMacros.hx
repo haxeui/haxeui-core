@@ -58,7 +58,11 @@ class ModuleMacros {
             }
             Sys.println("adding resources for module '" + moduleId +"'");
             #end
+            var resourceList = [];
             for (r in m.resourceEntries) {
+                var inclusions = ModuleResourceEntry.globalInclusions.concat(r.inclusions);
+                var exclusions = ModuleResourceEntry.globalExclusions.concat(r.exclusions);
+
                 if (r.path != null) {
                     if (r.prefix == null) {
                         r.prefix = r.path;
@@ -68,7 +72,7 @@ class ModuleMacros {
                         trace("WARNING: Could not resolve resource path " + r.path);
                     } else {
                         for (resolvedPath in resolvedPaths) {
-                            addResources(resolvedPath, resolvedPath, r.prefix);
+                            addResources(resolvedPath, resolvedPath, r.prefix, inclusions, exclusions, resourceList);
                         }
                     }
                 }
@@ -85,9 +89,11 @@ class ModuleMacros {
                     );
                 }
                 for (r in t.styles) {
-                    builder.add(macro
-                        haxe.ui.themes.ThemeManager.instance.addStyleResource($v{t.name}, $v{r.resource}, $v{r.priority}, $v{r.styleData})
-                    );
+                    if (resourceList.indexOf(r.resource) != -1) {
+                        builder.add(macro
+                            haxe.ui.themes.ThemeManager.instance.addStyleResource($v{t.name}, $v{r.resource}, $v{r.priority}, $v{r.styleData})
+                        );
+                    }
                 }
                 for (r in t.images) {
                     builder.add(macro
@@ -509,7 +515,7 @@ class ModuleMacros {
         return _modules;
     }
 
-    private static function addResources(path:String, base:String, prefix:String) {
+    private static function addResources(path:String, base:String, prefix:String, inclusions:Array<String>, exclusions:Array<String>, resourceList:Array<String>) {
         if (prefix == null) {
             prefix = "";
         }
@@ -517,22 +523,107 @@ class ModuleMacros {
         for (f in contents) {
             var file = path + "/" + f;
             if (sys.FileSystem.isDirectory(file)) {
-                addResources(file, base, prefix);
+                addResources(file, base, prefix, inclusions, exclusions, resourceList);
             } else {
                 var relativePath = prefix + StringTools.replace(file, base, "");
                 var resourceName:String = relativePath;
                 if (StringTools.startsWith(resourceName, "/")) {
                     resourceName = resourceName.substr(1, resourceName.length);
                 }
-                _resourceIds.push(resourceName);
+                var includedIndex = isInInclusions(resourceName, inclusions);
+                var excludedIndex = isInExclusions(resourceName, exclusions);
                 
-                #if resource_resolution_verbose
-                Sys.println("    adding resource '" + resourceName + "' (" + file + ")");
-                #end
-                
-                Context.addResource(resourceName, File.getBytes(file));
+                if (includedIndex != -1 && excludedIndex == -1) {
+                    _resourceIds.push(resourceName);
+                    
+                    #if resource_resolution_verbose
+                    if (includedIndex != -1 && includedIndex != 0xffffff) {
+                        var inclusionPattern = inclusions[includedIndex];
+                        if (ModuleResourceEntry.globalInclusions.indexOf(inclusionPattern) != -1) {
+                            Sys.println("    + '" + resourceName + "' - explicitly included via global pattern '" + inclusions[includedIndex] + "'");
+                        } else {
+                            Sys.println("    + '" + resourceName + "' - explicitly included via pattern '" + inclusions[includedIndex] + "'");
+                        }
+                    } else {
+                        Sys.println("    + '" + resourceName);
+                    }
+                    #end
+                    
+                    if (resourceList != null) {
+                        resourceList.push(resourceName);
+                    }
+                    Context.addResource(resourceName, File.getBytes(file));
+                } else {
+                    #if resource_resolution_verbose
+                    if (includedIndex == -1) {
+                        Sys.println("    - '" + resourceName + "' based on inclusion patterns: " + inclusions.join(", "));
+                    }
+                    if (excludedIndex != -1) {
+                        var exclusionPattern = exclusions[excludedIndex];
+                        if (ModuleResourceEntry.globalExclusions.indexOf(exclusionPattern) != -1) {
+                            Sys.println("    - '" + resourceName + "' based on global exclusion pattern '" + exclusions[excludedIndex] + "'");
+                        } else {
+                            Sys.println("    - '" + resourceName + "' based on exclusion pattern '" + exclusions[excludedIndex] + "'");
+                        }
+                    }
+                    #end
+                }
             }
         }
     }
+    
+    private static function isInInclusions(s:String, inclusions:Array<String>):Int {
+        if (inclusions.length == 0) {
+            return 0xffffff;
+        }
+        var n = -1;
+        var i = 0;
+        for (inclusion in inclusions) {
+            try {
+                inclusion = fixPattern(inclusion);
+                var pattern = new EReg(inclusion, "gmi");
+                if (pattern.match(s)) {
+                    n = i;
+                    break;
+                }
+            } catch (e:Dynamic) {
+                trace("WARNING: inclusion pattern '" + inclusion + "' not valid");
+            }
+            i++;
+        }
+        return n;
+    }
+    
+    private static function isInExclusions(s:String, exclusions:Array<String>):Int {
+        var n = -1;
+        var i = 0;
+        for (exclusion in exclusions) {
+            try {
+                exclusion = fixPattern(exclusion);
+                var pattern = new EReg(exclusion, "gmi");
+                if (pattern.match(s)) {
+                    n = i;
+                    break;
+                }
+            } catch (e:Dynamic) {
+                trace("WARNING: exclusion pattern '" + exclusion + "' not valid");
+            }
+            i++;
+        }
+        return n;
+    }
+    
+    private static function fixPattern(s:String) { // this just means we can make the regexp a little "simpler"
+        s = StringTools.replace(s, ".*", "|*");
+        s = StringTools.replace(s, "/", "\\/");
+        s = StringTools.replace(s, "\\.", ".");
+        s = StringTools.replace(s, ".", "\\.");
+        s = StringTools.replace(s, "|*", ".*");
+        if (StringTools.startsWith(s, "*")) { // lets "fix" a regexp so you can use things like "*.png" rather than ".*\.png"
+            s = ".*" + s.substr(1);
+        }
+        return s;
+    }
+    
     #end
 }
