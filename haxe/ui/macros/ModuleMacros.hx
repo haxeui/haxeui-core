@@ -515,6 +515,11 @@ class ModuleMacros {
                     resourceName = resourceName.substr(1, resourceName.length);
                 }
                 _resourceIds.push(resourceName);
+                
+                #if resource_resolution_verbose
+                trace("adding resource: " + resourceName);
+                #end
+                
                 Context.addResource(resourceName, File.getBytes(file));
             }
         }
