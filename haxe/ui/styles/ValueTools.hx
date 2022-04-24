@@ -3,8 +3,10 @@ package haxe.ui.styles;
 import haxe.ui.core.Platform;
 import haxe.ui.constants.UnitTime;
 import haxe.ui.core.Screen;
+import haxe.ui.styles.StyleLookupMap;
 import haxe.ui.themes.ThemeManager;
 import haxe.ui.util.Color;
+import haxe.ui.util.Variant;
 
 class ValueTools {
     private static var timeEReg:EReg = ~/^(-?\d+(?:\.\d+)?)(s|ms)$/gi;
@@ -46,7 +48,6 @@ class ValueTools {
         } else if (StringTools.startsWith(s, "'") && StringTools.endsWith(s, "'")) {
             v = Value.VString(s.substr(1, s.length - 2));
         } else if (isNum(s) == true) {
-            //trace(s);
             v = Value.VNumber(Std.parseFloat(s));
         } else if (s == "true" || s == "false") {
             v = Value.VBool(s == "true");
@@ -183,6 +184,25 @@ class ValueTools {
         }
     }
 
+    public static function variant(value:Value):Variant {
+        if (value == null) {
+            return null;
+        }
+        
+        switch (value) {
+            case Value.VString(v) | Value.VConstant(v):
+                return Variant.fromDynamic(v);
+            case Value.VNumber(v):
+                return Variant.fromDynamic(v);
+            case Value.VBool(v):
+                return Variant.fromDynamic(v);
+            case Value.VCall(f, vl):
+                return Variant.fromDynamic(call(f, vl));
+            case _:
+                return null;
+        }
+    }
+    
     public static function string(value:Value):String {
         if (value == null) {
             return null;
@@ -400,6 +420,8 @@ class ValueTools {
                 return ThemeManager.instance.image(ValueTools.string(vl[0]));
             case "rgb":
                 return Color.fromComponents(ValueTools.int(vl[0]), ValueTools.int(vl[1]), ValueTools.int(vl[2]), 0).toInt();
+            case "lookup":
+                return Variant.toDynamic(StyleLookupMap.instance.get(ValueTools.string(vl[0])));
             case _:
                 return null;
         }

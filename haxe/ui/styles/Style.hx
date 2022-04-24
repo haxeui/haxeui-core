@@ -100,7 +100,7 @@ class Style {
     /** A value between 0 and 1 deciding the object's border transparency **/       @:optional public var borderOpacity:Null<Float>;
     /** The style to use for this border's design **/                               @:optional public var borderStyle:Null<String>;
 
-    /** A path to an image file to be shown as an icon inside of the object **/     @:optional public var icon:Null<String>;
+    /** A path to an image file to be shown as an icon inside of the object **/     @:optional public var icon:Variant;
     /** The position of the icon inside the object - `left`, `right`... **/         @:optional public var iconPosition:Null<String>;
 
     /** Alignment to use for this object: `right`, `center`, `left` **/             @:optional public var horizontalAlign:Null<String>;
@@ -123,7 +123,7 @@ class Style {
     @:optional public var filter:Array<Filter>;
     @:optional public var backdropFilter:Array<Filter>;
 
-    @:optional public var resource:String;
+    @:optional public var resource:Variant;
 
     @:optional public var animationName:Null<String>;
     @:optional public var animationOptions:AnimationOptions;
@@ -251,7 +251,7 @@ class Style {
                     backgroundOpacity = ValueTools.float(v.value);
 
                 case "background-image":
-                    backgroundImage = ValueTools.string(v.value);
+                    backgroundImage = ValueTools.variant(v.value);
                 case "background-image-repeat":
                     backgroundImageRepeat = ValueTools.string(v.value);
 
@@ -335,7 +335,7 @@ class Style {
                         case Value.VNone:
                             icon = null;
                         case _:
-                            icon = ValueTools.string(v.value);
+                            icon = ValueTools.variant(v.value);
                     }
                 case "icon-position":
                     iconPosition = ValueTools.string(v.value);
@@ -412,7 +412,7 @@ class Style {
                     #end
 
                 case "resource":
-                    resource = ValueTools.string(v.value);
+                    resource = ValueTools.variant(v.value);
                 case "animation-name":
                     animationName = ValueTools.string(v.value);
                 case "animation-duration":
