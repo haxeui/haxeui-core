@@ -3,7 +3,7 @@ package haxe.ui.events;
 import haxe.ui.core.Component;
 
 class ItemEvent extends UIEvent {
-    public static inline var COMPONENT_EVENT:String = "itemComponentEvent";
+    public static inline var COMPONENT_EVENT:String = "itemcomponentevent";
 
     public var source:Component = null;
     public var sourceEvent:UIEvent = null;

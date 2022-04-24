@@ -2,8 +2,8 @@ package haxe.ui.events;
 import haxe.ui.actions.ActionType;
 
 class ActionEvent extends UIEvent {
-    public static inline var ACTION_START:String = "actionStart";
-    public static inline var ACTION_END:String = "actionEnd";
+    public static inline var ACTION_START:String = "actionstart";
+    public static inline var ACTION_END:String = "actionend";
     
     public var action:ActionType;
     public var repeater:Bool = false;

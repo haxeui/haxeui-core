@@ -1,8 +1,8 @@
 package haxe.ui.events;
 
 class ValidationEvent extends UIEvent {
-    public static inline var START:String = "ValidationStart";
-    public static inline var STOP:String = "ValidationStop";
+    public static inline var START:String = "validationstart";
+    public static inline var STOP:String = "validationstop";
 
     public function new(type:String) {
         super(type);
