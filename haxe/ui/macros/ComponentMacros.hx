@@ -739,7 +739,7 @@ class ComponentMacros {
             if (StringTools.startsWith(propName, "on")) {
                 buildData.scripts.push({
                     generatedVarName: varName,
-                    eventName: propName,
+                    eventName: propName.toLowerCase(),
                     code: propValue
                 });
             } else if (Std.string(propValue).indexOf("${") != -1) {
