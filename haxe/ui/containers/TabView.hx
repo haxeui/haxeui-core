@@ -288,7 +288,9 @@ private class Events extends haxe.ui.events.Events {
         var builder:Builder = cast(_tabview._compositeBuilder, Builder);
         var view = builder._views[event.data];
         builder._views.remove(view);
-        builder._content.removeComponent(view);
+        if (builder._content.getComponentIndex(view) != -1) {
+            builder._content.removeComponent(view);
+        }
 
         _tabview.dispatch(new UIEvent(UIEvent.CLOSE, event.data));
     }
