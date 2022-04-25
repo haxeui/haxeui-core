@@ -139,7 +139,7 @@ class ToolkitAssets extends AssetsImpl {
     }
 
     public function getBytes(resourceId):Bytes {
-        return null;
+        return haxe.Resource.getBytes(resourceId);
     }
 
     //***********************************************************************************************************
