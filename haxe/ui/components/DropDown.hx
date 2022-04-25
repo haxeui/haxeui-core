@@ -673,7 +673,8 @@ class DropDownEvents extends ButtonEvents {
             }
 
             if (_wrapper.screenLeft + _wrapper.actualComponentWidth > Screen.instance.actualWidth) {
-                _wrapper.left = _wrapper.screenLeft - _wrapper.actualComponentWidth + _dropdown.actualComponentWidth;
+                final left = _wrapper.screenLeft - _wrapper.actualComponentWidth + _dropdown.actualComponentWidth;
+                _wrapper.left = left >= 0 ? left : (Screen.instance.actualWidth / 2) - (_wrapper.actualComponentWidth / 2);
             }
             if (_wrapper.screenTop + _wrapper.actualComponentHeight > Screen.instance.actualHeight) {
                 _wrapper.top = _dropdown.screenTop - _wrapper.actualComponentHeight;
