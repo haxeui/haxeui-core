@@ -411,7 +411,6 @@ private class Builder extends CompositeBuilder {
             switch _views.indexOf(child) {
                 case -1:
                 case i:
-                    _views.splice(i, 1);
                     _tabs.removeComponentAt(i, dispose, invalidate);
                     return child;
             }
