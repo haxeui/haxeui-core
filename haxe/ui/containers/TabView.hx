@@ -419,7 +419,6 @@ private class Builder extends CompositeBuilder {
     }
 
     public override function removeComponentAt(index:Int, dispose:Bool = true, invalidate:Bool = true):Component {
-        _views.splice(index, 1);
         return _tabs.removeComponentAt(index, dispose, invalidate);
     }
 
