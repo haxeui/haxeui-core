@@ -26,6 +26,7 @@ class TabView extends Component {
     @:behaviour(Closable, false)    public var closable:Bool;
     @:call(RemovePage)              public function removePage(index:Int);
     @:call(GetPage)                 public function getPage(index:Int):Component;
+    @:call(GetPageById)             public function getPageById(pageId:String):Component;
     @:call(RemoveAllPages)          public function removeAllPages();
 }
 
@@ -226,6 +227,24 @@ private class GetPage extends Behaviour {
         var page:Component = null;
         if (index < builder._views.length) {
             page = builder._views[index];
+        }
+        return page;
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+@:access(haxe.ui.containers.Builder)
+private class GetPageById extends Behaviour {
+    public override function call(param:Any = null):Variant {
+        var builder:Builder = cast(_component._compositeBuilder, Builder);
+        var id:String = param;
+        var page:Component = null;
+        for (view in builder._views) {
+            if (view.id == id) {
+                page = view;
+                break;
+            }
         }
         return page;
     }
