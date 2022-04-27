@@ -326,12 +326,6 @@ private class Events extends haxe.ui.events.Events {
             case ActionType.UP:
                 ValueHelper.incrementValue(_stepper);
                 event.repeater = true;
-            case ActionType.LEFT:    
-                ValueHelper.deincrementValue(_stepper);
-                event.repeater = true;
-            case ActionType.RIGHT:    
-                ValueHelper.incrementValue(_stepper);
-                event.repeater = true;
             case _:      
         }
     }
