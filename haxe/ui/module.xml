@@ -11,21 +11,26 @@
     <locales>
         <locale id="en">
             <resource path="haxeui-core/locale/en/std-strings.properties" />
+            <resource path="haxeui-core/locale/en/formats.properties" />
+        </locale>
+        <locale id="en_US">
+            <resource path="haxeui-core/locale/en_US/formats.properties" />
         </locale>
         <locale id="es">
             <resource path="haxeui-core/locale/es/std-strings.properties" />
+            <resource path="haxeui-core/locale/es/formats.properties" />
         </locale>
         <locale id="de">
             <resource path="haxeui-core/locale/de/std-strings.properties" />
-        </locale>
-        <locale id="de_alt">
-            <resource path="haxeui-core/locale/de_alt/std-strings.properties" />
+            <resource path="haxeui-core/locale/de/formats.properties" />
         </locale>
         <locale id="fr">
             <resource path="haxeui-core/locale/fr/std-strings.properties" />
+            <resource path="haxeui-core/locale/fr/formats.properties" />
         </locale>
         <locale id="it">
             <resource path="haxeui-core/locale/it/std-strings.properties" />
+            <resource path="haxeui-core/locale/it/formats.properties" />
         </locale>
     </locales>
 

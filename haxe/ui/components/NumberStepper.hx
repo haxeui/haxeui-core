@@ -13,6 +13,7 @@ import haxe.ui.events.FocusEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.layouts.DefaultLayout;
+import haxe.ui.locale.Formats;
 import haxe.ui.styles.Style;
 import haxe.ui.util.MathUtil;
 import haxe.ui.util.StringUtil;
@@ -28,48 +29,48 @@ class NumberStepper extends InteractiveComponent {
     /**
      * The actual value of the number stepper.
      */
-    @:clonable @:behaviour(PosBehaviour, 0)             public var pos:Null<Float>;
+    @:clonable @:behaviour(PosBehaviour, 0)                             public var pos:Null<Float>;
 
     /**
      * The number displayed inside of the stepper.
      * 
      * `value` is used as a universal way to access the value a component is based on. in this case its the number inside of the stepper.
      */
-    @:clonable @:value(pos)                             public var value:Dynamic;
+    @:clonable @:value(pos)                                             public var value:Dynamic;
 
     /**
      * The amount by which the value is increased or decreased when the user presses the up or down button.
      */
-    @:clonable @:behaviour(DefaultBehaviour, 1)         public var step:Float;
+    @:clonable @:behaviour(DefaultBehaviour, 1)                         public var step:Float;
 
     /**
      * The Highest value this stepper can get to, even when set through code.
      */
-    @:clonable @:behaviour(DefaultBehaviour, null)      public var max:Null<Float>;
+    @:clonable @:behaviour(DefaultBehaviour, null)                      public var max:Null<Float>;
 
     /**
      * The lowest value this stepper can get to, even when set through code.
      */
-    @:clonable @:behaviour(DefaultBehaviour, null)      public var min:Null<Float>;
+    @:clonable @:behaviour(DefaultBehaviour, null)                      public var min:Null<Float>;
 
     /**
      * The amount of numbers displayed after the decimal point.
      * 
      * `0` or `null` means that no decimal point is displayed. defaults to `null`.
      */
-    @:clonable @:behaviour(DefaultBehaviour, null)      public var precision:Null<Int>;
+    @:clonable @:behaviour(DefaultBehaviour, null)                      public var precision:Null<Int>;
 
     /**
      * If true, overflowing values will be fixed to the closest valid value.
      * 
      * for example, if the user types `20`, but the maximum is `10`, the value will automatically be set to `10`.
      */
-    @:clonable @:behaviour(DefaultBehaviour, false)     public var autoCorrect:Bool;
+    @:clonable @:behaviour(DefaultBehaviour, false)                     public var autoCorrect:Bool;
     
     /**
      * The character that will be used to seperate decimals (eg 100.00 or 100,00)
      */
-    @:clonable @:behaviour(DefaultBehaviour, ".")       public var decimalSeparator:String;
+    @:clonable @:behaviour(DefaultBehaviour, Formats.decimalSeperator)  public var decimalSeparator:String;
 }
 
 //***********************************************************************************************************

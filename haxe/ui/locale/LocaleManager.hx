@@ -153,7 +153,7 @@ class LocaleManager {
         }
 
         if (getStrings(value) == null) {
-            return value;
+            //return value;
         }
         
         _language = value;
@@ -240,6 +240,9 @@ class LocaleManager {
         
         localeId = StringTools.replace(localeId, "-", "_");
         var parts = localeId.split("_");
+        if (!_localeMap.exists(parts[0])) {
+            return _localeMap.get("en");
+        }
         return _localeMap.get(parts[0]);
     }
     

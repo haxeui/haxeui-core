@@ -23,6 +23,7 @@ import haxe.ui.data.DataSource;
 import haxe.ui.events.ActionEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
+import haxe.ui.locale.Formats;
 import haxe.ui.locale.LocaleManager;
 import haxe.ui.util.Variant;
 
@@ -469,8 +470,6 @@ private class ListDropDownHandler extends DropDownHandler {
 
 @:access(haxe.ui.core.Component)
 class CalendarDropDownHandler extends DropDownHandler {
-    public static var DATE_FORMAT:String = "%d/%m/%Y";
-
     private var _calendar:CalendarView;
 
     private override function get_component():Component {
@@ -525,7 +524,7 @@ class CalendarDropDownHandler extends DropDownHandler {
 
         if (_calendar != null && date != null) {
             if (date.toString() == _calendar.selectedDate.toString()) {
-                _dropdown.text = DateTools.format(date, DATE_FORMAT);
+                _dropdown.text = DateTools.format(date, Formats.dateFormatShort);
                 return value;
             }
             _cachedSelectedDate = date;
@@ -533,7 +532,7 @@ class CalendarDropDownHandler extends DropDownHandler {
             //_dropdown.text = DateTools.format(date, DATE_FORMAT);
         } else if (date != null) {
             _cachedSelectedDate = date;
-            _dropdown.text = DateTools.format(_cachedSelectedDate, DATE_FORMAT);
+            _dropdown.text = DateTools.format(_cachedSelectedDate, Formats.dateFormatShort);
         }
         return value;
     }
@@ -543,7 +542,7 @@ class CalendarDropDownHandler extends DropDownHandler {
             return;
         }
         _cachedSelectedDate = _calendar.selectedDate;
-        _dropdown.text = DateTools.format(_calendar.selectedDate, DATE_FORMAT);
+        _dropdown.text = DateTools.format(_calendar.selectedDate, Formats.dateFormatShort);
         cast(_dropdown._internalEvents, DropDownEvents).hideDropDown();
         _dropdown.dispatch(new UIEvent(UIEvent.CHANGE, false, _calendar.selectedDate));
     }
