@@ -8,10 +8,8 @@ import haxe.ui.components.TextField;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.InteractiveComponent;
-import haxe.ui.core.Platform;
 import haxe.ui.events.ActionEvent;
 import haxe.ui.events.FocusEvent;
-import haxe.ui.events.KeyboardEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.layouts.DefaultLayout;
@@ -193,9 +191,6 @@ private class Events extends haxe.ui.events.Events {
         if (!value.hasEvent(UIEvent.CHANGE, onValueFieldChange)) {
             value.registerEvent(UIEvent.CHANGE, onValueFieldChange);
         }
-        if (!value.hasEvent(KeyboardEvent.KEY_UP, onValueKeyUp)) {
-            value.registerEvent(KeyboardEvent.KEY_UP, onValueKeyUp);
-        }
         
         var deinc:Button = _stepper.findComponent("deinc", Button);
         if (!deinc.hasEvent(MouseEvent.CLICK, onDeinc)) {
@@ -219,7 +214,6 @@ private class Events extends haxe.ui.events.Events {
             
         var value:TextField = _stepper.findComponent("value", TextField);
         value.unregisterEvent(UIEvent.CHANGE, onValueFieldChange);
-        value.unregisterEvent(KeyboardEvent.KEY_UP, onValueKeyUp);
         
         var deinc:Button = _stepper.findComponent("deinc", Button);
         deinc.unregisterEvent(MouseEvent.CLICK, onDeinc);
@@ -265,16 +259,6 @@ private class Events extends haxe.ui.events.Events {
     private function onInc(event:MouseEvent) {
         _stepper.focus = true;
         ValueHelper.incrementValue(_stepper);
-    }
-    
-    private function onValueKeyUp(event:KeyboardEvent) {
-        if (event.keyCode == Platform.instance.KeyUp) {
-            event.cancel();
-            ValueHelper.incrementValue(_stepper);
-        } else if (event.keyCode == Platform.instance.KeyDown) {
-            event.cancel();
-            ValueHelper.deincrementValue(_stepper);
-        }
     }
     
     private function isInScroller():Bool {
