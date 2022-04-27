@@ -70,6 +70,11 @@ class Image extends Component {
      * The original height of the image graphic.
      */
     @:clonable @:behaviour(DefaultBehaviour)                               public var originalHeight:Float;
+    
+    /**
+     * The value to multiply the images size by
+     */
+    @:clonable @:behaviour(DefaultBehaviour, 1)                            public var scale:Float;
 }
 
 //***********************************************************************************************************
@@ -109,6 +114,9 @@ private class ImageLayout extends DefaultLayout {
             var scaleW:Float = maxWidth != -1 ? maxWidth / image.originalWidth : 1;
             var scaleH:Float = maxHeight != -1 ? maxHeight / image.originalHeight : 1;
 
+            scaleW *= image.scale;
+            scaleH *= image.scale;
+            
             if (imageScaleMode != ScaleMode.FILL) {
                 var scale:Float;
                 switch (imageScaleMode) {
