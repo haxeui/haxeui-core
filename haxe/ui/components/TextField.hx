@@ -265,6 +265,8 @@ private class CaretIndexBehaviour extends ValueBehaviour {
         return _component.getTextInput().caretIndex;
     }
     public override function set(value:Variant) {
+        super.set(value);
+        _component.syncComponentValidation();
         _component.getTextInput().caretIndex = value;
     }
 }
