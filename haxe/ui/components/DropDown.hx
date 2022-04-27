@@ -370,7 +370,17 @@ private class ListDropDownHandler extends DropDownHandler {
             return value;
         }
 
-        var index:Int = indexOfItem(value);
+        var text = null;
+        if (Type.typeof(value) == TObject) {
+            text = value.text;
+            if (text == null) {
+                text = value.value;
+            }
+        } else {
+            text = Std.string(value);
+        }
+        
+        var index:Int = indexOfItem(text);
         selectedIndex = index;
         return value;
     }
