@@ -65,6 +65,11 @@ class NumberStepper extends InteractiveComponent {
      * for example, if the user types `20`, but the maximum is `10`, the value will automatically be set to `10`.
      */
     @:clonable @:behaviour(DefaultBehaviour, false)     public var autoCorrect:Bool;
+    
+    /**
+     * The character that will be used to seperate decimals (eg 100.00 or 100,00)
+     */
+    @:clonable @:behaviour(DefaultBehaviour, ".")       public var decimalSeparator:String;
 }
 
 //***********************************************************************************************************
@@ -80,14 +85,27 @@ private class PosBehaviour extends DataBehaviour {
         }
         
         preciseValue = MathUtil.clamp(preciseValue, stepper.min, stepper.max);
+        var wasRounded = false;
         if (stepper.precision != null) {
-            preciseValue = MathUtil.round(preciseValue, stepper.precision);
+            var newPreciseValue = MathUtil.round(preciseValue, stepper.precision);
+            if (newPreciseValue != preciseValue) {
+                preciseValue = newPreciseValue;
+                wasRounded = true;
+            }
         }
         _value = preciseValue;
         
         var stringValue = StringUtil.padDecimal(preciseValue, stepper.precision);
         var value:TextField = stepper.findComponent("value", TextField);
+        var carentIndex = value.caretIndex;
+        stringValue = StringTools.replace(stringValue, ",", ".");
+        stringValue = StringTools.replace(stringValue, ".", stepper.decimalSeparator);
         value.text = stringValue;
+        if (wasRounded) {
+            value.caretIndex = stringValue.length;
+        } else {
+            value.caretIndex = carentIndex;
+        }
         
         var event = new UIEvent(UIEvent.CHANGE);
         event.previousValue = _previousValue;
@@ -248,6 +266,8 @@ private class Events extends haxe.ui.events.Events {
         var parsedValue = Std.parseFloat(value.text);
         _stepper.pos = MathUtil.clamp(parsedValue, _stepper.min, _stepper.max);
         var stringValue = StringUtil.padDecimal(_stepper.pos, _stepper.precision);
+        stringValue = StringTools.replace(stringValue, ",", ".");
+        stringValue = StringTools.replace(stringValue, ".", _stepper.decimalSeparator);
         value.text = stringValue;
     }
     
@@ -403,6 +423,8 @@ private class ValueHelper {
         var min = stepper.min;
         var max = stepper.max;
         
+        textValue = StringTools.replace(textValue, ",", ".");
+        textValue = StringTools.replace(textValue, stepper.decimalSeparator, ".");
         var parsedValue:Null<Float> = Std.parseFloat(textValue);
         
         var valid = StringUtil.countTokens(textValue, ".") <= 1;
