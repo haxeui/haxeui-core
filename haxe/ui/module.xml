@@ -10,19 +10,22 @@
 
     <locales>
         <locale id="en">
-            <resource path="haxeui-core/locale/en/dialog.properties" />
+            <resource path="haxeui-core/locale/en/std-strings.properties" />
         </locale>
         <locale id="es">
-            <resource path="haxeui-core/locale/es/dialog.properties" />
+            <resource path="haxeui-core/locale/es/std-strings.properties" />
         </locale>
         <locale id="de">
-            <resource path="haxeui-core/locale/de/dialog.properties" />
+            <resource path="haxeui-core/locale/de/std-strings.properties" />
         </locale>
-	<locale id="fr">
-            <resource path="haxeui-core/locale/fr/dialog.properties" />
+        <locale id="de_alt">
+            <resource path="haxeui-core/locale/de_alt/std-strings.properties" />
         </locale>
-	<locale id="it">
-            <resource path="haxeui-core/locale/it/dialog.properties" />
+        <locale id="fr">
+            <resource path="haxeui-core/locale/fr/std-strings.properties" />
+        </locale>
+        <locale id="it">
+            <resource path="haxeui-core/locale/it/std-strings.properties" />
         </locale>
     </locales>
 
