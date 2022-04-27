@@ -1,6 +1,7 @@
 package haxe.ui.components;
 
 import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.behaviours.ValueBehaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.InteractiveComponent;
@@ -75,6 +76,12 @@ class TextField extends InteractiveComponent {
      * If no icon is set, the text field will be displayed without any icon. The default is no icon.
      */
     @:clonable @:behaviour(IconBehaviour)              public var icon:String;
+    
+    /**
+     * The (zero based) position of the caret within the textfield
+     *
+     */
+    @:clonable @:behaviour(CaretIndexBehaviour)         public var caretIndex:Int;
 }
 
 //***********************************************************************************************************
@@ -249,6 +256,16 @@ private class IconBehaviour extends DataBehaviour {
             }
             icon.resource = _value.toString();
         }
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class CaretIndexBehaviour extends ValueBehaviour {
+    public override function get():Variant {
+        return _component.getTextInput().caretIndex;
+    }
+    public override function set(value:Variant) {
+        _component.getTextInput().caretIndex = value;
     }
 }
 

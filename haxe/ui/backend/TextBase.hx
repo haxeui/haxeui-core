@@ -56,6 +56,14 @@ class TextBase {
         return false;
     }
 
+    public var caretIndex(get, set):Int;
+    private function get_caretIndex():Int {
+        return 0;
+    }
+    private function set_caretIndex(value:Int):Int {
+        return value;
+    }
+    
     //***********************************************************************************************************
     // Validation functions
     //***********************************************************************************************************
