@@ -75,6 +75,7 @@
     border: none;
     background-color: $scrollbar-background-color;
     border-radius: 0;
+    opacity: 1;
 }
 
 .number-stepper .stepper-deinc:hover {
@@ -98,6 +99,7 @@
     border: none;
     background-color: $scrollbar-background-color;
     border-radius: 0;
+    opacity: 1;
 }
 
 .number-stepper .stepper-inc:hover {
@@ -180,6 +182,7 @@
     border: none;
     background-color: $scrollbar-background-color;
     border-radius: 0;
+    opacity: 1;
 }
 
 .option-stepper .stepper-deinc:hover {
@@ -203,6 +206,7 @@
     border: none;
     background-color: $scrollbar-background-color;
     border-radius: 0;
+    opacity: 1;
 }
 
 .option-stepper .stepper-inc:hover {
