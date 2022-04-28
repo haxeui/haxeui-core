@@ -21,10 +21,12 @@
     color: $hover-text-color;
 }
 
+/*
 .menubar-button:active {
     background-color: $selection-background-color-hover;
     color: $hover-text-color;
 }
+*/
 
 .menubar-button:down {
     background-color: $secondary-background-color;
@@ -52,24 +54,30 @@
     border: 1px solid $normal-border-color;
 }
 
+/*
 .menubar-button-no-children-active {
     background-color: $solid-background-color;
     border: none;
     color: $normal-text-color;
     vertical-align: center;
 }
+*/
 
+/*
 .menubar-button-no-children-active:hover {
     background-color: $secondary-background-color;
     color: $down-text-color;
     border: 1px solid $normal-border-color;
 }
+*/
 
+/*
 .menubar-button-no-children-active:down {
     background-color: $selection-background-color-hover;
     color: $down-text-color;
     border: none;
 }
+*/
 
 /************************************************************************
 ** MENU
