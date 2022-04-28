@@ -50,9 +50,11 @@ class FocusManager extends FocusManagerImpl {
     }
     
     public function pushView(view:Component) {
-        for (k in _lastFocuses.keys()) {
-            _lastFocuses.get(k).focus = false;
-            unapplyFocus(cast _lastFocuses.get(k));
+        if (hasFocusableItem(view)) {
+            for (k in _lastFocuses.keys()) {
+                _lastFocuses.get(k).focus = false;
+                unapplyFocus(cast _lastFocuses.get(k));
+            }
         }
         if (autoFocus == true) {
             focusOnFirstInteractive(view);
@@ -62,8 +64,19 @@ class FocusManager extends FocusManagerImpl {
 
     private function onViewReady(e:UIEvent) {
         e.target.unregisterEvent(UIEvent.READY, onViewReady);
-        focusOnFirstInteractive(e.target);
-        
+        if (hasFocusableItem(e.target)) {
+            for (k in _lastFocuses.keys()) {
+                _lastFocuses.get(k).focus = false;
+                unapplyFocus(cast _lastFocuses.get(k));
+            }
+            focusOnFirstInteractive(e.target);
+        }
+    }
+    
+    private function hasFocusableItem(view:Component):Bool {
+        var list = [];
+        buildFocusableList(view, list);
+        return list.length != 0;
     }
     
     private function focusOnFirstInteractive(view:Component) {
@@ -71,7 +84,9 @@ class FocusManager extends FocusManagerImpl {
         buildFocusableList(view, list);
         if (list.length > 0) {
             list[0].focus = true;
+            return list[0];
         }
+        return null;
     }
     
     public function removeView(view:Component) {
