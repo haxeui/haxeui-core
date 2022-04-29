@@ -19,11 +19,19 @@ class ScrollViewLayout extends DefaultLayout {
         var borderSize = this.borderSize;
         
         if (hscroll != null && hidden(hscroll) == false) {
+            #if haxeui_subpixel
+            hscroll.moveComponent(paddingLeft + borderSize, component.componentHeight - hscroll.componentHeight - paddingBottom + marginTop(hscroll) - borderSize);
+            #else
             hscroll.moveComponent(paddingLeft + borderSize, Math.fround(component.componentHeight - hscroll.componentHeight - paddingBottom + marginTop(hscroll) - borderSize));
+            #end
         }
 
         if (vscroll != null && hidden(vscroll) == false) {
+            #if haxeui_subpixel
+            vscroll.moveComponent(component.componentWidth - vscroll.componentWidth - paddingRight + marginLeft(vscroll) - borderSize, paddingTop + borderSize);
+            #else
             vscroll.moveComponent(Math.fround(component.componentWidth - vscroll.componentWidth - paddingRight + marginLeft(vscroll)) - borderSize, paddingTop + borderSize);
+            #end
         }
 
         var contents:Component = component.findComponent("scrollview-contents", false, "css");
