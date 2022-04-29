@@ -13,6 +13,7 @@ class Module {
     public var preload(default, default):Array<ModulePreloadEntry>;
     public var locales(default, default):Array<ModuleLocaleEntry>;
     public var actionInputSources(default, default):Array<ModuleActionInputSourceEntry>;
+    public var defines(default, default):Array<ModuleDefineEntry>;
 
     public function new() {
         resourceEntries = [];
@@ -23,6 +24,7 @@ class Module {
         preload = [];
         locales = [];
         actionInputSources = [];
+        defines = [];
     }
 
     public function validate() {
@@ -126,6 +128,14 @@ class ModuleLocaleResourceEntry {
 
 class ModuleActionInputSourceEntry {
     public var className(default, default):String;
+    
+    public function new() {
+    }
+}
+
+class ModuleDefineEntry {
+    public var name(default, default):String;
+    public var value(default, default):String;
     
     public function new() {
     }

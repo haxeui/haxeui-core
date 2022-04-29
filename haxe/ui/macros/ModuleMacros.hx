@@ -17,6 +17,7 @@ import haxe.ui.parsers.modules.ModuleParser;
 import haxe.ui.util.StringUtil;
 import sys.FileSystem;
 import sys.io.File;
+import haxe.macro.Compiler;
 #end
 
 @:access(haxe.ui.macros.ComponentMacros)
@@ -168,6 +169,10 @@ class ModuleMacros {
                 builder.add(macro
                     haxe.ui.actions.ActionManager.instance.registerInputSource(new $t())
                 );
+            }
+            
+            for (d in m.defines) {
+                Compiler.define(d.name, d.value);
             }
         }
 
