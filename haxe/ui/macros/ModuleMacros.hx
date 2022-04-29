@@ -2,7 +2,6 @@ package haxe.ui.macros;
 
 #if macro
 import haxe.ds.ArraySort;
-import haxe.ui.core.TypeMap;
 import haxe.ui.macros.ComponentMacros.BuildData;
 import haxe.io.Path;
 import haxe.macro.Context;
@@ -17,7 +16,6 @@ import haxe.ui.parsers.modules.ModuleParser;
 import haxe.ui.util.StringUtil;
 import sys.FileSystem;
 import sys.io.File;
-import haxe.macro.Compiler;
 #end
 
 @:access(haxe.ui.macros.ComponentMacros)
@@ -169,10 +167,6 @@ class ModuleMacros {
                 builder.add(macro
                     haxe.ui.actions.ActionManager.instance.registerInputSource(new $t())
                 );
-            }
-            
-            for (d in m.defines) {
-                Compiler.define(d.name, d.value);
             }
         }
 

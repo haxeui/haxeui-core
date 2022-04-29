@@ -250,17 +250,6 @@ class XMLParser extends ModuleParser {
                     entry.className = sourceNode.get("class");
                     module.actionInputSources.push(entry);
                 }
-            } else if (nodeName == "defines" && checkCondition(el, defines) == true) {
-                for (defineNode in el.elementsNamed("define")) {
-                    if (checkCondition(defineNode, defines) == false) {
-                        continue;
-                    }
-                    
-                    var entry:Module.ModuleDefineEntry = new Module.ModuleDefineEntry();
-                    entry.name = defineNode.get("name");
-                    entry.value = defineNode.get("value");
-                    module.defines.push(entry);
-                }                
             }
         }
 
