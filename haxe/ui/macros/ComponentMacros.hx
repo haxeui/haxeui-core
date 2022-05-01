@@ -254,6 +254,16 @@ class ComponentMacros {
         buildScriptHandlers(builder, buildData.namedComponents, buildData.scripts);
         
         if (buildRoot == false) {
+            if (classBuilder.hasInterface("haxe.ui.core.IDataComponent") == true && c.data != null) {
+                var ds = new haxe.ui.data.DataSourceFactory<Dynamic>().fromString(c.dataString, haxe.ui.data.ArrayDataSource);
+                var dsVarName = 'ds_root';
+                builder.add(macro var $dsVarName = new haxe.ui.data.ArrayDataSource<Dynamic>());
+                for (i in 0...ds.size) {
+                    var item = ds.get(i);
+                    builder.add(macro $i{dsVarName}.add($v{item}));
+                }
+                builder.add(macro (this : haxe.ui.core.IDataComponent).dataSource = $i{dsVarName});
+            }
             assignComponentProperties(builder, c, rootVarName, buildData);
         }
         
