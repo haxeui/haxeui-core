@@ -8,7 +8,6 @@ import haxe.ui.core.Component;
 import haxe.ui.core.Screen;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
-import haxe.ui.locale.LocaleManager;
 
 @:dox(hide) @:noCompletion
 class DialogBase extends Box {
@@ -137,10 +136,18 @@ class DialogBase extends Box {
             }
             Toolkit.callLater(function() {
                 handleVisibility(true);
+                centerDialogComponent(cast(this, Dialog));
+                if (autoCenterDialog) {
+                    Screen.instance.registerEvent(UIEvent.RESIZE, _onScreenResized);
+                }
             });
         });
     }
 
+    private function _onScreenResized(_) {
+        centerDialogComponent(cast this);
+    }
+    
     private var _buttonsCreated:Bool = false;
     private function createButtons() {
         if (_buttonsCreated == true) {
@@ -248,6 +255,7 @@ class DialogBase extends Box {
             Screen.instance.removeComponent(_overlay);
             _overlay = null;
         }
+        Screen.instance.unregisterEvent(UIEvent.RESIZE, _onScreenResized);
     }
     
     private function onContentResize(e) {
