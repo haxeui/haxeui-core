@@ -294,7 +294,6 @@ class ComponentValidation extends ComponentEvents {
     }
 
     private function validateComponentData() {
-        behaviours.validateData();
     }
 
     private function validateComponentLayout():Bool {

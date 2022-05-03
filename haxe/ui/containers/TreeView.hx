@@ -20,6 +20,7 @@ import haxe.ui.data.ArrayDataSource;
 import haxe.ui.data.DataSource;
 import haxe.ui.events.UIEvent;
 
+@:access(haxe.ui.containers.TreeViewNode)
 @:composite(TreeViewEvents, TreeViewBuilder)
 class TreeView extends ScrollView implements IDataComponent {
     public function new() {
@@ -105,7 +106,7 @@ class TreeView extends ScrollView implements IDataComponent {
         node.data = nodeData;
     }
     
-    private function getNodes():Array<TreeViewNode> {
+    public function getNodes():Array<TreeViewNode> {
         return findComponents(TreeViewNode, 3); // TODO: is this brittle? Will it always be 3?
     }
     

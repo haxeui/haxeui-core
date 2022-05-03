@@ -60,7 +60,7 @@ class TreeViewNode extends VBox {
         return foundNode;
     }
     
-    public function matchesPathPart(part:String, field:String = null):Bool {
+    private function matchesPathPart(part:String, field:String = null):Bool {
         if (field == null) { // lets try to guess a field to use in the path
             if (Reflect.hasField(this.data, "id")) {
                 field = "id";
@@ -91,7 +91,7 @@ class TreeViewNode extends VBox {
         return node;
     }
     
-    private function getNodes():Array<TreeViewNode> {
+    public function getNodes():Array<TreeViewNode> {
         return findComponents(TreeViewNode, 3); // TODO: is this brittle? Will it always be 3?
     }
     
@@ -137,7 +137,7 @@ class TreeViewNode extends VBox {
         return value;
     }
     
-    private var _data:Dynamic;
+    private var _data:Dynamic = null;
     public var data(get, set):Dynamic;
     private function get_data():Dynamic {
         return _data;
@@ -150,6 +150,30 @@ class TreeViewNode extends VBox {
         _data = value;
         syncChildNodes();
         invalidateComponentData();
+        return value;
+    }
+    
+    private override function get_text():String {
+        return _data.text;
+    }
+    private override function set_text(value:String):String {
+        if (_data == null) {
+            _data = {};
+        }
+        _data.text = value;
+        this.data = Reflect.copy(_data); // TEMP
+        return value;
+    }
+    
+    private override function get_icon():String {
+        return _data.icon;
+    }
+    private override function set_icon(value:String):String {
+        if (_data == null) {
+            _data = {};
+        }
+        _data.icon = value;
+        this.data = Reflect.copy(_data); // TEMP
         return value;
     }
     
@@ -254,8 +278,10 @@ private class TreeViewNodeBuilder extends CompositeBuilder {
         if (_expandCollapseIcon.hitTest(event.screenX, event.screenY)) {
             return;
         }
+
         var treeview = _node.findAncestor(TreeView);
         treeview.selectedNode = _node;
+        onExpandCollapseClicked(null);
     }
     
     private function onContainerDblClick(_) {
@@ -273,6 +299,10 @@ private class TreeViewNodeBuilder extends CompositeBuilder {
                 }
             }
         }
+    }
+    
+    public override function validateComponentData() {
+        _renderer.data = _node.data;
     }
     
     private function changeToExpandableRenderer() {

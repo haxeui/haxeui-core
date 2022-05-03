@@ -76,6 +76,10 @@ class CompositeBuilder {
         return false;
     }
 
+    public function validateComponentData() {
+        
+    }
+    
     public function applyStyle(style:Style) {
     }
 

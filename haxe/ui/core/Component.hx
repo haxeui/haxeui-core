@@ -1642,6 +1642,14 @@ class Component extends ComponentImpl implements IValidating {
         }
     }
 
+    private override function validateComponentData() {
+        behaviours.validateData();
+        
+        if (_compositeBuilder != null) {
+            _compositeBuilder.validateComponentData();
+        }
+    }
+    
     /**
      Return true if the size has changed.
     **/
