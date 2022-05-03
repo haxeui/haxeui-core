@@ -108,6 +108,9 @@ class DialogBase extends Box {
             _overlay.id = "modal-background";
             _overlay.addClass("modal-background");
             _overlay.percentWidth = _overlay.percentHeight = 100;
+            _overlay.onClick = function(_) {
+                hideDialog(DialogButton.CANCEL);
+            }
             if (dp != null) {
                 dp.addComponent(_overlay);
             } else {
