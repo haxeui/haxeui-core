@@ -146,8 +146,6 @@ class DataSource<T> {
         sortCustom(sortByFn.bind(_, _, field, direction));
     }
     
-    private static var regexAlpha = new EReg("[^a-zA-Z]", "g");
-    private static var regexNumeric = new EReg("[^0-9]", "g");
     private function sortByFn(o1:T, o2:T, field:String, direction:SortDirection):Int {
         var f1:Dynamic = o1;
         var f2:Dynamic = o2;
@@ -174,16 +172,8 @@ class DataSource<T> {
             high = -1;
             low = 1;
         }
-        
-        var alpha1 = regexAlpha.replace(f1, "");
-        var alpha2 = regexAlpha.replace(f2, "");
-        if (alpha1 == alpha2) {
-            var numeric1 = Std.parseInt(regexNumeric.replace(f1, ""));
-            var numeric2 = Std.parseInt(regexNumeric.replace(f2, ""));
-            return numeric1 == numeric2 ? 0 : numeric1 > numeric2 ? high : low;
-        }
-        
-        return alpha1 > alpha2 ? high : low;
+
+        return f1 > f2 ? high : low;
     }
     
     // overrides
