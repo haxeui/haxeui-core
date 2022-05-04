@@ -5,14 +5,10 @@ import haxe.ui.constants.SortDirection;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.SortEvent;
+import haxe.ui.events.UIEvent;
 
 @:composite(Events)
 class Column extends Button {
-
-    public function new() {
-        super();
-    }
-
     /**
      * The field on which the sortings will be based on.
      */
@@ -44,10 +40,10 @@ class Column extends Button {
      *
      */
     public var sortDirection(get, set):SortDirection;
-    private function get_sortDirection():String {
+    private function get_sortDirection():SortDirection {
         return _sortDirection;
     }
-    private function set_sortDirection(value:String):String {
+    private function set_sortDirection(value:SortDirection):SortDirection {
         if (value == _sortDirection) {
             return value;
         }
@@ -77,6 +73,13 @@ private class Events extends ButtonEvents  {
         super(column);
         _column = column;
         _column.registerEvent(MouseEvent.CLICK, onColumnClick);
+        _column.registerEvent(UIEvent.READY, function(_) {
+            if (_column.sortDirection != null) {
+                var sortEvent = new SortEvent(SortEvent.SORT_CHANGED);
+                sortEvent.direction = _column.sortDirection;
+                _column.dispatch(sortEvent);
+            }
+        });
     }
     
     private override function onMouseDown(event:MouseEvent) {
