@@ -122,10 +122,13 @@ class DragManager {
     ///////////////
 
     private function onMouseDown(e:MouseEvent) {
-        e.screenX *= Toolkit.scaleX;
-        e.screenY *= Toolkit.scaleY;
         // set current pending dragging component
         _currentComponent = _mouseTargetToDragTarget.get(e.target);
+        if (_currentComponent.parentComponent == null) {
+            e.screenX *= Toolkit.scaleX;
+            e.screenY *= Toolkit.scaleY;
+        }
+        
         _currentOptions = getDragOptions(_currentComponent);
 
         // set _mouseOffset to current mouse position
@@ -137,8 +140,10 @@ class DragManager {
     }
 
     private function onScreenCheckForDrag(e:MouseEvent) {
-        e.screenX *= Toolkit.scaleX;
-        e.screenY *= Toolkit.scaleY;
+        if (_currentComponent.parentComponent == null) {
+            e.screenX *= Toolkit.scaleX;
+            e.screenY *= Toolkit.scaleY;
+        }
         // if the distance the mouse has traveled is greater than the dragTolerance...
         if (MathUtil.distance(e.screenX - _currentComponent.left, e.screenY - _currentComponent.top, _mouseOffset.x, _mouseOffset.y) > _currentOptions.dragTolerance) {
             // stop listening for drag check
@@ -159,8 +164,10 @@ class DragManager {
 
     private function onScreenDrag(e:MouseEvent) {
         // Calculate bounds //
-        e.screenX *= Toolkit.scaleX;
-        e.screenY *= Toolkit.scaleY;
+        if (_currentComponent.parentComponent == null) {
+            e.screenX *= Toolkit.scaleX;
+            e.screenY *= Toolkit.scaleY;
+        }
         
         var event = new DragEvent(DragEvent.DRAG);
         if (_currentOptions.dragBounds != null) {
