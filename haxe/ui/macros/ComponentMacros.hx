@@ -794,10 +794,7 @@ class ComponentMacros {
         var varProp = bindingData.varProp;
         var propType = bindingData.propType;
         
-        if (propType == "String") {
-            bindingExpr = StringTools.replace(bindingExpr, "'", "\"");
-            bindingExpr = "'" + bindingExpr + "'";
-        } else if (StringTools.startsWith(bindingExpr, "${") && StringTools.endsWith(bindingExpr, "}")) {
+        if (StringTools.startsWith(bindingExpr, "${") && StringTools.endsWith(bindingExpr, "}")) {
             bindingExpr = bindingExpr.substring(2, bindingExpr.length - 1);
         }
         var expr = Context.parseInlineString(bindingExpr, Context.currentPos());
@@ -817,9 +814,27 @@ class ComponentMacros {
             
             var propList = dependants.get(dependantName);
             for (dependantProp in propList) {
-                ifBuilder.add(macro if (e.data == $v{dependantProp}) {
-                    $i{target}.$varProp = $e{expr};
-                });
+                if (propType == "string") {
+                    ifBuilder.add(macro if (e.data == $v{dependantProp}) {
+                        $i{target}.$varProp = Std.string($e{expr});
+                    });
+                } else if (propType == "bool") {
+                    ifBuilder.add(macro if (e.data == $v{dependantProp}) {
+                        $i{target}.$varProp = Std.string($e{expr}) == "true" || Std.string($e{expr}) == "1";
+                    });
+                } else if (propType == "float") {
+                    ifBuilder.add(macro if (e.data == $v{dependantProp}) {
+                        $i{target}.$varProp = Std.parseFloat(Std.string($e{expr}));
+                    });
+                } else if (propType == "int") {
+                    ifBuilder.add(macro if (e.data == $v{dependantProp}) {
+                        $i{target}.$varProp = Std.parseInt(Std.string($e{expr}));
+                    });
+                } else {
+                    ifBuilder.add(macro if (e.data == $v{dependantProp}) {
+                        $i{target}.$varProp = $e{expr};
+                    });
+                }
             }
             
             if (addLocalVars == true) {
