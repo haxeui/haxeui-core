@@ -1,5 +1,6 @@
 package haxe.ui.containers;
 
+import haxe.ui.Toolkit;
 import haxe.ui.actions.ActionType;
 import haxe.ui.behaviours.Behaviour;
 import haxe.ui.behaviours.DataBehaviour;
@@ -418,11 +419,14 @@ private class DataSourceBehaviour extends DataBehaviour {
                     _firstPass = false;
                     _component.invalidateComponentLayout();
                 }
+                dispatchChanged();
             }
+            
             _component.invalidateComponentLayout();
         } else {
             _component.invalidateComponentLayout();
         }
+        dispatchChanged();
     }
 
     public override function get():Variant {
@@ -431,6 +435,12 @@ private class DataSourceBehaviour extends DataBehaviour {
             set(_value);
         }
         return _value;
+    }
+    
+    private function dispatchChanged() {
+        Toolkit.callLater(function() {
+            _component.dispatch(new UIEvent(UIEvent.PROPERTY_CHANGE, false, "dataSource"));
+        });
     }
 }
 
