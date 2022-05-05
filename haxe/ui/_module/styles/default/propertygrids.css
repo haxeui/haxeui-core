@@ -45,6 +45,8 @@
 }
 
 .property-group-header-label {
+    vertical-align: center;
+    width: 100%;
 }
 
 .property-group-contents {

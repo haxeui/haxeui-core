@@ -10,6 +10,7 @@ import haxe.ui.components.TextField;
 import haxe.ui.containers.properties.Property.PropertyBuilder;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
+import haxe.ui.core.InteractiveComponent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
 
@@ -48,6 +49,10 @@ private class Events extends haxe.ui.events.Events {
     }
 
     private function onHeaderClicked(event:MouseEvent) {
+        var interactives = _target.findComponentsUnderPoint(event.screenX, event.screenY, InteractiveComponent);
+        if (interactives.length > 0) {
+            return;
+        }
         var header = _target.findComponent("property-group-header", Component);
         var contents = _target.findComponent("property-group-contents", Component);
         if (header.hasClass(":expanded")) {
@@ -153,6 +158,9 @@ private class Builder extends CompositeBuilder {
             _editorMap.set(editor, prop);
 
             return editor;
+        } else if (child != _propertyGroupHeader && child != _propertyGroupContents) {
+            _propertyGroupHeader.addComponent(child);
+            return child;
         }
 
         return null;
