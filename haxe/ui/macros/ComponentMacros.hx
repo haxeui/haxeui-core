@@ -546,15 +546,21 @@ class ComponentMacros {
                     var __this__ = $i{sh.generatedVarName};
                 });
                 
+                var expr = Context.parseInlineString(fixedCode, Context.currentPos());
+                var usedVars = [];
+                expr = ExprTools.map(expr, replaceThis);
+                expr = ExprTools.map(expr, replaceShortClassNames);
+                expr = ExprTools.map(expr, findVars.bind(usedVars));
+                
                 for (namedComponent in namedComponents.keys()) {
                     var details = namedComponents.get(namedComponent);
                     var safeId:String = StringUtil.capitalizeHyphens(namedComponent);
+                    if (usedVars.indexOf(safeId) == -1) {
+                        continue;
+                    }
                     scriptBuilder.add(macro var $safeId = $i{details.generatedVarName});
                 }
 
-                var expr = Context.parseInlineString(fixedCode, Context.currentPos());
-                expr = ExprTools.map(expr, replaceThis);
-                expr = ExprTools.map(expr, replaceShortClassNames);
                 scriptBuilder.add(expr);
                 // TODO: typed "event" param based on event name
                 builder.add(macro $i{sh.generatedVarName}.registerEvent($v{event}, function(event:haxe.ui.events.UIEvent) { $e{scriptBuilder.expr} }));
@@ -569,6 +575,15 @@ class ComponentMacros {
             case _:
                 ExprTools.map(e, replaceThis);
         }
+    }
+    
+    private static function findVars(list:Array<String>, e:Expr):Expr {
+        switch (e.expr) {
+            case EConst(CIdent(name)):
+                list.push(name);
+            case _:    
+        }
+        return ExprTools.map(e, findVars.bind(list));
     }
     
     private static function replaceShortClassNames(e:Expr):Expr {
