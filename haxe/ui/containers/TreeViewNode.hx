@@ -281,7 +281,6 @@ private class TreeViewNodeBuilder extends CompositeBuilder {
 
         var treeview = _node.findAncestor(TreeView);
         treeview.selectedNode = _node;
-        onExpandCollapseClicked(null);
     }
     
     private function onContainerDblClick(_) {
