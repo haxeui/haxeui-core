@@ -289,7 +289,12 @@ private class TreeViewNodeBuilder extends CompositeBuilder {
         treeview.selectedNode = _node;
     }
     
-    private function onContainerDblClick(_) {
+    private function onContainerDblClick(event:MouseEvent) {
+        var interactives = _node.findComponentsUnderPoint(event.screenX, event.screenY, InteractiveComponent);
+        if (interactives.length > 0) {
+            return;
+        }
+        
         onExpandCollapseClicked(null);
     }
     
