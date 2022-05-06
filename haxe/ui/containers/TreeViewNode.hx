@@ -6,6 +6,7 @@ import haxe.ui.containers.HBox;
 import haxe.ui.containers.VBox;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
+import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.ItemRenderer;
 import haxe.ui.events.MouseEvent;
 
@@ -279,6 +280,11 @@ private class TreeViewNodeBuilder extends CompositeBuilder {
             return;
         }
 
+        var interactives = _node.findComponentsUnderPoint(event.screenX, event.screenY, InteractiveComponent);
+        if (interactives.length > 0) {
+            return;
+        }
+        
         var treeview = _node.findAncestor(TreeView);
         treeview.selectedNode = _node;
     }
