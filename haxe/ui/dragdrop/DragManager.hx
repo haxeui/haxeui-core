@@ -171,8 +171,8 @@ class DragManager {
         
         var event = new DragEvent(DragEvent.DRAG);
         if (_currentOptions.dragBounds != null) {
-            var boundX = MathUtil.clamp(e.screenX, _currentOptions.dragBounds.left + _mouseOffset.x, _currentOptions.dragBounds.right - _currentComponent.actualComponentWidth + _mouseOffset.x);
-            var boundY = MathUtil.clamp(e.screenY, _currentOptions.dragBounds.top + _mouseOffset.y, _currentOptions.dragBounds.bottom - _currentComponent.actualComponentHeight + _mouseOffset.y);
+            var boundX = MathUtil.clamp(e.screenX, _currentOptions.dragBounds.left + _mouseOffset.x, _currentOptions.dragBounds.right - _currentComponent.width + _mouseOffset.x);
+            var boundY = MathUtil.clamp(e.screenY, _currentOptions.dragBounds.top + _mouseOffset.y, _currentOptions.dragBounds.bottom - _currentComponent.height + _mouseOffset.y);
             event.left = boundX - _mouseOffset.x;
             event.top = boundY - _mouseOffset.y;
         } else {
