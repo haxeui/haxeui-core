@@ -364,6 +364,14 @@ class Style {
                     fontUnderline = ValueTools.bool(v.value);
                 case "font-italic":
                     fontItalic = ValueTools.bool(v.value);
+                case "font-style":
+                    if (ValueTools.string(v.value) != null) {
+                        fontItalic = ValueTools.string(v.value).toLowerCase() == "italic";
+                    }
+                case "text-decoration":
+                    if (ValueTools.string(v.value) != null) {
+                        fontUnderline = ValueTools.string(v.value).toLowerCase() == "underline";
+                    }
 
                 case "cursor":
                     cursor = ValueTools.string(v.value);
