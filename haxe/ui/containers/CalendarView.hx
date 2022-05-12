@@ -9,10 +9,11 @@ import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.events.Events;
+import haxe.ui.layouts.VerticalLayout;
 import haxe.ui.util.Variant;
 
-@:composite(Events, Builder)
-class CalendarView extends VBox {
+@:composite(Events, VerticalLayout, Builder)
+class CalendarView extends Box {
     public static var MONTH_NAMES:Array<String> = ["January", "Febuary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
     public static var DATE_FORMAT:String = "%Y-%m-%d";
