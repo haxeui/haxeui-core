@@ -216,12 +216,6 @@ private class Builder extends CompositeBuilder {
         }
         
         var c:Component = null;
-        #if !haxeui_hxwidgets
-        if (PropertyGrid.componentFromProperty != null) {
-            c = PropertyGrid.componentFromProperty(property);
-        }
-        #end
-        
         if (c == null) {
             var type = property.type;
             switch (type) {

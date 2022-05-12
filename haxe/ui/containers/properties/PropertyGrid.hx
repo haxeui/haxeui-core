@@ -8,10 +8,6 @@ import haxe.ui.core.Component;
 
 @:composite(Events, Builder)
 class PropertyGrid extends ScrollView {
-    #if !haxeui_hxwidgets
-    public static var componentFromProperty:Property->Component = null;
-    #end
-    
     @:behaviour(DefaultBehaviour)                    public var popupStyleNames:String;
 }
 
