@@ -27,7 +27,10 @@ class Switch extends Component {
     @:clonable @:behaviour(SelectedBehaviour)         public var selected:Bool;
 
 
-    @:clonable @:behaviour(DefaultBehaviour)          public var value:Variant;
+    /**
+     The value of this switch, which is equivelant to its selected property
+    **/
+    @:clonable @:value(selected)                      public var value:Dynamic;
 
     /**
      * The text that appears on the switch when created
