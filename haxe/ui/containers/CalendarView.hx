@@ -21,7 +21,7 @@ class CalendarView extends Box {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:behaviour(SelectedDateBehaviour)      public var selectedDate:Date;
+    @:behaviour(SelectedDateBehaviour, Date.now())      public var selectedDate:Date;
 }
 
 private class SelectedDateBehaviour extends DefaultBehaviour {
