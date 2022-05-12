@@ -149,6 +149,7 @@ private class Builder extends CompositeBuilder {
         _calendarView.addComponent(box);
 
         var calendar = new Calendar();
+        calendar.horizontalAlign = "center";
         _calendarView.addComponent(calendar);
     }
 }
