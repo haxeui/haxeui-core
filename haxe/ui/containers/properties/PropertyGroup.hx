@@ -209,53 +209,65 @@ private class Builder extends CompositeBuilder {
     }
 
     private function buildEditor(property:Property):Component {
-        var type = property.type;
-
+        if (cast(property._compositeBuilder, PropertyBuilder).editor != null) {
+            var editor = cast(property._compositeBuilder, PropertyBuilder).editor;
+            editor.value = property.value;
+            return editor;
+        }
+        
         var c:Component = null;
+        #if !haxeui_hxwidgets
+        if (PropertyGrid.componentFromProperty != null) {
+            c = PropertyGrid.componentFromProperty(property);
+        }
+        #end
+        
+        if (c == null) {
+            var type = property.type;
+            switch (type) {
+                case "text":
+                    c = new TextField();
+                    c.value = property.value;
 
-        switch (type) {
-            case "text":
-                c = new TextField();
-                c.value = property.value;
+                case "boolean":
+                    c = new CheckBox();
+                    c.value = property.value;
 
-            case "boolean":
-                c = new CheckBox();
-                c.value = property.value;
+                case "int" | "float" | "number":
+                    var stepper = new NumberStepper();
+                    c = stepper;
+                    c.value = property.value;
+                    if (property.min != null) {
+                        stepper.min = property.min;
+                    }
+                    if (property.max != null) {
+                        stepper.max = property.max;
+                    }
+                    if (property.step != null) {
+                        stepper.step = property.step;
+                    }
+                    if (property.precision != null) {
+                        stepper.precision = property.precision;
+                    }
 
-            case "int" | "float" | "number":
-                var stepper = new NumberStepper();
-                c = stepper;
-                c.value = property.value;
-                if (property.min != null) {
-                    stepper.min = property.min;
-                }
-                if (property.max != null) {
-                    stepper.max = property.max;
-                }
-                if (property.step != null) {
-                    stepper.step = property.step;
-                }
-                if (property.precision != null) {
-                    stepper.precision = property.precision;
-                }
+                case "list":
+                    c = new DropDown();
+                    cast(c, DropDown).dataSource = property.dataSource;
+                    switch (Type.typeof(property.value)) {
+                        case TInt:
+                            cast(c, DropDown).selectedIndex = property.value;
+                        case _:   
+                            c.value = property.value;
+                    }
 
-            case "list":
-                c = new DropDown();
-                cast(c, DropDown).dataSource = property.dataSource;
-                switch (Type.typeof(property.value)) {
-                    case TInt:
-                        cast(c, DropDown).selectedIndex = property.value;
-                    case _:   
-                        c.value = property.value;
-                }
+                case "date":
+                    c = new DropDown();
+                    cast(c, DropDown).type = "date";
 
-            case "date":
-                c = new DropDown();
-                cast(c, DropDown).type = "date";
-
-            default:
-                c = new TextField();
-                c.value = property.value;
+                default:
+                    c = new TextField();
+                    c.value = property.value;
+            }
         }
 
         return c;

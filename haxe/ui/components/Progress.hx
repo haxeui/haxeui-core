@@ -4,12 +4,13 @@ import haxe.ui.core.Component;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.core.IDirectionalComponent;
 import haxe.ui.behaviours.ValueBehaviour;
+import haxe.ui.core.IValueComponent;
 import haxe.ui.util.Variant;
 
 /**
  * A progress bar that starts from 0 and ends at 100.
  */
-class Progress extends Range implements IDirectionalComponent {
+class Progress extends Range implements IDirectionalComponent implements IValueComponent {
 
     /**
      * Creates a new progress bar.

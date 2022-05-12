@@ -5,6 +5,7 @@ import haxe.ui.behaviours.Behaviour;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
+import haxe.ui.core.IValueComponent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.events.Events;
@@ -12,7 +13,7 @@ import haxe.ui.util.MathUtil;
 import haxe.ui.util.Variant;
 
 @:composite(Events, Builder)
-class Stepper extends VBox {
+class Stepper extends VBox implements IValueComponent {
     @:clonable @:behaviour(PosBehaviour)                public var pos:Float;
     @:clonable @:value(pos)                             public var value:Dynamic;
     @:clonable @:behaviour(DefaultBehaviour, 1)         public var step:Float;

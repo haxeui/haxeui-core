@@ -1,6 +1,7 @@
 package haxe.ui.core;
 
 import haxe.ui.behaviours.DefaultBehaviour;
+import haxe.ui.core.IValueComponent;
 import haxe.ui.events.FocusEvent;
 import haxe.ui.focus.FocusManager;
 import haxe.ui.focus.IFocusable;
@@ -9,7 +10,7 @@ import haxe.ui.focus.IFocusable;
  A component that can be interacted with and gain input focus via either mouse or keyboard
 **/
 @:access(haxe.ui.events.Events)
-class InteractiveComponent extends Component implements IFocusable {
+class InteractiveComponent extends Component implements IFocusable implements IValueComponent {
     public var actionRepeatInterval = 100;
     //***********************************************************************************************************
     // Public API
