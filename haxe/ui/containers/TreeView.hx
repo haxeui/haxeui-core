@@ -32,7 +32,7 @@ class TreeView extends ScrollView implements IDataComponent {
     private function get_dataSource():DataSource<Dynamic> {
         if (_dataSource == null) {
             _dataSource = new ArrayDataSource<Dynamic>();
-            _dataSource.onChange = onDataChanged;
+            _dataSource.onDataSourceChange = onDataChanged;
         }
         return _dataSource;
     }
@@ -40,7 +40,7 @@ class TreeView extends ScrollView implements IDataComponent {
         var dataSource:DataSource<Dynamic> = value;
         if (dataSource != null) {
             _dataSource = dataSource;
-            _dataSource.onChange = onDataChanged;
+            _dataSource.onDataSourceChange = onDataChanged;
         }
         syncNodes();
         return value;

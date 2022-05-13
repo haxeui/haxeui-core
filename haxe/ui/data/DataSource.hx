@@ -4,7 +4,8 @@ import haxe.ui.constants.SortDirection;
 import haxe.ui.data.transformation.IItemTransformer;
 
 class DataSource<T> {
-    public var onChange:Void->Void;
+    @:noCompletion
+    public var onDataSourceChange:Void->Void;
     public var transformer:IItemTransformer<T>;
 
     private var _changed:Bool;
@@ -14,6 +15,7 @@ class DataSource<T> {
     public var onUpdate:Int->T->Void = null;
     public var onRemove:T->Void = null;
     public var onClear:Void->Void = null;
+    public var onChange:Void->Void = null;
 
     public function new(transformer:IItemTransformer<T> = null) {
         this.transformer = transformer;
@@ -30,9 +32,7 @@ class DataSource<T> {
         _allowCallbacks = value;
         if (_allowCallbacks == true && _changed == true) {
             _changed = false;
-            if (onChange != null) {
-                onChange();
-            }
+            onInternalChange();
         }
         return value;
     }
@@ -55,7 +55,7 @@ class DataSource<T> {
     public function get(index:Int):T {
         var r:T = handleGetItem(index);
         if ((r is IDataItem)) {
-            cast(r, IDataItem).onDataSourceChanged = onChange;
+            cast(r, IDataItem).onDataSourceChanged = onDataItemChange;
         }
         if (transformer != null) {
             r = transformer.transformFrom(r);
@@ -123,23 +123,38 @@ class DataSource<T> {
         }
     }
 
+    private var _filterFn:Int->T->Bool = null;
     public function clearFilter() {
+        _filterFn = null;
+        handleClearFilter();
     }
     
     // callback (fn) should return true if the element should not be filtered out
     public function filter(fn:Int->T->Bool) {
+        _filterFn = fn;
+        handleFilter(fn);
+    }
+    
+    public var isFiltered(get, null):Bool;
+    private function get_isFiltered():Bool {
+        return (_filterFn != null);
+    }
+    
+    private function handleClearFilter() {
+    }
+    
+    private function handleFilter(fn:Int->T->Bool) {
     }
     
     private function handleChanged() {
         _changed = true;
-        if (_allowCallbacks == true && onChange != null) {
+        if (_allowCallbacks == true) {
             _changed = false;
-            onChange();
+            onInternalChange();
         }
     }
 
     public function sortCustom(fn:T->T->Int) {
-        
     }
     
     public function sort(field:String = null, direction:SortDirection = null) {
@@ -206,7 +221,6 @@ class DataSource<T> {
     }
     
     private function handleSetData(v:Any) {
-        
     }
     
     private function handleClear() {
@@ -227,6 +241,23 @@ class DataSource<T> {
         return c;
     }
 
+    private function onDataItemChange() {
+        if (_filterFn != null) {
+            handleFilter(_filterFn);
+        } else {
+            onInternalChange();
+        }
+    }
+    
+    private function onInternalChange() {
+        if (onDataSourceChange != null) {
+            onDataSourceChange();
+        }
+        if (onChange != null) {
+            onChange();
+        }
+    }
+    
     // helpers
     public static function fromString<T>(data:String, type:Class<DataSource<T>>):DataSource<T> {
         return null;

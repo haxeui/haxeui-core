@@ -12,18 +12,15 @@ class ArrayDataSource<T> extends DataSource<T> {
 
     // overrides
     private var _filteredArray:Array<T> = null;
-    public override function clearFilter() {
+    private override function handleClearFilter() {
         if (_filteredArray == null) {
             return;
         }
-        _filterFn = null;
         _filteredArray = null;
         handleChanged();
     }
     
-    private var _filterFn:Int->T->Bool = null;
-    public override function filter(fn:Int->T->Bool) {
-        _filterFn = fn;
+    private override function handleFilter(fn:Int->T->Bool) {
         _filteredArray = [];
         var index = 0;
         for (item in _array) {

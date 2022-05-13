@@ -412,7 +412,7 @@ private class DataSourceBehaviour extends DataBehaviour {
         super.set(value);
         var dataSource:DataSource<Dynamic> = _value;
         if (dataSource != null) {
-            dataSource.onChange = function() {
+            dataSource.onDataSourceChange = function() {
                 _component.invalidateComponentLayout();
                 if (_firstPass == true) {
                     _component.syncComponentValidation();

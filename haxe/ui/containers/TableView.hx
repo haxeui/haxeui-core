@@ -610,7 +610,7 @@ private class DataSourceBehaviour extends DataBehaviour {
         var dataSource:DataSource<Dynamic> = _value;
         if (dataSource != null) {
             dataSource.transformer = new NativeTypeTransformer();
-            dataSource.onChange = function() {
+            dataSource.onDataSourceChange = function() {
                 _component.invalidateComponentLayout();
                 if (_firstPass == true) {
                     _component.syncComponentValidation();
