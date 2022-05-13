@@ -317,7 +317,9 @@ private class ListDropDownHandler extends DropDownHandler {
         }
         
         if (dispatchChanged) {
-            _dropdown.dispatch(new UIEvent(UIEvent.CHANGE, false, data));
+            var event = new UIEvent(UIEvent.CHANGE, false, data);
+            event.value = Variant.fromDynamic(data);
+            _dropdown.dispatch(event);
         }
 
         return value;
@@ -452,7 +454,9 @@ private class ListDropDownHandler extends DropDownHandler {
         
         if (eventsPaused == false) {
             cast(_dropdown._internalEvents, DropDownEvents).hideDropDown();
-            _dropdown.dispatch(new UIEvent(UIEvent.CHANGE, false, selectedItem));
+            var event = new UIEvent(UIEvent.CHANGE, false, selectedItem);
+            event.value = Variant.fromComponent(selectedItem);
+            _dropdown.dispatch(event);
         }
     }
 
