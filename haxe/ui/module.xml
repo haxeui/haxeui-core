@@ -154,11 +154,11 @@
             <style resource="haxeui-core/styles/default/frames.css" />
             <style resource="haxeui-core/styles/default/splitters.css" />
             <style resource="haxeui-core/styles/default/tooltips.css" />
-			<style resource="haxeui-core/styles/default/rules.css" />
-			<style resource="haxeui-core/styles/default/sidebars.css" />
-			<style resource="haxeui-core/styles/default/cards.css" />
-			<style resource="haxeui-core/styles/default/treeviews.css" />
-			<style resource="haxeui-core/styles/default/last.css" />
+            <style resource="haxeui-core/styles/default/rules.css" />
+            <style resource="haxeui-core/styles/default/sidebars.css" />
+            <style resource="haxeui-core/styles/default/cards.css" />
+            <style resource="haxeui-core/styles/default/treeviews.css" />
+            <style resource="haxeui-core/styles/default/last.css" />
         </default>
         <dark parent="default">
             <!-- normal  -->
