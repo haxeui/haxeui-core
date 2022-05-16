@@ -455,7 +455,7 @@ private class ListDropDownHandler extends DropDownHandler {
         if (eventsPaused == false) {
             cast(_dropdown._internalEvents, DropDownEvents).hideDropDown();
             var event = new UIEvent(UIEvent.CHANGE, false, selectedItem);
-            event.value = Variant.fromComponent(selectedItem);
+            event.value = Variant.fromDynamic(selectedItem);
             _dropdown.dispatch(event);
         }
     }
