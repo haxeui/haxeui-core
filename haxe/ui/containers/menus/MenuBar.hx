@@ -142,12 +142,6 @@ private class Events extends haxe.ui.events.Events {
 
         hideCurrentMenu();
         
-        for (button in builder._buttons) {
-            if (button.hasClass("menubar-button-no-children")) {
-                button.swapClass("menubar-button-no-children-active", "menubar-button-no-children");
-            }
-        }
-        
         cast(menu._internalEvents, MenuEvents).button = target;
         if (menu.hasEvent(UIEvent.CLOSE, onMenuClose) == false) {
             menu.registerEvent(UIEvent.CLOSE, onMenuClose);
