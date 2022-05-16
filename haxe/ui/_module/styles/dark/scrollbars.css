@@ -1,0 +1,74 @@
+/************************************************************************
+** CLASSIC VARIANTS
+*************************************************************************/
+.classic-scrolls .scroll,
+.scroll.classic-scrolls {
+    background-color: #2c2f30;
+    border:none;
+}
+
+.classic-scrolls .scroll .button,
+.scroll.classic-scrolls .button{
+    background-color: #2c2f30;
+    border:none;
+}
+
+.classic-scrolls .scroll .thumb,
+.scroll.classic-scrolls .thumb {
+    background-color: #3d4042;
+}
+
+.classic-scrolls .scroll .thumb:hover,
+.scroll.classic-scrolls .thumb:hover {
+    background-color: #45484a;
+}
+
+.classic-scrolls .scroll .thumb:down,
+.scroll.classic-scrolls .thumb:down {
+    background-color: #45484a;
+}
+
+.classic-scrolls .scroll .thumb:disabled,
+.scroll.classic-scrolls .thumb:disabled {
+    background-color: #333738;
+}
+
+.classic-scrolls .vertical-scroll .deinc,
+.vertical-scroll.classic-scrolls .deinc {
+    icon: "haxeui-core/styles/shared/up-arrow-light.png";
+}
+
+.classic-scrolls .vertical-scroll .deinc:down,
+.vertical-scroll.classic-scrolls .deinc:down {
+    icon: "haxeui-core/styles/shared/up-arrow-bright.png";
+}
+
+.classic-scrolls .vertical-scroll .inc,
+.vertical-scroll.classic-scrolls .inc {
+    icon: "haxeui-core/styles/shared/down-arrow-light.png";
+}
+
+.classic-scrolls .vertical-scroll .inc:down,
+.vertical-scroll.classic-scrolls .inc:down {
+    icon: "haxeui-core/styles/shared/down-arrow-bright.png";
+}
+
+.classic-scrolls .horizontal-scroll .deinc,
+.horizontal-scroll.classic-scrolls .deinc {
+    icon: "haxeui-core/styles/shared/left-arrow-light.png";
+}
+
+.classic-scrolls .horizontal-scroll .deinc:down,
+.horizontal-scroll.classic-scrolls .deinc:down {
+    icon: "haxeui-core/styles/shared/left-arrow-bright.png";
+}
+
+.classic-scrolls .horizontal-scroll .inc,
+.horizontal-scroll.classic-scrolls .inc {
+    icon: "haxeui-core/styles/shared/right-arrow-light.png";
+}
+
+.classic-scrolls .horizontal-scroll .inc:down,
+.horizontal-scroll.classic-scrolls .inc:down {
+    icon: "haxeui-core/styles/shared/right-arrow-bright.png";
+}
