@@ -17,8 +17,8 @@
 }
 
 .menubar-button:hover {
-    background-color: $selection-background-color-hover;
-    color: $hover-text-color;
+    background-color: $selection-background-color;
+    color: $selection-text-color;
 }
 
 /*
@@ -44,8 +44,8 @@
 }
 
 .menubar-button-no-children:hover {
-    background-color: $selection-background-color-hover;
-    color: $hover-text-color;
+    background-color: $selection-background-color;
+    color: $selection-text-color;
 }
 
 .menubar-button-no-children:down {
@@ -53,31 +53,6 @@
     color: $down-text-color;
     border: 1px solid $normal-border-color;
 }
-
-/*
-.menubar-button-no-children-active {
-    background-color: $solid-background-color;
-    border: none;
-    color: $normal-text-color;
-    vertical-align: center;
-}
-*/
-
-/*
-.menubar-button-no-children-active:hover {
-    background-color: $secondary-background-color;
-    color: $down-text-color;
-    border: 1px solid $normal-border-color;
-}
-*/
-
-/*
-.menubar-button-no-children-active:down {
-    background-color: $selection-background-color-hover;
-    color: $down-text-color;
-    border: none;
-}
-*/
 
 /************************************************************************
 ** MENU
@@ -131,11 +106,11 @@
 }
 
 .menuitem:hover, .menuitem:selected {
-    background-color: $selection-background-color-hover;
+    background-color: $selection-background-color;
 }
 
 .menuitem .label:hover, .menuitem .label:selected {
-    color: $hover-text-color;
+    color: $selection-text-color;
 }
 
 .menuitem-expandable {
