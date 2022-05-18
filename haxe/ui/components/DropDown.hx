@@ -676,7 +676,7 @@ class DropDownEvents extends ButtonEvents {
             var filler:Component = _wrapper.findComponent("dropdown-filler", false);
             if (cx > 0 && filler != null) {
                 _wrapper.addClass("dropdown-popup-expanded");
-                cx += 2;
+                cx += 1;
                 filler.width = cx;
                 filler.left = _wrapper.width - cx;
                 filler.hidden = false;

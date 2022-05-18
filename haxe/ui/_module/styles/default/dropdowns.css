@@ -27,6 +27,11 @@
     border-top-color: $down-border-color;
 }
 
+.dropdown-filler {
+    background-color: $accent-color;
+    height: 1px;
+}
+
 .dropdown-search-container {
     spacing: 0;
 }
