@@ -76,6 +76,9 @@ class LocaleManager {
         }
         
         var entry = propMap.get(prop);
+        if (entry == null) {
+            return null;
+        }
         return entry.expr;
     }
     
