@@ -33,22 +33,22 @@ class ScrollView extends InteractiveComponent implements IScrollView {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:behaviour(Virtual)                                public var virtual:Bool;
-    @:behaviour(ContentLayoutName, "vertical")          public var contentLayoutName:String;
-    @:behaviour(ContentWidth)                           public var contentWidth:Null<Float>;
-    @:behaviour(PercentContentWidth)                    public var percentContentWidth:Null<Float>;
-    @:behaviour(ContentHeight)                          public var contentHeight:Null<Float>;
-    @:behaviour(PercentContentHeight)                   public var percentContentHeight:Null<Float>;
-    @:behaviour(HScrollPos)                             public var hscrollPos:Float;
-    @:behaviour(HScrollMax)                             public var hscrollMax:Float;
-    @:behaviour(HScrollPageSize)                        public var hscrollPageSize:Float;
-    @:behaviour(VScrollPos)                             public var vscrollPos:Float;
-    @:behaviour(VScrollMax)                             public var vscrollMax:Float;
-    @:behaviour(VScrollPageSize)                        public var vscrollPageSize:Float;
-    @:behaviour(ScrollModeBehaviour, ScrollMode.DRAG)   public var scrollMode:ScrollMode;
-    @:behaviour(GetContents)                            public var contents:Component;
-    @:behaviour(DefaultBehaviour)                       public var autoHideScrolls:Bool;
-    @:behaviour(DefaultBehaviour, true)                 public var allowAutoScroll:Bool;
+    @:clonable @:behaviour(Virtual)                                public var virtual:Bool;
+    @:clonable @:behaviour(ContentLayoutName, "vertical")          public var contentLayoutName:String;
+    @:clonable @:behaviour(ContentWidth)                           public var contentWidth:Null<Float>;
+    @:clonable @:behaviour(PercentContentWidth)                    public var percentContentWidth:Null<Float>;
+    @:clonable @:behaviour(ContentHeight)                          public var contentHeight:Null<Float>;
+    @:clonable @:behaviour(PercentContentHeight)                   public var percentContentHeight:Null<Float>;
+    @:clonable @:behaviour(HScrollPos)                             public var hscrollPos:Float;
+    @:clonable @:behaviour(HScrollMax)                             public var hscrollMax:Float;
+    @:clonable @:behaviour(HScrollPageSize)                        public var hscrollPageSize:Float;
+    @:clonable @:behaviour(VScrollPos)                             public var vscrollPos:Float;
+    @:clonable @:behaviour(VScrollMax)                             public var vscrollMax:Float;
+    @:clonable @:behaviour(VScrollPageSize)                        public var vscrollPageSize:Float;
+    @:clonable @:behaviour(ScrollModeBehaviour, ScrollMode.DRAG)   public var scrollMode:ScrollMode;
+    @:clonable @:behaviour(GetContents)                            public var contents:Component;
+    @:clonable @:behaviour(DefaultBehaviour)                       public var autoHideScrolls:Bool;
+    @:clonable @:behaviour(DefaultBehaviour, true)                 public var allowAutoScroll:Bool;
     @:call(EnsureVisible)                               public function ensureVisible(component:Component):Void;
 
     //***********************************************************************************************************
