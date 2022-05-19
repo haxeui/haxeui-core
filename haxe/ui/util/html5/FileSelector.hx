@@ -1,10 +1,11 @@
 package haxe.ui.util.html5;
 
+import haxe.ui.containers.dialogs.Dialogs.FileDialogExtensionInfo;
+import haxe.ui.containers.dialogs.Dialogs.SelectedFileInfo;
+
 #if js
 
 import haxe.io.Bytes;
-import haxe.ui.containers.dialogs.Dialogs.FileDialogExtensionInfo;
-import haxe.ui.containers.dialogs.Dialogs.SelectedFileInfo;
 import js.Browser;
 import js.html.FileReader;
 import js.html.InputElement;
@@ -171,7 +172,7 @@ class FileSelector {
     public function new() {
     }
     
-    public function selectFile(callback:Bool->Array<SelectedFileInfo>->Void, readMode:ReadMode = None, multiple:Bool = false, extensions:Array<FileDialogExtensionInfo> = null) {
+    public function selectFile(callback:Bool->Array<SelectedFileInfo>->Void, readMode:String = "none", multiple:Bool = false, extensions:Array<FileDialogExtensionInfo> = null) {
     }
 }
 #end
