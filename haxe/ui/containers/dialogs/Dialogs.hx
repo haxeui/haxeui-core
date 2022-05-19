@@ -1,12 +1,25 @@
 package haxe.ui.containers.dialogs;
 
-import haxe.ui.backend.SelectFileDialogBase.SelectFileDialogOptions;
-import haxe.ui.backend.SelectFileDialogBase.SelectedFileInfo;
+import haxe.io.Bytes;
+import haxe.ui.backend.OpenFileDialogBase.OpenFileDialogOptions;
 import haxe.ui.containers.dialogs.Dialog.DialogButton;
 import haxe.ui.containers.dialogs.Dialog.DialogEvent;
 import haxe.ui.containers.dialogs.MessageBox.MessageBoxType;
-import haxe.ui.containers.dialogs.SelectFileDialog;
+import haxe.ui.containers.dialogs.OpenFileDialog;
 import haxe.ui.core.Component;
+
+typedef FileDialogExtensionInfo = {
+    @:optional var extension:String;
+    @:optional var label:String;
+}
+
+typedef SelectedFileInfo = {
+    var name:String;
+    @:optional var fullPath:String;
+    @:optional var text:String;
+    @:optional var bytes:Bytes;
+    var isBinary:Bool;
+}
 
 class Dialogs {
     public static function messageBox(message:String, title:String = null, type:MessageBoxType = null, modal:Bool = true, callback:DialogButton->Void = null):Dialog {
@@ -59,8 +72,8 @@ class Dialogs {
         return dialog;
     }
     
-    public static function selectFile(callback:DialogButton->Array<SelectedFileInfo>->Void, options:SelectFileDialogOptions = null) {
-        var dialog = new SelectFileDialog();
+    public static function openFile(callback:DialogButton->Array<SelectedFileInfo>->Void, options:OpenFileDialogOptions = null) {
+        var dialog = new OpenFileDialog();
         dialog.callback = callback;
         dialog.options = options;
         dialog.show();
