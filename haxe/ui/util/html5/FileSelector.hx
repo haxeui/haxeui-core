@@ -11,22 +11,22 @@ import js.html.InputElement;
 
 using StringTools;
 
-enum ReadMode {
-    None;
-    Text;
-    Binary;
+class ReadMode {
+    public static inline var None:String = "none";
+    public static inline var Text:String = "text";
+    public static inline var Binary:String = "binary";
 }
 
 @:noCompletion
 class FileSelector {
     private var _fileInput:InputElement;
-    private var _readMode:ReadMode = None;
+    private var _readMode:String = ReadMode.None;
     private var _callback:Bool->Array<SelectedFileInfo>->Void;
     
     public function new() {
     }
     
-    public function selectFile(callback:Bool->Array<SelectedFileInfo>->Void, readMode:ReadMode = None, multiple:Bool = false, extensions:Array<FileDialogExtensionInfo> = null) {
+    public function selectFile(callback:Bool->Array<SelectedFileInfo>->Void, readMode:String = "none", multiple:Bool = false, extensions:Array<FileDialogExtensionInfo> = null) {
         _callback = callback;
         _readMode = readMode;
         createFileInput(multiple, extensions);
