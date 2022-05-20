@@ -35,7 +35,7 @@ private class Builder extends CompositeBuilder {
         label.scriptAccess = false;
         _component.addComponent(label);
         
-        var line = new Component();
+        var line = new HorizontalRule();
         line.addClasses(["section-line", "line"]);
         line.scriptAccess = false;
         _component.addComponent(line);
