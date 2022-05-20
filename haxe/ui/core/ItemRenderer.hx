@@ -171,7 +171,7 @@ class ItemRenderer extends Box {
                 var propValue = TypeConverter.convertTo(v, TypeMap.getTypeInfo(c.className, "value"));
                 c.value = propValue;
 
-                if ((c is InteractiveComponent)) {
+                if ((c is InteractiveComponent) || (c is ItemRenderer)) {
                     if (c.hasEvent(UIEvent.CHANGE, onItemChange) == false) {
                         c.registerEvent(UIEvent.CHANGE, onItemChange);
                     }
