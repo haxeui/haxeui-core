@@ -33,6 +33,10 @@
     padding: 10px;
 }
 
+.dialog-content-padding {
+    padding: 10px;
+}
+
 .dialog.no-padding .dialog-content {
     padding: 0px;
 }
