@@ -190,8 +190,8 @@ class ToolTipManager {
             y = _lastMouseEvent.screenY - h - (_toolTip.marginTop / 2);
         }
 
-        _toolTip.left = x;
-        _toolTip.top = y;
+        _toolTip.left = x*Toolkit.scale;
+        _toolTip.top = y*Toolkit.scale;
     }
 
     private function hideToolTip() {
