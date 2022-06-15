@@ -134,6 +134,7 @@ private class Events extends ScrollViewEvents {
         var instance:ItemRenderer = cast(e.data, ItemRenderer);
         instance.registerEvent(MouseEvent.MOUSE_DOWN, onRendererMouseDown);
         instance.registerEvent(MouseEvent.CLICK, onRendererClick);
+        instance.registerEvent(MouseEvent.RIGHT_CLICK, onRendererClick);
         if (_tableview.selectedIndices.indexOf(instance.itemIndex) != -1) {
             var builder:Builder = cast(_tableview._compositeBuilder, Builder);
             builder.addItemRendererClass(instance, ":selected");
@@ -144,6 +145,7 @@ private class Events extends ScrollViewEvents {
         var instance:ItemRenderer = cast(e.data, ItemRenderer);
         instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onRendererMouseDown);
         instance.unregisterEvent(MouseEvent.CLICK, onRendererClick);
+        instance.unregisterEvent(MouseEvent.RIGHT_CLICK, onRendererClick);
         if (_tableview.selectedIndices.indexOf(instance.itemIndex) != -1) {
             var builder:Builder = cast(_tableview._compositeBuilder, Builder);
             builder.addItemRendererClass(instance, ":selected", false);

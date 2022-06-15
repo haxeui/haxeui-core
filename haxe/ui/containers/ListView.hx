@@ -112,6 +112,7 @@ class ListViewEvents extends ScrollViewEvents {
         var instance:ItemRenderer = cast(e.data, ItemRenderer);
         instance.registerEvent(MouseEvent.MOUSE_DOWN, onRendererMouseDown);
         instance.registerEvent(MouseEvent.CLICK, onRendererClick);
+        instance.registerEvent(MouseEvent.RIGHT_CLICK, onRendererClick);
         if (_listview.selectedIndices.indexOf(instance.itemIndex) != -1) {
             var builder:ListViewBuilder = cast(_listview._compositeBuilder, ListViewBuilder);
             builder.addItemRendererClass(instance, ":selected");
@@ -122,6 +123,7 @@ class ListViewEvents extends ScrollViewEvents {
         var instance:ItemRenderer = cast(e.data, ItemRenderer);
         instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onRendererMouseDown);
         instance.unregisterEvent(MouseEvent.CLICK, onRendererClick);
+        instance.unregisterEvent(MouseEvent.RIGHT_CLICK, onRendererClick);
         if (_listview.selectedIndices.indexOf(instance.itemIndex) != -1) {
             var builder:ListViewBuilder = cast(_listview._compositeBuilder, ListViewBuilder);
             builder.addItemRendererClass(instance, ":selected", false);
