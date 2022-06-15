@@ -46,10 +46,27 @@ class DropDown extends Button implements IDataComponent {
     @:call(HideDropDown)                                            public function hideDropDown();
     @:clonable @:value(selectedItem)                                public var value:Dynamic;
 
+    private var _itemRenderer:ItemRenderer = null;
+    @:clonable public var itemRenderer(get, set):ItemRenderer;
+    private function get_itemRenderer():ItemRenderer {
+        return _itemRenderer;
+    }
+    private function set_itemRenderer(value:ItemRenderer):ItemRenderer {
+        _itemRenderer = value;
+        return value;
+    }
+    
     private override function onThemeChanged() {
         super.onThemeChanged();
         var builder:DropDownBuilder = cast(this._compositeBuilder, DropDownBuilder);
         builder.onThemeChanged();
+    }
+
+    private override function postCloneComponent(c:Component) {
+        super.postCloneComponent(c);
+        if (_itemRenderer != null) {
+            c.addComponent(_itemRenderer.cloneComponent());
+        }
     }
 }
 
@@ -390,11 +407,9 @@ private class ListDropDownHandler extends DropDownHandler {
 
     private function createListView() {
         if (_listview == null) {
-            var builder = cast(_dropdown._compositeBuilder, DropDownBuilder);
-            
             _listview = new ListView();
-            if (builder.itemRenderer != null) {
-                _listview.addComponent(builder.itemRenderer);
+            if (_dropdown.itemRenderer != null) {
+                _listview.addComponent(_dropdown.itemRenderer);
             }
             _listview.componentTabIndex = -1;
             _listview.virtual = _dropdown.virtual;
@@ -854,16 +869,14 @@ class DropDownBuilder extends ButtonBuilder {
         }
     }
 
-    public var itemRenderer:ItemRenderer = null;
     public override function addComponent(child:Component):Component {
         if ((child is ItemRenderer)) {
-            itemRenderer = cast child.cloneComponent();
+            _dropdown.itemRenderer = cast child.cloneComponent();
             if (child.id == "dropdown-renderer" || child.id == "dropdownRenderer") {
                 return child;
             }
         }
-        var r = super.addComponent(child);
-        return r;
+        return super.addComponent(child);
     }
     
     @:access(haxe.ui.core.Screen)
