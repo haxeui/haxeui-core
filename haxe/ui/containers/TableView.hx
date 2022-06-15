@@ -27,7 +27,6 @@ import haxe.ui.geom.Size;
 import haxe.ui.layouts.LayoutFactory;
 import haxe.ui.layouts.VerticalVirtualLayout;
 import haxe.ui.util.MathUtil;
-import haxe.ui.util.StringUtil;
 import haxe.ui.util.Variant;
 
 @:composite(Events, Builder, Layout)
@@ -35,27 +34,27 @@ class TableView extends ScrollView implements IDataComponent implements IVirtual
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:behaviour(DataSourceBehaviour)                            public var dataSource:DataSource<Dynamic>;
-    @:behaviour(LayoutBehaviour, -1)                            public var itemWidth:Float;
-    @:behaviour(LayoutBehaviour, -1)                            public var itemHeight:Float;
-    @:behaviour(LayoutBehaviour, -1)                            public var itemCount:Int;
-    @:behaviour(LayoutBehaviour, false)                         public var variableItemSize:Bool;
-    @:behaviour(SelectedIndexBehaviour, -1)                     public var selectedIndex:Int;
-    @:behaviour(SelectedItemBehaviour)                          public var selectedItem:Dynamic;
-    @:behaviour(SelectedIndicesBehaviour)                       public var selectedIndices:Array<Int>;
-    @:behaviour(SelectedItemsBehaviour)                         public var selectedItems:Array<Dynamic>;
-    @:behaviour(SelectionModeBehaviour, SelectionMode.ONE_ITEM) public var selectionMode:SelectionMode;
-    @:behaviour(DefaultBehaviour, 500)                          public var longPressSelectionTime:Int;  //ms
-    @:behaviour(GetHeader)                                      public var header:Component;
+    @:clonable @:behaviour(DataSourceBehaviour)                             public var dataSource:DataSource<Dynamic>;
+    @:clonable @:behaviour(LayoutBehaviour, -1)                             public var itemWidth:Float;
+    @:clonable @:behaviour(LayoutBehaviour, -1)                             public var itemHeight:Float;
+    @:clonable @:behaviour(LayoutBehaviour, -1)                             public var itemCount:Int;
+    @:clonable @:behaviour(LayoutBehaviour, false)                          public var variableItemSize:Bool;
+    @:clonable @:behaviour(SelectedIndexBehaviour, -1)                      public var selectedIndex:Int;
+    @:clonable @:behaviour(SelectedItemBehaviour)                           public var selectedItem:Dynamic;
+    @:clonable @:behaviour(SelectedIndicesBehaviour)                        public var selectedIndices:Array<Int>;
+    @:clonable @:behaviour(SelectedItemsBehaviour)                          public var selectedItems:Array<Dynamic>;
+    @:clonable @:behaviour(SelectionModeBehaviour, SelectionMode.ONE_ITEM)  public var selectionMode:SelectionMode;
+    @:clonable @:behaviour(DefaultBehaviour, 500)                           public var longPressSelectionTime:Int;  //ms
+    @:clonable @:behaviour(GetHeader)                                       public var header:Component;
 
-    @:call(ClearTable)                                          public function clearContents(clearHeader:Bool = false);
-    @:call(AddColumn)                                           public function addColumn(text:String):Component;
-    @:call(RemoveColumn)                                        public function removeColumn(text:String);
+    @:call(ClearTable)                                                      public function clearContents(clearHeader:Bool = false);
+    @:call(AddColumn)                                                       public function addColumn(text:String):Component;
+    @:call(RemoveColumn)                                                    public function removeColumn(text:String);
 
-    @:event(ItemEvent.COMPONENT_EVENT)                          public var onComponentEvent:ItemEvent->Void;
+    @:event(ItemEvent.COMPONENT_EVENT)                                      public var onComponentEvent:ItemEvent->Void;
 
     private var _itemRendererClass:Class<ItemRenderer>;
-    public var itemRendererClass(get, set):Class<ItemRenderer>;
+    @:clonable public var itemRendererClass(get, set):Class<ItemRenderer>;
     private function get_itemRendererClass():Class<ItemRenderer> {
         return _itemRendererClass;
     }
@@ -69,7 +68,7 @@ class TableView extends ScrollView implements IDataComponent implements IVirtual
     }
 
     private var _itemRenderer:ItemRenderer;
-    public var itemRenderer(get, set):ItemRenderer;
+    @:clonable public var itemRenderer(get, set):ItemRenderer;
     private function get_itemRenderer():ItemRenderer {
         return _itemRenderer;
     }
@@ -80,12 +79,6 @@ class TableView extends ScrollView implements IDataComponent implements IVirtual
         }
 
         return value;
-    }
-    
-    public override function cloneComponent():TableView {
-        if (this.dataSource != null) {
-            c.dataSource = this.dataSource;
-        }
     }
 }
 
