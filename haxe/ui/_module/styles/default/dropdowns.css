@@ -8,6 +8,11 @@
     padding: 6px 8px;
 }
 
+.dropdown .itemrenderer .label {
+    color: $normal-text-color;
+    cursor: pointer;
+}
+
 .dropdown:down {
     border-color: $accent-color;
 }

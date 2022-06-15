@@ -7,11 +7,11 @@
     padding: 0px;
 }
 
-.listview .itemrenderer {
+.listview .listview-contents > .itemrenderer {
     cursor: pointer;  
 }
 
-.listview .itemrenderer .label {
+.listview .listview-contents > .itemrenderer .label {
     color: $normal-text-color;
     cursor: pointer;
 }
@@ -32,17 +32,17 @@
     background-color: $selection-background-color-hover;
 }
 
-.listview .itemrenderer {
+.listview .listview-contents > .itemrenderer {
     height: auto;
     padding: 6px;
 }
 
-.listview .itemrenderer:selected {
+.listview .listview-contents > .itemrenderer:selected {
     background-color: $selection-background-color;
     color: $selection-text-color;
 }
 
-.listview .itemrenderer:selected .label {
+.listview .listview-contents > .itemrenderer:selected .label {
     color: $selection-text-color;
 }
 
@@ -116,14 +116,14 @@
     padding-bottom: 8px;
 }
 
-.listview.left-menu .itemrenderer:selected {
+.listview.left-menu .listview-contents > .itemrenderer:selected {
     background-color: $default-background-color;
     color: $normal-text-color;
     border-right: 1px solid $default-background-color;
 }
 
 
-.listview.left-menu .itemrenderer:selected .label {
+.listview.left-menu .listview-contents > .itemrenderer:selected .label {
     color: $normal-text-color;
 }
     
