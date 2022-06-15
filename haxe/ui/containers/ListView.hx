@@ -30,23 +30,23 @@ class ListView extends ScrollView implements IDataComponent implements IVirtualC
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:behaviour(DataSourceBehaviour)                            public var dataSource:DataSource<Dynamic>;
-    @:behaviour(LayoutBehaviour, -1)                            public var itemWidth:Float;
-    @:behaviour(LayoutBehaviour, -1)                            public var itemHeight:Float;
-    @:behaviour(LayoutBehaviour, -1)                            public var itemCount:Int;
-    @:behaviour(LayoutBehaviour, false)                         public var variableItemSize:Bool;
-    @:behaviour(SelectedIndexBehaviour, -1)                     public var selectedIndex:Int;
-    @:behaviour(SelectedItemBehaviour)                          public var selectedItem:Dynamic;
-    @:behaviour(SelectedIndicesBehaviour)                       public var selectedIndices:Array<Int>;
-    @:behaviour(SelectedItemsBehaviour)                         public var selectedItems:Array<Dynamic>;
-    @:behaviour(SelectionModeBehaviour, SelectionMode.ONE_ITEM) public var selectionMode:SelectionMode;
-    @:behaviour(DefaultBehaviour, 500)                          public var longPressSelectionTime:Int;  //ms
-    @:clonable @:value(selectedIndex)                           public var value:Dynamic;
+    @:clonable @:behaviour(DataSourceBehaviour)                             public var dataSource:DataSource<Dynamic>;
+    @:clonable @:behaviour(LayoutBehaviour, -1)                             public var itemWidth:Float;
+    @:clonable @:behaviour(LayoutBehaviour, -1)                             public var itemHeight:Float;
+    @:clonable @:behaviour(LayoutBehaviour, -1)                             public var itemCount:Int;
+    @:clonable @:behaviour(LayoutBehaviour, false)                          public var variableItemSize:Bool;
+    @:clonable @:behaviour(SelectedIndexBehaviour, -1)                      public var selectedIndex:Int;
+    @:clonable @:behaviour(SelectedItemBehaviour)                           public var selectedItem:Dynamic;
+    @:clonable @:behaviour(SelectedIndicesBehaviour)                        public var selectedIndices:Array<Int>;
+    @:clonable @:behaviour(SelectedItemsBehaviour)                          public var selectedItems:Array<Dynamic>;
+    @:clonable @:behaviour(SelectionModeBehaviour, SelectionMode.ONE_ITEM)  public var selectionMode:SelectionMode;
+    @:clonable @:behaviour(DefaultBehaviour, 500)                           public var longPressSelectionTime:Int;  //ms
+    @:clonable @:value(selectedIndex)                                       public var value:Dynamic;
 
-    @:event(ItemEvent.COMPONENT_EVENT)                          public var onComponentEvent:ItemEvent->Void;
+    @:event(ItemEvent.COMPONENT_EVENT)                                      public var onComponentEvent:ItemEvent->Void;
 
     private var _itemRendererClass:Class<ItemRenderer>;
-    public var itemRendererClass(get, set):Class<ItemRenderer>;
+    @:clonable public var itemRendererClass(get, set):Class<ItemRenderer>;
     private function get_itemRendererClass():Class<ItemRenderer> {
         return _itemRendererClass;
     }
@@ -60,7 +60,7 @@ class ListView extends ScrollView implements IDataComponent implements IVirtualC
     }
 
     private var _itemRenderer:ItemRenderer;
-    public var itemRenderer(get, set):ItemRenderer;
+    @:clonable public var itemRenderer(get, set):ItemRenderer;
     private function get_itemRenderer():ItemRenderer {
         return _itemRenderer;
     }
@@ -71,12 +71,6 @@ class ListView extends ScrollView implements IDataComponent implements IVirtualC
         }
 
         return value;
-    }
-    
-    public override function cloneComponent():ListView {
-        if (this.dataSource != null) {
-            c.dataSource = this.dataSource;
-        }
     }
 }
 
