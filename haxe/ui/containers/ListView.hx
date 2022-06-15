@@ -72,6 +72,12 @@ class ListView extends ScrollView implements IDataComponent implements IVirtualC
 
         return value;
     }
+    
+    public override function cloneComponent():ListView {
+        if (this.dataSource != null) {
+            c.dataSource = this.dataSource;
+        }
+    }
 }
 
 //***********************************************************************************************************

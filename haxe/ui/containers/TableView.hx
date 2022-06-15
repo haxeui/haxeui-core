@@ -81,6 +81,12 @@ class TableView extends ScrollView implements IDataComponent implements IVirtual
 
         return value;
     }
+    
+    public override function cloneComponent():TableView {
+        if (this.dataSource != null) {
+            c.dataSource = this.dataSource;
+        }
+    }
 }
 
 private class CompoundItemRenderer extends ItemRenderer {
