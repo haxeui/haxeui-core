@@ -6,4 +6,5 @@ package haxe.ui.core;
 interface IClonable<T> {
     function cloneComponent():T;
     private function self():T;
+    private function postCloneComponent(c:Component):Void;
 }

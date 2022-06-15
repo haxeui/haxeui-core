@@ -134,6 +134,9 @@ class ComponentContainer extends ComponentCommon implements IClonable<ComponentC
         return cast _children[_children.length - 1];
     }
     
+    private function postCloneComponent(c:Component):Void {
+    }
+    
     //***********************************************************************************************************
     // Layout related
     //***********************************************************************************************************
