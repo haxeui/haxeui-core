@@ -5,7 +5,6 @@ import haxe.ui.util.RTTI;
 
 #if macro
 import haxe.macro.ComplexTypeTools;
-import haxe.ui.core.TypeMap;
 import haxe.macro.Context;
 import haxe.macro.Expr;
 import haxe.macro.TypeTools;
@@ -347,6 +346,8 @@ class Macros {
                     c.addComponent(child.cloneComponent());
                 }
             }
+            
+            postCloneComponent(cast c);
         });
         cloneFn.add(macro return c);
 

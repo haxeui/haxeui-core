@@ -261,6 +261,7 @@ private class TreeViewNodeBuilder extends CompositeBuilder {
         _expandCollapseIcon.id = "treenode-expand-collapse-icon";
         _expandCollapseIcon.registerEvent(MouseEvent.CLICK, onExpandCollapseClicked);
         _nodeContainer.registerEvent(MouseEvent.CLICK, onContainerClick);
+        _nodeContainer.registerEvent(MouseEvent.RIGHT_CLICK, onContainerClick);
         _nodeContainer.registerEvent(MouseEvent.DBL_CLICK, onContainerDblClick);
         _nodeContainer.addComponent(_expandCollapseIcon);
 

@@ -1060,7 +1060,7 @@ class Component extends ComponentImpl implements IValidating {
      Whether this component is hidden or not
     **/
     @:dox(group = "Display tree related properties and methods")
-    @:clonable public var hidden(get, set):Bool;
+    public var hidden(get, set):Bool;
     private function get_hidden():Bool {
         if (_hidden == true) {
             return true;
@@ -1973,6 +1973,9 @@ class Component extends ComponentImpl implements IValidating {
     public override function cloneComponent():Component {
         if (_ready == false) {
             //ready();
+        }
+        if (_hidden == true) {
+            c.hide();
         }
         if (autoWidth == false && this.width > 0) {
             c.width = this.width;
