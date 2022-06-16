@@ -40,12 +40,14 @@ class Stepper extends VBox implements IValueComponent {
 @:dox(hide) @:noCompletion
 private class PosBehaviour extends DataBehaviour {
     public override function validateData() {
-        var stepper:Stepper = cast(_component, Stepper);
-        var v:Float = MathUtil.clamp(_value, stepper.min, stepper.max);
-        stepper.pos = v;
-        _value = v;
-        var event = new UIEvent(UIEvent.CHANGE);
-        _component.dispatch(event);
+        if (_value!=null) {
+            var stepper:Stepper = cast(_component, Stepper);
+            var v:Float = MathUtil.clamp(_value, stepper.min, stepper.max);
+            stepper.pos = v;
+            _value = v;
+            var event = new UIEvent(UIEvent.CHANGE);
+            _component.dispatch(event);
+        }
     }
 }
 

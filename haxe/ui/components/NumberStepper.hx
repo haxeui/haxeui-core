@@ -79,39 +79,41 @@ class NumberStepper extends InteractiveComponent {
 @:dox(hide) @:noCompletion
 private class PosBehaviour extends DataBehaviour {
     public override function validateData() {
-        var stepper = cast(_component, NumberStepper);
-        var preciseValue:Null<Float> = _value;
-        if (preciseValue == null) {
-            preciseValue = stepper.min;
-        }
-        
-        preciseValue = MathUtil.clamp(preciseValue, stepper.min, stepper.max);
-        var wasRounded = false;
-        if (stepper.precision != null) {
-            var newPreciseValue = MathUtil.round(preciseValue, stepper.precision);
-            if (newPreciseValue != preciseValue) {
-                preciseValue = newPreciseValue;
-                wasRounded = true;
+        if (_value!=null) {
+            var stepper = cast(_component, NumberStepper);
+            var preciseValue:Null<Float> = _value;
+            if (preciseValue == null) {
+                preciseValue = stepper.min;
             }
+            
+            preciseValue = MathUtil.clamp(preciseValue, stepper.min, stepper.max);
+            var wasRounded = false;
+            if (stepper.precision != null) {
+                var newPreciseValue = MathUtil.round(preciseValue, stepper.precision);
+                if (newPreciseValue != preciseValue) {
+                    preciseValue = newPreciseValue;
+                    wasRounded = true;
+                }
+            }
+            _value = preciseValue;
+            
+            var stringValue = StringUtil.padDecimal(preciseValue, stepper.precision);
+            var value:TextField = stepper.findComponent("value", TextField);
+            var carentIndex = value.caretIndex;
+            stringValue = StringTools.replace(stringValue, ",", ".");
+            stringValue = StringTools.replace(stringValue, ".", stepper.decimalSeparator);
+            value.text = stringValue;
+            if (wasRounded) {
+                value.caretIndex = stringValue.length;
+            } else {
+                value.caretIndex = carentIndex;
+            }
+            
+            var event = new UIEvent(UIEvent.CHANGE);
+            event.previousValue = _previousValue;
+            event.value = _value;
+            _component.dispatch(event);
         }
-        _value = preciseValue;
-        
-        var stringValue = StringUtil.padDecimal(preciseValue, stepper.precision);
-        var value:TextField = stepper.findComponent("value", TextField);
-        var carentIndex = value.caretIndex;
-        stringValue = StringTools.replace(stringValue, ",", ".");
-        stringValue = StringTools.replace(stringValue, ".", stepper.decimalSeparator);
-        value.text = stringValue;
-        if (wasRounded) {
-            value.caretIndex = stringValue.length;
-        } else {
-            value.caretIndex = carentIndex;
-        }
-        
-        var event = new UIEvent(UIEvent.CHANGE);
-        event.previousValue = _previousValue;
-        event.value = _value;
-        _component.dispatch(event);
     }
 }
 
