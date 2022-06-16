@@ -424,7 +424,10 @@ private class Builder extends ScrollViewBuilder {
     public function buildDefaultRenderer() {
         var r = new CompoundItemRenderer();
         if (_header != null) {
-            for (column in _header.childComponents) {
+            for (column in _header.findComponents(Column)) {
+                if (column.id == null) {
+                    continue;
+                }
                 var itemRenderer = createRenderer(column.id);
                 r.addComponent(itemRenderer);
             }
@@ -434,7 +437,10 @@ private class Builder extends ScrollViewBuilder {
 
     public function fillExistingRenderer() {
         var i = 0;
-        for (column in _header.childComponents) {
+        for (column in _header.findComponents(Column)) {
+            if (column.id == null) {
+                continue;
+            }
             var existing = _tableview.itemRenderer.findComponent(column.id, ItemRenderer, true);
             if (existing == null) {
                 var temp = _tableview.itemRenderer.findComponent(column.id, Component, true);
@@ -550,8 +556,11 @@ private class Layout extends VerticalVirtualLayout {
         if (data != null) {
             //data.lockLayout(true);
             for (item in data.childComponents) {
-                var headerChildComponents = header.childComponents;
+                var headerChildComponents = header.findComponents(Column);
                 for (column in headerChildComponents) {
+                    if (column.id == null) {
+                        continue;
+                    }
                     var isLast = (headerChildComponents.indexOf(column) == (headerChildComponents.length - 1));
                     var itemRenderer = item.findComponent(column.id, Component);
                     if (itemRenderer != null && (itemRenderer is ItemRenderer) == false) {
@@ -822,7 +831,10 @@ private class RemoveColumn extends Behaviour {
         if (header == null) {
             return null;
         }
-        for (c in header.childComponents) {
+        for (c in header.findComponents(Column)) {
+            if (c.id == null) {
+                continue;
+            }
             if (c.text == param) {
                 header.removeComponent(c);
                 break;
