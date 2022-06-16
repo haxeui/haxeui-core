@@ -1038,11 +1038,10 @@ class ScrollViewBuilder extends CompositeBuilder {
                 if (hscroll == null) {
                     hscroll = createHScroll();
                 }
-
-                hscroll.max = vcw - usableSize.width;
-                hscroll.pageSize = (usableSize.width / vcw) * hscroll.max;
-
-                hscroll.syncComponentValidation();    //avoid another pass
+                //Any action might cause a resize->might cause the child to modify size->might cause the hscroll to disappear
+                if (hscroll != null) hscroll.max = vcw - usableSize.width;
+                if (hscroll != null) hscroll.pageSize = (usableSize.width / vcw) * hscroll.max;
+                if (hscroll != null) hscroll.syncComponentValidation();    //avoid another pass
             } else {
                 if (hscroll != null) {
                     destroyHScroll();
@@ -1054,15 +1053,18 @@ class ScrollViewBuilder extends CompositeBuilder {
             var verticalConstraint = _contents;
             var vscroll:VerticalScroll = _component.findComponent(VerticalScroll, false);
             var vch:Float = verticalConstraint.height + verticalConstraintModifier();
+            //account for height of hscroll in case there is one
+            var hscroll:HorizontalScroll = _component.findComponent(HorizontalScroll, false);
+            if (hscroll!=null) vch-=hscroll.height;
+
             if (vch > usableSize.height) {
                 if (vscroll == null) {
                     vscroll = createVScroll();
                 }
-
-                vscroll.max = vch - usableSize.height;
-                vscroll.pageSize = (usableSize.height / vch) * vscroll.max;
-
-                vscroll.syncComponentValidation();    //avoid another pass
+                //any action might cause a resize->might cause the child to modify size->might cause the vscroll to disappear
+                if (vscroll != null) vscroll.max = vch - usableSize.height;
+                if (vscroll != null) vscroll.pageSize = (usableSize.height / vch) * vscroll.max;
+                if (vscroll != null) vscroll.syncComponentValidation();    //avoid another pass
             } else {
                 if (vscroll != null) {
                     destroyVScroll();
