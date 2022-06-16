@@ -180,6 +180,7 @@ class TextDisplay extends TextDisplayImpl implements IValidating {
 
     public var textHeight(get, null):Float;
     private function get_textHeight():Float {
+        #if haxeui_zero_height_labels
         if (_text == null && _htmlText == null) {
             return 0;
         }
@@ -191,6 +192,7 @@ class TextDisplay extends TextDisplayImpl implements IValidating {
         if (_htmlText != null && _htmlText.length == 0) {
             return 0;
         }
+        #end
 
         if (isComponentInvalid() == true) {
             validateComponent();
