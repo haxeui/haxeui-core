@@ -105,6 +105,8 @@ private class Layout extends DefaultLayout {
 
         if (_component.autoWidth == false) {
             contents.width = _component.width;
+        } else if (contents.width < _component.width) {
+            contents.width = _component.width;
         }
         if (_component.autoHeight == false) {
             contents.height = _component.height - (label.height / 2);
@@ -150,6 +152,10 @@ private class Layout extends DefaultLayout {
         var size = super.calcAutoSize(exclusions);
         size.height += label.height / 2;
         size.width -= paddingLeft;
+        if (label != null && label.width > size.width) {
+            var contents = findComponent("frame-contents", Box, false);
+            size.width = label.width + (childPaddingLeft(contents) + childPaddingRight(contents));
+        }
         return size;
     }
 }
