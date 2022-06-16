@@ -102,6 +102,37 @@ class Layout implements ILayout {
         return child.style.marginRight;
     }
 
+    private function childPaddingTop(child:Component):Float {
+        if (child == null || child.style == null || child.style.paddingTop == null) {
+            return 0;
+        }
+        return child.style.paddingTop;
+    }
+
+    private function childPaddingLeft(child:Component):Float {
+        if (child == null || child.style == null || child.style.paddingLeft == null) {
+            return 0;
+        }
+
+        return child.style.paddingLeft;
+    }
+
+    private function childPaddingBottom(child:Component):Float {
+        if (child == null || child.style == null || child.style.paddingBottom == null) {
+            return 0;
+        }
+
+        return child.style.paddingBottom;
+    }
+
+    private function childPaddingRight(child:Component):Float {
+        if (child == null || child.style == null || child.style.paddingRight == null) {
+            return 0;
+        }
+
+        return child.style.paddingRight;
+    }
+    
     private function hidden(c:Component = null):Bool {
         if (c == null) {
             c = component;
