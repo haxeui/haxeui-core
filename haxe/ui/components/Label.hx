@@ -85,10 +85,12 @@ private class LabelLayout extends DefaultLayout {
             component.getTextDisplay().width = component.getTextDisplay().textWidth;
         }
 
+        //Extra space is needed to ensure the last line in multiline labels is visible.
+        var extraSpace:Int=(component.getTextDisplay().textField.numLines>1)?5:0;
         if (component.autoHeight == true) {
-            component.getTextDisplay().height = component.getTextDisplay().textHeight;
+            component.getTextDisplay().height = component.getTextDisplay().textHeight+extraSpace;
         } else {
-            component.getTextDisplay().height = component.height;
+            component.getTextDisplay().height = component.height+extraSpace;
         }
     }
 
@@ -103,7 +105,9 @@ private class LabelLayout extends DefaultLayout {
         var size:Size = super.calcAutoSize(exclusions);
         if (component.hasTextDisplay() == true) {
             size.width += component.getTextDisplay().textWidth;
-            size.height += component.getTextDisplay().textHeight;
+            //Extra space is needed to ensure the last line in multiline labels is visible.
+            var extraSpace:Int=(component.getTextDisplay().textField.numLines>1)?5:0;
+            size.height += component.getTextDisplay().textHeight+extraSpace;
         }
         return size;
     }
