@@ -6,6 +6,17 @@ import haxe.ui.util.StringUtil;
 
 /*
  current usage: --macro haxe.ui.macros.SchemaMacros.buildComponentsSchema('assets/haxeui.xsd')
+ 
+ if you want to generated schemas for everything, use:
+ 
+--macro include('haxe.ui.components')
+--macro include('haxe.ui.containers')
+--macro include('haxe.ui.containers.dialogs')
+--macro include('haxe.ui.containers.menus')
+--macro include('haxe.ui.containers.properties')
+
+note, this will mean you will create ref to every component (TODO)
+ 
 */
 
 class SchemaMacros {
