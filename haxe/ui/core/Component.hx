@@ -1107,7 +1107,7 @@ class Component extends ComponentImpl implements IValidating {
     @:dox(group = "Style related properties and methods")
     private var classes:Array<String> = [];
 
-    public var cascadeActive:Bool = false;
+    private var cascadeActive:Bool = false;
     /**
      Adds a css style name to this component
     **/
