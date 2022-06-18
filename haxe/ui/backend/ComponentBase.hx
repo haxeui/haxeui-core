@@ -251,6 +251,16 @@ class ComponentBase extends ComponentBounds {
         return _className;
     }
 
+    @:noCompletion private var _nodeName:String = null;
+    @:noCompletion private var nodeName(get, null):String;
+    @:noCompletion private function get_nodeName():String {
+        if (_nodeName != null) {
+            return _nodeName;
+        }
+        _nodeName = className.split(".").pop().toLowerCase();
+        return _nodeName;
+    }
+    
     @:noCompletion private var _nativeClassName:String = null;
     private var nativeClassName(get, null):String;
     private function get_nativeClassName():String {
