@@ -1,5 +1,6 @@
 package haxe.ui.macros;
 
+import haxe.macro.ExprTools;
 import haxe.macro.Type;
 import haxe.ui.macros.helpers.ClassBuilder;
 import haxe.ui.util.StringUtil;
@@ -59,6 +60,11 @@ class SchemaMacros {
     }
     
     private static function buildSchemaElement(classType:ClassType, schema:Schema) {
+        var dox = classType.meta.extract(":dox")[0];
+        if (dox != null && ExprTools.toString(dox.params[0]) == "hide") {
+            return;
+        }
+        
         var element = new SchemaElement();
         element.name = buildElementName(classType);
         element.type = classType.name + "Type";
@@ -81,6 +87,11 @@ class SchemaMacros {
     }
     
     private static function buildSchemaType(classType:ClassType, schema:Schema) {
+        var dox = classType.meta.extract(":dox")[0];
+        if (dox != null && ExprTools.toString(dox.params[0]) == "hide") {
+            //return;
+        }
+        
         #if haxeui_schema_debug
         Sys.println("Generating XSD type: " + classType.name + "Type (" + classType.name + ")");
         #end
@@ -115,6 +126,7 @@ class SchemaMacros {
                                 if (StringTools.startsWith(fixedDoc, "*")) {
                                     fixedDoc = StringTools.trim(fixedDoc.substr(1));
                                 }
+                                fixedDoc = StringTools.replace(fixedDoc, "&", "&amp;");
                                 attr.documentation = fixedDoc;
                             }
                             
