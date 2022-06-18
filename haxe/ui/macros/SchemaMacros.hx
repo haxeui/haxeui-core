@@ -31,7 +31,10 @@ class SchemaMacros {
                     case _:
                 }
             }
-            
+        }
+        
+        for (t in types) {
+            var classInfo = new ClassBuilder(t);
             if (classInfo.hasSuperClass("haxe.ui.core.Component")) {
                 switch (t) {
                     case TInst(classType, params):
@@ -40,6 +43,7 @@ class SchemaMacros {
                 }
             }
         }
+        
         schema.write(SchemaMacros.filename);
     }
     
@@ -47,6 +51,9 @@ class SchemaMacros {
         var element = new SchemaElement();
         element.name = buildElementName(classType);
         element.type = classType.name + "Type";
+        #if haxeui_schema_debug
+        Sys.println("Generating XSD element: " + element.name + " (" + classType.name + ")");
+        #end
         schema.elements.push(element);
     }
     
@@ -63,6 +70,9 @@ class SchemaMacros {
     }
     
     private static function buildSchemaType(classType:ClassType, schema:Schema) {
+        #if haxeui_schema_debug
+        Sys.println("Generating XSD type: " + classType.name + "Type (" + classType.name + ")");
+        #end
         var complexType = new SchemaComplexType();
         complexType.name = classType.name + "Type";
         schema.complexTypes.push(complexType);
