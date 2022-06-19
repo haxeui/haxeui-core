@@ -414,6 +414,7 @@ private class ListDropDownHandler extends DropDownHandler {
             _listview.componentTabIndex = -1;
             _listview.virtual = _dropdown.virtual;
             _listview.dataSource = _dropdown.dataSource;
+            _listview.selectedIndex = _cachedSelectedIndex;
             
             if (_dropdown.id != null) {
                 _listview.addClass(_dropdown.id + "-listview");
@@ -482,6 +483,8 @@ private class ListDropDownHandler extends DropDownHandler {
             if (index != -1) {
                 indexToSelect = index;
             }
+        } else if (_cachedSelectedIndex != -1) {
+            indexToSelect = _cachedSelectedIndex;
         }
         _dropdown.selectedIndex = indexToSelect;
     }
