@@ -78,7 +78,7 @@ class Button extends InteractiveComponent {
     /**
      How often this button will dispatch multiple click events while the the mouse is pressed within it
     **/
-    @:clonable @:behaviour(DefaultBehaviour, 50)       public var repeatInterval:Int;
+    @:clonable @:behaviour(DefaultBehaviour, 100)      public var repeatInterval:Int;
 
     /**
      Whether this button will ease in to specified repeatInterval
