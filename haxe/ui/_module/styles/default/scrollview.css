@@ -17,6 +17,10 @@
     border: none;
 }
 
+.scrollview.no-padding .scrollview-contents {
+    padding: 0px;
+}
+
 .scrollview:active {
     border: 1px solid $accent-color;
 }
