@@ -2,10 +2,12 @@ package haxe.ui.containers.dialogs;
 
 import haxe.io.Bytes;
 import haxe.ui.backend.OpenFileDialogBase.OpenFileDialogOptions;
+import haxe.ui.backend.SaveFileDialogBase.SaveFileDialogOptions;
 import haxe.ui.containers.dialogs.Dialog.DialogButton;
 import haxe.ui.containers.dialogs.Dialog.DialogEvent;
 import haxe.ui.containers.dialogs.MessageBox.MessageBoxType;
 import haxe.ui.containers.dialogs.OpenFileDialog;
+import haxe.ui.containers.dialogs.SaveFileDialog;
 import haxe.ui.core.Component;
 
 typedef FileDialogExtensionInfo = {
@@ -13,12 +15,29 @@ typedef FileDialogExtensionInfo = {
     @:optional var label:String;
 }
 
-typedef SelectedFileInfo = {
-    var name:String;
-    @:optional var fullPath:String;
+typedef FileInfo = {
+    @:optional var name:String;
     @:optional var text:String;
     @:optional var bytes:Bytes;
-    var isBinary:Bool;
+    @:optional var isBinary:Bool;
+}
+
+typedef SelectedFileInfo = { > FileInfo,
+    @:optional var fullPath:String;
+}
+
+class FileDialogTypes {
+    public static inline var ANY:Array<FileDialogExtensionInfo> = null;
+    
+    public static var IMAGES(get, null):Array<FileDialogExtensionInfo>;
+    private static function get_IMAGES():Array<FileDialogExtensionInfo> {
+        return [{label: "Image Files", extension: "png, gif, jpeg, jpg, bmp"}];
+    }
+    
+    public static var TEXTS(get, null):Array<FileDialogExtensionInfo>;
+    private static function get_TEXTS():Array<FileDialogExtensionInfo> {
+        return [{label: "Text Files", extension: "txt"}];
+    }
 }
 
 class Dialogs {
@@ -77,5 +96,68 @@ class Dialogs {
         dialog.callback = callback;
         dialog.options = options;
         dialog.show();
+    }
+    
+    public static function openBinaryFile(title:String = null, fileTypes:Array<FileDialogExtensionInfo> = null, callback:SelectedFileInfo->Void) {
+        var options:OpenFileDialogOptions = {
+            readContents: true,
+            readAsBinary: true,
+            multiple: false,
+            extensions: fileTypes,
+            title: title
+        }
+        openFile(function(button, selectedFiles) {
+            if (button == DialogButton.OK && selectedFiles.length > 0) {
+                callback(selectedFiles[0]);
+            }
+        }, options);
+    }
+    
+    public static function openTextFile(title:String = null, fileTypes:Array<FileDialogExtensionInfo> = null, callback:SelectedFileInfo->Void) {
+        var options:OpenFileDialogOptions = {
+            readContents: true,
+            readAsBinary: false,
+            multiple: false,
+            extensions: fileTypes,
+            title: title
+        }
+
+        openFile(function(button, selectedFiles) {
+            if (button == DialogButton.OK && selectedFiles.length > 0) {
+                callback(selectedFiles[0]);
+            }
+        }, options);
+    }
+    
+    public static function saveFile(callback:DialogButton->Bool->Void, fileInfo:FileInfo, options:SaveFileDialogOptions = null) {
+        var dialog = new SaveFileDialog();
+        dialog.callback = callback;
+        dialog.options = options;
+        dialog.fileInfo = fileInfo;
+        dialog.show();
+    }
+    
+    public static function saveBinaryFile(title:String = null, fileTypes:Array<FileDialogExtensionInfo> = null, fileInfo:FileInfo, callback:Bool->Void) {
+        var options:SaveFileDialogOptions = {
+            writeAsBinary: true,
+            extensions: fileTypes,
+            title: title
+        }
+
+        saveFile(function(button, result) {
+            callback(result);
+        }, fileInfo, options);
+    }
+    
+    public static function saveTextFile(title:String = null, fileTypes:Array<FileDialogExtensionInfo> = null, fileInfo:FileInfo, callback:Bool->Void) {
+        var options:SaveFileDialogOptions = {
+            writeAsBinary: false,
+            extensions: fileTypes,
+            title: title
+        }
+
+        saveFile(function(button, result) {
+            callback(result);
+        }, fileInfo, options);
     }
 }
