@@ -26,7 +26,7 @@ class FileSaver {
         _link.setAttribute("href", URL.createObjectURL(file));
         _link.setAttribute("download", fileName);
         _link.style.display = "none";
-        Browser.document.body.append(_link);
+        Browser.document.body.appendChild(_link);
         _link.click();
         
         Browser.window.addEventListener("focus", onWindowFocus);
@@ -43,7 +43,7 @@ class FileSaver {
         _link.setAttribute("href", URL.createObjectURL(file));
         _link.setAttribute("download", fileName);
         _link.style.display = "none";
-        Browser.document.body.append(_link);
+        Browser.document.body.appendChild(_link);
         _link.click();
         
         Browser.window.addEventListener("focus", onWindowFocus);
