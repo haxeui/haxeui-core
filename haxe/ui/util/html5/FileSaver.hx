@@ -1,12 +1,13 @@
 package haxe.ui.util.html5;
+
 import haxe.io.Bytes;
+
+#if js
+
 import js.Browser;
 import js.html.AnchorElement;
 import js.html.Blob;
 import js.html.URL;
-
-#if js
-
 
 class FileSaver {
     private var _link:AnchorElement = null;
@@ -69,6 +70,12 @@ class FileSaver {
 
 class FileSaver {
     public function new() {
+    }
+    
+    public function saveText(fileName:String, text:String, callback:Bool->Void) {
+    }
+    
+    public function saveBinary(fileName:String, bytes:Bytes, callback:Bool->Void) {
     }
 }
 
