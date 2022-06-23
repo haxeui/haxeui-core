@@ -192,6 +192,7 @@
 .tabview-content:disabled {
     border-color: $disabled-border-color;
 }
+
 /************************************************************************
 ** TABVIEW ALT STYLES
 *************************************************************************/
@@ -201,4 +202,8 @@
 
 .collapsible-labels .tabbar-button-selected .label {
     hidden: false;
+}
+
+.full-width-buttons .tabbar-button, .full-width-buttons .tabbar > .tabbar-contents {
+    width: 100%;
 }
