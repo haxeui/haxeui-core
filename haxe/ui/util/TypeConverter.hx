@@ -31,6 +31,10 @@ class TypeConverter {
                 return Std.string(input);
             case "bool":
                 return Std.string(input) == "true";
+            case "int":
+                return Std.parseInt(Std.string(input));
+            case "float":
+                return Std.parseFloat(Std.string(input));
         }
         
         return input;

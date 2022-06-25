@@ -775,7 +775,13 @@ class ComponentMacros {
                     propType: TypeMap.getTypeInfo(c.resolvedClassName, propName)
                 });
             } else {
-                var propExpr = macro $v{TypeConverter.convertFrom(propValue)};
+                var propType = null;
+                var info = haxe.ui.util.RTTI.getClassInfo(c.resolvedClassName);
+                if (info != null && info.properties != null && info.properties.get(propName) != null) {
+                    propType = info.properties.get(propName).propertyType;
+                }
+                
+                var propExpr = macro $v{TypeConverter.convertTo(TypeConverter.convertFrom(propValue), $v{propType})};
                 builder.add(macro $i{varName}.$propName = $propExpr);
             }
         }
