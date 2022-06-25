@@ -43,8 +43,10 @@ class DropDown extends Button implements IDataComponent {
     @:clonable @:behaviour(SelectedItemBehaviour)                   public var selectedItem:Dynamic;
     @:clonable @:behaviour(DefaultBehaviour, false)                 public var searchable:Bool;
     @:clonable @:behaviour(DefaultBehaviour, "{{search}}")          public var searchPrompt:String;
-    @:call(HideDropDown)                                            public function hideDropDown();
     @:clonable @:value(selectedItem)                                public var value:Dynamic;
+    @:clonable @:behaviour(SearchFieldBehaviour)                    public var searchField:Component;
+    @:call(HideDropDown)                                            public function hideDropDown();
+    @:call(ShowDropDown)                                            public function showDropDown();
 
     private var _itemRenderer:ItemRenderer = null;
     @:clonable public var itemRenderer(get, set):ItemRenderer;
@@ -79,6 +81,16 @@ private class HideDropDown extends DefaultBehaviour {
     public override function call(param:Any = null):Variant {
         var events:DropDownEvents = cast(_component._internalEvents, DropDownEvents);
         events.hideDropDown();
+        return null;
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class ShowDropDown extends DefaultBehaviour {
+    public override function call(param:Any = null):Variant {
+        var events:DropDownEvents = cast(_component._internalEvents, DropDownEvents);
+        events.showDropDown();
         return null;
     }
 }
@@ -162,6 +174,20 @@ private class SelectedItemBehaviour extends DynamicDataBehaviour  {
         invalidateData();
         var handler:IDropDownHandler = cast(_component._compositeBuilder, DropDownBuilder).handler;
         handler.selectedItem = value;
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class SearchFieldBehaviour extends DefaultBehaviour {
+    public override function get():Variant {
+        var events:DropDownEvents = cast(_component._internalEvents, DropDownEvents);
+        return events.searchField;
+    }
+    
+    public override function set(value:Variant) {
+        var events:DropDownEvents = cast(_component._internalEvents, DropDownEvents);
+        events.searchField = cast value.toComponent();
     }
 }
 
@@ -639,21 +665,6 @@ class DropDownEvents extends ButtonEvents {
                 searchContainer.addClass("dropdown-search-container");
                 searchContainer.scriptAccess = false;
 
-                var searchField = new TextField();
-                searchField.registerEvent(ActionEvent.ACTION_START, function(e:ActionEvent) {
-                    if (e.action == ActionType.DOWN || e.action == ActionType.UP ||
-                        e.action == ActionType.CONFIRM || e.action == ActionType.PRESS ||
-                        e.action == ActionType.BACK || e.action == ActionType.CANCEL) {
-                        var builder:DropDownBuilder = cast(_dropdown._compositeBuilder, DropDownBuilder);
-                        builder.handler.component.dispatch(e);
-                    }
-                });
-                searchField.id = "dropdown-search-field";
-                searchField.addClass("dropdown-search-field");
-                searchField.placeholder = _dropdown.searchPrompt;
-                searchField.scriptAccess = false;
-                searchField.registerEvent(UIEvent.CHANGE, onSearchChange);
-                
                 var searchFieldContainer = new HBox();
                 searchFieldContainer.id = "dropdown-search-field-container";
                 searchFieldContainer.addClass("dropdown-search-field-container");
@@ -730,6 +741,37 @@ class DropDownEvents extends ButtonEvents {
 
         Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
         Screen.instance.registerEvent(MouseEvent.RIGHT_MOUSE_DOWN, onScreenMouseDown);
+    }
+    
+    public function createSearchField():TextField {
+        var searchField = new TextField();
+        searchField.registerEvent(ActionEvent.ACTION_START, function(e:ActionEvent) {
+            if (e.action == ActionType.DOWN || e.action == ActionType.UP ||
+                e.action == ActionType.CONFIRM || e.action == ActionType.PRESS ||
+                e.action == ActionType.BACK || e.action == ActionType.CANCEL) {
+                var builder:DropDownBuilder = cast(_dropdown._compositeBuilder, DropDownBuilder);
+                builder.handler.component.dispatch(e);
+            }
+        });
+        searchField.id = "dropdown-search-field";
+        searchField.addClass("dropdown-search-field");
+        searchField.placeholder = _dropdown.searchPrompt;
+        searchField.scriptAccess = false;
+        searchField.registerEvent(UIEvent.CHANGE, onSearchChange);
+        return searchField;
+    }
+    
+    private var _searchField:TextField = null;
+    public var searchField(get, set):TextField;
+    private function get_searchField():TextField {
+        if (_searchField == null) {
+            _searchField = createSearchField();
+        }
+        return _searchField;
+    }
+    private function set_searchField(value:TextField):TextField {
+        _searchField = value;
+        return value;
     }
 
     private var _lastSearchTerm = "";
