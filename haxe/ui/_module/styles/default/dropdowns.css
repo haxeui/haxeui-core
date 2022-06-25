@@ -21,15 +21,19 @@
     background-color: $default-background-color;
     border: 1px solid $accent-color;
     border-top-color: $down-border-color;
+    padding: 1px;
 }
 
 .dropdown-popup .listview .itemrenderer {
     padding: 6px 8px;
 }
 
-.dropdown-popup > .scrollview, .dropdown-popup > dropdown-search-container > .scrollview  {
-    border: 1px solid $accent-color;
-    border-top-color: $down-border-color;
+.dropdown-popup > .scrollview,
+.dropdown-popup > .scrollview:active,
+.dropdown-popup > .dropdown-search-container > .scrollview,
+.dropdown-popup > .dropdown-search-container > .scrollview:active  {
+    border: none;
+    border-radius: 0px;
 }
 
 .dropdown-filler {
@@ -43,7 +47,7 @@
 
 .dropdown-search-field-container {
     width: 100%;
-    padding: 1px;
+    padding: 0px;
 }
 
 .dropdown-search-field {
@@ -53,6 +57,11 @@
     icon: $search;
 }
 
+.dropdown-search-field-separator {
+    height: 1px;
+    width: 100%;
+    background-color: $down-border-color;
+}
 /************************************************************************
 ** MOBILE VARIANTS
 *************************************************************************/

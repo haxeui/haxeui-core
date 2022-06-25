@@ -640,6 +640,14 @@ class DropDownEvents extends ButtonEvents {
                 searchContainer.scriptAccess = false;
 
                 var searchField = new TextField();
+                searchField.registerEvent(ActionEvent.ACTION_START, function(e:ActionEvent) {
+                    if (e.action == ActionType.DOWN || e.action == ActionType.UP ||
+                        e.action == ActionType.CONFIRM || e.action == ActionType.PRESS ||
+                        e.action == ActionType.BACK || e.action == ActionType.CANCEL) {
+                        var builder:DropDownBuilder = cast(_dropdown._compositeBuilder, DropDownBuilder);
+                        builder.handler.component.dispatch(e);
+                    }
+                });
                 searchField.id = "dropdown-search-field";
                 searchField.addClass("dropdown-search-field");
                 searchField.placeholder = _dropdown.searchPrompt;
@@ -652,7 +660,13 @@ class DropDownEvents extends ButtonEvents {
                 searchFieldContainer.scriptAccess = false;
                 searchFieldContainer.addComponent(searchField);
                 
+                var searchFieldSeparator = new Component();
+                searchFieldSeparator.id = "dropdown-search-field-separator";
+                searchFieldSeparator.addClass("dropdown-search-field-separator");
+                searchFieldSeparator.scriptAccess = false;
+                
                 searchContainer.addComponent(searchFieldContainer);
+                searchContainer.addComponent(searchFieldSeparator);
                 searchContainer.addComponent(handler.component);
                 _wrapper.addComponent(searchContainer);
             } else {
