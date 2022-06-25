@@ -1916,14 +1916,6 @@ class Component extends ComponentImpl implements IValidating {
             handleFrameworkProperty("allowMouseInteraction", false);
         }
         
-        if (hasClass("listview") || hasClass("tableview") || hasClass("treeview")) {       
-            if (style.borderType == StyleBorderType.None) {
-                addClass("borderless");
-            } else {
-                removeClass("borderless");
-            }
-        }
-        
         if (_compositeBuilder != null) {
             _compositeBuilder.applyStyle(style);
         }
