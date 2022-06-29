@@ -49,6 +49,8 @@ class TypeConverter {
                     return 0;
                 }
                 return r;
+            case "variant" | "dynamic":
+                return input;
             case _:
                 trace("dont know how to convert from type '" + type + "', returning input");
         }
