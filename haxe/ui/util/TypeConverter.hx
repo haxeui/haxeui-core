@@ -32,9 +32,25 @@ class TypeConverter {
             case "bool":
                 return Std.string(input) == "true";
             case "int":
-                return Std.parseInt(Std.string(input));
+                if (input == null) {
+                    return 0;
+                }
+                var r = Std.parseInt(Std.string(input));
+                if (r == null) {
+                    return 0;
+                }
+                return r;
             case "float":
-                return Std.parseFloat(Std.string(input));
+                if (input == null) {
+                    return 0;
+                }
+                var r = Std.parseFloat(Std.string(input));
+                if (Math.isNaN(r)) {
+                    return 0;
+                }
+                return r;
+            case _:
+                trace("dont know how to convert from type '" + type + "', returning input");
         }
         
         return input;

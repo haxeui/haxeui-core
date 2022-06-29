@@ -623,12 +623,13 @@ class ComponentMacros {
             if (direction == null) {
                 direction = "horizontal"; // default to horizontal
             }
-            var directionalClassName = ComponentClassMap.get(direction + c.type);
+            var directionalClassName = ModuleMacros.resolveComponentClass(direction + c.type);
             if (directionalClassName == null) {
-                trace("WARNING: no direction class found for component: " + c.type + " (" + (direction + c.type.toLowerCase()) + ")");
+                trace("WARNING: no directional class found for component: " + c.type + " (" + (direction + c.type.toLowerCase()) + ")");
                 return id;
             }
 
+            var directionalClassInfo = new ClassBuilder(Context.getModule(directionalClassName)[0]); // we want to use get getModule (and therefore create a ref) to ensure macro order is determinate
             className = directionalClassName;
         }
         c.resolvedClassName = className;
@@ -776,11 +777,10 @@ class ComponentMacros {
                 });
             } else {
                 var propType = null;
-                var info = haxe.ui.util.RTTI.getClassInfo(c.resolvedClassName);
-                if (info != null && info.properties != null && info.properties.get(propName) != null) {
-                    propType = info.properties.get(propName).propertyType;
+                var propInfo = haxe.ui.util.RTTI.getClassProperty(c.resolvedClassName, propName);
+                if (propInfo != null) {
+                    propType = propInfo.propertyType;
                 }
-                
                 var propExpr = macro $v{TypeConverter.convertTo(TypeConverter.convertFrom(propValue), $v{propType})};
                 builder.add(macro $i{varName}.$propName = $propExpr);
             }

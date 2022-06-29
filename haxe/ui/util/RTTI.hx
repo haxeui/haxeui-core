@@ -1,6 +1,7 @@
 package haxe.ui.util;
 
 typedef RTTIEntry = {
+    @:optional var superClass:String;
     @:optional var properties:Map<String, RTTIProperty>;
 }
 
@@ -41,18 +42,21 @@ class RTTI {
         });
     }
     
-    public static function hasClassProperty(className:String, propertyName:String) {
-        if (classInfo == null) {
-            return false;
-        }
-        if (classInfo.exists(className)) {
-            return false;
-        }
+    public static function setSuperClass(className:String, superClassName:String) {
+        className = className.toLowerCase();
+        superClassName = superClassName.toLowerCase();
         var entry = classInfo.get(className);
-        if (entry == null || entry.properties == null) {
-            return false;
+        if (entry == null) {
+            entry = {
+                properties: new Map<String, RTTIProperty>()
+            };
+            classInfo.set(className, entry);
         }
-        return entry.properties.exists(propertyName);
+        entry.superClass = superClassName;
+    }
+    
+    public static function hasClassProperty(className:String, propertyName:String) {
+        return getClassProperty(className, propertyName) != null;
     }
     
     public static function load() {
@@ -80,6 +84,26 @@ class RTTI {
         
         var entry = classInfo.get(className);
         return entry;
+    }
+    
+    public static function getClassProperty(className:String, propertyName:String):RTTIProperty {
+        className = className.toLowerCase();
+        propertyName = propertyName.toLowerCase();
+        var entry = getClassInfo(className);
+        if (entry == null) {
+            return null;
+        }
+        
+        var propInfo:RTTIProperty = null;
+        if (entry.properties != null && entry.properties.exists(propertyName)) {
+            propInfo = entry.properties.get(propertyName);
+        }
+        
+        if (propInfo == null && entry.superClass != null) {
+            propInfo = getClassProperty(entry.superClass, propertyName);
+        }
+        
+        return propInfo;
     }
     
     public static function save() {

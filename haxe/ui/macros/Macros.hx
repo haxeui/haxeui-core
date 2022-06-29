@@ -555,6 +555,13 @@ class Macros {
             }
         }
 
+        // lets set the super class for this class so RTTI works for super classes
+        var superClass = builder.superClass;
+        if (superClass != null) {
+            var superFullPath = superClass.t.get().pack.join(".") + "." + superClass.t.get().name;
+            RTTI.setSuperClass(builder.fullPath, superFullPath);
+        }
+        
         //buildEvents(builder);
         buildStyles(builder);
         buildBindings(builder);
