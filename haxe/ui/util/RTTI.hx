@@ -43,6 +43,10 @@ class RTTI {
     }
     
     public static function setSuperClass(className:String, superClassName:String) {
+        if (classInfo == null) {
+            classInfo = new Map<String, RTTIEntry>();
+        }
+        
         className = className.toLowerCase();
         superClassName = superClassName.toLowerCase();
         var entry = classInfo.get(className);
