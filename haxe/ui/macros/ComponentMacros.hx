@@ -172,9 +172,9 @@ class ComponentMacros {
         };
         var c:ComponentInfo = buildComponentFromFile(builder, codeBuilder, resourcePath, buildData, "this", false);
         var superClass:String = builder.superClass.t.toString();
-        var rootType = ComponentClassMap.get(c.type);
-        if (superClass != rootType) {
-            //Context.warning("The super class of '" + builder.name + "' does not match the root node of '" + resourcePath + "' (" + superClass + " != " + rootType + ") - this may have unintended consequences", pos);
+        var rootType = ModuleMacros.resolveComponentClass(c.type);
+        if (haxe.ui.util.RTTI.hasSuperClass(builder.fullPath, rootType) == false) {
+            Context.warning('The class hierarchy of "${builder.fullPath}" does not contain the root node of "${resourcePath}" (${rootType}) - this may have unintended consequences', pos);
         }
 
         for (id in buildData.namedComponents.keys()) {
