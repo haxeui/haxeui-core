@@ -49,6 +49,9 @@ class RTTI {
         
         className = className.toLowerCase();
         superClassName = superClassName.toLowerCase();
+        if (StringTools.startsWith(superClassName, ".")) {
+            superClassName = superClassName.substr(1);
+        }
         var entry = classInfo.get(className);
         if (entry == null) {
             entry = {
