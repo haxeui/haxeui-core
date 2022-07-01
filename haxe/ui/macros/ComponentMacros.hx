@@ -590,7 +590,7 @@ class ComponentMacros {
         return switch (e.expr) {
             case ENew(t, params):
                 var fullPath = t.pack.concat([t.name]).join(".");
-                var registeredClass = ComponentClassMap.get(fullPath);
+                var registeredClass = ModuleMacros.resolveComponentClass(fullPath);
                 var r = e;
                 if (registeredClass != null) {
                     r = { expr: ENew({ pack: ["haxe", "ui", "components"], name: "Button", params: t.params, sub: t.sub}, params), pos: e.pos};
