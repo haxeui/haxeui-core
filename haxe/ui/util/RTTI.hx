@@ -62,6 +62,38 @@ class RTTI {
         entry.superClass = superClassName;
     }
     
+    public static function hasSuperClass(className:String, superClassName:String) {
+        load();
+        className = className.toLowerCase();
+        superClassName = superClassName.toLowerCase();
+        if (StringTools.startsWith(superClassName, ".")) {
+            superClassName = superClassName.substr(1);
+        }
+
+        var entry = classInfo.get(className);
+        if (entry == null) {
+            return false;
+        }
+        
+        if (className == superClassName) {
+            return true;
+        }
+        
+        var testSuper = entry.superClass;
+        while (testSuper != null) {
+            if (testSuper == superClassName) {
+                return true;
+            }
+            entry = classInfo.get(testSuper);
+            if (entry == null) {
+                return false;
+            }
+            testSuper = entry.superClass;
+        }
+        
+        return false;
+    }
+    
     public static function hasClassProperty(className:String, propertyName:String) {
         return getClassProperty(className, propertyName) != null;
     }
