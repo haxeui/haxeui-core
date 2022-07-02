@@ -98,12 +98,31 @@ class DialogBase extends Box {
         show();
     }
 
+    private var _forcedLeft:Null<Float> = null;
+    private override function set_left(value:Null<Float>):Null<Float> {
+        super.set_left(value);
+        autoCenterDialog = false;
+        _forcedLeft = value;
+        return value;
+    }
+    
+    private var _forcedTop:Null<Float> = null;
+    private override function set_top(value:Null<Float>):Null<Float> {
+        super.set_top(value);
+        autoCenterDialog = false;
+        _forcedTop = value;
+        return value;
+    }
+    
     public override function show() {
         #if !haxeui_flixel
         handleVisibility(false);
         #end
         var dp = dialogParent;
         if (modal) {
+            if (_overlay != null) {
+                return;
+            }
             _overlay = new Component();
             _overlay.id = "modal-background";
             _overlay.addClass("modal-background");
@@ -142,6 +161,8 @@ class DialogBase extends Box {
             Toolkit.callLater(function() {
                 handleVisibility(true);
                 centerDialogComponent(cast(this, Dialog));
+                _forcedLeft = null;
+                _forcedTop = null;
                 if (autoCenterDialog) {
                     Screen.instance.registerEvent(UIEvent.RESIZE, _onScreenResized);
                 }
@@ -150,6 +171,8 @@ class DialogBase extends Box {
     }
 
     private function _onScreenResized(_) {
+        _forcedLeft = null;
+        _forcedTop = null;
         centerDialogComponent(cast this);
     }
     
@@ -323,11 +346,23 @@ class DialogBase extends Box {
                 dp.syncComponentValidation();
             }
             var x = (dp.actualComponentWidth / 2) - (dialog.actualComponentWidth / 2);
+            if (_forcedLeft != null && _forcedLeft > 0) {
+                x = _forcedLeft;
+            }
             var y = (dp.actualComponentHeight / 2) - (dialog.actualComponentHeight / 2);
+            if (_forcedTop != null && _forcedTop > 0) {
+                y = _forcedTop;
+            }
             dialog.moveComponent(x, y);
         } else {
             var x = (Screen.instance.actualWidth / 2) - (dialog.actualComponentWidth / 2);
+            if (_forcedLeft != null && _forcedLeft > 0) {
+                x = _forcedLeft;
+            }
             var y = (Screen.instance.actualHeight / 2) - (dialog.actualComponentHeight / 2);
+            if (_forcedTop != null && _forcedTop > 0) {
+                y = _forcedTop;
+            }
             dialog.moveComponent(x, y);
         }
     }
