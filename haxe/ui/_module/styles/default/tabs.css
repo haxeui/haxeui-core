@@ -184,7 +184,7 @@
 }
 
 .tabview > .tabview-content {
-    border: 1px solid $normal-border-color;
+    border: $normal-border-size solid $normal-border-color;
     padding: 8px;
     background-color: $secondary-background-color;
 }
