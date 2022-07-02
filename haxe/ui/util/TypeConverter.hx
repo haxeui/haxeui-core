@@ -49,10 +49,12 @@ class TypeConverter {
                     return 0;
                 }
                 return r;
-            case "variant" | "dynamic":
+            case "variant" | "dynamic" | "scalemode":
                 return input;
             case _:
+                #if debug
                 trace("dont know how to convert from type '" + type + "', returning input");
+                #end
         }
         
         return input;
