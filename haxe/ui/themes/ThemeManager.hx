@@ -138,7 +138,10 @@ class ThemeManager {
     }
 
     public function applyResource(resourceId:String, styleData:String = null) {
-        var style:String = Toolkit.assets.getText(resourceId);
+        var style:String = "";
+        if (resourceId != null) {
+            style = Toolkit.assets.getText(resourceId);
+        }
         if (styleData != null) {
             style += "\n" + styleData;
         }
