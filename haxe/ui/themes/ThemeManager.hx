@@ -143,6 +143,9 @@ class ThemeManager {
             style = Toolkit.assets.getText(resourceId);
         }
         if (styleData != null) {
+            if (style == null) {
+                style = "";
+            }
             style += "\n" + styleData;
         }
         if (style != null) {
