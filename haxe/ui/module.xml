@@ -204,8 +204,8 @@
             <var name="solid-background-color-down" value="#313335" />
             <var name="solid-background-color-disabled" value="#2f3132" />
             <var name="lighter-text-color" value="#737373" />
-            <var name="error-background-color" value="#ffdddd" />
-            <var name="error-text-color" value="#ff0000" />
+            <var name="error-background-color" value="#cf6679" />
+            <var name="error-text-color" value="#880000" />
             <var name="modal-background-color" value="#181a1b" />
             <!-- special cases -->
             <var name="scrollbar-background-color" value="#2c2f30" />
