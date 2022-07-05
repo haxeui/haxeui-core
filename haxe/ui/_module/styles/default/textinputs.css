@@ -15,6 +15,12 @@
     content-type: auto;
 }
 
+.textfield.invalid-value {
+    color: $error-text-color;
+    background-color: $error-background-color;
+    border-color: $error-text-color;
+}
+
 .textfield:active {
     border: 1px solid $accent-color;
 }
@@ -41,6 +47,12 @@
     initial-width: 150px;
     initial-height: 100px;
     content-type: auto;
+}
+
+.textarea.invalid-value {
+    color: $error-text-color;
+    background-color: $error-background-color;
+    border-color: $error-text-color;
 }
 
 .textarea:active {
