@@ -59,10 +59,6 @@ class ItemRenderer extends Box {
         return _data;
     }
     private function set_data(value:Dynamic):Dynamic {
-        if (value == _data) {
-            return value;
-        }
-
         _data = value;
         invalidateComponentData();
         return value;
@@ -115,6 +111,7 @@ class ItemRenderer extends Box {
     }
 
     private function onDataChanged(data:Dynamic) {
+        _data = data;
     }
     
     private function onItemChange(event:UIEvent) {
