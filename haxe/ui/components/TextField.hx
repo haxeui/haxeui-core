@@ -305,9 +305,6 @@ private class TextFieldHelper {
                 }
             } else {
                 textfield.removeClass(":empty");
-                if (text == textfield.placeholder) {
-                    text = "";
-                }
                 textfield.password = password;
             }
         } else {
@@ -351,9 +348,6 @@ private class TextFieldHelper {
                 }
             } else {
                 textfield.removeClass(":empty");
-                if (htmlText == textfield.placeholder) {
-                    htmlText = "";
-                }
                 textfield.password = password;
             }
         } else {
