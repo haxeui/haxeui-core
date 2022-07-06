@@ -283,6 +283,7 @@ private class Events extends haxe.ui.events.Events {
         } else {
             builder.scrollRight();
         }
+        event.cancel();
     }
 
     private function onTabMouseDown(event:MouseEvent) {
@@ -540,6 +541,7 @@ private class TabBarButton extends Button {
     private var _closable:Bool = false;
     public var closable(get, set):Bool;
     private function get_closable():Bool {
+        return _closable;
         return _closable;
     }
     private function set_closable(value:Bool):Bool {
