@@ -126,6 +126,9 @@ class RTTI {
     }
     
     public static function getClassProperty(className:String, propertyName:String):RTTIProperty {
+        if (className == null || propertyName == null) //TODO: Investigate why nulls may be passed as arguments
+            return null;
+        
         className = className.toLowerCase();
         propertyName = propertyName.toLowerCase();
         var entry = getClassInfo(className);
