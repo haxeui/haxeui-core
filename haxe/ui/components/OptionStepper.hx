@@ -92,6 +92,11 @@ private class SelectedIndexBehaviour extends DataBehaviour {
         var value:Label = stepper.findComponent("value", Label);
         value.text = v;
         
+        var event = new UIEvent(UIEvent.CHANGE);
+        event.previousValue = _previousValue;
+        event.value = _value;
+        _component.dispatch(event);
+        
     }
 }
 
