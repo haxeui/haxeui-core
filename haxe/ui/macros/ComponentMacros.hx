@@ -255,14 +255,7 @@ class ComponentMacros {
         
         if (buildRoot == false) {
             if (classBuilder.hasInterface("haxe.ui.core.IDataComponent") == true && c.data != null) {
-                var ds = new haxe.ui.data.DataSourceFactory<Dynamic>().fromString(c.dataString, haxe.ui.data.ArrayDataSource);
-                var dsVarName = 'ds_root';
-                builder.add(macro var $dsVarName = new haxe.ui.data.ArrayDataSource<Dynamic>());
-                for (i in 0...ds.size) {
-                    var item = ds.get(i);
-                    builder.add(macro $i{dsVarName}.add($v{item}));
-                }
-                builder.add(macro (this : haxe.ui.core.IDataComponent).dataSource = $i{dsVarName});
+                buildDataSourceCode(builder, c, 'ds_root', "this");
             }
             assignComponentProperties(builder, c, rootVarName, buildData);
         }
@@ -657,14 +650,7 @@ class ComponentMacros {
         }
 
         if (classInfo.hasInterface("haxe.ui.core.IDataComponent") == true && c.data != null) {
-            var ds = new haxe.ui.data.DataSourceFactory<Dynamic>().fromString(c.dataString, haxe.ui.data.ArrayDataSource);
-            var dsVarName = 'ds${id}';
-            builder.add(macro var $dsVarName = new haxe.ui.data.ArrayDataSource<Dynamic>());
-            for (i in 0...ds.size) {
-                var item = ds.get(i);
-                builder.add(macro $i{dsVarName}.add($v{item}));
-            }
-            builder.add(macro ($i{componentVarName} : haxe.ui.core.IDataComponent).dataSource = $i{dsVarName});
+            buildDataSourceCode(builder, c, 'ds${id}', componentVarName);
         }
 
         if (c.id != null && buildData.namedComponents != null && useNamedComponents == true) {
@@ -707,6 +693,16 @@ class ComponentMacros {
         return childId;
     }
 
+    private static function buildDataSourceCode(builder:CodeBuilder, c:ComponentInfo, dsVarName:String, componentVarName:String) {
+        var ds = new haxe.ui.data.DataSourceFactory<Dynamic>().fromString(c.dataString, haxe.ui.data.ArrayDataSource);
+        builder.add(macro var $dsVarName = new haxe.ui.data.ArrayDataSource<Dynamic>());
+        for (i in 0...ds.size) {
+            var item = ds.get(i);
+            builder.add(macro $i{dsVarName}.add($v{item}));
+        }
+        builder.add(macro ($i{componentVarName} : haxe.ui.core.IDataComponent).dataSource = $i{dsVarName});
+    }
+    
     private static function buildLayoutCode(builder:CodeBuilder, l:LayoutInfo, id:Int) {
         var className:String = LayoutClassMap.get(l.type.toLowerCase());
         if (className == null) {
