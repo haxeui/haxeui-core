@@ -623,7 +623,7 @@ private class DataSourceBehaviour extends DataBehaviour {
             dataSource.onDataSourceChange = function() {
                 _component.invalidateComponentLayout();
                 if (_firstPass == true) {
-                    _component.syncComponentValidation();
+                    //_component.syncComponentValidation();
                     _firstPass = false;
                     _component.invalidateComponentLayout();
                 }
