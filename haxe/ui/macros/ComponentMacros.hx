@@ -700,7 +700,33 @@ class ComponentMacros {
         builder.add(macro var $dsVarName = new haxe.ui.data.ArrayDataSource<Dynamic>());
         for (i in 0...ds.size) {
             var item = ds.get(i);
-            builder.add(macro $i{dsVarName}.add($v{item}));
+            var hasExpression:Bool = false;
+            // lets first find out if any of the items are expressions
+            for (f in Reflect.fields(item)) {
+                var v = Std.string(Reflect.field(item, f));
+                if (StringTools.startsWith(v, "${") && StringTools.endsWith(v, "}")) {
+                    hasExpression = true;
+                    break;
+                }
+            }
+            
+            if (hasExpression) {
+                builder.add(macro var __item:Dynamic = {} );
+                for (f in Reflect.fields(item)) {
+                    var v = Reflect.field(item, f);
+                    var stringValue = Std.string(v);
+                    if (StringTools.startsWith(stringValue, "${") && StringTools.endsWith(stringValue, "}")) {
+                        stringValue = stringValue.substring(2, stringValue.length - 1);
+                        var expr = Context.parseInlineString(stringValue, Context.currentPos());
+                        builder.add(macro __item.$f = $e{expr});
+                    } else {
+                        builder.add(macro __item.$f = $v{v});
+                    }
+                }
+                builder.add(macro $i{dsVarName}.add($i{"__item"}));
+            } else {
+                builder.add(macro $i{dsVarName}.add($v{item}));
+            }
         }
         builder.add(macro ($i{componentVarName} : haxe.ui.core.IDataComponent).dataSource = $i{dsVarName});
     }
