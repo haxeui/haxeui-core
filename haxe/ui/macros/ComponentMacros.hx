@@ -58,6 +58,7 @@ typedef BuildData = {
 }
 #end
 
+@:access(haxe.ui.macros.Macros)
 class ComponentMacros {
     macro public static function build(resourcePath:String, params:Expr = null):Array<Field> {
         return buildCommon(resourcePath, params);
@@ -156,6 +157,7 @@ class ComponentMacros {
             Context.error("Must have a superclass of haxe.ui.core.Component", Context.currentPos());
         }
 
+        Macros.addConstructor(builder);
         if (builder.ctor == null) {
             Context.error("A class building component must have a constructor", Context.currentPos());
         }

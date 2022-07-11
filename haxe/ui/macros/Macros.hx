@@ -42,6 +42,12 @@ class Macros {
         return builder.fields;
     }
 
+    static function addConstructor(builder:ClassBuilder) {
+        if (builder.ctor == null) {
+            builder.addFunction("new", macro { super(); });
+        }
+    }
+    
     static function applyProperties(builder:ClassBuilder) {
         var propPrefix = builder.fullPath.toLowerCase();
         if (ModuleMacros.properties.exists(propPrefix + ".style")) {
@@ -66,6 +72,7 @@ class Macros {
             Context.error("Must have a superclass of haxe.ui.core.Component", Context.currentPos());
         }
 
+        addConstructor(builder);
         if (builder.ctor == null) {
             Context.error("A class building component must have a constructor", Context.currentPos());
         }
@@ -256,6 +263,7 @@ class Macros {
         }
 
         if (f.expr != null) {
+            addConstructor(builder);
             builder.ctor.add(macro $i{f.name} = $e{f.expr}, AfterSuper);
         }
 
@@ -280,6 +288,7 @@ class Macros {
                 Context.error("Must have a superclass of haxe.ui.core.Component", Context.currentPos());
             }
 
+            addConstructor(builder);
             if (builder.ctor == null) {
                 Context.error("A class building component must have a constructor", Context.currentPos());
             }
