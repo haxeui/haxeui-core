@@ -5,6 +5,7 @@ import haxe.ui.behaviours.Behaviour;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.components.HorizontalScroll;
+import haxe.ui.components.Scroll;
 import haxe.ui.components.TextField;
 import haxe.ui.components.VerticalScroll;
 import haxe.ui.constants.Priority;
@@ -897,10 +898,16 @@ class ScrollViewEvents extends haxe.ui.events.Events {
     private var _fadeTimer:Timer = null;
     @:access(haxe.ui.core.Component)
     private function onMouseWheel(event:MouseEvent) {
-        var vscroll:VerticalScroll = _scrollview.findComponent(VerticalScroll, false);
-        if (vscroll != null) {
+        // we'll default to vertical scrolling for the mouse wheel, however,
+        // if there is no vertical scrollbar we'll try to use horizontal
+        // scrolling instead
+        var scroll:Scroll = _scrollview.findComponent(VerticalScroll, false);
+        if (scroll == null) {
+            scroll = _scrollview.findComponent(HorizontalScroll, false);
+        }
+        if (scroll != null) {
             if (_scrollview.autoHideScrolls == true && _fadeTimer == null) {
-                vscroll.fadeIn();
+                scroll.fadeIn();
             }
             event.cancel();
             var amount = 50; // TODO: calculate this
@@ -908,9 +915,9 @@ class ScrollViewEvents extends haxe.ui.events.Events {
             amount = 2;
             #end
             if (event.delta > 0) {
-                vscroll.pos -= amount;
+                scroll.pos -= amount;
             } else if (event.delta < 0) {
-                vscroll.pos += amount;
+                scroll.pos += amount;
             }
             if (_scrollview.autoHideScrolls == true) {
                 if (_fadeTimer != null) {
@@ -918,7 +925,7 @@ class ScrollViewEvents extends haxe.ui.events.Events {
                     _fadeTimer = null;
                 }
                 _fadeTimer = new Timer(300, function() {
-                    vscroll.fadeOut();
+                    scroll.fadeOut();
                     _fadeTimer.stop();
                     _fadeTimer = null;
                 });
