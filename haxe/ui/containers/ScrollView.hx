@@ -33,24 +33,27 @@ class ScrollView extends InteractiveComponent implements IScrollView {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:clonable @:behaviour(Virtual)                                public var virtual:Bool;
-    @:clonable @:behaviour(ContentLayoutName, "vertical")          public var contentLayoutName:String;
-    @:clonable @:behaviour(ContentWidth)                           public var contentWidth:Null<Float>;
-    @:clonable @:behaviour(PercentContentWidth)                    public var percentContentWidth:Null<Float>;
-    @:clonable @:behaviour(ContentHeight)                          public var contentHeight:Null<Float>;
-    @:clonable @:behaviour(PercentContentHeight)                   public var percentContentHeight:Null<Float>;
-    @:clonable @:behaviour(HScrollPos)                             public var hscrollPos:Float;
-    @:clonable @:behaviour(HScrollMax)                             public var hscrollMax:Float;
-    @:clonable @:behaviour(HScrollPageSize)                        public var hscrollPageSize:Float;
-    @:clonable @:behaviour(VScrollPos)                             public var vscrollPos:Float;
-    @:clonable @:behaviour(VScrollMax)                             public var vscrollMax:Float;
-    @:clonable @:behaviour(VScrollPageSize)                        public var vscrollPageSize:Float;
-    @:clonable @:behaviour(ScrollModeBehaviour, ScrollMode.DRAG)   public var scrollMode:ScrollMode;
-    @:clonable @:behaviour(GetContents)                            public var contents:Component;
-    @:clonable @:behaviour(DefaultBehaviour)                       public var autoHideScrolls:Bool;
-    @:clonable @:behaviour(DefaultBehaviour, true)                 public var allowAutoScroll:Bool;
-    @:call(EnsureVisible)                               public function ensureVisible(component:Component):Void;
+    @:clonable @:behaviour(Virtual)                                 public var virtual:Bool;
+    @:clonable @:behaviour(ContentLayoutName, "vertical")           public var contentLayoutName:String;
+    @:clonable @:behaviour(ContentWidth)                            public var contentWidth:Null<Float>;
+    @:clonable @:behaviour(PercentContentWidth)                     public var percentContentWidth:Null<Float>;
+    @:clonable @:behaviour(ContentHeight)                           public var contentHeight:Null<Float>;
+    @:clonable @:behaviour(PercentContentHeight)                    public var percentContentHeight:Null<Float>;
+    @:clonable @:behaviour(HScrollPos)                              public var hscrollPos:Float;
+    @:clonable @:behaviour(HScrollMax)                              public var hscrollMax:Float;
+    @:clonable @:behaviour(HScrollPageSize)                         public var hscrollPageSize:Float;
+    @:clonable @:behaviour(VScrollPos)                              public var vscrollPos:Float;
+    @:clonable @:behaviour(VScrollMax)                              public var vscrollMax:Float;
+    @:clonable @:behaviour(VScrollPageSize)                         public var vscrollPageSize:Float;
+    @:clonable @:behaviour(ScrollModeBehaviour, ScrollMode.DRAG)    public var scrollMode:ScrollMode;
+    @:clonable @:behaviour(GetContents)                             public var contents:Component;
+    @:clonable @:behaviour(DefaultBehaviour)                        public var autoHideScrolls:Bool;
+    @:clonable @:behaviour(DefaultBehaviour, true)                  public var allowAutoScroll:Bool;
+    
+    @:call(EnsureVisible)                                           public function ensureVisible(component:Component):Void;
 
+    @:event(ScrollEvent.SCROLL)                                     public var onScroll:ScrollEvent->Void;
+    
     //***********************************************************************************************************
     // Validation
     //***********************************************************************************************************
@@ -520,10 +523,16 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         if (hscroll != null && hscroll.hasEvent(UIEvent.CHANGE, onHScroll) == false) {
             hscroll.registerEvent(UIEvent.CHANGE, onHScroll);
         }
+        if (hscroll != null && hscroll.hasEvent(ScrollEvent.SCROLL, onHScrollScroll) == false) {
+            hscroll.registerEvent(ScrollEvent.SCROLL, onHScrollScroll);
+        }
 
         var vscroll:VerticalScroll = _scrollview.findComponent(VerticalScroll, false);
         if (vscroll != null && vscroll.hasEvent(UIEvent.CHANGE, onVScroll) == false) {
             vscroll.registerEvent(UIEvent.CHANGE, onVScroll);
+        }
+        if (vscroll != null && vscroll.hasEvent(ScrollEvent.SCROLL, onVScrollScroll) == false) {
+            vscroll.registerEvent(ScrollEvent.SCROLL, onVScrollScroll);
         }
 
         if (_scrollview.scrollMode == ScrollMode.DRAG || _scrollview.scrollMode == ScrollMode.INERTIAL) {
@@ -549,11 +558,13 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         var hscroll:HorizontalScroll = _scrollview.findComponent(HorizontalScroll, false);
         if (hscroll != null) {
             hscroll.unregisterEvent(UIEvent.CHANGE, onHScroll);
+            hscroll.unregisterEvent(ScrollEvent.SCROLL, onHScrollScroll);
         }
 
         var vscroll:VerticalScroll = _scrollview.findComponent(VerticalScroll, false);
         if (vscroll != null) {
             vscroll.unregisterEvent(UIEvent.CHANGE, onVScroll);
+            vscroll.unregisterEvent(ScrollEvent.SCROLL, onVScrollScroll);
         }
 
         unregisterEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
@@ -583,11 +594,19 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         _target.dispatch(new ScrollEvent(ScrollEvent.CHANGE));
     }
 
+    private function onHScrollScroll(event:UIEvent) {
+        _target.dispatch(new ScrollEvent(ScrollEvent.SCROLL));
+    }
+
     private function onVScroll(event:UIEvent) {
         _scrollview.invalidateComponent(InvalidationFlags.SCROLL);
         _target.dispatch(new ScrollEvent(ScrollEvent.CHANGE));
     }
 
+    private function onVScrollScroll(event:UIEvent) {
+        _target.dispatch(new ScrollEvent(ScrollEvent.SCROLL));
+    }
+    
     private var _offset:Point;
     private static inline var INERTIAL_TIME_CONSTANT:Int = 325;
     private var _inertia:Inertia = null;

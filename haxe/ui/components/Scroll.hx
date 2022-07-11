@@ -1,6 +1,7 @@
 package haxe.ui.components;
 
 import haxe.ui.events.Events;
+import haxe.ui.events.ScrollEvent;
 import haxe.ui.util.Variant;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
@@ -31,12 +32,12 @@ class Scroll extends InteractiveComponent implements IDirectionalComponent {
     /**
      * A minimum value to calculate the position of the thumb from. defaults to 0.
      */
-    @:behaviour(ScrollValueBehaviour, 0)        public var min:Float;
+    @:behaviour(ScrollMinMaxBehaviour, 0)       public var min:Float;
 
     /**
      * A maximum value to calculate the position of the thumb from. defaults to 100.
      */
-    @:behaviour(ScrollValueBehaviour, 100)      public var max:Float;
+    @:behaviour(ScrollMinMaxBehaviour, 100)     public var max:Float;
 
     /**
      * When pressing on the scrollbar itself, decides how much should the thumb jump towards the mouse's position:
@@ -198,6 +199,36 @@ private class Events extends haxe.ui.events.Events  {
 
 @:dox(hide) @:noCompletion
 private class ScrollValueBehaviour extends DataBehaviour {
+    public override function set(value:Variant) {
+        if (value == get()) {
+            return;
+        }
+
+        super.set(value);
+        _component.invalidateComponentLayout();
+    }
+
+    private override function validateData() {
+        var scroll:Scroll = cast(_component, Scroll);
+        var pos:Float = scroll.pos;
+        var min:Float = scroll.min;
+        var max:Float = scroll.max;
+        if (pos < min) {
+            scroll.pos = min;
+        } else  if (pos > max) {
+            scroll.pos = max;
+        }
+
+        var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
+        scroll.dispatch(changeEvent);
+        
+        var scrollEvent:ScrollEvent = new ScrollEvent(ScrollEvent.SCROLL);
+        scroll.dispatch(scrollEvent);
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class ScrollMinMaxBehaviour extends DataBehaviour {
     public override function set(value:Variant) {
         if (value == get()) {
             return;
