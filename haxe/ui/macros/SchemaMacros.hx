@@ -212,6 +212,7 @@ class SchemaMacros {
     #end
 }
 
+#if macro
 private class Schema {
     public var elements:Array<SchemaElement> = [];
     public var complexTypes:Array<SchemaComplexType> = [];
@@ -311,3 +312,4 @@ private class SchemaAttribute {
     }
 }
 
+#end
