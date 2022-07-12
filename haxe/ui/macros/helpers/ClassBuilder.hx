@@ -69,7 +69,27 @@ class ClassBuilder {
 
     public var name(get, null):String;
     private function get_name():String {
-        return fullPath.split(".").pop();
+        var fullPathCopy = fullPath;
+        var n1 = fullPathCopy.indexOf("<");
+        var n2 = fullPathCopy.indexOf(">");
+        if (n1 != -1 && n2 != -1) {
+            fullPathCopy = fullPathCopy.substring(0, n1) + fullPathCopy.substring(n2 + 1);
+        }
+        
+        return fullPathCopy.split(".").pop();
+    }
+    
+    public var pkg(get, null):Array<String>;
+    private function get_pkg():Array<String> {
+        var fullPathCopy = fullPath;
+        var n1 = fullPathCopy.indexOf("<");
+        var n2 = fullPathCopy.indexOf(">");
+        if (n1 != -1 && n2 != -1) {
+            fullPathCopy = fullPathCopy.substring(0, n1) + fullPathCopy.substring(n2 + 1);
+        }
+        var parts = fullPathCopy.split(".");
+        parts.pop();
+        return parts;
     }
 
     public var isPrivate(get, null):Bool;
@@ -83,6 +103,17 @@ class ClassBuilder {
                 false;
         }
     }
+    
+    public var isInterface(get, null):Bool;
+    private function get_isInterface():Bool {
+        return switch (type) {
+            case TInst(c, _):
+                c.get().isInterface;
+            case _:
+                false;
+        }
+    }
+    
 
     public function findField(name:String):Field {
         var r = null;
