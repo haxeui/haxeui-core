@@ -625,17 +625,11 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         _lastMousePos = new Point(event.screenX, event.screenY);
 
         var componentOffset = _scrollview.getComponentOffset();
-        if (hscroll != null && hscroll.hitTest(event.screenX - componentOffset.x, event.screenY - componentOffset.y) == true) {
-            return;
-        }
-        if (vscroll != null && vscroll.hitTest(event.screenX - componentOffset.x, event.screenY - componentOffset.y) == true) {
-            return;
-        }
-        
         // we want to disallow mouse scrolling if we are under a textfield as this stops selection of data in textfield
+        // if we are under a scrollbar, lets let the scroll bar handle it (rather than scrollview intefering) 
         var under = _scrollview.findComponentsUnderPoint(event.screenX - componentOffset.x, event.screenY - componentOffset.y);
         for (c in under) {
-            if ((c is TextField)) {
+            if ((c is TextField) || (c is Scroll)) {
                 return;
             }
         }
