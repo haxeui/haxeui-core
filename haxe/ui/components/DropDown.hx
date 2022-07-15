@@ -741,6 +741,11 @@ class DropDownEvents extends ButtonEvents {
 
         Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
         Screen.instance.registerEvent(MouseEvent.RIGHT_MOUSE_DOWN, onScreenMouseDown);
+        registerEvent(UIEvent.MOVE, onDropDownMoved);
+    }
+    
+    private function onDropDownMoved(_) {
+        hideDropDown();
     }
     
     public function createSearchField():TextField {
@@ -840,6 +845,7 @@ class DropDownEvents extends ButtonEvents {
         }
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
         Screen.instance.unregisterEvent(MouseEvent.RIGHT_MOUSE_DOWN, onScreenMouseDown);
+        unregisterEvent(UIEvent.MOVE, onDropDownMoved);
     }
 
     private function onScreenMouseDown(event:MouseEvent) {
