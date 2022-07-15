@@ -372,6 +372,7 @@ private class Events extends haxe.ui.events.Events {
         }
         var vscroll:VerticalScroll = _textarea.findComponent(VerticalScroll, false);
         if (vscroll != null) {
+            event.cancel();
             var step:Float = 20;
             if (_textarea.getTextInput().data.vscrollPageStep != null) {
                 step = _textarea.getTextInput().data.vscrollPageStep;
