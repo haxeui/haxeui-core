@@ -43,6 +43,13 @@ class Rectangle {
         top -= dy; height += dy * 2;
     }
 
+    public function equals(rc:Rectangle) {
+        if (rc == null) {
+            return false;
+        }
+        return (rc.left == this.left && rc.top == this.top && rc.width == this.width && rc.height == this.height);
+    }
+    
     public function containsPoint(x:Float, y:Float):Bool {
         if (x >= left && x < left + width && y >= top && y < top + height) {
             return true;
