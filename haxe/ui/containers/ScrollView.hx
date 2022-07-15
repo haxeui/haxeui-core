@@ -6,7 +6,6 @@ import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.components.HorizontalScroll;
 import haxe.ui.components.Scroll;
-import haxe.ui.components.TextField;
 import haxe.ui.components.VerticalScroll;
 import haxe.ui.constants.Priority;
 import haxe.ui.constants.ScrollMode;
@@ -625,11 +624,11 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         _lastMousePos = new Point(event.screenX, event.screenY);
 
         var componentOffset = _scrollview.getComponentOffset();
-        // we want to disallow mouse scrolling if we are under a textfield as this stops selection of data in textfield
+        // we want to disallow mouse scrolling if we are under a textfield/textarea as this stops selection of data in textfield
         // if we are under a scrollbar, lets let the scroll bar handle it (rather than scrollview intefering) 
         var under = _scrollview.findComponentsUnderPoint(event.screenX - componentOffset.x, event.screenY - componentOffset.y);
         for (c in under) {
-            if ((c is TextField) || (c is Scroll)) {
+            if (c.hasTextInput() || (c is Scroll)) {
                 return;
             }
         }
