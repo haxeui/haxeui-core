@@ -49,6 +49,22 @@ class MessageBoxBase extends Dialog {
         return value;
     }
 
+    public override function get_text():String {
+        return message;
+    }
+    public override function set_text(value:String):String {
+        message = value;
+        return value;
+    }
+
+    public override function get_icon():String {
+        return iconImage.resource;
+    }
+    public override function set_icon(value:String):String {
+        iconImage.resource = value;
+        return value;
+    }
+    
     private var _type:String = null;
     public var type(get, set):MessageBoxType;
     private function get_type():MessageBoxType {
