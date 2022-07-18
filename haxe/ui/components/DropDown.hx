@@ -684,6 +684,10 @@ class DropDownEvents extends ButtonEvents {
                 _wrapper.addComponent(handler.component);
             }
 
+            if (_dropdown.style.fontSize != null && handler.component.customStyle.fontSize != _dropdown.style.fontSize) {
+                handler.component.customStyle.fontSize = _dropdown.style.fontSize;
+            }
+            
             var filler = new Component();
             filler.horizontalAlign = "right";
             filler.includeInLayout = false;

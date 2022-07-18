@@ -123,6 +123,42 @@ class ComponentMacros {
         return builder.expr;
     }
     
+    macro public static function cascacdeStylesToList(componentType:Expr, styleProperties:Expr = null):Expr {
+        if (styleProperties == null) {
+            return macro null;
+        }
+        
+        var stylePropertiesArray = MacroHelpers.exprToArray(styleProperties);
+        if (stylePropertiesArray == null || stylePropertiesArray.length == 0) {
+            return macro null;
+        }
+        
+        var builder = new CodeBuilder();
+        builder.add(macro var list = _component.findComponents($e{componentType}, 0xffffff));
+        
+        var propertyExprs = [];
+        for (prop in stylePropertiesArray) {
+            propertyExprs.push(macro {
+                if (c.customStyle.$prop != style.$prop) {
+                    c.customStyle.$prop = style.$prop;
+                    invalidate = true;
+                }
+            });
+        }
+        
+        builder.add(macro for (c in list) {
+            var invalidate = false;
+            
+            $b{propertyExprs}
+            
+            if (invalidate == true) {
+                c.invalidateComponentStyle();
+            }
+        });
+        
+        return builder.expr;
+    }
+    
     #if macro
     private static function buildFromStringCommon(source:String, params:Expr = null):Expr {
         var builder = new CodeBuilder();
