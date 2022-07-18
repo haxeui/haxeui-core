@@ -1203,21 +1203,18 @@ class ScrollViewBuilder extends CompositeBuilder {
             clipCY = _contents.componentClipRect.height;
         }
 
-        var currentClipRect = _contents.componentClipRect;
         var newClipRect:Rectangle = new Rectangle(Math.fround(xpos), Math.fround(ypos), Math.fround(clipCX), Math.fround(clipCY));
-        if (!newClipRect.equals(currentClipRect)) {
-            _contents.componentClipRect = newClipRect;
-            _contents.walkComponents(function(c) {
-                // we dont usually check see if a component has an event before dispatching it
-                // however, in this specific case we are going to, potentially, be disaptching
-                // a move event for many child components, so lets just not do that if we know
-                // the component isnt going to respond to that event anyway
-                if (c.hasEvent(UIEvent.MOVE)) {
-                    c.dispatch(new UIEvent(UIEvent.MOVE));
-                }
-                return true;
-            });
-        }
+        _contents.componentClipRect = newClipRect;
+        _contents.walkComponents(function(c) {
+            // we dont usually check see if a component has an event before dispatching it
+            // however, in this specific case we are going to, potentially, be disaptching
+            // a move event for many child components, so lets just not do that if we know
+            // the component isnt going to respond to that event anyway
+            if (c.hasEvent(UIEvent.MOVE)) {
+                c.dispatch(new UIEvent(UIEvent.MOVE));
+            }
+            return true;
+        });
     }
 
     public var virtualHorizontal(get, null):Bool;
