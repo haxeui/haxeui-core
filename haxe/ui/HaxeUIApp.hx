@@ -86,6 +86,15 @@ class HaxeUIApp extends AppImpl {
         }
     }
 
+    public var title(get, set):String;
+    private function get_title():String {
+        return Screen.instance.title;
+    }
+    private function set_title(value:String):String {
+        Screen.instance.title = value;
+        return value;
+    }
+    
     public function addComponent(component:Component):Component {
         return Screen.instance.addComponent(component);
     }
