@@ -893,10 +893,17 @@ class ScrollViewEvents extends haxe.ui.events.Events {
     private function onMouseWheel(event:MouseEvent) {
         // we'll default to vertical scrolling for the mouse wheel, however,
         // if there is no vertical scrollbar we'll try to use horizontal
-        // scrolling instead
-        var scroll:Scroll = _scrollview.findComponent(VerticalScroll, false);
+        // scrolling instead - note that if the shiftkey is pressed
+        // we'll reverse that an look primarily to scroll horizontally
+        var primaryType:Class<Scroll> = VerticalScroll;
+        var secondaryType:Class<Scroll> = HorizontalScroll;
+        if (event.shiftKey) {
+            primaryType = HorizontalScroll;
+            secondaryType = VerticalScroll;
+        }
+        var scroll:Scroll = _scrollview.findComponent(primaryType, false);
         if (scroll == null) {
-            scroll = _scrollview.findComponent(HorizontalScroll, false);
+            scroll = _scrollview.findComponent(secondaryType, false);
         }
         if (scroll != null) {
             if (_scrollview.autoHideScrolls == true && _fadeTimer == null) {
