@@ -657,12 +657,6 @@ class Component extends ComponentImpl implements IValidating {
         }
 
         for (child in childComponents) {
-            if (callback(child) == false) {
-                return;
-            }
-        }
-
-        for (child in childComponents) {
             var cont = true;
             child.walkComponents(function(c) {
                 cont = callback(c);
