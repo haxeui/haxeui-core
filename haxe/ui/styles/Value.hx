@@ -8,6 +8,7 @@ enum Value {
     VBool(v:Bool);
     VDimension(v:Dimension);
     VColor(v:Int);
+    VCalc(v:CalcFunction);
     VCall(f:String, vl:Array<Value>);
     VConstant(v:String);
     VComposite(vl:Array<Value>);
