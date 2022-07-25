@@ -33,4 +33,32 @@ class MathUtil {
 
         return v;
     }
+    
+    public static inline function min(numbers:Array<Float>):Float {
+        var r:Float = numbers[0];
+        for (n in numbers) {
+            if (n < r) {
+                r = n;
+            }
+        }
+        return r;
+    }
+    
+    public static inline function max(numbers:Array<Float>):Float {
+        var r:Float = numbers[0];
+        for (n in numbers) {
+            if (n > r) {
+                r = n;
+            }
+        }
+        return r;
+    }
+    
+    public static inline function wrapCircular(v:Float, max:Float):Float {
+        v = v % max;
+        if (v < 0) {
+            v += max;
+        }
+        return v;
+    }
 }

@@ -1,6 +1,140 @@
 package haxe.ui.util;
 
+typedef HSL = {
+    var h:Float;
+    var s:Float;
+    var l:Float;
+}
+
+typedef HSV = {
+    var h:Float;
+    var s:Float;
+    var v:Float;
+}
+
+// conversion functions extracted from: https://github.com/fponticelli/thx.color
+
 class ColorUtil {
+    public static function toHSL(color:Color):HSL {
+        var r = color.r / 255;
+        var g = color.g / 255;
+        var b = color.b / 255;
+        
+        var min = MathUtil.min([r, g, b]);
+        var max = MathUtil.max([r, g, b]);
+        var delta = max - min;
+        var h:Float = 0;
+        var s:Float = 0;
+        var l:Float = (max + min) / 2;
+
+        if (delta == 0.0) {
+            s = h = 0.0;
+        } else {
+            s = l < 0.5 ? delta / (max + min) : delta / (2 - max - min);
+            if (r == max) {
+                h = (g - b) / delta + (g < b ? 6 : 0);
+            } else if (g == max) {
+                h = (b - r) / delta + 2;
+            } else {
+                h = (r - g) / delta + 4;
+            }
+            h *= 60;
+        }
+        
+        return {h: Math.round(h), s: s * 100, l: l * 100};
+    }
+    
+    public static function fromHSL(hue:Float, saturation:Float, luminosity:Float):Color {
+        saturation /= 100;
+        luminosity /= 100;
+        // Based on D3.js by Michael Bostock
+        var _c = function(d:Float, s:Float, l:Float):Float {
+            var m2:Float = l <= 0.5 ? l * (1 + s): l + s - l * s;
+            var m1:Float = 2 * l - m2;
+            
+            d = MathUtil.wrapCircular(d, 360);
+            if (d < 60) {
+                return m1 + (m2 - m1) * d / 60;
+            } else if (d < 180) {
+                return m2;
+            } else if (d < 240) {
+                return m1 + (m2 - m1) * (240 - d) / 60;
+            }
+            return m1;
+        }
+        return Color.fromComponents(Math.round(_c(hue + 120, saturation, luminosity) * 255), 
+                                    Math.round(_c(hue, saturation, luminosity) * 255),
+                                    Math.round(_c(hue - 120, saturation, luminosity) * 255),
+                                    255);
+    }
+    
+    public static function toHSV(color:Color):HSV {
+        var r = color.r / 255;
+        var g = color.g / 255;
+        var b = color.b / 255;
+        
+        var min = MathUtil.min([r, g, b]);
+        var max = MathUtil.max([r, g, b]);
+        var delta = max - min;
+        var h:Float = 0;
+        var s:Float = 0;
+        var v:Float = max;
+        
+        if (delta != 0) {
+            s = delta / max;
+        } else {
+            s = 0;
+            h = -1;
+            return {h: Math.fround(h), s: s * 100, v: v * 100};
+        }
+        
+        if (r == max) {
+            h = (g - b) / delta;
+        } else if (g == max) {
+            h = 2 + (b - r) / delta;
+        } else {
+            h = 4 + (r - g) / delta;
+        }
+        
+        h *= 60;
+        if (h < 0) {
+            h += 360;
+        }
+        
+        return {h: Math.fround(h), s: s * 100, v: v * 100};
+    }
+    
+    public static function fromHSV(hue:Float, saturation:Float, value:Float):Color {
+        saturation /= 100;
+        value /= 100;
+        if (saturation == 0) {
+            return Color.fromComponents(Std.int(value), Std.int(value), Std.int(value), 255);
+        }
+        
+        var r:Float, g:Float, b:Float, i:Int, f:Float, p:Float, q:Float, t:Float;
+        var h = hue / 60;
+        
+        i = Math.floor(h);
+        f = h - i;
+        p = value * (1 - saturation);
+        q = value * (1 - f * saturation);
+        t = value * (1 - (1 - f) * saturation);
+        
+        switch (i) {
+            case 0: r = value; g = t; b = p;
+            case 1: r = q; g = value; b = p;
+            case 2: r = p; g = value; b = t;
+            case 3: r = p; g = q; b = value;
+            case 4: r = t; g = p; b = value;
+            default: r = value; g = p; b = q; // case 5
+        }
+        
+        return Color.fromComponents(Math.round(r * 255), 
+                                    Math.round(g * 255),
+                                    Math.round(b * 255),
+                                    255);
+    }
+    
     public static function buildColorArray(startColor:Color, endColor:Color, size:Float):Array<Int> {
         var array:Array<Int> = [];
 
