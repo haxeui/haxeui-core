@@ -21,6 +21,8 @@ class ValueTools {
             v = Value.VDimension(Dimension.VW(Std.parseFloat(s)));
         } else if (StringTools.endsWith(s, "vh") == true && hasSpace == false) {
             v = Value.VDimension(Dimension.VH(Std.parseFloat(s)));
+        } else if (StringTools.endsWith(s, "vmin") == true && hasSpace == false) {
+            v = Value.VDimension(Dimension.VMIN(Std.parseFloat(s)));
         } else if (StringTools.endsWith(s, "rem") == true && hasSpace == false) {
             v = Value.VDimension(Dimension.REM(Std.parseFloat(s)));
         } else if (validColor(s)) {
@@ -325,6 +327,8 @@ class ValueTools {
                         return d / 100 * Screen.instance.width;
                     case Dimension.VH(d):
                         return d / 100 * Screen.instance.height;
+                    case Dimension.VMIN(d):
+                        return d / 100 * Math.min(Screen.instance.width, Screen.instance.height);
                     case Dimension.REM(d):
                         return d * Toolkit.pixelsPerRem;
                     case _:
