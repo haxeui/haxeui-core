@@ -24,13 +24,6 @@ class ValueTools {
             v = Value.VDimension(Dimension.VW(Std.parseFloat(s)));
         } else if (StringTools.endsWith(s, "vh") == true && hasSpace == false) {
             v = Value.VDimension(Dimension.VH(Std.parseFloat(s)));
-        } else if (StringTools.startsWith(s, "min(") == true && StringTools.endsWith(s, ")") == true && hasSpace == false) {
-            v = Value.VCalc(CalcFunction.FMin(s.substring(4, s.length - 1).split(',').map(s -> parse(s))));
-        } else if (StringTools.startsWith(s, "max(") == true && StringTools.endsWith(s, ")") == true && hasSpace == false) {
-            v = Value.VCalc(CalcFunction.FMax(s.substring(4, s.length - 1).split(',').map(s -> parse(s))));
-        } else if (StringTools.startsWith(s, "clamp(") == true && StringTools.endsWith(s, ")") == true && hasSpace == false && s.substring(6, s.length - 1).split(',').length == 3) {
-            var args = s.substring(6, s.length - 1).split(',').map(s -> parse(s));
-            v = Value.VCalc(CalcFunction.FClamp(args[0], args[1], args[2]));
         } else if (StringTools.endsWith(s, "rem") == true && hasSpace == false) {
             v = Value.VDimension(Dimension.REM(Std.parseFloat(s)));
         } else if (validColor(s)) {
@@ -375,42 +368,6 @@ class ValueTools {
                 return v;
             case Value.VCall(f, vl):
                 return call(f, vl);
-            case Value.VCalc(FMin(values)):
-                var minv:Float = Math.POSITIVE_INFINITY;
-                for (val in values) {
-                    var num:Null<Float> = calcDimension(val);
-                    if (num == null)
-                        return null;
-                    else if (num < minv)
-                        minv = num;
-                }
-                return minv;
-            case Value.VCalc(Fmax(values)):
-                var minv:Float = Math.NEGATIVE_INFINITY;
-                for (val in values) {
-                    var num:Null<Float> = calcDimension(val);
-                    if (num == null)
-                        return null;
-                    else if (num > minv)
-                        minv = num;
-                }
-                return minv;
-            case Value.VCalc(FClamp(val, min, max)):
-                if (val == null || min == null || max == null)
-                    return null;
-
-                var valNum:Null<Float> = calcDimension(val);
-                var minNum:Null<Float> = calcDimension(min);
-                var maxNum:Null<Float> = calcDimension(max);
-
-                if (valNum == null || minNum == null || maxNum == null)
-                    return null;
-                else if (valNum < minNum)
-                    return minNum;
-                else if (valNum > maxNum)
-                    return maxNum;
-                else
-                    return valNum;
             case Value.VNone:
                 return null;
             case _:
@@ -457,6 +414,39 @@ class ValueTools {
                 return null;
 
                 #end
+            case "min":
+                var minv:Float = Math.POSITIVE_INFINITY;
+                for (val in vl) {
+                    var num:Null<Float> = calcDimension(val);
+                    if (num == null)
+                        return null;
+                    else if (num < minv)
+                        minv = num;
+                }
+                return minv;
+            case "max":
+                var maxv:Float = Math.NEGATIVE_INFINITY;
+                for (val in vl) {
+                    var num:Null<Float> = calcDimension(val);
+                    if (num == null)
+                        return null;
+                    else if (num > maxv)
+                        maxv = num;
+                }
+                return maxv;
+            case "clamp":
+                var valNum:Null<Float> = calcDimension(vl[0]);
+                var minNum:Null<Float> = calcDimension(vl[1]);
+                var maxNum:Null<Float> = calcDimension(vl[2]);
+
+                if (valNum == null || minNum == null || maxNum == null)
+                    return null;
+                else if (valNum < minNum)
+                    return minNum;
+                else if (valNum > maxNum)
+                    return maxNum;
+                else
+                    return valNum;
             case "platform-color":
                 return Platform.instance.getColor(ValueTools.string(vl[0]));
             case "theme-icon" | "theme-image":
