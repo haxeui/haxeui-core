@@ -46,7 +46,7 @@ class HorizontalSliderLayout extends DefaultLayout {
         }
 
         var cx = rangeValue.width;
-        if (rangeValue.hidden == true) {
+        if (rangeValue.hidden == true && _component.hidden == false) {
             cx = 0;
         }
         
