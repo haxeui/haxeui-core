@@ -196,6 +196,10 @@ abstract Color(Int) from Int {
         return this;
     }
 
+    public function toHex():String {
+        return "#" + StringTools.hex(r, 2) + StringTools.hex(g, 2) + StringTools.hex(b, 2);
+    }
+    
     @:op(A | B) static inline function or(a:Color, b:Color):Int {
         return a.toInt() | b.toInt();
     }
