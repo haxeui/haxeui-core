@@ -28,13 +28,13 @@ class TextField extends InteractiveComponent {
      * Whether or not the text inside the text field is fully visible,
      * or displayed as a password, with every character replaced by a `*`.
      */
-    @:clonable @:behaviour(PasswordBehaviour)          public var password:Bool;
+    @:clonable @:behaviour(PasswordBehaviour)               public var password:Bool;
 
     /**
      * The maximum number of characters that can be entered in the text field.  
      * **Note** - this doesnt apply to text added via code.
      */
-    @:clonable @:behaviour(MaxCharsBehaviour, -1)      public var maxChars:Int;
+    @:clonable @:behaviour(MaxCharsBehaviour, -1)           public var maxChars:Int;
 
     /**
      * A string, containing a pattern of characters that the user can enter. When unspecified, the text field accepts all characters.
@@ -45,29 +45,29 @@ class TextField extends InteractiveComponent {
      *  - use the `-` character to represent a range of characters - `"a-zA-Z0-9"` will accept characters from `a` to `z`, `A` to `Z` and `0` to `9`.
      *  - prefix the string with a `^` for it to only accept characters that do not match the string's pattern - `"^abc"` will accept any character except `a`, `b` and `c`.
      */
-    @:clonable @:behaviour(RestrictCharsBehaviour)     public var restrictChars:String;
+    @:clonable @:behaviour(RestrictCharsBehaviour)          public var restrictChars:String;
 
     /**
      * Displayed only when the text is empty.
      */
-    @:clonable @:behaviour(PlaceholderBehaviour)       public var placeholder:String;
+    @:clonable @:behaviour(PlaceholderBehaviour)            public var placeholder:String;
 
     /**
      * The actual text that is displayed inside the text field.
      */
-    @:clonable @:behaviour(TextBehaviour)              public var text:String;
+    @:clonable @:behaviour(TextBehaviour)                   public var text:String;
 
     /**
      * A string containing HTML markup to be displayed inside the text field.
      */
-    @:clonable @:behaviour(HtmlTextBehaviour)          public var htmlText:String;
+    @:clonable @:behaviour(HtmlTextBehaviour)               public var htmlText:String;
 
     /**
      * The text displayed inside of the `TextField`.
      * 
      * `value` is used as a universal way to access the value a component is based on. in this case its the text inside of the text field.
      */
-    @:clonable @:value(text)                           public var value:Dynamic;
+    @:clonable @:value(text)                                public var value:Dynamic;
 
     /**
      * An icon that is displayed to the left of the text field.
@@ -75,13 +75,15 @@ class TextField extends InteractiveComponent {
      * To display an icon, set the `icon` property to a path to an image file.
      * If no icon is set, the text field will be displayed without any icon. The default is no icon.
      */
-    @:clonable @:behaviour(IconBehaviour)              public var icon:String;
+    @:clonable @:behaviour(IconBehaviour)                   public var icon:String;
     
     /**
      * The (zero based) position of the caret within the textfield
      *
      */
-    @:clonable @:behaviour(CaretIndexBehaviour)         public var caretIndex:Int;
+    @:clonable @:behaviour(CaretIndexBehaviour)             public var caretIndex:Int;
+    @:clonable @:behaviour(SelectionStartIndexBehaviour)    public var selectionStartIndex:Int;
+    @:clonable @:behaviour(SelectionEndIndexBehaviour)      public var selectionEndIndex:Int;
 }
 
 //***********************************************************************************************************
@@ -271,6 +273,30 @@ private class CaretIndexBehaviour extends ValueBehaviour {
     }
 }
 
+
+@:dox(hide) @:noCompletion
+private class SelectionStartIndexBehaviour extends ValueBehaviour {
+    public override function get():Variant {
+        return _component.getTextInput().selectionStartIndex;
+    }
+    public override function set(value:Variant) {
+        super.set(value);
+        _component.syncComponentValidation();
+        _component.getTextInput().selectionStartIndex = value;
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class SelectionEndIndexBehaviour extends ValueBehaviour {
+    public override function get():Variant {
+        return _component.getTextInput().selectionEndIndex;
+    }
+    public override function set(value:Variant) {
+        super.set(value);
+        _component.syncComponentValidation();
+        _component.getTextInput().selectionEndIndex = value;
+    }
+}
 //***********************************************************************************************************
 // Helpers
 //***********************************************************************************************************

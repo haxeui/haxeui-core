@@ -64,6 +64,22 @@ class TextBase {
         return value;
     }
     
+    public var selectionStartIndex(get, set):Int;
+    private function get_selectionStartIndex():Int {
+        return 0;
+    }
+    private function set_selectionStartIndex(value:Int):Int {
+        return value;
+    }
+    
+    public var selectionEndIndex(get, set):Int;
+    private function get_selectionEndIndex():Int {
+        return 0;
+    }
+    private function set_selectionEndIndex(value:Int):Int {
+        return value;
+    }
+    
     //***********************************************************************************************************
     // Validation functions
     //***********************************************************************************************************
