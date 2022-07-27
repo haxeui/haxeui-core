@@ -128,8 +128,21 @@ class ImageLoader {
             if (data != null && data.length > 0) {
                 Toolkit.assets.imageFromBytes(data, callback);
             } else {
-                trace("WARNING: 0 length bytes found for '" + url + "' (http status: " + httpStatus + ")");
-                callback(null);
+                if (httpStatus == 301 || httpStatus == 302) { // lets follow redirects
+                    var location = http.responseHeaders.get("location");
+                    if (location == null) {
+                        location = http.responseHeaders.get("Location");
+                    }
+                    if (location != null) {
+                        loadFromHttp(location, callback);
+                    } else {
+                        trace("WARNING: redirect encounters but no location header found (http status: " + httpStatus + ")");
+                        callback(null);
+                    }
+                } else {
+                    trace("WARNING: 0 length bytes found for '" + url + "' (http status: " + httpStatus + ")");
+                    callback(null);
+                }
             }
         }
         
@@ -139,8 +152,21 @@ class ImageLoader {
             if (data != null && data.length > 0) {
                 Toolkit.assets.imageFromBytes(Bytes.ofString(data), callback);
             } else {
-                trace("WARNING: 0 length bytes found for '" + url + "' (http status: " + httpStatus + ")");
-                callback(null);
+                if (httpStatus == 301 || httpStatus == 302) { // lets follow redirects
+                    var location = http.responseHeaders.get("location");
+                    if (location == null) {
+                        location = http.responseHeaders.get("Location");
+                    }
+                    if (location != null) {
+                        loadFromHttp(location, callback);
+                    } else {
+                        trace("WARNING: redirect encounters but no location header found (http status: " + httpStatus + ")");
+                        callback(null);
+                    }
+                } else {
+                    trace("WARNING: 0 length bytes found for '" + url + "' (http status: " + httpStatus + ")");
+                    callback(null);
+                }
             }
         }
         
