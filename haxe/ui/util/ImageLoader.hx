@@ -121,9 +121,9 @@ class ImageLoader {
         #else
 
         var http:haxe.Http = new haxe.Http(url);
+        var httpStatus = -1;
         
         #if (haxe_ver >= 4.0)
-        var httpStatus = -1;
         http.onBytes = function(data:Bytes) {
             if (data != null && data.length > 0) {
                 Toolkit.assets.imageFromBytes(data, callback);
