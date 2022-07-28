@@ -119,7 +119,6 @@ class ListViewEvents extends ScrollViewEvents {
             var builder:ListViewBuilder = cast(_listview._compositeBuilder, ListViewBuilder);
             builder.addItemRendererClass(instance, ":selected");
         }
-        _listview.invalidateComponentStyle(true);
     }
 
     private function onRendererDestroyed(e:UIEvent) {
