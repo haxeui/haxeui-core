@@ -189,7 +189,8 @@ abstract Color(Int) from Int {
     }
 
     public inline function set(r:Int, g:Int, b:Int, a:Int):Int {
-        return this = ((a & 0xFF) << 24) | ((r & 0xFF) << 16) | ((g & 0xFF) << 8) | (b & 0xFF);
+        return this = ((r & 0xFF) << 16) | ((g & 0xFF) << 8) | (b & 0xFF);
+        //return this = ((a & 0xFF) << 24) | ((r & 0xFF) << 16) | ((g & 0xFF) << 8) | (b & 0xFF);
     }
 
     @:to public function toInt():Int {

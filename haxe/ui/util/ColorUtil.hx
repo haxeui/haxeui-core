@@ -12,6 +12,12 @@ typedef HSV = {
     var v:Float;
 }
 
+typedef RGBF = {
+    var r:Float;
+    var g:Float;
+    var b:Float;
+}
+
 // conversion functions extracted from: https://github.com/fponticelli/thx.color
 
 class ColorUtil {
@@ -84,7 +90,7 @@ class ColorUtil {
             s = delta / max;
         } else {
             s = 0;
-            h = -1;
+            h = 0;
             return {h: Math.fround(h), s: s * 100, v: v * 100};
         }
         
@@ -105,11 +111,12 @@ class ColorUtil {
     }
     
     public static function fromHSV(hue:Float, saturation:Float, value:Float):Color {
-        saturation /= 100;
-        value /= 100;
         if (saturation == 0) {
             return Color.fromComponents(Std.int(value), Std.int(value), Std.int(value), 255);
         }
+
+        saturation /= 100;
+        value /= 100;
         
         var r:Float, g:Float, b:Float, i:Int, f:Float, p:Float, q:Float, t:Float;
         var h = hue / 60;
@@ -133,6 +140,81 @@ class ColorUtil {
                                     Math.round(g * 255),
                                     Math.round(b * 255),
                                     255);
+    }
+    
+    public static function hsvToRGBF(hue:Float, saturation:Float, value:Float):RGBF {
+        if (hue == 0 && saturation == 0 && value == 100) {
+            //return {r: 255, g: 255, b: 255};
+        }
+        if (saturation == 0) {
+            //return {r: value, g: value, b: value};
+        }
+
+        saturation /= 100;
+        value /= 100;
+        
+        var r:Float, g:Float, b:Float, i:Int, f:Float, p:Float, q:Float, t:Float;
+        var h = hue / 60;
+        
+        i = Math.floor(h);
+        f = h - i;
+        p = value * (1 - saturation);
+        q = value * (1 - f * saturation);
+        t = value * (1 - (1 - f) * saturation);
+        
+        switch (i) {
+            case 0: r = value; g = t; b = p;
+            case 1: r = q; g = value; b = p;
+            case 2: r = p; g = value; b = t;
+            case 3: r = p; g = q; b = value;
+            case 4: r = t; g = p; b = value;
+            default: r = value; g = p; b = q; // case 5
+        }
+        
+        return {r: r * 255, g: g * 255, b: b * 255};
+    }
+    
+    public static function rgbfToHSV(r:Float, g:Float, b:Float):HSV {
+        if (Math.fround(r) == 255 && Math.fround(g) == 255 && Math.fround(b) == 255) {
+            //return {h: 0, s: 0, v: 100}; 
+        }
+        var r = r / 255;
+        var g = g / 255;
+        var b = b / 255;
+        
+        var min = MathUtil.min([r, g, b]);
+        var max = MathUtil.max([r, g, b]);
+        var delta = max - min;
+        var h:Float = 0;
+        var s:Float = 0;
+        var v:Float = max;
+        
+        if (delta != 0) {
+            s = delta / max;
+        } else {
+            s = 0;
+            h = 0;
+            return {h: h, s: s * 100, v: v * 100};
+        }
+        
+        if (r == max) {
+            h = (g - b) / delta;
+        } else if (g == max) {
+            h = 2 + (b - r) / delta;
+        } else {
+            h = 4 + (r - g) / delta;
+        }
+        
+        h *= 60;
+        if (h < 0) {
+            h += 360;
+        }
+        
+        if (Math.fround(r) == 255 && Math.fround(g) == 255 && Math.fround(b) == 255) {
+            return {h: h, s: 0, v: 100}; 
+        }
+        
+        return {h: h, s: s * 100, v: v * 100};
     }
     
     public static function buildColorArray(startColor:Color, endColor:Color, size:Float):Array<Int> {
