@@ -1,9 +1,10 @@
 package haxe.ui.macros;
 
-import haxe.ui.macros.ModuleMacros;
-import haxe.ui.util.RTTI;
 
 #if macro
+import haxe.ui.macros.ModuleMacros;
+import haxe.ui.util.EventInfo;
+import haxe.ui.util.RTTI;
 import haxe.macro.ComplexTypeTools;
 import haxe.macro.Context;
 import haxe.macro.Expr;
@@ -22,6 +23,25 @@ import haxe.macro.ExprTools;
 class Macros {
     #if macro
 
+    macro static function buildEvent():Array<Field> {
+        var builder = new ClassBuilder(Context.getBuildFields(), Context.getLocalType(), Context.currentPos());
+        for (f in builder.fields) {
+            if (f.access.contains(AInline) && f.access.contains(AStatic)) {
+                switch (f.kind) {
+                    case FVar(t, e):
+                        var eventName = ExprTools.toString(e);
+                        eventName = StringTools.replace(eventName, "\"", "");
+                        eventName = StringTools.replace(eventName, "'", "");
+                        eventName = eventName.toLowerCase();
+                        EventInfo.nameToType.set(eventName, builder.fullPath);
+                        EventInfo.nameToType.set("on" + eventName, builder.fullPath);
+                    case _:
+                }
+            }
+        }
+        return builder.fields;
+    }
+    
     macro static function build():Array<Field> {
         ModuleMacros.loadModules();
         

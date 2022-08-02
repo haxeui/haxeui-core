@@ -4,6 +4,8 @@ import haxe.ui.backend.EventImpl;
 import haxe.ui.core.Component;
 import haxe.ui.util.Variant;
 
+@:build(haxe.ui.macros.Macros.buildEvent())
+@:autoBuild(haxe.ui.macros.Macros.buildEvent())
 class UIEvent extends EventImpl {
     public static inline var READY:String = "ready";
     public static inline var DESTROY:String = "destroy";    

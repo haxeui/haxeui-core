@@ -1,8 +1,9 @@
 package haxe.ui.macros;
 
-import haxe.macro.Expr;
 
 #if macro
+import haxe.macro.Expr;
+import haxe.ui.util.EventInfo;
 import haxe.macro.Context;
 import haxe.macro.ExprTools;
 import haxe.macro.TypeTools;
@@ -593,8 +594,14 @@ class ComponentMacros {
                 }
 
                 scriptBuilder.add(expr);
-                // TODO: typed "event" param based on event name
-                builder.add(macro $i{sh.generatedVarName}.registerEvent($v{event}, function(event:haxe.ui.events.UIEvent) { $e{scriptBuilder.expr} }));
+                var eventType = "haxe.ui.events.UIEvent";
+                if (EventInfo.nameToType.exists(sh.eventName)) {
+                    eventType = EventInfo.nameToType.get(sh.eventName);
+                }
+                var eventTypeParts = eventType.split(".");
+                var eventTypeName = eventTypeParts.pop();
+                var eventComplexType = ComplexType.TPath({pack: eventTypeParts, name: eventTypeName});
+                builder.add(macro $i{sh.generatedVarName}.registerEvent($v{event}, function(event:$eventComplexType) { $e{scriptBuilder.expr} }));
             }
         }
     }
