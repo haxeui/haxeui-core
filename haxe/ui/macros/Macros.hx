@@ -26,7 +26,7 @@ class Macros {
     macro static function buildEvent():Array<Field> {
         var builder = new ClassBuilder(Context.getBuildFields(), Context.getLocalType(), Context.currentPos());
         for (f in builder.fields) {
-            if (f.access.contains(AInline) && f.access.contains(AStatic)) {
+            if (f.access.indexOf(AInline) != -1 && f.access.indexOf(AStatic) != -1) {
                 switch (f.kind) {
                     case FVar(t, e):
                         var eventName = ExprTools.toString(e);
