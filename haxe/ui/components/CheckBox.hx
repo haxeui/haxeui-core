@@ -245,7 +245,9 @@ class CheckBoxBuilder extends CompositeBuilder {
     }
 
     public override function applyStyle(style:Style) {
-        haxe.ui.macros.ComponentMacros.cascacdeStylesTo('${_checkbox.cssName}-label', [color, fontName, fontSize, cursor, textAlign]);
+        haxe.ui.macros.ComponentMacros.cascacdeStylesTo('${_checkbox.cssName}-label', [
+            color, fontName, fontSize, cursor, textAlign, fontBold, fontUnderline, fontItalic
+        ]);
     }
 
     private override function get_cssName():String {
