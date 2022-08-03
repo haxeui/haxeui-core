@@ -9,6 +9,8 @@ import haxe.ui.events.UIEvent;
 import haxe.ui.util.TypeConverter;
 
 class ItemRenderer extends Box {
+    public var autoRegisterInteractiveEvents:Bool = true;
+    
     public function new() {
         super();
         registerEvent(MouseEvent.MOUSE_OVER, _onItemMouseOver);
@@ -94,15 +96,17 @@ class ItemRenderer extends Box {
 
         updateValues(_data, _fieldList);
 
-        var components = findComponents(InteractiveComponent);
-        for (c in components) {
-            if ((c is Button)) {
-                if (c.hasEvent(MouseEvent.CLICK, onItemClick) == false) {
-                    c.registerEvent(MouseEvent.CLICK, onItemClick);
-                }
-            } else {
-                if (c.hasEvent(UIEvent.CHANGE, onItemChange) == false) {
-                    c.registerEvent(UIEvent.CHANGE, onItemChange);
+        if (autoRegisterInteractiveEvents) {
+            var components = findComponents(InteractiveComponent);
+            for (c in components) {
+                if ((c is Button)) {
+                    if (c.hasEvent(MouseEvent.CLICK, onItemClick) == false) {
+                        c.registerEvent(MouseEvent.CLICK, onItemClick);
+                    }
+                } else {
+                    if (c.hasEvent(UIEvent.CHANGE, onItemChange) == false) {
+                        c.registerEvent(UIEvent.CHANGE, onItemChange);
+                    }
                 }
             }
         }
@@ -168,12 +172,14 @@ class ItemRenderer extends Box {
                 var propValue = TypeConverter.convertTo(v, TypeMap.getTypeInfo(c.className, "value"));
                 c.value = propValue;
 
-                if ((c is InteractiveComponent) || (c is ItemRenderer)) {
-                    if (c.hasEvent(UIEvent.CHANGE, onItemChange) == false) {
-                        c.registerEvent(UIEvent.CHANGE, onItemChange);
-                    }
-                    if (c.hasEvent(MouseEvent.CLICK, onItemClick) == false) {
-                        c.registerEvent(MouseEvent.CLICK, onItemClick);
+                if (autoRegisterInteractiveEvents) {
+                    if ((c is InteractiveComponent) || (c is ItemRenderer)) {
+                        if (c.hasEvent(UIEvent.CHANGE, onItemChange) == false) {
+                            c.registerEvent(UIEvent.CHANGE, onItemChange);
+                        }
+                        if (c.hasEvent(MouseEvent.CLICK, onItemClick) == false) {
+                            c.registerEvent(MouseEvent.CLICK, onItemClick);
+                        }
                     }
                 }
 
