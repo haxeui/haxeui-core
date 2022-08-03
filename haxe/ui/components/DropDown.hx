@@ -288,6 +288,7 @@ private class ListDropDownHandler extends DropDownHandler {
             _listview.itemCount = itemCount;
         }
 
+        _listview.syncComponentValidation();
         if (_dropdown.dropdownWidth == null) {
             wrapper.syncComponentValidation();
             var offset:Float = 0;
