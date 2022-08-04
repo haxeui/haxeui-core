@@ -414,6 +414,39 @@ class ValueTools {
                 return null;
 
                 #end
+            case "min":
+                var minv:Float = Math.POSITIVE_INFINITY;
+                for (val in vl) {
+                    var num:Null<Float> = calcDimension(val);
+                    if (num == null)
+                        return null;
+                    else if (num < minv)
+                        minv = num;
+                }
+                return minv;
+            case "max":
+                var maxv:Float = Math.NEGATIVE_INFINITY;
+                for (val in vl) {
+                    var num:Null<Float> = calcDimension(val);
+                    if (num == null)
+                        return null;
+                    else if (num > maxv)
+                        maxv = num;
+                }
+                return maxv;
+            case "clamp":
+                var valNum:Null<Float> = calcDimension(vl[0]);
+                var minNum:Null<Float> = calcDimension(vl[1]);
+                var maxNum:Null<Float> = calcDimension(vl[2]);
+
+                if (valNum == null || minNum == null || maxNum == null)
+                    return null;
+                else if (valNum < minNum)
+                    return minNum;
+                else if (valNum > maxNum)
+                    return maxNum;
+                else
+                    return valNum;
             case "platform-color":
                 return Platform.instance.getColor(ValueTools.string(vl[0]));
             case "theme-icon" | "theme-image":
