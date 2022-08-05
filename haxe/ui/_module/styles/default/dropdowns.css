@@ -24,6 +24,11 @@
     padding: 1px;
 }
 
+.dropdown-popup.popup-from-bottom {
+    border: 1px solid $accent-color;
+    border-bottom-color: $down-border-color;
+}
+
 .dropdown-popup .listview .itemrenderer {
     padding: 6px 8px;
 }

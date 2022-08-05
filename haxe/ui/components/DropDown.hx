@@ -690,7 +690,6 @@ class DropDownEvents extends ButtonEvents {
             }
             
             var filler = new Component();
-            filler.horizontalAlign = "right";
             filler.includeInLayout = false;
             filler.addClass("dropdown-filler");
             filler.id = "dropdown-filler";
@@ -722,26 +721,45 @@ class DropDownEvents extends ButtonEvents {
             _wrapper.syncComponentValidation();
             _wrapper.validateNow();
 
+            var popupToRight = false;
+            var popupFromBottom = false;
+            if (_wrapper.screenLeft + _wrapper.actualComponentWidth > Screen.instance.actualWidth) {
+                var left = _wrapper.screenLeft - _wrapper.actualComponentWidth + _dropdown.actualComponentWidth;
+                _wrapper.left = left >= 0 ? left : (Screen.instance.actualWidth / 2) - (_wrapper.actualComponentWidth / 2);
+                popupToRight = true;
+            }
+            _wrapper.removeClass("popup-from-bottom");
+            if (_wrapper.screenTop + _wrapper.actualComponentHeight > Screen.instance.actualHeight) {
+                _wrapper.top = (_dropdown.screenTop - _wrapper.actualComponentHeight) + Toolkit.scaleY;
+                popupFromBottom = true;
+                _wrapper.addClass("popup-from-bottom");
+            }
+            
             var cx = _wrapper.width - _dropdown.width;
             var filler:Component = _wrapper.findComponent("dropdown-filler", false);
             if (cx > 0 && filler != null) {
                 _wrapper.addClass("dropdown-popup-expanded");
-                cx += 1;
                 filler.width = cx;
-                filler.left = _wrapper.width - cx;
+                if (popupToRight) {
+                    cx -= Toolkit.scaleX;
+                    filler.left = Toolkit.scaleX;
+                } else {
+                    cx += Toolkit.scaleX;
+                    filler.left = _wrapper.width - cx;
+                }
+                
+                if (popupFromBottom) {
+                    filler.top = _wrapper.actualComponentHeight - Toolkit.scaleY;
+                } else {
+                    filler.top = 0;
+                }
+                
                 filler.hidden = false;
             } else if (filler != null) {
                 filler.hidden = true;
                 _wrapper.removeClass("dropdown-popup-expanded");
             }
 
-            if (_wrapper.screenLeft + _wrapper.actualComponentWidth > Screen.instance.actualWidth) {
-                var left = _wrapper.screenLeft - _wrapper.actualComponentWidth + _dropdown.actualComponentWidth;
-                _wrapper.left = left >= 0 ? left : (Screen.instance.actualWidth / 2) - (_wrapper.actualComponentWidth / 2);
-            }
-            if (_wrapper.screenTop + _wrapper.actualComponentHeight > Screen.instance.actualHeight) {
-                _wrapper.top = _dropdown.screenTop - _wrapper.actualComponentHeight;
-            }
         }
 
         Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
