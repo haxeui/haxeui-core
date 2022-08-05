@@ -37,6 +37,7 @@
     <components>
         <class package="haxe.ui.core" />
         <class package="haxe.ui.components" />
+        <class package="haxe.ui.components.popups" />
         <class package="haxe.ui.containers" />
         <class package="haxe.ui.containers.dialogs" />
         <class package="haxe.ui.containers.menus" />
@@ -101,6 +102,7 @@
             <!-- special cases -->
             <var name="scrollbar-background-color" value="#f0f0f0" />
             <var name="scrollbar-button-color" value="#d6d6d6" />
+            <var name="contrast-background-color" value="#ffffff" />
             <var name="dialog-title-color" value="#aaaaaa" />
             <var name="tooltip-background-color" value="#fffff8" />
             <var name="dialog-shadow" value="drop-shadow(1, 45, #888888, 0.2, 30, 2, 1, 3, false)" />
@@ -158,6 +160,7 @@
             <style resource="haxeui-core/styles/default/sidebars.css" />
             <style resource="haxeui-core/styles/default/cards.css" />
             <style resource="haxeui-core/styles/default/treeviews.css" />
+            <style resource="haxeui-core/styles/default/colorpickers.css" />
             <style resource="haxeui-core/styles/default/last.css" />
         </default>
         <dark parent="default">
@@ -209,6 +212,7 @@
             <var name="modal-background-color" value="#181a1b" />
             <!-- special cases -->
             <var name="scrollbar-background-color" value="#2c2f30" />
+            <var name="contrast-background-color" value="#aaaaaa" />
             <var name="scrollbar-button-color" value="#3e4142" />
             <var name="dialog-title-color" value="#aaaaaa" />
             <var name="tooltip-background-color" value="#3d3f41" />

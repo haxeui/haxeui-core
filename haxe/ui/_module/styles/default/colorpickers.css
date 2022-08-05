@@ -1,0 +1,102 @@
+/************************************************************************
+** COLOR PICKER
+*************************************************************************/
+.color-picker {
+    padding: 0;
+    border-radius: $normal-border-radius;
+}
+
+.color-picker .controls-container {
+    border: $normal-border-size solid $normal-border-color;
+    padding: 5px 2px;
+    border-radius: $normal-border-radius;
+    spacing: 2px;
+}
+
+.color-picker .controls-container #prevControls {
+    resource: haxeui-core/styles/shared/left-square-arrow-blue.png;
+}
+
+.color-picker .controls-container #nextControls {
+    resource: haxeui-core/styles/shared/right-square-arrow-blue.png;
+}
+
+.color-picker .controls-container .textfield, .color-picker #inputHex {
+    width: 25px;
+    text-align: center;
+    border: none;
+    filter: none;
+    border-radius: 0px;
+    border-bottom: $normal-border-size solid $normal-border-color;
+    padding: 0px;
+    padding-bottom: 1px;
+    background-color: none;
+    vertical-align: center;
+}
+
+.color-picker #inputHex {
+    width: 100%;
+}
+
+.color-picker .controls-container .label {
+    width: 55px;
+    vertical-align: center;
+}
+
+.color-picker .controls-container .slider {
+    width: 100%;
+    vertical-align: center;
+}
+
+/* saturation / value */
+.color-picker #saturationValueContainer {
+    border: $normal-border-size solid $normal-border-color;
+    padding: 1px;
+    border-radius: $normal-border-radius;
+}
+
+.color-picker #saturationValueIndicator {
+    width: 10px;
+    height: 10px;
+    border: 2px solid white;
+    border-opacity: .7;
+    border-radius:10px;
+}
+
+/* hue */
+.color-picker #hueContainer {
+    border: $normal-border-size solid $normal-border-color;
+    padding:1px 2px;
+    border-radius: $normal-border-radius;
+}
+
+.color-picker #hueIndicator {
+    border-radius:2px;
+    pointer-events:none;
+    background-color:white;
+    filter:drop-shadow(2, 45, #888888, 0.1, 4, 1, 30, 35, false);
+}
+
+/* preview */
+.color-picker #colorPreviewContainer {
+    border: $normal-border-size solid $normal-border-color;
+    padding: 2px;
+    border-radius: $normal-border-radius;
+}
+
+/************************************************************************
+** COLOR PICKER POPUP
+*************************************************************************/
+.color-picker-popup {
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 4px;
+    padding-right: 6px;
+}
+
+.color-picker-popup #selectedColorPreviewContainer {
+    padding: 2px;
+    background-color: $contrast-background-color;
+    border: 1px solid $normal-border-color;
+    border-radius: 2px;
+}

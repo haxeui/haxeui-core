@@ -108,3 +108,15 @@
     filter: none;
 }
 
+/************************************************************************
+** VARIANT - SIMPLE
+*************************************************************************/
+.slider.simple-slider .button {
+    height: 12px;
+    width: 12px;
+}
+
+.slider.simple-slider .range-value {
+    background-color: none;
+}
+
