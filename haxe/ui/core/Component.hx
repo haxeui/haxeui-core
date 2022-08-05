@@ -1073,6 +1073,7 @@ class Component extends ComponentImpl implements IValidating {
         } else {
             show();
         }
+        dispatch(new UIEvent(UIEvent.PROPERTY_CHANGE, "hidden"));
         return value;
     }
 
