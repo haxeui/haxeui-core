@@ -255,7 +255,7 @@ class DialogBase extends Box {
     }
 
     public override function addComponent(child:Component):Component {
-        if (child.hasClass("dialog-container")) {
+        if (child == dialogContainer) {
             return super.addComponent(child);
         }
         return dialogContent.addComponent(child);
