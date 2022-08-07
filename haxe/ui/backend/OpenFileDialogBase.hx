@@ -1,6 +1,5 @@
 package haxe.ui.backend;
 
-import haxe.io.Bytes;
 import haxe.ui.containers.dialogs.Dialog.DialogButton;
 import haxe.ui.containers.dialogs.Dialog.DialogEvent;
 import haxe.ui.containers.dialogs.Dialogs;
