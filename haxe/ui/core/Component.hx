@@ -820,9 +820,9 @@ class Component extends ComponentImpl implements IValidating {
 
     public function findComponentsUnderPoint<T:Component>(screenX:Float, screenY:Float, type:Class<T> = null):Array<Component> {
         var c:Array<Component> = [];
-        if (hitTest(screenX, screenY, true)) {
+        if (hitTest(screenX, screenY, false)) {
             for (child in childComponents) {
-                if (child.hitTest(screenX, screenY, true)) {
+                if (child.hitTest(screenX, screenY, false)) {
                     var match = true;
                     if (type != null && isOfType(child, type) == false) {
                         match = false;
@@ -839,12 +839,12 @@ class Component extends ComponentImpl implements IValidating {
 
     public function hasComponentUnderPoint<T:Component>(screenX:Float, screenY:Float, type:Class<T> = null):Bool {
         var b = false;
-        if (hitTest(screenX, screenY, true)) {
+        if (hitTest(screenX, screenY, false)) {
             if (type == null) {
                 return true;
             }
             for (child in childComponents) {
-                if (child.hitTest(screenX, screenY, true)) {
+                if (child.hitTest(screenX, screenY, false)) {
                     var match = true;
                     if (type != null && isOfType(child, type) == false) {
                         match = false;
