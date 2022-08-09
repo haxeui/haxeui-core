@@ -89,10 +89,8 @@ class Screen extends ScreenImpl {
     }
     
     public function findComponentsUnderPoint<T:Component>(screenX:Float, screenY:Float, type:Class<T> = null):Array<Component> {
-        var copy = rootComponents.copy();
-        copy.reverse();
         var c:Array<Component> = [];
-        for (r in copy) {
+        for (r in rootComponents) {
             if (r.hitTest(screenX, screenY)) {
                 var match = true;
                 if (type != null && isOfType(r, type) == false) {
@@ -108,9 +106,7 @@ class Screen extends ScreenImpl {
     }
     
     public function hasComponentUnderPoint<T:Component>(screenX:Float, screenY:Float, type:Class<T> = null):Bool {
-        var copy = rootComponents.copy();
-        copy.reverse();
-        for (r in copy) {
+        for (r in rootComponents) {
             if (r.hasComponentUnderPoint(screenX, screenY, type) == true) {
                 return true;
             }
