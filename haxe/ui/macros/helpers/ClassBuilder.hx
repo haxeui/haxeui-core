@@ -115,7 +115,7 @@ class ClassBuilder {
     }
     
     public var isAbstractClass(get, null):Bool;
-    private function get_isAbstractClas():Bool {
+    private function get_isAbstractClass():Bool {
         return #if (haxe_ver >= 4.2) classType.isAbstract #else false #end;
     }
 
