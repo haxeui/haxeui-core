@@ -114,6 +114,10 @@ class ClassBuilder {
         }
     }
     
+    public var isAbstractClass(get, null):Bool;
+    private function get_isAbstractClas():Bool {
+        return #if (haxe_ver >= 4.2) classType.isAbstract #else false #end;
+    }
 
     public function findField(name:String):Field {
         var r = null;
