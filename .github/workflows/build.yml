@@ -15,4 +15,5 @@ jobs:
     - uses: actions/checkout@v1
     - name: Dispatch event to ${{ matrix.backend }}
       run: |
-        curl --fail -X POST https://api.github.com/repos/haxeui/${{ matrix.backend }}/dispatches -H 'Accept: application/vnd.github.everest-preview+json' -H 'Authorization: Bearer ${{ secrets.GH_TOKEN }}' --data "{\"event_type\": \"haxeui-core push: ${{ github.event.head_commit.message }}\"}"
+        export commit_message="$(echo "${{ github.event.head_commit.message }}"|tr -d '\n')"
+        curl --fail -X POST https://api.github.com/repos/haxeui/${{ matrix.backend }}/dispatches -H 'Accept: application/vnd.github.everest-preview+json' -H 'Authorization: Bearer ${{ secrets.GH_TOKEN }}' --data "{\"event_type\": \"haxeui-core push: $commit_message\"}"

@@ -595,7 +595,7 @@ class Macros {
         buildStyles(builder);
         buildBindings(builder);
 
-        if (builder.hasInterface("haxe.ui.core.IClonable")) {
+        if (builder.hasInterface("haxe.ui.core.IClonable") && !builder.isAbstractClass) {
             buildClonable(builder);
         }
 
