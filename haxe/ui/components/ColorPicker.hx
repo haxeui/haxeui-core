@@ -78,34 +78,34 @@ private class ColorPickerImpl extends Box {
                 <image id="prevControls" verticalAlign="center" style="pointer-events:true" onclick="controlsStack.prevPage()" />
                 <stack id="controlsStack" width="100%" selectedIndex="0">
                     <grid columns="4" width="100%" style="spacing:0px">
-                        <label text="Hue" styleName="text-tiny" />
+                        <label text="{{hue}}" styleName="text-tiny" />
                         <slider id="sliderHue" max="360" allowFocus="false" styleName="simple-slider" />
                         <spacer width="5" />
                         <textfield id="inputHue" restrictChars="0-9" styleName="text-tiny" />
                         
-                        <label text="Saturation" styleName="text-tiny" />
+                        <label text="{{saturation}}" styleName="text-tiny" />
                         <slider id="sliderSaturation" allowFocus="false" styleName="simple-slider" />
                         <spacer width="5" />
                         <textfield id="inputSaturation" restrictChars="0-9" styleName="text-tiny" />
                         
-                        <label text="Value" styleName="text-tiny" />
+                        <label text="{{brightness}}" styleName="text-tiny" />
                         <slider id="sliderValue" allowFocus="false" styleName="simple-slider" />
                         <spacer width="5" />
                         <textfield id="inputValue" restrictChars="0-9" styleName="text-tiny" />
                     </grid>
                     
                     <grid columns="4" width="100%" style="spacing:0">
-                        <label text="Red" styleName="text-tiny" />
+                        <label text="{{red}}" styleName="text-tiny" />
                         <slider id="sliderRed" max="255" allowFocus="false" styleName="simple-slider" />
                         <spacer width="5" />
                         <textfield id="inputRed" restrictChars="0-9" styleName="text-tiny" />
                         
-                        <label text="Green" styleName="text-tiny" />
+                        <label text="{{green}}" styleName="text-tiny" />
                         <slider id="sliderGreen" max="255" allowFocus="false" styleName="simple-slider" />
                         <spacer width="5" />
                         <textfield id="inputGreen" restrictChars="0-9" styleName="text-tiny" />
                         
-                        <label text="Blue" styleName="text-tiny" />
+                        <label text="{{blue}}" styleName="text-tiny" />
                         <slider id="sliderBlue" max="255" allowFocus="false" styleName="simple-slider" />
                         <spacer width="5" />
                         <textfield id="inputBlue" restrictChars="0-9" styleName="text-tiny" />
