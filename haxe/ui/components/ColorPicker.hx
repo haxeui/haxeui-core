@@ -483,8 +483,8 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
         var cx = saturationValueGraph.width;
         var cy = saturationValueGraph.height;
         
-        if (x > cx - 1) {
-            x = cx - 1;
+        if (x > cx) {
+            x = cx;
         } else if (x < 0) {
             x = 0;
         }
@@ -510,7 +510,7 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
     private function hsvFromSaturationValueCoord(hue:Float, x:Float, y:Float):HSV {
         var stepX = 100 / saturationValueGraph.width;
         var stepY = 100 / saturationValueGraph.height;
-        var s = (x + 1) * stepX;
+        var s = (x) * stepX;
         var v = 100 - (y * stepY);
         return {h: hue, s: s, v: v};
     }
