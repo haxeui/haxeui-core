@@ -70,7 +70,11 @@ private class ColorPickerPopupHandler extends DropDownHandler {
     }
 
     private override function set_selectedItem(value:Dynamic):Dynamic {
-        _cachedSelectedColor = value;
+        if ((value is String)) {
+            _cachedSelectedColor = Color.fromString(value);
+        } else {
+            _cachedSelectedColor = value;
+        }
         if (_view != null) {
             _view.currentColor = _cachedSelectedColor;
         }
