@@ -337,6 +337,10 @@ class DialogBase extends Box {
     }
 
     public function centerDialogComponent(dialog:Dialog, validate:Bool = true) {
+        if (_isDisposed) {
+            return;
+        }
+        
         if (validate == true) {
             dialog.syncComponentValidation();
         }
