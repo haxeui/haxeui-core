@@ -174,6 +174,11 @@ class ColorUtil {
         return {r: r * 255, g: g * 255, b: b * 255};
     }
     
+    public static function rgbToGray(r:Float, g:Float, b:Float):Int {
+        var g = (0.3 * r) + (0.59 * g) + (0.11 * b);
+        return Math.round(g);
+    }
+    
     public static function rgbfToHSV(r:Float, g:Float, b:Float):HSV {
         if (Math.fround(r) == 255 && Math.fround(g) == 255 && Math.fround(b) == 255) {
             //return {h: 0, s: 0, v: 100}; 

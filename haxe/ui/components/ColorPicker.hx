@@ -206,10 +206,18 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
             for (x in 0...Std.int(cx)) {
                 var i:Int = Std.int(y * (cx * 4) + x * 4);
                 var pixel = ColorUtil.hsvToRGBF(_currentColorHSV.h - 1, (x + 1) * stepX, 100 - (y * stepY));
-                bytes.set(i + 0, Math.round(pixel.r));
-                bytes.set(i + 1, Math.round(pixel.g));
-                bytes.set(i + 2, Math.round(pixel.b));
-                bytes.set(i + 3, 0xFF);
+                if (picker.disabled) {
+                    var greypixel = ColorUtil.rgbToGray(Math.round(pixel.r), Math.round(pixel.g), Math.round(pixel.b));
+                    bytes.set(i + 0, greypixel);
+                    bytes.set(i + 1, greypixel);
+                    bytes.set(i + 2, greypixel);
+                    bytes.set(i + 3, 0xFF);
+                } else {
+                    bytes.set(i + 0, Math.round(pixel.r));
+                    bytes.set(i + 1, Math.round(pixel.g));
+                    bytes.set(i + 2, Math.round(pixel.b));
+                    bytes.set(i + 3, 0xFF);
+                }
             }
         }
         saturationValueGraph.componentGraphics.clear();
@@ -232,11 +240,19 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
         for (y in 0...Std.int(cy)) {
             for (x in 0...Std.int(cx)) {
                 var i:Int = Std.int(y * (cx * 4) + x * 4);
-                var c = ColorUtil.fromHSV(x * step, 100, 100);
-                bytes.set(i + 0, c.r);
-                bytes.set(i + 1, c.g);
-                bytes.set(i + 2, c.b);
-                bytes.set(i + 3, 0xFF);
+                var c = ColorUtil.hsvToRGBF(x * step, 100, 100);
+                if (picker.disabled) {
+                    var greypixel = ColorUtil.rgbToGray(Math.round(c.r), Math.round(c.g), Math.round(c.b));
+                    bytes.set(i + 0, greypixel);
+                    bytes.set(i + 1, greypixel);
+                    bytes.set(i + 2, greypixel);
+                    bytes.set(i + 3, 0xFF);
+                } else {
+                    bytes.set(i + 0, Math.round(c.r));
+                    bytes.set(i + 1, Math.round(c.g));
+                    bytes.set(i + 2, Math.round(c.b));
+                    bytes.set(i + 3, 0xFF);
+                }
             }
         }
         hueGraph.componentGraphics.clear();

@@ -82,6 +82,33 @@
     border: $normal-border-size solid $normal-border-color;
     padding: 2px;
     border-radius: $normal-border-radius;
+    opacity: 1;
+    filter: none;
+}
+
+.color-picker:disabled #colorPreviewContainer {
+    filter: grayscale;
+    opacity: .3;
+}
+
+.color-picker #saturationValueGraph {
+    opacity: 1;
+    filter: none;
+}
+
+.color-picker:disabled #saturationValueGraph {
+    filter: grayscale;
+    opacity: .3;
+}
+
+.color-picker #hueGraph {
+    opacity: 1;
+    filter: none;
+}
+
+.color-picker:disabled #hueGraph {
+    filter: grayscale;
+    opacity: .3;
 }
 
 /************************************************************************
@@ -99,4 +126,11 @@
     background-color: $contrast-background-color;
     border: 1px solid $normal-border-color;
     border-radius: 2px;
+    opacity: 1;
+    filter: none;
+}
+
+.color-picker-popup:disabled #selectedColorPreviewContainer {
+    filter: grayscale;
+    opacity: .3;
 }
