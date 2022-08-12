@@ -1536,6 +1536,7 @@ class Component extends ComponentImpl implements IValidating {
     @:event(DragEvent.DRAG_END)         public var onDragEnd:DragEvent->Void;    
     
     @:event(AnimationEvent.START)       public var onAnimationStart:AnimationEvent->Void;
+    @:event(AnimationEvent.FRAME)       public var onAnimationFrame:AnimationEvent->Void;
     @:event(AnimationEvent.END)         public var onAnimationEnd:AnimationEvent->Void;
 
     /**

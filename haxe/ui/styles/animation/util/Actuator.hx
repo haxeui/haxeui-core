@@ -14,7 +14,7 @@ class ActuatorOptions {
     @:optional public var delay:Null<Float>;
     @:optional public var easingFunction:EasingFunction;
     @:optional public var onComplete:Void->Void;
-    @:optional public var onUpdate:Float->Void;
+    @:optional public var onUpdate:Float->Float->Float->Void;
 }
 
 class Actuator<T> {
@@ -101,7 +101,7 @@ class Actuator<T> {
     private var _currentTime:Float;
     private var _easeFunc:Float->Float;
     private var _onComplete:Void->Void;
-    private var _onUpdate:Float->Void;
+    private var _onUpdate:Float->Float->Float->Void;
     private var _stopped:Bool;
 
     private var _propertyDetails:Array<PropertyDetails<T>>;
@@ -252,7 +252,7 @@ class Actuator<T> {
         _apply(tweenPosition);
 
         if (_onUpdate != null) {
-            _onUpdate(currentTime);
+            _onUpdate(currentTime, delta, tweenPosition);
         }
 
         if (delta >= duration) {
