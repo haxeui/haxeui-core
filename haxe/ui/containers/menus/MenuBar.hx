@@ -102,7 +102,6 @@ private class Events extends haxe.ui.events.Events {
         if (target.selected == true) {
             showMenu(index);
         } else if (_currentButton != null) {
-            cast(_currentButton._internalEvents, ButtonEvents).lastMouseEvent = event;
             hideCurrentMenu();
         }
     }

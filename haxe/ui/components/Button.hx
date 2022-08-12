@@ -430,9 +430,8 @@ private class SelectedBehaviour extends DataBehaviour {
             button.addClass(":down", true, true);
         }
         var events = cast(button._internalEvents, ButtonEvents);
-        if (events.lastMouseEvent != null && button.hitTest(events.lastMouseEvent.screenX, events.lastMouseEvent.screenY)) {
+        if (button.hitTest(Screen.instance.currentMouseX, Screen.instance.currentMouseY)) {
             button.addClass(":hover", true, true);
-            events.lastMouseEvent = null;
         } else {
             button.removeClass(":hover", true, true);
         }
@@ -450,8 +449,6 @@ class ButtonEvents extends haxe.ui.events.Events {
     private var _repeatTimer:Timer;
     private var _repeater:Bool = false;
     private var _repeatInterval:Int = 0;
-
-    public var lastMouseEvent:MouseEvent = null;
 
     public var recursiveStyling:Bool = true;
     
