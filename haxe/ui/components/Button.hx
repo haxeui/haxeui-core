@@ -10,6 +10,7 @@ import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.ItemRenderer;
+import haxe.ui.core.Screen;
 import haxe.ui.events.ActionEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
@@ -548,7 +549,6 @@ class ButtonEvents extends haxe.ui.events.Events {
         _repeater = _button.repeater;
     }
 
-    private var _lastScreenEvent:MouseEvent = null;
     private function onMouseUp(event:MouseEvent) {
         //event.cancel();
         _down = _repeater = false;
@@ -559,7 +559,6 @@ class ButtonEvents extends haxe.ui.events.Events {
             return;
         }
 
-        _lastScreenEvent = event;
         _button.removeClass(":down", true, recursiveStyling);
         var over = _button.hitTest(event.screenX, event.screenY);
         if (event.touchEvent == false && over == true) {
@@ -575,18 +574,12 @@ class ButtonEvents extends haxe.ui.events.Events {
     }
 
     private function onMove(event:UIEvent) {
-        if (_lastScreenEvent == null) {
-            return;
-        }
-
-        var over = _button.hitTest(_lastScreenEvent.screenX, _lastScreenEvent.screenY);
-        if (_lastScreenEvent.touchEvent == false && over == true) {
+        var over = _button.hitTest(Screen.instance.currentMouseX, Screen.instance.currentMouseY);
+        if (over == true) {
             _button.addClass(":hover", true, recursiveStyling);
         } else if (over == false) {
             _button.removeClass(":hover", true, recursiveStyling);
         }
-        
-        _lastScreenEvent = null;
     }
     
     private function onRepeatTimer() {
