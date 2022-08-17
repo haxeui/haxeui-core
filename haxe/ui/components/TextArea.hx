@@ -295,7 +295,11 @@ private class Events extends haxe.ui.events.Events {
             _textarea.getTextInput().multiline = true;
             _textarea.getTextInput().data.onChangedCallback = function() {
                 if (_textarea.hasClass(":empty") == false) {
-                    _textarea.text = _textarea.getTextInput().text;
+                    var text = _textarea.getTextInput().text;
+                    if (text == null) {
+                        text = "";
+                    }
+                    _textarea.text = text;
                     _textarea.dispatch(new UIEvent(UIEvent.CHANGE));
                     if (_textarea.style.autoHeight == true) {
                         var maxHeight = _textarea.style.maxHeight;
