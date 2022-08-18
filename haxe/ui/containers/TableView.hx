@@ -52,6 +52,7 @@ class TableView extends ScrollView implements IDataComponent implements IVirtual
     @:call(RemoveColumn)                                                    public function removeColumn(text:String);
 
     @:event(ItemEvent.COMPONENT_EVENT)                                      public var onComponentEvent:ItemEvent->Void;
+    @:event(SortEvent.SORT_CHANGED)                                         public var onSortChanged:SortEvent->Void;
 
     private var _itemRendererClass:Class<ItemRenderer>;
     @:clonable public var itemRendererClass(get, set):Class<ItemRenderer>;
@@ -387,12 +388,15 @@ private class Builder extends ScrollViewBuilder {
     }
 
     private function onSortChanged(e:SortEvent) {
-        var column = cast(e.target, Column);
-        var field = column.id;
-        if (column.sortField != null) {
-            field = column.sortField;
+        _tableview.dispatch(e);
+        if (e.canceled == false) {
+            var column = cast(e.target, Column);
+            var field = column.id;
+            if (column.sortField != null) {
+                field = column.sortField;
+            }
+            _tableview.dataSource.sort(field, e.direction);
         }
-        _tableview.dataSource.sort(field, e.direction);
     }
     
     public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
