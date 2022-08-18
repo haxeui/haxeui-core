@@ -252,7 +252,11 @@ class ModuleMacros {
                                 if (StringTools.endsWith(file, ".hx") && !StringTools.startsWith(file, ".")) {
                                     var fileName:String = file.substr(0, file.length - 3);
                                     if (fileName.toLowerCase() == name) {
-                                        types = Context.getModule(c.classPackage + "." + fileName);
+                                        var pkg = c.classPackage + ".";
+                                        if (c.classPackage == ".") {
+                                            pkg = "";
+                                        }
+                                        types = Context.getModule(pkg + fileName);
                                         break;
                                     }
                                 }
