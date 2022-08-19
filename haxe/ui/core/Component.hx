@@ -1464,11 +1464,11 @@ class Component extends ComponentImpl implements IValidating {
     @:style                 public var borderSize:Null<Float>;
     @:style                 public var borderRadius:Null<Float>;
 
-    @:style                 public var padding:Null<Float>;
-    @:style                 public var paddingLeft:Null<Float>;
-    @:style                 public var paddingRight:Null<Float>;
-    @:style                 public var paddingTop:Null<Float>;
-    @:style                 public var paddingBottom:Null<Float>;
+    @:style(layout)         public var padding:Null<Float>;
+    @:style(layout)         public var paddingLeft:Null<Float>;
+    @:style(layout)         public var paddingRight:Null<Float>;
+    @:style(layout)         public var paddingTop:Null<Float>;
+    @:style(layout)         public var paddingBottom:Null<Float>;
 
     @:style                 public var marginLeft:Null<Float>;
     @:style                 public var marginRight:Null<Float>;
