@@ -40,17 +40,17 @@
 /************************************************************************
 ** BORDERLESS VARIANTS
 *************************************************************************/
-.scrollview.borderless .scroll .button, .textarea.borderless .scroll .button {
+.scrollview.borderless > .scroll .button, .textarea.borderless > .scroll .button {
     width: 8px;
     height: 8px;
 }
 
-.scrollview.borderless .vertical-scroll, .textarea.borderless .vertical-scroll {
+.scrollview.borderless > .vertical-scroll, .textarea.borderless > .vertical-scroll {
     padding-left: 0px;
     border-left: none;
 }
 
-.scrollview.borderless .horizontal-scroll, .textarea.borderless .horizontal-scroll {
+.scrollview.borderless > .horizontal-scroll, .textarea.borderless > .horizontal-scroll {
     padding-top: 0px;
     border-top: none;
 }
