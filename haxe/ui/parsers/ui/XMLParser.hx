@@ -15,6 +15,7 @@ class XMLParser extends ComponentParser {
         #if (haxe_ver >= 4.1)
         
         try {
+            data = preprocess(data);
             var xml:Xml = Xml.parse(data).firstElement();
             parseComponent(component, xml, resourceResolver);
         } catch (e:haxe.ui.parsers.ui.ComponentParser.ComponentParserException) {
@@ -33,6 +34,12 @@ class XMLParser extends ComponentParser {
         return component;
     }
 
+    private static function preprocess(data:String):String {
+        data = StringTools.replace(data, "<script>", "<script><![CDATA[");
+        data = StringTools.replace(data, "</script>", "]]></script>");
+        return data;
+    }
+    
     private static function parseComponent(component:ComponentInfo, xml:Xml, resourceResolver:ResourceResolver):Bool {
         var isComponent:Bool = false;
         var nodeName = xml.nodeName;
