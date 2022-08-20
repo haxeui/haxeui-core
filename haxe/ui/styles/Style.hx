@@ -116,6 +116,7 @@ class Style {
     /** Whether or not this text should use the **bold** variation of it's font **/ @:optional public var fontBold:Null<Bool>;
     /** Whether or not to underline the text **/                                    @:optional public var fontUnderline:Null<Bool>;
     /** Whether or not this text should use the *italic* variation of it's font **/ @:optional public var fontItalic:Null<Bool>;
+    @:optional public var fontStrikeThrough:Null<Bool>;
 
     @:optional public var cursor:Null<String>;
     @:optional public var hidden:Null<Bool>;
@@ -371,6 +372,7 @@ class Style {
                 case "text-decoration":
                     if (ValueTools.string(v.value) != null) {
                         fontUnderline = ValueTools.string(v.value).toLowerCase() == "underline";
+                        fontStrikeThrough = ValueTools.string(v.value).toLowerCase() == "line-through";
                     }
 
                 case "cursor":
@@ -602,6 +604,7 @@ class Style {
         if (s.fontSize != null) fontSize = s.fontSize;
         if (s.fontBold != null) fontBold = s.fontBold;
         if (s.fontUnderline != null) fontUnderline = s.fontUnderline;
+        if (s.fontStrikeThrough != null) fontStrikeThrough = s.fontStrikeThrough;
         if (s.fontItalic != null) fontItalic = s.fontItalic;
 
         if (s.animationName != null) animationName = s.animationName;
@@ -731,6 +734,7 @@ class Style {
         if (s.fontSize != fontSize) return false;
         if (s.fontBold != fontBold) return false;
         if (s.fontUnderline != fontUnderline) return false;
+        if (s.fontStrikeThrough != fontStrikeThrough) return false;
         if (s.fontItalic != fontItalic) return false;
 
         if (s.resource != resource) return false;
