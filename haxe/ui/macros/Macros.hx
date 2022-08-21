@@ -17,6 +17,9 @@ import haxe.ui.util.StringUtil;
 import haxe.ui.macros.ComponentMacros.NamedComponentDescription;
 import haxe.ui.macros.ComponentMacros.BuildData;
 import haxe.macro.ExprTools;
+
+using StringTools;
+
 #end
 
 @:access(haxe.ui.macros.ComponentMacros)
@@ -97,7 +100,15 @@ class Macros {
             Context.error("A class building component must have a constructor", Context.currentPos());
         }
 
-        var xml = builder.getClassMetaValue("xml");
+        var xml:String = builder.getClassMetaValue("xml");
+        if (xml.indexOf("@:markup") != -1) { // means it was xml without quotes, lets extract and clean it up a little
+            xml = xml.replace("@:markup", "").trim();
+            xml = xml.substr(1, xml.length - 2);
+            xml = xml.replace("\\r", "\r");
+            xml = xml.replace("\\n", "\n");
+            xml = xml.replace("\\\"", "\"");
+            xml = xml.replace("\\'", "'");
+        }
         var codeBuilder = new CodeBuilder();
         var buildData:BuildData = { };
         ComponentMacros.buildComponentFromStringCommon(codeBuilder, xml, buildData);
