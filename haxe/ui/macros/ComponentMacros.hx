@@ -201,6 +201,10 @@ class ComponentMacros {
 
         var originalRes = resourcePath;
         resourcePath = MacroHelpers.resolveFile(resourcePath);
+        if (resourcePath == null) { // we couldnt find it relative to classpath roots, let see about relative to this class
+            var relativePath = haxe.io.Path.normalize(builder.pkg.join("/") + "/" + originalRes);
+            resourcePath = MacroHelpers.resolveFile(relativePath);
+        }
         if (resourcePath == null || sys.FileSystem.exists(resourcePath) == false) {
             Context.error('UI markup file "${originalRes}" not found', Context.currentPos());
         }

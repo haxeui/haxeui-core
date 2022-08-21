@@ -62,7 +62,7 @@ class MacroHelpers {
             //paths.push("assets");
 
             for (path in paths) {
-                path = path + "/" + file;
+                path = haxe.io.Path.normalize(path + "/" + file);
                 if (sys.FileSystem.exists(path)) {
                     resolvedPath = path;
                     break;
