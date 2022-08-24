@@ -1,15 +1,61 @@
 package haxe.ui.layouts;
 
+import haxe.ui.core.Component;
 import haxe.ui.geom.Size;
 
 class DefaultLayout extends Layout {
     private var _calcFullWidths:Bool = false;
     private var _calcFullHeights:Bool = false;
+    private var _roundFullWidths:Bool = true;
 
-    public function new() {
-        super();
+    private function buildWidthRoundingMap():Map<Component, Int> {
+        #if haxeui_allow_subpixels // if the backend is fine with subpixels, let not round anything
+        
+        return null;
+        
+        #else
+        
+        if (_roundFullWidths == false || component.childComponents.length <= 1) {
+            return null;
+        }
+
+        var map:Map<Component, Int> = null;
+        var hasNonFullWidth:Bool = false;
+        for (child in component.childComponents) {
+            if (child.includeInLayout == false) {
+                continue;
+            }
+            
+            if (child.percentWidth == null || child.percentWidth != 100) {
+                hasNonFullWidth = true;
+                break;
+            }
+        }
+        
+        if (hasNonFullWidth == false) {
+            var remainderWidth = usableWidth % component.childComponents.length;
+            if (remainderWidth != 0) {
+                map = new Map<Component, Int>();
+                for (child in component.childComponents) {
+                    if (child.includeInLayout == false) {
+                        continue;
+                    }
+                    
+                    var n = 0;
+                    if (remainderWidth > 0) {
+                        n = 1;
+                        remainderWidth--;
+                    }
+                    map.set(child, n);
+                }
+            }
+        }
+        
+        return map;
+        
+        #end
     }
-
+    
     private override function resizeChildren() {
         var usableSize:Size = usableSize;
         var percentWidth:Float = 100;
@@ -41,6 +87,13 @@ class DefaultLayout extends Layout {
             }
         }
 
+        // not all backends will work (nicely) with sub pixels (heaps, openfl, etc)
+        // so we'll add a small optimization here that if all the items are 100%
+        // then we'll round them up / down to ensure we always get single pixel
+        // sizes (no fractions), this makes things look _much_ nicer without
+        // making the whole UI look bad from using subpixels, which cases nasty
+        // drawing artifacts in most cases
+        var childRoundingWidth:Map<Component, Int> = buildWidthRoundingMap();
         for (child in component.childComponents) {
             if (child.includeInLayout == false) {
                 continue;
@@ -55,6 +108,14 @@ class DefaultLayout extends Layout {
                     childPercentWidth = fullWidthValue;
                 }
                 cx = (usableSize.width * childPercentWidth) / percentWidth - marginLeft(child) - marginRight(child);
+                if (childRoundingWidth != null && childRoundingWidth.exists(child)) {
+                    var roundDirection = childRoundingWidth.get(child);
+                    if (roundDirection == 0) {
+                        cx = Math.ffloor(cx);
+                    } else if (roundDirection == 1) {
+                        cx = Math.fceil(cx);
+                    }
+                }
                 
                 /*
                 #if debug
