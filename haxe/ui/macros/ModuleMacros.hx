@@ -155,8 +155,8 @@ class ModuleMacros {
                 }
             }
             
-            for (is in m.actionInputSources) {
-                var className = is.className;
+            for (inputSource in m.actionInputSources) {
+                var className = inputSource.className;
                 var parts = className.split(".");
                 var name:String = parts.pop();
                 var t:TypePath = {
