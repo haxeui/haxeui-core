@@ -227,6 +227,8 @@ class ModuleMacros {
             return resolvedClass;
         }
         
+        populateDynamicClassMap();
+
         var modules:Array<Module> = loadModules();
         for (m in modules) {
             for (c in m.componentEntries) {
