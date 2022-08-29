@@ -1,5 +1,6 @@
 package haxe.ui.macros.helpers;
 
+import haxe.macro.ComplexTypeTools;
 import haxe.macro.Expr;
 import haxe.macro.Expr.Function;
 import haxe.macro.ExprTools;
@@ -29,6 +30,12 @@ class FunctionBuilder {
         return r;
     }
 
+    public var returnsComponent(get, null):Bool;
+    private function get_returnsComponent():Bool {
+        var classBuiler = new ClassBuilder(ComplexTypeTools.toType(fn.ret));
+        return classBuiler.hasSuperClass("haxe.ui.core.Component");
+    }
+    
     public var isVoid(get, null):Bool;
     private function get_isVoid():Bool {
         return (returnType == "Void");

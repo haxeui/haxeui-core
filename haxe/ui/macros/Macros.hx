@@ -461,6 +461,13 @@ class Macros {
                     newField = builder.addGetter(f.name, f.type, macro {
                         return behaviours.getDynamic($v{f.name});
                     }, f.access);
+                } else if (f.isComponent) {
+                    newField = builder.addGetter(f.name, f.type, macro {
+                        if (behaviours == null) {
+                            return $v{defVal};
+                        }
+                        return cast behaviours.get($v{f.name}).toComponent();
+                    }, f.access);
                 } else { // add a normal (Variant) getter
                     newField = builder.addGetter(f.name, f.type, macro {
                         if (behaviours == null) {
@@ -549,6 +556,10 @@ class Macros {
                         return;
                     }
                     behaviours.call($v{f.name}, $i{arg0});
+                });
+            } else if (f.returnsComponent) { // special case for component calls, we will conver the variant to a component and then cast it
+                f.set(macro {
+                    return cast behaviours.call($v{f.name}, $i{arg0}).toComponent();
                 });
             } else {
                 f.set(macro {
