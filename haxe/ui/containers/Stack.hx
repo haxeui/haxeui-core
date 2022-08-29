@@ -1,9 +1,9 @@
 package haxe.ui.containers;
 
-import haxe.ui.events.UIEvent;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
+import haxe.ui.events.UIEvent;
 import haxe.ui.util.Variant;
 
 /**
@@ -17,10 +17,6 @@ class Stack extends Box {
     
     @:call(PrevPage)                    public function prevPage();
     @:call(NextPage)                    public function nextPage();
-    
-    public function new() {
-        super();
-    }
 }
 
 //***********************************************************************************************************
@@ -63,8 +59,6 @@ private class SelectedId extends DataBehaviour {
     }
     
     private override function validateData() {
-        var builder:Builder = cast(_component._compositeBuilder, Builder);
-        
         var item = _component.findComponent(_value, Component, false);
         if (item != null) {
             _stack.selectedIndex = _component.getComponentIndex(item);
