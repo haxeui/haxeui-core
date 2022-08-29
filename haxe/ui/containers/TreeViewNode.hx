@@ -1,5 +1,7 @@
 package haxe.ui.containers;
 
+import haxe.ui.behaviours.Behaviour;
+import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.components.Image;
 import haxe.ui.containers.Box;
 import haxe.ui.containers.HBox;
@@ -9,6 +11,7 @@ import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.ItemRenderer;
 import haxe.ui.events.MouseEvent;
+import haxe.ui.util.Variant;
 
 #if (haxe_ver >= 4.2)
 import Std.isOfType;
@@ -18,6 +21,12 @@ import Std.is as isOfType;
 
 @:composite(TreeViewNodeEvents, TreeViewNodeBuilder)
 class TreeViewNode extends VBox {
+    @:behaviour(Expanded)               public var expanded:Bool;
+    
+    @:call(AddNode)                     public function addNode(data:Dynamic):TreeViewNode;
+    @:call(RemoveNode)                  public function removeNode(node:TreeViewNode):TreeViewNode;
+    @:call(ClearNodes)                  public function clearNodes():Void;
+    
     public var parentNode:TreeViewNode = null;
     
     public function nodePath(field:String = null):String {
@@ -79,27 +88,8 @@ class TreeViewNode extends VBox {
         return Std.string(Reflect.field(this.data, field)) == part;
     }
     
-    public function addNode(data:Dynamic):TreeViewNode {
-        var node = new TreeViewNode();
-        node.parentNode = this;
-        node.data = data;
-        addComponent(node);
-        return node;
-    }
-    
-    public function removeNode(node:TreeViewNode):TreeViewNode {
-        removeComponent(node);
-        return node;
-    }
-    
     public function getNodes():Array<TreeViewNode> {
         return findComponents(TreeViewNode, 3); // TODO: is this brittle? Will it always be 3?
-    }
-    
-    public var expandable(get, null):Bool;
-    private function get_expandable():Bool {
-        var childContainer = findComponent("treenode-child-container", Box);
-        return (childContainer != null && childContainer.numComponents > 0);
     }
     
     public var selected(get, set):Bool;
@@ -110,31 +100,6 @@ class TreeViewNode extends VBox {
     private function set_selected(value:Bool):Bool {
         var treeview = findAncestor(TreeView);
         treeview.selectedNode = this;
-        return value;
-    }
-    
-    private var _expanded:Bool = false;
-    public var expanded(get, set):Bool;
-    private function get_expanded():Bool {
-        var childContainer = findComponent("treenode-child-container", Box);
-        if (childContainer == null) {
-            return _expanded;
-        }
-        return !childContainer.hidden;
-    }
-    private function set_expanded(value:Bool):Bool {
-        _expanded = value;
-        var childContainer = findComponent("treenode-child-container", Box);
-        if (childContainer == null) {
-            return value;
-        }
-        
-        if (value == true) {
-            childContainer.show();
-        } else {
-            childContainer.hide();
-        }
-        
         return value;
     }
     
@@ -149,7 +114,6 @@ class TreeViewNode extends VBox {
         }
 
         _data = value;
-        syncChildNodes();
         invalidateComponentData();
         return value;
     }
@@ -178,46 +142,61 @@ class TreeViewNode extends VBox {
         return value;
     }
     
-    private function syncChildNodes() {
-        var childDataArray:Array<Dynamic> = null;
-        for (f in Reflect.fields(_data)) { // TODO: ill concieved?
-            switch (Type.typeof(Reflect.field(_data, f))) {
-                case TClass(Array):
-                    childDataArray = Reflect.field(_data, f);
-                    break;
-                case _:
-            }
-        }
-        
-        if (childDataArray != null) {
-            var i = 0;
-            for (childData in childDataArray) {
-                var childNode:TreeViewNode = getChildNodes()[i];
-                if (childNode == null) {
-                    childNode = new TreeViewNode();
-                    addComponent(childNode);
-                }
-                childNode.data = childData;
-                i++;
-            }
-        }
-    }
-    
     private function getChildNodes():Array<TreeViewNode> {
         return findComponents(TreeViewNode, 3); // TODO: is this brittle? Will it always be 3?
-    }
-    
-    public function clearNodes() {
-        var nodes = findComponents(TreeViewNode, 3);
-        for (n in nodes) {
-            removeComponent(n);
-        }
     }
 }
 
 //***********************************************************************************************************
 // Behaviours
 //***********************************************************************************************************
+@:dox(hide) @:noCompletion
+private class AddNode extends Behaviour {
+    public override function call(param:Any = null):Variant {
+        var node = new TreeViewNode();
+        node.parentNode = cast(_component, TreeViewNode);
+        node.data = param;
+        _component.addComponent(node);
+        return node;
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class RemoveNode extends Behaviour {
+    public override function call(param:Any = null):Variant {
+        var node:TreeViewNode = param;
+        _component.removeComponent(node);
+        return node;
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class ClearNodes extends Behaviour {
+    public override function call(param:Any = null):Variant {
+        var node:TreeViewNode = cast(_component, TreeViewNode);
+        var nodes = node.findComponents(TreeViewNode, 3);
+        for (n in nodes) {
+            node.removeComponent(n);
+        }
+        return null;
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class Expanded extends DataBehaviour {
+    private override function validateData() {
+        var childContainer = _component.findComponent("treenode-child-container", Box);
+        if (childContainer == null) {
+            return;
+        }
+        
+        if (_value == true) {
+            childContainer.show();
+        } else {
+            childContainer.hide();
+        }
+    }
+}
 
 //***********************************************************************************************************
 // Events
@@ -350,7 +329,7 @@ private class TreeViewNodeBuilder extends CompositeBuilder {
             _renderer = newRenderer;
             _nodeContainer.addComponent(newRenderer);
             if (wasSelected == true) {
-                treeview.clearSelection();
+                //treeview.clearSelection();
                 treeview.selectedNode = _node;
             }
         }
@@ -378,7 +357,7 @@ private class TreeViewNodeBuilder extends CompositeBuilder {
             _renderer = newRenderer;
             _nodeContainer.addComponent(newRenderer);
             if (wasSelected == true) {
-                treeview.clearSelection();
+                //treeview.clearSelection();
                 treeview.selectedNode = _node;
             }
         }

@@ -11,7 +11,10 @@ package haxe.ui.containers;
  * Examples of usage can be found at the end of this file
  ***************************************************************************************************/
 
+import haxe.ui.behaviours.Behaviour;
+import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.containers.ScrollView;
+import haxe.ui.containers.TreeViewNode;
 import haxe.ui.core.BasicItemRenderer;
 import haxe.ui.core.Component;
 import haxe.ui.core.IDataComponent;
@@ -19,13 +22,16 @@ import haxe.ui.core.ItemRenderer;
 import haxe.ui.data.ArrayDataSource;
 import haxe.ui.data.DataSource;
 import haxe.ui.events.UIEvent;
+import haxe.ui.util.Variant;
 
 @:access(haxe.ui.containers.TreeViewNode)
 @:composite(TreeViewEvents, TreeViewBuilder)
 class TreeView extends ScrollView implements IDataComponent {
-    public function new() {
-        super();
-    }
+    @:behaviour(SelectedNode)           public var selectedNode:TreeViewNode;
+    
+    @:call(AddNode)                     public function addNode(data:Dynamic):TreeViewNode;
+    @:call(RemoveNode)                  public function removeNode(node:TreeViewNode):TreeViewNode;
+    @:call(ClearNodes)                  public function clearNodes():Void;
     
     private var _dataSource:DataSource<Dynamic> = null;
     public var dataSource(get, set):DataSource<Dynamic>;
@@ -42,70 +48,10 @@ class TreeView extends ScrollView implements IDataComponent {
             _dataSource = dataSource;
             _dataSource.onDataSourceChange = onDataChanged;
         }
-        syncNodes();
         return value;
-    }
-    
-    private var _selectedNode:TreeViewNode = null;
-    public var selectedNode(get, set):TreeViewNode;
-    private function get_selectedNode():TreeViewNode {
-        return _selectedNode;
-    }
-    private function set_selectedNode(value:TreeViewNode):TreeViewNode {
-        if (value == _selectedNode) {
-            return value;
-        }
-
-        clearSelection();
-        
-        _selectedNode = value;
-        if (_selectedNode != null) {
-            var p = _selectedNode.parentNode;
-            while (p != null) {
-                p.expanded = true;
-                p = p.parentNode;
-            }
-            var renderer = _selectedNode.findComponent(ItemRenderer, true);
-            if (renderer != null) {
-                renderer.addClass(":node-selected", true, true);
-            }
-            
-            ensureVisible(_selectedNode);
-        }
-        
-        var event:UIEvent = new UIEvent(UIEvent.CHANGE);
-        this.dispatch(event);
-        
-        return value;
-    }
-    
-    public function clearSelection() {
-        if (_selectedNode != null) {
-            var renderer = _selectedNode.findComponent(ItemRenderer, true);
-            if (renderer != null) {
-                renderer.removeClass(":node-selected", true, true);
-            }
-            _selectedNode = null;
-        }
     }
     
     private function onDataChanged() {
-    }
-    
-    private function syncNodes() {
-        for (i in 0..._dataSource.size) {
-            var item = _dataSource.get(i);
-            syncNode(i, item);
-        }
-    }
-    
-    private function syncNode(index:Int, nodeData:Dynamic) {
-        var node:TreeViewNode = getNodes()[index];
-        if (node == null) {
-            node = new TreeViewNode();
-            addComponent(node);
-        }
-        node.data = nodeData;
     }
     
     public function getNodes():Array<TreeViewNode> {
@@ -143,35 +89,6 @@ class TreeView extends ScrollView implements IDataComponent {
         return value;
     }
     
-    public function addNode(data:Dynamic):TreeViewNode {
-        var node = new TreeViewNode();
-        node.data = data;
-        addComponent(node);
-        return node;
-    }
-
-    public function removeNode(node:TreeViewNode):TreeViewNode {
-        removeComponent(node);
-        return node;
-    }
-    
-    public function clearNodes() {
-        selectedNode = null;
-        var nodes = findComponents(TreeViewNode, 3);
-        for (n in nodes) {
-            removeComponent(n);
-        }
-    }
-    
-    private override function onReady() {
-        super.onReady();
-        if (_selectedNode != null) {
-            var node = _selectedNode;
-            _selectedNode = null;
-            selectedNode = node;
-        }
-    }
-    
     public function findNodeByPath(path:String, field:String = null):TreeViewNode {
         var foundNode = null;
         
@@ -197,6 +114,76 @@ class TreeView extends ScrollView implements IDataComponent {
 //***********************************************************************************************************
 // Behaviours
 //***********************************************************************************************************
+@:dox(hide) @:noCompletion
+private class AddNode extends Behaviour {
+    public override function call(param:Any = null):Variant {
+        var node = new TreeViewNode();
+        node.data = param;
+        _component.addComponent(node);
+        return node;
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class RemoveNode extends Behaviour {
+    public override function call(param:Any = null):Variant {
+        var node:TreeViewNode = param;
+        _component.removeComponent(node);
+        return node;
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class ClearNodes extends Behaviour {
+    public override function call(param:Any = null):Variant {
+        var treeview:TreeView = cast(_component, TreeView);
+        treeview.selectedNode = null;
+        var nodes = treeview.findComponents(TreeViewNode, 3);
+        for (n in nodes) {
+            treeview.removeComponent(n);
+        }
+        return null;
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class SelectedNode extends DataBehaviour {
+    private override function validateData() {
+        if (_value == null || _value.isNull) {
+            if (_previousValue != null && !_previousValue.isNull) {
+                var previousSelection = cast(_previousValue.toComponent(), TreeViewNode);
+                var renderer = previousSelection.findComponent(ItemRenderer, true);
+                if (renderer != null) {
+                    renderer.removeClass(":node-selected", true, true);
+                }
+            }
+        } else {
+            if (_previousValue != null && !_previousValue.isNull) {
+                var previousSelection = cast(_previousValue.toComponent(), TreeViewNode);
+                var renderer = previousSelection.findComponent(ItemRenderer, true);
+                if (renderer != null) {
+                    renderer.removeClass(":node-selected", true, true);
+                }
+            }
+            
+            var node:TreeViewNode = cast(_value.toComponent(), TreeViewNode);
+            var p = node.parentNode;
+            while (p != null) {
+                p.expanded = true;
+                p = p.parentNode;
+            }
+            var renderer = node.findComponent(ItemRenderer, true);
+            if (renderer != null) {
+                renderer.addClass(":node-selected", true, true);
+            }
+            
+            cast(_component, TreeView).ensureVisible(node);
+        }
+        
+        var event:UIEvent = new UIEvent(UIEvent.CHANGE);
+        _component.dispatch(event);
+    }
+}
 
 //***********************************************************************************************************
 // Events
