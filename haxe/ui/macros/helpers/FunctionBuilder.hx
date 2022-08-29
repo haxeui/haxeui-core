@@ -32,6 +32,9 @@ class FunctionBuilder {
 
     public var returnsComponent(get, null):Bool;
     private function get_returnsComponent():Bool {
+        if (fn == null || fn.ret == null) {
+            return false;
+        }
         var classBuiler = new ClassBuilder(ComplexTypeTools.toType(fn.ret));
         return classBuiler.hasSuperClass("haxe.ui.core.Component");
     }
