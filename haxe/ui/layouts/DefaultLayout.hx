@@ -9,12 +9,6 @@ class DefaultLayout extends Layout {
     private var _roundFullWidths:Bool = true;
 
     private function buildWidthRoundingMap():Map<Component, Int> {
-        #if haxeui_allow_subpixels // if the backend is fine with subpixels, let not round anything
-        
-        return null;
-        
-        #else
-        
         if (_roundFullWidths == false || component.childComponents.length <= 1) {
             return null;
         }
@@ -52,8 +46,6 @@ class DefaultLayout extends Layout {
         }
         
         return map;
-        
-        #end
     }
     
     private override function resizeChildren() {
