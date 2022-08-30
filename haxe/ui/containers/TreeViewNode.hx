@@ -26,6 +26,7 @@ class TreeViewNode extends VBox {
     @:call(AddNode)                     public function addNode(data:Dynamic):TreeViewNode;
     @:call(RemoveNode)                  public function removeNode(node:TreeViewNode):TreeViewNode;
     @:call(ClearNodes)                  public function clearNodes():Void;
+    @:call(GetNodesInternal)            private function getNodesInternal():Array<Component>;
     
     public var parentNode:TreeViewNode = null;
     
@@ -89,7 +90,12 @@ class TreeViewNode extends VBox {
     }
     
     public function getNodes():Array<TreeViewNode> {
-        return findComponents(TreeViewNode, 3); // TODO: is this brittle? Will it always be 3?
+        var nodes:Array<TreeViewNode> = [];
+        var internalNodes = getNodesInternal();
+        for (node in internalNodes) {
+            nodes.push(cast node);
+        }
+        return nodes;
     }
     
     public var selected(get, set):Bool;
@@ -141,10 +147,6 @@ class TreeViewNode extends VBox {
         this.data = Reflect.copy(_data); // TEMP
         return value;
     }
-    
-    private function getChildNodes():Array<TreeViewNode> {
-        return findComponents(TreeViewNode, 3); // TODO: is this brittle? Will it always be 3?
-    }
 }
 
 //***********************************************************************************************************
@@ -195,6 +197,14 @@ private class Expanded extends DataBehaviour {
         } else {
             childContainer.hide();
         }
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class GetNodesInternal extends Behaviour {
+    public override function call(param:Any = null):Variant {
+        var nodes = _component.findComponents(TreeViewNode, 3); // TODO: is this brittle? Will it always be 3?
+        return nodes;
     }
 }
 

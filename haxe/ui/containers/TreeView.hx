@@ -32,6 +32,7 @@ class TreeView extends ScrollView implements IDataComponent {
     @:call(AddNode)                     public function addNode(data:Dynamic):TreeViewNode;
     @:call(RemoveNode)                  public function removeNode(node:TreeViewNode):TreeViewNode;
     @:call(ClearNodes)                  public function clearNodes():Void;
+    @:call(GetNodesInternal)            private function getNodesInternal():Array<Component>;
     
     private var _dataSource:DataSource<Dynamic> = null;
     public var dataSource(get, set):DataSource<Dynamic>;
@@ -55,7 +56,12 @@ class TreeView extends ScrollView implements IDataComponent {
     }
     
     public function getNodes():Array<TreeViewNode> {
-        return findComponents(TreeViewNode, 3); // TODO: is this brittle? Will it always be 3?
+        var nodes:Array<TreeViewNode> = [];
+        var internalNodes = getNodesInternal();
+        for (node in internalNodes) {
+            nodes.push(cast node);
+        }
+        return nodes;
     }
     
     private var _itemRenderer:ItemRenderer = new BasicItemRenderer();
@@ -182,6 +188,14 @@ private class SelectedNode extends DataBehaviour {
         
         var event:UIEvent = new UIEvent(UIEvent.CHANGE);
         _component.dispatch(event);
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class GetNodesInternal extends Behaviour {
+    public override function call(param:Any = null):Variant {
+        var nodes = _component.findComponents(TreeViewNode, 3); // TODO: is this brittle? Will it always be 3?
+        return nodes;
     }
 }
 
