@@ -50,27 +50,28 @@ class SplitterEvents extends haxe.ui.events.Events {
     private var _currentOffset:Point = null;
     private function onGripperMouseDown(event:MouseEvent) {
         _currentGripper = cast(event.target, SizerGripper);
-        _currentOffset = new Point(event.screenX, event.screenY);
+        _currentOffset = new Point(event.screenX - _currentGripper.screenLeft, event.screenY - _currentGripper.screenTop);
         Screen.instance.registerEvent(MouseEvent.MOUSE_MOVE, onScreenMouseMove);
         Screen.instance.registerEvent(MouseEvent.MOUSE_UP, onScreenMouseUp);
     }
 
     private function onScreenMouseMove(event:MouseEvent) {
-        _currentGripper.addClass(":hover");
+        _currentGripper.addClass(":down");
         var index = _splitter.getComponentIndex(_currentGripper);
         var prev = _splitter.getComponentAt(index - 1);
         var next = _splitter.getComponentAt(index + 1);
-
         handleResize(prev, next, event);
-
-        _currentOffset = new Point(event.screenX, event.screenY);
     }
 
     private function handleResize(prev:Component, next:Component, event:MouseEvent) {
-
     }
 
     private function onScreenMouseUp(event:MouseEvent) {
+        _currentGripper.removeClass(":down");
+        if (_currentGripper.hitTest(event.screenX, event.screenY)) {
+            _currentGripper.addClass(":hover");
+        }
+        _currentGripper = null;
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_MOVE, onScreenMouseMove);
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_UP, onScreenMouseUp);
         #if haxeui_html5

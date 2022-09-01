@@ -129,7 +129,7 @@
             <var name="warning-large" value="haxeui-core/styles/shared/warning-large.png" />
             <var name="error-large" value="haxeui-core/styles/shared/error-large.png" />
             <var name="gripper-vertical" value="haxeui-core/styles/shared/gripper-vertical.png" />
-            <var name="gripper-horizontal" value="haxeui-core/shared/default/gripper-horizontal.png" />
+            <var name="gripper-horizontal" value="haxeui-core/styles/shared/gripper-horizontal.png" />
             <var name="search" value="haxeui-core/styles/shared/search.png" />
             
             <style resource="haxeui-core/styles/default/main.css" priority="-3" />

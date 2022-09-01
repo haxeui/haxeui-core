@@ -10,6 +10,10 @@
 }
 
 .vertical-splitter-gripper:hover {
+    background-color: $solid-background-color;
+}
+
+.vertical-splitter-gripper:down {
     background-color: $solid-background-color-down;
 }
 
@@ -27,6 +31,10 @@
 }
 
 .horizontal-splitter-gripper:hover {
+    background-color: $solid-background-color;
+}
+
+.horizontal-splitter-gripper:down {
     background-color: $solid-background-color-down;
 }
 

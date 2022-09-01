@@ -26,6 +26,64 @@ private class VerticalSplitterEvents extends SplitterEvents {
     }
 
     private override function handleResize(prev:Component, next:Component, event:MouseEvent) {
+        var screenY = _splitter.screenTop;
+        var delta = event.screenY - screenY - _currentOffset.y;
+        var ucy = _splitter.layout.usableHeight;
+        
+        var prevCY = delta;
+        var nextCY = ucy - delta;
+        
+        var prevMinHeight:Float = 0;
+        var nextMinHeight:Float = 0;
+        
+        var prevMaxHeight:Null<Float> = null;
+        var nextMaxHeight:Null<Float> = null;
+        
+        // limit to min sizes
+        if (prevCY <= prevMinHeight) {
+            prevCY = prevMinHeight;
+            nextCY = ucy - prevMinHeight;
+        }
+        if (nextCY <= nextMinHeight) {
+            prevCY = ucy - nextMinHeight;
+            nextCY = nextMinHeight;
+        }
+
+        // limit to max sizes
+        if (prevMaxHeight != null && prevCY > prevMaxHeight) {
+            prevCY = prevMaxHeight;
+            nextCY = ucy - prevMaxHeight;
+        }
+        if (nextMaxHeight != null && nextCY > nextMaxHeight) {
+            prevCY = ucy - nextMaxHeight;
+            nextCY = nextMaxHeight;
+        }
+        
+        // bit of a hack to make things look a little nicer
+        if (prevCY <= 0) {
+            @:privateAccess prev.handleVisibility(false);
+        } else {
+            @:privateAccess prev.handleVisibility(true);
+        }
+        if (nextCY <= 0) {
+            @:privateAccess next.handleVisibility(false);
+        } else {
+            @:privateAccess next.handleVisibility(true);
+        }
+        
+        // assign new sizes
+        if (prev.percentHeight != null) {
+            prev.percentHeight = (prevCY / ucy) * 100;
+        } else {
+            prev.height = prevCY;
+        }
+        if (next.percentHeight != null) {
+            next.percentHeight = (nextCY / ucy) * 100;
+        } else {
+            next.height = nextCY;
+        }
+        
+        /*
         var delta = event.screenY - _currentOffset.y;
         var prevCY = prev.height += delta;
         var nextCY = next.height -= delta;
@@ -46,6 +104,7 @@ private class VerticalSplitterEvents extends SplitterEvents {
         } else {
             next.height = nextCY;
         }
+        */
     }
 }
 
