@@ -1459,6 +1459,7 @@ class Component extends ComponentImpl implements IValidating {
     @:style                 public var color:Null<Color>;
     #end
     @:style                 public var backgroundColor:Null<Color>;
+    @:style                 public var backgroundColorEnd:Null<Color>;
     @:style                 public var backgroundImage:Variant;
     @:style                 public var borderColor:Null<Color>;
     @:style                 public var borderSize:Null<Float>;
@@ -1814,6 +1815,7 @@ class Component extends ComponentImpl implements IValidating {
         return invalidate;
     }
 
+    private var _pauseAnimationStyleChanges:Bool = false;
     private override function applyStyle(style:Style) {
         super.applyStyle(style);
 
@@ -1873,11 +1875,13 @@ class Component extends ComponentImpl implements IValidating {
             hidden = style.hidden;
         }
 
-        if (style.animationName != null) {
-            var animationKeyFrames:AnimationKeyFrames = Toolkit.styleSheet.animations.get(style.animationName);
-            applyAnimationKeyFrame(animationKeyFrames, style.animationOptions);
-        } else if (componentAnimation != null) {
-            componentAnimation = null;
+        if (_pauseAnimationStyleChanges == false) {
+            if (style.animationName != null) {
+                var animationKeyFrames:AnimationKeyFrames = Toolkit.styleSheet.animations.get(style.animationName);
+                applyAnimationKeyFrame(animationKeyFrames, style.animationOptions);
+            } else if (componentAnimation != null) {
+                componentAnimation = null;
+            }
         }
 
         if (style.pointerEvents != null && style.pointerEvents != "none") {

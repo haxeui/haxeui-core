@@ -8,6 +8,7 @@ import haxe.ui.styles.Value;
 import haxe.ui.styles.elements.AnimationKeyFrame;
 import haxe.ui.styles.elements.AnimationKeyFrames;
 import haxe.ui.styles.elements.Directive;
+import haxe.ui.util.Color;
 
 @:access(haxe.ui.core.Component)
 class AnimationTools {
@@ -100,14 +101,57 @@ class AnimationTools {
         var framesArray:Array<AnimationKeyFrame> = [k1, k2, k3, k4, k5, k6];
         var frames = new AnimationKeyFrames("shake", framesArray);
         c.onAnimationEnd = function(e) {
+            c._pauseAnimationStyleChanges = false;
             c._componentAnimation = null;
             if (onComplete != null) {
                 onComplete();
             }
         }
         Toolkit.callLater(function() {
+            c._pauseAnimationStyleChanges = true;
             c.applyAnimationKeyFrame(frames, {
-                duration: .1,
+                duration: .2,
+                easingFunction: EasingFunction.LINEAR
+            });
+        });
+    }
+    
+    public static function flash(c:Component, color:Color = 0xffdddd, onComplete:Void->Void = null) {
+        Toolkit.callLater(function() {
+            var originalColor = c.backgroundColor;
+            var originalColorEnd = c.backgroundColorEnd;
+            
+            var k1 = new AnimationKeyFrame();
+            k1.time = Value.VDimension(Dimension.PERCENT(10));
+            var directive1 = new Directive("backgroundColor", Value.VColor(color));
+            var directive2 = new Directive("backgroundColorEnd", Value.VColor(color));
+            k1.directives = [directive1, directive2];
+
+            var k2 = new AnimationKeyFrame();
+            k2.time = Value.VDimension(Dimension.PERCENT(90));
+            var directive1 = new Directive("backgroundColor", Value.VColor(color));
+            var directive2 = new Directive("backgroundColorEnd", Value.VColor(color));
+            k2.directives = [directive1, directive2];
+            
+            var k3 = new AnimationKeyFrame();
+            k3.time = Value.VDimension(Dimension.PERCENT(100));
+            var directive1 = new Directive("backgroundColor", Value.VColor(originalColor));
+            var directive2 = new Directive("backgroundColorEnd", Value.VColor(originalColorEnd));
+            k3.directives = [directive1, directive2];
+            
+            var framesArray:Array<AnimationKeyFrame> = [k1, k2, k3];
+            var frames = new AnimationKeyFrames("flash", framesArray);
+            c.onAnimationEnd = function(e) {
+                c._pauseAnimationStyleChanges = false;
+                c._componentAnimation = null;
+                if (onComplete != null) {
+                    onComplete();
+                }
+            }
+        
+            c._pauseAnimationStyleChanges = true;
+            c.applyAnimationKeyFrame(frames, {
+                duration: .2,
                 easingFunction: EasingFunction.LINEAR
             });
         });
