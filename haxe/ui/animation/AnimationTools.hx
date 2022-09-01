@@ -3,6 +3,7 @@ package haxe.ui.animation;
 import haxe.ui.Toolkit;
 import haxe.ui.core.Component;
 import haxe.ui.styles.Dimension;
+import haxe.ui.styles.EasingFunction;
 import haxe.ui.styles.Value;
 import haxe.ui.styles.elements.AnimationKeyFrame;
 import haxe.ui.styles.elements.AnimationKeyFrames;
@@ -106,7 +107,8 @@ class AnimationTools {
         }
         Toolkit.callLater(function() {
             c.applyAnimationKeyFrame(frames, {
-                duration: .1
+                duration: .1,
+                easingFunction: EasingFunction.LINEAR
             });
         });
     }
