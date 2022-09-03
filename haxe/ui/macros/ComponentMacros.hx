@@ -61,14 +61,17 @@ typedef BuildData = {
 
 @:access(haxe.ui.macros.Macros)
 class ComponentMacros {
+    @:deprecated("'haxe.ui.macros.ComponentMacros.build' is deprecated, use 'haxe.ui.ComponentBuilder.build' instead")
     macro public static function build(resourcePath:String, params:Expr = null):Array<Field> {
         return buildCommon(resourcePath, params);
     }
     
+    @:deprecated("'haxe.ui.macros.ComponentMacros.buildComponent' is deprecated, use 'haxe.ui.ComponentBuilder.fromFile' instead")
     macro public static function buildComponent(filePath:String, params:Expr = null):Expr {
         return buildComponentCommon(filePath, params);
     }
 
+    @:deprecated("'haxe.ui.macros.ComponentMacros.buildComponentFromString' is deprecated, use 'haxe.ui.ComponentBuilder.fromString' instead")
     macro public  static function buildComponentFromString(source:String, params:Expr = null):Expr {
         return buildFromStringCommon(source, params);
     }
