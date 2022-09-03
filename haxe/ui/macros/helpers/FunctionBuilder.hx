@@ -32,15 +32,22 @@ class FunctionBuilder {
 
     public var returnsComponent(get, null):Bool;
     private function get_returnsComponent():Bool {
-        #if (haxe_ver < 4)
-        return false;
-        #else
         if (fn == null || fn.ret == null) {
             return false;
         }
+        
+        #if (haxe_ver < 4)
+            switch (fn.ret) {
+                case TPath(p):
+                    if (p.name == "Component" || p.name == "String" || p.name == "Bool" || p.name == "Int" || p.name == "Variant") {
+                        return false;
+                    }
+                case _:    
+            }
+        #end
+        
         var classBuiler = new ClassBuilder(ComplexTypeTools.toType(fn.ret));
         return classBuiler.hasSuperClass("haxe.ui.core.Component");
-        #end
     }
     
     public var isVoid(get, null):Bool;

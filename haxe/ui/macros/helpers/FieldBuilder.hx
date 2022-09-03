@@ -263,15 +263,22 @@ class FieldBuilder {
 
     public var isComponent(get, null):Bool;
     private function get_isComponent():Bool {
-        #if (haxe_ver < 4)
-        return false;
-        #else
         if (type == null) {
             return false;
         }
+        
+        #if (haxe_ver < 4)
+            switch (type) {
+                case TPath(p):
+                    if (p.name == "Component" || p.name == "String" || p.name == "Bool" || p.name == "Int" || p.name == "Variant") {
+                        return false;
+                    }
+                case _:    
+            }
+        #end
+        
         var builder = new ClassBuilder(ComplexTypeTools.toType(type));
         return builder.hasSuperClass("haxe.ui.core.Component");
-        #end
     }
     
     public function hasMeta(name:String):Bool {
