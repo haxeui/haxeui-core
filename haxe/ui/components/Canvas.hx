@@ -22,6 +22,12 @@ class Canvas extends Component implements IDataComponent {
         componentGraphics.resize(width, height);
         return b;
     }
+    
+    public override function cloneComponent():Canvas {
+        @:privateAccess c.componentGraphics._drawCommands = this.componentGraphics._drawCommands.copy();
+        @:privateAccess c.componentGraphics.replayDrawCommands();
+        return c;
+    }
 }
 
 //***********************************************************************************************************
