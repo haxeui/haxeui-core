@@ -1815,6 +1815,7 @@ class Component extends ComponentImpl implements IValidating {
         return invalidate;
     }
 
+	@:noCompletion 
     private var _pauseAnimationStyleChanges:Bool = false;
     private override function applyStyle(style:Style) {
         super.applyStyle(style);
