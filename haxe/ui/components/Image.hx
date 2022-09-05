@@ -14,6 +14,7 @@ import haxe.ui.geom.Rectangle;
 import haxe.ui.geom.Size;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.styles.Style;
+import haxe.ui.util.GUID;
 import haxe.ui.util.ImageLoader;
 import haxe.ui.util.Variant;
 
@@ -215,6 +216,8 @@ private class ImageLayout extends DefaultLayout {
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.components.Image)
 private class ResourceBehaviour extends DataBehaviour {
+    private var _canvasMap:Map<String, Canvas> = null; // we'll want to cache any canvases used so we dont cloneComponent over and ove again
+    
     private override function validateData() {
         if (_value == null || _value.isNull) {
             _component.removeImageDisplay();
@@ -222,32 +225,61 @@ private class ResourceBehaviour extends DataBehaviour {
             return;
         }
 
-        var imageLoader = new ImageLoader(_value);
-        imageLoader.load(function(imageInfo) {
-            if (imageInfo != null) {
-                if (_value == null || _value.isNull) { // its possible that while loading the image (async) its been set to null, lets honour it
-                    _component.removeImageDisplay();
-                    _component.invalidateComponent();
-                    return;
-                }
-
-                var image:Image = cast(_component, Image);
-                if (image == null) {
-                    return;
-                }
-                var display:ImageDisplay = image.getImageDisplay();
-                if (display != null) {
-                    display.imageInfo = imageInfo;
-                    image.originalWidth = imageInfo.width;
-                    image.originalHeight = imageInfo.height;
-                    if (image.autoSize() == true && image.parentComponent != null) {
-                        image.parentComponent.invalidateComponentLayout();
-                    }
-                    image.invalidateComponent();
-                    display.validateComponent();
-                }
+        if (_value.isComponent && ((_value.toComponent() is Canvas))) { // lets support adding canvases as icons, images, etc
+            var newCanvas:Canvas = null;
+            if (_canvasMap == null) {
+                _canvasMap = new Map<String, Canvas>();
             }
-        });
+            var canvas:Component = _value.toComponent();
+            if (canvas.id == null) {
+                canvas.id = GUID.uuid();
+            }
+            
+            var existingCanvas = _component.findComponent(Canvas, false);
+            if (existingCanvas != null && existingCanvas.id == canvas.id) { // if the current canvas is the same as the new one, lets return
+                return;
+            }
+            
+            if (existingCanvas != null) {
+                _component.removeComponent(existingCanvas, false);
+            }
+            
+            if (_canvasMap.exists(canvas.id)) { // use cached canvas
+                newCanvas = _canvasMap.get(canvas.id);
+            } else {
+                newCanvas = cast _value.toComponent().cloneComponent(); // not found in cache, lets clone it and add it to the cache
+                _canvasMap.set(canvas.id, newCanvas);
+            }
+            
+            _component.addComponent(newCanvas);
+        } else {
+            var imageLoader = new ImageLoader(_value);
+            imageLoader.load(function(imageInfo) {
+                if (imageInfo != null) {
+                    if (_value == null || _value.isNull) { // its possible that while loading the image (async) its been set to null, lets honour it
+                        _component.removeImageDisplay();
+                        _component.invalidateComponent();
+                        return;
+                    }
+
+                    var image:Image = cast(_component, Image);
+                    if (image == null) {
+                        return;
+                    }
+                    var display:ImageDisplay = image.getImageDisplay();
+                    if (display != null) {
+                        display.imageInfo = imageInfo;
+                        image.originalWidth = imageInfo.width;
+                        image.originalHeight = imageInfo.height;
+                        if (image.autoSize() == true && image.parentComponent != null) {
+                            image.parentComponent.invalidateComponentLayout();
+                        }
+                        image.invalidateComponent();
+                        display.validateComponent();
+                    }
+                }
+            });
+        }
     }
 }
 
