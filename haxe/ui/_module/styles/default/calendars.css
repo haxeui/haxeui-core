@@ -45,6 +45,10 @@
     border-radius: 1px;
 }
 
+.dropdown-popup > .calendar-view {
+    border: none;
+}
+
 .calendar-view .calendar {
     border: none;
     padding: 0px;
