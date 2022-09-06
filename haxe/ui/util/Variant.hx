@@ -510,6 +510,9 @@ abstract Variant(VariantType) from VariantType {
     }
 
     private static function containsOnlyDigits(s:Dynamic):Bool {
+        if ((s is Component) || (s is ImageData) || (s is Array) || (s is DataSource)) {
+            return false;
+        }
         if ((s is Int) || (s is Float)) {
             return true;
         }
