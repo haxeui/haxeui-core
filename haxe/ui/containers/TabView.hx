@@ -1,17 +1,18 @@
 package haxe.ui.containers;
 
-import haxe.ui.components.Button;
-import haxe.ui.components.TabBar;
 import haxe.ui.behaviours.Behaviour;
-import haxe.ui.core.Component;
-import haxe.ui.core.CompositeBuilder;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
-import haxe.ui.events.UIEvent;
+import haxe.ui.components.Button;
+import haxe.ui.components.TabBar;
+import haxe.ui.core.Component;
+import haxe.ui.core.CompositeBuilder;
 import haxe.ui.events.Events;
+import haxe.ui.events.UIEvent;
+import haxe.ui.geom.Size;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.LayoutFactory;
-import haxe.ui.geom.Size;
+import haxe.ui.styles.Style;
 import haxe.ui.util.Variant;
 
 @:composite(Builder, Events, Layout)
@@ -24,6 +25,8 @@ class TabView extends Component {
     @:behaviour(TabPosition)        public var tabPosition:String;
     @:behaviour(PageCount)          public var pageCount:Int;
     @:behaviour(Closable, false)    public var closable:Bool;
+    @:behaviour(ButtonWidth, null)  public var buttonWidth:Null<Float>;
+    @:behaviour(ButtonHeight, null) public var buttonHeight:Null<Float>;
     @:call(RemovePage)              public function removePage(index:Int);
     @:call(GetPage)                 public function getPage(index:Int):Component;
     @:call(GetPageById)             public function getPageById(pageId:String):Component;
@@ -265,6 +268,30 @@ private class RemoveAllPages extends Behaviour {
     }
 }
 
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+@:access(haxe.ui.components.Builder)
+private class ButtonWidth extends DataBehaviour {
+    public override function validateData() {
+        var tabbar = _component.findComponent("tabview-tabs", TabBar);
+        if (tabbar != null) {
+            tabbar.buttonWidth = _value;
+        }
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+@:access(haxe.ui.components.Builder)
+private class ButtonHeight extends DataBehaviour {
+    public override function validateData() {
+        var tabbar = _component.findComponent("tabview-tabs", TabBar);
+        if (tabbar != null) {
+            tabbar.buttonHeight = _value;
+        }
+    }
+}
+
 //***********************************************************************************************************
 // Events
 //***********************************************************************************************************
@@ -352,6 +379,7 @@ private class Builder extends CompositeBuilder {
         }
 
         if (_tabs == null) {
+            trace("create");
             _tabs = new TabBar();
             _tabs.id = "tabview-tabs";
             _tabs.addClass("tabview-tabs");
@@ -480,5 +508,13 @@ private class Builder extends CompositeBuilder {
             }
         }
         return cast match;
+    }
+    
+    public override function applyStyle(style:Style) {
+        super.applyStyle(style);
+        
+        haxe.ui.macros.ComponentMacros.cascacdeStylesTo("tabview-tabs", [
+            color, fontName, fontSize, cursor, textAlign, fontBold, fontUnderline, fontItalic
+        ], false);
     }
 }

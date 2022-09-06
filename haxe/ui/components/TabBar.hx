@@ -8,12 +8,12 @@ import haxe.ui.containers.Box;
 import haxe.ui.containers.HBox;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
-import haxe.ui.core.InteractiveComponent;
 import haxe.ui.events.Events;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.geom.Size;
 import haxe.ui.layouts.DefaultLayout;
+import haxe.ui.styles.Style;
 import haxe.ui.util.Variant;
 
 @:composite(Builder, Events, TabBarLayout)
@@ -26,6 +26,8 @@ class TabBar extends Component {
     @:behaviour(TabPosition, "top")     public var tabPosition:String;
     @:behaviour(TabCount)               public var tabCount:Int;
     @:behaviour(Closable, false)        public var closable:Bool;
+    @:behaviour(ButtonWidth, null)      public var buttonWidth:Null<Float>;
+    @:behaviour(ButtonHeight, null)     public var buttonHeight:Null<Float>;
     @:call(RemoveTab)                   public function removeTab(index:Int);
     @:call(GetTab)                      public function getTab(index:Int):Component;
 }
@@ -249,6 +251,34 @@ private class GetTab extends Behaviour {
     }
 }
 
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+@:access(haxe.ui.components.Builder)
+private class ButtonWidth extends DataBehaviour {
+    public override function validateData() {
+        if (_value == null || _value.isNull) {
+            return;
+        }
+        for (b in _component.findComponents(Button)) {
+            b.width = _value;
+        }
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+@:access(haxe.ui.components.Builder)
+private class ButtonHeight extends DataBehaviour {
+    public override function validateData() {
+        if (_value == null || _value.isNull) {
+            return;
+        }
+        for (b in _component.findComponents(Button)) {
+            b.height = _value;
+        }
+    }
+}
+
 //***********************************************************************************************************
 // Events
 //***********************************************************************************************************
@@ -374,6 +404,12 @@ private class Builder extends CompositeBuilder {
             button.icon = cast(child, Button).icon;
         }
         button.closable = _tabbar.closable;
+        if (_tabbar.buttonWidth != null) {
+            button.componentWidth = _tabbar.buttonWidth;
+        }
+        if (_tabbar.buttonHeight != null) {
+            button.componentHeight = _tabbar.buttonHeight;
+        }
 
         return button;
     }
@@ -532,6 +568,14 @@ private class Builder extends CompositeBuilder {
         if (_scrollRight != null) {
             _scrollRight.hide();
         }
+    }
+    
+    public override function applyStyle(style:Style) {
+        super.applyStyle(style);
+        
+        haxe.ui.macros.ComponentMacros.cascacdeStylesToList(Button, [
+            color, fontName, fontSize, cursor, textAlign, fontBold, fontUnderline, fontItalic
+        ]);
     }
 }
 
