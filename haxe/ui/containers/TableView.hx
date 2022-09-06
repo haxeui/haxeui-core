@@ -128,7 +128,7 @@ private class Events extends ScrollViewEvents {
     }
 
     private function onScrollChange(e:ScrollEvent) {
-        _tableview.invalidateComponentLayout();
+        //_tableview.invalidateComponentLayout();
     }
 
     private function onRendererCreated(e:UIEvent) {
