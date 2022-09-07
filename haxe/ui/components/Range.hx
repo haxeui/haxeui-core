@@ -18,7 +18,7 @@ import haxe.ui.util.Variant;
 /**
  * A range bar component, that starts from `min` and ends at `max`, defaults to 0-100.
  */
-@:composite(Builder)
+@:composite(RangeBuilder)
 class Range extends InteractiveComponent implements IDirectionalComponent {
 
     /**
@@ -251,7 +251,12 @@ private class Events extends haxe.ui.events.Events {
 // Composite Builder
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
-private class Builder extends CompositeBuilder {
+class RangeBuilder extends CompositeBuilder {
+    public function new(component:Component) {
+        super(component);
+        showWarning();
+    }
+
     public override function create() {
         super.create();
         if (_component.findComponent("${_component.cssName}-value") == null) {
@@ -260,5 +265,10 @@ private class Builder extends CompositeBuilder {
             v.addClass('${_component.cssName}-value', false);
             _component.addComponent(v);
         }
+    }
+    
+    private function showWarning() {
+        var name = _component.className.split(".").pop();
+        trace("WARNING: trying to create an instance of '" + name + "' directly, use either 'Horizontal" + name + "' or 'Vertical" + name + "'");
     }
 }
