@@ -2,6 +2,7 @@ package haxe.ui.parsers.modules;
 
 class Module {
     public var id(default, default):String;
+    public var preloader(default, default):String;
     public var rootPath(default, default):String;
     public var priority(default, default):Int = 0;
     public var preloadList(default, default):String;

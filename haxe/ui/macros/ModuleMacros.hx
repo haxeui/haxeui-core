@@ -48,6 +48,12 @@ class ModuleMacros {
             if (m.preloadList == "all") {
                 preloadAll = true;
             }
+            if (m.preloader != null) {
+                var p = m.preloader;
+                builder.add(macro
+                    haxe.ui.HaxeUIApp.instance.preloaderClass = cast Type.resolveClass($v{p})
+                );
+            }
 
             // add resources as haxe resources (plus prefix)
             #if resource_resolution_verbose

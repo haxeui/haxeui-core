@@ -1,5 +1,6 @@
 package haxe.ui;
 
+import haxe.ui.Preloader;
 import haxe.ui.Preloader.PreloadItem;
 import haxe.ui.backend.AppImpl;
 import haxe.ui.backend.ToolkitOptions;
@@ -23,6 +24,8 @@ class HaxeUIApp extends AppImpl {
         init(onReady, onEnd);
     }
 
+    public var preloaderClass:Class<Preloader> = null;
+    public var preloader:Preloader = null;
     private override function init(onReady:Void->Void, onEnd:Void->Void = null) {
         if (Toolkit.backendProperties.getProp("haxe.ui.theme") != null && Toolkit.theme == "default") {
             Toolkit.theme = Toolkit.backendProperties.getProp("haxe.ui.theme");
@@ -35,13 +38,16 @@ class HaxeUIApp extends AppImpl {
         }
 
         var preloadList:Array<PreloadItem> = null;
-        var preloader = null;
 
         #if (!haxeui_hxwidgets && !haxeui_kha && !haxeui_qt && !haxeui_raylib) // TODO: needs some work here
 
         preloadList = buildPreloadList();
         if (preloadList != null && preloadList.length > 0) {
-            preloader = new Preloader();
+            if (preloaderClass == null) {
+                preloader = new Preloader();
+            } else {
+                preloader = Type.createInstance(preloaderClass, []);
+            }
             preloader.progress(0, preloadList.length);
             addComponent(preloader);
             preloader.validateComponent();

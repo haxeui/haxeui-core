@@ -42,11 +42,13 @@ class Preloader extends Box {
 
         if (current > 0) {
             var label = findComponent(Label);
-            var text = label.text; // + ".";
-            if (StringTools.endsWith(text, "....")) {
-                text = "Loading";
+            if (label != null) {
+                var text = label.text; // + ".";
+                if (StringTools.endsWith(text, "....")) {
+                    text = "Loading";
+                }
+                label.text = text;
             }
-            label.text = text;
         }
     }
 

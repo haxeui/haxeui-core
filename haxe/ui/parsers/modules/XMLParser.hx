@@ -13,6 +13,7 @@ class XMLParser extends ModuleParser {
 
         var xml:Xml = Xml.parse(data).firstElement();
         module.id = xml.get("id");
+        module.preloader = xml.get("preloader");
         if (xml.get("priority") != null) {
             module.priority = Std.parseInt(xml.get("priority"));
         }
