@@ -154,6 +154,11 @@ private class StartBehaviour extends DataBehaviour {
 @:access(haxe.ui.components.Range)
 private class EndBehaviour extends DataBehaviour {
     private override function validateData() {
+        var range = _component.findComponent(Range);
+        if (range == null) {
+            return;
+        }
+        
         var slider:Slider = cast(_component, Slider);
         if (_value != null && _value < slider.min) {
             _value = slider.min;
@@ -173,17 +178,15 @@ private class EndBehaviour extends DataBehaviour {
         
         if (slider.center != null) {
             if (_value >= slider.center) {
-                var r = slider.findComponent(Range);
-                r.virtualStart = slider.center;
-                r.virtualEnd = _value;
+                range.virtualStart = slider.center;
+                range.virtualEnd = _value;
             } else if (_value < slider.center) {
-                var r = slider.findComponent(Range);
-                r.virtualStart = _value;
-                r.virtualEnd = slider.center;
+                range.virtualStart = _value;
+                range.virtualEnd = slider.center;
             }
         }
         
-        _component.findComponent(Range).end = _value;
+        range.end = _value;
         cast(_component, Slider).pos = _value;
         _component.invalidateComponentLayout();
     }
@@ -192,10 +195,14 @@ private class EndBehaviour extends DataBehaviour {
 @:dox(hide) @:noCompletion
 private class MinBehaviour extends DataBehaviour {
     private override function validateData() {
-        if (cast(_component, Slider).start == null) {
-            _component.findComponent(Range).start = _value;
+        var range = _component.findComponent(Range);
+        if (range == null) {
+            return;
         }
-        _component.findComponent(Range).min = _value;
+        if (cast(_component, Slider).start == null) {
+            range.start = _value;
+        }
+        range.min = _value;
         _component.invalidateComponentLayout();
     }
 }
@@ -203,7 +210,11 @@ private class MinBehaviour extends DataBehaviour {
 @:dox(hide) @:noCompletion
 private class MaxBehaviour extends DataBehaviour {
     private override function validateData() {
-        _component.findComponent(Range).max = _value;
+        var range = _component.findComponent(Range);
+        if (range == null) {
+            return;
+        }
+        range.max = _value;
         _component.invalidateComponentLayout();
     }
 }
@@ -326,10 +337,10 @@ private class Events extends haxe.ui.events.Events  {
             _endThumb.registerEvent(MouseEvent.MOUSE_DOWN, onThumbMouseDown);
         }
 
-        if (_range.hasEvent(MouseEvent.MOUSE_DOWN, onRangeMouseDown) == false) {
+        if (_range != null && _range.hasEvent(MouseEvent.MOUSE_DOWN, onRangeMouseDown) == false) {
             _range.registerEvent(MouseEvent.MOUSE_DOWN, onRangeMouseDown);
         }
-        if (_range.hasEvent(UIEvent.CHANGE, onRangeChange) == false) {
+        if (_range != null && _range.hasEvent(UIEvent.CHANGE, onRangeChange) == false) {
             _range.registerEvent(UIEvent.CHANGE, onRangeChange);
         }
         if (hasEvent(ActionEvent.ACTION_START, onActionStart) == false) {
@@ -346,8 +357,10 @@ private class Events extends haxe.ui.events.Events  {
             _endThumb.unregisterEvent(MouseEvent.MOUSE_DOWN, onThumbMouseDown);
         }
 
-        _range.unregisterEvent(MouseEvent.MOUSE_DOWN, onRangeMouseDown);
-        _range.unregisterEvent(UIEvent.CHANGE, onRangeChange);
+        if (_range != null) {
+            _range.unregisterEvent(MouseEvent.MOUSE_DOWN, onRangeMouseDown);
+            _range.unregisterEvent(UIEvent.CHANGE, onRangeChange);
+        }
         unregisterEvent(ActionEvent.ACTION_START, onActionStart);
     }
 
@@ -482,21 +495,24 @@ class SliderBuilder extends CompositeBuilder {
     public function new(slider:Slider) {
         super(slider);
         _slider = slider;
+        showWarning();
     }
     
     public override function create() {
         if (_component.findComponent("range") == null) {
             var v = createValueComponent();
-            v.scriptAccess = false;
-            v.allowFocus = false;
-            v.id = "range";
-            v.addClass("slider-value");
-            v.start = v.end = 0;
-            if (_slider.center != null) {
-                _slider.pos = _slider.center;
-                v.virtualStart = _slider.center;
+            if (v != null) {
+                v.scriptAccess = false;
+                v.allowFocus = false;
+                v.id = "range";
+                v.addClass("slider-value");
+                v.start = v.end = 0;
+                if (_slider.center != null) {
+                    _slider.pos = _slider.center;
+                    v.virtualStart = _slider.center;
+                }
+                _component.addComponent(v);
             }
-            _component.addComponent(v);
         }
 
         createThumb("end-thumb");
@@ -524,5 +540,9 @@ class SliderBuilder extends CompositeBuilder {
         _component.addComponent(b);
 
         _component.registerInternalEvents(Events, true); // call .register again as we might have a new thumb!
+    }
+    
+    private function showWarning() {
+        trace("WARNING: trying to create an instance of 'Slider' directly, use either 'HorizontalSlider' or 'VerticalSlider'");
     }
 }
