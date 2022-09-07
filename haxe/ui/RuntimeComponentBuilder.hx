@@ -7,6 +7,7 @@ import haxe.ui.core.Component;
 import haxe.ui.core.ComponentClassMap;
 import haxe.ui.core.ComponentFieldMap;
 import haxe.ui.core.IDataComponent;
+import haxe.ui.core.IDirectionalComponent;
 import haxe.ui.core.LayoutClassMap;
 import haxe.ui.layouts.Layout;
 import haxe.ui.parsers.ui.ComponentInfo;
@@ -70,12 +71,37 @@ class RuntimeComponentBuilder {
             return null;
         }
 
-        var component:Component = Type.createInstance(Type.resolveClass(className), []);
-        if (component == null) {
+        var tempComponent:Component = Type.createEmptyInstance(Type.resolveClass(className));
+        if (tempComponent == null) {
             trace("WARNING: could not create class instance: " + className);
             return null;
         }
-
+        
+        var component:Component = null;
+        if ((tempComponent is IDirectionalComponent)) { // lets see if its a directional class
+            var parts = tempComponent.className.split(".");
+            var name = parts.pop();
+            if (StringTools.startsWith(name, "Horizontal") == false && StringTools.startsWith(name, "Vertical") == false) { // is it already a vertical or horizontal variant?
+                var direction = c.direction;
+                if (direction == null) {
+                    direction = "horizontal";
+                }
+                var directionalName = direction + name;
+                var directionalClassName = ComponentClassMap.get(directionalName.toLowerCase());
+                if (directionalClassName == null) {
+                    trace("WARNING: no directional class found for component: " + c.type + " (" + (direction + c.type.toLowerCase()) + ")");
+                    return null;
+                }
+                component = Type.createInstance(Type.resolveClass(directionalClassName), []);
+                if (component == null) {
+                    trace("WARNING: could not create class instance: " + directionalClassName);
+                    return null;
+                }
+            }
+        } else {
+            component = Type.createInstance(Type.resolveClass(className), []);
+        }
+        
         if (c.id != null)               component.id = c.id;
         if (c.left != null)             component.left = c.left;
         if (c.top != null)              component.top = c.top;
