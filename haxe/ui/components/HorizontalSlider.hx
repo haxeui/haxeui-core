@@ -125,4 +125,7 @@ private class Builder extends SliderBuilder {
         }
         return start;
     }
+    
+    private override function showWarning() { // do nothing
+    }
 }

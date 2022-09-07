@@ -2,6 +2,7 @@ package haxe.ui.components;
 
 import haxe.ui.Toolkit;
 import haxe.ui.behaviours.Behaviour;
+import haxe.ui.components.Range.RangeBuilder;
 import haxe.ui.core.Component;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.geom.Point;
@@ -12,7 +13,7 @@ import haxe.ui.util.Variant;
  * 
  * **Note** - A range bar is like a prgress bar, but isnt forced to start from 0.
  */
-@:composite(HorizontalRangeLayout)
+@:composite(HorizontalRangeLayout, Builder)
 class HorizontalRange extends Range {
 
     /**
@@ -139,5 +140,14 @@ class HorizontalRangeLayout extends DefaultLayout {
         var startInPixels = (start * d) - (min * d);
         value.left = Math.ffloor(paddingLeft + startInPixels);
         value.top = paddingTop;
+    }
+}
+
+//***********************************************************************************************************
+// Composite Builder
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+private class Builder extends RangeBuilder {
+    private override function showWarning() { // do nothing
     }
 }

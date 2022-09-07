@@ -107,4 +107,7 @@ private class Builder extends SliderBuilder {
     private override function createValueComponent():Range {
         return new VerticalRange();
     }
+    
+    private override function showWarning() { // do nothing
+    }
 }

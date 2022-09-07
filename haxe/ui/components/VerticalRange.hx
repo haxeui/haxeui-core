@@ -2,12 +2,13 @@ package haxe.ui.components;
 
 import haxe.ui.Toolkit;
 import haxe.ui.behaviours.Behaviour;
+import haxe.ui.components.Range.RangeBuilder;
 import haxe.ui.core.Component;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.geom.Point;
 import haxe.ui.util.Variant;
 
-@:composite(VerticalRangeLayout)
+@:composite(VerticalRangeLayout, Builder)
 class VerticalRange extends Range {
     public function new() {
         super();
@@ -130,5 +131,14 @@ class VerticalRangeLayout extends DefaultLayout {
         var startInPixels = (ucy - value.height) - ((start * d) - (min * d));
         value.left = paddingLeft;
         value.top = Math.ffloor(paddingTop + startInPixels);
+    }
+}
+
+//***********************************************************************************************************
+// Composite Builder
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+private class Builder extends RangeBuilder {
+    private override function showWarning() { // do nothing
     }
 }

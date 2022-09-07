@@ -1,8 +1,9 @@
 package haxe.ui.containers;
 
+import haxe.ui.containers.ButtonBar.ButtonBarBuilder;
 import haxe.ui.layouts.VerticalLayout;
 
-@:composite(Layout)
+@:composite(Layout, Builder)
 class VerticalButtonBar extends ButtonBar {
     public function new() {
         super();
@@ -36,5 +37,15 @@ private class Layout extends VerticalLayout {
                 child.width = max;
             }
         }
+    }
+}
+
+//***********************************************************************************************************
+// Composite Builder
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class Builder extends ButtonBarBuilder {
+    private override function showWarning() { // do nothing
     }
 }

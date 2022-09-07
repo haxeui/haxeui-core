@@ -1,5 +1,6 @@
 package haxe.ui.components;
 
+import haxe.ui.components.Range.RangeBuilder;
 import haxe.ui.core.Component;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.core.IDirectionalComponent;
@@ -10,6 +11,7 @@ import haxe.ui.util.Variant;
 /**
  * A progress bar that starts from 0 and ends at 100.
  */
+@:composite(ProgressBuilder)
 class Progress extends Range implements IDirectionalComponent implements IValueComponent {
 
     /**
@@ -106,4 +108,11 @@ private class Indeterminate extends ValueBehaviour {
         super.detatch();
         _component.removeClass(":indeterminate");
     }
+}
+
+//***********************************************************************************************************
+// Composite Builder
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+class ProgressBuilder extends RangeBuilder {
 }
