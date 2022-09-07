@@ -21,7 +21,7 @@ import Std.is as isOfType;
 
 @:composite(TreeViewNodeEvents, TreeViewNodeBuilder)
 class TreeViewNode extends VBox {
-    @:behaviour(Expanded)               public var expanded:Bool;
+    @:behaviour(Expanded, false)        public var expanded:Bool;
     
     @:call(AddNode)                     public function addNode(data:Dynamic):TreeViewNode;
     @:call(RemoveNode)                  public function removeNode(node:TreeViewNode):TreeViewNode;
@@ -185,6 +185,7 @@ private class ClearNodes extends Behaviour {
 }
 
 @:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
 private class Expanded extends DataBehaviour {
     private override function validateData() {
         var childContainer = _component.findComponent("treenode-child-container", Box);
@@ -197,6 +198,9 @@ private class Expanded extends DataBehaviour {
         } else {
             childContainer.hide();
         }
+        
+        var builder:TreeViewNodeBuilder = cast(_component._compositeBuilder, TreeViewNodeBuilder);
+        builder.updateIconClass();
     }
 }
 
@@ -290,12 +294,16 @@ private class TreeViewNodeBuilder extends CompositeBuilder {
     
     private function onExpandCollapseClicked(_) {
         _node.expanded = !_node.expanded;
+        updateIconClass();
+    }
+    
+    public function updateIconClass() {
         if (_expandCollapseIcon != null) {
             if (_childContainer != null) {
-                if (_childContainer.hidden == true) {
-                    _expandCollapseIcon.swapClass("node-collapsed", "node-expanded");
-                } else {
+                if (_node.expanded == true) {
                     _expandCollapseIcon.swapClass("node-expanded", "node-collapsed");
+                } else {
+                    _expandCollapseIcon.swapClass("node-collapsed", "node-expanded");
                 }
             }
         }
@@ -348,16 +356,7 @@ private class TreeViewNodeBuilder extends CompositeBuilder {
     private function makeExpandableRendererChanges() {
         var treeview = _node.findAncestor(TreeView);
         
-        if (_expandCollapseIcon != null) {
-            if (_childContainer != null) {
-                if (_childContainer.hidden == true) {
-                    _expandCollapseIcon.swapClass("node-collapsed", "node-expanded");
-                } else {
-                    _expandCollapseIcon.swapClass("node-expanded", "node-collapsed");
-                }
-            }
-        }
-        
+        updateIconClass();
         if (_renderer != null) {
             var wasSelected = (treeview.selectedNode == _node);
             var data = _renderer.data;
