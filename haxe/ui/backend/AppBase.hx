@@ -54,4 +54,13 @@ class AppBase {
         return [];
     }
 
+    private var _icon:String = null;
+    public var icon(get, set):String;
+    private function get_icon():String {
+        return _icon;
+    }
+    private function set_icon(value:String):String {
+        _icon = value;
+        return value;
+    }
 }
