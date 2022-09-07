@@ -12,7 +12,7 @@ import haxe.ui.layouts.LayoutFactory;
 import haxe.ui.styles.Style;
 import haxe.ui.util.Variant;
 
-@:composite(Events, Builder)
+@:composite(Events, ButtonBarBuilder)
 class ButtonBar extends Box implements IDirectionalComponent {
     private function new() {
         super();
@@ -30,10 +30,10 @@ class ButtonBar extends Box implements IDirectionalComponent {
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
-@:access(haxe.ui.containers.Builder)
+@:access(haxe.ui.containers.ButtonBarBuilder)
 private class SelectedIndex extends DataBehaviour {
     private override function validateData() {
-        var builder:Builder = cast(_component._compositeBuilder, Builder);
+        var builder:ButtonBarBuilder = cast(_component._compositeBuilder, ButtonBarBuilder);
         var currentButton = builder._currentButton;
         var button = cast(_component.getComponentAt(_value), Button);
         if (currentButton == button) {
@@ -123,13 +123,14 @@ private class Events extends haxe.ui.events.Events {
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
-private class Builder extends CompositeBuilder {
+class ButtonBarBuilder extends CompositeBuilder {
     private var _bar:ButtonBar;
     private var _currentButton:Button;
     
     private function new(bar:ButtonBar) {
         super(bar);
         _bar = bar;
+        showWarning();
     }
     
     public override function addComponent(child:Component):Component {
@@ -156,5 +157,9 @@ private class Builder extends CompositeBuilder {
             }
             _component.layout = LayoutFactory.createFromName(direction);
         }
+    }
+    
+    private function showWarning() {
+        trace("WARNING: trying to create an instance of 'ButtonBar' directly, use either 'HorizontalButtonBar' or 'VerticalButtonBar'");
     }
 }
