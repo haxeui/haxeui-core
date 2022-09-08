@@ -37,6 +37,11 @@ class TabBar extends Component {
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
 class TabBarLayout extends DefaultLayout {
+    public function new() {
+        super();
+        _roundFullWidths = true;
+    }
+    
     private override function repositionChildren() {
         super.repositionChildren();
 

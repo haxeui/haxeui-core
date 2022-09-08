@@ -6,6 +6,7 @@ class HorizontalLayout extends DefaultLayout {
     public function new() {
         super();
         _calcFullWidths = true;
+        _roundFullWidths = true;
     }
 
     private override function repositionChildren() {
