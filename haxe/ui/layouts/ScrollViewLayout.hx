@@ -8,6 +8,11 @@ import haxe.ui.core.Platform;
 import haxe.ui.geom.Size;
 
 class ScrollViewLayout extends DefaultLayout {
+    public function new() {
+        super();
+        _roundFullWidths = false;
+    }
+    
     private override function repositionChildren() {
         var contents:Component = component.findComponent("scrollview-contents", false, "css");
         if (contents == null) {
