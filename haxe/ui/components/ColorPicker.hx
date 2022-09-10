@@ -80,7 +80,7 @@ private class ColorPickerImpl extends Box {
 @:xml('
 <box width="100%" height="100%">
     <vbox width="100%" height="100%">
-        <absolute id="saturationValueContainer" style="clip:true;" width="100%" height="100%">
+        <absolute id="saturationValueContainer" style="clip:true;padding-right: 3px;padding-bottom:3px;" width="100%" height="100%">
             <canvas id="saturationValueGraph" width="100%" height="100%" left="2" top="2" style="pointer-events:true" />
             <box id="saturationValueIndicator" style="pointer-events:none" includeInLayout="false" />
         </absolute>
