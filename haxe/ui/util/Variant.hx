@@ -478,32 +478,43 @@ abstract Variant(VariantType) from VariantType {
     public static function fromDynamic<T>(r:Dynamic):Variant {
         var v:Variant = null;
         if (r != null) {
-            if (containsOnlyDigits(r) && Math.isNaN(Std.parseFloat("" + r)) == false) {
-                if (Std.string(r).indexOf(".") != -1) {
-                    v = Std.parseFloat("" + r);
+            var unstringable = ((r is Component) || (r is ImageData) || (r is Array) || (r is DataSource));
+            if (unstringable == false) {
+                if (containsOnlyDigits(r) && Math.isNaN(Std.parseFloat("" + r)) == false) {
+                    if (Std.string(r).indexOf(".") != -1) {
+                        v = Std.parseFloat("" + r);
+                    } else {
+                        v = Std.parseInt("" + r);
+                    }
+                } else if ((("" + r) == "true" || (r + "") == "false")) {
+                    v = (("" + r) == "true");
+                } else if ((r is String)) {
+                    v = cast(r, String);
                 } else {
-                    v = Std.parseInt("" + r);
+                    #if hl
+                    v = null;
+                    #else
+                    v = r;
+                    #end
                 }
-            } else if ((("" + r) == "true" || (r + "") == "false")) {
-                v = (("" + r) == "true");
-            } else if ((r is String)) {
-                v = cast(r, String);
-            } else if ((r is Component)) {
-                v = cast(r, Component);
-            } else if ((r is DataSource)) {
-                v = cast r;
-            } else if ((r is Array)) {
-                v = cast r;
-            } else if ((r is Date)) {
-                v = cast(r, Date);
-            } else if ((r is ImageData)) {
-                v = cast(r, ImageData);
             } else {
-                #if hl
-                v = null;
-                #else
-                v = r;
-                #end
+                if ((r is Component)) {
+                    v = cast(r, Component);
+                } else if ((r is DataSource)) {
+                    v = cast r;
+                } else if ((r is Array)) {
+                    v = cast r;
+                } else if ((r is Date)) {
+                    v = cast(r, Date);
+                } else if ((r is ImageData)) {
+                    v = cast(r, ImageData);
+                } else {
+                    #if hl
+                    v = null;
+                    #else
+                    v = r;
+                    #end
+                }                
             }
         }
         return v;
