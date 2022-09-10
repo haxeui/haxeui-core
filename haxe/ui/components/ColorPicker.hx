@@ -34,6 +34,20 @@ class ColorPicker extends Box {
     private function onImplValueChanged(_) {
         dispatch(new UIEvent(UIEvent.CHANGE));
     }
+    
+    public override function addClass(name:String, invalidate:Bool = true, recursive:Bool = false) {
+        super.addClass(name, invalidate, recursive);
+        if (_impl != null) {
+            @:privateAccess _impl.onStyleClassChanged();
+        }
+    }
+    
+    public override function removeClass(name:String, invalidate:Bool = true, recursive:Bool = false) {
+        super.removeClass(name, invalidate, recursive);
+        if (_impl != null) {
+            @:privateAccess _impl.onStyleClassChanged();
+        }
+    }
 }
 
 private class ColorPickerImpl extends Box {
@@ -58,13 +72,16 @@ private class ColorPickerImpl extends Box {
             currentColor = 0xff0000;
         }
     }
+    private function onStyleClassChanged() {
+        
+    }
 }
 
 @:xml('
-<box>
-    <vbox>
-        <absolute id="saturationValueContainer" style="clip:true;">
-            <canvas id="saturationValueGraph" width="270" height="200" left="2" top="2" style="pointer-events:true" />
+<box width="100%" height="100%">
+    <vbox width="100%" height="100%">
+        <absolute id="saturationValueContainer" style="clip:true;" width="100%" height="100%">
+            <canvas id="saturationValueGraph" width="100%" height="100%" left="2" top="2" style="pointer-events:true" />
             <box id="saturationValueIndicator" style="pointer-events:none" includeInLayout="false" />
         </absolute>
         
@@ -73,11 +90,11 @@ private class ColorPickerImpl extends Box {
             <box id="hueIndicator" width="8" height="18" includeInLayout="false" top="3" left="10" />
         </absolute>
         
-        <hbox width="100%">
+        <hbox styleName="controls-preview-container" width="100%">
             <hbox styleName="controls-container" width="100%">
                 <image id="prevControls" verticalAlign="center" style="pointer-events:true" onclick="controlsStack.prevPage()" />
                 <stack id="controlsStack" width="100%" selectedIndex="0">
-                    <grid columns="4" width="100%" style="spacing:0px">
+                    <grid id="hsvControls" columns="4" width="100%" style="spacing:0px">
                         <label text="{{hue}}" styleName="text-tiny" />
                         <slider id="sliderHue" max="360" allowFocus="false" styleName="simple-slider" />
                         <spacer width="5" />
@@ -94,7 +111,7 @@ private class ColorPickerImpl extends Box {
                         <textfield id="inputValue" restrictChars="0-9" styleName="text-tiny" />
                     </grid>
                     
-                    <grid columns="4" width="100%" style="spacing:0">
+                    <grid id="rgbControls" columns="4" width="100%" style="spacing:0">
                         <label text="{{red}}" styleName="text-tiny" />
                         <slider id="sliderRed" max="255" allowFocus="false" styleName="simple-slider" />
                         <spacer width="5" />
@@ -194,6 +211,9 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
     private function updateSaturationValueGraph() {
         var cx = saturationValueGraph.width;
         var cy = saturationValueGraph.height;
+        if (cx <= 0 || cy <= 0) {
+            return;
+        }
         
         if (_currentColorRGBF.r == 255 && _currentColorRGBF.g == 255 && _currentColorRGBF.b == 255) {
             return;
@@ -227,7 +247,7 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
     private function updateHueGraph() {
         var cx = hueGraph.width;
         var cy = hueGraph.height;
-        if (cx == 0 || cy == 0) {
+        if (cx <= 0 || cy <= 0) {
             return;
         }
         
@@ -532,5 +552,15 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
         var y = 3;
         
         return new Point(x + 3, y);
+    }
+    
+    private override function onStyleClassChanged() {
+        if (picker.hasClass("no-sliders") || picker.hasClass("no-text-inputs")) {
+            hsvControls.columns = 3;
+            rgbControls.columns = 3;
+        } else {
+            hsvControls.columns = 4;
+            rgbControls.columns = 4;
+        }
     }
 }
