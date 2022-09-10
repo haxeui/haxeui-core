@@ -1831,7 +1831,7 @@ class Component extends ComponentImpl implements IValidating {
                 }
             }
 
-            if (style.autoHeight != true && (style.initialHeight != null || style.initialPercentHeight != null) && (height <= 0 && percentHeight == null)) {
+            if ((style.initialHeight != null || style.initialPercentHeight != null) && (height <= 0 && percentHeight == null)) {
                 if (style.initialHeight != null) {
                     height = style.initialHeight;
                     _initialSizeApplied = true;
