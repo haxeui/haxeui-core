@@ -227,14 +227,14 @@ class ModuleMacros {
     }
 
     public static function resolveComponentClass(name:String):String {
+        populateDynamicClassMap();
+        
         name = name.toLowerCase();
         var resolvedClass = ComponentClassMap.get(name);
         if (resolvedClass != null) {
             return resolvedClass;
         }
         
-        populateDynamicClassMap();
-
         var modules:Array<Module> = loadModules();
         for (m in modules) {
             for (c in m.componentEntries) {
