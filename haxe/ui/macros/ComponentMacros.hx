@@ -107,7 +107,7 @@ class ComponentMacros {
         var propertyExprs = [];
         for (prop in stylePropertiesArray) {
             propertyExprs.push(macro {
-                if (c.customStyle.$prop != style.$prop) {
+                if (c.customStyle.$prop == null && c.customStyle.$prop != style.$prop) {
                     c.customStyle.$prop = style.$prop;
                     invalidate = true;
                 }
@@ -143,7 +143,7 @@ class ComponentMacros {
         var propertyExprs = [];
         for (prop in stylePropertiesArray) {
             propertyExprs.push(macro {
-                if (c.customStyle.$prop != style.$prop) {
+                if (c.customStyle.$prop == null && c.customStyle.$prop != style.$prop) {
                     c.customStyle.$prop = style.$prop;
                     invalidate = true;
                 }
