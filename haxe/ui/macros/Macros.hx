@@ -250,6 +250,11 @@ class Macros {
     }
 
     private static function buildPropertyBinding(builder:ClassBuilder, f:FieldBuilder, variable:Expr, field:String) {
+        var componentField = builder.findField(ExprTools.toString(variable));
+        if (componentField == null) { // the bind target might not be a member variable yet, which means we cant get its type, lets wait
+            return;
+        }
+        
         var hasGetter = builder.findFunction("get_" + f.name) != null;
         var hasSetter = builder.findFunction("set_" + f.name) != null;
 
@@ -257,18 +262,21 @@ class Macros {
             f.remove();
         }
 
+        var componentType = "haxe.ui.core.Component";
+        switch (componentField.kind) {
+            case FVar(TPath(p), e):
+                componentType = p.pack.join(".") + "." + p.name;
+            case _:    
+        }
+        var componentTypeExpr = macro $p{componentType.split(".")};
+
         var variable = ExprTools.toString(variable);
         if (hasGetter == false) {
             builder.addGetter(f.name, f.type, macro {
-                var c = findComponent($v{variable}, haxe.ui.core.Component);
+                var c = findComponent($v{variable}, $componentTypeExpr);
                 if (c == null) {
                     trace("WARNING: no child component found: " + $v{variable});
-                    return haxe.ui.util.Variant.fromDynamic(c.$field);
-                }
-                var fieldIndex = Type.getInstanceFields(Type.getClass(c)).indexOf("get_" + $v{field});
-                if (fieldIndex == -1) {
-                    trace("WARNING: no component getter found: " + $v{field});
-                    return haxe.ui.util.Variant.fromDynamic(c.$field);
+                    return haxe.ui.util.Variant.fromDynamic(null);
                 }
                 return haxe.ui.util.Variant.fromDynamic(c.$field);
             });
@@ -277,14 +285,9 @@ class Macros {
         if (hasSetter == false) {
             builder.addSetter(f.name, f.type, macro {
                 if (value != $i{f.name}) {
-                    var c = findComponent($v{variable}, haxe.ui.core.Component);
+                    var c = findComponent($v{variable}, $componentTypeExpr);
                     if (c == null) {
                         trace("WARNING: no child component found: " + $v{variable});
-                        return value;
-                    }
-                    var fieldIndex = Type.getInstanceFields(Type.getClass(c)).indexOf("set_" + $v{field});
-                    if (fieldIndex == -1) {
-                        trace("WARNING: no component setter found: " + $v{field});
                         return value;
                     }
                     c.$field = haxe.ui.util.Variant.fromDynamic(value);

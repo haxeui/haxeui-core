@@ -243,6 +243,19 @@ class ComponentMacros {
 
         buildBindings(codeBuilder, buildData);
         buildLanguageBindings(codeBuilder, buildData);
+        var bindFields = builder.getFieldsWithMeta("bind");
+        for (f in bindFields) {
+            for (n in 0...f.getMetaCount("bind")) { // single method can be bound to multiple events
+                var meta = f.getMetaByIndex("bind", n);
+                switch (meta.params) {
+                    case [{expr: EField(variable, field), pos: pos}]: // one param, lets assume binding to component prop
+                        Macros.buildPropertyBinding(builder, f, variable, field);
+                    case [param1]:
+                        Macros.buildPropertyBinding(builder, f, param1, "value"); // input component that has value
+                }
+                
+            }
+        }
         
         builder.ctor.add(codeBuilder, AfterSuper);
 
