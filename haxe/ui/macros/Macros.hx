@@ -278,7 +278,7 @@ class Macros {
                     trace("WARNING: no child component found: " + $v{variable});
                     return haxe.ui.util.Variant.fromDynamic(null);
                 }
-                return haxe.ui.util.Variant.fromDynamic(c.$field);
+                return c.$field;
             });
         }
 
@@ -290,7 +290,7 @@ class Macros {
                         trace("WARNING: no child component found: " + $v{variable});
                         return value;
                     }
-                    c.$field = haxe.ui.util.Variant.fromDynamic(value);
+                    c.$field = value;
                 }
                 return value;
             });
