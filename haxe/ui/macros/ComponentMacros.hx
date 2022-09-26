@@ -2,9 +2,8 @@ package haxe.ui.macros;
 
 
 #if macro
-import haxe.macro.Expr;
-import haxe.ui.util.EventInfo;
 import haxe.macro.Context;
+import haxe.macro.Expr;
 import haxe.macro.ExprTools;
 import haxe.macro.TypeTools;
 import haxe.ui.core.ComponentClassMap;
@@ -19,6 +18,7 @@ import haxe.ui.parsers.ui.ComponentInfo;
 import haxe.ui.parsers.ui.ComponentParser;
 import haxe.ui.parsers.ui.LayoutInfo;
 import haxe.ui.parsers.ui.resolvers.FileResourceResolver;
+import haxe.ui.util.EventInfo;
 import haxe.ui.util.ExpressionUtil;
 import haxe.ui.util.SimpleExpressionEvaluator;
 import haxe.ui.util.StringUtil;
@@ -107,7 +107,7 @@ class ComponentMacros {
         var propertyExprs = [];
         for (prop in stylePropertiesArray) {
             propertyExprs.push(macro {
-                if (c.customStyle.$prop == null && c.customStyle.$prop != style.$prop) {
+                if (style.$prop != null  && c.customStyle.$prop != style.$prop) {
                     c.customStyle.$prop = style.$prop;
                     invalidate = true;
                 }
@@ -143,7 +143,7 @@ class ComponentMacros {
         var propertyExprs = [];
         for (prop in stylePropertiesArray) {
             propertyExprs.push(macro {
-                if (c.customStyle.$prop == null && c.customStyle.$prop != style.$prop) {
+                if (style.$prop != null && c.customStyle.$prop != style.$prop) {
                     c.customStyle.$prop = style.$prop;
                     invalidate = true;
                 }
