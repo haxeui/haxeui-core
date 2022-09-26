@@ -69,6 +69,18 @@ class TabBarLayout extends DefaultLayout {
             right.top = (_component.height / 2) - (right.height / 2);
         }
     }
+
+    public override function calcAutoSize(exclusions:Array<Component> = null) {
+        var size = super.calcAutoSize();
+        var max:Float = 0;
+        for (b in _component.findComponents(TabBarButton)) {
+            if (b.height > max) {
+                max = b.height;
+            }
+        }
+        size.height = max;
+        return size;
+    }
 }
 
 //***********************************************************************************************************
