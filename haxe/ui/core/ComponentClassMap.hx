@@ -20,6 +20,7 @@ class ComponentClassMap {
     }
 
     public static function list():Iterator<String> {
+        instance.load();
         return instance._map.keys();
     }
 
@@ -35,25 +36,60 @@ class ComponentClassMap {
     // Instance
     ////////////////////////////////////////////////////////////////////////////////////////////
 
-    private var _map:Map<String, String>;
+    private var _map:Map<String, String> = null;
     private function new() {
+        #if macro
         _map = new Map<String, String>();
+        #end
     }
 
     public function getClassName(alias:String):String {
+        load();
+        alias = alias.toLowerCase();
         return _map.get(alias);
     }
 
     public function registerClassName(alias:String, className:String) {
-        _map.set(alias, className);
+        load();
+        alias = alias.toLowerCase();
+        if (_map.exists(alias) == false) {
+            _map.set(alias, className);
+        }
+        save();
     }
 
     public function hasClassName(className:String):Bool {
+        load();
         for (k in _map.keys()) {
             if (_map.get(k) == className) {
                 return true;
             }
         }
         return false;
+    }
+
+    private function load() {
+        #if !macro
+        if (_map != null) {
+            return;
+        }
+
+        var s = haxe.Resource.getString("haxeui_classmap");
+        if (s == null) {
+            return;
+        }
+
+        var unserializer = new Unserializer(s);
+        _map = unserializer.unserialize();
+        #end
+    }
+
+    private function save() {
+        #if macro
+        var serializer = new Serializer();
+        serializer.serialize(_map);
+        var s = serializer.toString();
+        haxe.macro.Context.addResource("haxeui_classmap", haxe.io.Bytes.ofString(s));
+        #end
     }
 }

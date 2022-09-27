@@ -2,13 +2,13 @@ package haxe.ui.macros;
 
 #if macro
 import haxe.ds.ArraySort;
-import haxe.ui.macros.ComponentMacros.BuildData;
 import haxe.io.Path;
 import haxe.macro.Context;
-import haxe.macro.Expr;
 import haxe.macro.Expr.TypePath;
+import haxe.macro.Expr;
 import haxe.ui.core.ComponentClassMap;
 import haxe.ui.core.LayoutClassMap;
+import haxe.ui.macros.ComponentMacros.BuildData;
 import haxe.ui.macros.helpers.ClassBuilder;
 import haxe.ui.macros.helpers.CodeBuilder;
 import haxe.ui.parsers.modules.Module;

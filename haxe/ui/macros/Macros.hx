@@ -1,22 +1,23 @@
 package haxe.ui.macros;
 
 
+import haxe.ui.core.ComponentClassMap;
 #if macro
-import haxe.ui.macros.ModuleMacros;
-import haxe.ui.util.EventInfo;
-import haxe.ui.util.RTTI;
 import haxe.macro.ComplexTypeTools;
 import haxe.macro.Context;
 import haxe.macro.Expr;
+import haxe.macro.ExprTools;
 import haxe.macro.TypeTools;
+import haxe.ui.macros.ComponentMacros.BuildData;
+import haxe.ui.macros.ComponentMacros.NamedComponentDescription;
+import haxe.ui.macros.ModuleMacros;
 import haxe.ui.macros.helpers.ClassBuilder;
 import haxe.ui.macros.helpers.CodeBuilder;
 import haxe.ui.macros.helpers.CodePos;
 import haxe.ui.macros.helpers.FieldBuilder;
+import haxe.ui.util.EventInfo;
+import haxe.ui.util.RTTI;
 import haxe.ui.util.StringUtil;
-import haxe.ui.macros.ComponentMacros.NamedComponentDescription;
-import haxe.ui.macros.ComponentMacros.BuildData;
-import haxe.macro.ExprTools;
 
 using StringTools;
 
@@ -47,9 +48,9 @@ class Macros {
     
     macro static function build():Array<Field> {
         ModuleMacros.loadModules();
-        
-        
+
         var builder = new ClassBuilder(Context.getBuildFields(), Context.getLocalType(), Context.currentPos());
+        ComponentClassMap.register(builder.name, builder.fullPath);
 
         if (builder.hasClassMeta(["xml"])) {
             buildFromXmlMeta(builder);
