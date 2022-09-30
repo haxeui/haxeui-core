@@ -421,6 +421,9 @@ private class ValueHelper {
     public static function validateValue(stepper:NumberStepper):Null<Float> {
         var value = stepper.findComponent("value", TextField);
         var textValue = value.text;
+        if (textValue == null) {
+            textValue = "";
+        }
         var min = stepper.min;
         var max = stepper.max;
         
