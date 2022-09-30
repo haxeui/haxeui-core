@@ -421,14 +421,13 @@ private class ValueHelper {
     public static function validateValue(stepper:NumberStepper):Null<Float> {
         var value = stepper.findComponent("value", TextField);
         var textValue = value.text;
-        if (textValue == null) {
-            textValue = "";
-        }
         var min = stepper.min;
         var max = stepper.max;
-        
-        textValue = StringTools.replace(textValue, ",", ".");
-        textValue = StringTools.replace(textValue, stepper.decimalSeparator, ".");
+
+        if (textValue != null) {
+            textValue = StringTools.replace(textValue, ",", ".");
+            textValue = StringTools.replace(textValue, stepper.decimalSeparator, ".");
+        }
         var parsedValue:Null<Float> = Std.parseFloat(textValue);
         
         var valid = StringUtil.countTokens(textValue, ".") <= 1;
