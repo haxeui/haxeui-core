@@ -48,13 +48,13 @@ class BackendMacros {
             }
         }
         if (searchCriteria.length > 0) {
-            MacroHelpers.scanClassPath(function(filePath:String) {
+            MacroHelpers.scanClassPath(function(filePath:String, base:String) {
                 var props:Properties = new Properties();
                 props.fromFile(filePath);
                 properties.addAll(props);
                 return false;
             }, searchCriteria);
-        }
+        } 
         return macro null;
     }
 

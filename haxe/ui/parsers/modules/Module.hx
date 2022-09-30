@@ -1,9 +1,13 @@
 package haxe.ui.parsers.modules;
 
 class Module {
+    public static inline var DEFAULT_HAXEUI_PREFIX = "core";
+    public static inline var DEFAULT_HAXEUI_NAMESPACE = "urn::haxeui::org";
+
     public var id(default, default):String;
     public var preloader(default, default):String;
     public var rootPath(default, default):String;
+    public var classPath(default, default):String;
     public var priority(default, default):Int = 0;
     public var preloadList(default, default):String;
     public var resourceEntries(default, default):Array<ModuleResourceEntry>;
@@ -14,6 +18,7 @@ class Module {
     public var preload(default, default):Array<ModulePreloadEntry>;
     public var locales(default, default):Array<ModuleLocaleEntry>;
     public var actionInputSources(default, default):Array<ModuleActionInputSourceEntry>;
+    public var namespaces(default, default):Map<String, String>;
 
     public function new() {
         resourceEntries = [];
@@ -24,9 +29,17 @@ class Module {
         preload = [];
         locales = [];
         actionInputSources = [];
+        namespaces = new Map<String, String>();
     }
 
     public function validate() {
+        var namespaceCount = 0;
+        for (_ in namespaces.keys()) {
+            namespaceCount++;
+        }
+        if (namespaceCount == 0) { // if no namespaces set, we'll consider the module in the core namespace
+            namespaces.set(DEFAULT_HAXEUI_PREFIX, DEFAULT_HAXEUI_NAMESPACE);
+        }
     }
 }
 

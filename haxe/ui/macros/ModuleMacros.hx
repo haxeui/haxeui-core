@@ -226,16 +226,49 @@ class ModuleMacros {
         return paths;
     }
 
-    public static function resolveComponentClass(name:String):String {
+    public static function resolveComponentClass(name:String, namespace:String = null):String {
         populateDynamicClassMap();
         
+        if (namespace == null) {
+            namespace = Module.DEFAULT_HAXEUI_NAMESPACE;
+        }
+
+        var qualifiedName = namespace + "/" + name;
         name = name.toLowerCase();
-        var resolvedClass = ComponentClassMap.get(name);
+        var resolvedClass = ComponentClassMap.get(qualifiedName);
         if (resolvedClass != null) {
             return resolvedClass;
         }
         
         var modules:Array<Module> = loadModules();
+        var namespaceToClassPath:Map<String, Array<String>> = new Map<String, Array<String>>();
+        var namespaceMap:Map<String, String> = new Map<String, String>();
+
+        // maybe move this to a new function and only populate once, concern is about language server and caching
+        for (m in modules) {
+            for (nsp in m.namespaces.keys()) {
+                var nsv = m.namespaces.get(nsp);
+                var list = namespaceToClassPath.get(nsp);
+                if (list == null) {
+                    list = [];
+                    namespaceToClassPath.set(nsp, list);
+                }
+                if (list.indexOf(m.classPath) == -1) {
+                    list.push(m.classPath);
+                }
+                namespaceMap.set(nsp, nsv);
+            }
+        }
+
+        var namespacePrefix = null;
+        for (mapNamespacePrefix in namespaceMap.keys()) {
+            var mapNamespaceValue = namespaceMap.get(mapNamespacePrefix);
+            if (mapNamespaceValue == namespace) {
+                namespacePrefix = mapNamespacePrefix;
+                break;
+            }
+        }
+
         for (m in modules) {
             for (c in m.componentEntries) {
                 var types = null;
@@ -246,7 +279,7 @@ class ModuleMacros {
                         types = Context.getModule(c.className);
                     }
                 } else if (c.classPackage != null) {
-                    var paths:Array<String> = Context.getClassPath();
+                    var paths = namespaceToClassPath.get(namespacePrefix);
                     var arr:Array<String> = c.classPackage.split(".");
                     for (path in paths) {
                         var dir:String = path + arr.join("/");
@@ -295,26 +328,26 @@ class ModuleMacros {
                             
                             if (builder.hasInterface("haxe.ui.core.IDirectionalComponent")) {
                                 if (StringTools.startsWith(resolvedClassName, "Horizontal")) { // alias HorizontalComponent with hcomponent
-                                    ComponentClassMap.register("h" + StringTools.replace(resolvedClassName, "Horizontal", "").toLowerCase(), resolvedClass);
+                                    ComponentClassMap.register(namespace + "/" + "h" + StringTools.replace(resolvedClassName, "Horizontal", "").toLowerCase(), resolvedClass);
                                 } else if (StringTools.startsWith(resolvedClassName, "Vertical")) { // alias VerticalComponent with vcomponent
-                                    ComponentClassMap.register("v" + StringTools.replace(resolvedClassName, "Vertical", "").toLowerCase(), resolvedClass);
+                                    ComponentClassMap.register(namespace + "/" + "v" + StringTools.replace(resolvedClassName, "Vertical", "").toLowerCase(), resolvedClass);
                                 } else {
                                     var parts = builder.fullPath.split(".");
                                     var tempName = parts.pop();
                                     var hname = "Horizontal" + tempName;
                                     var hclass = parts.join(".") + "." + hname;
-                                    ComponentClassMap.register(hname.toLowerCase(), hclass);
-                                    ComponentClassMap.register(("h" + tempName).toLowerCase(), hclass);
+                                    ComponentClassMap.register(namespace + "/" + hname.toLowerCase(), hclass);
+                                    ComponentClassMap.register(namespace + "/" + ("h" + tempName).toLowerCase(), hclass);
                                     
                                     
                                     var vname = "Vertical" + tempName;
                                     var vclass = parts.join(".") + "." + vname;
-                                    ComponentClassMap.register(vname.toLowerCase(), vclass);
-                                    ComponentClassMap.register(("v" + tempName).toLowerCase(), vclass);
+                                    ComponentClassMap.register(namespace + "/" + vname.toLowerCase(), vclass);
+                                    ComponentClassMap.register(namespace + "/" + ("v" + tempName).toLowerCase(), vclass);
                                 }
                             }
                             
-                            ComponentClassMap.register(resolvedClassName.toLowerCase(), resolvedClass);
+                            ComponentClassMap.register(namespace + "/" + resolvedClassName.toLowerCase(), resolvedClass);
                             return resolvedClass;
                         }
                     }
@@ -418,7 +451,7 @@ class ModuleMacros {
         var c = ComponentMacros.buildComponentFromStringCommon(codeBuilder, xml, buildData);
 
         var superClassString = "haxe.ui.containers.Box";
-        var superClassLookup:String = ModuleMacros.resolveComponentClass(c.type);
+        var superClassLookup:String = ModuleMacros.resolveComponentClass(c.type, c.namespace);
         if (superClassLookup != null) {
             superClassString = superClassLookup;
         }
@@ -472,9 +505,9 @@ class ModuleMacros {
         #if module_resolution_verbose
         Sys.println("scanning class path for modules");
         #end
-        MacroHelpers.scanClassPath(function(filePath:String) {
+        MacroHelpers.scanClassPath(function(filePath:String, base:String) {
             #if module_resolution_verbose
-            Sys.println("    module found at '" + filePath + "'");
+            Sys.println("    module found at '" + filePath + "' (base: '" + base + "')");
             #end
             
             var moduleParser = ModuleParser.get(MacroHelpers.extension(filePath));
@@ -483,6 +516,7 @@ class ModuleMacros {
                     var module:Module = moduleParser.parse(File.getContent(filePath), Context.getDefines(), filePath);
                     module.validate();
                     module.rootPath = new Path(filePath).dir;
+                    module.classPath = base;
                     _modules.push(module);
                     return true;
                 } catch (e:Dynamic) {

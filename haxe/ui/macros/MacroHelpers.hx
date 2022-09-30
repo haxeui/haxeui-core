@@ -9,6 +9,7 @@ import haxe.ui.util.GenericConfig;
 #end
 
 typedef ClassPathEntry = {
+    var base:String;
     var path:String;
     var priority:Int;
 }
@@ -174,6 +175,7 @@ class MacroHelpers {
         }
 
         for (path in paths) {
+            var originalPath = path;
             path = StringTools.trim(path);
             path = Path.normalize(path);
             var exclude = false;
@@ -186,11 +188,11 @@ class MacroHelpers {
             if (exclude == true) {
                 continue;
             }
-            cacheClassPathEntries(path, classPathCache);
+            cacheClassPathEntries(path, classPathCache, originalPath);
         }
     }
 
-    private static function cacheClassPathEntries(path, array) {
+    private static function cacheClassPathEntries(path, array, base) {
         path = StringTools.trim(path);
         if (path.length == 0) {
             #if classpath_scan_verbose
@@ -227,13 +229,14 @@ class MacroHelpers {
             var isDir = sys.FileSystem.isDirectory(fullPath);
             if (isDir == true && StringTools.startsWith(item, ".") == false) {
                 if (exclude == false) {
-                    cacheClassPathEntries(fullPath, array);
+                    cacheClassPathEntries(fullPath, array, base);
                 }
             } else if (isDir == false) {
                 #if classpath_scan_verbose
                 Sys.println("classpath cache: adding '" + fullPath + "'");
                 #end    
                 array.push({
+                    base: base,
                     path: fullPath,
                     priority: 0
                 });
@@ -242,7 +245,7 @@ class MacroHelpers {
 
     }
 
-    public static function scanClassPath(processFileFn:String->Bool, searchCriteria:Array<String> = null) {
+    public static function scanClassPath(processFileFn:String->String->Bool, searchCriteria:Array<String> = null) {
         buildClassPathCache();
         for (entry in classPathCache) {
             #if classpath_scan_verbose
@@ -252,7 +255,7 @@ class MacroHelpers {
             var parts = entry.path.split("/");
             var fileName = parts[parts.length - 1];
             if (searchCriteria == null) {
-                processFileFn(entry.path);
+                processFileFn(entry.path, entry.base);
             } else {
                 var found:Bool = false;
                 for (s in searchCriteria) {
@@ -262,7 +265,7 @@ class MacroHelpers {
                     }
                 }
                 if (found == true) {
-                    processFileFn(entry.path);
+                    processFileFn(entry.path, entry.base);
                 }
             }
         }

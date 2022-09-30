@@ -665,7 +665,7 @@ class ComponentMacros {
             return id;
         }
 
-        var className = ModuleMacros.resolveComponentClass(c.type);
+        var className = ModuleMacros.resolveComponentClass(c.type, c.namespace);
         if (className == null) {
             Context.warning("no class found for component: " + c.type, Context.currentPos());
             return id;
@@ -681,7 +681,7 @@ class ComponentMacros {
             if (direction == null) {
                 direction = "horizontal"; // default to horizontal
             }
-            var directionalClassName = ModuleMacros.resolveComponentClass(direction + c.type);
+            var directionalClassName = ModuleMacros.resolveComponentClass(direction + c.type, c.namespace);
             if (directionalClassName == null) {
                 trace("WARNING: no directional class found for component: " + c.type + " (" + (direction + c.type.toLowerCase()) + ")");
                 return id;
@@ -719,7 +719,8 @@ class ComponentMacros {
         }
 
         if (c.id != null && buildData.namedComponents != null && useNamedComponents == true) {
-            var rootClassName = ModuleMacros.resolveComponentClass(c.findRootComponent().type);
+            var rootComponentInfo = c.findRootComponent();
+            var rootClassName = ModuleMacros.resolveComponentClass(rootComponentInfo.type, rootComponentInfo.namespace);
             var rootClassInfo = new ClassBuilder(Context.getModule(rootClassName)[0]);
             if (rootClassInfo.hasField(c.id, true) == false) {
                 var varDescription = {

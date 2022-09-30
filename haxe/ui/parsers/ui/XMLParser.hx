@@ -34,15 +34,44 @@ class XMLParser extends ComponentParser {
         return component;
     }
 
-    private static function preprocess(data:String):String {
+    private var _namespaces:Map<String, String> = new Map<String, String>();
+    private var _defaultNamespace:String = null;
+    private function preprocess(data:String):String {
         data = StringTools.replace(data, "<script>", "<script><![CDATA[");
         data = StringTools.replace(data, "</script>", "]]></script>");
         return data;
     }
     
-    private static function parseComponent(component:ComponentInfo, xml:Xml, resourceResolver:ResourceResolver):Bool {
+    private function extractNamespaces(xml:Xml) {
+        for (attrName in xml.attributes()) {
+            var attrValue = xml.get(attrName);
+            if (StringTools.startsWith(attrName, "xmlns")) {
+                if (attrName == "xmlns") {
+                    // This is the default namespace, note, currently there is only one default namespace.
+                    // Normally, you could have multiple xmlns's on different nodes to scope the default
+                    // to that (and child) nodes. This isnt supported currently (and im not convinced it would)
+                    // be needed - essentially, for now, namespaces are basically global regardless where they
+                    // appear in the xml document
+                    _defaultNamespace = attrValue;
+                } else if (attrName.indexOf(":") != -1) {
+                    var prefix = StringTools.trim(attrName.substr(attrName.indexOf(':') + 1));
+                    _namespaces.set(prefix, attrValue);
+                }
+            }
+        }
+    }
+
+    private function parseComponent(component:ComponentInfo, xml:Xml, resourceResolver:ResourceResolver):Bool {
+        extractNamespaces(xml);
+
         var isComponent:Bool = false;
         var nodeName = xml.nodeName;
+        var nodeNamespacePrefix = null;
+        if (nodeName.indexOf(":") != -1) {
+            var n = nodeName.indexOf(":");
+            nodeNamespacePrefix = nodeName.substr(0, n);
+            nodeName = nodeName.substr(n + 1);
+        }
         if (nodeName == "import") {
             parseImportNode(component.parent, xml, resourceResolver);
         } else if (nodeName == "script") {
@@ -80,7 +109,9 @@ class XMLParser extends ComponentParser {
         return isComponent;
     }
 
-    private static function parseImportNode(component:ComponentInfo, xml:Xml, resourceResolver:ResourceResolver) {
+    private function parseImportNode(component:ComponentInfo, xml:Xml, resourceResolver:ResourceResolver) {
+        extractNamespaces(xml);
+
         if (xml.get("source") != null || xml.get("resource") != null) {
             var source:String = xml.get("source");
             if (source == null) {
@@ -111,7 +142,9 @@ class XMLParser extends ComponentParser {
         }
     }
 
-    private static function parseScriptNode(component:ComponentInfo, xml:Xml, resourceResolver:ResourceResolver) {
+    private function parseScriptNode(component:ComponentInfo, xml:Xml, resourceResolver:ResourceResolver) {
+        extractNamespaces(xml);
+
         var scriptText = null;
         if (xml.firstChild() != null) {
             scriptText = xml.firstChild().nodeValue;
@@ -136,7 +169,9 @@ class XMLParser extends ComponentParser {
         }
     }
 
-    private static function parseStyleNode(component:ComponentInfo, xml:Xml, resourceResolver:ResourceResolver) {
+    private function parseStyleNode(component:ComponentInfo, xml:Xml, resourceResolver:ResourceResolver) {
+        extractNamespaces(xml);
+
         var styleText = null;
         if (xml.firstChild() != null) {
             styleText = xml.firstChild().nodeValue;
@@ -166,7 +201,9 @@ class XMLParser extends ComponentParser {
         }
     }
 
-    private static function parseLayoutNode(component:ComponentInfo, xml:Xml) {
+    private function parseLayoutNode(component:ComponentInfo, xml:Xml) {
+        extractNamespaces(xml);
+
         var layoutXml:Xml = xml.firstElement();
         var layout:LayoutInfo = new LayoutInfo();
         component.layout = layout;
@@ -179,17 +216,34 @@ class XMLParser extends ComponentParser {
         }
     }
 
-    private static function parseDetails(component:ComponentInfo, xml:Xml) {
+    private function parseDetails(component:ComponentInfo, xml:Xml) {
+        extractNamespaces(xml);
+
         if (xml.firstChild() != null && '${xml.firstChild().nodeType}' == "1") {
             var value = StringTools.trim(xml.firstChild().nodeValue);
             if (value != null && value.length > 0) {
                 component.text = value;
             }
         }
-        component.type = StringTools.replace(xml.nodeName.toLowerCase(), "-", "");
+
+        var nodeName = xml.nodeName;
+        var nodeNamespacePrefix = null;
+        var nodeNamespace = _defaultNamespace;
+        if (nodeName.indexOf(":") != -1) {
+            var n = nodeName.indexOf(":");
+            nodeNamespacePrefix = nodeName.substr(0, n);
+            nodeName = nodeName.substr(n + 1);
+
+            if (_namespaces.exists(nodeNamespacePrefix)) {
+                nodeNamespace = _namespaces.get(nodeNamespacePrefix);
+            }
+        }
+
+        component.type = StringTools.replace(nodeName.toLowerCase(), "-", "");
+        component.namespace = nodeNamespace;
     }
 
-    private static function parseAttributes(component:ComponentInfo, xml:Xml) {
+    private function parseAttributes(component:ComponentInfo, xml:Xml) {
         for (attrName in xml.attributes()) {
             var attrValue:String = xml.get(attrName);
             switch (attrName) {
@@ -250,7 +304,9 @@ class XMLParser extends ComponentParser {
                 case "direction":
                     component.direction = attrValue;
                 default:
-                    component.properties.set(attrName, attrValue);
+                    if (StringTools.startsWith(attrName, "xmlns") == false) {
+                        component.properties.set(attrName, attrValue);
+                    }
             }
         }
     }

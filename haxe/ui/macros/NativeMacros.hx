@@ -36,7 +36,7 @@ class NativeMacros {
             return _nativeConfigs;
         }
 
-        MacroHelpers.scanClassPath(function(filePath:String) {
+        MacroHelpers.scanClassPath(function(filePath:String, base:String) {
             var parser:ConfigParser = ConfigParser.get(MacroHelpers.extension(filePath));
             if (parser != null) {
                 try {

@@ -251,6 +251,18 @@ class XMLParser extends ModuleParser {
                     entry.className = sourceNode.get("class");
                     module.actionInputSources.push(entry);
                 }
+            } else if (nodeName == "namespaces" && checkCondition(el, defines) == true) {
+                for (namespaceNode in el.elementsNamed("namespace")) {
+                    if (checkCondition(namespaceNode, defines) == false) {
+                        continue;
+                    }
+
+                    var namespacePrefix = namespaceNode.get("prefix");
+                    var namespaceURI = namespaceNode.get("uri");
+                    if (namespacePrefix != null && namespacePrefix.length > 0 && namespaceURI != null && namespaceURI.length > 0) {
+                        module.namespaces.set(namespacePrefix, namespaceURI);
+                    }
+                }
             }
         }
 

@@ -8,6 +8,10 @@
         <resource path="/haxe/ui/_module/locale" prefix="haxeui-core/locale" />
     </resources>
 
+    <namespaces>
+        <namespace prefix="core" uri="urn::haxeui::org" />
+    </namespaces>
+
     <locales>
         <locale id="en">
             <resource path="haxeui-core/locale/en/std-strings.properties" />

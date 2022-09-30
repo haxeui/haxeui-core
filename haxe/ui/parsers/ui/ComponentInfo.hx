@@ -3,6 +3,7 @@ package haxe.ui.parsers.ui;
 import haxe.ui.util.StringUtil;
 
 class ComponentInfo {
+    public var namespace:Null<String>;
     public var type:Null<String>;
     public var id:Null<String>;
     public var left:Null<Float>;
