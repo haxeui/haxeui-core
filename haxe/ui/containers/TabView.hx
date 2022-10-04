@@ -379,7 +379,6 @@ private class Builder extends CompositeBuilder {
         }
 
         if (_tabs == null) {
-            trace("create");
             _tabs = new TabBar();
             _tabs.id = "tabview-tabs";
             _tabs.addClass("tabview-tabs");
