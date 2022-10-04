@@ -413,6 +413,9 @@ private class Builder extends CompositeBuilder {
         if (_tabbar.tabPosition == "bottom") {
             button.addClass(":bottom");
         }
+        if (child.disabled == true) {
+            button.disabled = child.disabled;
+        }
 
         button.id = child.id;
         button.text = child.text;

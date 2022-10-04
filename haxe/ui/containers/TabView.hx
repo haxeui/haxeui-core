@@ -401,6 +401,9 @@ private class Builder extends CompositeBuilder {
             child.registerEvent(UIEvent.PROPERTY_CHANGE, onPagePropertyChanged);
             _views.push(child);
             var button:Button = new Button();
+            if (child.disabled == true) {
+                button.disabled = true;
+            }
             button.text = text;
             button.icon = icon;
             button.tooltip = child.tooltip;
@@ -448,6 +451,12 @@ private class Builder extends CompositeBuilder {
             var button = cast(_tabs.getTab(index), Button);
             if (button != null &&  button.icon != cast(event.target, Box).icon) {
                 button.icon = cast(event.target, Box).icon;
+            }
+        } else if (event.data == "disabled") {
+            var index = _views.indexOf(event.target);
+            var button = cast(_tabs.getTab(index), Button);
+            if (button != null &&  button.disabled != cast(event.target, Box).disabled) {
+                button.disabled = cast(event.target, Box).disabled;
             }
         }
     }

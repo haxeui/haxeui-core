@@ -98,8 +98,12 @@
     background-color: $selection-background-color;
 }
 
+.tabbar .tabbar-button:disabled {
+    border-color: $normal-border-color;
+}
+
 .tabbar .tabbar-button-selected:disabled {
-    border-color: $disabled-border-color;
+    border-color: $normal-border-color;
     border-bottom-color: $secondary-background-color;
 }
 
