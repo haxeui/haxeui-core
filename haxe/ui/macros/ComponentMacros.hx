@@ -218,7 +218,7 @@ class ComponentMacros {
         };
         var c:ComponentInfo = buildComponentFromFile(builder, codeBuilder, resourcePath, buildData, "this", false);
         var superClass:String = builder.superClass.t.toString();
-        var rootType = ModuleMacros.resolveComponentClass(c.type);
+        var rootType = ModuleMacros.resolveComponentClass(c.type, c.namespace);
         if (haxe.ui.util.RTTI.hasSuperClass(builder.fullPath, rootType) == false) {
             Context.warning('The class hierarchy of "${builder.fullPath}" does not contain the root node of "${resourcePath}" (${rootType}) - this may have unintended consequences', pos);
         }
@@ -671,7 +671,8 @@ class ComponentMacros {
             return id;
         }
 
-        var classInfo = new ClassBuilder(Context.getModule(className)[0]);
+        //var classInfo = new ClassBuilder(Context.getModule(className)[0]);
+        var classInfo = new ClassBuilder(Context.getType(className));
         var useNamedComponents = true;
         if (classInfo.hasSuperClass("haxe.ui.core.ItemRenderer")) { // we dont really want to create variable instances of contents of item renderers
             useNamedComponents = false;
