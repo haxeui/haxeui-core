@@ -129,6 +129,8 @@ class Macros {
 
         ComponentMacros.buildBindings(codeBuilder, buildData);
         ComponentMacros.buildLanguageBindings(codeBuilder, buildData);
+        // TODO: namespace shouldnt always be default
+        ComponentClassMap.register("urn::haxeui::org/" + builder.name, builder.fullPath);
         
         builder.ctor.add(codeBuilder, AfterSuper);
     }
