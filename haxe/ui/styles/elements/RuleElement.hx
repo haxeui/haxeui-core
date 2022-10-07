@@ -31,11 +31,8 @@ class RuleElement {
             return true;
         }
 
-        if (c.pseudoClass != null) {
-            var pc = ":" + c.pseudoClass;
-            if (d.hasClass(pc) == false) {
-                return false;
-            }
+        if (c.id != null && c.id != d.id) {
+            return false;
         }
 
         if (c.className != null) {
@@ -46,15 +43,18 @@ class RuleElement {
             }
         }
 
+        if (c.pseudoClass != null) {
+            var pc = ":" + c.pseudoClass;
+            if (d.hasClass(pc) == false) {
+                return false;
+            }
+        }
+
         if (c.nodeName != null) {
             var classNodeName:String = @:privateAccess d.nodeName;
             if (c.nodeName != classNodeName) {
                 return false;
             }
-        }
-
-        if (c.id != null && c.id != d.id) {
-            return false;
         }
 
         if (c.parent != null) {
