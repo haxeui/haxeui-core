@@ -128,7 +128,24 @@ private class Events extends ScrollViewEvents {
     }
 
     private function onScrollChange(e:ScrollEvent) {
-        _tableview.invalidateComponentLayout();
+        //_tableview.invalidateComponentLayout();
+
+        var header = _tableview.findComponent(Header, true);
+        if (header == null) {
+            return;
+        }
+
+        var vscroll = _tableview.findComponent(VerticalScroll);
+        if (vscroll != null && vscroll.hidden == false) {
+            header.addClass("scrolling");
+            header.invalidateComponent(true);
+        } else {
+            header.removeClass("scrolling");
+            header.invalidateComponent(true);
+        }
+        var usableWidth = _tableview.layout.usableWidth;
+        var rc:Rectangle = new Rectangle(_tableview.hscrollPos + 0, 1, usableWidth, header.height);
+        header.componentClipRect = rc;
     }
 
     private function onRendererCreated(e:UIEvent) {
