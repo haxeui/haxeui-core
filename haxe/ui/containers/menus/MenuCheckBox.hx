@@ -4,6 +4,8 @@ import haxe.ui.components.CheckBox;
 import haxe.ui.components.Label;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.events.UIEvent;
+import haxe.ui.util.Variant;
 
 @:composite(Builder)
 class MenuCheckBox extends MenuItem {
@@ -53,6 +55,14 @@ private class SelectedBehaviour extends DataBehaviour {
 
         checkbox.selected = _value;
     }
+
+    public override function get():Variant {
+        var checkbox:CheckBox = _component.findComponent(CheckBox, false);
+        if (checkbox == null) {
+            return false;
+        }
+        return checkbox.selected;
+    }
 }
 
 //***********************************************************************************************************
@@ -66,6 +76,7 @@ private class Builder extends CompositeBuilder {
     public override function create() {
         _checkbox = new CheckBox();
         _checkbox.styleNames = "menuitem-checkbox";
+        _checkbox.registerEvent(UIEvent.CHANGE, onCheckboxChange);
         _checkbox.scriptAccess = false;
         _component.addComponent(_checkbox);
 
@@ -74,5 +85,9 @@ private class Builder extends CompositeBuilder {
         label.styleNames = "menuitem-shortcut-label";
         label.scriptAccess = false;
         _component.addComponent(label);
+    }
+
+    private function onCheckboxChange(event:UIEvent) {
+        _component.dispatch(event);
     }
 }
