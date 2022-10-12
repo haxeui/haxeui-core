@@ -208,6 +208,7 @@ class SideBar extends Box {
         
         this.onAnimationEnd = function(_) {
             this.removeClass(showSideBarClass);
+            onShowAnimationEnd();
         }
         
         if (activeSideBar != null && activeSideBar != this) {
@@ -344,11 +345,14 @@ class SideBar extends Box {
             hideModalOverlay();
         }
     }
-    
+
+    private function onShowAnimationEnd() {
+    }
+        
     private function onHideAnimationEnd() {
         super.hide();
     }
-    
+
     public override function hide() {
         if (activeSideBar != null && activeSideBar != this) {
             activeSideBar.hide();
