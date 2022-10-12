@@ -292,6 +292,7 @@ private class Builder extends CompositeBuilder {
             button.icon = menu.icon;
             button.tooltip = menu.tooltip;
             button.hidden = child.hidden;
+            button.allowFocus = false;
             LocaleManager.instance.cloneForComponent(child, button);
             _buttons.push(button);
             _menubar.addComponent(button);
