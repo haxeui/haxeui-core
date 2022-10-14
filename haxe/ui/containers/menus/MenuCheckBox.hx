@@ -76,6 +76,7 @@ private class Builder extends CompositeBuilder {
     public override function create() {
         _checkbox = new CheckBox();
         _checkbox.styleNames = "menuitem-checkbox";
+        _checkbox.percentWidth = 100;
         _checkbox.registerEvent(UIEvent.CHANGE, onCheckboxChange);
         _checkbox.scriptAccess = false;
         _component.addComponent(_checkbox);

@@ -109,7 +109,9 @@
     background-color: $selection-background-color;
 }
 
-.menuitem .label:hover, .menuitem .label:selected {
+.menuitem .label:hover, .menuitem .label:selected,
+.menuitem-checkbox:hover, .menuitem-checkbox:selected,
+.menuitem-optionbox:hover, .menuitem-optionbox:selected {
     color: $selection-text-color;
 }
 

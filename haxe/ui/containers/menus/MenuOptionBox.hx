@@ -107,6 +107,7 @@ private class Builder extends CompositeBuilder {
     public override function create() {
         _optionbox = new OptionBox();
         _optionbox.styleNames = "menuitem-optionbox";
+        _optionbox.percentWidth = 100;
         _optionbox.registerEvent(UIEvent.CHANGE, onOptionboxChange);
         _optionbox.scriptAccess = false;
         _component.addComponent(_optionbox);
