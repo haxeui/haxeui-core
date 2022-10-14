@@ -2007,4 +2007,21 @@ class Component extends ComponentImpl implements IValidating {
         }
         return cssName;
     }
+
+    public var isComponentSolid(get, null):Bool;
+    private function get_isComponentSolid():Bool {
+        if (this.style == null) {
+            return false;
+        }
+
+        if (this.style.backgroundColor != null || this.style.backgroundImage != null) { // heavily nested so its easier to see whats going on
+            if (this.style.opacity == null || this.style.opacity > 0) {
+                if (this.style.backgroundOpacity == null || this.style.backgroundOpacity > 0) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 }

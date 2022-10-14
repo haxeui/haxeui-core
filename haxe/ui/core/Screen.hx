@@ -132,25 +132,24 @@ class Screen extends ScreenImpl {
         }
         return false;
     }
-    
+   
+    public function findSolidComponentUnderPoint<T:Component>(screenX:Float, screenY:Float, type:Class<T> = null):Array<Component> {
+        var solidComponents = [];
+        var components = findComponentsUnderPoint(screenX, screenY, type);
+        for (c in components) {
+            if (c.isComponentSolid) {
+                solidComponents.push(c);
+            }
+        }
+        return solidComponents;
+    }
+
     /**
      Find out if there is a 'solid' component under a specific point (in screen co-ordinates). A 'solid' component is one which has a background
      of some kind (image or color) and is not transparent.
     **/
     public function hasSolidComponentUnderPoint<T:Component>(screenX:Float, screenY:Float, type:Class<T> = null):Bool {
-        var components = findComponentsUnderPoint(screenX, screenY, type);
-        for (c in components) {
-            if (c.style != null) { // heavily nested so its easier to see whats going on
-                if (c.style.backgroundColor != null || c.style.backgroundImage != null) {
-                    if (c.style.opacity == null || c.style.opacity > 0) {
-                        if (c.style.backgroundOpacity == null || c.style.backgroundOpacity > 0) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        return false;
+        return (findSolidComponentUnderPoint(screenX, screenY, type).length > 0);
     }
 
     private function onThemeChanged() {
