@@ -27,16 +27,13 @@ class Screen extends ScreenImpl {
     //***********************************************************************************************************
     // Instance
     //***********************************************************************************************************
-    private var _eventMap:EventMap;
+    private var _eventMap:EventMap = new EventMap();
 
     public var currentMouseX:Float = 0;
     public var currentMouseY:Float = 0;
     
     public function new() {
         super();
-        rootComponents = [];
-
-        _eventMap = new EventMap();
         registerEvent(MouseEvent.MOUSE_MOVE, function(e:MouseEvent) {
             currentMouseX = e.screenX;
             currentMouseY = e.screenY;
