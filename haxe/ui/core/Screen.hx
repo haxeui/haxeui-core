@@ -96,6 +96,11 @@ class Screen extends ScreenImpl {
         }
     }
     
+    /**
+     List components under a specific point (in screen co-ordinates).
+
+     Note: this function will return components at a specific point even if they have no backgrounds (or anything drawn into them). 
+    **/
     public function findComponentsUnderPoint<T:Component>(screenX:Float, screenY:Float, type:Class<T> = null):Array<Component> {
         var c:Array<Component> = [];
         for (r in rootComponents) {
@@ -113,6 +118,12 @@ class Screen extends ScreenImpl {
         return c;
     }
     
+    /**
+     Find out if there is a component under a specific point (in screen co-ordinates).
+
+     Note: this function will return true even if the components have no backgrounds (or anything drawn into them). Use hasSolidComponentUnderPoint
+           to additionally check if they are not transparent and have solid backgrounds
+    **/
     public function hasComponentUnderPoint<T:Component>(screenX:Float, screenY:Float, type:Class<T> = null):Bool {
         for (r in rootComponents) {
             if (r.hasComponentUnderPoint(screenX, screenY, type) == true) {
@@ -122,6 +133,26 @@ class Screen extends ScreenImpl {
         return false;
     }
     
+    /**
+     Find out if there is a 'solid' component under a specific point (in screen co-ordinates). A 'solid' component is one which has a background
+     of some kind (image or color) and is not transparent.
+    **/
+    public function hasSolidComponentUnderPoint<T:Component>(screenX:Float, screenY:Float, type:Class<T> = null):Bool {
+        var components = findComponentsUnderPoint(screenX, screenY, type);
+        for (c in components) {
+            if (c.style != null) { // heavily nested so its easier to see whats going on
+                if (c.style.backgroundColor != null || c.style.backgroundImage != null) {
+                    if (c.style.opacity == null || c.style.opacity > 0) {
+                        if (c.style.backgroundOpacity == null || c.style.backgroundOpacity > 0) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     private function onThemeChanged() {
         for (c in rootComponents) {
             onThemeChangedChildren(c);
