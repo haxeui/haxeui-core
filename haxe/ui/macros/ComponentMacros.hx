@@ -267,7 +267,7 @@ class ComponentMacros {
         
         var f = MacroHelpers.resolveFile(filePath);
         if (f == null) {
-            throw "Could not resolve: " + filePath;
+            throw "Could not resolve: " + filePath + "(cwd: " + Sys.getCwd() + ", classpath: " + Context.getClassPath() + ")";
         }
 
         Context.registerModuleDependency(Context.getLocalModule(), f);
