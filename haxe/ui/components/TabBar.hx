@@ -124,11 +124,7 @@ private class SelectedIndex extends DataBehaviour {
         beforeChangeEvent.value = _value;
         _component.dispatch(beforeChangeEvent);
         if (beforeChangeEvent.canceled) {
-            trace("CANCLEED");
-            var selectedTab:Component = cast(_component, TabBar).selectedTab;
-            if (selectedTab != null) {
-                selectedTab.removeClass(":active");
-            }
+            _value = _previousValue;
             return;
         }
 
