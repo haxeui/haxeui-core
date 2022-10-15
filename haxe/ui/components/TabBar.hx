@@ -654,7 +654,7 @@ private class TabBarButtonLayout extends ButtonLayout {
         super.repositionChildren();
 
         var image = _component.findComponent("tab-close-button", Image, false);
-        if (image != null && component.componentWidth > 0) {
+        if (image != null && image.hidden == false && component.componentWidth > 0) {
             image.top = Std.int((component.componentHeight / 2) - (image.componentHeight / 2)) + marginTop(image) - marginBottom(image);
             image.left = component.componentWidth - image.componentWidth - paddingRight + marginLeft(image) - marginRight(image);
         }
@@ -664,7 +664,7 @@ private class TabBarButtonLayout extends ButtonLayout {
         var size = super.calcAutoSize(exclusions);
 
         var image = _component.findComponent("tab-close-button", Image, false);
-        if (image != null) {
+        if (image != null && image.hidden == false) {
             size.width += image.width + horizontalSpacing;
         }
 
