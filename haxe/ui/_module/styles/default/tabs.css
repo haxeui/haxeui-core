@@ -27,6 +27,10 @@
     border-left-width: 0px;
 }
 
+.tabbar-button .icon {
+    pointer-events: none;
+}
+
 .tabbar-button.first {
     border-left-width: 1px;
 }
