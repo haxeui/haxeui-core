@@ -46,13 +46,23 @@ class TabBarLayout extends DefaultLayout {
         super.repositionChildren();
 
         var filler:Box = _component.findComponent("tabbar-filler", false);
+        var container:Box = _component.findComponent("tabbar-contents", false);
         if (filler != null) {
-            var container:Box = _component.findComponent("tabbar-contents", false);
             filler.width = _component.width - container.width;
             filler.height = _component.height;
             filler.left = container.width;
         }
-        
+
+        var max:Float = 0;
+        for (button in container.childComponents) {
+            if (button.height > max) {
+                max = button.height;
+            }
+        }
+        for (button in container.childComponents) {
+            button.height = max;
+        }
+
         var left:Button = _component.findComponent("tabbar-scroll-left", false);
         var right:Button = _component.findComponent("tabbar-scroll-right", false);
         if (left != null && hidden(left) == false) {
