@@ -120,6 +120,18 @@ private class SelectedIndex extends DataBehaviour {
             return;
         }
 
+        var beforeChangeEvent = new UIEvent(UIEvent.BEFORE_CHANGE);
+        beforeChangeEvent.value = _value;
+        _component.dispatch(beforeChangeEvent);
+        if (beforeChangeEvent.canceled) {
+            trace("CANCLEED");
+            var selectedTab:Component = cast(_component, TabBar).selectedTab;
+            if (selectedTab != null) {
+                selectedTab.removeClass(":active");
+            }
+            return;
+        }
+
         var tab:Component = cast(builder._container.getComponentAt(_value), Button);
         if (tab != null) {
             var selectedTab:Component = cast(_component, TabBar).selectedTab;

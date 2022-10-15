@@ -40,6 +40,18 @@
     border: 1px solid $normal-border-color;
 }
 
+.tabbar-button:active {
+    border-top: 1px solid $normal-border-color;
+    border-right: 1px solid $normal-border-color;
+    border-bottom: 1px solid $normal-border-color;
+    border-left-color: $normal-border-color;
+    border-left-width: 0px;
+}
+
+.tabbar-button-selected.first:active {
+    border-left-width: 1px;
+}
+
 .tabbar-button-selected {
     border-radius: 0px;
 
@@ -53,13 +65,6 @@
 
 .tabbar-button-selected.first {
     border-left-width: 1px;
-}
-
-.tabbar-button:active {
-    border-top: 2px solid $accent-color;
-    border-right: 1px solid $normal-border-color;
-    border-bottom: 1px solid $normal-border-color;
-    border-left-color: $normal-border-color;
 }
 
 .tabbar-button-selected:active {

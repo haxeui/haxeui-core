@@ -312,6 +312,9 @@ private class Events extends haxe.ui.events.Events {
         if (tabs.hasEvent(UIEvent.CHANGE, onTabChanged) == false) {
             tabs.registerEvent(UIEvent.CHANGE, onTabChanged);
         }
+        if (tabs.hasEvent(UIEvent.BEFORE_CHANGE, onTabBeforeChanged) == false) {
+            tabs.registerEvent(UIEvent.BEFORE_CHANGE, onTabBeforeChanged);
+        }
         if (tabs.hasEvent(UIEvent.BEFORE_CLOSE, onBeforeTabClosed) == false) {
             tabs.registerEvent(UIEvent.BEFORE_CLOSE, onBeforeTabClosed);
         }
@@ -323,7 +326,9 @@ private class Events extends haxe.ui.events.Events {
     public override function unregister() {
         var tabs:TabBar = _tabview.findComponent(TabBar, false);
         tabs.unregisterEvent(UIEvent.CHANGE, onTabChanged);
+        tabs.unregisterEvent(UIEvent.BEFORE_CHANGE, onTabBeforeChanged);
         tabs.unregisterEvent(UIEvent.BEFORE_CLOSE, onBeforeTabClosed);
+        tabs.unregisterEvent(UIEvent.CLOSE, onTabClosed);
     }
 
     private function onBeforeTabClosed(event:UIEvent) {
@@ -345,6 +350,10 @@ private class Events extends haxe.ui.events.Events {
         var tabs:TabBar = _tabview.findComponent(TabBar, false);
         _tabview.pageIndex = -1;
         _tabview.pageIndex = tabs.selectedIndex;
+    }
+
+    private function onTabBeforeChanged(event:UIEvent) {
+        _tabview.dispatch(event);
     }
 }
 
