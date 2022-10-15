@@ -7,6 +7,7 @@ import haxe.ui.styles.Value;
 class RuleElement {
     public var selector:Selector;
     public var directives:Map<String, Directive> = new Map<String, Directive>();
+    public var directiveCount:Int = 0;
 
     public function new(selector:String, directives:Array<Directive>) {
         this.selector = new Selector(selector);
@@ -14,6 +15,7 @@ class RuleElement {
 
         for (d in directives) {
             processDirective(d);
+            directiveCount++;
         }
     }
 
