@@ -154,14 +154,14 @@ class DataSource<T> {
         }
     }
 
-    public function sortCustom(fn:T->T->Int) {
+    public function sortCustom(fn:T->T->SortDirection->Int, direction:SortDirection = null) {
     }
     
     public function sort(field:String = null, direction:SortDirection = null) {
-        sortCustom(sortByFn.bind(_, _, field, direction));
+        sortCustom(sortByFn.bind(_, _, _, field));
     }
     
-    private function sortByFn(o1:T, o2:T, field:String, direction:SortDirection):Int {
+    private function sortByFn(o1:T, o2:T, direction:SortDirection, field:String):Int {
         var f1:Dynamic = o1;
         var f2:Dynamic = o2;
         

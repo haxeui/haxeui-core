@@ -1,5 +1,6 @@
 package haxe.ui.data;
 
+import haxe.ui.constants.SortDirection;
 import haxe.ui.data.transformation.IItemTransformer;
 
 class ArrayDataSource<T> extends DataSource<T> {
@@ -32,8 +33,8 @@ class ArrayDataSource<T> extends DataSource<T> {
         handleChanged();
     }
     
-    public override function sortCustom(fn:T->T->Int) {
-        _array.sort(fn);
+    public override function sortCustom(fn:T->T->SortDirection->Int, direction:SortDirection = null) {
+        _array.sort(fn.bind(_, _, direction));
         handleChanged();
     }
     
