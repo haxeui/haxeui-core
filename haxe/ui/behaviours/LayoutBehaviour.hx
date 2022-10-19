@@ -9,7 +9,7 @@ class LayoutBehaviour extends ValueBehaviour {
             return;
         }
 
-        _value = value;
+        super.set(value);
         _component.invalidateComponentLayout();
     }
 }
