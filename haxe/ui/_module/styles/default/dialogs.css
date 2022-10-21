@@ -67,6 +67,34 @@
     background-color: $selection-background-color;
 }
 
+.dialog-minimize-button {
+    resource: $minimize;
+    vertical-align: "center";
+    cursor: "pointer";
+    pointer-events: true;
+    padding: 3px;
+    border-radius: 2px;
+}
+
+.dialog-minimize-button:hover {
+    resource: $minimize-hover;
+    background-color: $selection-background-color;
+}
+
+.dialog-maximize-button {
+    resource: $maximize;
+    vertical-align: "center";
+    cursor: "pointer";
+    pointer-events: true;
+    padding: 3px;
+    border-radius: 2px;
+}
+
+.dialog-maximize-button:hover {
+    resource: $maximize-hover;
+    background-color: $selection-background-color;
+}
+
 .dialog #iconImage.info {
     resource: $info-large;
 }
