@@ -120,6 +120,10 @@
             <var name="arrow-down-square" value="haxeui-core/styles/shared/down-arrow-square-blue.png" />
             <var name="close" value="haxeui-core/styles/shared/close-button-blue.png" />
             <var name="close-hover" value="haxeui-core/styles/shared/close-button-white.png" />
+            <var name="minimize" value="haxeui-core/styles/shared/minimize-button-blue.png" />
+            <var name="minimize-hover" value="haxeui-core/styles/shared/minimize-button-white.png" />
+            <var name="maximize" value="haxeui-core/styles/shared/maximize-button-blue.png" />
+            <var name="maximize-hover" value="haxeui-core/styles/shared/maximize-button-white.png" />
             <var name="check-selected" value="haxeui-core/styles/shared/check-blue.png" />
             <var name="option-selected" value="haxeui-core/styles/shared/option-blue.png" />
             <var name="arrow-up-down" value="haxeui-core/styles/shared/sortable-arrows-blue.png" />
