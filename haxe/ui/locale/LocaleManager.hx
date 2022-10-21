@@ -261,7 +261,7 @@ class LocaleManager {
         return translateTo(language, id, param0, param1, param2, param3);
     }
 
-	public function translateTo(lang:String, id:String, param0:Any = null, param1:Any = null, param2:Any = null, param3:Any = null) {
+    public function translateTo(lang:String, id:String, param0:Any = null, param1:Any = null, param2:Any = null, param3:Any = null) {
         var strings = getStrings(lang);
         if (strings == null) {
             return id;

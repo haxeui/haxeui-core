@@ -53,18 +53,18 @@ class AssetsBase {
         #end
     }
 
-	private static function isAbsolutePath(path:String):Bool {
-		if (StringTools.startsWith(path, '/')) {
-			return true;
+    private static function isAbsolutePath(path:String):Bool {
+        if (StringTools.startsWith(path, '/')) {
+            return true;
         }
-		if (path.charAt(1) == ':') {
-			return true;
+        if (path.charAt(1) == ':') {
+            return true;
         }
-		if (StringTools.startsWith(path, '\\\\')) {
-			return true;
+        if (StringTools.startsWith(path, '\\\\')) {
+            return true;
         }
-		return false;
-	}
+        return false;
+    }
     
     private function getFontInternal(resourceId:String, callback:FontInfo->Void) {
         callback(null);

@@ -45,9 +45,9 @@ private class SelectedIndex extends DataBehaviour {
         }
         
         if (button != null) {
-	        button.selected = true;
-	        builder._currentButton = button;
-		}
+            button.selected = true;
+            builder._currentButton = button;
+        }
         
         _component.dispatch(new UIEvent(UIEvent.CHANGE));
     }
@@ -55,13 +55,13 @@ private class SelectedIndex extends DataBehaviour {
 
 @:dox(hide) @:noCompletion
 private class SelectedButton extends DataBehaviour {
-	private var _bar:ButtonBar;
-	
-	public function new(bar:ButtonBar) {
-		super(bar);
-		_bar = bar;
-	}
-	
+    private var _bar:ButtonBar;
+    
+    public function new(bar:ButtonBar) {
+        super(bar);
+        _bar = bar;
+    }
+    
     public override function get():Variant {
         for (child in _component.childComponents) {
             if ((child is Button) && cast(child, Button).selected == true) {
@@ -72,8 +72,8 @@ private class SelectedButton extends DataBehaviour {
     }
     
     public override function set(value:Variant) {
-		_bar.selectedIndex = _component.getComponentIndex(value);
-	}
+        _bar.selectedIndex = _component.getComponentIndex(value);
+    }
 }
 
 //***********************************************************************************************************
