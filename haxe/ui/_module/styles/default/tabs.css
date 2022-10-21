@@ -179,6 +179,29 @@
     border-top-color: $secondary-background-color;
 }
 
+
+/************************************************************************
+** TABBAR - ROUNDED TABS
+*************************************************************************/
+.rounded-tabs .tabbar-button.first {
+    border-top-left-radius: 4px;
+}
+.rounded-tabs .tabbar-button.last {
+    border-top-right-radius: 4px;
+}
+
+.rounded-tabs .tabbar:bottom .tabbar-button {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}
+
+.rounded-tabs .tabbar:bottom .tabbar-button.first {
+    border-bottom-left-radius: 4px;
+}
+.rounded-tabs .tabbar:bottom .tabbar-button.last {
+    border-bottom-right-radius: 4px;
+}
+
 /************************************************************************
 ** TABVIEW
 *************************************************************************/
