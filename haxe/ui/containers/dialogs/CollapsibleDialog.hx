@@ -1,70 +1,76 @@
 package haxe.ui.containers.dialogs;
 
+import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.components.Image;
 import haxe.ui.containers.dialogs.Dialog;
+import haxe.ui.core.CompositeBuilder;
 import haxe.ui.events.MouseEvent;
 
 /**
  * A dialog with a minimize/maximize button in the title bar, which collapses the dialog body.
  */
-class CollapsibleDialog extends Dialog
-{
-    public var dialogMinMaxButton:haxe.ui.components.Image;
+@:composite(Builder)
+class CollapsibleDialog extends Dialog {
+    /**
+     * Set this property to collapse/expand the dialog body.
+     */
+     @:clonable @:behaviour(Minimized, false)    public var minimized:Bool;
+}
 
-  /**
-   * Set this property to collapse/expand the dialog body.
-   */
-    public var minimized(default, set):Bool = false;
+private class Minimized extends DataBehaviour {
+    public override function validateData() {
+        var dialogContent = _component.findComponent("dialog-content", VBox, true);
+        if (dialogContent == null) {
+            return;
+        }
+        var dialogTitle = _component.findComponent("dialog-title", HBox, true);
+        if (dialogTitle == null) {
+            return;
+        }
+        var dialogMinMaxButton = dialogTitle.findComponent("dialog-minmax-button", Image);
+        if (dialogMinMaxButton == null) {
+            return;
+        }
+        if (_value) {
+            // Collapse the dialog.
+            dialogMinMaxButton.swapClass("dialog-maximize-button", "dialog-minimize-button");
+            dialogContent.hidden = true;
+            _component.height -= dialogContent.height;
+        } else {
+            dialogMinMaxButton.swapClass("dialog-minimize-button", "dialog-maximize-button");
+            dialogContent.hidden = false;
+            _component.height += dialogContent.height;
+        }
+    }
+}
 
-  function set_minimized(value:Bool):Bool {
-    if (value == this.minimized) return value;
-
-    if (value)
-      minimize();
-    else
-      maximize();
-
-    return this.minimized = value;
-  }
-
-    public function new() {
-        super();
-
-    // Create the minimize/maximize button.
-        dialogMinMaxButton = new haxe.ui.components.Image();
-        dialogMinMaxButton.id = "dialog-minmax-button";
-        dialogMinMaxButton.styleNames = "dialog-minimize-button";
-        dialogTitle.addComponent(dialogMinMaxButton);
-
-        // Move the button before the close button
-        dialogTitle.setComponentIndex(dialogMinMaxButton, 1);
+@:dox(hide) @:noCompletion
+private class Builder extends CompositeBuilder {
+    private var _dialog:CollapsibleDialog;
+    private var _dialogMinMaxButton:Image;
+    
+    public function new(dialog:CollapsibleDialog) {
+        super(dialog);
+        _dialog = dialog;
     }
 
-  @:bind(dialogMinMaxButton, MouseEvent.CLICK)
-  private function onMinMax(_) {
-    minimized = !minimized;
-  }
+    public override function onInitialize() {
+        super.onInitialize();
 
-  /**
-   * This function is private. Call dialog.minimized = true instead.
-   */
-  private function minimize() {
-        // Switch the button appearance.
-        dialogMinMaxButton.swapClass("dialog-maximize-button", "dialog-minimize-button");
+        var dialogTitle = _component.findComponent("dialog-title", HBox, true);
+        // Create the minimize/maximize button.
+        _dialogMinMaxButton = new Image();
+        _dialogMinMaxButton.id = "dialog-minmax-button";
+        _dialogMinMaxButton.styleNames = "dialog-minimize-button";
+        _dialogMinMaxButton.scriptAccess = false;
+        _dialogMinMaxButton.registerEvent(MouseEvent.CLICK, onMinMaxButton);
+        dialogTitle.addComponent(_dialogMinMaxButton);
 
-        // Collapse the dialog.
-        dialogContent.hidden = true;
-        this.height -= dialogContent.height;
-  }
+        // Move the button before the close button
+        dialogTitle.setComponentIndex(_dialogMinMaxButton, 1);
+    }
 
-  /**
-   * This function is private. Call dialog.minimized = false instead.
-   */
-    private function maximize() {
-        // Switch the button appearance.
-        dialogMinMaxButton.swapClass("dialog-minimize-button", "dialog-maximize-button");
-
-        // Uncollapse the dialog.
-        dialogContent.hidden = false;
-        this.height += dialogContent.height;
+    private function onMinMaxButton(_) {
+        _dialog.minimized = !_dialog.minimized;
     }
 }
