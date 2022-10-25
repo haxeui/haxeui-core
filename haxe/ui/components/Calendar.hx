@@ -36,7 +36,7 @@ class Calendar extends Grid {
     //***********************************************************************************************************
 
     /**
-     * Most of the time the same as `selectedDate`, But its always visible to the calendar.
+     * Most of the time the same as `selectedDate`, But has to be visible to the calendar.
      * 
      * That means, if you move the calendar to the next month, the `date` will be the first day of the next month,
      * because the `selectedDate` is no longer visible.

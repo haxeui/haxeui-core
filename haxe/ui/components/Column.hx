@@ -15,7 +15,7 @@ class Column extends Button {
     public var sortField:String;
     
     /**
-     * Whether or not this column should allow sorting
+     * Whether this column should allow sorting or not.
      */
     public var sortable(get, set):Bool;
     private function get_sortable():Bool {

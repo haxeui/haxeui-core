@@ -40,25 +40,26 @@ class Image extends Component {
     /**
      * The path to the image file/data. Similar to the resource property.
      * 
-     * `value` is a universal way to access the value a component is based on. in this
-     * case its the `resource` property, which can appear in "multiple formats". For more information, check out the `resource` property.
+     * `value` is a universal way to access the "core" value a component is based on. in this
+     * case, its the `resource` property, which can appear in "multiple formats". 
+     * For more information, check out the `resource` property.
      */
     @:clonable @:value(resource)                                           public var value:Dynamic;
 
     /**
-     * The image scaling mode to use, defaults to `ScaleMode.FILL`.
+     * The scaling mode to use when changing the aspect ratio of this image. defaults to `ScaleMode.FILL`.
      */
     @:clonable @:behaviour(InvalidatingBehaviour, ScaleMode.FILL)          public var scaleMode:ScaleMode;
 
     /**
      * The horizontal alignment of the image, defaults to `HorizontalAlign.CENTER`. Used
-     * when the width property of the image is larger than the width of the actual graphic.
+     * when the width property of the image is larger/smaller than the width of the actual graphic.
      */
     @:clonable @:behaviour(InvalidatingBehaviour, HorizontalAlign.CENTER)  public var imageHorizontalAlign:HorizontalAlign;
 
     /**
      * The vertical alignment of the image, defaults to `VerticalAlign.CENTER`. Used
-     * when the height property of the image is larger than the height of the actual graphic.
+     * when the height property of the image is larger/smaller than the height of the actual graphic.
      */
     @:clonable @:behaviour(InvalidatingBehaviour, VerticalAlign.CENTER)    public var imageVerticalAlign:VerticalAlign;
 
@@ -73,7 +74,7 @@ class Image extends Component {
     @:clonable @:behaviour(DefaultBehaviour)                               public var originalHeight:Float;
     
     /**
-     * The value to multiply the images size by
+     * The value to multiply the images size by when drawing the imag eto the screen.
      */
     @:clonable @:behaviour(DefaultBehaviour, 1)                            public var imageScale:Float;
 }
