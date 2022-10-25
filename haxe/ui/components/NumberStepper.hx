@@ -34,7 +34,8 @@ class NumberStepper extends InteractiveComponent {
     /**
      * The number displayed inside of the stepper.
      * 
-     * `value` is used as a universal way to access the "core" value a component is based on. in this case its the number inside of the stepper.
+     * `value` is used as a universal way to access the "core" value a component is based on. 
+     * in this case its the number inside of the stepper.
      */
     @:clonable @:value(pos)                                             public var value:Dynamic;
 

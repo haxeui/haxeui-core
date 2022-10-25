@@ -14,10 +14,33 @@ class OptionBox extends CheckBox {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
+    /**
+        A group name, used to group multiple option elements together, utilizing the "optioning" functionality.
+
+        @see http://haxeui.org/explorer/#basic/option_boxes
+    **/
     @:clonable @:behaviour(GroupBehaviour, "defaultGroup")      public var componentGroup:String;
+
+    /**
+        Whether this option box is selected or not.
+    **/
     @:clonable @:behaviour(SelectedBehaviour)                   public var selected:Bool;
+
+    /**
+        Gets the currently selected option from this `OptionBox`'s component group.
+    **/
     @:clonable @:behaviour(SelectedOptionBehaviour)             public var selectedOption:Component;
+
+    /**
+        Whether or not this option box is selected or not.
+
+        `value` is used as a universal way to access the "core" value a component is based on. 
+        in this case, its whether or not this option box is selected.
+    **/
     @:clonable @:value(selected)                                public var value:Any;
+    /**
+        Makes every single option box in the current `componentGroup` unselected.
+    **/
     @:call(ResetGroup)                                          public function resetGroup():Void;
 }
 
