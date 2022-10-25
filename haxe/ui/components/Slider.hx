@@ -103,7 +103,7 @@ class Slider extends InteractiveComponent implements IDirectionalComponent {
     /**
      * The current value of the slider.
      *
-     * `value` is a universal way to access the value a component is based on.
+     * `value` is a universal way to access the "core" value a component is based on.
      * In this case, value represents the current position of the thumb inside the slider.
      */
     @:clonable @:value(pos)                         public var value:Dynamic;

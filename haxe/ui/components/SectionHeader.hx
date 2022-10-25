@@ -7,7 +7,13 @@ import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 
 @:composite(Builder)
+/**
+    A content header you can add to your components to make, for example, some sort of a navbar.
+**/
 class SectionHeader extends VBox {
+    /**
+        The text displayed inside this header.
+    **/
     @:clonable @:behaviour(TextBehaviour)              public var text:String;
 }
 

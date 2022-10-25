@@ -21,30 +21,30 @@ class Switch extends Component implements IValueComponent {
     //***********************************************************************************************************
 
     /**
-     * Whether the switch is in the on state.
+     * Whether the switch is in the `on` state.
      * 
-     * true if it is, false otherwise.
+     * `true` if it is, `false` otherwise.
      */
     @:clonable @:behaviour(SelectedBehaviour)         public var selected:Bool;
 
 
     /**
-     The value of this switch, which is equivelant to its selected property
+        The value of this switch, which is equivalent to its `selected` property
     **/
     @:clonable @:value(selected)                      public var value:Dynamic;
 
     /**
-     * The text that appears on the switch when created
+     * The text displayed on the switch
      */
     @:clonable @:behaviour(TextBehaviour)             public var text:String;
 
     /**
-     * The text that appears on the switch when it is in the on state
+     * The text that displays on the switch when it is in the on state
      */
     @:clonable @:behaviour(DefaultBehaviour)          public var textOn:String;
 
     /**
-     * The text that appears on the switch when it is in the off state
+     * The text that displays on the switch when it is in the off state
      */
     @:clonable @:behaviour(DefaultBehaviour)          public var textOff:String;
 }

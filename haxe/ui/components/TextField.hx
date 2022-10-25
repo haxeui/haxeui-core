@@ -65,7 +65,7 @@ class TextField extends InteractiveComponent {
     /**
      * The text displayed inside of the `TextField`.
      * 
-     * `value` is used as a universal way to access the value a component is based on. in this case its the text inside of the text field.
+     * `value` is used as a universal way to access the "core" value a component is based on. in this case its the text inside of the text field.
      */
     @:clonable @:value(text)                                public var value:Dynamic;
 
