@@ -72,47 +72,49 @@ class Button extends InteractiveComponent {
     // Public API
     //***********************************************************************************************************
     /**
-     Whether this button will dispatch multiple click events while the the mouse is pressed within it
+        Whether this button will dispatch multiple click events while the the mouse is pressed within it
     **/
     @:clonable @:behaviour(DefaultBehaviour, false)    public var repeater:Bool;
 
     /**
-     How often this button will dispatch multiple click events while the the mouse is pressed within it
+        How often this button will dispatch multiple click events while the the mouse is 
+        pressed within it, in milliseconds. Default is `100`.
     **/
     @:clonable @:behaviour(DefaultBehaviour, 100)      public var repeatInterval:Int;
 
     /**
-     Whether this button will ease in to specified repeatInterval
+        Whether this button will ease in to specified repeatInterval
     **/
     @:clonable @:behaviour(DefaultBehaviour, false)    public var easeInRepeater:Bool;
 
     /**
-     Whether the buttons state should remain pressed even when the mouse has left its bounds
+        Whether the buttons state should remain pressed even when the mouse has left its bounds
     **/
     @:clonable @:behaviour(DefaultBehaviour, false)    public var remainPressed:Bool;
 
     /**
-     Whether this button should behave as a toggle button or not
+        Whether this button should behave as a toggle button or not 
+        (a button that behaves like a switch, being either on/off)
     **/
     @:clonable @:behaviour(ToggleBehaviour)            public var toggle:Bool;
 
     /**
-     Whether this button is toggled or not (only relavant if toggle = true)
+        Whether this button is toggled or not (only relevant if `toggle = true`)
     **/
     @:clonable @:behaviour(SelectedBehaviour)           public var selected:Bool;
 
     /**
-     The text (label) of this button
+        The text (label) of this button
     **/
     @:clonable @:behaviour(TextBehaviour)              public var text:String;
 
     /**
-     The value of this button, which is equivelant to its text
+        The value of this button, which is equivalent to its text
     **/
     @:clonable @:value(text)                           public var value:Dynamic;
 
     /**
-     The image resource to use as the buttons icon
+        The image resource to use as the buttons icon
     **/
     @:clonable @:behaviour(IconBehaviour)              public var icon:Variant;
     

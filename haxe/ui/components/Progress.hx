@@ -26,6 +26,9 @@ class Progress extends Range implements IDirectionalComponent implements IValueC
     // Public API
     //***********************************************************************************************************
 
+    /**
+        Whether the made progress should "dance around" in the progress bar or not. Defaults to `false`.
+    **/
     @:clonable @:behaviour(Indeterminate)      public var indeterminate:Bool;
 
     /**
@@ -41,7 +44,7 @@ class Progress extends Range implements IDirectionalComponent implements IValueC
     /**
      * The current position of the progress bar.
      *
-     * `value` is a universal way to access the value a component is based on.
+     * `value` is a universal way to access the "core" value a component is based on.
      * In this case, value represents the current position of the progress bar.
      */
     @:clonable @:value(pos)                    public var value:Dynamic;

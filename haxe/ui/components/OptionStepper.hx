@@ -25,30 +25,25 @@ import haxe.ui.styles.Style;
 class OptionStepper extends InteractiveComponent implements IDataComponent {
 
     /**
-     * The index of the currently selected item.
+     * The index of the currently selected option.
      */
     @:clonable @:behaviour(SelectedIndexBehaviour, 0)   public var selectedIndex:Int;
 
     /**
-     * The selected item
+     * The selected option
      */
     @:behaviour(SelectedItemBehaviour)                  public var selectedItem:Dynamic;
 
     /**
-     * The data from which the items are taken.
-     *
-     * Usage:
-     * ```haxe
-     * stepper.dataSource.add({text: "exampleText"});
-     * ```
+     * The data source containing the options to render.
      */
     @:clonable @:behaviour(DataSourceBehaviour)         public var dataSource:DataSource<Dynamic>;
 
     /**
      * The index of the currently selected item
      * 
-     * `value` is used as a universal way to access the value a component is based on. 
-     * in this case its the index of the selected item inside the stepper.
+     * `value` is used as a universal way to access the "core" value a component is based on. 
+     * in this case its the index of the selected option inside this stepper.
      */
     @:clonable @:value(selectedIndex)                   public var value:Dynamic;
 }

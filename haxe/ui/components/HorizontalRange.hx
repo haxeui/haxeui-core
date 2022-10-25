@@ -9,10 +9,9 @@ import haxe.ui.geom.Point;
 import haxe.ui.util.Variant;
 
 /**
- * A horizontal range bar.
- * 
- * **Note** - A range bar is like a prgress bar, but isnt forced to start from 0.
- */
+    A horizontal range bar.  
+    **Notice** - A range bar is like a progress bar, but it doesn't always start from 0.
+**/
 @:composite(HorizontalRangeLayout, Builder)
 class HorizontalRange extends Range {
 

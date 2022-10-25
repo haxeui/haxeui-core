@@ -36,23 +36,23 @@ class Range extends InteractiveComponent implements IDirectionalComponent {
 
     /**
      * The value this range bar starts from, used to calculate 
-     * the starting position of the filled section.
+     * the starting position of the filled section. Defaults to `0`.
      */
     @:clonable @:behaviour(RangeMin, 0)                 public var min:Null<Float>;
 
     /**
      * The value this range bar ends at to, used calculate 
-     * the ending position of the filled section.
+     * the ending position of the filled section. Defaults to `100`
      */
     @:clonable @:behaviour(RangeMax, 100)               public var max:Null<Float>;
 
     /**
-     * The value this range bar's filled section is currently starting at.
+     * The value this range bar's filled section starts at.
      */
     @:clonable @:behaviour(RangeStart, null)            public var start:Null<Float>;
 
     /**
-     * The value this range bar's filled section is currently ending at.
+     * The value this range bar's filled section ends at.
      */
     @:clonable @:behaviour(RangeEnd, 0)                 public var end:Float;
 
@@ -63,7 +63,7 @@ class Range extends InteractiveComponent implements IDirectionalComponent {
     @:clonable @:behaviour(InvalidatingBehaviour)       public var precision:Int;
 
     /**
-     * The amount of "offsetting" that should be applied to the position of the filled section.
+     * The amount of snapping that should be applied to the position of the filled section.
      * 
      * for example: 
      * the range bar starts at 0 and ends at 100, and the offset is set to step is set to 10.
@@ -73,7 +73,7 @@ class Range extends InteractiveComponent implements IDirectionalComponent {
     @:clonable @:behaviour(InvalidatingBehaviour)       public var step:Float;
 
     /**
-     * Whether or not to allow the uer to interact with the range bar.
+     * Whether to allow the user to interact with the range bar or not.
      */
     @:clonable @:behaviour(AllowInteraction, false)     public var allowInteraction:Bool;
 

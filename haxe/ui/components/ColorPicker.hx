@@ -12,8 +12,15 @@ import haxe.ui.util.Color;
 import haxe.ui.util.ColorUtil;
 import haxe.ui.util.ColorUtil.HSV;
 
+/**
+	A visual color picker that allows the user to pick a color from either an HSV color space, 
+    or by directly modifying RGB/HSV values.
+**/
 class ColorPicker extends Box {
     private var _impl:ColorPickerImpl = null;
+    /**
+    	Creates a new color picker. `0xFF00000` is selected by default.
+    **/
     public function new() {
         super();
         _impl = new HSVColorPickerImpl();
@@ -22,6 +29,11 @@ class ColorPicker extends Box {
         addComponent(_impl);
     }
     
+    /**
+    	The currently selected color, as a 24-bit, RGB value.
+
+        Setting this value will update the selected color in the picker.
+    **/
     public var currentColor(get, set):Null<Color>;
     private function get_currentColor():Null<Color> {
         return _impl.currentColor;

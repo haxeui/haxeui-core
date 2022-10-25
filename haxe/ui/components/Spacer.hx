@@ -3,7 +3,7 @@ package haxe.ui.components;
 import haxe.ui.core.Component;
 
 /**
- A general purpose spacer component
+    A general purpose spacer component
 **/
 class Spacer extends Component {
     public function new() {

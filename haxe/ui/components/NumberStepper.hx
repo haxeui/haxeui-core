@@ -20,8 +20,8 @@ import haxe.ui.util.StringUtil;
 import haxe.ui.util.Timer;
 
 /**
- * A normal stepper that can be used to increment or decrement a number with the 
- * visual arrow buttons, arrow keys or by normally typing in the stepper's text field.
+ * A normal stepper that can be used to increment or decrement a number. To do so, you can use the
+ * visual arrow buttons, arrow keys or just by typing in the stepper's text field.
  */
 @:composite(Events, Builder)
 class NumberStepper extends InteractiveComponent {
@@ -34,12 +34,13 @@ class NumberStepper extends InteractiveComponent {
     /**
      * The number displayed inside of the stepper.
      * 
-     * `value` is used as a universal way to access the value a component is based on. in this case its the number inside of the stepper.
+     * `value` is used as a universal way to access the "core" value a component is based on. 
+     * in this case its the number inside of the stepper.
      */
     @:clonable @:value(pos)                                             public var value:Dynamic;
 
     /**
-     * The amount by which the value is increased or decreased when the user presses the up or down button.
+     * The amount by which the value is increased or decreased when the user presses the up or down buttons.
      */
     @:clonable @:behaviour(DefaultBehaviour, 1)                         public var step:Float;
 
@@ -61,14 +62,14 @@ class NumberStepper extends InteractiveComponent {
     @:clonable @:behaviour(DefaultBehaviour, null)                      public var precision:Null<Int>;
 
     /**
-     * If true, overflowing values will be fixed to the closest valid value.
+     * If true, overflowing values will be fixed to the closest, valid value.
      * 
      * for example, if the user types `20`, but the maximum is `10`, the value will automatically be set to `10`.
      */
     @:clonable @:behaviour(DefaultBehaviour, false)                     public var autoCorrect:Bool;
     
     /**
-     * The character that will be used to seperate decimals (eg 100.00 or 100,00)
+     * The character that will be used to separate decimals (eg 100.00 or 100,00)
      */
     @:clonable @:behaviour(DefaultBehaviour, Formats.decimalSeperator)  public var decimalSeparator:String;
 }
