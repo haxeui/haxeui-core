@@ -33,12 +33,16 @@ import Std.is as isOfType;
 #end
 
 /**
- Base class of all HaxeUI controls
-**/
+ * Base class of all HaxeUI controls
+ */
 @:allow(haxe.ui.backend.ComponentImpl)
 @:build(haxe.ui.macros.Macros.build())
 @:autoBuild(haxe.ui.macros.Macros.build())
 class Component extends ComponentImpl implements IValidating {
+
+    /**
+     * Creates a new, default, HaxeUI `Component`.
+     */
     public function new() {
         super();
 
@@ -1339,8 +1343,8 @@ class Component extends ComponentImpl implements IValidating {
     }
 
     /**
-        A string representation of the `css` classes associated with this component
-    **/
+     * A string representation of the `css` classes associated with this component
+     */
     @:dox(group = "Style related properties and methods")
     @clonable public var styleNames(get, set):String;
     private function get_styleNames():String {
@@ -1431,10 +1435,10 @@ class Component extends ComponentImpl implements IValidating {
     //***********************************************************************************************************
     @:noCompletion private var _includeInLayout:Bool = true;
     /**
-     Whether to use this component as part of its part layout
-
-     *Note*: invisible components are not included in parent layouts
-    **/
+     * Whether to use this component as part of its part layout
+     * 
+     * Note*: invisible components are not included in parent layouts
+     */
     @:dox(group = "Layout related properties and methods")
     public var includeInLayout(get, set):Bool;
     private function get_includeInLayout():Bool {
@@ -1449,8 +1453,8 @@ class Component extends ComponentImpl implements IValidating {
     }
 
     /**
-     The layout of this component
-    **/
+     * The layout of this component
+     */
     @:dox(group = "Layout related properties and methods")
     public var layout(get, set):Layout;
     private function get_layout():Layout {
@@ -1504,10 +1508,10 @@ class Component extends ComponentImpl implements IValidating {
     //***********************************************************************************************************
 
     /**
-     Tells the framework this component is ready to render
-
-     *Note*: this is called internally by the framework
-    **/
+     * Tells the framework this component is ready to render
+     *
+     * *Note*: this is called internally by the framework
+     */
     public function ready() {
         depth = ComponentUtil.getDepth(this);
 
@@ -1649,63 +1653,63 @@ class Component extends ComponentImpl implements IValidating {
     }
 
     /**
-     *Utility property to add a single `DragEvent.DRAG_START` event
+     * Utility property to add a single `DragEvent.DRAG_START` event
      */
     @:event(DragEvent.DRAG_START)       public var onDragStart:DragEvent->Void;    
     
     /**
-     *Utility property to add a single `DragEvent.DRAG` event
+     * Utility property to add a single `DragEvent.DRAG` event
      */
     @:event(DragEvent.DRAG)             public var onDrag:DragEvent->Void;    
     
     /**
-     *Utility property to add a single `DragEvent.DRAG_END` event
+     * Utility property to add a single `DragEvent.DRAG_END` event
      */
     @:event(DragEvent.DRAG_END)         public var onDragEnd:DragEvent->Void;    
     
     /**
-     *Utility property to add a single `AnimationEvent.START` event
+     * Utility property to add a single `AnimationEvent.START` event
      */
     @:event(AnimationEvent.START)       public var onAnimationStart:AnimationEvent->Void;
     
     /**
-     *Utility property to add a single `AnimationEvent.FRAME` event
+     * Utility property to add a single `AnimationEvent.FRAME` event
      */
     @:event(AnimationEvent.FRAME)       public var onAnimationFrame:AnimationEvent->Void;
     
     /**
-     *Utility property to add a single `AnimationEvent.END` event
+     * Utility property to add a single `AnimationEvent.END` event
      */
     @:event(AnimationEvent.END)         public var onAnimationEnd:AnimationEvent->Void;
 
     /**
-     Utility property to add a single `MouseEvent.CLICK` event
-    **/
+     * Utility property to add a single `MouseEvent.CLICK` event
+     */
     @:event(MouseEvent.CLICK)           public var onClick:MouseEvent->Void;
 
     /**
-     Utility property to add a single `MouseEvent.MOUSE_OVER` event
-    **/
+     * Utility property to add a single `MouseEvent.MOUSE_OVER` event
+     */
     @:event(MouseEvent.MOUSE_OVER)      public var onMouseOver:MouseEvent->Void;
 
     /**
-     Utility property to add a single `MouseEvent.MOUSE_OUT` event
-    **/
+     * Utility property to add a single `MouseEvent.MOUSE_OUT` event
+     */
     @:event(MouseEvent.MOUSE_OUT)       public var onMouseOut:MouseEvent->Void;
     
     /**
-     Utility property to add a single `MouseEvent.DBL_CLICK` event
-    **/
+     * Utility property to add a single `MouseEvent.DBL_CLICK` event
+     */
     @:event(MouseEvent.DBL_CLICK)       public var onDblClick:MouseEvent->Void;
 
     /**
-     Utility property to add a single `MouseEvent.RIGHT_CLICK` event
-    **/
+     * Utility property to add a single `MouseEvent.RIGHT_CLICK` event
+     */
     @:event(MouseEvent.RIGHT_CLICK)     public var onRightClick:MouseEvent->Void;
 
     /**
-     Utility property to add a single `UIEvent.CHANGE` event
-    **/
+     * Utility property to add a single `UIEvent.CHANGE` event
+     */
     @:event(UIEvent.CHANGE)             public var onChange:UIEvent->Void;
 
     //***********************************************************************************************************
@@ -1786,8 +1790,8 @@ class Component extends ComponentImpl implements IValidating {
     }
     
     /**
-     Return true if the size has changed.
-    **/
+     * Return true if the size has changed.
+     */
     private override function validateComponentLayout():Bool {
         layout.refresh();
 
@@ -1930,8 +1934,8 @@ class Component extends ComponentImpl implements IValidating {
     }
 
     /**
-     Return true if the size calculated has changed and the autosize is enabled.
-    **/
+     * Return true if the size calculated has changed and the autosize is enabled.
+     */
     private function validateComponentAutoSize():Bool {
         var invalidate:Bool = false;
         if (autoWidth == true || autoHeight == true) {
