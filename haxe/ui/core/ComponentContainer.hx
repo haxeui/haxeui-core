@@ -79,17 +79,42 @@ class ComponentContainer extends ComponentCommon implements IClonable<ComponentC
         return _children;
     }
 
-    private function registerBehaviours() {
-    }
+    private function registerBehaviours() {}
 
+    /**
+     * Adds a component to the end of this component's display list.
+     * 
+     * If this component already has children, the given component is added in front of the other children.
+     * 
+     * @param child The child component to add to this component.
+     * @return The added component.
+     */
     public function addComponent(child:Component):Component {
         return null;
     }
 
+    /**
+     * Inserts a child component at z-index `index`, effectively adding it in front of `index` children, and behind the rest.
+     * 
+     * If `index` is below every other child's index, the added component will render behind this component's children.  
+     * If `index` is above every other child's index, the added component will render in front of this component's children.
+     * 
+     * @param child The child component to add to this component.
+     * @param index The z-index in which the child component should be added.
+     * @return The added component.
+     */
     public function addComponentAt(child:Component, index:Int):Component {
         return null;
     }
 
+    /**
+     * Removes a child component from this component's display list, and returns it.
+     * 
+     * @param child The child component to remvove from this component
+     * @param dispose 
+     * @param invalidate
+     * @return Component
+     */
     public function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
         return null;
     }

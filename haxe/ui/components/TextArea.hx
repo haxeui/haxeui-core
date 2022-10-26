@@ -53,7 +53,7 @@ class TextArea extends InteractiveComponent implements IFocusable {
     @:behaviour(PlaceholderBehaviour)       public var placeholder:String;
 
     /**
-        Wether or not the text area should automatically transfer text for which 
+        Whether or not the text area should automatically transfer text for which 
         there isn't enough space from the end of the current line of text to the beginning of the next.
     **/
     @:behaviour(WrapBehaviour, true)        public var wrap:Bool;
