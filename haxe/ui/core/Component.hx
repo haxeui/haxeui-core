@@ -163,8 +163,8 @@ class Component extends ComponentImpl implements IValidating {
 
     @:noCompletion private var _native:Null<Bool> = null;
     /**
-     Whether to try to use a native version of this component
-    **/
+     * When enabled, HaxeUI will try  to use a native version of this component.
+     */
     public var native(get, set):Null<Bool>;
     private function get_native():Null<Bool> {
         if (_native == null) {
@@ -202,9 +202,10 @@ class Component extends ComponentImpl implements IValidating {
     }
 
     @:noCompletion private var _animatable:Bool = true;
+
     /**
-     Whether this component is allowed to animate
-    **/
+     * Whether this component is allowed to animate or not.
+     */
     public var animatable(get, set):Bool;
     private function get_animatable():Bool {
         #if !actuate
@@ -228,9 +229,10 @@ class Component extends ComponentImpl implements IValidating {
     }
 
     @:noCompletion private var _componentAnimation:Animation;
+
     /**
-     Current animation running
-    **/
+     * The currently running animation.
+     */
     public var componentAnimation(get, set):Animation;
     private function get_componentAnimation():Animation {
         return _componentAnimation;
@@ -248,8 +250,8 @@ class Component extends ComponentImpl implements IValidating {
     }
 
     /**
-     User specific data stored against this component instance
-    **/
+     * Can be used to store specific data relating to the component, or other things in your application.
+     */
     public var userData(default, default):Dynamic = null;
 
     //***********************************************************************************************************
@@ -257,8 +259,8 @@ class Component extends ComponentImpl implements IValidating {
     //***********************************************************************************************************
 
     /**
-     Reference to the `Screen` object this component is displayed on
-    **/
+     * The `Screen` object this component is displayed on.
+     */
     public var screen(get, null):Screen;
     private function get_screen():Screen {
         return Toolkit.screen;
@@ -267,6 +269,10 @@ class Component extends ComponentImpl implements IValidating {
     //***********************************************************************************************************
     // Drag & Drop
     //***********************************************************************************************************
+
+    /**
+     * When set to `true`, this component should be drag&drop-able.
+     */
     public var draggable(get, set):Bool;
     private function get_draggable():Bool {
         return DragManager.instance.isRegisteredDraggable(this);
@@ -318,9 +324,10 @@ class Component extends ComponentImpl implements IValidating {
     //***********************************************************************************************************
     // Display tree
     //***********************************************************************************************************
+
     /**
-     The top level component of this component instance
-    **/
+     * The top-level component of this component's parent tree.
+     */
     @:dox(group = "Display tree related properties and methods")
     public var rootComponent(get, never):Component;
     private function get_rootComponent():Component {
@@ -332,8 +339,8 @@ class Component extends ComponentImpl implements IValidating {
     }
 
     /**
-     Gets the number of child components under this component instance
-    **/
+     * Gets the number of children added to this component.
+     */
     @:dox(group = "Display tree related properties and methods")
     public var numComponents(get, never):Int;
     private function get_numComponents():Int {
@@ -352,8 +359,13 @@ class Component extends ComponentImpl implements IValidating {
     }
 
     /**
-     Adds a child component to this component instance
-    **/
+     * Adds a component to the end of this component's display hierarchy.
+     * 
+     * If this component already has children, the given component is added in front of the other children.
+     * 
+     * @param child The child component to add to this component.
+     * @return The added component.
+     */
     @:dox(group = "Display tree related properties and methods")
     public override function addComponent(child:Component):Component {
         if (_compositeBuilder != null) {
@@ -401,6 +413,12 @@ class Component extends ComponentImpl implements IValidating {
         return child;
     }
 
+    /**
+     * Returns `true` if the given component is a child of this component, `false` otherwise.
+     * 
+     * @param child The child component to check against.
+     * @return Is the child component a child of this component?
+     */
     public function containsComponent(child:Component):Bool {
         if (child == null) {
             return false;
@@ -416,8 +434,15 @@ class Component extends ComponentImpl implements IValidating {
     }
     
     /**
-     Adds a child component to this component instance
-    **/
+     * Inserts a child component at z-index `index`, effectively adding it in front of `index` children, and behind the rest.
+     * 
+     * If `index` is below every other child's index, the added component will render behind this component's children.  
+     * If `index` is above every other child's index, the added component will render in front of this component's children.
+     * 
+     * @param child The child component to add to this component.
+     * @param index The z-index in which the child component should be added.
+     * @return The added component.
+     */
     @:dox(group = "Display tree related properties and methods")
     public override function addComponentAt(child:Component, index:Int):Component {
         if (_compositeBuilder != null) {
@@ -469,8 +494,13 @@ class Component extends ComponentImpl implements IValidating {
     }
 
     /**
-     Removes the specified child component from this component instance
-    **/
+     * Removes a child component from this component's display hierarchy, and returns it.
+     * 
+     * @param child The child component to remove from this component.
+     * @param dispose Decides whether or not the child component should be destroyed too.
+     * @param invalidate If `true`, the child component updates itself after the removal.
+     * @return The removed child component
+     */
     @:dox(group = "Display tree related properties and methods")
     public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
         if (child == null) {
@@ -522,6 +552,12 @@ class Component extends ComponentImpl implements IValidating {
         return child;
     }
 
+    /**
+     * Removes this component from memory.
+     * 
+     * Calling methods/using fields on this component after calling `disposeComponent`
+     * is undefined behaviour, and could result in a null pointer exception/`x` is null exceptions.
+     */
     public function disposeComponent() {
         this._isDisposed = true;
         this.removeAllComponents(true);
@@ -552,8 +588,12 @@ class Component extends ComponentImpl implements IValidating {
     }
     
     /**
-     Removes the child component from this component instance
-    **/
+     * Removes the child component at z-index `index` from this component's display hierarchy, and returns it.
+     * @param index The index of the child component to remove from this component.
+     * @param dispose Decides whether or not the child component should be destroyed too.
+     * @param invalidate If `true`, the child component updates itself after the removal.
+     * @return The removed child component
+     */
     @:dox(group = "Display tree related properties and methods")
     public override function removeComponentAt(index:Int, dispose:Bool = true, invalidate:Bool = true):Component {
         if (_children == null) {
@@ -649,8 +689,11 @@ class Component extends ComponentImpl implements IValidating {
     }
 
     /**
-     Walk all children recursively, callback should return "true" if walking should continue
-    **/
+     * Iterates over the children components and calls `callback()` on each of them, recursively. 
+     * The children's children are also included in the walking, and so are those children's children...
+     *
+     * @param callback a callback that receives one component, and returns whether the walking should continue or not.
+     */
     public function walkComponents(callback:Component->Bool) {
         if (callback(this) == false) {
             return;
@@ -670,8 +713,10 @@ class Component extends ComponentImpl implements IValidating {
     }
 
     /**
-     Removes all child components from this component instance
-    **/
+     * Removes all child component from this component's display hierarchy.
+     * 
+     * @param dispose Decides whether or not the child component should be destroyed too.
+     */
     @:dox(group = "Display tree related properties and methods")
     public function removeAllComponents(dispose:Bool = true) {
         if (_compositeBuilder != null) {
@@ -705,20 +750,13 @@ class Component extends ComponentImpl implements IValidating {
     }
 
     /**
-     Finds a specific child in this components display tree (recusively if desired) and can optionally cast the result
-
-     - `criteria` - The criteria by which to search, the interpretation of this is defined using `searchType` (the default search type is *id*)
-
-     - `type` - The component class you wish to cast the result to (defaults to *null*)
-
-     - `recursive` - Whether to search this components children and all its childrens children till it finds a match (the default depends on the `searchType` param. If `searchType` is `id` the default is *true* otherwise it is *false*)
-
-     - `searchType` - Allows you specify how to consider a child a match (defaults to *id*), can be either:
-
-            - `id` - The first component that has the id specified in `criteria` will be considered a match
-
-            - `css` - The first component that contains a style name specified by `criteria` will be considered a match
-    **/
+     * Finds a specific child in this components display tree (recursively if desired) and can optionally cast the result
+     * @param criteria The criteria by which to search, the interpretation of this is defined using `searchType` (the default search type is *id*)
+     * @param type The component class you wish to cast the result to (defaults to *null*)
+     * @param recursive Whether to search this components children and all its children's children till it finds a match (the default depends on the `searchType` param. If `searchType` is `id` the default is *true* otherwise it is *false*)
+     * @param searchType Allows you specify how to consider a child a match (defaults to *id*), can be either: **`id`** - The first component that has the id specified in `criteria` will be considered a match *or* **`css`** - The first component that contains a style name specified by `criteria` will be considered a match.
+     * @return Null<T>
+     */
     @:dox(group = "Display tree related properties and methods")
     public function findComponent<T:Component>(criteria:String = null, type:Class<T> = null, recursive:Null<Bool> = null, searchType:String = "id"):Null<T> {
         if (recursive == null && criteria != null && searchType == "id") {
@@ -790,20 +828,14 @@ class Component extends ComponentImpl implements IValidating {
         return r;
     }
 
-    /**
-     Finds a specific parent in this components display tree and can optionally cast the result
-
-     - `criteria` - The criteria by which to search, the interpretation of this is defined using `searchType` (the default search type is *id*)
-
-     - `type` - The component class you wish to cast the result to (defaults to *null*)
-
-     - `searchType` - Allows you specify how to consider a parent a match (defaults to *id*), can be either:
-
-            - `id` - The first component that has the id specified in `criteria` will be considered a match
-
-            - `css` - The first component that contains a style name specified by `criteria` will be considered a match
-    **/
     @:dox(group = "Display tree related properties and methods")
+    /**
+     * Finds a specific parent in this components display tree and can optionally cast the result
+     * @param criteria The criteria by which to search, the interpretation of this is defined using `searchType` (the default search type is `id`)
+     * @param type The component class you wish to cast the result to (defaults to `null`)
+     * @param searchType Allows you specify how to consider a parent a match (defaults to `id`), can be either: **`id`** - The first component that has the id specified in `criteria` will be considered a match, *or*, **`css`** - The first component that contains a style name specified by `criteria` will be considered a match
+     * @return the found ancestor, or null if no ancestor is found.
+     */
     public function findAncestor<T:Component>(criteria:String = null, type:Class<T> = null, searchType:String = "id"):Null<T> {
         var match:Component = null;
         var p = this.parentComponent;
@@ -818,6 +850,17 @@ class Component extends ComponentImpl implements IValidating {
         return cast match;
     }
 
+     /**
+     * Lists components under a specific point in global, screen coordinates.
+     * 
+     * Note: this function will return *every single* components at a specific point, 
+     * even if they have no backgrounds, or haven't got anything drawn onto them. 
+     * 
+     * @param screenX The global, on-screen `x` position of the point to check for components under
+     * @param screenY The global, on-screen `y` position of the point to check for components under
+     * @param type Used to filter all components that aren't of a specific type. `null` by default, which means no filter is applied.
+     * @return An array of all components that overlap the "global" position `(x, y)`
+     */
     public function findComponentsUnderPoint<T:Component>(screenX:Float, screenY:Float, type:Class<T> = null):Array<Component> {
         var c:Array<Component> = [];
         if (hitTest(screenX, screenY, false)) {
@@ -837,6 +880,14 @@ class Component extends ComponentImpl implements IValidating {
         return c;
     }
 
+    /**
+     * Finds out if there is a component under a specific point in global coordinates.
+     * 
+     * @param screenX The global, on-screen `x` position of the point to check for components under
+     * @param screenY The global, on-screen `y` position of the point to check for components under
+     * @param type Used to filter all components that aren't of a specific type. `null` by default, which means no filter is applied.
+     * @return `true` if there is a component that overlaps the global position `(x, y)`, `false` otherwise.
+     */ 
     public function hasComponentUnderPoint<T:Component>(screenX:Float, screenY:Float, type:Class<T> = null):Bool {
         var b = false;
         if (hitTest(screenX, screenY, false)) {
