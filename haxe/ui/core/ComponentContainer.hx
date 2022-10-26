@@ -13,14 +13,36 @@ import haxe.ui.util.Variant;
 @:build(haxe.ui.macros.Macros.buildBehaviours())
 @:autoBuild(haxe.ui.macros.Macros.buildBehaviours())
 class ComponentContainer extends ComponentCommon implements IClonable<ComponentContainer> {
+
+    /**
+     * Whether to disable interactivity for this component or not.
+     * 
+     * The user can't interact with disabled components, and they don't
+     * send state change events when the user tries to interact with them.
+     */
     @:clonable @:behaviour(ComponentDisabledBehaviour)              public var disabled:Bool;
+
+    /**
+     * A tooltip to display near the cursor when hovering on top of this component for a while.
+     * 
+     * @see http://haxeui.org/explorer/#miscellaneous/tooltips
+     */
     @:clonable @:behaviour(ComponentToolTipBehaviour, null)         public var tooltip:Dynamic;
+
+    /**
+     * Some sort of a "default" tooltip layout used when assigning tooltips. 
+     * Might be useful when you want to use complex tooltips.
+     * 
+     * @see http://haxeui.org/explorer/#miscellaneous/tooltips
+     */
     @:clonable @:behaviour(ComponentToolTipRendererBehaviour, null) public var tooltipRenderer:Component;
 
     private var behaviours:Behaviours;
 
     /**
-     The parent component of this component instance
+        The parent component of this component instance.
+
+        Returns `null` if this component hasn't been added yet, or just doesn't have a parent.
     **/
     @:dox(group = "Display tree related properties and methods")
     public var parentComponent:Component = null;
@@ -35,7 +57,7 @@ class ComponentContainer extends ComponentCommon implements IClonable<ComponentC
 
     @:noCompletion private var _ready:Bool = false;
     /**
-     Whether the framework considers this component ready or not
+        Whether the framework considers this component ready or not.
     **/
     public var isReady(get, null):Bool;
     private function get_isReady():Bool {
@@ -44,9 +66,9 @@ class ComponentContainer extends ComponentCommon implements IClonable<ComponentC
 
     @:noCompletion private var _children:Array<Component>;
     /**
-     A list of this components children
-
-     *Note*: this function will return an empty array if the component has no children
+     *  An array of this component's children.
+     *  
+     *  Note: If this component has no children, and empty array is returned.
     **/
     @:dox(group = "Display tree related properties and methods")
     public var childComponents(get, null):Array<Component>;
