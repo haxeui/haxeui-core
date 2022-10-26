@@ -4,12 +4,17 @@ import haxe.ui.geom.Rectangle;
 import haxe.ui.validation.InvalidationFlags;
 
 class ComponentBounds extends ComponentLayout {
+
     //***********************************************************************************************************
     // Size related
     //***********************************************************************************************************
+
     /**
-     Whether this component will automatically resize itself based on it childrens calculated width
-    **/
+     * When enabled, this component will automatically resize itself based on it's children's calculated width.
+     * 
+     * For example, if this component's padding is `5`, and it has one child, `150` pixels wide, 
+     * and `autoWidth` is set to `true`, this component's width should be `160`
+     */
     @:dox(group = "Size related properties and methods")
     public var autoWidth(get, null):Bool;
     private function get_autoWidth():Bool {
@@ -28,8 +33,11 @@ class ComponentBounds extends ComponentLayout {
     }
 
     /**
-     Whether this component will automatically resize itself based on it childrens calculated height
-    **/
+     * When enabled, this component will automatically resize itself based on it's children's calculated height.
+     * 
+     * For example, if this component's padding is `5`, and it has one child, `200` pixels tall, 
+     * and `autoHeight` is set to `true`, this component's height should be `210`
+     */
     @:dox(group = "Size related properties and methods")
     public var autoHeight(get, null):Bool;
     private function get_autoHeight():Bool {
@@ -42,6 +50,14 @@ class ComponentBounds extends ComponentLayout {
         return style.autoHeight;
     }
 
+    /**
+     * Resizes a component to be `w` pixels wide and `h` pixels tall.
+     * 
+     * Useful if you want to resize the component in both the X & Y axis, 
+     * and don't want to call the resizing logic twice.
+     * @param w The component's new width.
+     * @param h The component's new height.
+     */
     @:dox(group = "Size related properties and methods")
     public function resizeComponent(w:Null<Float>, h:Null<Float>) {
         var invalidate:Bool = false;
@@ -61,11 +77,21 @@ class ComponentBounds extends ComponentLayout {
         }
     }
 
+    /**
+     * The component's true width on screen. 
+     * 
+     * May differ from `componentWidth` if `Toolkit.scaleX != 1` 
+     */
     public var actualComponentWidth(get, null):Float;
     private function get_actualComponentWidth():Float {
         return componentWidth * Toolkit.scaleX;
     }
 
+    /**
+     * The component's true height on screen. 
+     * 
+     * May differ from `componentHeight` if `Toolkit.scaleY != 1` 
+     */
     public var actualComponentHeight(get, null):Float;
     private function get_actualComponentHeight():Float {
         return componentHeight * Toolkit.scaleY;
@@ -74,9 +100,10 @@ class ComponentBounds extends ComponentLayout {
     @:noCompletion private var _componentWidth:Null<Float>;
     @:allow(haxe.ui.layouts.Layout)
     @:allow(haxe.ui.core.Screen)
+
     /**
-     The calculated width of this component
-    **/
+     * This component's calculated width.
+     */
     @:dox(group = "Size related properties and methods")
     @:clonable private var componentWidth(get, set):Null<Float>;
     private function get_componentWidth():Null<Float> {
@@ -93,9 +120,10 @@ class ComponentBounds extends ComponentLayout {
     @:noCompletion private var _componentHeight:Null<Float>;
     @:allow(haxe.ui.layouts.Layout)
     @:allow(haxe.ui.core.Screen)
+
     /**
-     The calculated height of this component
-    **/
+     * This component's calculated height.
+     */
     @:dox(group = "Size related properties and methods")
     @:clonable private var componentHeight(get, set):Null<Float>;
     private function get_componentHeight():Null<Float> {
@@ -110,9 +138,10 @@ class ComponentBounds extends ComponentLayout {
     }
 
     @:noCompletion private var _percentWidth:Null<Float>;
+
     /**
-     What percentage of this components parent to use to calculate its width
-    **/
+     * When set, sets this component's width to be `percentWidth`% percent of it's parent's width.
+     */
     @:dox(group = "Size related properties and methods")
     @clonable @bindable public var percentWidth(get, set):Null<Float>;
     private function get_percentWidth():Null<Float> {
@@ -134,9 +163,10 @@ class ComponentBounds extends ComponentLayout {
     }
 
     @:noCompletion private var _percentHeight:Null<Float>;
+
     /**
-     What percentage of this components parent to use to calculate its height
-    **/
+     * When set, sets this component's height to be `percentHeight`% percent of it's parent's height.
+     */
     @:dox(group = "Size related properties and methods")
     @clonable @bindable public var percentHeight(get, set):Null<Float>;
     private function get_percentHeight():Null<Float> {
