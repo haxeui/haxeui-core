@@ -366,6 +366,10 @@ class ComponentBounds extends ComponentLayout {
     @:noCompletion private var _actualHeight:Null<Float>;
 
     @:noCompletion private var _hasScreen:Null<Bool> = null;
+
+    /**
+     * Whether this component, or one if it's parents, has a screen.
+     */
     public var hasScreen(get, null):Bool;
     private function get_hasScreen():Bool {
         var p = this;
