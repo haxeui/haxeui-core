@@ -16,6 +16,9 @@ import Std.is as isOfType;
 class Screen extends ScreenImpl {
 
     private static var _instance:Screen;
+    /**
+     * References the main application's screen, in a cross-framework way.
+     */
     public static var instance(get, never):Screen;
     private static function get_instance():Screen {
         if (_instance == null) {
@@ -29,9 +32,28 @@ class Screen extends ScreenImpl {
     //***********************************************************************************************************
     private var _eventMap:EventMap = new EventMap();
 
+    /**
+     * The `x` position of the mouse on screen.
+     * 
+     * A lower value means the mouse is at the left side of the screen,
+     * whie a higher value means the mouse is at the right side of the screen.
+     */
     public var currentMouseX:Float = 0;
+    
+    /**
+     * The `y` position of the mouse on screen.
+     * 
+     * A lower value means the mouse is closer to the top of the screen,
+     * whie a higher value means the mouse is closer to the bottom of the screen.
+     */
     public var currentMouseY:Float = 0;
     
+    /**
+     * Creates a new `Screen`.
+     * 
+     * Usually, you wouldn't want to create a screen yourself, but to use the one in `Screen.instance`.
+     * Double check if thats what your'e trying to do.
+     */
     public function new() {
         super();
         registerEvent(MouseEvent.MOUSE_MOVE, function(e:MouseEvent) {
@@ -40,6 +62,15 @@ class Screen extends ScreenImpl {
         });
     }
 
+    /**
+     * Adds a component/container to the screen. 
+     * 
+     * When using this via `Screen.instance.addComponent()`, This method acts as some sort of a cross-framework way
+     * to draw components/containers onto the main application's screen.
+     * 
+     * @param component The component to add to the screen.
+     * @return The added component.
+     */
     public override function addComponent(component:Component):Component {
         var wasReady = component.isReady;
         @:privateAccess component._hasScreen = true;
@@ -62,6 +93,16 @@ class Screen extends ScreenImpl {
         return component;
     }
 
+    /**
+     * Removes a component/container from the screen. 
+     * 
+     * When using this via `Screen.instance.removeComponent()`, 
+     * This method acts as some sort of a cross-framework way
+     * to remove components/containers from the main application's screen.
+     * 
+     * @param component The component to add to the screen.
+     * @return The added component.
+     */
     public override function removeComponent(component:Component, dispose:Bool = true):Component {
         if (rootComponents.indexOf(component) == -1) {
             return component;
@@ -78,6 +119,13 @@ class Screen extends ScreenImpl {
         return component;
     }
 
+    /**
+     * Sets the z-index of a component, essentially moving it forwards/backwards, 
+     * or, in front/behind other components.
+     * @param child The component to move.
+     * @param index The z-index to move that component to.
+     * @return The moved component.
+     */
     public function setComponentIndex(child:Component, index:Int):Component {
         if (index >= 0 && index <= rootComponents.length) {
             handleSetComponentIndex(child, index);
@@ -87,6 +135,11 @@ class Screen extends ScreenImpl {
         return child;
     }
 
+    /**
+     * Moves a component to the front of the screen.
+     * 
+     * @param child The component to move to the front of the screen.
+     */
     public function moveComponentToFront(child:Component) {
         if (rootComponents.indexOf(child) != -1) {
             setComponentIndex(child, rootComponents.length - 1);
@@ -94,10 +147,16 @@ class Screen extends ScreenImpl {
     }
     
     /**
-     List components under a specific point (in screen co-ordinates).
-
-     Note: this function will return components at a specific point even if they have no backgrounds (or anything drawn into them). 
-    **/
+     * Lists components under a specific point in global, screen coordinates.
+     * 
+     * Note: this function will return *every single* components at a specific point, 
+     * even if they have no backgrounds, or haven't got anything drawn onto them. 
+     * 
+     * @param screenX The global, on-screen `x` position of the point to check for components under
+     * @param screenY The global, on-screen `y` position of the point to check for components under
+     * @param type Used to filter all components that aren't of a specific type. `null` by default, which means no filter is applied.
+     * @return An array of all components that overlap the "global" position `(x, y)`
+     */
     public function findComponentsUnderPoint<T:Component>(screenX:Float, screenY:Float, type:Class<T> = null):Array<Component> {
         var c:Array<Component> = [];
         for (r in rootComponents) {
@@ -116,11 +175,13 @@ class Screen extends ScreenImpl {
     }
     
     /**
-     Find out if there is a component under a specific point (in screen co-ordinates).
-
-     Note: this function will return true even if the components have no backgrounds (or anything drawn into them). Use hasSolidComponentUnderPoint
-           to additionally check if they are not transparent and have solid backgrounds
-    **/
+     * Finds out if there is a component under a specific point in global coordinates.
+     * 
+     * @param screenX The global, on-screen `x` position of the point to check for components under
+     * @param screenY The global, on-screen `y` position of the point to check for components under
+     * @param type Used to filter all components that aren't of a specific type. `null` by default, which means no filter is applied.
+     * @return `true` if there is a component that overlaps the global position `(x, y)`, `false` otherwise.
+     */ 
     public function hasComponentUnderPoint<T:Component>(screenX:Float, screenY:Float, type:Class<T> = null):Bool {
         for (r in rootComponents) {
             if (r.hasComponentUnderPoint(screenX, screenY, type) == true) {
@@ -130,6 +191,17 @@ class Screen extends ScreenImpl {
         return false;
     }
    
+    /**
+     * Lists components under a specific point in global, screen coordinates.
+     * 
+     * Note: this function will only return components "solid" components - components that have
+     * some sort of a background/image, and are not transparent.
+     * 
+     * @param screenX The global, on-screen `x` position of the point to check for components under
+     * @param screenY The global, on-screen `y` position of the point to check for components under
+     * @param type Used to filter all components that aren't of a specific type. `null` by default, which means no filter is applied.
+     * @return An array of all solid components that overlap the "global" position `(x, y)`
+     */
     public function findSolidComponentUnderPoint<T:Component>(screenX:Float, screenY:Float, type:Class<T> = null):Array<Component> {
         var solidComponents = [];
         var components = findComponentsUnderPoint(screenX, screenY, type);
@@ -142,9 +214,16 @@ class Screen extends ScreenImpl {
     }
 
     /**
-     Find out if there is a 'solid' component under a specific point (in screen co-ordinates). A 'solid' component is one which has a background
-     of some kind (image or color) and is not transparent.
-    **/
+     * Finds out if there is a solid component under a specific point in global coordinates.
+     * 
+     * Note: a solid component is a component that has
+     * some sort of a background/image, and is not transparent.
+     * 
+     * @param screenX The global, on-screen `x` position of the point to check for components under
+     * @param screenY The global, on-screen `y` position of the point to check for components under
+     * @param type Used to filter all components that aren't of a specific type. `null` by default, which means no filter is applied.
+     * @return `true` if there is a solid component that overlaps the global position `(x, y)`, `false` otherwise.
+     */ 
     public function hasSolidComponentUnderPoint<T:Component>(screenX:Float, screenY:Float, type:Class<T> = null):Bool {
         return (findSolidComponentUnderPoint(screenX, screenY, type).length > 0);
     }
@@ -166,6 +245,14 @@ class Screen extends ScreenImpl {
     //***********************************************************************************************************
     // Events
     //***********************************************************************************************************
+
+    /**
+     * Adds an event listener, that listens to a certain type of event.
+     * 
+     * @param type The name of the event to listen to
+     * @param listener a function with one argument that returns nothing
+     * @param priority A higher value will make this event dispatch "sooner", while a lower value does the opposite.
+     */
     public function registerEvent(type:String, listener:Dynamic->Void, priority:Int = 0) {
         if (supportsEvent(type) == true) {
             if (_eventMap.add(type, listener, priority) == true) {
@@ -178,6 +265,12 @@ class Screen extends ScreenImpl {
         }
     }
 
+    /**
+     * Removes an event listener from a specific type of event.
+     * 
+     * @param type The name of the event to listen to
+     * @param listener a function with one argument that returns nothing
+     */
     public function unregisterEvent(type:String, listener:Dynamic->Void) {
         if (_eventMap.remove(type, listener) == true) {
             unmapEvent(type, _onMappedEvent);
