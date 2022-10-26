@@ -750,12 +750,13 @@ class Component extends ComponentImpl implements IValidating {
     }
 
     /**
-     * Finds a specific child in this components display tree (recursively if desired) and can optionally cast the result
-     * @param criteria The criteria by which to search, the interpretation of this is defined using `searchType` (the default search type is *id*)
-     * @param type The component class you wish to cast the result to (defaults to *null*)
-     * @param recursive Whether to search this components children and all its children's children till it finds a match (the default depends on the `searchType` param. If `searchType` is `id` the default is *true* otherwise it is *false*)
-     * @param searchType Allows you specify how to consider a child a match (defaults to *id*), can be either: **`id`** - The first component that has the id specified in `criteria` will be considered a match *or* **`css`** - The first component that contains a style name specified by `criteria` will be considered a match.
-     * @return Null<T>
+     * Finds a specific child in this components display tree (recursively if desired) and can optionally cast the result.
+     * 
+     * @param criteria The criteria by which to search, the interpretation of this is defined using `searchType` (the default search type is `id`).
+     * @param type The component class you wish to cast the result to (defaults to `null`).
+     * @param recursive Whether to search this components children and all its children's children till it finds a match (the default depends on the `searchType` param. If `searchType` is `id` the default is *true* otherwise it is `false`)
+     * @param searchType Allows you specify how to consider a child a match (defaults to *id*), can be either: **`id`** - The first component that has the id specified in `criteria` will be considered a match, *or*, **`css`** - The first component that contains a style name specified by `criteria` will be considered a match.
+     * @return The found component, or `null` if no component was found.
      */
     @:dox(group = "Display tree related properties and methods")
     public function findComponent<T:Component>(criteria:String = null, type:Class<T> = null, recursive:Null<Bool> = null, searchType:String = "id"):Null<T> {
@@ -786,6 +787,14 @@ class Component extends ComponentImpl implements IValidating {
         return cast match;
     }
 
+    /**
+     * Finds all components with a specific style in this components display tree.
+     * 
+     * @param styleName The style name to search for
+     * @param type The component class you wish to cast the result to (defaults to `null`, which means casting to the default, `Component` type).
+     * @param maxDepth how many children "deep" should the search go to find components. defaults to `5`.
+     * @return An array of the found components.
+     */
     public function findComponents<T:Component>(styleName:String = null, type:Class<T> = null, maxDepth:Int = 5):Array<T> {
         if (maxDepth == -1) {
             maxDepth = 100;
@@ -831,6 +840,7 @@ class Component extends ComponentImpl implements IValidating {
     @:dox(group = "Display tree related properties and methods")
     /**
      * Finds a specific parent in this components display tree and can optionally cast the result
+     * 
      * @param criteria The criteria by which to search, the interpretation of this is defined using `searchType` (the default search type is `id`)
      * @param type The component class you wish to cast the result to (defaults to `null`)
      * @param searchType Allows you specify how to consider a parent a match (defaults to `id`), can be either: **`id`** - The first component that has the id specified in `criteria` will be considered a match, *or*, **`css`** - The first component that contains a style name specified by `criteria` will be considered a match
@@ -914,8 +924,10 @@ class Component extends ComponentImpl implements IValidating {
     }
     
     /**
-     Gets the index of a child component
-    **/
+     * Gets the index of `child` under this component. Returns `-1` if `child` isn't a child of this component.
+     * @param child The child to get the index of.
+     * @return It's index, or `-1` if the child wan't found.
+     */
     @:dox(group = "Display tree related properties and methods")
     public function getComponentIndex(child:Component):Int {
         if (_compositeBuilder != null) {
@@ -932,6 +944,12 @@ class Component extends ComponentImpl implements IValidating {
         return index;
     }
 
+    /**
+     * Sets the index of `child` under this component, essentially moving it forwards/backwards.
+     * @param child The child to set the index of.
+     * @param index the index to set to.
+     * @return the child component.
+     */
     public function setComponentIndex(child:Component, index:Int):Component {
         if (_compositeBuilder != null) {
             var v = _compositeBuilder.setComponentIndex(child, index);
@@ -950,8 +968,10 @@ class Component extends ComponentImpl implements IValidating {
     }
 
     /**
-     Gets a child component at a specified index
-    **/
+     * Gets the child component at a specific index. If this component has no children, `null` is returned.
+     * @param index the child's index
+     * @return the child at the given index, or `null` if this component has no children.
+     */
     @:dox(group = "Display tree related properties and methods")
     public function getComponentAt(index:Int):Component {
         if (_compositeBuilder != null) {
@@ -967,8 +987,8 @@ class Component extends ComponentImpl implements IValidating {
     }
 
     /**
-     Hides this component and all its children
-    **/
+     * Hides this component, and all it's children.
+     */
     @:dox(group = "Display tree related properties and methods")
     public function hide() {
         if (_compositeBuilder != null) {
@@ -1013,8 +1033,8 @@ class Component extends ComponentImpl implements IValidating {
     }
     
     /**
-     Shows this component and all its children
-    **/
+     * Shows this component and all it's children
+     */
     @:dox(group = "Display tree related properties and methods")
     public function show() {
         if (_compositeBuilder != null) {
@@ -1060,6 +1080,11 @@ class Component extends ComponentImpl implements IValidating {
         }
     }
     
+    /**
+     * Applies a fade effect which turns this component from invisible to visible.
+     * @param onEnd A function to dispatch when the fade completes
+     * @param show When enabled, ensures that this component is actually visible when the fade completes.
+     */
     public function fadeIn(onEnd:Void->Void = null, show:Bool = true) {
         if (onEnd != null || show == true) {
             var prevStart = onAnimationStart;
@@ -1083,6 +1108,11 @@ class Component extends ComponentImpl implements IValidating {
         swapClass("fade-in", "fade-out");
     }
 
+    /**
+     * Applies a fade effect which turns this component from visible to invisible.
+     * @param onEnd A function to dispatch when the fade completes
+     * @param show When enabled, ensures that this component is actually invisible when the fade completes.
+     */
     public function fadeOut(onEnd:Void->Void = null, hide:Bool = true) {
         if (onEnd != null || hide == true) {
             var prevEnd = onAnimationEnd;
@@ -1101,9 +1131,10 @@ class Component extends ComponentImpl implements IValidating {
     }
 
     @:noCompletion private var _hidden:Bool = false;
+
     /**
-     Whether this component is hidden or not
-    **/
+     * Whether this component is visible or not.
+     */
     @:dox(group = "Display tree related properties and methods")
     public var hidden(get, set):Bool;
     private function get_hidden():Bool {
@@ -1131,10 +1162,14 @@ class Component extends ComponentImpl implements IValidating {
     //***********************************************************************************************************
     // Style related
     //***********************************************************************************************************
+
     @:noCompletion private var _customStyle:Style = null;
+
     /**
-     A custom style object that will appled to this component after any css rules have been matched and applied
-    **/
+     * A custom style object that will applied to this component after any css rules have been matched and applied.
+     * 
+     * Use this when modifying this component's style through code.
+     */
     @:dox(group = "Style related properties and methods")
     public var customStyle(get, set):Style;
     private function get_customStyle():Style {
@@ -1154,9 +1189,14 @@ class Component extends ComponentImpl implements IValidating {
     private var classes:Array<String> = [];
 
     private var cascadeActive:Bool = false;
+    
     /**
-     Adds a css style name to this component
-    **/
+     * Adds a `css` class name to this component.
+     * 
+     * @param name The `css` class name.
+     * @param invalidate Should this component update after adding the class?
+     * @param recursive When enabled, recursively adds the class to this component's children.
+     */
     @:dox(group = "Style related properties and methods")
     public function addClass(name:String, invalidate:Bool = true, recursive:Bool = false) {
         if (classes.indexOf(name) == -1) {
@@ -1174,8 +1214,12 @@ class Component extends ComponentImpl implements IValidating {
     }
 
     /**
-     Adds a css style names to this component
-    **/
+     * Adds multiple `css` class names to this component.
+     * 
+     * @param names The `css` class names.
+     * @param invalidate Should this component update after adding the class?
+     * @param recursive When enabled, recursively adds the class to this component's children.
+     */
     @:dox(group = "Style related properties and methods")
     public function addClasses(names:Array<String>, invalidate:Bool = true, recursive:Bool = false) {
         var needsInvalidate = false;
@@ -1200,8 +1244,12 @@ class Component extends ComponentImpl implements IValidating {
     }
 
     /**
-     Removes a css style name from this component
-    **/
+     * Removes a `css` class name from this component.
+     * 
+     * @param name The `css` class name.
+     * @param invalidate Should this component update after adding the class?
+     * @param recursive When enabled, recursively adds the class to this component's children.
+     */
     @:dox(group = "Style related properties and methods")
     public function removeClass(name:String, invalidate:Bool = true, recursive:Bool = false) {
         if (classes.indexOf(name) != -1) {
@@ -1219,8 +1267,12 @@ class Component extends ComponentImpl implements IValidating {
     }
 
     /**
-     Removes a css style names from this component
-    **/
+     * Removes multiple `css` class names from this component.
+     * 
+     * @param names The `css` class names.
+     * @param invalidate Should this component update after adding the class?
+     * @param recursive When enabled, recursively adds the class to this component's children.
+     */
     @:dox(group = "Style related properties and methods")
     public function removeClasses(names:Array<String>, invalidate:Bool = true, recursive:Bool = false) {
         var needsInvalidate = false;
@@ -1245,16 +1297,23 @@ class Component extends ComponentImpl implements IValidating {
     }
 
     /**
-     Whether or not this component has a css class associated with it
-    **/
+     * Returns `true` if this components has the `css` class `name`, `false` otherwise.
+     * @param name The `css` class name.
+     * @return Does this component contain the given `css` class?
+     */
     @:dox(group = "Style related properties and methods")
     public inline function hasClass(name:String):Bool {
         return (classes.indexOf(name) != -1);
     }
 
     /**
-     Adds a css style name to this component
-    **/
+     * Swaps a `css` class with another `css` class.
+     * 
+     * @param classToAdd The `css` class name to add.
+     * @param classToRemove The `css` class name to remove.
+     * @param invalidate Should this component update after adding the class?
+     * @param recursive When enabled, recursively adds the class to this component's children.
+     */
     @:dox(group = "Style related properties and methods")
     public function swapClass(classToAdd:String, classToRemove:String = null, invalidate:Bool = true, recursive:Bool = false) {
         var needsInvalidate = false;
@@ -1280,7 +1339,7 @@ class Component extends ComponentImpl implements IValidating {
     }
 
     /**
-     A string representation of the css classes associated with this component
+        A string representation of the `css` classes associated with this component
     **/
     @:dox(group = "Style related properties and methods")
     @clonable public var styleNames(get, set):String;
@@ -1299,9 +1358,10 @@ class Component extends ComponentImpl implements IValidating {
     }
 
     @:noCompletion private var _styleString:String;
+
     /**
-     An inline css string that will be parsed and applied as a custom style
-    **/
+     * Used to parse an apply an inline `css` string to this component as a custom style.
+     */
     @:dox(group = "Style related properties and methods")
     @clonable public var styleString(get, set):String;
     private function get_styleString():String {
@@ -1444,7 +1504,7 @@ class Component extends ComponentImpl implements IValidating {
     //***********************************************************************************************************
 
     /**
-     Tells the framework this component is ready
+     Tells the framework this component is ready to render
 
      *Note*: this is called internally by the framework
     **/
@@ -1507,40 +1567,42 @@ class Component extends ComponentImpl implements IValidating {
     // Styles
     //***********************************************************************************************************
     #if !(haxeui_flixel || haxeui_heaps)
-    @:style                 public var color:Null<Color>;
+    /** A color to tint the object with **/                                         @:style                 public var color:Null<Color>;
     #end
     @:style                 public var backgroundColor:Null<Color>;
     @:style                 public var backgroundColorEnd:Null<Color>;
     @:style                 public var backgroundImage:Variant;
-    @:style                 public var borderColor:Null<Color>;
-    @:style                 public var borderSize:Null<Float>;
-    @:style                 public var borderRadius:Null<Float>;
+    /** The color of the border **/                                                 @:style                 public var borderColor:Null<Color>;
+    /** The size of the border, in pixels **/                                       @:style                 public var borderSize:Null<Float>;
+    /** The amount of rounding to apply to the border **/                           @:style                 public var borderRadius:Null<Float>;
 
-    @:style(layout)         public var padding:Null<Float>;
-    @:style(layout)         public var paddingLeft:Null<Float>;
-    @:style(layout)         public var paddingRight:Null<Float>;
-    @:style(layout)         public var paddingTop:Null<Float>;
-    @:style(layout)         public var paddingBottom:Null<Float>;
+    /** The gap between the container's children, on all sides **/                  @:style(layout)         public var padding:Null<Float>;
+    /** The gap between the container's children, on their top **/                  @:style(layout)         public var paddingLeft:Null<Float>;
+    /** The gap between the container's children, on their left side **/            @:style(layout)         public var paddingRight:Null<Float>;
+    /** The gap between the container's children, on their right side **/           @:style(layout)         public var paddingTop:Null<Float>;
+    /** The gap between the container's children, on their bottom **/               @:style(layout)         public var paddingBottom:Null<Float>;
 
-    @:style                 public var marginLeft:Null<Float>;
-    @:style                 public var marginRight:Null<Float>;
-    @:style                 public var marginTop:Null<Float>;
-    @:style                 public var marginBottom:Null<Float>;
+    /** The amount of offseting to apply for text from the top in pixels **/        @:style                 public var marginLeft:Null<Float>;
+    /** The amount of offseting to apply for text from the left in pixels **/       @:style                 public var marginRight:Null<Float>;
+    /** The amount of offseting to apply for text from the right in pixels **/      @:style                 public var marginTop:Null<Float>;
+    /** The amount of offseting to apply for text from the bottom in pixels **/     @:style                 public var marginBottom:Null<Float>;
     @:style                 public var clip:Null<Bool>;
 
-    @:style                 public var opacity:Null<Float>;
+    /** A value between 0 and 1, deciding the transparency of this object **/       @:style                 public var opacity:Null<Float>;
 
-    @:style(layoutparent)   public var horizontalAlign:String;
-    @:style(layoutparent)   public var verticalAlign:String;
+    /** The anount of spacing between children horizontally, in pixels **/          @:style(layoutparent)   public var horizontalAlign:String;
+    /** The anount of spacing between children vertically, in pixels **/            @:style(layoutparent)   public var verticalAlign:String;
 
     //***********************************************************************************************************
     // Script related
     //***********************************************************************************************************
-    /**
-     Whether or not this component is allowed to be exposed to script interpreters (defaults to _true_)
-    **/
+    
     @:noCompletion private var _scriptAccess:Bool = true;
     @:dox(group = "Script related properties and methods")
+
+    /**
+     * Whether or not this component is allowed to be exposed to script interpreters (defaults to `true`)
+     */
     public var scriptAccess(get, set):Bool;
     private function get_scriptAccess():Bool {
         return _scriptAccess;
@@ -1558,9 +1620,6 @@ class Component extends ComponentImpl implements IValidating {
         return value;
     }
     
-    /**
-     Recursively generates list of all child components that have specified an `id`
-    **/
     @:dox(group = "Script related properties and methods")
     public var namedComponents(get, null):Array<Component>;
     private function get_namedComponents():Array<Component> {
@@ -1569,6 +1628,12 @@ class Component extends ComponentImpl implements IValidating {
         return list;
     }
 
+    /**
+     * Adds multiple components from `parent`, which name can be found in `list`.
+     * 
+     * @param parent The parent component. to add from.
+     * @param list The name list to check against.
+     */
     private static function addNamedComponentsFrom(parent:Component, list:Array<Component>) {
         if (parent == null) {
             return;
@@ -1583,12 +1648,34 @@ class Component extends ComponentImpl implements IValidating {
         }
     }
 
+    /**
+     *Utility property to add a single `DragEvent.DRAG_START` event
+     */
     @:event(DragEvent.DRAG_START)       public var onDragStart:DragEvent->Void;    
+    
+    /**
+     *Utility property to add a single `DragEvent.DRAG` event
+     */
     @:event(DragEvent.DRAG)             public var onDrag:DragEvent->Void;    
+    
+    /**
+     *Utility property to add a single `DragEvent.DRAG_END` event
+     */
     @:event(DragEvent.DRAG_END)         public var onDragEnd:DragEvent->Void;    
     
+    /**
+     *Utility property to add a single `AnimationEvent.START` event
+     */
     @:event(AnimationEvent.START)       public var onAnimationStart:AnimationEvent->Void;
+    
+    /**
+     *Utility property to add a single `AnimationEvent.FRAME` event
+     */
     @:event(AnimationEvent.FRAME)       public var onAnimationFrame:AnimationEvent->Void;
+    
+    /**
+     *Utility property to add a single `AnimationEvent.END` event
+     */
     @:event(AnimationEvent.END)         public var onAnimationEnd:AnimationEvent->Void;
 
     /**
@@ -2016,6 +2103,11 @@ class Component extends ComponentImpl implements IValidating {
     //***********************************************************************************************************
     // Clonable
     //***********************************************************************************************************
+    
+    /**
+     * Gets a complete copy of this component.
+     * @return A new component, similar to this one.
+     */
     public override function cloneComponent():Component {
         if (_ready == false) {
             //ready();
@@ -2059,6 +2151,9 @@ class Component extends ComponentImpl implements IValidating {
         return cssName;
     }
 
+    /**
+     * Whether this component has a non-visible graphic added/drawn onto it or not.
+     */
     public var isComponentSolid(get, null):Bool;
     private function get_isComponentSolid():Bool {
         if (this.style == null) {
