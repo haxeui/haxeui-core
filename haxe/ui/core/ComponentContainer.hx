@@ -47,6 +47,9 @@ class ComponentContainer extends ComponentCommon implements IClonable<ComponentC
     @:dox(group = "Display tree related properties and methods")
     public var parentComponent:Component = null;
 
+    /**
+     * Creates a new `ComponentContainer`.
+     */
     public function new() {
         super();
         behaviours = new Behaviours(cast(this, Component));
@@ -110,19 +113,30 @@ class ComponentContainer extends ComponentCommon implements IClonable<ComponentC
     /**
      * Removes a child component from this component's display list, and returns it.
      * 
-     * @param child The child component to remvove from this component
-     * @param dispose 
-     * @param invalidate
-     * @return Component
+     * @param child The child component to remove from this component.
+     * @param dispose Decides whether or not the child component should be destroyed too.
+     * @param invalidate If `true`, the child component updates itself after the removal.
+     * @return The removed child component
      */
     public function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
         return null;
     }
 
+    /**
+     * Removes the child component at z-index `index` from this component's display list, and returns it.
+     * @param index The index of the child component to remove from this component.
+     * @param dispose Decides whether or not the child component should be destroyed too.
+     * @param invalidate If `true`, the child component updates itself after the removal.
+     * @return The removed child component
+     */
     public function removeComponentAt(index:Int, dispose:Bool = true, invalidate:Bool = true):Component {
         return null;
     }
 
+    /**
+     * Sets this component's z-index to `0`, 
+     * effectively putting it behind every single one of the parent's children.
+     */
     public function moveComponentToBack() {
         if (parentComponent == null || parentComponent.numComponents <= 1) {
             return;
@@ -131,6 +145,9 @@ class ComponentContainer extends ComponentCommon implements IClonable<ComponentC
         parentComponent.setComponentIndex(cast this, 0);
     }
 
+    /**
+     * Moves this component behind the child component behind it.
+     */
     public function moveComponentBackward() {
         if (parentComponent == null || parentComponent.numComponents <= 1) {
             return;
@@ -144,6 +161,10 @@ class ComponentContainer extends ComponentCommon implements IClonable<ComponentC
         parentComponent.setComponentIndex(cast this, index - 1);
     }
     
+    /**
+     * Sets this component's z-index to `parentComponent.numComponents - 1`, 
+     * effectively putting it after in front of every single one of the parent's children.
+     */
     public function moveComponentToFront() {
         if (parentComponent == null || parentComponent.numComponents <= 1) {
             return;
@@ -152,6 +173,9 @@ class ComponentContainer extends ComponentCommon implements IClonable<ComponentC
         parentComponent.setComponentIndex(cast this, parentComponent.numComponents - 1);
     }
 
+    /**
+     * Moves this component to the front of the child component in front of it.
+     */
     public function moveComponentFrontward() {
         if (parentComponent == null || parentComponent.numComponents <= 1) {
             return;
@@ -165,6 +189,9 @@ class ComponentContainer extends ComponentCommon implements IClonable<ComponentC
         parentComponent.setComponentIndex(cast this, index + 1);
     }
     
+    /**
+     * Gets the child component at the bottom of this component
+     */
     public var bottomComponent(get, null):Component;
     private function get_bottomComponent():Component {
         if (_children == null || _children.length == 0) {
@@ -173,6 +200,9 @@ class ComponentContainer extends ComponentCommon implements IClonable<ComponentC
         return cast _children[0];
     }
     
+    /**
+     * Gets the child component at the top of this component
+     */
     public var topComponent(get, null):Component;
     private function get_topComponent():Component {
         if (_children == null || _children.length == 0) {
@@ -200,13 +230,23 @@ class ComponentContainer extends ComponentCommon implements IClonable<ComponentC
     //***********************************************************************************************************
     // General
     //***********************************************************************************************************
+
+    /**
+     * The text displayed inside this component.
+     */
     @:clonable @:behaviour(ComponentTextBehaviour)                  public var text:String;
+    /**
+     * The text displayed inside the label.
+     * 
+     * `value` is used as a universal way to access the "core" value a component is based on. 
+     * in this case, its the component's text.
+     */
     @:clonable @:behaviour(ComponentValueBehaviour)                 public var value:Dynamic;
 
     @:noCompletion private var _id:String = null;
     /**
-     The identifier of this component
-    **/
+     * This component's identifier.
+     */
     @:clonable public var id(get, set):String;
     private function get_id():String {
         return _id;
