@@ -363,7 +363,7 @@ class Component extends ComponentImpl implements IValidating {
     }
 
     /**
-     * Adds a component to the end of this component's display hierarchy.
+     * Adds a component to the end of this component's display list.
      * 
      * If this component already has children, the given component is added in front of the other children.
      * 
@@ -500,7 +500,7 @@ class Component extends ComponentImpl implements IValidating {
     }
 
     /**
-     * Removes a child component from this component's display hierarchy, and returns it.
+     * Removes a child component from this component's display list, and returns it.
      * 
      * @param child The child component to remove from this component.
      * @param dispose Decides whether or not the child component should be destroyed too.
@@ -594,7 +594,7 @@ class Component extends ComponentImpl implements IValidating {
     }
     
     /**
-     * Removes the child component at index `index` from this component's display hierarchy, and returns it.
+     * Removes the child component at index `index` from this component's display list, and returns it.
      * 
      * @param index The index of the child component to remove from this component.
      * @param dispose Decides whether or not the child component should be destroyed too.
@@ -720,7 +720,7 @@ class Component extends ComponentImpl implements IValidating {
     }
 
     /**
-     * Removes all child component from this component's display hierarchy.
+     * Removes all child component from this component's display tree.
      * 
      * @param dispose Decides whether or not the child component should be destroyed too.
      */
