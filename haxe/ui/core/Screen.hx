@@ -120,10 +120,14 @@ class Screen extends ScreenImpl {
     }
 
     /**
-     * Sets the z-index of a component, essentially moving it forwards/backwards, 
+     * Sets the index of a component, essentially moving it forwards/backwards, 
      * or, in front/behind other components.
+     * 
+     * For example, setting the index of a child of a `VBox` to 0 will put that child at the top of the `VBox`, 
+     * "behind" the rest of the children.
+     * 
      * @param child The component to move.
-     * @param index The z-index to move that component to.
+     * @param index The index to move that component to.
      * @return The moved component.
      */
     public function setComponentIndex(child:Component, index:Int):Component {

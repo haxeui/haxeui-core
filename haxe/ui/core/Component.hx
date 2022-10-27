@@ -438,13 +438,15 @@ class Component extends ComponentImpl implements IValidating {
     }
     
     /**
-     * Inserts a child component at z-index `index`, effectively adding it in front of `index` children, and behind the rest.
+     * Inserts a child component after `index` children, effectively adding it "in front" of `index` children, and "behind" the rest.
      * 
      * If `index` is below every other child's index, the added component will render behind this component's children.  
      * If `index` is above every other child's index, the added component will render in front of this component's children.
      * 
+     * For example, inserting a child into a `VBox` at `index = 0` will place it at the top, "behind" all other children
+     * 
      * @param child The child component to add to this component.
-     * @param index The z-index in which the child component should be added.
+     * @param index The index at which the child component should be added.
      * @return The added component.
      */
     @:dox(group = "Display tree related properties and methods")
@@ -592,7 +594,8 @@ class Component extends ComponentImpl implements IValidating {
     }
     
     /**
-     * Removes the child component at z-index `index` from this component's display hierarchy, and returns it.
+     * Removes the child component at index `index` from this component's display hierarchy, and returns it.
+     * 
      * @param index The index of the child component to remove from this component.
      * @param dispose Decides whether or not the child component should be destroyed too.
      * @param invalidate If `true`, the child component updates itself after the removal.
