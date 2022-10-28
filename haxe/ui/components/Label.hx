@@ -27,7 +27,7 @@ class Label extends Component {
     @:style(layout)                             public var textAlign:Null<String>;
 
     /**
-     * Wether or not the label should automatically transfer text for which 
+     * Whether or not the label should automatically transfer text for which 
      * there isn't enough space from the end of the current line of text to the beginning of the next.
      */
     @:style(layout)                             public var wordWrap:Null<Bool>;

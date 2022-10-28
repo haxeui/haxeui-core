@@ -4,12 +4,17 @@ import haxe.ui.geom.Rectangle;
 import haxe.ui.validation.InvalidationFlags;
 
 class ComponentBounds extends ComponentLayout {
+
     //***********************************************************************************************************
     // Size related
     //***********************************************************************************************************
+
     /**
-     Whether this component will automatically resize itself based on it childrens calculated width
-    **/
+     * When enabled, this component will automatically resize itself based on it's children's calculated width.
+     * 
+     * For example, if this component's padding is `5`, and it has one child, `150` pixels wide, 
+     * and `autoWidth` is set to `true`, this component's width should be `160`
+     */
     @:dox(group = "Size related properties and methods")
     public var autoWidth(get, null):Bool;
     private function get_autoWidth():Bool {
@@ -28,8 +33,11 @@ class ComponentBounds extends ComponentLayout {
     }
 
     /**
-     Whether this component will automatically resize itself based on it childrens calculated height
-    **/
+     * When enabled, this component will automatically resize itself based on it's children's calculated height.
+     * 
+     * For example, if this component's padding is `5`, and it has one child, `200` pixels tall, 
+     * and `autoHeight` is set to `true`, this component's height should be `210`
+     */
     @:dox(group = "Size related properties and methods")
     public var autoHeight(get, null):Bool;
     private function get_autoHeight():Bool {
@@ -42,6 +50,14 @@ class ComponentBounds extends ComponentLayout {
         return style.autoHeight;
     }
 
+    /**
+     * Resizes a component to be `w` pixels wide and `h` pixels tall.
+     * 
+     * Useful if you want to resize the component in both the X & Y axis, 
+     * and don't want to call the resizing logic twice.
+     * @param w The component's new width.
+     * @param h The component's new height.
+     */
     @:dox(group = "Size related properties and methods")
     public function resizeComponent(w:Null<Float>, h:Null<Float>) {
         var invalidate:Bool = false;
@@ -61,11 +77,21 @@ class ComponentBounds extends ComponentLayout {
         }
     }
 
+    /**
+     * The component's true width on screen. 
+     * 
+     * May differ from `componentWidth` if `Toolkit.scaleX != 1` 
+     */
     public var actualComponentWidth(get, null):Float;
     private function get_actualComponentWidth():Float {
         return componentWidth * Toolkit.scaleX;
     }
 
+    /**
+     * The component's true height on screen. 
+     * 
+     * May differ from `componentHeight` if `Toolkit.scaleY != 1` 
+     */
     public var actualComponentHeight(get, null):Float;
     private function get_actualComponentHeight():Float {
         return componentHeight * Toolkit.scaleY;
@@ -74,9 +100,10 @@ class ComponentBounds extends ComponentLayout {
     @:noCompletion private var _componentWidth:Null<Float>;
     @:allow(haxe.ui.layouts.Layout)
     @:allow(haxe.ui.core.Screen)
+
     /**
-     The calculated width of this component
-    **/
+     * This component's calculated width.
+     */
     @:dox(group = "Size related properties and methods")
     @:clonable private var componentWidth(get, set):Null<Float>;
     private function get_componentWidth():Null<Float> {
@@ -93,9 +120,10 @@ class ComponentBounds extends ComponentLayout {
     @:noCompletion private var _componentHeight:Null<Float>;
     @:allow(haxe.ui.layouts.Layout)
     @:allow(haxe.ui.core.Screen)
+
     /**
-     The calculated height of this component
-    **/
+     * This component's calculated height.
+     */
     @:dox(group = "Size related properties and methods")
     @:clonable private var componentHeight(get, set):Null<Float>;
     private function get_componentHeight():Null<Float> {
@@ -110,9 +138,10 @@ class ComponentBounds extends ComponentLayout {
     }
 
     @:noCompletion private var _percentWidth:Null<Float>;
+
     /**
-     What percentage of this components parent to use to calculate its width
-    **/
+     * When set, sets this component's width to be `percentWidth`% percent of it's parent's width.
+     */
     @:dox(group = "Size related properties and methods")
     @clonable @bindable public var percentWidth(get, set):Null<Float>;
     private function get_percentWidth():Null<Float> {
@@ -134,9 +163,10 @@ class ComponentBounds extends ComponentLayout {
     }
 
     @:noCompletion private var _percentHeight:Null<Float>;
+
     /**
-     What percentage of this components parent to use to calculate its height
-    **/
+     * When set, sets this component's height to be `percentHeight`% percent of it's parent's height.
+     */
     @:dox(group = "Size related properties and methods")
     @clonable @bindable public var percentHeight(get, set):Null<Float>;
     private function get_percentHeight():Null<Float> {
@@ -291,7 +321,7 @@ class ComponentBounds extends ComponentLayout {
     #else
 
     /**
-     The width of this component
+        This component's width. similar to `componentWidth`
     **/
     @:dox(group = "Size related properties and methods")
     @bindable public var width(get, set):Null<Float>;
@@ -311,7 +341,7 @@ class ComponentBounds extends ComponentLayout {
     }
 
     /**
-     The height of this component
+        This component's height. similar to `componentHeight`
     **/
     @:dox(group = "Size related properties and methods")
     @bindable public var height(get, set):Null<Float>;
@@ -336,6 +366,10 @@ class ComponentBounds extends ComponentLayout {
     @:noCompletion private var _actualHeight:Null<Float>;
 
     @:noCompletion private var _hasScreen:Null<Bool> = null;
+
+    /**
+     * Whether this component, or one if it's parents, has a screen.
+     */
     public var hasScreen(get, null):Bool;
     private function get_hasScreen():Bool {
         var p = this;
@@ -415,6 +449,17 @@ class ComponentBounds extends ComponentLayout {
     /**
      Move this components left and top co-ord in one call
     **/
+    /**
+     * Moves this component to the position (`left`, `top`) in one function call.
+     * 
+     * A more performant alternative to doing:
+     * 
+     *      component.x = value;
+     *      component.y = anotherValue;
+     * 
+     * @param left The x position of the top-left corner of this component
+     * @param top The y position of the top-left corner of this component
+     */
     @:dox(group = "Position related properties and methods")
     public function moveComponent(left:Null<Float>, top:Null<Float>) {
         var invalidate:Bool = false;
@@ -434,8 +479,10 @@ class ComponentBounds extends ComponentLayout {
 
     @:noCompletion private var _left:Null<Float> = 0;
     /**
-     The left co-ord of this component relative to its parent
-    **/
+     * The position of this component on the horizontal, x-axis.
+     * 
+     * This position is relative to this component's parent.
+     */
     @:dox(group = "Position related properties and methods")
     public var left(get, set):Null<Float>;
     private function get_left():Null<Float> {
@@ -448,8 +495,10 @@ class ComponentBounds extends ComponentLayout {
 
     @:noCompletion private var _top:Null<Float> = 0;
     /**
-     The top co-ord of this component relative to its parent
-    **/
+     * The position of this component on the vertical, y-axis.
+     * 
+     * This position is relative to this component's parent.
+     */
     @:dox(group = "Position related properties and methods")
     public var top(get, set):Null<Float>;
     private function get_top():Null<Float> {
@@ -461,8 +510,8 @@ class ComponentBounds extends ComponentLayout {
     }
 
     /**
-     The left co-ord of this component relative to the screen
-    **/
+     * The **on-screen** position of this component on the horizontal, x-axis. 
+     */
     @:dox(group = "Position related properties and methods")
     public var screenLeft(get, null):Float;
     private function get_screenLeft():Float {
@@ -485,8 +534,8 @@ class ComponentBounds extends ComponentLayout {
     }
 
     /**
-     The top co-ord of this component relative to the screen
-    **/
+     * The **on-screen** position of this component on the vertical, y-axis. 
+     */
     @:dox(group = "Position related properties and methods")
     public var screenTop(get, null):Float;
     private function get_screenTop():Float {
@@ -512,9 +561,11 @@ class ComponentBounds extends ComponentLayout {
     // Clip rect
     //***********************************************************************************************************
     @:noCompletion private var _componentClipRect:Rectangle = null;
+
     /**
-     Whether to clip the display of this component
-    **/
+     * When set to a non-null value, restricts the component's "rendering zone"
+     * to only render inside the bounds of the given rectangle, effectively "clipping" the component.
+     */
     public var componentClipRect(get, set):Rectangle;
     private function get_componentClipRect():Rectangle {
         if (style != null && style.clip != null && style.clip == true) {
@@ -528,11 +579,21 @@ class ComponentBounds extends ComponentLayout {
         return value;
     }
 
+    /**
+     * Whether this component has a non-null clipping rectangle or not.
+     */
     public var isComponentClipped(get, null):Bool;
     private function get_isComponentClipped():Bool {
         return (componentClipRect != null);
     }
     
+    /**
+     * `true` if this component's area intersects with the screen, `false` otherwise.
+     * 
+     * clipRect is not taken into consideration - that means, if a clipRect turns a component from being
+     * visible on screen to being invisible on screen, `isComponentOffScreen` should still be `false`.
+     * 
+     */
     public var isComponentOffscreen(get, null):Bool;
     private function get_isComponentOffscreen():Bool {
         if (this.width == 0 && this.height == 0) {

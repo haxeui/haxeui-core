@@ -86,7 +86,7 @@ class Style {
     /** The color of the upper side of the border **/                               @:optional public var borderTopColor:Null<Int>;
     /** The color of the left side of the border **/                                @:optional public var borderLeftColor:Null<Int>;
     /** The color of the lower side of the border **/                               @:optional public var borderBottomColor:Null<Int>;
-    /** The color of the righ side of the border **/                                @:optional public var borderRightColor:Null<Int>;
+    /** The color of the right side of the border **/                               @:optional public var borderRightColor:Null<Int>;
     /** The size of the border, in pixels **/                                       @:optional public var borderSize:Null<Float>;
     /** The size of the upper of the border, in pixels **/                          @:optional public var borderTopSize:Null<Float>;
     /** The size of the left side of the border, in pixels **/                      @:optional public var borderLeftSize:Null<Float>;
