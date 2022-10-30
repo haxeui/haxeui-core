@@ -235,8 +235,14 @@ class ModuleMacros {
 
         var qualifiedName = namespace + "/" + name;
         name = name.toLowerCase();
+        #if component_resolution_verbose
+            Sys.print("resolving component class '" + qualifiedName + "'");
+        #end
         var resolvedClass = ComponentClassMap.get(qualifiedName);
         if (resolvedClass != null) {
+            #if component_resolution_verbose
+                Sys.println(" => " + resolvedClass + " (from cache)");
+            #end
             return resolvedClass;
         }
         
@@ -269,6 +275,11 @@ class ModuleMacros {
             }
         }
 
+        #if component_resolution_verbose
+        var pathsSearched:Map<String, String> = new Map<String, String>();
+        var classPackages:Map<String, String> = new Map<String, String>();
+        #end
+
         for (m in modules) {
             for (c in m.componentEntries) {
                 var types = null;
@@ -279,9 +290,15 @@ class ModuleMacros {
                         types = Context.getModule(c.className);
                     }
                 } else if (c.classPackage != null) {
+                    #if component_resolution_verbose
+                        classPackages.set(c.classPackage, c.classPackage);
+                    #end
                     var paths = namespaceToClassPath.get(namespacePrefix);
                     var arr:Array<String> = c.classPackage.split(".");
                     for (path in paths) {
+                        #if component_resolution_verbose 
+                        pathsSearched.set(path, path);
+                        #end
                         var dir:String = path + arr.join("/");
                         if (!sys.FileSystem.exists(dir) || !sys.FileSystem.isDirectory(dir)) {
                             continue;
@@ -348,6 +365,9 @@ class ModuleMacros {
                             }
                             
                             ComponentClassMap.register(namespace + "/" + resolvedClassName.toLowerCase(), resolvedClass);
+                            #if component_resolution_verbose
+                                Sys.println(" => " + resolvedClass);
+                            #end
                             return resolvedClass;
                         }
                     }
@@ -355,6 +375,20 @@ class ModuleMacros {
             }
         }
         
+        #if component_resolution_verbose
+        if (resolvedClass == null) {
+            Sys.println(" => NOT FOUND!");
+            Sys.println("  Paths searched:");
+            for (key in pathsSearched.keys()) {
+                Sys.println("    * " + key);
+            }
+            Sys.println("  Registered class packages:");
+            for (key in classPackages.keys()) {
+                Sys.println("    * " + key);
+            }
+        }
+        #end
+
         return resolvedClass;
     }
 
