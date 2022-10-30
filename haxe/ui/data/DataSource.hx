@@ -158,7 +158,7 @@ class DataSource<T> {
     }
     
     public function sort(field:String = null, direction:SortDirection = null) {
-        sortCustom(sortByFn.bind(_, _, _, field));
+        sortCustom(sortByFn.bind(_, _, _, field), direction);
     }
     
     private function sortByFn(o1:T, o2:T, direction:SortDirection, field:String):Int {
