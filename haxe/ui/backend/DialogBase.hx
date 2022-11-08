@@ -140,7 +140,13 @@ class DialogBase extends Box {
                 }
             }
             if (dp != null) {
-                dp.addComponent(_overlay);
+                includeInLayout = false;
+        		_overlay.includeInLayout = false;
+        		_overlay.screenTop = dp.screenTop;
+        		_overlay.screenLeft = dp.screenLeft;
+        		_overlay.height = dp.height;
+        		_overlay.width = dp.width;
+        		dp.addComponent(_overlay);
             } else {
                 Screen.instance.addComponent(_overlay);
             }
