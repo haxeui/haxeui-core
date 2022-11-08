@@ -55,6 +55,7 @@ class TabBarLayout extends DefaultLayout {
 
         var max:Float = 0;
         for (button in container.childComponents) {
+            button.syncComponentValidation();
             if (button.height > max) {
                 max = button.height;
             }
