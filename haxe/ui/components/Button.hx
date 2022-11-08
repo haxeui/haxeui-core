@@ -31,13 +31,15 @@ import haxe.ui.util.Variant;
 
     Pseudo classes:
 
-    | Name      | Notes                                                                    |
-    | --------- | ------------------------------------------------------------------------ |
-    | `:hover`  | The style to be applied when the cursor is over the button               |
-    | `:down`   | The style to be applied when a mouse button is pressed inside the button |
-    | `:active` | The style to be applied when the button has focus                        |
+    | Name        | Notes                                                                    |
+    | ----------- | ------------------------------------------------------------------------ |
+    | `:hover`    | The style to be applied when the cursor is over the button               |
+    | `:down`     | The style to be applied when a mouse button is pressed inside the button |
+    | `:active`   | The style to be applied when the button has focus                        |
+    | `:disabled` | The style to be applied when the button is disabled                      |
 
     XML example:
+
     ```xml
     <button text="Button"
             styleNames="myCustomButton"
@@ -56,6 +58,9 @@ import haxe.ui.util.Variant;
         trace("hello world");
     }
     ```
+
+    @see http://haxeui.org/explorer/#basic/buttons
+    @see haxe.ui.containers.ButtonBar
 **/
 
 @:dox(icon = "ui-button.png")

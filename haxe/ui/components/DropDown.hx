@@ -519,6 +519,7 @@ private class ListDropDownHandler extends DropDownHandler {
     }
 }
 
+@:dox(hide)
 @:access(haxe.ui.core.Component)
 class CalendarDropDownHandler extends DropDownHandler {
     private var _calendar:CalendarView;

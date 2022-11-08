@@ -1,18 +1,18 @@
 package haxe.ui.components;
 
-import haxe.ui.core.Component;
-import haxe.ui.core.CompositeBuilder;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
+import haxe.ui.behaviours.InvalidatingBehaviour;
+import haxe.ui.core.Component;
+import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.IDirectionalComponent;
 import haxe.ui.core.InteractiveComponent;
-import haxe.ui.behaviours.InvalidatingBehaviour;
-import haxe.ui.events.MouseEvent;
 import haxe.ui.core.Screen;
-import haxe.ui.events.UIEvent;
 import haxe.ui.events.Events;
-import haxe.ui.util.MathUtil;
+import haxe.ui.events.MouseEvent;
+import haxe.ui.events.UIEvent;
 import haxe.ui.geom.Point;
+import haxe.ui.util.MathUtil;
 import haxe.ui.util.Variant;
 
 /**
@@ -35,14 +35,12 @@ class Range extends InteractiveComponent implements IDirectionalComponent {
     //***********************************************************************************************************
 
     /**
-     * The value this range bar starts from, used to calculate 
-     * the starting position of the filled section. Defaults to `0`.
+     * The value this range bar starts from, used to calculate the starting position of the filled section. Defaults to `0`.
      */
     @:clonable @:behaviour(RangeMin, 0)                 public var min:Null<Float>;
 
     /**
-     * The value this range bar ends at to, used calculate 
-     * the ending position of the filled section. Defaults to `100`
+     * The value this range bar ends at, used to calculate the ending position of the filled section. Defaults to `100`
      */
     @:clonable @:behaviour(RangeMax, 100)               public var max:Null<Float>;
 
@@ -57,18 +55,14 @@ class Range extends InteractiveComponent implements IDirectionalComponent {
     @:clonable @:behaviour(RangeEnd, 0)                 public var end:Float;
 
     /**
-     * The amount of numbers after the decimal points that should be taken
-     * into account when calculating the position of the filled section.
+     * The amount of numbers after the decimal points that should be taken into account when calculating the position of the filled section.
      */
     @:clonable @:behaviour(InvalidatingBehaviour)       public var precision:Int;
 
     /**
      * The amount of snapping that should be applied to the position of the filled section.
      * 
-     * for example: 
-     * the range bar starts at 0 and ends at 100, and the offset is set to step is set to 10.
-     * 
-     * if we set the start to 6 and the end to 54, the visually filled range would be from 10 to 50.
+     * For example, if the range bar starts at 0 and ends at 100, and the offset is set to step is set to 10, if we set the start to 6 and the end to 54, the visually filled range would be from 10 to 50.
      */
     @:clonable @:behaviour(InvalidatingBehaviour)       public var step:Float;
 
