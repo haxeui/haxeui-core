@@ -128,7 +128,9 @@ private class Events extends ScrollViewEvents {
     }
 
     private function onScrollChange(e:ScrollEvent) {
-        //_tableview.invalidateComponentLayout();
+        if (_tableview.virtual) {
+            _tableview.invalidateComponentLayout();
+        }
 
         var header = _tableview.findComponent(Header, true);
         if (header == null) {
