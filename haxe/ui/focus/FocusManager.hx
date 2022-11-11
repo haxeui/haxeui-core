@@ -27,6 +27,7 @@ class FocusManager extends FocusManagerImpl {
     // Instance
     //****************************************************************************************************
     public var autoFocus:Bool = true; // whether or not to automatically set focus to the first interactive component in a view when its added
+    public var enabled:Bool = true; // whether or not to allow focus management globally
     
     private var _applicators:Array<IFocusApplicator> = [];
     
@@ -181,6 +182,9 @@ class FocusManager extends FocusManagerImpl {
     }
 
     private function buildFocusableList(c:Component, list:Array<IFocusable>):IFocusable {
+        if (!enabled) {
+            return null;
+        }
         var currentFocus = null;
         
         if (@:privateAccess c._isDisposed == true) {
