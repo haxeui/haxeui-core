@@ -928,26 +928,37 @@ class ComponentMacros {
             });
             
             var propList = dependants.get(dependantName);
+            var initialExprs:Array<Expr> = [];
             for (dependantProp in propList) {
                 if (propType == "string") {
+                    var expr = macro $i{target}.$varProp = Std.string($e{expr});
+                    initialExprs.push(expr);
                     ifBuilder.add(macro if (e.data == $v{dependantProp}) {
-                        $i{target}.$varProp = Std.string($e{expr});
+                        ${expr};
                     });
                 } else if (propType == "bool") {
+                    var expr = macro $i{target}.$varProp = Std.string($e{expr}) == "true" || Std.string($e{expr}) == "1";
+                    initialExprs.push(expr);
                     ifBuilder.add(macro if (e.data == $v{dependantProp}) {
-                        $i{target}.$varProp = Std.string($e{expr}) == "true" || Std.string($e{expr}) == "1";
+                        ${expr}
                     });
                 } else if (propType == "float") {
+                    var expr = macro $i{target}.$varProp = Std.parseFloat(Std.string($e{expr}));
+                    initialExprs.push(expr);
                     ifBuilder.add(macro if (e.data == $v{dependantProp}) {
-                        $i{target}.$varProp = Std.parseFloat(Std.string($e{expr}));
+                        ${expr}
                     });
                 } else if (propType == "int") {
+                    var expr = macro $i{target}.$varProp = Std.parseInt(Std.string($e{expr}));
+                    initialExprs.push(expr);
                     ifBuilder.add(macro if (e.data == $v{dependantProp}) {
-                        $i{target}.$varProp = Std.parseInt(Std.string($e{expr}));
+                        ${expr}
                     });
                 } else {
+                    var expr = macro $i{target}.$varProp = $e{expr};
+                    initialExprs.push(expr);
                     ifBuilder.add(macro if (e.data == $v{dependantProp}) {
-                        $i{target}.$varProp = $e{expr};
+                        ${expr}
                     });
                 }
             }
@@ -959,6 +970,9 @@ class ComponentMacros {
                 }
             }
             
+            for (expr in initialExprs) {
+                builder.add(macro ${expr});
+            }
             builder.add(macro {
                 $i{generatedDependantName}.registerEvent(haxe.ui.events.UIEvent.PROPERTY_CHANGE, function(e:haxe.ui.events.UIEvent) {
                     $e{ifBuilder.expr}
