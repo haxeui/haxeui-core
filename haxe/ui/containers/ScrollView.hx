@@ -48,6 +48,7 @@ class ScrollView extends InteractiveComponent implements IScrollView {
     @:clonable @:behaviour(VScrollMax)                              public var vscrollMax:Float;
     @:clonable @:behaviour(VScrollPageSize)                         public var vscrollPageSize:Float;
     @:clonable @:behaviour(VScrollThumbSize)                        public var vscrollThumbSize:Null<Float>;
+    @:clonable @:behaviour(ThumbSize)                               public var thumbSize:Null<Float>;
     @:clonable @:behaviour(ScrollModeBehaviour, ScrollMode.DRAG)    public var scrollMode:ScrollMode;
     @:clonable @:behaviour(ScrollPolicyBehaviour)                   public var scrollPolicy:ScrollPolicy;
     @:clonable @:behaviour(HScrollPolicyBehaviour)                  public var horizontalScrollPolicy:ScrollPolicy;
@@ -525,6 +526,22 @@ private class VScrollThumbSize extends DataBehaviour {
                 vscroll.thumbSize = _value;
             }
         }
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class ThumbSize extends DataBehaviour {
+    private var _scrollview:ScrollView;
+
+    public function new(scrollview:ScrollView) {
+        super(scrollview);
+        _scrollview = scrollview;
+    }
+
+    public override function validateData() { 
+        _scrollview.hscrollThumbSize = _value;
+        _scrollview.vscrollThumbSize = _value;
     }
 }
 
@@ -1214,6 +1231,9 @@ class ScrollViewBuilder extends CompositeBuilder {
             hscroll.percentWidth = 100;
             hscroll.allowFocus = false;
             hscroll.id = "scrollview-hscroll";
+            if (_scrollview.hscrollThumbSize != null) {
+                hscroll.thumbSize = _scrollview.hscrollThumbSize;
+            }
             _component.addComponent(hscroll);
             _component.registerInternalEvents(true);
         }
@@ -1252,6 +1272,9 @@ class ScrollViewBuilder extends CompositeBuilder {
             vscroll.percentHeight = 100;
             vscroll.allowFocus = false;
             vscroll.id = "scrollview-vscroll";
+            if (_scrollview.vscrollThumbSize != null) {
+                vscroll.thumbSize = _scrollview.vscrollThumbSize;
+            }
             _component.addComponent(vscroll);
             _component.registerInternalEvents(true);
         }
