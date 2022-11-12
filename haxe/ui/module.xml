@@ -36,6 +36,10 @@
             <resource path="haxeui-core/locale/it/std-strings.properties" />
             <resource path="haxeui-core/locale/it/formats.properties" />
         </locale>
+        <locale id="ru">
+            <resource path="haxeui-core/locale/ru/std-strings.properties" />
+            <resource path="haxeui-core/locale/ru/formats.properties" />
+        </locale>
     </locales>
 
     <components>
