@@ -143,6 +143,10 @@ class Style {
     /** Whether or not the text inside this object should be wrapped **/            @:optional public var wordWrap:Null<Bool>;
 
     @:optional public var imageRendering:String;
+    @:optional public var backgroundWidth:Null<Float>;
+    @:optional public var backgroundWidthPercent:Null<Float>;
+    @:optional public var backgroundHeight:Null<Float>;
+    @:optional public var backgroundHeightPercent:Null<Float>;
 
     @:optional public var layout:String;
     
@@ -255,6 +259,12 @@ class Style {
                     backgroundImage = ValueTools.variant(v.value);
                 case "background-image-repeat":
                     backgroundImageRepeat = ValueTools.string(v.value);
+                case "background-width":
+                    backgroundWidth = ValueTools.calcDimension(v.value);
+                    backgroundWidthPercent = ValueTools.percent(v.value);
+                case "background-height":
+                    backgroundHeight = ValueTools.calcDimension(v.value);
+                    backgroundHeightPercent = ValueTools.percent(v.value);
 
                 case "background-position-x":
                     backgroundPositionX = ValueTools.calcDimension(v.value);
@@ -630,6 +640,10 @@ class Style {
         
         if (s.wordWrap != null) wordWrap = s.wordWrap;
         if (s.imageRendering != null) imageRendering = s.imageRendering;
+        if (s.backgroundWidth != null) backgroundWidth = s.backgroundWidth;
+        if (s.backgroundWidthPercent != null) backgroundWidthPercent = s.backgroundWidthPercent;
+        if (s.backgroundHeight != null) backgroundHeight = s.backgroundHeight;
+        if (s.backgroundHeightPercent != null) backgroundHeightPercent = s.backgroundHeightPercent;
         if (s.layout != null) layout = s.layout;
     }
 
@@ -753,6 +767,10 @@ class Style {
 
         if (s.wordWrap != wordWrap) return false;
         if (s.imageRendering != imageRendering) return false;
+        if (s.backgroundWidth != backgroundWidth) return false;
+        if (s.backgroundWidthPercent != backgroundWidthPercent) return false;
+        if (s.backgroundHeight != backgroundHeight) return false;
+        if (s.backgroundHeightPercent != backgroundHeightPercent) return false;
         if (s.layout != layout) return false;
         
         return true;

@@ -131,6 +131,13 @@ class RuleElement {
                 processComposite(d, ["background-image-slice-top", "background-image-slice-left", "background-image-slice-bottom", "background-image-slice-right"]);
             case "animation":
                 processComposite(d, ["animation-name", "animation-duration", "animation-timing-function", "animation-delay", "animation-iteration-count", "animation-direction", "animation-fill-mode"]);
+            case "background-size":
+                var vl = ValueTools.composite(d.value);
+                if (vl.length == 1) {
+                    processComposite(new Directive("", vl[0]), ["background-width", "background-height"]);
+                } else if (vl.length == 2) {
+                    processComposite(d, ["background-width", "background-height"]);
+                }
             case "font-style":
                 var v1 = ValueTools.composite(d.value);
                 if (v1 == null) {
