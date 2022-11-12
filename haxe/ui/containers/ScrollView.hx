@@ -42,9 +42,11 @@ class ScrollView extends InteractiveComponent implements IScrollView {
     @:clonable @:behaviour(HScrollPos)                              public var hscrollPos:Float;
     @:clonable @:behaviour(HScrollMax)                              public var hscrollMax:Float;
     @:clonable @:behaviour(HScrollPageSize)                         public var hscrollPageSize:Float;
+    @:clonable @:behaviour(HScrollThumbSize)                        public var hscrollThumbSize:Null<Float>;
     @:clonable @:behaviour(VScrollPos)                              public var vscrollPos:Float;
     @:clonable @:behaviour(VScrollMax)                              public var vscrollMax:Float;
     @:clonable @:behaviour(VScrollPageSize)                         public var vscrollPageSize:Float;
+    @:clonable @:behaviour(VScrollThumbSize)                        public var vscrollThumbSize:Null<Float>;
     @:clonable @:behaviour(ScrollModeBehaviour, ScrollMode.DRAG)    public var scrollMode:ScrollMode;
     @:clonable @:behaviour(GetContents)                             public var contents:Component;
     @:clonable @:behaviour(DefaultBehaviour)                        public var autoHideScrolls:Bool;
@@ -455,6 +457,29 @@ private class HScrollPageSize extends DataBehaviour {
 
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
+private class HScrollThumbSize extends DataBehaviour {
+    private var _scrollview:ScrollView;
+
+    public function new(scrollview:ScrollView) {
+        super(scrollview);
+        _scrollview = scrollview;
+    }
+
+    public override function validateData() { // TODO: feels a bit ugly!
+        if (_scrollview.virtual == true) {
+            var hscroll = _scrollview.findComponent(HorizontalScroll, false);
+            if (hscroll == null) {
+                hscroll = cast(_scrollview._compositeBuilder, ScrollViewBuilder).createHScroll();
+            }
+            if (hscroll != null) {
+                hscroll.thumbSize = _value;
+            }
+        }
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
 private class VScrollPageSize extends DataBehaviour {
     private var _scrollview:ScrollView;
 
@@ -471,6 +496,29 @@ private class VScrollPageSize extends DataBehaviour {
             }
             if (vscroll != null) {
                 vscroll.pageSize = _value;
+            }
+        }
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class VScrollThumbSize extends DataBehaviour {
+    private var _scrollview:ScrollView;
+
+    public function new(scrollview:ScrollView) {
+        super(scrollview);
+        _scrollview = scrollview;
+    }
+
+    public override function validateData() { // TODO: feels a bit ugly!
+        if (_scrollview.virtual == true) {
+            var vscroll = _scrollview.findComponent(VerticalScroll, false);
+            if (vscroll == null) {
+                vscroll = cast(_scrollview._compositeBuilder, ScrollViewBuilder).createVScroll();
+            }
+            if (vscroll != null) {
+                vscroll.thumbSize = _value;
             }
         }
     }
@@ -1066,7 +1114,9 @@ class ScrollViewBuilder extends CompositeBuilder {
                 }
 
                 hscroll.max = vcw - usableSize.width;
-                hscroll.pageSize = (usableSize.width / vcw) * hscroll.max;
+                if (_scrollview.hscrollThumbSize == null) {
+                    hscroll.pageSize = (usableSize.width / vcw) * hscroll.max;
+                }
 
                 hscroll.syncComponentValidation();    //avoid another pass
             } else {
@@ -1086,7 +1136,9 @@ class ScrollViewBuilder extends CompositeBuilder {
                 }
 
                 vscroll.max = vch - usableSize.height;
-                vscroll.pageSize = (usableSize.height / vch) * vscroll.max;
+                if (_scrollview.vscrollThumbSize == null) {
+                    vscroll.pageSize = (usableSize.height / vch) * vscroll.max;
+                }
 
                 vscroll.syncComponentValidation();    //avoid another pass
             } else {

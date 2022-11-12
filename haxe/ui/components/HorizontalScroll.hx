@@ -105,6 +105,9 @@ private class HorizontalScrollLayout extends DefaultLayout {
             var m:Float = scroll.max - scroll.min;
             var ucx:Float = usableWidth;
             var thumbWidth = (scroll.pageSize / m) * ucx;
+            if (scroll.thumbSize != null) {
+                thumbWidth = scroll.thumbSize;
+            }
             if (thumbWidth < innerHeight) {
                 thumbWidth = innerHeight;
             } else if (thumbWidth > ucx) {

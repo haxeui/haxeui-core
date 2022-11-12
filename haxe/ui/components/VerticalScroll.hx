@@ -105,6 +105,9 @@ private class VerticalScrollLayout extends DefaultLayout {
             var m:Float = scroll.max - scroll.min;
             var ucy:Float = usableHeight;
             var thumbHeight = (scroll.pageSize / m) * ucy;
+            if (scroll.thumbSize != null) {
+                thumbHeight = scroll.thumbSize;
+            }
             if (thumbHeight < innerWidth) {
                 thumbHeight = innerWidth;
             } else if (thumbHeight > ucy) {
