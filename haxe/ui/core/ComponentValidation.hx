@@ -96,6 +96,11 @@ class ComponentValidation extends ComponentEvents {
             ValidationManager.instance.add(cast(this, Component)); // TODO: avoid cast
             return;
         } else if (isAlreadyInvalid == true) {
+            if (recursive == true) {
+                for (child in childComponents) {
+                    child.invalidateComponent(flag, recursive);
+                }
+            }
             return;
         }
 
