@@ -19,27 +19,38 @@ class CollapsibleDialog extends Dialog {
 
 private class Minimized extends DataBehaviour {
     public override function validateData() {
-        var dialogContent = _component.findComponent("dialog-content", VBox, true);
+        var dialogContent = _component.findComponent("dialog-content", Box);
         if (dialogContent == null) {
             return;
         }
-        var dialogTitle = _component.findComponent("dialog-title", HBox, true);
-        if (dialogTitle == null) {
+        var dialogFooterContainer = _component.findComponent("dialog-footer-container", Box);
+        if (dialogFooterContainer == null) {
             return;
         }
-        var dialogMinMaxButton = dialogTitle.findComponent("dialog-minmax-button", Image);
+        var hasFooterComponents = false;
+        var dialogFooter = _component.findComponent("dialog-footer", Box);
+        if (dialogFooter != null) {
+            hasFooterComponents = dialogFooter.numComponents > 0;
+        }
+        var dialogMinMaxButton = _component.findComponent("dialog-minmax-button", Image);
         if (dialogMinMaxButton == null) {
             return;
+        }
+        var offset = dialogContent.height;
+        if (hasFooterComponents) {
+            offset += dialogFooterContainer.height;
         }
         if (_value) {
             // Collapse the dialog.
             dialogMinMaxButton.swapClass("dialog-maximize-button", "dialog-minimize-button");
             dialogContent.hidden = true;
-            _component.height -= dialogContent.height;
+            dialogFooterContainer.hidden = true;
+            _component.height -= offset;
         } else {
             dialogMinMaxButton.swapClass("dialog-minimize-button", "dialog-maximize-button");
             dialogContent.hidden = false;
-            _component.height += dialogContent.height;
+            dialogFooterContainer.hidden = false;
+            _component.height += offset;
         }
     }
 }
@@ -54,8 +65,8 @@ private class Builder extends CompositeBuilder {
         _dialog = dialog;
     }
 
-    public override function onInitialize() {
-        super.onInitialize();
+    public override function onReady() {
+        super.onReady();
 
         var dialogTitle = _component.findComponent("dialog-title", HBox, true);
         // Create the minimize/maximize button.
