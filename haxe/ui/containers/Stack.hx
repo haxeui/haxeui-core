@@ -131,7 +131,7 @@ private class Builder extends CompositeBuilder {
         if (_stack.selectedIndex < 0) {
             _stack.selectedIndex = 0;
         }
-        if (_stack.numComponents > 0) {
+        if (_stack.numComponents != _stack.selectedIndex) {
             child.hide();
         }
         return null;
