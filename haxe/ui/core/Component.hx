@@ -25,6 +25,7 @@ import haxe.ui.util.StringUtil;
 import haxe.ui.util.Variant;
 import haxe.ui.validation.IValidating;
 import haxe.ui.validation.ValidationManager;
+import haxe.ui.validation.InvalidationFlags;
 
 #if (haxe_ver >= 4.2)
 import Std.isOfType;
@@ -1348,19 +1349,66 @@ class Component extends ComponentImpl implements IValidating {
     /**
      * A string representation of the `css` classes associated with this component
      */
+    private var _styleNames:String = null;
+    private var _styleNamesList:Array<String> = null;
     @:dox(group = "Style related properties and methods")
     @clonable public var styleNames(get, set):String;
     private function get_styleNames():String {
-        return classes.join(" ");
+        return _styleNames;
     }
     private function set_styleNames(value:String):String {
-        if (value == null) {
+        if (value == _styleNames) {
             return value;
         }
 
-        for (x in value.split(" ")) {
-            addClass(x);
+        if (value == null) {
+            value = "";
         }
+
+        _styleNames = value;
+        var newStyleNamesList = [];
+        var classesToAdd = [];
+        var requiresInvalidation = false;
+        for (x in value.split(" ")) {
+            x = StringTools.trim(x);
+            if (x.length == 0) {
+                continue;
+            }
+            newStyleNamesList.push(x);
+            if (_styleNamesList != null) {
+                if (_styleNamesList.indexOf(x) == -1) {
+                    classesToAdd.push(x);
+                    requiresInvalidation = true;
+                }
+            } else {
+                classesToAdd.push(x);
+                requiresInvalidation = true;
+            }
+        }
+
+        var classesToRemove = [];
+        if (_styleNamesList != null) {
+            for (x in _styleNamesList) {
+                if (newStyleNamesList.indexOf(x) == -1) {
+                    classesToRemove.push(x);
+                    requiresInvalidation = true;
+                }
+            }
+        }
+
+        _styleNamesList = newStyleNamesList;
+
+        if (requiresInvalidation) {
+            for (x in classesToAdd) {
+                classes.push(x);
+            }
+            for (x in classesToRemove) {
+                classes.remove(x);
+            }
+
+            invalidateComponent(InvalidationFlags.ALL, true);
+        }
+
         return value;
     }
 
