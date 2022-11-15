@@ -21,9 +21,10 @@
 }
 
 .button:down {
-    background: $down-background-color-start $down-background-color-end vertical;
-    color: $down-text-color;
-    border-color: $down-border-color;
+    background-color: $down-background-color-start;
+    color: $hover-text-color;
+    border-color: $hover-border-color;
+    filter: $normal-inner-shadow;
 }
 
 .button:active {
@@ -54,8 +55,8 @@
 }
 
 .button-bar .button:down {
-    background-color: $selection-background-color;
-    color: $selection-text-color;
+    __background-color: $selection-background-color;
+    __color: $selection-text-color;
     filter: $normal-inner-shadow;
 }
 
