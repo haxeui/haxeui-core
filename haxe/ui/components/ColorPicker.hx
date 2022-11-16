@@ -477,6 +477,7 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
     private var _trackingSaturationValue:Bool = false;
     @:bind(saturationValueGraph, MouseEvent.MOUSE_DOWN)
     private function onSaturationValueGraphDown(e:MouseEvent) {
+        e.cancel();
         _trackingSaturationValue = true;
         
         Screen.instance.registerEvent(MouseEvent.MOUSE_MOVE, onScreenMouseMove);
@@ -488,6 +489,7 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
     private var _trackingHue:Bool = false;
     @:bind(hueGraph, MouseEvent.MOUSE_DOWN)
     private function onHueGraphDown(e:MouseEvent) {
+        e.cancel();
         _trackingHue = true;
         
         Screen.instance.registerEvent(MouseEvent.MOUSE_MOVE, onScreenMouseMove);
