@@ -63,7 +63,7 @@
     border: 1px solid $normal-border-color;
     filter: $menu-shadow;
     spacing: 0;
-    width: 200px;
+    initial-width: 200px;
 }
 
 .menu.expanded {
