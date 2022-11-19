@@ -136,10 +136,10 @@ class TreeViewNode extends VBox {
         return value;
     }
     
-    private override function get_icon():String {
+    private override function get_icon():Variant {
         return _data.icon;
     }
-    private override function set_icon(value:String):String {
+    private override function set_icon(value:Variant):Variant {
         if (_data == null) {
             _data = {};
         }
