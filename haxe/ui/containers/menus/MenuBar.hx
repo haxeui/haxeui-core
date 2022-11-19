@@ -333,6 +333,11 @@ private class Builder extends CompositeBuilder {
             var index = _menus.indexOf(menu);
             var button = _buttons[index];
             button.hidden = event.target.hidden;
+        } else if (event.data == "icon") {
+            var menu = cast(event.target, Menu);
+            var index = _menus.indexOf(menu);
+            var button = _buttons[index];
+            button.icon = menu.icon;
         }
     }
     
