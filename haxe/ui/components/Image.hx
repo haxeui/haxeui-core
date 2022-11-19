@@ -280,6 +280,9 @@ private class ResourceBehaviour extends DataBehaviour {
                         }
                         image.invalidateComponent();
                         display.validateComponent();
+
+                        var event = new UIEvent(UIEvent.CHANGE);
+                        image.dispatch(event);
                     }
                 }
             });
