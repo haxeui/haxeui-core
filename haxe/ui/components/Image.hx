@@ -253,6 +253,9 @@ private class ResourceBehaviour extends DataBehaviour {
             }
             
             _component.addComponent(newCanvas);
+        } else if (_value.isComponent && ((_value.toComponent() is Image))) { // lets support adding images as icons, images, existingCanvas
+            var image:Image = cast(_value.toComponent(), Image);
+            _component.addComponent(image);
         } else {
             var imageLoader = new ImageLoader(_value);
             imageLoader.load(function(imageInfo) {
