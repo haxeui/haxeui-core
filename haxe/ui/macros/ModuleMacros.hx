@@ -403,15 +403,15 @@ class ModuleMacros {
         for (m in modules) {
             for (c in m.componentEntries) {
                 if (c.classFolder != null) {
-                    createDynamicClasses(c.classFolder);
+                    createDynamicClasses(c.classFolder, null, m.namespaces);
                 } else if (c.classFile != null) {
-                    createDynamicClass(c.classFile);
+                    createDynamicClass(c.classFile, null, null, m.namespaces);
                 }
             }
         }
     }
 
-    private static function createDynamicClasses(dir:String, root:String = null) {
+    private static function createDynamicClasses(dir:String, root:String, namespaces:Map<String, String>) {
         var resolvedPath = null;
         try {
             resolvedPath = Context.resolvePath(dir);
@@ -431,14 +431,14 @@ class ModuleMacros {
         for (item in contents) {
             var fullPath = Path.normalize(dir + "/" + item);
             if (FileSystem.isDirectory(fullPath)) {
-                createDynamicClasses(fullPath, root);
+                createDynamicClasses(fullPath, root, namespaces);
             } else {
-                createDynamicClass(fullPath, null, root);
+                createDynamicClass(fullPath, null, root, namespaces);
             }
         }
     }
 
-    public static function createDynamicClass(filePath:String, alias:String = null, root:String = null):String {
+    public static function createDynamicClass(filePath:String, alias:String = null, root:String = null, namespaces:Map<String, String> = null):String {
         var resolvedPath = null;
         try {
             resolvedPath = Context.resolvePath(filePath);
@@ -526,7 +526,14 @@ class ModuleMacros {
         ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         Context.defineModule(fileParts.concat([className]).join("."), [newClass]);
-        ComponentClassMap.register(className, fileParts.concat([className]).join("."));
+        if (namespaces != null) {
+            for (k in namespaces.keys()) {
+                var ns = namespaces.get(k);
+                ComponentClassMap.register(ns + "/" + className, fileParts.concat([className]).join("."));
+            }
+        } else {
+            ComponentClassMap.register(Module.DEFAULT_HAXEUI_NAMESPACE + "/" + className, fileParts.concat([className]).join("."));
+        }
         return fileParts.concat([className]).join(".");
     }
 
