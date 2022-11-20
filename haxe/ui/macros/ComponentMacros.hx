@@ -289,10 +289,12 @@ class ComponentMacros {
         for (scriptString in c.scriptlets) {
             fullScript += scriptString;
         }
-        if (classBuilder != null) {
-            buildScriptFunctions(classBuilder, builder, buildData.namedComponents, fullScript);   
-        } else {
-            buildScriptFunctionForwardDeclarations(builder, fullScript);
+        if (fullScript.length > 0) {
+            if (classBuilder != null) {
+                buildScriptFunctions(classBuilder, builder, buildData.namedComponents, fullScript);   
+            } else {
+                buildScriptFunctionForwardDeclarations(builder, fullScript);
+            }
         }
         
         var n = 0;
