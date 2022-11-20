@@ -525,6 +525,14 @@ class ModuleMacros {
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        var fullScript = "";
+        for (scriptString in c.scriptlets) {
+            fullScript += scriptString;
+        }
+        if (fullScript.length > 0) {
+            ComponentMacros.buildScriptFunctions(classBuilder, null, buildData.namedComponents, fullScript);
+        }
+
         Context.defineModule(fileParts.concat([className]).join("."), [newClass]);
         if (namespaces != null) {
             for (k in namespaces.keys()) {

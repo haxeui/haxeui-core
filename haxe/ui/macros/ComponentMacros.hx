@@ -449,75 +449,38 @@ class ComponentMacros {
     }
     
     private static function buildScriptFunctions(classBuilder:ClassBuilder, builder:CodeBuilder, namedComponents:Map<String, NamedComponentDescription>, script:String) {
+        var replaceOverride = new EReg("(override).*function", "gm");
+        script = replaceOverride.map(script, function(r) {
+            return StringTools.replace(r.matched(0), "override", "@:override");
+        });
+        var replacePrivate = new EReg("(private).*function", "gm");
+        script = replacePrivate.map(script, function(r) {
+            return StringTools.replace(r.matched(0), "private", "@:private");
+        });
+        var replaceGetSet = new EReg("var .*(get|set).*;", "gm");
+        script = replaceGetSet.map(script, function(r) {
+            var s = r.matched(0);
+            var n1 = s.indexOf("(");
+            var n2 = s.indexOf(")");
+            var before = s.substr(0, n1);
+            var after = s.substr(n2 + 1);
+            var middle = s.substr(n1, n2);
+            var modified = before + after;
+            if (middle.indexOf("get") != -1) {
+                modified = "@:get " + modified;
+            }
+            if (middle.indexOf("set") != -1) {
+                modified = "@:set " + modified;
+            }
+            return modified;
+        });
+
         var expr = Context.parseInlineString("{" + script + "}", Context.currentPos());
         expr = ExprTools.map(expr, replaceShortClassNames);
         switch (expr.expr) {
             case EBlock(exprs):
                 for (e in exprs) {
-                    switch (e.expr) {
-                        #if haxe4
-                        case EFunction(kind, f):
-                            switch (kind) {
-                                case FNamed(name, inlined):
-                                    if (classBuilder != null) {
-                                        classBuilder.addFunction(name, f.expr, f.args, f.ret);
-                                    } else {
-                                        var functionBuilder = new FunctionBuilder(null, f);
-                                        if (namedComponents != null) {
-                                            for (namedComponent in namedComponents.keys()) {
-                                                var details = namedComponents.get(namedComponent);
-                                                functionBuilder.addToStart(macro var $namedComponent = $i{details.generatedVarName});
-                                            }
-                                        }
-
-                                        var anonFunc:Expr = {
-                                            expr: EFunction(FAnonymous, functionBuilder.fn),
-                                            pos: Context.currentPos()
-                                        }
-                                        builder.add(macro $i{name} = $e{anonFunc});
-                                    }
-                                case _:
-                                    trace("unsupported " + kind);
-                            }
-                        #else
-                        case EFunction(name, f):
-                            if (classBuilder != null) {
-                                classBuilder.addFunction(name, f.expr, f.args, f.ret);
-                            } else {
-                                var functionBuilder = new FunctionBuilder(null, f);
-                                if (namedComponents != null) {
-                                    for (namedComponent in namedComponents.keys()) {
-                                        var details = namedComponents.get(namedComponent);
-                                        functionBuilder.addToStart(macro var $namedComponent = $i{details.generatedVarName});
-                                    }
-                                }
-
-                                /* TODO - not sure how to do this in 3.4.7
-                                var anonFunc:Expr = {
-                                    expr: EFunction(FAnonymous, functionBuilder.fn),
-                                    pos: Context.currentPos()
-                                }
-                                builder.add(macro $i{name} = $e{anonFunc});
-                                */
-                            }
-                        #end
-                        case EVars(vars):
-                            for (v in vars) {
-                                if (classBuilder != null) {
-                                    var vtype = v.type;
-                                    if (vtype == null) {
-                                        vtype = macro: Dynamic;
-                                    }
-                                    classBuilder.addVar(v.name, vtype, v.expr);
-                                } else {
-                                    if (v.expr != null) {
-                                        builder.add(macro $i{v.name} = $e{v.expr});
-                                    }
-                                }
-                            }
-                        case _:
-                            trace("unsupported " + e);
-                    }
+                    buildScriptFunctionsFromExpr(e, classBuilder, builder, namedComponents, null);
                 }
             case _:
                 trace("unsupported " + expr);
@@ -525,6 +488,107 @@ class ComponentMacros {
         }
     }
     
+    private static function buildScriptFunctionsFromExpr(e:Expr, classBuilder:ClassBuilder, builder:CodeBuilder, namedComponents:Map<String, NamedComponentDescription>, metas:Array<MetadataEntry>) {
+        switch (e.expr) {
+            case EMeta(s, e):
+                if (metas == null) {
+                    metas = [];
+                }
+                metas.push(s);
+                buildScriptFunctionsFromExpr(e, classBuilder, builder, namedComponents, metas);
+            #if haxe4
+            case EFunction(kind, f):
+                switch (kind) {
+                    case FNamed(name, inlined):
+                        if (classBuilder != null) {
+                            var access = [APublic];
+                            if (metas != null) {
+                                for (m in metas) {
+                                    if (m.name == ":private" || m.name == "private") {
+                                        access.remove(APublic);
+                                        access.push(APrivate);
+                                    }
+                                    if (m.name == ":override" || m.name == "override") {
+                                        access.push(AOverride);
+                                    }
+                                }
+                            }
+                            classBuilder.addFunction(name, f.expr, f.args, f.ret, access);
+                        } else {
+                            var functionBuilder = new FunctionBuilder(null, f);
+                            if (namedComponents != null) {
+                                for (namedComponent in namedComponents.keys()) {
+                                    var details = namedComponents.get(namedComponent);
+                                    functionBuilder.addToStart(macro var $namedComponent = $i{details.generatedVarName});
+                                }
+                            }
+
+                            var anonFunc:Expr = {
+                                expr: EFunction(FAnonymous, functionBuilder.fn),
+                                pos: Context.currentPos()
+                            }
+                            builder.add(macro $i{name} = $e{anonFunc});
+                        }
+                    case _:
+                        trace("unsupported " + kind);
+                }
+            #else
+            case EFunction(name, f):
+                if (classBuilder != null) {
+                    classBuilder.addFunction(name, f.expr, f.args, f.ret);
+                } else {
+                    var functionBuilder = new FunctionBuilder(null, f);
+                    if (namedComponents != null) {
+                        for (namedComponent in namedComponents.keys()) {
+                            var details = namedComponents.get(namedComponent);
+                            functionBuilder.addToStart(macro var $namedComponent = $i{details.generatedVarName});
+                        }
+                    }
+
+                    /* TODO - not sure how to do this in 3.4.7
+                    var anonFunc:Expr = {
+                        expr: EFunction(FAnonymous, functionBuilder.fn),
+                        pos: Context.currentPos()
+                    }
+                    builder.add(macro $i{name} = $e{anonFunc});
+                    */
+                }
+            #end
+            case EVars(vars):
+                for (v in vars) {
+                    if (classBuilder != null) {
+                        var vtype = v.type;
+                        if (vtype == null) {
+                            vtype = macro: Dynamic;
+                        }
+                        var get = null;
+                        var set = null;
+                        if (metas != null) {
+                            for (m in metas) {
+                                if (m.name == ":get" || m.name == "get") {
+                                    get = "get";
+                                }
+                                if (m.name == ":set" || m.name == "set") {
+                                    set = "set";
+                                }
+                            }
+                        }
+                        if (get == null && set == null) {
+                            classBuilder.addVar(v.name, vtype, v.expr);
+                        } else {
+                            classBuilder.addProp(v.name, vtype, v.expr, get, set);
+                        }
+                    } else {
+                        if (v.expr != null) {
+                            builder.add(macro $i{v.name} = $e{v.expr});
+                        }
+                    }
+                }
+            case _:
+                trace("unsupported " + e);
+        }
+    }
+
     private static function buildLanguageBindings(builder:CodeBuilder, buildData:BuildData, addLocalVars:Bool = false) {
         for (languageBinding in buildData.languageBindings) {
             assignLanguageBinding(builder, languageBinding, buildData.namedComponents, addLocalVars);

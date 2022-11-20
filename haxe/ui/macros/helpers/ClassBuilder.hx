@@ -405,6 +405,29 @@ class ClassBuilder {
         return newField;
     }
 
+    public function addProp(name:String, t:ComplexType, e:Expr = null, get:String = null, set:String = null, access:Array<Access> = null, meta:Metadata = null):Field {
+        if (access == null) {
+            if (StringTools.startsWith(name, "_")) {
+                access = [APrivate];
+            } else {
+                access = [APublic];
+            }
+        }
+        if (meta == null) {
+            meta = [];
+        }
+        var newField = {
+            name: name,
+            doc: null,
+            meta: meta,
+            access: access,
+            kind : FProp(get, set, t, e),
+            pos : pos
+        }
+        fields.push(newField);
+        return newField;
+    }
+
     public function hasVar(name:String):Bool {
         return (findVar(name) != null);
     }
