@@ -40,6 +40,10 @@ class HGrid extends Component {
     }
 
     private function set_rows(value:Int):Int {
+
+        if (_layout == null) {
+            layout = createLayout();
+        }
         if (_rows != value) {
             _rows = value;
 
