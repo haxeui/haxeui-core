@@ -4,6 +4,8 @@ import haxe.io.Path;
 import sys.FileSystem;
 import sys.io.File;
 
+using StringTools;
+
 class TemplateEntry {
     public function new() {
     }
@@ -12,6 +14,7 @@ class TemplateEntry {
     public var dst:String;
     public var binary:Bool = false;
     public var system:Bool = false;
+    @:optional @:default(true) public var expandVars:Bool = true;
 }
 
 class TemplateProject extends Project {
@@ -31,12 +34,22 @@ class TemplateProject extends Project {
             if (t.system == true) {
                 src = expandString(t.src, params);
             }
+            if (isExtensionBinary(src)) {
+                t.binary = true;
+            }
             var dst = expandString(t.dst, params);
-            copyTemplate(src, dst, params, t.binary);
+            copyTemplate(src, dst, params, t.binary, t.expandVars);
         }
     }
 
-    public static function copyTemplate(src:String, dst:String, vars:Map<String, String> = null, binary:Bool = false) {
+    private static function isExtensionBinary(path:String) {
+        if (path.endsWith(".png") || path.endsWith(".bmp") || path.endsWith(".gif") || path.endsWith(".jpg") || path.endsWith("jpeg") || path.endsWith(".ico") || path.endsWith(".icns")) {
+            return true;
+        }
+        return false;
+    }
+
+    public static function copyTemplate(src:String, dst:String, vars:Map<String, String> = null, binary:Bool = false, expandVars:Bool = true) {
         var params:Dynamic = {};
         for (k in vars.keys()) {
             Reflect.setField(params, k, vars.get(k));
@@ -59,13 +72,19 @@ class TemplateProject extends Project {
         }
 
         if (FileSystem.exists(dst) == false || force == true) {
-            Util.log('\t- Copying "${src}" to "${dst}"');
+            if (binary == true) {
+                Util.log('\t- Copying "${src}" to "${dst}" (as binary)');
+            } else {
+                Util.log('\t- Copying "${src}" to "${dst}"');
+            }
 
             if (binary == false) {
                 var content = File.getContent(src);
 
-                var t = new haxe.Template(content);
-                content = t.execute(params);
+                if (expandVars) {
+                    var t = new haxe.Template(content);
+                    content = t.execute(params);
+                }
 
                 File.saveContent(dst, content);
             } else {

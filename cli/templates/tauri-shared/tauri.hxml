@@ -1,0 +1,7 @@
+-cp src
+-main ::fullMain::
+
+-lib haxeui-core
+-lib haxeui-html5
+
+-js build/tauri/::output::.js

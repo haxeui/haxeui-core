@@ -1,0 +1,39 @@
+{
+    "name": "tauri-shared",
+    "type": "template",
+    "directories": [
+        "${target}/build/tauri",
+        "${target}/src-tauri",
+        "${target}/src-tauri/icons",
+        "${target}/src-tauri/src"
+    ],
+    "templates": [
+        { "src": "index.html", "dst": "${target}/build/tauri/index.html"},
+        { "src": "package.json", "dst": "${target}/package.json"},
+        { "src": "tauri.hxml", "dst": "${target}/tauri.hxml"},
+
+        { "src": "src-tauri/icons/32x32.png", "dst": "${target}/src-tauri/icons/32x32.png"},
+        { "src": "src-tauri/icons/128x128.png", "dst": "${target}/src-tauri/icons/128x128.png"},
+        { "src": "src-tauri/icons/128x128@2x.png", "dst": "${target}/src-tauri/icons/128x128@2x.png"},
+        { "src": "src-tauri/icons/icon.icns", "dst": "${target}/src-tauri/icons/icon.icns"},
+        { "src": "src-tauri/icons/icon.ico", "dst": "${target}/src-tauri/icons/icon.ico"},
+        { "src": "src-tauri/icons/icon.png", "dst": "${target}/src-tauri/icons/icon.png"},
+        { "src": "src-tauri/icons/Square30x30Logo.png", "dst": "${target}/src-tauri/icons/Square30x30Logo.png"},
+        { "src": "src-tauri/icons/Square44x44Logo.png", "dst": "${target}/src-tauri/icons/Square44x44Logo.png"},
+        { "src": "src-tauri/icons/Square71x71Logo.png", "dst": "${target}/src-tauri/icons/Square71x71Logo.png"},
+        { "src": "src-tauri/icons/Square89x89Logo.png", "dst": "${target}/src-tauri/icons/Square89x89Logo.png"},
+        { "src": "src-tauri/icons/Square107x107Logo.png", "dst": "${target}/src-tauri/icons/Square107x107Logo.png"},
+        { "src": "src-tauri/icons/Square142x142Logo.png", "dst": "${target}/src-tauri/icons/Square142x142Logo.png"},
+        { "src": "src-tauri/icons/Square150x150Logo.png", "dst": "${target}/src-tauri/icons/Square150x150Logo.png"},
+        { "src": "src-tauri/icons/Square284x284Logo.png", "dst": "${target}/src-tauri/icons/Square284x284Logo.png"},
+        { "src": "src-tauri/icons/Square310x310Logo.png", "dst": "${target}/src-tauri/icons/Square310x310Logo.png"},
+        { "src": "src-tauri/icons/StoreLogo.png", "dst": "${target}/src-tauri/icons/StoreLogo.png"},
+
+        { "src": "src-tauri/src/main.rs", "dst": "${target}/src-tauri/src/main.rs", "expandVars": false},
+
+        { "src": "src-tauri/build.rs", "dst": "${target}/src-tauri/build.rs", "expandVars": false},
+        { "src": "src-tauri/Cargo.toml", "dst": "${target}/src-tauri/Cargo.toml"},
+        { "src": "src-tauri/tauri.conf.json", "dst": "${target}/src-tauri/tauri.conf.json"},
+        { "src": "src-tauri/readme.txt", "dst": "${target}/src-tauri/readme.txt"}
+    ]
+}
