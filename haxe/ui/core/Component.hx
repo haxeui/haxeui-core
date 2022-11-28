@@ -417,6 +417,7 @@ class Component extends ComponentImpl implements IValidating {
 
         onComponentAdded(child);
         dispatch(new UIEvent(UIEvent.COMPONENT_ADDED));
+        child.dispatch(new UIEvent(UIEvent.COMPONENT_ADDED_TO_PARENT));
 
         child.scriptAccess = this.scriptAccess;
         return child;
@@ -496,6 +497,7 @@ class Component extends ComponentImpl implements IValidating {
 
         onComponentAdded(child);
         dispatch(new UIEvent(UIEvent.COMPONENT_ADDED));
+        child.dispatch(new UIEvent(UIEvent.COMPONENT_ADDED_TO_PARENT));
 
         child.scriptAccess = this.scriptAccess;
         return child;
@@ -559,6 +561,7 @@ class Component extends ComponentImpl implements IValidating {
 
         onComponentRemoved(child);
         dispatch(new UIEvent(UIEvent.COMPONENT_REMOVED));
+        child.dispatch(new UIEvent(UIEvent.COMPONENT_REMOVED_FROM_PARENT));
 
         return child;
     }
@@ -661,6 +664,7 @@ class Component extends ComponentImpl implements IValidating {
 
         onComponentRemoved(child);
         dispatch(new UIEvent(UIEvent.COMPONENT_REMOVED));
+        child.dispatch(new UIEvent(UIEvent.COMPONENT_REMOVED_FROM_PARENT));
 
         return child;
     }

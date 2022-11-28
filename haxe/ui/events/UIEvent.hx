@@ -32,6 +32,9 @@ class UIEvent extends EventImpl {
     public static inline var COMPONENT_ADDED:String = "componentadded";
     public static inline var COMPONENT_REMOVED:String = "componentremoved";
 
+    public static inline var COMPONENT_ADDED_TO_PARENT:String = "componentaddedtoparent";
+    public static inline var COMPONENT_REMOVED_FROM_PARENT:String = "componentremovedfromparent";
+
     public var bubble(default, default):Bool;
     public var type(default, default):String;
     public var target(default, default):Component;
