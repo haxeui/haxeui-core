@@ -438,9 +438,9 @@ private class SelectedBehaviour extends DataBehaviour {
         }
         var events = cast(button._internalEvents, ButtonEvents);
         if (button.hitTest(Screen.instance.currentMouseX, Screen.instance.currentMouseY)) {
-            button.addClass(":hover", true, true);
+            button.addClass(":hover", true, events.recursiveStyling);
         } else {
-            button.removeClass(":hover", true, true);
+            button.removeClass(":hover", true, events.recursiveStyling);
         }
         events.dispatchChanged();
     }
