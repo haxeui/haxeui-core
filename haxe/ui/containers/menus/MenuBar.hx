@@ -191,9 +191,8 @@ private class Events extends haxe.ui.events.Events {
                 if (rtl == false) {
                     filler.left = menu.width - cx;
                 }
-                filler.hidden = false;
             } else if (filler != null) {
-                filler.hidden = true;
+                menu.removeComponent(filler);
             }
 
             if (!_currentMenu.hasEvent(MenuEvent.MENU_SELECTED, onMenuSelected)) {
