@@ -298,10 +298,14 @@ class Component extends ComponentImpl implements IValidating {
     }
     private function set_dragInitiator(value:Component):Component {
         _dragInitiator = value;
-        if (_dragOptions != null) {
-            _dragOptions.mouseTarget = value;
+        if (value != null) {
+            if (_dragOptions != null) {
+                _dragOptions.mouseTarget = value;
+            }
+            draggable = true;
+        } else {
+            draggable = false;
         }
-        draggable = true;
         return value;
     }
 
