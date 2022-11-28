@@ -138,10 +138,13 @@ class ButtonBarBuilder extends CompositeBuilder {
             cast(child, Button).toggle = _bar.toggle;
         }
         
-        _component.registerInternalEvents(true);
-        
         return null;
     }
+
+    public override function onComponentAdded(child:Component) {
+	    _component.registerInternalEvents(true);
+    }
+
     
     public override function onReady() {
         _component.registerInternalEvents(true);
