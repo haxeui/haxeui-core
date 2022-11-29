@@ -346,11 +346,15 @@ private class Events extends haxe.ui.events.Events {
 
     private function onMouseWheel(event:MouseEvent) {
         var builder:Builder = cast(_tabbar._compositeBuilder, Builder);
+        if (builder._scrollLeft == null || builder._scrollLeft.hidden == true) {
+            return;
+        }
         if (event.delta < 0) {
             builder.scrollLeft();
         } else {
             builder.scrollRight();
         }
+
         event.cancel();
     }
 
