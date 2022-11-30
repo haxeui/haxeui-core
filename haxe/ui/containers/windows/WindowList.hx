@@ -73,7 +73,7 @@ private class WindowListItem extends Button {
         image.includeInLayout = false;
         image.scriptAccess = false;
         image.onClick = onCloseClicked;
-        image.registerEvent(MouseEvent.MOUSE_DOWN, function(event) {
+        image.registerEvent(MouseEvent.MOUSE_DOWN, function(event:MouseEvent) {
             event.cancel();
         });
         addComponent(image);

@@ -48,7 +48,11 @@ class Window extends VBox {
         return value;
     }
 
+    #if (haxeui_openfl || haxeui_nme || haxeui_flixel)
+    public override function set_width(value:Float):Float {
+    #else
     public override function set_width(value:Null<Float>):Null<Float> {
+    #end    
         var wrapper = findComponent("windowWrapper", VBox);
         if (wrapper != null) {
             wrapper.percentWidth = 100;
@@ -60,7 +64,11 @@ class Window extends VBox {
         return super.set_width(value);
     }
 
+    #if (haxeui_openfl || haxeui_nme || haxeui_flixel)
+    public override function set_height(value:Float):Float {
+    #else
     public override function set_height(value:Null<Float>):Null<Float> {
+    #end    
         var wrapper = findComponent("windowWrapper", VBox);
         if (wrapper != null) {
             wrapper.percentHeight = 100;
@@ -437,7 +445,7 @@ private class Builder extends CompositeBuilder {
             }
         #else
             _window.customStyle.cursor = cursor;
-            _title.customStyle.cursor = cursor;
+            title.customStyle.cursor = cursor;
 
             _window.invalidateComponentStyle();
             _title.invalidateComponentStyle();
