@@ -1776,6 +1776,7 @@ class Component extends ComponentImpl implements IValidating {
     //***********************************************************************************************************
 
     private function onThemeChanged() {
+        /*
         _initialSizeApplied = false;
         if (_style != null) {
             if (_style.initialWidth != null) {
@@ -1791,6 +1792,7 @@ class Component extends ComponentImpl implements IValidating {
                 percentHeight = null;
             }
         }
+        */
     }
 
     private override function initializeComponent() {
