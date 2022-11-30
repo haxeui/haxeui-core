@@ -24,4 +24,8 @@ class EventDispatcher<T:UIEvent> {
     public function dispatch<T:UIEvent>(event:T, target:Component = null) {
         _eventMap.invoke(event.type, event, target);
     }
+
+    public function removeAllListeners() {
+        _eventMap.removeAll();
+    }
 }
