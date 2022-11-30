@@ -448,7 +448,7 @@ private class Builder extends CompositeBuilder {
             title.customStyle.cursor = cursor;
 
             _window.invalidateComponentStyle();
-            _title.invalidateComponentStyle();
+            title.invalidateComponentStyle();
         #end
 
     }
