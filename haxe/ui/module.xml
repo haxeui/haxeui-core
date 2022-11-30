@@ -132,6 +132,8 @@
             <var name="restore-hover" value="haxeui-core/styles/shared/restore-button-white.png" />
             <var name="collapse" value="haxeui-core/styles/shared/window-collapse-blue.png" />
             <var name="collapse-hover" value="haxeui-core/styles/shared/window-collapse-white.png" />
+            <var name="expand" value="haxeui-core/styles/shared/window-expand-blue.png" />
+            <var name="expand-hover" value="haxeui-core/styles/shared/window-expand-white.png" />
             <var name="check-selected" value="haxeui-core/styles/shared/check-blue.png" />
             <var name="option-selected" value="haxeui-core/styles/shared/option-blue.png" />
             <var name="arrow-up-down" value="haxeui-core/styles/shared/sortable-arrows-blue.png" />

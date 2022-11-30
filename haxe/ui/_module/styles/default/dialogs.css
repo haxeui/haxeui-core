@@ -68,7 +68,7 @@
 }
 
 .dialog-minimize-button {
-    resource: $minimize;
+    resource: $collapse;
     vertical-align: "center";
     cursor: "pointer";
     pointer-events: true;
@@ -77,12 +77,12 @@
 }
 
 .dialog-minimize-button:hover {
-    resource: $minimize-hover;
+    resource: $collapse-hover;
     background-color: $selection-background-color;
 }
 
 .dialog-maximize-button {
-    resource: $maximize;
+    resource: $expand;
     vertical-align: "center";
     cursor: "pointer";
     pointer-events: true;
@@ -91,7 +91,7 @@
 }
 
 .dialog-maximize-button:hover {
-    resource: $maximize-hover;
+    resource: $expand-hover;
     background-color: $selection-background-color;
 }
 
