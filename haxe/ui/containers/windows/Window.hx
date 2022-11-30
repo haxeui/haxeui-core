@@ -15,10 +15,10 @@ import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.behaviours.DataBehaviour;
 
-@:xml(
+@:xml('
     <vbox style="spacing:0;">
     </vbox>
-)
+')
 @:composite(Builder)
 class Window extends VBox {
 
