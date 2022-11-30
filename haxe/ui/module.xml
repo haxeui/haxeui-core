@@ -48,6 +48,7 @@
         <class package="haxe.ui.components.popups" />
         <class package="haxe.ui.containers" />
         <class package="haxe.ui.containers.dialogs" />
+        <class package="haxe.ui.containers.windows" />
         <class package="haxe.ui.containers.menus" />
         <class package="haxe.ui.containers.properties" />
     </components>
@@ -153,6 +154,7 @@
             <style resource="haxeui-core/styles/default/main.css" priority="-3" />
             <style resource="haxeui-core/styles/default/buttons.css" />
             <style resource="haxeui-core/styles/default/dialogs.css" />
+            <style resource="haxeui-core/styles/default/windows.css" />
             <style resource="haxeui-core/styles/default/textinputs.css" />
             <style resource="haxeui-core/styles/default/scrollbars.css" />
             <style resource="haxeui-core/styles/default/scrollview.css" />
