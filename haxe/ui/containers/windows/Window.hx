@@ -96,7 +96,9 @@ class Window extends VBox {
         }
 
         var messageBox = new MessageBox();
+        #if !haxeui_hxwidgets
         messageBox.dialogParent = findComponent("windowContent", VBox);
+        #end
         messageBox.type = type;
         messageBox.message = message;
         messageBox.modal = modal;
