@@ -34,7 +34,7 @@ class WindowList extends HBox {
         var item = new WindowListItem();
         var window = cast(event.target, Window);
         item.text = window.title;
-        item.window = window;
+        item.relatedWindow = window;
         openWindows.addComponent(item);
 
         _windowToItemMap.set(window, item);
@@ -58,7 +58,7 @@ class WindowList extends HBox {
 
 @:composite(WindowListItemLayout)
 private class WindowListItem extends Button {
-    public var window:Window;
+    public var relatedWindow:Window;
 
     public function new() {
         super();
@@ -81,10 +81,10 @@ private class WindowListItem extends Button {
         this.onChange = function(_) {
             if (this.selected == true) {
                 var windowList = findAncestor(WindowList);
-                if (window.minimized) {
-                    windowList.windowManager.restoreWindow(window);
+                if (relatedWindow.minimized) {
+                    windowList.windowManager.restoreWindow(relatedWindow);
                 }
-                windowList.windowManager.bringToFront(window);
+                windowList.windowManager.bringToFront(relatedWindow);
             }
         }
 
@@ -95,7 +95,7 @@ private class WindowListItem extends Button {
     private function onCloseClicked(event:MouseEvent) {
         event.cancel();
         var windowList = findAncestor(WindowList);
-        windowList.windowManager.closeWindow(window);
+        windowList.windowManager.closeWindow(relatedWindow);
     }
 }
 
