@@ -165,6 +165,10 @@ class ComponentMacros {
     
     #if macro
     private static function buildFromStringCommon(source:String, params:Expr = null):Expr {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("ComponentMacros.buildFromStringCommon");
+        #end
+
         var builder = new CodeBuilder();
         var buildData:BuildData = {
             params: MacroHelpers.exprToMap(params)
@@ -173,10 +177,19 @@ class ComponentMacros {
         buildBindings(builder, buildData, true);
         buildLanguageBindings(builder, buildData, true);
         builder.add(macro rootComponent);
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
+
         return builder.expr;
     }
     
     private static function buildComponentCommon(filePath:String, params:Expr = null):Expr {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("ComponentMacros.buildComponentCommon");
+        #end
+
         var builder = new CodeBuilder();
         var buildData:BuildData = {
             params: MacroHelpers.exprToMap(params)
@@ -185,10 +198,19 @@ class ComponentMacros {
         buildBindings(builder, buildData, true);
         buildLanguageBindings(builder, buildData, true);
         builder.add(macro rootComponent);
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
+
         return builder.expr;
     }
     
     private static function buildCommon(resourcePath:String, params:Expr = null):Array<Field> {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("ComponentMacros.buildCommon");
+        #end
+
         var pos = haxe.macro.Context.currentPos();
         var fields = haxe.macro.Context.getBuildFields();
 
@@ -259,10 +281,18 @@ class ComponentMacros {
         
         builder.ctor.add(codeBuilder, AfterSuper);
 
+        #if haxeui_macro_times
+        stopTimer();
+        #end
+
         return builder.fields;
     }
 
     private static function buildComponentFromFile(classBuilder:ClassBuilder, builder:CodeBuilder, filePath:String, buildData:BuildData = null, rootVarName:String = "this", buildRoot:Bool = true):ComponentInfo {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("ComponentMacros.buildComponentFromFile");
+        #end
+
         populateBuildData(buildData);        
         
         var f = MacroHelpers.resolveFile(filePath);
@@ -326,7 +356,11 @@ class ComponentMacros {
         }
 
         builder.add(macro $i{rootVarName}.bindingRoot = true);
-        
+       
+        #if haxeui_macro_times
+        stopTimer();
+        #end
+
         return c;
     }
 
@@ -355,6 +389,10 @@ class ComponentMacros {
     }
     
     private static function buildComponentFromStringCommon(builder:CodeBuilder, source:String, buildData:BuildData = null, rootVarName:String = "this", buildRoot:Bool = false):ComponentInfo {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("ComponentMacros.buildComponentFromStringCommon");
+        #end
+
         populateBuildData(buildData);
         
         source = StringUtil.replaceVars(source, buildData.params);
@@ -394,10 +432,19 @@ class ComponentMacros {
         assignComponentProperties(builder, c, rootVarName, buildData);
         
         builder.add(macro $i{rootVarName}.bindingRoot = true);
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
+
         return c;
     }
 
     private static function buildComponentFromInfo(builder:CodeBuilder, c:ComponentInfo, buildData:BuildData, cb:ComponentInfo->CodeBuilder->Void = null, firstId:Int = 0) {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("ComponentMacros.buildComponentFromInfo");
+        #end
+
         populateBuildData(buildData);
 
         for (s in c.styles) {
@@ -411,6 +458,10 @@ class ComponentMacros {
         if (cb != null) {
             cb(c, builder);
         }
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
 
         return r;
     }
@@ -449,6 +500,10 @@ class ComponentMacros {
     }
     
     private static function buildScriptFunctions(classBuilder:ClassBuilder, builder:CodeBuilder, namedComponents:Map<String, NamedComponentDescription>, script:String) {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("ComponentMacros.buildScriptFunctions");
+        #end
+
         var replaceOverride = new EReg("(override).*function", "gm");
         script = replaceOverride.map(script, function(r) {
             return StringTools.replace(r.matched(0), "override", "@:override");
@@ -486,9 +541,17 @@ class ComponentMacros {
                 trace("unsupported " + expr);
                 
         }
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
     }
     
     private static function buildScriptFunctionsFromExpr(e:Expr, classBuilder:ClassBuilder, builder:CodeBuilder, namedComponents:Map<String, NamedComponentDescription>, metas:Array<MetadataEntry>) {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("ComponentMacros.buildScriptFunctionsFromExpr");
+        #end
+
         switch (e.expr) {
             case EMeta(s, e):
                 if (metas == null) {
@@ -587,6 +650,9 @@ class ComponentMacros {
             case _:
                 trace("unsupported " + e);
         }
+        #if haxeui_macro_times
+        stopTimer();
+        #end
     }
 
     private static function buildLanguageBindings(builder:CodeBuilder, buildData:BuildData, addLocalVars:Bool = false) {
@@ -596,6 +662,10 @@ class ComponentMacros {
     }
     
     private static function assignLanguageBinding(builder:CodeBuilder, languageBinding:LanguageBindingData, namedComponents:Map<String, NamedComponentDescription>, addLocalVars:Bool = false) {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("ComponentMacros.assignLanguageBinding");
+        #end
+
         var fixedExpr = ExpressionUtil.stringToLanguageExpression(languageBinding.bindingExpr);
         if (StringTools.endsWith(fixedExpr, ";") == false) {
             fixedExpr += ";";
@@ -642,6 +712,10 @@ class ComponentMacros {
         builder.add(macro haxe.ui.locale.LocaleManager.instance.registerComponent($i{varName}, $v{field}, function() {
             return $e{expr};
         }));
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
     }
     
     private static function buildBindings(builder:CodeBuilder, buildData:BuildData, addLocalVars:Bool = false) {
@@ -727,12 +801,22 @@ class ComponentMacros {
     
     // returns next free id
     private static function buildComponentNode(builder:CodeBuilder, c:ComponentInfo, id:Int, parentId:Int, buildData:BuildData, recurseChildren:Bool = true) {
+        #if macro_times_verbose
+        var stopTimer = Context.timer("ComponentMacros.buildComponentNode");
+        #end
+
         if (c.condition != null && SimpleExpressionEvaluator.evalCondition(c.condition) == false) {
+            #if macro_times_verbose
+            stopTimer();
+            #end
             return id;
         }
 
         var className = ModuleMacros.resolveComponentClass(c.type, c.namespace);
         if (className == null) {
+            #if macro_times_verbose
+            stopTimer();
+            #end
             Context.warning("no class found for component: " + c.type, Context.currentPos());
             return id;
         }
@@ -751,6 +835,9 @@ class ComponentMacros {
             var directionalClassName = ModuleMacros.resolveComponentClass(direction + c.type, c.namespace);
             if (directionalClassName == null) {
                 trace("WARNING: no directional class found for component: " + c.type + " (" + (direction + c.type.toLowerCase()) + ")");
+                #if macro_times_verbose
+                stopTimer();
+                #end
                 return id;
             }
 
@@ -823,6 +910,10 @@ class ComponentMacros {
             }
         }
         
+        #if macro_times_verbose
+        stopTimer();
+        #end
+
         return childId;
     }
 
@@ -970,6 +1061,10 @@ class ComponentMacros {
     }
     
     private static function assignBinding(builder:CodeBuilder, bindingData:BindingData, namedComponents:Map<String, NamedComponentDescription>, addLocalVars:Bool = false) {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("ComponentMacros.assignBinding");
+        #end
+
         var bindingExpr = bindingData.bindingExpr;
         var varName = bindingData.generatedVarName;
         var varProp = bindingData.varProp;
@@ -1067,6 +1162,10 @@ class ComponentMacros {
                 builder.add(macro $i{target}.$varProp = $e{expr});
             }
         }
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
     }
     
     private static function getDependants(expr:Expr):Map<String, Array<String>> {

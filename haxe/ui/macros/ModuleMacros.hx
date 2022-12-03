@@ -34,6 +34,10 @@ class ModuleMacros {
             return macro null;
         }
 
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("ModuleMacros.processModules");
+        #end
+
         /*
         _modules = [];
         _resourceIds = [];
@@ -205,12 +209,21 @@ class ModuleMacros {
         }
 
         _modulesProcessed = true;
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
+
         return builder.expr;
     }
 
     #if macro
     private static function resolvePaths(path:String):Array<String> {
         var paths = [];
+
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("ModuleMacros.resolvePaths");
+        #end
 
         for (c in Context.getClassPath()) {
             if (c.length == 0) {
@@ -223,10 +236,18 @@ class ModuleMacros {
             }
         }
 
+        #if haxeui_macro_times
+        stopTimer();
+        #end
+
         return paths;
     }
 
     public static function resolveComponentClass(name:String, namespace:String = null):String {
+        #if macro_times_verbose
+        var stopTimer = Context.timer("ModuleMacros.resolveComponentClass");
+        #end
+
         populateDynamicClassMap();
         
         if (namespace == null) {
@@ -242,6 +263,9 @@ class ModuleMacros {
         if (resolvedClass != null) {
             #if component_resolution_verbose
                 Sys.println(" => " + resolvedClass + " (from cache)");
+            #end
+            #if macro_times_verbose
+            stopTimer();
             #end
             return resolvedClass;
         }
@@ -389,6 +413,10 @@ class ModuleMacros {
         }
         #end
 
+        #if macro_times_vebose
+        stopTimer();
+        #end
+
         return resolvedClass;
     }
 
@@ -398,6 +426,10 @@ class ModuleMacros {
             return;
         }
         _dynamicClassMapPopulated = true;
+
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("ModuleMacros.populateDynamicClassMap");
+        #end
 
         var modules:Array<Module> = loadModules();
         for (m in modules) {
@@ -409,9 +441,17 @@ class ModuleMacros {
                 }
             }
         }
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
     }
 
     private static function createDynamicClasses(dir:String, root:String, namespaces:Map<String, String>) {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("ModuleMacros.createDynamicClasses");
+        #end
+
         var resolvedPath = null;
         try {
             resolvedPath = Context.resolvePath(dir);
@@ -436,9 +476,17 @@ class ModuleMacros {
                 createDynamicClass(fullPath, null, root, namespaces);
             }
         }
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
     }
 
     public static function createDynamicClass(filePath:String, alias:String = null, root:String = null, namespaces:Map<String, String> = null):String {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("ModuleMacros.createDynamicClass");
+        #end
+
         var resolvedPath = null;
         try {
             resolvedPath = Context.resolvePath(filePath);
@@ -542,6 +590,11 @@ class ModuleMacros {
         } else {
             ComponentClassMap.register(Module.DEFAULT_HAXEUI_NAMESPACE + "/" + className, fileParts.concat([className]).join("."));
         }
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
+
         return fileParts.concat([className]).join(".");
     }
 
@@ -550,6 +603,10 @@ class ModuleMacros {
         if (_modulesLoaded == true) {
             return _modules;
         }
+
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("ModuleMacros.loadModules");
+        #end
 
         #if module_resolution_verbose
         Sys.println("scanning class path for modules");
@@ -610,10 +667,19 @@ class ModuleMacros {
         }
         
         _modulesLoaded = true;
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
+
         return _modules;
     }
 
     private static function addResources(path:String, base:String, prefix:String, inclusions:Array<String>, exclusions:Array<String>, resourceList:Array<String>) {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("ModuleMacros.addResources");
+        #end
+
         if (prefix == null) {
             prefix = "";
         }
@@ -668,6 +734,10 @@ class ModuleMacros {
                 }
             }
         }
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
     }
     
     private static function isInInclusions(s:String, inclusions:Array<String>):Int {

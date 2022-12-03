@@ -29,6 +29,14 @@ class Macros {
 
     macro static function buildEvent():Array<Field> {
         var builder = new ClassBuilder(Context.getBuildFields(), Context.getLocalType(), Context.currentPos());
+
+        #if macro_times_verbose
+        var stopComponentTimer = Context.timer(builder.fullPath);
+        #end
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("build event");
+        #end
+
         for (f in builder.fields) {
             if (f.access.indexOf(AInline) != -1 && f.access.indexOf(AStatic) != -1) {
                 switch (f.kind) {
@@ -43,13 +51,28 @@ class Macros {
                 }
             }
         }
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
+        #if macro_times_verbose
+        stopComponentTimer();
+        #end
+
         return builder.fields;
     }
     
     macro static function build():Array<Field> {
+        var builder = new ClassBuilder(Context.getBuildFields(), Context.getLocalType(), Context.currentPos());
+        #if macro_times_verbose
+        var stopComponentTimer = Context.timer(builder.fullPath);
+        #end
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("build component");
+        #end
+
         ModuleMacros.loadModules();
 
-        var builder = new ClassBuilder(Context.getBuildFields(), Context.getLocalType(), Context.currentPos());
         ComponentClassMap.register(builder.name, builder.fullPath);
 
         if (builder.hasClassMeta(["xml"])) {
@@ -63,6 +86,13 @@ class Macros {
         buildEvents(builder);
         applyProperties(builder);
         
+        #if haxeui_macro_times
+        stopTimer();
+        #end
+        #if macro_times_verbose
+        stopComponentTimer();
+        #end
+
         return builder.fields;
     }
 
@@ -73,6 +103,10 @@ class Macros {
     }
     
     static function applyProperties(builder:ClassBuilder) {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("apply properties");
+        #end
+
         var propPrefix = builder.fullPath.toLowerCase();
         if (ModuleMacros.properties.exists(propPrefix + ".style")) {
             var styleNames = ModuleMacros.properties.get(propPrefix + ".style");
@@ -89,9 +123,17 @@ class Macros {
                 createDefaultsFn.add(macro addClass($v{n}));
             }
         }
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
     }
     
     static function buildFromXmlMeta(builder:ClassBuilder) {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("build from xml meta");
+        #end
+
         if (builder.hasSuperClass("haxe.ui.core.Component") == false) {
             Context.error("Must have a superclass of haxe.ui.core.Component", Context.currentPos());
         }
@@ -133,9 +175,17 @@ class Macros {
         ComponentClassMap.register("urn::haxeui::org/" + builder.name, builder.fullPath);
         
         builder.ctor.add(codeBuilder, AfterSuper);
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
     }
 
     static function buildComposite(builder:ClassBuilder) {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("build composite");
+        #end
+
         var registerCompositeFn = builder.findFunction("registerComposite");
         if (registerCompositeFn == null) {
             registerCompositeFn = builder.addFunction("registerComposite", macro {
@@ -159,9 +209,17 @@ class Macros {
                 );
             }
         }
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
     }
 
     static function buildEvents(builder:ClassBuilder) {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("build events");
+        #end
+
         for (f in builder.getFieldsWithMeta("event")) {
             f.remove();
             var eventExpr = f.getMetaValueExpr("event");
@@ -180,9 +238,17 @@ class Macros {
             });
             setter.addMeta(":dox", [macro group = "Event related properties and methods"]);
         }
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
     }
 
     static function buildStyles(builder:ClassBuilder) {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("build styles");
+        #end
+
         for (f in builder.getFieldsWithMeta("style")) {
             f.remove();
 
@@ -250,9 +316,17 @@ class Macros {
             }
             builder.addSetter(f.name, f.type, codeBuilder.expr);
         }
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
     }
 
     private static function buildPropertyBinding(builder:ClassBuilder, f:FieldBuilder, variable:Expr, field:String) {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("build property binding");
+        #end
+
         var componentField = builder.findField(ExprTools.toString(variable));
         if (componentField == null) { // the bind target might not be a member variable yet, which means we cant get its type, lets wait
             return;
@@ -311,9 +385,17 @@ class Macros {
                 });
             });
         }
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
     }
 
     static function buildBindings(builder:ClassBuilder) {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("build bindings");
+        #end
+
         for (f in builder.getFieldsWithMeta("bindable")) {
             var setFn = builder.findFunction("set_" + f.name);
             RTTI.addClassProperty(builder.fullPath, f.name, ComplexTypeTools.toString(f.type));
@@ -354,9 +436,17 @@ class Macros {
                 }
             }
         }
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
     }
 
     static function buildClonable(builder:ClassBuilder) {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("build clonable");
+        #end
+        
         var useSelf:Bool = (builder.fullPath == "haxe.ui.core.ComponentContainer");
 
         var cloneFn = builder.findFunction("cloneComponent");
@@ -431,6 +521,10 @@ class Macros {
                 }, builder.path, access);
             }
         }
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
     }
 
     #if ((haxe_ver < 4) || haxeui_heaps)
@@ -439,6 +533,13 @@ class Macros {
     #end
     static function buildBehaviours():Array<Field> {
         var builder = new ClassBuilder(haxe.macro.Context.getBuildFields(), Context.getLocalType(), Context.currentPos());
+        #if macro_times_verbose
+        var stopComponentTimer = Context.timer(builder.fullPath);
+        #end
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("build behaviours");
+        #end
+
         var registerBehavioursFn = builder.findFunction("registerBehaviours");
         if (registerBehavioursFn == null) {
             registerBehavioursFn = builder.addFunction("registerBehaviours", macro {
@@ -636,11 +737,24 @@ class Macros {
 
         RTTI.save();
         
+        #if haxeui_macro_times
+        stopTimer();
+        #end
+        #if macro_times_verbose
+        stopComponentTimer();
+        #end
+
         return builder.fields;
     }
 
     static function buildData():Array<Field> {
         var builder = new ClassBuilder(haxe.macro.Context.getBuildFields(), Context.getLocalType(), Context.currentPos());
+        #if macro_times_verbose
+        var stopComponentTimer = Context.timer(builder.fullPath);
+        #end
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("build behaviours");
+        #end
 
         for (f in builder.vars) {
             if (f.isStatic) {
@@ -668,6 +782,13 @@ class Macros {
         }
 
         builder.addVar("onDataSourceChanged", macro: Void->Void, macro null);
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
+        #if macro_times_verbose
+        stopComponentTimer();
+        #end
 
         return builder.fields;
     }
