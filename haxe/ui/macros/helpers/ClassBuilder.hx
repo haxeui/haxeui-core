@@ -145,7 +145,7 @@ class ClassBuilder {
 
         var map = CLASS_FIELD_CACHE.get(fullName);
         if (map == null) {
-            map = [];
+            map = new Map<String, ClassField>();
             CLASS_FIELD_CACHE.set(fullName, map);
         }
 
