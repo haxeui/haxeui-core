@@ -621,11 +621,13 @@ class DropDownEvents extends ButtonEvents {
     public override function register() {
         super.register();
         registerEvent(MouseEvent.MOUSE_DOWN, onClick);
+        registerEvent(UIEvent.HIDDEN, onHidden);
     }
 
     public override function unregister() {
         super.unregister();
         unregisterEvent(MouseEvent.MOUSE_DOWN, onClick);
+        unregisterEvent(UIEvent.HIDDEN, onHidden);
     }
 
     private function onClick(event:MouseEvent) {
@@ -635,6 +637,10 @@ class DropDownEvents extends ButtonEvents {
         } else {
             hideDropDown();
         }
+    }
+
+    private function onHidden(_) {
+        hideDropDown();
     }
 
     private override function onMouseClick(event:MouseEvent) {
