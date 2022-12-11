@@ -4,10 +4,13 @@
     height: auto;
 }
 
-.frame-contents {
+.frame-border {
     border-right: 1px solid $normal-border-color;
     border-left: 1px solid $normal-border-color;
     border-bottom: 1px solid $normal-border-color;
+}
+
+.frame-contents {
     padding: 10px;
     padding-top: 15px;
 }

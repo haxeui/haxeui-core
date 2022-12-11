@@ -50,6 +50,7 @@ private class IconBehaviour extends DataBehaviour {
 @:access(haxe.ui.core.Component)
 private class Builder extends CompositeBuilder {
     private var _frame:Frame;
+    private var _border:Box;
     private var _contents:Box;
     private var _label:Label;
 
@@ -59,9 +60,17 @@ private class Builder extends CompositeBuilder {
     }
 
     public override function create() {
+        _border = new Box();
+        _border.id = "frame-border";
+        _border.addClass("frame-border");
+        _border.includeInLayout = false;
+        _border.scriptAccess = false;
+        _frame.addComponent(_border);
+
         _contents = new Box();
         _contents.id = "frame-contents";
         _contents.addClass("frame-contents");
+        _contents.scriptAccess = false;
         _frame.addComponent(_contents);
 
         _label = new Label();
@@ -69,23 +78,26 @@ private class Builder extends CompositeBuilder {
         _label.id = "frame-title";
         _label.addClass("frame-title");
         _label.includeInLayout = false;
+        _label.scriptAccess = false;
         _frame.addComponent(_label);
 
         var line = new Component();
         line.id = "frame-left-line";
         line.addClass("frame-left-line");
         line.includeInLayout = false;
+        _label.scriptAccess = false;
         _frame.addComponent(line);
 
         var line = new Component();
         line.id = "frame-right-line";
         line.addClass("frame-right-line");
         line.includeInLayout = false;
+        _label.scriptAccess = false;
         _frame.addComponent(line);
     }
 
     public override function addComponent(child:Component):Component {
-        if (child.id != "frame-contents" && child.id != "frame-title"  && child.id != "frame-icon" && child.id != "frame-left-line" && child.id != "frame-right-line") {
+        if (child.id != "frame-border" && child.id != "frame-contents" && child.id != "frame-title"  && child.id != "frame-icon" && child.id != "frame-left-line" && child.id != "frame-right-line") {
             return _contents.addComponent(child);
         }
         return super.addComponent(child);
@@ -97,19 +109,21 @@ private class Builder extends CompositeBuilder {
 //***********************************************************************************************************
 private class Layout extends DefaultLayout {
     public override function resizeChildren() {
+        var border = findComponent("frame-border", Box, false);
         var contents = findComponent("frame-contents", Box, false);
         var label = findComponent("frame-title", Label, false);
         var icon = findComponent("frame-icon", Image, false);
         var line1 = findComponent("frame-left-line", Component, false);
         var line2 = findComponent("frame-right-line", Component, false);
 
+        border.width = _component.width;
+        border.height = _component.height - (label.height / 2);
+
         if (_component.autoWidth == false) {
-            contents.width = _component.width;
-        } else if (contents.width < _component.width) {
-            //contents.componentWidth = _component.width;
+            contents.width = border.width;
         }
-        if (_component.autoHeight == false) {
-            contents.height = _component.height - (label.height / 2);
+        if (_component.autoHeight == false) {    
+            contents.height = border.height;
         }
         var offset = 2;
         #if haxeui_openfl
@@ -124,13 +138,16 @@ private class Layout extends DefaultLayout {
     }
 
     public override function repositionChildren() {
+        var border = findComponent("frame-border", Box, false);
         var contents = findComponent("frame-contents", Box, false);
         var label = findComponent("frame-title", Label, false);
         var icon = findComponent("frame-icon", Image, false);
         var line1 = findComponent("frame-left-line", Component, false);
         var line2 = findComponent("frame-right-line", Component, false);
 
-        contents.top = _component.height - contents.height;
+        border.top = _component.height - border.height;
+        contents.top = border.top;
+
         var offset = 2;
         #if haxeui_openfl
         offset = 0;
