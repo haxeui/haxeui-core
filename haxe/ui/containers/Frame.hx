@@ -106,7 +106,7 @@ private class Layout extends DefaultLayout {
         if (_component.autoWidth == false) {
             contents.width = _component.width;
         } else if (contents.width < _component.width) {
-            contents.width = _component.width;
+            //contents.componentWidth = _component.width;
         }
         if (_component.autoHeight == false) {
             contents.height = _component.height - (label.height / 2);
