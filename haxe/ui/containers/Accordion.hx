@@ -147,32 +147,6 @@ private class Builder extends CompositeBuilder {
 
             _component.registerInternalEvents(true);
 
-            var buttonCount = 0;
-            var pageCount = 0;
-            for (child in _accordion.childComponents) {
-                if (child.hasClass("accordion-button")) {
-                    if (buttonCount == 0) {
-                        child.swapClass("first", "last", false);
-                    } else if (_component.childComponents.length / 2 > 1 && buttonCount == (_component.childComponents.length / 2) - 1) {
-                        child.swapClass("last", "first", false);
-                    } else {
-                        child.removeClasses(["first", "last"], false);
-                    }
-
-                    buttonCount++;
-                } else if (child.hasClass("accordion-page")) {
-                    if (pageCount == 0) {
-                        child.swapClass("first", "last", false);
-                    } else if (_component.childComponents.length / 2 > 1 && pageCount == (_component.childComponents.length / 2) - 1) {
-                        child.swapClass("last", "first", false);
-                    } else {
-                        child.removeClasses(["first", "last"], false);
-                    }
-
-                    pageCount++;
-                }
-            }
-
             return c;
         }
 
