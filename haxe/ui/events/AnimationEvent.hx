@@ -1,6 +1,7 @@
 package haxe.ui.events;
 
 class AnimationEvent extends UIEvent {
+    public static inline var LOADED:String = "animationloaded";
     public static inline var START:String = "animationstart";
     public static inline var END:String = "animationend";
     public static inline var FRAME:String = "animationframe";
