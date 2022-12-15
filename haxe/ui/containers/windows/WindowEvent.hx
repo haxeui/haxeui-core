@@ -16,4 +16,10 @@ class WindowEvent extends UIEvent {
     private function get_window():Window {
         return cast target;
     }
+
+    public override function clone():WindowEvent {
+        var c:WindowEvent = new WindowEvent(this.type);
+        c.window = this.window;
+        return c;
+    }
 }
