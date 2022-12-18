@@ -66,6 +66,7 @@ class ToolTipManager {
     private var _currentComponent:Component = null;
     private var _timer:Timer = null;
     private function onTargetMouseOver(event:MouseEvent) {
+        event.cancel();
         stopCurrent();
 
         _lastMouseEvent = event;
