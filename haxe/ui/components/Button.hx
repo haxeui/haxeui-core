@@ -429,7 +429,7 @@ private class SelectedBehaviour extends DataBehaviour {
             return;
         }
 
-        cast(button._compositeBuilder, ButtonBuilder).setSelection(button, _value);
+        ButtonGroups.instance.setSelection(button, _value);
         
         if (_value == false) {
             button.removeClass(":down", true, true);
@@ -690,40 +690,6 @@ class ButtonBuilder extends CompositeBuilder {
         }
     }
     
-    public function setSelection(button:Button, value:Bool, allowDeselection:Bool = false) {
-        if (button.componentGroup != null && value == false && allowDeselection == false) { // dont allow false if no other group selection
-            var arr:Array<Button> = ButtonGroups.instance.get(button.componentGroup);
-            var hasSelection:Bool = false;
-            if (arr != null) {
-                for (b in arr) {
-                    if (b != button && b.selected == true) {
-                        hasSelection = true;
-                        break;
-                    }
-                }
-            }
-            if (hasSelection == false && allowDeselection == false) {
-                button.behaviours.softSet("selected", true);
-                return;
-            }
-        }
-
-        if (button.componentGroup != null && value == true) { // set all the others in group
-            var arr:Array<Button> = ButtonGroups.instance.get(button.componentGroup);
-            if (arr != null) {
-                for (b in arr) {
-                    if (b != button) {
-                        b.selected = false;
-                    }
-                }
-            }
-        }
-
-        if (allowDeselection == true && value == false) {
-            button.behaviours.softSet("selected", false);
-        }
-    }
-    
     public override function addComponent(child:Component):Component {
         if ((child is ItemRenderer)) {
             var existingRenderer = _component.findComponent(ItemRenderer);
@@ -741,7 +707,7 @@ class ButtonBuilder extends CompositeBuilder {
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
-private class ButtonGroups { // singleton
+class ButtonGroups { // singleton
     private static var _instance:ButtonGroups;
     public static var instance(get, null):ButtonGroups;
     private static function get_instance():ButtonGroups {
@@ -808,6 +774,40 @@ private class ButtonGroups { // singleton
             return;
         }
         
-        cast(selection._compositeBuilder, ButtonBuilder).setSelection(selection, false, true);
+        ButtonGroups.instance.setSelection(selection, false, true);
+    }
+
+    public function setSelection(button:Button, value:Bool, allowDeselection:Bool = false) {
+        if (button.componentGroup != null && value == false && allowDeselection == false) { // dont allow false if no other group selection
+            var arr:Array<Button> = ButtonGroups.instance.get(button.componentGroup);
+            var hasSelection:Bool = false;
+            if (arr != null) {
+                for (b in arr) {
+                    if (b != button && b.selected == true) {
+                        hasSelection = true;
+                        break;
+                    }
+                }
+            }
+            if (hasSelection == false && allowDeselection == false) {
+                button.behaviours.softSet("selected", true);
+                return;
+            }
+        }
+
+        if (button.componentGroup != null && value == true) { // set all the others in group
+            var arr:Array<Button> = ButtonGroups.instance.get(button.componentGroup);
+            if (arr != null) {
+                for (b in arr) {
+                    if (b != button) {
+                        b.selected = false;
+                    }
+                }
+            }
+        }
+
+        if (allowDeselection == true && value == false) {
+            button.behaviours.softSet("selected", false);
+        }
     }
 }
