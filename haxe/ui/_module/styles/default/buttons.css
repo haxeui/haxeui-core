@@ -35,7 +35,6 @@
     background: $disabled-background-color-start $disabled-background-color-end vertical;
     color: $disabled-text-color;
     border-color: $disabled-border-color;
-    cursor: default;
 }
 
 .button .label {

@@ -25,6 +25,7 @@
     padding: 7px 8px;
     vertical-align: bottom;
     border-left-width: 0px;
+    cursor: pointer;
 }
 
 .tabbar-button .icon {

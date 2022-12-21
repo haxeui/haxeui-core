@@ -619,7 +619,7 @@ private class Builder extends CompositeBuilder {
         super.applyStyle(style);
         
         haxe.ui.macros.ComponentMacros.cascacdeStylesToList(Button, [
-            color, fontName, fontSize, cursor, textAlign, fontBold, fontUnderline, fontItalic
+            color, fontName, fontSize, textAlign, fontBold, fontUnderline, fontItalic
         ]);
     }
 }
