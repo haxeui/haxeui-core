@@ -350,9 +350,9 @@ private class Events extends haxe.ui.events.Events {
             return;
         }
         if (event.delta < 0) {
-            builder.scrollLeft();
-        } else {
             builder.scrollRight();
+        } else {
+            builder.scrollLeft();
         }
 
         event.cancel();
