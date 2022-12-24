@@ -327,11 +327,6 @@ class Macros {
         var stopTimer = Context.timer("build property binding");
         #end
 
-        var componentField = builder.findField(ExprTools.toString(variable));
-        if (componentField == null) { // the bind target might not be a member variable yet, which means we cant get its type, lets wait
-            return;
-        }
-        
         var hasGetter = builder.findFunction("get_" + f.name) != null;
         var hasSetter = builder.findFunction("set_" + f.name) != null;
 
@@ -339,36 +334,16 @@ class Macros {
             f.remove();
         }
 
-        var componentType = "haxe.ui.core.Component";
-        switch (componentField.kind) {
-            case FVar(TPath(p), e):
-                componentType = p.pack.join(".") + "." + p.name;
-            case _:    
-        }
-        var componentTypeExpr = macro $p{componentType.split(".")};
-
         var variable = ExprTools.toString(variable);
         if (hasGetter == false) {
             builder.addGetter(f.name, f.type, macro {
-                var c = findComponent($v{variable}, $componentTypeExpr);
-                if (c == null) {
-                    trace("WARNING: no child component found: " + $v{variable});
-                    return haxe.ui.util.Variant.fromDynamic(null);
-                }
-                return c.$field;
+                return $i{variable}.$field;
             });
         }
 
         if (hasSetter == false) {
             builder.addSetter(f.name, f.type, macro {
-                if (value != $i{f.name}) {
-                    var c = findComponent($v{variable}, $componentTypeExpr);
-                    if (c == null) {
-                        trace("WARNING: no child component found: " + $v{variable});
-                        return value;
-                    }
-                    c.$field = value;
-                }
+                $i{variable}.$field = value;
                 return value;
             });
         }
