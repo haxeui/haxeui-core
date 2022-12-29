@@ -7,6 +7,7 @@ import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.geom.Size;
 import haxe.ui.layouts.DefaultLayout;
+import haxe.ui.styles.Style;
 
 @:composite(Builder, Layout)
 class Frame extends Box {
@@ -101,6 +102,14 @@ private class Builder extends CompositeBuilder {
             return _contents.addComponent(child);
         }
         return super.addComponent(child);
+    }
+
+    public override function applyStyle(style:Style) {
+        if (style.icon != null) {
+            _frame.icon = style.icon;
+        } else {
+            //_frame.icon = null;
+        }
     }
 }
 
