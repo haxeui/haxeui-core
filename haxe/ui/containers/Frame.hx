@@ -11,9 +11,11 @@ import haxe.ui.styles.Style;
 
 @:composite(Builder, Layout)
 class Frame extends Box {
-    @:clonable @:behaviour(TextBehaviour)              public var text:String;
-    @:clonable @:behaviour(IconBehaviour)              public var icon:String;
-    @:clonable @:value(text)                           public var value:Dynamic;
+    @:clonable @:behaviour(TextBehaviour)               public var text:String;
+    @:clonable @:behaviour(IconBehaviour)               public var icon:String;
+    @:clonable @:behaviour(CollapsibleBehaviour)        public var collapsible:Bool;
+    @:clonable @:behaviour(CollapsedBehaviour)          public var collapsed:Bool;
+    @:clonable @:value(text)                            public var value:Dynamic;
 }
 
 //***********************************************************************************************************
@@ -30,7 +32,7 @@ private class TextBehaviour extends DataBehaviour {
 @:dox(hide) @:noCompletion
 private class IconBehaviour extends DataBehaviour {
     private override function validateData() {
-        var icon:Image = _component.findComponent("frame-icon", false);
+        var icon:Image = _component.findComponent("frame-icon", Image, false);
         if (icon == null) {
             icon = new Image();
             icon.addClass("frame-icon");
@@ -44,6 +46,46 @@ private class IconBehaviour extends DataBehaviour {
     }
 }
 
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class CollapsibleBehaviour extends DataBehaviour {
+    private override function validateData() {
+        var builder = cast(_component._compositeBuilder, Builder);
+        if (_value == true) {
+            builder.addCollapsibleHeader();
+        } else {
+            builder.removeCollapsibleHeader();
+        }
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class CollapsedBehaviour extends DataBehaviour {
+    private override function validateData() {
+        var frame = cast(_component, Frame);
+        var builder = cast(_component._compositeBuilder, Builder);
+        builder.addCollapsibleHeader();
+        frame.collapsible = true;
+
+
+        var header = _component.findComponent("frame-header", Header);
+        var border = _component.findComponent("frame-border", Box);
+        var contents = _component.findComponent("frame-contents", Box);
+        var collapseExpandIcon = header.findComponent("frame-collapse-expand-icon", Image);
+
+        if (_value == true) {
+            collapseExpandIcon.swapClass("collapsed", "expanded");
+            border.swapClass("collapsed", "expanded");
+            contents.swapClass("collapsed", "expanded");
+        } else {
+            collapseExpandIcon.swapClass("expanded", "collapsed");
+            border.swapClass("expanded", "collapsed");
+            contents.swapClass("expanded", "collapsed");
+        }
+    }
+}
+
 //***********************************************************************************************************
 // Composite Builder
 //***********************************************************************************************************
@@ -54,6 +96,7 @@ private class Builder extends CompositeBuilder {
     private var _border:Box;
     private var _contents:Box;
     private var _label:Label;
+    private var _header:Header;
 
     public function new(frame:Frame) {
         super(frame);
@@ -97,8 +140,50 @@ private class Builder extends CompositeBuilder {
         _frame.addComponent(line);
     }
 
+    public function addCollapsibleHeader() {
+        _component.addClass("collapsible");
+        var header = _component.findComponent("frame-header", Header);
+        if (header == null) {
+            header = new Header();
+            _component.addComponent(header);
+        }
+        var collapseExpandIcon = header.findComponent("frame-collapse-expand-icon", Image);
+        if (collapseExpandIcon == null) {
+            collapseExpandIcon = new Image();
+            collapseExpandIcon.id = "frame-collapse-expand-icon";
+            collapseExpandIcon.addClasses(["frame-collapse-expand-icon", "expanded"]);
+            header.addComponent(collapseExpandIcon);
+            collapseExpandIcon.onClick = onExpandCollapseClicked;
+        }
+        var title = _component.findComponent("frame-title", Label);
+        if (title != null) {
+            title.onClick = onExpandCollapseClicked;
+        }
+        var icon = _component.findComponent("frame-icon", Image);
+        if (icon != null) {
+            icon.onClick = onExpandCollapseClicked;
+        }
+    }
+
+    public function removeCollapsibleHeader() {
+        _component.removeClass("collapsible");
+        var header = _component.findComponent("frame-header", Header);
+        if (header != null) {
+            _component.removeComponent(header);
+        }
+    }
+
+    private function onExpandCollapseClicked(_) {
+        _frame.collapsed = !_frame.collapsed;
+    }
+
     public override function addComponent(child:Component):Component {
-        if (child.id != "frame-border" && child.id != "frame-contents" && child.id != "frame-title"  && child.id != "frame-icon" && child.id != "frame-left-line" && child.id != "frame-right-line") {
+        if ((child is Header)) {
+            _header = cast child;
+            _header.id = "frame-header";
+            _header.addClass("frame-header");
+            _header.includeInLayout = false;
+        } else if (child.id != "frame-border" && child.id != "frame-contents" && child.id != "frame-title"  && child.id != "frame-icon" && child.id != "frame-left-line" && child.id != "frame-right-line") {
             return _contents.addComponent(child);
         }
         return super.addComponent(child);
@@ -134,16 +219,26 @@ private class Layout extends DefaultLayout {
         if (_component.autoHeight == false) {    
             contents.height = border.height;
         }
-        var offset = 2;
+        var offset:Float = 2;
         #if haxeui_openfl
         offset = 0;
         #end
+
+        var titleOffset:Float = 0;
+        var frameHeader = findComponent("frame-header", Header, false);
+        if (frameHeader != null) {
+            switch (frameHeader.horizontalAlign) {
+                case "left":
+                    titleOffset = frameHeader.width;
+            }
+        }
+
         line1.width = paddingLeft - offset;
         var cx = label.width;
         if (icon != null) {
             cx += icon.width + horizontalSpacing;
         }
-        line2.width = _component.width - (paddingLeft + cx) - offset;
+        line2.width = _component.width - (paddingLeft + cx) - offset - titleOffset;
     }
 
     public override function repositionChildren() {
@@ -154,20 +249,33 @@ private class Layout extends DefaultLayout {
         var line1 = findComponent("frame-left-line", Component, false);
         var line2 = findComponent("frame-right-line", Component, false);
 
+        var titleOffset:Float = 0;
+        var frameHeader = findComponent("frame-header", Header, false);
+        if (frameHeader != null) {
+            switch (frameHeader.horizontalAlign) {
+                case "left":
+                    frameHeader.left = marginLeft(frameHeader);
+                    titleOffset = frameHeader.width + marginLeft(frameHeader);
+                case "right":
+                    frameHeader.left = _component.width - frameHeader.width - marginRight(frameHeader);
+            }
+
+            switch (frameHeader.verticalAlign) {
+                case "center":
+                    frameHeader.top = (label.height / 2) - (frameHeader.height / 2);
+            }
+        }
+
         border.top = _component.height - border.height;
         contents.top = border.top;
 
-        var offset = 2;
-        #if haxeui_openfl
-        offset = 0;
-        #end
-        var x = paddingLeft;
+        var x = paddingLeft + titleOffset;
         if (icon != null) {
             icon.top = (label.height / 2) - (icon.height / 2) - 1;
-            icon.left = paddingLeft;
+            icon.left = paddingLeft + titleOffset - marginLeft(frameHeader);
             x += icon.width + horizontalSpacing;
         }
-        label.left = x;
+        label.left = x - marginLeft(frameHeader);
         line1.top = contents.top;
         line2.left = _component.width - line2.width;
         line2.top = contents.top;
