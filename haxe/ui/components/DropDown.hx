@@ -160,6 +160,9 @@ private class SelectedItemBehaviour extends DynamicDataBehaviour  {
     }
 
     public override function getDynamic():Dynamic {
+        if (_component.isReady == false) {
+            return _value;
+        }
         var handler:IDropDownHandler = cast(_component._compositeBuilder, DropDownBuilder).handler;
         return handler.selectedItem;
     }
