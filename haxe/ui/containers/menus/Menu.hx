@@ -416,4 +416,9 @@ private class Builder extends CompositeBuilder {
             Screen.instance.removeComponent(subMenu);
         }
     }
+
+    public override function show() {
+        Screen.instance.addComponent(_menu);
+        return true;
+    }
 }
