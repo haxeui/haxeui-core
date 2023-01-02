@@ -192,6 +192,7 @@ class ComponentEvents extends ComponentContainer {
             if (updateStyle == true) {
                 cast(this, Component).swapClass(":disabled", ":hover");
             }
+            handleDisabled(true);
             disableInteractiveEvents(true);
             dispatch(new UIEvent(UIEvent.DISABLED));
             #if haxeui_html5
@@ -203,6 +204,7 @@ class ComponentEvents extends ComponentContainer {
             if (updateStyle == true) {
                 cast(this, Component).removeClass(":disabled");
             }
+            handleDisabled(false);
             disableInteractiveEvents(false);
             dispatch(new UIEvent(UIEvent.ENABLED));
             #if haxeui_html5

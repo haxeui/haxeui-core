@@ -3,6 +3,10 @@ package haxe.ui.core;
 import haxe.ui.backend.ComponentSurface;
 
 class ComponentCommon extends ComponentSurface {
+    private function handleDisabled(show:Bool) {
+
+    }
+
     //***********************************************************************************************************
     // Text related
     //***********************************************************************************************************
