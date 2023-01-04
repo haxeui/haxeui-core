@@ -14,13 +14,14 @@ typedef SaveFileDialogOptions = {
 
 class SaveFileDialogBase {
     public var saveResult:Bool = false;
-    public var callback:DialogButton->Bool->Void = null;
+    public var fullPath:String = null;
+    public var callback:DialogButton->Bool->String->Void = null;
     public var onDialogClosed:DialogEvent->Void = null;
     
     public var fileInfo:FileInfo = null;
     
     
-    public function new(options:SaveFileDialogOptions = null, callback:DialogButton->Bool->Void = null) {
+    public function new(options:SaveFileDialogOptions = null, callback:DialogButton->Bool->String->Void = null) {
         this.options = options;
         this.callback = callback;
     }
@@ -49,7 +50,7 @@ class SaveFileDialogBase {
     private function dialogConfirmed() {
         saveResult = true;
         if (callback != null) {
-            callback(DialogButton.OK, saveResult);
+            callback(DialogButton.OK, saveResult, fullPath);
         }
         if (onDialogClosed != null) {
             var event = new DialogEvent(DialogEvent.DIALOG_CLOSED, false, saveResult);
@@ -61,7 +62,7 @@ class SaveFileDialogBase {
     private function dialogCancelled() {
         saveResult = false;
         if (callback != null) {
-            callback(DialogButton.CANCEL, saveResult);
+            callback(DialogButton.CANCEL, saveResult, null);
         }
         if (onDialogClosed != null) {
             var event = new DialogEvent(DialogEvent.DIALOG_CLOSED, false, saveResult);
