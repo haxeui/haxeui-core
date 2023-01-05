@@ -14,6 +14,16 @@ class Point {
         this.y -= subtrahend.y;
     }
     
+    public function addCoords(addendX:Float, addendY:Float) {
+        this.x += addendX;
+        this.y += addendY;
+    }
+    
+    public function subtractCoords(subtrahendX:Float, subtrahendY:Float) {
+        this.x -= subtrahendX;
+        this.y -= subtrahendY;
+    }
+    
     public function sum(addend:Point):Point {
         return new Point(this.x + addend.x, this.y + addend.y);
     }
