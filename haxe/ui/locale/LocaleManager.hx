@@ -95,13 +95,13 @@ class LocaleManager {
     }
     
     private function onComponentReady(e:UIEvent) {
-        e.target.unregisterEvent(UIEvent.INITIALIZE, onComponentReady);
+        e.target.unregisterEvent(UIEvent.READY, onComponentReady);
         refreshFor(e.target);
     }
     
     public function refreshFor(component:Component) {
         if (component.isReady == false) {
-            component.registerEvent(UIEvent.INITIALIZE, onComponentReady);
+            component.registerEvent(UIEvent.READY, onComponentReady);
             return;
         }
         
