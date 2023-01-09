@@ -115,6 +115,8 @@ class Screen extends ScreenImpl {
         component.unregisterEvent(UIEvent.RESIZE, _onRootComponentResize);
         if (dispose == true) {
             component.disposeComponent();
+        } else {
+            component.dispatch(new UIEvent(UIEvent.HIDDEN));
         }
         return component;
     }

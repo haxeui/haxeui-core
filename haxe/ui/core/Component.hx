@@ -546,6 +546,8 @@ class Component extends ComponentImpl implements IValidating {
             }
             if (dispose == true) {
                 child.disposeComponent();
+            } else {
+                child.dispatch(new UIEvent(UIEvent.HIDDEN));
             }
         }
 
@@ -701,6 +703,7 @@ class Component extends ComponentImpl implements IValidating {
         for (child in childComponents) {
             child.onDestroy();
         }
+        dispatch(new UIEvent(UIEvent.HIDDEN));
         dispatch(new UIEvent(UIEvent.DESTROY));
     }
 
