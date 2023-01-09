@@ -48,7 +48,7 @@ class TableView extends ScrollView implements IDataComponent implements IVirtual
     @:clonable @:behaviour(GetHeader)                                       public var header:Component;
 
     @:call(ClearTable)                                                      public function clearContents(clearHeader:Bool = false);
-    @:call(AddColumn)                                                       public function addColumn(text:String):Component;
+    @:call(AddColumn)                                                       public function addColumn(text:String):Column;
     @:call(RemoveColumn)                                                    public function removeColumn(text:String);
 
     @:event(ItemEvent.COMPONENT_EVENT)                                      public var onComponentEvent:ItemEvent->Void;
