@@ -129,6 +129,13 @@ class ImageLoader {
                 Toolkit.assets.imageFromBytes(data, callback);
             } else {
                 if (httpStatus == 301 || httpStatus == 302) { // lets follow redirects
+                    #if flash
+
+                    trace("WARNING: redirect encountered, but responseHeaders not supported, ignoring redirect");
+                    callback(null); // responseHeaders doesnt exist, will not follow redirects for flash clients
+
+                    #else
+
                     var location = http.responseHeaders.get("location");
                     if (location == null) {
                         location = http.responseHeaders.get("Location");
@@ -139,6 +146,8 @@ class ImageLoader {
                         trace("WARNING: redirect encounters but no location header found (http status: " + httpStatus + ")");
                         callback(null);
                     }
+
+                    #end
                 } else {
                     trace("WARNING: 0 length bytes found for '" + url + "' (http status: " + httpStatus + ")");
                     callback(null);
@@ -153,6 +162,13 @@ class ImageLoader {
                 Toolkit.assets.imageFromBytes(Bytes.ofString(data), callback);
             } else {
                 if (httpStatus == 301 || httpStatus == 302) { // lets follow redirects
+                    #if flash 
+
+                    trace("WARNING: redirect encountered, but responseHeaders not supported, ignoring redirect");
+                    callback(null); // responseHeaders doesnt exist, will not follow redirects for flash clients
+
+                    #else
+
                     var location = http.responseHeaders.get("location");
                     if (location == null) {
                         location = http.responseHeaders.get("Location");
@@ -163,6 +179,8 @@ class ImageLoader {
                         trace("WARNING: redirect encounters but no location header found (http status: " + httpStatus + ")");
                         callback(null);
                     }
+
+                    #end
                 } else {
                     trace("WARNING: 0 length bytes found for '" + url + "' (http status: " + httpStatus + ")");
                     callback(null);
