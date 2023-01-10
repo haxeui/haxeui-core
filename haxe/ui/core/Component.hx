@@ -548,6 +548,8 @@ class Component extends ComponentImpl implements IValidating {
                 child.disposeComponent();
             } else {
                 child.dispatch(new UIEvent(UIEvent.HIDDEN));
+                // sometimes (on some backends, like browser), mouse out doesnt fire when removing from screen
+                child.removeClass(":hover", false, true);
             }
         }
 
@@ -644,6 +646,9 @@ class Component extends ComponentImpl implements IValidating {
         if (dispose == true) {
             child._isDisposed = true;
             child.removeAllComponents(true);
+        } else {
+            // sometimes (on some backends, like browser), mouse out doesnt fire when removing from screen
+            child.removeClass(":hover", false, true);
         }
         handleRemoveComponentAt(index, dispose);
         if (_children.remove(child)) {
