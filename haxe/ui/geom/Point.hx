@@ -9,8 +9,8 @@ class Point {
         
         This operation modifies `this` point in place.
 
-		@param point The point to be added.
-	**/
+        @param point The point to be added.
+    **/
     public function add(point:Point) {
         this.x += point.x;
         this.y += point.y;
@@ -21,8 +21,8 @@ class Point {
         
         This operation modifies `this` point in place.
 
-		@param point The point to be added.
-	**/
+        @param point The point to be added.
+    **/
     public function subtract(point:Point) {
         this.x -= point.x;
         this.y -= point.y;
@@ -33,9 +33,9 @@ class Point {
         
         This operation modifies `this` point in place.
 
-		@param dx The value to be added to the x coordinate of `this` point.
-		@param dy The value to be added to the y coordinate of `this` point.
-	**/
+        @param dx The value to be added to the x coordinate of `this` point.
+        @param dy The value to be added to the y coordinate of `this` point.
+    **/
     public function addCoords(dx:Float, dy:Float) {
         this.x += dx;
         this.y += dy;
@@ -46,50 +46,50 @@ class Point {
         
         This operation modifies `this` point in place.
 
-		@param dx The value to be subtracted from the x coordinate of `this` point.
-		@param dy The value to be subtracted from the y coordinate of `this` point.
-	**/
+        @param dx The value to be subtracted from the x coordinate of `this` point.
+        @param dy The value to be subtracted from the y coordinate of `this` point.
+    **/
     public function subtractCoords(dx:Float, dy:Float) {
         this.x -= dx;
         this.y -= dy;
     }
     
     /**
-		Adds the coordinates of another point to the coordinates of `this` point to
-		create a new point.
+        Adds the coordinates of another point to the coordinates of `this` point to
+        create a new point.
 
-		@param point The point to be added.
-		@return The new point.
-	**/
+        @param point The point to be added.
+        @return The new point.
+    **/
     public function sum(point:Point):Point {
         return new Point(this.x + point.x, this.y + point.y);
     }
     
     /**
-		Subtracts the coordinates of another point from the coordinates of `this` point to
-		create a new point.
+        Subtracts the coordinates of another point from the coordinates of `this` point to
+        create a new point.
 
-		@param point The point to be subtracted.
-		@return The new point.
-	**/
+        @param point The point to be subtracted.
+        @return The new point.
+    **/
     public function diff(point:Point):Point {
         return new Point(this.x - point.x, this.y - point.y);
     }
 
     /**
-		Creates a point obtained by rotating `this` point clockwise by 90 degrees about the origin.
+        Creates a point obtained by rotating `this` point clockwise by 90 degrees about the origin.
 
-		@return Rotated point.
-	**/
+        @return Rotated point.
+    **/
     public function orthogonalCW():Point {
         return new Point(y, -x);
     }
 
     /**
-		Creates a point obtained by rotating `this` point counter-clockwise by 90 degrees about the origin.
+        Creates a point obtained by rotating `this` point counter-clockwise by 90 degrees about the origin.
 
-		@return Rotated point.
-	**/
+        @return Rotated point.
+    **/
     public function orthogonalCCW():Point {
         return new Point(-y, x);
     }
@@ -98,8 +98,8 @@ class Point {
         Creates a point with radius vector opposite to `this` point's radius vector. Equivalent to creating the
         point with coordinates equal to ones of `this` point by absolute value, but with opposite sign.
 
-		@return Point with opposite radius vector.
-	**/
+        @return Point with opposite radius vector.
+    **/
     public function opposite():Point {
         return new Point(-x, -y);
     }
@@ -108,8 +108,8 @@ class Point {
         Rotates `this` point by 180 degrees about the origin. Equivalent to changing the sign of both of `this` point's
         coordinates.
 
-		This operation modifies `this` point in place.
-	**/
+        This operation modifies `this` point in place.
+    **/
     public function revert() {
         this.x = -x;
         this.y = -y;
@@ -120,8 +120,8 @@ class Point {
         
         This operation modifies `this` point in place.
 
-		@param radians Angle of rotation (in radians).
-	**/
+        @param radians Angle of rotation (in radians).
+    **/
     public function rotate(radians:Float) {
         var cos = Math.cos(radians);
         var sin = Math.sin(radians);
@@ -139,7 +139,7 @@ class Point {
         @param radians Angle of rotation (in radians).
         
         @return Rotated point.
-	**/
+    **/
     public function rotated(radians:Float):Point {
         var cos = Math.cos(radians);
         var sin = Math.sin(radians);
@@ -154,7 +154,7 @@ class Point {
         Returns the length of `this` point's radius vector, or the distance between the origin and `this` point.
         
         @return The length of the radius vector.
-	**/
+    **/
     public function length():Float {
         return Math.sqrt(x * x + y * y);
     }
@@ -166,10 +166,10 @@ class Point {
         This operation modifies `this` point in place.
 
         @param factor Value by which the coordinates of `this` point are multiplied.
-	**/
+    **/
     public function multiply(factor:Float) {
         x *= factor;
-		y *= factor;
+        y *= factor;
     }
 
     /**
@@ -180,7 +180,7 @@ class Point {
         @param factor Value by which the coordinates of `this` point are multiplied.
         
         @return The resulting point.
-	**/
+    **/
     public function product(factor:Float):Point {
         return new Point(x * factor, y * factor);
     }
@@ -191,15 +191,15 @@ class Point {
         This operation modifies `this` point in place.
 
         @param targetLength The scaling value. For example, if the current point is
-						    (0,5), and you normalize it to 2, the point returned is
-						    at (0,2).
-	**/
+                            (0,5), and you normalize it to 2, the point returned is
+                            at (0,2).
+    **/
     public function normalize(targetLength:Float) {
         if (x == 0 && y == 0)
-			return;
-		
-		var norm = targetLength / length();
-		multiply(norm);
+            return;
+        
+        var norm = targetLength / length();
+        multiply(norm);
     }
 
     /**
@@ -207,17 +207,17 @@ class Point {
         point to a set length.
 
         @param targetLength The scaling value. For example, if the current point is
-						    (0,5), and you normalize it to 2, the point returned is
+                            (0,5), and you normalize it to 2, the point returned is
                             at (0,2).
         
         @return The normalized point.
-	**/
+    **/
     public function normalized(targetLength:Float):Point {
         if (x == 0 && y == 0)
             return new Point();
-		
-		var norm = targetLength / length();
-		return product(norm);
+        
+        var norm = targetLength / length();
+        return product(norm);
     }
 
     /**
@@ -225,7 +225,7 @@ class Point {
         point to a length of 1. Equivalent to `this.normalized(1)`.
         
         @return The orth of `this` point.
-	**/
+    **/
     public function orth():Point {
         return normalized(1);
     }
@@ -234,7 +234,7 @@ class Point {
         Creates a new point by with coordinates equal to the coordinates of `this` point.
         
         @return The new point.
-	**/
+    **/
     public function copy():Point {
         return new Point(x, y);
     }
