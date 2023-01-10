@@ -9,11 +9,11 @@ class Point {
         
         This operation modifies `this` point in place.
 
-		@param addend The point to be added.
+		@param point The point to be added.
 	**/
-    public function add(addend:Point) {
-        this.x += addend.x;
-        this.y += addend.y;
+    public function add(point:Point) {
+        this.x += point.x;
+        this.y += point.y;
     }
     
     /**
@@ -21,11 +21,11 @@ class Point {
         
         This operation modifies `this` point in place.
 
-		@param addend The point to be added.
+		@param point The point to be added.
 	**/
-    public function subtract(subtrahend:Point) {
-        this.x -= subtrahend.x;
-        this.y -= subtrahend.y;
+    public function subtract(point:Point) {
+        this.x -= point.x;
+        this.y -= point.y;
     }
     
     /**
@@ -33,12 +33,12 @@ class Point {
         
         This operation modifies `this` point in place.
 
-		@param addendX The value to be added to the x coordinate of `this` point.
-		@param addendY The value to be added to the y coordinate of `this` point.
+		@param dx The value to be added to the x coordinate of `this` point.
+		@param dy The value to be added to the y coordinate of `this` point.
 	**/
-    public function addCoords(addendX:Float, addendY:Float) {
-        this.x += addendX;
-        this.y += addendY;
+    public function addCoords(dx:Float, dy:Float) {
+        this.x += dx;
+        this.y += dy;
     }
     
     /**
@@ -46,34 +46,34 @@ class Point {
         
         This operation modifies `this` point in place.
 
-		@param subtrahendX The value to be subtracted from the x coordinate of `this` point.
-		@param subtrahendY The value to be subtracted from the y coordinate of `this` point.
+		@param dx The value to be subtracted from the x coordinate of `this` point.
+		@param dy The value to be subtracted from the y coordinate of `this` point.
 	**/
-    public function subtractCoords(subtrahendX:Float, subtrahendY:Float) {
-        this.x -= subtrahendX;
-        this.y -= subtrahendY;
+    public function subtractCoords(dx:Float, dy:Float) {
+        this.x -= dx;
+        this.y -= dy;
     }
     
     /**
 		Adds the coordinates of another point to the coordinates of `this` point to
 		create a new point.
 
-		@param addend The point to be added.
+		@param point The point to be added.
 		@return The new point.
 	**/
-    public function sum(addend:Point):Point {
-        return new Point(this.x + addend.x, this.y + addend.y);
+    public function sum(point:Point):Point {
+        return new Point(this.x + point.x, this.y + point.y);
     }
     
     /**
 		Subtracts the coordinates of another point from the coordinates of `this` point to
 		create a new point.
 
-		@param subtrahend The point to be subtracted.
+		@param point The point to be subtracted.
 		@return The new point.
 	**/
-    public function diff(subtrahend:Point):Point {
-        return new Point(this.x - subtrahend.x, this.y - subtrahend.y);
+    public function diff(point:Point):Point {
+        return new Point(this.x - point.x, this.y - point.y);
     }
 
     /**
