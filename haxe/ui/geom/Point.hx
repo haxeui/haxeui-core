@@ -6,7 +6,7 @@ class Point {
     
     /**
         Adds the coordinates of another point to the coordinates of `this` point. 
-        
+
         This operation modifies `this` point in place.
 
 		@param addend The point to be added.
