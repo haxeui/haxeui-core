@@ -127,18 +127,18 @@ class DialogBase extends Box {
         #end
         var dp = dialogParent;
         if (modal) {
-            if (_overlay != null) {
-                return;
-            }
-            _overlay = new Component();
-            _overlay.id = "modal-background";
-            _overlay.addClass("modal-background");
-            _overlay.percentWidth = _overlay.percentHeight = 100;
-            _overlay.onClick = function(_) {
-                if (closable) {
-                    hideDialog(DialogButton.CANCEL);
+            if (_overlay == null) {
+                _overlay = new Component();
+                _overlay.id = "modal-background";
+                _overlay.addClass("modal-background");
+                _overlay.percentWidth = _overlay.percentHeight = 100;
+                _overlay.onClick = function(_) {
+                    if (closable) {
+                        hideDialog(DialogButton.CANCEL);
+                    }
                 }
             }
+
             if (dp != null) {
                 includeInLayout = false;
         		_overlay.includeInLayout = false;
