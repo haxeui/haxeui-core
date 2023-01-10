@@ -738,7 +738,7 @@ class Macros {
             builder.removeVar(f.name);
 
             var name = '_${f.name}';
-            builder.addVar(name, f.type, null, null, [{name: ":noCompletion", pos: Context.currentPos()}]);
+            builder.addVar(name, f.type, null, null, [{name: ":noCompletion", pos: Context.currentPos()}, {name: ":optional", pos: Context.currentPos()}]);
             var newField = builder.addGetter(f.name, f.type, macro {
                 return $i{name};
             });
