@@ -731,18 +731,24 @@ class Macros {
         var stopTimer = Context.timer("build behaviours");
         #end
 
+        var constructorArgs:Array<FunctionArg> = [];
+        var constructorExprs:Array<Expr> = [];
         for (f in builder.vars) {
             if (f.isStatic) {
                 continue;
             }
-            builder.removeVar(f.name);
+            var fieldName = f.name;
+            builder.removeVar(fieldName);
+            var optional = f.hasMeta(":optional");
+            constructorArgs.push({name: fieldName, type: f.type, value: f.expr, opt: optional});
+            constructorExprs.push(macro this.$fieldName = $i{fieldName});
 
-            var name = '_${f.name}';
+            var name = '_${fieldName}';
             builder.addVar(name, f.type, null, null, [{name: ":noCompletion", pos: Context.currentPos()}, {name: ":optional", pos: Context.currentPos()}]);
-            var newField = builder.addGetter(f.name, f.type, macro {
+            var newField = builder.addGetter(fieldName, f.type, macro {
                 return $i{name};
             });
-            var newField = builder.addSetter(f.name, f.type, macro {
+            var newField = builder.addSetter(fieldName, f.type, macro {
                 if (value == $i{name}) {
                     return value;
                 }
@@ -757,6 +763,13 @@ class Macros {
         }
 
         builder.addVar("onDataSourceChanged", macro: Void->Void, macro null);
+
+        if (!builder.hasFunction("new")) {
+            builder.addFunction("new", macro {
+                $b{constructorExprs}
+            }, constructorArgs);
+        }
+
 
         #if haxeui_macro_times
         stopTimer();
