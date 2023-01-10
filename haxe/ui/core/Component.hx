@@ -647,6 +647,7 @@ class Component extends ComponentImpl implements IValidating {
             child._isDisposed = true;
             child.removeAllComponents(true);
         } else {
+            child.dispatch(new UIEvent(UIEvent.HIDDEN));
             // sometimes (on some backends, like browser), mouse out doesnt fire when removing from screen
             child.removeClass(":hover", false, true);
         }
