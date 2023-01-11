@@ -182,11 +182,11 @@ class ModuleMacros {
 
         if (preloadAll) {
             for (r in _resourceIds) {
-                if (StringTools.endsWith(r, ".png")) {
+                if (isImage(r)) {
                     builder.add(macro
                         haxe.ui.ToolkitAssets.instance.preloadList.push({type: "image", resourceId: $v{r}})
                     );
-                } else if (StringTools.endsWith(r, ".ttf")) {
+                } else if (isFont(r)) {
                     builder.add(macro
                         haxe.ui.ToolkitAssets.instance.preloadList.push({type: "font", resourceId: $v{r}})
                     );
@@ -793,5 +793,17 @@ class ModuleMacros {
         return s;
     }
     
+    private static function isImage(file:String):Bool {
+        return StringTools.endsWith(file, ".png")
+            || StringTools.endsWith(file, ".gif")
+            || StringTools.endsWith(file, ".svg")
+            || StringTools.endsWith(file, ".jpg")
+            || StringTools.endsWith(file, ".jpeg");
+    }
+
+    private static function isFont(file:String):Bool {
+        return StringTools.endsWith(file, ".ttf");
+    }
+
     #end
 }
