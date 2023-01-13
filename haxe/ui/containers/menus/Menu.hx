@@ -417,6 +417,11 @@ private class Builder extends CompositeBuilder {
         }
     }
 
+    public override function hide() {
+        Screen.instance.removeComponent(_menu, false);
+        return true;
+    }
+
     public override function show() {
         Screen.instance.addComponent(_menu);
         return true;

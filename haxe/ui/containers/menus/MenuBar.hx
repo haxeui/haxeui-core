@@ -166,7 +166,6 @@ private class Events extends haxe.ui.events.Events {
                 menu.addComponent(filler);
             }
             menu.show();
-            Screen.instance.addComponent(menu);
             menu.syncComponentValidation();
 
             if (left + menu.actualComponentWidth > Screen.instance.actualWidth) {
@@ -226,7 +225,6 @@ private class Events extends haxe.ui.events.Events {
             _currentMenu.unregisterEvent(MenuEvent.MENU_SELECTED, onMenuSelected);
             _currentMenu.hide();
             _currentButton.selected = false;
-            Screen.instance.removeComponent(_currentMenu, false);
             _currentButton = null;
             _currentMenu = null;
         }
