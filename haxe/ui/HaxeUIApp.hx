@@ -26,7 +26,12 @@ class HaxeUIApp extends AppImpl {
 
     public var preloaderClass:Class<Preloader> = null;
     public var preloader:Preloader = null;
+    private var _onReady:Void->Void;
+    private var _onEnd:Void->Void;
     private override function init(onReady:Void->Void, onEnd:Void->Void = null) {
+        _onReady = onReady;
+        _onEnd = onEnd;
+        
         if (Toolkit.backendProperties.getProp("haxe.ui.theme") != null && Toolkit.theme == "default") {
             Toolkit.theme = Toolkit.backendProperties.getProp("haxe.ui.theme");
         }
@@ -37,6 +42,18 @@ class HaxeUIApp extends AppImpl {
             Toolkit.init(_options);
         }
 
+        if (_autoHandlePreload) {
+            startPreload(onPreloadComplete);
+        } else {
+            super.init(_onReady, _onEnd);
+        }
+    }
+
+    private function onPreloadComplete() {
+        super.init(_onReady, _onEnd);
+    }
+
+    private override function startPreload(onComplete:Void->Void) {
         var preloadList:Array<PreloadItem> = null;
 
         #if (!haxeui_hxwidgets && !haxeui_kha && !haxeui_qt && !haxeui_raylib) // TODO: needs some work here
@@ -55,15 +72,15 @@ class HaxeUIApp extends AppImpl {
 
         #end
 
-        handlePreload(preloadList, onReady, onEnd, preloader);
+        handlePreload(preloadList, onComplete, preloader);
     }
 
-    private function handlePreload(list:Array<PreloadItem>, onReady:Void->Void, onEnd:Void->Void, preloader:Preloader) {
+    private function handlePreload(list:Array<PreloadItem>, onComplete:Void->Void, preloader:Preloader) {
         if (list == null || list.length == 0) {
             if (preloader != null) {
                 preloader.complete();
             }
-            super.init(onReady, onEnd);
+            onComplete();
             return;
         }
 
@@ -74,21 +91,21 @@ class HaxeUIApp extends AppImpl {
                     if (preloader != null) {
                         preloader.increment();
                     }
-                    handlePreload(list, onReady, onEnd, preloader);
+                    handlePreload(list, onComplete, preloader);
                 });
             case "image":
                 ToolkitAssets.instance.getImage(item.resourceId, function(i) {
                     if (preloader != null) {
                         preloader.increment();
                     }
-                    handlePreload(list, onReady, onEnd, preloader);
+                    handlePreload(list, onComplete, preloader);
                 });
             case _:
                 trace('WARNING: unknown type to preload "${item.type}", continuing');
                 if (preloader != null) {
                     preloader.increment();
                 }
-                handlePreload(list, onReady, onEnd, preloader);
+                handlePreload(list, onComplete, preloader);
         }
     }
 
