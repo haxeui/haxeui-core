@@ -38,6 +38,15 @@ class BasicItemRenderer extends ItemRenderer {
             if (value.color != null) {
                 _label.color = Color.fromString(value.color);
             }
+            if (value.bold != null) {
+                _label.customStyle.fontBold = (Std.string(value.bold) == "true");
+            }
+            if (value.italic != null) {
+                _label.customStyle.fontItalic = (Std.string(value.italic) == "true");
+            }
+            if (value.underline != null) {
+                _label.customStyle.fontUnderline = (Std.string(value.underline) == "true");
+            }
         }
     }
 }
