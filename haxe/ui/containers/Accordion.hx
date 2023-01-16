@@ -125,6 +125,9 @@ private class Builder extends CompositeBuilder {
             button.addClass("accordion-button");
             button.toggle = true;
             button.scriptAccess = false;
+            if (child.id != null) {
+                button.id = child.id + "Button";
+            }
             _accordion.addComponent(button);
 
             child.animatable = false;
