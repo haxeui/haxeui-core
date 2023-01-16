@@ -1,5 +1,6 @@
 package haxe.ui.styles.animation.util;
 
+import haxe.ui.util.MathUtil;
 import haxe.ui.core.Component;
 import haxe.ui.core.TypeMap;
 import haxe.ui.styles.EasingFunction;
@@ -85,12 +86,14 @@ class Actuator<T> {
             _apply(1);
             _finish();
         } else {
-            _currentTime = Timer.stamp();
+            _currentTime = MathUtil.round(Timer.stamp(), 2); // we want to round the start time to account for small differences
 
             if (delay > 0) {
-                haxe.ui.util.Timer.delay(_nextFrame, Std.int(delay * 1000));
+                haxe.ui.util.Timer.delay(function() {
+                    registerFrameCallback(_nextFrame);
+                }, Std.int(delay * 1000));
             } else {
-                new CallLater(_nextFrame);
+                registerFrameCallback(_nextFrame);
             }
         }
     }
@@ -234,12 +237,12 @@ class Actuator<T> {
         }
     }
 
-    private function _nextFrame() {
+    private function _nextFrame(stamp:Float) {
         if (_stopped == true) {
             return;
         }
 
-        var currentTime:Float = Timer.stamp();
+        var currentTime:Float = stamp;
         var delta:Float = currentTime - _currentTime;
         if (delay < 0) {
             delta += -delay;
@@ -257,8 +260,6 @@ class Actuator<T> {
 
         if (delta >= duration) {
             _finish();
-        } else {
-            new CallLater(_nextFrame);
         }
     }
 
@@ -321,9 +322,48 @@ class Actuator<T> {
     private function _finish() {
         _stopped = true;
         target = null;
+        unregisterFrameCallback(_nextFrame);
         if (_onComplete != null) {
             _onComplete();
         }
+    }
+
+    // we want to unify animation "ticks" by having a single set of callbacks that are all called at the same time
+    // (once per frame event - via calllater)
+    private static var frameCallbacks:Array<Float->Void> = [];
+    private static var dispatchingFrameCallbacks:Bool = false;
+    private static function registerFrameCallback(fn:Float->Void) {
+        frameCallbacks.push(fn);
+        if (dispatchingFrameCallbacks == false) {
+            dispatchingFrameCallbacks = true;
+            processCallbacks();
+        }
+    }
+    
+    private static function unregisterFrameCallback(fn:Float->Void) {
+        new CallLater(function () {
+            frameCallbacks.remove(fn);
+            if (frameCallbacks.length == 0) {
+                dispatchingFrameCallbacks = false;
+            }
+        });
+    }
+
+
+    private static function processCallbacks() {
+        if (dispatchingFrameCallbacks == false) {
+            return;
+        }
+
+        new CallLater(function() {
+            var stamp = Timer.stamp();
+            for (cb in frameCallbacks) {
+                //s.frame();
+                cb(stamp);
+            }
+
+            processCallbacks();
+        });
     }
 }
 
