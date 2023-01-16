@@ -36,7 +36,7 @@ class BasicItemRenderer extends ItemRenderer {
 
         if (value != null) {
             if (value.color != null) {
-                _label.color = Color.fromString(value.color);
+                _label.customStyle.color = Color.fromString(value.color);
             }
             if (value.bold != null) {
                 _label.customStyle.fontBold = (Std.string(value.bold) == "true");
