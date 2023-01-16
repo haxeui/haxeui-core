@@ -15,6 +15,8 @@ class UIEvent extends EventImpl {
     public static inline var MOVE:String = "move";
     public static inline var INITIALIZE:String = "initialize";
 
+    public static inline var USER_SUBMIT:String = "usersubmit";
+
     public static inline var RENDERER_CREATED:String = "renderercreated";
     public static inline var RENDERER_DESTROYED:String = "rendererdestroyed";
 
