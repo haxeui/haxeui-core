@@ -86,7 +86,7 @@ class FocusManager extends FocusManagerImpl {
     
     private function focusOnFirstInteractive(view:Component) {
         var list = [];
-        buildFocusableList(view, list);
+        buildFocusableList(view, list, true);
         if (list.length > 0) {
             list[0].focus = true;
             return list[0];
@@ -181,7 +181,7 @@ class FocusManager extends FocusManagerImpl {
         return cast prevFocus;
     }
 
-    private function buildFocusableList(c:Component, list:Array<IFocusable>):IFocusable {
+    private function buildFocusableList(c:Component, list:Array<IFocusable>, considerAutoFocus:Bool = false):IFocusable {
         if (!enabled) {
             return null;
         }
@@ -197,6 +197,9 @@ class FocusManager extends FocusManagerImpl {
         
         if ((c is IFocusable)) {
             var f:IFocusable = cast c;
+            if (considerAutoFocus == true && f.autoFocus == false) {
+                return null;
+            }
             if (f.allowFocus == true && f.disabled == false) {
                 if (f.focus == true) {
                     currentFocus = f;
@@ -213,7 +216,7 @@ class FocusManager extends FocusManagerImpl {
         });
         
         for (child in childList) {
-            var f:IFocusable = buildFocusableList(child, list);
+            var f:IFocusable = buildFocusableList(child, list, considerAutoFocus);
             if (f != null) {
                 currentFocus = f;
             }

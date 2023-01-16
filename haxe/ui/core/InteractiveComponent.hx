@@ -73,6 +73,28 @@ class InteractiveComponent extends Component implements IFocusable implements IV
         }
         return value;
     }
+
+    private var _autoFocus:Bool = true;
+    /**
+     Whether this component is allowed to gain focus automatically 
+    **/
+    public var autoFocus(get, set):Bool;
+    private function get_autoFocus():Bool {
+        return _autoFocus;
+    }
+    private function set_autoFocus(value:Bool):Bool {
+        if (_autoFocus == value) {
+            return value;
+        }
+
+        _autoFocus = value;
+        for (child in childComponents) {
+            if ((child is IFocusable)) {
+                cast(child, IFocusable).autoFocus = value;
+            }
+        }
+        return value;
+    }
     
     private function findScroller():IScrollView {
         var view:IScrollView = null;
