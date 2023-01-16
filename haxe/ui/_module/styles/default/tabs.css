@@ -230,6 +230,10 @@
     border-color: $disabled-border-color;
 }
 
+.tabview.no-padding > .tabview-content {
+    padding: 0px;
+}
+
 /************************************************************************
 ** TABVIEW ALT STYLES
 *************************************************************************/
