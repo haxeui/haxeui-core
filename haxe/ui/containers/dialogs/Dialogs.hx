@@ -63,12 +63,12 @@ class Dialogs {
         if (title != null) {
             messageBox.title = title;
         }
-        messageBox.show();
         if (callback != null) {
             messageBox.registerEvent(DialogEvent.DIALOG_CLOSED, function(e:DialogEvent) {
                 callback(e.button);
             });
         }
+        messageBox.show();
         return messageBox;
     }
 
