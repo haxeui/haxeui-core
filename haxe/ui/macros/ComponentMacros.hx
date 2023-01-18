@@ -532,6 +532,7 @@ class ComponentMacros {
 
         var expr = Context.parseInlineString("{" + script + "}", Context.currentPos());
         expr = ExprTools.map(expr, replaceShortClassNames);
+        expr = ExprTools.map(expr, replaceInternalShortNames);
         switch (expr.expr) {
             case EBlock(exprs):
                 for (e in exprs) {
@@ -742,6 +743,7 @@ class ComponentMacros {
                 var usedVars = [];
                 expr = ExprTools.map(expr, replaceThis);
                 expr = ExprTools.map(expr, replaceShortClassNames);
+                expr = ExprTools.map(expr, replaceInternalShortNames);
                 expr = ExprTools.map(expr, findVars.bind(usedVars));
                 
                 for (namedComponent in namedComponents.keys()) {
@@ -799,6 +801,19 @@ class ComponentMacros {
         }
     }
     
+    private static function replaceInternalShortNames(e:Expr):Expr {
+        return switch (e.expr) {
+            case EConst(CIdent(s)):
+                var r = e;
+                if (s == "theme") {
+                    r = macro haxe.ui.themes.ThemeManager.instance;
+                }
+                r;
+            case _:
+                ExprTools.map(e, replaceInternalShortNames);
+        }
+    }
+
     // returns next free id
     private static function buildComponentNode(builder:CodeBuilder, c:ComponentInfo, id:Int, parentId:Int, buildData:BuildData, recurseChildren:Bool = true) {
         #if macro_times_verbose
@@ -1074,6 +1089,7 @@ class ComponentMacros {
             bindingExpr = bindingExpr.substring(2, bindingExpr.length - 1);
         }
         var expr = Context.parseInlineString(bindingExpr, Context.currentPos());
+        expr = ExprTools.map(expr, replaceInternalShortNames);
         
         var dependants = getDependants(expr);
         var target = varName;
