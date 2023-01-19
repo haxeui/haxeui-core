@@ -259,6 +259,7 @@ private class TreeViewNodeBuilder extends CompositeBuilder {
         _nodeContainer.addComponent(_expandCollapseIcon);
 
         _renderer = treeview.itemRenderer.cloneComponent();
+        _renderer.itemIndex = _node.parentComponent.getComponentIndex(_node);
         _renderer.data = _node.data;
         _nodeContainer.addComponent(_renderer);
         
