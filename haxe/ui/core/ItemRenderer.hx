@@ -1,6 +1,5 @@
 package haxe.ui.core;
 
-import haxe.ui.components.Button;
 import haxe.ui.containers.Box;
 import haxe.ui.core.TypeMap;
 import haxe.ui.events.ItemEvent;
@@ -99,14 +98,11 @@ class ItemRenderer extends Box {
         if (autoRegisterInteractiveEvents) {
             var components = findComponents(InteractiveComponent);
             for (c in components) {
-                if ((c is Button)) {
-                    if (c.hasEvent(MouseEvent.CLICK, onItemClick) == false) {
-                        c.registerEvent(MouseEvent.CLICK, onItemClick);
-                    }
-                } else {
-                    if (c.hasEvent(UIEvent.CHANGE, onItemChange) == false) {
-                        c.registerEvent(UIEvent.CHANGE, onItemChange);
-                    }
+                if (c.hasEvent(MouseEvent.CLICK, onItemClick) == false) {
+                    c.registerEvent(MouseEvent.CLICK, onItemClick);
+                }
+                if (c.hasEvent(UIEvent.CHANGE, onItemChange) == false) {
+                    c.registerEvent(UIEvent.CHANGE, onItemChange);
                 }
             }
         }
@@ -126,6 +122,7 @@ class ItemRenderer extends Box {
         if (_data != null) {
             Reflect.setProperty(_data, event.target.id, v);
         }
+
         var e = new ItemEvent(ItemEvent.COMPONENT_EVENT);
         e.bubble = true;
         e.source = event.target;
@@ -133,12 +130,21 @@ class ItemRenderer extends Box {
         e.itemIndex = itemIndex;
         e.data = _data;
         dispatch(e);
+
+        var e2 = new ItemEvent(ItemEvent.COMPONENT_CHANGE_EVENT);
+        e2.bubble = true;
+        e2.source = event.target;
+        e2.sourceEvent = event;
+        e2.itemIndex = itemIndex;
+        e2.data = _data;
+        dispatch(e2);
     }
 
     private function onItemClick(event:UIEvent) {
         if (itemIndex < 0) {
             return; 
         }
+
         var e = new ItemEvent(ItemEvent.COMPONENT_EVENT);
         e.bubble = true;
         e.source = event.target;
@@ -146,6 +152,14 @@ class ItemRenderer extends Box {
         e.itemIndex = itemIndex;
         e.data = _data;
         dispatch(e);
+
+        var e2 = new ItemEvent(ItemEvent.COMPONENT_CLICK_EVENT);
+        e2.bubble = true;
+        e2.source = event.target;
+        e2.sourceEvent = event;
+        e2.itemIndex = itemIndex;
+        e2.data = _data;
+        dispatch(e2);
     }
 
     private function updateValues(value:Dynamic, fieldList:Array<String> = null) {
