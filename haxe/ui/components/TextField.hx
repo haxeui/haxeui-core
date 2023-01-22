@@ -1,5 +1,7 @@
 package haxe.ui.components;
 
+import haxe.ui.core.Platform;
+import haxe.ui.events.KeyboardEvent;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.ValueBehaviour;
 import haxe.ui.core.Component;
@@ -415,6 +417,7 @@ private class Events extends haxe.ui.events.Events {
         registerEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
         registerEvent(FocusEvent.FOCUS_IN, onFocusChange);
         registerEvent(FocusEvent.FOCUS_OUT, onFocusChange);
+        registerEvent(KeyboardEvent.KEY_DOWN, onKeyDown);
     }
 
     public override function unregister() {
@@ -422,6 +425,7 @@ private class Events extends haxe.ui.events.Events {
         unregisterEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
         unregisterEvent(FocusEvent.FOCUS_IN, onFocusChange);
         unregisterEvent(FocusEvent.FOCUS_OUT, onFocusChange);
+        unregisterEvent(KeyboardEvent.KEY_DOWN, onKeyDown);
     }
 
     private function onMouseDown(event:MouseEvent) { // TODO: this should happen automatically as part of InteractiveComponent (?)
@@ -436,6 +440,12 @@ private class Events extends haxe.ui.events.Events {
             _textfield.getTextInput().blur();
         }
         TextFieldHelper.validateText(_textfield, _textfield.text);
+    }
+
+    private function onKeyDown(event:KeyboardEvent) { 
+        if (event.keyCode == Platform.instance.KeyEnter) {
+            _textfield.dispatch(new UIEvent(UIEvent.USER_SUBMIT, true));
+        }
     }
 }
 
