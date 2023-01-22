@@ -417,7 +417,7 @@ private class Events extends haxe.ui.events.Events {
         registerEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
         registerEvent(FocusEvent.FOCUS_IN, onFocusChange);
         registerEvent(FocusEvent.FOCUS_OUT, onFocusChange);
-        registerEvent(KeyboardEvent.KEY_DOWN, onKeyDown);
+        registerEvent(KeyboardEvent.KEY_UP, onKeyUp);
     }
 
     public override function unregister() {
@@ -425,7 +425,7 @@ private class Events extends haxe.ui.events.Events {
         unregisterEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
         unregisterEvent(FocusEvent.FOCUS_IN, onFocusChange);
         unregisterEvent(FocusEvent.FOCUS_OUT, onFocusChange);
-        unregisterEvent(KeyboardEvent.KEY_DOWN, onKeyDown);
+        unregisterEvent(KeyboardEvent.KEY_UP, onKeyUp);
     }
 
     private function onMouseDown(event:MouseEvent) { // TODO: this should happen automatically as part of InteractiveComponent (?)
@@ -442,8 +442,9 @@ private class Events extends haxe.ui.events.Events {
         TextFieldHelper.validateText(_textfield, _textfield.text);
     }
 
-    private function onKeyDown(event:KeyboardEvent) { 
+    private function onKeyUp(event:KeyboardEvent) { 
         if (event.keyCode == Platform.instance.KeyEnter) {
+            event.cancel();
             _textfield.dispatch(new UIEvent(UIEvent.USER_SUBMIT, true));
         }
     }
