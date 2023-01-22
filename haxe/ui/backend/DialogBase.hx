@@ -16,6 +16,7 @@ class DialogBase extends Box {
     public var buttons:DialogButton = null;
     public var centerDialog:Bool = true;
     public var button:DialogButton = null;
+    public var defaultButton:String = null;
 
     private var _overlay:Component;
 
@@ -81,6 +82,14 @@ class DialogBase extends Box {
         dialogFooterContainer.hide();
         dialogCloseButton.onClick = function(e) {
             hideDialog(DialogButton.CANCEL);
+        }
+
+        registerEvent(UIEvent.USER_SUBMIT, onSubmit);
+    }
+
+    private function onSubmit(event:UIEvent) {
+        if (defaultButton != null) {
+            hideDialog(defaultButton);
         }
     }
 
@@ -202,6 +211,9 @@ class DialogBase extends Box {
                 buttonComponent.text = text;
                 buttonComponent.userData = button;
                 buttonComponent.registerEvent(MouseEvent.CLICK, onFooterButtonClick);
+                if (buttonComponent.text == defaultButton) {
+                    buttonComponent.addClass("emphasized");
+                }
                 addFooterComponent(buttonComponent);
             }
             _buttonsCreated = true;
