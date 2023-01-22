@@ -27,6 +27,30 @@
     filter: $normal-inner-shadow;
 }
 
+/*
+WIP - dunno what looks "right"
+*/
+.button.emphasized {
+    background: #ecf2f9 #d9e5f2;
+    border-color: #b4cbe4;
+    color: #407dbf;
+
+    __border: 2px solid $accent-color;
+    __border-radius: 3px;
+}
+
+.button.emphasized:hover {
+    background: #d9e5f2 #b4cbe4;
+    border-color: #83aad4;
+    color: #407dbf;
+}
+
+.button.emphasized:down {
+    background: #b4cbe4 #b4cbe4;
+    border-color: #83aad4;
+    color: #407dbf;
+}
+
 .button:active {
     border: 1px solid $accent-color;
 }
