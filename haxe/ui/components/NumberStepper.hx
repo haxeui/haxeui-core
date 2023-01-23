@@ -263,8 +263,15 @@ private class Events extends haxe.ui.events.Events {
     private function onAutoCorrectTimer() {
         _autoCorrectTimer.stop();
         _autoCorrectTimer = null;
+
+        if (_stepper._isDisposed) {
+            return;
+        }
         
         var value:TextField = _stepper.findComponent("value", TextField);
+        if (value == null) {
+            return;
+        }
         var parsedValue = Std.parseFloat(value.text);
         _stepper.pos = MathUtil.clamp(parsedValue, _stepper.min, _stepper.max);
         var stringValue = StringUtil.padDecimal(_stepper.pos, _stepper.precision);
