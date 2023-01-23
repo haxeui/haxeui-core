@@ -1,5 +1,6 @@
 package haxe.ui.containers.windows;
 
+import haxe.ui.events.UIEvent;
 import haxe.ui.layouts.AbsoluteLayout;
 import haxe.ui.geom.Point;
 import haxe.ui.geom.Rectangle;
@@ -50,7 +51,30 @@ class WindowManager extends EventDispatcher<WindowEvent> {
     private function set_container(value:Component):Component {
         _container = value;
         _container.layout = new AbsoluteLayout();
+        _container.registerEvent(UIEvent.RESIZE, onContainerResized);
         return value;
+    }
+
+    private function onContainerResized(event:UIEvent) {
+        trace("resized");
+        for (window in windows) {
+            if (window.maximized) {
+                var cx:Float = 0;
+                var cy:Float = 0;
+                if (_container == null) {
+                    cx = Screen.instance.width;
+                    cy = Screen.instance.height;
+                } else {
+                    cx = _container.width;
+                    cy = _container.height;
+                }
+        
+                window.left = 0;
+                window.top = 0;
+                window.width = cx;
+                window.height = cy;
+            }
+        }
     }
 
     private var _nextWindowPos = new Point(0, 0);
