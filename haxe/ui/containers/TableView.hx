@@ -845,7 +845,10 @@ private class AddColumn extends Behaviour {
         }
         var column = new Column();
         column.text = param;
-        column.id = StringTools.replace(param, " ", "_");
+        var columnId:String = param;
+        columnId = StringTools.replace(columnId, " ", "_");
+        columnId = StringTools.replace(columnId, "*", "");
+        column.id = columnId;
         header.addComponent(column);
         return column;
     }
