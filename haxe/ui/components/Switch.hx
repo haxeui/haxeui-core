@@ -185,7 +185,7 @@ private class SwitchButtonSub extends InteractiveComponent {
     }
     private function set_selectedText(value:String):String {
         _selectedText = value;
-        if (_ready && _selected == true) {
+        if (_componentReady && _selected == true) {
             _label.text = _selectedText;
         }
         return value;
@@ -198,7 +198,7 @@ private class SwitchButtonSub extends InteractiveComponent {
     }
     private function set_unselectedText(value:String):String {
         _unselectedText = value;
-        if (_ready && _selected == false) {
+        if (_componentReady && _selected == false) {
             _label.text = _unselectedText;
         }
         return value;
