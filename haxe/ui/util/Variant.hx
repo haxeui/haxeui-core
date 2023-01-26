@@ -39,7 +39,7 @@ abstract Variant(VariantType) from VariantType {
             case VT_DataSource(s): s == null ? null : "";
             case VT_Date(s): Std.string(s);
             case VT_ImageData(s): s == null ? null : "";
-            default: throw "Variant Type Error";
+            default: throw "Variant Type Error (" + this + ")";
         }
     }
 
@@ -62,7 +62,7 @@ abstract Variant(VariantType) from VariantType {
         return switch (this) {
             case VT_Int(s): s;
             case VT_Float(s): s;
-            default: throw "Variant Type Error";
+            default: throw "Variant Type Error (" + this + ")";
         }
     }
 
@@ -85,7 +85,7 @@ abstract Variant(VariantType) from VariantType {
         return switch (this) {
             case VT_Int(s): s;
             case VT_Float(s): Std.int(s);
-            default: throw "Variant Type Error " + this;
+            default: throw "Variant Type Error (" + this + ")";
         }
     }
 
@@ -106,7 +106,7 @@ abstract Variant(VariantType) from VariantType {
         return switch (this) {
             case VT_Int(s): s;
             case VT_Float(s): s;
-            default: throw "Variant Type Error";
+            default: throw "Variant Type Error (" + this + ")";
         }
     }
 
@@ -124,7 +124,7 @@ abstract Variant(VariantType) from VariantType {
         return switch (this) {
             case VT_Bool(s): s;
             case VT_String(s): s == "true";
-            default: throw "Variant Type Error";
+            default: throw "Variant Type Error (" + this + ")";
         }
     }
 
@@ -150,7 +150,7 @@ abstract Variant(VariantType) from VariantType {
         }
         return switch (this) {
             case VT_Array(s): cast s;
-            default: throw "Variant Type Error";
+            default: throw "Variant Type Error (" + this + ")";
         }
     }
 
@@ -176,7 +176,7 @@ abstract Variant(VariantType) from VariantType {
         }
         return switch (this) {
             case VT_Date(s): s;
-            default: throw "Variant Type Error";
+            default: throw "Variant Type Error (" + this + ")";
         }
     }
 
@@ -202,7 +202,7 @@ abstract Variant(VariantType) from VariantType {
         }
         return switch (this) {
             case VT_Component(s): s;
-            default: throw "Variant Type Error";
+            default: throw "Variant Type Error (" + this + ")";
         }
     }
 
@@ -228,7 +228,7 @@ abstract Variant(VariantType) from VariantType {
         }
         return switch (this) {
             case VT_ImageData(s): s;
-            default: throw "Variant Type Error";
+            default: throw "Variant Type Error (" + this + ")";
         }
     }
 
@@ -255,7 +255,7 @@ abstract Variant(VariantType) from VariantType {
 
         return switch (this) {
             case VT_DataSource(s): cast s;
-            default: throw "Variant Type Error";
+            default: throw "Variant Type Error (" + this + ")";
         }
     }
 
