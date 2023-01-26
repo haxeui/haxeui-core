@@ -524,7 +524,17 @@ class Macros {
 
         var valueField = builder.getFieldMetaValue("value");
         var resolvedValueField = null;
-        for (f in builder.getFieldsWithMeta("behaviour")) {
+        var fields = builder.getFieldsWithMeta("behaviour");
+
+        // lets find the value field first, so we know we have it
+        for (f in fields) {
+            if (f.name == valueField) {
+                resolvedValueField = f;
+                break;
+            }
+        }
+
+        for (f in fields) {
             RTTI.addClassProperty(builder.fullPath, f.name, ComplexTypeTools.toString(f.type));
             if (f.name == valueField) {
                 RTTI.addClassProperty(builder.fullPath, "value", ComplexTypeTools.toString(f.type));
@@ -669,15 +679,82 @@ class Macros {
             f.remove();
 
             var propName = f.getMetaValueString("value");
-            if (resolvedValueField != null && resolvedValueField.isVariant) {
+            if (resolvedValueField != null && (resolvedValueField.isVariant || 
+                                               resolvedValueField.isString ||
+                                               resolvedValueField.isNumeric ||
+                                               resolvedValueField.isBool)) {
                 builder.addGetter(f.name, macro: Dynamic, macro {
-                    return haxe.ui.util.Variant.toDynamic($i{propName});
+                    return $i{propName};
                 }, false, true);
 
-                builder.addSetter(f.name, macro: Dynamic, macro {
-                    $i{propName} = haxe.ui.util.Variant.fromDynamic(value);
-                    return value;
-                }, false, true);
+                if (resolvedValueField.isString) {
+                    builder.addSetter(f.name, macro: Dynamic, macro {
+                        switch (Type.typeof(value)) {
+                            case TEnum(haxe.ui.util.Variant.VariantType):
+                                var v:haxe.ui.util.Variant = value;
+                                $i{propName} = v;
+                            case TInt | TFloat | TBool:
+                                $i{propName} = Std.string(value);
+                            case _:
+                                $i{propName} = value;
+                        }
+
+                        return value;
+                    }, false, true);
+                } else if (resolvedValueField.isFloat) {
+                    builder.addSetter(f.name, macro: Dynamic, macro {
+                        switch (Type.typeof(value)) {
+                            case TEnum(haxe.ui.util.Variant.VariantType):
+                                var v:haxe.ui.util.Variant = value;
+                                $i{propName} = v;
+                            case TClass(String):
+                                $i{propName} = Std.parseFloat(value);
+                            case TBool:
+                                $i{propName} = (value == true) ? 1 : 0;
+                            case _:
+                                $i{propName} = value;
+                        }
+
+                        return value;
+                    }, false, true);
+                } else if (resolvedValueField.isInt) {
+                    builder.addSetter(f.name, macro: Dynamic, macro {
+                        switch (Type.typeof(value)) {
+                            case TEnum(haxe.ui.util.Variant.VariantType):
+                                var v:haxe.ui.util.Variant = value;
+                                $i{propName} = v;
+                            case TClass(String):
+                                $i{propName} = Std.parseInt(value);
+                            case TBool:
+                                $i{propName} = (value == true) ? 1 : 0;
+                            case _:
+                                $i{propName} = value;
+                        }
+
+                        return value;
+                    }, false, true);
+                } else if (resolvedValueField.isBool) {
+                    builder.addSetter(f.name, macro: Dynamic, macro {
+                        switch (Type.typeof(value)) {
+                            case TEnum(haxe.ui.util.Variant.VariantType):
+                                var v:haxe.ui.util.Variant = value;
+                                $i{propName} = v;
+                            case TInt | TFloat:
+                                $i{propName} = (value == 1);
+                            case TClass(String):
+                                $i{propName} = (value == "true" || value == "1");
+                            case _:
+                                $i{propName} = value;
+                        }
+
+                        return value;
+                    }, false, true);
+                } else if (resolvedValueField.isVariant) {
+                    builder.addSetter(f.name, macro: Dynamic, macro {
+                        $i{propName} = haxe.ui.util.Variant.fromDynamic(value);
+                        return value;
+                    }, false, true);
+                }
             } else {
                 builder.addGetter(f.name, macro: Dynamic, macro {
                     return $i{propName};
