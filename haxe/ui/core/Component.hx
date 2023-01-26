@@ -401,7 +401,7 @@ class Component extends ComponentImpl implements IValidating {
         _children.push(child);
 
         handleAddComponent(child);
-        if (_ready) {
+        if (_componentReady) {
             child.ready();
         }
 
@@ -481,7 +481,7 @@ class Component extends ComponentImpl implements IValidating {
         _children.insert(index, child);
 
         handleAddComponentAt(child, index);
-        if (_ready) {
+        if (_componentReady) {
             child.ready();
         }
 
@@ -1588,8 +1588,8 @@ class Component extends ComponentImpl implements IValidating {
             ValidationManager.instance.add(this);
         }
 
-        if (_ready == false) {
-            _ready = true;
+        if (_componentReady == false) {
+            _componentReady = true;
             handleReady();
 
             if (childComponents != null) {
@@ -2183,7 +2183,7 @@ class Component extends ComponentImpl implements IValidating {
      * @return A new component, similar to this one.
      */
     public override function cloneComponent():Component {
-        if (_ready == false) {
+        if (_componentReady == false) {
             //ready();
         }
         if (_hidden == true) {

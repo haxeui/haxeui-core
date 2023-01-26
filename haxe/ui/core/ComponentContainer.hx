@@ -58,13 +58,13 @@ class ComponentContainer extends ComponentCommon implements IClonable<ComponentC
     public function dispatch(event:UIEvent) {
     }
 
-    @:noCompletion private var _ready:Bool = false;
+    @:noCompletion private var _componentReady:Bool = false;
     /**
         Whether the framework considers this component ready or not.
     **/
     public var isReady(get, null):Bool;
     private function get_isReady():Bool {
-        return _ready;
+        return _componentReady;
     }
 
     @:noCompletion private var _children:Array<Component>;

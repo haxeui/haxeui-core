@@ -53,7 +53,7 @@ class ComponentValidation extends ComponentEvents {
     **/
     @:dox(group = "Invalidation related properties and methods")
     public function invalidateComponent(flag:String = InvalidationFlags.ALL, recursive:Bool = false) {
-        if (_ready == false) {
+        if (_componentReady == false) {
             return;     //it should be added into the queue later
         }
 
@@ -165,7 +165,7 @@ class ComponentValidation extends ComponentEvents {
     **/
     @:dox(group = "Invalidation related properties and methods")
     public function validateComponent(nextFrame:Bool = true) {
-        if (_ready == false ||
+        if (_componentReady == false ||
             _isDisposed == true ||      //we don't want to validate disposed components, but they may have been left in the queue.
             _isValidating == true ||    //we were already validating, the existing validation will continue.
             isComponentInvalid() == false) {     //if none is invalid, exit.

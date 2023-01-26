@@ -437,7 +437,7 @@ class ComponentBounds extends ComponentLayout {
     **/
     @:dox(group = "Size related properties and methods")
     private function autoSize():Bool {
-        if (_ready == false || _layout == null) {
+        if (_componentReady == false || _layout == null) {
             return false;
         }
         return _layout.autoSize();
