@@ -201,7 +201,7 @@ class MacroHelpers {
         }
     }
 
-    private static function cacheClassPathEntries(path, array, base) {
+    private static function cacheClassPathEntries(path:String, array:Array<ClassPathEntry>, base:String) {
         path = StringTools.trim(path);
         if (path.length == 0) {
             #if classpath_scan_verbose
@@ -242,7 +242,7 @@ class MacroHelpers {
                 }
             } else if (isDir == false) {
                 #if classpath_scan_verbose
-                Sys.println("classpath cache: adding '" + fullPath + "'");
+                Sys.println("classpath cache: adding '" + fullPath + "' (cache size: " + array.length + ")");
                 #end    
                 array.push({
                     base: base,
