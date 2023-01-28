@@ -173,6 +173,10 @@ class MacroHelpers {
             return;
         }
 
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("MacroHelpers.buildClassPathCache");
+        #end
+
         classPathCache = [];
         var paths:Array<String> = Context.getClassPath();
         for (path in paths) {
@@ -199,6 +203,10 @@ class MacroHelpers {
             }
             cacheClassPathEntries(path, classPathCache, originalPath);
         }
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
     }
 
     private static function cacheClassPathEntries(path:String, array:Array<ClassPathEntry>, base:String) {
@@ -255,6 +263,10 @@ class MacroHelpers {
     }
 
     public static function scanClassPath(processFileFn:String->String->Bool, searchCriteria:Array<String> = null) {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("MacroHelpers.scanClassPath");
+        #end
+
         buildClassPathCache();
         for (entry in classPathCache) {
             #if classpath_scan_verbose
@@ -278,6 +290,10 @@ class MacroHelpers {
                 }
             }
         }
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
     }
 
     #end

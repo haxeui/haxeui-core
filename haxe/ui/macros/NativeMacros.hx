@@ -36,6 +36,9 @@ class NativeMacros {
             return _nativeConfigs;
         }
 
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("NativeMacros.loadNativeConfig");
+        #end
         MacroHelpers.scanClassPath(function(filePath:String, base:String) {
             var parser:ConfigParser = ConfigParser.get(MacroHelpers.extension(filePath));
             if (parser != null) {
@@ -51,6 +54,9 @@ class NativeMacros {
 
             return false;
         }, ["native."]);
+        #if haxeui_macro_times
+        stopTimer();
+        #end
 
         _nativeConfigLoaded = true;
         return _nativeConfigs;

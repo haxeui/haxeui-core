@@ -48,12 +48,20 @@ class BackendMacros {
             }
         }
         if (searchCriteria.length > 0) {
+            #if haxeui_macro_times
+            var stopTimer = Context.timer("BackendMacros.loadBackendProperties");
+            #end
+
             MacroHelpers.scanClassPath(function(filePath:String, base:String) {
                 var props:Properties = new Properties();
                 props.fromFile(filePath);
                 properties.addAll(props);
                 return false;
             }, searchCriteria);
+
+            #if haxeui_macro_times
+            stopTimer();
+            #end
         } 
         return macro null;
     }

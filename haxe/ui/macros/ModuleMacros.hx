@@ -611,6 +611,9 @@ class ModuleMacros {
         #if module_resolution_verbose
         Sys.println("scanning class path for modules");
         #end
+        #if haxeui_macro_times
+        var stopTimerScan = Context.timer("ModuleMacros.loadModules - scanClassPath");
+        #end
         MacroHelpers.scanClassPath(function(filePath:String, base:String) {
             #if module_resolution_verbose
             Sys.println("    module found at '" + filePath + "' (base: '" + base + "')");
@@ -633,6 +636,9 @@ class ModuleMacros {
         }, ["module."]);
         #if module_resolution_verbose
         Sys.println(_modules.length + " module(s) found\n");
+        #end
+        #if haxeui_macro_times
+        stopTimerScan();
         #end
         
         ArraySort.sort(_modules, function(a, b):Int {
