@@ -147,6 +147,10 @@ class MacroHelpers {
     private static var primaryClassPathExceptions:Array<EReg> = [];
     private static var secondaryClassPathExceptions:Array<EReg> = [];
     private static function loadClassPathExclusions(filePath:String) {
+        #if classpath_scan_verbose
+        Sys.println("classpath cache: loading classpath exclusions from '" + filePath + "'");
+        #end
+
         var contents = sys.io.File.getContent(filePath);
         var lines = contents.split("\n");
         for (line in lines) {
@@ -154,6 +158,11 @@ class MacroHelpers {
             if (line.length == 0 || StringTools.startsWith(line, ";")) {
                 continue;
             }
+
+            #if classpath_scan_verbose
+                Sys.println("    " + line);
+            #end
+
             primaryClassPathExceptions.push(new EReg(line, "gm"));
             secondaryClassPathExceptions.push(new EReg(line, "gm"));
         }
