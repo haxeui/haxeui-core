@@ -22,6 +22,10 @@ class FlashAnimation extends Animation {
                .setColor(80,  "backgroundColor",    color)
                .setColor(80,  "backgroundColorEnd", color)
                .setColor(100, "backgroundColor",    originalColor)
-               .setColor(100, "backgroundColorEnd", originalColorEnd);
+               .setColor(100, "backgroundColorEnd", originalColorEnd)
+               .onComplete = function() {
+                    target.customStyle.backgroundColor = null;
+                    target.customStyle.backgroundColorEnd = null;
+               };
     }
 }
