@@ -21,6 +21,21 @@
     border-color: $error-text-color;
 }
 
+.textfield.required {
+    background-color: #fffbeb;
+    border-color: #ffd83f;
+}
+
+.textfield.invalid {
+    background-color: #fde9e8;
+    border-color: #f6a7a2;
+}
+
+.textfield.valid {
+    background-color: #e9fbf3;
+    border-color: #53df9e;
+}
+
 .textfield:active {
     border: 1px solid $accent-color;
 }
