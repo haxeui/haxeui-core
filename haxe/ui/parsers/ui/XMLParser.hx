@@ -2,6 +2,8 @@ package haxe.ui.parsers.ui;
 
 import haxe.ui.parsers.ui.resolvers.ResourceResolver;
 
+using StringTools;
+
 class XMLParser extends ComponentParser {
     public function new() {
         super();
@@ -86,6 +88,8 @@ class XMLParser extends ComponentParser {
             }
         } else if (nodeName == "layout") {
             parseLayoutNode(component.parent, xml);
+        } else if (nodeName == "validator") {
+            parseValidatorNode(component.parent, xml);
         } else {
             parseDetails(component, xml);
             parseAttributes(component, xml);
@@ -216,6 +220,18 @@ class XMLParser extends ComponentParser {
         }
     }
 
+    private function parseValidatorNode(component:ComponentInfo, xml:Xml) {
+        extractNamespaces(xml);
+
+        var validatorXml:Xml = xml;
+        var validator = new ValidatorInfo();
+        validator.type = validatorXml.get("type");
+
+        if (validator.type != null) {
+            component.validators.push(validator);
+        }
+    }
+
     private function parseDetails(component:ComponentInfo, xml:Xml) {
         extractNamespaces(xml);
 
@@ -303,6 +319,18 @@ class XMLParser extends ComponentParser {
                     component.layoutName = attrValue;
                 case "direction":
                     component.direction = attrValue;
+                case "validator" | "validators":
+                    var parts = attrValue.split(",");
+                    for (part in parts) {
+                        part = part.trim();
+                        if (part.length == 0) {
+                            continue;
+                        }
+
+                        var validator = new ValidatorInfo();
+                        validator.type = part;
+                        component.validators.push(validator);
+                    }
                 default:
                     if (StringTools.startsWith(attrName, "xmlns") == false) {
                         component.properties.set(attrName, attrValue);

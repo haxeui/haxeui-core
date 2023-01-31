@@ -165,6 +165,23 @@ class ModuleMacros {
                 }
             }
             
+            for (validator in m.validators) {
+                var id = validator.id;
+                var className = validator.className;
+                var parts = className.split(".");
+                var name:String = parts.pop();
+                var t:TypePath = {
+                    pack: parts,
+                    name: name
+                }
+
+                builder.add(macro
+                    haxe.ui.validators.ValidatorManager.instance.registerValidator($v{id}, function() {
+                        return new $t();
+                    })
+                );
+            }
+
             for (inputSource in m.actionInputSources) {
                 var className = inputSource.className;
                 var parts = className.split(".");

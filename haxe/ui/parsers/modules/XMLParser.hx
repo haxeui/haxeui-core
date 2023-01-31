@@ -241,6 +241,17 @@ class XMLParser extends ModuleParser {
                     }
                     module.locales.push(entry);
                 }
+            } else if (nodeName == "validators" && checkCondition(el, defines) == true) {
+                for (validatorNode in el.elementsNamed("validator")) {
+                    if (checkCondition(validatorNode, defines) == false) {
+                        continue;
+                    }
+
+                    var entry:Module.ModuleValidatorEntry = new Module.ModuleValidatorEntry();
+                    entry.id = validatorNode.get("id");
+                    entry.className = validatorNode.get("class");
+                    module.validators.push(entry);
+                }
             } else if (nodeName == "actions" && checkCondition(el, defines) == true) {
                 for (sourceNode in el.elementsNamed("source")) {
                     if (checkCondition(sourceNode, defines) == false) {

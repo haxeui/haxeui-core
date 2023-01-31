@@ -1,7 +1,11 @@
 package haxe.ui.containers;
 
+import haxe.ui.core.InteractiveComponent;
 import haxe.ui.events.UIEvent;
+import haxe.ui.events.ValidatorEvent;
 import haxe.ui.layouts.VerticalGridLayout;
+
+using haxe.ui.animation.AnimationTools;
 
 @:composite(FormEvents)
 class Form extends Box {
@@ -15,7 +19,12 @@ class Form extends Box {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
-    @:event(UIEvent.USER_SUBMIT)                                      public var onSubmit:UIEvent->Void;
+    public var highlightInvalidFields:Bool = true;
+
+    @:event(UIEvent.USER_SUBMIT_START)                                  public var onSubmitStart:UIEvent->Void;
+    @:event(UIEvent.USER_SUBMIT)                                        public var onSubmit:UIEvent->Void;
+    @:event(ValidatorEvent.INVALID_DATA)                                public var onInvalidData:ValidatorEvent->Void;
+    @:event(ValidatorEvent.VALID_DATA)                                  public var onValidData:ValidatorEvent->Void;
 
     private var _columns:Int = -1;
     @:clonable public var columns(get, set):Int;
@@ -39,8 +48,56 @@ class Form extends Box {
         return value;
     }
 
+    public function submit() {
+        dispatch(new UIEvent(UIEvent.USER_SUBMIT, true));
+    }
+
+    //***********************************************************************************************************
+    // Private API
+    //***********************************************************************************************************
     private function validateForm(fn:Bool->Void) {
         fn(true);
+    }
+
+    public var invalidFields:Array<InteractiveComponent> = [];
+    public var invalidFieldMessages:Map<InteractiveComponent, Array<String>> = new Map<InteractiveComponent, Array<String>>();
+
+    @:noCompletion
+    private function validateFormData(fn:Bool->Void) {
+        invalidFields = [];
+        invalidFieldMessages = new Map<InteractiveComponent, Array<String>>();
+
+        var interactives = findComponents(InteractiveComponent);
+        for (i in interactives) {
+            if (i.validators != null && i.validators.length > 0) {
+                for (v in i.validators) {
+                    var valid = v.validate(i);
+                    if (valid == false) {
+                        invalidFields.push(i);
+                        var messageList = invalidFieldMessages.get(i);
+                        if (messageList == null) {
+                            messageList = [];
+                            invalidFieldMessages.set(i, messageList);
+                        }
+                        messageList.push(v.invalidMessage);
+                    }
+                }
+            }
+        }
+
+        if (invalidFields.length == 0) {
+            fn(true);
+            dispatch(new ValidatorEvent(ValidatorEvent.VALID_DATA));
+        } else {
+            if (highlightInvalidFields) {
+                for (f in invalidFields) {
+                    f.shake().flash();
+                }
+            }
+            dispatch(new ValidatorEvent(ValidatorEvent.INVALID_DATA));
+            fn(false);
+        }
+
     }
 
     //***********************************************************************************************************
@@ -72,9 +129,16 @@ private class FormEvents extends haxe.ui.events.Events {
     }
 
     private function onSubmit(event:UIEvent) {
-        _form.validateForm(function(valid) {
+        dispatch(new UIEvent(UIEvent.USER_SUBMIT_START, true));
+        _form.validateFormData(function(valid) {
             if (!valid) {
                 event.cancel();
+            } else {
+                _form.validateForm(function(valid) {
+                    if (!valid) {
+                        event.cancel();
+                    }
+                });
             }
         });
     }

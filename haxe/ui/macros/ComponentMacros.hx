@@ -17,6 +17,7 @@ import haxe.ui.macros.helpers.FunctionBuilder;
 import haxe.ui.parsers.ui.ComponentInfo;
 import haxe.ui.parsers.ui.ComponentParser;
 import haxe.ui.parsers.ui.LayoutInfo;
+import haxe.ui.parsers.ui.ValidatorInfo;
 import haxe.ui.parsers.ui.resolvers.FileResourceResolver;
 import haxe.ui.util.EventInfo;
 import haxe.ui.util.ExpressionUtil;
@@ -887,6 +888,10 @@ class ComponentMacros {
             buildDataSourceCode(builder, c, 'ds${id}', componentVarName);
         }
 
+        if (c.validators != null) {
+            buildValidatorCode(builder, c.validators, id);
+        }
+
         if (c.id != null && buildData.namedComponents != null && useNamedComponents == true) {
             var rootComponentInfo = c.findRootComponent();
             var rootClassName = ModuleMacros.resolveComponentClass(rootComponentInfo.type, rootComponentInfo.namespace);
@@ -995,6 +1000,20 @@ class ComponentMacros {
             builder.add(macro $i{"c" + (id)}.layout = $i{"l" + id});
         }
     }
+
+    private static function buildValidatorCode(builder:CodeBuilder, validators:Array<ValidatorInfo>, id:Int) {
+        if (validators.length == 0) {
+            return;
+        }
+        var validatorExprs:Array<Expr> = [];
+        for (validator in validators) {
+            var type = validator.type;
+            validatorExprs.push(macro haxe.ui.validators.ValidatorManager.instance.createValidator($v{type}));
+        }
+        if (id != 0) {
+            builder.add(macro $i{"c" + (id)}.validators = $a{validatorExprs});
+        }
+}
 
     private static function assignComponentProperties(builder:CodeBuilder, c:ComponentInfo, componentVarName:String, buildData:BuildData) {
         if (c.id != null)                       assignField(builder, componentVarName, "id", c.id, buildData, c);

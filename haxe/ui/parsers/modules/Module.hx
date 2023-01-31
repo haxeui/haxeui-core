@@ -17,6 +17,7 @@ class Module {
     public var properties(default, default):Array<ModulePropertyEntry>;
     public var preload(default, default):Array<ModulePreloadEntry>;
     public var locales(default, default):Array<ModuleLocaleEntry>;
+    public var validators(default, default):Array<ModuleValidatorEntry>;
     public var actionInputSources(default, default):Array<ModuleActionInputSourceEntry>;
     public var namespaces(default, default):Map<String, String>;
 
@@ -28,6 +29,7 @@ class Module {
         properties = [];
         preload = [];
         locales = [];
+        validators = [];
         actionInputSources = [];
         namespaces = new Map<String, String>();
     }
@@ -134,6 +136,14 @@ class ModuleLocaleEntry {
 class ModuleLocaleResourceEntry {
     public var path(default, default):String;
     
+    public function new() {
+    }
+}
+
+class ModuleValidatorEntry {
+    public var id(default, default):String;
+    public var className(default, default):String;
+
     public function new() {
     }
 }

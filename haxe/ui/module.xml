@@ -246,6 +246,12 @@
         </native>
     </themes>
     
+    <validators>
+        <validator id="required" class="haxe.ui.validators.RequiredValidator" />
+        <validator id="pattern" class="haxe.ui.validators.PatternValidator" />
+        <validator id="email" class="haxe.ui.validators.EmailValidator" />
+    </validators>
+
     <actions>
         <source class="haxe.ui.actions.KeyboardActionInputSource" />
     </actions>
