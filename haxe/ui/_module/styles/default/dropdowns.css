@@ -13,6 +13,21 @@
     cursor: pointer;
 }
 
+.dropdown.required {
+    background: #fffbeb #fff8df;
+    border-color:#ffd83f;
+}
+
+.dropdown.invalid {
+    background: #fde9e8 #fbdcda;
+    border-color: #f6a7a2;
+}
+
+.dropdown.valid {
+    background: #e9fbf3 #dcf8ec;
+    border-color: #53df9e;
+}
+
 .dropdown:down {
     border-color: $accent-color;
 }
