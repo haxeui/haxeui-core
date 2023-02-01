@@ -227,6 +227,14 @@ class XMLParser extends ComponentParser {
         var validator = new ValidatorInfo();
         validator.type = validatorXml.get("type");
 
+        for (attrName in validatorXml.attributes()) {
+            if (attrName == "type") {
+                continue;
+            }
+            var attrValue:String = validatorXml.get(attrName);
+            validator.properties.set(attrName, attrValue);
+        }
+
         if (validator.type != null) {
             component.validators.push(validator);
         }

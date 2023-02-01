@@ -12,7 +12,6 @@ class RequiredValidator extends Validator {
         component.addClass("required");
     }
 
-
     private override function validateString(s:String):Null<Bool> {
         var valid:Null<Bool> = null;
 

@@ -1001,17 +1001,35 @@ class ComponentMacros {
         }
     }
 
+    private static var _nextValidatorId = 0;
     private static function buildValidatorCode(builder:CodeBuilder, validators:Array<ValidatorInfo>, id:Int) {
         if (validators.length == 0) {
             return;
         }
+
         var validatorExprs:Array<Expr> = [];
+        var validatorAssignExprs:Array<Expr> = [];
         for (validator in validators) {
             var type = validator.type;
-            validatorExprs.push(macro haxe.ui.validators.ValidatorManager.instance.createValidator($v{type}));
+            var validatorId = 'validator${_nextValidatorId}';
+            validatorExprs.push(macro @:mergeBlock {
+                var $validatorId = haxe.ui.validators.ValidatorManager.instance.createValidator($v{type});
+            });
+            if (validator.properties != null) {
+                for (propertyName in validator.properties.keys()) {
+                    var propertyValue = validator.properties.get(propertyName);
+                    var convertedPropertyValue = TypeConverter.convertFrom(propertyValue);
+                    validatorExprs.push(macro $i{validatorId}.setProperty($v{propertyName}, $v{convertedPropertyValue}));
+                }
+            }
+            validatorAssignExprs.push(macro $i{validatorId});
+            _nextValidatorId++;
         }
         if (id != 0) {
-            builder.add(macro $i{"c" + (id)}.validators = $a{validatorExprs});
+            for (e in validatorExprs) {
+                builder.add(e);
+            }
+            builder.add(macro $i{"c" + (id)}.validators = $a{validatorAssignExprs});
         }
 }
 

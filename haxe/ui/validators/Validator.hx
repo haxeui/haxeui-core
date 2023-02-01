@@ -5,6 +5,9 @@ import haxe.ui.core.Component;
 class Validator implements IValidator {
     public var invalidMessage:String;
 
+    public var applyValid:Bool = true;
+    public var applyInvalid:Bool = true;
+
     public function new() {
     }
 
@@ -38,9 +41,17 @@ class Validator implements IValidator {
         }
 
         if (valid) {
-            onValid(component);
+            if (applyValid) {
+                onValid(component);
+            } else {
+                onReset(component);
+            }
         } else {
-            onInvalid(component);
+            if (applyInvalid) {
+                onInvalid(component);
+            } else {
+                onReset(component);
+            }
         }
 
         return valid;
@@ -61,5 +72,14 @@ class Validator implements IValidator {
 
     private function validateString(s:String):Null<Bool> {
         return null;
+    }
+
+    public function setProperty(name:String, value:Any) {
+        switch (name) {
+            case "applyValid":
+                applyValid = value;
+            case "applyInvalid":
+                applyInvalid = value;
+        }
     }
 }
