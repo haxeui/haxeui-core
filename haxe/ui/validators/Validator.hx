@@ -26,8 +26,10 @@ class Validator implements IValidator {
                 valid = validateString(stringValue);
             case TNull:
                 valid = validateString(null);
+            case TObject:
+                valid = validateString(component.text);
             case _:
-                trace("unsupported", Type.typeof(component.value), component.id, component.className);
+                trace("unsupported", Type.typeof(component.value), component.id, component.className, component.value);
         }
 
         if (valid == null) {
