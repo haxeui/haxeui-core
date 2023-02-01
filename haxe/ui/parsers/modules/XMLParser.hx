@@ -248,6 +248,15 @@ class XMLParser extends ModuleParser {
                     }
 
                     var entry:Module.ModuleValidatorEntry = new Module.ModuleValidatorEntry();
+
+                    for (attrName in validatorNode.attributes()) {
+                        if (attrName == "id" || attrName == "class") {
+                            continue;
+                        }
+                        var attrValue:String = validatorNode.get(attrName);
+                        entry.properties.set(attrName, attrValue);
+                    }
+            
                     entry.id = validatorNode.get("id");
                     entry.className = validatorNode.get("class");
                     module.validators.push(entry);

@@ -80,6 +80,8 @@ class Validator implements IValidator {
                 applyValid = value;
             case "applyInvalid":
                 applyInvalid = value;
+            case "invalidMessage":
+                invalidMessage = value;
         }
     }
 }

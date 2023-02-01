@@ -7,7 +7,7 @@ class PatternValidator extends Validator {
 
     private override function validateString(s:String):Null<Bool> {
         if (pattern == null) {
-            return true;
+            return null;
         }
 
         var valid:Null<Bool> = null;
@@ -16,5 +16,14 @@ class PatternValidator extends Validator {
         }
 
         return valid;
+    }
+
+    public override function setProperty(name:String, value:Any) {
+        switch (name) {
+            case "pattern":
+                pattern = new EReg(Std.string(value), "gm");
+            case _:
+                super.setProperty(name, value);
+        }
     }
 }

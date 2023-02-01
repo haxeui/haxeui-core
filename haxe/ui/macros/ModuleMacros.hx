@@ -1,5 +1,6 @@
 package haxe.ui.macros;
 
+import haxe.ui.util.TypeConverter;
 #if macro
 import haxe.ds.ArraySort;
 import haxe.io.Path;
@@ -175,10 +176,21 @@ class ModuleMacros {
                     name: name
                 }
 
+
+                var convertedProperties:Map<String, Any> = null;
+                if (validator.properties != null) {
+                    for (propertyName in validator.properties.keys()) {
+                        var propertyValue = validator.properties.get(propertyName);
+                        if (convertedProperties == null) {
+                            convertedProperties = new Map<String, Any>();
+                        }
+                        convertedProperties.set(propertyName, TypeConverter.convertFrom(propertyValue));
+                    }
+                }
                 builder.add(macro
                     haxe.ui.validators.ValidatorManager.instance.registerValidator($v{id}, function() {
                         return new $t();
-                    })
+                    }, $v{convertedProperties})
                 );
             }
 

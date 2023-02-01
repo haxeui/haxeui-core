@@ -143,8 +143,10 @@ class ModuleLocaleResourceEntry {
 class ModuleValidatorEntry {
     public var id(default, default):String;
     public var className(default, default):String;
+    public var properties(default, default):Map<String, Any>;
 
     public function new() {
+        properties = new Map<String, Any>();
     }
 }
 
