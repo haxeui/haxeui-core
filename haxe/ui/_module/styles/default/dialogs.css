@@ -22,6 +22,10 @@
     border: none;
 }
 
+.dialog.no-title .dialog-title {
+    hidden: true;
+}
+
 .dialog-title-label {
     width: 100%;
     vertical-align: center;
