@@ -2131,6 +2131,10 @@ class Component extends ComponentImpl implements IValidating {
             handleFrameworkProperty("allowMouseInteraction", false);
         }
         
+        if (style.includeInLayout != null) {
+            this.includeInLayout = style.includeInLayout;
+        }
+
         if (_compositeBuilder != null) {
             _compositeBuilder.applyStyle(style);
         }
