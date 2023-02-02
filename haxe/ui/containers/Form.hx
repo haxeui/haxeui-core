@@ -71,6 +71,9 @@ class Form extends Box {
         for (i in interactives) {
             if (i.validators != null && i.validators.length > 0) {
                 for (v in i.validators) {
+                    if (v == null) {
+                        continue;
+                    }
                     var valid = v.validate(i);
                     if (valid == false) {
                         invalidFields.push(i);
