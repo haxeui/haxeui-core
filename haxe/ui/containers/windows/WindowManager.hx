@@ -56,7 +56,6 @@ class WindowManager extends EventDispatcher<WindowEvent> {
     }
 
     private function onContainerResized(event:UIEvent) {
-        trace("resized");
         for (window in windows) {
             if (window.maximized) {
                 var cx:Float = 0;
