@@ -67,7 +67,7 @@ class Form extends Box {
         invalidFields = [];
         invalidFieldMessages = new Map<InteractiveComponent, Array<String>>();
 
-        var interactives = findComponents(InteractiveComponent);
+        var interactives = findComponents(InteractiveComponent, -1);
         for (i in interactives) {
             if (i.validators != null && i.validators.length > 0) {
                 for (v in i.validators) {
