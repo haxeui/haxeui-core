@@ -116,6 +116,12 @@ private class TextFieldLayout extends DefaultLayout {
             }
         }
 
+        var decorator = findComponent(Decorator);
+        if (decorator != null) {
+            decorator.left = _component.width - decorator.width - borderSize;
+            decorator.top = borderSize;
+        }
+
         if (component.hasTextInput() == true) {
             component.getTextInput().left = xpos;
             component.getTextInput().top = paddingTop + (component.componentHeight / 2) - ((component.getTextInput().height + paddingTop + paddingBottom) / 2);
@@ -125,9 +131,17 @@ private class TextFieldLayout extends DefaultLayout {
     private override function resizeChildren() {
         super.resizeChildren();
 
+        var offset:Float = 0;
+        var decorator = findComponent(Decorator);
+        if (decorator != null) {
+            var cy = _component.height - (borderSize * 2);
+            decorator.height = cy;
+            offset = decorator.width;
+        }
+
         if (component.hasTextInput() == true) {
             var size:Size = usableSize;
-            component.getTextInput().width = size.width;
+            component.getTextInput().width = size.width - offset;
             component.getTextInput().height = size.height;
         }
     }

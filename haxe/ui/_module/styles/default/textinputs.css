@@ -49,6 +49,20 @@
     color: $disabled-text-color;
 }
 
+.textfield .decorator {
+    padding: 0px 8px;
+    background: $normal-background-color-start $normal-background-color-end vertical;
+    border-radius: $normal-border-radius;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-left: $normal-border-size solid $normal-border-color;
+}
+
+.textfield .decorator .image {
+    vertical-align:center;
+    margin-top: -1px;
+}
+
 /************************************************************************
 ** TEXT AREA
 *************************************************************************/
