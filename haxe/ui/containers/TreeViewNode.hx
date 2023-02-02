@@ -361,9 +361,11 @@ private class TreeViewNodeBuilder extends CompositeBuilder {
         updateIconClass();
         if (_renderer != null) {
             var wasSelected = (treeview.selectedNode == _node);
+            var itemIndex = _renderer.itemIndex;
             var data = _renderer.data;
             var newRenderer = treeview.expandableItemRenderer.cloneComponent();
             newRenderer.data = data;
+            newRenderer.itemIndex = itemIndex;
             _nodeContainer.removeComponent(_renderer);
             _renderer = newRenderer;
             _nodeContainer.addComponent(newRenderer);
