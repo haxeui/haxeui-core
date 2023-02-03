@@ -119,7 +119,7 @@ class ItemRenderer extends Box {
             return; 
         }
         var v = event.target.value;
-        if (_data != null) {
+        if (_data != null && event.target.id != null) {
             Reflect.setProperty(_data, event.target.id, v);
         }
 
