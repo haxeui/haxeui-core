@@ -49,10 +49,17 @@ class Notification extends VBox {
             switch (_notificationData.type) {
                 case Info:
                     addClass("info");
+                    addClass("blue-notification");
                 case Error:
                     addClass("error");
+                    addClass("red-notification");
                 case Warning:    
                     addClass("warning");
+                    addClass("yellow-notification");
+                case Success:    
+                    addClass("success");
+                    addClass("green-notification");
+                case Default:    
             }
         }
         if (_notificationData.styleNames != null) {

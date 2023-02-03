@@ -8,6 +8,11 @@
     filter: $dialog-shadow;
 }
 
+.notification.blue-notification {
+    background-color: #ecf2f9;
+    border-color: #b4cbe4;
+}
+
 .notification.yellow-notification {
     background-color: #fffbeb;
     border-color: #ffd83f;
@@ -66,4 +71,8 @@
 
 .notification.warning #notificationIcon {
     resource: haxeui-core/styles/shared/warning-large.png;
+}
+
+.notification.success #notificationIcon {
+    resource: haxeui-core/styles/shared/tick-large.png;
 }
