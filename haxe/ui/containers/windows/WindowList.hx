@@ -34,6 +34,7 @@ class WindowList extends HBox {
         var item = new WindowListItem();
         var window = cast(event.target, Window);
         item.text = window.title;
+        item.icon = window.icon;
         item.relatedWindow = window;
         openWindows.addComponent(item);
 
