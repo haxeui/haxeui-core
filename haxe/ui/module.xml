@@ -181,6 +181,7 @@
             <style resource="haxeui-core/styles/default/cards.css" />
             <style resource="haxeui-core/styles/default/treeviews.css" />
             <style resource="haxeui-core/styles/default/colorpickers.css" />
+            <style resource="haxeui-core/styles/default/notifications.css" />
             <style resource="haxeui-core/styles/default/last.css" />
         </default>
         <dark parent="default">
