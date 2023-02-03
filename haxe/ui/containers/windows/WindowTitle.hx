@@ -4,7 +4,8 @@ import haxe.ui.core.Component;
 
 @:xml('
     <hbox width="100%">
-        <label id="windowTitleLabel" text="Window" />
+        <image id="windowTitleIcon" hidden="true" verticalAlign="center" />
+        <label id="windowTitleLabel" text="Window" verticalAlign="center" />
         <hbox id="controlsContainer" hidden="true" verticalAlign="center" style="cursor: default" />
     </hbox>
 ')

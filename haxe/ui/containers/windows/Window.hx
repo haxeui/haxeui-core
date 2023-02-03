@@ -1,5 +1,6 @@
 package haxe.ui.containers.windows;
 
+import haxe.ui.util.Variant;
 import haxe.ui.containers.dialogs.Dialog;
 import haxe.ui.containers.dialogs.Dialog.DialogEvent;
 import haxe.ui.containers.dialogs.Dialog.DialogButton;
@@ -44,6 +45,22 @@ class Window extends VBox {
         var label = findComponent("windowTitleLabel", Label);
         if (label != null) {
             label.text = value;
+        }
+        return value;
+    }
+
+    private override function get_icon():Variant {
+        var image = findComponent("windowTitleIcon", Image);
+        if (image != null) {
+            return image.resource;
+        }
+        return null;
+    }
+    private override function set_icon(value:Variant):Variant {
+        var image = findComponent("windowTitleIcon", Image);
+        if (image != null) {
+            image.resource = value;
+            image.show();
         }
         return value;
     }
