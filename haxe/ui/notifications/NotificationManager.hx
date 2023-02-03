@@ -27,7 +27,6 @@ class NotificationManager {
 
     }
 
-    private static var n:Int = 0;
     private var _addQueue:Array<Notification> = [];
     public function addNotification(notificationData:NotificationData) {
         if (notificationData.title == null) {
