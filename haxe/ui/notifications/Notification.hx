@@ -12,7 +12,7 @@ import haxe.ui.containers.VBox;
     <rule />
     <hbox id="contentContainer" width="100%">
         <image id="notificationIcon" resource="haxeui-core/styles/shared/info-large.png" />
-        <scrollview id="bodyContainer" width="100%" contentWidth="100%">
+        <scrollview id="bodyContainer" width="100%" contentWidth="100%" autoFocus="false" allowFocus="false">
             <vbox width="100%">
                 <label id="body" text="This is the body" width="100%" />
             </vbox>
