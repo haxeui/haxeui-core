@@ -84,7 +84,7 @@ class DialogBase extends Box {
             hideDialog(DialogButton.CANCEL);
         }
 
-        registerEvent(UIEvent.USER_SUBMIT, onSubmit);
+        registerEvent(UIEvent.SUBMIT, onSubmit);
     }
 
     private function onSubmit(event:UIEvent) {

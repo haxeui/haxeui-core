@@ -21,10 +21,10 @@ class Form extends Box {
     //***********************************************************************************************************
     public var highlightInvalidFields:Bool = true;
 
-    @:event(UIEvent.USER_SUBMIT_START)                                  public var onSubmitStart:UIEvent->Void;
-    @:event(UIEvent.USER_SUBMIT)                                        public var onSubmit:UIEvent->Void;
-    @:event(ValidatorEvent.INVALID_DATA)                                public var onInvalidData:ValidatorEvent->Void;
-    @:event(ValidatorEvent.VALID_DATA)                                  public var onValidData:ValidatorEvent->Void;
+    @:event(UIEvent.SUBMIT_START)               public var onSubmitStart:UIEvent->Void;
+    @:event(UIEvent.SUBMIT)                     public var onSubmit:UIEvent->Void;
+    @:event(ValidatorEvent.INVALID_DATA)        public var onInvalidData:ValidatorEvent->Void;
+    @:event(ValidatorEvent.VALID_DATA)          public var onValidData:ValidatorEvent->Void;
 
     private var _columns:Int = -1;
     @:clonable public var columns(get, set):Int;
@@ -49,7 +49,7 @@ class Form extends Box {
     }
 
     public function submit() {
-        dispatch(new UIEvent(UIEvent.USER_SUBMIT, true));
+        dispatch(new UIEvent(UIEvent.SUBMIT, true));
     }
 
     //***********************************************************************************************************
@@ -123,16 +123,16 @@ private class FormEvents extends haxe.ui.events.Events {
 
     public override function register() {
         super.register();
-        registerEvent(UIEvent.USER_SUBMIT, onSubmit);
+        registerEvent(UIEvent.SUBMIT, onSubmit);
     }
 
     public override function unregister() {
         super.unregister();
-        unregisterEvent(UIEvent.USER_SUBMIT, onSubmit);
+        unregisterEvent(UIEvent.SUBMIT, onSubmit);
     }
 
     private function onSubmit(event:UIEvent) {
-        dispatch(new UIEvent(UIEvent.USER_SUBMIT_START, true));
+        dispatch(new UIEvent(UIEvent.SUBMIT_START, true));
         _form.validateFormData(function(valid) {
             if (!valid) {
                 event.cancel();

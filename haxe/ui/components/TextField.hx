@@ -459,7 +459,7 @@ private class Events extends haxe.ui.events.Events {
     private function onKeyUp(event:KeyboardEvent) { 
         if (event.keyCode == Platform.instance.KeyEnter) {
             event.cancel();
-            _textfield.dispatch(new UIEvent(UIEvent.USER_SUBMIT, true));
+            _textfield.dispatch(new UIEvent(UIEvent.SUBMIT, true));
         }
     }
 }
