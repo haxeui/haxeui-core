@@ -60,7 +60,9 @@ class NotificationManager {
     }
 
     private function popNotification(notification:Notification) {
+        _isAnimating = true;
         notification.fadeOut(function () {
+            _isAnimating = false;
             _currentNotifications.remove(notification);
             Screen.instance.removeComponent(notification);
             positionNotifications();
@@ -99,6 +101,9 @@ class NotificationManager {
     public static var SPACING = 10;
     private var _isAnimating:Bool = false;
     private function positionNotifications() {
+        if (_isAnimating == true) {
+            return;
+        }
         _isAnimating = true;
         var scy = Screen.instance.height;
         var baseline = scy - GUTTER_SIZE;
@@ -119,12 +124,11 @@ class NotificationManager {
 
         if (builders.length > 0) {
             builder.onComplete = function () {
+                _isAnimating = false;
                 if (_addQueue.length > 0) {
                     pushNotification(_addQueue.shift());
                 } else if (_removeQueue.length > 0) {
                     popNotification(_removeQueue.shift());
-                } else {
-                    _isAnimating = false;
                 }
             }
 
