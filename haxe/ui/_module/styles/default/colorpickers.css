@@ -125,7 +125,7 @@
 
 .color-picker-popup #selectedColorPreviewContainer {
     padding: 2px;
-    background-color: $contrast-background-color;
+    background-color: $secondary-background-color;
     border: 1px solid $normal-border-color;
     border-radius: 2px;
     opacity: 1;
