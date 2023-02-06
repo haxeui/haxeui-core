@@ -1,7 +1,7 @@
 .notification {
     width: 300px;
     height: auto;
-    background-color: white;
+    background-color: $secondary-background-color;
     border-radius: 4px;
     border: 1px solid $normal-border-color;
     padding: 10px;
@@ -9,23 +9,23 @@
 }
 
 .notification.blue-notification {
-    background-color: #ecf2f9;
-    border-color: #b4cbe4;
+    background-color: $accent-color-lighter;
+    border-color: $selection-background-color;
 }
 
 .notification.yellow-notification {
-    background-color: #fffbeb;
-    border-color: #ffd83f;
+    background-color: $warning-background-color-start;
+    border-color: $warning-border-color;
 }
 
 .notification.red-notification {
-    background-color: #fde9e8;
-    border-color: #f6a7a2;
+    background-color: $error-background-color-start;
+    border-color: $error-border-color;
 }
 
 .notification.green-notification {
-    background-color: #e9fbf3;
-    border-color: #53df9e;
+    background-color: $success-background-color-start;
+    border-color: $success-border-color;
 }
 
 .notification #title {

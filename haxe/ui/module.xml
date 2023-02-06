@@ -95,6 +95,16 @@
             <var name="accent-color-lighter" value="#ecf2f9" />
             <var name="accent-gradient-start" value="#98c4e6" />
             <var name="accent-gradient-end" value="#549bde" />
+            <!-- warning / error / success -->
+            <var name="warning-border-color" value="#ffd83f" />
+            <var name="warning-background-color-start" value="#fffbeb" />
+            <var name="warning-background-color-end" value="#fff8df" />
+            <var name="error-border-color" value="#f6a7a2" />
+            <var name="error-background-color-start" value="#fde9e8" />
+            <var name="error-background-color-end" value="#fbdcda" />
+            <var name="success-border-color" value="#53df9e" />
+            <var name="success-background-color-start" value="#e9fbf3" />
+            <var name="success-background-color-end" value="#dcf8ec" />
             <!-- misc -->
             <var name="default-background-color" value="#ffffff" />
             <var name="secondary-background-color" value="#ffffff" />
@@ -105,8 +115,10 @@
             <var name="solid-background-color-down" value="#f0f0f0" />
             <var name="solid-background-color-disabled" value="#fefefe" />
             <var name="lighter-text-color" value="#a0a0a0" />
+            <!--
             <var name="error-background-color" value="#ffdddd" />
             <var name="error-text-color" value="#ff0000" />
+            -->
             <var name="modal-background-color" value="#ffffff" />
             <!-- special cases -->
             <var name="scrollbar-background-color" value="#f0f0f0" />
@@ -218,6 +230,16 @@
             <var name="accent-color-lighter" value="#323e52" />
             <var name="accent-gradient-start" value="#334666" />
             <var name="accent-gradient-end" value="#2f3746" />
+            <!-- warning / error / success -->
+            <var name="warning-border-color" value="#807100" />
+            <var name="warning-background-color-start" value="#4d4400" />
+            <var name="warning-background-color-end" value="#473f00" />
+            <var name="error-border-color" value="#8b160e" />
+            <var name="error-background-color-start" value="#4a1721" />
+            <var name="error-background-color-end" value="#3a121a" />
+            <var name="success-border-color" value="#146c43" />
+            <var name="success-background-color-start" value="#0c4129" />
+            <var name="success-background-color-end" value="#093421" />
             <!-- misc -->
             <var name="default-background-color" value="#2c2f30" />
             <var name="secondary-background-color" value="#3d3f41" />
@@ -228,8 +250,10 @@
             <var name="solid-background-color-down" value="#313335" />
             <var name="solid-background-color-disabled" value="#2f3132" />
             <var name="lighter-text-color" value="#737373" />
+            <!--
             <var name="error-background-color" value="#cf6679" />
             <var name="error-text-color" value="#880000" />
+            -->
             <var name="modal-background-color" value="#181a1b" />
             <!-- special cases -->
             <var name="scrollbar-background-color" value="#2c2f30" />

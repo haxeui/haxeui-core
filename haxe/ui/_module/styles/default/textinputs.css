@@ -22,18 +22,18 @@
 }
 
 .textfield.required {
-    background-color: #fffbeb;
-    border-color: #ffd83f;
+    background-color: $warning-background-color-start;
+    border-color: $warning-border-color;
 }
 
 .textfield.invalid {
-    background-color: #fde9e8;
-    border-color: #f6a7a2;
+    background-color: $error-background-color-start;
+    border-color: $error-border-color;
 }
 
 .textfield.valid {
-    background-color: #e9fbf3;
-    border-color: #53df9e;
+    background-color: $success-background-color-start;
+    border-color: $success-border-color;
 }
 
 .textfield:active {

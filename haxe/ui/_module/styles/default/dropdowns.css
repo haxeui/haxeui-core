@@ -14,18 +14,30 @@
 }
 
 .dropdown.required {
-    background: #fffbeb #fff8df;
-    border-color:#ffd83f;
+    background: $warning-background-color-start $warning-background-color-end;
+    border-color: $warning-border-color;
+}
+
+.dropdown.required:down {
+    background-color: $warning-background-color-end;
 }
 
 .dropdown.invalid {
-    background: #fde9e8 #fbdcda;
-    border-color: #f6a7a2;
+    background: $error-background-color-start $error-background-color-end;
+    border-color: $error-border-color;
+}
+
+.dropdown.invalid:down {
+    background-color: $error-background-color-end;
 }
 
 .dropdown.valid {
-    background: #e9fbf3 #dcf8ec;
-    border-color: #53df9e;
+    background: $success-background-color-start $success-background-color-end;
+    border-color: $success-border-color;
+}
+
+.dropdown.valid:down {
+    background-color: $success-background-color-end;
 }
 
 .dropdown:down {
