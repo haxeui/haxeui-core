@@ -175,6 +175,7 @@
 }
 
 .section-header .label {
+    font-weight: bold;
     color: $normal-text-color;
 }
 
