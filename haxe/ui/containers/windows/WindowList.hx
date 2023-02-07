@@ -33,6 +33,7 @@ class WindowList extends HBox {
     private function onWindowAdded(event:WindowEvent) {
         var item = new WindowListItem();
         var window = cast(event.target, Window);
+        window.registerEvent(WindowEvent.WINDOW_TITLE_CHANGED, onWindowTitleChanged);
         item.text = window.title;
         item.icon = window.icon;
         item.relatedWindow = window;
@@ -43,6 +44,7 @@ class WindowList extends HBox {
 
     private function onWindowClosed(event:WindowEvent) {
         var window = cast(event.target, Window);
+        window.unregisterEvent(WindowEvent.WINDOW_TITLE_CHANGED, onWindowTitleChanged);
         var item = _windowToItemMap.get(window);
         openWindows.removeComponent(item);
         _windowToItemMap.remove(window);
@@ -53,6 +55,14 @@ class WindowList extends HBox {
         var item = _windowToItemMap.get(window);
         if (item != null) {
             item.selected = true;
+        }
+    }
+
+    private function onWindowTitleChanged(event:WindowEvent) {
+        var window = cast(event.target, Window);
+        var item = _windowToItemMap.get(window);
+        if (item != null) {
+            item.text = window.title;
         }
     }
 }

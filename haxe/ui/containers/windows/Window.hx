@@ -45,6 +45,7 @@ class Window extends VBox {
         var label = findComponent("windowTitleLabel", Label);
         if (label != null) {
             label.text = value;
+            dispatch(new WindowEvent(WindowEvent.WINDOW_TITLE_CHANGED));
         }
         return value;
     }

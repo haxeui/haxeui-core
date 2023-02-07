@@ -11,6 +11,7 @@ class WindowEvent extends UIEvent {
     public static inline var WINDOW_DEACTIVATED = "windowdeactivated";
     public static inline var WINDOW_ADDED = "windowadded";
     public static inline var WINDOW_REMOVED = "windowremoved";
+    public static inline var WINDOW_TITLE_CHANGED = "windowtitlechanged";
 
     public var window(get, null):Window;
     private function get_window():Window {
