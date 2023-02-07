@@ -178,22 +178,30 @@ private class Builder extends CompositeBuilder {
         var container = event.target.findAncestor("property-group-item-editor-container", Box, "css");
         var index = _propertyGroupContents.getComponentIndex(container);
         var label = _propertyGroupContents.getComponentAt(index - 1);
-        label.hide();
-        container.hide();
+        if (label != null) {
+            label.hide();
+        }
+        if (container != null) {
+            container.hide();
+        }
     }
 
     private function onPropertyEnabled(event:UIEvent) {
         var container = event.target.findAncestor("property-group-item-editor-container", Box, "css");
         var index = _propertyGroupContents.getComponentIndex(container);
         var label = _propertyGroupContents.getComponentAt(index - 1);
-        label.disabled = false;
+        if (label != null) {
+            label.disabled = false;
+        }
     }
     
     private function onPropertyDisabled(event:UIEvent) {
         var container = event.target.findAncestor("property-group-item-editor-container", Box, "css");
         var index = _propertyGroupContents.getComponentIndex(container);
         var label = _propertyGroupContents.getComponentAt(index - 1);
-        label.disabled = true;
+        if (label != null) {
+            label.disabled = true;
+        }
     }
     
     private function onPropertyEditorChange(event:UIEvent) {
