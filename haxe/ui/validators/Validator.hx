@@ -8,6 +8,9 @@ class Validator implements IValidator {
     public var applyValid:Bool = true;
     public var applyInvalid:Bool = true;
 
+    public var validStyleName = "valid-value";
+    public var invalidStyleName = "invalid-value";
+
     public function new() {
     }
 
@@ -59,15 +62,15 @@ class Validator implements IValidator {
     }
 
     private function onReset(component:Component) {
-        component.removeClasses(["valid", "invalid"]);
+        component.removeClasses([validStyleName, invalidStyleName]);
     }
 
     private function onValid(component:Component) {
-        component.swapClass("valid", "invalid");
+        component.swapClass(validStyleName, invalidStyleName);
     }
 
     private function onInvalid(component:Component) {
-        component.swapClass("invalid", "valid");
+        component.swapClass(invalidStyleName, validStyleName);
     }
 
     private function validateString(s:String):Null<Bool> {

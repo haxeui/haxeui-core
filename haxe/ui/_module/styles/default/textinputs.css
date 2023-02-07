@@ -15,23 +15,17 @@
     content-type: auto;
 }
 
-.textfield.invalid-value {
-    color: $error-text-color;
-    background-color: $error-background-color;
-    border-color: $error-text-color;
-}
-
-.textfield.required {
+.textfield.required-value {
     background-color: $warning-background-color-start;
     border-color: $warning-border-color;
 }
 
-.textfield.invalid {
+.textfield.invalid-value {
     background-color: $error-background-color-start;
     border-color: $error-border-color;
 }
 
-.textfield.valid {
+.textfield.valid-value {
     background-color: $success-background-color-start;
     border-color: $success-border-color;
 }
@@ -79,10 +73,19 @@
     content-type: auto;
 }
 
+.textarea.required-value {
+    background-color: $warning-background-color-start;
+    border-color: $warning-border-color;
+}
+
 .textarea.invalid-value {
-    color: $error-text-color;
-    background-color: $error-background-color;
-    border-color: $error-text-color;
+    background-color: $error-background-color-start;
+    border-color: $error-border-color;
+}
+
+.textarea.valid-value {
+    background-color: $success-background-color-start;
+    border-color: $success-border-color;
 }
 
 .textarea:active {

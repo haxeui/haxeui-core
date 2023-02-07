@@ -6,6 +6,7 @@ class RequiredValidator extends Validator {
     public function new() {
         super();
         invalidMessage = "Field is required";
+        invalidStyleName = "required-value";
     }
 
     public override function setup(component:Component) {
@@ -25,10 +26,10 @@ class RequiredValidator extends Validator {
     }
 
     private override function onValid(component:Component) {
-        component.removeClass("required");
+        component.removeClass(invalidStyleName);
     }
 
     private override function onInvalid(component:Component) {
-        component.addClass("required");
+        component.addClass(invalidStyleName);
     }
 }
