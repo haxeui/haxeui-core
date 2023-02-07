@@ -1417,10 +1417,10 @@ class Component extends ComponentImpl implements IValidating {
 
         if (requiresInvalidation) {
             for (x in classesToAdd) {
-                classes.push(x);
+                addClass(x, false, false);
             }
             for (x in classesToRemove) {
-                classes.remove(x);
+                removeClass(x, false, false);
             }
 
             invalidateComponent(InvalidationFlags.ALL, true);
