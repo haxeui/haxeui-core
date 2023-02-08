@@ -66,6 +66,10 @@ class Window extends VBox {
         return value;
     }
 
+    private function validateWindow(fn:Bool->Void) {
+        fn(true);
+    }
+
     #if (haxeui_openfl || haxeui_nme || haxeui_flixel)
     public override function set_width(value:Float):Float {
     #else
