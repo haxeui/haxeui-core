@@ -114,7 +114,7 @@ class Window extends VBox {
         }
 
         var messageBox = new MessageBox();
-        #if hxwidgets
+        #if !hxwidgets
         messageBox.dialogParent = findComponent("windowContent", VBox);
         #end
         messageBox.type = type;
