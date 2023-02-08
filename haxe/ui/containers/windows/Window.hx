@@ -148,8 +148,9 @@ private class Closable extends DataBehaviour {
                 existing.registerEvent(MouseEvent.MOUSE_DOWN, function(event:MouseEvent) {
                     event.cancel();
                     var window = cast(_component, Window);
-                    existing.removeClass(":hover");
-                    window.windowManager.closeWindow(window); 
+                    if (window.windowManager.closeWindow(window)) {
+                        existing.removeClass(":hover");
+                    }
                 });
             } else if (_value == false && existing != null) {
                 title.removeComponent(existing);

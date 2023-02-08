@@ -270,7 +270,20 @@ class WindowManager extends EventDispatcher<WindowEvent> {
         }
     }
 
-    public function closeWindow(window:Window) {
+    // returns if window was closed or not
+    public function closeWindow(window:Window):Bool {
+        var e = new WindowEvent(WindowEvent.WINDOW_BEFORE_CLOSED);
+        dispatch(e, window);
+        if (e.canceled) {
+            return false;
+        }
+        var e = new WindowEvent(WindowEvent.WINDOW_BEFORE_CLOSED);
+        window.dispatch(e);
+        if (e.canceled) {
+            return false;
+        }
+
+
         // lets find the prev window _before_ we've removed the window, since, once removed
         // it we'll no longer be able to find its index, therefore cant find one previous 
         // to it
@@ -284,11 +297,16 @@ class WindowManager extends EventDispatcher<WindowEvent> {
         var e = new WindowEvent(WindowEvent.WINDOW_CLOSED);
         dispatch(e, window);
 
+        var e = new WindowEvent(WindowEvent.WINDOW_CLOSED);
+        window.dispatch(e);
+
         if (topMostWindow == window) {
             if (prevWindow != null) {
                 bringToFront(prevWindow);
             }
         }
+
+        return true;
     }
 
     public function reset() {
