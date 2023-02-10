@@ -241,7 +241,7 @@ class ColorUtil {
         var r:Float = r1;
         var g:Float = g1;
         var b:Float = b1;
-        var c:Color;
+        var c:Color = 0;
         for (n in 0...cast size) {
             c.set(Math.round(r), Math.round(g), Math.round(b), 0);
             array.push(c);
