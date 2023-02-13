@@ -386,6 +386,7 @@ private class ListDropDownHandler extends DropDownHandler {
             var event = new UIEvent(UIEvent.CHANGE, false, data);
             event.value = Variant.fromDynamic(data);
             _dropdown.dispatch(event);
+            _dropdown.dispatch(new UIEvent(UIEvent.PROPERTY_CHANGE, false, "selectedItem"));
         }
 
         return value;
@@ -524,6 +525,7 @@ private class ListDropDownHandler extends DropDownHandler {
             var event = new UIEvent(UIEvent.CHANGE, false, selectedItem);
             event.value = Variant.fromDynamic(selectedItem);
             _dropdown.dispatch(event);
+            _dropdown.dispatch(new UIEvent(UIEvent.PROPERTY_CHANGE, false, "selectedItem"));
         }
     }
 
@@ -619,6 +621,7 @@ class CalendarDropDownHandler extends DropDownHandler {
         _dropdown.text = DateTools.format(_calendar.selectedDate, Formats.dateFormatShort);
         cast(_dropdown._internalEvents, DropDownEvents).hideDropDown();
         _dropdown.dispatch(new UIEvent(UIEvent.CHANGE, false, _calendar.selectedDate));
+        _dropdown.dispatch(new UIEvent(UIEvent.PROPERTY_CHANGE, false, "selectedItem"));
     }
 
     public override function applyDefault() {
