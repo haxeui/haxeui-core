@@ -271,10 +271,10 @@ class LocaleManager {
             return id;
         }
         
-        if (param0 != null) value = StringTools.replace(value, "{0}", param0);
-        if (param1 != null) value = StringTools.replace(value, "{1}", param1);
-        if (param2 != null) value = StringTools.replace(value, "{2}", param2);
-        if (param3 != null) value = StringTools.replace(value, "{3}", param3);
+        if (param0 != null) value = StringTools.replace(value, "{0}", Std.string(param0));
+        if (param1 != null) value = StringTools.replace(value, "{1}", Std.string(param1));
+        if (param2 != null) value = StringTools.replace(value, "{2}", Std.string(param2));
+        if (param3 != null) value = StringTools.replace(value, "{3}", Std.string(param3));
         
         return value;
     }
