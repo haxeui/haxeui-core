@@ -9,14 +9,14 @@ class LocaleStringExpressionBlock {
 
     }
 
-    public function evaluate(vars:Dynamic):String {
+    public function evaluate(param0:Dynamic = null, param1:Dynamic = null, param2:Dynamic = null, param3:Dynamic = null):String {
         var result:String = null;
 
         for (expr in expressions) {
             if (expr.isDefault) {
                 continue;
             }
-            if (expr.evaluate(vars) == true) {
+            if (expr.evaluate(param0, param1, param2, param3) == true) {
                 result = expr.expressionResult;
                 break;
             }
@@ -26,8 +26,6 @@ class LocaleStringExpressionBlock {
             var defaultExpression = findDefaultExpression();
             if (defaultExpression != null) {
                 result = defaultExpression.expressionResult;
-            } else {
-                result = "";
             }
         }
 

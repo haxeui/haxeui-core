@@ -11,35 +11,94 @@ class LocaleStringExpression {
     public function new() {
     }
 
-    public function evaluate(vars:Dynamic):Bool {
-        if (!Reflect.hasField(vars, varName)) {
-            trace("WARNING: var '" + varName + "' not found");
+    public function evaluate(param0:Dynamic = null, param1:Dynamic = null, param2:Dynamic = null, param3:Dynamic = null):Bool {
+        if (expression == null) {
             return false;
         }
-        var varValue = Reflect.field(vars, varName);
+
+        var varValue = param0;
+        if (varName == "[0]") varValue = param0;
+        if (varName == "[1]") varValue = param1;
+        if (varName == "[2]") varValue = param2;
+        if (varName == "[3]") varValue = param3;
+
         var result = eval(varValue, expression);
         return result;
     }
 
     // probably all needs a revision
-    private function eval(varValue:Float, expr:LocalStringExpressionOperation):Any {
+    private function eval(varValue:Dynamic, expr:LocalStringExpressionOperation):Any {
         return switch (expr) {
             case Equals(expr):
-                varValue == eval(varValue, expr);
+                var r = false;
+                if (Type.typeof(varValue) == TFloat) {
+                    var floatValue:Float = varValue;
+                    var floatResult:Float = Std.parseFloat(eval(floatValue, expr));
+                    r = floatValue == floatResult;
+                } else if (Type.typeof(varValue) == TInt) {
+                    var intValue:Int = varValue;
+                    var intResult:Int = Std.parseInt(eval(intValue, expr));
+                    r = intValue == intResult;
+                } else {
+                    var stringValue:String = Std.string(varValue);
+                    var stringResult:String = Std.string(eval(stringValue, expr));
+                    r = stringValue == stringResult;
+                }
+                r;
             case LessThan(expr):    
-                varValue < cast eval(varValue, expr);
+                var r = false;
+                if (Type.typeof(varValue) == TFloat) {
+                    var floatValue:Float = varValue;
+                    var floatResult:Float = Std.parseFloat(eval(floatValue, expr));
+                    r = floatValue < floatResult;
+                } else if (Type.typeof(varValue) == TInt) {
+                    var intValue:Int = varValue;
+                    var intResult:Int = Std.parseInt(eval(intValue, expr));
+                    r = intValue < intResult;
+                }
+                r;
             case GreaterThan(expr):    
-                varValue > cast eval(varValue, expr);
+                var r = false;
+                if (Type.typeof(varValue) == TFloat) {
+                    var floatValue:Float = varValue;
+                    var floatResult:Float = Std.parseFloat(eval(floatValue, expr));
+                    r = floatValue > floatResult;
+                } else if (Type.typeof(varValue) == TInt) {
+                    var intValue:Int = varValue;
+                    var intResult:Int = Std.parseInt(eval(intValue, expr));
+                    r = intValue > intResult;
+                }
+                r;
             case LessThanOrEquals(expr):    
-                varValue <= cast eval(varValue, expr);
+                var r = false;
+                if (Type.typeof(varValue) == TFloat) {
+                    var floatValue:Float = varValue;
+                    var floatResult:Float = Std.parseFloat(eval(floatValue, expr));
+                    r = floatValue <= floatResult;
+                } else if (Type.typeof(varValue) == TInt) {
+                    var intValue:Int = varValue;
+                    var intResult:Int = Std.parseInt(eval(intValue, expr));
+                    r = intValue <= intResult;
+                }
+                r;
             case GreaterThanOrEquals(expr):    
-                varValue >= cast eval(varValue, expr);
+                var r = false;
+                if (Type.typeof(varValue) == TFloat) {
+                    var floatValue:Float = varValue;
+                    var floatResult:Float = Std.parseFloat(eval(floatValue, expr));
+                    r = floatValue >= floatResult;
+                } else if (Type.typeof(varValue) == TInt) {
+                    var intValue:Int = varValue;
+                    var intResult:Int = Std.parseInt(eval(intValue, expr));
+                    r = intValue >= intResult;
+                }
+                r;
             case Range(start, end):  
                 (varValue >= start && varValue <= end);
             case Value(value):
                 value;
             case List(values): // this seems screwy, returning the list item so Equal will match it
-                var found = null;
+                var found:Null<Float> = null;
                 for (v in values) {
                     if (v == varValue) {
                         found = v;
@@ -69,6 +128,16 @@ class LocaleStringExpression {
             return;
         }
 
+        expression = extractExpression(expr);
+        if (expression == null) {
+            var replacement = LocaleManager.instance.lookupString(expr);
+            if (replacement != null) {
+                expression = extractExpression(replacement);
+            }
+        }
+    }
+
+    private function extractExpression(expr:String):LocalStringExpressionOperation {
         var n = -1;
         for (i in 0...expr.length) {
             var ch = expr.charAt(i);
@@ -79,14 +148,15 @@ class LocaleStringExpression {
                 case _:    
             }
         }
-
+        
         if (n == -1) {
-            return;
+            return null;
         }
 
         varName = expr.substring(0, n).trim();
         expr = expr.substring(n).trim();
-        expression = parseExpression(expr);
+        var expression = parseExpression(expr);
+        return expression;
     }
 
     private function parseExpression(s:String):LocalStringExpressionOperation {
@@ -134,7 +204,7 @@ class LocaleStringExpression {
             }
             expression = List(values);
         } else {
-            expression = Value(Std.parseFloat(s));
+            expression = Value(s);
         }
         return expression;
     }
@@ -149,5 +219,5 @@ private enum LocalStringExpressionOperation {
     Range(start:Float, end:Float);
     Modulus(modulus:Float, expr:LocalStringExpressionOperation);
     List(values:Array<Float>);
-    Value(value:Float);
+    Value(value:Any);
 }

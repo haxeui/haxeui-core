@@ -14,6 +14,7 @@
 
     <locales>
         <locale id="en">
+            <resource path="haxeui-core/locale/en/expression-replacements.properties" />
             <resource path="haxeui-core/locale/en/std-strings.properties" />
             <resource path="haxeui-core/locale/en/formats.properties" />
         </locale>

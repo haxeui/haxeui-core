@@ -10,10 +10,7 @@ class LocaleString {
     public function new() {
     }
 
-    public function build(vars:Dynamic = null):String {
-        if (vars == null) {
-            vars = {};
-        }
+    public function build(param0:Dynamic = null, param1:Dynamic = null, param2:Dynamic = null, param3:Dynamic = null):String {
         var result = null;
 
         for (part in parts) {
@@ -27,7 +24,7 @@ class LocaleString {
                     if (result == null) {
                         result = "";
                     }
-                    result += expr.evaluate(vars);
+                    result += expr.evaluate(param0, param1, param2, param3);
             }
         }
 
@@ -36,9 +33,10 @@ class LocaleString {
         }
 
         if (result != null) {
-            for (f in Reflect.fields(vars)) {
-                result = result.replace("%" + f + "%", Reflect.field(vars, f));
-            }
+            if (param0 != null) result = result.replace("[0]", Std.string(param0));
+            if (param1 != null) result = result.replace("[1]", Std.string(param1));
+            if (param2 != null) result = result.replace("[2]", Std.string(param2));
+            if (param3 != null) result = result.replace("[3]", Std.string(param3));
         }
 
         return result;
