@@ -10,8 +10,7 @@ class PropertiesParser extends LocaleParser {
         // bit cheeky, but lets strip comments and empty lines
         // before we start parsing
         for (line in lines) {
-            line = line.trim();
-            if (line.length == 0 || line.startsWith("#")) {
+            if (line.trim().length == 0 || line.startsWith("#")) {
                 continue;
             }
 
