@@ -49,6 +49,11 @@ class OptionBox extends CheckBox {
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
 private class GroupBehaviour extends DataBehaviour {
+    public override function set(value:Variant) {
+        super.set(value);
+        OptionBoxGroups.instance.add(value, cast _component);
+    }
+
     public override function validateData() {
         OptionBoxGroups.instance.add(_value, cast _component);
     }
