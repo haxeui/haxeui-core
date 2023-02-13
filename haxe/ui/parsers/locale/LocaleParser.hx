@@ -28,7 +28,6 @@ class LocaleParser {
 
     private static function defaultParsers() {
         register("properties", PropertiesParser);
-        register("po", PoParser);
     }
 
     public static function register(extension:String, cls:Class<LocaleParser>) {
