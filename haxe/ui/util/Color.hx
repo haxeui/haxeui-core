@@ -151,7 +151,7 @@ abstract Color(Int) from Int {
     }
 
     static public function fromComponents(r:Int, g:Int, b:Int, a:Int):Color {
-        var result:Color;
+        var result:Color = 0;
         return result.set(r, g, b, a);
     }
 
