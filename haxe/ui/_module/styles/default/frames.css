@@ -10,6 +10,12 @@
     border-bottom: 1px solid $normal-border-color;
 }
 
+.frame-border:disabled {
+    border-right: 1px solid $disabled-border-color;
+    border-left: 1px solid $disabled-border-color;
+    border-bottom: 1px solid $disabled-border-color;
+}
+
 .frame-contents {
     padding: 10px;
     padding-top: 15px;
@@ -19,8 +25,17 @@
     color: $normal-text-color;
 }
 
+.frame-title:disabled {
+    color: $disabled-text-color;
+}
+
 .frame-left-line, .frame-right-line {
     background-color: $normal-border-color;
+    height: 1px;
+}
+
+.frame-left-line:disabled, .frame-right-line:disabled {
+    background-color: $disabled-border-color;
     height: 1px;
 }
 
