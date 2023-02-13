@@ -22,22 +22,27 @@
             <resource path="haxeui-core/locale/en_US/formats.properties" />
         </locale>
         <locale id="es">
+            <resource path="haxeui-core/locale/es/expression-replacements.properties" />
             <resource path="haxeui-core/locale/es/std-strings.properties" />
             <resource path="haxeui-core/locale/es/formats.properties" />
         </locale>
         <locale id="de">
+            <resource path="haxeui-core/locale/de/expression-replacements.properties" />
             <resource path="haxeui-core/locale/de/std-strings.properties" />
             <resource path="haxeui-core/locale/de/formats.properties" />
         </locale>
         <locale id="fr">
+            <resource path="haxeui-core/locale/fr/expression-replacements.properties" />
             <resource path="haxeui-core/locale/fr/std-strings.properties" />
             <resource path="haxeui-core/locale/fr/formats.properties" />
         </locale>
         <locale id="it">
+            <resource path="haxeui-core/locale/it/expression-replacements.properties" />
             <resource path="haxeui-core/locale/it/std-strings.properties" />
             <resource path="haxeui-core/locale/it/formats.properties" />
         </locale>
         <locale id="ru">
+            <resource path="haxeui-core/locale/ru/expression-replacements.properties" />
             <resource path="haxeui-core/locale/ru/std-strings.properties" />
             <resource path="haxeui-core/locale/ru/formats.properties" />
         </locale>
