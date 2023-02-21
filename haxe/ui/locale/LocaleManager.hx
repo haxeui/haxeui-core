@@ -261,22 +261,36 @@ class LocaleManager {
         return translateTo(language, id, param0, param1, param2, param3);
     }
 
+    private var _localeStringMap:Map<String, Map<String, LocaleString>> = new Map<String, Map<String, LocaleString>>();
     public function translateTo(lang:String, id:String, param0:Any = null, param1:Any = null, param2:Any = null, param3:Any = null) {
-        var strings = getStrings(lang);
-        if (strings == null) {
-            return id;
+        var map = _localeStringMap.get(lang);
+        var localeString:LocaleString = null;
+        if (map != null) {
+            localeString = map.get(id);
         }
-        var value = strings.get(id);
-        if (value == null) {
-            return id;
+
+        if (localeString == null) {
+            var strings = getStrings(lang);
+            if (strings == null) {
+                return id;
+            }
+            var value = strings.get(id);
+            if (value == null) {
+                return id;
+            }
+    
+            localeString = new LocaleString();
+            localeString.parse(id + "=" + value);
+
+            if (map == null) {
+                map = new Map<String, LocaleString>();
+                _localeStringMap.set(lang, map);
+            }
+            map.set(id, localeString);
         }
-        
-        if (param0 != null) value = StringTools.replace(value, "{0}", Std.string(param0));
-        if (param1 != null) value = StringTools.replace(value, "{1}", Std.string(param1));
-        if (param2 != null) value = StringTools.replace(value, "{2}", Std.string(param2));
-        if (param3 != null) value = StringTools.replace(value, "{3}", Std.string(param3));
-        
-        return value;
+
+        var result = localeString.build(param0, param1, param2, param3);
+        return result;
     }
     
     private function findRoot(c:Component):Component {

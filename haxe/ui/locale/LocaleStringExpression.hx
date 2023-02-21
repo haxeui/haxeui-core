@@ -33,11 +33,11 @@ class LocaleStringExpression {
                 var r = false;
                 if (Type.typeof(varValue) == TFloat) {
                     var floatValue:Float = varValue;
-                    var floatResult:Float = Std.parseFloat(eval(floatValue, expr));
+                    var floatResult:Float = Std.parseFloat(Std.string(eval(floatValue, expr)));
                     r = floatValue == floatResult;
                 } else if (Type.typeof(varValue) == TInt) {
                     var intValue:Int = varValue;
-                    var intResult:Int = Std.parseInt(eval(intValue, expr));
+                    var intResult:Int = Std.parseInt(Std.string(eval(intValue, expr)));
                     r = intValue == intResult;
                 } else {
                     var stringValue:String = Std.string(varValue);
@@ -49,11 +49,11 @@ class LocaleStringExpression {
                 var r = false;
                 if (Type.typeof(varValue) == TFloat) {
                     var floatValue:Float = varValue;
-                    var floatResult:Float = Std.parseFloat(eval(floatValue, expr));
+                    var floatResult:Float = Std.parseFloat(Std.string(eval(floatValue, expr)));
                     r = floatValue < floatResult;
                 } else if (Type.typeof(varValue) == TInt) {
                     var intValue:Int = varValue;
-                    var intResult:Int = Std.parseInt(eval(intValue, expr));
+                    var intResult:Int = Std.parseInt(Std.string(eval(intValue, expr)));
                     r = intValue < intResult;
                 }
                 r;
@@ -61,11 +61,11 @@ class LocaleStringExpression {
                 var r = false;
                 if (Type.typeof(varValue) == TFloat) {
                     var floatValue:Float = varValue;
-                    var floatResult:Float = Std.parseFloat(eval(floatValue, expr));
+                    var floatResult:Float = Std.parseFloat(Std.string(eval(floatValue, expr)));
                     r = floatValue > floatResult;
                 } else if (Type.typeof(varValue) == TInt) {
                     var intValue:Int = varValue;
-                    var intResult:Int = Std.parseInt(eval(intValue, expr));
+                    var intResult:Int = Std.parseInt(Std.string(eval(intValue, expr)));
                     r = intValue > intResult;
                 }
                 r;
@@ -73,11 +73,11 @@ class LocaleStringExpression {
                 var r = false;
                 if (Type.typeof(varValue) == TFloat) {
                     var floatValue:Float = varValue;
-                    var floatResult:Float = Std.parseFloat(eval(floatValue, expr));
+                    var floatResult:Float = Std.parseFloat(Std.string(eval(floatValue, expr)));
                     r = floatValue <= floatResult;
                 } else if (Type.typeof(varValue) == TInt) {
                     var intValue:Int = varValue;
-                    var intResult:Int = Std.parseInt(eval(intValue, expr));
+                    var intResult:Int = Std.parseInt(Std.string(eval(intValue, expr)));
                     r = intValue <= intResult;
                 }
                 r;
@@ -85,11 +85,11 @@ class LocaleStringExpression {
                 var r = false;
                 if (Type.typeof(varValue) == TFloat) {
                     var floatValue:Float = varValue;
-                    var floatResult:Float = Std.parseFloat(eval(floatValue, expr));
+                    var floatResult:Float = Std.parseFloat(Std.string(eval(floatValue, expr)));
                     r = floatValue >= floatResult;
                 } else if (Type.typeof(varValue) == TInt) {
                     var intValue:Int = varValue;
-                    var intResult:Int = Std.parseInt(eval(intValue, expr));
+                    var intResult:Int = Std.parseInt(Std.string(eval(intValue, expr)));
                     r = intValue >= intResult;
                 }
                 r;
