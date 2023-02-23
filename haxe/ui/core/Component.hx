@@ -1882,7 +1882,9 @@ class Component extends ComponentImpl implements IValidating {
             }
 
             onResized();
+            #if !(haxeui_hxwidgets) // TODO: temp until better way
             dispatch(new UIEvent(UIEvent.RESIZE));
+            #end
 
             sizeChanged = true;
         }
@@ -1996,6 +1998,10 @@ class Component extends ComponentImpl implements IValidating {
         }
 
         handleSize(componentWidth, componentHeight, _style);
+
+        #if (haxeui_hxwidgets) // TODO: temp until better way
+        dispatch(new UIEvent(UIEvent.RESIZE));
+        #end
 
         if (_componentClipRect != null ||
             (style != null && style.clip != null && style.clip == true)) {
