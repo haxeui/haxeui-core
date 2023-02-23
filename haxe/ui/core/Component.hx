@@ -1882,6 +1882,7 @@ class Component extends ComponentImpl implements IValidating {
             }
 
             onResized();
+            dispatch(new UIEvent(UIEvent.RESIZE));
 
             sizeChanged = true;
         }
@@ -1995,8 +1996,6 @@ class Component extends ComponentImpl implements IValidating {
         }
 
         handleSize(componentWidth, componentHeight, _style);
-
-        dispatch(new UIEvent(UIEvent.RESIZE));
 
         if (_componentClipRect != null ||
             (style != null && style.clip != null && style.clip == true)) {
