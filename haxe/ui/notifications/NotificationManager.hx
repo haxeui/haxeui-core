@@ -168,10 +168,18 @@ class NotificationManager {
         if (builders.length > 0) {
             builder.onComplete = function () {
                 _isAnimating = false;
+                /*
                 if (_addQueue.length > 0) {
                     pushNotification(_addQueue.shift());
                 } else if (_removeQueue.length > 0) {
                     popNotification(_removeQueue.shift());
+                }
+                */
+                if (_removeQueue.length > 0) {
+                    popNotification(_removeQueue.shift());
+                } 
+                if (_addQueue.length > 0) {
+                    pushNotification(_addQueue.shift());
                 }
             }
 
