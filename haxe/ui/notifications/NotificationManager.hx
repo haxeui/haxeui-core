@@ -23,6 +23,8 @@ class NotificationManager {
     private var _currentNotifications:Array<Notification> = [];
     private static var DEFAULT_EXPIRY:Int = 3000;
 
+    public var maxNotifications:Int = -1;
+
     private function new() {
     }
 
@@ -113,6 +115,14 @@ class NotificationManager {
     }
 
     private function pushNotification(notification:Notification) {
+        if (maxNotifications > 0) {
+            while (_currentNotifications.length > maxNotifications - 1) {
+                var n = _currentNotifications.pop();
+                n.fadeOut(function () {
+                    Screen.instance.removeComponent(n);
+                });
+            }
+        }
         _currentNotifications.insert(0, notification);
         notification.opacity = 0;
         Screen.instance.addComponent(notification);
