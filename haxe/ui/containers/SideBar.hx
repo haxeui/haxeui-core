@@ -216,6 +216,9 @@ class SideBar extends Box {
         }
         
         for (r in Screen.instance.rootComponents) {
+            if (r.hidden) {
+                continue;
+            }
             if (r.classes.indexOf("sidebar") == -1) {
                 r.cachePercentSizes();
                 r.swapClass("sideBarModifyContent", "sideBarRestoreContent");
@@ -375,6 +378,9 @@ class SideBar extends Box {
         last.set(new Directive("height", Value.VDimension(Dimension.PX(Screen.instance.height))));
 
         for (r in Screen.instance.rootComponents) {
+            if (r.hidden) {
+                continue;
+            }
             if (r.classes.indexOf("sidebar") == -1) {
                 r.swapClass("sideBarRestoreContent", "sideBarModifyContent");
                 r.onAnimationEnd = function(_) {
