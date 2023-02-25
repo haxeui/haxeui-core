@@ -280,13 +280,11 @@ class WindowManager extends EventDispatcher<WindowEvent> {
         var e = new WindowEvent(WindowEvent.WINDOW_BEFORE_CLOSED);
         dispatch(e, window);
         if (e.canceled) {
-            trace("here");
             return false;
         }
         var e = new WindowEvent(WindowEvent.WINDOW_BEFORE_CLOSED);
         window.dispatch(e);
         if (e.canceled) {
-            trace("here2");
             return false;
         }
 

@@ -108,7 +108,6 @@ private class PropertyValueBehaviour extends DataBehaviour {
     }
     
     public override function validateData() {
-        trace(_value);
         var builder = cast(_property._compositeBuilder, PropertyBuilder);
         if (builder.actualEditor != null) {
             builder.actualEditor.value = Variant.toDynamic(_value);
