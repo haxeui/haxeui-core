@@ -21,14 +21,13 @@ class NotificationManager {
     // Instance
     //****************************************************************************************************
     private var _currentNotifications:Array<Notification> = [];
-    public static var DEFAULT_EXPIRY:Int = 3000;
+    private static var DEFAULT_EXPIRY:Int = 3000;
 
     private function new() {
-
     }
 
     private var _addQueue:Array<Notification> = [];
-    public function addNotification(notificationData:NotificationData) {
+    public function addNotification(notificationData:NotificationData):Notification {
         if (notificationData.title == null) {
             notificationData.title = "Notification";
         }
@@ -47,10 +46,15 @@ class NotificationManager {
         } else {
             _addQueue.push(notification);
         }
+
+        return notification;
     }
 
     private var _removeQueue:Array<Notification> = [];
     public function removeNotification(notification:Notification) {
+        if (_currentNotifications.indexOf(notification) == -1) {
+            return;
+        }
         if (_isAnimating) {
             _removeQueue.push(notification);
             return;
@@ -60,6 +64,10 @@ class NotificationManager {
     }
 
     private function popNotification(notification:Notification) {
+        if (_currentNotifications.indexOf(notification) == -1) {
+            return;
+        }
+        
         _isAnimating = true;
         notification.fadeOut(function () {
             _isAnimating = false;
@@ -97,8 +105,8 @@ class NotificationManager {
         }
     }
 
-    public static var GUTTER_SIZE = 20;
-    public static var SPACING = 10;
+    private static var GUTTER_SIZE = 20;
+    private static var SPACING = 10;
     private var _isAnimating:Bool = false;
     private function positionNotifications() {
         if (_isAnimating == true) {
