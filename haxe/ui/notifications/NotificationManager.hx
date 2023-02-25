@@ -26,6 +26,39 @@ class NotificationManager {
     private function new() {
     }
 
+    private var _timer:Timer = null;
+    private function startTimer() {
+        if (_timer != null) {
+            return;
+        }
+        _timer = new Timer(100, onTimer);
+    }
+
+    private function stopTimer() {
+        if (_timer == null) {
+            return;
+        }
+
+        _timer.stop();
+        _timer = null;
+    }
+
+    private function onTimer() {
+        if (_isAnimating) {
+            return;
+        }
+
+        if (_addQueue.length > 0) {
+            pushNotification(_addQueue.shift());
+        } else if (_removeQueue.length > 0) {
+            popNotification(_removeQueue.shift());
+        }
+
+        if (_addQueue.length == 0 && _removeQueue.length == 0) {
+            stopTimer();
+        }
+    }
+
     private var _addQueue:Array<Notification> = [];
     public function addNotification(notificationData:NotificationData):Notification {
         if (notificationData.title == null) {
@@ -45,6 +78,7 @@ class NotificationManager {
             pushNotification(notification);
         } else {
             _addQueue.push(notification);
+            startTimer();
         }
 
         return notification;
@@ -57,6 +91,7 @@ class NotificationManager {
         }
         if (_isAnimating) {
             _removeQueue.push(notification);
+            startTimer();
             return;
         }
 
@@ -67,7 +102,7 @@ class NotificationManager {
         if (_currentNotifications.indexOf(notification) == -1) {
             return;
         }
-        
+
         _isAnimating = true;
         notification.fadeOut(function () {
             _isAnimating = false;
