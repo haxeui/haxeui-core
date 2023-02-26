@@ -35,7 +35,7 @@ class Window extends VBox {
     public var windowManager(get, set):WindowManager;
     private function get_windowManager():WindowManager {
         if (_windowManager == null) {
-            trace("WARNING: this window doenst have a window manager associated with it, make sure it was added via WindowManager.instance.addWindow");
+            trace("WARNING: this window doesnt have a window manager associated with it, make sure it was added via WindowManager.instance.addWindow");
         }
         return _windowManager;
     }
