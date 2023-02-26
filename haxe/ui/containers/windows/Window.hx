@@ -23,8 +23,6 @@ import haxe.ui.behaviours.DataBehaviour;
 @:composite(Builder)
 class Window extends VBox {
 
-    public var windowManager:WindowManager;
-
     @:behaviour(Minimizable, true) public var minimizable:Bool;
     @:behaviour(Collapsable, true) public var collapsable:Bool;
     @:behaviour(Maximizable, true) public var maximizable:Bool;
@@ -32,6 +30,19 @@ class Window extends VBox {
 
     @:behaviour(Maximized) public var maximized:Bool;
     @:behaviour(Minimized) public var minimized:Bool;
+
+    private var _windowManager:WindowManager = null;
+    public var windowManager(get, set):WindowManager;
+    private function get_windowManager():WindowManager {
+        if (_windowManager == null) {
+            trace("WARNING: this window doenst have a window manager associated with it, make sure it was added via WindowManager.instance.addWindow");
+        }
+        return _windowManager;
+    }
+    private function set_windowManager(value:WindowManager):WindowManager {
+        _windowManager = value;
+        return value;
+    }
 
     public var title(get, set):String;
     private function get_title():String {
@@ -152,7 +163,7 @@ private class Closable extends DataBehaviour {
                 existing.registerEvent(MouseEvent.MOUSE_DOWN, function(event:MouseEvent) {
                     event.cancel();
                     var window = cast(_component, Window);
-                    if (window.windowManager.closeWindow(window)) {
+                    if (window.windowManager != null && window.windowManager.closeWindow(window)) {
                         existing.removeClass(":hover");
                     }
                 });
@@ -196,7 +207,9 @@ private class Minimizable extends DataBehaviour {
                     event.cancel();
                     var window = cast(_component, Window);
                     existing.removeClass(":hover");
-                    window.windowManager.minimizeWindow(window);
+                    if (window.windowManager != null) {
+                        window.windowManager.minimizeWindow(window);
+                    }
                 });
             } else if (_value == false && existing != null) {
                 title.removeComponent(existing);
@@ -219,10 +232,12 @@ private class Maximizable extends DataBehaviour {
                 existing.registerEvent(MouseEvent.MOUSE_DOWN, function(_) {
                     var window = cast(_component, Window);
                     existing.removeClass(":hover");
-                    if (window.maximized) {
-                        window.windowManager.restoreWindow(window); 
-                    } else {
-                        window.windowManager.maximizeWindow(window);
+                    if (window.windowManager != null) {
+                        if (window.maximized) {
+                            window.windowManager.restoreWindow(window); 
+                        } else {
+                            window.windowManager.maximizeWindow(window);
+                        }
                     }
                 });
             } else if (_value == false && existing != null) {
@@ -295,10 +310,12 @@ private class Builder extends CompositeBuilder {
         if (title == null) {
             title = new WindowTitle();
             title.registerEvent(MouseEvent.DBL_CLICK, function(_) {
-                if (_window.maximized) {
-                    _window.windowManager.restoreWindow(_window); 
-                } else {
-                    _window.windowManager.maximizeWindow(_window);
+                if (_window.windowManager != null) {
+                    if (_window.maximized) {
+                        _window.windowManager.restoreWindow(_window); 
+                    } else {
+                        _window.windowManager.maximizeWindow(_window);
+                    }
                 }
             });
             _window.addComponent(title);
@@ -322,6 +339,10 @@ private class Builder extends CompositeBuilder {
     private var _tolerance:Float = 10;
     private var _downPoint:Point = new Point();
     private function onMouseDown(e:MouseEvent) {
+        if (_window.windowManager == null) {
+            return;
+        }
+
         _downPoint.x = e.screenX;
         _downPoint.y = e.screenY;
         _window.windowManager.bringToFront(_window);
@@ -371,6 +392,9 @@ private class Builder extends CompositeBuilder {
     }
 
     private function onScreenMouseUp(e:MouseEvent) {
+        if (_window.windowManager == null) {
+            return;
+        }
         for (w in _window.windowManager.windows) {
             w.disableInteractivity(false);
         }
@@ -488,10 +512,12 @@ private class Builder extends CompositeBuilder {
                 title = cast child;
                 _window.dragInitiator = title;
                 title.registerEvent(MouseEvent.DBL_CLICK, function(_) {
-                    if (_window.maximized) {
-                        _window.windowManager.restoreWindow(_window); 
-                    } else {
-                        _window.windowManager.maximizeWindow(_window);
+                    if (_window.windowManager != null) {
+                        if (_window.maximized) {
+                            _window.windowManager.restoreWindow(_window); 
+                        } else {
+                            _window.windowManager.maximizeWindow(_window);
+                        }
                     }
                 });
                 return _windowWrapper.addComponentAt(child, 0);
