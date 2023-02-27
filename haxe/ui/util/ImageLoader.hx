@@ -29,10 +29,8 @@ class ImageLoader {
             } else if (StringTools.startsWith(stringResource, "file://")) {
                 new FileImageLoader().load(_resource, callback);
             } else { // assume asset
-                //Toolkit.assets.getImage(stringResource, callback);
                 new AssetImageLoader().load(_resource, callback);
             }
-            
         } else if (_resource.isImageData) {
             var imageData:ImageData = _resource;
             if (callback != null) {
