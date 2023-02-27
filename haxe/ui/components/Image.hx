@@ -13,9 +13,9 @@ import haxe.ui.events.UIEvent;
 import haxe.ui.geom.Rectangle;
 import haxe.ui.geom.Size;
 import haxe.ui.layouts.DefaultLayout;
+import haxe.ui.loaders.image.ImageLoader;
 import haxe.ui.styles.Style;
 import haxe.ui.util.GUID;
-import haxe.ui.util.ImageLoader;
 import haxe.ui.util.Variant;
 
 /**
@@ -257,8 +257,7 @@ private class ResourceBehaviour extends DataBehaviour {
             var image:Image = cast(_value.toComponent(), Image);
             _component.addComponent(image);
         } else {
-            var imageLoader = new ImageLoader(_value);
-            imageLoader.load(function(imageInfo) {
+            ImageLoader.instance.load(_value, function(imageInfo) {
                 if (imageInfo != null) {
                     if (_value == null || _value.isNull) { // its possible that while loading the image (async) its been set to null, lets honour it
                         _component.removeImageDisplay();
