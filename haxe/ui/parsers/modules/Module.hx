@@ -20,6 +20,7 @@ class Module {
     public var validators(default, default):Array<ModuleValidatorEntry>;
     public var actionInputSources(default, default):Array<ModuleActionInputSourceEntry>;
     public var namespaces(default, default):Map<String, String>;
+    public var imageLoaders(default, default):Array<ModuleImageLoaderEntry>;
 
     public function new() {
         resourceEntries = [];
@@ -32,6 +33,7 @@ class Module {
         validators = [];
         actionInputSources = [];
         namespaces = new Map<String, String>();
+        imageLoaders = [];
     }
 
     public function validate() {
@@ -153,6 +155,16 @@ class ModuleValidatorEntry {
 class ModuleActionInputSourceEntry {
     public var className(default, default):String;
     
+    public function new() {
+    }
+}
+
+class ModuleImageLoaderEntry {
+    public var prefix(default, default):String;
+    public var className(default, default):String;
+    public var isDefault(default, default):Bool;
+    public var singleInstance(default, default):Bool;
+
     public function new() {
     }
 }

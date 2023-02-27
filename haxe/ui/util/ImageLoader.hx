@@ -14,6 +14,7 @@ class ImageLoader {
     }
 
     public function load(callback:ImageInfo->Void, useCache:Bool = true) {
+        /*
         if (_resource.isString) {
             var stringResource:String = _resource;
             if (useCache == true) {
@@ -37,5 +38,7 @@ class ImageLoader {
                 callback(ToolkitAssets.instance.imageInfoFromImageData(imageData));
             }
         }
+        */
+        haxe.ui.loaders.image.ImageLoader.instance.load(_resource, callback, useCache);
     }
 }

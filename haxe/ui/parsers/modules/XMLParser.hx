@@ -1,5 +1,6 @@
 package haxe.ui.parsers.modules;
 
+import haxe.ui.parsers.modules.Module.ModuleImageLoaderEntry;
 import haxe.ui.parsers.modules.Module.ModuleThemeImageEntry;
 import haxe.ui.parsers.modules.Module.ModuleThemeStyleEntry;
 
@@ -42,6 +43,8 @@ class XMLParser extends ModuleParser {
                 parseActions(el, module, defines, context);
             } else if (nodeName == "namespaces" && checkCondition(el, defines) == true) {
                 parseNamespaces(el, module, defines, context);
+            } else if (nodeName == "loaders" && checkCondition(el, defines) == true) {
+                parseLoaders(el, module, defines, context);
             }
         }
 
@@ -326,6 +329,26 @@ class XMLParser extends ModuleParser {
             if (namespacePrefix != null && namespacePrefix.length > 0 && namespaceURI != null && namespaceURI.length > 0) {
                 module.namespaces.set(namespacePrefix, namespaceURI);
             }
+        }
+    }
+
+    private function parseLoaders(el:Xml, module:Module, defines:Map<String, String>, context:String) {
+        for (el in el.elements()) {
+            var nodeName:String = el.nodeName;
+            if (nodeName == "image-loaders" && checkCondition(el, defines) == true) {
+                parseImageLoaders(el, module, defines, context);
+            }
+        }
+    }
+
+    private function parseImageLoaders(el:Xml, module:Module, defines:Map<String, String>, context:String) {
+        for (imageLoaderNode in el.elementsNamed("image-loader")) {
+            var imageLoaderEntry:ModuleImageLoaderEntry = new ModuleImageLoaderEntry();
+            imageLoaderEntry.prefix = imageLoaderNode.get("prefix");
+            imageLoaderEntry.className = imageLoaderNode.get("class");
+            imageLoaderEntry.isDefault = (imageLoaderNode.get("default") == "true");
+            imageLoaderEntry.singleInstance = (imageLoaderNode.get("singleInstance") == "true");
+            module.imageLoaders.push(imageLoaderEntry);
         }
     }
 

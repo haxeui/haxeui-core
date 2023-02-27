@@ -4,7 +4,7 @@ import haxe.io.Bytes;
 import haxe.ui.assets.ImageInfo;
 import haxe.ui.util.Variant;
 
-class HttpImageLoader extends ImageLoader {
+class HttpImageLoader extends ImageLoaderBase {
     public override function load(resource:Variant, callback:ImageInfo->Void) {
         var stringResource:String = resource;
         loadFromHttp(stringResource, function(imageInfo) {

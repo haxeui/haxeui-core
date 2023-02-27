@@ -207,6 +207,22 @@ class ModuleMacros {
                     haxe.ui.actions.ActionManager.instance.registerInputSource(new $t())
                 );
             }
+
+            for (imageLoader in m.imageLoaders) {
+                var className = imageLoader.className;
+                var parts = className.split(".");
+                var name:String = parts.pop();
+                var t:TypePath = {
+                    pack: parts,
+                    name: name
+                }
+
+                builder.add(macro
+                    haxe.ui.loaders.image.ImageLoader.instance.register($v{imageLoader.prefix}, function() {
+                        return new $t();
+                    }, $v{imageLoader.isDefault}, $v{imageLoader.singleInstance})
+                );
+            }
         }
 
         if (preloadAll) {

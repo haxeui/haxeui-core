@@ -283,6 +283,15 @@
         <validator id="email" class="haxe.ui.validators.EmailValidator" />
     </validators>
 
+    <loaders>
+        <image-loaders>
+            <image-loader prefix="asset" class="haxe.ui.loaders.image.AssetImageLoader" default="true" singleInstance="true" />
+            <image-loader prefix="file" class="haxe.ui.loaders.image.FileImageLoader" singleInstance="true" />
+            <image-loader prefix="http" class="haxe.ui.loaders.image.HttpImageLoader" />
+            <image-loader prefix="https" class="haxe.ui.loaders.image.HttpImageLoader" />
+        </image-loaders>
+    </loaders>
+
     <actions>
         <source class="haxe.ui.actions.KeyboardActionInputSource" />
     </actions>
