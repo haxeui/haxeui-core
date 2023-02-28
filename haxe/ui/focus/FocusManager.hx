@@ -187,7 +187,7 @@ class FocusManager extends FocusManagerImpl {
         }
         var currentFocus = null;
         
-        if (@:privateAccess c._isDisposed == true) {
+        if (c == null || @:privateAccess c._isDisposed == true) {
             return null;
         }
         
