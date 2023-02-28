@@ -100,6 +100,12 @@ class NotificationManager {
         popNotification(notification);
     }
 
+    public function clearNotifications():Void {
+        for (notification in _currentNotifications) {
+            removeNotification(notification);
+        }
+    }
+
     private function popNotification(notification:Notification) {
         if (_currentNotifications.indexOf(notification) == -1) {
             return;
