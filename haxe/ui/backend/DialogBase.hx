@@ -251,9 +251,9 @@ class DialogBase extends Box {
                 
                 if (modal && _overlay != null) {
                     if (dp != null) {
-                        dp.removeComponent(_overlay);
+                        dp.removeComponent(_overlay, destroyOnClose);
                     } else {
-                        Screen.instance.removeComponent(_overlay);
+                        Screen.instance.removeComponent(_overlay, destroyOnClose);
                     }
                 }
                 if (dp != null) {
