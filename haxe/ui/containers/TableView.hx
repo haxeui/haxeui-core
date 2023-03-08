@@ -97,6 +97,34 @@ private class CompoundItemRenderer extends ItemRenderer {
             r.onDataChanged(data);
         }
     }
+
+    private override function _onItemMouseOver(event:MouseEvent) {
+        addClass(":hover");
+        for (i in findComponents(ItemRenderer)) {
+            i.addClass(":hover");
+        }
+    }
+
+    private override function _onItemMouseOut(event:MouseEvent) {
+        removeClass(":hover");
+        for (i in findComponents(ItemRenderer)) {
+            i.removeClass(":hover");
+        }
+    }
+
+    private override function _onItemMouseDown(event:MouseEvent) {
+        addClass(":down");
+        for (i in findComponents(ItemRenderer)) {
+            i.addClass(":down");
+        }
+    }
+
+    private override function _onItemMouseUp(event:MouseEvent) {
+        removeClass(":down");
+        for (i in findComponents(ItemRenderer)) {
+            i.removeClass(":down");
+        }
+    }
 }
 
 //***********************************************************************************************************
