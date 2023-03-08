@@ -452,6 +452,9 @@ private class Builder extends ScrollViewBuilder {
                     continue;
                 }
                 var itemRenderer = createRenderer(column.id);
+                if (itemRenderer.id == null) {
+                    itemRenderer.id = column.id + "Renderer";
+                }
                 r.addComponent(itemRenderer);
             }
         }
