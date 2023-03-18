@@ -287,13 +287,16 @@ private class ListDropDownHandler extends DropDownHandler {
     }
 
     public override function reset() {
+        _cachedSelectedIndex = -1;
+        _cachedSelectedItem = null;
         if (_listview != null) {
             _listview.dataSource = _dropdown.dataSource;
-            /*
             _listview.unregisterEvent(UIEvent.CHANGE, onListChange); // TODO: not great!
-            selectedIndex = _cachedSelectedIndex;
+            _listview.selectedIndex = -1;
             _listview.registerEvent(UIEvent.CHANGE, onListChange); // TODO: not great!
-            */
+        }
+        if (_selectionSet == true) {
+            selectedIndex = 0;
         }
     }
 
@@ -341,6 +344,7 @@ private class ListDropDownHandler extends DropDownHandler {
         _listview.registerEvent(UIEvent.CHANGE, onListChange); // TODO: not great!
     }
 
+    private var _selectionSet:Bool = false;
     private var _cachedSelectedIndex:Int = -1;
     private override function get_selectedIndex():Int{
         if (_listview == null) {
@@ -364,6 +368,7 @@ private class ListDropDownHandler extends DropDownHandler {
         }
 
         if (_dropdown.dataSource != null && value >= 0 && value < _dropdown.dataSource.size) {
+            _selectionSet = true;
             var data = _dropdown.dataSource.get(value);
             var itemRenderer = _dropdown.findComponent(ItemRenderer);
             if (itemRenderer == null) {
@@ -380,6 +385,10 @@ private class ListDropDownHandler extends DropDownHandler {
             } else {
                 itemRenderer.data = data;
             }
+        }
+
+        if (value <= -1) {
+            _selectionSet = false;
         }
         
         if (dispatchChanged) {
@@ -501,6 +510,7 @@ private class ListDropDownHandler extends DropDownHandler {
         if (currentHover != null) { // since the dropdown list dissapears it doesnt recvieve a mouse out (sometimes)
             currentHover.removeClass(":hover");
         }
+        _selectionSet = true;
         var selectedItem = _listview.selectedItem;
         var itemRenderer = _dropdown.findComponent(ItemRenderer);
         if (itemRenderer == null) {
