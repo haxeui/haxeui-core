@@ -118,6 +118,7 @@ private class PropertyValueBehaviour extends DataBehaviour {
 //***********************************************************************************************************
 // Builder
 //***********************************************************************************************************
+@:noCompletion
 class PropertyBuilder extends CompositeBuilder {
     public var editor:Component = null;
     public var label:Label = null;

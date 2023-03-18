@@ -142,10 +142,17 @@ private class Builder extends CompositeBuilder {
 
             var editor = buildEditor(prop);
             editor.disabled = prop.disabled;
+
             editor.registerEvent(UIEvent.SHOWN, onPropertyShown);
             editor.registerEvent(UIEvent.HIDDEN, onPropertyHidden);
             editor.registerEvent(UIEvent.ENABLED, onPropertyEnabled);
             editor.registerEvent(UIEvent.DISABLED, onPropertyDisabled);
+
+            child.registerEvent(UIEvent.SHOWN, onPropertyShown);
+            child.registerEvent(UIEvent.HIDDEN, onPropertyHidden);
+            child.registerEvent(UIEvent.ENABLED, onPropertyEnabled);
+            child.registerEvent(UIEvent.DISABLED, onPropertyDisabled);
+            
             editor.scriptAccess = false;
             editor.id = child.id;
             editor.addClass("property-group-item-editor");
@@ -166,8 +173,26 @@ private class Builder extends CompositeBuilder {
         return null;
     }
 
+    public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
+        if ((child is Property)) {
+            var target = cast(child._compositeBuilder, PropertyBuilder).actualEditor;
+            var container = target.findAncestor("property-group-item-editor-container", Box, "css");
+            var index = _propertyGroupContents.getComponentIndex(container);
+            var label = _propertyGroupContents.getComponentAt(index - 1);
+            _propertyGroupContents.removeComponent(label, dispose, invalidate);
+            _propertyGroupContents.removeComponent(container, dispose, invalidate);
+            _editorMap.remove(target);
+            return child;
+        }
+        return null;
+    }
+
     private function onPropertyShown(event:UIEvent) {
-        var container = event.target.findAncestor("property-group-item-editor-container", Box, "css");
+        var target = event.target;
+        if ((target is Property)) {
+            target = cast(target._compositeBuilder, PropertyBuilder).actualEditor;
+        }
+        var container = target.findAncestor("property-group-item-editor-container", Box, "css");
         var index = _propertyGroupContents.getComponentIndex(container);
         var label = _propertyGroupContents.getComponentAt(index - 1);
         label.show();
@@ -175,7 +200,11 @@ private class Builder extends CompositeBuilder {
     }
     
     private function onPropertyHidden(event:UIEvent) {
-        var container = event.target.findAncestor("property-group-item-editor-container", Box, "css");
+        var target = event.target;
+        if ((target is Property)) {
+            target = cast(target._compositeBuilder, PropertyBuilder).actualEditor;
+        }
+        var container = target.findAncestor("property-group-item-editor-container", Box, "css");
         var index = _propertyGroupContents.getComponentIndex(container);
         var label = _propertyGroupContents.getComponentAt(index - 1);
         if (label != null) {
@@ -187,7 +216,11 @@ private class Builder extends CompositeBuilder {
     }
 
     private function onPropertyEnabled(event:UIEvent) {
-        var container = event.target.findAncestor("property-group-item-editor-container", Box, "css");
+        var target = event.target;
+        if ((target is Property)) {
+            target = cast(target._compositeBuilder, PropertyBuilder).actualEditor;
+        }
+        var container = target.findAncestor("property-group-item-editor-container", Box, "css");
         var index = _propertyGroupContents.getComponentIndex(container);
         var label = _propertyGroupContents.getComponentAt(index - 1);
         if (label != null) {
@@ -196,7 +229,11 @@ private class Builder extends CompositeBuilder {
     }
     
     private function onPropertyDisabled(event:UIEvent) {
-        var container = event.target.findAncestor("property-group-item-editor-container", Box, "css");
+        var target = event.target;
+        if ((target is Property)) {
+            target = cast(target._compositeBuilder, PropertyBuilder).actualEditor;
+        }
+        var container = target.findAncestor("property-group-item-editor-container", Box, "css");
         var index = _propertyGroupContents.getComponentIndex(container);
         var label = _propertyGroupContents.getComponentAt(index - 1);
         if (label != null) {
