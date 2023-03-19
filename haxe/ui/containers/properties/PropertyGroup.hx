@@ -87,6 +87,26 @@ private class Builder extends CompositeBuilder {
         for (c in _propertyGroupContents.findComponents(DropDown)) {
             c.handlerStyleNames = propGrid.popupStyleNames;
         }
+        for (editor in _editorMap.keys()) {
+            var prop = _editorMap.get(editor);
+            if (prop.hidden) {
+                applyForPropertyRow(prop, function(label, container) {
+                    trace("showing");
+                    label.hide();
+                    container.hide();
+                });
+            }
+                
+            editor.registerEvent(UIEvent.SHOWN, onPropertyShown);
+            editor.registerEvent(UIEvent.HIDDEN, onPropertyHidden);
+            editor.registerEvent(UIEvent.ENABLED, onPropertyEnabled);
+            editor.registerEvent(UIEvent.DISABLED, onPropertyDisabled);
+
+            prop.registerEvent(UIEvent.SHOWN, onPropertyShown);
+            prop.registerEvent(UIEvent.HIDDEN, onPropertyHidden);
+            prop.registerEvent(UIEvent.ENABLED, onPropertyEnabled);
+            prop.registerEvent(UIEvent.DISABLED, onPropertyDisabled);
+        }
     }
 
     public override function create() {
@@ -143,16 +163,6 @@ private class Builder extends CompositeBuilder {
             var editor = buildEditor(prop);
             editor.disabled = prop.disabled;
 
-            editor.registerEvent(UIEvent.SHOWN, onPropertyShown);
-            editor.registerEvent(UIEvent.HIDDEN, onPropertyHidden);
-            editor.registerEvent(UIEvent.ENABLED, onPropertyEnabled);
-            editor.registerEvent(UIEvent.DISABLED, onPropertyDisabled);
-
-            child.registerEvent(UIEvent.SHOWN, onPropertyShown);
-            child.registerEvent(UIEvent.HIDDEN, onPropertyHidden);
-            child.registerEvent(UIEvent.ENABLED, onPropertyEnabled);
-            child.registerEvent(UIEvent.DISABLED, onPropertyDisabled);
-            
             editor.scriptAccess = false;
             editor.id = child.id;
             editor.addClass("property-group-item-editor");
@@ -188,59 +198,42 @@ private class Builder extends CompositeBuilder {
     }
 
     private function onPropertyShown(event:UIEvent) {
-        var target = event.target;
-        if ((target is Property)) {
-            target = cast(target._compositeBuilder, PropertyBuilder).actualEditor;
-        }
-        var container = target.findAncestor("property-group-item-editor-container", Box, "css");
-        var index = _propertyGroupContents.getComponentIndex(container);
-        var label = _propertyGroupContents.getComponentAt(index - 1);
-        label.show();
-        container.show();
+        applyForPropertyRow(event.target, function(label, container) {
+            trace("showing");
+            label.show();
+            container.show();
+        });
     }
     
     private function onPropertyHidden(event:UIEvent) {
-        var target = event.target;
-        if ((target is Property)) {
-            target = cast(target._compositeBuilder, PropertyBuilder).actualEditor;
-        }
-        var container = target.findAncestor("property-group-item-editor-container", Box, "css");
-        var index = _propertyGroupContents.getComponentIndex(container);
-        var label = _propertyGroupContents.getComponentAt(index - 1);
-        if (label != null) {
+        applyForPropertyRow(event.target, function(label, container) {
             label.hide();
-        }
-        if (container != null) {
             container.hide();
-        }
+        });
     }
 
     private function onPropertyEnabled(event:UIEvent) {
-        var target = event.target;
-        if ((target is Property)) {
-            target = cast(target._compositeBuilder, PropertyBuilder).actualEditor;
-        }
-        var container = target.findAncestor("property-group-item-editor-container", Box, "css");
-        var index = _propertyGroupContents.getComponentIndex(container);
-        var label = _propertyGroupContents.getComponentAt(index - 1);
-        if (label != null) {
+        applyForPropertyRow(event.target, function(label, container) {
             label.disabled = false;
-        }
+        });
+    }
+        
+    private function onPropertyDisabled(event:UIEvent) {
+        applyForPropertyRow(event.target, function(label, container) {
+            label.disabled = true;
+        });
     }
     
-    private function onPropertyDisabled(event:UIEvent) {
-        var target = event.target;
+    private function applyForPropertyRow(target:Component, cb:Component->Component->Void) {
         if ((target is Property)) {
             target = cast(target._compositeBuilder, PropertyBuilder).actualEditor;
         }
         var container = target.findAncestor("property-group-item-editor-container", Box, "css");
         var index = _propertyGroupContents.getComponentIndex(container);
         var label = _propertyGroupContents.getComponentAt(index - 1);
-        if (label != null) {
-            label.disabled = true;
-        }
+        cb(label, container);
     }
-    
+
     private function onPropertyEditorChange(event:UIEvent) {
         var newEvent = new UIEvent(UIEvent.CHANGE);
         newEvent.target = event.target;

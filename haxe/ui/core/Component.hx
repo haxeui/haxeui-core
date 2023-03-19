@@ -24,8 +24,8 @@ import haxe.ui.util.MathUtil;
 import haxe.ui.util.StringUtil;
 import haxe.ui.util.Variant;
 import haxe.ui.validation.IValidating;
-import haxe.ui.validation.ValidationManager;
 import haxe.ui.validation.InvalidationFlags;
+import haxe.ui.validation.ValidationManager;
 
 #if (haxe_ver >= 4.2)
 import Std.isOfType;
