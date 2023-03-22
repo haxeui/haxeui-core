@@ -1,13 +1,11 @@
 package haxe.ui.parsers.locale;
 
 /**
- * ...
- * @author bb
+ * Register it for the file extension before intialising the toolkik
+ * LocaleParser.register("csv", CSVParser);
  */
-class CSVParser extends KeyValueParser 
-{
-	public function new() 
-	{
+class CSVParser extends KeyValueParser {
+	public function new() {
 		super();
 		this.SEPARATOR = ";";
 		this.COMMENT_STRING = "#";
