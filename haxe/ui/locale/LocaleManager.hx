@@ -10,6 +10,8 @@ import haxe.ui.util.ExpressionUtil;
 import haxe.ui.util.MathUtil;
 import haxe.ui.util.SimpleExpressionEvaluator;
 
+using StringTools;
+
 typedef ComponentLocaleEntry = {
     @:optional var callback:Void->Dynamic;
     @:optional var expr:String;
@@ -278,15 +280,40 @@ class LocaleManager {
             if (value == null) {
                 return id;
             }
-    
+
+            // this means its a compound string, ie, translates string that refs another string:
+            //     X=test1
+            //     Y=test2 {{X}}
+            //     Z=test3 {{X}} {{Y}}
+            // this also means we cant really cache it, so in these cases, we will completely
+            // build the string from scratch again and again
+            var isCompound = false;
+            if (value.indexOf("{{") != -1 && value.indexOf("}}") != -1) {
+                isCompound = true;
+                var n1 = value.indexOf("{{");
+                while (n1 != -1) {
+                    var n2 = value.indexOf("}}", n1);
+                    var before = value.substring(0, n1);
+                    var part = value.substring(n1 + 2, n2);
+                    var after = value.substring(n2 + 2);
+
+                    var partValue = translateTo(lang, part, param0, param1, param2, param3);
+                    value = before + partValue + after;
+
+                    n1 = value.indexOf("{{", n1);
+                }
+            }
+
             localeString = new LocaleString();
             localeString.parse(id + "=" + value);
 
-            if (map == null) {
-                map = new Map<String, LocaleString>();
-                _localeStringMap.set(lang, map);
+            if (!isCompound) {
+                if (map == null) {
+                    map = new Map<String, LocaleString>();
+                    _localeStringMap.set(lang, map);
+                }
+                map.set(id, localeString);
             }
-            map.set(id, localeString);
         }
 
         var result = localeString.build(param0, param1, param2, param3);
