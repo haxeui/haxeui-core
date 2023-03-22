@@ -3,14 +3,11 @@ package;
 import haxe.ui.parsers.locale.KeyValueParser;
 
 /**
- * ...
- * @author bb
+ * Register the parser before intialising the toolkik
+ * LocaleParser.register("csv", TSVParser);
  */
-class TSVParser extends KeyValueParser 
-{
-
-	public function new() 
-	{
+class TSVParser extends KeyValueParser {
+	public function new() {
 		super();
 		this.SEPARATOR = "\t";
 		this.COMMENT_STRING = "#";
