@@ -7,10 +7,10 @@ package haxe.ui.parsers.locale;
 class TSVParser extends KeyValueParser {
 	public function new() {
 		super();
-		this.SEPARATOR = "\t";
-		this.COMMENT_STRING = "#";
-		this.STRICT = false;
-		this.LINE_FEED = "\n";
+		this.PARSER_SEPARATOR = "\t";
+		this.PARSER_COMMENT_STRING = "#";
+		this.PARSER_STRICT = false;
+		this.PARSER_LINE_FEED = "\n";
 	}
 	
 }
