@@ -1,6 +1,4 @@
-package;
-
-import haxe.ui.parsers.locale.KeyValueParser;
+package haxe.ui.parsers.locale;
 
 /**
  * Register the parser before intialising the toolkik
