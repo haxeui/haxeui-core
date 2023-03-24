@@ -10,7 +10,7 @@ class KeyValueParser extends LocaleParser {
 	
 	public override function parse(data:String):Map<String, String> {
 		if (PARSER_SEPARATOR == "") {
-			throw "separator, comment needs implementation";
+			throw "PARSER_SEPARATOR needs implementation in " + Type.getClassName(Type.getClass(this));
 		}
 		
 		var result:Map<String, String> = new Map<String, String>();
