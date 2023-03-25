@@ -116,9 +116,10 @@ class ValueTools {
     }
 
     private static function parseColor(s:String):Value {
-        final c = Color.fromString(s);
-        if (c != 0)
+        var c = Color.fromString(s);
+        if (c != 0) {
             return Value.VColor(c);
+        }
         else if (StringTools.startsWith(s, "#") && s.length == 4) {
             return Value.VColor(Std.parseInt("0x" + s.charAt(1) + s.charAt(1)
                                                   + s.charAt(2) + s.charAt(2)
