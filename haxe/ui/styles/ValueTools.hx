@@ -115,47 +115,24 @@ class ValueTools {
         return b;
     }
 
-    private static var colors:Map<String, Int> = [
-        "black"     => 0x000000,
-        "red"       => 0xFF0000,
-        "lime"      => 0x00FF00,
-        "blue"      => 0x0000FF,
-        "white"     => 0xFFFFFF,
-        "aqua"      => 0x00FFFF,
-        "fuchsia"   => 0xFF00FF,
-        "yellow"    => 0xFFFF00,
-        "maroon"    => 0x800000,
-        "green"     => 0x008000,
-        "navy"      => 0x000080,
-        "olive"     => 0x808000,
-        "purple"    => 0x800080,
-        "teal"      => 0x008080,
-        "silver"    => 0xC0C0C0,
-        "gray"      => 0x808080,
-        "grey"      => 0x808080
-    ];
-
     private static function parseColor(s:String):Value {
-        if (StringTools.startsWith(s, "#")) {
-            s = s.substring(1);
-            if (s.length == 6) {
-                return Value.VColor(Std.parseInt("0x" + s));
-            } else if (s.length == 3) {
-                return Value.VColor(Std.parseInt("0x" + s.charAt(0) + s.charAt(0)
-                                                      + s.charAt(1) + s.charAt(1)
-                                                      + s.charAt(2) + s.charAt(2)));
-            }
-        } else if (colors.exists(s)) {
-            return Value.VColor(colors.get(s));
+        var c = Color.fromString(s);
+        if (c != 0) {
+            return Value.VColor(c);
+        }
+        else if (StringTools.startsWith(s, "#") && s.length == 4) {
+            return Value.VColor(Std.parseInt("0x" + s.charAt(1) + s.charAt(1)
+                                                  + s.charAt(2) + s.charAt(2)
+                                                  + s.charAt(3) + s.charAt(3)));
         }
 
         return null;
     }
 
     private static function validColor(s:String):Bool {
-        if (StringTools.startsWith(s, "#") && (s.length == 7 || s.length == 4)) {
+        if (Color.fromString(s) != 0) {
             return true;
-        } else if (colors.exists(s)) {
+        } else if (StringTools.startsWith(s, "#") && s.length == 4) {
             return true;
         } /* else if (StringTools.startsWith(s, "rgb(")) {
             return true;
