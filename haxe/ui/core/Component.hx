@@ -1057,6 +1057,10 @@ class Component extends ComponentImpl implements IValidating {
         }
     }
     
+    // we want to invalidate all child components the first time we are showing a component
+    // this isnt needed all the time (hence why we dont want to recursively invalidate every time)
+    // but avoids layout issues when sub components are being added (cloned) as hidden and later shown
+    private var _invalidateRecursivelyOnShow:Bool = true;
     /**
      * Shows this component and all it's children
      */
@@ -1072,7 +1076,8 @@ class Component extends ComponentImpl implements IValidating {
         if (_hidden == true) {
             _hidden = false;
             handleVisibility(true);
-            invalidateComponentLayout();
+            invalidateComponentLayout(_invalidateRecursivelyOnShow);
+            _invalidateRecursivelyOnShow = false;
             if (parentComponent != null) {
                 parentComponent.invalidateComponentLayout();
             }
