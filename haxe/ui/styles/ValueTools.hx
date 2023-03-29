@@ -1,7 +1,7 @@
 package haxe.ui.styles;
 
-import haxe.ui.core.Platform;
 import haxe.ui.constants.UnitTime;
+import haxe.ui.core.Platform;
 import haxe.ui.core.Screen;
 import haxe.ui.styles.StyleLookupMap;
 import haxe.ui.themes.ThemeManager;
@@ -115,30 +115,12 @@ class ValueTools {
         return b;
     }
 
-    private static function parseColor(s:String):Value {
-        var c = Color.fromString(s);
-        if (c != 0) {
-            return Value.VColor(c);
-        }
-        else if (StringTools.startsWith(s, "#") && s.length == 4) {
-            return Value.VColor(Std.parseInt("0x" + s.charAt(1) + s.charAt(1)
-                                                  + s.charAt(2) + s.charAt(2)
-                                                  + s.charAt(3) + s.charAt(3)));
-        }
-
-        return null;
+    private static inline function parseColor(s:String):Value {
+        return Value.VColor(Color.fromString(s));
     }
 
-    private static function validColor(s:String):Bool {
-        if (Color.fromString(s) != 0) {
-            return true;
-        } else if (StringTools.startsWith(s, "#") && s.length == 4) {
-            return true;
-        } /* else if (StringTools.startsWith(s, "rgb(")) {
-            return true;
-        } */
-
-        return false;
+    private static inline function validColor(s:String):Bool {
+        return Color.isValidColor(s);
     }
 
     public static function time(value:Value):Null<Float> {
