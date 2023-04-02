@@ -23,7 +23,7 @@ class HaxeUIApp extends AppImpl {
     private var _readyCalled:Bool = false;
     public function ready(onReady:Void->Void, onEnd:Void->Void = null) {
         if (_readyCalled) {
-            trace("WARNING: multiple class to HaxeUIApp:ready detect, only one needed, skipping additional calls");
+            trace("WARNING: multiple class to HaxeUIApp:ready detected, only one needed, skipping additional calls");
             onReady();
             return;
         }
