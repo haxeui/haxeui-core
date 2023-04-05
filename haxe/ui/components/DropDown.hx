@@ -286,8 +286,13 @@ private class ListDropDownHandler extends DropDownHandler {
         return _listview;
     }
 
+    private var _resetting:Bool = false;
     public override function reset() {
-        _cachedSelectedIndex = -1;
+        if (_resetting) {
+            return;
+        }
+        _resetting = true;
+        //_cachedSelectedIndex = -1;
         _cachedSelectedItem = null;
         if (_listview != null) {
             _listview.dataSource = _dropdown.dataSource;
@@ -298,6 +303,7 @@ private class ListDropDownHandler extends DropDownHandler {
         if (_selectionSet == true) {
             selectedIndex = 0;
         }
+        _resetting = false;
     }
 
     public override function prepare(wrapper:Box) {
