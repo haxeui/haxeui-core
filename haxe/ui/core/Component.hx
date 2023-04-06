@@ -753,7 +753,9 @@ class Component extends ComponentImpl implements IValidating {
         
         if (_children != null) {
             while (_children.length > 0) {
-                _children[0].removeAllComponents(dispose);
+                if (dispose) {
+                    _children[0].removeAllComponents(dispose);
+                }
                 removeComponent(_children[0], dispose, false);
             }
             invalidateComponentLayout();
