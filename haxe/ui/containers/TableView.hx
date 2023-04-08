@@ -87,7 +87,6 @@ private class CompoundItemRenderer extends ItemRenderer {
     public function new() {
         super();
         this.layout = LayoutFactory.createFromName("horizontal");
-        this.styleString = "spacing: 2px;";
         removeClass("itemrenderer");
     }
     
