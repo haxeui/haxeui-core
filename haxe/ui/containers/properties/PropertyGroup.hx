@@ -91,9 +91,12 @@ private class Builder extends CompositeBuilder {
             var prop = _editorMap.get(editor);
             if (prop.hidden) {
                 applyForPropertyRow(prop, function(label, container) {
-                    trace("showing");
-                    label.hide();
-                    container.hide();
+                    if (label != null) {
+                        label.hide();
+                    }
+                    if (container != null) {
+                        container.hide();
+                    }
                 });
             }
                 
@@ -199,28 +202,39 @@ private class Builder extends CompositeBuilder {
 
     private function onPropertyShown(event:UIEvent) {
         applyForPropertyRow(event.target, function(label, container) {
-            trace("showing");
-            label.show();
-            container.show();
+            if (label != null) {
+                label.show();
+            }
+            if (container != null) {
+                container.show();
+            }
         });
     }
     
     private function onPropertyHidden(event:UIEvent) {
         applyForPropertyRow(event.target, function(label, container) {
-            label.hide();
-            container.hide();
+            if (label != null) {
+                label.hide();
+            }
+            if (container != null) {
+                container.hide();
+            }
         });
     }
 
     private function onPropertyEnabled(event:UIEvent) {
         applyForPropertyRow(event.target, function(label, container) {
-            label.disabled = false;
+            if (label != null) {
+                label.disabled = false;
+            }
         });
     }
         
     private function onPropertyDisabled(event:UIEvent) {
         applyForPropertyRow(event.target, function(label, container) {
-            label.disabled = true;
+            if (label != null) {
+                label.disabled = true;
+            }
         });
     }
     
