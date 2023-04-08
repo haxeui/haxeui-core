@@ -454,7 +454,7 @@ private class Builder extends ScrollViewBuilder {
         return super.removeComponent(child, dispose, invalidate);
     }
 
-    private function createRenderer(id:String):ItemRenderer {
+    private function createRenderer(column:Column):ItemRenderer {
         var itemRenderer:ItemRenderer = null;
         if (_tableview.itemRendererClass == null) {
             itemRenderer = new ItemRenderer();
@@ -464,9 +464,12 @@ private class Builder extends ScrollViewBuilder {
         
         if (itemRenderer.childComponents.length == 0) {
             var label = new Label();
-            label.id = id;
+            label.id = column.id;
             label.percentWidth = 100;
             label.verticalAlign = "center";
+            if (column.styleString != null) {
+                label.styleString = column.styleString;
+            }
             itemRenderer.addComponent(label);
         }
         return itemRenderer;
@@ -479,7 +482,7 @@ private class Builder extends ScrollViewBuilder {
                 if (column.id == null) {
                     continue;
                 }
-                var itemRenderer = createRenderer(column.id);
+                var itemRenderer = createRenderer(column);
                 if (itemRenderer.id == null) {
                     itemRenderer.id = column.id + "Renderer";
                 }
@@ -506,7 +509,7 @@ private class Builder extends ScrollViewBuilder {
                     }
                     _tableview.itemRenderer.setComponentIndex(existing, i);
                 } else {
-                    var itemRenderer = createRenderer(column.id);
+                    var itemRenderer = createRenderer(column);
                     _tableview.itemRenderer.addComponentAt(itemRenderer, i);
                 }
             } else {
