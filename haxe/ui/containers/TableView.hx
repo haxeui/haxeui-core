@@ -408,6 +408,15 @@ private class Builder extends ScrollViewBuilder {
             _header = cast(child, Header);
             _header.registerEvent(UIEvent.COMPONENT_ADDED, onColumnAdded);
             _header.registerEvent(SortEvent.SORT_CHANGED, onSortChanged);
+            // if the header is hidden, it means its child columns
+            // wont have a size since layouts will be skipped for them
+            // this means that all rows will end up with zero-width cells
+            // a work around for this is to set header height to 0, and
+            // show it
+            if (_header.hidden) {
+                _header.customStyle.height = 0;
+                _header.show();
+            }
 
             /*
             if (_tableview.itemRenderer == null) {
