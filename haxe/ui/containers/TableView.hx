@@ -480,6 +480,7 @@ private class Builder extends ScrollViewBuilder {
             }
             itemRenderer.addComponent(label);
         }
+        itemRenderer.styleNames = "column-" + column.id;
         return itemRenderer;
     }
     
