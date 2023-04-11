@@ -503,7 +503,12 @@ abstract Variant(VariantType) from VariantType {
                 } else if ((r is DataSource)) {
                     v = cast r;
                 } else if ((r is Array)) {
+                    #if hl
+                    var arr:Array<Dynamic> = cast r;
+                    v = arr;
+                    #else
                     v = cast r;
+                    #end
                 } else if ((r is Date)) {
                     v = cast(r, Date);
                 } else if ((r is ImageData)) {
