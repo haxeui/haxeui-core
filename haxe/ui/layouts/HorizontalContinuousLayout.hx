@@ -102,6 +102,7 @@ class HorizontalContinuousLayout extends HorizontalLayout {
                     total += c.width;
                     if (lastWidth == null) {
                         lastWidth = c.width;
+                        varyingWidths = false;
                     } else if (lastWidth != c.width) {
                         varyingWidths = true;
                     }
@@ -122,7 +123,13 @@ class HorizontalContinuousLayout extends HorizontalLayout {
                 x++;
             }
             if (x <= 1) {
-                additionalSpacing = [];
+                if (varyingWidths == false) {
+                    var max = Math.ffloor((ucx + horizontalSpacing) / (lastWidth + horizontalSpacing));
+                    var total = (max * lastWidth) + (horizontalSpacing * (max - 1));
+                    additionalSpacing = [(ucx - total) / (max - 1)];
+                } else {
+                    additionalSpacing = [];
+                }
             }
         }
 
