@@ -121,6 +121,9 @@ class HorizontalContinuousLayout extends HorizontalLayout {
                 }
                 x++;
             }
+            if (x <= 1) {
+                additionalSpacing = [];
+            }
         }
 
         // finally lets apply the spacing and component positions
