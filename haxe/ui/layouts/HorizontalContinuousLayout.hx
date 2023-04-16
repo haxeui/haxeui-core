@@ -85,7 +85,7 @@ class HorizontalContinuousLayout extends HorizontalLayout {
             heights.push(rowCY);
         }
 
-        var additionalSpacing:Array<Float> = [];
+        var additionalSpacing:Array<Null<Float>> = [];
         var varyingWidths:Null<Bool> = null;
         var evenlySpace = false;
         if (component.style != null && (component.style.justifyContent == "space-evenly" || component.style.justifyContent == "space-around" || component.style.justifyContent == "space-between")) {
