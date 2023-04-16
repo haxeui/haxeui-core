@@ -150,6 +150,7 @@ class Style {
 
     @:optional public var layout:String;
     @:optional public var includeInLayout:Null<Bool>;
+    @:optional public var justifyContent:String;
     
     /** The type of the border. can be `Compound`, `Full` or `None` **/             @:optional public var borderType(get, null):StyleBorderType;
     private function get_borderType():StyleBorderType {
@@ -497,6 +498,8 @@ class Style {
                     }
                 case "include-in-layout":
                     includeInLayout = ValueTools.bool(v.value);
+                case "justify-content":
+                    justifyContent = ValueTools.string(v.value);
             }
         }
     }
@@ -649,6 +652,7 @@ class Style {
         if (s.backgroundHeightPercent != null) backgroundHeightPercent = s.backgroundHeightPercent;
         if (s.layout != null) layout = s.layout;
         if (s.includeInLayout != null) includeInLayout = s.includeInLayout;
+        if (s.justifyContent != null) justifyContent = s.justifyContent;
     }
 
     public function equalTo(s:Style):Bool {
@@ -777,6 +781,7 @@ class Style {
         if (s.backgroundHeightPercent != backgroundHeightPercent) return false;
         if (s.layout != layout) return false;
         if (s.includeInLayout != includeInLayout) return false;
+        if (s.justifyContent != justifyContent) return false;
         
         return true;
     }
