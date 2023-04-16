@@ -147,8 +147,10 @@ class Macros {
         if (xml.indexOf("@:markup") != -1) { // means it was xml without quotes, lets extract and clean it up a little
             xml = xml.replace("@:markup", "").trim();
             xml = xml.substr(1, xml.length - 2);
+            #if (haxe_ver <= 4.2)
             xml = xml.replace("\\r", "\r");
             xml = xml.replace("\\n", "\n");
+            #end
             xml = xml.replace("\\\"", "\"");
             xml = xml.replace("\\'", "'");
         }
