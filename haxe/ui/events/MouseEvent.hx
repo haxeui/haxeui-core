@@ -12,6 +12,9 @@ class MouseEvent extends UIEvent {
     public static inline var RIGHT_CLICK:String = "rightclick";
     public static inline var RIGHT_MOUSE_DOWN:String = "rightmousedown";
     public static inline var RIGHT_MOUSE_UP:String = "rightmouseup";
+    public static inline var MIDDLE_CLICK:String = "middleclick";
+    public static inline var MIDDLE_MOUSE_DOWN:String = "middlemousedown";
+    public static inline var MIDDLE_MOUSE_UP:String = "middlemouseup";
 
     public var screenX:Float;
     public var screenY:Float;
@@ -45,6 +48,7 @@ class MouseEvent extends UIEvent {
 
     public override function clone():MouseEvent {
         var c:MouseEvent = new MouseEvent(this.type);
+        c.data = this.data;
         c.type = this.type;
         c.target = this.target;
         c.screenX = this.screenX;
