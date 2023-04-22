@@ -1,5 +1,7 @@
 package haxe.ui.components;
 
+import haxe.ui.core.Platform;
+import haxe.ui.events.KeyboardEvent;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.ValueBehaviour;
 import haxe.ui.core.Component;
@@ -65,7 +67,7 @@ class TextField extends InteractiveComponent {
     /**
      * The text displayed inside of the `TextField`.
      * 
-     * `value` is used as a universal way to access the value a component is based on. in this case its the text inside of the text field.
+     * `value` is used as a universal way to access the "core" value a component is based on. in this case its the text inside of the text field.
      */
     @:clonable @:value(text)                                public var value:Dynamic;
 
@@ -114,6 +116,12 @@ private class TextFieldLayout extends DefaultLayout {
             }
         }
 
+        var decorator = findComponent(Decorator);
+        if (decorator != null) {
+            decorator.left = _component.width - decorator.width - borderSize;
+            decorator.top = borderSize;
+        }
+
         if (component.hasTextInput() == true) {
             component.getTextInput().left = xpos;
             component.getTextInput().top = paddingTop + (component.componentHeight / 2) - ((component.getTextInput().height + paddingTop + paddingBottom) / 2);
@@ -123,9 +131,17 @@ private class TextFieldLayout extends DefaultLayout {
     private override function resizeChildren() {
         super.resizeChildren();
 
+        var offset:Float = 0;
+        var decorator = findComponent(Decorator);
+        if (decorator != null) {
+            var cy = _component.height - (borderSize * 2);
+            decorator.height = cy;
+            offset = decorator.width;
+        }
+
         if (component.hasTextInput() == true) {
             var size:Size = usableSize;
-            component.getTextInput().width = size.width;
+            component.getTextInput().width = size.width - offset;
             component.getTextInput().height = size.height;
         }
     }
@@ -415,6 +431,7 @@ private class Events extends haxe.ui.events.Events {
         registerEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
         registerEvent(FocusEvent.FOCUS_IN, onFocusChange);
         registerEvent(FocusEvent.FOCUS_OUT, onFocusChange);
+        registerEvent(KeyboardEvent.KEY_UP, onKeyUp);
     }
 
     public override function unregister() {
@@ -422,6 +439,7 @@ private class Events extends haxe.ui.events.Events {
         unregisterEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
         unregisterEvent(FocusEvent.FOCUS_IN, onFocusChange);
         unregisterEvent(FocusEvent.FOCUS_OUT, onFocusChange);
+        unregisterEvent(KeyboardEvent.KEY_UP, onKeyUp);
     }
 
     private function onMouseDown(event:MouseEvent) { // TODO: this should happen automatically as part of InteractiveComponent (?)
@@ -436,6 +454,13 @@ private class Events extends haxe.ui.events.Events {
             _textfield.getTextInput().blur();
         }
         TextFieldHelper.validateText(_textfield, _textfield.text);
+    }
+
+    private function onKeyUp(event:KeyboardEvent) { 
+        if (event.keyCode == Platform.instance.KeyEnter) {
+            event.cancel();
+            _textfield.dispatch(new UIEvent(UIEvent.SUBMIT, true));
+        }
     }
 }
 

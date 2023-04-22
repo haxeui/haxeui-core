@@ -7,6 +7,7 @@ import haxe.ui.styles.Value;
 class RuleElement {
     public var selector:Selector;
     public var directives:Map<String, Directive> = new Map<String, Directive>();
+    public var directiveCount:Int = 0;
 
     public function new(selector:String, directives:Array<Directive>) {
         this.selector = new Selector(selector);
@@ -14,6 +15,7 @@ class RuleElement {
 
         for (d in directives) {
             processDirective(d);
+            directiveCount++;
         }
     }
 
@@ -31,11 +33,8 @@ class RuleElement {
             return true;
         }
 
-        if (c.pseudoClass != null) {
-            var pc = ":" + c.pseudoClass;
-            if (d.hasClass(pc) == false) {
-                return false;
-            }
+        if (c.id != null && c.id != d.id) {
+            return false;
         }
 
         if (c.className != null) {
@@ -46,15 +45,18 @@ class RuleElement {
             }
         }
 
+        if (c.pseudoClass != null) {
+            var pc = ":" + c.pseudoClass;
+            if (d.hasClass(pc) == false) {
+                return false;
+            }
+        }
+
         if (c.nodeName != null) {
             var classNodeName:String = @:privateAccess d.nodeName;
             if (c.nodeName != classNodeName) {
                 return false;
             }
-        }
-
-        if (c.id != null && c.id != d.id) {
-            return false;
         }
 
         if (c.parent != null) {
@@ -129,6 +131,13 @@ class RuleElement {
                 processComposite(d, ["background-image-slice-top", "background-image-slice-left", "background-image-slice-bottom", "background-image-slice-right"]);
             case "animation":
                 processComposite(d, ["animation-name", "animation-duration", "animation-timing-function", "animation-delay", "animation-iteration-count", "animation-direction", "animation-fill-mode"]);
+            case "background-size":
+                var vl = ValueTools.composite(d.value);
+                if (vl.length == 1) {
+                    processComposite(new Directive("", vl[0]), ["background-width", "background-height"]);
+                } else if (vl.length == 2) {
+                    processComposite(d, ["background-width", "background-height"]);
+                }
             case "font-style":
                 var v1 = ValueTools.composite(d.value);
                 if (v1 == null) {

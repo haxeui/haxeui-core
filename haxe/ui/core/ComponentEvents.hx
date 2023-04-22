@@ -174,6 +174,9 @@ class ComponentEvents extends ComponentContainer {
     
     @:noCompletion private var _interactivityDisabled:Bool = false;
     @:noCompletion private var _interactivityDisabledCounter:Int = 0;
+    #if haxeui_html5
+    private var _lastCursor:String = null;
+    #end
     private function disableInteractivity(disable:Bool, recursive:Bool = true, updateStyle:Bool = false, force:Bool = false) { // You might want to disable interactivity but NOT actually disable visually
         if (force == true) {
             _interactivityDisabledCounter = 0;
@@ -189,15 +192,26 @@ class ComponentEvents extends ComponentContainer {
             if (updateStyle == true) {
                 cast(this, Component).swapClass(":disabled", ":hover");
             }
+            handleDisabled(true);
             disableInteractiveEvents(true);
             dispatch(new UIEvent(UIEvent.DISABLED));
+            #if haxeui_html5
+            _lastCursor = cast(this, Component).element.style.cursor;
+            cast(this, Component).element.style.removeProperty("cursor");
+            #end
         } else if (_interactivityDisabledCounter < 1 && _interactivityDisabled == true) {
             _interactivityDisabled = false;
             if (updateStyle == true) {
                 cast(this, Component).removeClass(":disabled");
             }
+            handleDisabled(false);
             disableInteractiveEvents(false);
             dispatch(new UIEvent(UIEvent.ENABLED));
+            #if haxeui_html5
+            if (_lastCursor != null) {
+                cast(this, Component).element.style.cursor = _lastCursor;
+            }
+            #end
         }
 
         if (recursive == true) {

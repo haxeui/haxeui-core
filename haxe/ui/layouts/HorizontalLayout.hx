@@ -11,7 +11,8 @@ class HorizontalLayout extends DefaultLayout {
 
     private override function repositionChildren() {
         var xpos = paddingLeft;
-
+        var usableSize = this.usableSize;
+        
         for (child in component.childComponents) {
             if (child.includeInLayout == false) {
                 continue;
@@ -21,7 +22,7 @@ class HorizontalLayout extends DefaultLayout {
 
             switch (verticalAlign(child)) {
                 case "center":
-                    ypos = ((component.componentHeight - child.componentHeight) / 2) + marginTop(child) - marginBottom(child);
+                    ypos = ((usableSize.height - child.componentHeight) / 2) + paddingTop + marginTop(child) - marginBottom(child);
                 case "bottom":
                     if (child.componentHeight < component.componentHeight) {
                         ypos = component.componentHeight - (child.componentHeight + paddingBottom + marginTop(child));

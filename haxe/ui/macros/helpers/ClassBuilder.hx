@@ -3,9 +3,12 @@ package haxe.ui.macros.helpers;
 import haxe.macro.Expr;
 import haxe.macro.ExprTools;
 import haxe.macro.Type.ClassType;
+import haxe.macro.Type.ClassField;
 import haxe.macro.Type.Ref;
 import haxe.macro.TypeTools;
 import haxe.macro.Expr.ComplexType;
+
+using Lambda;
 
 class ClassBuilder {
     public var fields:Array<Field>;
@@ -132,6 +135,65 @@ class ClassBuilder {
         return r;
     }
 
+    private static var CLASS_FIELD_CACHE:Map<String, Map<String, ClassField>> = null;
+    private static function cacheClassFields(c:ClassType) {
+        if (CLASS_FIELD_CACHE != null) {
+            return;
+        }
+        CLASS_FIELD_CACHE = new Map<String, Map<String, ClassField>>();
+        var fullName = c.pack.join(".") + "." + c.name;
+
+        var map = CLASS_FIELD_CACHE.get(fullName);
+        if (map == null) {
+            map = new Map<String, ClassField>();
+            CLASS_FIELD_CACHE.set(fullName, map);
+        }
+
+        var ref = c;
+        while (ref != null) {
+            for (f in ref.fields.get()) {
+                map.set(f.name, f);
+            }
+
+            if (ref.superClass != null) {
+                ref = ref.superClass.t.get();
+            } else {
+                break;
+            }
+        }
+    }
+
+    // this is a _highly_ specialized version of "findField", that because we know
+    // that we are running inside haxeui can make so assumptions and so big perf
+    // improvements, most notably:
+    //  * once we get to 'haxe.ui.core.ComponentCommon' we know we dont care anymore
+    //  * we can cache all fields from 'haxe.ui.core.Component' and upwards
+    //    this means that once we get to those classes we no longer need to 
+    //    do any iterations, this leads to _huge_ performance increases that
+    //    that scale (around 30 times faster!)
+	static public function findFieldEx(c:ClassType, name:String):Null<ClassField> {
+        var fullName = c.pack.join(".") + "." + c.name;
+        if (fullName == "haxe.ui.core.Component") {
+            if (CLASS_FIELD_CACHE != null) {
+                var map = CLASS_FIELD_CACHE.get(fullName);
+                if (map != null) {
+                    return map.get(name);
+                }
+            } else {
+                cacheClassFields(c);
+            }
+        }
+
+        var field = c.fields.get().find(function(field) return field.name == name);
+
+        if (fullName == "haxe.ui.core.ComponentCommon") {
+            return field;
+        }
+
+		var field = if (field != null) field; else if (c.superClass != null) findFieldEx(c.superClass.t.get(), name); else null;
+        return field;
+	}
+
     public function hasField(name:String, recursive:Bool = false):Bool {
         if (classType == null) {
             return false;
@@ -144,7 +206,8 @@ class ClassBuilder {
             }
             return (haxe3FindField(classType, name) != null);
             #else
-            return (TypeTools.findField(classType, name) != null);
+            var r = (findFieldEx(classType, name) != null);
+            return r;
             #end
         }
         return (findField(name) != null);
@@ -399,6 +462,29 @@ class ClassBuilder {
             meta: meta,
             access: access,
             kind : FVar(t, e),
+            pos : pos
+        }
+        fields.push(newField);
+        return newField;
+    }
+
+    public function addProp(name:String, t:ComplexType, e:Expr = null, get:String = null, set:String = null, access:Array<Access> = null, meta:Metadata = null):Field {
+        if (access == null) {
+            if (StringTools.startsWith(name, "_")) {
+                access = [APrivate];
+            } else {
+                access = [APublic];
+            }
+        }
+        if (meta == null) {
+            meta = [];
+        }
+        var newField = {
+            name: name,
+            doc: null,
+            meta: meta,
+            access: access,
+            kind : FProp(get, set, t, e),
             pos : pos
         }
         fields.push(newField);

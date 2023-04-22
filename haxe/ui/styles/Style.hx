@@ -86,7 +86,7 @@ class Style {
     /** The color of the upper side of the border **/                               @:optional public var borderTopColor:Null<Int>;
     /** The color of the left side of the border **/                                @:optional public var borderLeftColor:Null<Int>;
     /** The color of the lower side of the border **/                               @:optional public var borderBottomColor:Null<Int>;
-    /** The color of the righ side of the border **/                                @:optional public var borderRightColor:Null<Int>;
+    /** The color of the right side of the border **/                               @:optional public var borderRightColor:Null<Int>;
     /** The size of the border, in pixels **/                                       @:optional public var borderSize:Null<Float>;
     /** The size of the upper of the border, in pixels **/                          @:optional public var borderTopSize:Null<Float>;
     /** The size of the left side of the border, in pixels **/                      @:optional public var borderLeftSize:Null<Float>;
@@ -143,8 +143,14 @@ class Style {
     /** Whether or not the text inside this object should be wrapped **/            @:optional public var wordWrap:Null<Bool>;
 
     @:optional public var imageRendering:String;
+    @:optional public var backgroundWidth:Null<Float>;
+    @:optional public var backgroundWidthPercent:Null<Float>;
+    @:optional public var backgroundHeight:Null<Float>;
+    @:optional public var backgroundHeightPercent:Null<Float>;
 
     @:optional public var layout:String;
+    @:optional public var includeInLayout:Null<Bool>;
+    @:optional public var justifyContent:String;
     
     /** The type of the border. can be `Compound`, `Full` or `None` **/             @:optional public var borderType(get, null):StyleBorderType;
     private function get_borderType():StyleBorderType {
@@ -255,6 +261,12 @@ class Style {
                     backgroundImage = ValueTools.variant(v.value);
                 case "background-image-repeat":
                     backgroundImageRepeat = ValueTools.string(v.value);
+                case "background-width":
+                    backgroundWidth = ValueTools.calcDimension(v.value);
+                    backgroundWidthPercent = ValueTools.percent(v.value);
+                case "background-height":
+                    backgroundHeight = ValueTools.calcDimension(v.value);
+                    backgroundHeightPercent = ValueTools.percent(v.value);
 
                 case "background-position-x":
                     backgroundPositionX = ValueTools.calcDimension(v.value);
@@ -484,6 +496,10 @@ class Style {
                         case _:    
                             layout = ValueTools.string(v.value);
                     }
+                case "include-in-layout":
+                    includeInLayout = ValueTools.bool(v.value);
+                case "justify-content":
+                    justifyContent = ValueTools.string(v.value);
             }
         }
     }
@@ -630,7 +646,13 @@ class Style {
         
         if (s.wordWrap != null) wordWrap = s.wordWrap;
         if (s.imageRendering != null) imageRendering = s.imageRendering;
+        if (s.backgroundWidth != null) backgroundWidth = s.backgroundWidth;
+        if (s.backgroundWidthPercent != null) backgroundWidthPercent = s.backgroundWidthPercent;
+        if (s.backgroundHeight != null) backgroundHeight = s.backgroundHeight;
+        if (s.backgroundHeightPercent != null) backgroundHeightPercent = s.backgroundHeightPercent;
         if (s.layout != null) layout = s.layout;
+        if (s.includeInLayout != null) includeInLayout = s.includeInLayout;
+        if (s.justifyContent != null) justifyContent = s.justifyContent;
     }
 
     public function equalTo(s:Style):Bool {
@@ -753,7 +775,13 @@ class Style {
 
         if (s.wordWrap != wordWrap) return false;
         if (s.imageRendering != imageRendering) return false;
+        if (s.backgroundWidth != backgroundWidth) return false;
+        if (s.backgroundWidthPercent != backgroundWidthPercent) return false;
+        if (s.backgroundHeight != backgroundHeight) return false;
+        if (s.backgroundHeightPercent != backgroundHeightPercent) return false;
         if (s.layout != layout) return false;
+        if (s.includeInLayout != includeInLayout) return false;
+        if (s.justifyContent != justifyContent) return false;
         
         return true;
     }

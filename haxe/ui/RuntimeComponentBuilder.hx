@@ -98,7 +98,8 @@ class RuntimeComponentBuilder {
                     return null;
                 }
             }
-        } else {
+        }
+        if (component == null) {
             component = Type.createInstance(Type.resolveClass(className), []);
         }
         

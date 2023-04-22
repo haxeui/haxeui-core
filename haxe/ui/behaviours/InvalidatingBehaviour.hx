@@ -14,6 +14,6 @@ class InvalidatingBehaviour extends ValueBehaviour {
         }
 
         super.set(value);
-        _component.invalidateComponentLayout();
+        _component.invalidateComponent();
     }
 }

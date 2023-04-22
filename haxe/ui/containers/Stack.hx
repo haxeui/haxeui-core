@@ -127,13 +127,13 @@ private class Builder extends CompositeBuilder {
         _stack = stack;
     }
 
-    public override function addComponent(child:Component):Component {
+    public override function onComponentAdded(child:Component) {
         if (_stack.selectedIndex < 0) {
             _stack.selectedIndex = 0;
         }
-        if (_stack.numComponents > 0) {
+        var childIndex = _stack.getComponentIndex(child);
+        if (childIndex != _stack.selectedIndex) {
             child.hide();
         }
-        return null;
     }
 }

@@ -90,4 +90,7 @@ class FunctionArray<T> {
         return s;
     }
 
+    public function removeAll() {
+        _array = [];
+    }
 }

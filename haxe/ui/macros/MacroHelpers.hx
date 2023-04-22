@@ -9,6 +9,7 @@ import haxe.ui.util.GenericConfig;
 #end
 
 typedef ClassPathEntry = {
+    var base:String;
     var path:String;
     var priority:Int;
 }
@@ -146,6 +147,10 @@ class MacroHelpers {
     private static var primaryClassPathExceptions:Array<EReg> = [];
     private static var secondaryClassPathExceptions:Array<EReg> = [];
     private static function loadClassPathExclusions(filePath:String) {
+        #if classpath_scan_verbose
+        Sys.println("classpath cache: loading classpath exclusions from '" + filePath + "'");
+        #end
+
         var contents = sys.io.File.getContent(filePath);
         var lines = contents.split("\n");
         for (line in lines) {
@@ -153,6 +158,11 @@ class MacroHelpers {
             if (line.length == 0 || StringTools.startsWith(line, ";")) {
                 continue;
             }
+
+            #if classpath_scan_verbose
+                Sys.println("    " + line);
+            #end
+
             primaryClassPathExceptions.push(new EReg(line, "gm"));
             secondaryClassPathExceptions.push(new EReg(line, "gm"));
         }
@@ -162,6 +172,10 @@ class MacroHelpers {
         if (classPathCache != null) {
             return;
         }
+
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("MacroHelpers.buildClassPathCache");
+        #end
 
         classPathCache = [];
         var paths:Array<String> = Context.getClassPath();
@@ -174,6 +188,7 @@ class MacroHelpers {
         }
 
         for (path in paths) {
+            var originalPath = path;
             path = StringTools.trim(path);
             path = Path.normalize(path);
             var exclude = false;
@@ -186,11 +201,15 @@ class MacroHelpers {
             if (exclude == true) {
                 continue;
             }
-            cacheClassPathEntries(path, classPathCache);
+            cacheClassPathEntries(path, classPathCache, originalPath);
         }
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
     }
 
-    private static function cacheClassPathEntries(path, array) {
+    private static function cacheClassPathEntries(path:String, array:Array<ClassPathEntry>, base:String) {
         path = StringTools.trim(path);
         if (path.length == 0) {
             #if classpath_scan_verbose
@@ -227,13 +246,14 @@ class MacroHelpers {
             var isDir = sys.FileSystem.isDirectory(fullPath);
             if (isDir == true && StringTools.startsWith(item, ".") == false) {
                 if (exclude == false) {
-                    cacheClassPathEntries(fullPath, array);
+                    cacheClassPathEntries(fullPath, array, base);
                 }
             } else if (isDir == false) {
                 #if classpath_scan_verbose
-                Sys.println("classpath cache: adding '" + fullPath + "'");
+                Sys.println("classpath cache: adding '" + fullPath + "' (cache size: " + array.length + ")");
                 #end    
                 array.push({
+                    base: base,
                     path: fullPath,
                     priority: 0
                 });
@@ -242,7 +262,11 @@ class MacroHelpers {
 
     }
 
-    public static function scanClassPath(processFileFn:String->Bool, searchCriteria:Array<String> = null) {
+    public static function scanClassPath(processFileFn:String->String->Bool, searchCriteria:Array<String> = null) {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("MacroHelpers.scanClassPath");
+        #end
+
         buildClassPathCache();
         for (entry in classPathCache) {
             #if classpath_scan_verbose
@@ -252,7 +276,7 @@ class MacroHelpers {
             var parts = entry.path.split("/");
             var fileName = parts[parts.length - 1];
             if (searchCriteria == null) {
-                processFileFn(entry.path);
+                processFileFn(entry.path, entry.base);
             } else {
                 var found:Bool = false;
                 for (s in searchCriteria) {
@@ -262,10 +286,14 @@ class MacroHelpers {
                     }
                 }
                 if (found == true) {
-                    processFileFn(entry.path);
+                    processFileFn(entry.path, entry.base);
                 }
             }
         }
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
     }
 
     #end

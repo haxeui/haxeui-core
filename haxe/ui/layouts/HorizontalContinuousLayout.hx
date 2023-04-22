@@ -29,6 +29,7 @@ class HorizontalContinuousLayout extends HorizontalLayout {
         var ucy:Float = component.componentHeight - (paddingTop + paddingBottom);
         var dimensions:Array<Array<ComponentRectangle>> = [];
         var heights:Array<Float> = [];
+        var horizontalSpacing = this.horizontalSpacing;
 
         var row = 0;
         var usedCX:Float = 0;
@@ -84,11 +85,69 @@ class HorizontalContinuousLayout extends HorizontalLayout {
             heights.push(rowCY);
         }
 
-        // now lets do some spacing calculations and actual apply dimentions
+        var additionalSpacing:Array<Null<Float>> = [];
+        var varyingWidths:Null<Bool> = null;
+        var evenlySpace = false;
+        if (component.style != null && (component.style.justifyContent == "space-evenly" || component.style.justifyContent == "space-around" || component.style.justifyContent == "space-between")) {
+            evenlySpace = true;
+        }
+        // now lets do some spacing calculations based on if we are going to justify the content or not
+        if (evenlySpace) {
+            var x:Int = 0;
+            var lastWidth:Null<Float> = null;
+            for (r in dimensions) {
+                var isLastRow = (x == dimensions.length - 1);
+                var total:Float = 0;
+                for (c in r) {
+                    total += c.width;
+                    if (lastWidth == null) {
+                        lastWidth = c.width;
+                        varyingWidths = false;
+                    } else if (lastWidth != c.width) {
+                        varyingWidths = true;
+                    }
+                }
+                total += horizontalSpacing * (r.length - 1);
+                if (isLastRow) {
+                    //if ()
+                    if (ucx - total <= total) {
+                        additionalSpacing.push((ucx - total) / (r.length - 1));
+                    } else {
+                        if (additionalSpacing[x - 1] != null) {
+                            additionalSpacing.push(additionalSpacing[x - 1]);
+                        }
+                    }
+                } else {
+                    additionalSpacing.push((ucx - total) / (r.length - 1));
+                }
+                x++;
+            }
+            if (x <= 1) {
+                if (varyingWidths == false) {
+                    var max = Math.ffloor((ucx + horizontalSpacing) / (lastWidth + horizontalSpacing));
+                    var total = (max * lastWidth) + (horizontalSpacing * (max - 1));
+                    additionalSpacing = [(ucx - total) / (max - 1)];
+                } else {
+                    additionalSpacing = [];
+                }
+            }
+        }
+
+        // finally lets apply the spacing and component positions
         var x:Int = 0;
         for (r in dimensions) {
             var height:Float = heights[x];
-            var spaceX:Float = ((r.length - 1) / r.length) * horizontalSpacing;
+            var rowSpacing = horizontalSpacing;
+            if (varyingWidths) {
+                if (additionalSpacing[x] != null) {
+                    rowSpacing += additionalSpacing[x];
+                }
+            } else {
+                if (additionalSpacing[0] != null) {
+                    rowSpacing += additionalSpacing[0];
+                }
+            }
+            var spaceX:Float = ((r.length - 1) / r.length) * rowSpacing;
             var n:Int = 0;
             for (c in r) {
                 switch (verticalAlign(c.component)) {
@@ -100,10 +159,10 @@ class HorizontalContinuousLayout extends HorizontalLayout {
                 }
 
                 if (c.component.percentWidth != null) {
-                    c.left += n * (horizontalSpacing - spaceX);
+                    c.left += n * (rowSpacing - spaceX);
                     c.width -= spaceX;
                 } else {
-                    c.left += n * horizontalSpacing;
+                    c.left += n * rowSpacing;
                 }
 
                 c.apply();

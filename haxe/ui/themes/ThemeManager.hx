@@ -50,13 +50,24 @@ class ThemeManager {
         _eventMap.invoke(event.type, new ThemeEvent(ThemeEvent.THEME_CHANGED));
     }
     
-    public function getTheme(themeName):Theme {
-        var theme:Theme = _themes.get(themeName);
+    public function getTheme(themeName:String):Theme {
+        var theme:Theme = findTheme(themeName);
         if (theme == null) {
             theme = new Theme();
             _themes.set(themeName, theme);
         }
         return theme;
+    }
+
+    public function findTheme(themeName:String):Theme {
+        var t = null;
+        for (name in _themes.keys()) {
+            if (name.toLowerCase() == themeName.toLowerCase()) {
+                t = _themes.get(name);
+                break;
+            }
+        }
+        return t;
     }
 
     public function addStyleResource(themeName:String, resourceId:String, priority:Float = 0, styleData:String = null) {
@@ -90,6 +101,10 @@ class ThemeManager {
     private var currentThemeVars:Map<String, String> = new Map<String, String>();
     
     public function applyTheme(themeName:String) {
+        if (findTheme(themeName) == null) {
+            trace("WARNING: theme '" + themeName + "' not found, falling back to default theme");
+            themeName = "default";
+        }
         Toolkit.styleSheet.clear("default");
 
         // vars
@@ -162,7 +177,7 @@ class ThemeManager {
     }
 
     private function buildThemeVars(themeName:String, vars:Map<String, String>) {
-        var theme:Theme = _themes.get(themeName);
+        var theme:Theme = findTheme(themeName);
         if (theme == null) {
             return;
         }
@@ -177,7 +192,7 @@ class ThemeManager {
     }
     
     private function buildThemeEntries(themeName:String, arr:Array<ThemeEntry>) {
-        var theme:Theme = _themes.get(themeName);
+        var theme:Theme = findTheme(themeName);
         if (theme == null) {
             return;
         }
@@ -191,7 +206,7 @@ class ThemeManager {
     }
 
     private function buildThemeImages(themeName:String, arr:Array<ThemeImageEntry>) {
-        var theme:Theme = _themes.get(themeName);
+        var theme:Theme = findTheme(themeName);
         if (theme == null) {
             return;
         }

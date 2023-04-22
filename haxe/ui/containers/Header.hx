@@ -74,6 +74,10 @@ private class Layout extends HorizontalLayout {
                 continue;
             }
             
+            if (!(child is Column)) {
+                continue;
+            }
+
             if (child.text == null || child.text.length == 0 || child.height < max) {
                 child.height = max;
             }

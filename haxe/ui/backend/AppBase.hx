@@ -6,7 +6,8 @@ import haxe.ui.util.EventMap;
 
 class AppBase {
     private var __events:EventMap = null;
-
+    private var _autoHandlePreload:Bool = true;
+    
     public function registerEvent(type:String, listener:Dynamic->Void, priority:Int = 0) {
         if (__events == null) {
             __events = new EventMap();
@@ -52,6 +53,9 @@ class AppBase {
 
     private function buildPreloadList():Array<PreloadItem> {
         return [];
+    }
+
+    private function startPreload(onComplete:Void->Void) {
     }
 
     private var _icon:String = null;

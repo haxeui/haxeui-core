@@ -22,6 +22,10 @@
     border: none;
 }
 
+.dialog.no-title .dialog-title {
+    hidden: true;
+}
+
 .dialog-title-label {
     width: 100%;
     vertical-align: center;
@@ -64,6 +68,34 @@
 
 .dialog-close-button:hover {
     resource: $close-hover;
+    background-color: $selection-background-color;
+}
+
+.dialog-minimize-button {
+    resource: $collapse;
+    vertical-align: "center";
+    cursor: "pointer";
+    pointer-events: true;
+    padding: 3px;
+    border-radius: 2px;
+}
+
+.dialog-minimize-button:hover {
+    resource: $collapse-hover;
+    background-color: $selection-background-color;
+}
+
+.dialog-maximize-button {
+    resource: $expand;
+    vertical-align: "center";
+    cursor: "pointer";
+    pointer-events: true;
+    padding: 3px;
+    border-radius: 2px;
+}
+
+.dialog-maximize-button:hover {
+    resource: $expand-hover;
     background-color: $selection-background-color;
 }
 

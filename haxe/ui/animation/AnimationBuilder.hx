@@ -13,7 +13,8 @@ import haxe.ui.util.Color;
 class AnimationBuilder {
     private var _keyFrames:Array<AnimationKeyFrame> = [];
     public var target:Component;
-    
+    public var onComplete:Void->Void = null;
+
     public function new(target:Component = null) {
         this.target = target;
     }
@@ -89,11 +90,9 @@ class AnimationBuilder {
         target.onAnimationEnd = function(e) {
             target._pauseAnimationStyleChanges = false;
             target._componentAnimation = null;
-            /*
             if (onComplete != null) {
                 onComplete();
             }
-            */
         }
         Toolkit.callLater(function() {
             sortFrames();

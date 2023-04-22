@@ -9,6 +9,7 @@ import haxe.ui.components.Scroll;
 import haxe.ui.components.VerticalScroll;
 import haxe.ui.constants.Priority;
 import haxe.ui.constants.ScrollMode;
+import haxe.ui.constants.ScrollPolicy;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.IScrollView;
@@ -42,10 +43,16 @@ class ScrollView extends InteractiveComponent implements IScrollView {
     @:clonable @:behaviour(HScrollPos)                              public var hscrollPos:Float;
     @:clonable @:behaviour(HScrollMax)                              public var hscrollMax:Float;
     @:clonable @:behaviour(HScrollPageSize)                         public var hscrollPageSize:Float;
+    @:clonable @:behaviour(HScrollThumbSize)                        public var hscrollThumbSize:Null<Float>;
     @:clonable @:behaviour(VScrollPos)                              public var vscrollPos:Float;
     @:clonable @:behaviour(VScrollMax)                              public var vscrollMax:Float;
     @:clonable @:behaviour(VScrollPageSize)                         public var vscrollPageSize:Float;
+    @:clonable @:behaviour(VScrollThumbSize)                        public var vscrollThumbSize:Null<Float>;
+    @:clonable @:behaviour(ThumbSize)                               public var thumbSize:Null<Float>;
     @:clonable @:behaviour(ScrollModeBehaviour, ScrollMode.DRAG)    public var scrollMode:ScrollMode;
+    @:clonable @:behaviour(ScrollPolicyBehaviour)                   public var scrollPolicy:ScrollPolicy;
+    @:clonable @:behaviour(HScrollPolicyBehaviour)                  public var horizontalScrollPolicy:ScrollPolicy;
+    @:clonable @:behaviour(VScrollPolicyBehaviour)                  public var verticalScrollPolicy:ScrollPolicy;
     @:clonable @:behaviour(GetContents)                             public var contents:Component;
     @:clonable @:behaviour(DefaultBehaviour)                        public var autoHideScrolls:Bool;
     @:clonable @:behaviour(DefaultBehaviour, true)                  public var allowAutoScroll:Bool;
@@ -455,6 +462,29 @@ private class HScrollPageSize extends DataBehaviour {
 
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
+private class HScrollThumbSize extends DataBehaviour {
+    private var _scrollview:ScrollView;
+
+    public function new(scrollview:ScrollView) {
+        super(scrollview);
+        _scrollview = scrollview;
+    }
+
+    public override function validateData() { // TODO: feels a bit ugly!
+        if (_scrollview.virtual == true) {
+            var hscroll = _scrollview.findComponent(HorizontalScroll, false);
+            if (hscroll == null) {
+                hscroll = cast(_scrollview._compositeBuilder, ScrollViewBuilder).createHScroll();
+            }
+            if (hscroll != null) {
+                hscroll.thumbSize = _value;
+            }
+        }
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
 private class VScrollPageSize extends DataBehaviour {
     private var _scrollview:ScrollView;
 
@@ -478,10 +508,75 @@ private class VScrollPageSize extends DataBehaviour {
 
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
+private class VScrollThumbSize extends DataBehaviour {
+    private var _scrollview:ScrollView;
+
+    public function new(scrollview:ScrollView) {
+        super(scrollview);
+        _scrollview = scrollview;
+    }
+
+    public override function validateData() { // TODO: feels a bit ugly!
+        if (_scrollview.virtual == true) {
+            var vscroll = _scrollview.findComponent(VerticalScroll, false);
+            if (vscroll == null) {
+                vscroll = cast(_scrollview._compositeBuilder, ScrollViewBuilder).createVScroll();
+            }
+            if (vscroll != null) {
+                vscroll.thumbSize = _value;
+            }
+        }
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class ThumbSize extends DataBehaviour {
+    private var _scrollview:ScrollView;
+
+    public function new(scrollview:ScrollView) {
+        super(scrollview);
+        _scrollview = scrollview;
+    }
+
+    public override function validateData() { 
+        _scrollview.hscrollThumbSize = _value;
+        _scrollview.vscrollThumbSize = _value;
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
 private class ScrollModeBehaviour extends DataBehaviour {
     public override function validateData() {
         _component.registerInternalEvents(true);
     }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class ScrollPolicyBehaviour extends DataBehaviour {
+    private var _scrollview:ScrollView;
+
+    public function new(scrollview:ScrollView) {
+        super(scrollview);
+        _scrollview = scrollview;
+    }
+
+    public override function validateData() {
+        _scrollview.horizontalScrollPolicy = _value;
+        _scrollview.verticalScrollPolicy = _value;
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class HScrollPolicyBehaviour extends DataBehaviour {
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class VScrollPolicyBehaviour extends DataBehaviour {
 }
 
 @:dox(hide) @:noCompletion
@@ -1066,11 +1161,19 @@ class ScrollViewBuilder extends CompositeBuilder {
                 }
 
                 hscroll.max = vcw - usableSize.width;
-                hscroll.pageSize = (usableSize.width / vcw) * hscroll.max;
+                if (_scrollview.hscrollThumbSize == null) {
+                    hscroll.pageSize = (usableSize.width / vcw) * hscroll.max;
+                }
 
                 hscroll.syncComponentValidation();    //avoid another pass
+            } else if (_scrollview.horizontalScrollPolicy == ScrollPolicy.ALWAYS) {
+                if (hscroll == null) {
+                    hscroll = createHScroll();
+                }
+                hscroll.max = 0;
+                hscroll.pageSize = 0;
             } else {
-                if (hscroll != null) {
+                if (_scrollview.horizontalScrollPolicy != ScrollPolicy.ALWAYS && hscroll != null) {
                     destroyHScroll();
                 }
             }
@@ -1086,11 +1189,19 @@ class ScrollViewBuilder extends CompositeBuilder {
                 }
 
                 vscroll.max = vch - usableSize.height;
-                vscroll.pageSize = (usableSize.height / vch) * vscroll.max;
+                if (_scrollview.vscrollThumbSize == null) {
+                    vscroll.pageSize = (usableSize.height / vch) * vscroll.max;
+                }
 
                 vscroll.syncComponentValidation();    //avoid another pass
+            } else if (_scrollview.verticalScrollPolicy == ScrollPolicy.ALWAYS) {
+                if (vscroll == null) {
+                    vscroll = createVScroll();
+                }
+                vscroll.max = 0;
+                vscroll.pageSize = 0;
             } else {
-                if (vscroll != null) {
+                if (_scrollview.verticalScrollPolicy != ScrollPolicy.ALWAYS && vscroll != null) {
                     destroyVScroll();
                 }
             }
@@ -1112,7 +1223,7 @@ class ScrollViewBuilder extends CompositeBuilder {
             return hscroll;
         }
 
-        if (vcw > usableSize.width && hscroll == null) {
+        if (vcw > usableSize.width && hscroll == null || _scrollview.horizontalScrollPolicy == ScrollPolicy.ALWAYS) {
             hscroll = new HorizontalScroll();
             hscroll.scriptAccess = false;
             hscroll.includeInLayout = !_scrollview.autoHideScrolls;
@@ -1120,8 +1231,19 @@ class ScrollViewBuilder extends CompositeBuilder {
             hscroll.percentWidth = 100;
             hscroll.allowFocus = false;
             hscroll.id = "scrollview-hscroll";
+            if (_scrollview.hscrollThumbSize != null) {
+                hscroll.thumbSize = _scrollview.hscrollThumbSize;
+            }
             _component.addComponent(hscroll);
             _component.registerInternalEvents(true);
+        }
+
+        if (_scrollview.horizontalScrollPolicy == ScrollPolicy.NEVER) {
+            hscroll.includeInLayout = false;
+            hscroll.hidden = true;
+        } else if (_scrollview.horizontalScrollPolicy == ScrollPolicy.ALWAYS) {
+            hscroll.includeInLayout = true;
+            hscroll.hidden = false;
         }
 
         return hscroll;
@@ -1142,7 +1264,7 @@ class ScrollViewBuilder extends CompositeBuilder {
             return vscroll;
         }
 
-        if (vch > usableSize.height && vscroll == null) {
+        if ((vch > usableSize.height && vscroll == null) || _scrollview.verticalScrollPolicy == ScrollPolicy.ALWAYS) {
             vscroll = new VerticalScroll();
             vscroll.scriptAccess = false;
             vscroll.includeInLayout = !_scrollview.autoHideScrolls;
@@ -1150,8 +1272,19 @@ class ScrollViewBuilder extends CompositeBuilder {
             vscroll.percentHeight = 100;
             vscroll.allowFocus = false;
             vscroll.id = "scrollview-vscroll";
+            if (_scrollview.vscrollThumbSize != null) {
+                vscroll.thumbSize = _scrollview.vscrollThumbSize;
+            }
             _component.addComponent(vscroll);
             _component.registerInternalEvents(true);
+        }
+
+        if (_scrollview.verticalScrollPolicy == ScrollPolicy.NEVER) {
+            vscroll.includeInLayout = false;
+            vscroll.hidden = true;
+        } else if (_scrollview.verticalScrollPolicy == ScrollPolicy.ALWAYS) {
+            vscroll.includeInLayout = true;
+            vscroll.hidden = false;
         }
 
         return vscroll;

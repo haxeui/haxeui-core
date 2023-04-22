@@ -6,7 +6,7 @@ import haxe.ui.events.UIEvent;
 import haxe.ui.validation.InvalidationFlags;
 
 class ScreenBase {
-    public var rootComponents:Array<Component>;
+    public var rootComponents:Array<Component> = [];
 
     private var _options:ToolkitOptions;
     public var options(get, set):ToolkitOptions;

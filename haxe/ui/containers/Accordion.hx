@@ -125,11 +125,18 @@ private class Builder extends CompositeBuilder {
             button.addClass("accordion-button");
             button.toggle = true;
             button.scriptAccess = false;
+            if (child.id != null) {
+                button.id = child.id + "Button";
+            }
             _accordion.addComponent(button);
 
+            if (child.disabled == true) {
+                button.disabled = true;
+            }
             child.animatable = false;
             child.percentWidth = 100;
             child.addClass("accordion-page");
+            child.registerEvent(UIEvent.PROPERTY_CHANGE, onPagePropertyChanged);
             var c = _accordion.addComponent(child);
 
             if (_accordion.pageIndex == -1) {
@@ -147,35 +154,25 @@ private class Builder extends CompositeBuilder {
 
             _component.registerInternalEvents(true);
 
-            var buttonCount = 0;
-            var pageCount = 0;
-            for (child in _accordion.childComponents) {
-                if (child.hasClass("accordion-button")) {
-                    if (buttonCount == 0) {
-                        child.swapClass("first", "last", false);
-                    } else if (_component.childComponents.length / 2 > 1 && buttonCount == (_component.childComponents.length / 2) - 1) {
-                        child.swapClass("last", "first", false);
-                    } else {
-                        child.removeClasses(["first", "last"], false);
-                    }
-
-                    buttonCount++;
-                } else if (child.hasClass("accordion-page")) {
-                    if (pageCount == 0) {
-                        child.swapClass("first", "last", false);
-                    } else if (_component.childComponents.length / 2 > 1 && pageCount == (_component.childComponents.length / 2) - 1) {
-                        child.swapClass("last", "first", false);
-                    } else {
-                        child.removeClasses(["first", "last"], false);
-                    }
-
-                    pageCount++;
-                }
-            }
-
             return c;
         }
 
         return null;
+    }
+
+    private function onPagePropertyChanged(event:UIEvent) {
+        if (event.data == "text") {
+            var index = _component.getComponentIndex(event.target);
+            var button = _component.getComponentAt(index - 1);
+            if (button != null &&  button.text != event.target.text) {
+                button.text = event.target.text;
+            }
+        } else if (event.data == "disabled") {
+            var index = _component.getComponentIndex(event.target);
+            var button = _component.getComponentAt(index - 1);
+            if (button != null &&  button.disabled != cast(event.target, Box).disabled) {
+                button.disabled = cast(event.target, Box).disabled;
+            }
+        }
     }
 }

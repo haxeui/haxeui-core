@@ -27,6 +27,7 @@ class FocusManager extends FocusManagerImpl {
     // Instance
     //****************************************************************************************************
     public var autoFocus:Bool = true; // whether or not to automatically set focus to the first interactive component in a view when its added
+    public var enabled:Bool = true; // whether or not to allow focus management globally
     
     private var _applicators:Array<IFocusApplicator> = [];
     
@@ -85,7 +86,7 @@ class FocusManager extends FocusManagerImpl {
     
     private function focusOnFirstInteractive(view:Component) {
         var list = [];
-        buildFocusableList(view, list);
+        buildFocusableList(view, list, true);
         if (list.length > 0) {
             list[0].focus = true;
             return list[0];
@@ -180,10 +181,13 @@ class FocusManager extends FocusManagerImpl {
         return cast prevFocus;
     }
 
-    private function buildFocusableList(c:Component, list:Array<IFocusable>):IFocusable {
+    private function buildFocusableList(c:Component, list:Array<IFocusable>, considerAutoFocus:Bool = false):IFocusable {
+        if (!enabled) {
+            return null;
+        }
         var currentFocus = null;
         
-        if (@:privateAccess c._isDisposed == true) {
+        if (c == null || @:privateAccess c._isDisposed == true) {
             return null;
         }
         
@@ -193,6 +197,9 @@ class FocusManager extends FocusManagerImpl {
         
         if ((c is IFocusable)) {
             var f:IFocusable = cast c;
+            if (considerAutoFocus == true && f.autoFocus == false) {
+                return null;
+            }
             if (f.allowFocus == true && f.disabled == false) {
                 if (f.focus == true) {
                     currentFocus = f;
@@ -209,7 +216,7 @@ class FocusManager extends FocusManagerImpl {
         });
         
         for (child in childList) {
-            var f:IFocusable = buildFocusableList(child, list);
+            var f:IFocusable = buildFocusableList(child, list, considerAutoFocus);
             if (f != null) {
                 currentFocus = f;
             }

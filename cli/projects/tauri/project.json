@@ -1,0 +1,9 @@
+{
+    "name": "tauri",
+    "type": "template",
+    "subProjects": [
+        "shared", "tauri-shared"
+    ],
+    "templates": [
+    ]
+}

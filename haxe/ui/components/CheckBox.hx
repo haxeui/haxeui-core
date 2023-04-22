@@ -33,9 +33,10 @@ class CheckBox extends InteractiveComponent {
     @:clonable @:behaviour(SelectedBehaviour)          public var selected:Bool;
 
     /**
-     * similar to `selected`, and for casual use you should use `selected` instead.
+     * Similar to `selected`, and for casual use you should use `selected` instead.
      * 
-     * `value` is a universal way to access the value a component is based on.
+     * `value` is a universal way to access the "core" value a component is based on.
+     *  In this case, its Whether this checkbox is selected or not.
      */
     @:clonable @:value(selected)                       public var value:Dynamic;
 }

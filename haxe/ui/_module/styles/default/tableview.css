@@ -62,6 +62,10 @@
     cursor: pointer;
 }
 
+.tableview .compounditemrenderer {
+    spacing: 1px;
+}
+
 .tableview .compounditemrenderer > .itemrenderer {
     height: auto;
     padding: 6px;

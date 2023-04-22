@@ -102,16 +102,24 @@ private class VerticalScrollLayout extends DefaultLayout {
         var scroll:Scroll = cast(component, Scroll);
         var thumb:Button =  component.findComponent("scroll-thumb-button");
         if (thumb != null) {
-            var m:Float = scroll.max - scroll.min;
-            var ucy:Float = usableHeight;
-            var thumbHeight = (scroll.pageSize / m) * ucy;
-            if (thumbHeight < innerWidth) {
-                thumbHeight = innerWidth;
-            } else if (thumbHeight > ucy) {
-                thumbHeight = ucy;
-            }
-            if (thumbHeight > 0 && Math.isNaN(thumbHeight) == false) {
-                thumb.height = thumbHeight;
+            if (scroll.min == scroll.max) {
+                thumb.hide();
+            } else {
+                var m:Float = scroll.max - scroll.min;
+                var ucy:Float = usableHeight;
+                var thumbHeight = (scroll.pageSize / m) * ucy;
+                if (scroll.thumbSize != null) {
+                    thumbHeight = scroll.thumbSize;
+                }
+                if (thumbHeight < innerWidth) {
+                    thumbHeight = innerWidth;
+                } else if (thumbHeight > ucy) {
+                    thumbHeight = ucy;
+                }
+                if (thumbHeight > 0 && Math.isNaN(thumbHeight) == false) {
+                    thumb.height = thumbHeight;
+                }
+                thumb.show();
             }
         }
     }

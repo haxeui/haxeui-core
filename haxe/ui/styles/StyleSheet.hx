@@ -88,6 +88,9 @@ class StyleSheet {
     }
 
     public function addRule(el:RuleElement) {
+        if (el.directiveCount == 0) {
+            return;
+        }
         _rules.push(el);
     }
 

@@ -1,5 +1,6 @@
 package haxe.ui.containers;
 
+import haxe.ui.util.Variant;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.core.Component;
 import haxe.ui.layouts.DefaultLayout;
@@ -21,7 +22,7 @@ class Box extends Component {
      *Note*: this class itself does nothing special with this property and simply here to allow subclasses to make use
      of it should they want to
     **/
-    @:clonable @:behaviour(DefaultBehaviour)                public var icon:String;
+    @:clonable @:behaviour(DefaultBehaviour)                public var icon:Variant;
 
     @:noCompletion private var _layoutName:String;
     @:clonable public var layoutName(get, set):String;

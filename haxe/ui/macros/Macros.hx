@@ -1,22 +1,23 @@
 package haxe.ui.macros;
 
 
+import haxe.ui.core.ComponentClassMap;
 #if macro
-import haxe.ui.macros.ModuleMacros;
-import haxe.ui.util.EventInfo;
-import haxe.ui.util.RTTI;
 import haxe.macro.ComplexTypeTools;
 import haxe.macro.Context;
 import haxe.macro.Expr;
+import haxe.macro.ExprTools;
 import haxe.macro.TypeTools;
+import haxe.ui.macros.ComponentMacros.BuildData;
+import haxe.ui.macros.ComponentMacros.NamedComponentDescription;
+import haxe.ui.macros.ModuleMacros;
 import haxe.ui.macros.helpers.ClassBuilder;
 import haxe.ui.macros.helpers.CodeBuilder;
 import haxe.ui.macros.helpers.CodePos;
 import haxe.ui.macros.helpers.FieldBuilder;
+import haxe.ui.util.EventInfo;
+import haxe.ui.util.RTTI;
 import haxe.ui.util.StringUtil;
-import haxe.ui.macros.ComponentMacros.NamedComponentDescription;
-import haxe.ui.macros.ComponentMacros.BuildData;
-import haxe.macro.ExprTools;
 
 using StringTools;
 
@@ -28,6 +29,14 @@ class Macros {
 
     macro static function buildEvent():Array<Field> {
         var builder = new ClassBuilder(Context.getBuildFields(), Context.getLocalType(), Context.currentPos());
+
+        #if macro_times_verbose
+        var stopComponentTimer = Context.timer(builder.fullPath);
+        #end
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("build event");
+        #end
+
         for (f in builder.fields) {
             if (f.access.indexOf(AInline) != -1 && f.access.indexOf(AStatic) != -1) {
                 switch (f.kind) {
@@ -42,14 +51,29 @@ class Macros {
                 }
             }
         }
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
+        #if macro_times_verbose
+        stopComponentTimer();
+        #end
+
         return builder.fields;
     }
     
     macro static function build():Array<Field> {
-        ModuleMacros.loadModules();
-        
-        
         var builder = new ClassBuilder(Context.getBuildFields(), Context.getLocalType(), Context.currentPos());
+        #if macro_times_verbose
+        var stopComponentTimer = Context.timer(builder.fullPath);
+        #end
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("build component");
+        #end
+
+        ModuleMacros.loadModules();
+
+        ComponentClassMap.register(builder.name, builder.fullPath);
 
         if (builder.hasClassMeta(["xml"])) {
             buildFromXmlMeta(builder);
@@ -62,6 +86,13 @@ class Macros {
         buildEvents(builder);
         applyProperties(builder);
         
+        #if haxeui_macro_times
+        stopTimer();
+        #end
+        #if macro_times_verbose
+        stopComponentTimer();
+        #end
+
         return builder.fields;
     }
 
@@ -72,6 +103,10 @@ class Macros {
     }
     
     static function applyProperties(builder:ClassBuilder) {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("apply properties");
+        #end
+
         var propPrefix = builder.fullPath.toLowerCase();
         if (ModuleMacros.properties.exists(propPrefix + ".style")) {
             var styleNames = ModuleMacros.properties.get(propPrefix + ".style");
@@ -88,9 +123,17 @@ class Macros {
                 createDefaultsFn.add(macro addClass($v{n}));
             }
         }
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
     }
     
     static function buildFromXmlMeta(builder:ClassBuilder) {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("build from xml meta");
+        #end
+
         if (builder.hasSuperClass("haxe.ui.core.Component") == false) {
             Context.error("Must have a superclass of haxe.ui.core.Component", Context.currentPos());
         }
@@ -104,8 +147,10 @@ class Macros {
         if (xml.indexOf("@:markup") != -1) { // means it was xml without quotes, lets extract and clean it up a little
             xml = xml.replace("@:markup", "").trim();
             xml = xml.substr(1, xml.length - 2);
+            #if (haxe_ver <= 4.2)
             xml = xml.replace("\\r", "\r");
             xml = xml.replace("\\n", "\n");
+            #end
             xml = xml.replace("\\\"", "\"");
             xml = xml.replace("\\'", "'");
         }
@@ -128,11 +173,21 @@ class Macros {
 
         ComponentMacros.buildBindings(codeBuilder, buildData);
         ComponentMacros.buildLanguageBindings(codeBuilder, buildData);
+        // TODO: namespace shouldnt always be default
+        ComponentClassMap.register("urn::haxeui::org/" + builder.name, builder.fullPath);
         
         builder.ctor.add(codeBuilder, AfterSuper);
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
     }
 
     static function buildComposite(builder:ClassBuilder) {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("build composite");
+        #end
+
         var registerCompositeFn = builder.findFunction("registerComposite");
         if (registerCompositeFn == null) {
             registerCompositeFn = builder.addFunction("registerComposite", macro {
@@ -156,9 +211,17 @@ class Macros {
                 );
             }
         }
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
     }
 
     static function buildEvents(builder:ClassBuilder) {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("build events");
+        #end
+
         for (f in builder.getFieldsWithMeta("event")) {
             f.remove();
             var eventExpr = f.getMetaValueExpr("event");
@@ -177,9 +240,17 @@ class Macros {
             });
             setter.addMeta(":dox", [macro group = "Event related properties and methods"]);
         }
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
     }
 
     static function buildStyles(builder:ClassBuilder) {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("build styles");
+        #end
+
         for (f in builder.getFieldsWithMeta("style")) {
             f.remove();
 
@@ -247,14 +318,17 @@ class Macros {
             }
             builder.addSetter(f.name, f.type, codeBuilder.expr);
         }
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
     }
 
     private static function buildPropertyBinding(builder:ClassBuilder, f:FieldBuilder, variable:Expr, field:String) {
-        var componentField = builder.findField(ExprTools.toString(variable));
-        if (componentField == null) { // the bind target might not be a member variable yet, which means we cant get its type, lets wait
-            return;
-        }
-        
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("build property binding");
+        #end
+
         var hasGetter = builder.findFunction("get_" + f.name) != null;
         var hasSetter = builder.findFunction("set_" + f.name) != null;
 
@@ -262,36 +336,16 @@ class Macros {
             f.remove();
         }
 
-        var componentType = "haxe.ui.core.Component";
-        switch (componentField.kind) {
-            case FVar(TPath(p), e):
-                componentType = p.pack.join(".") + "." + p.name;
-            case _:    
-        }
-        var componentTypeExpr = macro $p{componentType.split(".")};
-
         var variable = ExprTools.toString(variable);
         if (hasGetter == false) {
             builder.addGetter(f.name, f.type, macro {
-                var c = findComponent($v{variable}, $componentTypeExpr);
-                if (c == null) {
-                    trace("WARNING: no child component found: " + $v{variable});
-                    return haxe.ui.util.Variant.fromDynamic(null);
-                }
-                return c.$field;
+                return $i{variable}.$field;
             });
         }
 
         if (hasSetter == false) {
             builder.addSetter(f.name, f.type, macro {
-                if (value != $i{f.name}) {
-                    var c = findComponent($v{variable}, $componentTypeExpr);
-                    if (c == null) {
-                        trace("WARNING: no child component found: " + $v{variable});
-                        return value;
-                    }
-                    c.$field = value;
-                }
+                $i{variable}.$field = value;
                 return value;
             });
         }
@@ -308,9 +362,17 @@ class Macros {
                 });
             });
         }
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
     }
 
     static function buildBindings(builder:ClassBuilder) {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("build bindings");
+        #end
+
         for (f in builder.getFieldsWithMeta("bindable")) {
             var setFn = builder.findFunction("set_" + f.name);
             RTTI.addClassProperty(builder.fullPath, f.name, ComplexTypeTools.toString(f.type));
@@ -351,9 +413,17 @@ class Macros {
                 }
             }
         }
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
     }
 
     static function buildClonable(builder:ClassBuilder) {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("build clonable");
+        #end
+        
         var useSelf:Bool = (builder.fullPath == "haxe.ui.core.ComponentContainer");
 
         var cloneFn = builder.findFunction("cloneComponent");
@@ -428,6 +498,10 @@ class Macros {
                 }, builder.path, access);
             }
         }
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
     }
 
     #if ((haxe_ver < 4) || haxeui_heaps)
@@ -436,6 +510,13 @@ class Macros {
     #end
     static function buildBehaviours():Array<Field> {
         var builder = new ClassBuilder(haxe.macro.Context.getBuildFields(), Context.getLocalType(), Context.currentPos());
+        #if macro_times_verbose
+        var stopComponentTimer = Context.timer(builder.fullPath);
+        #end
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("build behaviours");
+        #end
+
         var registerBehavioursFn = builder.findFunction("registerBehaviours");
         if (registerBehavioursFn == null) {
             registerBehavioursFn = builder.addFunction("registerBehaviours", macro {
@@ -445,7 +526,17 @@ class Macros {
 
         var valueField = builder.getFieldMetaValue("value");
         var resolvedValueField = null;
-        for (f in builder.getFieldsWithMeta("behaviour")) {
+        var fields = builder.getFieldsWithMeta("behaviour");
+
+        // lets find the value field first, so we know we have it
+        for (f in fields) {
+            if (f.name == valueField) {
+                resolvedValueField = f;
+                break;
+            }
+        }
+
+        for (f in fields) {
             RTTI.addClassProperty(builder.fullPath, f.name, ComplexTypeTools.toString(f.type));
             if (f.name == valueField) {
                 RTTI.addClassProperty(builder.fullPath, "value", ComplexTypeTools.toString(f.type));
@@ -485,12 +576,14 @@ class Macros {
                         newField = builder.addSetter(f.name, f.type, macro { // add a normal (Variant) setter but let the binding manager know that the value has changed
                             behaviours.setDynamic($v{f.name}, value);
                             dispatch(new haxe.ui.events.UIEvent(haxe.ui.events.UIEvent.PROPERTY_CHANGE, $v{f.name}));
+                            dispatch(new haxe.ui.events.UIEvent(haxe.ui.events.UIEvent.PROPERTY_CHANGE, "value"));
                             return value;
                         }, f.access);
                     } else {
                         newField = builder.addSetter(f.name, f.type, macro { // add a normal (Variant) setter but let the binding manager know that the value has changed
                             behaviours.set($v{f.name}, value);
                             dispatch(new haxe.ui.events.UIEvent(haxe.ui.events.UIEvent.PROPERTY_CHANGE, $v{f.name}));
+                            dispatch(new haxe.ui.events.UIEvent(haxe.ui.events.UIEvent.PROPERTY_CHANGE, "value"));
                             return value;
                         }, f.access);
                     }
@@ -506,7 +599,7 @@ class Macros {
                         newField = builder.addSetter(f.name, f.type, macro { // add a normal (Variant) setter
                             switch (Type.typeof(value)) {
                                 case TClass(String):
-                                    if (value != null && value.indexOf("{{") != -1 && value.indexOf("}}") != -1) {
+                                    if (value != null && StringTools.startsWith(value, "{{") && StringTools.endsWith(value, "}}")) {
                                         haxe.ui.locale.LocaleManager.instance.registerComponent(cast this, $v{f.name}, value);
                                         return value;
                                     }
@@ -588,15 +681,82 @@ class Macros {
             f.remove();
 
             var propName = f.getMetaValueString("value");
-            if (resolvedValueField != null && resolvedValueField.isVariant) {
+            if (resolvedValueField != null && (resolvedValueField.isVariant || 
+                                               resolvedValueField.isString ||
+                                               resolvedValueField.isNumeric ||
+                                               resolvedValueField.isBool)) {
                 builder.addGetter(f.name, macro: Dynamic, macro {
-                    return haxe.ui.util.Variant.toDynamic($i{propName});
+                    return $i{propName};
                 }, false, true);
 
-                builder.addSetter(f.name, macro: Dynamic, macro {
-                    $i{propName} = haxe.ui.util.Variant.fromDynamic(value);
-                    return value;
-                }, false, true);
+                if (resolvedValueField.isString) {
+                    builder.addSetter(f.name, macro: Dynamic, macro {
+                        switch (Type.typeof(value)) {
+                            case TEnum(haxe.ui.util.Variant.VariantType):
+                                var v:haxe.ui.util.Variant = value;
+                                $i{propName} = v;
+                            case TInt | TFloat | TBool:
+                                $i{propName} = Std.string(value);
+                            case _:
+                                $i{propName} = value;
+                        }
+
+                        return value;
+                    }, false, true);
+                } else if (resolvedValueField.isFloat) {
+                    builder.addSetter(f.name, macro: Dynamic, macro {
+                        switch (Type.typeof(value)) {
+                            case TEnum(haxe.ui.util.Variant.VariantType):
+                                var v:haxe.ui.util.Variant = value;
+                                $i{propName} = v;
+                            case TClass(String):
+                                $i{propName} = Std.parseFloat(value);
+                            case TBool:
+                                $i{propName} = (value == true) ? 1 : 0;
+                            case _:
+                                $i{propName} = value;
+                        }
+
+                        return value;
+                    }, false, true);
+                } else if (resolvedValueField.isInt) {
+                    builder.addSetter(f.name, macro: Dynamic, macro {
+                        switch (Type.typeof(value)) {
+                            case TEnum(haxe.ui.util.Variant.VariantType):
+                                var v:haxe.ui.util.Variant = value;
+                                $i{propName} = v;
+                            case TClass(String):
+                                $i{propName} = Std.parseInt(value);
+                            case TBool:
+                                $i{propName} = (value == true) ? 1 : 0;
+                            case _:
+                                $i{propName} = value;
+                        }
+
+                        return value;
+                    }, false, true);
+                } else if (resolvedValueField.isBool) {
+                    builder.addSetter(f.name, macro: Dynamic, macro {
+                        switch (Type.typeof(value)) {
+                            case TEnum(haxe.ui.util.Variant.VariantType):
+                                var v:haxe.ui.util.Variant = value;
+                                $i{propName} = v;
+                            case TInt | TFloat:
+                                $i{propName} = (value == 1);
+                            case TClass(String):
+                                $i{propName} = (value == "true" || value == "1");
+                            case _:
+                                $i{propName} = value;
+                        }
+
+                        return value;
+                    }, false, true);
+                } else if (resolvedValueField.isVariant) {
+                    builder.addSetter(f.name, macro: Dynamic, macro {
+                        $i{propName} = haxe.ui.util.Variant.fromDynamic(value);
+                        return value;
+                    }, false, true);
+                }
             } else {
                 builder.addGetter(f.name, macro: Dynamic, macro {
                     return $i{propName};
@@ -631,24 +791,43 @@ class Macros {
 
         RTTI.save();
         
+        #if haxeui_macro_times
+        stopTimer();
+        #end
+        #if macro_times_verbose
+        stopComponentTimer();
+        #end
+
         return builder.fields;
     }
 
     static function buildData():Array<Field> {
         var builder = new ClassBuilder(haxe.macro.Context.getBuildFields(), Context.getLocalType(), Context.currentPos());
+        #if macro_times_verbose
+        var stopComponentTimer = Context.timer(builder.fullPath);
+        #end
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("build behaviours");
+        #end
 
+        var constructorArgs:Array<FunctionArg> = [];
+        var constructorExprs:Array<Expr> = [];
         for (f in builder.vars) {
             if (f.isStatic) {
                 continue;
             }
-            builder.removeVar(f.name);
+            var fieldName = f.name;
+            builder.removeVar(fieldName);
+            var optional = f.hasMeta(":optional");
+            constructorArgs.push({name: fieldName, type: f.type, value: f.expr, opt: optional});
+            constructorExprs.push(macro this.$fieldName = $i{fieldName});
 
-            var name = '_${f.name}';
-            builder.addVar(name, f.type, null, null, [{name: ":noCompletion", pos: Context.currentPos()}]);
-            var newField = builder.addGetter(f.name, f.type, macro {
+            var name = '_${fieldName}';
+            builder.addVar(name, f.type, null, null, [{name: ":noCompletion", pos: Context.currentPos()}, {name: ":optional", pos: Context.currentPos()}]);
+            var newField = builder.addGetter(fieldName, f.type, macro {
                 return $i{name};
             });
-            var newField = builder.addSetter(f.name, f.type, macro {
+            var newField = builder.addSetter(fieldName, f.type, macro {
                 if (value == $i{name}) {
                     return value;
                 }
@@ -663,6 +842,20 @@ class Macros {
         }
 
         builder.addVar("onDataSourceChanged", macro: Void->Void, macro null);
+
+        if (!builder.hasFunction("new")) {
+            builder.addFunction("new", macro {
+                $b{constructorExprs}
+            }, constructorArgs);
+        }
+
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
+        #if macro_times_verbose
+        stopComponentTimer();
+        #end
 
         return builder.fields;
     }

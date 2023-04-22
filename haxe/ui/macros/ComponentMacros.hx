@@ -2,9 +2,8 @@ package haxe.ui.macros;
 
 
 #if macro
-import haxe.macro.Expr;
-import haxe.ui.util.EventInfo;
 import haxe.macro.Context;
+import haxe.macro.Expr;
 import haxe.macro.ExprTools;
 import haxe.macro.TypeTools;
 import haxe.ui.core.ComponentClassMap;
@@ -18,7 +17,9 @@ import haxe.ui.macros.helpers.FunctionBuilder;
 import haxe.ui.parsers.ui.ComponentInfo;
 import haxe.ui.parsers.ui.ComponentParser;
 import haxe.ui.parsers.ui.LayoutInfo;
+import haxe.ui.parsers.ui.ValidatorInfo;
 import haxe.ui.parsers.ui.resolvers.FileResourceResolver;
+import haxe.ui.util.EventInfo;
 import haxe.ui.util.ExpressionUtil;
 import haxe.ui.util.SimpleExpressionEvaluator;
 import haxe.ui.util.StringUtil;
@@ -107,7 +108,7 @@ class ComponentMacros {
         var propertyExprs = [];
         for (prop in stylePropertiesArray) {
             propertyExprs.push(macro {
-                if (c.customStyle.$prop == null && c.customStyle.$prop != style.$prop) {
+                if (style.$prop != null  && c.customStyle.$prop != style.$prop) {
                     c.customStyle.$prop = style.$prop;
                     invalidate = true;
                 }
@@ -143,7 +144,7 @@ class ComponentMacros {
         var propertyExprs = [];
         for (prop in stylePropertiesArray) {
             propertyExprs.push(macro {
-                if (c.customStyle.$prop == null && c.customStyle.$prop != style.$prop) {
+                if (style.$prop != null && c.customStyle.$prop != style.$prop) {
                     c.customStyle.$prop = style.$prop;
                     invalidate = true;
                 }
@@ -165,6 +166,10 @@ class ComponentMacros {
     
     #if macro
     private static function buildFromStringCommon(source:String, params:Expr = null):Expr {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("ComponentMacros.buildFromStringCommon");
+        #end
+
         var builder = new CodeBuilder();
         var buildData:BuildData = {
             params: MacroHelpers.exprToMap(params)
@@ -173,10 +178,19 @@ class ComponentMacros {
         buildBindings(builder, buildData, true);
         buildLanguageBindings(builder, buildData, true);
         builder.add(macro rootComponent);
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
+
         return builder.expr;
     }
     
     private static function buildComponentCommon(filePath:String, params:Expr = null):Expr {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("ComponentMacros.buildComponentCommon");
+        #end
+
         var builder = new CodeBuilder();
         var buildData:BuildData = {
             params: MacroHelpers.exprToMap(params)
@@ -185,10 +199,19 @@ class ComponentMacros {
         buildBindings(builder, buildData, true);
         buildLanguageBindings(builder, buildData, true);
         builder.add(macro rootComponent);
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
+
         return builder.expr;
     }
     
     private static function buildCommon(resourcePath:String, params:Expr = null):Array<Field> {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("ComponentMacros.buildCommon");
+        #end
+
         var pos = haxe.macro.Context.currentPos();
         var fields = haxe.macro.Context.getBuildFields();
 
@@ -218,7 +241,7 @@ class ComponentMacros {
         };
         var c:ComponentInfo = buildComponentFromFile(builder, codeBuilder, resourcePath, buildData, "this", false);
         var superClass:String = builder.superClass.t.toString();
-        var rootType = ModuleMacros.resolveComponentClass(c.type);
+        var rootType = ModuleMacros.resolveComponentClass(c.type, c.namespace);
         if (haxe.ui.util.RTTI.hasSuperClass(builder.fullPath, rootType) == false) {
             Context.warning('The class hierarchy of "${builder.fullPath}" does not contain the root node of "${resourcePath}" (${rootType}) - this may have unintended consequences', pos);
         }
@@ -259,15 +282,23 @@ class ComponentMacros {
         
         builder.ctor.add(codeBuilder, AfterSuper);
 
+        #if haxeui_macro_times
+        stopTimer();
+        #end
+
         return builder.fields;
     }
 
     private static function buildComponentFromFile(classBuilder:ClassBuilder, builder:CodeBuilder, filePath:String, buildData:BuildData = null, rootVarName:String = "this", buildRoot:Bool = true):ComponentInfo {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("ComponentMacros.buildComponentFromFile");
+        #end
+
         populateBuildData(buildData);        
         
         var f = MacroHelpers.resolveFile(filePath);
         if (f == null) {
-            throw "Could not resolve: " + filePath;
+            throw "Could not resolve: " + filePath + "(cwd: " + Sys.getCwd() + ", classpath: " + Context.getClassPath() + ")";
         }
 
         Context.registerModuleDependency(Context.getLocalModule(), f);
@@ -289,10 +320,12 @@ class ComponentMacros {
         for (scriptString in c.scriptlets) {
             fullScript += scriptString;
         }
-        if (classBuilder != null) {
-            buildScriptFunctions(classBuilder, builder, buildData.namedComponents, fullScript);   
-        } else {
-            buildScriptFunctionForwardDeclarations(builder, fullScript);
+        if (fullScript.length > 0) {
+            if (classBuilder != null) {
+                buildScriptFunctions(classBuilder, builder, buildData.namedComponents, fullScript);   
+            } else {
+                buildScriptFunctionForwardDeclarations(builder, fullScript);
+            }
         }
         
         var n = 0;
@@ -324,7 +357,11 @@ class ComponentMacros {
         }
 
         builder.add(macro $i{rootVarName}.bindingRoot = true);
-        
+       
+        #if haxeui_macro_times
+        stopTimer();
+        #end
+
         return c;
     }
 
@@ -353,6 +390,10 @@ class ComponentMacros {
     }
     
     private static function buildComponentFromStringCommon(builder:CodeBuilder, source:String, buildData:BuildData = null, rootVarName:String = "this", buildRoot:Bool = false):ComponentInfo {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("ComponentMacros.buildComponentFromStringCommon");
+        #end
+
         populateBuildData(buildData);
         
         source = StringUtil.replaceVars(source, buildData.params);
@@ -392,10 +433,19 @@ class ComponentMacros {
         assignComponentProperties(builder, c, rootVarName, buildData);
         
         builder.add(macro $i{rootVarName}.bindingRoot = true);
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
+
         return c;
     }
 
     private static function buildComponentFromInfo(builder:CodeBuilder, c:ComponentInfo, buildData:BuildData, cb:ComponentInfo->CodeBuilder->Void = null, firstId:Int = 0) {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("ComponentMacros.buildComponentFromInfo");
+        #end
+
         populateBuildData(buildData);
 
         for (s in c.styles) {
@@ -409,6 +459,10 @@ class ComponentMacros {
         if (cb != null) {
             cb(c, builder);
         }
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
 
         return r;
     }
@@ -447,82 +501,162 @@ class ComponentMacros {
     }
     
     private static function buildScriptFunctions(classBuilder:ClassBuilder, builder:CodeBuilder, namedComponents:Map<String, NamedComponentDescription>, script:String) {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("ComponentMacros.buildScriptFunctions");
+        #end
+
+        var replaceOverride = new EReg("(override).*function", "gm");
+        script = replaceOverride.map(script, function(r) {
+            return StringTools.replace(r.matched(0), "override", "@:override");
+        });
+        var replacePrivate = new EReg("(private).*function", "gm");
+        script = replacePrivate.map(script, function(r) {
+            return StringTools.replace(r.matched(0), "private", "@:private");
+        });
+        var replaceGetSet = new EReg("var .*(get|set).*;", "gm");
+        script = replaceGetSet.map(script, function(r) {
+            var s = r.matched(0);
+            var n1 = s.indexOf("(");
+            var n2 = s.indexOf(")");
+            var before = s.substr(0, n1);
+            var after = s.substr(n2 + 1);
+            var middle = s.substr(n1, n2);
+            var modified = before + after;
+            if (middle.indexOf("get") != -1) {
+                modified = "@:get " + modified;
+            }
+            if (middle.indexOf("set") != -1) {
+                modified = "@:set " + modified;
+            }
+            return modified;
+        });
+
         var expr = Context.parseInlineString("{" + script + "}", Context.currentPos());
         expr = ExprTools.map(expr, replaceShortClassNames);
+        expr = ExprTools.map(expr, replaceInternalShortNames);
         switch (expr.expr) {
             case EBlock(exprs):
                 for (e in exprs) {
-                    switch (e.expr) {
-                        #if haxe4
-                        case EFunction(kind, f):
-                            switch (kind) {
-                                case FNamed(name, inlined):
-                                    if (classBuilder != null) {
-                                        classBuilder.addFunction(name, f.expr, f.args, f.ret);
-                                    } else {
-                                        var functionBuilder = new FunctionBuilder(null, f);
-                                        if (namedComponents != null) {
-                                            for (namedComponent in namedComponents.keys()) {
-                                                var details = namedComponents.get(namedComponent);
-                                                functionBuilder.addToStart(macro var $namedComponent = $i{details.generatedVarName});
-                                            }
-                                        }
-
-                                        var anonFunc:Expr = {
-                                            expr: EFunction(FAnonymous, functionBuilder.fn),
-                                            pos: Context.currentPos()
-                                        }
-                                        builder.add(macro $i{name} = $e{anonFunc});
-                                    }
-                                case _:
-                                    trace("unsupported " + kind);
-                            }
-                        #else
-                        case EFunction(name, f):
-                            if (classBuilder != null) {
-                                classBuilder.addFunction(name, f.expr, f.args, f.ret);
-                            } else {
-                                var functionBuilder = new FunctionBuilder(null, f);
-                                if (namedComponents != null) {
-                                    for (namedComponent in namedComponents.keys()) {
-                                        var details = namedComponents.get(namedComponent);
-                                        functionBuilder.addToStart(macro var $namedComponent = $i{details.generatedVarName});
-                                    }
-                                }
-
-                                /* TODO - not sure how to do this in 3.4.7
-                                var anonFunc:Expr = {
-                                    expr: EFunction(FAnonymous, functionBuilder.fn),
-                                    pos: Context.currentPos()
-                                }
-                                builder.add(macro $i{name} = $e{anonFunc});
-                                */
-                            }
-                        #end
-                        case EVars(vars):
-                            for (v in vars) {
-                                if (classBuilder != null) {
-                                    var vtype = v.type;
-                                    if (vtype == null) {
-                                        vtype = macro: Dynamic;
-                                    }
-                                    classBuilder.addVar(v.name, vtype, v.expr);
-                                } else {
-                                    if (v.expr != null) {
-                                        builder.add(macro $i{v.name} = $e{v.expr});
-                                    }
-                                }
-                            }
-                        case _:
-                            trace("unsupported " + e);
-                    }
+                    buildScriptFunctionsFromExpr(e, classBuilder, builder, namedComponents, null);
                 }
             case _:
                 trace("unsupported " + expr);
                 
         }
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
     }
     
+    private static function buildScriptFunctionsFromExpr(e:Expr, classBuilder:ClassBuilder, builder:CodeBuilder, namedComponents:Map<String, NamedComponentDescription>, metas:Array<MetadataEntry>) {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("ComponentMacros.buildScriptFunctionsFromExpr");
+        #end
+
+        switch (e.expr) {
+            case EMeta(s, e):
+                if (metas == null) {
+                    metas = [];
+                }
+                metas.push(s);
+                buildScriptFunctionsFromExpr(e, classBuilder, builder, namedComponents, metas);
+            #if haxe4
+            case EFunction(kind, f):
+                switch (kind) {
+                    case FNamed(name, inlined):
+                        if (classBuilder != null) {
+                            var access = [APublic];
+                            if (metas != null) {
+                                for (m in metas) {
+                                    if (m.name == ":private" || m.name == "private") {
+                                        access.remove(APublic);
+                                        access.push(APrivate);
+                                    }
+                                    if (m.name == ":override" || m.name == "override") {
+                                        access.push(AOverride);
+                                    }
+                                }
+                            }
+                            classBuilder.addFunction(name, f.expr, f.args, f.ret, access);
+                        } else {
+                            var functionBuilder = new FunctionBuilder(null, f);
+                            if (namedComponents != null) {
+                                for (namedComponent in namedComponents.keys()) {
+                                    var details = namedComponents.get(namedComponent);
+                                    functionBuilder.addToStart(macro var $namedComponent = $i{details.generatedVarName});
+                                }
+                            }
+
+                            var anonFunc:Expr = {
+                                expr: EFunction(FAnonymous, functionBuilder.fn),
+                                pos: Context.currentPos()
+                            }
+                            builder.add(macro $i{name} = $e{anonFunc});
+                        }
+                    case _:
+                        trace("unsupported " + kind);
+                }
+            #else
+            case EFunction(name, f):
+                if (classBuilder != null) {
+                    classBuilder.addFunction(name, f.expr, f.args, f.ret);
+                } else {
+                    var functionBuilder = new FunctionBuilder(null, f);
+                    if (namedComponents != null) {
+                        for (namedComponent in namedComponents.keys()) {
+                            var details = namedComponents.get(namedComponent);
+                            functionBuilder.addToStart(macro var $namedComponent = $i{details.generatedVarName});
+                        }
+                    }
+
+                    /* TODO - not sure how to do this in 3.4.7
+                    var anonFunc:Expr = {
+                        expr: EFunction(FAnonymous, functionBuilder.fn),
+                        pos: Context.currentPos()
+                    }
+                    builder.add(macro $i{name} = $e{anonFunc});
+                    */
+                }
+            #end
+            case EVars(vars):
+                for (v in vars) {
+                    if (classBuilder != null) {
+                        var vtype = v.type;
+                        if (vtype == null) {
+                            vtype = macro: Dynamic;
+                        }
+                        var get = null;
+                        var set = null;
+                        if (metas != null) {
+                            for (m in metas) {
+                                if (m.name == ":get" || m.name == "get") {
+                                    get = "get";
+                                }
+                                if (m.name == ":set" || m.name == "set") {
+                                    set = "set";
+                                }
+                            }
+                        }
+                        if (get == null && set == null) {
+                            classBuilder.addVar(v.name, vtype, v.expr);
+                        } else {
+                            classBuilder.addProp(v.name, vtype, v.expr, get, set);
+                        }
+                    } else {
+                        if (v.expr != null) {
+                            builder.add(macro $i{v.name} = $e{v.expr});
+                        }
+                    }
+                }
+            case _:
+                trace("unsupported " + e);
+        }
+        #if haxeui_macro_times
+        stopTimer();
+        #end
+    }
+
     private static function buildLanguageBindings(builder:CodeBuilder, buildData:BuildData, addLocalVars:Bool = false) {
         for (languageBinding in buildData.languageBindings) {
             assignLanguageBinding(builder, languageBinding, buildData.namedComponents, addLocalVars);
@@ -530,6 +664,10 @@ class ComponentMacros {
     }
     
     private static function assignLanguageBinding(builder:CodeBuilder, languageBinding:LanguageBindingData, namedComponents:Map<String, NamedComponentDescription>, addLocalVars:Bool = false) {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("ComponentMacros.assignLanguageBinding");
+        #end
+
         var fixedExpr = ExpressionUtil.stringToLanguageExpression(languageBinding.bindingExpr);
         if (StringTools.endsWith(fixedExpr, ";") == false) {
             fixedExpr += ";";
@@ -576,6 +714,10 @@ class ComponentMacros {
         builder.add(macro haxe.ui.locale.LocaleManager.instance.registerComponent($i{varName}, $v{field}, function() {
             return $e{expr};
         }));
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
     }
     
     private static function buildBindings(builder:CodeBuilder, buildData:BuildData, addLocalVars:Bool = false) {
@@ -602,6 +744,7 @@ class ComponentMacros {
                 var usedVars = [];
                 expr = ExprTools.map(expr, replaceThis);
                 expr = ExprTools.map(expr, replaceShortClassNames);
+                expr = ExprTools.map(expr, replaceInternalShortNames);
                 expr = ExprTools.map(expr, findVars.bind(usedVars));
                 
                 for (namedComponent in namedComponents.keys()) {
@@ -659,19 +802,43 @@ class ComponentMacros {
         }
     }
     
+    private static function replaceInternalShortNames(e:Expr):Expr {
+        return switch (e.expr) {
+            case EConst(CIdent(s)):
+                var r = e;
+                if (s == "theme") {
+                    r = macro haxe.ui.themes.ThemeManager.instance;
+                }
+                r;
+            case _:
+                ExprTools.map(e, replaceInternalShortNames);
+        }
+    }
+
     // returns next free id
     private static function buildComponentNode(builder:CodeBuilder, c:ComponentInfo, id:Int, parentId:Int, buildData:BuildData, recurseChildren:Bool = true) {
+        #if macro_times_verbose
+        var stopTimer = Context.timer("ComponentMacros.buildComponentNode");
+        #end
+
         if (c.condition != null && SimpleExpressionEvaluator.evalCondition(c.condition) == false) {
+            #if macro_times_verbose
+            stopTimer();
+            #end
             return id;
         }
 
-        var className = ModuleMacros.resolveComponentClass(c.type);
+        var className = ModuleMacros.resolveComponentClass(c.type, c.namespace);
         if (className == null) {
+            #if macro_times_verbose
+            stopTimer();
+            #end
             Context.warning("no class found for component: " + c.type, Context.currentPos());
             return id;
         }
 
-        var classInfo = new ClassBuilder(Context.getModule(className)[0]);
+        //var classInfo = new ClassBuilder(Context.getModule(className)[0]);
+        var classInfo = new ClassBuilder(Context.getType(className));
         var useNamedComponents = true;
         if (classInfo.hasSuperClass("haxe.ui.core.ItemRenderer")) { // we dont really want to create variable instances of contents of item renderers
             useNamedComponents = false;
@@ -681,9 +848,12 @@ class ComponentMacros {
             if (direction == null) {
                 direction = "horizontal"; // default to horizontal
             }
-            var directionalClassName = ModuleMacros.resolveComponentClass(direction + c.type);
+            var directionalClassName = ModuleMacros.resolveComponentClass(direction + c.type, c.namespace);
             if (directionalClassName == null) {
                 trace("WARNING: no directional class found for component: " + c.type + " (" + (direction + c.type.toLowerCase()) + ")");
+                #if macro_times_verbose
+                stopTimer();
+                #end
                 return id;
             }
 
@@ -718,8 +888,13 @@ class ComponentMacros {
             buildDataSourceCode(builder, c, 'ds${id}', componentVarName);
         }
 
+        if (c.validators != null) {
+            buildValidatorCode(builder, c.validators, id);
+        }
+
         if (c.id != null && buildData.namedComponents != null && useNamedComponents == true) {
-            var rootClassName = ModuleMacros.resolveComponentClass(c.findRootComponent().type);
+            var rootComponentInfo = c.findRootComponent();
+            var rootClassName = ModuleMacros.resolveComponentClass(rootComponentInfo.type, rootComponentInfo.namespace);
             var rootClassInfo = new ClassBuilder(Context.getModule(rootClassName)[0]);
             if (rootClassInfo.hasField(c.id, true) == false) {
                 var varDescription = {
@@ -755,6 +930,10 @@ class ComponentMacros {
             }
         }
         
+        #if macro_times_verbose
+        stopTimer();
+        #end
+
         return childId;
     }
 
@@ -822,6 +1001,38 @@ class ComponentMacros {
         }
     }
 
+    private static var _nextValidatorId = 0;
+    private static function buildValidatorCode(builder:CodeBuilder, validators:Array<ValidatorInfo>, id:Int) {
+        if (validators.length == 0) {
+            return;
+        }
+
+        var validatorExprs:Array<Expr> = [];
+        var validatorAssignExprs:Array<Expr> = [];
+        for (validator in validators) {
+            var type = validator.type;
+            var validatorId = 'validator${_nextValidatorId}';
+            validatorExprs.push(macro @:mergeBlock {
+                var $validatorId = haxe.ui.validators.ValidatorManager.instance.createValidator($v{type});
+            });
+            if (validator.properties != null) {
+                for (propertyName in validator.properties.keys()) {
+                    var propertyValue = validator.properties.get(propertyName);
+                    var convertedPropertyValue = TypeConverter.convertFrom(propertyValue);
+                    validatorExprs.push(macro $i{validatorId}.setProperty($v{propertyName}, $v{convertedPropertyValue}));
+                }
+            }
+            validatorAssignExprs.push(macro $i{validatorId});
+            _nextValidatorId++;
+        }
+        if (id != 0) {
+            for (e in validatorExprs) {
+                builder.add(e);
+            }
+            builder.add(macro $i{"c" + (id)}.validators = $a{validatorAssignExprs});
+        }
+}
+
     private static function assignComponentProperties(builder:CodeBuilder, c:ComponentInfo, componentVarName:String, buildData:BuildData) {
         if (c.id != null)                       assignField(builder, componentVarName, "id", c.id, buildData, c);
         if (c.left != null)                     assignField(builder, componentVarName, "left", c.left, buildData, c);
@@ -869,7 +1080,7 @@ class ComponentMacros {
                     if (propInfo != null) {
                         propType = propInfo.propertyType;
                     }
-                    var propExpr = macro $v{TypeConverter.convertTo(TypeConverter.convertFrom(propValue), $v{propType})};
+                    var propExpr = macro $v{TypeConverter.convertTo(TypeConverter.convertFrom(propValue), propType)};
                     builder.add(macro $i{varName}.$propName = $propExpr);
                 } else {
                     var propExpr = macro $v{TypeConverter.convertFrom(propValue)};
@@ -902,6 +1113,10 @@ class ComponentMacros {
     }
     
     private static function assignBinding(builder:CodeBuilder, bindingData:BindingData, namedComponents:Map<String, NamedComponentDescription>, addLocalVars:Bool = false) {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("ComponentMacros.assignBinding");
+        #end
+
         var bindingExpr = bindingData.bindingExpr;
         var varName = bindingData.generatedVarName;
         var varProp = bindingData.varProp;
@@ -911,6 +1126,7 @@ class ComponentMacros {
             bindingExpr = bindingExpr.substring(2, bindingExpr.length - 1);
         }
         var expr = Context.parseInlineString(bindingExpr, Context.currentPos());
+        expr = ExprTools.map(expr, replaceInternalShortNames);
         
         var dependants = getDependants(expr);
         var target = varName;
@@ -926,26 +1142,37 @@ class ComponentMacros {
             });
             
             var propList = dependants.get(dependantName);
+            var initialExprs:Array<Expr> = [];
             for (dependantProp in propList) {
                 if (propType == "string") {
+                    var expr = macro $i{target}.$varProp = Std.string($e{expr});
+                    initialExprs.push(expr);
                     ifBuilder.add(macro if (e.data == $v{dependantProp}) {
-                        $i{target}.$varProp = Std.string($e{expr});
+                        ${expr};
                     });
                 } else if (propType == "bool") {
+                    var expr = macro $i{target}.$varProp = Std.string($e{expr}) == "true" || Std.string($e{expr}) == "1";
+                    initialExprs.push(expr);
                     ifBuilder.add(macro if (e.data == $v{dependantProp}) {
-                        $i{target}.$varProp = Std.string($e{expr}) == "true" || Std.string($e{expr}) == "1";
+                        ${expr}
                     });
                 } else if (propType == "float") {
+                    var expr = macro $i{target}.$varProp = Std.parseFloat(Std.string($e{expr}));
+                    initialExprs.push(expr);
                     ifBuilder.add(macro if (e.data == $v{dependantProp}) {
-                        $i{target}.$varProp = Std.parseFloat(Std.string($e{expr}));
+                        ${expr}
                     });
                 } else if (propType == "int") {
+                    var expr = macro $i{target}.$varProp = Std.parseInt(Std.string($e{expr}));
+                    initialExprs.push(expr);
                     ifBuilder.add(macro if (e.data == $v{dependantProp}) {
-                        $i{target}.$varProp = Std.parseInt(Std.string($e{expr}));
+                        ${expr}
                     });
                 } else {
+                    var expr = macro $i{target}.$varProp = $e{expr};
+                    initialExprs.push(expr);
                     ifBuilder.add(macro if (e.data == $v{dependantProp}) {
-                        $i{target}.$varProp = $e{expr};
+                        ${expr}
                     });
                 }
             }
@@ -957,6 +1184,9 @@ class ComponentMacros {
                 }
             }
             
+            for (expr in initialExprs) {
+                builder.add(macro ${expr});
+            }
             builder.add(macro {
                 $i{generatedDependantName}.registerEvent(haxe.ui.events.UIEvent.PROPERTY_CHANGE, function(e:haxe.ui.events.UIEvent) {
                     $e{ifBuilder.expr}
@@ -985,6 +1215,10 @@ class ComponentMacros {
                 builder.add(macro $i{target}.$varProp = $e{expr});
             }
         }
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
     }
     
     private static function getDependants(expr:Expr):Map<String, Array<String>> {

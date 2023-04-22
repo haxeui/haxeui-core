@@ -1,14 +1,15 @@
 package haxe.ui.macros;
 
+import haxe.ui.util.TypeConverter;
 #if macro
 import haxe.ds.ArraySort;
-import haxe.ui.macros.ComponentMacros.BuildData;
 import haxe.io.Path;
 import haxe.macro.Context;
-import haxe.macro.Expr;
 import haxe.macro.Expr.TypePath;
+import haxe.macro.Expr;
 import haxe.ui.core.ComponentClassMap;
 import haxe.ui.core.LayoutClassMap;
+import haxe.ui.macros.ComponentMacros.BuildData;
 import haxe.ui.macros.helpers.ClassBuilder;
 import haxe.ui.macros.helpers.CodeBuilder;
 import haxe.ui.parsers.modules.Module;
@@ -33,6 +34,10 @@ class ModuleMacros {
         if (_modulesProcessed == true) {
             return macro null;
         }
+
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("ModuleMacros.processModules");
+        #end
 
         /*
         _modules = [];
@@ -161,6 +166,34 @@ class ModuleMacros {
                 }
             }
             
+            for (validator in m.validators) {
+                var id = validator.id;
+                var className = validator.className;
+                var parts = className.split(".");
+                var name:String = parts.pop();
+                var t:TypePath = {
+                    pack: parts,
+                    name: name
+                }
+
+
+                var convertedProperties:Map<String, Any> = null;
+                if (validator.properties != null) {
+                    for (propertyName in validator.properties.keys()) {
+                        var propertyValue = validator.properties.get(propertyName);
+                        if (convertedProperties == null) {
+                            convertedProperties = new Map<String, Any>();
+                        }
+                        convertedProperties.set(propertyName, TypeConverter.convertFrom(propertyValue));
+                    }
+                }
+                builder.add(macro
+                    haxe.ui.validators.ValidatorManager.instance.registerValidator($v{id}, function() {
+                        return new $t();
+                    }, $v{convertedProperties})
+                );
+            }
+
             for (inputSource in m.actionInputSources) {
                 var className = inputSource.className;
                 var parts = className.split(".");
@@ -174,15 +207,31 @@ class ModuleMacros {
                     haxe.ui.actions.ActionManager.instance.registerInputSource(new $t())
                 );
             }
+
+            for (imageLoader in m.imageLoaders) {
+                var className = imageLoader.className;
+                var parts = className.split(".");
+                var name:String = parts.pop();
+                var t:TypePath = {
+                    pack: parts,
+                    name: name
+                }
+
+                builder.add(macro
+                    haxe.ui.loaders.image.ImageLoader.instance.register($v{imageLoader.prefix}, function() {
+                        return new $t();
+                    }, $v{imageLoader.isDefault}, $v{imageLoader.singleInstance})
+                );
+            }
         }
 
         if (preloadAll) {
             for (r in _resourceIds) {
-                if (StringTools.endsWith(r, ".png")) {
+                if (isImage(r)) {
                     builder.add(macro
                         haxe.ui.ToolkitAssets.instance.preloadList.push({type: "image", resourceId: $v{r}})
                     );
-                } else if (StringTools.endsWith(r, ".ttf")) {
+                } else if (isFont(r)) {
                     builder.add(macro
                         haxe.ui.ToolkitAssets.instance.preloadList.push({type: "font", resourceId: $v{r}})
                     );
@@ -205,12 +254,21 @@ class ModuleMacros {
         }
 
         _modulesProcessed = true;
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
+
         return builder.expr;
     }
 
     #if macro
     private static function resolvePaths(path:String):Array<String> {
         var paths = [];
+
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("ModuleMacros.resolvePaths");
+        #end
 
         for (c in Context.getClassPath()) {
             if (c.length == 0) {
@@ -223,19 +281,74 @@ class ModuleMacros {
             }
         }
 
+        #if haxeui_macro_times
+        stopTimer();
+        #end
+
         return paths;
     }
 
-    public static function resolveComponentClass(name:String):String {
+    public static function resolveComponentClass(name:String, namespace:String = null):String {
+        #if macro_times_verbose
+        var stopTimer = Context.timer("ModuleMacros.resolveComponentClass");
+        #end
+
         populateDynamicClassMap();
         
+        if (namespace == null) {
+            namespace = Module.DEFAULT_HAXEUI_NAMESPACE;
+        }
+
+        var qualifiedName = namespace + "/" + name;
         name = name.toLowerCase();
-        var resolvedClass = ComponentClassMap.get(name);
+        #if component_resolution_verbose
+            Sys.print("resolving component class '" + qualifiedName + "'");
+        #end
+        var resolvedClass = ComponentClassMap.get(qualifiedName);
         if (resolvedClass != null) {
+            #if component_resolution_verbose
+                Sys.println(" => " + resolvedClass + " (from cache)");
+            #end
+            #if macro_times_verbose
+            stopTimer();
+            #end
             return resolvedClass;
         }
         
         var modules:Array<Module> = loadModules();
+        var namespaceToClassPath:Map<String, Array<String>> = new Map<String, Array<String>>();
+        var namespaceMap:Map<String, String> = new Map<String, String>();
+
+        // maybe move this to a new function and only populate once, concern is about language server and caching
+        for (m in modules) {
+            for (nsp in m.namespaces.keys()) {
+                var nsv = m.namespaces.get(nsp);
+                var list = namespaceToClassPath.get(nsp);
+                if (list == null) {
+                    list = [];
+                    namespaceToClassPath.set(nsp, list);
+                }
+                if (list.indexOf(m.classPath) == -1) {
+                    list.push(m.classPath);
+                }
+                namespaceMap.set(nsp, nsv);
+            }
+        }
+
+        var namespacePrefix = null;
+        for (mapNamespacePrefix in namespaceMap.keys()) {
+            var mapNamespaceValue = namespaceMap.get(mapNamespacePrefix);
+            if (mapNamespaceValue == namespace) {
+                namespacePrefix = mapNamespacePrefix;
+                break;
+            }
+        }
+
+        #if component_resolution_verbose
+        var pathsSearched:Map<String, String> = new Map<String, String>();
+        var classPackages:Map<String, String> = new Map<String, String>();
+        #end
+
         for (m in modules) {
             for (c in m.componentEntries) {
                 var types = null;
@@ -246,9 +359,15 @@ class ModuleMacros {
                         types = Context.getModule(c.className);
                     }
                 } else if (c.classPackage != null) {
-                    var paths:Array<String> = Context.getClassPath();
+                    #if component_resolution_verbose
+                        classPackages.set(c.classPackage, c.classPackage);
+                    #end
+                    var paths = namespaceToClassPath.get(namespacePrefix);
                     var arr:Array<String> = c.classPackage.split(".");
                     for (path in paths) {
+                        #if component_resolution_verbose 
+                        pathsSearched.set(path, path);
+                        #end
                         var dir:String = path + arr.join("/");
                         if (!sys.FileSystem.exists(dir) || !sys.FileSystem.isDirectory(dir)) {
                             continue;
@@ -295,26 +414,29 @@ class ModuleMacros {
                             
                             if (builder.hasInterface("haxe.ui.core.IDirectionalComponent")) {
                                 if (StringTools.startsWith(resolvedClassName, "Horizontal")) { // alias HorizontalComponent with hcomponent
-                                    ComponentClassMap.register("h" + StringTools.replace(resolvedClassName, "Horizontal", "").toLowerCase(), resolvedClass);
+                                    ComponentClassMap.register(namespace + "/" + "h" + StringTools.replace(resolvedClassName, "Horizontal", "").toLowerCase(), resolvedClass);
                                 } else if (StringTools.startsWith(resolvedClassName, "Vertical")) { // alias VerticalComponent with vcomponent
-                                    ComponentClassMap.register("v" + StringTools.replace(resolvedClassName, "Vertical", "").toLowerCase(), resolvedClass);
+                                    ComponentClassMap.register(namespace + "/" + "v" + StringTools.replace(resolvedClassName, "Vertical", "").toLowerCase(), resolvedClass);
                                 } else {
                                     var parts = builder.fullPath.split(".");
                                     var tempName = parts.pop();
                                     var hname = "Horizontal" + tempName;
                                     var hclass = parts.join(".") + "." + hname;
-                                    ComponentClassMap.register(hname.toLowerCase(), hclass);
-                                    ComponentClassMap.register(("h" + tempName).toLowerCase(), hclass);
+                                    ComponentClassMap.register(namespace + "/" + hname.toLowerCase(), hclass);
+                                    ComponentClassMap.register(namespace + "/" + ("h" + tempName).toLowerCase(), hclass);
                                     
                                     
                                     var vname = "Vertical" + tempName;
                                     var vclass = parts.join(".") + "." + vname;
-                                    ComponentClassMap.register(vname.toLowerCase(), vclass);
-                                    ComponentClassMap.register(("v" + tempName).toLowerCase(), vclass);
+                                    ComponentClassMap.register(namespace + "/" + vname.toLowerCase(), vclass);
+                                    ComponentClassMap.register(namespace + "/" + ("v" + tempName).toLowerCase(), vclass);
                                 }
                             }
                             
-                            ComponentClassMap.register(resolvedClassName.toLowerCase(), resolvedClass);
+                            ComponentClassMap.register(namespace + "/" + resolvedClassName.toLowerCase(), resolvedClass);
+                            #if component_resolution_verbose
+                                Sys.println(" => " + resolvedClass);
+                            #end
                             return resolvedClass;
                         }
                     }
@@ -322,6 +444,24 @@ class ModuleMacros {
             }
         }
         
+        #if component_resolution_verbose
+        if (resolvedClass == null) {
+            Sys.println(" => NOT FOUND!");
+            Sys.println("  Paths searched:");
+            for (key in pathsSearched.keys()) {
+                Sys.println("    * " + key);
+            }
+            Sys.println("  Registered class packages:");
+            for (key in classPackages.keys()) {
+                Sys.println("    * " + key);
+            }
+        }
+        #end
+
+        #if macro_times_vebose
+        stopTimer();
+        #end
+
         return resolvedClass;
     }
 
@@ -332,19 +472,31 @@ class ModuleMacros {
         }
         _dynamicClassMapPopulated = true;
 
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("ModuleMacros.populateDynamicClassMap");
+        #end
+
         var modules:Array<Module> = loadModules();
         for (m in modules) {
             for (c in m.componentEntries) {
                 if (c.classFolder != null) {
-                    createDynamicClasses(c.classFolder);
+                    createDynamicClasses(c.classFolder, null, m.namespaces);
                 } else if (c.classFile != null) {
-                    createDynamicClass(c.classFile);
+                    createDynamicClass(c.classFile, null, null, m.namespaces);
                 }
             }
         }
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
     }
 
-    private static function createDynamicClasses(dir:String, root:String = null) {
+    private static function createDynamicClasses(dir:String, root:String, namespaces:Map<String, String>) {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("ModuleMacros.createDynamicClasses");
+        #end
+
         var resolvedPath = null;
         try {
             resolvedPath = Context.resolvePath(dir);
@@ -364,14 +516,22 @@ class ModuleMacros {
         for (item in contents) {
             var fullPath = Path.normalize(dir + "/" + item);
             if (FileSystem.isDirectory(fullPath)) {
-                createDynamicClasses(fullPath, root);
+                createDynamicClasses(fullPath, root, namespaces);
             } else {
-                createDynamicClass(fullPath, null, root);
+                createDynamicClass(fullPath, null, root, namespaces);
             }
         }
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
     }
 
-    public static function createDynamicClass(filePath:String, alias:String = null, root:String = null):String {
+    public static function createDynamicClass(filePath:String, alias:String = null, root:String = null, namespaces:Map<String, String> = null):String {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("ModuleMacros.createDynamicClass");
+        #end
+
         var resolvedPath = null;
         try {
             resolvedPath = Context.resolvePath(filePath);
@@ -418,7 +578,7 @@ class ModuleMacros {
         var c = ComponentMacros.buildComponentFromStringCommon(codeBuilder, xml, buildData);
 
         var superClassString = "haxe.ui.containers.Box";
-        var superClassLookup:String = ModuleMacros.resolveComponentClass(c.type);
+        var superClassLookup:String = ModuleMacros.resolveComponentClass(c.type, c.namespace);
         if (superClassLookup != null) {
             superClassString = superClassLookup;
         }
@@ -458,8 +618,28 @@ class ModuleMacros {
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        var fullScript = "";
+        for (scriptString in c.scriptlets) {
+            fullScript += scriptString;
+        }
+        if (fullScript.length > 0) {
+            ComponentMacros.buildScriptFunctions(classBuilder, null, buildData.namedComponents, fullScript);
+        }
+
         Context.defineModule(fileParts.concat([className]).join("."), [newClass]);
-        ComponentClassMap.register(className, fileParts.concat([className]).join("."));
+        if (namespaces != null) {
+            for (k in namespaces.keys()) {
+                var ns = namespaces.get(k);
+                ComponentClassMap.register(ns + "/" + className, fileParts.concat([className]).join("."));
+            }
+        } else {
+            ComponentClassMap.register(Module.DEFAULT_HAXEUI_NAMESPACE + "/" + className, fileParts.concat([className]).join("."));
+        }
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
+
         return fileParts.concat([className]).join(".");
     }
 
@@ -469,12 +649,19 @@ class ModuleMacros {
             return _modules;
         }
 
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("ModuleMacros.loadModules");
+        #end
+
         #if module_resolution_verbose
         Sys.println("scanning class path for modules");
         #end
-        MacroHelpers.scanClassPath(function(filePath:String) {
+        #if haxeui_macro_times
+        var stopTimerScan = Context.timer("ModuleMacros.loadModules - scanClassPath");
+        #end
+        MacroHelpers.scanClassPath(function(filePath:String, base:String) {
             #if module_resolution_verbose
-            Sys.println("    module found at '" + filePath + "'");
+            Sys.println("    module found at '" + filePath + "' (base: '" + base + "')");
             #end
             
             var moduleParser = ModuleParser.get(MacroHelpers.extension(filePath));
@@ -483,6 +670,7 @@ class ModuleMacros {
                     var module:Module = moduleParser.parse(File.getContent(filePath), Context.getDefines(), filePath);
                     module.validate();
                     module.rootPath = new Path(filePath).dir;
+                    module.classPath = base;
                     _modules.push(module);
                     return true;
                 } catch (e:Dynamic) {
@@ -493,6 +681,9 @@ class ModuleMacros {
         }, ["module."]);
         #if module_resolution_verbose
         Sys.println(_modules.length + " module(s) found\n");
+        #end
+        #if haxeui_macro_times
+        stopTimerScan();
         #end
         
         ArraySort.sort(_modules, function(a, b):Int {
@@ -527,10 +718,19 @@ class ModuleMacros {
         }
         
         _modulesLoaded = true;
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
+
         return _modules;
     }
 
     private static function addResources(path:String, base:String, prefix:String, inclusions:Array<String>, exclusions:Array<String>, resourceList:Array<String>) {
+        #if haxeui_macro_times
+        var stopTimer = Context.timer("ModuleMacros.addResources");
+        #end
+
         if (prefix == null) {
             prefix = "";
         }
@@ -585,6 +785,10 @@ class ModuleMacros {
                 }
             }
         }
+
+        #if haxeui_macro_times
+        stopTimer();
+        #end
     }
     
     private static function isInInclusions(s:String, inclusions:Array<String>):Int {
@@ -640,5 +844,17 @@ class ModuleMacros {
         return s;
     }
     
+    private static function isImage(file:String):Bool {
+        return StringTools.endsWith(file, ".png")
+            || StringTools.endsWith(file, ".gif")
+            || StringTools.endsWith(file, ".svg")
+            || StringTools.endsWith(file, ".jpg")
+            || StringTools.endsWith(file, ".jpeg");
+    }
+
+    private static function isFont(file:String):Bool {
+        return StringTools.endsWith(file, ".ttf");
+    }
+
     #end
 }

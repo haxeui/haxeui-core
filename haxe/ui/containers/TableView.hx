@@ -48,7 +48,7 @@ class TableView extends ScrollView implements IDataComponent implements IVirtual
     @:clonable @:behaviour(GetHeader)                                       public var header:Component;
 
     @:call(ClearTable)                                                      public function clearContents(clearHeader:Bool = false);
-    @:call(AddColumn)                                                       public function addColumn(text:String):Component;
+    @:call(AddColumn)                                                       public function addColumn(text:String):Column;
     @:call(RemoveColumn)                                                    public function removeColumn(text:String);
 
     @:event(ItemEvent.COMPONENT_EVENT)                                      public var onComponentEvent:ItemEvent->Void;
@@ -87,7 +87,6 @@ private class CompoundItemRenderer extends ItemRenderer {
     public function new() {
         super();
         this.layout = LayoutFactory.createFromName("horizontal");
-        this.styleString = "spacing: 2px;";
         removeClass("itemrenderer");
     }
     
@@ -95,6 +94,34 @@ private class CompoundItemRenderer extends ItemRenderer {
         var renderers = findComponents(ItemRenderer);
         for (r in renderers) {
             r.onDataChanged(data);
+        }
+    }
+
+    private override function _onItemMouseOver(event:MouseEvent) {
+        addClass(":hover");
+        for (i in findComponents(ItemRenderer)) {
+            i.addClass(":hover");
+        }
+    }
+
+    private override function _onItemMouseOut(event:MouseEvent) {
+        removeClass(":hover");
+        for (i in findComponents(ItemRenderer)) {
+            i.removeClass(":hover");
+        }
+    }
+
+    private override function _onItemMouseDown(event:MouseEvent) {
+        addClass(":down");
+        for (i in findComponents(ItemRenderer)) {
+            i.addClass(":down");
+        }
+    }
+
+    private override function _onItemMouseUp(event:MouseEvent) {
+        removeClass(":down");
+        for (i in findComponents(ItemRenderer)) {
+            i.removeClass(":down");
         }
     }
 }
@@ -128,7 +155,26 @@ private class Events extends ScrollViewEvents {
     }
 
     private function onScrollChange(e:ScrollEvent) {
-        _tableview.invalidateComponentLayout();
+        if (_tableview.virtual) {
+            _tableview.invalidateComponentLayout();
+        }
+
+        var header = _tableview.findComponent(Header, true);
+        if (header == null) {
+            return;
+        }
+
+        var vscroll = _tableview.findComponent(VerticalScroll);
+        if (vscroll != null && vscroll.hidden == false) {
+            header.addClass("scrolling");
+            header.invalidateComponent(true);
+        } else {
+            header.removeClass("scrolling");
+            header.invalidateComponent(true);
+        }
+        var usableWidth = _tableview.layout.usableWidth;
+        var rc:Rectangle = new Rectangle(_tableview.hscrollPos + 0, 1, usableWidth, header.height);
+        header.componentClipRect = rc;
     }
 
     private function onRendererCreated(e:UIEvent) {
@@ -361,6 +407,15 @@ private class Builder extends ScrollViewBuilder {
             _header = cast(child, Header);
             _header.registerEvent(UIEvent.COMPONENT_ADDED, onColumnAdded);
             _header.registerEvent(SortEvent.SORT_CHANGED, onSortChanged);
+            // if the header is hidden, it means its child columns
+            // wont have a size since layouts will be skipped for them
+            // this means that all rows will end up with zero-width cells
+            // a work around for this is to set header height to 0, and
+            // show it
+            if (_header.hidden) {
+                _header.customStyle.height = 0;
+                _header.show();
+            }
 
             /*
             if (_tableview.itemRenderer == null) {
@@ -407,7 +462,7 @@ private class Builder extends ScrollViewBuilder {
         return super.removeComponent(child, dispose, invalidate);
     }
 
-    private function createRenderer(id:String):ItemRenderer {
+    private function createRenderer(column:Column):ItemRenderer {
         var itemRenderer:ItemRenderer = null;
         if (_tableview.itemRendererClass == null) {
             itemRenderer = new ItemRenderer();
@@ -417,11 +472,15 @@ private class Builder extends ScrollViewBuilder {
         
         if (itemRenderer.childComponents.length == 0) {
             var label = new Label();
-            label.id = id;
+            label.id = column.id;
             label.percentWidth = 100;
             label.verticalAlign = "center";
+            if (column.styleString != null) {
+                label.styleString = column.styleString;
+            }
             itemRenderer.addComponent(label);
         }
+        itemRenderer.styleNames = "column-" + column.id;
         return itemRenderer;
     }
     
@@ -432,7 +491,10 @@ private class Builder extends ScrollViewBuilder {
                 if (column.id == null) {
                     continue;
                 }
-                var itemRenderer = createRenderer(column.id);
+                var itemRenderer = createRenderer(column);
+                if (itemRenderer.id == null) {
+                    itemRenderer.id = column.id + "Renderer";
+                }
                 r.addComponent(itemRenderer);
             }
         }
@@ -456,7 +518,7 @@ private class Builder extends ScrollViewBuilder {
                     }
                     _tableview.itemRenderer.setComponentIndex(existing, i);
                 } else {
-                    var itemRenderer = createRenderer(column.id);
+                    var itemRenderer = createRenderer(column);
                     _tableview.itemRenderer.addComponentAt(itemRenderer, i);
                 }
             } else {
@@ -553,7 +615,7 @@ private class Layout extends VerticalVirtualLayout {
             header.removeClass("scrolling");
             header.invalidateComponent(true);
         }
-        var rc:Rectangle = new Rectangle(cast(_component, ScrollView).hscrollPos + 1, 1, usableWidth, header.height);
+        var rc:Rectangle = new Rectangle(cast(_component, ScrollView).hscrollPos + 0, 1, usableWidth, header.height);
         header.componentClipRect = rc;
 
         var data = findComponent("tableview-contents", Box, true, "css");
@@ -581,8 +643,12 @@ private class Layout extends VerticalVirtualLayout {
                 }
             }
 
+            var modifier = 0;
+            if (header.height > 0) {
+                modifier = 1;
+            }
             data.left = paddingLeft + borderSize;
-            data.top = header.top + header.height - 1;
+            data.top = header.top + header.height - modifier;
             data.componentWidth = header.width;
             //data.unlockLayout(true);
         }
@@ -822,7 +888,10 @@ private class AddColumn extends Behaviour {
         }
         var column = new Column();
         column.text = param;
-        column.id = StringTools.replace(param, " ", "_");
+        var columnId:String = param;
+        columnId = StringTools.replace(columnId, " ", "_");
+        columnId = StringTools.replace(columnId, "*", "");
+        column.id = columnId;
         header.addComponent(column);
         return column;
     }

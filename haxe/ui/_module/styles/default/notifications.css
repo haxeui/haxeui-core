@@ -1,0 +1,78 @@
+.notification {
+    width: 300px;
+    height: auto;
+    background-color: $secondary-background-color;
+    border-radius: 4px;
+    border: 1px solid $normal-border-color;
+    padding: 10px;
+    filter: $dialog-shadow;
+}
+
+.notification.blue-notification {
+    background-color: $accent-color-lighter;
+    border-color: $selection-background-color;
+}
+
+.notification.yellow-notification {
+    background-color: $warning-background-color-start;
+    border-color: $warning-border-color;
+}
+
+.notification.red-notification {
+    background-color: $error-background-color-start;
+    border-color: $error-border-color;
+}
+
+.notification.green-notification {
+    background-color: $success-background-color-start;
+    border-color: $success-border-color;
+}
+
+.notification #title {
+    font-weight: bold;
+}
+
+.notification-close-button {
+    resource: $close;
+    vertical-align: "center";
+    cursor: "pointer";
+    pointer-events: true;
+    padding: 3px;
+    border-radius: 2px;
+}
+
+.notification-close-button:hover {
+    resource: $close-hover;
+    background-color: $selection-background-color;
+}
+
+.notification .scrollview {
+    border: none;
+    background-color: none;
+}
+
+.notification .scrollview-contents {
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+}
+
+.notification .vertical-scroll {
+    border: none;
+}
+
+.notification.info #notificationIcon {
+    resource: haxeui-core/styles/shared/info-large.png;
+}
+
+.notification.error #notificationIcon {
+    resource: haxeui-core/styles/shared/error-large.png;
+}
+
+.notification.warning #notificationIcon {
+    resource: haxeui-core/styles/shared/warning-large.png;
+}
+
+.notification.success #notificationIcon {
+    resource: haxeui-core/styles/shared/tick-large.png;
+}

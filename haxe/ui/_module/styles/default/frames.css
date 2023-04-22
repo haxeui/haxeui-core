@@ -4,10 +4,19 @@
     height: auto;
 }
 
-.frame-contents {
+.frame-border {
     border-right: 1px solid $normal-border-color;
     border-left: 1px solid $normal-border-color;
     border-bottom: 1px solid $normal-border-color;
+}
+
+.frame-border:disabled {
+    border-right: 1px solid $disabled-border-color;
+    border-left: 1px solid $disabled-border-color;
+    border-bottom: 1px solid $disabled-border-color;
+}
+
+.frame-contents {
     padding: 10px;
     padding-top: 15px;
 }
@@ -16,7 +25,63 @@
     color: $normal-text-color;
 }
 
+.frame-title:disabled {
+    color: $disabled-text-color;
+}
+
 .frame-left-line, .frame-right-line {
     background-color: $normal-border-color;
     height: 1px;
+}
+
+.frame-left-line:disabled, .frame-right-line:disabled {
+    background-color: $disabled-border-color;
+    height: 1px;
+}
+
+.frame .header {
+    horizontal-align: right;
+    vertical-align: center;
+    margin-right: 10px;
+    margin-left: 0px;
+    spacing: 5px;
+}
+
+.frame.left-header .header {
+    horizontal-align: left;
+    vertical-align: center;
+    margin-right: 10px;
+    margin-left: 10px;
+    spacing: 5px;
+    padding-right: 5px;
+}
+
+.frame.collapsible .header {
+    horizontal-align: left;
+    vertical-align: center;
+    _margin-right: 10px;
+    margin-left: 10px;
+    padding-right: 0px;
+}
+
+.frame.collapsible .frame-title, .frame.collapsible .frame-icon {
+    pointer-events: true;
+}
+
+.frame.collapsible .frame-contents.expanded, .frame.collapsible .frame-border.expanded {
+    hidden: false;
+}
+
+.frame.collapsible .frame-contents.collapsed, .frame.collapsible .frame-border.collapsed {
+    hidden: true;
+}
+
+.frame-collapse-expand-icon.expanded {
+    resource: "haxeui-core/styles/shared/expanded-blue.png";
+    pointer-events: true;
+}
+
+.frame-collapse-expand-icon.collapsed {
+    resource: "haxeui-core/styles/shared/collapsed-blue.png";
+    pointer-events: true;
 }

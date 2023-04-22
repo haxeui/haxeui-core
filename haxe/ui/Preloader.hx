@@ -14,6 +14,7 @@ class Preloader extends Box {
         super();
         id = "preloader";
         styleString = "width:100%;height:100%;";
+        this.percentWidth = this.percentHeight = 100;
         styleNames = "default-background";
     }
 

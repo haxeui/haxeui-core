@@ -4,6 +4,8 @@ import haxe.ui.core.Component;
 
 class ItemEvent extends UIEvent {
     public static inline var COMPONENT_EVENT:String = "itemcomponentevent";
+    public static inline var COMPONENT_CLICK_EVENT:String = "itemcomponentclickevent";
+    public static inline var COMPONENT_CHANGE_EVENT:String = "itemcomponentchangeevent";
 
     public var source:Component = null;
     public var sourceEvent:UIEvent = null;

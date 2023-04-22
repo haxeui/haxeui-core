@@ -63,12 +63,12 @@ class Dialogs {
         if (title != null) {
             messageBox.title = title;
         }
-        messageBox.show();
         if (callback != null) {
             messageBox.registerEvent(DialogEvent.DIALOG_CLOSED, function(e:DialogEvent) {
                 callback(e.button);
             });
         }
+        messageBox.show();
         return messageBox;
     }
 
@@ -129,7 +129,7 @@ class Dialogs {
         }, options);
     }
     
-    public static function saveFile(callback:DialogButton->Bool->Void, fileInfo:FileInfo, options:SaveFileDialogOptions = null) {
+    public static function saveFile(callback:DialogButton->Bool->String->Void, fileInfo:FileInfo, options:SaveFileDialogOptions = null) {
         var dialog = new SaveFileDialog();
         dialog.callback = callback;
         dialog.options = options;
@@ -137,27 +137,27 @@ class Dialogs {
         dialog.show();
     }
     
-    public static function saveBinaryFile(title:String = null, fileTypes:Array<FileDialogExtensionInfo> = null, fileInfo:FileInfo, callback:Bool->Void) {
+    public static function saveBinaryFile(title:String = null, fileTypes:Array<FileDialogExtensionInfo> = null, fileInfo:FileInfo, callback:Bool->String->Void) {
         var options:SaveFileDialogOptions = {
             writeAsBinary: true,
             extensions: fileTypes,
             title: title
         }
 
-        saveFile(function(button, result) {
-            callback(result);
+        saveFile(function(button, result, path) {
+            callback(result, path);
         }, fileInfo, options);
     }
     
-    public static function saveTextFile(title:String = null, fileTypes:Array<FileDialogExtensionInfo> = null, fileInfo:FileInfo, callback:Bool->Void) {
+    public static function saveTextFile(title:String = null, fileTypes:Array<FileDialogExtensionInfo> = null, fileInfo:FileInfo, callback:Bool->String->Void) {
         var options:SaveFileDialogOptions = {
             writeAsBinary: false,
             extensions: fileTypes,
             title: title
         }
 
-        saveFile(function(button, result) {
-            callback(result);
+        saveFile(function(button, result, path) {
+            callback(result, path);
         }, fileInfo, options);
     }
 }

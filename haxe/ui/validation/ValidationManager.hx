@@ -1,8 +1,8 @@
 package haxe.ui.validation;
 
 import haxe.ui.core.Component;
-import haxe.ui.events.ValidationEvent;
 import haxe.ui.events.UIEvent;
+import haxe.ui.events.ValidationEvent;
 import haxe.ui.util.EventMap;
 
 class ValidationManager {

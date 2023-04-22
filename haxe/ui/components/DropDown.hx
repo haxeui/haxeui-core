@@ -45,6 +45,7 @@ class DropDown extends Button implements IDataComponent {
     @:clonable @:behaviour(DefaultBehaviour, "{{search}}")          public var searchPrompt:String;
     @:clonable @:value(selectedItem)                                public var value:Dynamic;
     @:clonable @:behaviour(SearchFieldBehaviour)                    public var searchField:Component;
+    @:clonable @:behaviour(DropDownOpenBehaviour)                   public var dropDownOpen:Bool;
     @:call(HideDropDown)                                            public function hideDropDown();
     @:call(ShowDropDown)                                            public function showDropDown();
 
@@ -160,6 +161,9 @@ private class SelectedItemBehaviour extends DynamicDataBehaviour  {
     }
 
     public override function getDynamic():Dynamic {
+        if (_component.isReady == false) {
+            return _value;
+        }
         var handler:IDropDownHandler = cast(_component._compositeBuilder, DropDownBuilder).handler;
         return handler.selectedItem;
     }
@@ -188,6 +192,24 @@ private class SearchFieldBehaviour extends DefaultBehaviour {
     public override function set(value:Variant) {
         var events:DropDownEvents = cast(_component._internalEvents, DropDownEvents);
         events.searchField = cast value.toComponent();
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class DropDownOpenBehaviour extends DefaultBehaviour {
+    public override function get():Variant {
+        var events:DropDownEvents = cast(_component._internalEvents, DropDownEvents);
+        return @:privateAccess events._dropdownOpen;
+    }
+    
+    public override function set(value:Variant) {
+        var events:DropDownEvents = cast(_component._internalEvents, DropDownEvents);
+        if (value == true) {
+            events.showDropDown();
+        } else {
+            events.hideDropDown();
+        }
     }
 }
 
@@ -364,6 +386,7 @@ private class ListDropDownHandler extends DropDownHandler {
             var event = new UIEvent(UIEvent.CHANGE, false, data);
             event.value = Variant.fromDynamic(data);
             _dropdown.dispatch(event);
+            _dropdown.dispatch(new UIEvent(UIEvent.PROPERTY_CHANGE, false, "selectedItem"));
         }
 
         return value;
@@ -502,6 +525,7 @@ private class ListDropDownHandler extends DropDownHandler {
             var event = new UIEvent(UIEvent.CHANGE, false, selectedItem);
             event.value = Variant.fromDynamic(selectedItem);
             _dropdown.dispatch(event);
+            _dropdown.dispatch(new UIEvent(UIEvent.PROPERTY_CHANGE, false, "selectedItem"));
         }
     }
 
@@ -519,6 +543,7 @@ private class ListDropDownHandler extends DropDownHandler {
     }
 }
 
+@:dox(hide)
 @:access(haxe.ui.core.Component)
 class CalendarDropDownHandler extends DropDownHandler {
     private var _calendar:CalendarView;
@@ -596,6 +621,7 @@ class CalendarDropDownHandler extends DropDownHandler {
         _dropdown.text = DateTools.format(_calendar.selectedDate, Formats.dateFormatShort);
         cast(_dropdown._internalEvents, DropDownEvents).hideDropDown();
         _dropdown.dispatch(new UIEvent(UIEvent.CHANGE, false, _calendar.selectedDate));
+        _dropdown.dispatch(new UIEvent(UIEvent.PROPERTY_CHANGE, false, "selectedItem"));
     }
 
     public override function applyDefault() {
@@ -620,11 +646,13 @@ class DropDownEvents extends ButtonEvents {
     public override function register() {
         super.register();
         registerEvent(MouseEvent.MOUSE_DOWN, onClick);
+        registerEvent(UIEvent.HIDDEN, onHidden);
     }
 
     public override function unregister() {
         super.unregister();
         unregisterEvent(MouseEvent.MOUSE_DOWN, onClick);
+        unregisterEvent(UIEvent.HIDDEN, onHidden);
     }
 
     private function onClick(event:MouseEvent) {
@@ -636,12 +664,17 @@ class DropDownEvents extends ButtonEvents {
         }
     }
 
+    private function onHidden(_) {
+        hideDropDown();
+    }
+
     private override function onMouseClick(event:MouseEvent) {
         // do nothing
     }
 
     private var _overlay:Component = null;
     private var _wrapper:Box = null;
+    private var _dropdownOpen:Bool = false;
     public function showDropDown() {
         var handler:IDropDownHandler = cast(_dropdown._compositeBuilder, DropDownBuilder).handler;
         if (handler == null) {
@@ -765,6 +798,7 @@ class DropDownEvents extends ButtonEvents {
         Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
         Screen.instance.registerEvent(MouseEvent.RIGHT_MOUSE_DOWN, onScreenMouseDown);
         registerEvent(UIEvent.MOVE, onDropDownMoved);
+        _dropdownOpen = true;
     }
     
     private function onDropDownMoved(_) {
@@ -869,6 +903,7 @@ class DropDownEvents extends ButtonEvents {
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
         Screen.instance.unregisterEvent(MouseEvent.RIGHT_MOUSE_DOWN, onScreenMouseDown);
         unregisterEvent(UIEvent.MOVE, onDropDownMoved);
+        _dropdownOpen = false;
     }
 
     private function onScreenMouseDown(event:MouseEvent) {

@@ -166,7 +166,6 @@ private class Events extends haxe.ui.events.Events {
                 menu.addComponent(filler);
             }
             menu.show();
-            Screen.instance.addComponent(menu);
             menu.syncComponentValidation();
 
             if (left + menu.actualComponentWidth > Screen.instance.actualWidth) {
@@ -191,9 +190,8 @@ private class Events extends haxe.ui.events.Events {
                 if (rtl == false) {
                     filler.left = menu.width - cx;
                 }
-                filler.hidden = false;
             } else if (filler != null) {
-                filler.hidden = true;
+                menu.removeComponent(filler);
             }
 
             if (!_currentMenu.hasEvent(MenuEvent.MENU_SELECTED, onMenuSelected)) {
@@ -227,7 +225,6 @@ private class Events extends haxe.ui.events.Events {
             _currentMenu.unregisterEvent(MenuEvent.MENU_SELECTED, onMenuSelected);
             _currentMenu.hide();
             _currentButton.selected = false;
-            Screen.instance.removeComponent(_currentMenu, false);
             _currentButton = null;
             _currentMenu = null;
         }
@@ -292,6 +289,7 @@ private class Builder extends CompositeBuilder {
             button.icon = menu.icon;
             button.tooltip = menu.tooltip;
             button.hidden = child.hidden;
+            button.allowFocus = false;
             LocaleManager.instance.cloneForComponent(child, button);
             _buttons.push(button);
             _menubar.addComponent(button);
@@ -332,6 +330,11 @@ private class Builder extends CompositeBuilder {
             var index = _menus.indexOf(menu);
             var button = _buttons[index];
             button.hidden = event.target.hidden;
+        } else if (event.data == "icon") {
+            var menu = cast(event.target, Menu);
+            var index = _menus.indexOf(menu);
+            var button = _buttons[index];
+            button.icon = menu.icon;
         }
     }
     

@@ -55,7 +55,7 @@
 }
 
 .calendar-view .hbox {
-	spacing: 0;
+    spacing: 0;
 }
 
 .calendar-view #prev-month {
@@ -79,11 +79,11 @@
 .calendar-view #current-year {
     text-align: right;
     vertical-align: center;
-	border: none;
-	padding-top: 1px;
-	background-color: $default-background-color;
+    border: none;
+    padding-top: 1px;
+    background-color: $default-background-color;
 }
 .calendar-view #current-year .button {
-	background-color: $default-background-color;
-	border: none;
+    background-color: $default-background-color;
+    border: none;
 }

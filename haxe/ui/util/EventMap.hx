@@ -14,6 +14,12 @@ class EventMap  {
         return _map.keys();
     }
 
+    public function removeAll() {
+        for (type in _map.keys()) {
+            _map.get(type).removeAll();
+        }
+    }
+
     public function add<T:UIEvent>(type:String, listener:T->Void, priority:Int = 0):Bool { // returns true if a new FunctionArray was created
         if (listener == null) {
             return false;

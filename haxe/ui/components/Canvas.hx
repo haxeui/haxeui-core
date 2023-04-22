@@ -51,6 +51,14 @@ private class DataSourceBehaviour extends DataBehaviour {
                 switch (item.id) {
                     case "clear":
                         g.clear();
+                    case "moveTo" | "move-to":
+                        var x:Null<Float> = (item.x != null) ? Std.parseFloat(item.x) : 0;
+                        var y:Null<Float> = (item.y != null) ? Std.parseFloat(item.y) : 0;
+                        g.moveTo(x, y);
+                    case "lineTo" | "line-to":
+                        var x:Null<Float> = (item.x != null) ? Std.parseFloat(item.x) : 0;
+                        var y:Null<Float> = (item.y != null) ? Std.parseFloat(item.y) : 0;
+                        g.lineTo(x, y);
                     case "strokeStyle" | "stroke-style":
                         var color:String = item.color;
                         var thickness:Null<Float> = (item.thickness != null) ? Std.parseFloat(item.thickness) : 1;

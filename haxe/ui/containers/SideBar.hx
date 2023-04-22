@@ -208,6 +208,7 @@ class SideBar extends Box {
         
         this.onAnimationEnd = function(_) {
             this.removeClass(showSideBarClass);
+            onShowAnimationEnd();
         }
         
         if (activeSideBar != null && activeSideBar != this) {
@@ -215,6 +216,9 @@ class SideBar extends Box {
         }
         
         for (r in Screen.instance.rootComponents) {
+            if (r.hidden) {
+                continue;
+            }
             if (r.classes.indexOf("sidebar") == -1) {
                 r.cachePercentSizes();
                 r.swapClass("sideBarModifyContent", "sideBarRestoreContent");
@@ -344,11 +348,14 @@ class SideBar extends Box {
             hideModalOverlay();
         }
     }
-    
+
+    private function onShowAnimationEnd() {
+    }
+        
     private function onHideAnimationEnd() {
         super.hide();
     }
-    
+
     public override function hide() {
         if (activeSideBar != null && activeSideBar != this) {
             activeSideBar.hide();
@@ -371,6 +378,9 @@ class SideBar extends Box {
         last.set(new Directive("height", Value.VDimension(Dimension.PX(Screen.instance.height))));
 
         for (r in Screen.instance.rootComponents) {
+            if (r.hidden) {
+                continue;
+            }
             if (r.classes.indexOf("sidebar") == -1) {
                 r.swapClass("sideBarRestoreContent", "sideBarModifyContent");
                 r.onAnimationEnd = function(_) {

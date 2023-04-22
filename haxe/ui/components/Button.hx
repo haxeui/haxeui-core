@@ -31,13 +31,15 @@ import haxe.ui.util.Variant;
 
     Pseudo classes:
 
-    | Name      | Notes                                                                    |
-    | --------- | ------------------------------------------------------------------------ |
-    | `:hover`  | The style to be applied when the cursor is over the button               |
-    | `:down`   | The style to be applied when a mouse button is pressed inside the button |
-    | `:active` | The style to be applied when the button has focus                        |
+    | Name        | Notes                                                                    |
+    | ----------- | ------------------------------------------------------------------------ |
+    | `:hover`    | The style to be applied when the cursor is over the button               |
+    | `:down`     | The style to be applied when a mouse button is pressed inside the button |
+    | `:active`   | The style to be applied when the button has focus                        |
+    | `:disabled` | The style to be applied when the button is disabled                      |
 
     XML example:
+
     ```xml
     <button text="Button"
             styleNames="myCustomButton"
@@ -56,6 +58,9 @@ import haxe.ui.util.Variant;
         trace("hello world");
     }
     ```
+
+    @see http://haxeui.org/explorer/#basic/buttons
+    @see haxe.ui.containers.ButtonBar
 **/
 
 @:dox(icon = "ui-button.png")
@@ -72,47 +77,49 @@ class Button extends InteractiveComponent {
     // Public API
     //***********************************************************************************************************
     /**
-     Whether this button will dispatch multiple click events while the the mouse is pressed within it
+        Whether this button will dispatch multiple click events while the the mouse is pressed within it
     **/
     @:clonable @:behaviour(DefaultBehaviour, false)    public var repeater:Bool;
 
     /**
-     How often this button will dispatch multiple click events while the the mouse is pressed within it
+        How often this button will dispatch multiple click events while the the mouse is 
+        pressed within it, in milliseconds. Default is `100`.
     **/
     @:clonable @:behaviour(DefaultBehaviour, 100)      public var repeatInterval:Int;
 
     /**
-     Whether this button will ease in to specified repeatInterval
+        Whether this button will ease in to specified repeatInterval
     **/
     @:clonable @:behaviour(DefaultBehaviour, false)    public var easeInRepeater:Bool;
 
     /**
-     Whether the buttons state should remain pressed even when the mouse has left its bounds
+        Whether the buttons state should remain pressed even when the mouse has left its bounds
     **/
     @:clonable @:behaviour(DefaultBehaviour, false)    public var remainPressed:Bool;
 
     /**
-     Whether this button should behave as a toggle button or not
+        Whether this button should behave as a toggle button or not 
+        (a button that behaves like a switch, being either on/off)
     **/
     @:clonable @:behaviour(ToggleBehaviour)            public var toggle:Bool;
 
     /**
-     Whether this button is toggled or not (only relavant if toggle = true)
+        Whether this button is toggled or not (only relevant if `toggle = true`)
     **/
     @:clonable @:behaviour(SelectedBehaviour)           public var selected:Bool;
 
     /**
-     The text (label) of this button
+        The text (label) of this button
     **/
     @:clonable @:behaviour(TextBehaviour)              public var text:String;
 
     /**
-     The value of this button, which is equivelant to its text
+        The value of this button, which is equivalent to its text
     **/
     @:clonable @:value(text)                           public var value:Dynamic;
 
     /**
-     The image resource to use as the buttons icon
+        The image resource to use as the buttons icon
     **/
     @:clonable @:behaviour(IconBehaviour)              public var icon:Variant;
     
@@ -422,7 +429,7 @@ private class SelectedBehaviour extends DataBehaviour {
             return;
         }
 
-        cast(button._compositeBuilder, ButtonBuilder).setSelection(button, _value);
+        ButtonGroups.instance.setSelection(button, _value);
         
         if (_value == false) {
             button.removeClass(":down", true, true);
@@ -431,9 +438,9 @@ private class SelectedBehaviour extends DataBehaviour {
         }
         var events = cast(button._internalEvents, ButtonEvents);
         if (button.hitTest(Screen.instance.currentMouseX, Screen.instance.currentMouseY)) {
-            button.addClass(":hover", true, true);
+            button.addClass(":hover", true, events.recursiveStyling);
         } else {
-            button.removeClass(":hover", true, true);
+            button.removeClass(":hover", true, events.recursiveStyling);
         }
         events.dispatchChanged();
     }
@@ -683,40 +690,6 @@ class ButtonBuilder extends CompositeBuilder {
         }
     }
     
-    public function setSelection(button:Button, value:Bool, allowDeselection:Bool = false) {
-        if (button.componentGroup != null && value == false && allowDeselection == false) { // dont allow false if no other group selection
-            var arr:Array<Button> = ButtonGroups.instance.get(button.componentGroup);
-            var hasSelection:Bool = false;
-            if (arr != null) {
-                for (b in arr) {
-                    if (b != button && b.selected == true) {
-                        hasSelection = true;
-                        break;
-                    }
-                }
-            }
-            if (hasSelection == false && allowDeselection == false) {
-                button.behaviours.softSet("selected", true);
-                return;
-            }
-        }
-
-        if (button.componentGroup != null && value == true) { // set all the others in group
-            var arr:Array<Button> = ButtonGroups.instance.get(button.componentGroup);
-            if (arr != null) {
-                for (b in arr) {
-                    if (b != button) {
-                        b.selected = false;
-                    }
-                }
-            }
-        }
-
-        if (allowDeselection == true && value == false) {
-            button.behaviours.softSet("selected", false);
-        }
-    }
-    
     public override function addComponent(child:Component):Component {
         if ((child is ItemRenderer)) {
             var existingRenderer = _component.findComponent(ItemRenderer);
@@ -734,7 +707,7 @@ class ButtonBuilder extends CompositeBuilder {
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
-private class ButtonGroups { // singleton
+class ButtonGroups { // singleton
     private static var _instance:ButtonGroups;
     public static var instance(get, null):ButtonGroups;
     private static function get_instance():ButtonGroups {
@@ -801,6 +774,40 @@ private class ButtonGroups { // singleton
             return;
         }
         
-        cast(selection._compositeBuilder, ButtonBuilder).setSelection(selection, false, true);
+        ButtonGroups.instance.setSelection(selection, false, true);
+    }
+
+    public function setSelection(button:Button, value:Bool, allowDeselection:Bool = false) {
+        if (button.componentGroup != null && value == false && allowDeselection == false) { // dont allow false if no other group selection
+            var arr:Array<Button> = ButtonGroups.instance.get(button.componentGroup);
+            var hasSelection:Bool = false;
+            if (arr != null) {
+                for (b in arr) {
+                    if (b != button && b.selected == true) {
+                        hasSelection = true;
+                        break;
+                    }
+                }
+            }
+            if (hasSelection == false && allowDeselection == false) {
+                button.behaviours.softSet("selected", true);
+                return;
+            }
+        }
+
+        if (button.componentGroup != null && value == true) { // set all the others in group
+            var arr:Array<Button> = ButtonGroups.instance.get(button.componentGroup);
+            if (arr != null) {
+                for (b in arr) {
+                    if (b != button) {
+                        b.selected = false;
+                    }
+                }
+            }
+        }
+
+        if (allowDeselection == true && value == false) {
+            button.behaviours.softSet("selected", false);
+        }
     }
 }

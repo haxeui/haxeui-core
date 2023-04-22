@@ -8,8 +8,13 @@
         <resource path="/haxe/ui/_module/locale" prefix="haxeui-core/locale" />
     </resources>
 
+    <namespaces>
+        <namespace prefix="core" uri="urn::haxeui::org" />
+    </namespaces>
+
     <locales>
         <locale id="en">
+            <resource path="haxeui-core/locale/en/expression-replacements.properties" />
             <resource path="haxeui-core/locale/en/std-strings.properties" />
             <resource path="haxeui-core/locale/en/formats.properties" />
         </locale>
@@ -17,20 +22,29 @@
             <resource path="haxeui-core/locale/en_US/formats.properties" />
         </locale>
         <locale id="es">
+            <resource path="haxeui-core/locale/es/expression-replacements.properties" />
             <resource path="haxeui-core/locale/es/std-strings.properties" />
             <resource path="haxeui-core/locale/es/formats.properties" />
         </locale>
         <locale id="de">
+            <resource path="haxeui-core/locale/de/expression-replacements.properties" />
             <resource path="haxeui-core/locale/de/std-strings.properties" />
             <resource path="haxeui-core/locale/de/formats.properties" />
         </locale>
         <locale id="fr">
+            <resource path="haxeui-core/locale/fr/expression-replacements.properties" />
             <resource path="haxeui-core/locale/fr/std-strings.properties" />
             <resource path="haxeui-core/locale/fr/formats.properties" />
         </locale>
         <locale id="it">
+            <resource path="haxeui-core/locale/it/expression-replacements.properties" />
             <resource path="haxeui-core/locale/it/std-strings.properties" />
             <resource path="haxeui-core/locale/it/formats.properties" />
+        </locale>
+        <locale id="ru">
+            <resource path="haxeui-core/locale/ru/expression-replacements.properties" />
+            <resource path="haxeui-core/locale/ru/std-strings.properties" />
+            <resource path="haxeui-core/locale/ru/formats.properties" />
         </locale>
     </locales>
 
@@ -40,6 +54,7 @@
         <class package="haxe.ui.components.popups" />
         <class package="haxe.ui.containers" />
         <class package="haxe.ui.containers.dialogs" />
+        <class package="haxe.ui.containers.windows" />
         <class package="haxe.ui.containers.menus" />
         <class package="haxe.ui.containers.properties" />
     </components>
@@ -86,6 +101,16 @@
             <var name="accent-color-lighter" value="#ecf2f9" />
             <var name="accent-gradient-start" value="#98c4e6" />
             <var name="accent-gradient-end" value="#549bde" />
+            <!-- warning / error / success -->
+            <var name="warning-border-color" value="#ffd83f" />
+            <var name="warning-background-color-start" value="#fffbeb" />
+            <var name="warning-background-color-end" value="#fff8df" />
+            <var name="error-border-color" value="#f6a7a2" />
+            <var name="error-background-color-start" value="#fde9e8" />
+            <var name="error-background-color-end" value="#fbdcda" />
+            <var name="success-border-color" value="#53df9e" />
+            <var name="success-background-color-start" value="#e9fbf3" />
+            <var name="success-background-color-end" value="#dcf8ec" />
             <!-- misc -->
             <var name="default-background-color" value="#ffffff" />
             <var name="secondary-background-color" value="#ffffff" />
@@ -96,8 +121,10 @@
             <var name="solid-background-color-down" value="#f0f0f0" />
             <var name="solid-background-color-disabled" value="#fefefe" />
             <var name="lighter-text-color" value="#a0a0a0" />
+            <!--
             <var name="error-background-color" value="#ffdddd" />
             <var name="error-text-color" value="#ff0000" />
+            -->
             <var name="modal-background-color" value="#ffffff" />
             <!-- special cases -->
             <var name="scrollbar-background-color" value="#f0f0f0" />
@@ -116,6 +143,16 @@
             <var name="arrow-down-square" value="haxeui-core/styles/shared/down-arrow-square-blue.png" />
             <var name="close" value="haxeui-core/styles/shared/close-button-blue.png" />
             <var name="close-hover" value="haxeui-core/styles/shared/close-button-white.png" />
+            <var name="minimize" value="haxeui-core/styles/shared/minimize-button-blue.png" />
+            <var name="minimize-hover" value="haxeui-core/styles/shared/minimize-button-white.png" />
+            <var name="maximize" value="haxeui-core/styles/shared/maximize-button-blue.png" />
+            <var name="maximize-hover" value="haxeui-core/styles/shared/maximize-button-white.png" />
+            <var name="restore" value="haxeui-core/styles/shared/restore-button-blue.png" />
+            <var name="restore-hover" value="haxeui-core/styles/shared/restore-button-white.png" />
+            <var name="collapse" value="haxeui-core/styles/shared/window-collapse-blue.png" />
+            <var name="collapse-hover" value="haxeui-core/styles/shared/window-collapse-white.png" />
+            <var name="expand" value="haxeui-core/styles/shared/window-expand-blue.png" />
+            <var name="expand-hover" value="haxeui-core/styles/shared/window-expand-white.png" />
             <var name="check-selected" value="haxeui-core/styles/shared/check-blue.png" />
             <var name="option-selected" value="haxeui-core/styles/shared/option-blue.png" />
             <var name="arrow-up-down" value="haxeui-core/styles/shared/sortable-arrows-blue.png" />
@@ -135,6 +172,7 @@
             <style resource="haxeui-core/styles/default/main.css" priority="-3" />
             <style resource="haxeui-core/styles/default/buttons.css" />
             <style resource="haxeui-core/styles/default/dialogs.css" />
+            <style resource="haxeui-core/styles/default/windows.css" />
             <style resource="haxeui-core/styles/default/textinputs.css" />
             <style resource="haxeui-core/styles/default/scrollbars.css" />
             <style resource="haxeui-core/styles/default/scrollview.css" />
@@ -161,6 +199,7 @@
             <style resource="haxeui-core/styles/default/cards.css" />
             <style resource="haxeui-core/styles/default/treeviews.css" />
             <style resource="haxeui-core/styles/default/colorpickers.css" />
+            <style resource="haxeui-core/styles/default/notifications.css" />
             <style resource="haxeui-core/styles/default/last.css" />
         </default>
         <dark parent="default">
@@ -197,6 +236,16 @@
             <var name="accent-color-lighter" value="#323e52" />
             <var name="accent-gradient-start" value="#334666" />
             <var name="accent-gradient-end" value="#2f3746" />
+            <!-- warning / error / success -->
+            <var name="warning-border-color" value="#807100" />
+            <var name="warning-background-color-start" value="#4d4400" />
+            <var name="warning-background-color-end" value="#473f00" />
+            <var name="error-border-color" value="#8b160e" />
+            <var name="error-background-color-start" value="#4a1721" />
+            <var name="error-background-color-end" value="#3a121a" />
+            <var name="success-border-color" value="#146c43" />
+            <var name="success-background-color-start" value="#0c4129" />
+            <var name="success-background-color-end" value="#093421" />
             <!-- misc -->
             <var name="default-background-color" value="#2c2f30" />
             <var name="secondary-background-color" value="#3d3f41" />
@@ -207,8 +256,10 @@
             <var name="solid-background-color-down" value="#313335" />
             <var name="solid-background-color-disabled" value="#2f3132" />
             <var name="lighter-text-color" value="#737373" />
+            <!--
             <var name="error-background-color" value="#cf6679" />
             <var name="error-text-color" value="#880000" />
+            -->
             <var name="modal-background-color" value="#181a1b" />
             <!-- special cases -->
             <var name="scrollbar-background-color" value="#2c2f30" />
@@ -226,6 +277,21 @@
         </native>
     </themes>
     
+    <validators>
+        <validator id="required" class="haxe.ui.validators.RequiredValidator" />
+        <validator id="pattern" class="haxe.ui.validators.PatternValidator" />
+        <validator id="email" class="haxe.ui.validators.EmailValidator" />
+    </validators>
+
+    <loaders>
+        <image-loaders>
+            <image-loader prefix="asset" class="haxe.ui.loaders.image.AssetImageLoader" default="true" singleInstance="true" />
+            <image-loader prefix="file" class="haxe.ui.loaders.image.FileImageLoader" singleInstance="true" />
+            <image-loader prefix="http" class="haxe.ui.loaders.image.HttpImageLoader" />
+            <image-loader prefix="https" class="haxe.ui.loaders.image.HttpImageLoader" />
+        </image-loaders>
+    </loaders>
+
     <actions>
         <source class="haxe.ui.actions.KeyboardActionInputSource" />
     </actions>

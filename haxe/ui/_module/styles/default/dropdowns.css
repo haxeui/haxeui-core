@@ -13,6 +13,33 @@
     cursor: pointer;
 }
 
+.dropdown.required-value {
+    background: $warning-background-color-start $warning-background-color-end;
+    border-color: $warning-border-color;
+}
+
+.dropdown.required-value:down {
+    background-color: $warning-background-color-end;
+}
+
+.dropdown.invalid-value {
+    background: $error-background-color-start $error-background-color-end;
+    border-color: $error-border-color;
+}
+
+.dropdown.invalid-value:down {
+    background-color: $error-background-color-end;
+}
+
+.dropdown.valid-value {
+    background: $success-background-color-start $success-background-color-end;
+    border-color: $success-border-color;
+}
+
+.dropdown.valid-value:down {
+    background-color: $success-background-color-end;
+}
+
 .dropdown:down {
     border-color: $accent-color;
 }

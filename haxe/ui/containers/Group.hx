@@ -16,6 +16,10 @@ class Group extends Box {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
+    /**
+        Gets the currently selected component from this `Group`.
+    **/
+    @:clonable @:behaviour(SelectedOptionBehaviour)                 public var selectedOption:Component;
     @:clonable @:behaviour(DataBehaviour, "group" + GUID.uuid())    public var componentGroup:String;
     @:call(ResetGroup)                                              public function resetGroup():Void;
 }
@@ -23,6 +27,25 @@ class Group extends Box {
 //***********************************************************************************************************
 // Behaviours
 //***********************************************************************************************************
+
+@:dox(hide) @:noCompletion
+private class SelectedOptionBehaviour extends DataBehaviour {
+    public override function get():Variant {
+        var optionbox:OptionBox = _component.findComponent(OptionBox, false);
+        var arr:Array<OptionBox> = OptionBoxGroups.instance.get(optionbox.componentGroup);
+        var selectionOption:OptionBox = null;
+        if (arr != null) {
+            for (test in arr) {
+                if (test.selected == true) {
+                    selectionOption = test;
+                    break;
+                }
+            }
+        }
+        return selectionOption;
+    }
+}
+
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 private class ResetGroup extends Behaviour {
@@ -99,7 +122,7 @@ private class Builder extends CompositeBuilder {
                 if (_initialValues == null) {
                     _initialValues = new Map<Component, Variant>();
                 }
-                _initialValues.set(c, c.value);
+                _initialValues.set(c, Variant.fromDynamic(c.value));
             } else {
                 _initialResets.set(optionbox.componentGroup, true);
             }
@@ -107,7 +130,7 @@ private class Builder extends CompositeBuilder {
             if (_initialValues == null) {
                 _initialValues = new Map<Component, Variant>();
             }
-            _initialValues.set(c, c.value);
+            _initialValues.set(c, Variant.fromDynamic(c.value));
         }
     }
 
@@ -128,5 +151,6 @@ private class Builder extends CompositeBuilder {
     
     private function childChangeHandler(e:UIEvent) {
         _group.dispatch(e.clone());
+        _group.dispatch(new UIEvent(UIEvent.PROPERTY_CHANGE, false, "selectedOption"));
     }
 }

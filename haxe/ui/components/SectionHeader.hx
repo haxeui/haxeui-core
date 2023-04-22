@@ -5,9 +5,16 @@ import haxe.ui.components.Label;
 import haxe.ui.containers.VBox;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
+import haxe.ui.styles.Style;
 
 @:composite(Builder)
+/**
+    A content header you can add to your components to make, for example, some sort of a navbar.
+**/
 class SectionHeader extends VBox {
+    /**
+        The text displayed inside this header.
+    **/
     @:clonable @:behaviour(TextBehaviour)              public var text:String;
 }
 
@@ -39,5 +46,13 @@ private class Builder extends CompositeBuilder {
         line.addClasses(["section-line", "line"]);
         line.scriptAccess = false;
         _component.addComponent(line);
+    }
+
+    public override function applyStyle(style:Style) {
+        super.applyStyle(style);
+        
+        haxe.ui.macros.ComponentMacros.cascacdeStylesToList(Label, [
+            color, fontName, fontSize, cursor, textAlign, fontBold, fontUnderline, fontItalic
+        ]);
     }
 }

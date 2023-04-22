@@ -1,0 +1,260 @@
+.window-manager-container {
+    background-color: $solid-background-color-alt;
+    clip: true;
+}    
+
+/************************************************************************
+** WINDOWS
+*************************************************************************/
+.window-container {
+    padding: 5px;
+    background-color: none;
+    border-radius: 4px;
+}
+
+.window-container.window-maximized {
+    padding: 0;
+}
+
+.window {
+    border: 1px solid $normal-border-color;
+    filter: $dialog-shadow;
+    border-radius: 4px;
+    width: auto;
+    height: auto;
+    background-color: $default-background-color;
+    padding: 2px;
+    spacing: 0px;
+}
+
+.window.window-active {
+    filter: $dialog-shadow;
+}
+
+.window.window-maximized {
+    border: none;
+    border-radius: none;
+    padding: 0px;
+}
+
+.window-content {
+    padding: 10px;
+    clip: true;
+}
+
+.no-padding .window-content {
+    padding: 0px;
+}
+
+/************************************************************************
+** WINDOW TITLE
+*************************************************************************/
+.window-title {
+    padding: 10px;
+    background-color: $solid-background-color;
+    border: none;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+}
+
+.window.window-active .window-title {
+    background-color: $accent-color-lighter;
+}
+
+.window-title .label {
+    width: 100%;
+    vertical-align: center;
+    color: $dialog-title-color;
+    vertical-align: "center";
+}
+
+.window.window-active .window-title .label {
+    color: $accent-color-darker;
+}
+
+/************************************************************************
+** WINDOW FOOTER
+*************************************************************************/
+.window-footer {
+    width: 100%;
+    padding: 10px;
+    background-color: $solid-background-color;
+    border: none;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+}
+    
+.window.window-active .window-footer {
+    background-color: $accent-color-lighter;
+}
+    
+/************************************************************************
+** WINDOW BUTTONS
+*************************************************************************/
+.window #windowCloseButton {
+    resource: $close;
+    vertical-align: "center";
+    cursor: "pointer";
+    pointer-events: true;
+    padding: 3px;
+    border-radius: 2px;
+}
+
+.window #windowCloseButton:hover {
+    resource: $close-hover;
+    background-color: $selection-background-color;
+}
+
+.window #windowCollapseButton {
+    resource: $collapse;
+    vertical-align: "center";
+    cursor: "pointer";
+    pointer-events: true;
+    padding: 3px;
+    border-radius: 2px;
+}
+
+.window #windowCollapseButton:hover {
+    resource: $collapse-hover;
+    background-color: $selection-background-color;
+}
+
+.window #windowMinimizeButton {
+    resource: $minimize;
+    vertical-align: "center";
+    cursor: "pointer";
+    pointer-events: true;
+    padding: 3px;
+    border-radius: 2px;
+}
+
+.window #windowMinimizeButton:hover {
+    resource: $minimize-hover;
+    background-color: $selection-background-color;
+}
+
+.window #windowMaximizeButton {
+    resource: $maximize;
+    vertical-align: "center";
+    cursor: "pointer";
+    pointer-events: true;
+    padding: 3px;
+    border-radius: 2px;
+}
+
+.window #windowMaximizeButton:hover {
+    resource: $maximize-hover;
+    background-color: $selection-background-color;
+}
+
+.window #windowMaximizeButton.restore {
+    resource: $restore;
+}
+
+.window #windowMaximizeButton.restore:hover {
+    resource: $restore-hover;
+    background-color: $selection-background-color;
+}
+
+/************************************************************************
+** WINDOW SIZING GRIPPERS
+*************************************************************************/
+.window.size-nw {
+    border: 1px solid $normal-border-color;
+    border-left-color: $accent-color;
+    border-top-color: $accent-color;
+    border-left-width: 2px;
+    border-top-width: 2px;
+}
+
+.window.size-n {
+    border: 1px solid $normal-border-color;
+    border-top-color: $accent-color;
+    border-top-width: 2px;
+}
+
+.window.size-ne {
+    border: 1px solid $normal-border-color;
+    border-right-color: $accent-color;
+    border-top-color: $accent-color;
+    border-right-width: 2px;
+    border-top-width: 2px;
+}
+
+.window.size-w {
+    border: 1px solid $normal-border-color;
+    border-left-color: $accent-color;
+    border-left-width: 2px;
+}
+
+.window.size-e {
+    border: 1px solid $normal-border-color;
+    border-right-color: $accent-color;
+    border-right-width: 2px;
+}
+
+.window.size-sw {
+    border: 1px solid $normal-border-color;
+    border-left-color: $accent-color;
+    border-bottom-color: $accent-color;
+    border-left-width: 2px;
+    border-bottom-width: 2px;
+}
+
+.window.size-s {
+    border: 1px solid $normal-border-color;
+    border-bottom-color: $accent-color;
+    border-bottom-width: 2px;
+}
+
+.window.size-se {
+    border: 1px solid $normal-border-color;
+    border-right-color: $accent-color;
+    border-bottom-color: $accent-color;
+    border-right-width: 2px;
+    border-bottom-width: 2px;
+}
+
+
+/************************************************************************
+** WINDOW LIST
+*************************************************************************/
+.window-list {
+    border-top: 1px solid $normal-border-color;
+    padding-top: 1px;
+    background-color: $solid-background-color-alt;
+    clip: true;
+}
+
+.window-list .button {
+    height: 100%;
+    border: none;
+    border-radius: 0px;
+    border-right: 1px solid $normal-border-color;
+    padding: 7px 8px;
+}
+
+.window-list .button:down {
+    background-color: $accent-color-lighter;
+    color: $accent-color-darker;
+}
+
+.window-list .icon {
+    pointer-events: none;
+}
+
+.window-list .window-list-close-button {
+    resource: $close;
+    vertical-align: "center";
+    cursor: "pointer";
+    pointer-events: true;
+    padding: 3px;
+    border-radius: 2px;
+    margin-right: -3px;
+}
+
+.window-list .window-list-close-button:hover {
+    resource: $close-hover;
+    background-color: $selection-background-color;
+}
+

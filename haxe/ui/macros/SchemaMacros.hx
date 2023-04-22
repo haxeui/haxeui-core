@@ -62,6 +62,10 @@ class SchemaMacros {
     private static function buildSchemaElement(classType:ClassType, schema:Schema) {
         var dox = classType.meta.extract(":dox")[0];
         if (dox != null && ExprTools.toString(dox.params[0]) == "hide") {
+            //return;
+        }
+        var noSchemaGen = classType.meta.extract(":noSchemaGen")[0];
+        if (noSchemaGen != null) {
             return;
         }
         
@@ -91,7 +95,11 @@ class SchemaMacros {
         if (dox != null && ExprTools.toString(dox.params[0]) == "hide") {
             //return;
         }
-        
+        var noSchemaGen = classType.meta.extract(":noSchemaGen")[0];
+        if (noSchemaGen != null) {
+            return;
+        }
+
         #if haxeui_schema_debug
         Sys.println("Generating XSD type: " + classType.name + "Type (" + classType.name + ")");
         #end

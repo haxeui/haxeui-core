@@ -35,7 +35,7 @@ class GenericConfig {
         var r = null;
         for (item in array) {
             for (key in item.values.keys()) {
-                if (key == field && item.values.get(key) == value) {
+                if (key == field && (item.values.get(key) == value || item.values.get(key).toLowerCase() == value.toLowerCase())) {
                     r = item;
                     break;
                 }

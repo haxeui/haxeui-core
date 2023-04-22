@@ -27,7 +27,8 @@ class Label extends Component {
     @:style(layout)                             public var textAlign:Null<String>;
 
     /**
-     * Wether or not the label should escape text to the next line if its wider then the width of the label.
+     * Whether or not the label should automatically transfer text for which 
+     * there isn't enough space from the end of the current line of text to the beginning of the next.
      */
     @:style(layout)                             public var wordWrap:Null<Bool>;
 
@@ -36,19 +37,20 @@ class Label extends Component {
     //***********************************************************************************************************
 
     /**
-     * The actual text that is displayed inside the label.
+     * The actual text displayed inside the label.
      */
     @:clonable @:behaviour(TextBehaviour)       public var text:String;
 
     /**
-     * A string containing HTML markup to be displayed inside the text field.
+     * A string containing HTML markup to be displayed inside the label.
      */
     @:clonable @:behaviour(HtmlTextBehaviour)   public var htmlText:String;
 
     /**
-     * The text displayed inside of the label.
+     * The text displayed inside the label.
      * 
-     * `value` is used as a universal way to access the value a component is based on. in this case its the text inside of the label.
+     * `value` is used as a universal way to access the "core" value a component is based on. 
+     * in this case, its the text inside of the label.
      */
     @:clonable @:value(text)                    public var value:Dynamic;
 }

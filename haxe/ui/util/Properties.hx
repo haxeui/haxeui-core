@@ -4,6 +4,8 @@ package haxe.ui.util;
 import sys.io.File;
 #end
 
+using StringTools;
+
 class Properties {
     private var _props:Map<String, String>;
     public function new() {
@@ -19,7 +21,7 @@ class Properties {
             line = StringTools.trim(line);
             if (line.length != 0) {
                 var parts:Array<String> = line.split("=");
-                _props.set(parts[0], parts[1]);
+                setProp(parts[0], parts[1]);
             }
         }
     }
@@ -65,7 +67,10 @@ class Properties {
     }
 
     public function setProp(name:String, value:String) {
-        _props.set(name, value);
+        if (name == null || name.trim().length == 0) {
+            return;
+        }
+        _props.set(name.trim(), value.trim());
     }
 
     public function names():Iterator<String> {
@@ -74,7 +79,7 @@ class Properties {
 
     public function addAll(p:Properties) {
         for (name in p.names()) {
-            _props.set(name, p.getProp(name));
+            setProp(name, p.getProp(name));
         }
     }
 }

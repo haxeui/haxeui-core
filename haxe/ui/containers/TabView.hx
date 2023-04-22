@@ -312,6 +312,9 @@ private class Events extends haxe.ui.events.Events {
         if (tabs.hasEvent(UIEvent.CHANGE, onTabChanged) == false) {
             tabs.registerEvent(UIEvent.CHANGE, onTabChanged);
         }
+        if (tabs.hasEvent(UIEvent.BEFORE_CHANGE, onTabBeforeChanged) == false) {
+            tabs.registerEvent(UIEvent.BEFORE_CHANGE, onTabBeforeChanged);
+        }
         if (tabs.hasEvent(UIEvent.BEFORE_CLOSE, onBeforeTabClosed) == false) {
             tabs.registerEvent(UIEvent.BEFORE_CLOSE, onBeforeTabClosed);
         }
@@ -323,7 +326,9 @@ private class Events extends haxe.ui.events.Events {
     public override function unregister() {
         var tabs:TabBar = _tabview.findComponent(TabBar, false);
         tabs.unregisterEvent(UIEvent.CHANGE, onTabChanged);
+        tabs.unregisterEvent(UIEvent.BEFORE_CHANGE, onTabBeforeChanged);
         tabs.unregisterEvent(UIEvent.BEFORE_CLOSE, onBeforeTabClosed);
+        tabs.unregisterEvent(UIEvent.CLOSE, onTabClosed);
     }
 
     private function onBeforeTabClosed(event:UIEvent) {
@@ -345,6 +350,10 @@ private class Events extends haxe.ui.events.Events {
         var tabs:TabBar = _tabview.findComponent(TabBar, false);
         _tabview.pageIndex = -1;
         _tabview.pageIndex = tabs.selectedIndex;
+    }
+
+    private function onTabBeforeChanged(event:UIEvent) {
+        _tabview.dispatch(event);
     }
 }
 
@@ -379,7 +388,6 @@ private class Builder extends CompositeBuilder {
         }
 
         if (_tabs == null) {
-            trace("create");
             _tabs = new TabBar();
             _tabs.id = "tabview-tabs";
             _tabs.addClass("tabview-tabs");
@@ -402,6 +410,9 @@ private class Builder extends CompositeBuilder {
             child.registerEvent(UIEvent.PROPERTY_CHANGE, onPagePropertyChanged);
             _views.push(child);
             var button:Button = new Button();
+            if (child.disabled == true) {
+                button.disabled = true;
+            }
             button.text = text;
             button.icon = icon;
             button.tooltip = child.tooltip;
@@ -449,6 +460,12 @@ private class Builder extends CompositeBuilder {
             var button = cast(_tabs.getTab(index), Button);
             if (button != null &&  button.icon != cast(event.target, Box).icon) {
                 button.icon = cast(event.target, Box).icon;
+            }
+        } else if (event.data == "disabled") {
+            var index = _views.indexOf(event.target);
+            var button = cast(_tabs.getTab(index), Button);
+            if (button != null &&  button.disabled != cast(event.target, Box).disabled) {
+                button.disabled = cast(event.target, Box).disabled;
             }
         }
     }

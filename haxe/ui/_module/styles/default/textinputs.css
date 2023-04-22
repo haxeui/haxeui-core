@@ -15,10 +15,19 @@
     content-type: auto;
 }
 
+.textfield.required-value {
+    background-color: $warning-background-color-start;
+    border-color: $warning-border-color;
+}
+
 .textfield.invalid-value {
-    color: $error-text-color;
-    background-color: $error-background-color;
-    border-color: $error-text-color;
+    background-color: $error-background-color-start;
+    border-color: $error-border-color;
+}
+
+.textfield.valid-value {
+    background-color: $success-background-color-start;
+    border-color: $success-border-color;
 }
 
 .textfield:active {
@@ -32,6 +41,21 @@
 .textfield:disabled {
     border-color: $disabled-border-color;
     color: $disabled-text-color;
+}
+
+.textfield .decorator {
+    padding: 0px 8px;
+    background: $normal-background-color-start $normal-background-color-end vertical;
+    border-radius: $normal-border-radius;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-left: $normal-border-size solid $normal-border-color;
+    include-in-layout: false;
+}
+
+.textfield .decorator .image {
+    vertical-align:center;
+    margin-top: -1px;
 }
 
 /************************************************************************
@@ -49,10 +73,19 @@
     content-type: auto;
 }
 
+.textarea.required-value {
+    background-color: $warning-background-color-start;
+    border-color: $warning-border-color;
+}
+
 .textarea.invalid-value {
-    color: $error-text-color;
-    background-color: $error-background-color;
-    border-color: $error-text-color;
+    background-color: $error-background-color-start;
+    border-color: $error-border-color;
+}
+
+.textarea.valid-value {
+    background-color: $success-background-color-start;
+    border-color: $success-border-color;
 }
 
 .textarea:active {

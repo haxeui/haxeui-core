@@ -21,6 +21,14 @@
     padding: 0px;
 }
 
+.scrollview.no-border {
+    border: none;
+}
+
+.scrollview.no-border .scroll {
+    border: none;
+}
+
 .scrollview:active {
     border: 1px solid $accent-color;
 }

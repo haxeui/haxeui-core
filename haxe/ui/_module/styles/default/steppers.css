@@ -116,9 +116,19 @@
     background-color: $scrollbar-background-color;
 }
 
+.number-stepper.required-value {
+    background-color: $warning-background-color-start;
+    border-color: $warning-border-color;
+}
+
 .number-stepper.invalid-value {
-    color: $error-text-color;
-    background-color: $error-background-color;
+    background-color: $error-background-color-start;
+    border-color: $error-border-color;
+}
+
+.number-stepper.valid-value {
+    background-color: $success-background-color-start;
+    border-color: $success-border-color;
 }
 
 .number-stepper:active {
@@ -223,9 +233,19 @@
     background-color: $scrollbar-background-color;
 }
 
+.option-stepper.required-value {
+    background-color: $warning-background-color-start;
+    border-color: $warning-border-color;
+}
+
 .option-stepper.invalid-value {
-    color: red;
-    background-color: $error-background-color;
+    background-color: $error-background-color-start;
+    border-color: $error-border-color;
+}
+
+.option-stepper.valid-value {
+    background-color: $success-background-color-start;
+    border-color: $success-border-color;
 }
 
 .option-stepper:active {

@@ -145,6 +145,8 @@ class DefaultLayout extends Layout {
     }
 
     private override function repositionChildren() {
+        var usableSize = this.usableSize;
+
         for (child in component.childComponents) {
             if (child.includeInLayout == false) {
                 continue;
@@ -155,7 +157,7 @@ class DefaultLayout extends Layout {
 
             switch (horizontalAlign(child)) {
                 case "center":
-                    xpos = ((component.componentWidth - child.componentWidth) / 2) + marginLeft(child) - marginRight(child);
+                    xpos = ((usableSize.width - child.componentWidth) / 2) + paddingLeft + marginLeft(child) - marginRight(child);
                 case "right":
                     xpos = component.componentWidth - (child.componentWidth + paddingRight + marginRight(child));
                 default:    //left
@@ -164,7 +166,7 @@ class DefaultLayout extends Layout {
 
             switch (verticalAlign(child)) {
                 case "center":
-                    ypos = ((component.componentHeight - child.componentHeight) / 2) + marginTop(child) - marginBottom(child);
+                    ypos = ((usableSize.height - child.componentHeight) / 2) + paddingTop + marginTop(child) - marginBottom(child);
                 case "bottom":
                     ypos = component.componentHeight - (child.componentHeight + paddingBottom + marginBottom(child));
                 default:    //top

@@ -64,6 +64,12 @@ class Scroll extends InteractiveComponent implements IDirectionalComponent {
      */
     @:behaviour(DefaultBehaviour, 20)           public var increment:Float; // TODO: should calc, 20 is too high if there are, say, 30 items
 
+
+    /**
+     * Can be used to specify a fixed size (in pixels) for the thumb
+     */
+    @:behaviour(DefaultBehaviour, null)           public var thumbSize:Null<Float>;
+
     //***********************************************************************************************************
     // Private API
     //***********************************************************************************************************

@@ -15,6 +15,9 @@ class UIEvent extends EventImpl {
     public static inline var MOVE:String = "move";
     public static inline var INITIALIZE:String = "initialize";
 
+    public static inline var SUBMIT_START:String = "submitstart";
+    public static inline var SUBMIT:String = "submit";
+
     public static inline var RENDERER_CREATED:String = "renderercreated";
     public static inline var RENDERER_DESTROYED:String = "rendererdestroyed";
 
@@ -31,6 +34,9 @@ class UIEvent extends EventImpl {
 
     public static inline var COMPONENT_ADDED:String = "componentadded";
     public static inline var COMPONENT_REMOVED:String = "componentremoved";
+
+    public static inline var COMPONENT_ADDED_TO_PARENT:String = "componentaddedtoparent";
+    public static inline var COMPONENT_REMOVED_FROM_PARENT:String = "componentremovedfromparent";
 
     public var bubble(default, default):Bool;
     public var type(default, default):String;

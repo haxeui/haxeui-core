@@ -11,3 +11,6 @@
 \/haxeui-core\/(.*\/)?cli.?$
 \/haxeui-core\/(.*\/)?haxe\/ui.*\w+
 \/haxeui-\w+\/(.*\/)?haxe\/ui\/backend\/\w+
+\/swf\/.*\/src\/.*$
+
+\/hxnodejs\/

@@ -1,5 +1,6 @@
 package haxe.ui.backend;
 
+import haxe.ui.util.Variant;
 import haxe.ui.containers.dialogs.Dialog;
 import haxe.ui.containers.dialogs.MessageBox.MessageBoxType;
 
@@ -57,10 +58,10 @@ class MessageBoxBase extends Dialog {
         return value;
     }
 
-    public override function get_icon():String {
+    public override function get_icon():Variant {
         return iconImage.resource;
     }
-    public override function set_icon(value:String):String {
+    public override function set_icon(value:Variant):Variant {
         iconImage.resource = value;
         return value;
     }

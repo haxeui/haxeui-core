@@ -136,10 +136,10 @@ class TreeViewNode extends VBox {
         return value;
     }
     
-    private override function get_icon():String {
+    private override function get_icon():Variant {
         return _data.icon;
     }
-    private override function set_icon(value:String):String {
+    private override function set_icon(value:Variant):Variant {
         if (_data == null) {
             _data = {};
         }
@@ -259,6 +259,7 @@ private class TreeViewNodeBuilder extends CompositeBuilder {
         _nodeContainer.addComponent(_expandCollapseIcon);
 
         _renderer = treeview.itemRenderer.cloneComponent();
+        _renderer.itemIndex = _node.parentComponent.getComponentIndex(_node);
         _renderer.data = _node.data;
         _nodeContainer.addComponent(_renderer);
         
@@ -292,7 +293,8 @@ private class TreeViewNodeBuilder extends CompositeBuilder {
         onExpandCollapseClicked(null);
     }
     
-    private function onExpandCollapseClicked(_) {
+    private function onExpandCollapseClicked(event:MouseEvent) {
+        event.cancel();
         _node.expanded = !_node.expanded;
         updateIconClass();
     }
@@ -359,9 +361,11 @@ private class TreeViewNodeBuilder extends CompositeBuilder {
         updateIconClass();
         if (_renderer != null) {
             var wasSelected = (treeview.selectedNode == _node);
+            var itemIndex = _renderer.itemIndex;
             var data = _renderer.data;
             var newRenderer = treeview.expandableItemRenderer.cloneComponent();
             newRenderer.data = data;
+            newRenderer.itemIndex = itemIndex;
             _nodeContainer.removeComponent(_renderer);
             _renderer = newRenderer;
             _nodeContainer.addComponent(newRenderer);

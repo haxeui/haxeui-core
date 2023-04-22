@@ -10,7 +10,7 @@ import haxe.ui.layouts.HorizontalGridLayout;
 class HGrid extends Component {
 
     /**
-     * Creates a new horizontal grid with a sinle row.
+     * Creates a new horizontal grid with a single row.
      */
     public function new() {
         super();
@@ -32,7 +32,7 @@ class HGrid extends Component {
     private var _rows:Int;
 
     /**
-     * The number of rows in the grid. Defaults to `1`.
+     * The number of rows in this grid. Defaults to `1`.
      */
     @:clonable public var rows(get, set):Int;
     private function get_rows():Int {
@@ -40,6 +40,10 @@ class HGrid extends Component {
     }
 
     private function set_rows(value:Int):Int {
+
+        if (_layout == null) {
+            layout = createLayout();
+        }
         if (_rows != value) {
             _rows = value;
 

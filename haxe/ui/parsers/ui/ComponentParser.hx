@@ -65,7 +65,11 @@ class ComponentParser {
     }
 
     private static function float(value:String):Float {
-        return Std.parseFloat(value);
+        var f = Std.parseFloat(value);
+        if (Math.isNaN(f)) {
+            return 0;
+        }
+        return f;
     }
 
     private static function isPercentage(value:String):Bool {

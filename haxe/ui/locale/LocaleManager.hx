@@ -10,6 +10,8 @@ import haxe.ui.util.ExpressionUtil;
 import haxe.ui.util.MathUtil;
 import haxe.ui.util.SimpleExpressionEvaluator;
 
+using StringTools;
+
 typedef ComponentLocaleEntry = {
     @:optional var callback:Void->Dynamic;
     @:optional var expr:String;
@@ -95,13 +97,13 @@ class LocaleManager {
     }
     
     private function onComponentReady(e:UIEvent) {
-        e.target.unregisterEvent(UIEvent.INITIALIZE, onComponentReady);
+        e.target.unregisterEvent(UIEvent.READY, onComponentReady);
         refreshFor(e.target);
     }
     
     public function refreshFor(component:Component) {
         if (component.isReady == false) {
-            component.registerEvent(UIEvent.INITIALIZE, onComponentReady);
+            component.registerEvent(UIEvent.READY, onComponentReady);
             return;
         }
         
@@ -261,22 +263,61 @@ class LocaleManager {
         return translateTo(language, id, param0, param1, param2, param3);
     }
 
-	public function translateTo(lang:String, id:String, param0:Any = null, param1:Any = null, param2:Any = null, param3:Any = null) {
-        var strings = getStrings(lang);
-        if (strings == null) {
-            return id;
+    private var _localeStringMap:Map<String, Map<String, LocaleString>> = new Map<String, Map<String, LocaleString>>();
+    public function translateTo(lang:String, id:String, param0:Any = null, param1:Any = null, param2:Any = null, param3:Any = null) {
+        var map = _localeStringMap.get(lang);
+        var localeString:LocaleString = null;
+        if (map != null) {
+            localeString = map.get(id);
         }
-        var value = strings.get(id);
-        if (value == null) {
-            return id;
+
+        if (localeString == null) {
+            var strings = getStrings(lang);
+            if (strings == null) {
+                return id;
+            }
+            var value = strings.get(id);
+            if (value == null) {
+                return id;
+            }
+
+            // this means its a compound string, ie, translates string that refs another string:
+            //     X=test1
+            //     Y=test2 {{X}}
+            //     Z=test3 {{X}} {{Y}}
+            // this also means we cant really cache it, so in these cases, we will completely
+            // build the string from scratch again and again
+            var isCompound = false;
+            if (value.indexOf("{{") != -1 && value.indexOf("}}") != -1) {
+                isCompound = true;
+                var n1 = value.indexOf("{{");
+                while (n1 != -1) {
+                    var n2 = value.indexOf("}}", n1);
+                    var before = value.substring(0, n1);
+                    var part = value.substring(n1 + 2, n2);
+                    var after = value.substring(n2 + 2);
+
+                    var partValue = translateTo(lang, part, param0, param1, param2, param3);
+                    value = before + partValue + after;
+
+                    n1 = value.indexOf("{{", n1);
+                }
+            }
+
+            localeString = new LocaleString();
+            localeString.parse(id + "=" + value);
+
+            if (!isCompound) {
+                if (map == null) {
+                    map = new Map<String, LocaleString>();
+                    _localeStringMap.set(lang, map);
+                }
+                map.set(id, localeString);
+            }
         }
-        
-        if (param0 != null) value = StringTools.replace(value, "{0}", param0);
-        if (param1 != null) value = StringTools.replace(value, "{1}", param1);
-        if (param2 != null) value = StringTools.replace(value, "{2}", param2);
-        if (param3 != null) value = StringTools.replace(value, "{3}", param3);
-        
-        return value;
+
+        var result = localeString.build(param0, param1, param2, param3);
+        return result;
     }
     
     private function findRoot(c:Component):Component {

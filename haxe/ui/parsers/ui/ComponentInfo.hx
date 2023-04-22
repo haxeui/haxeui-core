@@ -3,6 +3,7 @@ package haxe.ui.parsers.ui;
 import haxe.ui.util.StringUtil;
 
 class ComponentInfo {
+    public var namespace:Null<String>;
     public var type:Null<String>;
     public var id:Null<String>;
     public var left:Null<Float>;
@@ -21,6 +22,7 @@ class ComponentInfo {
     public var composite:Null<Bool>;
     public var layoutName:Null<String>;
     public var direction:Null<String>;
+    public var validators:Array<ValidatorInfo>;
 
     public var properties:Map<String, String>;
     public var parent:ComponentInfo;
@@ -41,6 +43,7 @@ class ComponentInfo {
         children = [];
         scriptlets = [];
         styles = [];
+        validators = [];
     }
 
     public var styleString(get, never):String;

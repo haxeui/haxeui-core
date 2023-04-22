@@ -16,6 +16,7 @@ class DialogBase extends Box {
     public var buttons:DialogButton = null;
     public var centerDialog:Bool = true;
     public var button:DialogButton = null;
+    public var defaultButton:String = null;
 
     private var _overlay:Component;
 
@@ -35,11 +36,13 @@ class DialogBase extends Box {
         dialogContainer = new haxe.ui.containers.VBox();
         dialogContainer.id = "dialog-container";
         dialogContainer.styleNames = "dialog-container";
+        dialogContainer.scriptAccess = false;
         addComponent(dialogContainer);
 
         dialogTitle = new haxe.ui.containers.HBox();
         dialogTitle.id = "dialog-title";
         dialogTitle.styleNames = "dialog-title";
+        dialogTitle.scriptAccess = false;
         dragInitiator = dialogTitle;
         dialogContainer.addComponent(dialogTitle);
 
@@ -47,33 +50,46 @@ class DialogBase extends Box {
         dialogTitleLabel.id = "dialog-title-label";
         dialogTitleLabel.styleNames = "dialog-title-label";
         dialogTitleLabel.text = "HaxeUI";
+        dialogTitleLabel.scriptAccess = false;
         dialogTitle.addComponent(dialogTitleLabel);
 
         dialogCloseButton = new haxe.ui.components.Image();
         dialogCloseButton.id = "dialog-close-button";
         dialogCloseButton.styleNames = "dialog-close-button";
+        dialogCloseButton.scriptAccess = false;
         dialogTitle.addComponent(dialogCloseButton);
 
         dialogContent = new haxe.ui.containers.VBox();
         dialogContent.id = "dialog-content";
         dialogContent.styleNames = "dialog-content";
+        dialogContent.scriptAccess = false;
         dialogContent.registerEvent(UIEvent.RESIZE, onContentResize);
         dialogContainer.addComponent(dialogContent);
 
         dialogFooterContainer = new haxe.ui.containers.Box();
         dialogFooterContainer.id = "dialog-footer-container";
         dialogFooterContainer.styleNames = "dialog-footer-container";
+        dialogFooterContainer.scriptAccess = false;
         dialogContainer.addComponent(dialogFooterContainer);
 
         dialogFooter = new haxe.ui.containers.HBox();
         dialogFooter.id = "dialog-footer";
         dialogFooter.styleNames = "dialog-footer";
+        dialogFooter.scriptAccess = false;
         dialogFooter.registerEvent(UIEvent.RESIZE, onFooterResize);
         dialogFooterContainer.addComponent(dialogFooter);
 
         dialogFooterContainer.hide();
         dialogCloseButton.onClick = function(e) {
             hideDialog(DialogButton.CANCEL);
+        }
+
+        registerEvent(UIEvent.SUBMIT, onSubmit);
+    }
+
+    private function onSubmit(event:UIEvent) {
+        if (defaultButton != null) {
+            hideDialog(defaultButton);
         }
     }
 
@@ -120,20 +136,26 @@ class DialogBase extends Box {
         #end
         var dp = dialogParent;
         if (modal) {
-            if (_overlay != null) {
-                return;
-            }
-            _overlay = new Component();
-            _overlay.id = "modal-background";
-            _overlay.addClass("modal-background");
-            _overlay.percentWidth = _overlay.percentHeight = 100;
-            _overlay.onClick = function(_) {
-                if (closable) {
-                    hideDialog(DialogButton.CANCEL);
+            if (_overlay == null) {
+                _overlay = new Component();
+                _overlay.id = "modal-background";
+                _overlay.addClass("modal-background");
+                _overlay.percentWidth = _overlay.percentHeight = 100;
+                _overlay.onClick = function(_) {
+                    if (closable) {
+                        hideDialog(DialogButton.CANCEL);
+                    }
                 }
             }
+
             if (dp != null) {
-                dp.addComponent(_overlay);
+                includeInLayout = false;
+        		_overlay.includeInLayout = false;
+        		_overlay.screenTop = dp.screenTop;
+        		_overlay.screenLeft = dp.screenLeft;
+        		_overlay.height = dp.height;
+        		_overlay.width = dp.width;
+        		dp.addComponent(_overlay);
             } else {
                 Screen.instance.addComponent(_overlay);
             }
@@ -189,6 +211,9 @@ class DialogBase extends Box {
                 buttonComponent.text = text;
                 buttonComponent.userData = button;
                 buttonComponent.registerEvent(MouseEvent.CLICK, onFooterButtonClick);
+                if (defaultButton != null && buttonComponent.text == defaultButton) {
+                    buttonComponent.addClass("emphasized");
+                }
                 addFooterComponent(buttonComponent);
             }
             _buttonsCreated = true;
@@ -226,9 +251,9 @@ class DialogBase extends Box {
                 
                 if (modal && _overlay != null) {
                     if (dp != null) {
-                        dp.removeComponent(_overlay);
+                        dp.removeComponent(_overlay, destroyOnClose);
                     } else {
-                        Screen.instance.removeComponent(_overlay);
+                        Screen.instance.removeComponent(_overlay, destroyOnClose);
                     }
                 }
                 if (dp != null) {

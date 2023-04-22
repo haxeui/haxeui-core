@@ -119,6 +119,30 @@ class FieldBuilder {
         return false;
     }
 
+    public var isInt(get, null):Bool;
+    private function get_isInt():Bool {
+        switch (this.type) {
+            case TPath(p):
+                if (p.name == "Int") {
+                    return true;
+                }
+            case _:
+        }
+        return false;
+    }
+
+    public var isFloat(get, null):Bool;
+    private function get_isFloat():Bool {
+        switch (this.type) {
+            case TPath(p):
+                if (p.name == "Float") {
+                    return true;
+                }
+            case _:
+        }
+        return false;
+    }
+
     public var meta(get, null):Metadata;
     private function get_meta():Metadata {
         return field.meta;

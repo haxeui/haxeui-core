@@ -4,6 +4,10 @@
 .component {
 }
 
+.absolute {
+    clip: true;
+}
+
 .custom-component, .animation {
     width: auto;
     height: auto;
@@ -171,6 +175,7 @@
 }
 
 .section-header .label {
+    font-weight: bold;
     color: $normal-text-color;
 }
 

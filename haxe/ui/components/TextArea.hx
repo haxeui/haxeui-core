@@ -29,15 +29,53 @@ class TextArea extends InteractiveComponent implements IFocusable {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
+    /**
+        The text displayed inside this text area.
+    **/
     @:behaviour(TextBehaviour)              public var text:String;
+
+    /**
+        A string containing HTML markup to be displayed inside the text field.
+    **/
     @:behaviour(HtmlTextBehaviour)          public var htmlText:String;
+
+    /**
+        The text displayed inside of the `TextField`.
+        
+        `value` is used as a universal way to access the "core" value a component is based on. 
+        in this case its the text displayed inside the text field.
+    **/
     @:clonable @:value(text)                public var value:Dynamic;
+
+    /**
+        Placeholder text to display inside the text area when `text` is empty.
+    **/
     @:behaviour(PlaceholderBehaviour)       public var placeholder:String;
+
+    /**
+        Whether or not the text area should automatically transfer text for which 
+        there isn't enough space from the end of the current line of text to the beginning of the next.
+    **/
     @:behaviour(WrapBehaviour, true)        public var wrap:Bool;
+
+    /**
+        Might be more efficient to use to this field instead of directly setting 
+        `text` if you work with large amounts of text.
+    **/
     @:behaviour(DataSourceBehaviour)        public var dataSource:DataSource<String>;
+
+    /**
+        Whether to automatically scroll to the bottom of the text when typing or not.
+    **/
     @:behaviour(DefaultBehaviour)           public var autoScrollToBottom:Bool;
 
+    /**
+        Scrolls to the top of the text area
+    **/
     @:call(ScrollToTop)                     public function scrollToTop();
+    /**
+        Scrolls to the bottom of the text area
+    **/
     @:call(ScrollToBottom)                  public function scrollToBottom();
 
     //***********************************************************************************************************

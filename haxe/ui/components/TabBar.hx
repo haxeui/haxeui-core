@@ -46,13 +46,26 @@ class TabBarLayout extends DefaultLayout {
         super.repositionChildren();
 
         var filler:Box = _component.findComponent("tabbar-filler", false);
+        var container:Box = _component.findComponent("tabbar-contents", false);
         if (filler != null) {
-            var container:Box = _component.findComponent("tabbar-contents", false);
             filler.width = _component.width - container.width;
             filler.height = _component.height;
             filler.left = container.width;
         }
-        
+
+        var max:Float = 0;
+        for (button in container.childComponents) {
+            button.syncComponentValidation();
+            if (button.height > max) {
+                max = button.height;
+            }
+        }
+        if (max > 0) {
+            for (button in container.childComponents) {
+                button.height = max;
+            }
+        }
+
         var left:Button = _component.findComponent("tabbar-scroll-left", false);
         var right:Button = _component.findComponent("tabbar-scroll-right", false);
         if (left != null && hidden(left) == false) {
@@ -68,6 +81,18 @@ class TabBarLayout extends DefaultLayout {
             right.left = _component.width - right.width;
             right.top = (_component.height / 2) - (right.height / 2);
         }
+    }
+
+    public override function calcAutoSize(exclusions:Array<Component> = null) {
+        var size = super.calcAutoSize();
+        var max:Float = 0;
+        for (b in _component.findComponents(TabBarButton)) {
+            if (b.height > max) {
+                max = b.height;
+            }
+        }
+        size.height = max;
+        return size;
     }
 }
 
@@ -105,6 +130,14 @@ private class SelectedIndex extends DataBehaviour {
         }
         if (_value > builder._container.childComponents.length - 1) {
             _value = builder._container.childComponents.length - 1;
+            return;
+        }
+
+        var beforeChangeEvent = new UIEvent(UIEvent.BEFORE_CHANGE);
+        beforeChangeEvent.value = _value;
+        _component.dispatch(beforeChangeEvent);
+        if (beforeChangeEvent.canceled) {
+            _value = _previousValue;
             return;
         }
 
@@ -313,11 +346,15 @@ private class Events extends haxe.ui.events.Events {
 
     private function onMouseWheel(event:MouseEvent) {
         var builder:Builder = cast(_tabbar._compositeBuilder, Builder);
-        if (event.delta < 0) {
-            builder.scrollLeft();
-        } else {
-            builder.scrollRight();
+        if (builder._scrollLeft == null || builder._scrollLeft.hidden == true) {
+            return;
         }
+        if (event.delta < 0) {
+            builder.scrollRight();
+        } else {
+            builder.scrollLeft();
+        }
+
         event.cancel();
     }
 
@@ -400,6 +437,9 @@ private class Builder extends CompositeBuilder {
         button.addClass("tabbar-button");
         if (_tabbar.tabPosition == "bottom") {
             button.addClass(":bottom");
+        }
+        if (child.disabled == true) {
+            button.disabled = child.disabled;
         }
 
         button.id = child.id;
@@ -579,7 +619,7 @@ private class Builder extends CompositeBuilder {
         super.applyStyle(style);
         
         haxe.ui.macros.ComponentMacros.cascacdeStylesToList(Button, [
-            color, fontName, fontSize, cursor, textAlign, fontBold, fontUnderline, fontItalic
+            color, fontName, fontSize, textAlign, fontBold, fontUnderline, fontItalic
         ]);
     }
 }
@@ -639,7 +679,7 @@ private class TabBarButtonLayout extends ButtonLayout {
         super.repositionChildren();
 
         var image = _component.findComponent("tab-close-button", Image, false);
-        if (image != null && component.componentWidth > 0) {
+        if (image != null && image.hidden == false && component.componentWidth > 0) {
             image.top = Std.int((component.componentHeight / 2) - (image.componentHeight / 2)) + marginTop(image) - marginBottom(image);
             image.left = component.componentWidth - image.componentWidth - paddingRight + marginLeft(image) - marginRight(image);
         }
@@ -649,7 +689,7 @@ private class TabBarButtonLayout extends ButtonLayout {
         var size = super.calcAutoSize(exclusions);
 
         var image = _component.findComponent("tab-close-button", Image, false);
-        if (image != null) {
+        if (image != null && image.hidden == false) {
             size.width += image.width + horizontalSpacing;
         }
 

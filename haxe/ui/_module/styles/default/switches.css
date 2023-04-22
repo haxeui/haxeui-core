@@ -19,7 +19,6 @@
     padding: 0px;
     initial-width: 40px;
     initial-height: 20px;
-    filter: $normal-inner-shadow;
 }
 
 .switch-button-sub:disabled {
@@ -53,7 +52,7 @@
     }
     100% {
         pos: 100;
-        background-color: $selection-background-color;
+        background-color: $selection-background-color-hover;
     }
 }
 

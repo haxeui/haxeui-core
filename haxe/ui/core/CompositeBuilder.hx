@@ -3,6 +3,7 @@ package haxe.ui.core;
 import haxe.ui.styles.Style;
 import haxe.ui.util.MathUtil;
 
+@:keepSub
 class CompositeBuilder {
     private var _component:Component;
 
