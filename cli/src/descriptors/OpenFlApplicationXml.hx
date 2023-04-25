@@ -33,7 +33,7 @@ class OpenFlApplicationXml extends Descriptor {
     public override function find(path:String):Bool {
         var contents = FileSystem.readDirectory(path);
         for (c in contents) {
-            if (FileSystem.isDirectory(path + "/" + c) == false && (c == "application.xml" || c == "project.xml")) {
+            if (FileSystem.isDirectory(path + "/" + c) == false && c == "Project.xml") {
                 load(path + "/" + c);
                 return true;
             }
