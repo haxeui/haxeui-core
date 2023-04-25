@@ -12,5 +12,5 @@ typedef ImageInfo = {
     #end
     public var width:Int;
     public var height:Int;
-    @:optional public var loader:ImageLoaderBase;
+    @:noCompletion @:optional public var loader:ImageLoaderBase;
 }
