@@ -47,7 +47,12 @@ class ImageLoader {
                 return;
             }
 
-            loader.load(resource, callback);
+            loader.load(resource, function(imageInfo) {
+                if (callback != null) {
+                    imageInfo.loader = loader;
+                    callback(imageInfo);
+                }
+            });
         } else if (resource.isImageData) {
             var imageData:ImageData = resource;
             if (callback != null) {

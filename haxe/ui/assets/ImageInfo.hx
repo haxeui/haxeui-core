@@ -1,5 +1,6 @@
 package haxe.ui.assets;
 
+import haxe.ui.loaders.image.ImageLoaderBase;
 import haxe.ui.backend.ImageData;
 
 typedef ImageInfo = {
@@ -11,5 +12,5 @@ typedef ImageInfo = {
     #end
     public var width:Int;
     public var height:Int;
-
+    @:optional public var loader:ImageLoaderBase;
 }

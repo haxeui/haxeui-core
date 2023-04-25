@@ -271,6 +271,10 @@ private class ResourceBehaviour extends DataBehaviour {
                     }
                     var display:ImageDisplay = image.getImageDisplay();
                     if (display != null) {
+                        if (imageInfo.loader != null) {
+                            imageInfo.loader.postProcess(_value, image);
+                            imageInfo.loader = null;
+                        }
                         display.imageInfo = imageInfo;
                         image.originalWidth = imageInfo.width;
                         image.originalHeight = imageInfo.height;
