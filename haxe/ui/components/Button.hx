@@ -144,15 +144,26 @@ class ButtonLayout extends DefaultLayout {
 
         if (_component.autoWidth == false) {
             var label:Label = component.findComponent(Label, false);
-            var ucx:Size = usableSize;
-            var cx = ucx.width;
+            var ucx = usableSize.width;
             if (label != null) {
-                label.width = cx;
+                label.width = ucx;
             }
             
             var itemRenderer = component.findComponent(ItemRenderer);
             if (itemRenderer != null) {
-                itemRenderer.width = cx;
+                itemRenderer.width = ucx;
+            }
+        }
+
+        if (_component.autoHeight == false) {
+            var icon:Image = component.findComponent("button-icon", false);
+            var ucy = usableSize.height;
+            if (icon != null) {
+                if (icon.height > ucy) {
+                    var ratio = icon.width / icon.height;
+                    icon.height = ucy;
+                    icon.width = ucy * ratio;
+                }
             }
         }
     }
