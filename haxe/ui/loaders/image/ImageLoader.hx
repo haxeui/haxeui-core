@@ -49,7 +49,9 @@ class ImageLoader {
 
             loader.load(resource, function(imageInfo) {
                 if (callback != null) {
-                    imageInfo.loader = loader;
+                    if (imageInfo != null) {
+                        imageInfo.loader = loader;
+                    }
                     callback(imageInfo);
                 }
             });
