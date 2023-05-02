@@ -8,7 +8,6 @@ import haxe.macro.Context;
 import haxe.macro.Expr.TypePath;
 import haxe.macro.Expr;
 import haxe.ui.core.ComponentClassMap;
-import haxe.ui.core.LayoutClassMap;
 import haxe.ui.macros.ComponentMacros.BuildData;
 import haxe.ui.macros.helpers.ClassBuilder;
 import haxe.ui.macros.helpers.CodeBuilder;
@@ -244,12 +243,6 @@ class ModuleMacros {
         for (alias in ComponentClassMap.list()) {
             builder.add(macro
                 haxe.ui.core.ComponentClassMap.register($v{alias}, $v{ComponentClassMap.get(alias)})
-            );
-        }
-
-        for (alias in LayoutClassMap.list()) {
-            builder.add(macro
-                haxe.ui.core.LayoutClassMap.register($v{alias}, $v{LayoutClassMap.get(alias)})
             );
         }
 

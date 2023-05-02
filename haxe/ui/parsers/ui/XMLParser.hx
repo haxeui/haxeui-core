@@ -86,8 +86,6 @@ class XMLParser extends ComponentParser {
             } else if (StringTools.startsWith(StringTools.trim(xml.firstChild().nodeValue), "[")) {
                 component.parent.data = StringTools.trim(xml.firstChild().nodeValue);
             }
-        } else if (nodeName == "layout") {
-            parseLayoutNode(component.parent, xml);
         } else if (nodeName == "validator") {
             parseValidatorNode(component.parent, xml);
         } else {
@@ -205,21 +203,6 @@ class XMLParser extends ComponentParser {
         }
     }
 
-    private function parseLayoutNode(component:ComponentInfo, xml:Xml) {
-        extractNamespaces(xml);
-
-        var layoutXml:Xml = xml.firstElement();
-        var layout:LayoutInfo = new LayoutInfo();
-        component.layout = layout;
-
-        layout.type = layoutXml.nodeName;
-
-        for (attrName in layoutXml.attributes()) {
-            var attrValue:String = layoutXml.get(attrName);
-            layout.properties.set(attrName, attrValue);
-        }
-    }
-
     private function parseValidatorNode(component:ComponentInfo, xml:Xml) {
         extractNamespaces(xml);
 
@@ -323,7 +306,7 @@ class XMLParser extends ComponentParser {
                     component.styleNames = attrValue;
                 case "composite":
                     component.composite = (attrValue == "true");
-                case "layout":
+                case "layout" | "layoutName":
                     component.layoutName = attrValue;
                 case "direction":
                     component.direction = attrValue;

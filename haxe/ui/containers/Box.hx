@@ -1,11 +1,11 @@
 package haxe.ui.containers;
 
-import haxe.ui.util.Variant;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.core.Component;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.LayoutFactory;
 import haxe.ui.styles.Style;
+import haxe.ui.util.Variant;
 
 /**
  Base `Layout` that allows a container to specify an `icon`. How that icon resource is used depends on subclasses, like `TabView`
@@ -35,7 +35,10 @@ class Box extends Component {
         }
 
         _layoutName = value;
-        layout = LayoutFactory.createFromName(layoutName);
+        var l = LayoutFactory.createFromName(layoutName);
+        if (l != null) {
+            layout = l;
+        }
         return value;
     }
 
@@ -56,6 +59,9 @@ class Box extends Component {
         if (style.direction != null && style.direction != _direction) {
             _direction = style.direction;
             this.layout = LayoutFactory.createFromName(_direction);
+        }
+        if (style.layout != null) {
+            layoutName = style.layout;
         }
     }
 }

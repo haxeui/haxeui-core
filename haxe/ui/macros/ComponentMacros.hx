@@ -8,7 +8,6 @@ import haxe.macro.ExprTools;
 import haxe.macro.TypeTools;
 import haxe.ui.core.ComponentClassMap;
 import haxe.ui.core.ComponentFieldMap;
-import haxe.ui.core.LayoutClassMap;
 import haxe.ui.core.TypeMap;
 import haxe.ui.macros.ModuleMacros;
 import haxe.ui.macros.helpers.ClassBuilder;
@@ -974,18 +973,7 @@ class ComponentMacros {
     }
     
     private static function buildLayoutCode(builder:CodeBuilder, l:LayoutInfo, id:Int) {
-        var className:String = LayoutClassMap.get(l.type.toLowerCase());
-        if (className == null) {
-            Context.warning("no class found for layout: " + l.type, Context.currentPos());
-            return;
-        }
-
         var layoutVarName = 'l${id}';
-        var typePath = {
-            var split = className.split(".");
-            { name: split.pop(), pack: split }
-        };
-
         var buildData = {
             namedComponents: new Map<String, NamedComponentDescription>(),
             bindingExprs: [],
@@ -993,12 +981,10 @@ class ComponentMacros {
             bindings: []
         }
         
-        builder.add(macro var $layoutVarName = new $typePath());
+        var layoutName = l.type.toLowerCase();
+        builder.add(macro var $layoutVarName = haxe.ui.layouts.LayoutFactory.createFromName($v{layoutName}));
         assignProperties(builder, layoutVarName, l.properties, buildData, null);
-
-        if (id != 0) {
-            builder.add(macro $i{"c" + (id)}.layout = $i{"l" + id});
-        }
+        builder.add(macro $i{"c" + (id)}.layout = $i{layoutVarName});
     }
 
     private static var _nextValidatorId = 0;
