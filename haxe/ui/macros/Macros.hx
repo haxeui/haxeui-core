@@ -1,13 +1,13 @@
 package haxe.ui.macros;
 
 
-import haxe.ui.core.ComponentClassMap;
 #if macro
 import haxe.macro.ComplexTypeTools;
 import haxe.macro.Context;
 import haxe.macro.Expr;
 import haxe.macro.ExprTools;
 import haxe.macro.TypeTools;
+import haxe.ui.core.ComponentClassMap;
 import haxe.ui.macros.ComponentMacros.BuildData;
 import haxe.ui.macros.ComponentMacros.NamedComponentDescription;
 import haxe.ui.macros.ModuleMacros;

@@ -4,9 +4,9 @@ import haxe.ui.core.Component;
 import haxe.ui.geom.Size;
 
 class DefaultLayout extends Layout {
-    private var _calcFullWidths:Bool = false;
-    private var _calcFullHeights:Bool = false;
-    private var _roundFullWidths:Bool = false;
+    @:clonable private var _calcFullWidths:Bool = false;
+    @:clonable private var _calcFullHeights:Bool = false;
+    @:clonable private var _roundFullWidths:Bool = false;
 
     private function buildWidthRoundingMap():Map<Component, Int> {
         if (_roundFullWidths == false || component.childComponents.length <= 1) {

@@ -8,7 +8,7 @@ class VerticalGridLayout extends Layout {
     }
 
     private var _columns:Int = 1;
-    public var columns(get, set):Int;
+    @:clonable public var columns(get, set):Int;
     private function get_columns():Int {
         return _columns;
     }

@@ -2203,6 +2203,11 @@ class Component extends ComponentImpl implements IValidating {
         if (_componentReady == false) {
             //ready();
         }
+
+        if (this.layout != null) {
+            c.layout = this.layout.cloneLayout();
+        }
+
         if (_hidden == true) {
             c.hide();
         }

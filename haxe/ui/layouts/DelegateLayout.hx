@@ -4,9 +4,9 @@ import haxe.ui.core.Component;
 import haxe.ui.geom.Size;
 
 class DelegateLayout extends DefaultLayout {
-    private var _size:DelegateLayoutSize;
+    @:clonable private var _size:DelegateLayoutSize;
 
-    public function new(size:DelegateLayoutSize) {
+    public function new(size:DelegateLayoutSize = null) {
         super();
         _size = size;
     }

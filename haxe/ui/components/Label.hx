@@ -1,12 +1,12 @@
 package haxe.ui.components;
 
+import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
-import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.events.UIEvent;
+import haxe.ui.geom.Size;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.styles.Style;
-import haxe.ui.geom.Size;
 
 /**
  * A way to display static (uneditable) text.

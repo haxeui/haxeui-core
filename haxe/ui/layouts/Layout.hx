@@ -3,6 +3,8 @@ package haxe.ui.layouts;
 import haxe.ui.core.Component;
 import haxe.ui.geom.Size;
 
+@:build(haxe.ui.macros.LayoutMacros.build())
+@:autoBuild(haxe.ui.macros.LayoutMacros.build())
 class Layout implements ILayout {
     public function new() {
 

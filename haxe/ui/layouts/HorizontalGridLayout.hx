@@ -4,7 +4,7 @@ import haxe.ui.geom.Size;
 
 class HorizontalGridLayout extends Layout {
     private var _rows:Int = 1;
-    public var rows(get, set):Int;
+    @:clonable public var rows(get, set):Int;
     private function get_rows():Int {
         return _rows;
     }
