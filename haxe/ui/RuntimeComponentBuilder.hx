@@ -8,8 +8,8 @@ import haxe.ui.core.ComponentClassMap;
 import haxe.ui.core.ComponentFieldMap;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.IDirectionalComponent;
-import haxe.ui.core.LayoutClassMap;
 import haxe.ui.layouts.Layout;
+import haxe.ui.layouts.LayoutFactory;
 import haxe.ui.parsers.ui.ComponentInfo;
 import haxe.ui.parsers.ui.ComponentParser;
 import haxe.ui.parsers.ui.LayoutInfo;
@@ -163,15 +163,9 @@ class RuntimeComponentBuilder {
     }
 
     private static function buildLayoutFromInfo(l:LayoutInfo):Layout {
-        var className:String = LayoutClassMap.get(l.type.toLowerCase());
-        if (className == null) {
-            trace("WARNING: no class found for layout: " + l.type);
-            return null;
-        }
-
-        var layout:Layout = Type.createInstance(Type.resolveClass(className), []);
+        var layout:Layout = LayoutFactory.createFromName(l.type.toLowerCase());
         if (layout == null) {
-            trace("WARNING: could not create class instance: " + className);
+            trace("WARNING: could not create class instance: " + l.type.toLowerCase());
             return null;
         }
 
