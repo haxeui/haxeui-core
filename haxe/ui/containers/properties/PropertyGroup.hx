@@ -1,6 +1,7 @@
 package haxe.ui.containers.properties;
 
 import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.components.Button;
 import haxe.ui.components.CheckBox;
 import haxe.ui.components.DropDown;
 import haxe.ui.components.Image;
@@ -172,6 +173,12 @@ private class Builder extends CompositeBuilder {
             editorContainer.addComponent(editor);
             editorContainer.hidden = prop.hidden;
             editor.registerEvent(UIEvent.CHANGE, onPropertyEditorChange);
+            if ((editor is Button)) {
+                var b = cast(editor, Button);
+                if (b.toggle == false) {
+                    editor.registerEvent(MouseEvent.CLICK, onPropertyEditorClick);
+                }
+            }
             cast(prop._compositeBuilder, PropertyBuilder).editor = editor;
 
             _propertyGroup.registerInternalEvents(Events, true);
@@ -254,10 +261,30 @@ private class Builder extends CompositeBuilder {
         newEvent.data = event.data;
         var prop = _editorMap.get(event.target);
         if (prop != null) {
+            if ((event.target is Button)) {
+                newEvent.data = cast(event.target, Button).selected;
+            } else {
+                newEvent.data = prop.value;
+            }
             prop.dispatch(newEvent);
         }
         _component.dispatch(newEvent);
-        _component.findAncestor(PropertyGrid).dispatch(newEvent);
+        var pg:PropertyGrid = _component.findAncestor(PropertyGrid);
+        pg.dispatch(newEvent);
+    }
+
+    private function onPropertyEditorClick(event:UIEvent) {
+        var newEvent = new UIEvent(UIEvent.CHANGE);
+        newEvent.target = event.target;
+        newEvent.data = event.data;
+        var prop = _editorMap.get(event.target);
+        if (prop != null) {
+            newEvent.data = prop.value;
+            prop.dispatch(newEvent);
+        }
+        _component.dispatch(newEvent);
+        var pg:PropertyGrid = _component.findAncestor(PropertyGrid);
+        pg.dispatch(newEvent);
     }
 
     private function buildEditor(property:Property):Component {
@@ -309,6 +336,15 @@ private class Builder extends CompositeBuilder {
                 case "date":
                     c = new DropDown();
                     cast(c, DropDown).type = "date";
+
+                case "action":
+                    c = new Button();
+                    c.value = property.value;
+
+                case "toggle":
+                    c = new Button();
+                    cast(c, Button).toggle = true;
+                    c.value = property.value;
 
                 default:
                     c = new TextField();
