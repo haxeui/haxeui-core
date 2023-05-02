@@ -983,6 +983,10 @@ class ComponentMacros {
         
         var layoutName = l.type.toLowerCase();
         var layoutClass = haxe.ui.layouts.LayoutFactory.lookupClass(layoutName);
+        if (layoutClass == null) {
+            trace("WARNING: layout '" + l.type + "' not found");
+            return;
+        }
         var parts = layoutClass.split(".");
         var typePath = {
             name: parts.pop(),
