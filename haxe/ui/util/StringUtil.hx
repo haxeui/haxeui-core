@@ -39,6 +39,10 @@ class StringUtil {
         return s;
     }
 
+    public static function splitOnCapitals(s:String, toLower:Bool = true):Array<String> {
+        return toDashes(s, toLower).split("-");
+    }
+
     public static function replaceVars(s:String, params:Map<String, Dynamic>):String {
         if (params != null) {
             for (k in params.keys()) {

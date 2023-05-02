@@ -982,7 +982,13 @@ class ComponentMacros {
         }
         
         var layoutName = l.type.toLowerCase();
-        builder.add(macro var $layoutVarName = haxe.ui.layouts.LayoutFactory.createFromName($v{layoutName}));
+        var layoutClass = haxe.ui.layouts.LayoutFactory.lookupClass(layoutName);
+        var parts = layoutClass.split(".");
+        var typePath = {
+            name: parts.pop(),
+            pack: parts
+        }
+        builder.add(macro var $layoutVarName = new $typePath());
         assignProperties(builder, layoutVarName, l.properties, buildData, null);
         builder.add(macro $i{"c" + (id)}.layout = $i{layoutVarName});
     }
@@ -1060,7 +1066,7 @@ class ComponentMacros {
                     propType: TypeMap.getTypeInfo(c.resolvedClassName, propName)
                 });
             } else {
-                if (c.resolvedClassName != null) {
+                if (c != null && c.resolvedClassName != null) {
                     var propType = null;
                     var propInfo = haxe.ui.util.RTTI.getClassProperty(c.resolvedClassName, propName);
                     if (propInfo != null) {

@@ -1,22 +1,32 @@
 package haxe.ui.layouts;
 
 class LayoutFactory {
+    private static var _map:Map<String, String> = new Map<String, String>();
+
+    #if !macro
     public static function createFromName(name:String):Layout {
-        switch (name) { // TODO: change this to a map, and make populate from module.xml (like components) - would also allow other modules to add layouts (as well as manually "registering" layouts)
-            case "vertical":
-                return new VerticalLayout();
-            case "horizontal":
-                return new HorizontalLayout();
-            case "continuous horizontal" | "continuousHorizontal":
-                return new HorizontalContinuousLayout();
-            case "absolute":
-                return new AbsoluteLayout();
-            case "vertical grid" | "verticalgrid":
-                return new VerticalGridLayout();
-            case "horizontal grid" | "horizontalgrid":
-                return new HorizontalGridLayout();
+        var className = _map.get(name.toLowerCase());
+        if (className == null) {
+            trace("WARNING: layout '" + name + "' not found");
+            return new DefaultLayout();
         }
 
-        return new DefaultLayout();
+        var cls = Type.resolveClass(className);
+        if (cls == null) {
+            trace("WARNING: layout '" + name + "' not found");
+            return new DefaultLayout();
+        }
+
+        var instance = Type.createInstance(cls, []);
+        return instance;
+    }
+    #end
+
+    public static function register(name:String, className:String) {
+        _map.set(name.toLowerCase(), className);
+    }
+
+    public static function lookupClass(name:String):String {
+        return _map.get(name.toLowerCase());
     }
 }
