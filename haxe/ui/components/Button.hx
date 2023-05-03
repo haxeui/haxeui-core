@@ -159,7 +159,7 @@ class ButtonLayout extends DefaultLayout {
             var icon:Image = component.findComponent("button-icon", false);
             var ucy = usableSize.height;
             if (icon != null) {
-                if (icon.height > ucy) {
+                if (icon.height > 0 && ucy > 0 && icon.height > ucy) {
                     var ratio = icon.width / icon.height;
                     icon.height = ucy;
                     icon.width = ucy * ratio;
