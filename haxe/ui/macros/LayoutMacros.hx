@@ -12,6 +12,8 @@ class LayoutMacros {
     macro static function build():Array<Field> {
         var builder = new ClassBuilder(Context.getBuildFields(), Context.getLocalType(), Context.currentPos());
 
+        ModuleMacros.loadModules();
+
         buildClonable(builder);
 
         return builder.fields;

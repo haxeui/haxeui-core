@@ -151,58 +151,7 @@ class ModuleMacros {
                 }
             }
 
-            for (l in m.layoutEntries) {
-                var types = MacroHelpers.typesFromClassOrPackage(l.className, l.classPackage);
-                if (types != null) {
-                    for (t in types) {
-                        var classInfo = new ClassBuilder(t);
-                        if (classInfo.hasSuperClass("haxe.ui.layouts.Layout")) {
-                            var fullPath = classInfo.fullPath;
-                            var name:String = classInfo.name;
-                            name = StringTools.replace(name, "Layout", "");
-                            name = StringTools.trim(name);
-                            if (name.length > 0) {
-                                builder.add(macro haxe.ui.layouts.LayoutFactory.register($v{name}, $v{fullPath}));
-                                haxe.ui.layouts.LayoutFactory.register(name, fullPath);
-                                var parts = StringUtil.splitOnCapitals(name);
-                                name = name.toLowerCase();
-                                if (parts.length > 1) {
-                                    var alias1 = parts.join(" ");
-                                    var alias2 = parts.join("-");
-                                    parts.reverse();
-                                    var alias3 = parts.join(" ");
-                                    var alias4 = parts.join("-");
-                                    builder.add(macro haxe.ui.layouts.LayoutFactory.register($v{alias1}, $v{fullPath}));
-                                    builder.add(macro haxe.ui.layouts.LayoutFactory.register($v{alias2}, $v{fullPath}));
-                                    builder.add(macro haxe.ui.layouts.LayoutFactory.register($v{alias3}, $v{fullPath}));
-                                    builder.add(macro haxe.ui.layouts.LayoutFactory.register($v{alias4}, $v{fullPath}));
-
-                                    haxe.ui.layouts.LayoutFactory.register(alias1, fullPath);
-                                    haxe.ui.layouts.LayoutFactory.register(alias2, fullPath);
-                                    haxe.ui.layouts.LayoutFactory.register(alias3, fullPath);
-                                    haxe.ui.layouts.LayoutFactory.register(alias4, fullPath);
-
-                                    // this is a bit of a hack, we'd like to use "vertical grid" as just "grid"
-                                    // so we'll add an appropriate alias, this can also be achived in another way
-                                    // using IDirectionalLayout (like IDirectionalComponent), but im not sure it 
-                                    // warrants it yet
-                                    if (parts[parts.length - 1] == "vertical" && parts.length > 1) {
-                                        parts.pop();
-                                        var directionalAlias1 = parts.join(" ");
-                                        var directionalAlias2 = parts.join("-");
-
-                                        builder.add(macro haxe.ui.layouts.LayoutFactory.register($v{directionalAlias1}, $v{fullPath}));
-                                        builder.add(macro haxe.ui.layouts.LayoutFactory.register($v{directionalAlias2}, $v{fullPath}));
-
-                                        haxe.ui.layouts.LayoutFactory.register(directionalAlias1, fullPath);
-                                        haxe.ui.layouts.LayoutFactory.register(directionalAlias2, fullPath);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            processLayoutEntries(m.layoutEntries, builder);
             
             for (l in m.locales) {
                 var localeId = l.id;
@@ -757,19 +706,81 @@ class ModuleMacros {
             return 0;
         });
 
+        _modulesLoaded = true;
+
         for (m in _modules) {
             for (p in m.properties) {
                 properties.set(p.name, p.value);
             }
+            processLayoutEntries(m.layoutEntries);
         }
         
-        _modulesLoaded = true;
-
         #if haxeui_macro_times
         stopTimer();
         #end
 
         return _modules;
+    }
+
+    private static function processLayoutEntries(layoutEntries:Array<ModuleLayoutEntry>, builder:CodeBuilder = null) {
+        for (l in layoutEntries) {
+            var types = MacroHelpers.typesFromClassOrPackage(l.className, l.classPackage);
+            if (types != null) {
+                for (t in types) {
+                    var classInfo = new ClassBuilder(t);
+                    if (classInfo.hasSuperClass("haxe.ui.layouts.Layout")) {
+                        var fullPath = classInfo.fullPath;
+                        var name:String = classInfo.name;
+                        name = StringTools.replace(name, "Layout", "");
+                        name = StringTools.trim(name);
+                        if (name.length > 0) {
+                            if (builder != null) {
+                                builder.add(macro haxe.ui.layouts.LayoutFactory.register($v{name}, $v{fullPath}));
+                            }
+                            haxe.ui.layouts.LayoutFactory.register(name, fullPath);
+                            var parts = StringUtil.splitOnCapitals(name);
+                            name = name.toLowerCase();
+                            if (parts.length > 1) {
+                                var alias1 = parts.join(" ");
+                                var alias2 = parts.join("-");
+                                parts.reverse();
+                                var alias3 = parts.join(" ");
+                                var alias4 = parts.join("-");
+                                if (builder != null) {
+                                    builder.add(macro haxe.ui.layouts.LayoutFactory.register($v{alias1}, $v{fullPath}));
+                                    builder.add(macro haxe.ui.layouts.LayoutFactory.register($v{alias2}, $v{fullPath}));
+                                    builder.add(macro haxe.ui.layouts.LayoutFactory.register($v{alias3}, $v{fullPath}));
+                                    builder.add(macro haxe.ui.layouts.LayoutFactory.register($v{alias4}, $v{fullPath}));
+                                }
+
+                                haxe.ui.layouts.LayoutFactory.register(alias1, fullPath);
+                                haxe.ui.layouts.LayoutFactory.register(alias2, fullPath);
+                                haxe.ui.layouts.LayoutFactory.register(alias3, fullPath);
+                                haxe.ui.layouts.LayoutFactory.register(alias4, fullPath);
+
+                                // this is a bit of a hack, we'd like to use "vertical grid" as just "grid"
+                                // so we'll add an appropriate alias, this can also be achived in another way
+                                // using IDirectionalLayout (like IDirectionalComponent), but im not sure it 
+                                // warrants it yet
+                                if (parts[parts.length - 1] == "vertical" && parts.length > 1) {
+                                    parts.pop();
+                                    var directionalAlias1 = parts.join(" ");
+                                    var directionalAlias2 = parts.join("-");
+
+                                    if (builder != null) {
+                                        builder.add(macro haxe.ui.layouts.LayoutFactory.register($v{directionalAlias1}, $v{fullPath}));
+                                        builder.add(macro haxe.ui.layouts.LayoutFactory.register($v{directionalAlias2}, $v{fullPath}));
+                                    }
+
+                                    haxe.ui.layouts.LayoutFactory.register(directionalAlias1, fullPath);
+                                    haxe.ui.layouts.LayoutFactory.register(directionalAlias2, fullPath);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private static function addResources(path:String, base:String, prefix:String, inclusions:Array<String>, exclusions:Array<String>, resourceList:Array<String>) {
