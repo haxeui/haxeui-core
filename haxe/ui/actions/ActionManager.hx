@@ -11,8 +11,7 @@ typedef RepeatActionInfo = {
     var timer:Timer;
 }
 
-@:enum
-abstract NavigationMethod(String) from String to String {
+enum abstract NavigationMethod(String) from String to String {
     var DESKTOP:String = "navigationDesktop";
     var DPAD:String = "navigationDPad";
 }
