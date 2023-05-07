@@ -1,7 +1,6 @@
 package haxe.ui.constants;
 
-@:enum
-abstract Priority(Int) from Int to Int {
+enum abstract Priority(Int) from Int to Int {
     var LOWEST = -1000;
     var LOW = -100;
     var NORMAL = 0;

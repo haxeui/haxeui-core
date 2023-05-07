@@ -4,8 +4,7 @@ package haxe.ui.actions;
 // it means "press on a button" (could be hardware button), so for example
 // you "press" a key on the keyboard, but only pressing the space key might dispatch the
 // "press" action type
-@:enum
-abstract ActionType(String) from String to String {
+enum abstract ActionType(String) from String to String {
     var PRESS = "actionPress";
     var LEFT = "actionLeft";
     var RIGHT = "actionRight";
