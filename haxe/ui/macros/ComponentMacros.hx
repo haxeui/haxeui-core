@@ -832,7 +832,7 @@ class ComponentMacros {
             #if macro_times_verbose
             stopTimer();
             #end
-            Context.warning("no class found for component: " + c.type, Context.currentPos());
+            Sys.println("WARNING: no class found for component '" + c.type + "' in '" + c.filename + "'");
             return id;
         }
 
@@ -880,7 +880,7 @@ class ComponentMacros {
 
         assignComponentProperties(builder, c, componentVarName, buildData);
         if (c.layout != null) {
-            buildLayoutCode(builder, c.layout, id);
+            buildLayoutCode(builder, c, id);
         }
 
         if (classInfo.hasInterface("haxe.ui.core.IDataComponent") == true && c.data != null) {
@@ -972,7 +972,8 @@ class ComponentMacros {
         builder.add(macro ($i{componentVarName} : haxe.ui.core.IDataComponent).dataSource = $i{dsVarName});
     }
     
-    private static function buildLayoutCode(builder:CodeBuilder, l:LayoutInfo, id:Int) {
+    private static function buildLayoutCode(builder:CodeBuilder, c:ComponentInfo, id:Int) {
+        var l = c.layout;
         var layoutVarName = 'l${id}';
         var buildData = {
             namedComponents: new Map<String, NamedComponentDescription>(),
@@ -984,7 +985,7 @@ class ComponentMacros {
         var layoutName = l.type.toLowerCase();
         var layoutClass = haxe.ui.layouts.LayoutFactory.lookupClass(layoutName);
         if (layoutClass == null) {
-            trace("WARNING: layout '" + l.type + "' not found");
+            Sys.println("WARNING: layout '" + l.type + "' not found for '" + c.type + "' in '" + c.filename + "'");
             return;
         }
         var parts = layoutClass.split(".");
