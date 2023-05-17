@@ -133,7 +133,14 @@ private class Builder extends CompositeBuilder {
             if (child.disabled == true) {
                 button.disabled = true;
             }
-            child.animatable = false;
+            if (!_accordion.isReady) {
+                child.animatable = false;
+            } else {
+                child.animatable = false;
+                Toolkit.callLater(function() {
+                    child.animatable = true;
+                });
+            }
             child.percentWidth = 100;
             child.addClass("accordion-page");
             child.registerEvent(UIEvent.PROPERTY_CHANGE, onPagePropertyChanged);
