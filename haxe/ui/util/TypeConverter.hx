@@ -49,7 +49,7 @@ class TypeConverter {
                     return 0;
                 }
                 return r;
-            case "variant" | "dynamic" | "scalemode" | "selectionmode":
+            case "variant" | "dynamic" | "scalemode" | "selectionmode" | "scrollpolicy":
                 return input;
             case _:
                 #if debug
