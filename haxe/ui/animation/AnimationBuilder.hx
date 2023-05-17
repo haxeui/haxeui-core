@@ -15,8 +15,13 @@ class AnimationBuilder {
     public var target:Component;
     public var onComplete:Void->Void = null;
 
-    public function new(target:Component = null) {
+    public var duration:Float;
+    public var easing:String;
+
+    public function new(target:Component = null, duration = .2, easing = "linear") {
         this.target = target;
+        this.duration = duration;
+        this.easing = easing;
     }
     
     public function shake(direction:String = "horizontal"):AnimationBuilder {
@@ -98,8 +103,8 @@ class AnimationBuilder {
             sortFrames();
             target._pauseAnimationStyleChanges = true;
             target.applyAnimationKeyFrame(frames, {
-                duration: .2,
-                easingFunction: EasingFunction.LINEAR
+                duration: duration,
+                easingFunction: easing
             });
         });
     }
