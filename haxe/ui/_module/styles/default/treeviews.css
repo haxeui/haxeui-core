@@ -81,3 +81,11 @@
 .treeview.full-width .treenode-child-container {
     width: 100%;
 }
+
+.treeview.full-width .basic-renderer-container {
+    width: 100%;
+}
+
+.treeview.full-width .treenode-container .label {
+    width: 100%;
+} 
