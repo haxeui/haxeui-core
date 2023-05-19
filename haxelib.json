@@ -15,8 +15,5 @@
     "dependencies": {},
     "name": "haxeui-core",
     "description": "The core library of the HaxeUI framework",
-    "url": "https://github.com/haxeui/haxeui-core",
-		"documentation": {
-			"metadata": "metas.json"
-		}
+    "url": "https://github.com/haxeui/haxeui-core"
 }
