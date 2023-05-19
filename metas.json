@@ -1,0 +1,7 @@
+[
+	{
+		"metadata": "bind",
+		"params": ["Component id", "The kind of event to bind the component to"],
+		"doc": "Provides a way for you to bind a function to a particular interaction event such as `MouseEvent`, `UIEvent` or `KeyboardEvent`"
+	}
+]

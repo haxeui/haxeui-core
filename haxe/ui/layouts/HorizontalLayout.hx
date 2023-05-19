@@ -12,6 +12,38 @@ class HorizontalLayout extends DefaultLayout {
     private override function repositionChildren() {
         var xpos = paddingLeft;
         var usableSize = this.usableSize;
+
+        var visibleChildren = component.childComponents.length;
+        for (child in component.childComponents) {
+            if (child.includeInLayout == false) {
+                visibleChildren--;
+                continue;
+            }
+        }
+        
+        var evenlySpace  = false;
+        var aroundSpace  = false;
+        var betweenSpace = false;
+        if (component.style != null) {
+            if (component.style.justifyContent == "space-between" ) betweenSpace = true;
+            // The empty space before the first and after the last item equals half of the spacing between the items
+            if (component.style.justifyContent == "space-evenly" )  evenlySpace  = true;
+            //  The empty space before the first and after the last item equals the spacing between the items
+            if (component.style.justifyContent == "space-around")   aroundSpace  = true;
+        }
+
+        var spacing:Float = horizontalSpacing;
+        
+        if (betweenSpace) {
+            spacing =   usableSize.width / (visibleChildren - 1) + horizontalSpacing;
+        }
+        else if (aroundSpace){
+            spacing = (usableSize.width + horizontalSpacing * (visibleChildren - 1))  / visibleChildren ;
+        }
+        else if (evenlySpace){
+            spacing = (usableSize.width + horizontalSpacing * (visibleChildren - 1))  / (visibleChildren + 1)  ;
+        }
+
         
         for (child in component.childComponents) {
             if (child.includeInLayout == false) {
@@ -31,8 +63,16 @@ class HorizontalLayout extends DefaultLayout {
                     ypos = paddingTop + marginTop(child);
             }
 
-            child.moveComponent(xpos + marginLeft(child), ypos);
-            xpos += child.componentWidth + horizontalSpacing;
+            if (aroundSpace) {
+                child.moveComponent(xpos + spacing / 2 + marginLeft(child), ypos);
+            }
+            else if (evenlySpace) {
+                child.moveComponent(xpos + spacing + marginLeft(child), ypos);
+            }
+            else {
+                child.moveComponent(xpos + marginLeft(child), ypos);
+            }
+            xpos += child.componentWidth + spacing;
         }
     }
 
