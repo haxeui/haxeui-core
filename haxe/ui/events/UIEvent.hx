@@ -46,6 +46,7 @@ class UIEvent extends EventImpl {
     // an event might have a related event, for example, a change event might
     // contain a related event as to where the event came from (mouse, keyboard, action)
     public var relatedEvent(default, default):UIEvent = null;
+    public var relatedComponent(default, default):Component = null;
 
     public var value:Variant;
     public var previousValue:Variant;
@@ -72,6 +73,7 @@ class UIEvent extends EventImpl {
         c.previousValue = this.previousValue;
         c.canceled = this.canceled;
         c.relatedEvent = this.relatedEvent;
+        c.relatedComponent = this.relatedComponent;
         postClone(c);
         return c;
     }
