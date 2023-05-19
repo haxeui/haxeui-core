@@ -1,28 +1,28 @@
 package haxe.ui.styles;
 
-enum EasingFunction {
+enum abstract EasingFunction(String) from String {
     /**
      Specifies an animation with the same speed from start to end.
     **/
-    LINEAR;
+    var LINEAR = "linear";
 
     /**
      Specifies an animation with a slow start, then fast, then end slowly.
     **/
-    EASE;
+    var EASE = "ease";
 
     /**
      Specifies an animation with a slow start.
     **/
-    EASE_IN;
+    var EASE_IN = "easeIn";
 
     /**
      Specifies an animation with a slow end.
     **/
-    EASE_OUT;
+    var EASE_OUT = "easeOut";
 
     /**
      Specifies an animation with a slow start and end.
     **/
-    EASE_IN_OUT;
+    var EASE_IN_OUT = "easeInOut";
 }

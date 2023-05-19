@@ -1,7 +1,6 @@
 package haxe.ui.constants;
 
-@:enum
-abstract AnimationFillMode(String) from String to String {
+enum abstract AnimationFillMode(String) from String to String {
     /**
      Animation will not apply any styles to the target before or after it is executing.
     **/

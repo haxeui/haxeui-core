@@ -1,7 +1,6 @@
 package haxe.ui.validation;
 
-@:enum
-abstract InvalidationFlags(String) from String to String {
+enum abstract InvalidationFlags(String) from String to String {
     var ALL = "all";
     var DATA = "data";
     var DISPLAY = "display";

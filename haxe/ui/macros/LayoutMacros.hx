@@ -6,17 +6,65 @@ import haxe.macro.Expr;
 import haxe.macro.TypeTools;
 import haxe.ui.macros.helpers.ClassBuilder;
 import haxe.ui.macros.helpers.CodePos;
+import haxe.ui.util.StringUtil;
 #end
 
 class LayoutMacros {
     macro static function build():Array<Field> {
         var builder = new ClassBuilder(Context.getBuildFields(), Context.getLocalType(), Context.currentPos());
 
-        ModuleMacros.loadModules();
+        if (builder.fullPath != "haxe.ui.layouts.Layout") {
+            ModuleMacros.loadModules();
+        }
+
+        if (!Context.getLocalClass().get().isPrivate) {
+            for (alias in buildLayoutAliases(builder.fullPath)) {
+                haxe.ui.layouts.LayoutFactory.register(alias, builder.fullPath);
+            }
+        }
 
         buildClonable(builder);
 
         return builder.fields;
+    }
+
+    public static function buildLayoutAliases(fullPath:String):Array<String> {
+        var aliases = [];
+        var name:String = fullPath.split(".").pop();
+        name = StringTools.replace(name, "Layout", "");
+        name = StringTools.trim(name);
+        if (name.length > 0) {
+            aliases.push(name);
+
+            var parts = StringUtil.splitOnCapitals(name);
+            name = name.toLowerCase();
+            if (parts.length > 1) {
+                var alias1 = parts.join(" ");
+                var alias2 = parts.join("-");
+                parts.reverse();
+                var alias3 = parts.join(" ");
+                var alias4 = parts.join("-");
+                aliases.push(alias1);
+                aliases.push(alias2);
+                aliases.push(alias3);
+                aliases.push(alias4);
+
+                // this is a bit of a hack, we'd like to use "vertical grid" as just "grid"
+                // so we'll add an appropriate alias, this can also be achived in another way
+                // using IDirectionalLayout (like IDirectionalComponent), but im not sure it 
+                // warrants it yet
+                if (parts[parts.length - 1] == "vertical" && parts.length > 1) {
+                    parts.pop();
+                    var directionalAlias1 = parts.join(" ");
+                    var directionalAlias2 = parts.join("-");
+                    aliases.push(directionalAlias1);
+                    aliases.push(directionalAlias2);
+                }
+            }
+
+        }
+
+        return aliases;
     }
 
     static function buildClonable(builder:ClassBuilder) {

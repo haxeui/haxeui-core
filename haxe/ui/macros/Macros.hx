@@ -599,7 +599,7 @@ class Macros {
                         newField = builder.addSetter(f.name, f.type, macro { // add a normal (Variant) setter
                             switch (Type.typeof(value)) {
                                 case TClass(String):
-                                    if (value != null && StringTools.startsWith(value, "{{") && StringTools.endsWith(value, "}}")) {
+                                    if (value != null && value.indexOf("{{") != -1 && value.indexOf("}}") != -1) {
                                         haxe.ui.locale.LocaleManager.instance.registerComponent(cast this, $v{f.name}, value);
                                         return value;
                                     }

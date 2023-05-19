@@ -1,7 +1,6 @@
 package haxe.ui.constants;
 
-@:enum
-abstract ScaleMode(String) from String to String {
+enum abstract ScaleMode(String) from String to String {
     var NONE = "none";
     var FILL = "fill";
     var FIT_INSIDE = "fitinside";

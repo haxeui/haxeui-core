@@ -180,6 +180,9 @@ class MacroHelpers {
         classPathCache = [];
         var paths:Array<String> = Context.getClassPath();
         for (path in paths) {
+            if (StringTools.trim(path).length == 0) {
+                path = Sys.getCwd();
+            }
             path = StringTools.trim(path + "/classpath.exclusions");
             path = Path.normalize(path);
             if (sys.FileSystem.exists(path)) {
@@ -188,6 +191,9 @@ class MacroHelpers {
         }
 
         for (path in paths) {
+            if (StringTools.trim(path).length == 0) {
+                path = Sys.getCwd();
+            }
             var originalPath = path;
             path = StringTools.trim(path);
             path = Path.normalize(path);

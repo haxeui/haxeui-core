@@ -1,5 +1,7 @@
 package haxe.ui.core;
 
+import haxe.ui.components.Image;
+import haxe.ui.components.Label;
 import haxe.ui.containers.Box;
 import haxe.ui.core.TypeMap;
 import haxe.ui.events.ItemEvent;
@@ -20,18 +22,42 @@ class ItemRenderer extends Box {
 
     private function _onItemMouseOver(event:MouseEvent) {
         addClass(":hover");
+        for (c in findComponents(Label)) {
+            c.addClass(":hover");
+        }
+        for (c in findComponents(Image)) {
+            c.addClass(":hover");
+        }
     }
 
     private function _onItemMouseOut(event:MouseEvent) {
         removeClass(":hover");
+        for (c in findComponents(Label)) {
+            c.removeClass(":hover");
+        }
+        for (c in findComponents(Image)) {
+            c.removeClass(":hover");
+        }
     }
 
     private function _onItemMouseDown(event:MouseEvent) {
         addClass(":down");
+        for (c in findComponents(Label)) {
+            c.addClass(":down");
+        }
+        for (c in findComponents(Image)) {
+            c.addClass(":down");
+        }
     }
 
     private function _onItemMouseUp(event:MouseEvent) {
         removeClass(":down");
+        for (c in findComponents(Label)) {
+            c.removeClass(":down");
+        }
+        for (c in findComponents(Image)) {
+            c.removeClass(":down");
+        }
     }
 
     private var _allowHover:Bool = true;

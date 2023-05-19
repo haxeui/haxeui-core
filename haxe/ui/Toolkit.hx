@@ -13,6 +13,10 @@ import haxe.ui.themes.ThemeManager;
 import haxe.ui.util.GenericConfig;
 import haxe.ui.util.Properties;
 
+#if !haxe4
+#error "HaxeUI requires Haxe 4+"
+#end
+
 class Toolkit {
     public static var styleSheet:CompositeStyleSheet = new CompositeStyleSheet();
 

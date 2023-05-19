@@ -1,7 +1,6 @@
 package haxe.ui.constants;
 
-@:enum
-abstract SelectionMode(String) from String to String {
+enum abstract SelectionMode(String) from String to String {
     var DISABLED = "disabled";
     var ONE_ITEM = "one-item";
     var ONE_ITEM_REPEATED = "one-item-repeated";

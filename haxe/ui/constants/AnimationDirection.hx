@@ -1,7 +1,6 @@
 package haxe.ui.constants;
 
-@:enum
-abstract AnimationDirection(String) from String to String {
+enum abstract AnimationDirection(String) from String to String {
     /**
      The animation is played as normal (forwards).
     **/

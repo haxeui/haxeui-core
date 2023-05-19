@@ -13,6 +13,7 @@ class XMLParser extends ComponentParser {
         _resourceResolver = resourceResolver;
 
         var component:ComponentInfo = new ComponentInfo();
+        component.filename = fileName;
 
         #if (haxe_ver >= 4.1)
         
@@ -94,6 +95,7 @@ class XMLParser extends ComponentParser {
 
             for (childXml in xml.elements()) {
                 var child:ComponentInfo = new ComponentInfo();
+                child.filename = component.filename;
                 child.parent = component;
                 if (parseComponent(child, childXml, resourceResolver) == true) {
                     component.children.push(child);
