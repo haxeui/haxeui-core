@@ -7,6 +7,8 @@ class FilterParser {
         var filter:Filter = null;
         if (filterDetails[0] == "drop-shadow") {
             filter = parseDropShadow(filterDetails);
+        } else if (filterDetails[0] == "box-shadow") {
+            filter = parseBoxShadow(filterDetails);
         } else if (filterDetails[0] == "blur") {
             filter = parseBlur(filterDetails);
         } else if (filterDetails[0] == "outline") {
@@ -41,6 +43,30 @@ class FilterParser {
         dropShadow.quality = copy[7];
         dropShadow.inner = copy[8];
         return dropShadow;
+    }
+
+    public static function parseBoxShadow(filterDetails:Array<Dynamic>):BoxShadow {
+        if (filterDetails == null || filterDetails.length == 0) {
+            return null;
+        }
+
+        var copy:Array<Dynamic> = filterDetails.copy();
+        buildDefaults();
+
+        var filterName = copy[0];
+        copy.remove(filterName);
+
+        copy = copyFilterDefaults(filterName, copy);
+
+        var boxShadow:BoxShadow = new BoxShadow();
+        boxShadow.offsetX = copy[0];
+        boxShadow.offsetY = copy[1];
+        boxShadow.color = copy[2];
+        boxShadow.alpha = copy[3];
+        boxShadow.blurRadius = copy[4];
+        boxShadow.spreadRadius = copy[5];
+        boxShadow.inset = copy[6];
+        return boxShadow;
     }
 
     public static function parseBlur(filterDetails:Array<Dynamic>):Blur {
@@ -126,6 +152,9 @@ class FilterParser {
         filterParamDefaults = new Map<String, Array<Dynamic>>();
         filterParamDefaults["drop-shadow"] = [];
         filterParamDefaults["drop-shadow"] = filterParamDefaults["drop-shadow"].concat([4, 45, 0, 1, 4, 4, 1, 1, false, false, false]);
+
+        filterParamDefaults["box-shadow"] = [];
+        filterParamDefaults["box-shadow"] = filterParamDefaults["box-shadow"].concat([2, 2, 0, .1, 1, 0, false]);
 
         filterParamDefaults["blur"] = [];
         filterParamDefaults["blur"] = filterParamDefaults["blur"].concat([1]);
