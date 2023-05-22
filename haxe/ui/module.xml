@@ -52,6 +52,7 @@
         <class package="haxe.ui.core" />
         <class package="haxe.ui.components" />
         <class package="haxe.ui.components.popups" />
+        <class package="haxe.ui.components.pickers" />
         <class package="haxe.ui.containers" />
         <class package="haxe.ui.containers.dialogs" />
         <class package="haxe.ui.containers.windows" />
@@ -200,6 +201,7 @@
             <style resource="haxeui-core/styles/default/treeviews.css" />
             <style resource="haxeui-core/styles/default/colorpickers.css" />
             <style resource="haxeui-core/styles/default/notifications.css" />
+            <style resource="haxeui-core/styles/default/pickers.css" />
             <style resource="haxeui-core/styles/default/last.css" />
         </default>
         <dark parent="default">
