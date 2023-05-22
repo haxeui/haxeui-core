@@ -231,7 +231,7 @@ class ListViewEvents extends ScrollViewEvents {
             case SelectionMode.ONE_ITEM_REPEATED:
                 _listview.selectedIndices = [renderer.itemIndex];
 
-            case SelectionMode.MULTIPLE_MODIFIER_KEY, SelectionMode.MULTIPLE_CLICK_MODIFIER_KEY:
+            case SelectionMode.MULTIPLE, SelectionMode.MULTIPLE_MODIFIER_KEY, SelectionMode.MULTIPLE_CLICK_MODIFIER_KEY:
                 if (e.ctrlKey == true) {
                     toggleSelection(renderer);
                 } else if (e.shiftKey == true) {
@@ -251,7 +251,7 @@ class ListViewEvents extends ScrollViewEvents {
                     }
 
                     selectRange(fromIndex, toIndex);
-                } else if (_listview.selectionMode == SelectionMode.MULTIPLE_CLICK_MODIFIER_KEY) {
+                } else if (_listview.selectionMode == SelectionMode.MULTIPLE || _listview.selectionMode == SelectionMode.MULTIPLE_CLICK_MODIFIER_KEY) {
                     _listview.selectedIndex = renderer.itemIndex;
                 }
 

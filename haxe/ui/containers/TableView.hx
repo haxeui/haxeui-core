@@ -292,7 +292,7 @@ private class Events extends ScrollViewEvents {
             case SelectionMode.ONE_ITEM_REPEATED:
                 _tableview.selectedIndices = [renderer.itemIndex];
 
-            case SelectionMode.MULTIPLE_MODIFIER_KEY, SelectionMode.MULTIPLE_CLICK_MODIFIER_KEY:
+            case SelectionMode.MULTIPLE, SelectionMode.MULTIPLE_MODIFIER_KEY, SelectionMode.MULTIPLE_CLICK_MODIFIER_KEY:
                 if (e.ctrlKey == true) {
                     toggleSelection(renderer);
                 } else if (e.shiftKey == true) {
@@ -312,7 +312,7 @@ private class Events extends ScrollViewEvents {
                     }
 
                     selectRange(fromIndex, toIndex);
-                } else if (_tableview.selectionMode == SelectionMode.MULTIPLE_CLICK_MODIFIER_KEY) {
+                } else if (_tableview.selectionMode == SelectionMode.MULTIPLE || _tableview.selectionMode == SelectionMode.MULTIPLE_CLICK_MODIFIER_KEY) {
                     _tableview.selectedIndex = renderer.itemIndex;
                 }
 
