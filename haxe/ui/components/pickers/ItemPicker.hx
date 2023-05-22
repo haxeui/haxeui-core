@@ -209,13 +209,11 @@ class ItemPickerBuilder extends CompositeBuilder {
 
     private function onPanelSelection(event:UIEvent) {
         handler.onPanelSelection(event);
-        trace("panel selection!");
         hidePanel();
     }
 
     private function onTrigger(event:UIEvent) {
         //event.cancel();
-        trace("on trigger");
         if (!_panelVisible) {
             picker.focus = true;
             showPanel();    
@@ -268,8 +266,6 @@ class ItemPickerBuilder extends CompositeBuilder {
                 panelOrigin = "left";
             }
         }
-
-        trace(panelWidth, panelHeight);
 
         if (panelPosition == "down") {
             panelContainer.addClass("position-down");
