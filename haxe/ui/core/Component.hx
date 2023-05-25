@@ -213,11 +213,6 @@ class Component extends ComponentImpl implements IValidating {
      */
     public var animatable(get, set):Bool;
     private function get_animatable():Bool {
-        #if !actuate
-
-        return false;
-
-        #end
         return _animatable;
     }
     private function set_animatable(value:Bool):Bool {
