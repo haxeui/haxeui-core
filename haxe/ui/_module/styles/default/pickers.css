@@ -1,3 +1,6 @@
+/************************************************************************
+** BASE ITEM PICKER
+*************************************************************************/
 .item-picker {
     background-color: #FFEEEE;
     padding: 6px 5px;
@@ -56,4 +59,97 @@
     border-bottom-color: $down-border-color;
     margin-top: -1px;
     filter: box-shadow(2, -2, #000000, 0.15, 6);
+}
+
+/************************************************************************
+** MONTH PICKER
+*************************************************************************/
+.month-picker {
+    padding: 1px;
+    border: 1px solid $normal-border-color;
+    border-radius: 2px;
+
+    background: $normal-background-color-start $normal-background-color-end vertical;
+    background: white;
+}
+
+.month-picker .option-stepper {
+    border: none;
+    filter: none;
+    background: none;
+}
+
+.month-picker .option-stepper .label {
+    background: none;
+    padding: 5px 8px;
+}
+
+.month-picker .option-stepper .button {
+    background: none;
+    padding: 0px 6px;
+}
+
+.month-picker .option-stepper .button:hover {
+    background: $hover-background-color-start $hover-background-color-end vertical;
+}
+
+.month-picker .option-stepper .stepper-deinc:hover {
+    border-right: 1px solid $normal-border-color;
+}
+
+.month-picker .option-stepper .stepper-inc:hover {
+    border-left: 1px solid $normal-border-color;
+}
+
+.month-picker .option-stepper .button:down {
+    background-color: $down-background-color-start;
+    filter: $normal-inner-shadow;
+}
+
+.month-picker #itemPickerTrigger {
+    padding: 5px 5px;
+    background: $normal-background-color-start $normal-background-color-end vertical;
+}
+
+.month-picker #itemPickerTrigger:hover {
+    background: $hover-background-color-start $hover-background-color-end vertical;
+}
+
+.month-picker #itemPickerTrigger.selected {
+    background-color: $down-background-color-start;
+    filter: $normal-inner-shadow;
+}
+
+.month-picker:active {
+    border: 1px solid $accent-color;
+}
+
+.month-picker.selected {
+    border: 1px solid $accent-color;
+}
+
+.month-deinc {
+    resource: $arrow-left;
+}
+
+.month-inc {
+    resource: $arrow-right;
+}
+
+.month-button {
+    height: 48px;
+    border: none;
+    background-color: $normal-background-color-end;
+}
+
+.month-button:hover {
+    border: 1px solid $normal-border-color;
+}
+
+.month-button.selected {
+    border: 1px solid $accent-color;
+}
+
+.month-button:disabled {
+    background-color: $default-background-color;
 }

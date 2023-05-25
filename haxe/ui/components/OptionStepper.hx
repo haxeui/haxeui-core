@@ -17,6 +17,7 @@ import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.styles.Style;
+import haxe.ui.util.Variant;
 
 /**
  * A stepper that allows the user to switch between items using the visual arrow buttons/arrow keys.
@@ -46,6 +47,9 @@ class OptionStepper extends InteractiveComponent implements IDataComponent {
      * in this case its the index of the selected option inside this stepper.
      */
     @:clonable @:value(selectedIndex)                   public var value:Dynamic;
+
+    @:call(IncrementValue)                              public function incrementValue():Void;
+    @:call(DeincrementValue)                            public function deincrementValue():Void;
 }
 
 //***********************************************************************************************************
@@ -104,6 +108,46 @@ private class SelectedItemBehaviour extends Behaviour {
     }
 }
 
+private class IncrementValue extends Behaviour {
+    public override function call(param:Any = null):Variant {
+        var stepper:OptionStepper = cast _component;
+        if (stepper.dataSource == null) {
+            return null;
+        }
+        var n = stepper.selectedIndex;
+        var m = stepper.dataSource.size;
+        
+        n++;
+        
+        if (n > m - 1) {
+            n = 0;
+        }
+        
+        stepper.selectedIndex = n;
+        return null;
+    }
+}
+
+private class DeincrementValue extends Behaviour {
+    public override function call(param:Any = null):Variant {
+        var stepper:OptionStepper = cast _component;
+        if (stepper.dataSource == null) {
+            return null;
+        }
+        var n = stepper.selectedIndex;
+        var m = stepper.dataSource.size;
+        
+        n--;
+        
+        if (n < 0) {
+            n = m -1;
+        }
+        
+        stepper.selectedIndex = n;
+        return null;
+    }
+}
+
 //***********************************************************************************************************
 // Composite Builder
 //***********************************************************************************************************
@@ -139,7 +183,7 @@ private class Builder extends CompositeBuilder {
         inc.repeater = true;
         _stepper.addComponent(inc);
     }
-    
+
     public override function applyStyle(style:Style) {
         var value:Label = _stepper.findComponent("value", Label);
         if (value != null &&
@@ -268,36 +312,12 @@ private class Events extends haxe.ui.events.Events {
     }
     
     private function incrementValue() {
-        if (_stepper.dataSource == null) {
-            return;
-        }
-        var n = _stepper.selectedIndex;
-        var m = _stepper.dataSource.size;
-        
-        n++;
-        
-        if (n > m - 1) {
-            n = 0;
-        }
-        
-        _stepper.selectedIndex = n;
+        _stepper.incrementValue();
     }
     
     
     private function deincrementValue() {
-        if (_stepper.dataSource == null) {
-            return;
-        }
-        var n = _stepper.selectedIndex;
-        var m = _stepper.dataSource.size;
-        
-        n--;
-        
-        if (n < 0) {
-            n = m -1;
-        }
-        
-        _stepper.selectedIndex = n;
+        _stepper.deincrementValue();
     }
 }
 
@@ -312,7 +332,6 @@ private class Layout extends DefaultLayout {
         var inc = findComponent("inc", Button);
         
         var u = usableSize;
-        
         deinc.height = u.height - (borderSize * 2);
         value.width = u.width - (deinc.width + inc.width);
         inc.height = u.height - (borderSize * 2);
