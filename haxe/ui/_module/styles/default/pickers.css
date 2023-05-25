@@ -71,6 +71,8 @@
 
     background: $normal-background-color-start $normal-background-color-end vertical;
     background: white;
+
+    filter: $normal-inner-shadow;
 }
 
 .month-picker .option-stepper {
