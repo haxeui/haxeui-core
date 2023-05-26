@@ -324,7 +324,18 @@ class ButtonLayout extends DefaultLayout {
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
 private class GroupBehaviour extends DataBehaviour {
+    public override function set(value:Variant) {
+        super.set(value);
+        if (_previousValue != null && !_previousValue.isNull && _previousValue.toString() != _value.toString()) {
+            ButtonGroups.instance.remove(_previousValue, cast _component);    
+        }
+        ButtonGroups.instance.add(value, cast _component);
+    }
+
     public override function validateData() {
+        if (_previousValue != null && !_previousValue.isNull && _previousValue.toString() != _value.toString()) {
+            ButtonGroups.instance.remove(_previousValue, cast _component);    
+        }
         ButtonGroups.instance.add(_value, cast _component);
     }
 }

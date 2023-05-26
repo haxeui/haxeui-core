@@ -51,10 +51,16 @@ class OptionBox extends CheckBox {
 private class GroupBehaviour extends DataBehaviour {
     public override function set(value:Variant) {
         super.set(value);
+        if (_previousValue != null && !_previousValue.isNull && _previousValue.toString() != _value.toString()) {
+            OptionBoxGroups.instance.remove(_previousValue, cast _component);    
+        }
         OptionBoxGroups.instance.add(value, cast _component);
     }
 
     public override function validateData() {
+        if (_previousValue != null && !_previousValue.isNull && _previousValue.toString() != _value.toString()) {
+            OptionBoxGroups.instance.remove(_previousValue, cast _component);    
+        }
         OptionBoxGroups.instance.add(_value, cast _component);
     }
 }
