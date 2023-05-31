@@ -249,18 +249,37 @@ class ItemPickerBuilder extends CompositeBuilder {
         panel.validateNow();
         panelContainer.validateNow();
 
+        Toolkit.callLater(function() {
+            positionPanel();
+        });
 
+        positionPanel();
+        
+        if (picker.animatable) {
+            panelContainer.fadeIn();
+        } else {
+            panelContainer.opacity = 1;
+        }
+        Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
+        _panelVisible = true;
+
+        Toolkit.callLater(function() {
+            resumePanelEvents();
+        });
+    }
+
+    private function positionPanel() {
         var panelPosition = "down";
         var panelOrigin = "left";
         var panelPosition = picker.panelPosition;
         var panelOrigin = picker.panelOrigin;
         var panelWidth:Null<Float> = picker.width;
         var panelHeight:Null<Float> = panel.height;
-
+    
         if (picker.panelWidth != null) {
             panelWidth = picker.panelWidth;
         }
-
+    
         if (panelPosition == "auto") {
             if (picker.screenTop + picker.height + panelHeight > Screen.instance.height) {
                 panelPosition = "up";
@@ -268,7 +287,7 @@ class ItemPickerBuilder extends CompositeBuilder {
                 panelPosition = "down";
             }
         }
-
+    
         if (panelOrigin == "auto") {
             if (picker.screenLeft + panelWidth > Screen.instance.width) {
                 panelOrigin = "right";
@@ -276,17 +295,13 @@ class ItemPickerBuilder extends CompositeBuilder {
                 panelOrigin = "left";
             }
         }
-
+    
         if (panelPosition == "down") {
             panelContainer.addClass("position-down");
         } else if (panelPosition == "up") {
             panelContainer.addClass("position-up");
         }
-
-        panelContainer.invalidateComponent();
-        panel.validateNow();
-        panelContainer.validateNow();
-
+    
         var marginTop:Float = 0;
         var marginLeft:Float = 0;
         var marginBottom:Float = 0;
@@ -302,7 +317,7 @@ class ItemPickerBuilder extends CompositeBuilder {
             horizontalPadding = panelContainer.style.paddingLeft + panelContainer.style.paddingRight;
             borderSize = panelContainer.style.borderTopSize;
         }
-
+    
         if (_panelFiller == null) {
             _panelFiller = new Component();
             _panelFiller.addClass("item-picker-panel-filler");
@@ -310,7 +325,7 @@ class ItemPickerBuilder extends CompositeBuilder {
             _panelFiller.height = borderSize;
             panelContainer.addComponent(_panelFiller);
         }
-
+    
         _panelFiller.width = panelWidth - picker.width;
         if (_panelFiller.width > 0) {
             _panelFiller.show();
@@ -318,7 +333,7 @@ class ItemPickerBuilder extends CompositeBuilder {
             _panelFiller.hide();
         }
         panel.width = panelWidth - horizontalPadding;
-
+    
         if (panelOrigin == "left") {
             panelContainer.left = picker.screenLeft;
             _panelFiller.left = picker.width - borderSize;
@@ -326,7 +341,7 @@ class ItemPickerBuilder extends CompositeBuilder {
             panelContainer.left = picker.screenLeft + picker.width - panelWidth;
             _panelFiller.left = borderSize;
         }
-
+    
         if (panelPosition == "down") {
             panelContainer.top = picker.screenTop + picker.height + marginTop;
             _panelFiller.top = 0;
@@ -334,25 +349,28 @@ class ItemPickerBuilder extends CompositeBuilder {
             panelContainer.top = picker.screenTop - panelContainer.height - marginTop;
             _panelFiller.top = panelHeight + borderSize;
         }
-        
-        if (picker.animatable) {
-            panelContainer.fadeIn();
-        } else {
-            panelContainer.opacity = 1;
-        }
-        Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
-        _panelVisible = true;
-
-        Toolkit.callLater(function() {
-            resumePanelEvents();
-        });
     }
 
     public function hidePanel() {
-        handler.onPanelHidden();
-        picker.removeClass("selected", true, true);
-        Screen.instance.removeComponent(panelContainer, false);
-        Screen.instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
+        if (picker.animatable) {
+            /*
+            panelContainer.fadeOut(function() {
+                handler.onPanelHidden();
+                picker.removeClass("selected", true, true);
+                Screen.instance.removeComponent(panelContainer, false);
+                Screen.instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
+            }, false);
+            */
+            handler.onPanelHidden();
+            picker.removeClass("selected", true, true);
+            Screen.instance.removeComponent(panelContainer, false);
+            Screen.instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
+        } else {
+            handler.onPanelHidden();
+            picker.removeClass("selected", true, true);
+            Screen.instance.removeComponent(panelContainer, false);
+            Screen.instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
+        }
         _panelVisible = false;
     }
 
