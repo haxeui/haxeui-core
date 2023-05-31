@@ -58,14 +58,14 @@ class SettingsManager {
     }
 }
 
-private interface ISettingsPersister {
+interface ISettingsPersister {
     public function set(name:String, value:String):Void;
     public function get(name:String):String;
 }
 
 #if js
 
-private class LocalStorageSettingsPersister implements ISettingsPersister {
+class LocalStorageSettingsPersister implements ISettingsPersister {
     public function new() {
     }
 
@@ -82,7 +82,7 @@ private class LocalStorageSettingsPersister implements ISettingsPersister {
 
 #elseif sys
 
-private class FileSettingsPersister implements ISettingsPersister {
+class FileSettingsPersister implements ISettingsPersister {
     public var filename:String = "settings.json";
 
     public function new() {
@@ -125,7 +125,7 @@ private class FileSettingsPersister implements ISettingsPersister {
 
 #end
 
-private class NoOpSettingsPersister implements ISettingsPersister {
+class NoOpSettingsPersister implements ISettingsPersister {
     public function new() {
     }
 
