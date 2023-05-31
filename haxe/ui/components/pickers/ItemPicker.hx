@@ -245,7 +245,7 @@ class ItemPickerBuilder extends CompositeBuilder {
         handler.onPanelShown();
         panelContainer.opacity = 0;
         Screen.instance.addComponent(panelContainer);
-        panelContainer.invalidateComponent();
+        panelContainer.syncComponentValidation();
         panel.validateNow();
         panelContainer.validateNow();
 
@@ -302,6 +302,10 @@ class ItemPickerBuilder extends CompositeBuilder {
             panelContainer.addClass("position-up");
         }
     
+        panelContainer.syncComponentValidation();
+        panel.validateNow();
+        panelContainer.validateNow();
+
         var marginTop:Float = 0;
         var marginLeft:Float = 0;
         var marginBottom:Float = 0;
