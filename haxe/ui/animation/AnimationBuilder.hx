@@ -1,6 +1,7 @@
 package haxe.ui.animation;
 
 import haxe.ui.core.Component;
+import haxe.ui.events.AnimationEvent;
 import haxe.ui.styles.Dimension;
 import haxe.ui.styles.EasingFunction;
 import haxe.ui.styles.Value;
@@ -92,13 +93,13 @@ class AnimationBuilder {
     
     public function play() {
         var frames = new AnimationKeyFrames("builder", _keyFrames);
-        target.onAnimationEnd = function(e) {
+        target.registerEvent(AnimationEvent.END, function(e) {
             target._pauseAnimationStyleChanges = false;
             target._componentAnimation = null;
             if (onComplete != null) {
                 onComplete();
             }
-        }
+        });
         Toolkit.callLater(function() {
             sortFrames();
             target._pauseAnimationStyleChanges = true;
