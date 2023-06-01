@@ -39,7 +39,7 @@
     height: 1px;
 }
 
-.frame .header {
+.frame .frame-header {
     horizontal-align: right;
     vertical-align: center;
     margin-right: 10px;
@@ -47,7 +47,7 @@
     spacing: 5px;
 }
 
-.frame.left-header .header {
+.frame.left-header .frame-header {
     horizontal-align: left;
     vertical-align: center;
     margin-right: 10px;
@@ -56,7 +56,7 @@
     padding-right: 5px;
 }
 
-.frame.collapsible .header {
+.frame.collapsible .frame-header {
     horizontal-align: left;
     vertical-align: center;
     _margin-right: 10px;
