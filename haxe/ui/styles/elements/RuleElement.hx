@@ -197,7 +197,12 @@ class RuleElement {
                     processDirective(nd);
                     directives.set(p, nd);
                 }
+            case Value.VCall(f, vl):
+                for (p in parts) {
+                    directives.set(p, new Directive(p, d.value));
+                }
             case _:
+                trace("unknown value type", d.value);
         }
     }
 }
