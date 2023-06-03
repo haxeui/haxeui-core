@@ -82,7 +82,7 @@ class Actuator<T> {
 
         _stopped = false;
 
-        if (target is Component && cast(target, Component).animatable == false) {
+        if ((target is Component) && cast(target, Component).animatable == false) {
             duration = 0;
         }
 
