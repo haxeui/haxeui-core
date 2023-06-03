@@ -5,6 +5,7 @@ class PropertyDetails<T> {
     public var propertyName:String;
     public var start:Float;
     public var target:T;
+    public var lastValue:Null<Float> = null;
 
     public function new (target:T, propertyName:String, start:Float, change:Float):Void {
         this.target = target;
