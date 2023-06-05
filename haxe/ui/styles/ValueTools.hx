@@ -32,20 +32,8 @@ class ValueTools {
             v = parseColor(s);
         } else if (s == "none") {
             v = Value.VNone;
-        } else if (isCall(s)) {    
-            var n = s.indexOf("(");
-            var f = s.substr(0, n);
-            var params = s.substr(n + 1, s.length - n - 2);
-            if (f == "calc") {
-                params = "'" + params + "'";
-            }
-            var vl = [];
-            for (p in params.split(",")) {
-                p = StringTools.trim(p);
-                vl.push(parse(p));
-            }
-            v = Value.VCall(f, vl);
-        } else if (StringTools.startsWith(s, "\"") && StringTools.endsWith(s, "\"")) {
+        }
+        else if (StringTools.startsWith(s, "\"") && StringTools.endsWith(s, "\"")) {
             v = Value.VString(s.substr(1, s.length - 2));
         } else if (StringTools.startsWith(s, "'") && StringTools.endsWith(s, "'")) {
             v = Value.VString(s.substr(1, s.length - 2));
@@ -56,30 +44,88 @@ class ValueTools {
         } else if (timeEReg.match(s)) {
             v = Value.VTime(Std.parseFloat(timeEReg.matched(1)), timeEReg.matched(2));
         } else {
-            var arr = s.split(" ");
-            if (arr.length == 1) {
-                v = Value.VConstant(s);
-            } else {
-                var vl = [];
-                for (a in arr) {
-                    a = StringTools.trim(a);
-                    vl.push(parse(a));
+            if (s.indexOf("(") != -1) {
+                var calls = extractCalls(s);
+                if (calls.length == 1) {
+                    var n = s.indexOf("(");
+                    var f = s.substr(0, n);
+                    var params = s.substr(n + 1, s.length - n - 2);
+                    if (f == "calc") {
+                        params = "'" + params + "'";
+                    }
+                    var vl = [];
+                    for (p in params.split(",")) {
+                        p = StringTools.trim(p);
+                        vl.push(parse(p));
+                    }
+                    v = Value.VCall(f, vl);
+                } else {
+                    var vl = [];
+                    for (a in calls) {
+                        a = StringTools.trim(a);
+                        vl.push(parse(a));
+                    }
+                    v = Value.VComposite(vl);
                 }
-                v = Value.VComposite(vl);
+            } else {
+                var arr = s.split(" ");
+                if (arr.length == 1) {
+                    v = Value.VConstant(s);
+                } else {
+                    var vl = [];
+                    for (a in arr) {
+                        a = StringTools.trim(a);
+                        vl.push(parse(a));
+                    }
+                    v = Value.VComposite(vl);
+                }
             }
         }
 
         return v;
     }
 
-    private static function isCall(s:String) {
-        var s = s.trim();
-        for (functionName in cssFunctions.keys()) {
-            if (s.startsWith(functionName + "(") && s.endsWith(")")) {
-                return true;
+    private static function extractCalls(s:String) {
+
+        var calls = [];
+        var counter = 0;
+
+        var i = 0;
+        var startCall = 0;
+        var startParams = -1;
+        while (i < s.length) {
+            var char = s.charAt(i);
+            if (char == "(") {
+                if (startParams  == -1 ) startParams = i;
+                counter--;
+            } else if (char == ")") {
+                counter++;
             }
+            // If counter is 0, then it is at the end of function, as same number of left and right parenthesis
+            if ((startParams != -1) && counter == 0) {
+                var preParams = s.substring(startCall, startParams);
+
+                // we check if there are "words" before the start of the function
+                // 1px solid rgb(255, 0, 0) each word will be push in his own call
+                var words = preParams.split(" ");
+                for ( j in 0...words.length) {
+                    var word = StringTools.trim(words[j]);
+                    // If the last word we attach the content between the parenthesis as it's a function
+                    if (j == words.length-1) {
+                        var func_params = s.substring(startParams, i + 1); 
+                        calls.push(word + func_params);
+                    }
+                    else {
+                        if (word != "" ) calls.push(word);
+                    }
+                }
+                
+                startCall = i + 1;
+                startParams = -1;
+            }
+            i++;
         }
-        return false;
+        return calls;
     }
 
     public static function compositeParts(value:Value):Int {
