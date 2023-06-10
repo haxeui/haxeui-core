@@ -26,27 +26,6 @@
     border-top: 1px solid $normal-border-color;
 }
 
-
-.sidebar:left #closeSideBar {
-    resource: "haxeui-core/styles/default/left_arrow_circled.png ";
-    cursor: pointer;
-}
-
-.sidebar:right #closeSideBar {
-    resource: "haxeui-core/styles/default/right_arrow_circled.png ";
-    cursor: pointer;
-}
-
-.sidebar:top #closeSideBar {
-    resource: "haxeui-core/styles/default/up_arrow_circled.png ";
-    cursor: pointer;
-}
-
-.sidebar:bottom #closeSideBar {
-    resource: "haxeui-core/styles/default/down_arrow_circled.png ";
-    cursor: pointer;
-}
-
 /****************************************************************************/
 /* ANIMATIONS                                                               */
 /****************************************************************************/
