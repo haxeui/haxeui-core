@@ -37,8 +37,6 @@ import Std.is as isOfType;
  * Base class of all HaxeUI controls
  */
 @:allow(haxe.ui.backend.ComponentImpl)
-@:build(haxe.ui.macros.Macros.build())
-@:autoBuild(haxe.ui.macros.Macros.build())
 class Component extends ComponentImpl implements IValidating {
 
     /**

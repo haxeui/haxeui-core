@@ -424,7 +424,7 @@ class Macros {
         var stopTimer = Context.timer("build clonable");
         #end
         
-        var useSelf:Bool = (builder.fullPath == "haxe.ui.core.ComponentContainer");
+        var useSelf:Bool = (builder.fullPath == "haxe.ui.backend.ComponentBase");
 
         var cloneFn = builder.findFunction("cloneComponent");
         if (cloneFn == null) { // add new clone fn
