@@ -52,12 +52,22 @@ class BackendMacros {
             var stopTimer = Context.timer("BackendMacros.loadBackendProperties");
             #end
 
+            var map:Map<String, String> = new Map<String, String>();
             MacroHelpers.scanClassPath(function(filePath:String, base:String) {
                 var props:Properties = new Properties();
                 props.fromFile(filePath);
                 properties.addAll(props);
+                for (propName in props.names()) {
+                    var propValue = props.getProp(propName);
+                    map.set(propName, propValue);
+                }
                 return false;
             }, searchCriteria);
+
+            var serializer = new haxe.Serializer();
+            serializer.serialize(map);
+            var s = serializer.toString();
+            Context.addResource("app.properties", haxe.io.Bytes.ofString(s));
 
             #if haxeui_macro_times
             stopTimer();
