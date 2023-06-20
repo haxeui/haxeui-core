@@ -401,35 +401,14 @@ class Style {
 
                 case "filter":
                     #if !haxeui_nofilters
-                    
-                    switch (v.value) {
-                        case Value.VCall(f, vl):
-                            var arr = ValueTools.array(vl);
-                            arr.insert(0, f);
-                            filter = [FilterParser.parseFilter(arr)];
-                        case Value.VConstant(f):
-                            filter = [FilterParser.parseFilter([f])];
-                        case Value.VNone:
-                            filter = null;
-                        case _:
-                    }
-                    
+                    filter = [];
+                    parseFilter(v.value, filter);  
                     #end
 
                 case "backdrop-filter":
                     #if !haxeui_nofilters
-                    
-                    switch (v.value) {
-                        case Value.VCall(f, vl):
-                            var arr = ValueTools.array(vl);
-                            arr.insert(0, f);
-                            backdropFilter = [FilterParser.parseFilter(arr)];
-                        case Value.VConstant(f):
-                            backdropFilter = [FilterParser.parseFilter([f])];
-                        case Value.VNone:
-                            backdropFilter = null;
-                        case _:
-                    }
+                    backdropFilter = [];
+                    parseFilter(v.value, backdropFilter);
                     
                     #end
 
@@ -788,6 +767,23 @@ class Style {
 
     private inline function createAnimationOptions() {
         if (animationOptions == null) animationOptions = {};
+    }
+
+    private function parseFilter(value, filters) {
+        switch (value) {
+            case Value.VCall(f, vl):
+                var arr = ValueTools.array(vl);
+                arr.insert(0, f);
+                filters.push(FilterParser.parseFilter(arr));
+            case Value.VConstant(f):
+                filters.push(FilterParser.parseFilter([f]));
+            case Value.VComposite(vl):
+                for ( v in vl ){
+                    parseFilter(v, filters);
+                }                  
+            case _:
+        }
+        return filters;
     }
     
     public function clone():Style {
