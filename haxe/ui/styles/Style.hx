@@ -401,44 +401,12 @@ class Style {
 
                 case "filter":
                     #if !haxeui_nofilters
-                    function parseFilter(value, filters) {
-                        switch (value) {
-                            case Value.VCall(f, vl):
-                                var arr = ValueTools.array(vl);
-                                arr.insert(0, f);
-                                filters.push(FilterParser.parseFilter(arr));
-                            case Value.VConstant(f):
-                                filters.push(FilterParser.parseFilter([f]));
-                            case Value.VComposite(vl):
-                                for ( v in vl ){
-                                    parseFilter(v, filters);
-                                }                  
-                            case _:
-                        }
-                        return filters;
-                    }
                     filter = [];
                     parseFilter(v.value, filter);  
                     #end
 
                 case "backdrop-filter":
                     #if !haxeui_nofilters
-                    function parseFilter(value, filters) {
-                        switch (value) {
-                            case Value.VCall(f, vl):
-                                var arr = ValueTools.array(vl);
-                                arr.insert(0, f);
-                                filters.push(FilterParser.parseFilter(arr));
-                            case Value.VConstant(f):
-                                filters.push(FilterParser.parseFilter([f]));
-                            case Value.VComposite(vl):
-                                for ( v in vl ){
-                                    parseFilter(v, filters);
-                                }
-                            case _:
-                        }
-                        return filters;
-                    }
                     backdropFilter = [];
                     parseFilter(v.value, backdropFilter);
                     
@@ -799,6 +767,23 @@ class Style {
 
     private inline function createAnimationOptions() {
         if (animationOptions == null) animationOptions = {};
+    }
+
+    private function parseFilter(value, filters) {
+        switch (value) {
+            case Value.VCall(f, vl):
+                var arr = ValueTools.array(vl);
+                arr.insert(0, f);
+                filters.push(FilterParser.parseFilter(arr));
+            case Value.VConstant(f):
+                filters.push(FilterParser.parseFilter([f]));
+            case Value.VComposite(vl):
+                for ( v in vl ){
+                    parseFilter(v, filters);
+                }                  
+            case _:
+        }
+        return filters;
     }
     
     public function clone():Style {
