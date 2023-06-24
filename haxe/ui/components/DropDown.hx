@@ -749,10 +749,17 @@ class DropDownEvents extends ButtonEvents {
         } else {
             _wrapper.left = _dropdown.screenLeft + componentOffset.x;
             _wrapper.top = _dropdown.screenTop + (_dropdown.actualComponentHeight - Toolkit.scaleY) + componentOffset.y;
+            _wrapper.hide();
             Screen.instance.addComponent(_wrapper);
             handler.prepare(_wrapper);
             _wrapper.syncComponentValidation();
             _wrapper.validateNow();
+            var marginTop = 0.0;
+            if (_wrapper.style != null && _wrapper.style.marginTop != null) {
+                marginTop = _wrapper.style.marginTop;
+            }
+            _wrapper.top += marginTop;
+            _wrapper.show();
 
             var popupToRight = false;
             var popupFromBottom = false;
