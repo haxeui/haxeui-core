@@ -224,6 +224,12 @@ class ModuleMacros {
                     }, $v{imageLoader.isDefault}, $v{imageLoader.singleInstance})
                 );
             }
+
+            for (cssFunction in m.cssFunctions) {
+                builder.add(macro
+                    haxe.ui.styles.CssFunctions.registerCssFunction($v{cssFunction.name}, $p{cssFunction.call.split(".")})
+                );
+            }
         }
 
         if (preloadAll) {

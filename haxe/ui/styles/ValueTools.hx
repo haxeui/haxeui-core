@@ -1,10 +1,7 @@
 package haxe.ui.styles;
 
 import haxe.ui.constants.UnitTime;
-import haxe.ui.core.Platform;
 import haxe.ui.core.Screen;
-import haxe.ui.styles.StyleLookupMap;
-import haxe.ui.themes.ThemeManager;
 import haxe.ui.util.Color;
 import haxe.ui.util.Variant;
 
@@ -32,8 +29,7 @@ class ValueTools {
             v = parseColor(s);
         } else if (s == "none") {
             v = Value.VNone;
-        }
-        else if (StringTools.startsWith(s, "\"") && StringTools.endsWith(s, "\"")) {
+        } else if (StringTools.startsWith(s, "\"") && StringTools.endsWith(s, "\"")) {
             v = Value.VString(s.substr(1, s.length - 2));
         } else if (StringTools.startsWith(s, "'") && StringTools.endsWith(s, "'")) {
             v = Value.VString(s.substr(1, s.length - 2));
@@ -415,143 +411,11 @@ class ValueTools {
     }
 
     public static function call(f, vl:Array<Value>):Any {
-        if (!cssFunctions.exists(f)) {
+        if (!CssFunctions.hasCssFunction(f)) {
             trace("unknown css function: " + f);
             return null;
         }
 
-        return cssFunctions.get(f)(vl);
-
-        switch (f) {
-            case "calc":
-                #if hscript
-
-                var parser = new hscript.Parser();
-                var program = parser.parseString(string(vl[0]));
-
-                var interp = new hscript.Interp();
-                return interp.expr(program);
-
-                #else
-
-                return null;
-
-                #end
-            case "min":
-                var minv:Float = Math.POSITIVE_INFINITY;
-                for (val in vl) {
-                    var num:Null<Float> = calcDimension(val);
-                    if (num == null)
-                        return null;
-                    else if (num < minv)
-                        minv = num;
-                }
-                return minv;
-            case "max":
-                var maxv:Float = Math.NEGATIVE_INFINITY;
-                for (val in vl) {
-                    var num:Null<Float> = calcDimension(val);
-                    if (num == null)
-                        return null;
-                    else if (num > maxv)
-                        maxv = num;
-                }
-                return maxv;
-            case "clamp":
-                var valNum:Null<Float> = calcDimension(vl[0]);
-                var minNum:Null<Float> = calcDimension(vl[1]);
-                var maxNum:Null<Float> = calcDimension(vl[2]);
-
-                if (valNum == null || minNum == null || maxNum == null)
-                    return null;
-                else if (valNum < minNum)
-                    return minNum;
-                else if (valNum > maxNum)
-                    return maxNum;
-                else
-                    return valNum;
-            case "platform-color":
-                return Platform.instance.getColor(ValueTools.string(vl[0]));
-            case "theme-icon" | "theme-image":
-                return ThemeManager.instance.image(ValueTools.string(vl[0]));
-            case "rgb":
-                return Color.fromComponents(ValueTools.int(vl[0]), ValueTools.int(vl[1]), ValueTools.int(vl[2]), 0).toInt();
-            case "lookup":
-                return Variant.toDynamic(StyleLookupMap.instance.get(ValueTools.string(vl[0])));
-            case _:
-                trace("unknown css function: " + f);
-                return null;
-        }
-
-        return null;
+        return CssFunctions.getCssFunction(f)(vl);
     }
-
-    private static var cssFunctions:Map<String, Array<Value>->Any> = [
-        "calc" => function(vl) {
-            #if hscript
-
-            var parser = new hscript.Parser();
-            var program = parser.parseString(string(vl[0]));
-
-            var interp = new hscript.Interp();
-            return interp.expr(program);
-
-            #else
-
-            return null;
-
-            #end
-        },
-        "min" => function(vl) {
-            var minv:Float = Math.POSITIVE_INFINITY;
-            for (val in vl) {
-                var num:Null<Float> = calcDimension(val);
-                if (num == null)
-                    return null;
-                else if (num < minv)
-                    minv = num;
-            }
-            return minv;
-        },
-        "max" => function(vl) {
-            var maxv:Float = Math.NEGATIVE_INFINITY;
-            for (val in vl) {
-                var num:Null<Float> = calcDimension(val);
-                if (num == null)
-                    return null;
-                else if (num > maxv)
-                    maxv = num;
-            }
-            return maxv;
-        },
-        "clamp" => function(vl) {
-            var valNum:Null<Float> = calcDimension(vl[0]);
-            var minNum:Null<Float> = calcDimension(vl[1]);
-            var maxNum:Null<Float> = calcDimension(vl[2]);
-
-            if (valNum == null || minNum == null || maxNum == null)
-                return null;
-            else if (valNum < minNum)
-                return minNum;
-            else if (valNum > maxNum)
-                return maxNum;
-            else
-                return valNum;
-        },
-        "platform-color" => function(vl) {
-            return Platform.instance.getColor(ValueTools.string(vl[0]));
-        },
-        "theme-icon" => function(vl) {
-            return ThemeManager.instance.image(ValueTools.string(vl[0]));
-        },
-        "theme-image" => function(vl) {
-            return ThemeManager.instance.image(ValueTools.string(vl[0]));
-        },
-        "rgb" => function(vl) {
-            return Color.fromComponents(ValueTools.int(vl[0]), ValueTools.int(vl[1]), ValueTools.int(vl[2]), 0).toInt();
-        },
-        "lookup" => function(vl) {
-            return Variant.toDynamic(StyleLookupMap.instance.get(ValueTools.string(vl[0])));
-        }
-    ];
 }

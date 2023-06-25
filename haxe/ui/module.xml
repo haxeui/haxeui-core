@@ -294,6 +294,18 @@
         </image-loaders>
     </loaders>
 
+    <cssFunctions>
+        <cssFunction name="calc" call="haxe.ui.styles.CssFunctions.calc" />
+        <cssFunction name="min" call="haxe.ui.styles.CssFunctions.min" />
+        <cssFunction name="max" call="haxe.ui.styles.CssFunctions.max" />
+        <cssFunction name="clamp" call="haxe.ui.styles.CssFunctions.clamp" />
+        <cssFunction name="platform-color" call="haxe.ui.styles.CssFunctions.platformColor" />
+        <cssFunction name="theme-icon" call="haxe.ui.styles.CssFunctions.themeIcon" />
+        <cssFunction name="theme-image" call="haxe.ui.styles.CssFunctions.themeIcon" />
+        <cssFunction name="rgb" call="haxe.ui.styles.CssFunctions.rgb" />
+        <cssFunction name="lookup" call="haxe.ui.styles.CssFunctions.lookup" />
+    </cssFunctions>
+
     <actions>
         <source class="haxe.ui.actions.KeyboardActionInputSource" />
     </actions>
