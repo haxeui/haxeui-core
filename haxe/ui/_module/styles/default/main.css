@@ -69,11 +69,8 @@
 /************************************************************************
 ** CONTAINERS
 *************************************************************************/
-.box, .vbox, .hbox, .absolute, .continuoushbox, .hgrid, .vgrid, .grid {
-    spacing: 5px 5px;
-}
-
 .box, .vbox, .hbox, .continuoushbox, .hgrid, .vgrid, .grid {
+    spacing: 5px 5px;
     width: auto;
     height: auto;
 }

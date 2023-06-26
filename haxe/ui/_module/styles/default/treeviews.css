@@ -43,10 +43,6 @@
 }
     
 .treenode-expand-collapse-icon {
-    resource: none;
-}
-
-.treenode-expand-collapse-icon {
     resource: $blank;
     cursor: none;
     vertical-align: center;
