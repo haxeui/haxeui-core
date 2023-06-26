@@ -294,7 +294,7 @@
         </image-loaders>
     </loaders>
 
-    <cssFunctions>
+    <cssExtensions>
         <cssFunction name="calc" call="haxe.ui.styles.CssFunctions.calc" />
         <cssFunction name="min" call="haxe.ui.styles.CssFunctions.min" />
         <cssFunction name="max" call="haxe.ui.styles.CssFunctions.max" />
@@ -304,7 +304,7 @@
         <cssFunction name="theme-image" call="haxe.ui.styles.CssFunctions.themeIcon" />
         <cssFunction name="rgb" call="haxe.ui.styles.CssFunctions.rgb" />
         <cssFunction name="lookup" call="haxe.ui.styles.CssFunctions.lookup" />
-    </cssFunctions>
+    </cssExtensions>
 
     <actions>
         <source class="haxe.ui.actions.KeyboardActionInputSource" />

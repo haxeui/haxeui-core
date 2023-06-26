@@ -46,7 +46,7 @@ class XMLParser extends ModuleParser {
                 parseNamespaces(el, module, defines, context);
             } else if (nodeName == "loaders" && checkCondition(el, defines) == true) {
                 parseLoaders(el, module, defines, context);
-            } else if (nodeName == "cssFunctions" && checkCondition(el, defines) == true) {
+            } else if (nodeName == "cssExtensions" && checkCondition(el, defines) == true) {
                 parseCssFunctions(el, module, defines, context);
             }
         }
