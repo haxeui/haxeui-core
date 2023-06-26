@@ -22,6 +22,7 @@ class Module {
     public var namespaces(default, default):Map<String, String>;
     public var imageLoaders(default, default):Array<ModuleImageLoaderEntry>;
     public var cssFunctions(default, default):Array<ModuleCssFunctionEntry>;
+    public var cssFilters(default, default):Array<ModuleCssFilterEntry>;
 
     public function new() {
         resourceEntries = [];
@@ -36,6 +37,7 @@ class Module {
         namespaces = new Map<String, String>();
         imageLoaders = [];
         cssFunctions = [];
+        cssFilters = [];
     }
 
     public function validate() {
@@ -174,6 +176,14 @@ class ModuleImageLoaderEntry {
 class ModuleCssFunctionEntry {
     public var name(default, default):String;
     public var call(default, default):String;
+
+    public function new() {
+    }
+}
+
+class ModuleCssFilterEntry {
+    public var name(default, default):String;
+    public var className(default, default):String;
 
     public function new() {
     }

@@ -230,6 +230,13 @@ class ModuleMacros {
                     haxe.ui.styles.CssFunctions.registerCssFunction($v{cssFunction.name}, $p{cssFunction.call.split(".")})
                 );
             }
+
+            for (cssFilter in m.cssFilters) {
+                var ctor = cssFilter.className + ".new";
+                builder.add(macro
+                    haxe.ui.styles.CssFilters.registerCssFilter($v{cssFilter.name}, $p{ctor.split(".")})
+                );
+            }
         }
 
         if (preloadAll) {

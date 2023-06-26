@@ -1,5 +1,6 @@
 package haxe.ui.parsers.modules;
 
+import haxe.ui.parsers.modules.Module.ModuleCssFilterEntry;
 import haxe.ui.parsers.modules.Module.ModuleCssFunctionEntry;
 import haxe.ui.parsers.modules.Module.ModuleImageLoaderEntry;
 import haxe.ui.parsers.modules.Module.ModuleThemeImageEntry;
@@ -48,6 +49,7 @@ class XMLParser extends ModuleParser {
                 parseLoaders(el, module, defines, context);
             } else if (nodeName == "cssExtensions" && checkCondition(el, defines) == true) {
                 parseCssFunctions(el, module, defines, context);
+                parseCssFilters(el, module, defines, context);
             }
         }
 
@@ -350,6 +352,15 @@ class XMLParser extends ModuleParser {
             cssFunctionEntry.name = el.get("name");
             cssFunctionEntry.call = el.get("call");
             module.cssFunctions.push(cssFunctionEntry);
+        }
+    }
+
+    private function parseCssFilters(el:Xml, module:Module, defines:Map<String, String>, context:String) {
+        for (el in el.elementsNamed("cssFilter")) {
+            var cssFilterEntry:ModuleCssFilterEntry = new ModuleCssFilterEntry();
+            cssFilterEntry.name = el.get("name");
+            cssFilterEntry.className = el.get("class");
+            module.cssFilters.push(cssFilterEntry);
         }
     }
 

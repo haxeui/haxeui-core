@@ -304,6 +304,11 @@
         <cssFunction name="theme-image" call="haxe.ui.styles.CssFunctions.themeIcon" />
         <cssFunction name="rgb" call="haxe.ui.styles.CssFunctions.rgb" />
         <cssFunction name="lookup" call="haxe.ui.styles.CssFunctions.lookup" />
+        <cssFilter name="blur" class="haxe.ui.filters.Blur" />
+        <cssFilter name="box-shadow" class="haxe.ui.filters.BoxShadow" />
+        <cssFilter name="drop-shadow" class="haxe.ui.filters.DropShadow" />
+        <cssFilter name="grayscale" class="haxe.ui.filters.Grayscale" />
+        <cssFilter name="outline" class="haxe.ui.filters.Outline" />
     </cssExtensions>
 
     <actions>
