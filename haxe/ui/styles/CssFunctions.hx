@@ -25,7 +25,7 @@ class CssFunctions {
         #if hscript
 
         var parser = new hscript.Parser();
-        var program = parser.parseString(string(vl[0]));
+        var program = parser.parseString(ValueTools.string(vl[0]));
 
         var interp = new hscript.Interp();
         return interp.expr(program);
