@@ -769,7 +769,7 @@ class Style {
         if (animationOptions == null) animationOptions = {};
     }
 
-    private function parseFilter(value, filters) {
+    private function parseFilter(value:Value, filters:Array<Filter>) {
         switch (value) {
             case Value.VCall(f, vl):
                 var arr = ValueTools.array(vl);
