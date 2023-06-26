@@ -9,7 +9,7 @@ class Filter {
     }
 
     private static function applyDefaults(params:Array<Any>, defaults:Array<Any>):Array<Any> {
-        var copy:Array<Dynamic> = [];
+        var copy:Array<Any> = [];
 
         if (defaults != null) {
             for (p in defaults) {
