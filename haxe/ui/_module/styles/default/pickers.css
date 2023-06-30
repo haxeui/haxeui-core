@@ -155,3 +155,11 @@
 .month-button:disabled {
     background-color: $default-background-color;
 }
+
+/************************************************************************
+** MENU ITEM PICKER
+*************************************************************************/
+.menuitempicker-panel #primaryPickerMenu {
+    border: none;
+    padding: none;
+}

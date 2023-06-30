@@ -799,7 +799,6 @@ class DropDownEvents extends ButtonEvents {
                 filler.hidden = true;
                 _wrapper.removeClass("dropdown-popup-expanded");
             }
-
         }
 
         Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);

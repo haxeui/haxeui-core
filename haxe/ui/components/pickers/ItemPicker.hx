@@ -23,6 +23,7 @@ class ItemPicker extends InteractiveComponent implements IDataComponent {
     public var panelPosition = "auto";
     public var panelOrigin = "auto";
     public var panelWidth:Null<Float> = null;
+    public var isPanelOpen:Bool = false;
 
     private var _dataSource:DataSource<Dynamic> = null;
     public var dataSource(get, set):DataSource<Dynamic>;
@@ -93,7 +94,6 @@ private class DefaultItemPickerRenderer extends HBox {
         _triggerIcon.id = "itemPickerTriggerIcon";
         _triggerIcon.addClass("item-picker-trigger-icon");
         addComponent(_triggerIcon);
-        //_renderer.data = { text: "bob", icon: "haxeui-core/styles/default/haxeui_tiny.png"};
     }
 }
 
@@ -217,6 +217,8 @@ class ItemPickerBuilder extends CompositeBuilder {
         handler.onPanelSelection(event);
         if (!event.canceled) {
             var changeEvent = new UIEvent(UIEvent.CHANGE);
+            changeEvent.relatedComponent = event.relatedComponent;
+            changeEvent.relatedEvent = event;
             picker.dispatch(changeEvent);
         }
         hidePanel();
@@ -239,10 +241,12 @@ class ItemPickerBuilder extends CompositeBuilder {
             return;
         }
 
-        pausePanelEvents();
+        picker.isPanelOpen = true;
 
+        pausePanelEvents();
         picker.addClass("selected", true, true);
         handler.onPanelShown();
+        panelContainer.addClass(picker.cssName + "-panel", true, true);
         panelContainer.opacity = 0;
         Screen.instance.addComponent(panelContainer);
         panelContainer.syncComponentValidation();
@@ -356,6 +360,8 @@ class ItemPickerBuilder extends CompositeBuilder {
     }
 
     public function hidePanel() {
+        picker.isPanelOpen = false;
+        
         if (picker.animatable) {
             /*
             panelContainer.fadeOut(function() {
