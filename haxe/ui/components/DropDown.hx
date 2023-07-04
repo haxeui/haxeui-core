@@ -49,6 +49,20 @@ class DropDown extends Button implements IDataComponent {
     @:call(HideDropDown)                                            public function hideDropDown();
     @:call(ShowDropDown)                                            public function showDropDown();
 
+    public function selectItemBy(fn:Dynamic->Bool) {
+        var indexToSelect = -1;
+        for (i in 0...this.dataSource.size) {
+            var item = this.dataSource.get(i);
+            if (fn(item)) {
+                indexToSelect = i;
+                break;
+            }
+        }
+        if (indexToSelect != -1) {
+            this.selectedIndex = indexToSelect;
+        }
+    }
+
     private var _itemRenderer:ItemRenderer = null;
     @:clonable public var itemRenderer(get, set):ItemRenderer;
     private function get_itemRenderer():ItemRenderer {
