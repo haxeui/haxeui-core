@@ -219,9 +219,13 @@ class SideBar extends Box {
             if (r.hidden) {
                 continue;
             }
+            if (r.percentWidth == null && r.percentHeight == null) {
+                continue;
+            }
             if (r.classes.indexOf("sidebar") == -1) {
                 r.cachePercentSizes();
                 r.swapClass("sideBarModifyContent", "sideBarRestoreContent");
+                r.addClass("sidebarRestorable");
                 r.onAnimationEnd = function(_) {
                     r.onAnimationEnd = null;
                     rootComponent.removeClass("sideBarModifyContent");
@@ -381,8 +385,9 @@ class SideBar extends Box {
             if (r.hidden) {
                 continue;
             }
-            if (r.classes.indexOf("sidebar") == -1) {
+            if (r.classes.indexOf("sidebar") == -1 && r.classes.indexOf("sidebarRestorable") != -1) {
                 r.swapClass("sideBarRestoreContent", "sideBarModifyContent");
+                r.removeClass("sidebarRestorable");
                 r.onAnimationEnd = function(_) {
                     r.restorePercentSizes();
                     r.onAnimationEnd = null;
