@@ -398,8 +398,7 @@ class Macros {
                         case [param1]:
                             buildPropertyBinding(builder, f, param1, "value"); // input component that has value
                         case [component, event]: // two params, lets assume event binding
-                            builder.ctor.add(macro {
-                                @:pos(component.pos)
+                            builder.ctor.add(macro @:pos(component.pos) {
                                 var c:haxe.ui.core.Component = ${component};
                                 if (c != null) {
                                     c.registerEvent($event, $i{f.name});
