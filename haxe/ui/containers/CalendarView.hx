@@ -1,14 +1,14 @@
 package haxe.ui.containers;
 
+import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.components.Button;
 import haxe.ui.components.Calendar;
 import haxe.ui.components.Label;
 import haxe.ui.components.Stepper;
 import haxe.ui.core.CompositeBuilder;
-import haxe.ui.behaviours.DefaultBehaviour;
+import haxe.ui.events.Events;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
-import haxe.ui.events.Events;
 import haxe.ui.layouts.VerticalLayout;
 import haxe.ui.util.Variant;
 
@@ -89,7 +89,7 @@ private class Events extends haxe.ui.events.Events {
         _target.findComponent("current-month", Label).text = monthName + "  " + calendar.date.getFullYear();
     }
 
-    private function onCalendarChange(event:CalendarEvent) {
+    private function onCalendarChange(event:UIEvent) {
         var calendar:Calendar = _target.findComponent(Calendar);
         var stepper:Stepper = _target.findComponent("current-year");
         stepper.pos = calendar.selectedDate.getFullYear();
