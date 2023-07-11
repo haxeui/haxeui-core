@@ -3,8 +3,8 @@ package haxe.ui.events;
 import haxe.ui.validators.IValidator;
 
 class ValidatorEvent extends UIEvent {
-    public static inline var VALID_DATA:String = "validdata";
-    public static inline var INVALID_DATA:String = "invaliddata";
+    public static inline var VALID_DATA:EventType<ValidatorEvent> = EventType.name("validdata");
+    public static inline var INVALID_DATA:EventType<ValidatorEvent> = EventType.name("invaliddata");
 
     public var validator:IValidator;
     public var valid:Bool;

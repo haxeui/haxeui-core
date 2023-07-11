@@ -1,12 +1,12 @@
 package haxe.ui.events;
 
 class ScrollEvent extends UIEvent {
-    public static inline var CHANGE:String = "scrollchange";
-    public static inline var START:String = "scrollstart";
-    public static inline var STOP:String = "scrollstop";
-    public static inline var SCROLL:String = "scrollscroll";
+    public static final CHANGE:EventType<ScrollEvent> = EventType.name("scrollchange");
+    public static final START:EventType<ScrollEvent> = EventType.name("scrollstart");
+    public static final STOP:EventType<ScrollEvent> = EventType.name("scrollstop");
+    public static final SCROLL:EventType<ScrollEvent> = EventType.name("scrollscroll");
 
-    public function new(type:String) {
+    public function new(type:EventType<ScrollEvent>) {
         super(type);
     }
 

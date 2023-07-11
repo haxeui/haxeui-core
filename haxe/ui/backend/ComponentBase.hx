@@ -2,29 +2,30 @@ package haxe.ui.backend;
 
 import haxe.ui.backend.ComponentSurface;
 import haxe.ui.behaviours.Behaviours;
-import haxe.ui.events.UIEvent;
-import haxe.ui.layouts.Layout;
-import haxe.ui.styles.Style;
 import haxe.ui.behaviours.DataBehaviour;
-import haxe.ui.behaviours.ValueBehaviour;
-import haxe.ui.util.Variant;
 import haxe.ui.behaviours.DefaultBehaviour;
-import haxe.ui.tooltips.ToolTipManager;
-import haxe.ui.events.Events;
-import haxe.ui.util.EventMap;
-import haxe.ui.events.MouseEvent;
-import haxe.ui.events.KeyboardEvent;
-import haxe.ui.util.FunctionArray;
-import haxe.ui.validation.InvalidationFlags;
-import haxe.ui.validation.ValidationManager;
-import haxe.ui.geom.Rectangle;
-import haxe.ui.geom.Point;
-import haxe.ui.core.IClonable;
+import haxe.ui.behaviours.ValueBehaviour;
 import haxe.ui.core.Component;
-import haxe.ui.core.TextDisplay;
-import haxe.ui.core.TextInput;
+import haxe.ui.core.IClonable;
 import haxe.ui.core.ImageDisplay;
 import haxe.ui.core.Screen;
+import haxe.ui.core.TextDisplay;
+import haxe.ui.core.TextInput;
+import haxe.ui.events.EventType;
+import haxe.ui.events.Events;
+import haxe.ui.events.KeyboardEvent;
+import haxe.ui.events.MouseEvent;
+import haxe.ui.events.UIEvent;
+import haxe.ui.geom.Point;
+import haxe.ui.geom.Rectangle;
+import haxe.ui.layouts.Layout;
+import haxe.ui.styles.Style;
+import haxe.ui.tooltips.ToolTipManager;
+import haxe.ui.util.EventMap;
+import haxe.ui.util.FunctionArray;
+import haxe.ui.util.Variant;
+import haxe.ui.validation.InvalidationFlags;
+import haxe.ui.validation.ValidationManager;
 
 @:build(haxe.ui.macros.Macros.buildBehaviours())
 @:autoBuild(haxe.ui.macros.Macros.buildBehaviours())
@@ -298,8 +299,11 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
      Register a listener for a certain `UIEvent`
     **/
     @:dox(group = "Event related properties and methods")
-    public function registerEvent<T:UIEvent>(type:String, listener:T->Void, priority:Int = 0) {
-        if (cast(this, Component).hasClass(":mobile") && (type == MouseEvent.MOUSE_OVER || type == MouseEvent.MOUSE_OUT)) {
+    public function registerEvent<T:UIEvent>(type:EventType<T>, listener:T->Void, priority:Int = 0) {
+        if (cast(this, Component).hasClass(":mobile")
+            // TODO: would be nice not to have the Std.string, and really, would make sense to review 
+            // the whole concept of "block over / out if mobile"
+            && (Std.string(type) == Std.string(MouseEvent.MOUSE_OVER) || Std.string(type) == Std.string(MouseEvent.MOUSE_OUT))) {
             return;
         }
 
@@ -323,7 +327,7 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
      Returns if this component has a certain event and listener
     **/
     @:dox(group = "Event related properties and methods")
-    public function hasEvent<T:UIEvent>(type:String, listener:T->Void = null):Bool {
+    public function hasEvent<T:UIEvent>(type:EventType<T>, listener:T->Void = null):Bool {
         if (__events == null) {
             return false;
         }
@@ -334,7 +338,7 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
      Unregister a listener for a certain `UIEvent`
     **/
     @:dox(group = "Event related properties and methods")
-    public function unregisterEvent<T:UIEvent>(type:String, listener:T->Void) {
+    public function unregisterEvent<T:UIEvent>(type:EventType<T>, listener:T->Void) {
         if (_disabledEvents != null && !_interactivityDisabled) {
             _disabledEvents.remove(type, listener);
         }
@@ -350,7 +354,7 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
      Dispatch a certain `UIEvent`
     **/
     @:dox(group = "Event related properties and methods")
-    public function dispatch(event:UIEvent) {
+    public function dispatch<T:UIEvent>(event:T) {
         if (event != null) {
             if (__events != null) {
                 __events.invoke(event.type, event, cast(this, Component));  // TODO: avoid cast
@@ -362,14 +366,14 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
         }
     }
 
-    private function dispatchRecursively(event:UIEvent) {
+    private function dispatchRecursively<T:UIEvent>(event:T) {
         dispatch(event);
         for (child in childComponents) {
             child.dispatchRecursively(event);
         }
     }
 
-    private function dispatchRecursivelyWhen(event:UIEvent, condition:Component->Bool) {
+    private function dispatchRecursivelyWhen<T:UIEvent>(event:T, condition:Component->Bool) {
         if (condition(cast this) == true) {
             dispatch(event);
         }
@@ -381,7 +385,7 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
     }
     
     @:noCompletion 
-    private function _onMappedEvent(event:UIEvent) {
+    private function _onMappedEvent<T:UIEvent>(event:T) {
         dispatch(event);
     }
 

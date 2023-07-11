@@ -2,13 +2,13 @@ package haxe.ui.events;
 import haxe.ui.actions.ActionType;
 
 class ActionEvent extends UIEvent {
-    public static inline var ACTION_START:String = "actionstart";
-    public static inline var ACTION_END:String = "actionend";
+    public static final ACTION_START:EventType<ActionEvent> = EventType.name("actionstart");
+    public static final ACTION_END:EventType<ActionEvent> = EventType.name("actionend");
     
     public var action:ActionType;
     public var repeater:Bool = false;
     
-    public function new(type:String, action:ActionType, bubble:Null<Bool> = false, data:Dynamic = null) {
+    public function new(type:EventType<ActionEvent>, action:ActionType, bubble:Null<Bool> = false, data:Dynamic = null) {
         super(type, bubble, data);
         this.action = action;
     }

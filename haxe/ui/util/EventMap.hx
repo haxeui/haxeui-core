@@ -1,6 +1,7 @@
 package haxe.ui.util;
 
 import haxe.ui.core.Component;
+import haxe.ui.events.EventType;
 import haxe.ui.events.UIEvent;
 
 class EventMap  {
@@ -20,7 +21,7 @@ class EventMap  {
         }
     }
 
-    public function add<T:UIEvent>(type:String, listener:T->Void, priority:Int = 0):Bool { // returns true if a new FunctionArray was created
+    public function add<T:UIEvent>(type:EventType<T>, listener:T->Void, priority:Int = 0):Bool { // returns true if a new FunctionArray was created
         if (listener == null) {
             return false;
         }
@@ -37,7 +38,7 @@ class EventMap  {
         return b;
     }
 
-    public function remove<T:UIEvent>(type:String, listener:T->Void):Bool { // returns true if a FunctionArray was removed
+    public function remove<T:UIEvent>(type:EventType<T>, listener:T->Void):Bool { // returns true if a FunctionArray was removed
         if (listener == null) {
             return false;
         }
@@ -53,7 +54,7 @@ class EventMap  {
         return b;
     }
 
-    public function contains<T:UIEvent>(type:String, listener:T->Void = null):Bool {
+    public function contains<T:UIEvent>(type:EventType<T>, listener:T->Void = null):Bool {
         var b:Bool = false;
         var arr:FunctionArray<UIEvent->Void> = _map.get(type);
         if (arr != null) {
@@ -62,7 +63,7 @@ class EventMap  {
         return b;
     }
 
-    public function invoke(type:String, event:UIEvent, target:Component = null) {
+    public function invoke<T:UIEvent>(type:EventType<T>, event:T, target:Component = null) {
         if (event.bubble && event.target == null) {
             event.target = target;
         }
@@ -86,7 +87,7 @@ class EventMap  {
         }
     }
 
-    public function listenerCount(type:String):Int {
+    public function listenerCount<T:UIEvent>(type:EventType<T>):Int {
         var n:Int = 0;
         var arr:FunctionArray<UIEvent->Void> = _map.get(type);
         if (arr != null) {
@@ -95,7 +96,7 @@ class EventMap  {
         return n;
     }
 
-    public function listeners(type:String):FunctionArray<UIEvent->Void> {
+    public function listeners<T:UIEvent>(type:EventType<T>):FunctionArray<UIEvent->Void> {
         var arr:FunctionArray<UIEvent->Void> = _map.get(type);
         if (arr == null) {
             return null;

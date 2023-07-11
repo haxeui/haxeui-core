@@ -7,36 +7,36 @@ import haxe.ui.util.Variant;
 @:build(haxe.ui.macros.Macros.buildEvent())
 @:autoBuild(haxe.ui.macros.Macros.buildEvent())
 class UIEvent extends EventImpl {
-    public static inline var READY:String = "ready";
-    public static inline var DESTROY:String = "destroy";    
-    public static inline var RESIZE:String = "resize";
-    public static inline var CHANGE:String = "change";
-    public static inline var BEFORE_CHANGE:String = "beforechange";
-    public static inline var MOVE:String = "move";
-    public static inline var INITIALIZE:String = "initialize";
+    public static final READY:EventType<UIEvent> = EventType.name("ready");
+    public static final DESTROY:EventType<UIEvent> = EventType.name("destroy");    
+    public static final RESIZE:EventType<UIEvent> = EventType.name("resize");
+    public static final CHANGE:EventType<UIEvent> = EventType.name("change");
+    public static final BEFORE_CHANGE:EventType<UIEvent> = EventType.name("beforechange");
+    public static final MOVE:EventType<UIEvent> = EventType.name("move");
+    public static final INITIALIZE:EventType<UIEvent> = EventType.name("initialize");
 
-    public static inline var SUBMIT_START:String = "submitstart";
-    public static inline var SUBMIT:String = "submit";
+    public static final SUBMIT_START:EventType<UIEvent> = EventType.name("submitstart");
+    public static final SUBMIT:EventType<UIEvent> = EventType.name("submit");
 
-    public static inline var RENDERER_CREATED:String = "renderercreated";
-    public static inline var RENDERER_DESTROYED:String = "rendererdestroyed";
+    public static final RENDERER_CREATED:EventType<UIEvent> = EventType.name("renderercreated");
+    public static final RENDERER_DESTROYED:EventType<UIEvent> = EventType.name("rendererdestroyed");
 
-    public static inline var HIDDEN:String = "hidden";
-    public static inline var SHOWN:String = "shown";
+    public static final HIDDEN:EventType<UIEvent> = EventType.name("hidden");
+    public static final SHOWN:EventType<UIEvent> = EventType.name("shown");
 
-    public static inline var ENABLED:String = "enabled";
-    public static inline var DISABLED:String = "disabled";
+    public static final ENABLED:EventType<UIEvent> = EventType.name("enabled");
+    public static final DISABLED:EventType<UIEvent> = EventType.name("disabled");
 
-    public static inline var BEFORE_CLOSE:String = "beforeclose";
-    public static inline var CLOSE:String = "close";
+    public static final BEFORE_CLOSE:EventType<UIEvent> = EventType.name("beforeclose");
+    public static final CLOSE:EventType<UIEvent> = EventType.name("close");
 
-    public static inline var PROPERTY_CHANGE:String = "propertychange";
+    public static final PROPERTY_CHANGE:EventType<UIEvent> = EventType.name("propertychange");
 
-    public static inline var COMPONENT_ADDED:String = "componentadded";
-    public static inline var COMPONENT_REMOVED:String = "componentremoved";
+    public static final COMPONENT_ADDED:EventType<UIEvent> = EventType.name("componentadded");
+    public static final COMPONENT_REMOVED:EventType<UIEvent> = EventType.name("componentremoved");
 
-    public static inline var COMPONENT_ADDED_TO_PARENT:String = "componentaddedtoparent";
-    public static inline var COMPONENT_REMOVED_FROM_PARENT:String = "componentremovedfromparent";
+    public static final COMPONENT_ADDED_TO_PARENT:EventType<UIEvent> = EventType.name("componentaddedtoparent");
+    public static final COMPONENT_REMOVED_FROM_PARENT:EventType<UIEvent> = EventType.name("componentremovedfromparent");
 
     public var bubble(default, default):Bool;
     public var type(default, default):String;
@@ -63,7 +63,7 @@ class UIEvent extends EventImpl {
         canceled = true;
     }
 
-    public function clone():UIEvent {
+    @:noCompletion public function clone():UIEvent {
         var c:UIEvent = new UIEvent(this.type);
         c.type = this.type;
         c.bubble = this.bubble;
@@ -78,7 +78,7 @@ class UIEvent extends EventImpl {
         return c;
     }
     
-    public function copyFrom(c:UIEvent) {
+    @:noCompletion public function copyFrom(c:UIEvent) {
         
     }
 }

@@ -1,16 +1,16 @@
 package haxe.ui.events;
 
 class AnimationEvent extends UIEvent {
-    public static inline var LOADED:String = "animationloaded";
-    public static inline var START:String = "animationstart";
-    public static inline var END:String = "animationend";
-    public static inline var FRAME:String = "animationframe";
+    public static final LOADED:EventType<AnimationEvent> = EventType.name("animationloaded");
+    public static final START:EventType<AnimationEvent> = EventType.name("animationstart");
+    public static final END:EventType<AnimationEvent> = EventType.name("animationend");
+    public static final FRAME:EventType<AnimationEvent> = EventType.name("animationframe");
 
     public var currentTime:Float;
     public var delta:Float;
     public var position:Float;
     
-    public function new(type:String) {
+    public function new(type:EventType<AnimationEvent>) {
         super(type);
     }
 

@@ -1,20 +1,20 @@
 package haxe.ui.events;
 
 class MouseEvent extends UIEvent {
-    public static inline var MOUSE_MOVE:String = "mousemove";
-    public static inline var MOUSE_OVER:String = "mouseover";
-    public static inline var MOUSE_OUT:String = "mouseout";
-    public static inline var MOUSE_DOWN:String = "mousedown";
-    public static inline var MOUSE_UP:String = "mouseup";
-    public static inline var MOUSE_WHEEL:String = "mousewheel";
-    public static inline var CLICK:String = "click";
-    public static inline var DBL_CLICK:String = "doubleclick";
-    public static inline var RIGHT_CLICK:String = "rightclick";
-    public static inline var RIGHT_MOUSE_DOWN:String = "rightmousedown";
-    public static inline var RIGHT_MOUSE_UP:String = "rightmouseup";
-    public static inline var MIDDLE_CLICK:String = "middleclick";
-    public static inline var MIDDLE_MOUSE_DOWN:String = "middlemousedown";
-    public static inline var MIDDLE_MOUSE_UP:String = "middlemouseup";
+    public static final MOUSE_MOVE:EventType<MouseEvent> = EventType.name("mousemove");
+    public static final MOUSE_OVER:EventType<MouseEvent> = EventType.name("mouseover");
+    public static final MOUSE_OUT:EventType<MouseEvent> = EventType.name("mouseout");
+    public static final MOUSE_DOWN:EventType<MouseEvent> = EventType.name("mousedown");
+    public static final MOUSE_UP:EventType<MouseEvent> = EventType.name("mouseup");
+    public static final MOUSE_WHEEL:EventType<MouseEvent> = EventType.name("mousewheel");
+    public static final CLICK:EventType<MouseEvent> = EventType.name("click");
+    public static final DBL_CLICK:EventType<MouseEvent> = EventType.name("doubleclick");
+    public static final RIGHT_CLICK:EventType<MouseEvent> = EventType.name("rightclick");
+    public static final RIGHT_MOUSE_DOWN:EventType<MouseEvent> = EventType.name("rightmousedown");
+    public static final RIGHT_MOUSE_UP:EventType<MouseEvent> = EventType.name("rightmouseup");
+    public static final MIDDLE_CLICK:EventType<MouseEvent> = EventType.name("middleclick");
+    public static final MIDDLE_MOUSE_DOWN:EventType<MouseEvent> = EventType.name("middlemousedown");
+    public static final MIDDLE_MOUSE_UP:EventType<MouseEvent> = EventType.name("middlemouseup");
 
     public var screenX:Float;
     public var screenY:Float;
@@ -24,7 +24,7 @@ class MouseEvent extends UIEvent {
     public var ctrlKey:Bool;
     public var shiftKey:Bool;
 
-    public function new(type:String) {
+    public function new(type:EventType<MouseEvent>) {
         super(type);
     }
 

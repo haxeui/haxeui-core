@@ -1,9 +1,9 @@
 package haxe.ui.events;
 
 class DragEvent extends UIEvent {
-    public static inline var DRAG_START:String = "dragstart";
-    public static inline var DRAG:String = "drag";
-    public static inline var DRAG_END:String = "dragend";
+    public static final DRAG_START:EventType<DragEvent> = EventType.name("dragstart");
+    public static final DRAG:EventType<DragEvent> = EventType.name("drag");
+    public static final DRAG_END:EventType<DragEvent> = EventType.name("dragend");
     
     public var left:Float = 0;
     public var top:Float = 0;

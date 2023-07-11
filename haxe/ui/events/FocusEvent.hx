@@ -1,10 +1,10 @@
 package haxe.ui.events;
 
 class FocusEvent extends UIEvent {
-    public static inline var FOCUS_IN:String = "focusin";
-    public static inline var FOCUS_OUT:String = "focusout";
+    public static final FOCUS_IN:EventType<FocusEvent> = EventType.name("focusin");
+    public static final FOCUS_OUT:EventType<FocusEvent> = EventType.name("focusout");
 
-    public function new(type:String) {
+    public function new(type:EventType<FocusEvent>) {
         super(type);
     }
 

@@ -18,21 +18,21 @@ class Events {
 
     }
 
-    private function registerEvent(type:String, listener:Dynamic->Void, priority:Int = 0) {
+    private function registerEvent<T:UIEvent>(type:EventType<T>, listener:T->Void, priority:Int = 0) {
         if (hasEvent(type, listener) == false) {
             _target.registerEvent(type, listener, priority);
         }
     }
 
-    private function hasEvent(type:String, listener:Dynamic->Void):Bool {
+    private function hasEvent<T:UIEvent>(type:EventType<T>, listener:T->Void):Bool {
         return _target.hasEvent(type, listener);
     }
 
-    private function unregisterEvent(type:String, listener:Dynamic->Void) {
+    private function unregisterEvent<T:UIEvent>(type:EventType<T>, listener:T->Void) {
         _target.unregisterEvent(type, listener);
     }
 
-    private function dispatch(event:UIEvent) {
+    private function dispatch<T:UIEvent>(event:T) {
         _target.dispatch(event);
     }
 }
