@@ -1077,7 +1077,8 @@ class ComponentMacros {
                     if (propInfo != null) {
                         propType = propInfo.propertyType;
                     }
-                    var propExpr = macro $v{TypeConverter.convertTo(TypeConverter.convertFrom(propValue), propType)};
+                    //var propExpr = macro $v{TypeConverter.convertTo(TypeConverter.convertFrom(propValue), propType)};
+                    var propExpr = macro $v{TypeConverter.convertFrom(propValue)};
                     builder.add(macro $i{varName}.$propName = $propExpr);
                 } else {
                     var propExpr = macro $v{TypeConverter.convertFrom(propValue)};
