@@ -1058,11 +1058,13 @@ class ComponentMacros {
             propName = ComponentFieldMap.mapField(propName);
 
             if (StringTools.startsWith(propName, "on")) {
-                buildData.scripts.push({
-                    generatedVarName: varName,
-                    eventName: propName.toLowerCase(),
-                    code: propValue
-                });
+                if (propValue != null && StringTools.trim(propValue).length > 0) {
+                    buildData.scripts.push({
+                        generatedVarName: varName,
+                        eventName: propName.toLowerCase(),
+                        code: propValue
+                    });
+                }
             } else if (Std.string(propValue).indexOf("${") != -1) {
                 buildData.bindings.push({
                     generatedVarName: varName,
