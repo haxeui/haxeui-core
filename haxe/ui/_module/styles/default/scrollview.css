@@ -25,6 +25,10 @@
     border: none;
 }
 
+.scrollview.no-background {
+    background-color: none;
+}
+
 .scrollview.no-border .scroll {
     border: none;
 }
