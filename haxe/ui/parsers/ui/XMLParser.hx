@@ -84,7 +84,7 @@ class XMLParser extends ComponentParser {
         } else if (nodeName == "data") {
             if (xml.firstElement() != null) {
                 component.parent.data = StringTools.trim(xml.toString());
-            } else if (StringTools.startsWith(StringTools.trim(xml.firstChild().nodeValue), "[")) {
+            } else if (xml.firstChild() != null && StringTools.startsWith(StringTools.trim(xml.firstChild().nodeValue), "[")) {
                 component.parent.data = StringTools.trim(xml.firstChild().nodeValue);
             }
         } else if (nodeName == "validator") {
