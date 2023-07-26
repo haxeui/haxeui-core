@@ -669,26 +669,49 @@ class ModuleMacros {
         #if haxeui_macro_times
         var stopTimerScan = Context.timer("ModuleMacros.loadModules - scanClassPath");
         #end
+
+        var moduleDetails:Array<{filePath:String, fileContents:String, hash:String, base:String}> = [];
         MacroHelpers.scanClassPath(function(filePath:String, base:String) {
             #if module_resolution_verbose
             Sys.println("    module found at '" + filePath + "' (base: '" + base + "')");
             #end
-            
             var moduleParser = ModuleParser.get(MacroHelpers.extension(filePath));
             if (moduleParser != null) {
-                try {
-                    var module:Module = moduleParser.parse(File.getContent(filePath), Context.getDefines(), filePath);
-                    module.validate();
-                    module.rootPath = new Path(filePath).dir;
-                    module.classPath = base;
-                    _modules.push(module);
-                    return true;
-                } catch (e:Dynamic) {
-                    Sys.println('WARNING: Problem parsing module ${MacroHelpers.extension(filePath)} (${filePath}) - ${e} (skipping file)');
+                var fileContents = File.getContent(filePath);
+                var hash = haxe.crypto.Md5.encode(fileContents);
+                var found = false;
+                for (details in moduleDetails) {
+                    if (details.hash == hash) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    moduleDetails.push({
+                        filePath: filePath,
+                        fileContents: fileContents,
+                        hash: hash,
+                        base: base
+                    });
                 }
             }
             return false;
         }, ["module."]);
+
+        for (moduleDetail in moduleDetails) {
+            var moduleParser = ModuleParser.get(MacroHelpers.extension(moduleDetail.filePath));
+            if (moduleParser != null) {
+                try {
+                    var module:Module = moduleParser.parse(moduleDetail.fileContents, Context.getDefines(), moduleDetail.filePath);
+                    module.validate();
+                    module.rootPath = new Path(moduleDetail.filePath).dir;
+                    module.classPath = moduleDetail.base;
+                    _modules.push(module);
+                } catch (e:Dynamic) {
+                    Sys.println('WARNING: Problem parsing module ${MacroHelpers.extension(moduleDetail.filePath)} (${moduleDetail.filePath}) - ${e} (skipping file)');
+                }
+            }
+        }
         #if module_resolution_verbose
         Sys.println(_modules.length + " module(s) found\n");
         #end
