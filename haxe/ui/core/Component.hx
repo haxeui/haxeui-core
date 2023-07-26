@@ -1143,7 +1143,7 @@ class Component extends ComponentImpl implements IValidating {
     /**
      * Applies a fade effect which turns this component from visible to invisible.
      * @param onEnd A function to dispatch when the fade completes
-     * @param show When enabled, ensures that this component is actually invisible when the fade completes.
+     * @param hide When enabled, ensures that this component is actually invisible when the fade completes.
      */
     public function fadeOut(onEnd:Void->Void = null, hide:Bool = true) {
         if (onEnd != null || hide == true) {
