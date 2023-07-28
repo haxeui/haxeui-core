@@ -1,12 +1,12 @@
 package haxe.ui.macros.helpers;
 
+import haxe.macro.Expr.ComplexType;
 import haxe.macro.Expr;
 import haxe.macro.ExprTools;
-import haxe.macro.Type.ClassType;
 import haxe.macro.Type.ClassField;
+import haxe.macro.Type.ClassType;
 import haxe.macro.Type.Ref;
 import haxe.macro.TypeTools;
-import haxe.macro.Expr.ComplexType;
 
 using Lambda;
 
