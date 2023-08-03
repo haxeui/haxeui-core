@@ -255,6 +255,10 @@ class Component extends ComponentImpl implements IValidating {
      */
     public var userData(default, default):Dynamic = null;
 
+    public function userDataAs<T>(c:Class<T>):T {
+        return cast userData;
+    }
+
     //***********************************************************************************************************
     // General
     //***********************************************************************************************************
@@ -853,6 +857,10 @@ class Component extends ComponentImpl implements IValidating {
 
             if (match == true) {
                 r.push(cast child);
+                var childArray = child.findComponents(styleName, type, maxDepth);
+                for (c in childArray) { // r.concat caused issues here on hxcpp
+                    r.push(c);
+                }
             } else {
                 var childArray = child.findComponents(styleName, type, maxDepth);
                 for (c in childArray) { // r.concat caused issues here on hxcpp
