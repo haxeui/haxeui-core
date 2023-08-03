@@ -221,11 +221,24 @@ private class MaxBehaviour extends DataBehaviour {
 
 @:dox(hide) @:noCompletion
 private class PosBehaviour extends DataBehaviour {
+    /*
     public override function get():Variant {
         if (_component.isReady == false) {
             return _value;
         }
         return cast(_component, Slider).end;
+    }
+    */
+
+    public override function set(value:Variant) {
+        if (_component.isReady == false) {
+            _value = value;
+            cast(_component, Slider).end = _value;
+            invalidateData();
+            return;
+        }
+
+        super.set(value);
     }
 
     private override function validateData() {
