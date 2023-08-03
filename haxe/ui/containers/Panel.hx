@@ -74,7 +74,7 @@ private class Builder extends CompositeBuilder {
                 header.addComponent(c);
             }
             return child;
-        } else if  (child is Footer) {
+        } else if  ((child is Footer)) {
             for (c in child.childComponents) {
                 footer.addComponent(c);
             }
