@@ -156,7 +156,7 @@ class Macros {
         }
         var codeBuilder = new CodeBuilder();
         var buildData:BuildData = { };
-        ComponentMacros.buildComponentFromStringCommon(codeBuilder, xml, buildData);
+        ComponentMacros.buildComponentFromStringCommon(codeBuilder, xml, buildData, "this", false, builder);
 
         for (id in buildData.namedComponents.keys()) {
             var safeId:String = StringUtil.capitalizeHyphens(id);
@@ -603,6 +603,10 @@ class Macros {
                                         return value;
                                     }
                                 case _:    
+                            }
+                            if (behaviours == null) {
+                                behaviours = new haxe.ui.behaviours.Behaviours(cast this);
+                                this.registerBehaviours();
                             }
                             behaviours.set($v{f.name}, value);
                             dispatch(new haxe.ui.events.UIEvent(haxe.ui.events.UIEvent.PROPERTY_CHANGE, $v{f.name}));

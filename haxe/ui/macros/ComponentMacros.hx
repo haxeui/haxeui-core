@@ -343,7 +343,6 @@ class ComponentMacros {
         }
         
         buildScriptHandlers(builder, buildData.namedComponents, buildData.scripts);
-        
         if (buildRoot == false) {
             if (classBuilder.hasInterface("haxe.ui.core.IDataComponent") == true && c.data != null) {
                 buildDataSourceCode(builder, c, 'ds_root', "this");
@@ -388,7 +387,7 @@ class ComponentMacros {
         }
     }
     
-    private static function buildComponentFromStringCommon(builder:CodeBuilder, source:String, buildData:BuildData = null, rootVarName:String = "this", buildRoot:Bool = false):ComponentInfo {
+    private static function buildComponentFromStringCommon(builder:CodeBuilder, source:String, buildData:BuildData = null, rootVarName:String = "this", buildRoot:Bool = false, classBuilder:ClassBuilder = null):ComponentInfo {
         #if haxeui_macro_times
         var stopTimer = Context.timer("ComponentMacros.buildComponentFromStringCommon");
         #end
@@ -429,6 +428,9 @@ class ComponentMacros {
         }
 
         buildScriptHandlers(builder, buildData.namedComponents, buildData.scripts);
+        if (classBuilder != null && classBuilder.hasInterface("haxe.ui.core.IDataComponent") == true && c.data != null) {
+            buildDataSourceCode(builder, c, 'ds_root', rootVarName);
+        }
         assignComponentProperties(builder, c, rootVarName, buildData);
         
         builder.add(macro $i{rootVarName}.bindingRoot = true);
