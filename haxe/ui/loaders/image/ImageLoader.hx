@@ -25,6 +25,10 @@ class ImageLoader {
     public function load(resource:Variant, callback:ImageInfo->Void, useCache:Bool = true) {
         if (resource.isString) {
             var stringResource:String = resource;
+            if (stringResource == "null") {
+                callback(null);
+                return;
+            }
             if (useCache == true) {
                 var cachedImage = ToolkitAssets.instance.getCachedImage(stringResource);
                 if (cachedImage != null) {
