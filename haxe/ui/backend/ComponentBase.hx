@@ -546,13 +546,13 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
             return;
         }
         
-        Toolkit.callLater(function() {
+        //Toolkit.callLater(function() {
             var pausedList = _pausedEvents.get(type);
             for (l in pausedList) {
                 registerEvent(type, l);
             }
             _pausedEvents.remove(type);
-        });
+        //});
         
         if (recursive == true) {
             for (c in childComponents) {
