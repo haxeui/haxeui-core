@@ -1,13 +1,13 @@
 package haxe.ui.components.pickers;
 
-import haxe.ui.data.DataSource;
-import haxe.ui.util.Variant;
-import haxe.ui.containers.menus.MenuSeparator;
-import haxe.ui.events.UIEvent;
-import haxe.ui.containers.menus.MenuItem;
-import haxe.ui.containers.menus.Menu;
-import haxe.ui.core.Component;
 import haxe.ui.components.pickers.ItemPicker;
+import haxe.ui.containers.menus.Menu;
+import haxe.ui.containers.menus.MenuItem;
+import haxe.ui.containers.menus.MenuSeparator;
+import haxe.ui.core.Component;
+import haxe.ui.data.DataSource;
+import haxe.ui.events.UIEvent;
+import haxe.ui.util.Variant;
 
 @:composite(Builder)
 @:xml('

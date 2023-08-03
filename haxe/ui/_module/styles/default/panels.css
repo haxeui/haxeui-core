@@ -22,7 +22,8 @@
 .panel-header {
     background-color: $solid-background-color;
     border-top-left-radius: 4px;
-    border-top-right-radius:4px; padding: 5px;
+    border-top-right-radius:4px;
+    padding: 5px;
     border-bottom: 1px solid $normal-border-color;
     width: 100%;
 }

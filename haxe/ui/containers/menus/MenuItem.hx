@@ -1,12 +1,12 @@
 package haxe.ui.containers.menus;
 
+import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.components.Image;
 import haxe.ui.components.Label;
 import haxe.ui.containers.HBox;
 import haxe.ui.core.CompositeBuilder;
-import haxe.ui.behaviours.DataBehaviour;
-import haxe.ui.events.MouseEvent;
 import haxe.ui.events.Events;
+import haxe.ui.events.MouseEvent;
 import haxe.ui.styles.Style;
 
 @:composite(Events, Builder)
