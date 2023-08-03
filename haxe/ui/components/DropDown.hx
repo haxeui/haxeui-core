@@ -49,7 +49,7 @@ class DropDown extends Button implements IDataComponent {
     @:call(HideDropDown)                                            public function hideDropDown();
     @:call(ShowDropDown)                                            public function showDropDown();
 
-    public function selectItemBy(fn:Dynamic->Bool) {
+    public function selectItemBy(fn:Dynamic->Bool, allowUnselection:Bool = false) {
         var indexToSelect = -1;
         for (i in 0...this.dataSource.size) {
             var item = this.dataSource.get(i);
@@ -58,7 +58,11 @@ class DropDown extends Button implements IDataComponent {
                 break;
             }
         }
-        if (indexToSelect != -1) {
+        if (allowUnselection) {
+            this.selectedIndex = -1;
+            this.selectedIndex = indexToSelect;
+        } else if (indexToSelect != -1) {
+            this.selectedIndex = -1;
             this.selectedIndex = indexToSelect;
         }
     }
