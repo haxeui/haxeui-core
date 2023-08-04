@@ -66,6 +66,11 @@
     initial-width: 200px;
 }
 
+.menu.auto-width {
+    width: auto;
+    initial-width: none;
+}
+
 .menu.expanded {
     border-top-width: 0px;
     border-top-size: 0px;
@@ -81,7 +86,6 @@
 *************************************************************************/
 .menuitem {
     background-color: $secondary-background-color;
-    width: 100%;
     padding: 6px;
     padding-left: 12px;
     cursor: pointer;

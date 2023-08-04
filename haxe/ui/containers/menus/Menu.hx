@@ -2,12 +2,15 @@ package haxe.ui.containers.menus;
 
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.components.Button;
-import haxe.ui.containers.VBox;
+import haxe.ui.components.Label;
+import haxe.ui.containers.Box;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
-import haxe.ui.events.MouseEvent;
 import haxe.ui.core.Screen;
+import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
+import haxe.ui.geom.Size;
+import haxe.ui.layouts.VerticalLayout;
 
 #if (haxe_ver >= 4.2)
 import Std.isOfType;
@@ -41,8 +44,8 @@ class MenuEvent extends UIEvent {
     }
 }
 
-@:composite(MenuEvents, Builder)
-class Menu extends VBox {
+@:composite(MenuEvents, Builder, Layout)
+class Menu extends Box {
     @:behaviour(DefaultBehaviour)           public var menuStyleNames:String;
 
     /**
@@ -425,5 +428,50 @@ private class Builder extends CompositeBuilder {
     public override function show() {
         Screen.instance.addComponent(_menu);
         return true;
+    }
+}
+
+private class Layout extends VerticalLayout {
+    private override function resizeChildren() {
+        if (!_component.autoWidth) {
+            for (child in component.childComponents) {
+                if (child.includeInLayout == false) {
+                    continue;
+                }
+
+                if (child.percentWidth == null) {
+                    child.percentWidth = 100;
+                }
+            }
+            super.resizeChildren();
+        } else {
+            var usableSize:Size = usableSize;
+            var biggest:Float = 0;
+
+            for (child in component.childComponents) {
+                if (child.includeInLayout == false) {
+                    continue;
+                }
+
+                if (child.width <= 0) {
+                    child.validateNow();    
+                }
+
+                if (child.width > biggest) {
+                    biggest = child.width;
+                }
+            }
+
+            for (child in component.childComponents) {
+                if (child.includeInLayout == false) {
+                    continue;
+                }
+
+                var cx:Null<Float> = null;
+                cx = 100;
+
+                child.width = biggest;
+            }    
+        }
     }
 }

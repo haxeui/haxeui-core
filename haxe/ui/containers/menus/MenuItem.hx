@@ -3,14 +3,15 @@ package haxe.ui.containers.menus;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.components.Image;
 import haxe.ui.components.Label;
-import haxe.ui.containers.HBox;
+import haxe.ui.containers.Box;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.events.Events;
 import haxe.ui.events.MouseEvent;
+import haxe.ui.layouts.HorizontalLayout;
 import haxe.ui.styles.Style;
 
-@:composite(Events, Builder)
-class MenuItem extends HBox {
+@:composite(Events, Builder, Layout)
+class MenuItem extends Box {
     @:clonable @:behaviour(TextBehaviour)           public var text:String;
     @:clonable @:behaviour(ShortcutTextBehaviour)   public var shortcutText:String;
     @:clonable @:behaviour(IconBehaviour)           public var icon:String;
@@ -113,12 +114,13 @@ private class Builder extends CompositeBuilder {
         super.create();
 
         var box = new HBox();
-        box.percentWidth = 100;
+        box.id = "menuitem-container";
+        //box.percentWidth = 100;
         box.verticalAlign = "center";
 
         var label = new Label();
         label.id = "menuitem-label";
-        label.percentWidth = 100;
+        //label.percentWidth = 100;
         label.styleNames = "menuitem-label";
         label.scriptAccess = false;
         box.addComponent(label);
@@ -134,5 +136,23 @@ private class Builder extends CompositeBuilder {
     
     public override function applyStyle(style:Style) {
         haxe.ui.macros.ComponentMacros.cascacdeStylesTo("menuitem-label", [color, fontName, fontSize, cursor, textAlign]);
+    }
+}
+
+private class Layout extends HorizontalLayout {
+    private override function resizeChildren() {
+        if (_component.percentWidth != null) {
+            var container = _component.findComponent("menuitem-container", HBox);
+            if (container != null && container.percentWidth != 100) {
+                container.percentWidth = 100;
+            }
+            var label = _component.findComponent("menuitem-label", Label);
+            if (label != null && label.percentWidth != 100) {
+                label.percentWidth = 100;
+            }
+            super.resizeChildren();
+        } else {
+            super.resizeChildren();
+        }
     }
 }
