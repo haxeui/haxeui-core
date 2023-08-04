@@ -184,15 +184,19 @@ private class Events extends haxe.ui.events.Events {
         _currentButton = target;
         _currentMenu = menu;
         
-
         if (hasChildren == true) {
             var cx = menu.width - _currentButton.width;
+            var offset:Float = 0;
+            if (_currentMenu.style != null && _currentMenu.style.borderRadiusTopRight > 0) {
+                offset = _currentMenu.style.borderRadiusTopRight - 1;
+            }
+            cx -= offset;
             var filler:Component = menu.findComponent("menu-filler", false);
             if (cx > 0 && filler != null) {
                 cx += 1;
                 filler.width = cx;
                 if (rtl == false) {
-                    filler.left = menu.width - cx;
+                    filler.left = menu.width - cx - offset;
                 }
             } else if (filler != null) {
                 menu.removeComponent(filler);
