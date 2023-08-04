@@ -689,15 +689,28 @@ class Component extends ComponentImpl implements IValidating {
             childComponents[0].addClasses(["first", "last"], invalidate);
             return;
         }
+        var effectiveChildCount = 0;
         for (i in 0...childComponents.length) {
             var c = childComponents[i];
+            if (!c.includeInLayout) {
+                continue;
+            }
+            effectiveChildCount++;
+        }
+        var n = 0;
+        for (i in 0...childComponents.length) {
+            var c = childComponents[i];
+            if (!c.includeInLayout) {
+                continue;
+            }
             if (i == 0) {
                 c.swapClass("first", "last", invalidate);
-            } else if (childComponents.length > 1 && i == childComponents.length - 1) {
+            } else if (i == effectiveChildCount - 1) {
                 c.swapClass("last", "first", invalidate);
             } else {
                 c.removeClasses(["first", "last"], invalidate);
             }
+            n++;
         }
     }
 
