@@ -4,9 +4,9 @@ import haxe.ui.Toolkit;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.components.Button;
 import haxe.ui.containers.HBox;
+import haxe.ui.containers.menus.Menu;
 import haxe.ui.containers.menus.Menu.MenuEvent;
 import haxe.ui.containers.menus.Menu.MenuEvents;
-import haxe.ui.containers.menus.Menu;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.Screen;
@@ -167,7 +167,6 @@ private class Events extends haxe.ui.events.Events {
             }
             menu.show();
             menu.syncComponentValidation();
-            menu.removeClass(":hover", true, true);
 
             if (left + menu.actualComponentWidth > Screen.instance.actualWidth) {
                 left = target.screenLeft - menu.actualComponentWidth + target.actualComponentWidth;

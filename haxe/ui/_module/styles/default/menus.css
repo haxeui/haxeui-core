@@ -63,8 +63,7 @@
     border: 1px solid $normal-border-color;
     filter: $menu-shadow;
     spacing: 0;
-    __initial-width: 200px;
-    width: auto;
+    initial-width: 200px;
 }
 
 .menu.expanded {
@@ -82,7 +81,7 @@
 *************************************************************************/
 .menuitem {
     background-color: $secondary-background-color;
-    width: auto;
+    width: 100%;
     padding: 6px;
     padding-left: 12px;
     cursor: pointer;

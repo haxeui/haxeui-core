@@ -5,10 +5,9 @@ import haxe.ui.components.Button;
 import haxe.ui.containers.VBox;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
-import haxe.ui.core.Screen;
 import haxe.ui.events.MouseEvent;
+import haxe.ui.core.Screen;
 import haxe.ui.events.UIEvent;
-import haxe.ui.layouts.VerticalLayout;
 
 #if (haxe_ver >= 4.2)
 import Std.isOfType;
@@ -42,12 +41,8 @@ class MenuEvent extends UIEvent {
     }
 }
 
-@:composite(MenuEvents, Builder, Layout)
+@:composite(MenuEvents, Builder)
 class Menu extends VBox {
-    public function new() {
-        super();
-        trace("new menu");
-    }
     @:behaviour(DefaultBehaviour)           public var menuStyleNames:String;
 
     /**
@@ -430,18 +425,5 @@ private class Builder extends CompositeBuilder {
     public override function show() {
         Screen.instance.addComponent(_menu);
         return true;
-    }
-}
-
-private class Layout extends VerticalLayout {
-    private override function resizeChildren() {
-        trace("here");
-        for (child in component.childComponents) {
-            if (child.includeInLayout == false) {
-                continue;
-            }
-
-            trace(child.width);
-        }
     }
 }
