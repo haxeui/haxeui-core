@@ -485,19 +485,105 @@ class ModuleMacros {
         #end
 
         var modules:Array<Module> = loadModules();
+        var list = [];
         for (m in modules) {
             for (c in m.componentEntries) {
                 if (c.classFolder != null) {
-                    createDynamicClasses(c.classFolder, null, m.namespaces);
+                    findDynamicClasses(c.classFolder, list);
                 } else if (c.classFile != null) {
-                    createDynamicClass(c.classFile, null, null, m.namespaces);
+                    list.push(c.classFile);
                 }
             }
+        }
+
+        list = orderDynamicClassesByDependency(list);
+        for (file in list) {
+            createDynamicClass(file, null, null, null);
         }
 
         #if haxeui_macro_times
         stopTimer();
         #end
+    }
+
+    private static function findDynamicClasses(dir:String, list:Array<String>) {
+        var resolvedPath = null;
+        try {
+            resolvedPath = Context.resolvePath(dir);
+        } catch (e:Dynamic) {
+            resolvedPath = haxe.io.Path.join([Sys.getCwd(), dir]);
+        }
+        if (resolvedPath == null || FileSystem.exists(resolvedPath) == false || FileSystem.isDirectory(resolvedPath) == false) {
+            trace("WARNING: Could not find path " + resolvedPath);
+        }
+
+        dir = Path.normalize(resolvedPath);
+        var contents = FileSystem.readDirectory(dir);
+        for (item in contents) {
+            var fullPath = Path.normalize(dir + "/" + item);
+            if (FileSystem.isDirectory(fullPath)) {
+                findDynamicClasses(fullPath, list);
+            } else {
+                list.push(fullPath);
+            }
+        }
+    }
+
+    private static function orderDynamicClassesByDependency(list:Array<String>) {
+        var classNames = [];
+        var classNameToFile:Map<String, String> = new Map<String, String>();
+        for (filename in list) {
+            var className:String = StringUtil.capitalizeFirstLetter(StringUtil.capitalizeHyphens(new Path(filename).file)).toLowerCase();
+            classNames.push(className);
+            classNameToFile.set(className, filename);
+        }
+
+        for (filename in list) {
+            var resolvedPath = null;
+            try {
+                resolvedPath = Context.resolvePath(filename);
+            } catch (e:Dynamic) {
+                resolvedPath = haxe.io.Path.join([Sys.getCwd(), filename]);
+            }
+            if (resolvedPath == null || FileSystem.exists(resolvedPath) == false || FileSystem.isDirectory(resolvedPath) == true) {
+                trace("WARNING: Could not find path " + resolvedPath);
+            }
+    
+            var fullPath = Path.normalize(resolvedPath);
+    
+            var className:String = StringUtil.capitalizeFirstLetter(StringUtil.capitalizeHyphens(new Path(filename).file)).toLowerCase();
+            var fileContents = sys.io.File.getContent(fullPath);
+            try {
+                var xml = Xml.parse(fileContents);
+                walkXmlNodes(className, xml.firstElement(), classNames);
+            } catch(e:Dynamic) {}
+        }
+
+        var orderedList = [];
+        for (className in classNames) {
+            orderedList.push(classNameToFile.get(className));
+        }
+        return orderedList;
+    }
+    
+    private static function walkXmlNodes(currentClassName:String, xml:Xml, classNames:Array<String>) {
+        var nodeName = StringTools.replace(xml.nodeName.toLowerCase(), "-", "");
+        if (classNames.indexOf(nodeName) != -1) {
+            var currentClassIndex = classNames.indexOf(currentClassName);
+            var dependencyClassIndex = classNames.indexOf(nodeName);
+            if (dependencyClassIndex > currentClassIndex) {
+                classNames.remove(nodeName);
+                classNames.insert(currentClassIndex, nodeName);
+            }
+        }
+        for (el in xml.elements()) {
+            walkXmlNodes(currentClassName, el, classNames);
+        }
+    }
+
+    private static function buildDynamicClassDep(filename:String) {
+        var className:String = StringUtil.capitalizeFirstLetter(StringUtil.capitalizeHyphens(new Path(filename).file));
+        trace("build deps for", filename, className);
     }
 
     private static function createDynamicClasses(dir:String, root:String, namespaces:Map<String, String>) {
