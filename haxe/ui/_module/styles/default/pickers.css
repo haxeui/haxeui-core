@@ -111,6 +111,7 @@
 .month-picker #itemPickerTrigger {
     padding: 5px 5px;
     background: $normal-background-color-start $normal-background-color-end vertical;
+    border-left: 1px solid $normal-border-color;
 }
 
 .month-picker #itemPickerTrigger:hover {
@@ -120,6 +121,7 @@
 .month-picker #itemPickerTrigger.selected {
     background-color: $down-background-color-start;
     filter: $normal-inner-shadow;
+    border-left: 1px solid $down-border-color;
 }
 
 .month-picker:active {

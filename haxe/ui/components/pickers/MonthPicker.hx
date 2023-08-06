@@ -10,7 +10,6 @@ import haxe.ui.events.UIEvent;
 <item-picker panelWidth="300">
     <hbox id="itemPickerRenderer" style="spacing:0px">
         <month-stepper allowFocus="false" id="monthStepper" width="100%" />
-        <rule direction="vertical" />
         <box id="itemPickerTrigger" height="100%">
             <image styleName="item-picker-trigger-icon" />
         </box>
