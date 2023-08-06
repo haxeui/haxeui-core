@@ -23,6 +23,7 @@
 
 .frame-title {
     color: $normal-text-color;
+    font-weight: bold;
 }
 
 .frame-title:disabled {
