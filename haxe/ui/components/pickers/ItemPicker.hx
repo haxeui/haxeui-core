@@ -59,7 +59,7 @@ class ItemPickerHandler {
     public var builder:ItemPickerBuilder;
     public var picker:ItemPicker;
     public var renderer:Component;
-    public var panel:Component;  
+    public var panel:Component;
 
     private function pausePanelEvents() {
         builder.pausePanelEvents();
@@ -85,7 +85,7 @@ class ItemPickerHandler {
 private class DefaultItemPickerRenderer extends HBox {
     private var _renderer:ItemRenderer = new BasicItemRenderer();
     private var _triggerIcon:Image = new Image();
-    
+
     public function new() {
         super();
 
@@ -209,7 +209,9 @@ class ItemPickerBuilder extends CompositeBuilder {
 
     public function resumePanelEvents() {
         if (panel != null) {
-            panel.resumeEvent(panelSelectionEvent);
+            Toolkit.callLater(function() {
+                panel.resumeEvent(panelSelectionEvent);
+            });
         }
     }
 
@@ -228,7 +230,7 @@ class ItemPickerBuilder extends CompositeBuilder {
         //event.cancel();
         if (!_panelVisible) {
             picker.focus = true;
-            showPanel();    
+            showPanel();
         } else {
             hidePanel();
         }
@@ -258,7 +260,7 @@ class ItemPickerBuilder extends CompositeBuilder {
         });
 
         positionPanel();
-        
+
         if (picker.animatable) {
             panelContainer.fadeIn();
         } else {
@@ -267,9 +269,7 @@ class ItemPickerBuilder extends CompositeBuilder {
         Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
         _panelVisible = true;
 
-        Toolkit.callLater(function() {
-            resumePanelEvents();
-        });
+        resumePanelEvents();
     }
 
     private function positionPanel() {
@@ -279,11 +279,11 @@ class ItemPickerBuilder extends CompositeBuilder {
         var panelOrigin = picker.panelOrigin;
         var panelWidth:Null<Float> = picker.width;
         var panelHeight:Null<Float> = panel.height;
-    
+
         if (picker.panelWidth != null) {
             panelWidth = picker.panelWidth;
         }
-    
+
         if (panelPosition == "auto") {
             if (picker.screenTop + picker.height + panelHeight > Screen.instance.height) {
                 panelPosition = "up";
@@ -291,7 +291,7 @@ class ItemPickerBuilder extends CompositeBuilder {
                 panelPosition = "down";
             }
         }
-    
+
         if (panelOrigin == "auto") {
             if (picker.screenLeft + panelWidth > Screen.instance.width) {
                 panelOrigin = "right";
@@ -299,13 +299,13 @@ class ItemPickerBuilder extends CompositeBuilder {
                 panelOrigin = "left";
             }
         }
-    
+
         if (panelPosition == "down") {
             panelContainer.addClass("position-down");
         } else if (panelPosition == "up") {
             panelContainer.addClass("position-up");
         }
-    
+
         panelContainer.syncComponentValidation();
         panel.validateNow();
         panelContainer.validateNow();
@@ -325,7 +325,7 @@ class ItemPickerBuilder extends CompositeBuilder {
             horizontalPadding = panelContainer.style.paddingLeft + panelContainer.style.paddingRight;
             borderSize = panelContainer.style.borderTopSize;
         }
-    
+
         if (_panelFiller == null) {
             _panelFiller = new Component();
             _panelFiller.addClass("item-picker-panel-filler");
@@ -333,7 +333,7 @@ class ItemPickerBuilder extends CompositeBuilder {
             _panelFiller.height = borderSize;
             panelContainer.addComponent(_panelFiller);
         }
-    
+
         _panelFiller.width = panelWidth - picker.width;
         if (_panelFiller.width > 0) {
             _panelFiller.show();
@@ -341,7 +341,7 @@ class ItemPickerBuilder extends CompositeBuilder {
             _panelFiller.hide();
         }
         panel.width = panelWidth - horizontalPadding;
-    
+
         if (panelOrigin == "left") {
             panelContainer.left = picker.screenLeft;
             _panelFiller.left = picker.width - borderSize;
@@ -349,7 +349,7 @@ class ItemPickerBuilder extends CompositeBuilder {
             panelContainer.left = picker.screenLeft + picker.width - panelWidth;
             _panelFiller.left = borderSize;
         }
-    
+
         if (panelPosition == "down") {
             panelContainer.top = picker.screenTop + picker.height + marginTop;
             _panelFiller.top = 0;
@@ -361,7 +361,7 @@ class ItemPickerBuilder extends CompositeBuilder {
 
     public function hidePanel() {
         picker.isPanelOpen = false;
-        
+
         if (picker.animatable) {
             /*
             panelContainer.fadeOut(function() {
