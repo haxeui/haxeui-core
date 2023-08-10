@@ -1682,10 +1682,10 @@ class Component extends ComponentImpl implements IValidating {
     /** The gap between the container's children, on their right side **/           @:style(layout)         public var paddingTop:Null<Float>;
     /** The gap between the container's children, on their bottom **/               @:style(layout)         public var paddingBottom:Null<Float>;
 
-    /** The amount of offseting to apply for text from the top in pixels **/        @:style                 public var marginLeft:Null<Float>;
-    /** The amount of offseting to apply for text from the left in pixels **/       @:style                 public var marginRight:Null<Float>;
-    /** The amount of offseting to apply for text from the right in pixels **/      @:style                 public var marginTop:Null<Float>;
-    /** The amount of offseting to apply for text from the bottom in pixels **/     @:style                 public var marginBottom:Null<Float>;
+    /** The amount of left offsetting to apply to the calculated position **/        @:style                 public var marginLeft:Null<Float>;
+    /** The amount of right offsetting to apply to the calculated position**/        @:style                 public var marginRight:Null<Float>;
+    /** The amount of top offsetting to apply to the calculated position **/         @:style                 public var marginTop:Null<Float>;
+    /** The amount of bottom offsetting to apply to the calculated position **/      @:style                 public var marginBottom:Null<Float>;
     @:style                 public var clip:Null<Bool>;
 
     /** A value between 0 and 1, deciding the transparency of this object **/       @:style                 public var opacity:Null<Float>;
