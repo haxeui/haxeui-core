@@ -1690,8 +1690,8 @@ class Component extends ComponentImpl implements IValidating {
 
     /** A value between 0 and 1, deciding the transparency of this object **/       @:style                 public var opacity:Null<Float>;
 
-    /** The anount of spacing between children horizontally, in pixels **/          @:style(layoutparent)   public var horizontalAlign:String;
-    /** The anount of spacing between children vertically, in pixels **/            @:style(layoutparent)   public var verticalAlign:String;
+    /** How the component is aligned to the parent: center, left, right **/         @:style(layoutparent)   public var horizontalAlign:String;
+    /** How the component is aligned to the parent: center, top, bottom **/         @:style(layoutparent)   public var verticalAlign:String;
 
     //***********************************************************************************************************
     // Script related
