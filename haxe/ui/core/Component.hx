@@ -1667,7 +1667,7 @@ class Component extends ComponentImpl implements IValidating {
     // Styles
     //***********************************************************************************************************
     #if !(haxeui_flixel || haxeui_heaps)
-    /** A color to tint the object with **/                                         @:style                 public var color:Null<Color>;
+    /** The color of the text **/                                                   @:style                 public var color:Null<Color>;
     #end
     @:style                 public var backgroundColor:Null<Color>;
     @:style                 public var backgroundColorEnd:Null<Color>;
@@ -1676,11 +1676,11 @@ class Component extends ComponentImpl implements IValidating {
     /** The size of the border, in pixels **/                                       @:style                 public var borderSize:Null<Float>;
     /** The amount of rounding to apply to the border **/                           @:style                 public var borderRadius:Null<Float>;
 
-    /** The gap between the container's children, on all sides **/                  @:style(layout)         public var padding:Null<Float>;
-    /** The gap between the container's children, on their top **/                  @:style(layout)         public var paddingLeft:Null<Float>;
-    /** The gap between the container's children, on their left side **/            @:style(layout)         public var paddingRight:Null<Float>;
-    /** The gap between the container's children, on their right side **/           @:style(layout)         public var paddingTop:Null<Float>;
-    /** The gap between the container's children, on their bottom **/               @:style(layout)         public var paddingBottom:Null<Float>;
+    /** The gap between the component and its children, on all sides **/                  @:style(layout)         public var padding:Null<Float>;
+    /** The gap between the component and its children, on the top **/                  @:style(layout)         public var paddingLeft:Null<Float>;
+    /** The gap between the component and its children, on the left side **/            @:style(layout)         public var paddingRight:Null<Float>;
+    /** The gap between the component and its children, on the right side **/           @:style(layout)         public var paddingTop:Null<Float>;
+    /** The gap between the component and its children, on the bottom **/               @:style(layout)         public var paddingBottom:Null<Float>;
 
     /** The amount of left offsetting to apply to the calculated position **/        @:style                 public var marginLeft:Null<Float>;
     /** The amount of right offsetting to apply to the calculated position**/        @:style                 public var marginRight:Null<Float>;
