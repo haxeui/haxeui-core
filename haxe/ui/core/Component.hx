@@ -1686,7 +1686,7 @@ class Component extends ComponentImpl implements IValidating {
     /** The amount of right offsetting to apply to the calculated position**/        @:style                 public var marginRight:Null<Float>;
     /** The amount of top offsetting to apply to the calculated position **/         @:style                 public var marginTop:Null<Float>;
     /** The amount of bottom offsetting to apply to the calculated position **/      @:style                 public var marginBottom:Null<Float>;
-    @:style                 public var clip:Null<Bool>;
+    /** Whether the children are clipped (cut) to the the component boundings **/    @:style                 public var clip:Null<Bool>;
 
     /** A value between 0 and 1, deciding the transparency of this object **/       @:style                 public var opacity:Null<Float>;
 
