@@ -1667,7 +1667,7 @@ class Component extends ComponentImpl implements IValidating {
     // Styles
     //***********************************************************************************************************
     #if !(haxeui_flixel || haxeui_heaps)
-    /** A color to tint the object with **/                                         @:style                 public var color:Null<Color>;
+    /** The color of the text **/                                                   @:style                 public var color:Null<Color>;
     #end
     @:style                 public var backgroundColor:Null<Color>;
     @:style                 public var backgroundColorEnd:Null<Color>;
@@ -1676,22 +1676,22 @@ class Component extends ComponentImpl implements IValidating {
     /** The size of the border, in pixels **/                                       @:style                 public var borderSize:Null<Float>;
     /** The amount of rounding to apply to the border **/                           @:style                 public var borderRadius:Null<Float>;
 
-    /** The gap between the container's children, on all sides **/                  @:style(layout)         public var padding:Null<Float>;
-    /** The gap between the container's children, on their top **/                  @:style(layout)         public var paddingLeft:Null<Float>;
-    /** The gap between the container's children, on their left side **/            @:style(layout)         public var paddingRight:Null<Float>;
-    /** The gap between the container's children, on their right side **/           @:style(layout)         public var paddingTop:Null<Float>;
-    /** The gap between the container's children, on their bottom **/               @:style(layout)         public var paddingBottom:Null<Float>;
+    /** The gap between the component and its children, on all sides **/                  @:style(layout)         public var padding:Null<Float>;
+    /** The gap between the component and its children, on the top **/                  @:style(layout)         public var paddingLeft:Null<Float>;
+    /** The gap between the component and its children, on the left side **/            @:style(layout)         public var paddingRight:Null<Float>;
+    /** The gap between the component and its children, on the right side **/           @:style(layout)         public var paddingTop:Null<Float>;
+    /** The gap between the component and its children, on the bottom **/               @:style(layout)         public var paddingBottom:Null<Float>;
 
-    /** The amount of offseting to apply for text from the top in pixels **/        @:style                 public var marginLeft:Null<Float>;
-    /** The amount of offseting to apply for text from the left in pixels **/       @:style                 public var marginRight:Null<Float>;
-    /** The amount of offseting to apply for text from the right in pixels **/      @:style                 public var marginTop:Null<Float>;
-    /** The amount of offseting to apply for text from the bottom in pixels **/     @:style                 public var marginBottom:Null<Float>;
-    @:style                 public var clip:Null<Bool>;
+    /** The amount of left offsetting to apply to the calculated position **/        @:style                 public var marginLeft:Null<Float>;
+    /** The amount of right offsetting to apply to the calculated position**/        @:style                 public var marginRight:Null<Float>;
+    /** The amount of top offsetting to apply to the calculated position **/         @:style                 public var marginTop:Null<Float>;
+    /** The amount of bottom offsetting to apply to the calculated position **/      @:style                 public var marginBottom:Null<Float>;
+    /** Whether the children are clipped (cut) to the the component boundings **/    @:style                 public var clip:Null<Bool>;
 
     /** A value between 0 and 1, deciding the transparency of this object **/       @:style                 public var opacity:Null<Float>;
 
-    /** The anount of spacing between children horizontally, in pixels **/          @:style(layoutparent)   public var horizontalAlign:String;
-    /** The anount of spacing between children vertically, in pixels **/            @:style(layoutparent)   public var verticalAlign:String;
+    /** How the component is aligned to the parent: center, left, right **/         @:style(layoutparent)   public var horizontalAlign:String;
+    /** How the component is aligned to the parent: center, top, bottom **/         @:style(layoutparent)   public var verticalAlign:String;
 
     //***********************************************************************************************************
     // Script related

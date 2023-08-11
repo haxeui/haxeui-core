@@ -49,10 +49,8 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
     @:clonable @:behaviour(ComponentTextBehaviour)                  public var text:String;
     
     /**
-    * The text displayed inside the label.
-    * 
     * `value` is used as a universal way to access the "core" value a component is based on. 
-    * in this case, its the component's text.
+    *  For example, in a label component, it will be the text.
     */
     @:clonable @:behaviour(ComponentValueBehaviour)                 public var value:Dynamic;
 
