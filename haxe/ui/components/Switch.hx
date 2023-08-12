@@ -1,9 +1,9 @@
 package haxe.ui.components;
 
-import haxe.ui.core.Component;
-import haxe.ui.core.CompositeBuilder;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
+import haxe.ui.core.Component;
+import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.IValueComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.events.UIEvent;
@@ -122,6 +122,10 @@ private class SwitchButtonSub extends InteractiveComponent {
         super.createChildren();
 
         if (_button == null) {
+            var component:Component = new Component();
+            component.addClass("switch-button-sub-extra");
+            addComponent(component);
+
             _label = new Label();
             _label.id = "switch-label";
             _label.addClass("switch-label");
@@ -136,10 +140,6 @@ private class SwitchButtonSub extends InteractiveComponent {
             onClick = function(e) {
                 selected = !selected;
             }
-
-            var component:Component = new Component();
-            component.addClass("switch-button-sub-extra");
-            addComponentAt(component, 0);
         }
     }
 
