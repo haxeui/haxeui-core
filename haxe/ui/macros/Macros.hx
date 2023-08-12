@@ -134,9 +134,11 @@ class Macros {
         var stopTimer = Context.timer("build from xml meta");
         #end
 
+        #if !haxeui_dont_impose_base_class
         if (builder.hasSuperClass("haxe.ui.core.Component") == false) {
             Context.error("Must have a superclass of haxe.ui.core.Component", Context.currentPos());
         }
+        #end
 
         addConstructor(builder);
         if (builder.ctor == null) {
@@ -380,9 +382,11 @@ class Macros {
 
         var bindFields = builder.getFieldsWithMeta("bind");
         if (bindFields.length > 0) {
+            #if !haxeui_dont_impose_base_class
             if (builder.hasSuperClass("haxe.ui.core.Component") == false) {
                 Context.error("Must have a superclass of haxe.ui.core.Component", Context.currentPos());
             }
+            #end
 
             addConstructor(builder);
             if (builder.ctor == null) {

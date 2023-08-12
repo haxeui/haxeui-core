@@ -215,9 +215,11 @@ class ComponentMacros {
         var fields = haxe.macro.Context.getBuildFields();
 
         var builder = new ClassBuilder(Context.getBuildFields(), Context.getLocalType(), Context.currentPos());
+        #if !haxeui_dont_impose_base_class
         if (builder.hasSuperClass("haxe.ui.core.Component") == false) {
             Context.error("Must have a superclass of haxe.ui.core.Component", Context.currentPos());
         }
+        #end
 
         Macros.addConstructor(builder);
         if (builder.ctor == null) {
