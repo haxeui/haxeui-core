@@ -290,7 +290,7 @@ private class TreeViewNodeBuilder extends CompositeBuilder {
             return;
         }
         
-        onExpandCollapseClicked(null);
+        onExpandCollapseClicked(event);
     }
     
     private function onExpandCollapseClicked(event:MouseEvent) {
