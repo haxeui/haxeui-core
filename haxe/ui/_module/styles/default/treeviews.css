@@ -82,6 +82,6 @@
     width: 100%;
 }
 
-.treeview.full-width .treenode-container .label {
+.treeview.full-width .treenode-container #text {
     width: 100%;
 } 
