@@ -445,9 +445,9 @@ private class Builder extends CompositeBuilder {
         button.id = child.id;
         button.text = child.text;
         button.tooltip = child.tooltip;
+        button.userData = child.userData;
         if ((child is Button)) {
             button.icon = cast(child, Button).icon;
-            button.userData = cast(child, Button).userData;
         }
         button.closable = _tabbar.closable;
         if (_tabbar.buttonWidth != null) {
