@@ -17,31 +17,31 @@ class Style {
     @:optional public var left:Null<Float>;
     @:optional public var top:Null<Float>;
 
-    /** Whether or not the object's width is decided by its children's width **/    @:optional public var autoWidth:Null<Bool>;
-    /** A hard-coded value for the object's width **/                               @:optional public var width:Null<Float>;
-    /** Sets the width of the object to `X` percent of the parent's width **/       @:optional public var percentWidth:Null<Float>;
-    /** The thinest this object can get **/                                         @:optional public var minWidth:Null<Float>;
-    /** The thinest this object can get, by percentage of its parent's width**/     @:optional public var minPercentWidth:Null<Float>;
-    /** The widest this object can get **/                                          @:optional public var maxWidth:Null<Float>;
-    /** The widest this object can get, by percentage of its parent's width**/      @:optional public var maxPercentWidth:Null<Float>;
-    /** The starting, automatically assigned `width` of this object **/             @:optional public var initialWidth:Null<Float>;
-    /** The starting, automatically assigned `percentWidth` of this object **/      @:optional public var initialPercentWidth:Null<Float>;
+    /** Whether or not the component's width is decided by its children's width **/ @:optional public var autoWidth:Null<Bool>;
+    /** A hard-coded value in pixels for the component's width **/                  @:optional public var width:Null<Float>;
+    /** Sets the width of the component to `X` percent of the parent's width **/    @:optional public var percentWidth:Null<Float>;
+    /** The minimum width in pixels the component can get **/                       @:optional public var minWidth:Null<Float>;
+    /** The minimum width the component can get in percent of its parent's width**/ @:optional public var minPercentWidth:Null<Float>;
+    /** The maximum width in pixels the component can get**/                        @:optional public var maxWidth:Null<Float>;
+    /** The maximum width the component can get in percent of its parent's width**/ @:optional public var maxPercentWidth:Null<Float>;
+    /** The starting, automatically assigned `width` of the component **/           @:optional public var initialWidth:Null<Float>;
+    /** The starting, automatically assigned `percentWidth` of the component**/     @:optional public var initialPercentWidth:Null<Float>;
 
     /** Whether or not the object's height is decided by its children's height **/  @:optional public var autoHeight:Null<Bool>;
-    /** A hard-coded value for the object's height **/                              @:optional public var height:Null<Float>;
-    /** sets the width of the object to `X` percent of the parent's height **/      @:optional public var percentHeight:Null<Float>;  
-    /** The shorteset this object can get **/                                       @:optional public var minHeight:Null<Float>;
-    /** The shortest this object can get, by percentage of its parent's height **/  @:optional public var minPercentHeight:Null<Float>;
+    /** A hard-coded value in pixels for the component's height **/                 @:optional public var height:Null<Float>;
+    /** Sets the width of the object to `X` percent of the parent's height **/      @:optional public var percentHeight:Null<Float>;  
+    /** The minimum height in pixels the component can get **/                      @:optional public var minHeight:Null<Float>;
+    /** The minimum height the component can get, in percent of its parent's height **/  @:optional public var minPercentHeight:Null<Float>;
     /** The tallest this object can get **/                                         @:optional public var maxHeight:Null<Float>;
     /** The tallest this object can get, by percentage of its parent's height **/   @:optional public var maxPercentHeight:Null<Float>;
-    /** The starting, automatically assigned `height` of this object **/            @:optional public var initialHeight:Null<Float>;
-    /** The starting, automatically assigned `heightWidth` of this object **/       @:optional public var initialPercentHeight:Null<Float>;
+    /** The starting, automatically assigned `height` of the component **/          @:optional public var initialHeight:Null<Float>;
+    /** The starting, automatically assigned `heightWidth` of the component **/     @:optional public var initialPercentHeight:Null<Float>;
 
-    /** The gap between the container's children, on all sides **/                  @:optional public var padding(default, set):Null<Float>;
-    /** The gap between the container's children, on their top **/                  @:optional public var paddingTop:Null<Float>;
-    /** The gap between the container's children, on their left side **/            @:optional public var paddingLeft:Null<Float>;
-    /** The gap between the container's children, on their right side **/           @:optional public var paddingRight:Null<Float>;
-    /** The gap between the container's children, on their bottom **/               @:optional public var paddingBottom:Null<Float>;
+    /** The gap between the container and its children, on all sides **/                  @:optional public var padding(default, set):Null<Float>;
+    /** The gap between the container and its children, on their top **/                  @:optional public var paddingTop:Null<Float>;
+    /** The gap between the container and its children, on their left side **/            @:optional public var paddingLeft:Null<Float>;
+    /** The gap between the container and its children, on their right side **/           @:optional public var paddingRight:Null<Float>;
+    /** The gap between the container and its children, on their bottom **/               @:optional public var paddingBottom:Null<Float>;
 
     private function set_padding(value:Null<Float>):Null<Float> {
         paddingTop = value;
@@ -51,18 +51,18 @@ class Style {
         return value;
     }
     
-    /** The amount of offseting to apply for text from the top in pixels **/        @:optional public var marginTop:Null<Float>;
-    /** The amount of offseting to apply for text from the left in pixels **/       @:optional public var marginLeft:Null<Float>;
-    /** The amount of offseting to apply for text from the right in pixels **/      @:optional public var marginRight:Null<Float>;
-    /** The amount of offseting to apply for text from the bottom in pixels **/     @:optional public var marginBottom:Null<Float>;
+    /** The amount of top offset to apply to the calculated position **/            @:optional public var marginTop:Null<Float>;
+    /** The amount of left offset to apply to the calculated position **/           @:optional public var marginLeft:Null<Float>;
+    /** The amount of right offset to apply to the calculated position **/          @:optional public var marginRight:Null<Float>;
+    /** The amount of bottom offset to apply to the calculated position **/         @:optional public var marginBottom:Null<Float>;
 
-    /** The anount of spacing between children horizontally, in pixels **/          @:optional public var horizontalSpacing:Null<Float>;
-    /** The anount of spacing between children vertically, in pixels **/            @:optional public var verticalSpacing:Null<Float>;
+    /** How the component is aligned to the parent: center, left, right **/         @:optional public var horizontalSpacing:Null<Float>;
+    /** How the component is aligned to the parent: center, top, bottom **/         @:optional public var verticalSpacing:Null<Float>;
 
-    /** A color to tint the object with **/                                         @:optional public var color:Null<Int>;
+    /** The color of the text **/                                                   @:optional public var color:Null<Int>;
 
-    /** The color of the object's background **/                                    @:optional public var backgroundColor:Null<Int>;
-    /** A value between 0 and 1 deciding the object's background transparency **/   @:optional public var backgroundOpacity:Null<Float>;
+    /** The color of the component's background **/                                 @:optional public var backgroundColor:Null<Int>;
+    /** A value between 0 and 1 setting the component's background transparency **/ @:optional public var backgroundOpacity:Null<Float>;
     @:optional public var backgroundColorEnd:Null<Int>;
     @:optional public var backgroundGradientStyle:Null<String>;
 
