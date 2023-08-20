@@ -15,12 +15,10 @@ enum StyleBorderType {
 @:structInit
 class Style {
     /** The left (x) position relative to its parent.
-    Parent's layout can modify this value.
-    Will stay the same if `includeInLayout` is false 
+    Will be honoured if `includeInLayout` is false 
     or if parent's layout is `absolute ` **/                                        @:optional public var left:Null<Float>;
     /** The top (y) position relative to its parent.
-    Parent's layout can modify this value.
-    Will stay the same if `includeInLayout` is false 
+    Will ne honoured if `includeInLayout` is false 
     or if parent's layout is `absolute ` **/                                        @:optional public var top:Null<Float>;
 
     /** Whether the component's width is calculated from its children's width **/   @:optional public var autoWidth:Null<Bool>;
