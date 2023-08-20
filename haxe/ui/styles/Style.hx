@@ -14,10 +14,16 @@ enum StyleBorderType {
 
 @:structInit
 class Style {
-    @:optional public var left:Null<Float>;
-    @:optional public var top:Null<Float>;
+    /** The left (x) position relative to its parent.
+    Parent's layout can modify this value.
+    Will stay the same if `includeInLayout` is false 
+    or if parent's layout is `absolute ` **/                                        @:optional public var left:Null<Float>;
+    /** The top (y) position relative to its parent.
+    Parent's layout can modify this value.
+    Will stay the same if `includeInLayout` is false 
+    or if parent's layout is `absolute ` **/                                        @:optional public var top:Null<Float>;
 
-    /** Whether or not the component's width is decided by its children's width **/ @:optional public var autoWidth:Null<Bool>;
+    /** Whether the component's width is calculated from its children's width **/   @:optional public var autoWidth:Null<Bool>;
     /** A hard-coded value in pixels for the component's width **/                  @:optional public var width:Null<Float>;
     /** Sets the width of the component to `X` percent of the parent's width **/    @:optional public var percentWidth:Null<Float>;
     /** The minimum width in pixels the component can get **/                       @:optional public var minWidth:Null<Float>;
@@ -27,7 +33,7 @@ class Style {
     /** The starting, automatically assigned `width` of the component **/           @:optional public var initialWidth:Null<Float>;
     /** The starting, automatically assigned `percentWidth` of the component**/     @:optional public var initialPercentWidth:Null<Float>;
 
-    /** Whether or not the object's height is decided by its children's height **/  @:optional public var autoHeight:Null<Bool>;
+    /** Whether the component's height is calculated from its children's height**/  @:optional public var autoHeight:Null<Bool>;
     /** A hard-coded value in pixels for the component's height **/                 @:optional public var height:Null<Float>;
     /** Sets the width of the object to `X` percent of the parent's height **/      @:optional public var percentHeight:Null<Float>;  
     /** The minimum height in pixels the component can get **/                      @:optional public var minHeight:Null<Float>;
@@ -37,11 +43,11 @@ class Style {
     /** The starting, automatically assigned `height` of the component **/          @:optional public var initialHeight:Null<Float>;
     /** The starting, automatically assigned `heightWidth` of the component **/     @:optional public var initialPercentHeight:Null<Float>;
 
-    /** The gap between the container and its children, on all sides **/                  @:optional public var padding(default, set):Null<Float>;
-    /** The gap between the container and its children, on their top **/                  @:optional public var paddingTop:Null<Float>;
-    /** The gap between the container and its children, on their left side **/            @:optional public var paddingLeft:Null<Float>;
-    /** The gap between the container and its children, on their right side **/           @:optional public var paddingRight:Null<Float>;
-    /** The gap between the container and its children, on their bottom **/               @:optional public var paddingBottom:Null<Float>;
+    /** The gap between the container and its children, on all sides **/                 @:optional public var padding(default, set):Null<Float>;
+    /** The gap between the container and its children, on the top **/                  @:optional public var paddingTop:Null<Float>;
+    /** The gap between the container and its children, on the left side **/            @:optional public var paddingLeft:Null<Float>;
+    /** The gap between the container and its children, on the right side **/           @:optional public var paddingRight:Null<Float>;
+    /** The gap between the container and its children, on the bottom **/               @:optional public var paddingBottom:Null<Float>;
 
     private function set_padding(value:Null<Float>):Null<Float> {
         paddingTop = value;
@@ -56,13 +62,14 @@ class Style {
     /** The amount of right offset to apply to the calculated position **/          @:optional public var marginRight:Null<Float>;
     /** The amount of bottom offset to apply to the calculated position **/         @:optional public var marginBottom:Null<Float>;
 
-    /** How the component is aligned to the parent: center, left, right **/         @:optional public var horizontalSpacing:Null<Float>;
-    /** How the component is aligned to the parent: center, top, bottom **/         @:optional public var verticalSpacing:Null<Float>;
+    /** The vertical spacing between the component's children in pixels**/          @:optional public var horizontalSpacing:Null<Float>;
+    /** The horizontal spacing between the component's children in pixels**/        @:optional public var verticalSpacing:Null<Float>;
 
     /** The color of the text **/                                                   @:optional public var color:Null<Int>;
 
     /** The color of the component's background **/                                 @:optional public var backgroundColor:Null<Int>;
-    /** A value between 0 and 1 setting the component's background transparency **/ @:optional public var backgroundOpacity:Null<Float>;
+    /** A value between 0 and 1 setting the component's background opacity
+        0 is transparent **/                                                        @:optional public var backgroundOpacity:Null<Float>;
     @:optional public var backgroundColorEnd:Null<Int>;
     @:optional public var backgroundGradientStyle:Null<String>;
 
@@ -97,7 +104,8 @@ class Style {
     /** The amount of rounding to apply to the top-right of the border **/          @:optional public var borderRadiusTopRight:Null<Float>;
     /** The amount of rounding to apply to the bottom-left of the border **/        @:optional public var borderRadiusBottomLeft:Null<Float>;
     /** The amount of rounding to apply to the bottom-right of the border **/       @:optional public var borderRadiusBottomRight:Null<Float>;
-    /** A value between 0 and 1 deciding the object's border transparency **/       @:optional public var borderOpacity:Null<Float>;
+    /** A value between 0 and 1 deciding the object's border opacity 
+        0 is transparent **/                                                        @:optional public var borderOpacity:Null<Float>;
     /** The style to use for this border's design **/                               @:optional public var borderStyle:Null<String>;
 
     /** A path to an image file to be shown as an icon inside of the object **/     @:optional public var icon:Variant;
@@ -105,17 +113,18 @@ class Style {
 
     /** Alignment to use for this object: `right`, `center`, `left` **/             @:optional public var horizontalAlign:Null<String>;
     /** Alignment to use for this object: `top`, `center`, `bottom` **/             @:optional public var verticalAlign:Null<String>;
-    /** Alignment to use for this object: `right`, `center`, `left`, `justify` **/  @:optional public var textAlign:Null<String>;
+    /** Alignment to use for the component's text: 
+    `right`, `center`, `left`, `justify` **/                                        @:optional public var textAlign:Null<String>;
 
     /** A value between 0 and 1, deciding the transparency of this object **/       @:optional public var opacity:Null<Float>;
-    @:optional public var clip:Null<Bool>;
-    @:optional public var native:Null<Bool>;
+    /** Whether the children are clipped (cut) to the the component boundings **/   @:optional public var clip:Null<Bool>;
+    /** Whether it used the native version of the component**/                      @:optional public var native:Null<Bool>;
 
     /** A path to a font file to be used for the text inside the object **/         @:optional public var fontName:Null<String>;
     /** The visual size of the font **/                                             @:optional public var fontSize:Null<Float>;
-    /** Whether or not this text should use the **bold** variation of it's font **/ @:optional public var fontBold:Null<Bool>;
+    /** Whether or not this text should use the **bold** variation of its font **/  @:optional public var fontBold:Null<Bool>;
     /** Whether or not to underline the text **/                                    @:optional public var fontUnderline:Null<Bool>;
-    /** Whether or not this text should use the *italic* variation of it's font **/ @:optional public var fontItalic:Null<Bool>;
+    /** Whether or not this text should use the *italic* variation of its font **/  @:optional public var fontItalic:Null<Bool>;
     @:optional public var fontStrikeThrough:Null<Bool>;
 
     @:optional public var cursor:Null<String>;
@@ -140,19 +149,19 @@ class Style {
     /** The height at which the children will clipped inside a scrollview **/                               @:optional public var contentHeight:Null<Float>;
     /** The height in % unit of the component at which the children will clipped inside a scrollview **/    @:optional public var contentHeightPercent:Null<Float>;
     
-    /** Whether or not the text inside this object should be wrapped **/            @:optional public var wordWrap:Null<Bool>;
+    /** Whether or not the text inside this object should be wrapped **/                                    @:optional public var wordWrap:Null<Bool>;
 
-    @:optional public var imageRendering:String;
+    /** The optional image rendering. Only `pixelated` is supported **/                                     @:optional public var imageRendering:String;
     @:optional public var backgroundWidth:Null<Float>;
     @:optional public var backgroundWidthPercent:Null<Float>;
     @:optional public var backgroundHeight:Null<Float>;
     @:optional public var backgroundHeightPercent:Null<Float>;
 
-    @:optional public var layout:String;
-    @:optional public var includeInLayout:Null<Bool>;
+    /** The name of the layout to use, for example for a box: `vertical`, horizontal` **/                    @:optional public var layout:String;
+    /** Whether the `top` and `left` of the component can be modified by its parent layout **/               @:optional public var includeInLayout:Null<Bool>;
     @:optional public var justifyContent:String;
     
-    /** The type of the border. can be `Compound`, `Full` or `None` **/             @:optional public var borderType(get, null):StyleBorderType;
+    /** The type of the border. can be `Compound`, `Full` or `None` **/                                      @:optional public var borderType(get, null):StyleBorderType;
     private function get_borderType():StyleBorderType {
         var t = StyleBorderType.Compound;
         if (borderLeftSize != null && borderLeftSize > 0 && borderLeftSize == borderRightSize && borderLeftSize == borderBottomSize && borderLeftSize == borderTopSize) { // full border
@@ -168,7 +177,7 @@ class Style {
         return borderType != StyleBorderType.None;
     }
     
-    /** The size of the border. should only be used when `borderType` is `Full` **/ @:optional public var fullBorderSize(get, null):Null<Float>;
+    /** The size of the border. only used when `borderType` is `Full` **/           @:optional public var fullBorderSize(get, null):Null<Float>;
     private function get_fullBorderSize():Null<Float> {
         if (borderType == StyleBorderType.Full) {
             return borderLeftSize;
