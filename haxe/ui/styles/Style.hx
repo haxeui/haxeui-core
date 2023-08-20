@@ -135,10 +135,10 @@ class Style {
     @:optional public var contentType:String;
     @:optional public var direction:String;
 
-    /** The width of the children inside this container **/                         @:optional public var contentWidth:Null<Float>;
-    /** The width of the children, in relation to the width of the container **/    @:optional public var contentWidthPercent:Null<Float>;
-    /** The height of the children inside this container **/                        @:optional public var contentHeight:Null<Float>;
-    /** The width of the children, in relation to the width of the container **/    @:optional public var contentHeightPercent:Null<Float>;
+    /** The width at which the children will clipped inside a scrollview **/                                @:optional public var contentWidth:Null<Float>;
+    /** The width in % unit of the component at which the children will clipped inside a scrollview **/     @:optional public var contentWidthPercent:Null<Float>;
+    /** The height at which the children will clipped inside a scrollview **/                               @:optional public var contentHeight:Null<Float>;
+    /** The height in % unit of the component at which the children will clipped inside a scrollview **/    @:optional public var contentHeightPercent:Null<Float>;
     
     /** Whether or not the text inside this object should be wrapped **/            @:optional public var wordWrap:Null<Bool>;
 
