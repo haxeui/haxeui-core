@@ -38,6 +38,11 @@ private class CollapsedBehaviour extends DataBehaviour {
         if (button != null) {
             button.selected = !_value;
         }
+        if (button.selected) {
+            button.swapClass("expanded", "collapsed");
+        } else {
+            button.swapClass("collapsed", "expanded");
+        }
         
         var content = _component.findComponent("collapsible-content", Component);
         if (content != null) {

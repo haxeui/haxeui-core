@@ -14,7 +14,10 @@
     border-bottom-width: 1px;
     padding: 6px;
     background-color: $solid-background-color;
-    filter: none;
+}
+
+.collapsible.last .collapsible-button.collapsed {
+    border-bottom: none;
 }
 
 .collapsible-button:hover {
@@ -32,5 +35,5 @@
 }
 
 .collapsible.last .collapsible-content {
-    border: none;
+    border-bottom: none;
 }
