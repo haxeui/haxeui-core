@@ -2,9 +2,11 @@ package haxe.ui.styles;
 
 import haxe.ui.core.Component;
 import haxe.ui.styles.elements.AnimationKeyFrames;
+import haxe.ui.styles.elements.Directive;
 import haxe.ui.styles.elements.ImportElement;
 import haxe.ui.styles.elements.MediaQuery;
 import haxe.ui.styles.elements.RuleElement;
+import haxe.ui.styles.elements.Selector;
 
 class StyleSheet {
     public var name:String;
@@ -129,13 +131,34 @@ class StyleSheet {
         if (style == null) {
             style = {};
         }
+
+        if (rules.length <= 0) {
+            return style;
+        }
+
+        var directives = new Map<String, Directive>();
+        var priorities = new Map<String, Selector>();
+
         for (r in rules) {
             if (!r.match(c)) {
                 continue;
             }
 
-            style.mergeDirectives(r.directives);
+            for (k in r.directives.keys()) {
+                var v = r.directives.get(k);
+                if (!directives.exists(k)) {
+                    directives[k] = v;
+                    priorities[k] = r.selector;
+                } else {
+                    if (r.selector.hasPrecedenceOrEqualOver(priorities[k])) {
+                        directives[k] = v;
+                        priorities[k] = r.selector;
+                    }
+                }
+            }
         }
+
+        style.mergeDirectives(directives);
 
         return style;
     }
