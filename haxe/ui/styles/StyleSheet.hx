@@ -137,7 +137,7 @@ class StyleSheet {
         }
 
         var directives = new Map<String, Directive>();
-        var priorities = new Map<String, Selector>();
+        var selectedSelectors = new Map<String, Selector>();
 
         for (r in rules) {
             if (!r.match(c)) {
@@ -148,11 +148,11 @@ class StyleSheet {
                 var v = r.directives.get(k);
                 if (!directives.exists(k)) {
                     directives[k] = v;
-                    priorities[k] = r.selector;
+                    selectedSelectors[k] = r.selector;
                 } else {
-                    if (r.selector.hasPrecedenceOrEqualOver(priorities[k])) {
+                    if (r.selector.hasPrecedenceOrEqualTo(selectedSelectors[k])) {
                         directives[k] = v;
-                        priorities[k] = r.selector;
+                        selectedSelectors[k] = r.selector;
                     }
                 }
             }

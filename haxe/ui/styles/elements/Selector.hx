@@ -63,7 +63,7 @@ class Selector {
         }
     }
 
-    public function hasPrecedenceOrEqualOver(s:Selector) {
+    public function hasPrecedenceOrEqualTo(s:Selector) {
         if (weight.a > s.weight.a) return true;
         if (weight.a < s.weight.a) return false;
         if (weight.b > s.weight.b) return true;
