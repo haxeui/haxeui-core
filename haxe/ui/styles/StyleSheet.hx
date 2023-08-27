@@ -153,6 +153,10 @@ class StyleSheet {
                     if (r.selector.hasPrecedenceOrEqualTo(selectedSelectors[k])) {
                         directives[k] = v;
                         selectedSelectors[k] = r.selector;
+                        if (k == "background-color") {
+                            directives["background-color-end"] = v;
+                            selectedSelectors["background-color-end"] = r.selector;
+                        }
                     }
                 }
             }

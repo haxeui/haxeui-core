@@ -68,8 +68,8 @@ class Selector {
         if (weight.a < s.weight.a) return false;
         if (weight.b > s.weight.b) return true;
         if (weight.b < s.weight.b) return false;
-        if (weight.c > s.weight.c) return true;
-        if (weight.c < s.weight.c) return false;
+        //if (weight.c > s.weight.c) return true;
+        //if (weight.c < s.weight.c) return false;
         return true;
     }
 
