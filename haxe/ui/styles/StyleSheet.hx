@@ -127,6 +127,9 @@ class StyleSheet {
         }
     }
 
+    var directives = new Map<String, Directive>();
+    var selectedSelectors = new Map<String, Selector>();
+
     public function buildStyleFor(c:Component, style:Style = null):Style {
         if (style == null) {
             style = {};
@@ -138,6 +141,7 @@ class StyleSheet {
 
         var directives = new Map<String, Directive>();
         var selectedSelectors = new Map<String, Selector>();
+        directives.clear();
 
         for (r in rules) {
             if (!r.match(c)) {
