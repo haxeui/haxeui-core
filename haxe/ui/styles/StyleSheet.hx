@@ -139,8 +139,6 @@ class StyleSheet {
             return style;
         }
 
-        var directives = new Map<String, Directive>();
-        var selectedSelectors = new Map<String, Selector>();
         directives.clear();
 
         for (r in rules) {
