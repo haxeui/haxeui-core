@@ -2,7 +2,10 @@ package haxe.ui.styles.elements;
 
 class Selector {
     public var parts:Array<SelectorPart> = [];
-    public var weight:Weight = new Weight();
+
+    private var weightA = 0;
+    private var weightB = 0;
+    private var weightC = 0;
 
     public function new(s:String) {
         s = StringTools.replace(s, ">", " > ");
@@ -52,36 +55,28 @@ class Selector {
         //  but they don't add any value to the specificity weight.
         for ( p in parts) {
             if (p.id != null) {
-                weight.a++;
+                weightA++;
             }
             if (p.className != null) {
-                weight.b++;
+                weightB++;
             }
             if (p.pseudoClass != null) {
-                weight.c++;
+                weightC++;
             }
         }
     }
 
     public function hasPrecedenceOrEqualTo(s:Selector) {
-        if (weight.a > s.weight.a) return true;
-        if (weight.a < s.weight.a) return false;
-        if (weight.b > s.weight.b) return true;
-        if (weight.b < s.weight.b) return false;
-        //if (weight.c > s.weight.c) return true;
-        //if (weight.c < s.weight.c) return false;
+        if (weightA > s.weightA) return true;
+        if (weightA < s.weightA) return false;
+        if (weightB > s.weightB) return true;
+        if (weightB < s.weightB) return false;
+        if (weightC > s.weightC) return true;
+        if (weightC < s.weightC) return false;
         return true;
     }
 
     public function toString():String {
         return parts.join(" ");
     }
-}
-
-class Weight {
-    public var a:Int;
-    public var b:Int;
-    public var c:Int;
-
-    public function new() {}
 }
