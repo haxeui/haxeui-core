@@ -136,9 +136,19 @@ class ButtonBarBuilder extends CompositeBuilder {
     public override function addComponent(child:Component):Component {
         if ((child is Button)) {
             cast(child, Button).toggle = _bar.toggle;
+            child.registerEvent(UIEvent.SHOWN, onButtonShown);
+            child.registerEvent(UIEvent.HIDDEN, onButtonHidden);
         }
         
         return null;
+    }
+
+    private function onButtonShown(_) {
+        _bar.assignPositionClasses();
+    }
+
+    private function onButtonHidden(_) {
+        _bar.assignPositionClasses();
     }
 
     public override function onComponentAdded(child:Component) {
