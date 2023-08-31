@@ -42,6 +42,14 @@ class Panel extends VBox {
         contentContainer.percentHeight = 100;
         return super.set_percentHeight(value);
     }
+
+    public function showFooter() {
+        findComponent(PanelFooter, true).show();
+    }
+
+    public function hideFooter() {
+        findComponent(PanelFooter, true).hide();
+    }
 }
 
 @:xml('
@@ -98,6 +106,9 @@ private class Builder extends CompositeBuilder {
             }
             return child;
         } else if  ((child is Footer)) {
+            if (child.hidden) {
+                footer.hide();
+            }
             for (c in child.childComponents) {
                 footer.addComponent(c);
             }
