@@ -632,7 +632,7 @@ class ScrollViewEvents extends haxe.ui.events.Events {
 
         if (_scrollview.scrollMode == ScrollMode.DRAG || _scrollview.scrollMode == ScrollMode.INERTIAL) {
             registerEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
-        } else if (hasEvent(MouseEvent.MOUSE_DOWN, onMouseDown) == false) {
+        } else if (hasEvent(MouseEvent.MOUSE_DOWN, onMouseDown)) {
             unregisterEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
         }
 
