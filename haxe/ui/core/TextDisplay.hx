@@ -8,6 +8,7 @@ import haxe.ui.validation.InvalidationFlags;
 class TextDisplayData {
     public var multiline:Bool = false;
     public var wordWrap:Bool = false;
+    public var selectable:Bool = false;
 
     public function new() {
     }
@@ -226,6 +227,20 @@ class TextDisplay extends TextDisplayImpl implements IValidating {
 
         invalidateComponent(InvalidationFlags.STYLE);
         _displayData.wordWrap = value;
+        return value;
+    }
+
+    public var selectable(get, set):Bool;
+    private function get_selectable():Bool {
+        return _displayData.selectable;
+    }
+    private function set_selectable(value:Bool):Bool {
+        if (value == _displayData.selectable) {
+            return value;
+        }
+
+        _displayData.selectable = value;
+        invalidateComponent(InvalidationFlags.STYLE);
         return value;
     }
 

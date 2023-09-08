@@ -556,6 +556,9 @@ class Macros {
                 var newField:FieldBuilder = null;
                 if (f.isDynamic == true) { // add a getter that can return dynamic
                     newField = builder.addGetter(f.name, f.type, macro {
+                        if (behaviours == null) {
+                            return $v{defVal};
+                        }
                         return behaviours.getDynamic($v{f.name});
                     }, f.access);
                 } else if (f.isComponent) {

@@ -53,6 +53,11 @@ class Label extends Component {
      * in this case, its the text inside of the label.
      */
     @:clonable @:value(text)                    public var value:Dynamic;
+
+    /**
+     * Wheter the label text can be selected by the user or not
+     */
+    @:clonable @:behaviour(SelectableBehaviour) public var selectable:Bool;
 }
 
 //***********************************************************************************************************
@@ -140,6 +145,13 @@ private class HtmlTextBehaviour extends DataBehaviour {
         }
         _component.getTextDisplay().htmlText = '${_value}';
         _component.dispatch(new UIEvent(UIEvent.CHANGE));
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class SelectableBehaviour extends DataBehaviour {
+    public override function validateData() {
+        _component.getTextDisplay().selectable = _value;
     }
 }
 

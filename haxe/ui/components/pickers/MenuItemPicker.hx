@@ -71,7 +71,7 @@ class MenuItemPicker extends ItemPicker {
 
 private class Builder extends ItemPickerBuilder {
     public var menuPicker:MenuItemPicker;
-    private var menu:Menu = null;
+    public var menu:Menu = null;
 
     public function new(menuPicker:MenuItemPicker) {
         super(menuPicker);
@@ -93,6 +93,14 @@ private class Builder extends ItemPickerBuilder {
         return super.addComponent(child);
     }
 
+    public override function addComponentAt(child:Component, index:Int):Component {
+        if (child.id != "primaryPickerMenu" && ((child is Menu) || (child is MenuItem) || (child is MenuSeparator))) {
+            menu.addComponentAt(child, index);
+            return child;
+        }
+        return super.addComponentAt(child, index);
+    }
+
     private override function get_panelSelectionEvent():String {
         return MenuEvent.MENU_SELECTED;
     }
@@ -102,6 +110,8 @@ private class Builder extends ItemPickerBuilder {
     }
 }
 
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
 private class Handler extends ItemPickerHandler {
     public override function onPanelSelection(event:UIEvent) {
         var menuPicker:MenuItemPicker = cast picker;
@@ -126,21 +136,41 @@ private class Handler extends ItemPickerHandler {
     }
 
     public override function applyDataSource(ds:DataSource<Dynamic>) {
+        if (ds == null) {
+            return;
+        }
+        var builder = cast(picker._compositeBuilder, Builder);
+        ds.onChange = onDataSourceChanged;
         for (i in 0...ds.size) {
+            var existing = builder.menu.getComponentAt(i);
             var item = ds.get(i);
             var type = item.type;
-            switch (type) {
-                case "separator":
-                    var menuSeparator = new MenuSeparator();
-                    picker.addComponent(menuSeparator);
-                case _:
-                    var menuItem = new MenuItem();
-                    menuItem.text = item.text;
-                    menuItem.icon = Std.string(item.icon);
-                    menuItem.id = item.id;
-                    menuItem.userData = item;
-                    picker.addComponent(menuItem);
+            if (existing == null) {
+                switch (type) {
+                    case "separator":
+                        var menuSeparator = new MenuSeparator();
+                        picker.addComponentAt(menuSeparator, i);
+                    case _:
+                        var menuItem = new MenuItem();
+                        menuItem.text = item.text;
+                        menuItem.icon = Std.string(item.icon);
+                        menuItem.id = item.id;
+                        menuItem.userData = item;
+                        picker.addComponentAt(menuItem, i);
+                }
+            } else {
+                if ((existing is MenuItem) && type != "separator") {
+                    var existingMenuItem = cast(existing, MenuItem);
+                    existingMenuItem.text = item.text;
+                    existingMenuItem.icon = Std.string(item.icon);
+                    existingMenuItem.id = item.id;
+                    existingMenuItem.userData = item;
+                }
             }
         }
+    }
+
+    private function onDataSourceChanged() {
+        applyDataSource(picker.dataSource);
     }
 }

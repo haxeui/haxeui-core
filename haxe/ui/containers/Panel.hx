@@ -5,6 +5,7 @@ import haxe.ui.containers.Header;
 import haxe.ui.containers.VBox;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
+import haxe.ui.util.Variant;
 
 @:composite(Builder)
 @:xml('
@@ -26,14 +27,34 @@ class Panel extends VBox {
         return value;
     }
 
+    public override function get_icon():Variant {
+        var builder:Builder = cast(_compositeBuilder, Builder);
+        return builder.header.icon;
+    }
+
+    public override function set_icon(value:Variant):Variant {
+        var builder:Builder = cast(_compositeBuilder, Builder);
+        builder.header.icon = value;
+        return value;
+    }
+
     public override function set_percentHeight(value:Null<Float>):Null<Float> {
         contentContainer.percentHeight = 100;
         return super.set_percentHeight(value);
+    }
+
+    public function showFooter() {
+        findComponent(PanelFooter, true).show();
+    }
+
+    public function hideFooter() {
+        findComponent(PanelFooter, true).hide();
     }
 }
 
 @:xml('
 <hbox width="100%">
+    <image id="titleIcon" hidden="true" verticalAlign="center" />
     <label id="titleLabel" width="100%" hidden="true" verticalAlign="center" />
 </hbox>
 ')
@@ -45,6 +66,16 @@ private class PanelHeader extends HBox {
     public override function set_text(value:String):String {
         titleLabel.text = value;
         titleLabel.show();
+        return value;
+    }
+
+    public override function get_icon():Variant {
+        return titleIcon.resource;
+    }
+
+    public override function set_icon(value:Variant):Variant {
+        titleIcon.resource = value;
+        titleIcon.show();
         return value;
     }
 }
@@ -75,6 +106,9 @@ private class Builder extends CompositeBuilder {
             }
             return child;
         } else if  ((child is Footer)) {
+            if (child.hidden) {
+                footer.hide();
+            }
             for (c in child.childComponents) {
                 footer.addComponent(c);
             }

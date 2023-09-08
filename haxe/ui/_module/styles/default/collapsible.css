@@ -1,0 +1,39 @@
+.collapsible {
+    spacing: 0px;
+}
+
+.collapsible-button {
+    border-radius: 0;
+    border: 0px solid $normal-border-color;
+    width: 100%;
+    text-align: left;
+    icon: $arrow-right-square;
+    icon-position: left;
+    border: none;
+    border-color: $normal-border-color;
+    border-bottom-width: 1px;
+    padding: 6px;
+    background-color: $solid-background-color;
+}
+
+.collapsible.last .collapsible-button.collapsed {
+    border-bottom: none;
+}
+
+.collapsible-button:hover {
+    background-color: $solid-background-color-hover;
+}
+
+.collapsible-button:down {
+    icon: $arrow-down-square;
+}
+
+.collapsible-content {
+    padding: 5px 5px;
+    width: 100%;
+    border-bottom: 1px solid $normal-border-color;
+}
+
+.collapsible.last .collapsible-content {
+    border-bottom: none;
+}
