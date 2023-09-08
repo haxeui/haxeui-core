@@ -407,7 +407,7 @@ class Macros {
                                 if (c != null) {
                                     c.registerEvent($event, $i{f.name});
                                 } else {
-                                    trace("WARNING: could not find component to regsiter event (" + $v{ExprTools.toString(component)} + ")");
+                                    trace("WARNING: could not find component to register event (" + $v{ExprTools.toString(component)} + ")");
                                 }
                             }, End);
                         default:
