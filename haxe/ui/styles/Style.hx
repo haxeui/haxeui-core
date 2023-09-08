@@ -18,7 +18,7 @@ class Style {
     Will be honoured if `includeInLayout` is false 
     or if parent's layout is `absolute ` **/                                        @:optional public var left:Null<Float>;
     /** The top (y) position relative to its parent.
-    Will ne honoured if `includeInLayout` is false 
+    Will be honoured if `includeInLayout` is false 
     or if parent's layout is `absolute ` **/                                        @:optional public var top:Null<Float>;
 
     /** Whether the component's width is calculated from its children's width **/   @:optional public var autoWidth:Null<Bool>;
@@ -125,8 +125,8 @@ class Style {
     /** Whether or not this text should use the *italic* variation of its font **/  @:optional public var fontItalic:Null<Bool>;
     @:optional public var fontStrikeThrough:Null<Bool>;
 
-    @:optional public var cursor:Null<String>;
-    @:optional public var hidden:Null<Bool>;
+    /** The mouse cursor: `default`, `pointer`, `row-resize`, `col-resize` **/     @:optional public var cursor:Null<String>;
+    /** Whether the component is hidden or not **/                                 @:optional public var hidden:Null<Bool>;
 
     @:optional public var filter:Array<Filter>;
     @:optional public var backdropFilter:Array<Filter>;
@@ -142,10 +142,10 @@ class Style {
     @:optional public var contentType:String;
     @:optional public var direction:String;
 
-    /** The width at which the children will clipped inside a scrollview **/                                @:optional public var contentWidth:Null<Float>;
-    /** The width in % unit of the component at which the children will clipped inside a scrollview **/     @:optional public var contentWidthPercent:Null<Float>;
-    /** The height at which the children will clipped inside a scrollview **/                               @:optional public var contentHeight:Null<Float>;
-    /** The height in % unit of the component at which the children will clipped inside a scrollview **/    @:optional public var contentHeightPercent:Null<Float>;
+    /** The width at which the children will be clipped inside a scrollview **/                                @:optional public var contentWidth:Null<Float>;
+    /** The width in % unit of the component at which the children will be clipped inside a scrollview **/     @:optional public var contentWidthPercent:Null<Float>;
+    /** The height at which the children will be clipped inside a scrollview **/                               @:optional public var contentHeight:Null<Float>;
+    /** The height in % unit of the component at which the children will be clipped inside a scrollview **/    @:optional public var contentHeightPercent:Null<Float>;
     
     /** Whether or not the text inside this object should be wrapped **/                                    @:optional public var wordWrap:Null<Bool>;
 
