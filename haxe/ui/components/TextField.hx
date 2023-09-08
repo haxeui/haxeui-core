@@ -81,7 +81,6 @@ class TextField extends InteractiveComponent {
     
     /**
      * The (zero based) position of the caret within the textfield
-     *
      */
     @:clonable @:behaviour(CaretIndexBehaviour)             public var caretIndex:Int;
     @:clonable @:behaviour(SelectionStartIndexBehaviour)    public var selectionStartIndex:Int;

@@ -74,7 +74,7 @@ class Image extends Component {
     @:clonable @:behaviour(DefaultBehaviour)                               public var originalHeight:Float;
     
     /**
-     * The value to multiply the images size by when drawing the imag eto the screen.
+     * The value to multiply the images size by when drawing the image to the screen.
      */
     @:clonable @:behaviour(DefaultBehaviour, 1)                            public var imageScale:Float;
 }

@@ -54,7 +54,7 @@ class Calendar extends Grid {
     @:call(PreviousMonthBehaviour)                          public function previousMonth();
 
     /**
-     * Moves the calendar a month forward.
+     * Moves the calendar a month forwards.
      */
     @:call(NextMonthBehaviour)                              public function nextMonth();
 
@@ -64,7 +64,7 @@ class Calendar extends Grid {
     @:call(PreviousYearBehaviour)                           public function previousYear();
 
     /**
-     * Moves the calendar a year forward.
+     * Moves the calendar a year forwards.
      */
     @:call(NextYearBehaviour)                               public function nextYear();
 
