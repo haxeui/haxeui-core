@@ -45,7 +45,7 @@ class NumberStepper extends InteractiveComponent {
     @:clonable @:behaviour(DefaultBehaviour, 1)                         public var step:Float;
 
     /**
-     * The Highest value this stepper can get to, even when set through code.
+     * The highest value this stepper can get to, even when set through code.
      */
     @:clonable @:behaviour(DefaultBehaviour, null)                      public var max:Null<Float>;
 

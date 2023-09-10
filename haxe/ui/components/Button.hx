@@ -69,8 +69,11 @@ class Button extends InteractiveComponent {
     //***********************************************************************************************************
     // Styles
     //***********************************************************************************************************
+    /** The icon position: `top` `bottom` `left` `right` **/
     @:style(layout)                                     public var iconPosition:String;
+    /** Font size for button's label **/
     @:style(layout)                                     public var fontSize:Null<Float>;
+    /** Text alignment for button's label **/
     @:style(layout)                                     public var textAlign:String;
 
     //***********************************************************************************************************
@@ -119,10 +122,14 @@ class Button extends InteractiveComponent {
     @:clonable @:value(text)                           public var value:Dynamic;
 
     /**
-        The image resource to use as the buttons icon
+        The image resource to use as the button's icon
     **/
     @:clonable @:behaviour(IconBehaviour)              public var icon:Variant;
     
+    /**
+        The group which the button pertains to.
+        Selecting a button will unselect other buttons from the same group.
+    **/
     @:clonable @:behaviour(GroupBehaviour)             public var componentGroup:String;
 }
 
