@@ -1,14 +1,14 @@
 package haxe.ui.components;
 
-import haxe.ui.core.Platform;
-import haxe.ui.events.KeyboardEvent;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.ValueBehaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.InteractiveComponent;
+import haxe.ui.core.Platform;
 import haxe.ui.events.Events;
 import haxe.ui.events.FocusEvent;
+import haxe.ui.events.KeyboardEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.geom.Size;
