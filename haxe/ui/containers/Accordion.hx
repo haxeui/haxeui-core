@@ -41,6 +41,7 @@ private class PageIndex extends DefaultBehaviour {
         var panel = _component.getComponentAt(_component.getComponentIndex(button) + 1);
         panel.swapClass(":expanded", ":collapsed");
         panel.hidden = false;
+        cast(_component, Accordion).selectedPage = panel;
         button.selected = true;
         for (b in buttons) {
             if (b != button) {
@@ -50,6 +51,7 @@ private class PageIndex extends DefaultBehaviour {
                 tempPanel.swapClass(":collapsed", ":expanded");
             }
         }
+        _component.dispatch(new UIEvent(UIEvent.CHANGE));
     }
 }
 
