@@ -94,6 +94,13 @@ private class Events extends ButtonEvents  {
         if (_column.sortable == false) {
             return;
         }
+
+        var components = _column.findComponentsUnderPoint(event.screenX, event.screenY, InteractiveComponent);
+        components.remove(_column);
+        if (components.length != 0) {
+            return;
+        }
+
         if (_column.sortDirection == null) {
             _column.sortDirection = SortDirection.ASCENDING;
         } else if (_column.sortDirection == SortDirection.ASCENDING) {
