@@ -152,7 +152,8 @@ private class SelectedIndex extends DataBehaviour {
             var selectedTab:Component = cast(_component, TabBar).selectedTab;
             if (selectedTab != null) {
                 //cast(selectedTab, InteractiveComponent).allowFocus = true;
-                selectedTab.removeClass("tabbar-button-selected", true, true);
+                selectedTab.removeClass("tabbar-button-selected");
+                selectedTab.invalidateComponentStyle(false, true);
                 var label = selectedTab.findComponent(Label);
                 if (label != null) {
                     label.invalidateComponent();
@@ -162,7 +163,8 @@ private class SelectedIndex extends DataBehaviour {
                     icon.invalidateComponent();
                 }
             }
-            tab.addClass("tabbar-button-selected", true, true);
+            tab.addClass("tabbar-button-selected");
+            tab.invalidateComponentStyle(false, true);
             //cast(tab, InteractiveComponent).allowFocus = false;
             var label = tab.findComponent(Label);
             if (label != null) {
