@@ -50,7 +50,7 @@ class ValueTools {
                         params = "'" + params + "'";
                     }
                     var vl = [];
-                    for (p in params.split(",")) {
+                    for (p in paramsSplitter(params)) {
                         p = StringTools.trim(p);
                         vl.push(parse(p));
                     }
@@ -79,6 +79,30 @@ class ValueTools {
         }
 
         return v;
+    }
+
+    private static function paramsSplitter(s:String) {
+        var params = [];
+        var counter = 0;
+
+        var i = 0;
+        var startParameter = 0;
+        while (i < s.length) {
+            var char = s.charAt(i);
+            if (char == "," && counter == 0) {
+                params.push(s.substring(startParameter, i));
+                startParameter = i + 1;
+            }
+            if (char == "(") {
+                counter--;
+            } else if (char == ")") {
+                counter++;
+            }
+            i++;
+        }
+        params.push(s.substring(startParameter, s.length));
+        return params;
+
     }
 
     private static function extractCalls(s:String) {
@@ -309,6 +333,8 @@ class ValueTools {
                 return v;
             case Value.VBool(v):
                 return v;
+            case Value.VCall(f, vl):
+                return call(f, vl);
             case _:
                 return null;
         }
