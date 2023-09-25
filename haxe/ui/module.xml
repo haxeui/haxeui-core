@@ -311,6 +311,7 @@
         <cssFilter name="drop-shadow" class="haxe.ui.filters.DropShadow" />
         <cssFilter name="grayscale" class="haxe.ui.filters.Grayscale" />
         <cssFilter name="outline" class="haxe.ui.filters.Outline" />
+        <cssFilter name="tint" class="haxe.ui.filters.Tint" />
     </cssExtensions>
 
     <actions>
