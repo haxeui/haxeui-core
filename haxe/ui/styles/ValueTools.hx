@@ -84,7 +84,6 @@ class ValueTools {
     private static function paramsSplitter(s:String) {
         var params = [];
         var counter = 0;
-
         var i = 0;
         var startParameter = 0;
         while (i < s.length) {
@@ -102,7 +101,6 @@ class ValueTools {
         }
         params.push(s.substring(startParameter, s.length));
         return params;
-
     }
 
     private static function extractCalls(s:String) {
