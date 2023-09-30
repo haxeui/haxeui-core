@@ -6,10 +6,10 @@ class HueRotate extends Filter {
     /**
         Applies rotation in degrees
     **/ 
-    public var angle:Float;
+    public var angleDegree:Float;
 
     public override function parse(filterDetails:Array<Any>) {
         var copy = Filter.applyDefaults(filterDetails, DEFAULTS);
-        this.angle = copy[0];
+        this.angleDegree = copy[0];
     }
 }
