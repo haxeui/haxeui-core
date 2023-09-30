@@ -312,6 +312,9 @@
         <cssFilter name="grayscale" class="haxe.ui.filters.Grayscale" />
         <cssFilter name="outline" class="haxe.ui.filters.Outline" />
         <cssFilter name="tint" class="haxe.ui.filters.Tint" />
+        <cssFilter name="contrast" class="haxe.ui.filters.Contrast" />
+        <cssFilter name="hue-rotate" class="haxe.ui.filters.HueRotate" />
+        <cssFilter name="saturate" class="haxe.ui.filters.Saturate" />
     </cssExtensions>
 
     <actions>
