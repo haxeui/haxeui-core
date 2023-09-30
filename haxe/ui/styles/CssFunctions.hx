@@ -99,7 +99,7 @@ class CssFunctions {
         var amount:Int = ValueTools.int(vl[1]);
 
         var hsl = color.toHSL();
-        var diffL = (100 - hsl.l)*amount / 100;
+        var diffL = (100 - hsl.l) * amount / 100;
 
         var newColor:Color = ColorUtil.fromHSL(hsl.h, hsl.s, hsl.l + diffL);
 
