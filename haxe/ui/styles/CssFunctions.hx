@@ -5,7 +5,9 @@ import haxe.ui.styles.StyleLookupMap;
 import haxe.ui.themes.ThemeManager;
 import haxe.ui.util.Color;
 import haxe.ui.util.Variant;
+import haxe.ui.util.ColorUtil;
 
+using haxe.ui.util.ColorUtil;
 class CssFunctions {
     private static var _cssFunctions:Map<String, Array<Value>->Any> = new Map<String, Array<Value>->Any>();
 
@@ -91,4 +93,29 @@ class CssFunctions {
     public static function lookup(vl:Array<Value>):Any {
         return Variant.toDynamic(StyleLookupMap.instance.get(ValueTools.string(vl[0])));
     }
+
+    public static function lighten(vl:Array<Value>):Any {
+        var color:Color = ValueTools.int(vl[0]);
+        var amount:Int = ValueTools.int(vl[1]);
+
+        var hsl = color.toHSL();
+        var diffL = (100 - hsl.l) * amount / 100;
+
+        var newColor:Color = ColorUtil.fromHSL(hsl.h, hsl.s, hsl.l + diffL);
+
+        return newColor;
+    }
+
+    public static function darken(vl:Array<Value>):Any {
+        var color:Color = ValueTools.int(vl[0]);
+        var amount:Int = ValueTools.int(vl[1]);
+
+        var hsl = color.toHSL();
+        var diffL = hsl.l * amount / 100;
+
+        var newColor:Color = ColorUtil.fromHSL(hsl.h, hsl.s, hsl.l - diffL);
+
+        return newColor;
+    }
+
 }

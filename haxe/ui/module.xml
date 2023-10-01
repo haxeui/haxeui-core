@@ -306,6 +306,8 @@
         <cssFunction name="theme-image" call="haxe.ui.styles.CssFunctions.themeIcon" />
         <cssFunction name="rgb" call="haxe.ui.styles.CssFunctions.rgb" />
         <cssFunction name="lookup" call="haxe.ui.styles.CssFunctions.lookup" />
+        <cssFunction name="lighten" call="haxe.ui.styles.CssFunctions.lighten" />
+        <cssFunction name="darken" call="haxe.ui.styles.CssFunctions.darken" />
         <cssFilter name="blur" class="haxe.ui.filters.Blur" />
         <cssFilter name="box-shadow" class="haxe.ui.filters.BoxShadow" />
         <cssFilter name="drop-shadow" class="haxe.ui.filters.DropShadow" />
