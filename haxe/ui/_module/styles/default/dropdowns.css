@@ -13,6 +13,10 @@
     cursor: pointer;
 }
 
+.dropdown .itemrenderer {
+    vertical-align: center;
+}
+
 .dropdown.required-value {
     background: $warning-background-color-start $warning-background-color-end;
     border-color: $warning-border-color;
