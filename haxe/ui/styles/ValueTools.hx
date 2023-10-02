@@ -167,7 +167,7 @@ class ValueTools {
         switch (value) {
             case Value.VComposite(vl):
                 return vl;
-            case Value.VDimension(_) | Value.VNumber(_):
+            case Value.VDimension(_) | Value.VNumber(_) | Value.VString(_) | Value.VConstant(_):
                 return [value];
             case Value.VNone:
                 return [];

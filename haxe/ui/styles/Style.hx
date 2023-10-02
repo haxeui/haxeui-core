@@ -126,6 +126,8 @@ class Style {
     @:optional public var fontStrikeThrough:Null<Bool>;
 
     /** The mouse cursor: `default`, `pointer`, `row-resize`, `col-resize` **/     @:optional public var cursor:Null<String>;
+                                                                                   @:optional public var cursorOffsetX:Null<Int>;
+                                                                                   @:optional public var cursorOffsetY:Null<Int>;
     /** Whether the component is hidden or not **/                                 @:optional public var hidden:Null<Bool>;
 
     @:optional public var filter:Array<Filter>;
@@ -394,8 +396,14 @@ class Style {
                         fontStrikeThrough = ValueTools.string(v.value).toLowerCase() == "line-through";
                     }
 
-                case "cursor":
+                case "cursor-name":
+                    cursorOffsetX = null;
+                    cursorOffsetY = null;
                     cursor = ValueTools.string(v.value);
+                case "cursor-offset-x":
+                    cursorOffsetX = ValueTools.int(v.value);
+                case "cursor-offset-y":
+                    cursorOffsetY = ValueTools.int(v.value);
                 case "hidden":
                     hidden = ValueTools.bool(v.value);
                 case "display":
@@ -492,6 +500,8 @@ class Style {
 
     public function apply(s:Style) {
         if (s.cursor != null) cursor = s.cursor;
+        if (s.cursorOffsetX != null) cursorOffsetX = s.cursorOffsetX;
+        if (s.cursorOffsetY != null) cursorOffsetY = s.cursorOffsetY;
         if (s.hidden != null) hidden = s.hidden;
 
         if (s.left != null) left = s.left;
@@ -670,6 +680,8 @@ class Style {
         if (s.color != color) return false;
 
         if (s.cursor != cursor) return false;
+        if (s.cursorOffsetX != cursorOffsetX) return false;
+        if (s.cursorOffsetY != cursorOffsetY) return false;
         if (s.hidden != hidden) return false;
 
         if (s.left != left) return false;
