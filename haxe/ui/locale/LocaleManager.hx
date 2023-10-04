@@ -2,6 +2,7 @@ package haxe.ui.locale;
 
 import haxe.ui.ToolkitAssets;
 import haxe.ui.core.Component;
+import haxe.ui.core.Platform;
 import haxe.ui.events.UIEvent;
 import haxe.ui.locale.LocaleEvent;
 import haxe.ui.parsers.locale.LocaleParser;
@@ -35,6 +36,19 @@ class LocaleManager {
     private var _eventMap:EventMap = null;
     
     private function new() {
+    }
+
+    public function init() {
+        #if !haxeui_dont_detect_locale
+        var autoDetectedLocale = Platform.instance.getSystemLocale();
+        if (autoSetLocale && autoDetectedLocale != null && hasLocale(autoDetectedLocale)) {
+            #if debug
+            trace("DEBUG: System locale detected as: " + autautoDetectedLocale);
+            #end
+            _language = autoDetectedLocale;
+            applyLocale(_language);
+        }
+        #end
     }
     
     private static var _registeredComponents:Map<Component, Map<String, ComponentLocaleEntry>> = new Map<Component, Map<String, ComponentLocaleEntry>>();
@@ -144,6 +158,9 @@ class LocaleManager {
         }
     }
     
+    public var autoSetLocale:Bool = true;
+
+    private var _localeSet:Bool = false;
     private var _language:String = "en";
     public var language(get, set):String;
     private function get_language():String {
@@ -157,17 +174,33 @@ class LocaleManager {
             return value;
         }
 
-        if (getStrings(value) == null) {
+        _localeSet = true;
+        _language = value;
+
+        applyLocale(_language);
+        return value;
+    }
+
+    private function applyLocale(locale:String) {
+        if (getStrings(locale) == null) {
             //return value;
         }
         
-        _language = value;
         refreshAll();
         if (_eventMap != null) {
             var event = new LocaleEvent(LocaleEvent.LOCALE_CHANGED);
             _eventMap.invoke(LocaleEvent.LOCALE_CHANGED, event);
         }
-        return value;
+    }
+
+    public function hasLocale(localeId:String):Bool {
+        localeId = StringTools.replace(localeId, "-", "_");
+        if (_localeMap.exists(localeId)) {
+            return true;
+        }
+
+        var parts = localeId.split("_");
+        return _localeMap.exists(parts[0]);
     }
     
     public function registerEvent(type:String, listener:Dynamic->Void, priority:Int = 0) {
@@ -209,6 +242,7 @@ class LocaleManager {
     
     private var _localeMap:Map<String, Map<String, String>> = new Map<String, Map<String, String>>();
     public function addStrings(localeId:String, map:Map<String, String>, filename:String = null) {
+        localeId = StringTools.replace(localeId, "-", "_");
         var stringMap = _localeMap.get(localeId);
         if (stringMap == null) {
             stringMap = new Map<String, String>();
@@ -265,6 +299,7 @@ class LocaleManager {
 
     private var _localeStringMap:Map<String, Map<String, LocaleString>> = new Map<String, Map<String, LocaleString>>();
     public function translateTo(lang:String, id:String, param0:Any = null, param1:Any = null, param2:Any = null, param3:Any = null) {
+        lang = StringTools.replace(lang, "-", "_");
         var map = _localeStringMap.get(lang);
         var localeString:LocaleString = null;
         if (map != null) {

@@ -58,6 +58,7 @@ class Toolkit {
         ModuleMacros.processModules();
         NativeMacros.processNative();
         buildBackend();
+        haxe.ui.locale.LocaleManager.instance.init();
         _built = true;
     }
 
