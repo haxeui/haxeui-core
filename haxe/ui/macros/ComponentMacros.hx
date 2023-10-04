@@ -349,7 +349,11 @@ class ComponentMacros {
             if (classBuilder.hasInterface("haxe.ui.core.IDataComponent") == true && c.data != null) {
                 buildDataSourceCode(builder, c, 'ds_root', "this");
             }
+
             assignComponentProperties(builder, c, rootVarName, buildData);
+            if (c.layout != null) {
+                buildLayoutCode(builder, c, rootVarName);
+            }
         }
         
         if (classBuilder == null) {
@@ -884,7 +888,7 @@ class ComponentMacros {
 
         assignComponentProperties(builder, c, componentVarName, buildData);
         if (c.layout != null) {
-            buildLayoutCode(builder, c, id);
+            buildLayoutCode(builder, c, componentVarName);
         }
 
         if (classInfo.hasInterface("haxe.ui.core.IDataComponent") == true && c.data != null) {
@@ -976,9 +980,9 @@ class ComponentMacros {
         builder.add(macro ($i{componentVarName} : haxe.ui.core.IDataComponent).dataSource = $i{dsVarName});
     }
     
-    private static function buildLayoutCode(builder:CodeBuilder, c:ComponentInfo, id:Int) {
+    private static function buildLayoutCode(builder:CodeBuilder, c:ComponentInfo, componentVarName:String) {
         var l = c.layout;
-        var layoutVarName = 'l${id}';
+        var layoutVarName = 'layout_${componentVarName}';
         var buildData = {
             namedComponents: new Map<String, NamedComponentDescription>(),
             bindingExprs: [],
@@ -999,7 +1003,7 @@ class ComponentMacros {
         }
         builder.add(macro var $layoutVarName = new $typePath());
         assignProperties(builder, layoutVarName, l.properties, buildData, null);
-        builder.add(macro $i{"c" + (id)}.layout = $i{layoutVarName});
+        builder.add(macro $i{componentVarName}.layout = $i{layoutVarName});
     }
 
     private static var _nextValidatorId = 0;
