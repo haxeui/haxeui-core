@@ -412,6 +412,10 @@ class ComponentMacros {
             buildComponentNode(builder, c, 0, -1, buildData, false);
             builder.add(macro var $rootVarName = c0);
         }
+
+        if (c.layout != null) {
+            buildLayoutCode(builder, c, rootVarName);
+        }
         
         var fullScript = "";
         for (scriptString in c.scriptlets) {
