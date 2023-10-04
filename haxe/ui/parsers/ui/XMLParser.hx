@@ -309,6 +309,13 @@ class XMLParser extends ComponentParser {
                 case "composite":
                     component.composite = (attrValue == "true");
                 case "layout" | "layoutName":
+                    if (attrName == "layoutName") {
+                        #if sys
+                        Sys.println("WARNING: 'layoutName'xml  attribute is deprecated, use 'layout' instead (file: " + component.filename + ")");
+                        #else
+                        trace("WARNING: 'layoutName'xml  attribute is deprecated, use 'layout' instead (file: " + component.filename + ")");
+                        #end
+                    }
                     component.layoutName = attrValue;
                 case "direction":
                     component.direction = attrValue;
