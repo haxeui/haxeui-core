@@ -41,7 +41,7 @@ class LocaleManager {
     public function init() {
         #if !haxeui_dont_detect_locale
         var autoDetectedLocale = Platform.instance.getSystemLocale();
-        if (autoSetLocale && autoDetectedLocale != null && hasLocale(autoDetectedLocale)) {
+        if (!_localeSet && autoSetLocale && autoDetectedLocale != null && hasLocale(autoDetectedLocale)) {
             #if debug
             trace("DEBUG: System locale detected as: " + autautoDetectedLocale);
             #end
