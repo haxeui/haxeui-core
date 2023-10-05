@@ -4,6 +4,7 @@ import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.components.Button;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
+import haxe.ui.events.AnimationEvent;
 import haxe.ui.events.Events;
 import haxe.ui.events.UIEvent;
 import haxe.ui.util.Variant;
@@ -39,8 +40,19 @@ private class PageIndex extends DefaultBehaviour {
         var selectedIndex:Int = value;
         var button = buttons[selectedIndex];
         var panel = _component.getComponentAt(_component.getComponentIndex(button) + 1);
+
+        panel.registerEvent(AnimationEvent.START, function(event) {
+            panel.unregisterEvents(AnimationEvent.START);
+            _component.dispatch(event);
+        });
+        panel.registerEvent(AnimationEvent.END, function(event) {
+            panel.unregisterEvents(AnimationEvent.END);
+            _component.dispatch(event);
+        });
+        
         panel.swapClass(":expanded", ":collapsed");
         panel.hidden = false;
+
         cast(_component, Accordion).selectedPage = panel;
         button.selected = true;
         for (b in buttons) {
@@ -97,6 +109,14 @@ private class Events extends haxe.ui.events.Events {
         } else if (index == _accordion.pageIndex) {
             button.selected = true;
         }
+    }
+
+    private function onPageAnimationStart(event:AnimationEvent) {
+        trace("start");
+    }
+
+    private function onPageAnimationEnd(event:AnimationEvent) {
+        trace("end");
     }
 }
 
