@@ -43,7 +43,7 @@ class LocaleManager {
         var autoDetectedLocale = Platform.instance.getSystemLocale();
         if (!_localeSet && autoSetLocale && autoDetectedLocale != null && hasLocale(autoDetectedLocale)) {
             #if debug
-            trace("DEBUG: System locale detected as: " + autautoDetectedLocale);
+            trace("DEBUG: System locale detected as: " + autoDetectedLocale);
             #end
             _language = autoDetectedLocale;
             applyLocale(_language);
