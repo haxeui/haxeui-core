@@ -349,6 +349,21 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
     }
 
     /**
+     Unregister a listener for a certain `UIEvent`
+    **/
+    @:dox(group = "Event related properties and methods")
+    public function unregisterEvents<T:UIEvent>(type:EventType<T>) {
+        if (_disabledEvents != null && !_interactivityDisabled) {
+            _disabledEvents.removeAll(type);
+        }
+
+        if (__events != null) {
+            __events.removeAll(type);
+            unmapEvent(type, _onMappedEvent);
+        }
+    }
+
+    /**
      Dispatch a certain `UIEvent`
     **/
     @:dox(group = "Event related properties and methods")
@@ -481,7 +496,7 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
         }
     }
 
-    private function unregisterEvents() {
+    private function unregisterEventsInternal() {
         if (__events != null) {
             var copy:Array<String> = [];
             for (eventType in __events.keys()) {

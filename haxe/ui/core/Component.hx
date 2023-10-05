@@ -584,7 +584,7 @@ class Component extends ComponentImpl implements IValidating {
         this._isDisposed = true;
         this.removeAllComponents(true);
         this.destroyComponent();
-        this.unregisterEvents();
+        this.unregisterEventsInternal();
         if (this.hasTextDisplay()) {
             this.getTextDisplay().dispose();
         }
@@ -662,7 +662,7 @@ class Component extends ComponentImpl implements IValidating {
         }
         if (dispose == true) {
             child.destroyComponent();
-            child.unregisterEvents();
+            child.unregisterEventsInternal();
         }
         
         assignPositionClasses(invalidate);
