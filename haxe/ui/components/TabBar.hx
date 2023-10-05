@@ -273,8 +273,10 @@ private class RemoveTab extends Behaviour {
                 }
             }
 
-            builder._container.removeComponentAt(index);
-            _component.dispatch(new UIEvent(UIEvent.CLOSE, index));
+            var removedButton = builder._container.removeComponentAt(index);
+            var event = new UIEvent(UIEvent.CLOSE, index);
+            event.target = removedButton;
+            _component.dispatch(event);
 
             cast(_component, TabBar).selectedIndex = newSelectedIndex;
         }
