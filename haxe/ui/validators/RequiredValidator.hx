@@ -5,7 +5,7 @@ import haxe.ui.core.Component;
 class RequiredValidator extends Validator {
     public function new() {
         super();
-        invalidMessage = "Field is required";
+        invalidMessage = "{{form.field.required}}";
         invalidStyleName = "required-value";
     }
 

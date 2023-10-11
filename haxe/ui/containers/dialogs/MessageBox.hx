@@ -41,15 +41,15 @@ class MessageBox extends MessageBoxBase {
         if (title == "Message") {
             switch (type) {
                 case MessageBoxType.TYPE_INFO:
-                    title = "Info";
+                    title = "{{messagebox.title.info}}";
                 case MessageBoxType.TYPE_QUESTION:
-                    title = "Question";
+                    title = "{{messagebox.title.question}}";
                 case MessageBoxType.TYPE_WARNING:
-                    title = "Warning";
+                    title = "{{messagebox.title.warning}}";
                 case MessageBoxType.TYPE_ERROR:
-                    title = "Error";
+                    title = "{{messagebox.title.error}}";
                 case MessageBoxType.TYPE_YESNO:
-                    title = "Question";
+                    title = "{{messagebox.title.question}}";
             }
         }
     }
