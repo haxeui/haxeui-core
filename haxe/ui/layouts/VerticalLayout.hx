@@ -10,43 +10,35 @@ class VerticalLayout extends DefaultLayout {
 
     private override function repositionChildren() {
         var ypos = paddingTop;
-        var usableSize = this.usableSize;
+        var items = getLayoutItems();
 
-        for (child in component.childComponents) {
-            if (child.includeInLayout == false) {
-                continue;
-            }
-
+        for (child in items.children) {
             var xpos:Float = 0;
 
-            switch (horizontalAlign(child)) {
+            switch (child.horizontalAlign) {
                 case "center":
-                    xpos = ((usableSize.width - child.componentWidth) / 2) + paddingLeft + marginLeft(child) - marginRight(child);
+                    xpos = ((items.usableSize.width - child.width) / 2) + paddingLeft + child.marginLeft - child.marginRight;
                 case "right":
-                    if (child.componentWidth < component.componentWidth) {
-                        xpos = component.componentWidth - (child.componentWidth + paddingRight + marginLeft(child));
+                    if (child.width < component.width) {
+                        xpos = component.width - (child.width + paddingRight + child.marginLeft);
                     }
                 default:
-                    xpos = paddingLeft + marginLeft(child);
+                    xpos = paddingLeft + child.marginLeft;
             }
 
-            child.moveComponent(xpos, ypos + marginTop(child));
-            ypos += child.componentHeight + verticalSpacing;
+            child.moveComponent(xpos, ypos + child.marginTop);
+            ypos += child.height + verticalSpacing;
         }
     }
 
     private override function get_usableSize():Size {
         var size:Size = super.get_usableSize();
+        var items = getLayoutItems();
 
-        var visibleChildren = component.childComponents.length;
-        for (child in component.childComponents) {
-            if (child.includeInLayout == false) {
-                visibleChildren--;
-                continue;
-            }
-
-            if (child.componentHeight > 0 && (child.percentHeight == null || fixedMinHeight(child) == true)) { // means its a fixed height, ie, not a % sized control
-                size.height -= child.componentHeight + marginTop(child) + marginBottom(child);
+        var visibleChildren = items.children.length;
+        for (child in items.children) {
+            if (child.height > 0 && child.percentHeight == null) { // means its a fixed height, ie, not a % sized control
+                size.height -= child.height + child.marginTop + child.marginBottom;
             }
         }
 

@@ -41,6 +41,7 @@ class Layout implements ILayout {
     public function refresh() {
         if (_component != null && _component.isReady == true) {
 
+            _layoutItems = null;
             resizeChildren();
 
             _component.handlePreReposition();
@@ -156,20 +157,29 @@ class Layout implements ILayout {
         return child.style.verticalAlign;
     }
 
-    private function fixedMinWidth(child:Component):Bool {
-        var fixedMinWidth = false;
-        if (child != null && child.style != null && child.style.minWidth != null) {
-            fixedMinWidth = child.componentWidth <= child.style.minWidth;
+    private var _layoutItems:LayoutItems = null;
+    private function getLayoutItems(force:Bool = false):LayoutItems {
+        if (_layoutItems != null && !force) {
+            _layoutItems.refresh();
+            return _layoutItems;
         }
-        return fixedMinWidth;
-    }
+        var items = new LayoutItems(component, this);
+        for (child in component.childComponents) {
+            if (child.includeInLayout == false) {
+                continue;
+            }
 
-    private function fixedMinHeight(child:Component):Bool {
-        var fixedMinHeight = false;
-        if (child != null && child.style != null && child.style.minHeight != null) {
-            fixedMinHeight = child.componentHeight <= child.style.minHeight;
+            items.children.push({
+                parentComponent: component,
+                component: child,
+                width: child.width,
+                percentWidth: child.percentWidth,
+                height: child.height,
+                percentHeight: child.percentHeight
+            });
         }
-        return fixedMinHeight;
+        _layoutItems = items;
+        return items;
     }
 
     //******************************************************************************************
