@@ -316,25 +316,15 @@ class MacroHelpers {
             return false;
         }
 
-        var superHasRequiredInterface = false;
         var s = classType.superClass;
         while (s != null) {
             for (i in s.t.get().interfaces) {
                 if (i.t.toString() == extension) {
-                    superHasRequiredInterface = true;
-                    break;
+                    return false;
                 }
             }
 
-            if (superHasRequiredInterface) {
-                break;
-            }
-    
             s = s.t.get().superClass;
-        }
-
-        if (superHasRequiredInterface) {
-            return false;
         }
 
         return true;

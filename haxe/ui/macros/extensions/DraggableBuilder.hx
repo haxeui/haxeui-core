@@ -15,7 +15,7 @@ class DraggableBuilder {
         var fields = Context.getBuildFields();
 
         if (!MacroHelpers.shouldBuildExtension(Context.getLocalClass().get(), "haxe.ui.extensions.Draggable")) {
-            return fields;
+            return null;
         }
 
         var draggable = macro class Temp {
