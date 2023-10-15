@@ -171,6 +171,8 @@ class Layout implements ILayout {
 
             items.children.push({
                 parentComponent: component,
+                layout: this,
+                items: items,
                 component: child,
                 width: child.width,
                 percentWidth: child.percentWidth,

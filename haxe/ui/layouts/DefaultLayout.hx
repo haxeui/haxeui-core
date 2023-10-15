@@ -15,6 +15,10 @@ class DefaultLayout extends Layout {
         items.roundFullWidths = _roundFullWidths;
         items.applyRounding();
 
+        if (items.usableWidth <= 0 || items.usableHeight <= 0 || items.children.length == 0) {
+            return;
+        }
+
         for (child in items.children) {
             var cx:Null<Float> = null;
             var cy:Null<Float> = null;
@@ -33,6 +37,7 @@ class DefaultLayout extends Layout {
                     }
                 }
             }
+
             if (child.percentHeight != null) {
                 var childPercentHeight = child.percentHeight;
                 if (childPercentHeight == 100) {
@@ -41,12 +46,34 @@ class DefaultLayout extends Layout {
                 cy = ((items.usableSize.height * childPercentHeight) / 100) - child.marginTop - child.marginBottom;
             }
 
+            if (cx != null) {
+                if (child.minWidth != null && cx <= child.minWidth) {
+                    cx = child.minWidth;
+                }
+                if (child.maxWidth != null && cx >= child.maxWidth) {
+                    cx = child.maxWidth;
+                }
+            }
+
+            if (cy != null) {
+                if (child.minHeight != null && cy <= child.minHeight) {
+                    cy = child.minHeight;
+                }
+                if (child.maxHeight != null && cy >= child.maxHeight) {
+                    cy = child.maxHeight;
+                }
+            }
+
             child.resizeComponent(cx, cy);
         }
     }
 
     private override function repositionChildren() {
         var items = getLayoutItems();
+        if (items.usableWidth <= 0 || items.usableHeight <= 0 || items.children.length == 0) {
+            return;
+        }
+
         for (child in items.children) {
             var xpos:Float = 0;
             var ypos:Float = 0;
