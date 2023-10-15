@@ -15,13 +15,14 @@ import haxe.ui.events.MouseEvent;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.extensions.Draggable;
 
 @:xml('
     <vbox style="spacing:0;">
     </vbox>
 ')
 @:composite(Builder)
-class Window extends VBox {
+class Window extends VBox implements Draggable {
 
     @:behaviour(Minimizable, true) public var minimizable:Bool;
     @:behaviour(Collapsable, true) public var collapsable:Bool;
@@ -250,16 +251,22 @@ private class Maximizable extends DataBehaviour {
 @:access(haxe.ui.core.Component)
 @:access(haxe.ui.containers.windows.Window.Builder)
 private class Maximized extends DataBehaviour {
+    private var _window:Window;
+    public function new(window:Window) {
+        super(window);
+        _window = window;
+    }
+
     private override function validateData() {
         var title = cast(_component._compositeBuilder, Builder).title;
         if (title != null) {
             var existing = title.findComponent("windowMaximizeButton", Image);
             if (existing != null) {
                 if (_value == true) {
-                    _component.dragInitiator = null;
+                    _window.dragInitiator = null;
                     existing.addClass("restore");
                 } else {
-                    _component.dragInitiator = title;
+                    _window.dragInitiator = title;
                     existing.removeClass("restore");
                 }
             }

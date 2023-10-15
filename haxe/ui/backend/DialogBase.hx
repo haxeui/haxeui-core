@@ -8,9 +8,10 @@ import haxe.ui.core.Component;
 import haxe.ui.core.Screen;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
+import haxe.ui.extensions.Draggable;
 
 @:dox(hide) @:noCompletion
-class DialogBase extends Box {
+class DialogBase extends Box implements Draggable {
     public var modal:Bool = true;
     public var autoCenterDialog:Bool = true;
     public var buttons:DialogButton = null;
