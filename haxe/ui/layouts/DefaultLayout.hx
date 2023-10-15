@@ -15,10 +15,6 @@ class DefaultLayout extends Layout {
         items.roundFullWidths = _roundFullWidths;
         items.applyRounding();
 
-        if (items.usableWidth <= 0 || items.usableHeight <= 0 || items.children.length == 0) {
-            return;
-        }
-
         for (child in items.children) {
             var cx:Null<Float> = null;
             var cy:Null<Float> = null;
@@ -70,9 +66,6 @@ class DefaultLayout extends Layout {
 
     private override function repositionChildren() {
         var items = getLayoutItems();
-        if (items.usableWidth <= 0 || items.usableHeight <= 0 || items.children.length == 0) {
-            return;
-        }
 
         for (child in items.children) {
             var xpos:Float = 0;
