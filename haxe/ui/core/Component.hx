@@ -34,7 +34,11 @@ import Std.is as isOfType;
  * Base class of all HaxeUI controls
  */
 @:allow(haxe.ui.backend.ComponentImpl)
-class Component extends ComponentImpl implements IValidating {
+class Component extends ComponentImpl
+    #if haxeui_allow_drag_any_component
+    implements haxe.ui.extensions.Draggable
+    #end
+    implements IValidating {
 
     /**
      * Creates a new, default, HaxeUI `Component`.

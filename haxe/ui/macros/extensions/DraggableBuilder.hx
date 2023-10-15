@@ -4,6 +4,7 @@ package haxe.ui.macros.extensions;
 
 import haxe.macro.Context;
 import haxe.macro.Expr;
+import haxe.ui.macros.MacroHelpers;
 
 #end
 
@@ -13,16 +14,7 @@ class DraggableBuilder {
     macro static function build():Array<Field> {
         var fields = Context.getBuildFields();
 
-        var requiredInterface = "haxe.ui.extensions.Draggable";
-        var hasRequiredInterface = false;
-        for (i in Context.getLocalClass().get().interfaces) {
-            if (i.t.toString() == requiredInterface) {
-                hasRequiredInterface = true;
-                break;
-            }
-        }
-
-        if (!hasRequiredInterface) {
+        if (!MacroHelpers.shouldBuildExtension(Context.getLocalClass().get(), "haxe.ui.extensions.Draggable")) {
             return fields;
         }
 

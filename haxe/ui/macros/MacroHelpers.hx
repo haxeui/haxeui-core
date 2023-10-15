@@ -1,6 +1,7 @@
 package haxe.ui.macros;
 
 #if macro
+import haxe.macro.Type.ClassType;
 import haxe.io.Path;
 import haxe.macro.Context;
 import haxe.macro.Expr;
@@ -300,6 +301,43 @@ class MacroHelpers {
         #if haxeui_macro_times
         stopTimer();
         #end
+    }
+
+    public static function shouldBuildExtension(classType:ClassType, extension:String):Bool {
+        var hasRequiredInterface = false;
+        for (i in classType.interfaces) {
+            if (i.t.toString() == extension) {
+                hasRequiredInterface = true;
+                break;
+            }
+        }
+
+        if (!hasRequiredInterface) {
+            return false;
+        }
+
+        var superHasRequiredInterface = false;
+        var s = classType.superClass;
+        while (s != null) {
+            for (i in s.t.get().interfaces) {
+                if (i.t.toString() == extension) {
+                    superHasRequiredInterface = true;
+                    break;
+                }
+            }
+
+            if (superHasRequiredInterface) {
+                break;
+            }
+    
+            s = s.t.get().superClass;
+        }
+
+        if (superHasRequiredInterface) {
+            return false;
+        }
+
+        return true;
     }
 
     #end
