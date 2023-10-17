@@ -1,5 +1,7 @@
 package haxe.ui;
 
+import haxe.ui.core.InteractiveComponent;
+import haxe.ui.parsers.ui.ValidatorInfo;
 import haxe.ui.Toolkit;
 import haxe.ui.components.Button;
 import haxe.ui.components.Image;
@@ -148,6 +150,10 @@ class RuntimeComponentBuilder {
             cast(component, IDataComponent).dataSource = new haxe.ui.data.DataSourceFactory<Dynamic>().fromString(c.dataString, haxe.ui.data.ArrayDataSource);
         }
 
+        if (c.validators != null) {
+            buildValidators(c, component, c.validators);
+        }
+
         for (childInfo in c.children) {
             var childComponent = buildComponentFromInfo(childInfo, callback);
             if (childComponent != null) {
@@ -160,6 +166,25 @@ class RuntimeComponentBuilder {
         }
 
         return component;
+    }
+
+    private static function buildValidators(c:ComponentInfo, component:Component, validators:Array<ValidatorInfo>) {
+        var list = [];
+        for (validator in validators) {
+            var type = validator.type;
+            var instance = haxe.ui.validators.ValidatorManager.instance.createValidator(type);
+            if (validator.properties != null) {
+                for (propertyName in validator.properties.keys()) {
+                    var propertyValue = validator.properties.get(propertyName);
+                    var convertedPropertyValue = TypeConverter.convertFrom(propertyValue);
+                    instance.setProperty(propertyName, convertedPropertyValue);
+                }
+            }
+            list.push(instance);
+        }
+        if (list.length > 0 && (component is InteractiveComponent)) {
+            cast(component, InteractiveComponent).validators = list;
+        }
     }
 
     private static function buildLayoutFromInfo(l:LayoutInfo):Layout {
