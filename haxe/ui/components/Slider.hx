@@ -18,6 +18,7 @@ import haxe.ui.events.UIEvent;
 import haxe.ui.geom.Point;
 import haxe.ui.util.MathUtil;
 import haxe.ui.util.Variant;
+import haxe.ui.events.DragEvent;
 
 /**
  * A slider component, containing a thumb and a track to move the thumb along.
@@ -37,6 +38,21 @@ class Slider extends InteractiveComponent implements IDirectionalComponent {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
+
+    /**
+    * Utility property to add a single `DragEvent.DRAG_START` event
+    */
+    @:event(DragEvent.DRAG_START)                   public var onDragStart:DragEvent->Void;    
+
+    /**
+    * Utility property to add a single `DragEvent.DRAG` event
+    */
+    @:event(DragEvent.DRAG)                         public var onDrag:DragEvent->Void;    
+
+    /**
+    * Utility property to add a single `DragEvent.DRAG_END` event
+    */
+    @:event(DragEvent.DRAG_END)                     public var onDragEnd:DragEvent->Void;    
 
     /**
      * The minimum value of the slider. used to calculate the thumb's position.
@@ -392,6 +408,7 @@ private class Events extends haxe.ui.events.Events  {
         event.previousValue = e.previousValue;
         event.value = e.value;
         _slider.dispatch(event);
+        _slider.dispatch(new DragEvent(DragEvent.DRAG));
     }
 
     private function onRangeMouseDown(e:MouseEvent) {

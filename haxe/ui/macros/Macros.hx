@@ -226,6 +226,9 @@ class Macros {
 
         for (f in builder.getFieldsWithMeta("event")) {
             f.remove();
+            if (builder.hasFieldSuper(f.name)) {
+                continue;
+            }
             var eventExpr = f.getMetaValueExpr("event");
             var varName = '_internal__${f.name}';
             builder.addVar(varName, f.type, null, null, [{name: ":noCompletion", pos: Context.currentPos()}]);
