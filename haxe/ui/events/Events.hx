@@ -3,6 +3,7 @@ package haxe.ui.events;
 import haxe.ui.actions.ActionType;
 import haxe.ui.core.Component;
 
+@:access(haxe.ui.core.Component)
 class Events {
     private var _target:Component;
 
@@ -19,7 +20,7 @@ class Events {
     }
 
     private function registerEvent<T:UIEvent>(type:EventType<T>, listener:T->Void, priority:Int = 0) {
-        if (_target == null) {
+        if (_target == null || _target._isDisposed) {
             return;
         }
         if (hasEvent(type, listener) == false) {
@@ -28,23 +29,24 @@ class Events {
     }
 
     private function hasEvent<T:UIEvent>(type:EventType<T>, listener:T->Void):Bool {
-        if (_target == null) {
+        if (_target == null || _target._isDisposed) {
             return false;
         }
         return _target.hasEvent(type, listener);
     }
 
     private function unregisterEvent<T:UIEvent>(type:EventType<T>, listener:T->Void) {
-        if (_target == null) {
+        if (_target == null || _target._isDisposed) {
             return;
         }
         _target.unregisterEvent(type, listener);
     }
 
     private function dispatch<T:UIEvent>(event:T) {
-        if (_target == null) {
+        if (_target == null || _target._isDisposed) {
             return;
         }
+        trace(@:privateAccess _target._isDisposed);
         _target.dispatch(event);
     }
 }
