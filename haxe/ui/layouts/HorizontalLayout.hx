@@ -11,8 +11,15 @@ class HorizontalLayout extends DefaultLayout {
 
     private override function repositionChildren() {
         var xpos = paddingLeft;
-        var items = getLayoutItems();
-        var visibleChildren = items.children.length;
+        var usableSize = this.usableSize;
+
+        var visibleChildren = component.childComponents.length;
+        for (child in component.childComponents) {
+            if (child.includeInLayout == false) {
+                visibleChildren--;
+                continue;
+            }
+        }
         
         var evenlySpace  = false;
         var aroundSpace  = false;
@@ -28,46 +35,59 @@ class HorizontalLayout extends DefaultLayout {
         var spacing:Float = horizontalSpacing;
         
         if (betweenSpace) {
-            spacing = items.usableSize.width / (visibleChildren - 1) + horizontalSpacing;
-        } else if (aroundSpace){
-            spacing = items.usableSize.width / (visibleChildren - 1) + horizontalSpacing;
-        }  else if (evenlySpace){
-            spacing = (items.usableSize.width + horizontalSpacing * (visibleChildren - 1))  / (visibleChildren + 1);
+            spacing =   usableSize.width / (visibleChildren - 1) + horizontalSpacing;
+        }
+        else if (aroundSpace){
+            spacing = (usableSize.width + horizontalSpacing * (visibleChildren - 1))  / visibleChildren ;
+        }
+        else if (evenlySpace){
+            spacing = (usableSize.width + horizontalSpacing * (visibleChildren - 1))  / (visibleChildren + 1)  ;
         }
 
-        for (child in items.children) {
+        
+        for (child in component.childComponents) {
+            if (child.includeInLayout == false) {
+                continue;
+            }
+
             var ypos:Float = 0;
 
-            switch (child.verticalAlign) {
+            switch (verticalAlign(child)) {
                 case "center":
-                    ypos = ((items.usableSize.height - child.height) / 2) + paddingTop + child.marginTop - child.marginBottom;
+                    ypos = ((usableSize.height - child.componentHeight) / 2) + paddingTop + marginTop(child) - marginBottom(child);
                 case "bottom":
-                    if (child.height < component.height) {
-                        ypos = component.height - (child.height + paddingBottom + child.marginTop);
+                    if (child.componentHeight < component.componentHeight) {
+                        ypos = component.componentHeight - (child.componentHeight + paddingBottom + marginTop(child));
                     }
                 default:
-                    ypos = paddingTop + child.marginTop;
+                    ypos = paddingTop + marginTop(child);
             }
 
             if (aroundSpace) {
-                child.moveComponent(xpos + spacing / 2 + child.marginLeft, ypos);
-            } else if (evenlySpace) {
-                child.moveComponent(xpos + spacing + child.marginLeft, ypos);
-            } else {
-                child.moveComponent(xpos + child.marginLeft, ypos);
+                child.moveComponent(xpos + spacing / 2 + marginLeft(child), ypos);
             }
-            xpos += child.width + spacing;
+            else if (evenlySpace) {
+                child.moveComponent(xpos + spacing + marginLeft(child), ypos);
+            }
+            else {
+                child.moveComponent(xpos + marginLeft(child), ypos);
+            }
+            xpos += child.componentWidth + spacing;
         }
     }
 
     private override function get_usableSize():Size {
         var size:Size = super.get_usableSize();
 
-        var items = getLayoutItems();
-        var visibleChildren = items.children.length;
-        for (child in items.children) {
-            if (child.width > 0 && child.percentWidth == null) { // means its a fixed width, ie, not a % sized control
-                size.width -= child.width + child.marginLeft + child.marginRight;
+        var visibleChildren = component.childComponents.length;
+        for (child in component.childComponents) {
+            if (child.includeInLayout == false) {
+                visibleChildren--;
+                continue;
+            }
+
+            if (child.componentWidth > 0 && (child.percentWidth == null || fixedMinWidth(child) == true)) { // means its a fixed width, ie, not a % sized control
+                size.width -= child.componentWidth + marginLeft(child) + marginRight(child);
             }
         }
 

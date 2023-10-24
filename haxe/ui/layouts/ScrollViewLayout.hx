@@ -66,10 +66,10 @@ class ScrollViewLayout extends DefaultLayout {
                 cy = (usableSize.height * child.percentHeight) / percentHeight - marginTop(child) - marginBottom(child);
             }
 
-            if (child.percentWidth != null) {
+            if (fixedMinWidth(child) && child.percentWidth != null) {
                 percentWidth -= child.percentWidth;
             }
-            if (child.percentHeight != null) {
+            if (fixedMinHeight(child) && child.percentHeight != null) {
                 percentHeight -= child.percentHeight;
             }
 

@@ -7,38 +7,137 @@ class DefaultLayout extends Layout {
     @:clonable private var _calcFullWidths:Bool = false;
     @:clonable private var _calcFullHeights:Bool = false;
     @:clonable private var _roundFullWidths:Bool = false;
+
+    private function buildWidthRoundingMap():Map<Component, Int> {
+        if (_roundFullWidths == false || component.childComponents.length <= 1) {
+            return null;
+        }
+
+        var map:Map<Component, Int> = null;
+        var hasNonFullWidth:Bool = false;
+        for (child in component.childComponents) {
+            if (child.includeInLayout == false) {
+                continue;
+            }
+            
+            if (child.percentWidth == null || child.percentWidth != 100) {
+                hasNonFullWidth = true;
+                break;
+            }
+        }
+        
+        if (hasNonFullWidth == false) {
+            var remainderWidth = usableWidth % component.childComponents.length;
+            if (remainderWidth != 0) {
+                map = new Map<Component, Int>();
+                for (child in component.childComponents) {
+                    if (child.includeInLayout == false) {
+                        continue;
+                    }
+                    
+                    var n = 0;
+                    if (remainderWidth > 0) {
+                        n = 1;
+                        remainderWidth--;
+                    }
+                    map.set(child, n);
+                }
+            }
+        }
+        
+        return map;
+    }
     
     private override function resizeChildren() {
-        var items = getLayoutItems();
-        items.calcFullWidths = _calcFullWidths;
-        items.calcFullHeights = _calcFullHeights;
-        items.roundFullWidths = _roundFullWidths;
-        items.applyRounding();
+        var usableSize:Size = usableSize;
+        var percentWidth:Float = 100;
+        var percentHeight:Float = 100;
 
-        for (child in items.children) {
+        var fullWidthValue:Float = 100;
+        var fullHeightValue:Float = 100;
+        if (_calcFullWidths == true || _calcFullHeights == true) {
+            var n1 = 0;
+            var n2 = 0;
+            for (child in component.childComponents) {
+                if (child.includeInLayout == false) {
+                    continue;
+                }
+
+                if (_calcFullWidths == true && child.percentWidth != null && child.percentWidth == 100) {
+                    n1++;
+                }
+                if (_calcFullHeights == true && child.percentHeight != null && child.percentHeight == 100) {
+                    n2++;
+                }
+            }
+
+            if (n1 > 0) {
+                fullWidthValue = 100 / n1;
+            }
+            if (n2 > 0) {
+                fullHeightValue = 100 / n2;
+            }
+        }
+
+        // not all backends will work (nicely) with sub pixels (heaps, openfl, etc)
+        // so we'll add a small optimization here that if all the items are 100%
+        // then we'll round them up / down to ensure we always get single pixel
+        // sizes (no fractions), this makes things look _much_ nicer without
+        // making the whole UI look bad from using subpixels, which cases nasty
+        // drawing artifacts in most cases
+        var childRoundingWidth:Map<Component, Int> = buildWidthRoundingMap();
+        for (child in component.childComponents) {
+            if (child.includeInLayout == false) {
+                continue;
+            }
+
             var cx:Null<Float> = null;
             var cy:Null<Float> = null;
 
             if (child.percentWidth != null) {
                 var childPercentWidth = child.percentWidth;
                 if (childPercentWidth == 100) {
-                    childPercentWidth = items.fullWidthValue;
+                    childPercentWidth = fullWidthValue;
                 }
-                cx = ((items.usableSize.width * childPercentWidth) / 100) - child.marginLeft - child.marginRight;
-                if (child.widthRoundingDirection != null) {
-                    if (child.widthRoundingDirection == 0) {
+                cx = (usableSize.width * childPercentWidth) / percentWidth - marginLeft(child) - marginRight(child);
+                if (childRoundingWidth != null && childRoundingWidth.exists(child)) {
+                    var roundDirection = childRoundingWidth.get(child);
+                    if (roundDirection == 0) {
                         cx = Math.ffloor(cx);
-                    } else if (child.widthRoundingDirection == 1) {
+                    } else if (roundDirection == 1) {
                         cx = Math.fceil(cx);
                     }
                 }
+                
+                /*
+                #if debug
+                if (_component.autoWidth && usableSize.width <= 0) {
+                    trace("WARNING: trying to use a % width in a child (id: " + child.id + ") with autosized parent (id: " + _component.id + ")");
+                }
+                #end
+                */
             }
             if (child.percentHeight != null) {
                 var childPercentHeight = child.percentHeight;
                 if (childPercentHeight == 100) {
-                    childPercentHeight = items.fullHeightValue;
+                    childPercentHeight = fullHeightValue;
                 }
-                cy = ((items.usableSize.height * childPercentHeight) / 100) - child.marginTop - child.marginBottom;
+                cy = (usableSize.height * childPercentHeight) / percentHeight - marginTop(child) - marginBottom(child);
+                
+                /*
+                #if debug
+                if (_component.autoHeight && usableSize.height <= 0) {
+                    trace("WARNING: trying to use a % height in a child (id: " + child.id + ") with autosized parent (id: " + _component.id + ")");
+                }
+                #end
+                */
+            }
+
+            if (fixedMinWidth(child) && child.percentWidth != null) {
+                percentWidth -= child.percentWidth;
+            }
+            if (fixedMinHeight(child) && child.percentHeight != null) {
+                percentHeight -= child.percentHeight;
             }
 
             child.resizeComponent(cx, cy);
@@ -46,27 +145,32 @@ class DefaultLayout extends Layout {
     }
 
     private override function repositionChildren() {
-        var items = getLayoutItems();
-        for (child in items.children) {
+        var usableSize = this.usableSize;
+
+        for (child in component.childComponents) {
+            if (child.includeInLayout == false) {
+                continue;
+            }
+
             var xpos:Float = 0;
             var ypos:Float = 0;
 
-            switch (child.horizontalAlign) {
+            switch (horizontalAlign(child)) {
                 case "center":
-                    xpos = ((items.usableSize.width - child.width) / 2) + paddingLeft + child.marginLeft - child.marginRight;
+                    xpos = ((usableSize.width - child.componentWidth) / 2) + paddingLeft + marginLeft(child) - marginRight(child);
                 case "right":
-                    xpos = component.componentWidth - (child.width + paddingRight + child.marginRight);
+                    xpos = component.componentWidth - (child.componentWidth + paddingRight + marginRight(child));
                 default:    //left
-                    xpos = paddingLeft + child.marginLeft;
+                    xpos = paddingLeft + marginLeft(child);
             }
 
-            switch (child.verticalAlign) {
+            switch (verticalAlign(child)) {
                 case "center":
-                    ypos = ((items.usableSize.height - child.height) / 2) + paddingTop + child.marginTop - child.marginBottom;
+                    ypos = ((usableSize.height - child.componentHeight) / 2) + paddingTop + marginTop(child) - marginBottom(child);
                 case "bottom":
-                    ypos = component.componentHeight - (child.height + paddingBottom + child.marginBottom);
+                    ypos = component.componentHeight - (child.componentHeight + paddingBottom + marginBottom(child));
                 default:    //top
-                    ypos = paddingTop + child.marginTop;
+                    ypos = paddingTop + marginTop(child);
             }
 
             child.moveComponent(xpos, ypos);
