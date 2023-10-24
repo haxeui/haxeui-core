@@ -46,7 +46,6 @@ class Events {
         if (_target == null || _target._isDisposed) {
             return;
         }
-        trace(@:privateAccess _target._isDisposed);
         _target.dispatch(event);
     }
 }
