@@ -43,28 +43,10 @@ class LayoutItems {
             var n2 = 0;
             for (child in this.children) {
                 if (calcFullWidths == true && child.percentWidth != null && child.percentWidth == 100) {
-                    var viable = true;
-                    if (child.minWidth != null && child.width <= child.minWidth) {
-                        viable = false;
-                    }
-                    if (child.maxWidth != null && child.width >= child.maxWidth) {
-                        viable = false;
-                    }
-                    if (viable) {
-                        n1++;
-                    }
+                    n1++;
                 }
                 if (calcFullHeights == true && child.percentHeight != null && child.percentHeight == 100) {
-                    var viable = true;
-                    if (child.minHeight != null && child.height <= child.minHeight) {
-                        viable = false;
-                    }
-                    if (child.maxHeight != null && child.height >= child.maxHeight) {
-                        viable = false;
-                    }
-                    if (viable) {
-                        n2++;
-                    }
+                    n2++;
                 }
             }
 
@@ -85,24 +67,6 @@ class LayoutItems {
     private function get_usableSize():Size {
         if (_usableSize == null) {
             _usableSize = layout.usableSize;
-            for (child in children) {
-                if (calcFullWidths) {
-                    if (child.minWidth != null && child.width <= child.minWidth) {
-                        _usableSize.width -= child.minWidth;
-                    }
-                    if (child.maxWidth != null && child.width >= child.maxWidth) {
-                        _usableSize.width -= child.maxWidth;
-                    }
-                }
-                if (calcFullHeights) {
-                    if (child.minHeight != null && child.height <= child.minHeight) {
-                        _usableSize.height -= child.minHeight;
-                    }
-                    if (child.maxHeight != null && child.height >= child.maxHeight) {
-                        _usableSize.height -= child.maxHeight;
-                    }
-                }
-            }
         }
         return _usableSize;
     }
@@ -110,11 +74,6 @@ class LayoutItems {
     public var usableWidth(get, null):Float;
     private function get_usableWidth():Float {
         return usableSize.width;
-    }
-
-    public var usableHeight(get, null):Float;
-    private function get_usableHeight():Float {
-        return usableSize.height;
     }
 
     // not all backends will work (nicely) with sub pixels (heaps, openfl, etc)
@@ -156,15 +115,11 @@ class LayoutItems {
     }
 
     public function refresh() {
-        _fullWidthValue = null;
-        _fullHeightValue = null;
-        _usableSize = null;
         for (child in children) {
             child.width = child.component.width;
             child.percentWidth = child.component.percentWidth;
             child.height = child.component.height;
             child.percentHeight = child.component.percentHeight;
-            child.reset();
         }
     }
 }

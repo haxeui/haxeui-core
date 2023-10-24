@@ -1859,7 +1859,6 @@ class Component extends ComponentImpl
     }
 
     private function enforceSizeConstraints() {
-        return;
         if (style != null) {
             // enforce min width
             if (style.minWidth != null && _componentWidth < style.minWidth) {
