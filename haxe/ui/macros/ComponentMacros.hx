@@ -247,6 +247,8 @@ class ComponentMacros {
         if (haxe.ui.util.RTTI.hasSuperClass(builder.fullPath, rootType) == false) {
             Context.warning('The class hierarchy of "${builder.fullPath}" does not contain the root node of "${resourcePath}" (${rootType}) - this may have unintended consequences', pos);
         }
+        #else
+        builder.ctor.add(macro applyRootLayout($v{c.type}));
         #end
 
         for (id in buildData.namedComponents.keys()) {
@@ -404,6 +406,10 @@ class ComponentMacros {
         
         source = StringUtil.replaceVars(source, buildData.params);
         var c:ComponentInfo = ComponentParser.get("xml").parse(source);
+        #if haxeui_dont_impose_base_class
+        builder.add(macro applyRootLayout($v{c.type}));
+        #end
+
         for (s in c.styles) {
             if (s.scope == "global") {
                 builder.add(macro haxe.ui.Toolkit.styleSheet.parse($v{s.style}, "user"));
