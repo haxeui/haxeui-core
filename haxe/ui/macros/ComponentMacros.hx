@@ -243,9 +243,11 @@ class ComponentMacros {
         var c:ComponentInfo = buildComponentFromFile(builder, codeBuilder, resourcePath, buildData, "this", false);
         var superClass:String = builder.superClass.t.toString();
         var rootType = ModuleMacros.resolveComponentClass(c.type, c.namespace);
+        #if !haxeui_dont_impose_base_class
         if (haxe.ui.util.RTTI.hasSuperClass(builder.fullPath, rootType) == false) {
             Context.warning('The class hierarchy of "${builder.fullPath}" does not contain the root node of "${resourcePath}" (${rootType}) - this may have unintended consequences', pos);
         }
+        #end
 
         for (id in buildData.namedComponents.keys()) {
             var safeId:String = StringUtil.capitalizeHyphens(id);
