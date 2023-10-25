@@ -1,5 +1,6 @@
 package haxe.ui;
 
+#if !macro
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.parsers.ui.ValidatorInfo;
 import haxe.ui.Toolkit;
@@ -20,8 +21,24 @@ import haxe.ui.parsers.ui.resolvers.ResourceResolver;
 import haxe.ui.util.SimpleExpressionEvaluator;
 import haxe.ui.util.TypeConverter;
 import haxe.ui.util.Variant;
+#end
 
 class RuntimeComponentBuilder {
+    #if macro
+
+    public static function build(file:String) {
+        return null;
+    }
+
+    #else
+
+    public static function build(file:String) {
+        return fromAsset(file);
+    }
+
+    #end
+
+    #if !macro
     public static function fromAsset(assetId:String):Component {
         var data = ToolkitAssets.instance.getText(assetId);
         return fromString(data, null, new AssetResourceResolver(assetId));
@@ -201,4 +218,5 @@ class RuntimeComponentBuilder {
 
         return layout;
     }
+    #end
 }
