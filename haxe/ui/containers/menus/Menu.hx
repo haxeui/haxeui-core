@@ -7,6 +7,7 @@ import haxe.ui.containers.Box;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.Screen;
+import haxe.ui.events.MenuEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.geom.Size;
@@ -17,32 +18,6 @@ import Std.isOfType;
 #else
 import Std.is as isOfType;
 #end
-
-class MenuEvent extends UIEvent {
-    public static inline var MENU_SELECTED:String = "menuselected";
-    public static inline var MENU_OPENED:String = "menuopened";
-    public static inline var MENU_CLOSED:String = "menuclosed";
-
-    public var menu:Menu = null;
-    public var menuItem:MenuItem = null;
-
-    public function new(type:String, bubble:Null<Bool> = false, data:Dynamic = null) {
-        super(type, true, data);
-    }
-
-    public override function clone():MenuEvent {
-        var c:MenuEvent = new MenuEvent(this.type);
-        c.menu = this.menu;
-        c.menuItem = this.menuItem;
-        c.type = this.type;
-        c.bubble = this.bubble;
-        c.target = this.target;
-        c.data = this.data;
-        c.canceled = this.canceled;
-        postClone(c);
-        return c;
-    }
-}
 
 @:composite(MenuEvents, Builder, Layout)
 class Menu extends Box {
