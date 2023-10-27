@@ -1677,6 +1677,15 @@ class Component extends ComponentImpl
         return list;
     }
 
+    public var namedComponentsMap(get, null):Map<String, Component>;
+    private function get_namedComponentsMap():Map<String, Component> {
+        var map = new Map<String, Component>();
+        for (c in namedComponents) {
+            map.set(c.id, c);
+        }
+        return map;
+    }
+
     /**
      * Adds multiple components from `parent`, which name can be found in `list`.
      * 
