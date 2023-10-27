@@ -6,6 +6,7 @@ import haxe.ui.containers.menus.MenuItem;
 import haxe.ui.containers.menus.MenuSeparator;
 import haxe.ui.core.Component;
 import haxe.ui.data.DataSource;
+import haxe.ui.events.MenuEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.util.Variant;
 
