@@ -1,8 +1,6 @@
 package haxe.ui;
 
 #if !macro
-import haxe.ui.core.InteractiveComponent;
-import haxe.ui.parsers.ui.ValidatorInfo;
 import haxe.ui.Toolkit;
 import haxe.ui.components.Button;
 import haxe.ui.components.Image;
@@ -11,11 +9,13 @@ import haxe.ui.core.ComponentClassMap;
 import haxe.ui.core.ComponentFieldMap;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.IDirectionalComponent;
+import haxe.ui.core.InteractiveComponent;
 import haxe.ui.layouts.Layout;
 import haxe.ui.layouts.LayoutFactory;
 import haxe.ui.parsers.ui.ComponentInfo;
 import haxe.ui.parsers.ui.ComponentParser;
 import haxe.ui.parsers.ui.LayoutInfo;
+import haxe.ui.parsers.ui.ValidatorInfo;
 import haxe.ui.parsers.ui.resolvers.AssetResourceResolver;
 import haxe.ui.parsers.ui.resolvers.ResourceResolver;
 import haxe.ui.util.SimpleExpressionEvaluator;
@@ -44,7 +44,7 @@ class RuntimeComponentBuilder {
         return fromString(data, null, new AssetResourceResolver(assetId));
     }
     
-    public static function fromString(data:String, type:String = null, resourceResolver:ResourceResolver = null, callback:Component->Void = null):Component {
+    public static function fromString(data:String, type:String = null, resourceResolver:ResourceResolver = null):Component {
         if (data == null || data.length == 0) {
             return null;
         }
@@ -67,7 +67,7 @@ class RuntimeComponentBuilder {
                 Toolkit.styleSheet.parse(style.style);
             }
         }
-        var component = buildComponentFromInfo(c, callback);
+        var component = buildComponentFromInfo(c);
 
         var fullScript = "";
         for (scriptString in c.scriptlets) {
@@ -79,7 +79,7 @@ class RuntimeComponentBuilder {
         return component;
     }
     
-    private static function buildComponentFromInfo(c:ComponentInfo, callback:Component->Void):Component {
+    private static function buildComponentFromInfo(c:ComponentInfo):Component {
         if (c.condition != null && SimpleExpressionEvaluator.evalCondition(c.condition) == false) {
             return null;
         }
@@ -172,14 +172,10 @@ class RuntimeComponentBuilder {
         }
 
         for (childInfo in c.children) {
-            var childComponent = buildComponentFromInfo(childInfo, callback);
+            var childComponent = buildComponentFromInfo(childInfo);
             if (childComponent != null) {
                 component.addComponent(childComponent);
             }
-        }
-
-        if (callback != null) {
-            callback(component);
         }
 
         return component;
