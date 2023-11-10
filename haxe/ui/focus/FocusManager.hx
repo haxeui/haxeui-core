@@ -36,12 +36,9 @@ class FocusManager extends FocusManagerImpl {
         _applicators.push(new StyleFocusApplicator());
         //_applicators.push(new BoxFocusApplicator());
         
-        #if haxeui_focus_out_on_click
         Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
-        #end
     }
 
-    #if haxeui_focus_out_on_click
     private function onScreenMouseDown(event:MouseEvent) {
         var list = Screen.instance.findComponentsUnderPoint(event.screenX, event.screenY);
         for (l in list) {
@@ -52,7 +49,6 @@ class FocusManager extends FocusManagerImpl {
         
         focus = null;
     }
-    #end
     
     public function pushView(view:Component) {
         if (hasFocusableItem(view)) {
