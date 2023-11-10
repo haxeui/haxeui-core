@@ -319,19 +319,19 @@ class Layout implements ILayout {
 
             if (child.percentWidth == null) {
                 if (child.left < x1) {
-                    x1 = child.left;
+                    x1 = child.left - marginLeft(child) + marginRight(child);
                 }
                 if (child.componentWidth != null && child.left + child.componentWidth > x2) {
-                    x2 = child.left + child.componentWidth;
+                    x2 = child.left + child.componentWidth - marginLeft(child) + marginRight(child);
                 }
             }
 
             if (child.percentHeight == null) {
                 if (child.top < y1) {
-                    y1 = child.top;
+                    y1 = child.top - marginTop(child) + marginBottom(child);
                 }
                 if (child.componentHeight != null && child.top + child.componentHeight > y2) {
-                    y2 = child.top + child.componentHeight;
+                    y2 = child.top + child.componentHeight - marginTop(child) + marginBottom(child);
                 }
             }
         }
