@@ -21,9 +21,11 @@ class ElectronApp {
         window.loadFile('index.html');
         //window.maximize();
         //window.webContents.openDevTools();
-        window.show();
-        window.focus();
-        window.focusOnWebView();
+        window.on("ready-to-show", function() {
+            window.show();
+            window.focus();
+            window.focusOnWebView();
+        });
 
         window.setMenuBarVisibility(false);
     }
