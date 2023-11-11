@@ -15,7 +15,7 @@ class ElectronApp {
             }
         });
         window.setMenu(null);
-        window.on(closed, function() {
+        window.on("closed", function() {
             window = null;
         });
         window.loadFile('index.html');
