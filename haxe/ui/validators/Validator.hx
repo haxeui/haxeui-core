@@ -62,15 +62,15 @@ class Validator implements IValidator {
     }
 
     private function onReset(component:Component) {
-        component.removeClasses([validStyleName, invalidStyleName]);
+        component.removeClasses([validStyleName, invalidStyleName], true, true);
     }
 
     private function onValid(component:Component) {
-        component.swapClass(validStyleName, invalidStyleName);
+        component.swapClass(validStyleName, invalidStyleName, true, true);
     }
 
     private function onInvalid(component:Component) {
-        component.swapClass(invalidStyleName, validStyleName);
+        component.swapClass(invalidStyleName, validStyleName, true, true);
     }
 
     private function validateString(s:String):Null<Bool> {

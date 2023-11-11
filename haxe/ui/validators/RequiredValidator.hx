@@ -26,10 +26,10 @@ class RequiredValidator extends Validator {
     }
 
     private override function onValid(component:Component) {
-        component.removeClass(invalidStyleName);
+        component.removeClass(invalidStyleName, true, true);
     }
 
     private override function onInvalid(component:Component) {
-        component.addClass(invalidStyleName);
+        component.addClass(invalidStyleName, true, true);
     }
 }
