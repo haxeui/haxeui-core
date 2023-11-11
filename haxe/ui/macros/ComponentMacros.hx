@@ -1042,7 +1042,7 @@ class ComponentMacros {
             validatorAssignExprs.push(macro $i{validatorId});
             _nextValidatorId++;
         }
-        if (id != 0) {
+        if (id != -1) {
             for (e in validatorExprs) {
                 builder.add(e);
             }
