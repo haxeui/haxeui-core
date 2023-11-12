@@ -78,6 +78,9 @@ class TextArea extends InteractiveComponent implements IFocusable {
     **/
     @:call(ScrollToBottom)                  public function scrollToBottom();
 
+    @:clonable @:behaviour(IconBehaviour)   public var icon:String;
+    @:style(layout)                         public var iconPosition:String;
+
     //***********************************************************************************************************
     // Validation
     //***********************************************************************************************************
@@ -105,7 +108,23 @@ class TextArea extends InteractiveComponent implements IFocusable {
 //***********************************************************************************************************
 @:dox(hide) @:noCompletion
 private class TextAreaLayout extends DefaultLayout {
+    private var iconPosition(get, null):String;
+    private function get_iconPosition():String {
+        if (component.style.iconPosition == null) {
+            return "left";
+        }
+        return component.style.iconPosition;
+    }
+
     private override function repositionChildren() {
+        var decorator = findComponent(Decorator);
+        var decoratorWidth:Float = 0;
+        if (decorator != null) {
+            decorator.left = _component.width - decorator.width - borderSize;
+            decorator.top = borderSize;
+            decoratorWidth = decorator.width;
+        }
+
         var hscroll:Component = component.findComponent(HorizontalScroll, false);
         var vscroll:Component = component.findComponent(VerticalScroll, false);
 
@@ -117,19 +136,48 @@ private class TextAreaLayout extends DefaultLayout {
             hscroll.top = ucy - hscroll.componentHeight + paddingBottom;
         }
 
+        var vscrollWidth:Float = 0;
         if (vscroll != null && hidden(vscroll) == false) {
-            vscroll.left = ucx - vscroll.componentWidth + paddingRight + paddingLeft - borderSize;
+            vscroll.left = ucx - vscroll.componentWidth + paddingRight + paddingLeft - borderSize - decoratorWidth;
             vscroll.top = borderSize;
+            vscrollWidth = vscroll.componentWidth;
+        }
+
+        var icon:Image = component.findComponent(Image, false);
+        var xpos:Float = paddingLeft;
+        if (icon != null) {
+            switch (iconPosition) {
+                case "left":
+                    icon.left = xpos + 3;
+                    icon.top = (component.componentHeight / 2) - (icon.componentHeight / 2);
+                    xpos += icon.componentWidth + horizontalSpacing;
+                case "right":
+                    icon.left = component.componentWidth - icon.componentWidth - paddingRight - 3 - vscrollWidth - decoratorWidth;
+                    icon.top = (component.componentHeight / 2) - (icon.componentHeight / 2);
+            }
         }
 
         if (component.hasTextInput() == true) {
-            component.getTextInput().left = paddingLeft + 2;
+            component.getTextInput().left = xpos + 2;
             component.getTextInput().top = paddingTop + 2;
         }
     }
 
     private override function resizeChildren() {
         //super.resizeChildren();
+
+        var offset:Float = 0;
+        var decorator = findComponent(Decorator);
+        if (decorator != null) {
+            var cy = _component.height - (borderSize * 2);
+            decorator.height = cy;
+            offset += decorator.width;
+        }
+
+        var icon:Image = component.findComponent(Image, false);
+        if (icon != null) {
+            offset += icon.width;
+        }
 
         var hscroll:Component = component.findComponent(HorizontalScroll, false);
         var vscroll:Component = component.findComponent(VerticalScroll, false);
@@ -141,15 +189,13 @@ private class TextAreaLayout extends DefaultLayout {
 
         if (vscroll != null && hidden(vscroll) == false) {
             vscroll.height = usableSize.height - ((borderSize) * 2) + paddingTop + paddingBottom;
+            offset += vscroll.width;
         }
 
         if (component.hasTextInput() == true) {
             var size:Size = usableSize;
-            #if !pixijs
-            component.getTextInput().width = size.width - 4 - ((borderSize - 1) * 2);
-            component.getTextInput().height = size.height - 4 - ((borderSize - 1) * 2);
-            #end
-
+            component.getTextInput().width = size.width - 0 - ((borderSize - 1) * 2) - offset;
+            component.getTextInput().height = size.height - 0 - ((borderSize - 1) * 2);
         }
     }
 
@@ -245,6 +291,26 @@ private class ScrollToBottom extends Behaviour {
             vscroll.pos = vscroll.max;
         }
         return null;
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class IconBehaviour extends DataBehaviour {
+    public override function validateData() {
+        var textarea:TextArea = cast(_component, TextArea);
+        var icon:Image = textarea.findComponent(Image, false);
+        if ((_value == null || _value.isNull) && icon != null) {
+            textarea.removeComponent(icon);
+        } else {
+            if (icon == null) {
+                icon = new Image();
+                icon.id = "textarea-icon";
+                icon.addClass("icon");
+                icon.scriptAccess = false;
+                textarea.addComponentAt(icon, 0);
+            }
+            icon.resource = _value.toString();
+        }
     }
 }
 

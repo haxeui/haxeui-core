@@ -65,12 +65,15 @@
     color: $normal-text-color;
     border: 1px solid $normal-border-color;
     border-radius: 2px;
-    padding: 1px;
+    padding: 2px 5px;
+    padding-bottom: 4px;
     filter: $normal-inner-shadow;
     background-color: $tertiary-background-color;
     initial-width: 150px;
     initial-height: 100px;
     content-type: auto;
+    icon-position: right;
+    spacing: 5px;
 }
 
 .textarea.required-value {
@@ -99,4 +102,19 @@
 .textarea:disabled {
     border-color: $disabled-border-color;
     color: $disabled-text-color;
+}
+
+.textarea .decorator {
+    padding: 0px 8px;
+    background: $normal-background-color-start $normal-background-color-end vertical;
+    border-radius: $normal-border-radius;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-left: $normal-border-size solid $normal-border-color;
+    include-in-layout: false;
+}
+
+.textarea .decorator .image {
+    vertical-align:center;
+    margin-top: -1px;
 }

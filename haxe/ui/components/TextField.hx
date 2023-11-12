@@ -104,6 +104,15 @@ private class TextFieldLayout extends DefaultLayout {
     private override function repositionChildren() {
         var icon:Image = component.findComponent(Image, false);
         var xpos:Float = paddingLeft;
+
+        var decorator = findComponent(Decorator);
+        var decoratorWidth:Float = 0;
+        if (decorator != null) {
+            decorator.left = _component.width - decorator.width - borderSize;
+            decorator.top = borderSize;
+            decoratorWidth = decorator.width;
+        }
+
         if (icon != null) {
             switch (iconPosition) {
                 case "left":
@@ -111,15 +120,9 @@ private class TextFieldLayout extends DefaultLayout {
                     icon.top = (component.componentHeight / 2) - (icon.componentHeight / 2);
                     xpos += icon.componentWidth + horizontalSpacing;
                 case "right":
-                    icon.left = component.componentWidth - icon.componentWidth - paddingRight;
+                    icon.left = component.componentWidth - icon.componentWidth - paddingRight - decoratorWidth;
                     icon.top = (component.componentHeight / 2) - (icon.componentHeight / 2);
             }
-        }
-
-        var decorator = findComponent(Decorator);
-        if (decorator != null) {
-            decorator.left = _component.width - decorator.width - borderSize;
-            decorator.top = borderSize;
         }
 
         if (component.hasTextInput() == true) {
