@@ -118,8 +118,8 @@ private class TextAreaLayout extends DefaultLayout {
         }
 
         if (vscroll != null && hidden(vscroll) == false) {
-            vscroll.left = ucx - vscroll.componentWidth + paddingRight;
-            vscroll.top = paddingTop;
+            vscroll.left = ucx - vscroll.componentWidth + paddingRight + paddingLeft - borderSize;
+            vscroll.top = paddingTop + borderSize - 1;
         }
 
         if (component.hasTextInput() == true) {
@@ -129,7 +129,7 @@ private class TextAreaLayout extends DefaultLayout {
     }
 
     private override function resizeChildren() {
-        super.resizeChildren();
+        //super.resizeChildren();
 
         var hscroll:Component = component.findComponent(HorizontalScroll, false);
         var vscroll:Component = component.findComponent(VerticalScroll, false);
@@ -140,14 +140,14 @@ private class TextAreaLayout extends DefaultLayout {
         }
 
         if (vscroll != null && hidden(vscroll) == false) {
-            vscroll.height = usableSize.height;
+            vscroll.height = usableSize.height - ((borderSize - 1) * 2);
         }
 
         if (component.hasTextInput() == true) {
             var size:Size = usableSize;
             #if !pixijs
-            component.getTextInput().width = size.width - 4;
-            component.getTextInput().height = size.height - 4;
+            component.getTextInput().width = size.width - 4 - ((borderSize - 1) * 2);
+            component.getTextInput().height = size.height - 4 - ((borderSize - 1) * 2);
             #end
 
         }
