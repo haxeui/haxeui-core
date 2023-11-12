@@ -119,7 +119,7 @@ private class TextAreaLayout extends DefaultLayout {
 
         if (vscroll != null && hidden(vscroll) == false) {
             vscroll.left = ucx - vscroll.componentWidth + paddingRight + paddingLeft - borderSize;
-            vscroll.top = paddingTop + borderSize - 1;
+            vscroll.top = borderSize;
         }
 
         if (component.hasTextInput() == true) {
@@ -140,7 +140,7 @@ private class TextAreaLayout extends DefaultLayout {
         }
 
         if (vscroll != null && hidden(vscroll) == false) {
-            vscroll.height = usableSize.height - ((borderSize - 1) * 2);
+            vscroll.height = usableSize.height - ((borderSize) * 2) + paddingTop + paddingBottom;
         }
 
         if (component.hasTextInput() == true) {
