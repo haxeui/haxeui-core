@@ -78,6 +78,7 @@ class TextField extends InteractiveComponent {
      * If no icon is set, the text field will be displayed without any icon. The default is no icon.
      */
     @:clonable @:behaviour(IconBehaviour)                   public var icon:String;
+    @:style(layout)                                         public var iconPosition:String;
     
     /**
      * The (zero based) position of the caret within the textfield
