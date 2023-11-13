@@ -3,6 +3,9 @@ package haxe.ui.data;
 import haxe.ui.constants.SortDirection;
 import haxe.ui.data.transformation.IItemTransformer;
 
+#if haxeui_expose_all
+@:expose
+#end
 class ArrayDataSource<T> extends DataSource<T> {
     private var _array:Array<T>;
 
