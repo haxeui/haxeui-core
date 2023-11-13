@@ -382,6 +382,13 @@ class ClassBuilder {
         return r;
     }
 
+    public function addMeta(name:String, params:Array<Expr> = null) {
+        if (params == null) {
+            params = [];
+        }
+        classType.meta.add(name, params, pos);
+    }
+
     public function getClassMeta(name:String, index:Int = 0):MetadataEntry {
         if (hasClassMeta([name]) == false) {
             throw 'Meta not found: ${name}';
