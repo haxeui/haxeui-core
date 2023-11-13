@@ -64,6 +64,10 @@ class Macros {
     
     macro static function build():Array<Field> {
         var builder = new ClassBuilder(Context.getBuildFields(), Context.getLocalType(), Context.currentPos());
+        #if haxeui_expose_all
+        builder.addMeta(":expose");
+        #end
+
         #if macro_times_verbose
         var stopComponentTimer = Context.timer(builder.fullPath);
         #end
