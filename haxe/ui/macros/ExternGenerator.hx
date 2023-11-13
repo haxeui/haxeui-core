@@ -1,5 +1,6 @@
 package haxe.ui.macros;
 
+import haxe.macro.Context;
 import haxe.macro.TypeTools;
 import sys.io.File;
 import sys.FileSystem;
@@ -41,21 +42,6 @@ class ExternGenerator {
     private static function generateComponentExterns(types:Array<Type>) {
         for (t in types) {
             var classInfo = new ClassBuilder(t);
-            /*
-            if (classInfo.hasSuperClass("haxe.ui.backend.ComponentBase")) {
-                switch (t) {
-                    case TInst(classType, params):
-                        generateExtern(classType.get());
-                    case _:
-                }
-            } else if (classInfo.hasSuperClass("haxe.ui.backend.EventImpl")) {
-                switch (t) {
-                    case TInst(classType, params):
-                        generateExtern(classType.get());
-                    case _:
-                }
-            }
-            */
             switch (t) {
                 case TInst(classType, params):
                     if (classType.toString().startsWith("haxe.ui")) {
@@ -82,6 +68,81 @@ class ExternGenerator {
         writeEmptyClass("haxe.ui.backend.ComponentSurface");
         writeEmptyClass("haxe.ui.backend.EventImpl");
         */
+        // were going to copy the originals here so macros will work with the externs
+        copyOriginals("haxe.ui.macros");
+        copyOriginals("haxe.ui.parsers");
+        copyOriginal("haxe.ui.core.ComponentClassMap");
+        copyOriginal("haxe.ui.core.ComponentFieldMap");
+        copyOriginal("haxe.ui.core.TypeMap");
+        copyOriginal("haxe.ui.util.EventInfo");
+        copyOriginal("haxe.ui.util.StringUtil");
+        copyOriginal("haxe.ui.util.TypeConverter");
+        copyOriginal("haxe.ui.util.SimpleExpressionEvaluator");
+        copyOriginal("haxe.ui.util.RTTI");
+        copyOriginal("haxe.ui.util.ExpressionUtil");
+        copyOriginal("haxe.ui.util.Defines");
+        copyOriginal("haxe.ui.util.GenericConfig");
+        copyOriginal("haxe.ui.Backend");
+        copyBackendOriginal("haxe.ui.backend.BackendImpl");
+        copyOriginal("haxe.ui.layouts.LayoutFactory");
+        copyOriginal("haxe.ui.data.DataSourceFactory");
+
+        var moduleSourcePath = Path.normalize(rootDir() + "/haxe/ui/module.xml");
+        var moduleDestPath = Path.normalize(outputPath + "/haxe/ui/module.xml");
+        File.copy(moduleSourcePath, moduleDestPath);
+    }
+
+    private static function rootDir():String {
+        var root = Path.normalize(Context.resolvePath("haxe/ui/Toolkit.hx"));
+        var parts = root.split("/");
+        parts.pop();
+        parts.pop();
+        parts.pop();
+        return Path.normalize(parts.join("/"));
+    }
+
+    private static function backendRootDir():String {
+        var root = Path.normalize(Context.resolvePath("haxe/ui/backend/ToolkitOptions.hx"));
+        var parts = root.split("/");
+        parts.pop();
+        parts.pop();
+        parts.pop();
+        parts.pop();
+        return Path.normalize(parts.join("/"));
+    }
+
+    private static function copyOriginals(pkg:String) {
+        var fullSourcePath = Path.normalize(rootDir() + "/" + pkg.replace(".", "/"));
+        var fullDestPath = Path.normalize(outputPath + "/" + pkg.replace(".", "/"));
+        copyDir(fullSourcePath, fullDestPath);
+    }
+
+    private static function copyOriginal(className:String) {
+        var fullSourcePath = Path.normalize(rootDir() + "/" + className.replace(".", "/") + ".hx");
+        var fullDestPath = Path.normalize(outputPath + "/" + className.replace(".", "/") + ".hx");
+        File.copy(fullSourcePath, fullDestPath);
+    }
+
+    private static function copyBackendOriginal(className:String) {
+        var fullSourcePath = Path.normalize(backendRootDir() + "/" + className.replace(".", "/") + ".hx");
+        var fullDestPath = Path.normalize(outputPath + "/" + className.replace(".", "/") + ".hx");
+        File.copy(fullSourcePath, fullDestPath);
+    }
+
+    public static function copyDir(source:String, dest:String) {
+        if (!FileSystem.exists(dest)) {
+            FileSystem.createDirectory(dest);
+        }
+        var contents = FileSystem.readDirectory(source);
+        for (item in contents) {
+            var fullSourcePath = Path.normalize(source + "/" + item);
+            var fullDestPath = Path.normalize(dest + "/" + item);
+            if (FileSystem.isDirectory(fullSourcePath)) {
+                copyDir(fullSourcePath, fullDestPath);
+            } else {
+                File.copy(fullSourcePath, fullDestPath);
+            }
+        }
     }
 
     private static function generateExternClass(classType:ClassType) {
@@ -93,6 +154,11 @@ class ExternGenerator {
         sb.add('package ');
         sb.add(classType.pack.join("."));
         sb.add(';\n\n');
+
+        if (fullName == "haxe.ui.backend.ComponentBase") {
+            sb.add('@:build(haxe.ui.macros.Macros.build())\n');
+            sb.add('@:autoBuild(haxe.ui.macros.Macros.build())\n');
+        }
 
         sb.add('extern class ');
         sb.add(classType.name);
@@ -114,6 +180,16 @@ class ExternGenerator {
         if (classType.superClass != null) {
             sb.add(' extends ');
             sb.add(classType.superClass.t.toString());
+            var superClass = classType.superClass.t.get();
+            if (superClass.params != null && superClass.params.length > 0) {
+                sb.add('<');
+                var ps = [];
+                for (p in superClass.params) {
+                    ps.push(p.name);
+                }
+                sb.add(ps.join(", "));
+                sb.add('>');
+            }
         }
 
         sb.add(' {\n');
@@ -124,21 +200,6 @@ class ExternGenerator {
             sb.add('function ');
             sb.add('new');
             sb.add('(');
-            /*
-            switch (classType.constructor.get().kind) {
-                case TFun(args, ret):
-                    var argList = [];
-                    for (a in args) {
-                        if (a.opt) {
-                            argList.push("?" + a.name + ":" + TypeTools.toString(a.t).replace(f.name + ".", "").replace(fullName + ".", ""));
-                        } else {
-                            argList.push(a.name + ":" + TypeTools.toString(a.t).replace(f.name + ".", "").replace(fullName + ".", ""));
-                        }
-                    }
-                    sb.add(argList.join(", "));
-                case _:
-            }
-            */
             sb.add(')');
             sb.add(';');
             sb.add('\n\n');
@@ -263,20 +324,6 @@ class ExternGenerator {
                         case _:
                             trace(f.type);
                     }
-                    /*
-                    switch (f.type) {
-                        case _:
-                            if (f.name == "cloneComponent")
-                            trace(f.type);
-                    }
-                    //sb.add(TypeTools.toString(f.type));
-                    */
-
-                    /*
-                    if (f.name == "cloneComponent") {
-                        trace(f);
-                    }
-                    */
                     sb.add(";");
                     sb.add("\n\n");
                 case _:
@@ -287,7 +334,6 @@ class ExternGenerator {
         sb.add('}\n');
 
         var filename = buildFileNameForExternClass(classType);
-        //trace(">>>>>>>>>>> ", filename);
         writeFile(filename, sb);
     }
 
