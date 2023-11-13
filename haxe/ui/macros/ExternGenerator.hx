@@ -86,6 +86,7 @@ class ExternGenerator {
         copyBackendOriginal("haxe.ui.backend.BackendImpl");
         copyOriginal("haxe.ui.layouts.LayoutFactory");
         copyOriginal("haxe.ui.data.DataSourceFactory");
+        copyOriginals("haxe.ui.constants");
 
         var moduleSourcePath = Path.normalize(rootDir() + "/haxe/ui/module.xml");
         var moduleDestPath = Path.normalize(outputPath + "/haxe/ui/module.xml");
@@ -160,7 +161,11 @@ class ExternGenerator {
             sb.add('@:autoBuild(haxe.ui.macros.Macros.build())\n');
         }
 
-        sb.add('extern class ');
+        if (classType.isInterface) {
+            sb.add('interface ');
+        } else {
+            sb.add('extern class ');
+        }
         sb.add(classType.name);
         if (classType.params != null && classType.params.length > 0) {
             sb.add('<');
@@ -192,6 +197,18 @@ class ExternGenerator {
             }
         }
 
+        if (classType.interfaces != null && classType.interfaces.length > 0) {
+            for (i in classType.interfaces) {
+                sb.add(' implements ');
+                sb.add(i.t.toString());
+                if (i.t.toString() == "haxe.ui.core.IClonable") {
+                    sb.add('<');
+                    sb.add(fullName);
+                    sb.add('>');
+                }
+            }
+        }
+
         sb.add(' {\n');
 
         if (classType.constructor != null) {
@@ -219,21 +236,24 @@ class ExternGenerator {
                     sb.add(TypeTools.toString(f.type));
                     sb.add(';\n');
 
-                    sb.add('    ');
-                    sb.add('private function get_');
-                    sb.add(f.name);
-                    sb.add('():');
-                    sb.add(TypeTools.toString(f.type));
-                    sb.add(';\n');
+                    if (!classType.isInterface) {
+                        sb.add('    ');
+                        sb.add('private function get_');
+                        sb.add(f.name);
+                        sb.add('():');
+                        sb.add(TypeTools.toString(f.type));
+                        sb.add(';\n');
 
-                    sb.add('    ');
-                    sb.add('private function set_');
-                    sb.add(f.name);
-                    sb.add('(value:');
-                    sb.add(TypeTools.toString(f.type));
-                    sb.add('):');
-                    sb.add(TypeTools.toString(f.type));
-                    sb.add(';\n');
+                        sb.add('    ');
+                        sb.add('private function set_');
+                        sb.add(f.name);
+                        sb.add('(value:');
+                        sb.add(TypeTools.toString(f.type));
+                        sb.add('):');
+                        sb.add(TypeTools.toString(f.type));
+                        sb.add(';\n');
+                    }
+
 
                     sb.add("\n");
                     
@@ -253,14 +273,16 @@ class ExternGenerator {
                     sb.add(TypeTools.toString(f.type));
                     sb.add(';\n');
 
-                    sb.add('    ');
-                    sb.add('private function set_');
-                    sb.add(f.name);
-                    sb.add('(value:');
-                    sb.add(TypeTools.toString(f.type));
-                    sb.add('):');
-                    sb.add(TypeTools.toString(f.type));
-                    sb.add(';\n');
+                    if (!classType.isInterface) {
+                        sb.add('    ');
+                        sb.add('private function set_');
+                        sb.add(f.name);
+                        sb.add('(value:');
+                        sb.add(TypeTools.toString(f.type));
+                        sb.add('):');
+                        sb.add(TypeTools.toString(f.type));
+                        sb.add(';\n');
+                    }
 
                     sb.add("\n");
 
@@ -272,19 +294,25 @@ class ExternGenerator {
                     sb.add(TypeTools.toString(f.type));
                     sb.add(';\n');
 
-                    sb.add('    ');
-                    sb.add('private function get_');
-                    sb.add(f.name);
-                    sb.add('():');
-                    sb.add(TypeTools.toString(f.type));
-                    sb.add(';\n');
+                    if (!classType.isInterface) {
+                        sb.add('    ');
+                        sb.add('private function get_');
+                        sb.add(f.name);
+                        sb.add('():');
+                        sb.add(TypeTools.toString(f.type));
+                        sb.add(';\n');
+                    }
 
                     sb.add("\n");
 
                 case FMethod(k):    
                     //trace("    method", f.name);
                     sb.add('    ');
-                    sb.add('public ');
+                    if (classType.isInterface && (f.name.startsWith("get_") || f.name.startsWith("set_"))) {
+                        sb.add('private ');
+                    } else {
+                        sb.add('public ');
+                    }
                     sb.add('function ');
                     sb.add(f.name);
                     if (f.params != null && f.params.length > 0) {
