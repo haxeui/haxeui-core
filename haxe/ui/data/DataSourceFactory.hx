@@ -32,6 +32,24 @@ class DataSourceFactory<T> {
         return ds;
     }
 
+    public function fromStringToArray<T>(data:String):Array<T> {
+        var array:Array<T> = [];
+        if (StringTools.startsWith(data, "<")) { // xml
+            var xml:Xml = Xml.parse(data).firstElement();
+            for (el in xml.elements()) {
+                var o:Dynamic = xml2Object(el);
+                array.push(o);
+            }
+        } else if (StringTools.startsWith(data, "[")) { // json array
+            var json:Array<Dynamic> = Json.parse(StringTools.replace(data, "'", "\""));
+            for (o in json) {
+                array.push(o);
+            }
+        }
+
+        return array;
+    }
+
     private function xml2Object(el:Xml, addId:Bool = true):Dynamic {
         var o = {};
 

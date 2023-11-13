@@ -957,10 +957,9 @@ class ComponentMacros {
     }
 
     private static function buildDataSourceCode(builder:CodeBuilder, c:ComponentInfo, dsVarName:String, componentVarName:String) {
-        var ds = new haxe.ui.data.DataSourceFactory<Dynamic>().fromString(c.dataString, haxe.ui.data.ArrayDataSource);
+        var items = new haxe.ui.data.DataSourceFactory<Dynamic>().fromStringToArray(c.dataString);
         builder.add(macro var $dsVarName = new haxe.ui.data.ArrayDataSource<Dynamic>());
-        for (i in 0...ds.size) {
-            var item = ds.get(i);
+        for (item in items) {
             var hasExpression:Bool = false;
             // lets first find out if any of the items are expressions
             for (f in Reflect.fields(item)) {
