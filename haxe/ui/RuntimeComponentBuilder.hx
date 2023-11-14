@@ -232,6 +232,6 @@ class RuntimeComponentBuilder {
 
 #if !macro
 interface IComponentDelegate {
-    public var component(get, null):haxe.ui.core.Component;
+    public var component(get, set):haxe.ui.core.Component;
 }
 #end
