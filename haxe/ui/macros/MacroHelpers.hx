@@ -102,8 +102,10 @@ class MacroHelpers {
                 for (file in files) {
                     if (StringTools.endsWith(file, ".hx") && !StringTools.startsWith(file, ".")) {
                         var name:String = file.substr(0, file.length - 3);
-                        var temp:Array<haxe.macro.Type> = Context.getModule(pack + "." + name);
-                        types = types.concat(temp);
+                        try {
+                            var temp:Array<haxe.macro.Type> = Context.getModule(pack + "." + name);
+                            types = types.concat(temp);
+                        } catch (e:Dynamic) { }
                     }
                 }
             }
