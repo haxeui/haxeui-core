@@ -145,6 +145,11 @@ class ModuleMacros {
                                 builder.add(macro
                                     haxe.ui.core.ComponentClassMap.register($v{classInfo.name}, $v{fullPath})
                                 );
+                            } else if (classInfo.hasInterface("haxe.ui.IComponentDelegate")) {
+                                var fullPath = classInfo.fullPath;
+                                builder.add(macro
+                                    haxe.ui.core.ComponentClassMap.register($v{classInfo.name}, $v{fullPath})
+                                );
                             }
                         }
                     }
