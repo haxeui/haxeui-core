@@ -91,9 +91,19 @@ class RuntimeComponentBuilder {
         }
 
         var tempComponent:Component = Type.createEmptyInstance(Type.resolveClass(className));
+        var isDelegate = false;
         if (tempComponent == null) {
-            trace("WARNING: could not create class instance: " + className);
-            return null;
+            var tempComponent2 = Type.createEmptyInstance(Type.resolveClass(className));
+            // "delegate components" are a way of deferring creation of the component to wrapper class
+            // this can be useful to allow runtime components to _not_ have to extend from Component
+            // but still be used in xml layouts and such (like UI fragmenets) providing the class can
+            // be found (and created) in the ComponentClassMap
+            if ((tempComponent2 is IComponentDelegate)) {
+                isDelegate = true;
+            } else {
+                trace("WARNING: could not create class instance: " + className);
+                return null;
+            }
         }
         
         var component:Component = null;
@@ -117,6 +127,9 @@ class RuntimeComponentBuilder {
                     return null;
                 }
             }
+        } else if (isDelegate) {
+            var componentDelegate:IComponentDelegate = Type.createInstance(Type.resolveClass(className), []);
+            component = componentDelegate.component;
         }
         if (component == null) {
             component = Type.createInstance(Type.resolveClass(className), []);
@@ -216,3 +229,9 @@ class RuntimeComponentBuilder {
     }
     #end
 }
+
+#if !macro
+interface IComponentDelegate {
+    public var component(get, null):haxe.ui.core.Component;
+}
+#end
