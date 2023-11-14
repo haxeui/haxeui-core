@@ -19,6 +19,14 @@ class ComponentClassMap {
         instance.registerClassName(alias.toLowerCase(), className);
     }
 
+    public static function registerClass(cls:Class<Any>, alias:String = null) {
+        var className = Type.getClassName(cls);
+        if (alias == null) {
+            alias = className.split(".").pop().toLowerCase();
+        }
+        instance.registerClassName(alias.toLowerCase(), className);
+    }
+
     public static function list():Iterator<String> {
         instance.load();
         return instance._map.keys();
