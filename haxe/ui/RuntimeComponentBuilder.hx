@@ -1,5 +1,6 @@
 package haxe.ui;
 
+import haxe.ui.util.RTTI;
 #if !macro
 import haxe.ui.Toolkit;
 import haxe.ui.components.Button;
@@ -164,12 +165,13 @@ class RuntimeComponentBuilder {
             if (StringTools.startsWith(propName, "on")) {
                 //component.addScriptEvent(propName, propValue);
             } else {
-                // TODO: weirdly, for Images (also icons) setProperty doesnt work correctly - or the behaviour...... misbehaves
-                if (propName == "resource" && (component is Image)) {
-                    cast(component, Image).resource = Variant.fromDynamic(propValue);
-                } else if (propName == "icon" && (component is Button)) {
-                    cast(component, Button).icon = Variant.fromDynamic(propValue);
-                } else {
+                var propInfo = RTTI.getClassProperty(Type.getClassName(Type.getClass(component)), propName);
+                // if the property is a variant, we'll need to make sure (explicity) that it is a converted
+                // since the abstract wont exist at runtime, so it wont have the from, to, etc
+                if (propInfo != null && propInfo.propertyType == "variant") {
+                    propValue = Variant.fromDynamic(propValue);
+                    Reflect.setProperty(component, propName, propValue);
+            } else {
                     propValue = TypeConverter.convertFrom(propValue);
                     Reflect.setProperty(component, propName, propValue);
                 }
