@@ -93,6 +93,11 @@
 .property-group .checkbox {
     padding: 5px;
     padding-left: 4px;
+    width: auto;
+    horizontal-align: center;
+}
+
+.property-group .checkbox .checkbox-value {
 }
 
 .property-group .number-stepper {
