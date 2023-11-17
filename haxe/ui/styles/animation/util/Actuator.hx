@@ -1,14 +1,14 @@
 package haxe.ui.styles.animation.util;
 
-import haxe.ui.util.MathUtil;
 import haxe.ui.core.Component;
 import haxe.ui.core.TypeMap;
 import haxe.ui.styles.EasingFunction;
 import haxe.ui.util.Color;
+import haxe.ui.util.MathUtil;
 import haxe.ui.util.StringUtil;
 import haxe.ui.util.StyleUtil;
-import haxe.ui.util.Variant;
 import haxe.ui.util.Variant.VariantType;
+import haxe.ui.util.Variant;
 
 @:structInit
 class ActuatorOptions {

@@ -1,10 +1,10 @@
 package haxe.ui.styles.animation;
 
-import haxe.ui.constants.AnimationFillMode;
 import haxe.ui.constants.AnimationDirection;
-import haxe.ui.util.StyleUtil;
+import haxe.ui.constants.AnimationFillMode;
 import haxe.ui.styles.EasingFunction;
 import haxe.ui.styles.elements.AnimationKeyFrames;
+import haxe.ui.util.StyleUtil;
 
 @:structInit
 class AnimationOptions {
