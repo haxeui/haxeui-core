@@ -284,7 +284,7 @@ private class Layout extends DefaultLayout {
     public override function calcAutoSize(exclusions:Array<Component> = null):Size {
         var label = findComponent("frame-title", Label, false);
         var size = super.calcAutoSize(exclusions);
-        size.height += label.height / 2;
+        size.height += label.height;
         size.width -= paddingLeft;
         if (label != null && label.width > size.width) {
             var contents = findComponent("frame-contents", Box, false);
