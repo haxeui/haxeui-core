@@ -1,7 +1,8 @@
 .frame {
-    padding-left: 10px;
     width: auto;
     height: auto;
+    padding: 0px;
+    horizontal-spacing: 3px;
 }
 
 .frame-border {
@@ -18,7 +19,6 @@
 
 .frame-contents {
     padding: 10px;
-    padding-top: 15px;
 }
 
 .frame-title {
@@ -28,6 +28,10 @@
 
 .frame-title:disabled {
     color: $disabled-text-color;
+}
+
+.frame-left-line {
+    width: 10px;
 }
 
 .frame-left-line, .frame-right-line {
@@ -48,32 +52,15 @@
     spacing: 5px;
 }
 
-.frame.left-header .frame-header {
-    horizontal-align: left;
-    vertical-align: center;
-    margin-right: 10px;
-    margin-left: 10px;
-    spacing: 5px;
-    padding-right: 5px;
-}
-
-.frame.collapsible .frame-header {
-    horizontal-align: left;
-    vertical-align: center;
-    _margin-right: 10px;
-    margin-left: 10px;
-    padding-right: 0px;
-}
-
-.frame.collapsible .frame-title, .frame.collapsible .frame-icon {
+.frame.collapsible-frame .frame-title, .frame.collapsible-frame .frame-icon {
     pointer-events: true;
 }
 
-.frame.collapsible .frame-contents.expanded, .frame.collapsible .frame-border.expanded {
+.frame.collapsible-frame .frame-contents.expanded, .frame.collapsible-frame .frame-border.expanded {
     hidden: false;
 }
 
-.frame.collapsible .frame-contents.collapsed, .frame.collapsible .frame-border.collapsed {
+.frame.collapsible-frame .frame-contents.collapsed, .frame.collapsible-frame .frame-border.collapsed {
     hidden: true;
 }
 

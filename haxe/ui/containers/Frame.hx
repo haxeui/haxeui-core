@@ -141,10 +141,11 @@ private class Builder extends CompositeBuilder {
     }
 
     public function addCollapsibleHeader() {
-        _component.addClass("collapsible");
+        _component.addClass("collapsible-frame");
         var header = _component.findComponent("frame-header", Header);
         if (header == null) {
             header = new Header();
+            header.includeInLayout = false;
             _component.addComponent(header);
         }
         var collapseExpandIcon = header.findComponent("frame-collapse-expand-icon", Image);
@@ -210,8 +211,8 @@ private class Layout extends DefaultLayout {
         var line1 = findComponent("frame-left-line", Component, false);
         var line2 = findComponent("frame-right-line", Component, false);
 
-        border.width = _component.width;
-        border.height = _component.height - (label.height / 2);
+        border.width = _component.width - paddingLeft - paddingRight;
+        border.height = _component.height - paddingTop - paddingBottom - (label.height / 2);
 
         if (_component.autoWidth == false) {
             contents.width = border.width;
@@ -219,26 +220,19 @@ private class Layout extends DefaultLayout {
         if (_component.autoHeight == false) {    
             contents.height = border.height;
         }
-        var offset:Float = 2;
-        #if haxeui_openfl
-        offset = 0;
-        #end
 
-        var titleOffset:Float = 0;
+        var labelOffsetLeft:Float = 0;
         var frameHeader = findComponent("frame-header", Header, false);
         if (frameHeader != null) {
-            switch (frameHeader.horizontalAlign) {
-                case "left":
-                    titleOffset = frameHeader.width;
-            }
+            labelOffsetLeft += frameHeader.width - horizontalSpacing;
         }
 
-        line1.width = paddingLeft - offset;
-        var cx = label.width;
+        var headerWidth = label.width;
         if (icon != null) {
-            cx += icon.width + horizontalSpacing;
+            labelOffsetLeft += horizontalSpacing;
+            headerWidth += labelOffsetLeft + icon.width + horizontalSpacing;
         }
-        line2.width = _component.width - (paddingLeft + cx) - offset - titleOffset;
+        line2.width = _component.width - paddingLeft - paddingRight - headerWidth - line1.width;
     }
 
     public override function repositionChildren() {
@@ -249,46 +243,64 @@ private class Layout extends DefaultLayout {
         var line1 = findComponent("frame-left-line", Component, false);
         var line2 = findComponent("frame-right-line", Component, false);
 
-        var titleOffset:Float = 0;
+        border.left = paddingLeft;
+        border.top = _component.height - border.height - paddingBottom;
+
+        var labelOffsetLeft:Float = 0;
         var frameHeader = findComponent("frame-header", Header, false);
         if (frameHeader != null) {
-            switch (frameHeader.horizontalAlign) {
-                case "left":
-                    frameHeader.left = marginLeft(frameHeader);
-                    titleOffset = frameHeader.width + marginLeft(frameHeader);
-                case "right":
-                    frameHeader.left = _component.width - frameHeader.width - marginRight(frameHeader);
-            }
-
-            switch (frameHeader.verticalAlign) {
-                case "center":
-                    frameHeader.top = (label.height / 2) - (frameHeader.height / 2);
-            }
+            frameHeader.left = labelOffsetLeft + border.left + line1.width;
+            frameHeader.top = line1.top - (frameHeader.height / 2);
+            labelOffsetLeft += frameHeader.width - horizontalSpacing;
         }
 
-        border.top = _component.height - border.height;
-        contents.top = border.top;
+        contents.left = border.left;
+        contents.top = border.top + (label.height / 2);
 
-        var x = paddingLeft + titleOffset;
+        line1.left = border.left;
+        line1.top = border.top;
+
+        line2.left = border.width - line2.width + border.left;
+        line2.top = border.top;
+
         if (icon != null) {
-            icon.top = (label.height / 2) - (icon.height / 2) - 1;
-            icon.left = paddingLeft + titleOffset - marginLeft(frameHeader);
-            x += icon.width + horizontalSpacing;
+            labelOffsetLeft += horizontalSpacing;
+            icon.left = labelOffsetLeft + border.left + line1.width;
+            icon.top = line1.top - (icon.height / 2);
+            labelOffsetLeft += icon.width + horizontalSpacing;
         }
-        label.left = x - marginLeft(frameHeader);
-        line1.top = contents.top;
-        line2.left = _component.width - line2.width;
-        line2.top = contents.top;
+
+        label.left = labelOffsetLeft + border.left + line1.width;
+        label.top = paddingTop;
     }
 
     public override function calcAutoSize(exclusions:Array<Component> = null):Size {
-        var label = findComponent("frame-title", Label, false);
         var size = super.calcAutoSize(exclusions);
-        size.height += label.height / 2;
-        size.width -= paddingLeft;
+        var label = findComponent("frame-title", Label, false);
+        size.height += label.height;
         if (label != null && label.width > size.width) {
             var contents = findComponent("frame-contents", Box, false);
-            size.width = label.width + (childPaddingLeft(contents) + childPaddingRight(contents));
+            trace(contents.width);
+            if (label.width > contents.width) {
+                size.width = label.width + paddingLeft + paddingRight;// + (childPaddingLeft(contents) + childPaddingRight(contents));
+
+                var frameHeader = findComponent("frame-header", Header, false);
+                if (frameHeader != null) {
+                    size.width += frameHeader.width;
+                }
+        
+                var icon = findComponent("frame-icon", Image, false);
+                if (icon != null) {
+                    size.width += icon.width + horizontalSpacing;
+                }
+
+                var line1 = findComponent("frame-left-line", Component, false);
+                size.width += line1.width;
+
+                size.width += (childPaddingLeft(contents) + childPaddingRight(contents));
+            } else {
+                size.width = contents.width + paddingLeft + paddingRight;
+            }    
         }
         return size;
     }
