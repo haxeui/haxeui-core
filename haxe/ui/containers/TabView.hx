@@ -419,6 +419,9 @@ private class Builder extends CompositeBuilder {
             if (child.id != null) {
                 button.id = child.id + "_button";
             }
+            if (child.styleNames != null) {
+                button.styleNames = child.styleNames;
+            }
             _tabs.addComponent(button);
 
             return child;
