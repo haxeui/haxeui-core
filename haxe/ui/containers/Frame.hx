@@ -222,12 +222,13 @@ private class Layout extends DefaultLayout {
         }
 
         var labelOffsetLeft:Float = 0;
+        var headerWidth = label.width;
         var frameHeader = findComponent("frame-header", Header, false);
         if (frameHeader != null) {
-            labelOffsetLeft += frameHeader.width - horizontalSpacing;
+            //labelOffsetLeft += -horizontalSpacing;
+            headerWidth += frameHeader.width;
         }
 
-        var headerWidth = label.width;
         if (icon != null) {
             labelOffsetLeft += horizontalSpacing;
             headerWidth += labelOffsetLeft + icon.width + horizontalSpacing;
