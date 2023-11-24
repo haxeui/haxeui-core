@@ -280,7 +280,6 @@ private class Layout extends DefaultLayout {
         size.height += label.height;
         if (label != null && label.width > size.width) {
             var contents = findComponent("frame-contents", Box, false);
-            trace(contents.width);
             if (label.width > contents.width) {
                 size.width = label.width + paddingLeft + paddingRight;// + (childPaddingLeft(contents) + childPaddingRight(contents));
 
