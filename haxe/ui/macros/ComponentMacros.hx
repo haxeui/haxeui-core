@@ -255,7 +255,9 @@ class ComponentMacros {
             var safeId:String = StringUtil.capitalizeHyphens(id);
             var varDescription = buildData.namedComponents.get(id);
             var cls:String = varDescription.type;
-            builder.addVar(safeId, TypeTools.toComplexType(Context.getType(cls)));
+            if (!builder.hasVar(safeId)) {
+                builder.addVar(safeId, TypeTools.toComplexType(Context.getType(cls)));
+            }
             codeBuilder.add(macro
                 $i{safeId} = $i{varDescription.generatedVarName}
             );
