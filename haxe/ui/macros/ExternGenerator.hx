@@ -1,5 +1,6 @@
 package haxe.ui.macros;
 
+import haxe.macro.Expr.TypeParam;
 import haxe.macro.Context;
 import haxe.macro.TypeTools;
 import sys.io.File;
@@ -7,7 +8,6 @@ import sys.FileSystem;
 import haxe.io.Path;
 import haxe.macro.ExprTools;
 import haxe.macro.Type;
-import haxe.ui.macros.helpers.ClassBuilder;
 
 using StringTools;
 
@@ -36,38 +36,53 @@ class ExternGenerator {
     }
 
     private static function onTypesGenerated(types:Array<Type>) {
-        generateComponentExterns(types);
+        generateExterns(types);
     }
 
-    private static function generateComponentExterns(types:Array<Type>) {
+    private static function useType(fullPath:String):Bool {
+        if (fullPath.startsWith("haxe.ui")) {
+            return true;
+        }
+        return false;
+    }
+
+    private static function generateExterns(types:Array<Type>) {
+        var modules:Map<String, Array<Type>> = [];
+
+        function addType(module:String, type:Type) {
+            var types = modules.get(module);
+            if (types == null) {
+                types = [];
+                modules.set(module, types);
+            }
+            types.push(type);
+        }
+
         for (t in types) {
-            var classInfo = new ClassBuilder(t);
             switch (t) {
                 case TInst(classType, params):
-                    if (classType.toString().startsWith("haxe.ui")) {
-                        generateExternClass(classType.get());
+                    if (!classType.get().isPrivate && useType(classType.toString())) {
+                        addType(classType.get().module, t);
                     }
-                case TAbstract(t, params):
-                    if (t.toString().startsWith("haxe.ui")) {
-                        generateExternAbstract(t.get());
+                case TAbstract(abstractType, params):
+                    if (!abstractType.get().isPrivate && useType(abstractType.toString())) {
+                        addType(abstractType.get().module, t);
                     }
-                case TEnum(t, params):    
-                    if (t.toString().startsWith("haxe.ui")) {
-                        generateExternEnum(t.get());
+                case TEnum(enumType, params):    
+                    if (!enumType.get().isPrivate && useType(enumType.toString())) {
+                        addType(enumType.get().module, t);
                     }
-                case TType(t, params):    
-                    if (t.toString().startsWith("haxe.ui")) {
-                        generateExternType(t.get());
-                    }
+                case TType(defType, params):    
                 case _:
                     trace("UNKNOWN: ", t);
             }
         }
 
-        /*
-        writeEmptyClass("haxe.ui.backend.ComponentSurface");
-        writeEmptyClass("haxe.ui.backend.EventImpl");
-        */
+
+        for (module in modules.keys()) {
+            generateModule(module, modules.get(module));
+        }
+
         // were going to copy the originals here so macros will work with the externs
         copyOriginals("haxe.ui.macros");
         copyOriginals("haxe.ui.parsers");
@@ -82,6 +97,7 @@ class ExternGenerator {
         copyOriginal("haxe.ui.util.ExpressionUtil");
         copyOriginal("haxe.ui.util.Defines");
         copyOriginal("haxe.ui.util.GenericConfig");
+        copyOriginal("haxe.ui.util.Variant");
         copyOriginal("haxe.ui.Backend");
         copyBackendOriginal("haxe.ui.backend.BackendImpl");
         copyOriginal("haxe.ui.layouts.LayoutFactory");
@@ -93,6 +109,479 @@ class ExternGenerator {
         File.copy(moduleSourcePath, moduleDestPath);
     }
 
+    private static function generateModule(module:String, types:Array<Type>) {
+        //trace(module);
+        var sb = new StringBuf();
+        sb.add('// generated file\n');
+        sb.add('package ');
+        sb.add(extractPackage({module: module}));
+        sb.add(';');
+        sb.add('\n\n');
+
+        for (t in types) {
+            switch (t) {
+                case TInst(classType, params):
+                    if (classType.get().isInterface) {
+                        generateInterface(classType.get(), sb);
+                    } else {
+                        generateExternClass(classType.get(), sb);
+                    }
+                case TAbstract(abstractType, params):
+                    generateAbstract(abstractType.get(), sb);
+                case TEnum(enumType, params):    
+                    generateEnum(enumType.get(), sb);
+                case TType(defType, params):    
+                case _:
+                    trace("UNKNOWN: ", t);
+            }
+        }
+
+        var filename = Path.normalize(outputPath + "/" + module.replace(".", "/") + ".hx");
+        writeFile(filename, sb);
+    }
+
+    private static function generateExternClass(classType:ClassType, sb:StringBuf) {
+        var fullName = buildFullName(classType);
+        if (fullName == "haxe.ui.backend.ComponentBase") {
+            sb.add('@:build(haxe.ui.macros.Macros.build())\n');
+            sb.add('@:autoBuild(haxe.ui.macros.Macros.build())\n');
+        }
+
+        sb.add('extern ');
+        sb.add('class ');
+        sb.add(buildName(classType));
+
+        if (classType.superClass != null) {
+            sb.add(' extends ');
+            sb.add(buildName(classType.superClass.t.get(), true));
+        }
+
+        if (classType.interfaces != null && classType.interfaces.length > 0) {
+            for (i in classType.interfaces) {
+                sb.add(' implements ');
+                sb.add(i.t.toString());
+                if (i.t.toString() == "haxe.ui.core.IClonable") {
+                    sb.add('<');
+                    sb.add(fullName);
+                    sb.add('>');
+                }
+            }
+        }
+
+        sb.add(' {');
+        sb.add('\n');
+
+        if (classType.constructor != null) {
+            generateClassField(classType, classType.constructor.get(), sb);
+        }
+        for (f in classType.fields.get()) {
+            generateClassField(classType, f, sb);
+        }
+        for (f in classType.statics.get()) {
+            generateClassField(classType, f, sb, true);
+        }
+
+        sb.add('}');
+        sb.add('\n\n');
+    }
+
+    private static function generateInterface(classType:ClassType, sb:StringBuf) {
+        sb.add('interface ');
+        sb.add(buildName(classType));
+
+        if (classType.superClass != null) {
+            sb.add(' extends ');
+            sb.add(buildName(classType.superClass.t.get(), true));
+        }
+
+        if (classType.interfaces != null && classType.interfaces.length > 0) {
+            for (i in classType.interfaces) {
+                sb.add(' implements ');
+                sb.add(i.t.toString());
+            }
+        }
+
+        sb.add(' {');
+        sb.add('\n');
+
+        if (classType.constructor != null) {
+            generateClassField(classType, classType.constructor.get(), sb);
+        }
+        for (f in classType.fields.get()) {
+            if (f.name.startsWith("get_") || f.name.startsWith("set_")) {
+                continue;
+            }
+            generateClassField(classType, f, sb);
+        }
+        for (f in classType.statics.get()) {
+            if (f.name.startsWith("get_") || f.name.startsWith("set_")) {
+                continue;
+            }
+            generateClassField(classType, f, sb, true);
+        }
+
+        sb.add('}');
+        sb.add('\n\n');
+    }
+
+    private static function generateClassField(classType:ClassType, field:ClassField, sb:StringBuf, isStatic:Bool = false, allowMethods:Bool = true, allowGettersSetters:Bool = true) {
+        if (!field.isPublic) {
+            return;
+        }
+
+        switch (field.kind) {
+            case FVar(AccNormal, AccNormal) | FVar(AccNormal, AccNo) | FVar(AccInline, AccNever) | FVar(AccNormal, AccNever): // var
+                generateVar(field.name, buildFullName(classType), field.type, sb, isStatic);
+
+            case FVar(AccCall, AccCall) | FVar(AccNormal, AccCall): // get / set
+                if (allowGettersSetters) {
+                    generateGetterSetter(field.name, buildFullName(classType), field.type, sb, isStatic);
+                } else {
+                    generateVar(field.name, buildFullName(classType), field.type, sb, isStatic);
+                }
+
+            case FVar(AccNo, AccCall): // null / set
+                if (allowGettersSetters) {
+                    generateSetter(field.name, buildFullName(classType), field.type, sb, isStatic);
+                } else {
+                    generateVar(field.name, buildFullName(classType), field.type, sb, isStatic);
+                }
+
+            case FVar(AccCall, AccNo) | FVar(AccCall, AccNever): // set / null
+                if (allowGettersSetters) {
+                    generateGetter(field.name, buildFullName(classType), field.type, sb, isStatic);
+                } else {
+                    generateVar(field.name, buildFullName(classType), field.type, sb, isStatic);
+                }
+
+            case FMethod(k):
+                if (allowMethods) {
+                    generateMethod(field.name, buildFullName(classType), field.type, field.params, k, sb, isStatic);
+                }
+            case _:    
+        }
+    }
+
+    private static function generateAbstract(abstractType:AbstractType, sb:StringBuf) {
+        if (abstractType.meta.has(":enum")) {
+            sb.add('enum ');
+        }
+        sb.add('abstract ');
+        sb.add(buildName(abstractType));
+        
+        sb.add('(');
+        sb.add(typeToString(abstractType.type));
+        sb.add(') ');
+
+        if (abstractType.from.length > 0) {
+            var list = [];
+            for (f in abstractType.from) {
+                if (f.field != null) {
+                    continue;
+                }
+                list.push('from ' + typeToString(f.t));
+            }
+            sb.add(list.join(' '));
+            sb.add(' ');
+        }
+
+        if (abstractType.to.length > 0) {
+            var list = [];
+            for (f in abstractType.to) {
+                list.push('to ' + typeToString(f.t));
+            }
+            sb.add(list.join(' '));
+            sb.add(' ');
+        }
+        
+        sb.add('{');
+        sb.add('\n');
+
+        if (abstractType.impl != null) {
+            var classType = abstractType.impl.get();
+            for (f in classType.statics.get()) {
+                generateClassField(classType, f, sb, true, false, false);
+            }
+        }
+
+        sb.add('}');
+        sb.add('\n\n');
+    }
+
+    private static function generateEnum(enumType:EnumType, sb:StringBuf) {
+        sb.add('enum ');
+        sb.add(buildName(enumType));
+
+        sb.add(' {');
+        sb.add('\n');
+
+        for (name in enumType.names) {
+            sb.add('    ');
+            sb.add(name);
+            sb.add(';');
+            sb.add('\n');
+        }
+
+        sb.add('}');
+        sb.add('\n\n');
+    }
+
+    private static function generateVar(name:String, className:String, type:Type, sb:StringBuf, isStatic:Bool = false) {
+        sb.add('    ');
+        sb.add('public ');
+        if (isStatic) {
+            sb.add('static ');
+        }
+        sb.add('var ');
+        sb.add(name);
+
+        sb.add(':');
+        sb.add(typeToString(type, [name, className]));
+
+        sb.add(";");
+        sb.add("\n\n");
+    }
+
+    private static function generateGetter(name:String, className:String, type:Type, sb:StringBuf, isStatic:Bool = false) {
+        sb.add('    ');
+        sb.add('public ');
+        if (isStatic) {
+            sb.add('static ');
+        }
+        sb.add('var ');
+        sb.add(name);
+        sb.add('(get, null)');
+
+
+        sb.add(':');
+        sb.add(typeToString(type, [name, className]));
+
+        sb.add(";");
+        sb.add("\n");
+
+        buildGetter(name, className, type, sb);
+
+        sb.add("\n");
+    }
+
+    private static function generateSetter(name:String, className:String, type:Type, sb:StringBuf, isStatic:Bool = false) {
+        sb.add('    ');
+        sb.add('public ');
+        if (isStatic) {
+            sb.add('static ');
+        }
+        sb.add('var ');
+        sb.add(name);
+        sb.add('(null, set)');
+
+
+        sb.add(':');
+        sb.add(typeToString(type, [name, className]));
+
+        sb.add(";");
+        sb.add("\n");
+
+        buildSetter(name, className, type, sb);
+
+        sb.add("\n");
+    }
+
+    private static function generateGetterSetter(name:String, className:String, type:Type, sb:StringBuf, isStatic:Bool = false) {
+        sb.add('    ');
+        sb.add('public ');
+        if (isStatic) {
+            sb.add('static ');
+        }
+        sb.add('var ');
+        sb.add(name);
+        sb.add('(get, set)');
+
+
+        sb.add(':');
+        sb.add(typeToString(type, [name, className]));
+
+        sb.add(";");
+        sb.add("\n");
+
+        buildGetter(name, className, type, sb);
+        buildSetter(name, className, type, sb);
+
+        sb.add("\n");
+    }
+
+    private static function buildGetter(name:String, className:String, type:Type, sb:StringBuf) {
+        sb.add('    ');
+        sb.add('private function get_');
+        sb.add(name);
+        sb.add('()');
+        sb.add(':');
+        sb.add(typeToString(type, [name, className]));
+        sb.add(";");
+        sb.add("\n");
+    }
+
+    private static function buildSetter(name:String, className:String, type:Type, sb:StringBuf) {
+        sb.add('    ');
+        sb.add('private function set_');
+        sb.add(name);
+        sb.add('(');
+        sb.add('value:');
+        sb.add(typeToString(type, [name, className]));
+        sb.add(')');
+        sb.add(':');
+        sb.add(typeToString(type, [name, className]));
+        sb.add(";");
+        sb.add("\n");
+    }
+
+    private static function generateMethod(name:String, className:String, type:Type, params:Array<TypeParameter>, k:MethodKind, sb:StringBuf, isStatic:Bool = false) {
+        var methodArgs = null;
+        var methodReturn = null;
+        switch (type) {
+            case TFun(args, ret):
+                methodArgs = args;
+                methodReturn = ret;
+            case _:   
+        }
+
+        sb.add('    ');
+        sb.add('public ');
+        if (isStatic) {
+            sb.add('static ');
+        }
+        sb.add('function ');
+        sb.add(name);
+
+        sb.add(buildTypeParams(params));
+
+        sb.add('(');
+        var argList = [];
+        for (arg in methodArgs) {
+            if (arg.opt) {
+                argList.push('?${arg.name}:' + typeToString(arg.t, [name, className]));
+            } else {
+                argList.push('${arg.name}:' + typeToString(arg.t, [name, className]));
+            }
+        }
+        sb.add(argList.join(", "));
+        sb.add(')');
+
+        sb.add(':');
+        sb.add(typeToString(methodReturn, [name, className]));
+        sb.add(";");
+        sb.add("\n\n");
+    }
+
+    private static function typeToString(type:Type, replacements:Array<String> = null) {
+        if (replacements == null) {
+            replacements = [];
+        }
+
+        replacements.push("StdTypes");
+
+        var s = TypeTools.toString(type);
+        switch (type) {
+            case TInst(t, params):
+                var classType = t.get();
+                s = buildFullName(classType);
+                var paramList = [];
+                if (params.length > 0) {
+                    for (p in params) {
+                        paramList.push(typeToString(p, replacements));
+                    }
+                }
+                if (paramList.length > 0) {
+                    s += "<";
+                    s += paramList.join(", ");
+                    s += ">";
+                }
+            case TAbstract(t, params):
+                var abstractType = t.get();
+                s = buildFullName(abstractType);
+                //s = t.toString();
+                var paramList = [];
+                if (params.length > 0) {
+                    for (p in params) {
+                        paramList.push(typeToString(p, replacements));
+                    }
+                }
+                if (paramList.length > 0) {
+                    s += "<";
+                    s += paramList.join(", ");
+                    s += ">";
+                }
+            case _:
+        }
+        if (replacements != null) {
+            for (r in replacements) {
+                if (r != "validators") { // filty hack
+                    s = s.replace(r + ".", "");
+                }
+            }
+        }
+        return s;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    // util functions
+    ////////////////////////////////////////////////////////////////////////////////////
+    private static function writeFile(filename:String, data:StringBuf) {
+        var stringData = data.toString();
+        var parts = filename.split("/");
+        parts.pop();
+        var path = parts.join("/");
+        FileSystem.createDirectory(path);
+        File.saveContent(filename, stringData);
+    }
+
+    private static function buildName(type:{module:String, name:String, params:Array<TypeParameter>}, full:Bool = false):String {
+        var sb = new StringBuf();
+        if (full) {
+             sb.add(buildFullName(type));
+        } else {
+            sb.add(type.name);
+        }
+        sb.add(buildTypeParams(type.params));
+        return sb.toString();
+    }
+
+    private static function buildTypeParams(params:Array<TypeParameter>) {
+        if (params == null || params.length == 0) {
+            return "";
+        }
+
+        var sb = new StringBuf();
+        sb.add('<');
+        var list = [];
+        for (p in params) {
+            if (p.defaultType != null) {
+                list.push(p.name + ":" + TypeTools.toString(p.defaultType));
+            } else {
+                list.push(p.name);
+            }
+        }
+        sb.add(list.join(", "));
+        sb.add('>');
+        return sb.toString();
+    }
+
+    private static function buildFullName(info:{module:String, name:String}):String {
+        var fullName = info.module;
+        if (!fullName.endsWith(info.name)) {
+            fullName += "." + info.name;
+        }
+        return fullName;
+    }
+
+    private static function extractPackage(info:{module:String}):String {
+        var pack = info.module.split(".");
+        pack.pop();
+        return pack.join(".");
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    // path functions
+    ////////////////////////////////////////////////////////////////////////////////////
     private static function rootDir():String {
         var root = Path.normalize(Context.resolvePath("haxe/ui/Toolkit.hx"));
         var parts = root.split("/");
@@ -112,6 +601,9 @@ class ExternGenerator {
         return Path.normalize(parts.join("/"));
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////
+    // copy functions
+    ////////////////////////////////////////////////////////////////////////////////////
     private static function copyOriginals(pkg:String) {
         var fullSourcePath = Path.normalize(rootDir() + "/" + pkg.replace(".", "/"));
         var fullDestPath = Path.normalize(outputPath + "/" + pkg.replace(".", "/"));
@@ -146,425 +638,5 @@ class ExternGenerator {
         }
     }
 
-    private static function generateExternClass(classType:ClassType) {
-        var fields = classType.fields.get();
-
-        var fullName = classType.pack.join(".") + "." + classType.name;
-
-        var sb = new StringBuf();
-        sb.add('package ');
-        sb.add(classType.pack.join("."));
-        sb.add(';\n\n');
-
-        if (fullName == "haxe.ui.backend.ComponentBase") {
-            sb.add('@:build(haxe.ui.macros.Macros.build())\n');
-            sb.add('@:autoBuild(haxe.ui.macros.Macros.build())\n');
-        }
-
-        if (classType.isInterface) {
-            sb.add('interface ');
-        } else {
-            sb.add('extern class ');
-        }
-        sb.add(classType.name);
-        if (classType.params != null && classType.params.length > 0) {
-            sb.add('<');
-            var ps = [];
-            for (p in classType.params) {
-                if (p.defaultType != null) {
-                    ps.push(p.name + ":" + TypeTools.toString(p.defaultType));
-                } else {
-                    ps.push(p.name);
-                }
-            }
-            sb.add(ps.join(", "));
-            sb.add('>');
-        }
-
-
-        if (classType.superClass != null) {
-            sb.add(' extends ');
-            sb.add(classType.superClass.t.toString());
-            var superClass = classType.superClass.t.get();
-            if (superClass.params != null && superClass.params.length > 0) {
-                sb.add('<');
-                var ps = [];
-                for (p in superClass.params) {
-                    ps.push(p.name);
-                }
-                sb.add(ps.join(", "));
-                sb.add('>');
-            }
-        }
-
-        if (classType.interfaces != null && classType.interfaces.length > 0) {
-            for (i in classType.interfaces) {
-                sb.add(' implements ');
-                sb.add(i.t.toString());
-                if (i.t.toString() == "haxe.ui.core.IClonable") {
-                    sb.add('<');
-                    sb.add(fullName);
-                    sb.add('>');
-                }
-            }
-        }
-
-        sb.add(' {\n');
-
-        if (classType.constructor != null) {
-            sb.add('    ');
-            sb.add('public ');
-            sb.add('function ');
-            sb.add('new');
-            sb.add('(');
-            sb.add(')');
-            sb.add(';');
-            sb.add('\n\n');
-        }
-
-        for (f in fields) {
-            if (f.isPublic == false) {
-                continue;
-            }
-
-            generateExternField(classType, f, sb);
-        }
-        
-        for (f in classType.statics.get()) {
-            if (f.isPublic == false) {
-                continue;
-            }
-
-            generateExternField(classType, f, sb, true);
-        }
-
-        sb.add('}\n');
-
-        var filename = buildFileNameForExternClass(classType);
-        writeFile(filename, sb);
-    }
-
-    private static function generateExternField(classType:ClassType, f:ClassField, sb:StringBuf, isStatic:Bool = false) {
-        var fullName = classType.pack.join(".") + "." + classType.name;
-
-        switch (f.kind) {
-            case FVar(AccCall, AccCall) | FVar(AccNormal, AccCall): // get / set
-                sb.add('    ');
-                sb.add('public ');
-                if (isStatic) {
-                    sb.add('static ');
-                }
-                sb.add('var ');
-                sb.add(f.name);
-                sb.add('(get, set):');
-                sb.add(TypeTools.toString(f.type));
-                sb.add(';\n');
-
-                if (!classType.isInterface) {
-                    sb.add('    ');
-                    sb.add('private');
-                    sb.add(' function get_');
-                    sb.add(f.name);
-                    sb.add('():');
-                    sb.add(TypeTools.toString(f.type));
-                    sb.add(';\n');
-
-                    sb.add('    ');
-                    sb.add('private');
-                    sb.add(' function set_');
-                    sb.add(f.name);
-                    sb.add('(value:');
-                    sb.add(TypeTools.toString(f.type));
-                    sb.add('):');
-                    sb.add(TypeTools.toString(f.type));
-                    sb.add(';\n');
-                }
-
-
-                sb.add("\n");
-                
-            case FVar(AccNormal, AccNormal) | FVar(AccNormal, AccNo) | FVar(AccInline, AccNever) | FVar(AccNormal, AccNever): // var
-                sb.add('    ');
-                sb.add('public ');
-                if (isStatic) {
-                    sb.add('static ');
-                }
-                sb.add('var ');
-                sb.add(f.name);
-                sb.add(':');
-                sb.add(TypeTools.toString(f.type).replace(fullName + ".", ""));
-                sb.add(';\n');
-
-            case FVar(AccNo, AccCall): // null / set
-                sb.add('    ');
-                sb.add('public ');
-                if (isStatic) {
-                    sb.add('static ');
-                }
-                sb.add('var ');
-                sb.add(f.name);
-                sb.add('(null, set):');
-                sb.add(TypeTools.toString(f.type));
-                sb.add(';\n');
-
-                if (!classType.isInterface) {
-                    sb.add('    ');
-                    sb.add('private');
-                    sb.add(' function set_');
-                    sb.add(f.name);
-                    sb.add('(value:');
-                    sb.add(TypeTools.toString(f.type));
-                    sb.add('):');
-                    sb.add(TypeTools.toString(f.type));
-                    sb.add(';\n');
-                }
-
-                sb.add("\n");
-
-            case FVar(AccCall, AccNo) | FVar(AccCall, AccNever): // set / null
-                sb.add('    ');
-                sb.add('public ');
-                if (isStatic) {
-                    sb.add('static ');
-                }
-                sb.add('var ');
-                sb.add(f.name);
-                sb.add('(get, null):');
-                sb.add(TypeTools.toString(f.type));
-                sb.add(';\n');
-
-                if (!classType.isInterface) {
-                    sb.add('    ');
-                    sb.add('private');
-                    sb.add(' function get_');
-                    sb.add(f.name);
-                    sb.add('():');
-                    sb.add(TypeTools.toString(f.type));
-                    sb.add(';\n');
-                }
-
-                sb.add("\n");
-
-            case FMethod(k):    
-                //trace("    method", f.name);
-                sb.add('    ');
-                if (classType.isInterface && (f.name.startsWith("get_") || f.name.startsWith("set_"))) {
-                    sb.add('private ');
-                } else {
-                    sb.add('public ');
-                }
-                if (isStatic) {
-                    sb.add('static ');
-                }
-                sb.add('function ');
-                sb.add(f.name);
-                if (f.params != null && f.params.length > 0) {
-                    sb.add('<');
-                    var ps = [];
-                    for (p in f.params) {
-                        if (p.defaultType != null) {
-                            ps.push(p.name + ":" + TypeTools.toString(p.defaultType));
-                        } else {
-                            ps.push(p.name);
-                        }
-                    }
-                    sb.add(ps.join(", "));
-                    sb.add('>');
-                }
-
-                sb.add('(');
-                switch (f.type) {
-                    case TFun(args, ret):
-                        var argList = [];
-                        for (a in args) {
-                            if (a.opt) {
-                                argList.push("?" + a.name + ":" + TypeTools.toString(a.t).replace(f.name + ".", "").replace(fullName + ".", ""));
-                            } else {
-                                argList.push(a.name + ":" + TypeTools.toString(a.t).replace(f.name + ".", "").replace(fullName + ".", ""));
-                            }
-                        }
-                        sb.add(argList.join(", "));
-                    case _:
-                }
-                sb.add(')');
-
-                sb.add(':');
-                switch (f.type) {
-                    case TFun(args, ret):
-                        sb.add(TypeTools.toString(ret).replace(f.name + ".", "").replace(fullName + ".", ""));
-                    case _:
-                        trace(f.type);
-                }
-                sb.add(";");
-                sb.add("\n\n");
-            case _:
-                trace("UNSUPPORTED (" + fullName + "): " + f.name, f);
-        }
-    }
-
-    private static function generateExternAbstract(t:AbstractType) {
-        var sb = new StringBuf();
-        sb.add('package ');
-        sb.add(t.pack.join("."));
-        sb.add(';\n\n');
-
-        sb.add('abstract ');
-        sb.add(t.name);
-        if (t.params != null && t.params.length > 0) {
-            sb.add('<');
-            var ps = [];
-            for (p in t.params) {
-                if (p.defaultType != null) {
-                    ps.push(p.name + ":" + TypeTools.toString(p.defaultType));
-                } else {
-                    ps.push(p.name);
-                }
-            }
-            sb.add(ps.join(", "));
-            sb.add('>');
-        }
-        if (t.type != null) {
-            sb.add('(');
-            sb.add(TypeTools.toString(t.type));
-            sb.add(')');
-        }
-        if (t.from != null) {
-            for (f in t.from) {
-                if (f.field != null) {
-                    continue;
-                }
-                sb.add(' from ');
-                sb.add(TypeTools.toString(f.t));
-            }
-        }
-        if (t.to != null) {
-            for (f in t.to) {
-                if (f.field != null) {
-                    continue;
-                }
-                sb.add(' to ');
-                sb.add(TypeTools.toString(f.t));
-            }
-        }
-
-        sb.add(' {\n');
-
-        sb.add('}\n');
-
-        var filename = buildFileNameForExternAbstract(t);
-        writeFile(filename, sb);
-    }
-
-    private static function generateExternEnum(t:EnumType) {
-        var sb = new StringBuf();
-        sb.add('package ');
-        sb.add(t.pack.join("."));
-        sb.add(';\n\n');
-
-        sb.add('enum ');
-        sb.add(t.name);
-
-        sb.add(' {\n');
-
-        sb.add('}\n');
-
-        var filename = buildFileNameForExternEnum(t);
-        writeFile(filename, sb);
-    }
-
-    private static function generateExternType(t:DefType) {
-        var sb = new StringBuf();
-        sb.add('package ');
-        sb.add(t.pack.join("."));
-        sb.add(';\n\n');
-
-        sb.add('typedef ');
-        sb.add(t.name);
-        sb.add(' =');
-
-        sb.add(' {\n');
-
-        sb.add('}\n');
-
-        var filename = buildFileNameForExternType(t);
-        writeFile(filename, sb);
-    }
-
-    private static function writeEmptyClass(fullName:String) {
-        var pack = fullName.split(".");
-        var name = pack.pop();
-        var sb = new StringBuf();
-
-        sb.add('package ');
-        sb.add(pack.join("."));
-        sb.add(';\n\n');
-
-        sb.add('extern class ');
-        sb.add(name);
-        sb.add(' {\n');
-
-        /*
-        sb.add('    ');
-        sb.add('public function new();');
-        sb.add('\n');
-        */
-
-        sb.add('}\n');
-
-        var filename = Path.normalize(outputPath + "/" + fullName.replace(".", "/") + ".hx");
-        writeFile(filename, sb);
-    }
-
-    private static function writeFile(filename:String, data:StringBuf) {
-        var parts = filename.split("/");
-        parts.pop();
-        var path = parts.join("/");
-        FileSystem.createDirectory(path);
-        File.saveContent(filename, data.toString());
-    }
-
-    private static function buildFileNameForExternClass(classType:ClassType):String {
-        var finalPack = [];
-        for (p in classType.pack) {
-            finalPack.push(p);
-        }
-        finalPack.push(classType.name);
-
-        var s = Path.normalize(outputPath + "/" + finalPack.join("/") + ".hx");
-        return s;
-    }
-
-    private static function buildFileNameForExternAbstract(t:AbstractType):String {
-        var finalPack = [];
-        for (p in t.pack) {
-            finalPack.push(p);
-        }
-        finalPack.push(t.name);
-
-        var s = Path.normalize(outputPath + "/" + finalPack.join("/") + ".hx");
-        return s;
-    }
-
-    private static function buildFileNameForExternEnum(t:EnumType):String {
-        var finalPack = [];
-        for (p in t.pack) {
-            finalPack.push(p);
-        }
-        finalPack.push(t.name);
-
-        var s = Path.normalize(outputPath + "/" + finalPack.join("/") + ".hx");
-        return s;
-    }
-
-    private static function buildFileNameForExternType(t:DefType):String {
-        var finalPack = [];
-        for (p in t.pack) {
-            finalPack.push(p);
-        }
-        finalPack.push(t.name);
-
-        var s = Path.normalize(outputPath + "/" + finalPack.join("/") + ".hx");
-        return s;
-    }
     #end    
 }
