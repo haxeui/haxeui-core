@@ -227,142 +227,179 @@ class ExternGenerator {
                 continue;
             }
 
-            switch (f.kind) {
-                case FVar(AccCall, AccCall) | FVar(AccNormal, AccCall): // get / set
-                    sb.add('    ');
-                    sb.add('public var ');
-                    sb.add(f.name);
-                    sb.add('(get, set):');
-                    sb.add(TypeTools.toString(f.type));
-                    sb.add(';\n');
-
-                    if (!classType.isInterface) {
-                        sb.add('    ');
-                        sb.add('private function get_');
-                        sb.add(f.name);
-                        sb.add('():');
-                        sb.add(TypeTools.toString(f.type));
-                        sb.add(';\n');
-
-                        sb.add('    ');
-                        sb.add('private function set_');
-                        sb.add(f.name);
-                        sb.add('(value:');
-                        sb.add(TypeTools.toString(f.type));
-                        sb.add('):');
-                        sb.add(TypeTools.toString(f.type));
-                        sb.add(';\n');
-                    }
-
-
-                    sb.add("\n");
-                    
-                case FVar(AccNormal, AccNormal) | FVar(AccNormal, AccNo): // var
-                    sb.add('    ');
-                    sb.add('public var ');
-                    sb.add(f.name);
-                    sb.add(':');
-                    sb.add(TypeTools.toString(f.type).replace(fullName + ".", ""));
-                    sb.add(';\n');
-
-                case FVar(AccNo, AccCall): // null / set
-                    sb.add('    ');
-                    sb.add('public var ');
-                    sb.add(f.name);
-                    sb.add('(null, set):');
-                    sb.add(TypeTools.toString(f.type));
-                    sb.add(';\n');
-
-                    if (!classType.isInterface) {
-                        sb.add('    ');
-                        sb.add('private function set_');
-                        sb.add(f.name);
-                        sb.add('(value:');
-                        sb.add(TypeTools.toString(f.type));
-                        sb.add('):');
-                        sb.add(TypeTools.toString(f.type));
-                        sb.add(';\n');
-                    }
-
-                    sb.add("\n");
-
-                case FVar(AccCall, AccNo) | FVar(AccCall, AccNever): // set / null
-                    sb.add('    ');
-                    sb.add('public var ');
-                    sb.add(f.name);
-                    sb.add('(get, null):');
-                    sb.add(TypeTools.toString(f.type));
-                    sb.add(';\n');
-
-                    if (!classType.isInterface) {
-                        sb.add('    ');
-                        sb.add('private function get_');
-                        sb.add(f.name);
-                        sb.add('():');
-                        sb.add(TypeTools.toString(f.type));
-                        sb.add(';\n');
-                    }
-
-                    sb.add("\n");
-
-                case FMethod(k):    
-                    //trace("    method", f.name);
-                    sb.add('    ');
-                    if (classType.isInterface && (f.name.startsWith("get_") || f.name.startsWith("set_"))) {
-                        sb.add('private ');
-                    } else {
-                        sb.add('public ');
-                    }
-                    sb.add('function ');
-                    sb.add(f.name);
-                    if (f.params != null && f.params.length > 0) {
-                        sb.add('<');
-                        var ps = [];
-                        for (p in f.params) {
-                            if (p.defaultType != null) {
-                                ps.push(p.name + ":" + TypeTools.toString(p.defaultType));
-                            } else {
-                                ps.push(p.name);
-                            }
-                        }
-                        sb.add(ps.join(", "));
-                        sb.add('>');
-                    }
-
-                    sb.add('(');
-                    switch (f.type) {
-                        case TFun(args, ret):
-                            var argList = [];
-                            for (a in args) {
-                                if (a.opt) {
-                                    argList.push("?" + a.name + ":" + TypeTools.toString(a.t).replace(f.name + ".", "").replace(fullName + ".", ""));
-                                } else {
-                                    argList.push(a.name + ":" + TypeTools.toString(a.t).replace(f.name + ".", "").replace(fullName + ".", ""));
-                                }
-                            }
-                            sb.add(argList.join(", "));
-                        case _:
-                    }
-                    sb.add(')');
-
-                    sb.add(':');
-                    switch (f.type) {
-                        case TFun(args, ret):
-                            sb.add(TypeTools.toString(ret).replace(f.name + ".", "").replace(fullName + ".", ""));
-                        case _:
-                            trace(f.type);
-                    }
-                    sb.add(";");
-                    sb.add("\n\n");
-                case _:
-                    trace("UNSUPPORTED: " + f.name, f);
-            }
+            generateExternField(classType, f, sb);
         }
         
+        for (f in classType.statics.get()) {
+            if (f.isPublic == false) {
+                continue;
+            }
+
+            generateExternField(classType, f, sb, true);
+        }
+
         sb.add('}\n');
 
         var filename = buildFileNameForExternClass(classType);
         writeFile(filename, sb);
+    }
+
+    private static function generateExternField(classType:ClassType, f:ClassField, sb:StringBuf, isStatic:Bool = false) {
+        var fullName = classType.pack.join(".") + "." + classType.name;
+
+        switch (f.kind) {
+            case FVar(AccCall, AccCall) | FVar(AccNormal, AccCall): // get / set
+                sb.add('    ');
+                sb.add('public ');
+                if (isStatic) {
+                    sb.add('static ');
+                }
+                sb.add('var ');
+                sb.add(f.name);
+                sb.add('(get, set):');
+                sb.add(TypeTools.toString(f.type));
+                sb.add(';\n');
+
+                if (!classType.isInterface) {
+                    sb.add('    ');
+                    sb.add('private');
+                    sb.add(' function get_');
+                    sb.add(f.name);
+                    sb.add('():');
+                    sb.add(TypeTools.toString(f.type));
+                    sb.add(';\n');
+
+                    sb.add('    ');
+                    sb.add('private');
+                    sb.add(' function set_');
+                    sb.add(f.name);
+                    sb.add('(value:');
+                    sb.add(TypeTools.toString(f.type));
+                    sb.add('):');
+                    sb.add(TypeTools.toString(f.type));
+                    sb.add(';\n');
+                }
+
+
+                sb.add("\n");
+                
+            case FVar(AccNormal, AccNormal) | FVar(AccNormal, AccNo) | FVar(AccInline, AccNever) | FVar(AccNormal, AccNever): // var
+                sb.add('    ');
+                sb.add('public ');
+                if (isStatic) {
+                    sb.add('static ');
+                }
+                sb.add('var ');
+                sb.add(f.name);
+                sb.add(':');
+                sb.add(TypeTools.toString(f.type).replace(fullName + ".", ""));
+                sb.add(';\n');
+
+            case FVar(AccNo, AccCall): // null / set
+                sb.add('    ');
+                sb.add('public ');
+                if (isStatic) {
+                    sb.add('static ');
+                }
+                sb.add('var ');
+                sb.add(f.name);
+                sb.add('(null, set):');
+                sb.add(TypeTools.toString(f.type));
+                sb.add(';\n');
+
+                if (!classType.isInterface) {
+                    sb.add('    ');
+                    sb.add('private');
+                    sb.add(' function set_');
+                    sb.add(f.name);
+                    sb.add('(value:');
+                    sb.add(TypeTools.toString(f.type));
+                    sb.add('):');
+                    sb.add(TypeTools.toString(f.type));
+                    sb.add(';\n');
+                }
+
+                sb.add("\n");
+
+            case FVar(AccCall, AccNo) | FVar(AccCall, AccNever): // set / null
+                sb.add('    ');
+                sb.add('public ');
+                if (isStatic) {
+                    sb.add('static ');
+                }
+                sb.add('var ');
+                sb.add(f.name);
+                sb.add('(get, null):');
+                sb.add(TypeTools.toString(f.type));
+                sb.add(';\n');
+
+                if (!classType.isInterface) {
+                    sb.add('    ');
+                    sb.add('private');
+                    sb.add(' function get_');
+                    sb.add(f.name);
+                    sb.add('():');
+                    sb.add(TypeTools.toString(f.type));
+                    sb.add(';\n');
+                }
+
+                sb.add("\n");
+
+            case FMethod(k):    
+                //trace("    method", f.name);
+                sb.add('    ');
+                if (classType.isInterface && (f.name.startsWith("get_") || f.name.startsWith("set_"))) {
+                    sb.add('private ');
+                } else {
+                    sb.add('public ');
+                }
+                if (isStatic) {
+                    sb.add('static ');
+                }
+                sb.add('function ');
+                sb.add(f.name);
+                if (f.params != null && f.params.length > 0) {
+                    sb.add('<');
+                    var ps = [];
+                    for (p in f.params) {
+                        if (p.defaultType != null) {
+                            ps.push(p.name + ":" + TypeTools.toString(p.defaultType));
+                        } else {
+                            ps.push(p.name);
+                        }
+                    }
+                    sb.add(ps.join(", "));
+                    sb.add('>');
+                }
+
+                sb.add('(');
+                switch (f.type) {
+                    case TFun(args, ret):
+                        var argList = [];
+                        for (a in args) {
+                            if (a.opt) {
+                                argList.push("?" + a.name + ":" + TypeTools.toString(a.t).replace(f.name + ".", "").replace(fullName + ".", ""));
+                            } else {
+                                argList.push(a.name + ":" + TypeTools.toString(a.t).replace(f.name + ".", "").replace(fullName + ".", ""));
+                            }
+                        }
+                        sb.add(argList.join(", "));
+                    case _:
+                }
+                sb.add(')');
+
+                sb.add(':');
+                switch (f.type) {
+                    case TFun(args, ret):
+                        sb.add(TypeTools.toString(ret).replace(f.name + ".", "").replace(fullName + ".", ""));
+                    case _:
+                        trace(f.type);
+                }
+                sb.add(";");
+                sb.add("\n\n");
+            case _:
+                trace("UNSUPPORTED (" + fullName + "): " + f.name, f);
+        }
     }
 
     private static function generateExternAbstract(t:AbstractType) {
