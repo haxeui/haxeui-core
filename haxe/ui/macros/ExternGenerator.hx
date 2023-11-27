@@ -73,6 +73,9 @@ class ExternGenerator {
                         addType(enumType.get().module, t);
                     }
                 case TType(defType, params):    
+                    if (!defType.get().isPrivate && useType(defType.toString())) {
+                        addType(defType.get().module, t);
+                    }
                 case _:
                     trace("UNKNOWN: ", t);
             }
@@ -131,6 +134,7 @@ class ExternGenerator {
                 case TEnum(enumType, params):    
                     generateEnum(enumType.get(), sb);
                 case TType(defType, params):    
+                    generateTypeDef(defType.get(), sb);
                 case _:
                     trace("UNKNOWN: ", t);
             }
@@ -224,7 +228,7 @@ class ExternGenerator {
         sb.add('\n\n');
     }
 
-    private static function generateClassField(classType:ClassType, field:ClassField, sb:StringBuf, isStatic:Bool = false, allowMethods:Bool = true, allowGettersSetters:Bool = true) {
+    private static function generateClassField(classType:{module:String, name:String}, field:ClassField, sb:StringBuf, isStatic:Bool = false, allowMethods:Bool = true, allowGettersSetters:Bool = true) {
         if (!field.isPublic) {
             return;
         }
@@ -320,6 +324,25 @@ class ExternGenerator {
             sb.add(name);
             sb.add(';');
             sb.add('\n');
+        }
+
+        sb.add('}');
+        sb.add('\n\n');
+    }
+
+    private static function generateTypeDef(defType:DefType, sb:StringBuf) {
+        sb.add('typedef ');
+        sb.add(buildName(defType));
+
+        sb.add(' = {');
+        sb.add('\n');
+
+        switch (defType.type) {
+            case TAnonymous(a):
+                for (f in a.get().fields) {
+                    generateClassField({module: defType.module, name: f.name}, f, sb);
+                }
+            case _:
         }
 
         sb.add('}');
@@ -498,6 +521,21 @@ class ExternGenerator {
             case TAbstract(t, params):
                 var abstractType = t.get();
                 s = buildFullName(abstractType);
+                //s = t.toString();
+                var paramList = [];
+                if (params.length > 0) {
+                    for (p in params) {
+                        paramList.push(typeToString(p, replacements));
+                    }
+                }
+                if (paramList.length > 0) {
+                    s += "<";
+                    s += paramList.join(", ");
+                    s += ">";
+                }
+            case TType(t, params):    
+                var typeType = t.get();
+                s = buildFullName(typeType);
                 //s = t.toString();
                 var paramList = [];
                 if (params.length > 0) {
