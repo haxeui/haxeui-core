@@ -101,6 +101,7 @@ class ExternGenerator {
         copyOriginal("haxe.ui.util.Defines");
         copyOriginal("haxe.ui.util.GenericConfig");
         copyOriginal("haxe.ui.util.Variant");
+        copyOriginal("haxe.ui.util.Listener");
         copyOriginal("haxe.ui.Backend");
         copyBackendOriginal("haxe.ui.backend.BackendImpl");
         copyOriginal("haxe.ui.layouts.LayoutFactory");
@@ -151,6 +152,9 @@ class ExternGenerator {
             sb.add('@:autoBuild(haxe.ui.macros.Macros.build())\n');
         }
 
+        if (classType.isPrivate) {
+            sb.add('private ');
+        }
         sb.add('extern ');
         sb.add('class ');
         sb.add(buildName(classType));
@@ -229,38 +233,34 @@ class ExternGenerator {
     }
 
     private static function generateClassField(classType:{module:String, name:String}, field:ClassField, sb:StringBuf, isStatic:Bool = false, allowMethods:Bool = true, allowGettersSetters:Bool = true) {
-        if (!field.isPublic) {
-            return;
-        }
-
         switch (field.kind) {
             case FVar(AccNormal, AccNormal) | FVar(AccNormal, AccNo) | FVar(AccInline, AccNever) | FVar(AccNormal, AccNever): // var
-                generateVar(field.name, buildFullName(classType), field.type, sb, isStatic);
+                generateVar(field.name, buildFullName(classType), field.type, sb, isStatic, !field.isPublic);
 
             case FVar(AccCall, AccCall) | FVar(AccNormal, AccCall): // get / set
                 if (allowGettersSetters) {
-                    generateGetterSetter(field.name, buildFullName(classType), field.type, sb, isStatic);
+                    generateGetterSetter(field.name, buildFullName(classType), field.type, sb, isStatic, !field.isPublic);
                 } else {
-                    generateVar(field.name, buildFullName(classType), field.type, sb, isStatic);
+                    generateVar(field.name, buildFullName(classType), field.type, sb, isStatic, !field.isPublic);
                 }
 
             case FVar(AccNo, AccCall): // null / set
                 if (allowGettersSetters) {
-                    generateSetter(field.name, buildFullName(classType), field.type, sb, isStatic);
+                    generateSetter(field.name, buildFullName(classType), field.type, sb, isStatic, !field.isPublic);
                 } else {
-                    generateVar(field.name, buildFullName(classType), field.type, sb, isStatic);
+                    generateVar(field.name, buildFullName(classType), field.type, sb, isStatic, !field.isPublic);
                 }
 
             case FVar(AccCall, AccNo) | FVar(AccCall, AccNever): // set / null
                 if (allowGettersSetters) {
-                    generateGetter(field.name, buildFullName(classType), field.type, sb, isStatic);
+                    generateGetter(field.name, buildFullName(classType), field.type, sb, isStatic, !field.isPublic);
                 } else {
-                    generateVar(field.name, buildFullName(classType), field.type, sb, isStatic);
+                    generateVar(field.name, buildFullName(classType), field.type, sb, isStatic, !field.isPublic);
                 }
 
             case FMethod(k):
                 if (allowMethods) {
-                    generateMethod(field.name, buildFullName(classType), field.type, field.params, k, sb, isStatic);
+                    generateMethod(field.name, buildFullName(classType), field.type, field.params, k, sb, isStatic, !field.isPublic);
                 }
             case _:    
         }
@@ -349,9 +349,13 @@ class ExternGenerator {
         sb.add('\n\n');
     }
 
-    private static function generateVar(name:String, className:String, type:Type, sb:StringBuf, isStatic:Bool = false) {
+    private static function generateVar(name:String, className:String, type:Type, sb:StringBuf, isStatic:Bool = false, isPrivate:Bool = false) {
         sb.add('    ');
-        sb.add('public ');
+        if (isPrivate) {
+            sb.add('private ');
+        } else {
+            sb.add('public ');
+        }
         if (isStatic) {
             sb.add('static ');
         }
@@ -365,9 +369,13 @@ class ExternGenerator {
         sb.add("\n\n");
     }
 
-    private static function generateGetter(name:String, className:String, type:Type, sb:StringBuf, isStatic:Bool = false) {
+    private static function generateGetter(name:String, className:String, type:Type, sb:StringBuf, isStatic:Bool = false, isPrivate:Bool = false) {
         sb.add('    ');
-        sb.add('public ');
+        if (isPrivate) {
+            sb.add('private ');
+        } else {
+            sb.add('public ');
+        }
         if (isStatic) {
             sb.add('static ');
         }
@@ -387,9 +395,13 @@ class ExternGenerator {
         sb.add("\n");
     }
 
-    private static function generateSetter(name:String, className:String, type:Type, sb:StringBuf, isStatic:Bool = false) {
+    private static function generateSetter(name:String, className:String, type:Type, sb:StringBuf, isStatic:Bool = false, isPrivate:Bool = false) {
         sb.add('    ');
-        sb.add('public ');
+        if (isPrivate) {
+            sb.add('private ');
+        } else {
+            sb.add('public ');
+        }
         if (isStatic) {
             sb.add('static ');
         }
@@ -409,9 +421,13 @@ class ExternGenerator {
         sb.add("\n");
     }
 
-    private static function generateGetterSetter(name:String, className:String, type:Type, sb:StringBuf, isStatic:Bool = false) {
+    private static function generateGetterSetter(name:String, className:String, type:Type, sb:StringBuf, isStatic:Bool = false, isPrivate:Bool = false) {
         sb.add('    ');
-        sb.add('public ');
+        if (isPrivate) {
+            sb.add('private ');
+        } else {
+            sb.add('public ');
+        }
         if (isStatic) {
             sb.add('static ');
         }
@@ -433,6 +449,7 @@ class ExternGenerator {
     }
 
     private static function buildGetter(name:String, className:String, type:Type, sb:StringBuf) {
+        /*
         sb.add('    ');
         sb.add('private function get_');
         sb.add(name);
@@ -441,9 +458,11 @@ class ExternGenerator {
         sb.add(typeToString(type, [name, className]));
         sb.add(";");
         sb.add("\n");
+        */
     }
 
     private static function buildSetter(name:String, className:String, type:Type, sb:StringBuf) {
+        /*
         sb.add('    ');
         sb.add('private function set_');
         sb.add(name);
@@ -455,9 +474,10 @@ class ExternGenerator {
         sb.add(typeToString(type, [name, className]));
         sb.add(";");
         sb.add("\n");
+        */
     }
 
-    private static function generateMethod(name:String, className:String, type:Type, params:Array<TypeParameter>, k:MethodKind, sb:StringBuf, isStatic:Bool = false) {
+    private static function generateMethod(name:String, className:String, type:Type, params:Array<TypeParameter>, k:MethodKind, sb:StringBuf, isStatic:Bool = false, isPrivate:Bool = false) {
         var methodArgs = null;
         var methodReturn = null;
         switch (type) {
@@ -468,7 +488,11 @@ class ExternGenerator {
         }
 
         sb.add('    ');
-        sb.add('public ');
+        if (isPrivate) {
+            sb.add('private ');
+        } else {
+            sb.add('public ');
+        }
         if (isStatic) {
             sb.add('static ');
         }
@@ -479,12 +503,18 @@ class ExternGenerator {
 
         sb.add('(');
         var argList = [];
+        var n = 0;
         for (arg in methodArgs) {
+            if (arg.name == "_") {
+                argList.push("arg" + n + ":Any");
+                continue;
+            }
             if (arg.opt) {
                 argList.push('?${arg.name}:' + typeToString(arg.t, [name, className]));
             } else {
                 argList.push('${arg.name}:' + typeToString(arg.t, [name, className]));
             }
+            n++;
         }
         sb.add(argList.join(", "));
         sb.add(')');
@@ -552,7 +582,7 @@ class ExternGenerator {
         }
         if (replacements != null) {
             for (r in replacements) {
-                if (r != "validators") { // filty hack
+                if (r != "validators" && r != "behaviours") { // filty hack
                     s = s.replace(r + ".", "");
                 }
             }
