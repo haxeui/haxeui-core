@@ -233,6 +233,10 @@ class ExternGenerator {
     }
 
     private static function generateClassField(classType:{module:String, name:String}, field:ClassField, sb:StringBuf, isStatic:Bool = false, allowMethods:Bool = true, allowGettersSetters:Bool = true) {
+        if (field.name.startsWith("_")) {
+            return;
+        }
+
         switch (field.kind) {
             case FVar(AccNormal, AccNormal) | FVar(AccNormal, AccNo) | FVar(AccInline, AccNever) | FVar(AccNormal, AccNever): // var
                 generateVar(field.name, buildFullName(classType), field.type, sb, isStatic, !field.isPublic);
@@ -366,7 +370,7 @@ class ExternGenerator {
         sb.add(typeToString(type, [name, className]));
 
         sb.add(";");
-        sb.add("\n\n");
+        sb.add("\n");
     }
 
     private static function generateGetter(name:String, className:String, type:Type, sb:StringBuf, isStatic:Bool = false, isPrivate:Bool = false) {
@@ -388,10 +392,6 @@ class ExternGenerator {
         sb.add(typeToString(type, [name, className]));
 
         sb.add(";");
-        sb.add("\n");
-
-        buildGetter(name, className, type, sb);
-
         sb.add("\n");
     }
 
@@ -415,10 +415,6 @@ class ExternGenerator {
 
         sb.add(";");
         sb.add("\n");
-
-        buildSetter(name, className, type, sb);
-
-        sb.add("\n");
     }
 
     private static function generateGetterSetter(name:String, className:String, type:Type, sb:StringBuf, isStatic:Bool = false, isPrivate:Bool = false) {
@@ -441,40 +437,6 @@ class ExternGenerator {
 
         sb.add(";");
         sb.add("\n");
-
-        buildGetter(name, className, type, sb);
-        buildSetter(name, className, type, sb);
-
-        sb.add("\n");
-    }
-
-    private static function buildGetter(name:String, className:String, type:Type, sb:StringBuf) {
-        /*
-        sb.add('    ');
-        sb.add('private function get_');
-        sb.add(name);
-        sb.add('()');
-        sb.add(':');
-        sb.add(typeToString(type, [name, className]));
-        sb.add(";");
-        sb.add("\n");
-        */
-    }
-
-    private static function buildSetter(name:String, className:String, type:Type, sb:StringBuf) {
-        /*
-        sb.add('    ');
-        sb.add('private function set_');
-        sb.add(name);
-        sb.add('(');
-        sb.add('value:');
-        sb.add(typeToString(type, [name, className]));
-        sb.add(')');
-        sb.add(':');
-        sb.add(typeToString(type, [name, className]));
-        sb.add(";");
-        sb.add("\n");
-        */
     }
 
     private static function generateMethod(name:String, className:String, type:Type, params:Array<TypeParameter>, k:MethodKind, sb:StringBuf, isStatic:Bool = false, isPrivate:Bool = false) {
@@ -522,7 +484,7 @@ class ExternGenerator {
         sb.add(':');
         sb.add(typeToString(methodReturn, [name, className]));
         sb.add(";");
-        sb.add("\n\n");
+        sb.add("\n");
     }
 
     private static function typeToString(type:Type, replacements:Array<String> = null) {
