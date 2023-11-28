@@ -368,6 +368,7 @@ class XMLParser extends ModuleParser {
         for (imageLoaderNode in el.elementsNamed("image-loader")) {
             var imageLoaderEntry:ModuleImageLoaderEntry = new ModuleImageLoaderEntry();
             imageLoaderEntry.prefix = imageLoaderNode.get("prefix");
+            imageLoaderEntry.pattern = imageLoaderNode.get("pattern");
             imageLoaderEntry.className = imageLoaderNode.get("class");
             imageLoaderEntry.isDefault = (imageLoaderNode.get("default") == "true");
             imageLoaderEntry.singleInstance = (imageLoaderNode.get("singleInstance") == "true");

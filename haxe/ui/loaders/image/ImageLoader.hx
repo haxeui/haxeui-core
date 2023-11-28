@@ -4,6 +4,8 @@ import haxe.ui.assets.ImageInfo;
 import haxe.ui.backend.ImageData;
 import haxe.ui.util.Variant;
 
+using StringTools;
+
 class ImageLoader {
     private static var _instance:ImageLoader;
     public static var instance(get, null):ImageLoader;
@@ -44,7 +46,7 @@ class ImageLoader {
                 prefix = stringResource.substring(0, n);
             }
 
-            var loader = get(prefix);
+            var loader = get(prefix, stringResource);
             if (loader == null) {
                 trace("WARNING: no image loader could be found for '" + prefix + "'");
                 callback(null);
@@ -67,9 +69,10 @@ class ImageLoader {
         }
     }
 
-    public function register(prefix:String, ctor:Void->ImageLoaderBase, isDefault:Bool = false, singleInstance:Bool = false) {
+    public function register(prefix:String, ctor:Void->ImageLoaderBase, pattern:String = null, isDefault:Bool = false, singleInstance:Bool = false) {
         var info:ImageLoaderInfo = {
             prefix: prefix,
+            pattern: pattern,
             ctor: ctor,
             isDefault: isDefault,
             singleInstance: singleInstance
@@ -80,13 +83,15 @@ class ImageLoader {
         }
     }
 
-    public function get(prefix:String):ImageLoaderBase {
-        var info:ImageLoaderInfo = _defaultLoader;
+    public function get(prefix:String, stringResource:String = null):ImageLoaderBase {
+        var info:ImageLoaderInfo = null;
         if (_registeredLoaders.exists(prefix)) {
             info = _registeredLoaders.get(prefix);
+        } else if (stringResource != null) {
+            info = findByPattern(stringResource);
         }
         if (info == null) {
-            return null;
+            info = _defaultLoader;
         }
 
         var instance:ImageLoaderBase = null;
@@ -104,11 +109,27 @@ class ImageLoader {
         }
         return instance;
     }
+
+    private function findByPattern(stringResource:String):ImageLoaderInfo {
+        for (prefix in _registeredLoaders.keys()) {
+            var info = _registeredLoaders.get(prefix);
+            if (info.pattern == null) {
+                continue;
+            }
+
+            var regexp = new EReg(info.pattern, "gm");
+            if (regexp.match(stringResource)) {
+                return info;
+            }
+        }
+        return null;
+    }
 }
 
 private typedef ImageLoaderInfo = {
     var prefix:String;
     var ctor:Void->ImageLoaderBase;
+    @:optional var pattern:String;
     @:optional var instance:ImageLoaderBase;
     @:optional var isDefault:Bool;
     @:optional var singleInstance:Bool;

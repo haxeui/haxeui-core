@@ -226,7 +226,7 @@ class ModuleMacros {
                 builder.add(macro
                     haxe.ui.loaders.image.ImageLoader.instance.register($v{imageLoader.prefix}, function() {
                         return new $t();
-                    }, $v{imageLoader.isDefault}, $v{imageLoader.singleInstance})
+                    }, $v{imageLoader.pattern}, $v{imageLoader.isDefault}, $v{imageLoader.singleInstance})
                 );
             }
 

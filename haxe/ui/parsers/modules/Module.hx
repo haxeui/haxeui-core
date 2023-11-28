@@ -165,6 +165,7 @@ class ModuleActionInputSourceEntry {
 
 class ModuleImageLoaderEntry {
     public var prefix(default, default):String;
+    public var pattern(default, default):String;
     public var className(default, default):String;
     public var isDefault(default, default):Bool;
     public var singleInstance(default, default):Bool;
