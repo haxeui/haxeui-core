@@ -156,7 +156,6 @@ class TreeViewNode extends VBox {
 private class AddNode extends Behaviour {
     public override function call(param:Any = null):Variant {
         var node = new TreeViewNode();
-        node.parentNode = cast(_component, TreeViewNode);
         node.data = param;
         _component.addComponent(node);
         return node;
@@ -382,6 +381,7 @@ private class TreeViewNodeBuilder extends CompositeBuilder {
         }
         
         if ((child is TreeViewNode)) {
+            cast(child, TreeViewNode).parentNode = _node;
             if (_childContainer == null) {
                 _childContainer = new VBox();
                 if (_node.expanded == true) {
@@ -395,6 +395,31 @@ private class TreeViewNodeBuilder extends CompositeBuilder {
             }
             changeToExpandableRenderer();
             return _childContainer.addComponent(child);
+        }
+        
+        return null;
+    }
+	
+	public override function addComponentAt(child:Component, index:Int) {
+        if (child == _renderer || child == _childContainer) {
+            return null;
+        }
+        
+        if ((child is TreeViewNode)) {
+            cast(child, TreeViewNode).parentNode = _node;
+            if (_childContainer == null) {
+                _childContainer = new VBox();
+                if (_node.expanded == true) {
+                    _childContainer.show();
+                } else {
+                    _childContainer.hide();
+                }
+                _childContainer.addClass("treenode-child-container");
+                _childContainer.id = "treenode-child-container";
+                _node.addComponent(_childContainer);
+            }
+            changeToExpandableRenderer();
+            return _childContainer.addComponentAt(child,index);
         }
         
         return null;
