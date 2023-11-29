@@ -72,7 +72,7 @@ class Dialog extends DialogBase {
     public function new() {
         super();
         ActionManager.instance.registerEvent(ActionEvent.ACTION_START, function(event) { // global action listener
-            if (event.action == ActionType.CANCEL || event.action == ActionType.BACK) {
+            if (this.closable && (event.action == ActionType.CANCEL || event.action == ActionType.BACK)) {
                 hideDialog(DialogButton.CANCEL);
             }
         });
