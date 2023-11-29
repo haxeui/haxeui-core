@@ -640,6 +640,22 @@ class ScrollViewEvents extends haxe.ui.events.Events {
             registerEvent(UIEvent.SHOWN, onShown);
         }
 
+        if (_scrollview.hasEvent(UIEvent.COMPONENT_ADDED) == false) {
+            registerEvent(UIEvent.COMPONENT_ADDED, onComponentAdded);
+        }
+
+        if (contents != null && contents.hasEvent(UIEvent.COMPONENT_ADDED) == false) {
+            contents.registerEvent(UIEvent.COMPONENT_ADDED, onContentsComponentAdded);
+        }
+
+        if (_scrollview.hasEvent(UIEvent.COMPONENT_REMOVED) == false) {
+            registerEvent(UIEvent.COMPONENT_REMOVED, onComponentRemoved);
+        }
+
+        if (contents != null && contents.hasEvent(UIEvent.COMPONENT_REMOVED) == false) {
+            contents.registerEvent(UIEvent.COMPONENT_REMOVED, onComponentRemoved);
+        }
+
         registerEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
         registerEvent(ActionEvent.ACTION_START, onActionStart, Priority.LOW);
     }
@@ -665,6 +681,14 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         unregisterEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
         unregisterEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
         unregisterEvent(UIEvent.SHOWN, onShown);
+        unregisterEvent(UIEvent.COMPONENT_ADDED, onComponentAdded);
+        if (contents != null) {
+            contents.unregisterEvent(UIEvent.COMPONENT_ADDED, onContentsComponentAdded);
+        }
+        unregisterEvent(UIEvent.COMPONENT_REMOVED, onComponentRemoved);
+        if (contents != null) {
+            contents.unregisterEvent(UIEvent.COMPONENT_REMOVED, onContentsComponentRemoved);
+        }
         unregisterEvent(ActionEvent.ACTION_START, onActionStart);
     }
 
@@ -678,6 +702,30 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         if (vscroll != null) {
             vscroll.invalidateComponentLayout();
         }
+    }
+
+    private function onComponentAdded(event:UIEvent) { 
+        if ((event.relatedComponent is Scroll)) {
+            event.cancel();
+            var scrollEvent = new ScrollEvent(ScrollEvent.CHANGE);
+            _scrollview.dispatch(scrollEvent);
+        }
+    }
+
+    private function onContentsComponentAdded(event:UIEvent) { 
+        _scrollview.dispatch(event);
+    }
+
+    private function onComponentRemoved(event:UIEvent) { 
+        if ((event.relatedComponent is Scroll)) {
+            event.cancel();
+            var scrollEvent = new ScrollEvent(ScrollEvent.CHANGE);
+            _scrollview.dispatch(scrollEvent);
+        }
+    }
+
+    private function onContentsComponentRemoved(event:UIEvent) { 
+        _scrollview.dispatch(event);
     }
 
     private function onContentsResized(event:UIEvent) {
