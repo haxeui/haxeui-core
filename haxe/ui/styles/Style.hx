@@ -411,16 +411,13 @@ class Style {
                     native = ValueTools.bool(v.value);
 
                 case "filter":
-                    #if !haxeui_nofilters
-                    filter = [];
-                    parseFilter(v.value, filter);  
+                    #if (!haxeui_nofilters && !haxeui_no_filters)
+                    filter = parseFilter(v.value);  
                     #end
 
                 case "backdrop-filter":
-                    #if !haxeui_nofilters
-                    backdropFilter = [];
-                    parseFilter(v.value, backdropFilter);
-                    
+                    #if (!haxeui_nofilters && !haxeui_no_filters)
+                    backdropFilter = parseFilter(v.value);
                     #end
 
                 case "resource":
@@ -784,7 +781,10 @@ class Style {
         if (animationOptions == null) animationOptions = {};
     }
 
-    private function parseFilter(value:Value, filters:Array<Filter>) {
+    private function parseFilter(value:Value, filters:Array<Filter> = null) {
+        if (filters == null) {
+            filters = [];
+        }
         switch (value) {
             case Value.VCall(f, vl):
                 var arr = ValueTools.array(vl);
@@ -801,7 +801,9 @@ class Style {
             case Value.VComposite(vl):
                 for (v in vl) {
                     parseFilter(v, filters);
-                }                  
+                }
+            case Value.VNone:
+                filters = null;                      
             case _:
         }
         return filters;
