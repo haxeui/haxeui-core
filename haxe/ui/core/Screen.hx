@@ -38,7 +38,7 @@ class Screen extends ScreenImpl {
      * A lower value means the mouse is at the left side of the screen,
      * whie a higher value means the mouse is at the right side of the screen.
      */
-    public var currentMouseX:Float = 0;
+    public var currentMouseX:Null<Float> = null;
     
     /**
      * The `y` position of the mouse on screen.
@@ -46,7 +46,7 @@ class Screen extends ScreenImpl {
      * A lower value means the mouse is closer to the top of the screen,
      * whie a higher value means the mouse is closer to the bottom of the screen.
      */
-    public var currentMouseY:Float = 0;
+    public var currentMouseY:Null<Float> = null;
     
     /**
      * Creates a new `Screen`.
@@ -165,7 +165,10 @@ class Screen extends ScreenImpl {
      * @param type Used to filter all components that aren't of a specific type. `null` by default, which means no filter is applied.
      * @return An array of all components that overlap the "global" position `(x, y)`
      */
-    public function findComponentsUnderPoint<T:Component>(screenX:Float, screenY:Float, type:Class<T> = null):Array<Component> {
+    public function findComponentsUnderPoint<T:Component>(screenX:Null<Float>, screenY:Null<Float>, type:Class<T> = null):Array<Component> {
+        if (screenX == null || screenY == null) {
+            return [];
+        }
         var c:Array<Component> = [];
         for (r in rootComponents) {
             if (r.hitTest(screenX, screenY)) {
@@ -190,7 +193,10 @@ class Screen extends ScreenImpl {
      * @param type Used to filter all components that aren't of a specific type. `null` by default, which means no filter is applied.
      * @return `true` if there is a component that overlaps the global position `(x, y)`, `false` otherwise.
      */ 
-    public function hasComponentUnderPoint<T:Component>(screenX:Float, screenY:Float, type:Class<T> = null):Bool {
+    public function hasComponentUnderPoint<T:Component>(screenX:Null<Float>, screenY:Null<Float>, type:Class<T> = null):Bool {
+        if (screenX == null || screenY == null) {
+            return false;
+        }
         for (r in rootComponents) {
             if (r.hasComponentUnderPoint(screenX, screenY, type) == true) {
                 return true;
@@ -210,7 +216,10 @@ class Screen extends ScreenImpl {
      * @param type Used to filter all components that aren't of a specific type. `null` by default, which means no filter is applied.
      * @return An array of all solid components that overlap the "global" position `(x, y)`
      */
-    public function findSolidComponentUnderPoint<T:Component>(screenX:Float, screenY:Float, type:Class<T> = null):Array<Component> {
+    public function findSolidComponentUnderPoint<T:Component>(screenX:Null<Float>, screenY:Null<Float>, type:Class<T> = null):Array<Component> {
+        if (screenX == null || screenY == null) {
+            return [];
+        }
         var solidComponents = [];
         var components = findComponentsUnderPoint(screenX, screenY, type);
         for (c in components) {
@@ -232,7 +241,10 @@ class Screen extends ScreenImpl {
      * @param type Used to filter all components that aren't of a specific type. `null` by default, which means no filter is applied.
      * @return `true` if there is a solid component that overlaps the global position `(x, y)`, `false` otherwise.
      */ 
-    public function hasSolidComponentUnderPoint<T:Component>(screenX:Float, screenY:Float, type:Class<T> = null):Bool {
+    public function hasSolidComponentUnderPoint<T:Component>(screenX:Null<Float>, screenY:Null<Float>, type:Class<T> = null):Bool {
+        if (screenX == null || screenY == null) {
+            return false;
+        }
         return (findSolidComponentUnderPoint(screenX, screenY, type).length > 0);
     }
 

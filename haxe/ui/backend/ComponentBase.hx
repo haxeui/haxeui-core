@@ -965,8 +965,11 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
       *Note*: `left` and `top` must be stage (screen) co-ords
      **/
      @:dox(group = "Size related properties and methods")
-     public function hitTest(left:Float, top:Float, allowZeroSized:Bool = false):Bool { // co-ords must be stage
- 
+     public function hitTest(left:Null<Float>, top:Null<Float>, allowZeroSized:Bool = false):Bool { // co-ords must be stage
+         if (left == null || top == null) {
+            return false;
+         }
+
          if (hasScreen == false) {
              return false;
          }
