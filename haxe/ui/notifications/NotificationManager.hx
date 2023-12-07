@@ -1,13 +1,17 @@
 package haxe.ui.notifications;
 
-import haxe.ui.util.Timer;
 import haxe.ui.Toolkit;
 import haxe.ui.animation.AnimationBuilder;
+import haxe.ui.animation.AnimationSequence;
 import haxe.ui.core.Screen;
+import haxe.ui.events.NotificationEvent;
+import haxe.ui.events.UIEvent;
+import haxe.ui.util.EventDispatcher;
+import haxe.ui.util.Timer;
 
 using haxe.ui.animation.AnimationTools;
 
-class NotificationManager {
+class NotificationManager extends EventDispatcher<NotificationEvent> {
     private static var _instance:NotificationManager;
     public static var instance(get, null):NotificationManager;
     private static function get_instance():NotificationManager {
@@ -24,9 +28,7 @@ class NotificationManager {
     private static var DEFAULT_EXPIRY:Int = 3000;
 
     public var maxNotifications:Int = -1;
-
-    private function new() {
-    }
+    public var animationFn:Array<Notification>->Array<AnimationBuilder> = AnimateFromBottom;
 
     private var _timer:Timer = null;
     private function startTimer() {
@@ -70,8 +72,8 @@ class NotificationManager {
             if (notificationData.expiryMs == null) {
                 notificationData.expiryMs = DEFAULT_EXPIRY;
             }
-        } else {
-            notificationData.expiryMs = -1; // we'll assume if there are actions we dont want it to expire
+        } else if (notificationData.expiryMs == null) {
+            notificationData.expiryMs = -1; // we'll assume if there are actions we dont want it to expire by default
         }
 
         var notification = new Notification();
@@ -113,6 +115,11 @@ class NotificationManager {
 
         _isAnimating = true;
         notification.fadeOut(function () {
+            var event = new NotificationEvent(NotificationEvent.HIDDEN);
+            event.notification = notification;
+            notification.dispatch(event);
+            dispatch(event, notification);
+
             _isAnimating = false;
             _currentNotifications.remove(notification);
             Screen.instance.removeComponent(notification);
@@ -129,10 +136,9 @@ class NotificationManager {
                 });
             }
         }
-        _currentNotifications.insert(0, notification);
+
         notification.opacity = 0;
         Screen.instance.addComponent(notification);
-        notification.validateNow();
         Toolkit.callLater(function () {
             notification.validateNow();
             var scx = Screen.instance.width;
@@ -146,6 +152,12 @@ class NotificationManager {
             notification.left = scx - notification.width - GUTTER_SIZE;
             notification.top = baseline - notification.height;
 
+            var event = new NotificationEvent(NotificationEvent.SHOWN);
+            event.notification = notification;
+            notification.dispatch(event);
+            dispatch(event, notification);
+
+            _currentNotifications.insert(0, notification);
             positionNotifications();
         });
 
@@ -163,47 +175,44 @@ class NotificationManager {
         if (_isAnimating == true) {
             return;
         }
-        _isAnimating = true;
-        var scy = Screen.instance.height;
-        var baseline = scy - GUTTER_SIZE;
 
-        var builder:AnimationBuilder = null;
-        var builders:Array<AnimationBuilder> = [];
-        for (notification in _currentNotifications) {
-            builder = new AnimationBuilder(notification);
+        _isAnimating = true;
+
+        var sequence = new AnimationSequence();
+        var builders = animationFn(_currentNotifications);
+        for (builder in builders) {
+            sequence.add(builder);
+        }
+
+        sequence.onComplete = function() {
+            _isAnimating = false;
+            if (_removeQueue.length > 0) {
+                popNotification(_removeQueue.shift());
+            } else if (_addQueue.length > 0) {
+                pushNotification(_addQueue.shift());
+            }
+        }
+        sequence.play();
+    }
+
+    public static function AnimateFromBottom(notifications:Array<Notification>):Array<AnimationBuilder> {
+        var builders = [];
+
+        var scy = Screen.instance.height;
+        var baselineY = scy - GUTTER_SIZE;
+
+        for (notification in notifications) {
+            var builder = new AnimationBuilder(notification);
             builder.setPosition(0, "top", Std.int(notification.top), true);
-            builder.setPosition(100, "top", Std.int(baseline - notification.height), true);
+            builder.setPosition(100, "top", Std.int(baselineY - notification.height), true);
             if (notification.opacity == 0) {
                 builder.setPosition(0, "opacity", 0, true);
                 builder.setPosition(100, "opacity", 1, true);
             }
             builders.push(builder);
-            baseline -= (notification.height + SPACING);
+            baselineY -= (notification.height + SPACING);
         }
 
-        if (builders.length > 0) {
-            builder.onComplete = function () {
-                _isAnimating = false;
-                /*
-                if (_addQueue.length > 0) {
-                    pushNotification(_addQueue.shift());
-                } else if (_removeQueue.length > 0) {
-                    popNotification(_removeQueue.shift());
-                }
-                */
-                if (_removeQueue.length > 0) {
-                    popNotification(_removeQueue.shift());
-                } 
-                if (_addQueue.length > 0) {
-                    pushNotification(_addQueue.shift());
-                }
-            }
-
-            for (builder in builders) {
-                builder.play();
-            }
-        } else {
-            _isAnimating = false;
-        }
+        return builders;
     }
 }

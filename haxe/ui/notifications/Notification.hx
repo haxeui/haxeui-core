@@ -2,6 +2,9 @@ package haxe.ui.notifications;
 
 import haxe.ui.components.Button;
 import haxe.ui.containers.VBox;
+import haxe.ui.events.MouseEvent;
+import haxe.ui.events.NotificationEvent;
+import haxe.ui.notifications.NotificationData.NotificationActionData;
 
 @:xml('
 <vbox>
@@ -70,13 +73,28 @@ class Notification extends VBox {
             actionsFooter.hide();
         } else {
             actionsContainer.removeAllComponents();
-            for (actionText in _notificationData.actions) {
+            for (actionData in _notificationData.actions) {
                 var button = new Button();
-                button.text = actionText;
+                button.text = actionData.text;
+                button.icon = actionData.icon;
+                button.userData = actionData;
+                button.registerEvent(MouseEvent.CLICK, onActionButton);
                 actionsContainer.addComponent(button);
             }
             actionsFooter.show();
         }
         return value;
+    }
+
+    private function onActionButton(event:MouseEvent) {
+        var event = new NotificationEvent(NotificationEvent.ACTION);
+        event.notification = this;
+        dispatch(event);
+        NotificationManager.instance.dispatch(event, this);
+
+        var actionData:NotificationActionData = event.target.userData;
+        if (actionData.callback != null) {
+            actionData.callback(actionData);
+        }
     }
 }
