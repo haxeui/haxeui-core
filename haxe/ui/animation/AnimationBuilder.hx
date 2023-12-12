@@ -35,7 +35,7 @@ class AnimationBuilder {
         return this;
     }
     
-    public function setPosition(time:Float, propertyName:String, value:Int, absolute:Bool = false):AnimationBuilder {
+    public function setPosition(time:Float, propertyName:String, value:Float, absolute:Bool = false):AnimationBuilder {
         var kf = findKeyFrameAtTime(time);
         if (kf == null) {
             kf = new AnimationKeyFrame();
