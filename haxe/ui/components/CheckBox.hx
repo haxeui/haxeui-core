@@ -4,6 +4,7 @@ import haxe.ui.actions.ActionType;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
+import haxe.ui.core.ICompositeInteractiveComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.events.ActionEvent;
 import haxe.ui.events.Events;
@@ -17,7 +18,7 @@ import haxe.ui.styles.Style;
  * A basic checkbox component.
  */
 @:composite(Events, CheckBoxBuilder, CheckBoxLayout)
-class CheckBox extends InteractiveComponent {
+class CheckBox extends InteractiveComponent implements ICompositeInteractiveComponent {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************

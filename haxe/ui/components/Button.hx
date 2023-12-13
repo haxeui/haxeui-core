@@ -8,6 +8,7 @@ import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.constants.Priority;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
+import haxe.ui.core.ICompositeInteractiveComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.ItemRenderer;
 import haxe.ui.core.Screen;
@@ -65,7 +66,7 @@ import haxe.ui.util.Variant;
 
 @:dox(icon = "ui-button.png")
 @:composite(ButtonEvents, ButtonBuilder, ButtonLayout)
-class Button extends InteractiveComponent {
+class Button extends InteractiveComponent implements ICompositeInteractiveComponent {
     //***********************************************************************************************************
     // Styles
     //***********************************************************************************************************

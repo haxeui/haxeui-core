@@ -7,10 +7,12 @@ import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
+import haxe.ui.core.ICompositeInteractiveComponent;
 import haxe.ui.core.IDirectionalComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.Screen;
 import haxe.ui.events.ActionEvent;
+import haxe.ui.events.DragEvent;
 import haxe.ui.events.DragEvent;
 import haxe.ui.events.Events;
 import haxe.ui.events.MouseEvent;
@@ -18,13 +20,12 @@ import haxe.ui.events.UIEvent;
 import haxe.ui.geom.Point;
 import haxe.ui.util.MathUtil;
 import haxe.ui.util.Variant;
-import haxe.ui.events.DragEvent;
 
 /**
  * A slider component, containing a thumb and a track to move the thumb along.
  */
 @:composite(SliderBuilder)
-class Slider extends InteractiveComponent implements IDirectionalComponent {
+class Slider extends InteractiveComponent implements IDirectionalComponent implements ICompositeInteractiveComponent {
     
     /**
      * Creates a new Slider.

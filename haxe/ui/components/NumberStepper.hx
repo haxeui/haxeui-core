@@ -7,6 +7,7 @@ import haxe.ui.components.Button;
 import haxe.ui.components.TextField;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
+import haxe.ui.core.ICompositeInteractiveComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.events.ActionEvent;
 import haxe.ui.events.FocusEvent;
@@ -24,7 +25,7 @@ import haxe.ui.util.Timer;
  * visual arrow buttons, arrow keys or just by typing in the stepper's text field.
  */
 @:composite(Events, Builder)
-class NumberStepper extends InteractiveComponent {
+class NumberStepper extends InteractiveComponent implements ICompositeInteractiveComponent {
 
     /**
      * The actual value of the number stepper.

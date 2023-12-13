@@ -4,6 +4,7 @@ import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
+import haxe.ui.core.ICompositeInteractiveComponent;
 import haxe.ui.core.IValueComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.events.UIEvent;
@@ -15,7 +16,7 @@ import haxe.ui.util.Variant;
  * A switch component that can be used to toggle between two states.
  */
 @:composite(Builder, HorizontalLayout)
-class Switch extends Component implements IValueComponent {
+class Switch extends Component implements IValueComponent implements ICompositeInteractiveComponent {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************

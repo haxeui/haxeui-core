@@ -4,6 +4,7 @@ import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.ValueBehaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
+import haxe.ui.core.ICompositeInteractiveComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.Platform;
 import haxe.ui.events.Events;
@@ -21,7 +22,7 @@ import haxe.ui.util.Variant;
  * A single line text input box. for multiline text input use `TextArea`.
  */
 @:composite(Events, Builder, TextFieldLayout)
-class TextField extends InteractiveComponent {
+class TextField extends InteractiveComponent implements ICompositeInteractiveComponent {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************

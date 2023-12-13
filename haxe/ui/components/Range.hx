@@ -5,6 +5,7 @@ import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.behaviours.InvalidatingBehaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
+import haxe.ui.core.ICompositeInteractiveComponent;
 import haxe.ui.core.IDirectionalComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.Screen;
@@ -19,7 +20,7 @@ import haxe.ui.util.Variant;
  * A range bar component, that starts from `min` and ends at `max`, defaults to 0-100.
  */
 @:composite(RangeBuilder)
-class Range extends InteractiveComponent implements IDirectionalComponent {
+class Range extends InteractiveComponent implements IDirectionalComponent implements ICompositeInteractiveComponent {
 
     /**
      * Creates a new range bar.

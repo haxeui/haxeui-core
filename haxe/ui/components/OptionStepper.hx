@@ -7,6 +7,7 @@ import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.components.Label;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
+import haxe.ui.core.ICompositeInteractiveComponent;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.data.DataSource;
@@ -23,7 +24,7 @@ import haxe.ui.util.Variant;
  * A stepper that allows the user to switch between items using the visual arrow buttons/arrow keys.
  */
 @:composite(Events, Builder, Layout)
-class OptionStepper extends InteractiveComponent implements IDataComponent {
+class OptionStepper extends InteractiveComponent implements IDataComponent implements ICompositeInteractiveComponent {
 
     /**
      * The index of the currently selected option.

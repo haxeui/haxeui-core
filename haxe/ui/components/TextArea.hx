@@ -5,6 +5,7 @@ import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
+import haxe.ui.core.ICompositeInteractiveComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.TextInput;
 import haxe.ui.data.ArrayDataSource;
@@ -21,7 +22,7 @@ import haxe.ui.util.Variant;
 import haxe.ui.validation.InvalidationFlags;
 
 @:composite(Events, TextAreaBuilder, TextAreaLayout)
-class TextArea extends InteractiveComponent implements IFocusable {
+class TextArea extends InteractiveComponent implements IFocusable implements ICompositeInteractiveComponent {
     //***********************************************************************************************************
     // Styles
     //***********************************************************************************************************

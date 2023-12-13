@@ -817,19 +817,27 @@ class Component extends ComponentImpl
                 match = false;
             }
 
+            // bit of a special case here: if we are looking for interactive components
+            // we DONT want to include all the interactives that are built out of other
+            // interactives, for example, as number stepper has buttons and a textfield,
+            // none of which we want when looking for interactives, we would expect just
+            // the number stepper
+            var continueRecursion = true;
+            if ((child is ICompositeInteractiveComponent) && type == cast InteractiveComponent) {
+                continueRecursion = false;
+            }
+
             if (match == true) {
                 r.push(cast child);
-                var childArray = child.findComponents(styleName, type, maxDepth);
-                for (c in childArray) { // r.concat caused issues here on hxcpp
-                    r.push(c);
-                }
-            } else {
+            }
+
+            if (continueRecursion) {
                 var childArray = child.findComponents(styleName, type, maxDepth);
                 for (c in childArray) { // r.concat caused issues here on hxcpp
                     r.push(c);
                 }
             }
-        }
+    }
         
         return r;
     }

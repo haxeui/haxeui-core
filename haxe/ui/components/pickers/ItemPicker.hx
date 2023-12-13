@@ -6,6 +6,7 @@ import haxe.ui.containers.HBox;
 import haxe.ui.core.BasicItemRenderer;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
+import haxe.ui.core.ICompositeInteractiveComponent;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.ItemRenderer;
@@ -18,7 +19,7 @@ import haxe.ui.geom.Size;
 import haxe.ui.layouts.DefaultLayout;
 
 @:composite(ItemPickerBuilder, Layout)
-class ItemPicker extends InteractiveComponent implements IDataComponent {
+class ItemPicker extends InteractiveComponent implements IDataComponent implements ICompositeInteractiveComponent {
     public var selectionType = "dropPanel";
     public var panelPosition = "auto";
     public var panelOrigin = "auto";

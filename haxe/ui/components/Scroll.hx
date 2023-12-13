@@ -1,21 +1,22 @@
 package haxe.ui.components;
 
-import haxe.ui.events.Events;
-import haxe.ui.events.ScrollEvent;
-import haxe.ui.util.Variant;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
+import haxe.ui.behaviours.LayoutBehaviour;
+import haxe.ui.core.ICompositeInteractiveComponent;
 import haxe.ui.core.IDirectionalComponent;
 import haxe.ui.core.InteractiveComponent;
-import haxe.ui.behaviours.LayoutBehaviour;
+import haxe.ui.events.Events;
 import haxe.ui.events.MouseEvent;
+import haxe.ui.events.ScrollEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.geom.Point;
+import haxe.ui.util.Variant;
 
 /**
  * A scrollbar component, like the ones you see in a browser.
  */
-class Scroll extends InteractiveComponent implements IDirectionalComponent {
+class Scroll extends InteractiveComponent implements IDirectionalComponent implements ICompositeInteractiveComponent {
 
     /**
      * Creates a new scrollbar.

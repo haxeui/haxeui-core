@@ -8,6 +8,7 @@ import haxe.ui.containers.Box;
 import haxe.ui.containers.HBox;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
+import haxe.ui.core.ICompositeInteractiveComponent;
 import haxe.ui.events.Events;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
@@ -17,7 +18,7 @@ import haxe.ui.styles.Style;
 import haxe.ui.util.Variant;
 
 @:composite(Builder, Events, TabBarLayout)
-class TabBar extends Component {
+class TabBar extends Component implements ICompositeInteractiveComponent {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
