@@ -68,6 +68,11 @@ class NumberStepper extends InteractiveComponent implements ICompositeInteractiv
      * for example, if the user types `20`, but the maximum is `10`, the value will automatically be set to `10`.
      */
     @:clonable @:behaviour(DefaultBehaviour, false)                     public var autoCorrect:Bool;
+
+    /**
+     * The time, in milliseconds, that the number stepper will auto corrects its own value
+     */
+     @:clonable @:behaviour(DefaultBehaviour, 850)                      public var autoCorrectInterval:Int;
     
     /**
      * The character that will be used to separate decimals (eg 100.00 or 100,00)
@@ -252,7 +257,7 @@ private class Events extends haxe.ui.events.Events {
                _autoCorrectTimer = null;
             }
             
-            _autoCorrectTimer = new Timer(350, onAutoCorrectTimer);
+            _autoCorrectTimer = new Timer(_stepper.autoCorrectInterval, onAutoCorrectTimer);
         } else {
             var newValue = ValueHelper.validateValue(_stepper);
             if (newValue != null) {
