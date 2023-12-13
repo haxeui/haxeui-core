@@ -87,10 +87,10 @@ class Notification extends VBox {
     }
 
     private function onActionButton(event:MouseEvent) {
-        var event = new NotificationEvent(NotificationEvent.ACTION);
-        event.notification = this;
-        dispatch(event);
-        NotificationManager.instance.dispatch(event, this);
+        var notificationEvent = new NotificationEvent(NotificationEvent.ACTION);
+        notificationEvent.notification = this;
+        dispatch(notificationEvent);
+        NotificationManager.instance.dispatch(notificationEvent, this);
 
         var actionData:NotificationActionData = event.target.userData;
         if (actionData.callback != null) {
