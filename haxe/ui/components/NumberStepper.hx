@@ -257,6 +257,7 @@ private class Events extends haxe.ui.events.Events {
                _autoCorrectTimer = null;
             }
             
+            ValueHelper.validateValue(_stepper);
             _autoCorrectTimer = new Timer(_stepper.autoCorrectInterval, onAutoCorrectTimer);
         } else {
             var newValue = ValueHelper.validateValue(_stepper);
