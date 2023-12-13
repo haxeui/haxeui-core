@@ -43,7 +43,7 @@ class NumberStepper extends InteractiveComponent implements ICompositeInteractiv
     /**
      * The amount by which the value is increased or decreased when the user presses the up or down buttons.
      */
-    @:clonable @:behaviour(DefaultBehaviour, 1)                         public var step:Float;
+    @:clonable @:behaviour(DefaultBehaviour, null)                      public var step:Null<Float>;
 
     /**
      * The highest value this stepper can get to, even when set through code.
@@ -280,7 +280,12 @@ private class Events extends haxe.ui.events.Events {
             return;
         }
         var parsedValue = Std.parseFloat(value.text);
-        _stepper.pos = MathUtil.clamp(parsedValue, _stepper.min, _stepper.max);
+        parsedValue = MathUtil.clamp(parsedValue, _stepper.min, _stepper.max);
+        if (_stepper.step != null && parsedValue % _stepper.step != 0) {
+            parsedValue = MathUtil.roundToNearest(parsedValue, _stepper.step);
+        }
+
+        _stepper.pos = parsedValue;
         var stringValue = StringUtil.padDecimal(_stepper.pos, _stepper.precision);
         stringValue = StringTools.replace(stringValue, ",", ".");
         stringValue = StringTools.replace(stringValue, ".", _stepper.decimalSeparator);
@@ -438,6 +443,7 @@ private class ValueHelper {
         var textValue = value.text;
         var min = stepper.min;
         var max = stepper.max;
+        var step = stepper.step;
 
         if (textValue != null) {
             textValue = StringTools.replace(textValue, ",", ".");
@@ -462,6 +468,11 @@ private class ValueHelper {
             valid = false;
         }
         
+        if (step != null && parsedValue % step != 0) {
+            valid = false;
+            parsedValue = MathUtil.roundToNearest(parsedValue, step);
+        }
+
         if (valid == false) {
             parsedValue = null;
             stepper.addClass("invalid-value");
@@ -477,6 +488,10 @@ private class ValueHelper {
         var textValue = value.text;
         var min = stepper.min;
         var max = stepper.max;
+        var step = stepper.step;
+        if (step == null) {
+            step = 1;
+        }
         var newValue:Float = stepper.pos;
         
         if (textValue == null || StringTools.trim(textValue) == "") {
@@ -484,7 +499,7 @@ private class ValueHelper {
                 newValue = min;
             }
         } else {
-            newValue += stepper.step;
+            newValue += step;
         }
         
         if (max != null && newValue > max) {
@@ -498,6 +513,10 @@ private class ValueHelper {
         var value = stepper.findComponent("value", TextField);
         var textValue = value.text;
         var min = stepper.min;
+        var step = stepper.step;
+        if (step == null) {
+            step = 1;
+        }
         var newValue:Float = stepper.pos;
         
         if (textValue == null || StringTools.trim(textValue) == "") {
@@ -505,7 +524,7 @@ private class ValueHelper {
                 newValue = min;
             }
         } else {
-            newValue -= stepper.step;
+            newValue -= step;
         }
         
         if (min != null && newValue < min) {
