@@ -33,8 +33,12 @@ class Notification extends VBox {
         super();
 
         closeButton.onClick = function(_) {
-            NotificationManager.instance.removeNotification(this);
+            hide();
         }
+    }
+
+    public override function hide() {
+        NotificationManager.instance.removeNotification(this);
     }
 
     private var _notificationData:NotificationData = null;
@@ -87,14 +91,26 @@ class Notification extends VBox {
     }
 
     private function onActionButton(event:MouseEvent) {
+        var closeNotification = true;
+
         var notificationEvent = new NotificationEvent(NotificationEvent.ACTION);
         notificationEvent.notification = this;
         dispatch(notificationEvent);
+        if (notificationEvent.canceled) {
+            closeNotification = false;
+        }
         NotificationManager.instance.dispatch(notificationEvent, this);
+        if (notificationEvent.canceled) {
+            closeNotification = false;
+        }
 
         var actionData:NotificationActionData = event.target.userData;
         if (actionData.callback != null) {
-            actionData.callback(actionData);
+            closeNotification = actionData.callback(actionData);
+        }
+
+        if (closeNotification) {
+            hide();
         }
     }
 }

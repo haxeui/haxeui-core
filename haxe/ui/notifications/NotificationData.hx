@@ -15,5 +15,5 @@ typedef NotificationData = {
 typedef NotificationActionData = {
     @:optional var text:String;
     @:optional var icon:Variant;
-    @:optional var callback:NotificationActionData->Void;
+    @:optional var callback:NotificationActionData->Bool;
 }
