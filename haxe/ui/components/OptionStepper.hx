@@ -47,7 +47,7 @@ class OptionStepper extends InteractiveComponent implements IDataComponent imple
      * `value` is used as a universal way to access the "core" value a component is based on. 
      * in this case its the index of the selected option inside this stepper.
      */
-    @:clonable @:value(selectedIndex)                   public var value:Dynamic;
+    @:clonable @:value(selectedItem)                    public var value:Dynamic;
 
     @:call(IncrementValue)                              public function incrementValue():Void;
     @:call(DeincrementValue)                            public function deincrementValue():Void;
@@ -101,11 +101,50 @@ private class SelectedIndexBehaviour extends DataBehaviour {
 }
 
 @:dox(hide) @:noCompletion
-private class SelectedItemBehaviour extends Behaviour {
+private class SelectedItemBehaviour extends DataBehaviour {
     public override function getDynamic():Dynamic {
         var stepper:OptionStepper = cast(_component, OptionStepper);
         var ds = stepper.dataSource;
         return ds.get(stepper.selectedIndex);
+    }
+
+    private override function validateData() {
+        var stepper:OptionStepper = cast(_component, OptionStepper);
+        var ds = stepper.dataSource;
+        if (ds == null) {
+            return;
+        }
+
+        var indexToSelect = -1;
+        for (i in 0...ds.size) {
+            var v:Dynamic = ds.get(i);
+            #if hl
+            if (Reflect.hasField(v, "value")) {
+                v = Std.string(v.value);
+            } else if (Reflect.hasField(v, "text")) {
+                v = Std.string(v.text);
+            }
+            #else
+            if (v.value != null) {
+                v = Std.string(v.value);
+            } else if (v.text != null) {
+                v = Std.string(v.text);
+            }
+            #end
+
+            if (v == _value.toString()) {
+                indexToSelect = i;
+                break;
+            }
+        }
+
+        if (indexToSelect != -1) {
+            stepper.selectedIndex = indexToSelect;
+        } else { // lets also allow selectedItem to be an index _if_ it wasnt found in the datasource
+            if (_value.isInt) {
+                stepper.selectedIndex = _value.toInt();
+            }
+        }
     }
 }
 
