@@ -129,6 +129,9 @@ class FocusManager extends FocusManagerImpl {
             applyFocus(cast value);
         } else {
             var top = Screen.instance.topComponent;
+            if (top == null) {
+                return null;
+            }
             if (_lastFocuses.exists(top)) {
                 _lastFocuses.get(top).focus = false;
                 unapplyFocus(cast _lastFocuses.get(top));
