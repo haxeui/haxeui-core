@@ -14,7 +14,7 @@ class LayoutMacros {
         var builder = new ClassBuilder(Context.getBuildFields(), Context.getLocalType(), Context.currentPos());
 
         if (builder.fullPath != "haxe.ui.layouts.Layout") {
-            ModuleMacros.loadModules();
+            //ModuleMacros.loadModules();
         }
 
         if (!Context.getLocalClass().get().isPrivate) {
