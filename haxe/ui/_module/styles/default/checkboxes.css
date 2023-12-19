@@ -23,7 +23,7 @@
     background-color: $tertiary-background-color;
     width: 18px;
     height: 18px;
-    vertical-align: top;
+    vertical-align: center;
     border-radius: 2px;
     icon: none;
     filter: $normal-inner-shadow;
