@@ -164,4 +164,12 @@
 .menuitempicker-panel #primaryPickerMenu {
     border: none;
     padding: none;
+    border-radius: none;
+}
+
+.menuitempicker-panel #primaryPickerMenu .menuitem {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
 }
