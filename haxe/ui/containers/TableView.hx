@@ -1,5 +1,6 @@
 package haxe.ui.containers;
 
+import haxe.ui.actions.ActionType;
 import haxe.ui.behaviours.Behaviour;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
@@ -17,6 +18,7 @@ import haxe.ui.core.ItemRenderer;
 import haxe.ui.data.ArrayDataSource;
 import haxe.ui.data.DataSource;
 import haxe.ui.data.transformation.NativeTypeTransformer;
+import haxe.ui.events.ActionEvent;
 import haxe.ui.events.ItemEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.ScrollEvent;
@@ -200,6 +202,7 @@ private class Events extends ScrollViewEvents {
     }
 
     private function onRendererMouseDown(e:MouseEvent) {
+        _tableview.focus = true;
         switch (_tableview.selectionMode) {
             case SelectionMode.MULTIPLE_LONG_PRESS:
                 if (_tableview.selectedIndices.length == 0) {
@@ -341,6 +344,43 @@ private class Events extends ScrollViewEvents {
 
     private function selectRange(fromIndex:Int, toIndex:Int) {
         _tableview.selectedIndices = [for (i in fromIndex...toIndex + 1) i];
+    }
+
+    private override function onActionStart(event:ActionEvent) {
+        if (tableView.virtual) return;
+        switch (event.action) {
+            case ActionType.DOWN:
+                if (_tableview.selectedIndex < 0) {
+                    _tableview.selectedIndex = 0;
+                } else {
+                    var n:Int = _tableview.selectedIndex;
+                    n++;
+                    if (n > _tableview.dataSource.size - 1) {
+                        n = 0;
+                    }
+                    _tableview.selectedIndex = n;
+                }
+                event.repeater = true;
+            case ActionType.UP:
+                if (_tableview.selectedIndex < 0) {
+                    _tableview.selectedIndex = _tableview.dataSource.size - 1;
+                } else {
+                    var n:Int = _tableview.selectedIndex;
+                    n--;
+                    if (n < 0) {
+                        n = _tableview.selectedIndex = _tableview.dataSource.size - 1;
+                    }
+                    _tableview.selectedIndex = n;
+                }
+                event.repeater = true;
+            case ActionType.LEFT:    
+                _scrollview.hscrollPos -= 10;
+                event.repeater = true;
+            case ActionType.RIGHT:    
+                _scrollview.hscrollPos += 10;
+                event.repeater = true;
+            case _:    
+        }
     }
 }
 
