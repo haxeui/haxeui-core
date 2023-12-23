@@ -627,6 +627,41 @@ private class Builder extends ScrollViewBuilder {
             return true;
         });
     }
+
+    private function ensureVisible(itemToEnsure:ItemRenderer) {
+        if (itemToEnsure != null && _tableview.virtual == false) {
+            var vscroll:VerticalScroll = _tableview.findComponent(VerticalScroll);
+            if (vscroll != null) {
+                var vpos:Float = vscroll.pos;
+                var contents:Component = _tableview.findComponent("tableview-contents", "css");
+                if (itemToEnsure.top + itemToEnsure.height > vpos + contents.componentClipRect.height) {
+                    vscroll.pos = ((itemToEnsure.top + itemToEnsure.height) - contents.componentClipRect.height);
+                } else if (itemToEnsure.top < vpos) {
+                    vscroll.pos = itemToEnsure.top;
+                }
+            }
+        }
+    }
+    
+    
+    @:access(haxe.ui.layouts.VerticalVirtualLayout)
+    private function ensureVirtualItemVisible(index:Int) {
+        var vscroll:VerticalScroll = _tableview.findComponent(VerticalScroll);
+        if (vscroll != null) {
+            var layout = cast(_tableview.layout, VerticalVirtualLayout);
+            var itemHeight = layout.itemHeight;
+            var itemTop = index * itemHeight;
+                var vpos:Float = vscroll.pos;
+                var contents:Component = _tableview.findComponent("tableview-contents", "css");
+                if (itemTop + itemHeight > vpos + contents.componentClipRect.height) {
+                    vscroll.pos = ((itemTop + itemHeight) - contents.componentClipRect.height);
+                } else if (itemTop < vpos) {
+                    vscroll.pos = itemTop;
+                }
+        }
+    }
+
+
 }
 
 //***********************************************************************************************************
@@ -807,17 +842,12 @@ private class SelectedIndicesBehaviour extends DataBehaviour {
             }
         }
 
-        if (itemToEnsure != null && tableView.virtual == false) {  // TODO: virtual scroll into view
-            var vscroll:VerticalScroll = tableView.findComponent(VerticalScroll);
-            if (vscroll != null) {
-                var vpos:Float = vscroll.pos;
-                var contents:Component = tableView.findComponent("tableview-contents", "css");
-                if (itemToEnsure.top + itemToEnsure.height > vpos + contents.componentClipRect.height) {
-                    vscroll.pos = ((itemToEnsure.top + itemToEnsure.height) - contents.componentClipRect.height);
-                } else if (itemToEnsure.top < vpos) {
-                    vscroll.pos = itemToEnsure.top;
-                }
+        if (tableView.virtual) {
+            for (i in selectedIndices) {
+                @:privateAccess builder.ensureVirtualItemVisible(i);
             }
+        } else {
+            @:privateAccess builder.ensureVisible(itemToEnsure);
         }
 
         if (tableView.selectedIndex != -1 && tableView.selectedIndices.length != 0) {
