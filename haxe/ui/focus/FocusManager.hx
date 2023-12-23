@@ -42,7 +42,7 @@ class FocusManager extends FocusManagerImpl {
     private function onScreenMouseDown(event:MouseEvent) {
         var list = Screen.instance.findComponentsUnderPoint(event.screenX, event.screenY);
         for (l in list) {
-            if (isOfType(l, IFocusable) && @:privateAccess !cast(l, Component).isScroller) {
+            if (isOfType(l, IFocusable)) {
                 return;
             }
         }
