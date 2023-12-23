@@ -347,7 +347,6 @@ private class Events extends ScrollViewEvents {
     }
 
     private override function onActionStart(event:ActionEvent) {
-        if (tableView.virtual) return;
         switch (event.action) {
             case ActionType.DOWN:
                 if (_tableview.selectedIndex < 0) {
@@ -566,6 +565,8 @@ private class Builder extends ScrollViewBuilder {
             }
             i++;
         }
+
+        
 
         /* NOT SURE WHAT THIS IS, OR WHY ITS HERE, IT SEEMS LIKE TEST CODE THAT
          * HAS BEEN LEFT IN, COMMENTING FOR NOW, BUT LOOK TO REMOVE LATER IF
