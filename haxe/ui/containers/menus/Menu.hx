@@ -125,6 +125,8 @@ class MenuEvents extends haxe.ui.events.Events {
         }
     }
 
+    public var lastEventSubMenu:MouseEvent = null;
+
     private function onItemMouseOver(event:MouseEvent) {
         var builder:Builder = cast(_menu._compositeBuilder, Builder);
         var subMenus:Map<MenuItem, Menu> = builder._subMenus;
@@ -139,9 +141,43 @@ class MenuEvents extends haxe.ui.events.Events {
         if (subMenus.get(item) != null) {
             _currentItem = item;
             showSubMenu(cast(subMenus.get(item), Menu), item);
+            lastEventSubMenu = event;
         } else {
-            hideCurrentSubMenu();
+            if (currentSubMenu != null) {
+                if (!isMouseAimingForSubMenu(event)) {
+                    hideCurrentSubMenu();
+                    lastEventSubMenu = null;
+                }
+                lastEventSubMenu = event;
+            }
         }
+    }
+
+    private function isMouseAimingForSubMenu(event:MouseEvent) {
+        // We check if the mouse is moving towards the submenu
+        // by looking if it's inside the triangle formed by his last position
+        // and the top and bottom of the submenu
+        if (lastEventSubMenu == null) return true;
+        var vX = lastEventSubMenu.screenX;
+        var vY = lastEventSubMenu.screenY;
+        var v2X = currentSubMenu.screenLeft;
+        var v2Y = currentSubMenu.screenTop;
+        var v3X = v2X;
+        var v3Y = currentSubMenu.screenTop + currentSubMenu.height;
+
+        // https://stackoverflow.com/questions/2049582/how-to-determine-if-a-point-is-in-a-2d-triangle
+        inline function sign (px:Float, py:Float, p2x:Float, p2y:Float, p3x:Float, p3y:Float)
+        {
+            return (px - p3x) * (p2y - p3y) - (p2x - p3x) * (py - p3y);
+        }
+
+        var d1 = sign(event.screenX, event.screenY,  vX, vY, v2X, v2Y);
+        var d2 = sign(event.screenX, event.screenY,  v2X, v2Y, v3X, v3Y);
+        var d3 = sign(event.screenX, event.screenY,  v3X, v3Y, vX, vY);
+
+        var hasNeg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+        var hasPos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+        return !(hasNeg && hasPos);
     }
 
     private function onItemMouseOut(event:MouseEvent) {
