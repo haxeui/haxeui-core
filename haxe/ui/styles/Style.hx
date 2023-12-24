@@ -351,7 +351,7 @@ class Style {
                 case "icon":
                     switch (v.value) {
                         case Value.VNone:
-                            icon = null;
+                            icon = "";
                         case _:
                             icon = ValueTools.variant(v.value);
                     }

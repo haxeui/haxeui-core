@@ -220,7 +220,7 @@ private class ResourceBehaviour extends DataBehaviour {
     private var _canvasMap:Map<String, Canvas> = null; // we'll want to cache any canvases used so we dont cloneComponent over and ove again
     
     private override function validateData() {
-        if (_value == null || _value.isNull) {
+        if (_value == null || _value.isNull || _value == "") {
             _component.removeImageDisplay();
             _component.invalidateComponent();
             return;
