@@ -168,7 +168,7 @@ var main = Toolkit.componentFromString('<vbox><button text="Button" /></vbox>', 
 Screen.instance.addComponent(main);
 ```
 
-## Addtional resources
+## Additional resources
 * <a href="http://haxeui.org/explorer/">component-explorer</a> - Browse HaxeUI components
 * <a href="http://haxeui.org/builder/">playground</a> - Write and test HaxeUI layouts in your browser
 * <a href="https://github.com/haxeui/component-examples">component-examples</a> - Various componet examples
