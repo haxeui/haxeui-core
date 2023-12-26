@@ -227,6 +227,8 @@ private class ScrollValueBehaviour extends DataBehaviour {
         }
 
         var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
+        changeEvent.previousValue = _previousValue;
+        changeEvent.value = pos;
         scroll.dispatch(changeEvent);
         
         var scrollEvent:ScrollEvent = new ScrollEvent(ScrollEvent.SCROLL);
