@@ -216,10 +216,19 @@ private class MinBehaviour extends DataBehaviour {
         if (range == null) {
             return;
         }
-        if (cast(_component, Slider).start == null) {
+        var slider = cast(_component, Slider);
+        if (slider.start == null) {
             range.start = _value;
         }
         range.min = _value;
+        if (slider.minorTicks != null) {
+            --slider.minorTicks;
+            ++slider.minorTicks;
+        }
+        if (slider.majorTicks != null) {
+            --slider.majorTicks;
+            ++slider.majorTicks;
+        }
         _component.invalidateComponentLayout();
     }
 }
@@ -231,7 +240,16 @@ private class MaxBehaviour extends DataBehaviour {
         if (range == null) {
             return;
         }
+        var slider = cast(_component, Slider);
         range.max = _value;
+        if (slider.minorTicks != null) {
+            --slider.minorTicks;
+            ++slider.minorTicks;
+        }
+        if (slider.majorTicks != null) {
+            --slider.majorTicks;
+            ++slider.majorTicks;
+        }
         _component.invalidateComponentLayout();
     }
 }
@@ -288,16 +306,21 @@ private class MinorTicks extends DataBehaviour {
         if (_value != null && _value.isNull == false) {
             var slider:Slider = cast(_component, Slider);
             var ticks = slider.findComponents("minor-tick", 1);
-            if (ticks == null || ticks.length == 0) {
-                var m:Float = slider.max - slider.min;
-                var v:Float = _value;
-                var n:Int = Std.int(m / v);
+            var v:Float = _value;
+            var m:Float = slider.max - slider.min;
+            var n:Int = Std.int(m / v) + 1;
+            if (ticks == null || ticks.length != n) {
                 var index = slider.getComponentIndex(slider.findComponent(Range));
-                for (_ in 0...n + 1) {
+                var addN = Std.int(n - ticks.length);
+                for (_ in 0...addN) {
                     var tick = new Component();
                     tick.addClass("minor-tick");
                     tick.scriptAccess = false;
                     slider.addComponentAt(tick, index + 1);
+                }
+                var removeN = Std.int(ticks.length - n);
+                for (_ in 0...removeN) {
+                    slider.removeComponentAt(index + 1);
                 }
             }
         } else {
@@ -310,16 +333,21 @@ private class MajorTicks extends DataBehaviour {
         if (_value != null && _value.isNull == false) {
             var slider:Slider = cast(_component, Slider);
             var ticks = slider.findComponents("major-tick", 1);
-            if (ticks == null || ticks.length == 0) {
-                var m:Float = slider.max - slider.min;
-                var v:Float = _value;
-                var n:Int = Std.int(m / v);
+            var v:Float = _value;
+            var m:Float = slider.max - slider.min;
+            var n:Int = Std.int(m / v) + 1;
+            if (ticks == null || ticks.length != n) {
                 var index = slider.getComponentIndex(slider.findComponent(Range));
-                for (_ in 0...n + 1) {
+                var addN = Std.int(n - ticks.length);
+                for (_ in 0...addN) {
                     var tick = new Component();
                     tick.addClass("major-tick");
                     tick.scriptAccess = false;
                     slider.addComponentAt(tick, index + 1);
+                }
+                var removeN = Std.int(ticks.length - n);
+                for (_ in 0...removeN) {
+                    slider.removeComponentAt(index + 1);
                 }
             }
         } else {

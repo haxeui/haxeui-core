@@ -406,7 +406,7 @@ private class IconBehaviour extends DataBehaviour {
     private override function validateData() {
         var icon:Image = _component.findComponent("button-icon", false);
 
-        if ((_value == null || _value.isNull) && icon != null) {
+        if ((_value == null || _value.isNull || _value == "") && icon != null) {
             _component.customStyle.icon = null;
             _component.removeComponent(icon);
             return;

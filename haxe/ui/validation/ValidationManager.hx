@@ -148,15 +148,13 @@ class ValidationManager {
 
         isValidating = false;
         
-        /*
-        #if haxeui_flixel
         if (_queue.length > 0) { // lets process any stragglers - items maybe have been added while processing other parts
-            process();
+            isPending = true;
+            Toolkit.callLater(process);
+        } else {
+            isPending = false;
         }
-        #end
-        */
         
-        isPending = false;
 
         #if profile_validation
         _profileCount++;
@@ -180,7 +178,7 @@ class ValidationManager {
         
     }
 
-    private function queueSortFunction(first:IValidating, second:IValidating):Int {
+    private inline function queueSortFunction(first:IValidating, second:IValidating):Int {
         var difference:Int = second.depth - first.depth;
         //Down to top
         return if (difference > 0) 1; else if (difference < 0) -1; else 0;
