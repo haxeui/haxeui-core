@@ -743,7 +743,7 @@ class ScrollViewEvents extends haxe.ui.events.Events {
             
             var mouseX = haxe.ui.core.Screen.instance.currentMouseX;
             var mouseY = haxe.ui.core.Screen.instance.currentMouseY;
-            // components have not yet moved
+            // components have not yet moved so comparing actual and future position
             dispatchHoveringEvents(mouseX, mouseY, mouseX + diffX, mouseY);
         }
     }
@@ -763,7 +763,7 @@ class ScrollViewEvents extends haxe.ui.events.Events {
             
             var mouseX = haxe.ui.core.Screen.instance.currentMouseX;
             var mouseY = haxe.ui.core.Screen.instance.currentMouseY;
-            // components have not yet moved
+            // components have not yet moved so comparing actual and future position
             dispatchHoveringEvents(mouseX, mouseY, mouseX, mouseY + diffY);
         }
     }
@@ -773,7 +773,6 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         var oldComponents = _scrollview.findComponentsUnderPoint(oldScreenX, oldScreenY);
         var newComponents = _scrollview.findComponentsUnderPoint(newScreenX, newScreenY, true);
 
-        
         var oldHoveredComponents = [];
         var newHoveredComponents = [];
 
@@ -783,7 +782,6 @@ class ScrollViewEvents extends haxe.ui.events.Events {
                 oldHoveredComponents.push(c);
             }
         }
-
         for ( c in newComponents) {
             @:privateAccess if (c.__events != null && (c.__events._map.exists(MouseEvent.MOUSE_OUT) ||
             c.__events._map.exists(MouseEvent.MOUSE_OVER))) {
@@ -797,7 +795,6 @@ class ScrollViewEvents extends haxe.ui.events.Events {
                 c.dispatch(mouseEvent);
             }
         }
-
         for ( c in newHoveredComponents) {
             if (oldHoveredComponents.indexOf(c) == -1) {
                 var mouseEvent = new MouseEvent(MouseEvent.MOUSE_OVER);
