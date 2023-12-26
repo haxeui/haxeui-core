@@ -744,7 +744,7 @@ class ScrollViewEvents extends haxe.ui.events.Events {
             var mouseX = haxe.ui.core.Screen.instance.currentMouseX;
             var mouseY = haxe.ui.core.Screen.instance.currentMouseY;
             // components have not yet moved so comparing actual and future position
-            dispatchHoveringEvents(mouseX, mouseY, mouseX + diffX, mouseY);
+            simulateHoveringEvents(mouseX, mouseY, mouseX + diffX, mouseY);
         }
     }
 
@@ -764,11 +764,11 @@ class ScrollViewEvents extends haxe.ui.events.Events {
             var mouseX = haxe.ui.core.Screen.instance.currentMouseX;
             var mouseY = haxe.ui.core.Screen.instance.currentMouseY;
             // components have not yet moved so comparing actual and future position
-            dispatchHoveringEvents(mouseX, mouseY, mouseX, mouseY + diffY);
+            simulateHoveringEvents(mouseX, mouseY, mouseX, mouseY + diffY);
         }
     }
 
-    private function dispatchHoveringEvents(oldScreenX:Float, oldScreenY:Float, newScreenX:Float, newScreenY:Float) {
+    private function simulateHoveringEvents(oldScreenX:Float, oldScreenY:Float, newScreenX:Float, newScreenY:Float) {
 
         var oldComponents = _scrollview.findComponentsUnderPoint(oldScreenX, oldScreenY);
         var newComponents = _scrollview.findComponentsUnderPoint(newScreenX, newScreenY, true);
