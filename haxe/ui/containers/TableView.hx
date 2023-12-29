@@ -555,12 +555,15 @@ private class Builder extends ScrollViewBuilder {
                     } else {
                         existing = temp.findAncestor(ItemRenderer);
                     }
+                    existing.styleNames = "column-" + column.id;
                     _tableview.itemRenderer.setComponentIndex(existing, i);
                 } else {
                     var itemRenderer = createRenderer(column);
+                    itemRenderer.styleNames = "column-" + column.id;
                     _tableview.itemRenderer.addComponentAt(itemRenderer, i);
                 }
             } else {
+                existing.styleNames = "column-" + column.id;
                 _tableview.itemRenderer.setComponentIndex(existing, i);
             }
             i++;
