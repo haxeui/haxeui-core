@@ -78,10 +78,22 @@ private class CollapsedBehaviour extends DataBehaviour {
             collapseExpandIcon.swapClass("collapsed", "expanded");
             border.swapClass("collapsed", "expanded");
             contents.swapClass("collapsed", "expanded");
+            if (frame.percentHeight != null) {
+                builder.cachedPercentHeight = frame.percentHeight;
+            } else if (frame.height != null) {
+                builder.cachedHeight = frame.height;
+            }
+            frame.percentHeight = null;
+            frame.height = null;
         } else {
             collapseExpandIcon.swapClass("expanded", "collapsed");
             border.swapClass("expanded", "collapsed");
             contents.swapClass("expanded", "collapsed");
+            if (builder.cachedPercentHeight != null) {
+                frame.percentHeight = builder.cachedPercentHeight;
+            } else if (builder.cachedHeight != null) {
+                frame.height = builder.cachedHeight;
+            }
         }
     }
 }
@@ -97,6 +109,9 @@ private class Builder extends CompositeBuilder {
     private var _contents:Box;
     private var _label:Label;
     private var _header:Header;
+
+    public var cachedPercentHeight:Null<Float> = null;
+    public var cachedHeight:Null<Float> = null;
 
     public function new(frame:Frame) {
         super(frame);
