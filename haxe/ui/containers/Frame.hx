@@ -80,11 +80,11 @@ private class CollapsedBehaviour extends DataBehaviour {
             contents.swapClass("collapsed", "expanded");
             if (frame.percentHeight != null) {
                 builder.cachedPercentHeight = frame.percentHeight;
-            } else if (frame.height != null) {
-                builder.cachedHeight = frame.height;
+            } else if (frame._height != null) {
+                builder.cachedHeight = frame._height;
             }
             frame.percentHeight = null;
-            frame.height = null;
+            frame._height = null;
         } else {
             collapseExpandIcon.swapClass("expanded", "collapsed");
             border.swapClass("expanded", "collapsed");
