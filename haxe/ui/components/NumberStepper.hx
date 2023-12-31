@@ -468,7 +468,7 @@ private class ValueHelper {
             valid = false;
         }
 
-        if (step != null && MathUtil.fmodulo(parsedValue, step) !=0) {
+        if (step != null && MathUtil.fmodulo(parsedValue, step) != 0) {
             valid = false;
             parsedValue = MathUtil.roundToNearest(parsedValue, step);
         }
