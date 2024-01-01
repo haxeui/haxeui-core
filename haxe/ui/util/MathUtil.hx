@@ -22,23 +22,27 @@ class MathUtil {
         if (!Math.isFinite(v1) || !Math.isFinite(v2)) {
             return Math.NaN;
         }
-        var p = Std.int(Math.max(precision(v1), precision(v2)));
+        var p = Std.int(Math.min(5, Math.max(precision(v1), precision(v2))));
         var e = 1;
         for ( i in 0...p) {
             e *= 10;
         }
-        var i1 = Std.int(v1 * e);
-        var i2 = Std.int(v2 * e);
-        return i1 % i2 / e;
+        var i1 = Math.round(v1 * e);
+        var i2 = Math.round(v2 * e);
+        return round(i1 % i2 / e, p);
     }
 
     public static inline function round(v:Float, precision:Int = 0):Float {
-        return Math.round(v * Math.pow(10, precision)) / Math.pow(10, precision);
+        return Math.fround(v * Math.pow(10, precision)) / Math.pow(10, precision);
     }
 
     public static inline function roundToNearest(v:Float, n:Float):Float {
+        if (!Math.isFinite(v) || !Math.isFinite(n)) {
+            return Math.NaN;
+        }     
+        var p = Std.int(Math.min(5, Math.max(precision(v), precision(n))));
         var inv = 1.0 / n;
-        return Math.fround(v * inv) / inv;
+        return round(Math.fround(v * inv) / inv, p);
     }
     
     public static inline function clamp(v:Null<Float>, min:Null<Float>, max:Null<Float>):Float {
