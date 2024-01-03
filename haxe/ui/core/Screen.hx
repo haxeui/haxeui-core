@@ -285,6 +285,10 @@ class Screen extends ScreenImpl {
         }
     }
 
+    public function hasEvent(type:String, listener:Dynamic->Void):Bool {
+        return _eventMap.contains(type, listener);
+    }
+
     /**
      * Removes an event listener from a specific type of event.
      * 

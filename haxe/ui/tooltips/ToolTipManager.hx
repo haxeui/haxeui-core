@@ -7,12 +7,14 @@ import haxe.ui.core.Component;
 import haxe.ui.core.ItemRenderer;
 import haxe.ui.core.Screen;
 import haxe.ui.events.MouseEvent;
+import haxe.ui.geom.Rectangle;
 import haxe.ui.util.Timer;
 
 class ToolTipManager {
     public static var defaultDelay:Int = 500;
     public static var defaultRenderer:ItemRenderer = null;
     public static var fade:Bool = true;
+    public static var followMouse:Bool = false;
 
     private static var _instance:ToolTipManager;
     public static var instance(get, null):ToolTipManager;
@@ -28,9 +30,31 @@ class ToolTipManager {
     //****************************************************************************************************
     private var _lastMouseEvent:MouseEvent = null;
     private var _toolTipOptions:Map<Component, ToolTipOptions>;
+    private var _toolTipRegions:Array<ToolTipRegionOptions> = [];
 
     private function new() {
         _toolTipOptions = new Map<Component, ToolTipOptions>();
+    }
+
+    public function registerTooltipRegion(options:ToolTipRegionOptions):ToolTipRegionOptions {
+        if (_toolTipRegions.indexOf(options) == -1) {
+            _toolTipRegions.insert(0, options); // we'll add it to the start so we dont need to reverse the array
+                                                // were going to work on the principle that if regions overlap
+                                                // the "topmost" one will trigger, which will be the last added
+        }
+
+        if (_toolTipRegions.length > 0 && !Screen.instance.hasEvent(MouseEvent.MOUSE_MOVE, onScreenMouseMoveRegion)) {
+            Screen.instance.registerEvent(MouseEvent.MOUSE_MOVE, onScreenMouseMoveRegion, Priority.LOWEST);
+        }
+
+        return options;
+    }
+
+    public function unregisterTooltipRegion(options:ToolTipRegionOptions) {
+        _toolTipRegions.remove(options);
+        if (_toolTipRegions.length == 0) {
+            Screen.instance.unregisterEvent(MouseEvent.MOUSE_MOVE, onScreenMouseMoveRegion);
+        }
     }
 
     public function registerTooltip(target:Component, options:ToolTipOptions = null) {
@@ -64,9 +88,53 @@ class ToolTipManager {
         options.renderer = renderer;
     }
 
+    private static var calcRect:Rectangle = new Rectangle();
+    private var _currentRegion:ToolTipRegionOptions = null;
+    private function onScreenMouseMoveRegion(event:MouseEvent) {
+        _lastMouseEvent = event;
+
+        var found = false;
+        for (region in _toolTipRegions) {
+            calcRect.set(region.left, region.top, region.width, region.height);
+            if (calcRect.containsPoint(event.screenX, event.screenY)) {
+                found = true;
+                if (_currentRegion != region) {
+                    if (_currentRegion != null) {
+                        hideCurrentToolTip();
+                    }
+                    _currentRegion = region;
+                    stopTimer();
+                    startTimer();
+                } else {
+                    if (_toolTip != null && followMouse) {
+                        positionToolTip(_lastMouseEvent.screenX, _lastMouseEvent.screenY);
+                    }
+                }
+                break;
+            }
+        }
+        if (!found) {
+            if (_currentRegion != null) {
+                stopTimer();
+                hideCurrentToolTip();
+            }
+            _currentRegion = null;
+        }
+    }
+
     private var _currentComponent:Component = null;
     private var _timer:Timer = null;
     private function onTargetMouseOver(event:MouseEvent) {
+        if (_currentComponent != null && _currentComponent.style != null && _currentComponent.style.pointerEvents != null && _currentComponent.style.pointerEvents != "none") {
+            if (_currentComponent == event.target || _currentComponent.containsChildComponent(event.target, true)) {
+                return;
+            }
+        }
+
+        if (_toolTip != null) {
+            _toolTip.hide();
+        }
+
         event.cancel();
         stopCurrent();
 
@@ -80,6 +148,9 @@ class ToolTipManager {
 
     private function onTargetMouseMove(event:MouseEvent) {
         if (_toolTip != null && _toolTip.hidden == false) {
+            if (followMouse) {
+                positionToolTip();
+            }
             return;
         }
         stopTimer();
@@ -87,14 +158,23 @@ class ToolTipManager {
     }
 
     private function onTargetMouseOut(event:MouseEvent) {
+        if (_currentComponent != null && _currentComponent.style != null && _currentComponent.style.pointerEvents != null && _currentComponent.style.pointerEvents != "none") {
+            if (event.target.hitTest(event.screenX, event.screenY)) {
+                return;
+            }
+        }
         stopCurrent();
-        hideToolTip();
+        hideCurrentToolTip();
     }
 
     private function onDelayTimer() {
         _timer.stop();
         _timer = null;
-        showToolTip();
+        if (_currentRegion != null) {
+            showToolTipForRegion(_currentRegion);
+        } else if (_currentComponent != null) {
+            showToolTipForComponent(_currentComponent);
+        }
     }
 
     private function onScreenMouseMove(event:MouseEvent) {
@@ -102,7 +182,7 @@ class ToolTipManager {
     }
 
     private function onScreenMouseDown(event:MouseEvent) {
-        hideToolTip();
+        hideCurrentToolTip();
     }
 
     private function startTimer() {
@@ -135,12 +215,42 @@ class ToolTipManager {
         _toolTip = new ToolTip();
     }
 
-    private function showToolTip() {
-        if (_currentComponent == null) {
+    public function showToolTipAt(left:Float, top:Float, options:ToolTipOptions) {
+        createToolTip();
+        _toolTip.hide();
+
+        var renderer = createToolTipRenderer(options);
+        if (_toolTip.childComponents[0] != renderer) {
+            if (_toolTip.childComponents.length > 0) {
+                _toolTip.removeComponentAt(0, false);
+            }
+            _toolTip.addComponent(renderer);
+        }
+
+        renderer.data = options.tipData;
+
+        Screen.instance.addComponent(_toolTip);
+        Screen.instance.setComponentIndex(_toolTip, Screen.instance.rootComponents.length - 1);
+        _toolTip.validateNow();
+
+        positionToolTip(left, top);
+        Toolkit.callLater(function() {
+            if (fade == true) {
+                _toolTip.fadeIn();
+            } else {
+                _toolTip.show();
+            }
+        });
+
+        Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
+    }
+
+    private function showToolTipForComponent(component:Component) {
+        if (component == null) {
             return;
         }
         
-        if (_currentComponent.disabled == true || _currentComponent.hidden == true) {
+        if (component.disabled == true || component.hidden == true) {
             stopCurrent();
             return;
         }
@@ -149,7 +259,7 @@ class ToolTipManager {
 
         _toolTip.hide();
 
-        var options = _toolTipOptions.get(_currentComponent);
+        var options = _toolTipOptions.get(component);
         var renderer = createToolTipRenderer(options);
         if (_toolTip.childComponents[0] != renderer) {
             if (_toolTip.childComponents.length > 0) {
@@ -176,9 +286,51 @@ class ToolTipManager {
         Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
     }
 
-    private function positionToolTip() {
-        var x = _lastMouseEvent.screenX + _toolTip.marginLeft;
-        var y = _lastMouseEvent.screenY + _toolTip.marginTop;
+    private function showToolTipForRegion(region:ToolTipRegionOptions) {
+        createToolTip();
+
+        _toolTip.hide();
+
+        var options = region;
+        var renderer = createToolTipRenderer(options);
+        if (_toolTip.childComponents[0] != renderer) {
+            if (_toolTip.childComponents.length > 0) {
+                _toolTip.removeComponentAt(0, false);
+            }
+            _toolTip.addComponent(renderer);
+        }
+
+        renderer.data = options.tipData;
+
+        Screen.instance.addComponent(_toolTip);
+        Screen.instance.setComponentIndex(_toolTip, Screen.instance.rootComponents.length - 1);
+        _toolTip.validateNow();
+
+        positionToolTip(_lastMouseEvent.screenX, _lastMouseEvent.screenY);
+        Toolkit.callLater(function() {
+            if (fade == true) {
+                _toolTip.fadeIn();
+            } else {
+                _toolTip.show();
+            }
+        });
+
+        Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
+    }
+
+    private function positionToolTip(left:Null<Float> = null, top:Null<Float> = null) {
+        var x = _toolTip.marginLeft;
+        var y = _toolTip.marginTop;
+        if (left == null) {
+            x += _lastMouseEvent.screenX;
+        } else {
+            x += left;
+        }
+        if (top == null) {
+            y += _lastMouseEvent.screenY;
+        } else {
+            y += top;
+        }
         var w = _toolTip.width;
         var h = _toolTip.height;
 
@@ -192,11 +344,11 @@ class ToolTipManager {
             y = _lastMouseEvent.screenY - h - (_toolTip.marginTop / 2);
         }
 
-        _toolTip.left = x*Toolkit.scale;
-        _toolTip.top = y*Toolkit.scale;
+        _toolTip.left = x * Toolkit.scale;
+        _toolTip.top = y * Toolkit.scale;
     }
 
-    private function hideToolTip() {
+    public function hideCurrentToolTip() {
         if (_toolTip != null) {
             if (fade == true) {
                 _toolTip.fadeOut();
