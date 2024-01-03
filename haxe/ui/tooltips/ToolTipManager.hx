@@ -2,6 +2,7 @@ package haxe.ui.tooltips;
 
 import haxe.ui.Toolkit;
 import haxe.ui.components.Label;
+import haxe.ui.constants.Priority;
 import haxe.ui.core.Component;
 import haxe.ui.core.ItemRenderer;
 import haxe.ui.core.Screen;
@@ -40,7 +41,7 @@ class ToolTipManager {
         if (options == null) options = {};
         if (options.tipData == null) options.tipData = { text: target.tooltip };
         _toolTipOptions.set(target, options);
-        target.registerEvent(MouseEvent.MOUSE_OVER, onTargetMouseOver);
+        target.registerEvent(MouseEvent.MOUSE_OVER, onTargetMouseOver, Priority.LOW);
     }
 
     public function unregisterTooltip(target:Component) {
@@ -71,9 +72,9 @@ class ToolTipManager {
 
         _lastMouseEvent = event;
         _currentComponent = event.target;
-        event.target.registerEvent(MouseEvent.MOUSE_OUT, onTargetMouseOut);
-        event.target.registerEvent(MouseEvent.MOUSE_MOVE, onTargetMouseMove);
-        Screen.instance.registerEvent(MouseEvent.MOUSE_MOVE, onScreenMouseMove);
+        event.target.registerEvent(MouseEvent.MOUSE_OUT, onTargetMouseOut, Priority.LOW);
+        event.target.registerEvent(MouseEvent.MOUSE_MOVE, onTargetMouseMove, Priority.LOW);
+        Screen.instance.registerEvent(MouseEvent.MOUSE_MOVE, onScreenMouseMove, Priority.LOW);
         startTimer();
     }
 
