@@ -10,6 +10,7 @@ import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.DelegateLayout;
 import haxe.ui.layouts.Layout;
 import haxe.ui.locale.LocaleManager;
+import haxe.ui.styles.DirectiveHandler;
 import haxe.ui.styles.Parser;
 import haxe.ui.styles.Style;
 import haxe.ui.styles.StyleSheet;
@@ -2118,6 +2119,17 @@ class Component extends ComponentImpl
         
         if (style.includeInLayout != null) {
             this.includeInLayout = style.includeInLayout;
+        }
+
+        if (style.customDirectives != null) {
+            for (directive in style.customDirectives.keys()) {
+                if (DirectiveHandler.hasDirectiveHandler(directive)) {
+                    var handler = DirectiveHandler.getDirectiveHandler(directive);
+                    if (handler != null) {
+                        handler.apply(this, style.customDirectives.get(directive));
+                    }
+                }
+            }
         }
 
         if (_compositeBuilder != null) {

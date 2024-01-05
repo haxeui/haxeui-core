@@ -504,7 +504,11 @@ class Style {
                 case "justify-content":
                     justifyContent = ValueTools.string(v.value);
                 case _:
-                    if (!StringTools.startsWith(v.directive, "_")) {
+                    var use = DirectiveHandler.hasDirectiveHandler(v.directive);
+                    #if haxeui_custom_directives_relaxed // means we dont require a handler, so the backend can just do "anything" with them
+                        use = true;
+                    #end
+                    if (use) {
                         if (customDirectives == null) {
                             customDirectives = new Map<String, Directive>();
                         }
@@ -513,7 +517,6 @@ class Style {
                         } else {
                             customDirectives.set(v.directive, v);
                         }
-                        trace(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ", v);
                     }
             }
         }

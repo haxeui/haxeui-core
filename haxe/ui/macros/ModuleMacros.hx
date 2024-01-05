@@ -242,6 +242,13 @@ class ModuleMacros {
                     haxe.ui.styles.CssFilters.registerCssFilter($v{cssFilter.name}, $p{ctor.split(".")})
                 );
             }
+
+            for (cssDirective in m.cssDirectives) {
+                var ctor = cssDirective.className + ".new";
+                builder.add(macro
+                    haxe.ui.styles.DirectiveHandler.registerDirectiveHandler($v{cssDirective.name}, $p{ctor.split(".")})
+                );
+            }
         }
 
         if (preloadAll) {

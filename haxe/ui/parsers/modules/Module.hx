@@ -23,6 +23,7 @@ class Module {
     public var imageLoaders(default, default):Array<ModuleImageLoaderEntry>;
     public var cssFunctions(default, default):Array<ModuleCssFunctionEntry>;
     public var cssFilters(default, default):Array<ModuleCssFilterEntry>;
+    public var cssDirectives(default, default):Array<ModuleCssDirectiveEntry>;
 
     public function new() {
         resourceEntries = [];
@@ -38,6 +39,7 @@ class Module {
         imageLoaders = [];
         cssFunctions = [];
         cssFilters = [];
+        cssDirectives = [];
     }
 
     public function validate() {
@@ -183,6 +185,14 @@ class ModuleCssFunctionEntry {
 }
 
 class ModuleCssFilterEntry {
+    public var name(default, default):String;
+    public var className(default, default):String;
+
+    public function new() {
+    }
+}
+
+class ModuleCssDirectiveEntry {
     public var name(default, default):String;
     public var className(default, default):String;
 

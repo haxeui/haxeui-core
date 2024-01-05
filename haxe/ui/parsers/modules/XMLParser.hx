@@ -1,5 +1,6 @@
 package haxe.ui.parsers.modules;
 
+import haxe.ui.parsers.modules.Module.ModuleCssDirectiveEntry;
 import haxe.ui.parsers.modules.Module.ModuleCssFilterEntry;
 import haxe.ui.parsers.modules.Module.ModuleCssFunctionEntry;
 import haxe.ui.parsers.modules.Module.ModuleImageLoaderEntry;
@@ -50,6 +51,7 @@ class XMLParser extends ModuleParser {
             } else if (nodeName == "cssExtensions" && checkCondition(el, defines) == true) {
                 parseCssFunctions(el, module, defines, context);
                 parseCssFilters(el, module, defines, context);
+                parseCssDirectives(el, module, defines, context);
             }
         }
 
@@ -361,6 +363,15 @@ class XMLParser extends ModuleParser {
             cssFilterEntry.name = el.get("name");
             cssFilterEntry.className = el.get("class");
             module.cssFilters.push(cssFilterEntry);
+        }
+    }
+
+    private function parseCssDirectives(el:Xml, module:Module, defines:Map<String, String>, context:String) {
+        for (el in el.elementsNamed("cssDirective")) {
+            var cssDirectiveEntry:ModuleCssDirectiveEntry = new ModuleCssDirectiveEntry();
+            cssDirectiveEntry.name = el.get("name");
+            cssDirectiveEntry.className = el.get("class");
+            module.cssDirectives.push(cssDirectiveEntry);
         }
     }
 
