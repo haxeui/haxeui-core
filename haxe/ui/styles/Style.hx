@@ -181,6 +181,8 @@ class Style {
         return 0;
     }    
     
+    @:optional public var customDirectives:Map<String, Directive> = null;
+
     public function mergeDirectives(map:Map<String, Directive>) {
         for (key in map.keys()) {
             var v = map.get(key);
@@ -501,6 +503,18 @@ class Style {
                     includeInLayout = ValueTools.bool(v.value);
                 case "justify-content":
                     justifyContent = ValueTools.string(v.value);
+                case _:
+                    if (!StringTools.startsWith(v.directive, "_")) {
+                        if (customDirectives == null) {
+                            customDirectives = new Map<String, Directive>();
+                        }
+                        if (v.value == null || v.value == VNone) {
+                            customDirectives.remove(v.directive);
+                        } else {
+                            customDirectives.set(v.directive, v);
+                        }
+                        trace(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ", v);
+                    }
             }
         }
     }
@@ -656,6 +670,20 @@ class Style {
         if (s.layout != null) layout = s.layout;
         if (s.includeInLayout != null) includeInLayout = s.includeInLayout;
         if (s.justifyContent != null) justifyContent = s.justifyContent;
+
+        if (s.customDirectives != null) {
+            if (this.customDirectives == null) {
+                this.customDirectives = new Map<String, Directive>();
+            }
+            for (directive in s.customDirectives.keys()) {
+                var v = s.customDirectives.get(directive);
+                if (v.value == null || v.value == VNone) {
+                    this.customDirectives.remove(directive);
+                } else {
+                    this.customDirectives.set(directive, v);
+                }
+            }
+        }
     }
 
     public function equalTo(s:Style):Bool {
@@ -788,6 +816,18 @@ class Style {
         if (s.includeInLayout != includeInLayout) return false;
         if (s.justifyContent != justifyContent) return false;
         
+        if (s.customDirectives != null && this.customDirectives != null) { 
+            for (directive in s.customDirectives.keys()) {
+                if (!this.customDirectives.exists(directive)) {
+                    return false;
+                }
+            }
+            for (directive in this.customDirectives.keys()) {
+                if (!s.customDirectives.exists(directive)) {
+                    return false;
+                }
+            }
+        }
         return true;
     }
 
