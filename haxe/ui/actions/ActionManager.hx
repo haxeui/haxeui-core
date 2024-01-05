@@ -68,16 +68,16 @@ class ActionManager {
     public function actionStart(action:ActionType, source:IActionInputSource) {
         var currentFocus = FocusManager.instance.focus;
         if (currentFocus == null) {
-            #if debug
-            trace("no focus for action: " + action);
-            #end
+            // #if debug
+            // trace("no focus for action: " + action);
+            // #end
             return;
         }
         
         if (!(currentFocus is InteractiveComponent)) {
-            #if debug
-            trace("current focus not interactive: " + action);
-            #end
+            // #if debug
+            // trace("current focus not interactive: " + action);
+            // #end
             return;
         }
 
@@ -104,9 +104,9 @@ class ActionManager {
         }
         
         if (!(currentFocus is InteractiveComponent)) {
-            #if debug
-            trace("current focus not interactive: " + action);
-            #end
+            // #if debug
+            // trace("current focus not interactive: " + action);
+            // #end
             return;
         }
         
