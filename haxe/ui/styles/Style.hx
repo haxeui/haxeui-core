@@ -307,6 +307,20 @@ class Style {
                 case "border-bottom-color":
                     borderBottomColor = ValueTools.int(v.value);
 
+                case "border-size" | "border-width":
+                    if (v.value == VNone) {
+                        borderSize = 0;
+                        borderTopSize = 0;
+                        borderLeftSize = 0;
+                        borderBottomSize = 0;
+                        borderRightSize = 0;
+                    } else {
+                        borderSize = ValueTools.calcDimension(v.value);
+                        borderTopSize = ValueTools.calcDimension(v.value);
+                        borderLeftSize = ValueTools.calcDimension(v.value);
+                        borderBottomSize = ValueTools.calcDimension(v.value);
+                        borderRightSize = ValueTools.calcDimension(v.value);
+                    }
                 case "border-top-size" | "border-top-width":
                     if (v.value == VNone) {
                         borderTopSize = 0;
