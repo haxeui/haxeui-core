@@ -467,8 +467,8 @@ private class ValueHelper {
         if (max != null && parsedValue > max) {
             valid = false;
         }
-        
-        if (step != null && parsedValue % step != 0) {
+
+        if (step != null && MathUtil.fmodulo(parsedValue, step) != 0) {
             valid = false;
             parsedValue = MathUtil.roundToNearest(parsedValue, step);
         }
@@ -500,6 +500,7 @@ private class ValueHelper {
             }
         } else {
             newValue += step;
+            newValue = MathUtil.roundToNearest(newValue, step);
         }
         
         if (max != null && newValue > max) {
@@ -525,6 +526,7 @@ private class ValueHelper {
             }
         } else {
             newValue -= step;
+            newValue = MathUtil.roundToNearest(newValue, step);
         }
         
         if (min != null && newValue < min) {
