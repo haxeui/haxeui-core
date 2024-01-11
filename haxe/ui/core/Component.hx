@@ -531,6 +531,10 @@ class Component extends ComponentImpl
      * is undefined behaviour, and could result in a null pointer exception/`x` is null exceptions.
      */
     public function disposeComponent() {
+        if (this._isDisposed) {
+            return;
+        }
+
         this._isDisposed = true;
         this.removeAllComponents(true);
         this.destroyComponent();
@@ -553,6 +557,7 @@ class Component extends ComponentImpl
             _layout = null;
         }
         if (_internalEvents != null) {
+            _internalEvents.onDispose();
             @:privateAccess _internalEvents._target = null;
             _internalEvents = null;
         }

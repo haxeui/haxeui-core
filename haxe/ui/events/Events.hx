@@ -12,13 +12,14 @@ class Events {
     }
 
     public function register() {
-
     }
 
     public function unregister() {
-
     }
 
+    public function onDispose() {
+    }
+    
     private function registerEvent<T:UIEvent>(type:EventType<T>, listener:T->Void, priority:Int = 0) {
         if (_target == null || _target._isDisposed) {
             return;
