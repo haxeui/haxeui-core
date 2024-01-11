@@ -215,6 +215,14 @@ class ToolTipManager {
         _toolTip = new ToolTip();
     }
 
+    public function reset() {
+        if (_toolTip != null) {
+            Screen.instance.removeComponent(_toolTip);
+        }
+        _toolTip = null;
+        _toolTipContents = null;
+    }
+
     public function showToolTipAt(left:Float, top:Float, options:ToolTipOptions) {
         createToolTip();
         _toolTip.hide();
