@@ -102,6 +102,10 @@ class MenuEvents extends haxe.ui.events.Events {
         unregisterEvent(UIEvent.SHOWN, onShown);
     }
 
+    public override function onDispose() {
+        removeScreenMouseDown();
+    }
+
     private var _over:Bool = false;
     private function onMouseOver(event:MouseEvent) {
         _over = true;
@@ -229,6 +233,10 @@ class MenuEvents extends haxe.ui.events.Events {
     
     private function hideCurrentSubMenu() {
         if (currentSubMenu == null) {
+            return;
+        }
+
+        if (currentSubMenu._isDisposed) { // sub menu could have already been disposed of
             return;
         }
 
