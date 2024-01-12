@@ -1639,17 +1639,20 @@ class Component extends ComponentImpl
     /** The size of the border, in pixels **/                                       @:style                 public var borderSize:Null<Float>;
     /** The amount of rounding to apply to the border **/                           @:style                 public var borderRadius:Null<Float>;
 
-    /** The gap between the component and its children, on all sides **/                  @:style(layout)         public var padding:Null<Float>;
-    /** The gap between the component and its children, on the top **/                  @:style(layout)         public var paddingLeft:Null<Float>;
-    /** The gap between the component and its children, on the left side **/            @:style(layout)         public var paddingRight:Null<Float>;
-    /** The gap between the component and its children, on the right side **/           @:style(layout)         public var paddingTop:Null<Float>;
-    /** The gap between the component and its children, on the bottom **/               @:style(layout)         public var paddingBottom:Null<Float>;
+    /** The gap between the component and its children, on all sides **/            @:style(layout)         public var padding:Null<Float>;
+    /** The gap between the component and its children, on the top **/              @:style(layout)         public var paddingLeft:Null<Float>;
+    /** The gap between the component and its children, on the left side **/        @:style(layout)         public var paddingRight:Null<Float>;
+    /** The gap between the component and its children, on the right side **/       @:style(layout)         public var paddingTop:Null<Float>;
+    /** The gap between the component and its children, on the bottom **/           @:style(layout)         public var paddingBottom:Null<Float>;
 
-    /** The amount of left offsetting to apply to the calculated position **/        @:style                 public var marginLeft:Null<Float>;
-    /** The amount of right offsetting to apply to the calculated position**/        @:style                 public var marginRight:Null<Float>;
-    /** The amount of top offsetting to apply to the calculated position **/         @:style                 public var marginTop:Null<Float>;
-    /** The amount of bottom offsetting to apply to the calculated position **/      @:style                 public var marginBottom:Null<Float>;
-    /** Whether the children are clipped (cut) to the the component boundings **/    @:style                 public var clip:Null<Bool>;
+    /** The gap between the component and its children, on the top **/              @:style(layout)         public var horizontalSpacing:Null<Float>;
+    /** The gap between the component and its children, on the left side **/        @:style(layout)         public var verticalSpacing:Null<Float>;
+
+    /** The amount of left offsetting to apply to the calculated position **/       @:style                 public var marginLeft:Null<Float>;
+    /** The amount of right offsetting to apply to the calculated position**/       @:style                 public var marginRight:Null<Float>;
+    /** The amount of top offsetting to apply to the calculated position **/        @:style                 public var marginTop:Null<Float>;
+    /** The amount of bottom offsetting to apply to the calculated position **/     @:style                 public var marginBottom:Null<Float>;
+    /** Whether the children are clipped (cut) to the the component boundings **/   @:style                 public var clip:Null<Bool>;
 
     /** A value between 0 and 1, deciding the transparency of this object **/       @:style                 public var opacity:Null<Float>;
 
