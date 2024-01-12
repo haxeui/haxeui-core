@@ -4,6 +4,7 @@ class MathUtil {
     public static inline var MAX_INT:Int = 2147483647; // 2**31 - 1
     public static inline var MIN_INT:Int = -2147483648;
     public static inline var SIGNIFICANT_DECIMAL_DIGITS:Int = 7; // 32 bit floats have 24 bits precision  log10(2**24) ≈ 7.225  (for 64 bits it's 15)
+    public static inline var MAX_FLOAT_DIFFERENCE:Float = 0.0000001; // account for floating-point inaccuracy
 
     public static inline function distance(x1:Float, y1:Float, x2:Float, y2:Float):Float {
         return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
@@ -12,7 +13,7 @@ class MathUtil {
     public static inline function precision(v:Float):Int {
         var e = 1;
         var p = 0;
-        while (Math.round(v * e) / e != v) {
+        while (Math.abs((Math.round(v * e) / e) - v) > MAX_FLOAT_DIFFERENCE) {
             e *= 10;
             p++;
         }
