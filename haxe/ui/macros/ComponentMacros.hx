@@ -356,10 +356,12 @@ class ComponentMacros {
                 buildDataSourceCode(builder, c, 'ds_root', "this");
             }
 
+            buildData.scripts = [];
             assignComponentProperties(builder, c, rootVarName, buildData);
             if (c.layout != null) {
                 buildLayoutCode(builder, c, rootVarName);
             }
+            buildScriptHandlers(builder, buildData.namedComponents, buildData.scripts);
         }
         
         if (classBuilder == null) {
