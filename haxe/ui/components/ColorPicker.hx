@@ -349,6 +349,9 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
             return;
         }
         var v = Std.parseFloat(inputHue.text);
+        if (Math.isNaN(v)) {
+            v = 0;
+        }
         if (v > 360) {
             v = 360;
         }
@@ -366,6 +369,9 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
             return;
         }
         var v = Std.parseFloat(inputSaturation.text);
+        if (Math.isNaN(v)) {
+            v = 0;
+        }
         if (v > 100) {
             v = 100;
         }
@@ -383,6 +389,9 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
             return;
         }
         var v = Std.parseFloat(inputValue.text);
+        if (Math.isNaN(v)) {
+            v = 0;
+        }
         if (v > 100) {
             v = 100;
         }
@@ -403,6 +412,9 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
             return;
         }
         var v = Std.parseFloat(inputRed.text);
+        if (Math.isNaN(v)) {
+            v = 0;
+        }
         if (v > 255) {
             v = 255;
         }
@@ -420,6 +432,9 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
             return;
         }
         var v = Std.parseFloat(inputGreen.text);
+        if (Math.isNaN(v)) {
+            v = 0;
+        }
         if (v > 255) {
             v = 255;
         }
@@ -437,6 +452,9 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
             return;
         }
         var v = Std.parseFloat(inputBlue.text);
+        if (Math.isNaN(v)) {
+            v = 0;
+        }
         if (v > 255) {
             v = 255;
         }
