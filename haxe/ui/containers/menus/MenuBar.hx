@@ -285,6 +285,7 @@ private class Builder extends CompositeBuilder {
         super.destroy();
         for (menu in _menus) {
             Screen.instance.removeComponent(menu);
+            menu.disposeComponent();
         }
         _menus = null;
     }
