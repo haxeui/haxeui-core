@@ -9,6 +9,10 @@ class MathUtil {
         return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
     }
 
+    /**
+        Precision is the number of significant decimal digits
+        Returns a precision between 0 and 7
+    **/
     public static inline function precision(v:Float):Int {
         var e = 1;
         var p = 0;
