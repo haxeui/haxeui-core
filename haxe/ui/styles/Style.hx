@@ -56,8 +56,8 @@ class Style {
     /** The amount of right offset to apply to the calculated position **/          @:optional public var marginRight:Null<Float>;
     /** The amount of bottom offset to apply to the calculated position **/         @:optional public var marginBottom:Null<Float>;
 
-    /** The horizontal spacing between the component's children in pixels**/          @:optional public var horizontalSpacing:Null<Float>;
-    /** The vertical spacing between the component's children in pixels**/        @:optional public var verticalSpacing:Null<Float>;
+    /** The horizontal spacing between the component's children in pixels**/        @:optional public var horizontalSpacing:Null<Float>;
+    /** The vertical spacing between the component's children in pixels**/          @:optional public var verticalSpacing:Null<Float>;
 
     /** The color of the text **/                                                   @:optional public var color:Null<Int>;
 
