@@ -210,7 +210,7 @@ private class SwitchButtonSub extends InteractiveComponent {
     private function get_pos():Float {
         return _pos;
     }
-    private function set_pos(value:Float):Float {
+    @:keep private function set_pos(value:Float):Float {
         if (_pos == value) {
             return value;
         }
