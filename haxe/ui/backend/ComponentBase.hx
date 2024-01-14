@@ -1537,6 +1537,10 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
     }
 
     @:dox(group = "Backend")
+    private function handleDestroy() {
+    }
+
+    @:dox(group = "Backend")
     private function handlePosition(left:Null<Float>, top:Null<Float>, style:Style) {
     }
 

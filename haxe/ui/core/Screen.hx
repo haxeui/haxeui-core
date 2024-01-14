@@ -105,6 +105,9 @@ class Screen extends ScreenImpl {
      */
     public override function removeComponent(component:Component, dispose:Bool = true):Component {
         if (rootComponents.indexOf(component) == -1) {
+            if (dispose) {
+                component.disposeComponent();
+            }
             return component;
         }
         @:privateAccess component._hasScreen = false;
@@ -113,7 +116,7 @@ class Screen extends ScreenImpl {
         rootComponents.remove(component);
         FocusManager.instance.removeView(component);
         component.unregisterEvent(UIEvent.RESIZE, _onRootComponentResize);
-        if (dispose == true) {
+        if (dispose) {
             component.disposeComponent();
         } else {
             component.dispatch(new UIEvent(UIEvent.HIDDEN));

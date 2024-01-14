@@ -674,6 +674,7 @@ class Component extends ComponentImpl
             _compositeBuilder.destroy();
         }
         LocaleManager.instance.unregisterComponent(this);
+        handleDestroy();
         onDestroy();
     }
 
