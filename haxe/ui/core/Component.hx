@@ -1645,8 +1645,8 @@ class Component extends ComponentImpl
     /** The gap between the component and its children, on the right side **/       @:style(layout)         public var paddingTop:Null<Float>;
     /** The gap between the component and its children, on the bottom **/           @:style(layout)         public var paddingBottom:Null<Float>;
 
-    /** The gap between the component and its children, on the top **/              @:style(layout)         public var horizontalSpacing:Null<Float>;
-    /** The gap between the component and its children, on the left side **/        @:style(layout)         public var verticalSpacing:Null<Float>;
+    /** The horizontal spacing between the component's children in pixels **/       @:style(layout)         public var horizontalSpacing:Null<Float>;
+    /** The vertical spacing between the component's children in pixels **/         @:style(layout)         public var verticalSpacing:Null<Float>;
 
     /** The amount of left offsetting to apply to the calculated position **/       @:style                 public var marginLeft:Null<Float>;
     /** The amount of right offsetting to apply to the calculated position**/       @:style                 public var marginRight:Null<Float>;
