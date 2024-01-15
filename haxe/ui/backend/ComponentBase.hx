@@ -123,7 +123,7 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
  
 
     public function containsChildComponent(child:Component, recursive:Bool = false):Bool {
-        var contains = (_children.indexOf(child) != -1);
+        var contains = (_children != null && _children.indexOf(child) != -1);
         if (recursive && !contains && _children != null) {
             for (c in _children) {
                 contains = c.containsChildComponent(child, recursive);
