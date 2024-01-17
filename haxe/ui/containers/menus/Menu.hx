@@ -201,14 +201,18 @@ class MenuEvents extends haxe.ui.events.Events {
         var left = source.screenLeft + source.actualComponentWidth + componentOffset.x;
         var top = source.screenTop;
         Screen.instance.addComponent(subMenu);
-        subMenu.syncComponentValidation();
+        subMenu.validateNow();
 
         if (left + subMenu.actualComponentWidth > Screen.instance.width) {
             left = source.screenLeft - subMenu.actualComponentWidth;
         }
 
-        subMenu.left = left;
-        subMenu.top = top;
+        var offset:Float = 0;
+        if (subMenu.style != null && subMenu.style.paddingLeft > 0) {
+            offset = subMenu.style.paddingLeft - 1;
+        }
+        subMenu.left = left + offset;
+        subMenu.top = top - offset;
 
         currentSubMenu = subMenu;
     }
