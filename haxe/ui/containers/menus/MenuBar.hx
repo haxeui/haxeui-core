@@ -298,6 +298,7 @@ private class Builder extends CompositeBuilder {
             button.tooltip = menu.tooltip;
             button.hidden = child.hidden;
             button.allowFocus = false;
+            button.disabled = child.disabled;
             LocaleManager.instance.cloneForComponent(child, button);
             _buttons.push(button);
             _menubar.addComponent(button);
@@ -338,6 +339,11 @@ private class Builder extends CompositeBuilder {
             var index = _menus.indexOf(menu);
             var button = _buttons[index];
             button.hidden = event.target.hidden;
+        } else if (event.data == "disabled") {
+            var menu = cast(event.target, Menu);
+            var index = _menus.indexOf(menu);
+            var button = _buttons[index];
+            button.disabled = event.target.disabled;
         } else if (event.data == "icon") {
             var menu = cast(event.target, Menu);
             var index = _menus.indexOf(menu);
