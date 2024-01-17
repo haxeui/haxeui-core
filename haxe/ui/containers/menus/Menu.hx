@@ -207,12 +207,22 @@ class MenuEvents extends haxe.ui.events.Events {
             left = source.screenLeft - subMenu.actualComponentWidth;
         }
 
-        var offset:Float = 0;
-        if (subMenu.style != null && subMenu.style.paddingLeft > 0) {
-            offset = subMenu.style.paddingLeft - 1;
+        var offsetX:Float = 0;
+        var offsetY:Float = 0;
+        if (subMenu.style != null) {
+            if (subMenu.style.paddingLeft > 1) {
+                offsetX = subMenu.style.paddingLeft - 1;
+            } else {
+                offsetX = 0;
+            }
+            if (subMenu.style.paddingTop > 1) {
+                offsetY = subMenu.style.paddingTop - 1;
+            } else {
+                offsetY = 1;
+            }
         }
-        subMenu.left = left + offset;
-        subMenu.top = top - offset;
+        subMenu.left = left + offsetX;
+        subMenu.top = top - offsetY;
 
         currentSubMenu = subMenu;
     }
