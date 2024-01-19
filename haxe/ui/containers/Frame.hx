@@ -157,9 +157,11 @@ private class Builder extends CompositeBuilder {
 
     public function addCollapsibleHeader() {
         _component.addClass("collapsible-frame");
-        var header = _component.findComponent("frame-header", Header);
+        var header = _component.findComponent("frame-header", Header, false);
         if (header == null) {
             header = new Header();
+            header.id = "frame-header";
+            header.addClass("frame-header");
             header.includeInLayout = false;
             _component.addComponent(header);
         }
