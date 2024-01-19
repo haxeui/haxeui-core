@@ -872,6 +872,20 @@ class Component extends ComponentImpl
         return cast match;
     }
 
+    /**
+      Whether or not a point is inside this components bounds
+ 
+      *Note*: `left` and `top` must be stage (screen) co-ords
+     **/
+     @:dox(group = "Size related properties and methods")
+    public override function hitTest(left:Null<Float>, top:Null<Float>, allowZeroSized:Bool = false):Bool { // co-ords must be stage
+        if (hidden) {
+            return false;
+        }
+
+        return super.hitTest(left, top, allowZeroSized);
+    }
+
      /**
      * Lists components under a specific point in global, screen coordinates.
      * 
