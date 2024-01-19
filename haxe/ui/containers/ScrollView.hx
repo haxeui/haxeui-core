@@ -656,7 +656,7 @@ class ScrollViewEvents extends haxe.ui.events.Events {
             contents.registerEvent(UIEvent.COMPONENT_REMOVED, onComponentRemoved);
         }
 
-        registerEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
+        registerEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel, Priority.LOW);
         registerEvent(ActionEvent.ACTION_START, onActionStart, Priority.LOW);
     }
 
