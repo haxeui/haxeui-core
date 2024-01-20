@@ -33,7 +33,7 @@ class Slider extends InteractiveComponent implements IDirectionalComponent imple
     private function new() {
         super();
         cascadeActive = true;
-        actionRepeatInterval = 10;
+        actionRepeatInterval = 160;
     }
 
     //***********************************************************************************************************
@@ -529,15 +529,23 @@ private class Events extends haxe.ui.events.Events  {
             _slider.end = pos;
         }
     }
-    
+   
     private function onActionStart(event:ActionEvent) {
         switch (event.action) {
             case ActionType.RIGHT | ActionType.UP:
+                event.repeater = true;        
+                if (_slider.step != null) {
+                    _slider.value += _slider.step;
+                } else {
+                    _slider.value += 1; // TODO: calculate this somehow
+                }
+            case ActionType.LEFT | ActionType.DOWN:
                 event.repeater = true;
-                _slider.value += 1; // TODO: calculate this somehow
-            case ActionType.LEFT | ActionType.DOWN:    
-                event.repeater = true;
-                _slider.value -= 1; // TODO: calculate this somehow
+                if (_slider.step != null) {
+                    _slider.value -= _slider.step;
+                } else {
+                    _slider.value -= 1; // TODO: calculate this somehow
+                }
             case _:    
         }
     }
