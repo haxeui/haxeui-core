@@ -47,18 +47,17 @@ class ClassBuilder {
         return r;
     }
 
-    public var path(get, null):ComplexType;
-    private function get_path():ComplexType {
-        var p = fullPath.split(".");
-        var className = p.pop();
-        return TPath({pack: p, name: className});
+    public var complexType(get, null):ComplexType;
+    private function get_complexType():ComplexType {
+        return TypeTools.toComplexType(type);
     }
 
     public var typePath(get, null):TypePath;
     private function get_typePath():TypePath {
-        var p = fullPath.split(".");
-        var className = p.pop();
-        return {pack: p, name: className};
+        return switch (complexType) {
+            case TPath(p): p;
+            case _: null;
+        }
     }
 
     public var fullPath(get, null):String;

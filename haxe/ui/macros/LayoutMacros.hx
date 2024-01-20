@@ -76,7 +76,7 @@ class LayoutMacros {
             if (useSelf == false) {
                 access.push(AOverride);
             }
-            cloneFn = builder.addFunction("cloneLayout", builder.path, access);
+            cloneFn = builder.addFunction("cloneLayout", builder.complexType, access);
         }
 
         var cloneLineExpr = null;
@@ -111,7 +111,7 @@ class LayoutMacros {
             var typePath = builder.typePath;
             builder.addFunction("self", macro {
                 return new $typePath();
-            }, builder.path, access);
+            }, builder.complexType, access);
         }
     }
 }

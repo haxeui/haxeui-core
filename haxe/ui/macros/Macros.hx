@@ -443,7 +443,7 @@ class Macros {
             if (useSelf == false) {
                 access.push(AOverride);
             }
-            cloneFn = builder.addFunction("cloneComponent", builder.path, access);
+            cloneFn = builder.addFunction("cloneComponent", builder.complexType, access);
         }
 
         var cloneLineExpr = null;
@@ -502,11 +502,11 @@ class Macros {
             if (constructorArgExprs == null) {
                 builder.addFunction("self", macro {
                     return new $typePath();
-                }, builder.path, access);
+                }, builder.complexType, access);
             } else {
                 builder.addFunction("self", macro {
                     return new $typePath($a{constructorArgExprs});
-                }, builder.path, access);
+                }, builder.complexType, access);
             }
         }
 
