@@ -87,7 +87,12 @@ class ActionManager {
         if (actionEvent.canceled == false) {
             dispatch(new ActionEvent(ActionEvent.ACTION_START, action, false, Type.getClassName(Type.getClass(source))));
         }
-        if (actionEvent.repeater == true  && _repeatActions.exists(action) == false) {
+        if (actionEvent.repeater == true) {
+            if (_repeatActions.exists(action)) {
+                var info = _repeatActions.get(action);
+                info.timer.stop();
+                _repeatActions.remove(action);
+            }
             _repeatActions.set(action, {
                 type: action,
                 timer: new Timer(c.actionRepeatInterval, function() { // TODO: 100ms should probably be configurable

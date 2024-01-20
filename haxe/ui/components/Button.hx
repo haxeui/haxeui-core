@@ -662,7 +662,20 @@ class ButtonEvents extends haxe.ui.events.Events {
     private function onActionStart(event:ActionEvent) {
         switch (event.action) {
             case ActionType.PRESS | ActionType.CONFIRM:
+                if (_button.repeater == true) {
+                    if (_repeatInterval == 0) {
+                        _repeatInterval = (_button.easeInRepeater) ? _button.repeatInterval * 2 : _button.repeatInterval;
+                    }
+                    _button.actionRepeatInterval = _repeatInterval;
+                    event.repeater = true;
+                }
                 press();
+                if (_button.repeater == true) {
+                    _button.dispatch(new MouseEvent(MouseEvent.CLICK));
+                    if ( _repeatInterval > _button.repeatInterval) {
+                        _repeatInterval = Std.int(_repeatInterval - (_repeatInterval - _button.repeatInterval) / 2);
+                    }
+                }
             case _:    
         }
     }
@@ -671,6 +684,7 @@ class ButtonEvents extends haxe.ui.events.Events {
         switch (event.action) {
             case ActionType.PRESS | ActionType.CONFIRM:
                 release();
+                _repeatInterval = 0;
             case _:    
         }
     }
