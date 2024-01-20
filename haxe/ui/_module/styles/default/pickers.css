@@ -131,6 +131,10 @@
     border: 1px solid $accent-color;
 }
 
+.month-picker-panel {
+    background-color: $default-background-color;
+}
+
 .month-deinc {
     resource: $arrow-left;
 }
@@ -155,6 +159,11 @@
 
 .month-button:disabled {
     background-color: $default-background-color;
+}
+
+.month-picker-panel #yearLabel {
+    background-color: $normal-background-color-start;
+    border-top: 1px solid $normal-border-color;
 }
 
 /************************************************************************

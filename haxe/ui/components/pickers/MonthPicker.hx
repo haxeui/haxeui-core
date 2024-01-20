@@ -97,7 +97,7 @@ private class Handler extends ItemPickerHandler {
 }
 
 @:xml('
-<vbox style="padding: 0px;spacing:0;background-color: $default-background-color">
+<vbox style="padding: 0px;spacing:0;">
     <hbox width="100%" style="padding:10px;padding-top: 15px;padding-bottom:15px;spacing:10px;">
         <image verticalAlign="center" styleName="month-deinc" />
         <grid id="monthButtons" columns="4" width="100%">
@@ -116,7 +116,7 @@ private class Handler extends ItemPickerHandler {
         </grid>
         <image verticalAlign="center" styleName="month-inc" />
     </hbox>    
-    <label id="yearLabel" width="100%" horizontalAlign="center" style="background-color: $normal-background-color-start;text-align:center;padding: 5px;border-top:1px solid $normal-border-color;" />
+    <label id="yearLabel" width="100%" horizontalAlign="center" style="text-align:center;padding: 5px;" />
 </vbox>
 ')
 class MonthPickerPanel extends VBox {
