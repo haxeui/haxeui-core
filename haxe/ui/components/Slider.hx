@@ -539,22 +539,19 @@ private class Events extends haxe.ui.events.Events  {
         var diff = 1.;
         switch (event.action) {
             case ActionType.RIGHT | ActionType.UP:
-                repeats++;
-                event.repeater = true;
             case ActionType.LEFT | ActionType.DOWN:
-                repeats++;
-                event.repeater = true;
                 diff = -1;
             case _:
                 return;
         }
+        repeats++;
+        event.repeater = true;
 
-        var move = repeats;
         var step = 1.;
         if (_slider.step != null) {
             step = _slider.step;
         }
-        var speed = step * move * move * move;
+        var speed = step * repeats * repeats * repeats;
         var maxSpeed = MathUtil.roundToNearest((_slider.max - _slider.min)/ 6, step) ;
         if (speed > maxSpeed ) speed = maxSpeed;
         _slider.value += (diff * speed);
