@@ -63,7 +63,12 @@ class ClassBuilder {
     public var fullPath(get, null):String;
     private function get_fullPath():String {
         #if macro
-        return TypeTools.toString(type);
+        var s = TypeTools.toString(type);
+        var n = s.indexOf("<");
+        if (n != -1) {
+            s = s.substring(0, n);
+        }
+        return s;
         #else
         return null;
         #end
