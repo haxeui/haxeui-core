@@ -38,13 +38,15 @@ class Macros {
         #end
 
         for (f in builder.fields) {
-            if (f.access.indexOf(AInline) != -1 && f.access.indexOf(AStatic) != -1) {
+            if ((f.access.indexOf(AInline) != -1 || f.access.indexOf(AFinal) != -1) && f.access.indexOf(AStatic) != -1) {
                 switch (f.kind) {
                     case FVar(t, e):
                         var eventName = ExprTools.toString(e);
                         eventName = StringTools.replace(eventName, "\"", "");
                         eventName = StringTools.replace(eventName, "'", "");
                         eventName = eventName.toLowerCase();
+                        eventName = StringTools.replace(eventName, "eventtype.name(", "");
+                        eventName = StringTools.replace(eventName, ")", "");
                         EventInfo.nameToType.set(eventName, builder.fullPath);
                         EventInfo.nameToType.set("on" + eventName, builder.fullPath);
                     case _:
