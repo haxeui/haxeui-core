@@ -895,11 +895,12 @@ class Component extends ComponentImpl
      * @param screenX The global, on-screen `x` position of the point to check for components under
      * @param screenY The global, on-screen `y` position of the point to check for components under
      * @param type Used to filter all components that aren't of a specific type. `null` by default, which means no filter is applied.
+     * @param deepSearch Look into children even if parent is not under point
      * @return An array of all components that overlap the "global" position `(x, y)`
      */
-    public function findComponentsUnderPoint<T:Component>(screenX:Float, screenY:Float, type:Class<T> = null):Array<Component> {
+    public function findComponentsUnderPoint<T:Component>(screenX:Float, screenY:Float, type:Class<T> = null, deepSearch:Bool = false):Array<Component> {
         var c:Array<Component> = [];
-        if (hitTest(screenX, screenY, false)) {
+        if (deepSearch || hitTest(screenX, screenY, false)) {
             for (child in childComponents) {
                 if (child.hitTest(screenX, screenY, false)) {
                     var match = true;
