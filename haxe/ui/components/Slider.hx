@@ -33,7 +33,7 @@ class Slider extends InteractiveComponent implements IDirectionalComponent imple
     private function new() {
         super();
         cascadeActive = true;
-        actionRepeatInterval = 10;
+        actionRepeatInterval = 160;
     }
 
     //***********************************************************************************************************
@@ -404,6 +404,9 @@ private class Events extends haxe.ui.events.Events  {
         if (hasEvent(ActionEvent.ACTION_START, onActionStart) == false) {
             registerEvent(ActionEvent.ACTION_START, onActionStart);
         }
+        if (hasEvent(ActionEvent.ACTION_END, onActionEnd) == false) {
+            registerEvent(ActionEvent.ACTION_END, onActionEnd);
+        }
     }
 
     public override function unregister() {
@@ -420,6 +423,7 @@ private class Events extends haxe.ui.events.Events  {
             _range.unregisterEvent(UIEvent.CHANGE, onRangeChange);
         }
         unregisterEvent(ActionEvent.ACTION_START, onActionStart);
+        unregisterEvent(ActionEvent.ACTION_START, onActionEnd);
     }
 
     private var _rangeSynced:Bool = false;
@@ -529,15 +533,37 @@ private class Events extends haxe.ui.events.Events  {
             _slider.end = pos;
         }
     }
-    
-    private function onActionStart(event:ActionEvent) {
+
+    var repeats:Int = 0;    
+    private function onActionStart(event:ActionEvent) {    
+        var diff = 1.;
         switch (event.action) {
             case ActionType.RIGHT | ActionType.UP:
-                event.repeater = true;
-                _slider.value += 1; // TODO: calculate this somehow
-            case ActionType.LEFT | ActionType.DOWN:    
-                event.repeater = true;
-                _slider.value -= 1; // TODO: calculate this somehow
+            case ActionType.LEFT | ActionType.DOWN:
+                diff = -1;
+            case _:
+                return;
+        }
+        repeats++;
+        event.repeater = true;
+
+        var step = 1.;
+        if (_slider.step != null) {
+            step = _slider.step;
+        }
+        var speed = step * repeats * repeats * repeats;
+        var maxSpeed = MathUtil.roundToNearest((_slider.max - _slider.min)/ 6, step) ;
+        if (speed > maxSpeed ) speed = maxSpeed;
+        _slider.value += (diff * speed);
+        if (_slider.step == null) {
+            _slider.value = Math.round(_slider.value);
+        }
+    }
+
+    private function onActionEnd(event:ActionEvent) {    
+        switch (event.action) {
+            case ActionType.RIGHT | ActionType.UP | ActionType.LEFT | ActionType.DOWN:
+                repeats = 0;
             case _:    
         }
     }
