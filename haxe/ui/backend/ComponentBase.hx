@@ -118,8 +118,18 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
  
          Returns `null` if this component hasn't been added yet, or just doesn't have a parent.
      **/
+    private var _parentComponent:Component = null;
     @:dox(group = "Display tree related properties and methods")
-    public var parentComponent:Component = null;
+    public var parentComponent(get, set):Component;
+    @:noCompletion
+    private function get_parentComponent():Component {
+        return _parentComponent;
+    }
+    @:noCompletion
+    private function set_parentComponent(value:Component):Component {
+        _parentComponent = value;
+        return value;
+    }
  
 
     public function containsChildComponent(child:Component, recursive:Bool = false):Bool {
