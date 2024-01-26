@@ -283,7 +283,7 @@ class Macros {
             });
             getter.addMeta(":style");
             getter.addMeta(":keep");
-            getter.addMeta(":clonable");
+            //getter.addMeta(":clonable");
             getter.addMeta(":dox", [macro group = "Style properties"]);
 
             var codeBuilder = new CodeBuilder(macro {
