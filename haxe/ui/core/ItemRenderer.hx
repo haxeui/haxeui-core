@@ -10,7 +10,8 @@ import haxe.ui.events.UIEvent;
 import haxe.ui.util.TypeConverter;
 
 class ItemRenderer extends Box {
-    public var autoRegisterInteractiveEvents:Bool = true;
+    @:clonable public var autoRegisterInteractiveEvents:Bool = true;
+    @:clonable public var recursiveStyling:Bool = false;
     
     public function new() {
         super();
@@ -21,42 +22,50 @@ class ItemRenderer extends Box {
     }
 
     private function _onItemMouseOver(event:MouseEvent) {
-        addClass(":hover");
-        for (c in findComponents(Label)) {
-            c.addClass(":hover");
-        }
-        for (c in findComponents(Image)) {
-            c.addClass(":hover");
+        addClass(":hover", true, recursiveStyling);
+        if (!recursiveStyling) {
+            for (c in findComponents(Label)) {
+                c.addClass(":hover");
+            }
+            for (c in findComponents(Image)) {
+                c.addClass(":hover");
+            }
         }
     }
 
     private function _onItemMouseOut(event:MouseEvent) {
-        removeClass(":hover");
-        for (c in findComponents(Label)) {
-            c.removeClass(":hover");
-        }
-        for (c in findComponents(Image)) {
-            c.removeClass(":hover");
+        removeClass(":hover", true, recursiveStyling);
+        if (!recursiveStyling) {
+            for (c in findComponents(Label)) {
+                c.removeClass(":hover");
+            }
+            for (c in findComponents(Image)) {
+                c.removeClass(":hover");
+            }
         }
     }
 
     private function _onItemMouseDown(event:MouseEvent) {
-        addClass(":down");
-        for (c in findComponents(Label)) {
-            c.addClass(":down");
-        }
-        for (c in findComponents(Image)) {
-            c.addClass(":down");
+        addClass(":down", true, recursiveStyling);
+        if (!recursiveStyling) {
+            for (c in findComponents(Label)) {
+                c.addClass(":down");
+            }
+            for (c in findComponents(Image)) {
+                c.addClass(":down");
+            }
         }
     }
 
     private function _onItemMouseUp(event:MouseEvent) {
-        removeClass(":down");
-        for (c in findComponents(Label)) {
-            c.removeClass(":down");
-        }
-        for (c in findComponents(Image)) {
-            c.removeClass(":down");
+        removeClass(":down", true, recursiveStyling);
+        if (!recursiveStyling) {
+            for (c in findComponents(Label)) {
+                c.removeClass(":down");
+            }
+            for (c in findComponents(Image)) {
+                c.removeClass(":down");
+            }
         }
     }
 
