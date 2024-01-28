@@ -265,6 +265,11 @@ private class ResourceBehaviour extends DataBehaviour {
                         return;
                     }
 
+                    var subImage = _component.findComponent(Image);
+                    if (subImage != null) {
+                        _component.removeComponent(subImage, false, false);
+                    }
+
                     var image:Image = cast(_component, Image);
                     if (image == null) {
                         return;
