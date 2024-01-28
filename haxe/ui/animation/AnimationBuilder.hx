@@ -96,6 +96,7 @@ class AnimationBuilder {
         target.registerEvent(AnimationEvent.END, function(e) {
             target._pauseAnimationStyleChanges = false;
             target._componentAnimation = null;
+            target.unregisterEvents(AnimationEvent.END);
             if (onComplete != null) {
                 onComplete();
             }
