@@ -87,6 +87,14 @@ class TextField extends InteractiveComponent implements ICompositeInteractiveCom
     @:clonable @:behaviour(CaretIndexBehaviour)             public var caretIndex:Int;
     @:clonable @:behaviour(SelectionStartIndexBehaviour)    public var selectionStartIndex:Int;
     @:clonable @:behaviour(SelectionEndIndexBehaviour)      public var selectionEndIndex:Int;
+
+    public var isBlank(get, null):Bool;
+    private function get_isBlank():Bool {
+        if (text == null) {
+            return true;
+        }
+        return StringTools.trim(text).length == 0;
+    }
 }
 
 //***********************************************************************************************************
