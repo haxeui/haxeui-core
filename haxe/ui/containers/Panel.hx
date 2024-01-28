@@ -109,6 +109,7 @@ private class Builder extends CompositeBuilder {
             if (child.hidden) {
                 footer.hide();
             }
+            footer.styleString = child.styleString;
             for (c in child.childComponents) {
                 footer.addComponent(c);
             }
