@@ -388,15 +388,20 @@ private class TextBehaviour extends DataBehaviour {
             itemRenderer.data = data;
         } else {
             var label:Label = _component.findComponent(Label, false);
-            if (label == null) {
-                label = new Label();
-                label.id = "button-label";
-                label.scriptAccess = false;
-                _component.addComponent(label);
-                _component.invalidateComponentStyle(true);
+            if (_value == null || _value.isNull) {
+                if (label != null) {
+                    _component.removeComponent(label);
+                }
+            } else {
+                if (label == null) {
+                    label = new Label();
+                    label.id = "button-label";
+                    label.scriptAccess = false;
+                    _component.addComponent(label);
+                    _component.invalidateComponentStyle(true);
+                }
+                label.text = _value;
             }
-
-            label.text = _value;
         }
     }
 }
