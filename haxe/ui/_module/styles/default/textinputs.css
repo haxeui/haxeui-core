@@ -38,6 +38,10 @@
     color: $lighter-text-color;
 }
 
+.textfield.no-border {
+    border: none;
+}
+
 .textfield:disabled {
     border-color: $disabled-border-color;
     color: $disabled-text-color;
