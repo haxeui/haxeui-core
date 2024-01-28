@@ -788,9 +788,16 @@ class DropDownEvents extends ButtonEvents {
             }
             _wrapper.removeClass("popup-from-bottom");
             if (_wrapper.screenTop + _wrapper.actualComponentHeight > Screen.instance.actualHeight) {
-                _wrapper.top = (_dropdown.screenTop - _wrapper.actualComponentHeight) + Toolkit.scaleY;
-                popupFromBottom = true;
                 _wrapper.addClass("popup-from-bottom");
+                _wrapper.top = (_dropdown.screenTop - _wrapper.actualComponentHeight) + Toolkit.scaleY;
+                _wrapper.syncComponentValidation();
+                _wrapper.validateNow();
+                var marginTop = 0.0;
+                if (_wrapper.style != null && _wrapper.style.marginTop != null) {
+                    marginTop = _wrapper.style.marginTop;
+                }
+                _wrapper.top += marginTop;
+                popupFromBottom = true;
             }
             
             var cx = _wrapper.width - _dropdown.width;
