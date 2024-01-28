@@ -128,9 +128,16 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
     @:noCompletion
     private function set_parentComponent(value:Component):Component {
         _parentComponent = value;
+        if (value != null) {
+            onParentComponentSet();
+        }
         return value;
     }
  
+
+    private function onParentComponentSet() {
+
+    }
 
     public function containsChildComponent(child:Component, recursive:Bool = false):Bool {
         var contains = (_children != null && _children.indexOf(child) != -1);
