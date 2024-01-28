@@ -1136,6 +1136,11 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
          return xpos;
      }
  
+     public var screenRight(get, null):Float;
+     private function get_screenRight():Float {
+        return screenLeft + width;
+     }
+
      /**
       * The **on-screen** position of this component on the vertical, y-axis. 
       */
@@ -1160,6 +1165,11 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
          return ypos;
      }
  
+     public var screenBottom(get, null):Float;
+     private function get_screenBottom():Float { 
+        return screenTop + height;
+     }
+
      //***********************************************************************************************************
      // Clip rect
      //***********************************************************************************************************
