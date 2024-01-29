@@ -211,24 +211,25 @@ private class ScrollValueBehaviour extends DataBehaviour {
             return;
         }
 
+        var scroll:Scroll = cast(_component, Scroll);
+        var min:Float = scroll.min;
+        var max:Float = scroll.max;
+        if (value < min) {
+            value = min;
+        } else  if (value > max) {
+            value = max;
+        }
+
         super.set(value);
         _component.invalidateComponentLayout();
     }
 
     private override function validateData() {
         var scroll:Scroll = cast(_component, Scroll);
-        var pos:Float = scroll.pos;
-        var min:Float = scroll.min;
-        var max:Float = scroll.max;
-        if (pos < min) {
-            scroll.pos = min;
-        } else  if (pos > max) {
-            scroll.pos = max;
-        }
 
         var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
         changeEvent.previousValue = _previousValue;
-        changeEvent.value = pos;
+        changeEvent.value = _value;
         scroll.dispatch(changeEvent);
         
         var scrollEvent:ScrollEvent = new ScrollEvent(ScrollEvent.SCROLL);
