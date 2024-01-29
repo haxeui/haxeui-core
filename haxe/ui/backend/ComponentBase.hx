@@ -349,6 +349,7 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
         if (__events.add(type, listener, priority) == true) {
             mapEvent(type, _onMappedEvent);
         }
+        checkWatchForMoveEvents();
     }
 
     /**
@@ -375,6 +376,7 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
             if (__events.remove(type, listener) == true) {
                 unmapEvent(type, _onMappedEvent);
             }
+            checkWatchForMoveEvents();
         }
     }
 
@@ -427,6 +429,43 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
         }
     }
     
+    @:noCompletion 
+    private function checkWatchForMoveEvents() {
+        if (hasEvent(MouseEvent.MOUSE_OVER) || hasEvent(MouseEvent.MOUSE_OUT)) {
+            if (!hasEvent(UIEvent.MOVE, _onMoveInternal)) {
+                registerEvent(UIEvent.MOVE, _onMoveInternal);
+            }
+        }
+    }
+
+    @:noCompletion 
+    private function _onMoveInternal(_) {
+        checkComponentBounds();
+    }
+
+    @:noCompletion 
+    private function checkComponentBounds(checkNextFrame:Bool = true) {
+        // is it valid to assume it must have :hover?
+        var hasHover = cast(this, Component).hasClass(":hover"); // TODO: might want to move "hasClass" et al to this class to avoid cast
+        if (!hasHover && screenBounds.containsPoint(Screen.instance.currentMouseX, Screen.instance.currentMouseY)) {
+            var mouseEvent = new MouseEvent(MouseEvent.MOUSE_OVER);
+            mouseEvent.screenX = Screen.instance.currentMouseX;
+            mouseEvent.screenY = Screen.instance.currentMouseY;
+            dispatch(mouseEvent);
+        } else if (hasHover && !screenBounds.containsPoint(Screen.instance.currentMouseX, Screen.instance.currentMouseY)) {
+            var mouseEvent = new MouseEvent(MouseEvent.MOUSE_OUT);
+            mouseEvent.screenX = Screen.instance.currentMouseX;
+            mouseEvent.screenY = Screen.instance.currentMouseY;
+            dispatch(mouseEvent);
+        }
+
+        if (checkNextFrame) { // find any stragglers
+            Toolkit.callLater(function() {
+                checkComponentBounds(false);
+            });
+        }
+    }
+
     @:noCompletion 
     private function _onMappedEvent<T:UIEvent>(event:T) {
         dispatch(event);
