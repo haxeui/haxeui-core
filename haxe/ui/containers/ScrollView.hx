@@ -867,10 +867,17 @@ class ScrollViewEvents extends haxe.ui.events.Events {
 
     @:access(haxe.ui.core.Component)
     private function onContainerEventsStatusChanged() {
-        _scrollview.findComponent("scrollview-contents", Component, true, "css").disableInteractivity(_containerEventsPaused);
+        var scrollViewContents = _scrollview.findComponent("scrollview-contents", Component, true, "css");
+        scrollViewContents.disableInteractivity(_containerEventsPaused);
 
         if (_containerEventsPaused == true) {
-            _scrollview.findComponent("scrollview-contents", Component, true, "css").removeClass(":hover", true, true);
+            scrollViewContents.removeClass(":hover", true, true);
+        } else {
+            var components = scrollViewContents.findComponentsUnderPoint(Screen.instance.currentMouseX, Screen.instance.currentMouseY);
+            for (c in components) {
+                var mouseEvent = new MouseEvent(MouseEvent.MOUSE_OVER);
+                c.dispatch(mouseEvent);
+            }
         }
 
         var hscroll = _scrollview.findComponent(HorizontalScroll, false);
