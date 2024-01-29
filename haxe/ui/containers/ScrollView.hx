@@ -763,25 +763,18 @@ class ScrollViewEvents extends haxe.ui.events.Events {
             
             var mouseX = haxe.ui.core.Screen.instance.currentMouseX;
             var mouseY = haxe.ui.core.Screen.instance.currentMouseY;
-            // components have not yet moved so comparing actual and future position
-            simulateHoveringEvents(mouseX, mouseY, mouseX, mouseY + diffY);
+            Toolkit.callLater(function () {
+                simulateHoveringEvents(mouseX, mouseY - diffY, mouseX, mouseY);
+            });      
         }
     }
 
     private function simulateHoveringEvents(oldScreenX:Float, oldScreenY:Float, newScreenX:Float, newScreenY:Float) {
-
-        var oldComponents = _scrollview.findComponentsUnderPoint(oldScreenX, oldScreenY);
+        var oldHoveredComponents = _scrollview.findComponents(":hover", 999);
         var newComponents = _scrollview.findComponentsUnderPoint(newScreenX, newScreenY, true);
 
-        var oldHoveredComponents = [];
         var newHoveredComponents = [];
 
-        for ( c in oldComponents) {
-            @:privateAccess if (c.__events != null && (c.__events._map.exists(MouseEvent.MOUSE_OUT) ||
-            c.__events._map.exists(MouseEvent.MOUSE_OVER))) {
-                oldHoveredComponents.push(c);
-            }
-        }
         for ( c in newComponents) {
             @:privateAccess if (c.__events != null && (c.__events._map.exists(MouseEvent.MOUSE_OUT) ||
             c.__events._map.exists(MouseEvent.MOUSE_OVER))) {
