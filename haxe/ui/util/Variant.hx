@@ -356,7 +356,7 @@ abstract Variant(VariantType) from VariantType {
     @:op(A * B)
     private function multiply(rhs:Variant):Variant {
         if (isNumber && rhs.isNumber) {
-            return cast(toNumber() * rhs.toNumber());
+            return toNumber() * rhs.toNumber();
         }
 
         throw "Variant operation error";
@@ -365,7 +365,7 @@ abstract Variant(VariantType) from VariantType {
     @:op(A / B)
     private function divide(rhs:Variant):Variant {
         if (isNumber && rhs.isNumber) {
-            return cast(toNumber() / rhs.toNumber());
+            return toNumber() / rhs.toNumber();
         }
 
         throw "Variant operation error";
