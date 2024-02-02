@@ -82,4 +82,38 @@ class StringUtil {
         }
         return s.split(token).length - 1;
     }
+
+    #if !macro // stringtools gets used in macros, but some functions rely on haxeui "bits" (like locales), lets wrap to avoid problems
+    private static var humanReadableRegex = ~/\B(?=(\d{3})+(?!\d))/g;
+    private static inline var THOUSAND:Int = 1000;
+    private static inline var MILLION:Int = THOUSAND * THOUSAND;
+    private static inline var BILLION:Int = MILLION * THOUSAND;
+
+    public static function formatNumber(n:Float, standardNotation:Bool = true):String {
+        var s = Std.string(n);
+
+        if (standardNotation) {
+            var a = Math.abs(n);
+            var i = n;
+            var suffix = "";
+            if (a >= THOUSAND && a < MILLION) {
+                suffix = "K";
+                i = n / THOUSAND;
+            } else if (a >= MILLION && a < BILLION) {
+                suffix = "M";
+                i = n / MILLION;
+            } else {
+                suffix = "B";
+                i = n / BILLION;
+            }
+
+            i = MathUtil.round(i, 1);
+            s = Std.string(i) + suffix;
+        } else {
+            s = humanReadableRegex.replace(s, haxe.ui.locale.Formats.thousandsSeperator);
+        }
+
+        return s;
+    }
+    #end
 }

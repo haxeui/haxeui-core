@@ -26,4 +26,17 @@ class Formats {
         _decimalSeperator = value;
         return value;
     }
+    
+    private static var _thousandsSeperator:String = null;
+    public static var thousandsSeperator(get, set):String;
+    private static function get_thousandsSeperator():String {
+        if (_thousandsSeperator == null) {
+            return LocaleManager.instance.lookupString("formats.thousands.seperator");
+        }
+        return _thousandsSeperator;
+    }
+    private static function set_thousandsSeperator(value:String):String {
+        _thousandsSeperator = value;
+        return value;
+    }
 }
