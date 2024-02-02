@@ -819,7 +819,9 @@ class DropDownEvents extends ButtonEvents {
                     filler.top = 0;
                 }
                 
-                filler.hidden = false;
+                if (filler.style != null && (filler.style.hidden == null || filler.style.hidden == false)) {
+                    filler.hidden = false;
+                }
             } else if (filler != null) {
                 filler.hidden = true;
                 _wrapper.removeClass("dropdown-popup-expanded");
