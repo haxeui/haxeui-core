@@ -110,7 +110,7 @@ class StringUtil {
             i = MathUtil.round(i, 1);
             s = Std.string(i) + suffix;
         } else {
-            s = humanReadableRegex.replace(s, haxe.ui.locale.Formats.thousandsSeperator);
+            s = humanReadableRegex.replace(s, haxe.ui.locale.Formats.thousandsSeparator);
         }
 
         return s;
