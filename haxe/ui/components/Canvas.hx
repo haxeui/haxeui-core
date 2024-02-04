@@ -19,6 +19,12 @@ class Canvas extends Component implements IDataComponent {
     
     private override function validateComponentLayout():Bool {
         var b = super.validateComponentLayout();
+        if (width == null || height == null) {
+            return b;
+        }
+        if (width <= 0  || height <= 0) {
+            return b;
+        }
         componentGraphics.resize(width, height);
         return b;
     }
