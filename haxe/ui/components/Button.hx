@@ -777,6 +777,19 @@ class ButtonGroups { // singleton
         return _groups.get(name);
     }
 
+    public function getSelected(name:String):Button {
+        var list = get(name);
+        if (list == null) {
+            return null;
+        }
+        for (button in list) {
+            if (button.selected) {
+                return button;
+            }
+        }
+        return null;
+    }
+
     public function set(name:String, buttons:Array<Button>) {
         _groups.set(name, buttons);
     }
