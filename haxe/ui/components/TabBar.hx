@@ -646,7 +646,7 @@ private class Builder extends CompositeBuilder {
     public override function applyStyle(style:Style) {
         super.applyStyle(style);
         
-        haxe.ui.macros.ComponentMacros.cascacdeStylesToList(Button, [
+        haxe.ui.macros.ComponentMacros.cascadeStylesToList(Button, [
             color, fontName, fontSize, textAlign, fontBold, fontUnderline, fontItalic
         ]);
     }

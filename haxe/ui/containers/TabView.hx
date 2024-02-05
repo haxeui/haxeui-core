@@ -530,7 +530,7 @@ private class Builder extends CompositeBuilder {
     public override function applyStyle(style:Style) {
         super.applyStyle(style);
         
-        haxe.ui.macros.ComponentMacros.cascacdeStylesTo("tabview-tabs", [
+        haxe.ui.macros.ComponentMacros.cascadeStylesTo("tabview-tabs", [
             color, fontName, fontSize, cursor, textAlign, fontBold, fontUnderline, fontItalic
         ], false);
     }
