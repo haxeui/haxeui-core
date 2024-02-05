@@ -96,7 +96,10 @@ class StringUtil {
             var a = Math.abs(n);
             var i = n;
             var suffix = "";
-            if (a >= THOUSAND && a < MILLION) {
+            if (a >= 0 && a < THOUSAND) {
+                suffix = "";
+                i = n;
+            } else if (a >= THOUSAND && a < MILLION) {
                 suffix = "K";
                 i = n / THOUSAND;
             } else if (a >= MILLION && a < BILLION) {
