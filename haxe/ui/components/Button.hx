@@ -724,11 +724,11 @@ class ButtonBuilder extends CompositeBuilder {
     public override function applyStyle(style:Style) {
         super.applyStyle(style);
         
-        haxe.ui.macros.ComponentMacros.cascacdeStylesTo("button-label", [
+        haxe.ui.macros.ComponentMacros.cascadeStylesTo("button-label", [
             color, fontName, fontSize, cursor, textAlign, fontBold, fontUnderline, fontItalic
         ], false);
-        haxe.ui.macros.ComponentMacros.cascacdeStylesTo("button-icon", [cursor], false);
-        haxe.ui.macros.ComponentMacros.cascacdeStylesToList(Label, [
+        haxe.ui.macros.ComponentMacros.cascadeStylesTo("button-icon", [cursor], false);
+        haxe.ui.macros.ComponentMacros.cascadeStylesToList(Label, [
             color, fontName, fontSize, cursor, textAlign, fontBold, fontUnderline, fontItalic
         ]);
         

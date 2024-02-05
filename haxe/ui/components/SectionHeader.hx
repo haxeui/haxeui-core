@@ -51,7 +51,7 @@ private class Builder extends CompositeBuilder {
     public override function applyStyle(style:Style) {
         super.applyStyle(style);
         
-        haxe.ui.macros.ComponentMacros.cascacdeStylesToList(Label, [
+        haxe.ui.macros.ComponentMacros.cascadeStylesToList(Label, [
             color, fontName, fontSize, cursor, textAlign, fontBold, fontUnderline, fontItalic
         ]);
     }

@@ -135,7 +135,7 @@ private class Builder extends CompositeBuilder {
     }
     
     public override function applyStyle(style:Style) {
-        haxe.ui.macros.ComponentMacros.cascacdeStylesTo("menuitem-label", [color, fontName, fontSize, cursor, textAlign]);
+        haxe.ui.macros.ComponentMacros.cascadeStylesTo("menuitem-label", [color, fontName, fontSize, cursor, textAlign]);
     }
 }
 
