@@ -407,7 +407,7 @@ private class ListViewBuilder extends ScrollViewBuilder {
     
     public override function applyStyle(style:Style) {
         super.applyStyle(style);
-        haxe.ui.macros.ComponentMacros.cascacdeStylesToList(Label, [color, fontName, fontSize, cursor, textAlign]);
+        haxe.ui.macros.ComponentMacros.cascadeStylesToList(Label, [color, fontName, fontSize, cursor, textAlign]);
     }
 }
 

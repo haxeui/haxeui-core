@@ -88,7 +88,7 @@ class ComponentMacros {
         return macro new $t();
     }
 
-    macro public static function cascacdeStylesTo(id:Expr, styleProperties:Expr = null, recursiveFind:Null<Bool> = null):Expr {
+    macro public static function cascadeStylesTo(id:Expr, styleProperties:Expr = null, recursiveFind:Null<Bool> = null):Expr {
         if (styleProperties == null) {
             return macro null;
         }
@@ -127,7 +127,7 @@ class ComponentMacros {
         return builder.expr;
     }
     
-    macro public static function cascacdeStylesToList(componentType:Expr, styleProperties:Expr = null):Expr {
+    macro public static function cascadeStylesToList(componentType:Expr, styleProperties:Expr = null):Expr {
         if (styleProperties == null) {
             return macro null;
         }
