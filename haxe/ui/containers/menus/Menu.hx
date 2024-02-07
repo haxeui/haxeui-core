@@ -191,6 +191,16 @@ class MenuEvents extends haxe.ui.events.Events {
             }
         }
 
+        if (parentMenu != null) {
+            // so that's is always the parent menu that is visually selected
+            // even if you have previously hovered over parent's siblings.
+            var menuItem:MenuItem = null;
+            for (mi => menu in cast(parentMenu._compositeBuilder, Builder)._subMenus) {
+                if (_menu == menu) menuItem = mi;
+            }
+            parentMenu.currentItem = menuItem;
+        }
+
         if (_timer != null) {
             _timer.stop();
             _timer = null;
