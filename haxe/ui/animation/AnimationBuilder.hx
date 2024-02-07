@@ -101,13 +101,12 @@ class AnimationBuilder {
                 onComplete();
             }
         });
-        Toolkit.callLater(function() {
-            sortFrames();
-            target._pauseAnimationStyleChanges = true;
-            target.applyAnimationKeyFrame(frames, {
-                duration: duration,
-                easingFunction: easing
-            });
+
+        sortFrames();
+        target._pauseAnimationStyleChanges = true;
+        target.applyAnimationKeyFrame(frames, {
+            duration: duration,
+            easingFunction: easing
         });
     }
     
