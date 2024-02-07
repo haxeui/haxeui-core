@@ -168,9 +168,7 @@ private class Events extends haxe.ui.events.Events {
             menu.pauseEvent(MouseEvent.MOUSE_OVER, true);
             menu.show();
             menu.syncComponentValidation();
-            Toolkit.callLater(() -> {
-                menu.resumeEvent(MouseEvent.MOUSE_OVER, true);
-            });
+            menu.resumeEvent(MouseEvent.MOUSE_OVER, true, true);
 
             if (left + menu.actualComponentWidth > Screen.instance.actualWidth) {
                 left = target.screenLeft - menu.actualComponentWidth + target.actualComponentWidth;

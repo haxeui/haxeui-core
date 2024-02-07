@@ -336,14 +336,6 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
             return;
         }
 
-        if (_pausedEvents != null && _pausedEvents.exists(type)) {
-            var list = _pausedEvents.get(type);
-            if (!list.contains(cast listener)) {
-                list.push(cast listener);
-            }
-            return;
-        }
-
         if (disabled == true && isInteractiveEvent(type) == true) {
             if (_disabledEvents == null) {
                 _disabledEvents = new EventMap();
@@ -381,14 +373,6 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
             _disabledEvents.remove(type, listener);
         }
 
-        if (_pausedEvents != null && _pausedEvents.exists(type)) {
-            var list = _pausedEvents.get(type);
-            if (!list.contains(cast listener)) {
-                list.remove(cast listener);
-            }
-            return;
-        }
-
         if (__events != null) {
             if (__events.remove(type, listener) == true) {
                 unmapEvent(type, _onMappedEvent);
@@ -406,11 +390,6 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
             _disabledEvents.removeAll(type);
         }
 
-        if (_pausedEvents != null && _pausedEvents.exists(type)) {
-            _pausedEvents.set(type, []);
-            return;
-        }
-
         if (__events != null) {
             __events.removeAll(type);
             unmapEvent(type, _onMappedEvent);
@@ -422,6 +401,9 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
     **/
     @:dox(group = "Event related properties and methods")
     public function dispatch<T:UIEvent>(event:T, target:Component = null) {
+        if (_pausedEvents != null && _pausedEvents.contains(event.type)) {
+            return;
+        }
         if (event != null) {
             if (__events != null) {
                 __events.invoke(event.type, event, cast(this, Component));  // TODO: avoid cast
@@ -614,24 +596,13 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
         }
     }
 
-    @:noCompletion private var _pausedEvents:Map<String, Array<UIEvent->Void>> = null;
+    @:noCompletion private var _pausedEvents:Array<String> = null;
     public function pauseEvent(type:String, recursive:Bool = false) {
         if (_pausedEvents == null) {
-            _pausedEvents = new Map<String, Array<UIEvent->Void>>();
+            _pausedEvents = [];
         }
-        
-        var pausedList = _pausedEvents.get(type);
-        if (pausedList == null) { // were going to treat a zero length array as an indicator of an event being "paused", as future events may come in in register event which will want to pause
-            pausedList = new Array<UIEvent->Void>();
-            _pausedEvents.set(type, pausedList);
-        }
-        
-        if (__events != null && __events.contains(type)) {
-            var listeners = __events.listeners(type).copy();
-            for (l in listeners) {
-                pausedList.push(l);
-                unregisterEvent(type, l);
-            }
+        if (!_pausedEvents.contains(type)) {
+            _pausedEvents.push(type);
         }
         
         if (recursive == true) {
@@ -641,24 +612,20 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
         }
     }
     
-    public function resumeEvent(type:String, recursive:Bool = false) {
-        if (_pausedEvents == null) {
-            return;
-        }
-        
-        if (_pausedEvents.exists(type) == false) {
-            return;
-        }
-        
-        var pausedList = _pausedEvents.get(type);
-        _pausedEvents.remove(type);
-        for (l in pausedList) {
-            registerEvent(type, l);
-        }
-        
-        if (recursive == true) {
-            for (c in childComponents) {
-                c.resumeEvent(type, recursive);
+    public function resumeEvent(type:String, nextFrame:Bool = false, recursive:Bool = false) {
+        if (nextFrame) {
+            Toolkit.callLater(function() {
+                resumeEvent(type, false, recursive);
+            });
+        } else {
+            if (_pausedEvents != null && _pausedEvents.contains(type)) {
+                _pausedEvents.remove(type);
+            }
+
+            if (recursive == true) {
+                for (c in childComponents) {
+                    c.resumeEvent(type, recursive);
+                }
             }
         }
     }

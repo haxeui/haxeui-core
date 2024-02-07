@@ -210,9 +210,7 @@ class ItemPickerBuilder extends CompositeBuilder {
 
     public function resumePanelEvents() {
         if (panel != null) {
-            Toolkit.callLater(function() {
-                panel.resumeEvent(panelSelectionEvent);
-            });
+            panel.resumeEvent(panelSelectionEvent, true);
         }
     }
 
