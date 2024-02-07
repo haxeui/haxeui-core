@@ -227,9 +227,12 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
             return;
         }
         
+        //Seemingly breaks the color picker for no reason, commenting just in case.
+        /*
         if (_currentColorRGBF.r == 255 && _currentColorRGBF.g == 255 && _currentColorRGBF.b == 255) {
             return;
         }
+        */
         
         var stepX = 100 / cx;
         var stepY = 100 / cy;
@@ -263,9 +266,12 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
             return;
         }
         
+        //Seemingly breaks the color picker for no reason, commenting just in case.
+        /*
         if (_currentColorRGBF.r == 255 && _currentColorRGBF.g == 255 && _currentColorRGBF.b == 255) {
             return;
         }
+        */
         
         var step = 360 / cx;
         var bytes = Bytes.alloc(Std.int(cx * cy * 4));
