@@ -102,6 +102,7 @@ class MenuEvents extends haxe.ui.events.Events {
     public var currentSubMenu:Menu = null;
     public var parentMenu:Menu = null;
 
+    private static inline var TIME_MOUSE_OPENS_MS:Int =400;
     private var _timer:Timer = null;
 
     public var button:Button = null;
@@ -202,7 +203,7 @@ class MenuEvents extends haxe.ui.events.Events {
         if (subMenus.get(item) != null) {
             _menu.currentItem = item;
             lastEventSubMenu = event;
-            _timer = new Timer(400, function f() { 
+            _timer = new Timer(TIME_MOUSE_OPENS_MS, function f() { 
                 showSubMenu(cast(subMenus.get(item), Menu), item);
                 _timer.stop();
                 _timer = null;
@@ -213,7 +214,7 @@ class MenuEvents extends haxe.ui.events.Events {
                     hideCurrentSubMenu();
                     lastEventSubMenu = null;
                 } else {
-                    _timer = new Timer(400, function f() { 
+                    _timer = new Timer(TIME_MOUSE_OPENS_MS, function f() { 
                         hideCurrentSubMenu();
                         _timer.stop();
                         _timer = null;
