@@ -52,6 +52,9 @@ class UIEvent extends EventImpl {
     /** PROPERTY_CHANGE is dispatched by dropdowns, lists, etc where a specific property has changed usually selected item **/
     public static final PROPERTY_CHANGE:EventType<UIEvent> = EventType.name("propertychange");
 
+    /** COMPONENT_CREATED is dispatched when a child component is added **/
+    public static final COMPONENT_CREATED:EventType<UIEvent> = EventType.name("componentcreated");
+
     /** COMPONENT_ADDED is dispatched when a child component is added **/
     public static final COMPONENT_ADDED:EventType<UIEvent> = EventType.name("componentadded");
     /** COMPONENT_REMOVED is dispatched when a child component is removed **/

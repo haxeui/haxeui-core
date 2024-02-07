@@ -121,6 +121,16 @@ class Component extends ComponentImpl
             }
         }
         behaviours.applyDefaults();
+        Toolkit.callLater(function() {
+            var event = new UIEvent(UIEvent.COMPONENT_CREATED, true);
+            event.relatedComponent = this;
+            dispatch(event);
+        });
+        onComponentCreated();
+    }
+
+    private function onComponentCreated() {
+
     }
 
     @:noCompletion private var _compositeBuilderClass:Class<CompositeBuilder>;
