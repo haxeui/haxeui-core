@@ -26,12 +26,13 @@ import haxe.ui.util.FunctionArray;
 import haxe.ui.util.Variant;
 import haxe.ui.validation.InvalidationFlags;
 import haxe.ui.validation.ValidationManager;
+import haxe.ui.core.IEventDispatcher;
 
 @:build(haxe.ui.macros.Macros.buildBehaviours())
 @:autoBuild(haxe.ui.macros.Macros.buildBehaviours())
 @:build(haxe.ui.macros.Macros.build())
 @:autoBuild(haxe.ui.macros.Macros.build())
-class ComponentBase extends ComponentSurface implements IClonable<ComponentBase> {
+class ComponentBase extends ComponentSurface implements IClonable<ComponentBase> implements IEventDispatcher<UIEvent> {
     /**
      * Creates a new `ComponentContainer`.
      */
@@ -399,7 +400,7 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
      Dispatch a certain `UIEvent`
     **/
     @:dox(group = "Event related properties and methods")
-    public function dispatch<T:UIEvent>(event:T) {
+    public function dispatch<T:UIEvent>(event:T, target:Component = null) {
         if (event != null) {
             if (__events != null) {
                 __events.invoke(event.type, event, cast(this, Component));  // TODO: avoid cast
@@ -415,6 +416,12 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
         dispatch(event);
         for (child in childComponents) {
             child.dispatchRecursively(event);
+        }
+    }
+
+    public function removeAllListeners() {
+        if (__events != null) {
+            __events.removeAll();
         }
     }
 
