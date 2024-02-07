@@ -1,5 +1,6 @@
 package haxe.ui.containers.menus;
 
+import haxe.ui.util.Timer;
 import haxe.ui.util.Variant;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
@@ -194,15 +195,29 @@ class MenuEvents extends haxe.ui.events.Events {
             }
         }
 
+        if (_timer != null) {
+            _timer.stop();
+            _timer = null;
+        }
         if (subMenus.get(item) != null) {
-            showSubMenu(cast(subMenus.get(item), Menu), item);
             _menu.currentItem = item;
             lastEventSubMenu = event;
+            _timer = new Timer(400, function f() { 
+                showSubMenu(cast(subMenus.get(item), Menu), item);
+                _timer.stop();
+                _timer = null;
+            });
         } else {
             if (currentSubMenu != null) {
                 if (!isMouseAimingForSubMenu(event)) {
                     hideCurrentSubMenu();
                     lastEventSubMenu = null;
+                } else {
+                    _timer = new Timer(400, function f() { 
+                        hideCurrentSubMenu();
+                        _timer.stop();
+                        _timer = null;
+                    });
                 }
                 lastEventSubMenu = event;
             }
@@ -237,6 +252,10 @@ class MenuEvents extends haxe.ui.events.Events {
     }
 
     private function onItemMouseOut(event:MouseEvent) {
+        if (_timer != null) {
+            _timer.stop();
+            _timer = null;
+        }
         if (currentSubMenu != null) {
             _menu.currentItem.addClass(":hover", true, true);
             return;
