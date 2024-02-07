@@ -1,5 +1,7 @@
 package haxe.ui.containers.menus;
 
+import haxe.ui.util.Variant;
+import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.components.Button;
 import haxe.ui.components.Label;
@@ -21,7 +23,9 @@ import Std.is as isOfType;
 
 @:composite(MenuEvents, Builder, Layout)
 class Menu extends Box {
-    @:behaviour(DefaultBehaviour)           public var menuStyleNames:String;
+    @:behaviour(DefaultBehaviour)            public var menuStyleNames:String;
+    @:behaviour(CurrentIndexBehaviour, 0)    public var currentIndex:Int;
+    @:behaviour(CurrentItemBehaviour)        public var currentItem:MenuItem;
 
     /**
      Utility property to add a single `MenuEvent.MENU_SELECTED` event
@@ -39,6 +43,53 @@ class Menu extends Box {
 // Behaviours
 //***********************************************************************************************************
 
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class CurrentIndexBehaviour extends DataBehaviour {
+
+    public override function set(value:Variant) {
+        var _menu:Menu = cast _component;
+        var itemsNbr = _menu.findComponents(MenuItem, 1).length;
+        if (value >= itemsNbr) {
+            value = 0;
+        }
+        super.set(value); 
+    }
+
+    private override function validateData() {
+        var _menu:Menu = cast _component;
+        var items = _menu.findComponents(MenuItem, 1);
+        var itemNbr:Int = _value;
+        _menu.currentItem = items[itemNbr]; 
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class CurrentItemBehaviour extends DataBehaviour {
+
+    public override function set(value:Variant) {
+        
+        super.set(value); 
+    }
+
+    private override function validateData() {
+        var _menu:Menu = cast _component;
+        var menuItemC:Component = _value;
+        var menuItem:MenuItem = cast menuItemC;
+        var index = _menu.findComponents(MenuItem, 1).indexOf(menuItem);
+        _menu.currentIndex = index;
+
+        for (child in _menu.childComponents) {
+            child.removeClass(":hover", true, true);
+        }
+
+        var item:Component = _value;
+        if (item != null) item.addClass(":hover", true, true);
+    }
+}
+
+
 //***********************************************************************************************************
 // Events
 //***********************************************************************************************************
@@ -47,9 +98,10 @@ class Menu extends Box {
 @:access(haxe.ui.containers.menus.Builder)
 class MenuEvents extends haxe.ui.events.Events {
     private var _menu:Menu;
-    private var _currentItem:MenuItem = null;
     public var currentSubMenu:Menu = null;
     public var parentMenu:Menu = null;
+
+    private var _timer:Timer = null;
 
     public var button:Button = null;
     
@@ -143,8 +195,8 @@ class MenuEvents extends haxe.ui.events.Events {
         }
 
         if (subMenus.get(item) != null) {
-            _currentItem = item;
             showSubMenu(cast(subMenus.get(item), Menu), item);
+            _menu.currentItem = item;
             lastEventSubMenu = event;
         } else {
             if (currentSubMenu != null) {
@@ -186,10 +238,10 @@ class MenuEvents extends haxe.ui.events.Events {
 
     private function onItemMouseOut(event:MouseEvent) {
         if (currentSubMenu != null) {
-            _currentItem.addClass(":hover", true, true);
+            _menu.currentItem.addClass(":hover", true, true);
             return;
         } else {
-            _currentItem = null;
+            _menu.currentItem = null;
         }
     }
 
