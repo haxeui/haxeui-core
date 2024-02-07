@@ -401,7 +401,7 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
     **/
     @:dox(group = "Event related properties and methods")
     public function dispatch<T:UIEvent>(event:T, target:Component = null) {
-        if (_pausedEvents != null && _pausedEvents.contains(event.type)) {
+        if (_pausedEvents != null && _pausedEvents.indexOf(event.type) != -1) {
             return;
         }
         if (event != null) {
@@ -601,7 +601,7 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
         if (_pausedEvents == null) {
             _pausedEvents = [];
         }
-        if (!_pausedEvents.contains(type)) {
+        if (_pausedEvents.indexOf(type) == -1) {
             _pausedEvents.push(type);
         }
         
@@ -618,7 +618,7 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
                 resumeEvent(type, false, recursive);
             });
         } else {
-            if (_pausedEvents != null && _pausedEvents.contains(type)) {
+            if (_pausedEvents != null && _pausedEvents.indexOf(type) != -1) {
                 _pausedEvents.remove(type);
             }
 
