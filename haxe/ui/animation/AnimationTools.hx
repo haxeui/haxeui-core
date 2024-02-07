@@ -34,6 +34,9 @@ class AnimationTools {
             });
             return;
         }
+        if (c.parentComponent != null) {
+            c.parentComponent.validateNow();
+        }
         c.validateNow();
         var parentX:Float = 0;
         if (c.parentComponent != null) {
@@ -68,6 +71,9 @@ class AnimationTools {
             });
             return;
         }
+        if (c.parentComponent != null) {
+            c.parentComponent.validateNow();
+        }
         c.validateNow();
         var parentX:Float = 0;
         if (c.parentComponent != null) {
@@ -100,6 +106,9 @@ class AnimationTools {
                 slideFromTop(c, delayMs, onComplete, duration, easing);
             });
             return;
+        }
+        if (c.parentComponent != null) {
+            c.parentComponent.validateNow();
         }
         c.validateNow();
         var parentY:Float = 0;
@@ -134,6 +143,9 @@ class AnimationTools {
             });
             return;
         }
+        if (c.parentComponent != null) {
+            c.parentComponent.validateNow();
+        }
         c.validateNow();
         var parentY:Float = 0;
         if (c.parentComponent != null) {
@@ -167,6 +179,9 @@ class AnimationTools {
             });
             return;
         }
+        if (c.parentComponent != null) {
+            c.parentComponent.validateNow();
+        }
         c.validateNow();
         var parentX:Float = 0;
         if (c.parentComponent != null) {
@@ -199,6 +214,9 @@ class AnimationTools {
             return;
         }
 
+        if (c.parentComponent != null) {
+            c.parentComponent.validateNow();
+        }
         c.validateNow();
         var parentX:Float = 0;
         if (c.parentComponent != null) {
@@ -228,6 +246,9 @@ class AnimationTools {
                 slideFromBottom(c, delayMs, onComplete, duration, easing);
             });
             return;
+        }
+        if (c.parentComponent != null) {
+            c.parentComponent.validateNow();
         }
         c.validateNow();
         var parentY:Float = 0;
@@ -260,6 +281,9 @@ class AnimationTools {
                 slideToBottom(c, delayMs, onComplete, duration, easing);
             });
             return;
+        }
+        if (c.parentComponent != null) {
+            c.parentComponent.validateNow();
         }
         c.validateNow();
         var parentY:Float = 0;
