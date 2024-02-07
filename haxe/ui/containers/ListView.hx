@@ -47,6 +47,22 @@ class ListView extends ScrollView implements IDataComponent implements IVirtualC
 
     @:event(ItemEvent.COMPONENT_EVENT)                                      public var onComponentEvent:ItemEvent->Void;
 
+    public function selectItemBy(fn:Dynamic->Bool, allowUnselection:Bool = false) {
+        var indexToSelect = -1;
+        for (i in 0...this.dataSource.size) {
+            var item = this.dataSource.get(i);
+            if (fn(item)) {
+                indexToSelect = i;
+                break;
+            }
+        }
+        if (allowUnselection && indexToSelect != this.selectedIndex) {
+            this.selectedIndex = indexToSelect;
+        } else if (indexToSelect != -1 && indexToSelect != this.selectedIndex) {
+            this.selectedIndex = indexToSelect;
+        }
+    }
+
     private var _itemRendererClass:Class<ItemRenderer>;
     @:clonable public var itemRendererClass(get, set):Class<ItemRenderer>;
     private function get_itemRendererClass():Class<ItemRenderer> {
