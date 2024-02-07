@@ -624,7 +624,7 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
 
             if (recursive == true) {
                 for (c in childComponents) {
-                    c.resumeEvent(type, recursive);
+                    c.resumeEvent(type, false, recursive);
                 }
             }
         }
