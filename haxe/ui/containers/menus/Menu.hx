@@ -69,11 +69,6 @@ private class CurrentIndexBehaviour extends DataBehaviour {
 @:access(haxe.ui.core.Component)
 private class CurrentItemBehaviour extends DataBehaviour {
 
-    public override function set(value:Variant) {
-        
-        super.set(value); 
-    }
-
     private override function validateData() {
         var _menu:Menu = cast _component;
         var menuItemC:Component = _value;
