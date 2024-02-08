@@ -106,6 +106,7 @@ class ExternGenerator {
         copyBackendOriginal("haxe.ui.backend.BackendImpl");
         copyOriginal("haxe.ui.layouts.LayoutFactory");
         copyOriginal("haxe.ui.data.DataSourceFactory");
+        //copyOriginal("haxe.ui.core.IEventDispatcher");
         copyOriginals("haxe.ui.constants");
 
         var moduleSourcePath = Path.normalize(rootDir() + "/haxe/ui/module.xml");
@@ -148,6 +149,8 @@ class ExternGenerator {
     private static function generateExternClass(classType:ClassType, sb:StringBuf) {
         var fullName = buildFullName(classType);
         if (fullName == "haxe.ui.backend.ComponentBase") {
+            sb.add('@:build(haxe.ui.macros.Macros.buildBehaviours())\n');
+            sb.add('@:autoBuild(haxe.ui.macros.Macros.buildBehaviours())\n');
             sb.add('@:build(haxe.ui.macros.Macros.build())\n');
             sb.add('@:autoBuild(haxe.ui.macros.Macros.build())\n');
         }
