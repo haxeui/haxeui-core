@@ -534,6 +534,10 @@ class Macros {
     public static var _cachedFields:Map<String, Array<Field>> = new Map<String, Array<Field>>();
     #end
     static function buildBehaviours():Array<Field> {
+        if (Context.getLocalClass().get().isExtern) {
+            return null;
+        }
+
         var builder = new ClassBuilder(haxe.macro.Context.getBuildFields(), Context.getLocalType(), Context.currentPos());
         #if macro_times_verbose
         var stopComponentTimer = Context.timer(builder.fullPath);
