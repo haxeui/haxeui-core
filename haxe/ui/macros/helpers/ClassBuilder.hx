@@ -308,6 +308,30 @@ class ClassBuilder {
                         break;
                     }
                 }
+            case TAbstract(t, _):
+                switch (t.get().type) {
+                    case TInst(t, _):
+                        while (t != null) {
+                            for (i in t.get().interfaces) {
+                                var interfaceName:String = i.t.toString();
+                                if (interfaceName == interfaceRequired) {
+                                    has = true;
+                                    break;
+                                }
+                            }
+
+                            if (has == false) {
+                                if (t.get().superClass != null) {
+                                    t = t.get().superClass.t;
+                                } else {
+                                    t = null;
+                                }
+                            } else {
+                                break;
+                            }
+                        }
+                    case _:    
+                }
             case _:
         }
 
@@ -324,6 +348,18 @@ class ClassBuilder {
                         has = true;
                         break;
                     }
+                }
+            case TAbstract(t, _):
+                switch (t.get().type) {
+                    case TInst(t, _):
+                        for (i in t.get().interfaces) {
+                            var interfaceName:String = i.t.toString();
+                            if (interfaceName == interfaceRequired) {
+                                has = true;
+                                break;
+                            }
+                        }
+                    case _:    
                 }
             case _:
         }
@@ -354,6 +390,26 @@ class ClassBuilder {
                         }
                     }
                 }
+            case TAbstract(t, _):
+                switch (t.get().type) {
+                    case TInst(t, _):
+                        if (t.toString() == classRequired) {
+                            has = true;
+                        } else {
+                            while (t != null) {
+                                if (t.get().superClass != null) {
+                                    t = t.get().superClass.t;
+                                    if (t.toString() == classRequired) {
+                                        has = true;
+                                        break;
+                                    }
+                                } else {
+                                    t = null;
+                                }
+                            }
+                        }
+                    case _:    
+                }
             case _:
         }
 
@@ -366,6 +422,12 @@ class ClassBuilder {
         switch (type) {
             case TInst(t, _):
                 superClass = t.get().superClass;
+            case TAbstract(t, _):
+                switch (t.get().type) {
+                    case TInst(t, _):
+                        superClass = t.get().superClass;
+                    case _:    
+                }
             case _:
         }
         return superClass;
