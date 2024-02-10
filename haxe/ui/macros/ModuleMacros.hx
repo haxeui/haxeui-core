@@ -308,6 +308,7 @@ class ModuleMacros {
         return paths;
     }
 
+    private static var virtualModuleMap:Map<String, String> = new Map<String, String>();
     public static function resolveComponentClass(name:String, namespace:String = null):String {
         #if macro_times_verbose
         var stopTimer = Context.timer("ModuleMacros.resolveComponentClass");
@@ -418,45 +419,8 @@ class ModuleMacros {
                 
                 if (types != null) {
                     for (t in types) {
-                        var orgType = t;
-                        var builder = new ClassBuilder(t);
-                        if (builder.isPrivate == true) {
-                            continue;
-                        }
-                        var org = new ClassBuilder(orgType);
-                        
-                        if (builder.hasSuperClass("haxe.ui.core.Component") == true) {
-                            resolvedClass = builder.fullPath;
-                            if (c.className != null && org.fullPath != c.className) {
-                                continue;
-                            }
-                            var resolvedClassName = org.name;
-                            
-                            if (builder.hasInterface("haxe.ui.core.IDirectionalComponent")) {
-                                if (StringTools.startsWith(resolvedClassName, "Horizontal")) { // alias HorizontalComponent with hcomponent
-                                    ComponentClassMap.register(namespace + "/" + "h" + StringTools.replace(resolvedClassName, "Horizontal", "").toLowerCase(), resolvedClass);
-                                } else if (StringTools.startsWith(resolvedClassName, "Vertical")) { // alias VerticalComponent with vcomponent
-                                    ComponentClassMap.register(namespace + "/" + "v" + StringTools.replace(resolvedClassName, "Vertical", "").toLowerCase(), resolvedClass);
-                                } else {
-                                    var parts = builder.fullPath.split(".");
-                                    var tempName = parts.pop();
-                                    var hname = "Horizontal" + tempName;
-                                    var hclass = parts.join(".") + "." + hname;
-                                    ComponentClassMap.register(namespace + "/" + hname.toLowerCase(), hclass);
-                                    ComponentClassMap.register(namespace + "/" + ("h" + tempName).toLowerCase(), hclass);
-                                    
-                                    
-                                    var vname = "Vertical" + tempName;
-                                    var vclass = parts.join(".") + "." + vname;
-                                    ComponentClassMap.register(namespace + "/" + vname.toLowerCase(), vclass);
-                                    ComponentClassMap.register(namespace + "/" + ("v" + tempName).toLowerCase(), vclass);
-                                }
-                            }
-                            
-                            ComponentClassMap.register(namespace + "/" + resolvedClassName.toLowerCase(), resolvedClass);
-                            #if component_resolution_verbose
-                                Sys.println(" => " + resolvedClass);
-                            #end
+                        resolvedClass = resolveComponentClassInternal(t, c, namespace);
+                        if (resolvedClass != null) {
                             return resolvedClass;
                         }
                     }
@@ -464,6 +428,19 @@ class ModuleMacros {
             }
         }
         
+        if (resolvedClass == null) {
+            var module = virtualModuleMap.get(name);
+            if (module != null) {
+                var m = Context.getModule(module);
+                for (t in m) {
+                    var resolvedClass = resolveComponentClassInternal(t, null, namespace);
+                    if (resolvedClass != null) {
+                        return resolvedClass;
+                    }
+                }
+            }
+        }
+
         #if component_resolution_verbose
         if (resolvedClass == null) {
             Sys.println(" => NOT FOUND!");
@@ -483,6 +460,61 @@ class ModuleMacros {
         #end
 
         return resolvedClass;
+    }
+
+    public static function defineComponentType(typeDef:TypeDefinition) {
+        var name = typeDef.name.toLowerCase();
+        name = StringTools.replace(name, "_", "");
+        virtualModuleMap.set(name, typeDef.name);
+        Context.defineModule(typeDef.name, [typeDef]);
+    }
+
+    private static function resolveComponentClassInternal(t:haxe.macro.Type, c:ModuleComponentEntry, namespace:String) {
+        var orgType = t;
+        var builder = new ClassBuilder(t);
+        if (builder.isPrivate == true) {
+            return null;
+        }
+        var org = new ClassBuilder(orgType);
+        
+        var resolvedClass:String = null;
+        if (builder.hasSuperClass("haxe.ui.core.Component") == true) {
+            resolvedClass = builder.fullPath;
+            if (c != null && c.className != null && org.fullPath != c.className) {
+                return null;
+            }
+            var resolvedClassName = org.name;
+            
+            if (builder.hasInterface("haxe.ui.core.IDirectionalComponent")) {
+                if (StringTools.startsWith(resolvedClassName, "Horizontal")) { // alias HorizontalComponent with hcomponent
+                    ComponentClassMap.register(namespace + "/" + "h" + StringTools.replace(resolvedClassName, "Horizontal", "").toLowerCase(), resolvedClass);
+                } else if (StringTools.startsWith(resolvedClassName, "Vertical")) { // alias VerticalComponent with vcomponent
+                    ComponentClassMap.register(namespace + "/" + "v" + StringTools.replace(resolvedClassName, "Vertical", "").toLowerCase(), resolvedClass);
+                } else {
+                    var parts = builder.fullPath.split(".");
+                    var tempName = parts.pop();
+                    var hname = "Horizontal" + tempName;
+                    var hclass = parts.join(".") + "." + hname;
+                    ComponentClassMap.register(namespace + "/" + hname.toLowerCase(), hclass);
+                    ComponentClassMap.register(namespace + "/" + ("h" + tempName).toLowerCase(), hclass);
+                    
+                    
+                    var vname = "Vertical" + tempName;
+                    var vclass = parts.join(".") + "." + vname;
+                    ComponentClassMap.register(namespace + "/" + vname.toLowerCase(), vclass);
+                    ComponentClassMap.register(namespace + "/" + ("v" + tempName).toLowerCase(), vclass);
+                }
+            }
+            
+            ComponentClassMap.register(namespace + "/" + resolvedClassName.toLowerCase(), resolvedClass);
+            #if component_resolution_verbose
+                Sys.println(" => " + resolvedClass);
+            #end
+
+            return resolvedClass;
+        }
+
+        return null;
     }
 
     private static var _dynamicClassMapPopulated:Bool = false;
