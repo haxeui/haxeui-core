@@ -17,53 +17,57 @@ class ComponentGraphicsBase {
     
     public function clear() {
         _drawCommands = [];
-        _drawCommands.push(Clear);
+        addDrawCommand(Clear);
     }
     
     public function setPixel(x:Float, y:Float, color:Color) {
-        _drawCommands.push(SetPixel(x, y, color));
+        addDrawCommand(SetPixel(x, y, color));
     }
     
     public function setPixels(pixels:Bytes) {
-        _drawCommands.push(SetPixels(pixels));
+        addDrawCommand(SetPixels(pixels));
     }
     
     public function moveTo(x:Float, y:Float) {
-        _drawCommands.push(MoveTo(x, y));
+        addDrawCommand(MoveTo(x, y));
     }
     
     public function lineTo(x:Float, y:Float) {
-        _drawCommands.push(LineTo(x, y));
+        addDrawCommand(LineTo(x, y));
     }
     
     public function strokeStyle( color:Null<Color>, thickness:Null<Float> = 1, alpha:Null<Float> = 1) {
-        _drawCommands.push(StrokeStyle(color, thickness, alpha));
+        addDrawCommand(StrokeStyle(color, thickness, alpha));
     }
     
     public function circle(x:Float, y:Float, radius:Float) {
-        _drawCommands.push(Circle(x, y, radius));
+        addDrawCommand(Circle(x, y, radius));
     }
     
     public function fillStyle(color:Null<Color>, alpha:Null<Float> = 1) {
-        _drawCommands.push(FillStyle(color, alpha));
+        addDrawCommand(FillStyle(color, alpha));
     }
     
     public function curveTo(controlX:Float, controlY:Float, anchorX:Float, anchorY:Float) {
-        _drawCommands.push(CurveTo(controlX, controlY, anchorX, anchorY));
+        addDrawCommand(CurveTo(controlX, controlY, anchorX, anchorY));
     }
     
     public function cubicCurveTo(controlX1:Float, controlY1:Float, controlX2:Float, controlY2:Float, anchorX:Float, anchorY:Float) {
-        _drawCommands.push(CubicCurveTo(controlX1, controlY1, controlX2, controlY2, anchorX, anchorY));
+        addDrawCommand(CubicCurveTo(controlX1, controlY1, controlX2, controlY2, anchorX, anchorY));
     }
     
     public function rectangle(x:Float, y:Float, width:Float, height:Float) {
-        _drawCommands.push(Rectangle(x, y, width, height));
+        addDrawCommand(Rectangle(x, y, width, height));
     }
     
     public function image(resource:Variant, x:Null<Float> = null, y:Null<Float> = null, width:Null<Float> = null, height:Null<Float> = null) {
-        _drawCommands.push(Image(resource, x, y, width, height));
+        addDrawCommand(Image(resource, x, y, width, height));
     }
     
+    private function addDrawCommand(command:DrawCommand) {
+        _drawCommands.push(command);
+    }
+
     public function resize(width:Null<Float>, height:Null<Float>) {
     }
     
