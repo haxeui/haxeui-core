@@ -369,32 +369,31 @@ private class Builder extends CompositeBuilder {
     }
 
     private function onScreenMouseMove(e:MouseEvent) {
-        var sx = e.screenX;
-        var sy = e.screenY;
+        var dx = e.screenX - _downPoint.x;
+        var dy = e.screenY - _downPoint.y;
 
-        var updatePoint = true;
+        var prevWidth = _window.width;
         if (_resizeE) {
-            var newCX = _window.width + sx - _downPoint.x;
-            if (newCX < 180) { // TODO
-                newCX = 180;
-                updatePoint = false;
-            }
-            _window.width = newCX;
+            _window.width = Math.max(_window.width + dx, 1);
+            _window.syncComponentValidation();
+            _downPoint.x -= prevWidth - _window.width;
         } else if (_resizeW) {
-            _window.left += sx - _downPoint.x;
-            _window.width -= sx - _downPoint.x;
+            _window.width = Math.max(_window.width - dx, 1);
+            _window.syncComponentValidation();
+            _window.left += prevWidth - _window.width;
+            _downPoint.x += prevWidth - _window.width;
         }
 
+        var prevHeight = _window.height;
         if (_resizeS) {
-            _window.height += sy - _downPoint.y;
+            _window.height = Math.max(_window.height + dy, 1);
+            _window.syncComponentValidation();
+            _downPoint.y -= prevHeight - _window.height;
         } else if (_resizeN) {
-            _window.top += sy - _downPoint.y;
-            _window.height -= sy - _downPoint.y;
-        }
-
-        if (updatePoint) {
-            _downPoint.x = e.screenX;
-            _downPoint.y = e.screenY;
+            _window.height = Math.max(_window.height - dy, 1);
+            _window.syncComponentValidation();
+            _window.top += prevHeight - _window.height;
+            _downPoint.y += prevHeight - _window.height;
         }
     }
 
@@ -411,6 +410,9 @@ private class Builder extends CompositeBuilder {
         _resizeS = false;
         _resizeW = false;
         _windowWrapper.removeClasses(["size-nw", "size-n", "size-ne", "size-w", "size-e", "size-sw", "size-s", "size-se"]);
+        if (_window.dragInitiator != null && !_window.draggable) {
+            _window.draggable = true;
+        }
 
         _window.registerEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
         _window.registerEvent(MouseEvent.MOUSE_MOVE, onMouseMove);
@@ -426,6 +428,9 @@ private class Builder extends CompositeBuilder {
         _resizeS = false;
         _resizeW = false;
         _windowWrapper.removeClasses(["size-nw", "size-n", "size-ne", "size-w", "size-e", "size-sw", "size-s", "size-se"]);
+        if (_window.dragInitiator != null && !_window.draggable) {
+            _window.draggable = true;
+        }
 
         #if haxeui_html5
             js.Browser.document.body.style.removeProperty("cursor");
@@ -491,6 +496,11 @@ private class Builder extends CompositeBuilder {
 
         if (classToAdd != null) {
             _windowWrapper.addClass(classToAdd);
+            if (_window.dragInitiator != null && _window.draggable) {
+                _window.draggable = false;
+            }
+        } else if (_window.dragInitiator != null && !_window.draggable) {
+            _window.draggable = true;
         }
 
         #if haxeui_html5
