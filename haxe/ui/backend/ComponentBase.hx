@@ -850,33 +850,33 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
      
      #if ((haxeui_openfl || haxeui_nme) && !haxeui_flixel)
  
-     #if flash @:setter(x) #else override #end
-     public function set_x(value:Float): #if flash Void #else Float #end {
+     #if flash override #else override #end
+     private function set_x(value:Float): #if flash Float #else Float #end {
          #if flash
          super.x = value;
          #else
          super.set_x(value);
          #end
          left = value;
-         #if !flash return value; #end
+         #if !flash return value; #else return value; #end
      }
  
-     #if flash @:setter(y) #else override #end
-     public function set_y(value:Float): #if flash Void #else Float #end {
+     #if flash override #else override #end
+     public function set_y(value:Float): #if flash Float #else Float #end {
          #if flash
          super.y = value;
          #else
          super.set_y(value);
          #end
          top = value;
-         #if !flash return value; #end
+         #if !flash return value; #else return value; #end
      }
  
      @:noCompletion private var _width:Null<Float>;
-     #if flash @:setter(width) #else override #end
-     private function set_width(value:Float): #if flash Void #else Float #end {
+     #if flash override #else override #end
+     private function set_width(value:Float): #if Float Void #else Float #end {
          if (_width == value) {
-             return #if !flash value #end;
+             return #if !flash value #else value #end;
          }
          if (value == haxe.ui.util.MathUtil.MIN_INT) {
              _width = null;
@@ -885,20 +885,20 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
              _width = value;
              componentWidth = value;
          }
-         #if !flash return value; #end
+         #if !flash return value; #else return value; #end
      }
  
-     #if flash @:getter(width) #else override #end
+     #if flash override #else override #end
      private function get_width():Float {
          var f:Float = componentWidth;
          return f;
      }
  
      @:noCompletion private var _height:Null<Float>;
-     #if flash @:setter(height) #else override #end
-     private function set_height(value:Float): #if flash Void #else Float #end {
+     #if flash override #else override #end
+     private function set_height(value:Float): #if flash Float #else Float #end {
          if (_height == value) {
-             return #if !flash value #end;
+             return #if !flash value #else value #end;
          }
          if (value == haxe.ui.util.MathUtil.MIN_INT) {
              _height = null;
@@ -907,10 +907,10 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
              _height = value;
              componentHeight = value;
          }
-         #if !flash return value; #end
+         #if !flash return value; #else return value; #end
      }
  
-     #if flash @:getter(height) #else override #end
+     #if flash override #else override #end
      private function get_height():Float {
          var f:Float = componentHeight;
          return f;
