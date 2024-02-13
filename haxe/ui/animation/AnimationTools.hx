@@ -6,6 +6,9 @@ import haxe.ui.core.Screen;
 import haxe.ui.events.UIEvent;
 import haxe.ui.util.Color;
 
+#if haxeui_expose_all
+@:expose
+#end
 @:access(haxe.ui.core.Component)
 class AnimationTools {
     public static function shake(c:Component, direction = "horizontal", onComplete:Void->Void = null, autoPlay:Bool = true) {

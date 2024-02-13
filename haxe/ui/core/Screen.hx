@@ -13,6 +13,9 @@ import Std.isOfType;
 import Std.is as isOfType;
 #end
 
+#if haxeui_expose_all
+@:expose
+#end
 class Screen extends ScreenImpl {
 
     private static var _instance:Screen;
