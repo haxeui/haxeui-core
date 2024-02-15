@@ -19,11 +19,13 @@ class Preloader extends Box {
     }
 
     private override function createChildren() {
+        /*
         var label = new Label();
         label.text = "Loading";
         label.verticalAlign = "center";
         label.horizontalAlign = "center";
         addComponent(label);
+        */
     }
 
     private override function validateComponentLayout():Bool {
