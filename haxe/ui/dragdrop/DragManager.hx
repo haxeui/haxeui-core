@@ -100,6 +100,9 @@ class DragManager {
             dragOptions.mouseTarget.unregisterEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
             // remove mouseTarget from map
             _mouseTargetToDragTarget.remove(dragOptions.mouseTarget);
+            if (dragOptions.draggableStyleName != null) {
+                dragOptions.mouseTarget.removeClass(dragOptions.draggableStyleName);
+            }
         }
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_MOVE, onScreenCheckForDrag);
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_MOVE, onScreenDrag);
