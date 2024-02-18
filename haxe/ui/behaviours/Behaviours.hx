@@ -83,7 +83,13 @@ class Behaviours {
     }
 
     public function validateData() {
+        if (_instances == null) {
+            return;
+        }
         for (key in actualUpdateOrder) {
+            if (key == null || _instances == null || _instances.get(key) == null) {
+                continue;
+            }
             var b = _instances.get(key);
             if ((b is IValidatingBehaviour)) {
                 cast(b, IValidatingBehaviour).validate();
