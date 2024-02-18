@@ -106,7 +106,7 @@ class Screen extends ScreenImpl {
      * @param component The component to add to the screen.
      * @return The added component.
      */
-    public override function removeComponent(component:Component, dispose:Bool = true):Component {
+    public override function removeComponent(component:Component, dispose:Bool = true, invalidate:Bool = true):Component {
         if (rootComponents.indexOf(component) == -1) {
             if (dispose) {
                 component.disposeComponent();
@@ -127,6 +127,20 @@ class Screen extends ScreenImpl {
             component.removeClass(":hover", false, true);
         }
         return component;
+    }
+
+    public override function containsComponent(child:Component):Bool {
+        if (child == null) {
+            return false;
+        }
+
+        for (rootComponent in rootComponents) {
+            if (rootComponent == child) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

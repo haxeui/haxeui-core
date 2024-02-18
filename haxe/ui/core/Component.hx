@@ -391,7 +391,7 @@ class Component extends ComponentImpl
      * @param child The child component to check against.
      * @return Is the child component a child of this component?
      */
-    public function containsComponent(child:Component):Bool {
+    public override function containsComponent(child:Component):Bool {
         if (child == null) {
             return false;
         }
