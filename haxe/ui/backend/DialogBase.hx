@@ -183,7 +183,9 @@ class DialogBase extends Box implements Draggable {
             }
             Toolkit.callLater(function() {
                 handleVisibility(true);
-                centerDialogComponent(cast(this, Dialog));
+                if (centerDialog) {
+                    centerDialogComponent(cast(this, Dialog));
+                }
                 _forcedLeft = null;
                 _forcedTop = null;
                 if (autoCenterDialog) {
