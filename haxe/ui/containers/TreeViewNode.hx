@@ -12,6 +12,7 @@ import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.ItemRenderer;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.util.Variant;
+import haxe.ui.containers.TreeView.TreeViewEvent;
 
 #if (haxe_ver >= 4.2)
 import Std.isOfType;
@@ -294,8 +295,13 @@ private class TreeViewNodeBuilder extends CompositeBuilder {
     
     private function onExpandCollapseClicked(event:MouseEvent) {
         event.cancel();
+        var treeview = _node.findAncestor(TreeView);
         _node.expanded = !_node.expanded;
         updateIconClass();
+        trace("expandCollapseClicked");
+        var event = new TreeViewEvent(TreeViewEvent.NODE_COLLAPSE_EXPAND);
+        event.expand = _node.expanded;
+        treeview.dispatch(event);
     }
     
     public function updateIconClass() {
