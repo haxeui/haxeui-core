@@ -251,6 +251,18 @@ class TreeViewEvent extends UIEvent{
         super(type, bubble, data);
         this.expand = expand;
     }
+    public override function clone():MenuEvent {
+        var c:MenuEvent = new MenuEvent(this.type);
+        c.expand = this.expand;
+        c.affected_Node = this.affected_node;
+        c.type = this.type;
+        c.bubble = this.bubble;
+        c.target = this.target;
+        c.data = this.data;
+        c.canceled = this.canceled;
+        postClone(c);
+        return c;
+    }
 }
 
 
