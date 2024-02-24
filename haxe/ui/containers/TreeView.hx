@@ -254,7 +254,7 @@ class TreeViewEvent extends UIEvent{
     public override function clone():TreeViewEvent {
         var c:TreeViewEvent = new TreeViewEvent(this.type);
         c.expand = this.expand;
-        c.affected_Node = this.affected_node;
+        c.affected_node = this.affected_node;
         c.type = this.type;
         c.bubble = this.bubble;
         c.target = this.target;
