@@ -298,7 +298,6 @@ private class TreeViewNodeBuilder extends CompositeBuilder {
         var treeview = _node.findAncestor(TreeView);
         _node.expanded = !_node.expanded;
         updateIconClass();
-        trace("expandCollapseClicked");
         var event = new TreeViewEvent(TreeViewEvent.NODE_COLLAPSE_EXPAND);
         event.expand = _node.expanded;
         treeview.dispatch(event);
