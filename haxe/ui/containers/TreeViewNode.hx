@@ -300,6 +300,7 @@ private class TreeViewNodeBuilder extends CompositeBuilder {
         updateIconClass();
         var event = new TreeViewEvent(TreeViewEvent.NODE_COLLAPSE_EXPAND);
         event.expand = _node.expanded;
+        event.affected_node = _node;
         treeview.dispatch(event);
     }
     

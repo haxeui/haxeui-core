@@ -246,7 +246,7 @@ class TreeViewEvent extends UIEvent{
     public static final NODE_COLLAPSE_EXPAND:EventType<TreeViewEvent> = EventType.name("nodecollapseexpand");
 
     public var expand:Bool = false;
-    public var node:TreeViewNode;
+    public var affected_node:TreeViewNode;
     public function new(type:EventType<TreeViewEvent>, expand:Bool = false, bubble:Null<Bool> = false, data:Dynamic = null){
         super(type, bubble, data);
         this.expand = expand;
