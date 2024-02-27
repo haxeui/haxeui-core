@@ -405,6 +405,10 @@ private class Layout extends DefaultLayout {
         }
         if (!component.autoWidth) {
             renderer.width = usableSize.width;
+            var itemText = findComponent("itemText", Component);
+            if (itemText != null) {
+                itemText.percentWidth = 100;
+            }
         } else {
 
         }
