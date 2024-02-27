@@ -146,9 +146,12 @@ private class Handler extends ItemPickerHandler {
             var existing = builder.menu.getComponentAt(i);
             var item = ds.get(i);
             var type = item.type;
+            if (type == null) {
+                type = item.id;
+            }
             if (existing == null) {
                 switch (type) {
-                    case "separator":
+                    case "separator" | "menu-separator":
                         var menuSeparator = new MenuSeparator();
                         picker.addComponentAt(menuSeparator, i);
                     case _:
