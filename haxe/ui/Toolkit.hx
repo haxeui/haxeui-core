@@ -80,7 +80,13 @@ class Toolkit {
         return _initialized;
     }
     
+    public static var onBeforeInit:Void->Void = null;
+    public static var onAfterInit:Void->Void = null;
+    
     public static function init(options:ToolkitOptions = null) {
+        if (onBeforeInit != null) {
+            onBeforeInit();
+        }
         build();
         ThemeManager.instance.applyTheme(_theme);
         if (options != null) {
@@ -89,6 +95,9 @@ class Toolkit {
         }
         screen.registerEvent(KeyboardEvent.KEY_DOWN, onKeyDown);
         _initialized = true;
+        if (onAfterInit != null) {
+            onAfterInit();
+        }
     }
 
     private static function onKeyDown(event:KeyboardEvent) {
