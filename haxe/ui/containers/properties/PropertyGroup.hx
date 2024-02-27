@@ -1,6 +1,7 @@
 package haxe.ui.containers.properties;
 
 import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.components.Button;
 import haxe.ui.components.CheckBox;
 import haxe.ui.components.DropDown;
@@ -14,10 +15,12 @@ import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
+import haxe.ui.util.Variant;
 
 @:composite(Events, Builder)
 class PropertyGroup extends VBox {
-    @:clonable @:behaviour(TextBehaviour)              public var text:String;
+    @:clonable @:behaviour(TextBehaviour)               public var text:String;
+    @:clonable @:behaviour(DisabledBehaviour)           public var disabled:Bool;
 }
 
 //***********************************************************************************************************
@@ -28,6 +31,29 @@ private class TextBehaviour extends DataBehaviour {
     private override function validateData() {
         var label:Label = _component.findComponent("property-group-header-label");
         label.text = _value;
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class DisabledBehaviour extends DefaultBehaviour {
+    public override function set(value:Variant) {
+        var contents = _component.findComponent("property-group-contents", Component);
+        if (contents != null) {
+            contents.disabled = value;
+        }
+        var label:Label = _component.findComponent("property-group-header-label");
+        if (label != null) {
+            label.disabled = value;
+        }
+    }
+    
+    public override function get():Variant {
+        var contents = _component.findComponent("property-group-contents", Component);
+        if (contents != null) {
+            return contents.disabled;
+        }
+        return false;
     }
 }
 
@@ -152,11 +178,12 @@ private class Builder extends CompositeBuilder {
             var label = new Label();
             label.scriptAccess = false;
             label.text = prop.label;
-            label.disabled = prop.disabled;
             label.addClass("property-group-item-label");
             labelContainer.addComponent(label);
             labelContainer.hidden = prop.hidden;
-            labelContainer.disabled = prop.disabled;
+            if (prop.disabled) {
+                labelContainer.disabled = prop.disabled;
+            }
             cast(prop._compositeBuilder, PropertyBuilder).label = label;
 
             var editorContainer = new Box();
