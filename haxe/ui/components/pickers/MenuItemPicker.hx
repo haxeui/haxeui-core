@@ -83,11 +83,16 @@ private class Builder extends ItemPickerBuilder {
         super.create();
         menu = new Menu();
         menu.id = "primaryPickerMenu";
+        menu.styleNames = picker.styleNames;
         menuPicker.addComponent(menu);
     }
 
     public override function addComponent(child:Component):Component {
         if (child.id != "primaryPickerMenu" && ((child is Menu) || (child is MenuItem) || (child is MenuSeparator))) {
+            if ((child is Menu)) {
+                child.addClasses(["menuitempicker", "secondary-menu"]);
+                child.styleNames = picker.styleNames;
+            }
             menu.addComponent(child);
             return child;
         }
@@ -122,10 +127,10 @@ private class Handler extends ItemPickerHandler {
         var useText = false;
         if (menuEvent.menuItem.userData != null) {
             if (menuEvent.menuItem.userData.useIcon != null) {
-                useIcon = menuEvent.menuItem.userData.useIcon == "true";
+                useIcon = Std.string(menuEvent.menuItem.userData.useIcon) == "true";
             }
             if (menuEvent.menuItem.userData.useText != null) {
-                useText = menuEvent.menuItem.userData.useText == "true";
+                useText = Std.string(menuEvent.menuItem.userData.useText) == "true";
             }
         }
         if (useIcon) {

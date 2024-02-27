@@ -124,6 +124,7 @@ private class Events extends haxe.ui.events.Events {
     private function showMenu(index:Int) {
         var builder:Builder = cast(_menubar._compositeBuilder, Builder);
         var menu:Menu = builder._menus[index];
+        menu.addClass("primary-menu");
         var hasChildren = (menu.childComponents.length > 0);
         
         var target:Button = builder._buttons[index];

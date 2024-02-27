@@ -246,6 +246,10 @@ class ItemPickerBuilder extends CompositeBuilder {
 
         pausePanelEvents();
         picker.addClass("selected", true, true);
+        if (picker.hasClass("rounded")) {
+            panelContainer.addClass("rounded");
+        }
+        panelContainer.styleNames = picker.styleNames;
         handler.onPanelShown();
         panelContainer.addClass(picker.cssName + "-panel", true, true);
         panelContainer.opacity = 0;
@@ -333,7 +337,11 @@ class ItemPickerBuilder extends CompositeBuilder {
             panelContainer.addComponent(_panelFiller);
         }
 
-        _panelFiller.width = panelWidth - picker.width;
+        var offset:Float = 0;
+        if (panelContainer.style != null && panelContainer.style.borderRadiusTopRight != null) {
+            offset = panelContainer.style.borderRadiusTopRight;
+        }
+        _panelFiller.width = panelWidth - picker.width - offset + 1;
         if (_panelFiller.width > 0) {
             _panelFiller.show();
         } else {
