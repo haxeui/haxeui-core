@@ -1,18 +1,18 @@
 package haxe.ui.containers;
 
+import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.core.Component;
+import haxe.ui.core.CompositeBuilder;
+import haxe.ui.core.IDataComponent;
+import haxe.ui.core.ItemRenderer;
+import haxe.ui.data.ArrayDataSource;
+import haxe.ui.data.DataSource;
+import haxe.ui.events.UIEvent;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.LayoutFactory;
 import haxe.ui.styles.Style;
 import haxe.ui.util.Variant;
-import haxe.ui.core.CompositeBuilder;
-import haxe.ui.core.ItemRenderer;
-import haxe.ui.core.IDataComponent;
-import haxe.ui.data.ArrayDataSource;
-import haxe.ui.data.DataSource;
-import haxe.ui.behaviours.DataBehaviour;
-import haxe.ui.events.UIEvent;
 
 /**
  Base `Layout` that allows a container to specify an `icon`. How that icon resource is used depends on subclasses, like `TabView`
@@ -99,7 +99,7 @@ private class Builder extends CompositeBuilder {
     @:access(haxe.ui.backend.ComponentImpl)
     public override function addComponent(child:Component):Component {
         var r = null;
-        if (child is ItemRenderer && _box.itemRenderer == null) {
+        if ((child is ItemRenderer) && _box.itemRenderer == null) {
             _box.itemRenderer = cast(child, ItemRenderer);
             _box.itemRenderer.ready();
             _box.itemRenderer.handleVisibility(false);
