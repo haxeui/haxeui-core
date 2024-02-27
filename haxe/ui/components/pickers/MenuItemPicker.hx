@@ -118,8 +118,8 @@ private class Handler extends ItemPickerHandler {
         var menuPicker:MenuItemPicker = cast picker;
         var menuEvent:MenuEvent = cast event;
         event.relatedComponent = menuEvent.menuItem;
-        var useIcon = true;
-        var useText = true;
+        var useIcon = false;
+        var useText = false;
         if (menuEvent.menuItem.userData != null) {
             if (menuEvent.menuItem.userData.useIcon != null) {
                 useIcon = menuEvent.menuItem.userData.useIcon == "true";
