@@ -54,6 +54,16 @@ class ItemPicker extends InteractiveComponent implements IDataComponent implemen
         builder.panelSelectionEvent = _panelSelectionEvent;
         return value;
     }
+
+    public function showPanel() {
+        var builder:ItemPickerBuilder = cast(_compositeBuilder, ItemPickerBuilder);
+        builder.showPanel();
+    }
+
+    public function hidePanel() {
+        var builder:ItemPickerBuilder = cast(_compositeBuilder, ItemPickerBuilder);
+        builder.hidePanel();
+    }
 }
 
 class ItemPickerHandler {
@@ -326,6 +336,7 @@ class ItemPickerBuilder extends CompositeBuilder {
             marginBottom = panelContainer.style.marginBottom;
             marginRight = panelContainer.style.marginRight;
             horizontalPadding = panelContainer.style.paddingLeft + panelContainer.style.paddingRight;
+            verticalPadding = panelContainer.style.paddingTop + panelContainer.style.paddingBottom;
             borderSize = panelContainer.style.borderTopSize;
         }
 
@@ -362,7 +373,7 @@ class ItemPickerBuilder extends CompositeBuilder {
             _panelFiller.top = 0;
         } else if (panelPosition == "up") {
             panelContainer.top = picker.screenTop - panelContainer.height - marginTop;
-            _panelFiller.top = panelHeight + borderSize;
+            _panelFiller.top = panelHeight + (verticalPadding - borderSize);
         }
     }
 

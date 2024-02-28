@@ -16,7 +16,7 @@ import haxe.ui.util.Variant;
     <hbox id="itemPickerRenderer">
         <image id="itemIcon" verticalAlign="center" />
         <label id="itemText" text="Select Item" verticalAlign="center" />
-        <box height="100%">
+        <box height="100%" styleName="item-picker-trigger-icon-container">
             <image styleName="item-picker-trigger-icon" />
         </box>
     </hbox>
