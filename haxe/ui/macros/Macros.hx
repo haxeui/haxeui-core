@@ -532,10 +532,6 @@ class Macros {
         #end
     }
 
-    #if ((haxe_ver < 4) || haxeui_heaps)
-    // TODO: this is a really ugly haxe3 hack / workaround - once haxe4 stabalises this *MUST* be removed - its likely brittle and ill conceived!
-    public static var _cachedFields:Map<String, Array<Field>> = new Map<String, Array<Field>>();
-    #end
     static function buildBehaviours():Array<Field> {
         if (Context.getLocalClass().get().isExtern) {
             return null;
@@ -822,11 +818,6 @@ class Macros {
         if (builder.hasInterface("haxe.ui.core.IClonable") && !builder.isAbstractClass) {
             buildClonable(builder);
         }
-
-        #if ((haxe_ver < 4) || haxeui_heaps)
-        // TODO: this is a really ugly haxe3 hack / workaround - once haxe4 stabalises this *MUST* be removed - its likely brittle and ill conceived!
-        _cachedFields.set(builder.fullPath, builder.fields);
-        #end
 
         RTTI.save();
         
