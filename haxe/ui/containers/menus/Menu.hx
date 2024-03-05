@@ -1,7 +1,5 @@
 package haxe.ui.containers.menus;
 
-import haxe.ui.util.Timer;
-import haxe.ui.util.Variant;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.components.Button;
@@ -15,6 +13,8 @@ import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.geom.Size;
 import haxe.ui.layouts.VerticalLayout;
+import haxe.ui.util.Timer;
+import haxe.ui.util.Variant;
 
 #if (haxe_ver >= 4.2)
 import Std.isOfType;
@@ -288,7 +288,8 @@ class MenuEvents extends haxe.ui.events.Events {
         var offsetY:Float = 0;
         if (subMenu.style != null) {
             if (subMenu.style.paddingLeft > 1) {
-                offsetX = subMenu.style.paddingLeft - 1;
+                //offsetX = subMenu.style.paddingLeft - 1;
+                offsetX = subMenu.style.paddingLeft / 2;
             } else {
                 offsetX = 0;
             }

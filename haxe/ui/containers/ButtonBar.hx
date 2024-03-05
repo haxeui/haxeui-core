@@ -35,6 +35,15 @@ private class SelectedIndex extends DataBehaviour {
     private override function validateData() {
         var builder:ButtonBarBuilder = cast(_component._compositeBuilder, ButtonBarBuilder);
         var currentButton = builder._currentButton;
+        if (_value == -1) {
+            if (currentButton != null) {
+                currentButton.selected = false;
+            }
+            builder._currentButton = null;
+            _component.dispatch(new UIEvent(UIEvent.CHANGE));
+            return;
+        }
+
         var button = cast(_component.getComponentAt(_value), Button);
         if (currentButton == button) {
             return;
@@ -112,6 +121,12 @@ private class Events extends haxe.ui.events.Events {
             button.selected = true;
             return;
         }
+
+        if (_bar.allowUnselection == true && index == _bar.selectedIndex && button.selected == false) {
+            _bar.selectedIndex = -1;
+            return;
+        }
+
         if (button.selected == true) {
             _bar.selectedIndex = index;
         }

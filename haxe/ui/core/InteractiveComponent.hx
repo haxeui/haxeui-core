@@ -113,7 +113,7 @@ class InteractiveComponent extends Component implements IFocusable implements IV
     }
 
     private var _validators:Array<IValidator> = null;
-    public var validators(get, set):Array<IValidator>;
+    @:clonable public var validators(get, set):Array<IValidator>;
     private function get_validators():Array<IValidator> {
         return _validators;
     }

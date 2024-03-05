@@ -391,7 +391,7 @@ class Component extends ComponentImpl
      * @param child The child component to check against.
      * @return Is the child component a child of this component?
      */
-    public function containsComponent(child:Component):Bool {
+    public override function containsComponent(child:Component):Bool {
         if (child == null) {
             return false;
         }
@@ -2170,20 +2170,21 @@ class Component extends ComponentImpl
         }
     }
 
+    private var recursivePointerEvents:Bool = true;
     private function onPointerEventsMouseOver(e:MouseEvent) {
-        addClass(":hover", true, true);
+        addClass(":hover", true, recursivePointerEvents);
     }
 
     private function onPointerEventsMouseOut(e:MouseEvent) {
-        removeClass(":hover", true, true);
+        removeClass(":hover", true, recursivePointerEvents);
     }
 
     private function onPointerEventsMouseDown(e:MouseEvent) {
-        addClass(":down", true, true);
+        addClass(":down", true, recursivePointerEvents);
     }
 
     private function onPointerEventsMouseUp(e:MouseEvent) {
-        removeClass(":down", true, true);
+        removeClass(":down", true, recursivePointerEvents);
     }
 
     //***********************************************************************************************************

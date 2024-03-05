@@ -2,10 +2,11 @@ package haxe.ui.backend;
 
 import haxe.ui.Toolkit;
 import haxe.ui.core.Component;
+import haxe.ui.core.IComponentContainer;
 import haxe.ui.events.UIEvent;
 import haxe.ui.validation.InvalidationFlags;
 
-class ScreenBase {
+class ScreenBase implements IComponentContainer {
     public var rootComponents:Array<Component> = [];
 
     private var _options:ToolkitOptions;
@@ -84,8 +85,12 @@ class ScreenBase {
         return component;
     }
 
-    public function removeComponent(component:Component, dispose:Bool = true):Component {
+    public function removeComponent(component:Component, dispose:Bool = true, invalidate:Bool = true):Component {
         return component;
+    }
+
+    public function containsComponent(child:Component):Bool {
+        return false;
     }
 
     private function handleSetComponentIndex(child:Component, index:Int) {

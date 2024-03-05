@@ -15,8 +15,8 @@ import haxe.ui.util.Variant;
 <item-picker>
     <hbox id="itemPickerRenderer">
         <image id="itemIcon" verticalAlign="center" />
-        <label id="itemText" text="Select Item" verticalAlign="center" width="100%" />
-        <box height="100%">
+        <label id="itemText" text="Select Item" verticalAlign="center" />
+        <box height="100%" styleName="item-picker-trigger-icon-container">
             <image styleName="item-picker-trigger-icon" />
         </box>
     </hbox>
@@ -83,11 +83,16 @@ private class Builder extends ItemPickerBuilder {
         super.create();
         menu = new Menu();
         menu.id = "primaryPickerMenu";
+        menu.styleNames = picker.styleNames;
         menuPicker.addComponent(menu);
     }
 
     public override function addComponent(child:Component):Component {
         if (child.id != "primaryPickerMenu" && ((child is Menu) || (child is MenuItem) || (child is MenuSeparator))) {
+            if ((child is Menu)) {
+                child.addClasses(["menuitempicker", "secondary-menu"]);
+                child.styleNames = picker.styleNames;
+            }
             menu.addComponent(child);
             return child;
         }
@@ -118,14 +123,14 @@ private class Handler extends ItemPickerHandler {
         var menuPicker:MenuItemPicker = cast picker;
         var menuEvent:MenuEvent = cast event;
         event.relatedComponent = menuEvent.menuItem;
-        var useIcon = true;
-        var useText = true;
+        var useIcon = false;
+        var useText = false;
         if (menuEvent.menuItem.userData != null) {
             if (menuEvent.menuItem.userData.useIcon != null) {
-                useIcon = menuEvent.menuItem.userData.useIcon == "true";
+                useIcon = Std.string(menuEvent.menuItem.userData.useIcon) == "true";
             }
             if (menuEvent.menuItem.userData.useText != null) {
-                useText = menuEvent.menuItem.userData.useText == "true";
+                useText = Std.string(menuEvent.menuItem.userData.useText) == "true";
             }
         }
         if (useIcon) {
@@ -146,9 +151,12 @@ private class Handler extends ItemPickerHandler {
             var existing = builder.menu.getComponentAt(i);
             var item = ds.get(i);
             var type = item.type;
+            if (type == null) {
+                type = item.id;
+            }
             if (existing == null) {
                 switch (type) {
-                    case "separator":
+                    case "separator" | "menu-separator":
                         var menuSeparator = new MenuSeparator();
                         picker.addComponentAt(menuSeparator, i);
                     case _:

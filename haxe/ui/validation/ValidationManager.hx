@@ -35,7 +35,7 @@ class ValidationManager {
     }
 
     public function unregisterEvent(type:String, listener:Dynamic->Void) {
-        if (_events == null) {
+        if (_events != null) {
             _events.remove(type, listener);
         }
     }

@@ -152,8 +152,6 @@ class DialogBase extends Box implements Draggable {
             if (dp != null) {
                 includeInLayout = false;
         		_overlay.includeInLayout = false;
-        		_overlay.screenTop = dp.screenTop;
-        		_overlay.screenLeft = dp.screenLeft;
         		_overlay.height = dp.height;
         		_overlay.width = dp.width;
         		dp.addComponent(_overlay);
@@ -183,10 +181,14 @@ class DialogBase extends Box implements Draggable {
             }
             Toolkit.callLater(function() {
                 handleVisibility(true);
-                centerDialogComponent(cast(this, Dialog));
+                if (centerDialog) {
+                    centerDialogComponent(cast(this, Dialog));
+                }
                 _forcedLeft = null;
                 _forcedTop = null;
-                if (autoCenterDialog) {
+                if (dp != null) {
+                    dp.registerEvent(UIEvent.RESIZE, _onParentResized);
+                } else {
                     Screen.instance.registerEvent(UIEvent.RESIZE, _onScreenResized);
                 }
             });
@@ -194,9 +196,28 @@ class DialogBase extends Box implements Draggable {
     }
 
     private function _onScreenResized(_) {
+        if (!autoCenterDialog) {
+            return;
+        }
+
         _forcedLeft = null;
         _forcedTop = null;
         centerDialogComponent(cast this);
+    }
+
+    private function _onParentResized(_) {
+        if (_overlay != null) {
+            _overlay.width = dialogParent.width;
+            _overlay.height = dialogParent.height;
+        }
+
+        if (!autoCenterDialog) {
+            return;
+        }
+
+        _forcedLeft = null;
+        _forcedTop = null;
+        centerDialogComponent(cast this, false);
     }
     
     private var _buttonsCreated:Bool = false;
@@ -306,10 +327,18 @@ class DialogBase extends Box implements Draggable {
     private override function onDestroy() {
         super.onDestroy();
         if (_overlay != null) {
-            Screen.instance.removeComponent(_overlay);
+            if (dialogParent != null) {
+                dialogParent.removeComponent(_overlay);
+            } else {
+                Screen.instance.removeComponent(_overlay);
+            }
             _overlay = null;
         }
-        Screen.instance.unregisterEvent(UIEvent.RESIZE, _onScreenResized);
+        if (dialogParent != null) {
+            dialogParent.unregisterEvent(UIEvent.RESIZE, _onParentResized);
+        } else {
+            Screen.instance.unregisterEvent(UIEvent.RESIZE, _onScreenResized);
+        }
     }
     
     private function onContentResize(e) {

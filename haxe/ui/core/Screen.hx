@@ -106,7 +106,7 @@ class Screen extends ScreenImpl {
      * @param component The component to add to the screen.
      * @return The added component.
      */
-    public override function removeComponent(component:Component, dispose:Bool = true):Component {
+    public override function removeComponent(component:Component, dispose:Bool = true, invalidate:Bool = true):Component {
         if (rootComponents.indexOf(component) == -1) {
             if (dispose) {
                 component.disposeComponent();
@@ -127,6 +127,20 @@ class Screen extends ScreenImpl {
             component.removeClass(":hover", false, true);
         }
         return component;
+    }
+
+    public override function containsComponent(child:Component):Bool {
+        if (child == null) {
+            return false;
+        }
+
+        for (rootComponent in rootComponents) {
+            if (rootComponent == child) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -160,6 +174,25 @@ class Screen extends ScreenImpl {
         }
     }
     
+    /**
+     * Finds a specific child in the whole display tree (recursively if desired) and can optionally cast the result.
+     * 
+     * @param criteria The criteria by which to search, the interpretation of this is defined using `searchType` (the default search type is `id`).
+     * @param type The component class you wish to cast the result to (defaults to `null`).
+     * @param recursive Whether to search this components children and all its children's children till it finds a match (the default depends on the `searchType` param. If `searchType` is `id` the default is *true* otherwise it is `false`)
+     * @param searchType Allows you specify how to consider a child a match (defaults to *id*), can be either: **`id`** - The first component that has the id specified in `criteria` will be considered a match, *or*, **`css`** - The first component that contains a style name specified by `criteria` will be considered a match.
+     * @return The found component, or `null` if no component was found.
+     */
+    public function findComponent<T:Component>(criteria:String = null, type:Class<T> = null, recursive:Null<Bool> = null, searchType:String = "id"):Null<T> {
+        for (rootComponent in rootComponents) {
+            var result = rootComponent.findComponent(criteria, type, recursive, searchType);
+            if (result != null) {
+                return cast result;
+            }
+        }
+        return null;
+    }
+
     /**
      * Lists components under a specific point in global, screen coordinates.
      * 

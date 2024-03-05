@@ -203,16 +203,7 @@ class ClassBuilder {
             return false;
         }
         if (recursive == true) {
-            #if (haxe_ver < 4)
-            // TODO: this is a really ugly haxe3 hack / workaround - once haxe4 stabalises this *MUST* be removed - its likely brittle and ill conceived!
-            if (findField(name) != null) {
-                return true;
-            }
-            return (haxe3FindField(classType, name) != null);
-            #else
-            var r = (findFieldEx(classType, name) != null);
-            return r;
-            #end
+            return findFieldEx(classType, name) != null;
         }
         return (findField(name) != null);
     }
@@ -222,40 +213,8 @@ class ClassBuilder {
             return false;
         }
         var superClassType = classType.superClass.t.get();
-        #if (haxe_ver < 4)
-        // TODO: this is a really ugly haxe3 hack / workaround - once haxe4 stabalises this *MUST* be removed - its likely brittle and ill conceived!
-        if (findField(name) != null) {
-            return true;
-        }
-        return (haxe3FindField(superClassType, name) != null);
-        #else
-        var r = (findFieldEx(superClassType, name) != null);
-        #end
-        return r;
+        return findFieldEx(superClassType, name) != null;
     }
-
-    #if (haxe_ver < 4)
-    // TODO: this is a really ugly haxe3 hack / workaround - once haxe4 stabalises this *MUST* be removed - its likely brittle and ill conceived!
-    private function haxe3FindField(c:ClassType, name:String) {
-        var fullPath = c.pack.join(".") + "." + c.name;
-        var fields = Macros._cachedFields.get(fullPath);
-        var field = null;
-        if (fields != null) {
-            for (f in fields) {
-                if (f.name == name) {
-                    field = f;
-                    break;
-                }
-            }
-        }
-
-        if (field == null && c.superClass != null) {
-            field = haxe3FindField(c.superClass.t.get(), name);
-        }
-
-        return field;
-    }
-    #end
 
     public function getFieldsWithMeta(meta:String):Array<FieldBuilder> {
         var fs = [];

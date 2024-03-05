@@ -1,5 +1,6 @@
 package haxe.ui.containers;
 
+import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.core.Component;
 import haxe.ui.layouts.DefaultLayout;

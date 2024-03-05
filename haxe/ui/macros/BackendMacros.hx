@@ -12,6 +12,7 @@ class BackendMacros {
 
     #if macro
     public static var properties:Properties = new Properties();
+    public static var additionalExprs:Array<Expr> = [];
     #end
 
     macro public static function processBackend():Expr {
@@ -35,6 +36,10 @@ class BackendMacros {
             builder.add(macro haxe.ui.util.Defines.set($v{k}, $v{v}));
         }
         
+        for (additionalExpr in additionalExprs) {
+            builder.add(additionalExpr);
+        }
+
         return builder.expr;
     }
 

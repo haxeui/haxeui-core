@@ -7,6 +7,7 @@ import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.behaviours.ValueBehaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.IClonable;
+import haxe.ui.core.IComponentContainer;
 import haxe.ui.core.IEventDispatcher;
 import haxe.ui.core.ImageDisplay;
 import haxe.ui.core.Screen;
@@ -32,7 +33,7 @@ import haxe.ui.validation.ValidationManager;
 @:autoBuild(haxe.ui.macros.Macros.buildBehaviours())
 @:build(haxe.ui.macros.Macros.build())
 @:autoBuild(haxe.ui.macros.Macros.build())
-class ComponentBase extends ComponentSurface implements IClonable<ComponentBase> implements IEventDispatcher<UIEvent> {
+class ComponentBase extends ComponentSurface implements IClonable<ComponentBase> implements IEventDispatcher<UIEvent> implements IComponentContainer {
     /**
      * Creates a new `ComponentContainer`.
      */
@@ -208,6 +209,10 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
          return null;
      }
  
+     public function containsComponent(child:Component):Bool {
+         return false;
+     }
+
      /**
       * Removes the child component at index `index` from this component's display list, and returns it.
       * 
