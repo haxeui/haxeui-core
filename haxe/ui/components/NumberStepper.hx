@@ -480,6 +480,9 @@ private class ValueHelper {
             stepper.removeClass("invalid-value");
         }
         
+	   @:privateAccess(haxe.ui.core.InteractiveComponent)
+	   stepper._isComponentDataValid = valid;
+	   
         return parsedValue;
     }
     

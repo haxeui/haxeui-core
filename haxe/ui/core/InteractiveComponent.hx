@@ -128,6 +128,15 @@ class InteractiveComponent extends Component implements IFocusable implements IV
         }
         return value;
     }
+    
+    private var _isComponentDataValid:Bool = true;
+    /**
+	If the current value of the component passed all validators (or, "should this value be used?")
+    **/
+    public var isComponentDataValid(get, null):Bool;
+    private function get_isComponentDataValid():Bool {
+	return _isComponentDataValid;
+    }
 
     //***********************************************************************************************************
     // Internal
