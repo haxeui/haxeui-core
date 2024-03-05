@@ -143,7 +143,7 @@ private class Builder extends CompositeBuilder {
         _frame.addComponent(_contents);
 
         _label = new Label();
-        _label.text = "My Frame";
+        _label.text = "";
         _label.id = "frame-title";
         _label.addClass("frame-title");
         _label.includeInLayout = false;
@@ -245,7 +245,7 @@ private class Layout extends DefaultLayout {
             contents.width = border.width;
         }
         if (_component.autoHeight == false) {    
-            contents.height = border.height;
+            contents.height = border.height - (label.height / 2);
         }
 
         var labelOffsetLeft:Float = 0;

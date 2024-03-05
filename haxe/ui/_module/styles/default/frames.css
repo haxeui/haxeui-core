@@ -19,6 +19,12 @@
 
 .frame-contents {
     padding: 10px;
+    padding-top: 5px;
+}
+
+.frame.no-padding .frame-contents {
+    padding: 1px;
+    padding-top: 1px;
 }
 
 .frame-title {
