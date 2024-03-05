@@ -77,7 +77,7 @@ class NumberStepper extends InteractiveComponent implements ICompositeInteractiv
     /**
      * The character that will be used to separate decimals (eg 100.00 or 100,00)
      */
-    @:clonable @:behaviour(DefaultBehaviour, Formats.decimalSeperator)  public var decimalSeparator:String;
+    @:clonable @:behaviour(DefaultBehaviour, Formats.decimalSeparator)  public var decimalSeparator:String;
 }
 
 //***********************************************************************************************************

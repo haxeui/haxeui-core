@@ -14,29 +14,29 @@ class Formats {
         return value;
     }
     
-    private static var _decimalSeperator:String = null;
-    public static var decimalSeperator(get, set):String;
-    private static function get_decimalSeperator():String {
-        if (_decimalSeperator == null) {
-            return LocaleManager.instance.lookupString("formats.decimal.seperator");
+    private static var _decimalSeparator:String = null;
+    public static var decimalSeparator(get, set):String;
+    private static function get_decimalSeparator():String {
+        if (_decimalSeparator == null) {
+            return LocaleManager.instance.lookupString("formats.decimal.separator");
         }
-        return _decimalSeperator;
+        return _decimalSeparator;
     }
-    private static function set_decimalSeperator(value:String):String {
-        _decimalSeperator = value;
+    private static function set_decimalSeparator(value:String):String {
+        _decimalSeparator = value;
         return value;
     }
     
-    private static var _thousandsSeperator:String = null;
-    public static var thousandsSeperator(get, set):String;
-    private static function get_thousandsSeperator():String {
-        if (_thousandsSeperator == null) {
-            return LocaleManager.instance.lookupString("formats.thousands.seperator");
+    private static var _thousandsSeparator:String = null;
+    public static var thousandsSeparator(get, set):String;
+    private static function get_thousandsSeparator():String {
+        if (_thousandsSeparator == null) {
+            return LocaleManager.instance.lookupString("formats.thousands.separator");
         }
-        return _thousandsSeperator;
+        return _thousandsSeparator;
     }
-    private static function set_thousandsSeperator(value:String):String {
-        _thousandsSeperator = value;
+    private static function set_thousandsSeparator(value:String):String {
+        _thousandsSeparator = value;
         return value;
     }
 }
