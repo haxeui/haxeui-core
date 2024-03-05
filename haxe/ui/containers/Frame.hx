@@ -18,7 +18,7 @@ class Frame extends Box {
     @:clonable @:value(text)                            public var value:Dynamic;
 
     public override function set_layout(value:haxe.ui.layouts.Layout):haxe.ui.layouts.Layout {
-        if (value is Layout) {
+        if ((value is Layout)) {
             super.set_layout(value);
         } else {
             var builder:Builder = cast(this._compositeBuilder, Builder);
