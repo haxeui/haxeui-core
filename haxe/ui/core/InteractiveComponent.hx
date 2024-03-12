@@ -6,7 +6,7 @@ import haxe.ui.events.FocusEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.focus.FocusManager;
 import haxe.ui.focus.IFocusable;
-import haxe.ui.validators.IValidator;
+import haxe.ui.validators.Validators;
 
 /**
  A component that can be interacted with and gain input focus via either mouse or keyboard
@@ -112,19 +112,20 @@ class InteractiveComponent extends Component implements IFocusable implements IV
         return view;
     }
 
-    private var _validators:Array<IValidator> = null;
-    @:clonable public var validators(get, set):Array<IValidator>;
-    private function get_validators():Array<IValidator> {
+    private var _validators:Validators = null;
+    @:clonable public var validators(get, set):Validators;
+    private function get_validators():Validators {
         return _validators;
     }
-    private function set_validators(value:Array<IValidator>):Array<IValidator> {
+    private function set_validators(value:Validators):Validators {
         if (value == null) {
             unregisterEvent(UIEvent.CHANGE, _onInteractiveChange);
         }
         _validators = value;
         if (_validators != null) {
             registerEvent(UIEvent.CHANGE, _onInteractiveChange);
-            applyValidators();
+            _validators.setup(this);
+            _validators.validate(this);
         }
         return value;
     }
@@ -133,32 +134,9 @@ class InteractiveComponent extends Component implements IFocusable implements IV
     // Internal
     //***********************************************************************************************************
 
-    private function applyValidators() {
-        if (_validators == null) {
-            return;
-        }
-        for (v in _validators) {
-            if (v == null) {
-                continue;
-            }
-            v.setup(this);
-            validateComponentValue();
-        }
-    }
-
-    private function validateComponentValue() {
-        if (_validators == null) {
-            return;
-        }
-        for (v in _validators) {
-            if (v == null) {
-                continue;
-            }
-            v.validate(this);
-        }
-    }
-
     private function _onInteractiveChange(event:UIEvent) {
-        validateComponentValue();
+        if (_validators != null) {
+            _validators.validate(this);
+        }
     }
 }
