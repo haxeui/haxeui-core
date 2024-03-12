@@ -1050,6 +1050,7 @@ class ComponentMacros {
                 builder.add(e);
             }
             builder.add(macro $i{"c" + (id)}.validators = $a{validatorAssignExprs});
+            builder.add(macro @:privateAccess $i{"c" + (id)}.validators.component = $i{"c" + (id)});
         }
 }
 

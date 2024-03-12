@@ -123,9 +123,10 @@ class InteractiveComponent extends Component implements IFocusable implements IV
         }
         _validators = value;
         if (_validators != null) {
+            @:privateAccess _validators.component = this;
             registerEvent(UIEvent.CHANGE, _onInteractiveChange);
-            _validators.setup(this);
-            _validators.validate(this);
+            @:privateAccess _validators.setup();
+            _validators.validate();
         }
         return value;
     }
@@ -136,7 +137,15 @@ class InteractiveComponent extends Component implements IFocusable implements IV
 
     private function _onInteractiveChange(event:UIEvent) {
         if (_validators != null) {
-            _validators.validate(this);
+            _validators.validate();
         }
+    }
+
+    private override function onDestroy() {
+        if (_validators != null) {
+            @:privateAccess _validators.component = null;
+            _validators = null;
+        }
+        super.onDestroy();
     }
 }

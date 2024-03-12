@@ -4,6 +4,7 @@ import haxe.ui.core.Component;
 
 @:forward
 @:forward.new
+@:access(haxe.ui.validators.ValidatorsImpl)
 abstract Validators(ValidatorsImpl) from ValidatorsImpl {
 	@:arrayAccess
 	public inline function get(index:Int) {
@@ -19,9 +20,11 @@ abstract Validators(ValidatorsImpl) from ValidatorsImpl {
 }
 
 private class ValidatorsImpl {
-	public var list:Array<IValidator> = [];
+	private var list:Array<IValidator> = [];
+    private var component:Component;
 
-	public function new() {
+	public function new(component:Component = null) {
+        this.component = component;
     }
 
     public var length(get, null):Int;
@@ -32,7 +35,7 @@ private class ValidatorsImpl {
         return list.length;
     }
 
-    public function setup(component:Component) {
+    private function setup() {
         for (item in list) {
             if (item == null) {
                 continue;
@@ -41,23 +44,24 @@ private class ValidatorsImpl {
         }
     }
 
-    private var _isValid:Bool = true;
-    public var isValid(get, null):Bool;
-    private function get_isValid():Bool {
-        return _isValid;
+    private var _areValid:Bool = true;
+    public var areValid(get, null):Bool;
+    private function get_areValid():Bool {
+        return _areValid;
     }
 
-    public function validate(component:Component) {
-        _isValid = true;
+    public function validate():Bool {
+        _areValid = true;
         for (item in list) {
             if (item == null) {
                 continue;
             }
             var r = item.validate(component);
             if (r != null && r == false) {
-                _isValid = false;
+                _areValid = false;
             }
         }
+        return _areValid;
     }
 
     public function iterator() {
