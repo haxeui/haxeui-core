@@ -21,6 +21,7 @@ class Property extends HBox implements IDataComponent {
     @:clonable @:behaviour(DefaultBehaviour)            public var min:Null<Float>;
     @:clonable @:behaviour(DefaultBehaviour)            public var max:Null<Float>;
     @:clonable @:behaviour(DefaultBehaviour)            public var precision:Null<Int>;
+    @:clonable @:behaviour(DefaultBehaviour)            public var selected:Null<Bool>;
 }
 
 //***********************************************************************************************************
