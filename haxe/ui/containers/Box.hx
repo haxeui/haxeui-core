@@ -103,7 +103,7 @@ private class Builder extends CompositeBuilder {
 
     @:access(haxe.ui.backend.ComponentImpl)
     public override function addComponent(child:Component):Component {
-        if (child is ItemRenderer && _box.itemRenderer == null) {
+        if ((child is ItemRenderer) && _box.itemRenderer == null) {
             var builder:Builder = cast(_box._compositeBuilder, Builder);
             if (builder.hasDataSource) {
                 _box.itemRenderer = cast(child, ItemRenderer);
