@@ -13,12 +13,13 @@ import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.LayoutFactory;
 import haxe.ui.styles.Style;
 import haxe.ui.util.Variant;
+import haxe.ui.core.CompositeBuilder;
 
 /**
  Base `Layout` that allows a container to specify an `icon`. How that icon resource is used depends on subclasses, like `TabView`
 **/
 @:dox(icon = "/icons/ui-panel.png")
-@:composite(DefaultLayout)
+@:composite(Builder, DefaultLayout)
 class Box extends Component implements IDataComponent {
     //***********************************************************************************************************
     // Public API
@@ -89,48 +90,43 @@ class Box extends Component implements IDataComponent {
 }
 
 //***********************************************************************************************************
-// Behaviours
+// Builder
 //***********************************************************************************************************
-@:dox(hide) @:noCompletion
-private class DataSourceBehaviour extends DataBehaviour {
+private class Builder extends CompositeBuilder {
     private var _box:Box;
+    public var hasDataSource:Bool; // we'll hold a flag for ease since the act of call .dataSource will create a default one (so ".dataSource == null" will always evaluate as false)
 
     public function new(box:Box) {
         super(box);
         _box = box;
     }
 
-    public override function set(value:Variant) {
-        super.set(value);
-        var dataSource:DataSource<Dynamic> = _value;
-        if (dataSource != null) {
-            dataSource.onDataSourceChange = function() {
-                syncChildren();
+    @:access(haxe.ui.backend.ComponentImpl)
+    public override function addComponent(child:Component):Component {
+        if (child is ItemRenderer && _box.itemRenderer == null) {
+            var builder:Builder = cast(_box._compositeBuilder, Builder);
+            if (builder.hasDataSource) {
+                _box.itemRenderer = cast(child, ItemRenderer);
+                _box.itemRenderer.ready();
+                _box.itemRenderer.handleVisibility(false);
+                _box.invalidateComponentData();
+                return child;
             }
-        } else {
-            _box.removeAllComponents();
         }
-        syncChildren();
+        return super.addComponent(child);
     }
 
-    public override function get():Variant {
-        if (_value == null || _value.isNull) {
-            _value = new ArrayDataSource<Dynamic>();
-            var dataSource:DataSource<Dynamic> = _value;
-            dataSource.onDataSourceChange = function() {
-                syncChildren();
-            }
-        }
-        return _value;
+    public override function validateComponentData() {
+        syncChildren();
     }
 
     @:access(haxe.ui.backend.ComponentImpl)
     private function syncChildren() {
-        var dataSource:DataSource<Dynamic> = _value;
-        if (dataSource == null) {
+        if (!hasDataSource) {
             return;
-        }              
+        }
 
+        var dataSource:DataSource<Dynamic> = _box.dataSource;
         var itemRenderer:ItemRenderer = _box.itemRenderer;
         if (itemRenderer == null) {
             itemRenderer = _box.findComponent(ItemRenderer);
@@ -168,5 +164,48 @@ private class DataSourceBehaviour extends DataBehaviour {
             }
         }
         return null;
+    }
+}
+
+//***********************************************************************************************************
+// Behaviours
+//***********************************************************************************************************
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class DataSourceBehaviour extends DataBehaviour {
+    private var _box:Box;
+
+    public function new(box:Box) {
+        super(box);
+        _box = box;
+    }
+
+    public override function set(value:Variant) {
+        super.set(value);
+        var dataSource:DataSource<Dynamic> = _value;
+        var builder:Builder = cast(_box._compositeBuilder, Builder);
+        if (dataSource != null) {
+            builder.hasDataSource = true;
+            dataSource.onDataSourceChange = function() {
+                _box.invalidateComponentData();
+            }
+        } else {
+            builder.hasDataSource = false;
+            _box.removeAllComponents();
+        }
+        _box.invalidateComponentData();
+    }
+
+    public override function get():Variant {
+        if (_value == null || _value.isNull) {
+            _value = new ArrayDataSource<Dynamic>();
+            var dataSource:DataSource<Dynamic> = _value;
+            var builder:Builder = cast(_box._compositeBuilder, Builder);
+            builder.hasDataSource = true;
+            dataSource.onDataSourceChange = function() {
+                _box.invalidateComponentData();
+            }
+        }
+        return _value;
     }
 }
