@@ -1,5 +1,5 @@
 package haxe.ui.core;
 
-interface IScrollView {
+interface IScroller {
     public function ensureVisible(component:Component):Void;
 }

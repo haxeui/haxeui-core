@@ -99,12 +99,12 @@ class InteractiveComponent extends Component implements IFocusable implements IV
         return value;
     }
     
-    private function findScroller():IScrollView {
-        var view:IScrollView = null;
+    private function findScroller():IScroller {
+        var view:IScroller = null;
         var ref:Component = this;
         while (ref != null) {
-            if ((ref is IScrollView)) {
-                view = cast(ref, IScrollView);
+            if ((ref is IScroller)) {
+                view = cast(ref, IScroller);
                 break;
             }
             ref = ref.parentComponent;

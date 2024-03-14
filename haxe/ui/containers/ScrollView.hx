@@ -12,7 +12,7 @@ import haxe.ui.constants.ScrollMode;
 import haxe.ui.constants.ScrollPolicy;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
-import haxe.ui.core.IScrollView;
+import haxe.ui.core.IScroller;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.Screen;
 import haxe.ui.events.ActionEvent;
@@ -30,7 +30,7 @@ import haxe.ui.util.Variant;
 import haxe.ui.validation.InvalidationFlags;
 
 @:composite(ScrollViewEvents, ScrollViewBuilder, ScrollViewLayout)
-class ScrollView extends InteractiveComponent implements IScrollView {
+class ScrollView extends InteractiveComponent implements IScroller {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
