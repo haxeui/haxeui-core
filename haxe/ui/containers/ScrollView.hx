@@ -56,6 +56,9 @@ class ScrollView extends InteractiveComponent implements IScroller {
     @:clonable @:behaviour(GetContents)                             public var contents:Component;
     @:clonable @:behaviour(DefaultBehaviour)                        public var autoHideScrolls:Bool;
     @:clonable @:behaviour(DefaultBehaviour, true)                  public var allowAutoScroll:Bool;
+    @:clonable @:behaviour(IsScrollableHorizontallyBehaviour)          public var isScrollableHorizontally:Bool;
+    @:clonable @:behaviour(IsScrollableVerticallyBehaviour)            public var isScrollableVertically:Bool;
+    @:clonable @:behaviour(IsScrollableBehaviour)                      public var isScrollable:Bool;
     
     @:call(EnsureVisible)                                           public function ensureVisible(component:Component):Void;
 
@@ -546,6 +549,65 @@ private class ThumbSize extends DataBehaviour {
 private class ScrollModeBehaviour extends DataBehaviour {
     public override function validateData() {
         _component.registerInternalEvents(true);
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class IsScrollableHorizontallyBehaviour extends DefaultBehaviour {
+    private var _scrollview:ScrollView;
+
+    public function new(scrollview:ScrollView) {
+        super(scrollview);
+        _scrollview = scrollview;
+    }
+
+    public override function get():Variant {
+        var hscroll = _scrollview.findComponent("scrollview-hscroll", HorizontalScroll);
+        if (hscroll == null) { // seems we never need anything more (like checking the values of the scroll - if the scrollview cant scroll scrollbar is destroyed, and therefore null)
+            return false;
+        }
+        return true;
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class IsScrollableVerticallyBehaviour extends DefaultBehaviour {
+    private var _scrollview:ScrollView;
+
+    public function new(scrollview:ScrollView) {
+        super(scrollview);
+        _scrollview = scrollview;
+    }
+
+    public override function get():Variant {
+        var vscroll = _scrollview.findComponent("scrollview-vscroll", VerticalScroll);
+        if (vscroll == null) { // seems we never need anything more (like checking the values of the scroll - if the scrollview cant scroll scrollbar is destroyed, and therefore null)
+            return false;
+        }
+        return true;
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class IsScrollableBehaviour extends DefaultBehaviour {
+    private var _scrollview:ScrollView;
+
+    public function new(scrollview:ScrollView) {
+        super(scrollview);
+        _scrollview = scrollview;
+    }
+
+    public override function get():Variant {
+        if (_scrollview.isScrollableVertically) { // more like to be scrolling vertically, so lets make that check first
+            return true;
+        }
+        if (_scrollview.isScrollableHorizontally) {
+            return true;
+        }
+        return false;
     }
 }
 

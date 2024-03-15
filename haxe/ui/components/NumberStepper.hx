@@ -8,8 +8,8 @@ import haxe.ui.components.TextField;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.ICompositeInteractiveComponent;
-import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.IScroller;
+import haxe.ui.core.InteractiveComponent;
 import haxe.ui.events.ActionEvent;
 import haxe.ui.events.FocusEvent;
 import haxe.ui.events.MouseEvent;
@@ -303,22 +303,8 @@ private class Events extends haxe.ui.events.Events {
         ValueHelper.incrementValue(_stepper);
     }
     
-    private function isInScroller():Bool {
-        var p = _stepper.parentComponent;
-        while (p != null) {
-            if ((p is IScroller)) {
-                var vscroll = p.findComponent("scrollview-vscroll", Component);
-                if (vscroll != null && vscroll.hidden == false) {
-                    return true;
-                }
-            }
-            p = p.parentComponent;
-        }
-        return false;
-    }
-    
     private function onMouseWheel(event:MouseEvent) {
-        if (isInScroller() && _stepper.focus == false) {
+        if (_target.isInScroller && _stepper.focus == false) {
             return;
         }
         event.cancel();

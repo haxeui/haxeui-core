@@ -99,19 +99,6 @@ class InteractiveComponent extends Component implements IFocusable implements IV
         return value;
     }
     
-    private function findScroller():IScroller {
-        var view:IScroller = null;
-        var ref:Component = this;
-        while (ref != null) {
-            if ((ref is IScroller)) {
-                view = cast(ref, IScroller);
-                break;
-            }
-            ref = ref.parentComponent;
-        }
-        return view;
-    }
-
     private var _validators:Validators = null;
     @:clonable public var validators(get, set):Validators;
     private function get_validators():Validators {
