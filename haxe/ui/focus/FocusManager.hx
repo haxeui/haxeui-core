@@ -2,6 +2,7 @@ package haxe.ui.focus;
 
 import haxe.ui.backend.FocusManagerImpl;
 import haxe.ui.core.Component;
+import haxe.ui.core.IScroller;
 import haxe.ui.core.Screen;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
@@ -40,10 +41,30 @@ class FocusManager extends FocusManagerImpl {
     }
 
     private function onScreenMouseDown(event:MouseEvent) {
+        if (!enabled) {
+            return;
+        }
+
         var list = Screen.instance.findComponentsUnderPoint(event.screenX, event.screenY);
+        list.reverse();
         for (l in list) {
+            if (l.disabled || l.hidden || @:privateAccess l._isDisposed) {
+                continue;
+            }
             if (isOfType(l, IFocusable)) {
-                return;
+                var focusable:IFocusable = cast l;
+                if (focusable.allowFocus) {
+                    if (isOfType(l, IScroller)) {
+                        var scroller:IScroller = cast l;
+                        if (scroller.isScrollable) {
+                            focus = focusable;
+                            return;
+                        }
+                    } else {
+                        focus = focusable;
+                        return;
+                    }
+                }
             }
         }
         
@@ -193,18 +214,30 @@ class FocusManager extends FocusManagerImpl {
         if (c.hidden == true) {
             return null;
         }
-        
+
         if ((c is IFocusable)) {
             var f:IFocusable = cast c;
             if (considerAutoFocus == true && f.autoFocus == false) {
                 return null;
             }
             if (f.allowFocus == true && f.disabled == false) {
-                if (f.focus == true) {
-                    currentFocus = f;
-                }
-                if (list != null) {
-                    list.push(f);
+                if (isOfType(c, IScroller)) {
+                    var scroller:IScroller = cast c;
+                    if (scroller.isScrollable) {
+                        if (f.focus == true) {
+                            currentFocus = f;
+                        }
+                        if (list != null) {
+                            list.push(f);
+                        }
+                    }
+                } else {
+                    if (f.focus == true) {
+                        currentFocus = f;
+                    }
+                    if (list != null) {
+                        list.push(f);
+                    }
                 }
             }
         }

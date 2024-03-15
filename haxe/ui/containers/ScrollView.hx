@@ -118,6 +118,9 @@ private class EnsureVisible extends DefaultBehaviour {
         var scrollRect = new Rectangle(scrollview.screenLeft, scrollview.screenTop, scrollview.width, scrollview.height);
         
         var scrollRectFixed = scrollRect.copy();
+        if (scrollview.layout == null) {
+            scrollview.validateNow();
+        }
         var usableSize = scrollview.layout.usableSize;
         scrollRectFixed.width = usableSize.width;
         scrollRectFixed.height = usableSize.height;
