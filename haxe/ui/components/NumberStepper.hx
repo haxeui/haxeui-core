@@ -9,6 +9,7 @@ import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.ICompositeInteractiveComponent;
 import haxe.ui.core.InteractiveComponent;
+import haxe.ui.core.IScroller;
 import haxe.ui.events.ActionEvent;
 import haxe.ui.events.FocusEvent;
 import haxe.ui.events.MouseEvent;
@@ -305,7 +306,7 @@ private class Events extends haxe.ui.events.Events {
     private function isInScroller():Bool {
         var p = _stepper.parentComponent;
         while (p != null) {
-            if (p.isScroller) {
+            if ((p is IScroller)) {
                 var vscroll = p.findComponent("scrollview-vscroll", Component);
                 if (vscroll != null && vscroll.hidden == false) {
                     return true;

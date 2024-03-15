@@ -79,10 +79,6 @@ class ScrollView extends InteractiveComponent implements IScroller {
             cast(_compositeBuilder, ScrollViewBuilder).updateScrollRect(); // TODO: or this
         }
     }
-    
-    private override function get_isScroller():Bool {
-        return true;
-    }
 }
 
 //***********************************************************************************************************

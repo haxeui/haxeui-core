@@ -1682,11 +1682,6 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
         return false;
     }
 
-    private var isScroller(get, null):Bool;
-    private function get_isScroller():Bool {
-        return false;
-    }
-
     private function handleFrameworkProperty(id:String, value:Any) {
 
     }
