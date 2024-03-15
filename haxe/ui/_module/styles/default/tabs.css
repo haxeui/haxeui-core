@@ -51,6 +51,8 @@
     border-bottom: 1px solid $normal-border-color;
     border-left-color: $normal-border-color;
     border-left-width: 0px;
+
+    border-top: 2px solid $accent-gradient-start;
 }
 
 .tabbar-button-selected.first:active {
