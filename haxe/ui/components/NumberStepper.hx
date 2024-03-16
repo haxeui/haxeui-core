@@ -16,10 +16,13 @@ import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.locale.Formats;
+import haxe.ui.locale.LocaleEvent;
+import haxe.ui.locale.LocaleManager;
 import haxe.ui.styles.Style;
 import haxe.ui.util.MathUtil;
 import haxe.ui.util.StringUtil;
 import haxe.ui.util.Timer;
+import haxe.ui.util.Variant;
 
 /**
  * A normal stepper that can be used to increment or decrement a number. To do so, you can use the
@@ -78,7 +81,7 @@ class NumberStepper extends InteractiveComponent implements ICompositeInteractiv
     /**
      * The character that will be used to separate decimals (eg 100.00 or 100,00)
      */
-    @:clonable @:behaviour(DefaultBehaviour, Formats.decimalSeparator)  public var decimalSeparator:String;
+    @:clonable @:behaviour(DecimalSeparatorBehaviour)  public var decimalSeparator:String;
 }
 
 //***********************************************************************************************************
@@ -120,6 +123,17 @@ private class PosBehaviour extends DataBehaviour {
         event.previousValue = _previousValue;
         event.value = _value;
         _component.dispatch(event);
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class DecimalSeparatorBehaviour extends DefaultBehaviour {
+    public override function get():Variant {
+        if (_value == null) {
+            return Formats.decimalSeparator;
+        }
+
+        return _value;
     }
 }
 
@@ -213,6 +227,9 @@ private class Events extends haxe.ui.events.Events {
         if (!_stepper.hasEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel)) {
             _stepper.registerEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
         }
+        if (!LocaleManager.instance.hasEvent(LocaleEvent.LOCALE_CHANGED, onLocaleChanged)) {
+            LocaleManager.instance.registerEvent(LocaleEvent.LOCALE_CHANGED, onLocaleChanged);
+        }
         
         var value:TextField = _stepper.findComponent("value", TextField);
         if (!value.hasEvent(UIEvent.CHANGE, onValueFieldChange)) {
@@ -238,6 +255,7 @@ private class Events extends haxe.ui.events.Events {
         _stepper.unregisterEvent(FocusEvent.FOCUS_IN, onFocusIn);
         _stepper.unregisterEvent(FocusEvent.FOCUS_OUT, onFocusOut);
         _stepper.unregisterEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
+        LocaleManager.instance.unregisterEvent(LocaleEvent.LOCALE_CHANGED, onLocaleChanged);
             
         var value:TextField = _stepper.findComponent("value", TextField);
         value.unregisterEvent(UIEvent.CHANGE, onValueFieldChange);
@@ -340,6 +358,16 @@ private class Events extends haxe.ui.events.Events {
                 event.repeater = true;
             case _:      
         }
+    }
+
+    private function onLocaleChanged(event:LocaleEvent) {
+        var stringValue = StringUtil.padDecimal(_stepper.pos, _stepper.precision);
+        var value:TextField = _stepper.findComponent("value", TextField);
+        var caretIndex = value.caretIndex;
+        stringValue = StringTools.replace(stringValue, ",", ".");
+        stringValue = StringTools.replace(stringValue, ".", _stepper.decimalSeparator);
+        value.text = stringValue;
+        value.caretIndex = caretIndex;
     }
 }
 

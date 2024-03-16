@@ -5,7 +5,7 @@ class Formats {
     public static var dateFormatShort(get, set):String;
     private static function get_dateFormatShort():String {
         if (_dateFormatShort == null) {
-            return LocaleManager.instance.lookupString("formats.date.short");
+            return getLocaleString("formats.date.short", "%d/%m/%Y");
         }
         return _dateFormatShort;
     }
@@ -18,7 +18,7 @@ class Formats {
     public static var decimalSeparator(get, set):String;
     private static function get_decimalSeparator():String {
         if (_decimalSeparator == null) {
-            return LocaleManager.instance.lookupString("formats.decimal.separator");
+            return getLocaleString("formats.decimal.separator", ".");
         }
         return _decimalSeparator;
     }
@@ -31,12 +31,20 @@ class Formats {
     public static var thousandsSeparator(get, set):String;
     private static function get_thousandsSeparator():String {
         if (_thousandsSeparator == null) {
-            return LocaleManager.instance.lookupString("formats.thousands.separator");
+            return getLocaleString("formats.thousands.separator", ",");
         }
         return _thousandsSeparator;
     }
     private static function set_thousandsSeparator(value:String):String {
         _thousandsSeparator = value;
         return value;
+    }
+
+    private static function getLocaleString(id:String, ?defaultString:String) {
+        var localeString = LocaleManager.instance.lookupString(id);
+        if (localeString == id && defaultString != null) {
+            return defaultString;
+        }
+        return localeString;
     }
 }

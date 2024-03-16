@@ -61,10 +61,10 @@ class LocaleString {
                 if (result.indexOf("{{") != -1 && result.indexOf("}}") != -1) _isSimple = false;
             }
 
-            if (param0 != null) result = result.replace("[0]", Std.string(param0));
-            if (param1 != null) result = result.replace("[1]", Std.string(param1));
-            if (param2 != null) result = result.replace("[2]", Std.string(param2));
-            if (param3 != null) result = result.replace("[3]", Std.string(param3));
+            if (param0 != null) result = result.replace("[0]", formatParam(param0));
+            if (param1 != null) result = result.replace("[1]", formatParam(param1));
+            if (param2 != null) result = result.replace("[2]", formatParam(param2));
+            if (param3 != null) result = result.replace("[3]", formatParam(param3));
             
             var n1 = result.indexOf("{{");
             var beforePos = 0;
@@ -137,6 +137,17 @@ class LocaleString {
                     }
             }
         }
+    }
+
+    function formatParam(param:Dynamic = null):String {
+        if ((param is Float)) {
+            return StringTools.replace(Std.string(param), ".", Formats.decimalSeparator);
+        } else if ((param is Array)) {
+            var arr:Array<Any> = param;
+            return Std.string([for (x in arr) formatParam(x)]);
+        }
+
+        return Std.string(param);
     }
 }
 
