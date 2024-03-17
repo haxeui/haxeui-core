@@ -1106,6 +1106,9 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         // if there is no vertical scrollbar we'll try to use horizontal
         // scrolling instead - note that if the shiftkey is pressed
         // we'll reverse that an look primarily to scroll horizontally
+        if (_scrollview.scrollPolicy == ScrollPolicy.NEVER) {
+            return;
+        }
         var primaryType:Class<Scroll> = VerticalScroll;
         var secondaryType:Class<Scroll> = HorizontalScroll;
         if (event.shiftKey) {
