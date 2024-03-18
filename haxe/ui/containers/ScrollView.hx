@@ -1148,20 +1148,31 @@ class ScrollViewEvents extends haxe.ui.events.Events {
     }
     
     private function onActionStart(event:ActionEvent) {
+        if (_scrollview.scrollPolicy == ScrollPolicy.NEVER) {
+            return;
+        }
         switch (event.action) {
             case ActionType.DOWN:
-                _scrollview.vscrollPos++;
-                event.repeater = true;
+                if (_scrollview.verticalScrollPolicy != ScrollPolicy.NEVER) {
+                    _scrollview.vscrollPos++;
+                    event.repeater = true;
+                }
             case ActionType.UP:
-                _scrollview.vscrollPos--;
-                event.repeater = true;
-            case ActionType.LEFT:    
-                _scrollview.hscrollPos--;
-                event.repeater = true;
-            case ActionType.RIGHT:    
-                _scrollview.hscrollPos++;
-                event.repeater = true;
-            case _:      
+                if (_scrollview.verticalScrollPolicy != ScrollPolicy.NEVER) {
+                    _scrollview.vscrollPos--;
+                    event.repeater = true;
+                }
+            case ActionType.LEFT:
+                if (_scrollview.horizontalScrollPolicy != ScrollPolicy.NEVER) {
+                    _scrollview.hscrollPos--;
+                    event.repeater = true;
+                }
+            case ActionType.RIGHT:
+                if (_scrollview.horizontalScrollPolicy != ScrollPolicy.NEVER) {
+                    _scrollview.hscrollPos++;
+                    event.repeater = true;
+                }
+            case _:
         }
     }
 }
