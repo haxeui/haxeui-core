@@ -1106,6 +1106,9 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         // if there is no vertical scrollbar we'll try to use horizontal
         // scrolling instead - note that if the shiftkey is pressed
         // we'll reverse that an look primarily to scroll horizontally
+        if (_scrollview.scrollPolicy == ScrollPolicy.NEVER) {
+            return;
+        }
         var primaryType:Class<Scroll> = VerticalScroll;
         var secondaryType:Class<Scroll> = HorizontalScroll;
         if (event.shiftKey) {
@@ -1116,7 +1119,12 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         if (scroll == null) {
             scroll = _scrollview.findComponent(secondaryType, false);
         }
-        if (scroll != null) {
+
+        var currentScrollPolicy = scroll.id == 'scrollview-vscroll'
+            ? _scrollview.verticalScrollPolicy
+            : _scrollview.horizontalScrollPolicy;
+
+        if (scroll != null && currentScrollPolicy != ScrollPolicy.NEVER) {
             if (_scrollview.autoHideScrolls == true && _fadeTimer == null) {
                 scroll.fadeIn();
             }
@@ -1145,20 +1153,31 @@ class ScrollViewEvents extends haxe.ui.events.Events {
     }
     
     private function onActionStart(event:ActionEvent) {
+        if (_scrollview.scrollPolicy == ScrollPolicy.NEVER) {
+            return;
+        }
         switch (event.action) {
             case ActionType.DOWN:
-                _scrollview.vscrollPos++;
-                event.repeater = true;
+                if (_scrollview.verticalScrollPolicy != ScrollPolicy.NEVER) {
+                    _scrollview.vscrollPos++;
+                    event.repeater = true;
+                }
             case ActionType.UP:
-                _scrollview.vscrollPos--;
-                event.repeater = true;
-            case ActionType.LEFT:    
-                _scrollview.hscrollPos--;
-                event.repeater = true;
-            case ActionType.RIGHT:    
-                _scrollview.hscrollPos++;
-                event.repeater = true;
-            case _:      
+                if (_scrollview.verticalScrollPolicy != ScrollPolicy.NEVER) {
+                    _scrollview.vscrollPos--;
+                    event.repeater = true;
+                }
+            case ActionType.LEFT:
+                if (_scrollview.horizontalScrollPolicy != ScrollPolicy.NEVER) {
+                    _scrollview.hscrollPos--;
+                    event.repeater = true;
+                }
+            case ActionType.RIGHT:
+                if (_scrollview.horizontalScrollPolicy != ScrollPolicy.NEVER) {
+                    _scrollview.hscrollPos++;
+                    event.repeater = true;
+                }
+            case _:
         }
     }
 }
