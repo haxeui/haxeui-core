@@ -1119,7 +1119,12 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         if (scroll == null) {
             scroll = _scrollview.findComponent(secondaryType, false);
         }
-        if (scroll != null) {
+
+        var currentScrollPolicy = scroll.id == 'scrollview-vscroll'
+            ? _scrollview.verticalScrollPolicy
+            : _scrollview.horizontalScrollPolicy;
+
+        if (scroll != null && currentScrollPolicy != ScrollPolicy.NEVER) {
             if (_scrollview.autoHideScrolls == true && _fadeTimer == null) {
                 scroll.fadeIn();
             }
