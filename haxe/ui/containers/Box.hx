@@ -151,6 +151,7 @@ private class Builder extends CompositeBuilder {
         }
 
         for (child in _component.findComponents(ItemRenderer)) {
+            if (child == _box.itemRenderer) continue;
             if (dataSource.indexOf(child.data) == -1) {
                 _box.removeComponent(child);
             }
