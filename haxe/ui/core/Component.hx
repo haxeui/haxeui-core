@@ -1139,11 +1139,11 @@ class Component extends ComponentImpl
             }
 
             onAnimationEnd = function(e) {
+                removeClass("fade-in");
+                onAnimationEnd = prevEnd;
                 if (onEnd != null) {
                     onEnd();
                 }
-                removeClass("fade-in");
-                onAnimationEnd = prevEnd;
             }
         }
         swapClass("fade-in", "fade-out");
@@ -1161,11 +1161,11 @@ class Component extends ComponentImpl
                 if (hide == true) {
                     this.hide();
                 }
+                onAnimationEnd = prevEnd;
+                removeClass("fade-out");
                 if (onEnd != null) {
                     onEnd();
                 }
-                onAnimationEnd = prevEnd;
-                removeClass("fade-out");
             }
         }
         swapClass("fade-out", "fade-in");
