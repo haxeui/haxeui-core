@@ -5,6 +5,7 @@ import haxe.ui.components.Label;
 import haxe.ui.containers.Box;
 import haxe.ui.core.TypeMap;
 import haxe.ui.events.ItemEvent;
+import haxe.ui.events.ItemRendererEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.util.TypeConverter;
@@ -143,6 +144,8 @@ class ItemRenderer extends Box {
         }
         
         onDataChanged(_data);
+        var event = new ItemRendererEvent(ItemRendererEvent.DATA_CHANGED, this);
+        dispatch(event);
     }
 
     private function onDataChanged(data:Dynamic) {
