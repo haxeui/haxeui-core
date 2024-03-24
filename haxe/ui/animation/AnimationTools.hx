@@ -210,6 +210,7 @@ class AnimationTools {
     }
 
     public static function slideToRight(c:Component, delayMs:Int = 0, onComplete:Void->Void = null, duration:Float = .2, easing:String = "linear") {
+        c.opacity = 0;
         if (!c.isReady) {
             c.registerEvent(UIEvent.READY, function(_) {
                 slideToRight(c, delayMs, onComplete, duration, easing);
@@ -235,9 +236,11 @@ class AnimationTools {
         builder.setPosition(100, "left", Std.int(originX), true);
         if (delayMs <= 0) {
             builder.play();
+            c.opacity = 1;
         } else {
             haxe.ui.util.Timer.delay(function() {
                 builder.play();
+                c.opacity = 1;
             }, delayMs);
         }
     }
