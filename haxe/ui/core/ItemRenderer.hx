@@ -229,25 +229,14 @@ class ItemRenderer extends Box {
             }
             var c:Component = findComponent(componentId, null, true);
             if (c != null && v != null) {
-                var typeInfo = TypeMap.getTypeInfo(c.className, property);
-                var propValue = TypeConverter.convertTo(v, typeInfo);
-                if (property == "value") {
-                    c.value = propValue;
-                } else if (typeInfo == "variant") {
-                    Reflect.setProperty(c, property, Variant.fromDynamic(v));
-                } else {
-                    Reflect.setProperty(c, property, v);
-                }
-
-                if (autoRegisterInteractiveEvents) {
-                    if ((c is InteractiveComponent) || (c is ItemRenderer)) {
-                        if (c.hasEvent(UIEvent.CHANGE, onItemChange) == false) {
-                            c.registerEvent(UIEvent.CHANGE, onItemChange);
+                switch (Type.typeof(v)) {
+                    case TObject:
+                        for (valueField in Reflect.fields(v)) {
+                            var valueFieldValue = Reflect.field(v, valueField);
+                            setComponentProperty(c, valueFieldValue, valueField);
                         }
-                        if (c.hasEvent(MouseEvent.CLICK, onItemClick) == false) {
-                            c.registerEvent(MouseEvent.CLICK, onItemClick);
-                        }
-                    }
+                    case _:
+                        setComponentProperty(c, v, property);
                 }
 
                 c.show();
@@ -259,6 +248,29 @@ class ItemRenderer extends Box {
                 } catch (e:Dynamic) {}
             } else if (Type.typeof(v) == TObject) {
                 updateValues(v);
+            }
+        }
+    }
+
+    private function setComponentProperty(c:Component, v:Any, property:String) {
+        var typeInfo = TypeMap.getTypeInfo(c.className, property);
+        var propValue = TypeConverter.convertTo(v, typeInfo);
+        if (property == "value") {
+            c.value = propValue;
+        } else if (typeInfo == "variant") {
+            Reflect.setProperty(c, property, Variant.fromDynamic(v));
+        } else {
+            Reflect.setProperty(c, property, v);
+        }
+
+        if (autoRegisterInteractiveEvents) {
+            if ((c is InteractiveComponent) || (c is ItemRenderer)) {
+                if (c.hasEvent(UIEvent.CHANGE, onItemChange) == false) {
+                    c.registerEvent(UIEvent.CHANGE, onItemChange);
+                }
+                if (c.hasEvent(MouseEvent.CLICK, onItemClick) == false) {
+                    c.registerEvent(MouseEvent.CLICK, onItemClick);
+                }
             }
         }
     }
