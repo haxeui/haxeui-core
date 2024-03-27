@@ -9,6 +9,7 @@ import haxe.ui.events.ItemRendererEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.util.TypeConverter;
+import haxe.ui.util.Variant;
 
 class ItemRenderer extends Box {
     @:clonable public var autoRegisterInteractiveEvents:Bool = true;
@@ -218,11 +219,25 @@ class ItemRenderer extends Box {
         }
 
         for (f in fieldList) {
+            var property:String = "value";
             var v = Reflect.getProperty(valueObject, f);
-            var c:Component = findComponent(f, null, true);
+            var componentId = f;
+            var n = f.indexOf(".");
+            if (n != -1) {
+                componentId = f.substring(0, n);
+                property = f.substring(n + 1);
+            }
+            var c:Component = findComponent(componentId, null, true);
             if (c != null && v != null) {
-                var propValue = TypeConverter.convertTo(v, TypeMap.getTypeInfo(c.className, "value"));
-                c.value = propValue;
+                var typeInfo = TypeMap.getTypeInfo(c.className, property);
+                var propValue = TypeConverter.convertTo(v, typeInfo);
+                if (property == "value") {
+                    c.value = propValue;
+                } else if (typeInfo == "variant") {
+                    Reflect.setProperty(c, property, Variant.fromDynamic(v));
+                } else {
+                    Reflect.setProperty(c, property, v);
+                }
 
                 if (autoRegisterInteractiveEvents) {
                     if ((c is InteractiveComponent) || (c is ItemRenderer)) {
