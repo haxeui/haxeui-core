@@ -147,6 +147,7 @@ private class Builder extends CompositeBuilder {
                 renderer = itemRenderer.cloneComponent();
                 _box.addComponent(renderer);
             }
+            renderer.itemIndex = i;
             _box.setComponentIndex(renderer, i);
             renderer.data = item;
         }

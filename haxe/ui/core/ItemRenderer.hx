@@ -159,7 +159,13 @@ class ItemRenderer extends Box {
         }
         var v = event.target.value;
         if (_data != null && event.target.id != null) {
-            Reflect.setProperty(_data, event.target.id, v);
+            var item = Reflect.getProperty(_data, event.target.id);
+            switch (Type.typeof(item)) {
+                case TObject:
+                    item.value = v;
+                case _:
+                    Reflect.setProperty(_data, event.target.id, v);
+            }
         }
 
         var e = new ItemEvent(ItemEvent.COMPONENT_EVENT);
