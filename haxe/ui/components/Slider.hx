@@ -316,7 +316,8 @@ private class MinorTicks extends DataBehaviour {
                     var tick = new Component();
                     tick.addClass("minor-tick");
                     tick.scriptAccess = false;
-                    slider.addComponentAt(tick, index + 1);
+                    slider.addComponent(tick);
+                    slider.setComponentIndex(tick, index + 1);
                 }
                 var removeN = Std.int(ticks.length - n);
                 for (_ in 0...removeN) {
@@ -343,7 +344,8 @@ private class MajorTicks extends DataBehaviour {
                     var tick = new Component();
                     tick.addClass("major-tick");
                     tick.scriptAccess = false;
-                    slider.addComponentAt(tick, index + 1);
+                    slider.addComponent(tick);
+                    slider.setComponentIndex(tick, index + 1);
                 }
                 var removeN = Std.int(ticks.length - n);
                 for (_ in 0...removeN) {
