@@ -4,6 +4,7 @@ import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
+import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.IDataComponent;
 import haxe.ui.core.ItemRenderer;
 import haxe.ui.data.ArrayDataSource;
@@ -13,7 +14,6 @@ import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.layouts.LayoutFactory;
 import haxe.ui.styles.Style;
 import haxe.ui.util.Variant;
-import haxe.ui.core.CompositeBuilder;
 
 /**
  Base `Layout` that allows a container to specify an `icon`. How that icon resource is used depends on subclasses, like `TabView`
@@ -135,6 +135,7 @@ private class Builder extends CompositeBuilder {
             }
 
             _box.itemRenderer = itemRenderer;
+            _box.itemRenderer.includeInLayout = false;
             _box.itemRenderer.ready();
             _box.itemRenderer.handleVisibility(false);
         }
@@ -151,7 +152,9 @@ private class Builder extends CompositeBuilder {
         }
 
         for (child in _component.findComponents(ItemRenderer)) {
-            if (child == _box.itemRenderer) continue;
+            if (child == _box.itemRenderer) {
+                continue;
+            }
             if (dataSource.indexOf(child.data) == -1) {
                 _box.removeComponent(child);
             }
