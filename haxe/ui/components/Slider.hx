@@ -305,6 +305,7 @@ private class MinorTicks extends DataBehaviour {
     public override function validateData() {
         if (_value != null && _value.isNull == false) {
             var slider:Slider = cast(_component, Slider);
+            slider.addClass("minor-ticks");
             var ticks = slider.findComponents("minor-tick", 1);
             var v:Float = _value;
             var m:Float = slider.max - slider.min;
@@ -325,6 +326,7 @@ private class MinorTicks extends DataBehaviour {
                 }
             }
         } else {
+            _component.removeClass("minor-ticks");
         }
     }
 }
@@ -333,6 +335,7 @@ private class MajorTicks extends DataBehaviour {
     public override function validateData() {
         if (_value != null && _value.isNull == false) {
             var slider:Slider = cast(_component, Slider);
+            slider.addClass("major-ticks");
             var ticks = slider.findComponents("major-tick", 1);
             var v:Float = _value;
             var m:Float = slider.max - slider.min;
@@ -353,6 +356,7 @@ private class MajorTicks extends DataBehaviour {
                 }
             }
         } else {
+            _component.removeClass("major-ticks");
         }
     }
 }

@@ -11,6 +11,11 @@
     border-radius: $normal-border-radius;
 }
 
+.horizontal-slider.major-ticks, .horizontal-slider.minor-ticks {
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+
 .horizontal-slider:active .button {
     border: 1px solid $accent-color;
 }
@@ -62,6 +67,11 @@
     padding-right: 3px;
     width: auto;
     initial-height: 150px;
+}
+
+.vertical-slider.major-ticks, .vertical-slider.minor-ticks {
+    padding-left: 6px;
+    padding-right: 6px;
 }
 
 .vertical-slider:active .button {
