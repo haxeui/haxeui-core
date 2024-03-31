@@ -252,13 +252,14 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
                 _saturationValueGraphBytes = Bytes.alloc(bytesSize);
             }
 
+            var isDisabled = picker.disabled;
             var stepX = 100 / cx;
             var stepY = 100 / cy;
             for (y in 0...Std.int(cy)) {
                 for (x in 0...Std.int(cx)) {
                     var i:Int = Std.int(y * (cx * 4) + x * 4);
                     var pixel = ColorUtil.hsvToRGBF(_currentColorHSV.h - 1, (x + 1) * stepX, 100 - (y * stepY));
-                    if (picker.disabled) {
+                    if (isDisabled) {
                         var greypixel = ColorUtil.rgbToGray(Math.round(pixel.r), Math.round(pixel.g), Math.round(pixel.b));
                         _saturationValueGraphBytes.set(i + 0, greypixel);
                         _saturationValueGraphBytes.set(i + 1, greypixel);
@@ -304,12 +305,13 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
                 _hueGraphBytes = Bytes.alloc(bytesSize);
             }
 
+            var isDisabled = picker.disabled;
             var step = 360 / cx;
             for (y in 0...Std.int(cy)) {
                 for (x in 0...Std.int(cx)) {
                     var i:Int = Std.int(y * (cx * 4) + x * 4);
                     var c = ColorUtil.hsvToRGBF(x * step, 100, 100);
-                    if (picker.disabled) {
+                    if (isDisabled) {
                         var greypixel = ColorUtil.rgbToGray(Math.round(c.r), Math.round(c.g), Math.round(c.b));
                         _hueGraphBytes.set(i + 0, greypixel);
                         _hueGraphBytes.set(i + 1, greypixel);
