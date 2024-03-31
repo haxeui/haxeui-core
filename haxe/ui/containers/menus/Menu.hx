@@ -166,6 +166,9 @@ class MenuEvents extends haxe.ui.events.Events {
 
     private function onItemClick(event:MouseEvent) {
         var item:MenuItem = cast(event.target, MenuItem);
+        if ((item is MenuCheckBox) || (item is MenuOptionBox)) {
+            return;
+        }
         if (!item.expandable) {
             var event = new MenuEvent(MenuEvent.MENU_SELECTED);
             event.menu = _menu;
