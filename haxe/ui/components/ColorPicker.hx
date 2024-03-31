@@ -255,9 +255,10 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
             var isDisabled = picker.disabled;
             var stepX = 100 / cx;
             var stepY = 100 / cy;
+            var l = cx * 4;
             for (y in 0...cy) {
                 for (x in 0...cx) {
-                    var i:Int = y * (cx * 4) + x * 4;
+                    var i:Int = y * l + x * 4;
                     var pixel = ColorUtil.hsvToRGBF(_currentColorHSV.h - 1, (x + 1) * stepX, 100 - (y * stepY));
                     if (isDisabled) {
                         var greypixel = ColorUtil.rgbToGray(Math.round(pixel.r), Math.round(pixel.g), Math.round(pixel.b));
@@ -266,9 +267,9 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
                         _saturationValueGraphBytes.set(i + 2, greypixel);
                         _saturationValueGraphBytes.set(i + 3, 0xFF);
                     } else {
-                        _saturationValueGraphBytes.set(i + 0, Math.round(pixel.r));
-                        _saturationValueGraphBytes.set(i + 1, Math.round(pixel.g));
-                        _saturationValueGraphBytes.set(i + 2, Math.round(pixel.b));
+                        _saturationValueGraphBytes.set(i + 0, Std.int(pixel.r));
+                        _saturationValueGraphBytes.set(i + 1, Std.int(pixel.g));
+                        _saturationValueGraphBytes.set(i + 2, Std.int(pixel.b));
                         _saturationValueGraphBytes.set(i + 3, 0xFF);
                     }
                 }
@@ -307,9 +308,10 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
 
             var isDisabled = picker.disabled;
             var step = 360 / cx;
+            var l = cx * 4;
             for (y in 0...cy) {
                 for (x in 0...cx) {
-                    var i:Int = y * (cx * 4) + x * 4;
+                    var i:Int = y * l + x * 4;
                     var c = ColorUtil.hsvToRGBF(x * step, 100, 100);
                     if (isDisabled) {
                         var greypixel = ColorUtil.rgbToGray(Math.round(c.r), Math.round(c.g), Math.round(c.b));
@@ -318,9 +320,9 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
                         _hueGraphBytes.set(i + 2, greypixel);
                         _hueGraphBytes.set(i + 3, 0xFF);
                     } else {
-                        _hueGraphBytes.set(i + 0, Math.round(c.r));
-                        _hueGraphBytes.set(i + 1, Math.round(c.g));
-                        _hueGraphBytes.set(i + 2, Math.round(c.b));
+                        _hueGraphBytes.set(i + 0, Std.int(c.r));
+                        _hueGraphBytes.set(i + 1, Std.int(c.g));
+                        _hueGraphBytes.set(i + 2, Std.int(c.b));
                         _hueGraphBytes.set(i + 3, 0xFF);
                     }
                 }
