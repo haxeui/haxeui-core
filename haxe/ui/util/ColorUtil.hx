@@ -1,21 +1,24 @@
 package haxe.ui.util;
 
-typedef HSL = {
-    var h:Float;
-    var s:Float;
-    var l:Float;
+@:structInit
+class HSL {
+    public var h:Float;
+    public var s:Float;
+    public var l:Float;
 }
 
-typedef HSV = {
-    var h:Float;
-    var s:Float;
-    var v:Float;
+@:structInit
+class HSV {
+    public var h:Float;
+    public var s:Float;
+    public var v:Float;
 }
 
-typedef RGBF = {
-    var r:Float;
-    var g:Float;
-    var b:Float;
+@:structInit
+class RGBF {
+    public var r:Float;
+    public var g:Float;
+    public var b:Float;
 }
 
 // conversion functions extracted from: https://github.com/fponticelli/thx.color
