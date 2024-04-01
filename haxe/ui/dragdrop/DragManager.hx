@@ -24,6 +24,11 @@ class DragManager {
     // Instance
     //****************************************************************************************************
 
+    public var dragging(get, never):Bool;
+    inline function get_dragging():Bool {
+        return isDragging();
+    }
+
     private var _dragComponents:Map<Component, DragOptions>;
     private var _mouseTargetToDragTarget:Map<Component, Component>;
 
@@ -35,6 +40,13 @@ class DragManager {
     public function new() {
         _dragComponents = new Map<Component, DragOptions>();
         _mouseTargetToDragTarget = new Map<Component, Component>();
+    }
+
+    /**
+     * Returns true if a component is being dragged
+     */
+    public function isDragging():Bool {
+        return _currentComponent != null;
     }
 
     /**
