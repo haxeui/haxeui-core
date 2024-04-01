@@ -28,7 +28,7 @@ class DragManager {
      * Whether a component is currently being dragged
      */
     public var isDragging(get, never):Bool;
-    inline function get_isDragging():Bool {
+    function get_isDragging():Bool {
         return _currentComponent != null;
     }
 
