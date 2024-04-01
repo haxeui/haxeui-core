@@ -49,7 +49,7 @@ private class Minimized extends DataBehaviour {
         } else {
             dialogMinMaxButton.swapClass("dialog-minimize-button", "dialog-maximize-button");
             dialogContent.hidden = false;
-            dialogFooterContainer.hidden = false;
+            dialogFooterContainer.hidden = !hasFooterComponents;
             _component.height += offset;
         }
     }
