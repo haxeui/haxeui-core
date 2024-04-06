@@ -232,6 +232,16 @@ private class Events extends haxe.ui.events.Events {
                     return;
                 }
             }
+            if (!force) {
+                var beforeCloseEvent = new UIEvent(UIEvent.BEFORE_CLOSE);
+                if (_currentMenu.hitTest(Screen.instance.currentMouseX, Screen.instance.currentMouseY)) {
+                    beforeCloseEvent.relatedComponent = _currentMenu.findComponentsUnderPoint(Screen.instance.currentMouseX, Screen.instance.currentMouseY, MenuItem)[0];
+                }
+                _menubar.dispatch(beforeCloseEvent);
+                if (beforeCloseEvent.canceled) {
+                    return;
+                }
+            }
             
             var menuEvent = new MenuEvent(MenuEvent.MENU_CLOSED);
             menuEvent.menu = _currentMenu;
