@@ -132,6 +132,7 @@ private class Events extends haxe.ui.events.Events {
             return;
         }
 
+        menu.menuBar = _menubar;
         for (button in builder._buttons) {
             if (button != target) {
                 button.selected = false;
