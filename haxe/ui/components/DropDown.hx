@@ -696,6 +696,9 @@ class DropDownEvents extends ButtonEvents {
     private var _wrapper:Box = null;
     private var _dropdownOpen:Bool = false;
     public function showDropDown() {
+        if (_dropdownOpen) {
+            return;
+        }
         var handler:IDropDownHandler = cast(_dropdown._compositeBuilder, DropDownBuilder).handler;
         if (handler == null) {
             return;
@@ -834,6 +837,9 @@ class DropDownEvents extends ButtonEvents {
         Screen.instance.registerEvent(MouseEvent.RIGHT_MOUSE_DOWN, onScreenMouseDown);
         registerEvent(UIEvent.MOVE, onDropDownMoved);
         _dropdownOpen = true;
+
+        var event = new UIEvent(UIEvent.OPEN);
+        _dropdown.dispatch(event);
     }
     
     private function onDropDownMoved(_) {
@@ -913,6 +919,9 @@ class DropDownEvents extends ButtonEvents {
     }
     
     public function hideDropDown() {
+        if (!_dropdownOpen) {
+            return;
+        }
         var handler:IDropDownHandler = cast(_dropdown._compositeBuilder, DropDownBuilder).handler;
         if (handler == null) {
             return;
@@ -939,6 +948,9 @@ class DropDownEvents extends ButtonEvents {
         Screen.instance.unregisterEvent(MouseEvent.RIGHT_MOUSE_DOWN, onScreenMouseDown);
         unregisterEvent(UIEvent.MOVE, onDropDownMoved);
         _dropdownOpen = false;
+
+        var event = new UIEvent(UIEvent.CLOSE);
+        _dropdown.dispatch(event);
     }
 
     private function onScreenMouseDown(event:MouseEvent) {
