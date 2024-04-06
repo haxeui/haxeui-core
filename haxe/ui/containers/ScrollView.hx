@@ -50,7 +50,7 @@ class ScrollView extends InteractiveComponent implements IScroller {
     @:clonable @:behaviour(VScrollPageSize)                         public var vscrollPageSize:Float;
     @:clonable @:behaviour(VScrollThumbSize)                        public var vscrollThumbSize:Null<Float>;
     @:clonable @:behaviour(ThumbSize)                               public var thumbSize:Null<Float>;
-    @:clonable @:behaviour(ScrollMouseButton)                       public var scrollMouseButton:MouseButton;
+    @:clonable @:behaviour(DefaultBehaviour, MouseButton.LEFT)      public var scrollMouseButton:MouseButton;
     @:clonable @:behaviour(ScrollModeBehaviour, ScrollMode.DRAG)    public var scrollMode:ScrollMode;
     @:clonable @:behaviour(ScrollPolicyBehaviour)                   public var scrollPolicy:ScrollPolicy;
     @:clonable @:behaviour(HScrollPolicyBehaviour)                  public var horizontalScrollPolicy:ScrollPolicy;
@@ -543,21 +543,6 @@ private class ThumbSize extends DataBehaviour {
     public override function validateData() { 
         _scrollview.hscrollThumbSize = _value;
         _scrollview.vscrollThumbSize = _value;
-    }
-}
-
-@:dox(hide) @:noCompletion
-@:access(haxe.ui.core.Component)
-private class ScrollMouseButton extends DataBehaviour {
-    private var _scrollview:ScrollView;
-
-    public function new(scrollview:ScrollView) {
-        super(scrollview);
-        _scrollview = scrollview;
-    }
-
-    public override function validateData() {
-        _scrollview.scrollMouseButton = _value;
     }
 }
 
