@@ -172,6 +172,13 @@ class MenuEvents extends haxe.ui.events.Events {
             event.menuItem = item;
             findRootMenu().dispatch(event);
             
+            var beforeCloseEvent = new UIEvent(UIEvent.BEFORE_CLOSE);
+            beforeCloseEvent.relatedComponent = item;
+            findRootMenu().dispatch(beforeCloseEvent);
+            if (beforeCloseEvent.canceled) {
+                return;
+            }
+
             hideMenu();
             removeScreenMouseDown();
             _menu.dispatch(new UIEvent(UIEvent.CLOSE));
