@@ -1,5 +1,6 @@
 package haxe.ui.containers;
 
+import haxe.ui.constants.MouseButton;
 import haxe.ui.actions.ActionType;
 import haxe.ui.behaviours.Behaviour;
 import haxe.ui.behaviours.DataBehaviour;
@@ -49,6 +50,7 @@ class ScrollView extends InteractiveComponent implements IScroller {
     @:clonable @:behaviour(VScrollPageSize)                         public var vscrollPageSize:Float;
     @:clonable @:behaviour(VScrollThumbSize)                        public var vscrollThumbSize:Null<Float>;
     @:clonable @:behaviour(ThumbSize)                               public var thumbSize:Null<Float>;
+    @:clonable @:behaviour(DefaultBehaviour, MouseButton.LEFT)      public var scrollMouseButton:MouseButton;
     @:clonable @:behaviour(ScrollModeBehaviour, ScrollMode.DRAG)    public var scrollMode:ScrollMode;
     @:clonable @:behaviour(ScrollPolicyBehaviour)                   public var scrollPolicy:ScrollPolicy;
     @:clonable @:behaviour(HScrollPolicyBehaviour)                  public var horizontalScrollPolicy:ScrollPolicy;
@@ -689,9 +691,13 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         }
 
         if (_scrollview.scrollMode == ScrollMode.DRAG || _scrollview.scrollMode == ScrollMode.INERTIAL) {
-            registerEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
-        } else if (hasEvent(MouseEvent.MOUSE_DOWN, onMouseDown)) {
-            unregisterEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
+            registerEvent(MouseEvent.MIDDLE_MOUSE_DOWN, onMiddleMouseDown);
+            registerEvent(MouseEvent.MOUSE_DOWN, onLeftMouseDown);
+            registerEvent(MouseEvent.RIGHT_MOUSE_DOWN, onRightMouseDown);
+        } else if (hasEvent(MouseEvent.MOUSE_DOWN, onLeftMouseDown)) {
+            unregisterEvent(MouseEvent.MIDDLE_MOUSE_DOWN, onMiddleMouseDown);
+            unregisterEvent(MouseEvent.MOUSE_DOWN, onLeftMouseDown);
+            unregisterEvent(MouseEvent.RIGHT_MOUSE_DOWN, onRightMouseDown);
         }
 
         if (_scrollview.hasEvent(UIEvent.SHOWN) == false) {
@@ -736,7 +742,9 @@ class ScrollViewEvents extends haxe.ui.events.Events {
             vscroll.unregisterEvent(ScrollEvent.SCROLL, onVScrollScroll);
         }
 
-        unregisterEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
+        unregisterEvent(MouseEvent.MIDDLE_MOUSE_DOWN, onMiddleMouseDown);
+        unregisterEvent(MouseEvent.RIGHT_MOUSE_DOWN, onRightMouseDown);
+        unregisterEvent(MouseEvent.MOUSE_DOWN, onLeftMouseDown);
         unregisterEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
         unregisterEvent(UIEvent.SHOWN, onShown);
         unregisterEvent(UIEvent.COMPONENT_ADDED, onComponentAdded);
@@ -807,6 +815,27 @@ class ScrollViewEvents extends haxe.ui.events.Events {
     private function onVScrollScroll(event:UIEvent) {
         _target.dispatch(new ScrollEvent(ScrollEvent.SCROLL));
     }
+
+    @:access(haxe.ui.core.Component)
+    private function onLeftMouseDown(event:MouseEvent) {
+        if (_scrollview.scrollMouseButton == MouseButton.LEFT) {
+            onMouseDown(event);
+        }
+    }
+
+    @:access(haxe.ui.core.Component)
+    private function onMiddleMouseDown(event:MouseEvent) {
+        if (_scrollview.scrollMouseButton == MouseButton.MIDDLE) {
+            onMouseDown(event);
+        }
+    }
+
+    @:access(haxe.ui.core.Component)
+    private function onRightMouseDown(event:MouseEvent) {
+        if (_scrollview.scrollMouseButton == MouseButton.RIGHT) {
+            onMouseDown(event);
+        }
+    }
     
     private var _offset:Point;
     private static inline var INERTIAL_TIME_CONSTANT:Int = 325;
@@ -867,6 +896,8 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         }
 
         Screen.instance.registerEvent(MouseEvent.MOUSE_MOVE, onMouseMove);
+        Screen.instance.registerEvent(MouseEvent.MIDDLE_MOUSE_UP, onMouseUp);
+        Screen.instance.registerEvent(MouseEvent.RIGHT_MOUSE_UP, onMouseUp);
         Screen.instance.registerEvent(MouseEvent.MOUSE_UP, onMouseUp);
     }
 
@@ -967,6 +998,8 @@ class ScrollViewEvents extends haxe.ui.events.Events {
 
     private function onMouseUp(event:MouseEvent) {
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_MOVE, onMouseMove);
+        Screen.instance.unregisterEvent(MouseEvent.MIDDLE_MOUSE_UP, onMouseUp);
+        Screen.instance.unregisterEvent(MouseEvent.RIGHT_MOUSE_UP, onMouseUp);
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_UP, onMouseUp);
 
         if (_scrollview.scrollMode == ScrollMode.INERTIAL) {
