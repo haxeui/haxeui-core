@@ -1260,7 +1260,9 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
      }
      private function set_componentClipRect(value:Rectangle):Rectangle {
          _componentClipRect = value;
-         invalidateComponentDisplay();
+         if (!isComponentInvalid(InvalidationFlags.DISPLAY)) {
+            invalidateComponentDisplay();
+         }
          return value;
      }
  
