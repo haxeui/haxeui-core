@@ -166,12 +166,12 @@ class RuntimeComponentBuilder {
                 //component.addScriptEvent(propName, propValue);
             } else {
                 var propInfo = RTTI.getClassProperty(Type.getClassName(Type.getClass(component)), propName);
-                // if the property is a variant, we'll need to make sure (explicity) that it is a converted
+                // if the property is a variant, we'll need to make sure (explicitly) that it is a converted
                 // since the abstract wont exist at runtime, so it wont have the from, to, etc
                 if (propInfo != null && propInfo.propertyType == "variant") {
                     propValue = Variant.fromDynamic(propValue);
                     Reflect.setProperty(component, propName, propValue);
-            } else {
+                } else {
                     propValue = TypeConverter.convertFrom(propValue);
                     Reflect.setProperty(component, propName, propValue);
                 }
