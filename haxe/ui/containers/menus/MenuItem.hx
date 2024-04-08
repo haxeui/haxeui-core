@@ -14,7 +14,7 @@ import haxe.ui.styles.Style;
 class MenuItem extends Box {
     @:clonable @:behaviour(TextBehaviour)           public var text:String;
     @:clonable @:behaviour(ShortcutTextBehaviour)   public var shortcutText:String;
-    @:clonable @:behaviour(IconBehaviour)           public var icon:String;
+    @:clonable @:behaviour(IconBehaviour)           public var icon:Variant;
     @:clonable @:behaviour(ExpandableBehaviour)     public var expandable:Bool;
 }
 
