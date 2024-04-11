@@ -152,28 +152,36 @@ class DefaultLayout extends Layout {
                 continue;
             }
 
-            var xpos:Float = 0;
-            var ypos:Float = 0;
-
-            switch (horizontalAlign(child)) {
-                case "center":
-                    xpos = ((usableSize.width - child.componentWidth) / 2) + paddingLeft + marginLeft(child) - marginRight(child);
-                case "right":
-                    xpos = component.componentWidth - (child.componentWidth + paddingRight + marginRight(child));
-                default:    //left
-                    xpos = paddingLeft + marginLeft(child);
-            }
-
-            switch (verticalAlign(child)) {
-                case "center":
-                    ypos = ((usableSize.height - child.componentHeight) / 2) + paddingTop + marginTop(child) - marginBottom(child);
-                case "bottom":
-                    ypos = component.componentHeight - (child.componentHeight + paddingBottom + marginBottom(child));
-                default:    //top
-                    ypos = paddingTop + marginTop(child);
-            }
-
-            child.moveComponent(xpos, ypos);
+            repositionChild(child);
         }
+    }
+
+    private function repositionChild(child:Component) {
+        if (child == null) {
+            return;
+        }
+
+        var xpos:Float = 0;
+        var ypos:Float = 0;
+
+        switch (horizontalAlign(child)) {
+            case "center":
+                xpos = ((usableSize.width - child.componentWidth) / 2) + paddingLeft + marginLeft(child) - marginRight(child);
+            case "right":
+                xpos = component.componentWidth - (child.componentWidth + paddingRight + marginRight(child));
+            default:    //left
+                xpos = paddingLeft + marginLeft(child);
+        }
+
+        switch (verticalAlign(child)) {
+            case "center":
+                ypos = ((usableSize.height - child.componentHeight) / 2) + paddingTop + marginTop(child) - marginBottom(child);
+            case "bottom":
+                ypos = component.componentHeight - (child.componentHeight + paddingBottom + marginBottom(child));
+            default:    //top
+                ypos = paddingTop + marginTop(child);
+        }
+
+        child.moveComponent(xpos, ypos);
     }
 }

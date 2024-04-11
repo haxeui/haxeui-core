@@ -1,13 +1,14 @@
 package haxe.ui.containers;
 
-import haxe.ui.constants.MouseButton;
 import haxe.ui.actions.ActionType;
 import haxe.ui.behaviours.Behaviour;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.components.HorizontalScroll;
+import haxe.ui.components.Label;
 import haxe.ui.components.Scroll;
 import haxe.ui.components.VerticalScroll;
+import haxe.ui.constants.MouseButton;
 import haxe.ui.constants.Priority;
 import haxe.ui.constants.ScrollMode;
 import haxe.ui.constants.ScrollPolicy;
@@ -58,9 +59,11 @@ class ScrollView extends InteractiveComponent implements IScroller {
     @:clonable @:behaviour(GetContents)                             public var contents:Component;
     @:clonable @:behaviour(DefaultBehaviour)                        public var autoHideScrolls:Bool;
     @:clonable @:behaviour(DefaultBehaviour, true)                  public var allowAutoScroll:Bool;
-    @:clonable @:behaviour(IsScrollableHorizontallyBehaviour)          public var isScrollableHorizontally:Bool;
-    @:clonable @:behaviour(IsScrollableVerticallyBehaviour)            public var isScrollableVertically:Bool;
-    @:clonable @:behaviour(IsScrollableBehaviour)                      public var isScrollable:Bool;
+    @:clonable @:behaviour(IsScrollableHorizontallyBehaviour)       public var isScrollableHorizontally:Bool;
+    @:clonable @:behaviour(IsScrollableVerticallyBehaviour)         public var isScrollableVertically:Bool;
+    @:clonable @:behaviour(IsScrollableBehaviour)                   public var isScrollable:Bool;
+    @:clonable @:behaviour(EmptyContentsComponent)                  public var emptyContentsComponent:Component;
+    @:clonable @:behaviour(EmptyContentsText)                       public var emptyContentsText:String;
     
     @:call(EnsureVisible)                                           public function ensureVisible(component:Component):Void;
 
@@ -644,6 +647,45 @@ private class GetContents extends DefaultBehaviour {
     public override function get():Variant {
         var contents:Component = _component.findComponent("scrollview-contents", false, "css");
         return contents;
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+@:access(haxe.ui.containers.ScrollViewBuilder)
+private class EmptyContentsComponent extends DefaultBehaviour {
+    public override function set(value:Variant):Void {
+        super.set(value);
+        var builder = cast(_component._compositeBuilder, ScrollViewBuilder);
+        builder.checkEmptyContentsComponent();
+    }
+}
+
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+@:access(haxe.ui.containers.ScrollViewBuilder)
+private class EmptyContentsText extends DefaultBehaviour {
+    public override function set(value:Variant):Void {
+        super.set(value);
+        var scrollview = cast(_component, ScrollView);
+        var emptyContentsComponent = scrollview.emptyContentsComponent;
+        if (emptyContentsComponent == null) {
+            var emptyContentsComponent = scrollview.findComponent("empty-contents-component", false, "css");
+            if (emptyContentsComponent == null) {
+                emptyContentsComponent = new Label();
+                emptyContentsComponent.addClass("empty-contents-component");
+                emptyContentsComponent.text = value;
+                scrollview.emptyContentsComponent = emptyContentsComponent;
+            }
+        } else if ((emptyContentsComponent is Label)) {
+            emptyContentsComponent.text = value;
+        } else {
+            var label = emptyContentsComponent.findComponent(Label, true);
+            if (label != null) {
+                label.text = value;
+            }
+        }
     }
 }
 
@@ -1244,40 +1286,106 @@ class ScrollViewBuilder extends CompositeBuilder {
     public override function destroy() {
     }
 
+    private function checkEmptyContentsComponent(contentsComponent:Component = null) {
+        if (_contents == null) {
+            return;
+        }
+
+        var emptyContentsComponent:Component = _scrollview.emptyContentsComponent;
+        if (emptyContentsComponent == null) {
+            return;
+        }
+
+        if (contentsComponent == null) {
+            contentsComponent = _contents;
+        }
+
+        var containsEmptyContentsComponent = _scrollview.containsChildComponent(emptyContentsComponent);
+        if (contentsComponent.numComponents == 0) {
+            if (!containsEmptyContentsComponent) {
+                emptyContentsComponent.addClass("empty-contents-component");
+                _scrollview.addComponent(emptyContentsComponent);
+            }
+
+            if (_scrollview.emptyContentsText != null) {
+                if ((emptyContentsComponent is Label)) {
+                    emptyContentsComponent.text = _scrollview.emptyContentsText;
+                } else {
+                    var label = emptyContentsComponent.findComponent(Label, true);
+                    if (label != null) {
+                        label.text = _scrollview.emptyContentsText;
+                    }
+                }                
+            }
+
+            emptyContentsComponent.show();
+        } else if (containsEmptyContentsComponent) {
+            emptyContentsComponent.hide();
+        }
+    }
+
     private override function get_numComponents():Null<Int> {
         return _contents.numComponents;
     }
 
     public override function addComponent(child:Component):Component {
+        if (_scrollview.emptyContentsComponent == null && (child.id == "emptyContentsComponent" || child.hasClass("empty-contents-component"))) {
+            _scrollview.emptyContentsComponent = child;
+            return child;
+        } else if (_scrollview.emptyContentsComponent != null && (child.id == "emptyContentsComponent" || child.hasClass("empty-contents-component")) && child != _scrollview.emptyContentsComponent) {
+            _scrollview.removeComponent(_scrollview.emptyContentsComponent);
+            _scrollview.emptyContentsComponent = child;
+            return child;
+        }
+
+        if (_scrollview.emptyContentsComponent != null && child == _scrollview.emptyContentsComponent) {
+            return null;
+        }
         if ((child is HorizontalScroll) == false && (child is VerticalScroll) == false && child.hasClass("scrollview-contents") == false) {
-            return _contents.addComponent(child);
+            if ((child is Box)) {
+                child.registerEvent(UIEvent.COMPONENT_ADDED, onContentsChanged);
+                child.registerEvent(UIEvent.COMPONENT_REMOVED, onContentsChanged);
+            }
+            var r = _contents.addComponent(child);
+            checkEmptyContentsComponent();
+            return r;
         }
         return null;
     }
 
     public override function addComponentAt(child:Component, index:Int):Component {
         if ((child is HorizontalScroll) == false && (child is VerticalScroll) == false && child.hasClass("scrollview-contents") == false) {
-            return _contents.addComponentAt(child, index);
+            var r = _contents.addComponentAt(child, index);
+            checkEmptyContentsComponent();
+            return r;
         }
         return null;
     }
 
     public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
+        if (_scrollview.emptyContentsComponent != null && child == _scrollview.emptyContentsComponent) {
+            return null;
+        }
         if ((child is HorizontalScroll) == false && (child is VerticalScroll) == false && child.hasClass("scrollview-contents") == false) {
-            return _contents.removeComponent(child, dispose, invalidate);
+            var r = _contents.removeComponent(child, dispose, invalidate);
+            checkEmptyContentsComponent();
+            return r;
         }
         return null;
     }
 
+    public override function removeComponentAt(index:Int, dispose:Bool = true, invalidate:Bool = true):Component {
+        var r = _contents.removeComponentAt(index, dispose, invalidate);
+        checkEmptyContentsComponent();
+        return r;
+    }
+
     public override function removeAllComponents(dispose:Bool = true):Bool {
         _contents.removeAllComponents(dispose);
+        checkEmptyContentsComponent();
         return true;
     }
     
-    public override function removeComponentAt(index:Int, dispose:Bool = true, invalidate:Bool = true):Component {
-        return _contents.removeComponentAt(index, dispose, invalidate);
-    }
-
     public override function getComponentIndex(child:Component):Int {
         return _contents.getComponentIndex(child);
     }
@@ -1296,12 +1404,18 @@ class ScrollViewBuilder extends CompositeBuilder {
     private function createContentContainer(layoutName:String) {
         if (_contents == null) {
             _contents = new Box();
+            _contents.registerEvent(UIEvent.COMPONENT_ADDED, onContentsChanged);
+            _contents.registerEvent(UIEvent.COMPONENT_REMOVED, onContentsChanged);
             _contents.addClass("scrollview-contents");
             _contents.id = "scrollview-contents";
             _contents.layout = LayoutFactory.createFromName(layoutName); // TODO: temp
             _component.addComponent(_contents);
             _contentsLayoutName = layoutName;
         }
+    }
+
+    private function onContentsChanged(event:UIEvent) { 
+        checkEmptyContentsComponent(event.target);
     }
 
     private function horizontalConstraintModifier():Float {
