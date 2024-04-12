@@ -1342,12 +1342,14 @@ class ScrollViewBuilder extends CompositeBuilder {
             return null;
         }
         if ((child is HorizontalScroll) == false && (child is VerticalScroll) == false && child.hasClass("scrollview-contents") == false) {
+            var contentsComponent = null;
             if ((child is Box)) {
                 child.registerEvent(UIEvent.COMPONENT_ADDED, onContentsChanged);
                 child.registerEvent(UIEvent.COMPONENT_REMOVED, onContentsChanged);
+                contentsComponent = child;
             }
             var r = _contents.addComponent(child);
-            checkEmptyContentsComponent();
+            checkEmptyContentsComponent(contentsComponent);
             return r;
         }
         return null;
