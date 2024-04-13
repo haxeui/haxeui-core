@@ -139,6 +139,8 @@ class Style {
 
     @:optional public var contentType:String;
     @:optional public var direction:String;
+    @:optional public var scaleMode:String;
+    
 
     /** The width at which the children will be clipped inside a scrollview **/                                @:optional public var contentWidth:Null<Float>;
     /** The width in % unit of the component at which the children will be clipped inside a scrollview **/     @:optional public var contentWidthPercent:Null<Float>;
@@ -476,7 +478,13 @@ class Style {
                     contentType = ValueTools.string(v.value);
                 case "direction":
                     direction = ValueTools.string(v.value);
-                    
+
+                case "scale-mode":
+                    if (ValueTools.none(v.value)) {
+                        scaleMode = "none";
+                    } else {
+                        scaleMode = ValueTools.string(v.value);
+                    }    
                 case "content-width":
                     contentWidth = ValueTools.calcDimension(v.value);
                     contentWidthPercent = ValueTools.percent(v.value);
@@ -658,6 +666,7 @@ class Style {
         if (s.pointerEvents != null) pointerEvents = s.pointerEvents;
         if (s.contentType != null) contentType = s.contentType;
         if (s.direction != null) direction = s.direction;
+        if (s.scaleMode != null) scaleMode = s.scaleMode;
         
         if (s.contentWidth != null) contentWidth = s.contentWidth;
         if (s.contentWidthPercent != null) contentWidthPercent = s.contentWidthPercent;
@@ -803,6 +812,7 @@ class Style {
         if (s.pointerEvents != pointerEvents) return false;
         if (s.contentType != contentType) return false;
         if (s.direction != direction) return false;
+        if (s.scaleMode != scaleMode) return false;
         
         if (s.contentWidth != contentWidth) return false;
         if (s.contentWidthPercent != contentWidthPercent) return false;
