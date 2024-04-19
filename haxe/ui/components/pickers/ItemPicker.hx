@@ -356,7 +356,11 @@ class ItemPickerBuilder extends CompositeBuilder {
         }
 
         _panelFiller.width = panelWidth - picker.width - offset + 1;
-        if (_panelFiller.width > 0) {
+        var useFiller = true;
+        if (_panelFiller.style != null && _panelFiller.style.hidden == true) {
+            useFiller = false;
+        }
+        if (useFiller && _panelFiller.width > 0) {
             _panelFiller.show();
         } else {
             _panelFiller.hide();
