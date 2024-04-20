@@ -113,14 +113,16 @@ class StringUtil {
             if (suffix.length != 0 && includeSpace) {
                 suffix = " " + suffix;
             }
-            i = MathUtil.round(i, precision);
-            s = Std.string(i);
-            var p = s.indexOf(".");
-            if (p == -1 && precision > 0) {
-                p = s.length;
-                s += ".";
+            if (suffix.length != 0) {
+                i = MathUtil.round(i, precision);
+                s = Std.string(i);
+                var p = s.indexOf(".");
+                if (p == -1 && precision > 0) {
+                    p = s.length;
+                    s += ".";
+                }
+                s = StringTools.rpad(s, "0", p + precision + 1);
             }
-            s = StringTools.rpad(s, "0", p + precision + 1);
             s += suffix;
         } else {
             s = humanReadableRegex.replace(s, haxe.ui.locale.Formats.thousandsSeparator);
