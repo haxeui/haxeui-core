@@ -82,6 +82,14 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICo
     @:clonable @:behaviour(IconBehaviour)   public var icon:String;
     @:style(layout)                         public var iconPosition:String;
 
+    public var isBlank(get, null):Bool;
+    private function get_isBlank():Bool {
+        if (text == null) {
+            return true;
+        }
+        return StringTools.trim(text).length == 0;
+    }
+
     //***********************************************************************************************************
     // Validation
     //***********************************************************************************************************
