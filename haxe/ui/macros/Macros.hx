@@ -18,6 +18,7 @@ import haxe.ui.macros.helpers.FieldBuilder;
 import haxe.ui.util.EventInfo;
 import haxe.ui.util.RTTI;
 import haxe.ui.util.StringUtil;
+import haxe.ui.util.TypeConverter;
 
 using StringTools;
 
@@ -142,7 +143,8 @@ class Macros {
                     }
                     var propName = key.split(".").pop();
                     var propValue = ModuleMacros.properties.get(key);
-                    createDefaultsFn.add(macro $i{propName} = $v{propValue});
+                    var convertedPropValue = TypeConverter.convertFrom(propValue);
+                    createDefaultsFn.add(macro $i{propName} = $v{convertedPropValue});
                 }
             }
         }
