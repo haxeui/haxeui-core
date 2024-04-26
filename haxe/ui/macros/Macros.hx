@@ -131,6 +131,20 @@ class Macros {
                 }
                 createDefaultsFn.add(macro addClass($v{n}));
             }
+        } else {
+            for (key in ModuleMacros.properties.keys()) {
+                if (key.startsWith(propPrefix)) {
+                    var createDefaultsFn = builder.findFunction("createDefaults");
+                    if (createDefaultsFn == null) {
+                        createDefaultsFn = builder.addFunction("createDefaults", macro {
+                            super.createDefaults();
+                        }, null, null, [AOverride, APrivate]);
+                    }
+                    var propName = key.split(".").pop();
+                    var propValue = ModuleMacros.properties.get(key);
+                    createDefaultsFn.add(macro $i{propName} = $v{propValue});
+                }
+            }
         }
 
         #if haxeui_macro_times
