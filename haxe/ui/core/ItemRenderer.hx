@@ -159,7 +159,6 @@ class ItemRenderer extends Box {
         }
         var v = event.target.value;
         if (_data != null && event.target.id != null) {
-            trace(event.target.id, _data);
             var item:Dynamic = Reflect.getProperty(_data, event.target.id);
             switch (Type.typeof(item)) {
                 case TObject:
