@@ -849,6 +849,8 @@ class Macros {
 
     static function buildData():Array<Field> {
         var builder = new ClassBuilder(haxe.macro.Context.getBuildFields(), Context.getLocalType(), Context.currentPos());
+        builder.addMeta(":keep");
+        builder.addMeta(":keepSub");
         #if macro_times_verbose
         var stopComponentTimer = Context.timer(builder.fullPath);
         #end
