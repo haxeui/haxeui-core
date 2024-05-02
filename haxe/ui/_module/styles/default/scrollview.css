@@ -37,6 +37,11 @@
     border: 1px solid $accent-color;
 }
 
+.scrollview .empty-contents-component {
+    horizontal-align: center;
+    vertical-align: center;
+}
+
 /************************************************************************
 ** MOBILE VARIANTS
 *************************************************************************/

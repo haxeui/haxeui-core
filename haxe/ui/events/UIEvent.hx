@@ -44,9 +44,12 @@ class UIEvent extends EventImpl {
     /** DISABLED is dispatched when component is disabled **/
     public static final DISABLED:EventType<UIEvent> = EventType.name("disabled");
 
+    /** OPEN is dispatched by certain components when opened **/
+    public static final OPEN:EventType<UIEvent> = EventType.name("open");
+
     /** BEFORE_CLOSE is dispatched by tab before closing **/
     public static final BEFORE_CLOSE:EventType<UIEvent> = EventType.name("beforeclose");
-    /** CLOSE is dispatched by tab and menus after closing **/
+    /** CLOSE is dispatched by certain components when closed **/
     public static final CLOSE:EventType<UIEvent> = EventType.name("close");
 
     /** PROPERTY_CHANGE is dispatched by dropdowns, lists, etc where a specific property has changed usually selected item **/

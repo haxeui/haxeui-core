@@ -349,11 +349,18 @@ class ItemPickerBuilder extends CompositeBuilder {
         }
 
         var offset:Float = 0;
-        if (panelContainer.style != null && panelContainer.style.borderRadiusTopRight != null) {
+        if (panelOrigin == "left" && panelContainer.style != null && panelContainer.style.borderRadiusTopRight != null) {
             offset = panelContainer.style.borderRadiusTopRight;
+        } else if (panelOrigin == "right" && panelContainer.style != null && panelContainer.style.borderRadiusTopLeft != null) { 
+            offset = panelContainer.style.borderRadiusTopLeft - 1;
         }
+
         _panelFiller.width = panelWidth - picker.width - offset + 1;
-        if (_panelFiller.width > 0) {
+        var useFiller = true;
+        if (_panelFiller.style != null && _panelFiller.style.hidden == true) {
+            useFiller = false;
+        }
+        if (useFiller && _panelFiller.width > 0) {
             _panelFiller.show();
         } else {
             _panelFiller.hide();
@@ -365,7 +372,7 @@ class ItemPickerBuilder extends CompositeBuilder {
             _panelFiller.left = picker.width - borderSize;
         } else if (panelOrigin == "right") {
             panelContainer.left = picker.screenLeft + picker.width - panelWidth;
-            _panelFiller.left = borderSize;
+            _panelFiller.left = borderSize + offset;
         }
 
         if (panelPosition == "down") {

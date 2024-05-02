@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <module id="haxeui-core" priority="-2">
     <resources>
-        <exclude pattern="haxeui-core/styles/.*.png" if="haxeui_no_theme" />
-        <exclude pattern="haxeui-core/styles/.*.css" if="haxeui_no_theme" />
-        
         <resource path="/haxe/ui/_module/styles" prefix="haxeui-core/styles" />
         <resource path="/haxe/ui/_module/locale" prefix="haxeui-core/locale" />
+
+        <exclude pattern="haxeui-core/styles/.*.png" if="haxeui_no_theme" />
+        <exclude pattern="haxeui-core/styles/.*.css" if="haxeui_no_theme" />
+        <exclude pattern="haxeui-core/styles/atlases/.*.png" if="haxeui_no_default_spinner" />
+        <exclude pattern="haxeui-core/styles/atlases/.*.json" if="haxeui_no_default_spinner" />
     </resources>
 
     <namespaces>
@@ -322,4 +324,10 @@
     <actions>
         <source class="haxe.ui.actions.KeyboardActionInputSource" />
     </actions>
+
+    <properties>
+        <property name="haxe.ui.components.spinner.targetFrameRate" value="45" />
+        <property name="haxe.ui.components.spinner.resource" value="haxeui-core/styles/atlases/default-spinner.png" />
+        <property name="haxe.ui.components.spinner.atlas" value="haxeui-core/styles/atlases/default-spinner.json" />
+    </properties>
 </module>

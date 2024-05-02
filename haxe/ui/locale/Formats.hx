@@ -5,7 +5,7 @@ class Formats {
     public static var dateFormatShort(get, set):String;
     private static function get_dateFormatShort():String {
         if (_dateFormatShort == null) {
-            return LocaleManager.instance.lookupString("formats.date.short");
+            return getLocaleString("formats.date.short", "%d/%m/%Y");
         }
         return _dateFormatShort;
     }
@@ -14,29 +14,37 @@ class Formats {
         return value;
     }
     
-    private static var _decimalSeperator:String = null;
-    public static var decimalSeperator(get, set):String;
-    private static function get_decimalSeperator():String {
-        if (_decimalSeperator == null) {
-            return LocaleManager.instance.lookupString("formats.decimal.seperator");
+    private static var _decimalSeparator:String = null;
+    public static var decimalSeparator(get, set):String;
+    private static function get_decimalSeparator():String {
+        if (_decimalSeparator == null) {
+            return getLocaleString("formats.decimal.separator", ".");
         }
-        return _decimalSeperator;
+        return _decimalSeparator;
     }
-    private static function set_decimalSeperator(value:String):String {
-        _decimalSeperator = value;
+    private static function set_decimalSeparator(value:String):String {
+        _decimalSeparator = value;
         return value;
     }
     
-    private static var _thousandsSeperator:String = null;
-    public static var thousandsSeperator(get, set):String;
-    private static function get_thousandsSeperator():String {
-        if (_thousandsSeperator == null) {
-            return LocaleManager.instance.lookupString("formats.thousands.seperator");
+    private static var _thousandsSeparator:String = null;
+    public static var thousandsSeparator(get, set):String;
+    private static function get_thousandsSeparator():String {
+        if (_thousandsSeparator == null) {
+            return getLocaleString("formats.thousands.separator", ",");
         }
-        return _thousandsSeperator;
+        return _thousandsSeparator;
     }
-    private static function set_thousandsSeperator(value:String):String {
-        _thousandsSeperator = value;
+    private static function set_thousandsSeparator(value:String):String {
+        _thousandsSeparator = value;
         return value;
+    }
+
+    private static function getLocaleString(id:String, ?defaultString:String) {
+        var localeString = LocaleManager.instance.lookupString(id);
+        if (localeString == id && defaultString != null) {
+            return defaultString;
+        }
+        return localeString;
     }
 }

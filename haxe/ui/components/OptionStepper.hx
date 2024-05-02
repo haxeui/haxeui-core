@@ -9,6 +9,7 @@ import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.ICompositeInteractiveComponent;
 import haxe.ui.core.IDataComponent;
+import haxe.ui.core.IScroller;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.data.DataSource;
 import haxe.ui.events.ActionEvent;
@@ -304,22 +305,8 @@ private class Events extends haxe.ui.events.Events {
         incrementValue();
     }
 
-    private function isInScroller():Bool {
-        var p = _stepper.parentComponent;
-        while (p != null) {
-            if (p.isScroller) {
-                var vscroll = p.findComponent("scrollview-vscroll", Component);
-                if (vscroll != null && vscroll.hidden == false) {
-                    return true;
-                }
-            }
-            p = p.parentComponent;
-        }
-        return false;
-    }
-    
     private function onMouseWheel(event:MouseEvent) {
-        if (isInScroller() && _stepper.focus == false) {
+        if (_target.isInScroller && _stepper.focus == false) {
             return;
         }
         

@@ -305,6 +305,7 @@ private class MinorTicks extends DataBehaviour {
     public override function validateData() {
         if (_value != null && _value.isNull == false) {
             var slider:Slider = cast(_component, Slider);
+            slider.addClass("minor-ticks");
             var ticks = slider.findComponents("minor-tick", 1);
             var v:Float = _value;
             var m:Float = slider.max - slider.min;
@@ -316,7 +317,8 @@ private class MinorTicks extends DataBehaviour {
                     var tick = new Component();
                     tick.addClass("minor-tick");
                     tick.scriptAccess = false;
-                    slider.addComponentAt(tick, index + 1);
+                    slider.addComponent(tick);
+                    slider.setComponentIndex(tick, index + 1);
                 }
                 var removeN = Std.int(ticks.length - n);
                 for (_ in 0...removeN) {
@@ -324,6 +326,7 @@ private class MinorTicks extends DataBehaviour {
                 }
             }
         } else {
+            _component.removeClass("minor-ticks");
         }
     }
 }
@@ -332,6 +335,7 @@ private class MajorTicks extends DataBehaviour {
     public override function validateData() {
         if (_value != null && _value.isNull == false) {
             var slider:Slider = cast(_component, Slider);
+            slider.addClass("major-ticks");
             var ticks = slider.findComponents("major-tick", 1);
             var v:Float = _value;
             var m:Float = slider.max - slider.min;
@@ -343,7 +347,8 @@ private class MajorTicks extends DataBehaviour {
                     var tick = new Component();
                     tick.addClass("major-tick");
                     tick.scriptAccess = false;
-                    slider.addComponentAt(tick, index + 1);
+                    slider.addComponent(tick);
+                    slider.setComponentIndex(tick, index + 1);
                 }
                 var removeN = Std.int(ticks.length - n);
                 for (_ in 0...removeN) {
@@ -351,6 +356,7 @@ private class MajorTicks extends DataBehaviour {
                 }
             }
         } else {
+            _component.removeClass("major-ticks");
         }
     }
 }

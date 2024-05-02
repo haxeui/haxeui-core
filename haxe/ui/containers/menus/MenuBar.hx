@@ -117,11 +117,11 @@ private class Events extends haxe.ui.events.Events {
         var menu = builder._menus[index];
 
         if (menu != _currentMenu) {
-            showMenu(index);
+            showMenu(index, true);
         }
     }
 
-    private function showMenu(index:Int) {
+    private function showMenu(index:Int, force:Bool = false) {
         var builder:Builder = cast(_menubar._compositeBuilder, Builder);
         var menu:Menu = builder._menus[index];
         menu.addClass("primary-menu");
@@ -132,6 +132,7 @@ private class Events extends haxe.ui.events.Events {
             return;
         }
 
+        menu.menuBar = _menubar;
         for (button in builder._buttons) {
             if (button != target) {
                 button.selected = false;
@@ -140,7 +141,7 @@ private class Events extends haxe.ui.events.Events {
         
         target.selected = true;
 
-        hideCurrentMenu();
+        hideCurrentMenu(force);
         
         cast(menu._internalEvents, MenuEvents).button = target;
         if (menu.hasEvent(UIEvent.CLOSE, onMenuClose) == false) {
@@ -215,12 +216,29 @@ private class Events extends haxe.ui.events.Events {
         }
     }
 
-    private function hideCurrentMenu() {
+    private function hideCurrentMenu(force:Bool = false) {
         if (_currentMenu != null) {
             var builder:Builder = cast(_menubar._compositeBuilder, Builder);
             for (button in builder._buttons) {
                 if (button.hasClass("menubar-button-no-children-active")) {
                     button.swapClass("menubar-button-no-children", "menubar-button-no-children-active");
+                }
+            }
+
+            if (!force && _currentMenu.hitTest(Screen.instance.currentMouseX, Screen.instance.currentMouseY)) {
+                var beforeCloseEvent = new UIEvent(UIEvent.BEFORE_CLOSE);
+                beforeCloseEvent.relatedComponent = _currentMenu.findComponentsUnderPoint(Screen.instance.currentMouseX, Screen.instance.currentMouseY, MenuItem)[0];
+                _currentMenu.dispatch(beforeCloseEvent);
+                if (beforeCloseEvent.canceled) {
+                    return;
+                }
+            }
+            if (!force && _currentMenu.hitTest(Screen.instance.currentMouseX, Screen.instance.currentMouseY)) {
+                var beforeCloseEvent = new UIEvent(UIEvent.BEFORE_CLOSE);
+                beforeCloseEvent.relatedComponent = _currentMenu.findComponentsUnderPoint(Screen.instance.currentMouseX, Screen.instance.currentMouseY, MenuItem)[0];
+                _menubar.dispatch(beforeCloseEvent);
+                if (beforeCloseEvent.canceled) {
+                    return;
                 }
             }
             

@@ -5,9 +5,11 @@ import haxe.ui.components.Label;
 import haxe.ui.containers.Box;
 import haxe.ui.core.TypeMap;
 import haxe.ui.events.ItemEvent;
+import haxe.ui.events.ItemRendererEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.util.TypeConverter;
+import haxe.ui.util.Variant;
 
 class ItemRenderer extends Box {
     @:clonable public var autoRegisterInteractiveEvents:Bool = true;
@@ -143,6 +145,8 @@ class ItemRenderer extends Box {
         }
         
         onDataChanged(_data);
+        var event = new ItemRendererEvent(ItemRendererEvent.DATA_CHANGED, this);
+        dispatch(event);
     }
 
     private function onDataChanged(data:Dynamic) {
@@ -155,7 +159,13 @@ class ItemRenderer extends Box {
         }
         var v = event.target.value;
         if (_data != null && event.target.id != null) {
-            Reflect.setProperty(_data, event.target.id, v);
+            var item:Dynamic = Reflect.getProperty(_data, event.target.id);
+            switch (Type.typeof(item)) {
+                case TObject:
+                    item.value = v;
+                case _:
+                    Reflect.setProperty(_data, event.target.id, v);
+            }
         }
 
         var e = new ItemEvent(ItemEvent.COMPONENT_EVENT);
@@ -215,21 +225,24 @@ class ItemRenderer extends Box {
         }
 
         for (f in fieldList) {
+            var property:String = "value";
             var v = Reflect.getProperty(valueObject, f);
-            var c:Component = findComponent(f, null, true);
+            var componentId = f;
+            var n = f.indexOf(".");
+            if (n != -1) {
+                componentId = f.substring(0, n);
+                property = f.substring(n + 1);
+            }
+            var c:Component = findComponent(componentId, null, true);
             if (c != null && v != null) {
-                var propValue = TypeConverter.convertTo(v, TypeMap.getTypeInfo(c.className, "value"));
-                c.value = propValue;
-
-                if (autoRegisterInteractiveEvents) {
-                    if ((c is InteractiveComponent) || (c is ItemRenderer)) {
-                        if (c.hasEvent(UIEvent.CHANGE, onItemChange) == false) {
-                            c.registerEvent(UIEvent.CHANGE, onItemChange);
+                switch (Type.typeof(v)) {
+                    case TObject:
+                        for (valueField in Reflect.fields(v)) {
+                            var valueFieldValue = Reflect.field(v, valueField);
+                            setComponentProperty(c, valueFieldValue, valueField);
                         }
-                        if (c.hasEvent(MouseEvent.CLICK, onItemClick) == false) {
-                            c.registerEvent(MouseEvent.CLICK, onItemClick);
-                        }
-                    }
+                    case _:
+                        setComponentProperty(c, v, property);
                 }
 
                 c.show();
@@ -241,6 +254,29 @@ class ItemRenderer extends Box {
                 } catch (e:Dynamic) {}
             } else if (Type.typeof(v) == TObject) {
                 updateValues(v);
+            }
+        }
+    }
+
+    private function setComponentProperty(c:Component, v:Any, property:String) {
+        var typeInfo = TypeMap.getTypeInfo(c.className, property);
+        var propValue = TypeConverter.convertTo(v, typeInfo);
+        if (property == "value") {
+            c.value = propValue;
+        } else if (typeInfo == "variant") {
+            Reflect.setProperty(c, property, Variant.fromDynamic(v));
+        } else {
+            Reflect.setProperty(c, property, v);
+        }
+
+        if (autoRegisterInteractiveEvents) {
+            if ((c is InteractiveComponent) || (c is ItemRenderer)) {
+                if (c.hasEvent(UIEvent.CHANGE, onItemChange) == false) {
+                    c.registerEvent(UIEvent.CHANGE, onItemChange);
+                }
+                if (c.hasEvent(MouseEvent.CLICK, onItemClick) == false) {
+                    c.registerEvent(MouseEvent.CLICK, onItemClick);
+                }
             }
         }
     }

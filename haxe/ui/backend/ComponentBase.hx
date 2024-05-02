@@ -9,6 +9,7 @@ import haxe.ui.core.Component;
 import haxe.ui.core.IClonable;
 import haxe.ui.core.IComponentContainer;
 import haxe.ui.core.IEventDispatcher;
+import haxe.ui.core.IScroller;
 import haxe.ui.core.ImageDisplay;
 import haxe.ui.core.Screen;
 import haxe.ui.core.TextDisplay;
@@ -139,6 +140,32 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
 
     private function onParentComponentSet() {
 
+    }
+
+    @:noCompletion
+    private var isInScroller(get, null):Bool;
+    @:noCompletion
+    private function get_isInScroller():Bool {
+        var scroller = findScroller();
+        if (scroller == null) {
+            return false;
+        }
+
+        return scroller.isScrollable;
+    }
+
+    @:noCompletion
+    private function findScroller():IScroller {
+        var view:IScroller = null;
+        var ref:ComponentBase = this;
+        while (ref != null) {
+            if ((ref is IScroller)) {
+                view = cast(ref, IScroller);
+                break;
+            }
+            ref = ref.parentComponent;
+        }
+        return view;
     }
 
     public function containsChildComponent(child:Component, recursive:Bool = false):Bool {
@@ -1233,7 +1260,9 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
      }
      private function set_componentClipRect(value:Rectangle):Rectangle {
          _componentClipRect = value;
-         invalidateComponentDisplay();
+         if (!isComponentInvalid(InvalidationFlags.DISPLAY)) {
+            invalidateComponentDisplay();
+         }
          return value;
      }
  
@@ -1679,11 +1708,6 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
 
     private var isNativeScroller(get, null):Bool;
     private function get_isNativeScroller():Bool {
-        return false;
-    }
-
-    private var isScroller(get, null):Bool;
-    private function get_isScroller():Bool {
         return false;
     }
 

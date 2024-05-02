@@ -89,7 +89,7 @@ class StringUtil {
     private static inline var MILLION:Int = THOUSAND * THOUSAND;
     private static inline var BILLION:Int = MILLION * THOUSAND;
 
-    public static function formatNumber(n:Float, standardNotation:Bool = true):String {
+    public static function formatNumber(n:Float, precision:Int = 0, standardNotation:Bool = true, includeSpace:Bool = false):String {
         var s = Std.string(n);
 
         if (standardNotation) {
@@ -110,10 +110,22 @@ class StringUtil {
                 i = n / BILLION;
             }
 
-            i = MathUtil.round(i, 1);
-            s = Std.string(i) + suffix;
+            if (suffix.length != 0 && includeSpace) {
+                suffix = " " + suffix;
+            }
+            if (suffix.length != 0) {
+                i = MathUtil.round(i, precision);
+                s = Std.string(i);
+                var p = s.indexOf(".");
+                if (p == -1 && precision > 0) {
+                    p = s.length;
+                    s += ".";
+                }
+                s = StringTools.rpad(s, "0", p + precision + 1);
+            }
+            s += suffix;
         } else {
-            s = humanReadableRegex.replace(s, haxe.ui.locale.Formats.thousandsSeperator);
+            s = humanReadableRegex.replace(s, haxe.ui.locale.Formats.thousandsSeparator);
         }
 
         return s;

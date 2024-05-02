@@ -127,7 +127,7 @@ class ArrayDataSource<T> extends DataSource<T> {
     }
 
     public override function clone():DataSource<T> {
-        var c:ArrayDataSource<T> = new ArrayDataSource<T>();
+        var c:ArrayDataSource<T> = new ArrayDataSource<T>(this.transformer);
         c._array = _array.copy(); // this is a shallow copy
         if (_filteredArray != null) {
             c._filteredArray = _filteredArray.copy();

@@ -10,6 +10,7 @@
     border-bottom-color: $normal-border-color;
     border-top-width: 0px;
     clip: true;
+    spacing: 8px;
 }
 
 .tabbar > .tabbar-contents {
@@ -51,6 +52,8 @@
     border-bottom: 1px solid $normal-border-color;
     border-left-color: $normal-border-color;
     border-left-width: 0px;
+
+    border-top: 2px solid $accent-gradient-start;
 }
 
 .tabbar-button-selected.first:active {
@@ -80,12 +83,24 @@
     icon: $arrow-left;
     border-radius: 0;
     padding: 5px;
+    margin-left: 2px;
 }
 
 .tabbar-scroll-right {
     icon: $arrow-right;
     border-radius: 0;
     padding: 5px;
+    margin-left: 3px;
+}
+
+.tabbar-filler-left {
+    width: 1px;
+    background-color: $normal-border-color;
+}
+
+.tabbar-filler-right {
+    width: 1px;
+    background-color: $normal-border-color;
 }
 
 .tabbar-button-selected .label {
@@ -201,6 +216,16 @@
 }
 .rounded-tabs .tabbar:bottom .tabbar-button.last {
     border-bottom-right-radius: 4px;
+}
+
+.rounded-tabs .tabbar .tabbar-scroll-left {
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+.rounded-tabs .tabbar .tabbar-scroll-right {
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
 }
 
 /************************************************************************

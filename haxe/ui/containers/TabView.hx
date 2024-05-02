@@ -407,6 +407,8 @@ private class Builder extends CompositeBuilder {
             if ((child is Box)) {
                 icon = cast(child, Box).icon;
             }
+            child.parentComponent = _content; // this may be ill-conceived: the child wont many not be added to the _contents yet, which means it has no parentComponent
+                                              // it will, when the page changes, be set - but until then we can set it so things like "findAncestor" will work as expected
             child.registerEvent(UIEvent.PROPERTY_CHANGE, onPagePropertyChanged);
             _views.push(child);
             var button:Button = new Button();
@@ -433,6 +435,8 @@ private class Builder extends CompositeBuilder {
             if ((child is Box)) {
                 icon = cast(child, Box).icon;
             }
+            child.parentComponent = _content; // this may be ill-conceived: the child wont many not be added to the _contents yet, which means it has no parentComponent
+                                              // it will, when the page changes, be set - but until then we can set it so things like "findAncestor" will work as expected
             child.registerEvent(UIEvent.PROPERTY_CHANGE, onPagePropertyChanged);
             _views.insert(index, child);
             var button:Button = new Button();
@@ -475,7 +479,19 @@ private class Builder extends CompositeBuilder {
             switch _views.indexOf(child) {
                 case -1:
                 case i:
-                    _tabs.removeComponentAt(i, dispose, invalidate);
+                    _tabs.pauseEvent(UIEvent.CLOSE);
+                    _tabs.pauseEvent(UIEvent.BEFORE_CLOSE);
+                    if (_currentView == child) {
+                        _currentView = null;
+                    }
+                    child.unregisterEvent(UIEvent.PROPERTY_CHANGE, onPagePropertyChanged);
+                    _views.remove(child);
+                    if (_content.getComponentIndex(child) != -1) {
+                        _content.removeComponent(child, dispose, invalidate);
+                    }
+                    _tabs.removeTab(i);
+                    _tabs.resumeEvent(UIEvent.CLOSE);
+                    _tabs.resumeEvent(UIEvent.BEFORE_CLOSE);
                     return child;
             }
         }

@@ -60,6 +60,17 @@ class TabBarLayout extends DefaultLayout {
             filler.left = container.width;
         }
 
+        var leftFiller:Component = _component.findComponent("tabbar-filler-left", false);
+        if (leftFiller != null) {
+            leftFiller.height = _component.height;
+        }
+
+        var rightFiller:Component = _component.findComponent("tabbar-filler-right", false);
+        if (rightFiller != null) {
+            rightFiller.left = _component.width - rightFiller.width;
+            rightFiller.height = _component.height;
+        }
+
         var max:Float = 0;
         for (button in container.childComponents) {
             button.validateNow();
@@ -80,12 +91,12 @@ class TabBarLayout extends DefaultLayout {
             if (right != null) {
                 x -= right.width;
             }
-            left.left = x + 1;
+            left.left = x - left.style.marginLeft;
             left.top = (_component.height / 2) - (left.height / 2);
         }
 
         if (right != null && hidden(right) == false) {
-            right.left = _component.width - right.width;
+            right.left = _component.width - right.width - right.marginLeft;
             right.top = (_component.height / 2) - (right.height / 2);
         }
     }
@@ -206,6 +217,7 @@ private class SelectedIndex extends DataBehaviour {
 
                 builder._containerPosition = x;
                 builder._container.left = x;
+                builder.checkLeftRightFillers();
             }
 
             _component.invalidateComponentLayout();
@@ -409,6 +421,8 @@ private class Builder extends CompositeBuilder {
             _filler = new Box();
             _filler.id = "tabbar-filler";
             _filler.addClass("tabbar-filler");
+            _filler.scriptAccess = false;
+            _filler.includeInLayout = false;
             _tabbar.addComponent(_filler);
         }
         if (_container == null) {
@@ -492,21 +506,21 @@ private class Builder extends CompositeBuilder {
     }
 
     public override function addComponent(child:Component):Component {
-        if (child != _container && child != _scrollLeft && child != _scrollRight && child != _filler) {
+        if (child != _container && child != _scrollLeft && child != _scrollRight && child != _filler && child.id != "tabbar-filler-left" && child.id != "tabbar-filler-right") {
             return addTab(child);
         }
         return null;
     }
 
     public override function addComponentAt(child:Component, index:Int):Component {
-        if (child != _container && child != _scrollLeft && child != _scrollRight && child != _filler) {
+        if (child != _container && child != _scrollLeft && child != _scrollRight && child != _filler && child.id != "tabbar-filler-left" && child.id != "tabbar-filler-right") {
             return addTabAt(child, index);
         }
         return null;
     }
 
     public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
-        if (child != _container && child != _scrollLeft && child != _scrollRight && child != _filler) {
+        if (child != _container && child != _scrollLeft && child != _scrollRight && child != _filler && child.id != "tabbar-filler-left" && child.id != "tabbar-filler-right") {
             var index = _container.getComponentIndex(child);
             if (index != -1) {
                 _tabbar.removeTab(index);
@@ -525,14 +539,14 @@ private class Builder extends CompositeBuilder {
     }
 
     public override function getComponentIndex(child:Component):Int {
-        if (child != _container && child != _scrollLeft && child != _scrollRight && child != _filler) {
+        if (child != _container && child != _scrollLeft && child != _scrollRight && child != _filler && child.id != "tabbar-filler-left" && child.id != "tabbar-filler-right") {
             return _container.getComponentIndex(child);
         }
         return -1;
     }
 
     public override function setComponentIndex(child:Component, index:Int):Component {
-        if (child != _container && child != _scrollLeft && child != _scrollRight && child != _filler) {
+        if (child != _container && child != _scrollLeft && child != _scrollRight && child != _filler && child.id != "tabbar-filler-left" && child.id != "tabbar-filler-right") {
             return _container.setComponentIndex(child, index);
         }
         return null;
@@ -558,6 +572,8 @@ private class Builder extends CompositeBuilder {
             hideScrollButtons();
             _containerPosition = null;
         }
+
+        checkLeftRightFillers();
 
         return true;
     }
@@ -607,6 +623,40 @@ private class Builder extends CompositeBuilder {
         }
         _containerPosition = x;
         _container.left = x;
+        checkLeftRightFillers();
+    }
+
+    private function checkLeftRightFillers() {
+        var leftFiller = _tabbar.findComponent("tabbar-filler-left", false);
+        if (_containerPosition < 0) {
+            if (leftFiller == null) {
+                leftFiller = new Box();
+                leftFiller.id = "tabbar-filler-left";
+                leftFiller.addClass("tabbar-filler-left");
+                leftFiller.scriptAccess = false;
+                leftFiller.includeInLayout = false;
+                _tabbar.addComponent(leftFiller);
+            }
+            leftFiller.show();
+        } else if (leftFiller != null) {
+            leftFiller.hide();
+        }
+
+        var rightFiller = _tabbar.findComponent("tabbar-filler-right", false);
+        var max = -(_container.width - _tabbar.width);
+        if (_containerPosition > max) {
+            if (rightFiller == null) {
+                rightFiller = new Box();
+                rightFiller.id = "tabbar-filler-right";
+                rightFiller.addClass("tabbar-filler-right");
+                rightFiller.scriptAccess = false;
+                rightFiller.includeInLayout = false;
+                _tabbar.addComponent(rightFiller);
+            }
+            rightFiller.show();
+        } else if (rightFiller != null) {
+            rightFiller.hide();
+        }
     }
 
     private function scrollRight() {
@@ -632,6 +682,7 @@ private class Builder extends CompositeBuilder {
         }
         _containerPosition = x;
         _container.left = x;
+        checkLeftRightFillers();
     }
 
     private function hideScrollButtons() {

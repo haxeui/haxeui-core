@@ -189,6 +189,10 @@ private class ImageLayout extends DefaultLayout {
 
     private function updateClipRect() {
         if (component.hasImageDisplay()) {
+            if (component.style != null && component.style.clip == false) {
+                return;
+            }
+
             var usz:Size = usableSize;
             var imageDisplay:ImageDisplay = component.getImageDisplay();
             var rc:Rectangle = imageDisplay.imageClipRect;
@@ -318,6 +322,9 @@ private class Builder extends CompositeBuilder {
     public override function applyStyle(style:Style) {
         if (style.resource != null) {
             _image.resource = style.resource;
+        }
+        if (style.scaleMode != null) {
+            _image.scaleMode = style.scaleMode;
         }
     }
 }

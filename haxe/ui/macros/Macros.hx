@@ -18,6 +18,7 @@ import haxe.ui.macros.helpers.FieldBuilder;
 import haxe.ui.util.EventInfo;
 import haxe.ui.util.RTTI;
 import haxe.ui.util.StringUtil;
+import haxe.ui.util.TypeConverter;
 
 using StringTools;
 
@@ -130,6 +131,21 @@ class Macros {
                     continue;
                 }
                 createDefaultsFn.add(macro addClass($v{n}));
+            }
+        } else {
+            for (key in ModuleMacros.properties.keys()) {
+                if (key.startsWith(propPrefix)) {
+                    var createDefaultsFn = builder.findFunction("createDefaults");
+                    if (createDefaultsFn == null) {
+                        createDefaultsFn = builder.addFunction("createDefaults", macro {
+                            super.createDefaults();
+                        }, null, null, [AOverride, APrivate]);
+                    }
+                    var propName = key.split(".").pop();
+                    var propValue = ModuleMacros.properties.get(key);
+                    var convertedPropValue = TypeConverter.convertFrom(propValue);
+                    createDefaultsFn.add(macro $i{propName} = $v{convertedPropValue});
+                }
             }
         }
 
@@ -833,6 +849,8 @@ class Macros {
 
     static function buildData():Array<Field> {
         var builder = new ClassBuilder(haxe.macro.Context.getBuildFields(), Context.getLocalType(), Context.currentPos());
+        builder.addMeta(":keep");
+        builder.addMeta(":keepSub");
         #if macro_times_verbose
         var stopComponentTimer = Context.timer(builder.fullPath);
         #end

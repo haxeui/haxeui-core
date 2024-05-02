@@ -16,6 +16,16 @@ class Frame extends Box {
     @:clonable @:behaviour(CollapsibleBehaviour)        public var collapsible:Bool;
     @:clonable @:behaviour(CollapsedBehaviour)          public var collapsed:Bool;
     @:clonable @:value(text)                            public var value:Dynamic;
+
+    public override function set_layout(value:haxe.ui.layouts.Layout):haxe.ui.layouts.Layout {
+        if ((value is Layout)) {
+            super.set_layout(value);
+        } else {
+            var builder:Builder = cast(this._compositeBuilder, Builder);
+            @:privateAccess builder._contents.layout = value;
+        }
+        return value;
+    }
 }
 
 //***********************************************************************************************************
@@ -133,7 +143,7 @@ private class Builder extends CompositeBuilder {
         _frame.addComponent(_contents);
 
         _label = new Label();
-        _label.text = "My Frame";
+        _label.text = "";
         _label.id = "frame-title";
         _label.addClass("frame-title");
         _label.includeInLayout = false;
@@ -235,7 +245,7 @@ private class Layout extends DefaultLayout {
             contents.width = border.width;
         }
         if (_component.autoHeight == false) {    
-            contents.height = border.height;
+            contents.height = border.height - (label.height / 2);
         }
 
         var labelOffsetLeft:Float = 0;

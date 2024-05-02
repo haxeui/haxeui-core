@@ -149,6 +149,11 @@
 }
 
 .menuseparator {
+    width: 100%;
+    height: auto;
+}
+
+.menuseparator-line {
     height: 1px;
     width: 100%;
     background-color: $normal-border-color;
@@ -157,4 +162,9 @@
 
 .menu.rounded .menuitem {
     border-radius: 3px;
+}
+
+.menu.rounded .menuseparator {
+    padding-top: 3px;
+    padding-bottom: 3px;
 }
