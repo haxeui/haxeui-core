@@ -1,5 +1,6 @@
 package haxe.ui.components;
 
+import haxe.ui.constants.Priority;
 import haxe.ui.actions.ActionType;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
@@ -225,7 +226,7 @@ private class Events extends haxe.ui.events.Events {
             _stepper.registerEvent(FocusEvent.FOCUS_OUT, onFocusOut);
         }
         if (!_stepper.hasEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel)) {
-            _stepper.registerEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
+            _stepper.registerEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel, Priority.LOW);
         }
         if (!LocaleManager.instance.hasEvent(LocaleEvent.LOCALE_CHANGED, onLocaleChanged)) {
             LocaleManager.instance.registerEvent(LocaleEvent.LOCALE_CHANGED, onLocaleChanged);
