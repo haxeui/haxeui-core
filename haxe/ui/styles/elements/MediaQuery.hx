@@ -22,16 +22,16 @@ class MediaQuery {
         for (d in _directives) {
             switch (d.directive) {
                 case "min-width":
-                    b = b && (Screen.instance.width > ValueTools.calcDimension(d.value));
+                    b = b && (Screen.instance.width >= ValueTools.calcDimension(d.value));
                 case "max-width":
                     b = b && (Screen.instance.width < ValueTools.calcDimension(d.value));
                 case "min-height":
-                    b = b && (Screen.instance.height > ValueTools.calcDimension(d.value));
+                    b = b && (Screen.instance.height >= ValueTools.calcDimension(d.value));
                 case "max-height":
                     b = b && (Screen.instance.height < ValueTools.calcDimension(d.value));
                 case "min-aspect-ratio":
                     var sr = Screen.instance.width / Screen.instance.height;
-                    b = b && (sr > buildRatio(ValueTools.string(d.value)));
+                    b = b && (sr >= buildRatio(ValueTools.string(d.value)));
                 case "max-aspect-ratio":
                     var sr = Screen.instance.width / Screen.instance.height;
                     b = b && (sr < buildRatio(ValueTools.string(d.value)));
