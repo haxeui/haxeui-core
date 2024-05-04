@@ -91,6 +91,9 @@ class TabBarLayout extends DefaultLayout {
             if (right != null) {
                 x -= right.width;
             }
+            if (left.style == null) {
+                left.validateNow();
+            }
             left.left = x - left.style.marginLeft;
             left.top = (_component.height / 2) - (left.height / 2);
         }
