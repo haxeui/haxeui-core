@@ -331,6 +331,10 @@ class ValueTools {
                 return v;
             case Value.VBool(v):
                 return v;
+            case Value.VString(v):
+                return v;
+            case Value.VConstant(v):
+                return v;
             case Value.VCall(f, vl):
                 return call(f, vl);
             case _:
