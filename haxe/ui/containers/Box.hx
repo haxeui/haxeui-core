@@ -86,6 +86,9 @@ class Box extends Component implements IDataComponent {
         if (style.layout != null) {
             layoutName = style.layout;
         }
+        if (style.layoutProperties != null && this.layout != null) {
+            this.layout.applyProperties(style.layoutProperties);
+        }
     }
 }
 

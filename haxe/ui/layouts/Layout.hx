@@ -37,6 +37,10 @@ class Layout implements ILayout {
         return _component.findComponents(styleName, type, maxDepth);
     }
     
+    public function applyProperties(props:Map<String, Any>) {
+        
+    }
+
     @:access(haxe.ui.core.Component)
     public function refresh() {
         if (_component != null && _component.isReady == true) {

@@ -7,6 +7,14 @@ class VerticalGridLayout extends Layout {
         super();
     }
 
+    public override function applyProperties(props:Map<String, Any>) {
+        if (props != null) {
+            if (props.exists("columns") && props.get("columns") != null) {
+                this.columns = props.get("columns");
+            }
+        }
+    }
+
     private var _columns:Int = 1;
     @:clonable public var columns(get, set):Int;
     private function get_columns():Int {

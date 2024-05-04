@@ -183,6 +183,8 @@ class Style {
         return 0;
     }    
     
+    @:optional public var layoutProperties:Map<String, Any> = null;
+
     @:optional public var customDirectives:Map<String, Directive> = null;
 
     public function mergeDirectives(map:Map<String, Directive>) {
@@ -512,18 +514,26 @@ class Style {
                 case "justify-content":
                     justifyContent = ValueTools.string(v.value);
                 case _:
-                    var use = DirectiveHandler.hasDirectiveHandler(v.directive);
-                    #if haxeui_custom_directives_relaxed // means we dont require a handler, so the backend can just do "anything" with them
-                        use = true;
-                    #end
-                    if (use) {
-                        if (customDirectives == null) {
-                            customDirectives = new Map<String, Directive>();
+                    if (StringTools.startsWith(key, "layout-")) {
+                        var layoutPropName = key.substring("layout-".length);
+                        if (layoutProperties == null) {
+                            layoutProperties = new Map<String, Any>();
                         }
-                        if (v.value == null || v.value == VNone) {
-                            customDirectives.remove(v.directive);
-                        } else {
-                            customDirectives.set(v.directive, v);
+                        layoutProperties.set(layoutPropName, ValueTools.any(v.value));
+                    } else {
+                        var use = DirectiveHandler.hasDirectiveHandler(v.directive);
+                        #if haxeui_custom_directives_relaxed // means we dont require a handler, so the backend can just do "anything" with them
+                            use = true;
+                        #end
+                        if (use) {
+                            if (customDirectives == null) {
+                                customDirectives = new Map<String, Directive>();
+                            }
+                            if (v.value == null || v.value == VNone) {
+                                customDirectives.remove(v.directive);
+                            } else {
+                                customDirectives.set(v.directive, v);
+                            }
                         }
                     }
             }
@@ -683,6 +693,16 @@ class Style {
         if (s.includeInLayout != null) includeInLayout = s.includeInLayout;
         if (s.justifyContent != null) justifyContent = s.justifyContent;
 
+        if (s.layoutProperties != null) {
+            if (this.layoutProperties == null) {
+                this.layoutProperties = new Map<String, Any>();
+            }
+            for (layoutPropName in s.layoutProperties.keys()) {
+                var v = s.layoutProperties.get(layoutPropName);
+                this.layoutProperties.set(layoutPropName, v);
+            }
+        }
+
         if (s.customDirectives != null) {
             if (this.customDirectives == null) {
                 this.customDirectives = new Map<String, Directive>();
@@ -829,6 +849,19 @@ class Style {
         if (s.includeInLayout != includeInLayout) return false;
         if (s.justifyContent != justifyContent) return false;
         
+        if (s.layoutProperties != null && s.layoutProperties != null) {
+            for (layoutPropName in s.layoutProperties) {
+                if (!this.layoutProperties.exists(layoutPropName)) {
+                    return false;
+                }
+            }
+            for (layoutPropName in this.layoutProperties) {
+                if (!s.layoutProperties.exists(layoutPropName)) {
+                    return false;
+                }
+            }
+        }
+
         if (s.customDirectives != null && this.customDirectives != null) { 
             for (directive in s.customDirectives.keys()) {
                 if (!this.customDirectives.exists(directive)) {
