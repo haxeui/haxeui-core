@@ -72,7 +72,15 @@ private class Layout extends DefaultLayout {
         }
 
         var usableSize = usableSize;
-        tabs.width = usableSize.width;
+
+        var tabsWidthModifier:Float = 0;
+        if (tabs.style == null) {
+            tabs.validateNow();
+        }
+        if (tabs.marginRight != null) {
+            tabsWidthModifier = tabs.marginRight;
+        }
+        tabs.width = usableSize.width - tabsWidthModifier;
 
         if (component.autoHeight == false) {
             content.height = usableSize.height + 1;
