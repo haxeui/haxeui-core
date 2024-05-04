@@ -1379,6 +1379,37 @@ class Component extends ComponentImpl
         }
     }
 
+    public function swapClasses(classesToAdd:Array<String>, classesToRemove:Array<String> = null, invalidate:Bool = true, recursive:Bool = false) {
+        var needsInvalidate = false;
+        if (classesToAdd != null) {
+            for (classToAdd in classesToAdd) {
+                if (classToAdd != null && classes.indexOf(classToAdd) == -1) {
+                    classes.push(classToAdd);
+                    needsInvalidate = true;
+                }
+            }
+        }
+
+        if (classesToRemove != null) {
+            for (classToRemove in classesToRemove) {
+                if (classToRemove != null && classes.indexOf(classToRemove) != -1) {
+                    classes.remove(classToRemove);
+                    needsInvalidate = true;
+                }
+            }
+        }
+
+        if (invalidate == true && needsInvalidate == true) {
+            invalidateComponentStyle();
+        }
+
+        if (recursive == true) {
+            for (child in childComponents) {
+                child.swapClasses(classesToAdd, classesToRemove, invalidate, recursive);
+            }
+        }
+    }
+
     /**
      * A string representation of the `css` classes associated with this component
      */
