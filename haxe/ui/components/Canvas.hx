@@ -62,6 +62,20 @@ private class DataSourceBehaviour extends DataBehaviour {
                         var x:Null<Float> = (item.x != null) ? Std.parseFloat(item.x) : 0;
                         var y:Null<Float> = (item.y != null) ? Std.parseFloat(item.y) : 0;
                         g.lineTo(x, y);
+                    case "curveTo" | "curve-to":
+                        var controlX:Null<Float> = (item.controlX != null) ? Std.parseFloat(item.controlX) : 0;
+                        var controlY:Null<Float> = (item.controlY != null) ? Std.parseFloat(item.controlY) : 0;
+                        var anchorX:Null<Float> = (item.anchorX != null) ? Std.parseFloat(item.anchorX) : 0;
+                        var anchorY:Null<Float> = (item.anchorY != null) ? Std.parseFloat(item.anchorY) : 0;
+                        g.curveTo(controlX, controlY, anchorX, anchorY);
+                    case "cubicCurveTo" | "cubic-curve-to":
+                        var controlX:Null<Float> = (item.controlX != null) ? Std.parseFloat(item.controlX) : 0;
+                        var controlY:Null<Float> = (item.controlY != null) ? Std.parseFloat(item.controlY) : 0;
+                        var controlX2:Null<Float> = (item.controlX2 != null) ? Std.parseFloat(item.controlX2) : 0;
+                        var controlY2:Null<Float> = (item.controlY2 != null) ? Std.parseFloat(item.controlY2) : 0;
+                        var anchorX:Null<Float> = (item.anchorX != null) ? Std.parseFloat(item.anchorX) : 0;
+                        var anchorY:Null<Float> = (item.anchorY != null) ? Std.parseFloat(item.anchorY) : 0;
+                        g.cubicCurveTo(controlX, controlY, controlX2, controlY2, anchorX, anchorY);
                     case "strokeStyle" | "stroke-style":
                         var color:String = item.color;
                         var thickness:Null<Float> = (item.thickness != null) ? Std.parseFloat(item.thickness) : 1;
@@ -89,6 +103,10 @@ private class DataSourceBehaviour extends DataBehaviour {
                         var y:Null<Float> = Std.parseFloat(item.y);
                         var radius:Null<Float> = Std.parseFloat(item.radius);
                         g.circle(x, y, radius);
+                    case "beginPath" | "begin-path":
+                        g.beginPath();
+                    case "closePath" | "close-path":
+                        g.closePath();
                     case _:
                         trace("unrecognised draw command: " + item);
                 }

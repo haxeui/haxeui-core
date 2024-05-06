@@ -63,6 +63,14 @@ class ComponentGraphicsBase {
     public function image(resource:Variant, x:Null<Float> = null, y:Null<Float> = null, width:Null<Float> = null, height:Null<Float> = null) {
         addDrawCommand(Image(resource, x, y, width, height));
     }
+
+    public function beginPath() {
+        addDrawCommand(BeginPath);
+    }
+
+    public function closePath() {
+        addDrawCommand(ClosePath);
+    }
     
     private function addDrawCommand(command:DrawCommand) {
         _drawCommands.push(command);
@@ -106,7 +114,10 @@ class ComponentGraphicsBase {
                     rectangle(x, y, width, height);
                 case Image(resource, x, y, width, height):
                     image(resource, x, y, width, height);
-                    
+                case BeginPath:
+                    beginPath();
+                case ClosePath:
+                    closePath();
             }
         }
     }
