@@ -89,6 +89,10 @@ private class DataSourceBehaviour extends DataBehaviour {
                         var y:Null<Float> = Std.parseFloat(item.y);
                         var radius:Null<Float> = Std.parseFloat(item.radius);
                         g.circle(x, y, radius);
+                    case "beginPath" | "begin-path":
+                        g.beginPath();
+                    case "closePath" | "close-path":
+                        g.closePath();
                     case _:
                         trace("unrecognised draw command: " + item);
                 }
