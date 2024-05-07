@@ -17,4 +17,6 @@ enum DrawCommand {
     CubicCurveTo(controlX1:Float, controlY1:Float, controlX2:Float, controlY2:Float, anchorX:Float, anchorY:Float);
     Rectangle(x:Float, y:Float, width:Float, height:Float);
     Image(resource:Variant, x:Float, y:Float, width:Float, height:Float);
+    BeginPath;
+    ClosePath;
 }

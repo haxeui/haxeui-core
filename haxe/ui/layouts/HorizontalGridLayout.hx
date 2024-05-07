@@ -24,6 +24,14 @@ class HorizontalGridLayout extends Layout {
         super();
     }
 
+    public override function applyProperties(props:Map<String, Any>) {
+        if (props != null) {
+            if (props.exists("rows") && props.get("rows") != null) {
+                this.rows = props.get("rows");
+            }
+        }
+    }
+
     private override function get_usableSize():Size {
         var size:Size = super.get_usableSize();
         var columnWidths:Array<Float> = calcColumnWidths(size, false);
