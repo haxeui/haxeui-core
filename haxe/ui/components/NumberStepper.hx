@@ -110,14 +110,14 @@ private class PosBehaviour extends DataBehaviour {
         
         var stringValue = StringUtil.padDecimal(preciseValue, stepper.precision);
         var value:TextField = stepper.findComponent("value", TextField);
-        var carentIndex = value.caretIndex;
+        var caretIndex = value.caretIndex;
         stringValue = StringTools.replace(stringValue, ",", ".");
         stringValue = StringTools.replace(stringValue, ".", stepper.decimalSeparator);
         value.text = stringValue;
         if (wasRounded) {
             value.caretIndex = stringValue.length;
         } else {
-            value.caretIndex = carentIndex;
+            value.caretIndex = caretIndex;
         }
         
         var event = new UIEvent(UIEvent.CHANGE);
