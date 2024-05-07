@@ -49,6 +49,8 @@ class TypeConverter {
                     return 0;
                 }
                 return r;
+            case "color":
+                return Color.fromString(Std.string(input));
             case "variant" | "dynamic" | "scalemode" | "selectionmode" | "scrollpolicy" | "scrollmode":
                 return input;
             case _:

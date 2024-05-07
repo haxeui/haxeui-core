@@ -283,6 +283,7 @@ class Macros {
 
         for (f in builder.getFieldsWithMeta("style")) {
             f.remove();
+            RTTI.addClassProperty(builder.fullPath, f.name, ComplexTypeTools.toString(f.type));
 
             var defaultValue:Dynamic = null;
             if (f.isNumeric == true) {

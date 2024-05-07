@@ -21,6 +21,7 @@ class RTTI {
         if (propertyType == "null<bool>")   propertyType = "bool";
         if (propertyType == "null<int>")    propertyType = "int";
         if (propertyType == "null<float>")  propertyType = "float";
+        if (propertyType == "null<color>")  propertyType = "color";
         
         if (classInfo == null) {
             classInfo = new Map<String, RTTIEntry>();

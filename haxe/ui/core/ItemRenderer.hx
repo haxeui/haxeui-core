@@ -8,6 +8,7 @@ import haxe.ui.events.ItemEvent;
 import haxe.ui.events.ItemRendererEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
+import haxe.ui.util.Color;
 import haxe.ui.util.TypeConverter;
 import haxe.ui.util.Variant;
 
@@ -264,9 +265,9 @@ class ItemRenderer extends Box {
         if (property == "value") {
             c.value = propValue;
         } else if (typeInfo == "variant") {
-            Reflect.setProperty(c, property, Variant.fromDynamic(v));
+            Reflect.setProperty(c, property, Variant.fromDynamic(propValue));
         } else {
-            Reflect.setProperty(c, property, v);
+            Reflect.setProperty(c, property, propValue);
         }
 
         if (autoRegisterInteractiveEvents) {
