@@ -58,6 +58,8 @@ class Label extends Component {
      * Wheter the label text can be selected by the user or not
      */
     @:clonable @:behaviour(SelectableBehaviour) public var selectable:Bool;
+
+    @:style public var fontSize:Null<Float>;
 }
 
 //***********************************************************************************************************
