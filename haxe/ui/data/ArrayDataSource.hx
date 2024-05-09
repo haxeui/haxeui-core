@@ -36,12 +36,11 @@ class ArrayDataSource<T> extends DataSource<T> {
         handleChanged();
     }
     
-    public override function sortCustom(fn:T->T->SortDirection->Int, direction:SortDirection = null) {
+    private override function handleSort(fn:T->T->SortDirection->Int, direction:SortDirection = null) {
         _array.sort(fn.bind(_, _, direction));
         if (_filteredArray != null) {
             _filteredArray.sort(fn.bind(_, _, direction));
         }
-        handleChanged();
     }
     
     private override function handleGetSize():Int {

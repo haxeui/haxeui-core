@@ -148,13 +148,25 @@ class DataSource<T> {
     
     private function handleChanged() {
         _changed = true;
+        if (_currentSortFn != null) {
+            handleSort(_currentSortFn, _currentSortDirection);
+        }
         if (_allowCallbacks == true) {
             _changed = false;
             onInternalChange();
         }
     }
 
+    private function handleSort(fn:T->T->SortDirection->Int, direction:SortDirection = null) {
+    }
+
+    private var _currentSortFn:T->T->SortDirection->Int = null;
+    private var _currentSortDirection:SortDirection = null;
     public function sortCustom(fn:T->T->SortDirection->Int, direction:SortDirection = null) {
+        _currentSortFn = fn;
+        _currentSortDirection = direction;
+        handleSort(fn, direction);
+        handleChanged();
     }
     
     public function sort(field:String = null, direction:SortDirection = null) {
