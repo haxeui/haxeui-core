@@ -6,6 +6,7 @@ import haxe.ui.behaviours.LayoutBehaviour;
 import haxe.ui.core.ICompositeInteractiveComponent;
 import haxe.ui.core.IDirectionalComponent;
 import haxe.ui.core.InteractiveComponent;
+import haxe.ui.events.DragEvent;
 import haxe.ui.events.Events;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.ScrollEvent;
@@ -17,6 +18,20 @@ import haxe.ui.util.Variant;
  * A scrollbar component, like the ones you see in a browser.
  */
 class Scroll extends InteractiveComponent implements IDirectionalComponent implements ICompositeInteractiveComponent {
+    /**
+    * Utility property to add a single `DragEvent.DRAG_START` event
+    */
+    @:event(DragEvent.DRAG_START)                   public var onDragStart:DragEvent->Void;    
+
+    /**
+    * Utility property to add a single `DragEvent.DRAG` event
+    */
+    @:event(DragEvent.DRAG)                         public var onDrag:DragEvent->Void;    
+
+    /**
+    * Utility property to add a single `DragEvent.DRAG_END` event
+    */
+    @:event(DragEvent.DRAG_END)                     public var onDragEnd:DragEvent->Void;    
 
     /**
      * Creates a new scrollbar.
@@ -165,6 +180,10 @@ private class Events extends haxe.ui.events.Events  {
         if (_deincButton.hitTest(event.screenX - componentOffset.x, event.screenY - componentOffset.y) == false
             && _incButton.hitTest(event.screenX - componentOffset.x, event.screenY - componentOffset.y) == false) {
             _scroll.applyPageFromCoord(new Point(event.screenX - componentOffset.x, event.screenY - componentOffset.y));
+            // when "paging" we'll send the whole drag sequence in case some app logic is relying on it, or part of it
+            _scroll.dispatch(new DragEvent(DragEvent.DRAG_START));
+            _scroll.dispatch(new DragEvent(DragEvent.DRAG));
+            _scroll.dispatch(new DragEvent(DragEvent.DRAG_END));
         }
     }
 
@@ -186,12 +205,16 @@ private class Events extends haxe.ui.events.Events  {
 
         _scroll.screen.registerEvent(MouseEvent.MOUSE_UP, onScreenMouseUp);
         _scroll.screen.registerEvent(MouseEvent.MOUSE_MOVE, onScreenMouseMove);
+
+        _scroll.dispatch(new DragEvent(DragEvent.DRAG_START));
     }
 
     private function onScreenMouseUp(event:MouseEvent) {
         _mouseDownOffset = null;
         _scroll.screen.unregisterEvent(MouseEvent.MOUSE_UP, onScreenMouseUp);
         _scroll.screen.unregisterEvent(MouseEvent.MOUSE_MOVE, onScreenMouseMove);
+
+        _scroll.dispatch(new DragEvent(DragEvent.DRAG_END));
     }
 
     private function onScreenMouseMove(event:MouseEvent) {
@@ -234,6 +257,8 @@ private class ScrollValueBehaviour extends DataBehaviour {
         
         var scrollEvent:ScrollEvent = new ScrollEvent(ScrollEvent.SCROLL);
         scroll.dispatch(scrollEvent);
+
+        scroll.dispatch(new DragEvent(DragEvent.DRAG));
     }
 }
 
