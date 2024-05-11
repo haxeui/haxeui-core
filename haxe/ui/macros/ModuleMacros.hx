@@ -289,7 +289,12 @@ class ModuleMacros {
         #if haxeui_macro_times
         var stopTimer = Context.timer("ModuleMacros.resolvePaths");
         #end
-
+        if (Path.isAbsolute(path)) {
+            var isDir = FileSystem.exists(path) && FileSystem.isDirectory(path);
+            if (isDir == true) {
+                paths.push(path);
+            }
+        }
         for (c in Context.getClassPath()) {
             if (c.length == 0) {
                 c = Sys.getCwd();
