@@ -220,6 +220,11 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
         }
     }
     
+    @:bind(this, UIEvent.SHOWN)
+    private function _onShown(_) {
+        _saturationValueGraphLastHue = null;
+    }
+
     private var _saturationValueGraphBytes:Bytes = null;
     private var _saturationValueGraphLastHue:Null<Float> = null;
     private function updateSaturationValueGraph() {
