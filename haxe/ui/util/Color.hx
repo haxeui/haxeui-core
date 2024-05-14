@@ -165,7 +165,7 @@ abstract Color(Int) from Int {
         if (colors.exists(s)) {
             return colors.get(s);
         }
-        return 0;
+        return Std.parseInt(s);
     }
 
     static public function fromComponents(r:Int, g:Int, b:Int, a:Int):Color {
