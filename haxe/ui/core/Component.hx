@@ -1688,9 +1688,9 @@ class Component extends ComponentImpl
     #if !(haxeui_flixel || haxeui_heaps)
     /** The color of the text **/                                                   @:style                 public var color:Null<Color>;
     #end
-    @:style                 public var backgroundColor:Null<Color>;
-    @:style                 public var backgroundColorEnd:Null<Color>;
-    @:style                 public var backgroundImage:Variant;
+                                                                                    @:style                 public var backgroundColor:Null<Color>;
+                                                                                    @:style                 public var backgroundColorEnd:Null<Color>;
+                                                                                    @:style                 public var backgroundImage:Variant;
     /** The color of the border **/                                                 @:style                 public var borderColor:Null<Color>;
     /** The size of the border, in pixels **/                                       @:style                 public var borderSize:Null<Float>;
     /** The amount of rounding to apply to the border **/                           @:style                 public var borderRadius:Null<Float>;
