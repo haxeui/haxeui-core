@@ -162,10 +162,15 @@ class Style {
     /** The type of the border. can be `Compound`, `Full` or `None` **/                                      @:optional public var borderType(get, null):StyleBorderType;
     private function get_borderType():StyleBorderType {
         var t = StyleBorderType.Compound;
-        if (borderLeftSize != null && borderLeftSize > 0 && borderLeftSize == borderRightSize && borderLeftSize == borderBottomSize && borderLeftSize == borderTopSize) { // full border
-            t = StyleBorderType.Full;
-        } else if ((borderLeftSize == null || borderLeftSize <= 0) && (borderRightSize == null || borderRightSize <= 0)  && (borderBottomSize == null || borderRightSize <= 0) && (borderTopSize == null || borderTopSize <= 0)) {
+        var hasLeftBorder = (borderLeftSize != null && borderLeftSize > 0);
+        var hasRightBorder = (borderRightSize != null && borderRightSize > 0);
+        var hasTopBorder = (borderTopSize != null && borderTopSize > 0);
+        var hasBottomBorder = (borderBottomSize != null && borderBottomSize > 0);
+        var borderColoursEqual = (borderLeftColor == borderRightColor && borderLeftColor == borderTopColor && borderLeftColor == borderBottomColor);
+        if (!hasLeftBorder && !hasRightBorder && !hasTopBorder && !hasBottomBorder) {
             t = StyleBorderType.None;
+        } else if (borderColoursEqual) {
+            t = StyleBorderType.Full;
         }
         return t;
     }
