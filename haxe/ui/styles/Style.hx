@@ -169,7 +169,7 @@ class Style {
         var borderColoursEqual = (borderLeftColor == borderRightColor && borderLeftColor == borderTopColor && borderLeftColor == borderBottomColor);
         if (!hasLeftBorder && !hasRightBorder && !hasTopBorder && !hasBottomBorder) {
             t = StyleBorderType.None;
-        } else if (borderColoursEqual) {
+        } else if (hasLeftBorder && hasRightBorder && hasTopBorder && hasBottomBorder && borderColoursEqual) {
             t = StyleBorderType.Full;
         }
         return t;
