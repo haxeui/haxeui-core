@@ -137,7 +137,7 @@ class TreeViewNode extends VBox {
     }
     
     private override function get_icon():Variant {
-        return _data.icon;
+        return Variant.fromDynamic(_data.icon);
     }
     private override function set_icon(value:Variant):Variant {
         if (_data == null) {
