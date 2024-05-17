@@ -158,7 +158,11 @@ private class RangeEnd extends DataBehaviour {
 @:access(haxe.ui.core.Component)
 private class AllowInteraction extends DefaultBehaviour {
     public override function get():Variant {
-        return (_component._internalEvents != null);
+        #if (haxe_ver < 5)
+        return _component._internalEvents != null;
+        #else
+        return @:privateAccess Variant.fromBool(_component._internalEvents != null);
+        #end
     }
 
     public override function set(value:Variant) {
