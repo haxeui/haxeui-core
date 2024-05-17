@@ -170,6 +170,8 @@ class Style {
         if (!hasLeftBorder && !hasRightBorder && !hasTopBorder && !hasBottomBorder) {
             t = StyleBorderType.None;
         } else if (hasLeftBorder && hasRightBorder && hasTopBorder && hasBottomBorder && borderColoursEqual) {
+            borderSize = borderLeftSize;
+            borderColor = borderLeftColor;
             t = StyleBorderType.Full;
         }
         return t;
