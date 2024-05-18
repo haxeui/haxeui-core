@@ -454,7 +454,7 @@ private class TreeViewNodeBuilder extends CompositeBuilder {
         if ((child is TreeViewNode)) {
             cast(child, TreeViewNode).parentNode = null;
             var c = _childContainer.removeComponent(child, dispose, invalidate);
-            if (_childContainer.numComponents == 0) {
+            if (_childContainer.numComponents == 0 && _node.expandable != true) {
                 changeToNonExpandableRenderer();
             }
             return c;
