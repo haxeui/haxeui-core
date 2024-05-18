@@ -207,7 +207,6 @@ private class Expanded extends DataBehaviour {
         }
         var event = new TreeViewEvent(eventType);
         event.node = cast(_component, TreeViewNode);
-        trace("dispatch event");
         var treeview = _component.findAncestor(TreeView);
         treeview.dispatch(event);
 
