@@ -11,6 +11,7 @@ import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.ItemRenderer;
 import haxe.ui.events.MouseEvent;
+import haxe.ui.events.TreeViewEvent;
 import haxe.ui.util.Variant;
 
 #if (haxe_ver >= 4.2)
@@ -22,6 +23,7 @@ import Std.is as isOfType;
 @:composite(TreeViewNodeEvents, TreeViewNodeBuilder)
 class TreeViewNode extends VBox {
     @:behaviour(Expanded, false)        public var expanded:Bool;
+    @:behaviour(Expandable)             public var expandable:Null<Bool>;
     
     @:call(AddNode)                     public function addNode(data:Dynamic):TreeViewNode;
     @:call(RemoveNode)                  public function removeNode(node:TreeViewNode):TreeViewNode;
@@ -188,18 +190,41 @@ private class ClearNodes extends Behaviour {
 private class Expanded extends DataBehaviour {
     private override function validateData() {
         var childContainer = _component.findComponent("treenode-child-container", Box);
-        if (childContainer == null) {
-            return;
+        if (childContainer != null) {
+            if (_value == true) {
+                childContainer.show();
+            } else {
+                childContainer.hide();
+            }
+
+            var builder:TreeViewNodeBuilder = cast(_component._compositeBuilder, TreeViewNodeBuilder);
+            builder.updateIconClass();
         }
         
-        if (_value == true) {
-            childContainer.show();
-        } else {
-            childContainer.hide();
+        var eventType = TreeViewEvent.NODE_EXPANDED;
+        if (_value == false) {
+            eventType = TreeViewEvent.NODE_COLLAPSED;
         }
+        var event = new TreeViewEvent(eventType);
+        event.node = cast(_component, TreeViewNode);
+        trace("dispatch event");
+        var treeview = _component.findAncestor(TreeView);
+        treeview.dispatch(event);
+
         
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class Expandable extends DataBehaviour {
+    private override function validateData() {
         var builder:TreeViewNodeBuilder = cast(_component._compositeBuilder, TreeViewNodeBuilder);
-        builder.updateIconClass();
+        if (_value == true) {
+            @:privateAccess builder.changeToExpandableRenderer();
+        } else {
+            @:privateAccess builder.changeToNonExpandableRenderer();
+        }
     }
 }
 
@@ -300,12 +325,10 @@ private class TreeViewNodeBuilder extends CompositeBuilder {
     
     public function updateIconClass() {
         if (_expandCollapseIcon != null) {
-            if (_childContainer != null) {
-                if (_node.expanded == true) {
-                    _expandCollapseIcon.swapClass("node-expanded", "node-collapsed");
-                } else {
-                    _expandCollapseIcon.swapClass("node-collapsed", "node-expanded");
-                }
+            if (_node.expanded == true) {
+                _expandCollapseIcon.swapClass("node-expanded", "node-collapsed");
+            } else {
+                _expandCollapseIcon.swapClass("node-collapsed", "node-expanded");
             }
         }
     }
