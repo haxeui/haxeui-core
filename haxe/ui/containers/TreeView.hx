@@ -183,7 +183,7 @@ private class SelectedNode extends DataBehaviour {
                 renderer.addClass(":node-selected", true, true);
             }
             
-            cast(_component, TreeView).ensureVisible(node);
+            cast(_component, TreeView).ensureVisible(node.findComponent(ItemRenderer, true));
         }
         
         var event:UIEvent = new UIEvent(UIEvent.CHANGE);
