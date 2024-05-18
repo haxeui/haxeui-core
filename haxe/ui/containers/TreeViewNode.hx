@@ -317,6 +317,9 @@ private class TreeViewNodeBuilder extends CompositeBuilder {
     }
     
     private function onExpandCollapseClicked(event:MouseEvent) {
+        if (!_isExpandable) {
+            return;
+        }
         event.cancel();
         _node.expanded = !_node.expanded;
         updateIconClass();
