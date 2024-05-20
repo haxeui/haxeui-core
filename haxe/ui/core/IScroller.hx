@@ -5,4 +5,6 @@ interface IScroller {
     public var isScrollableHorizontally(get, null):Bool;
     public var isScrollableVertically(get, null):Bool;
     public var isScrollable(get, null):Bool;
+    public var vscrollPos(get, set):Float;
+    public var hscrollPos(get, set):Float;
 }
