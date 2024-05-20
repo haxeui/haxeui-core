@@ -287,20 +287,6 @@ class Screen extends ScreenImpl {
         return (findSolidComponentUnderPoint(screenX, screenY, type).length > 0);
     }
 
-    private function onThemeChanged() {
-        for (c in rootComponents) {
-            onThemeChangedChildren(c);
-        }
-    }
-
-    @:access(haxe.ui.core.Component)
-    private function onThemeChangedChildren(c:Component) {
-        for (child in c.childComponents) {
-            onThemeChangedChildren(child);
-        }
-        c.onThemeChanged();
-    }
-
     //***********************************************************************************************************
     // Events
     //***********************************************************************************************************
