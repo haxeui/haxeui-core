@@ -7,4 +7,5 @@ interface IScroller {
     public var isScrollable(get, null):Bool;
     public var vscrollPos(get, set):Float;
     public var hscrollPos(get, set):Float;
+    public var virtual(get, set):Bool;
 }
