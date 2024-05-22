@@ -1175,6 +1175,34 @@ class ScrollViewEvents extends haxe.ui.events.Events {
     @:access(haxe.ui.core.Component)
     private function onMouseWheel(event:MouseEvent) {
         if (_scrollview.isHybridScroller) {
+            if (_scrollview.scrollPolicy == ScrollPolicy.NEVER) {
+                return;
+            }
+            var primaryType:Class<Scroll> = VerticalScroll;
+            var secondaryType:Class<Scroll> = HorizontalScroll;
+            if (event.shiftKey) {
+                primaryType = HorizontalScroll;
+                secondaryType = VerticalScroll;
+            }
+            var scroll:Scroll = _scrollview.findComponent(primaryType, false);
+            if (scroll == null) {
+                scroll = _scrollview.findComponent(secondaryType, false);
+            }
+    
+            if (_scrollview.autoHideScrolls == true && _fadeTimer == null) {
+                scroll.fadeIn();
+            }
+            if (_scrollview.autoHideScrolls == true) {
+                if (_fadeTimer != null) {
+                    _fadeTimer.stop();
+                    _fadeTimer = null;
+                }
+                _fadeTimer = new Timer(300, function() {
+                    scroll.fadeOut();
+                    _fadeTimer.stop();
+                    _fadeTimer = null;
+                });
+            }
             return;
         }
 
