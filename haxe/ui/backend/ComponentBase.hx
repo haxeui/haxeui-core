@@ -1663,7 +1663,7 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
     }
 
     @:dox(group = "Backend")
-    private function handleDisabled(show:Bool) {
+    private function handleDisabled(disable:Bool) {
     }
 
     @:dox(group = "Backend")
