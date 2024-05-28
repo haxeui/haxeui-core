@@ -22,9 +22,9 @@ class ScrollViewLayout extends DefaultLayout {
         var borderSize = this.borderSize;
         
         if (hscroll != null && hidden(hscroll) == false) {
-            var offset = 0;
+            var offset:Float = 0;
             if (_component.isHybridScroller) {
-                offset = 1;
+                offset = borderSize;
             }
             var xpos = paddingLeft + borderSize - offset;
             var ypos = component.componentHeight - hscroll.componentHeight - paddingBottom + marginTop(hscroll) - borderSize - offset;
@@ -36,9 +36,9 @@ class ScrollViewLayout extends DefaultLayout {
         }
 
         if (vscroll != null && hidden(vscroll) == false) {
-            var offset = 0;
+            var offset:Float = 0;
             if (_component.isHybridScroller) {
-                offset = 1;
+                offset = borderSize;
             }
             var xpos = component.componentWidth - vscroll.componentWidth - paddingRight + marginLeft(vscroll) - borderSize - offset;
             var ypos = paddingTop + borderSize - offset;
