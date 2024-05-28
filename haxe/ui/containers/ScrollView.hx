@@ -66,6 +66,8 @@ class ScrollView extends InteractiveComponent implements IScroller {
     @:clonable @:behaviour(EmptyContentsText)                       public var emptyContentsText:String;
     
     @:call(EnsureVisible)                                           public function ensureVisible(component:Component):Void;
+    @:call(FindHorizontalScrollbar)                                 public function findHorizontalScrollbar():Component;
+    @:call(FindVerticalScrollbar)                                   public function findVerticalScrollbar():Component;
 
     @:event(ScrollEvent.SCROLL)                                     public var onScroll:ScrollEvent->Void;
     
@@ -193,6 +195,24 @@ private class EnsureVisible extends DefaultBehaviour {
             }
         }
         return p;
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class FindHorizontalScrollbar extends DefaultBehaviour {
+    public override function call(param:Any = null):Variant {
+        var scrollview:ScrollView = cast(_component, ScrollView);
+        return scrollview.findComponent(HorizontalScroll, false);
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class FindVerticalScrollbar extends DefaultBehaviour {
+    public override function call(param:Any = null):Variant {
+        var scrollview:ScrollView = cast(_component, ScrollView);
+        return scrollview.findComponent(VerticalScroll, false);
     }
 }
 

@@ -2,6 +2,8 @@ package haxe.ui.core;
 
 interface IScroller {
     public function ensureVisible(component:Component):Void;
+    public function findHorizontalScrollbar():Component;
+    public function findVerticalScrollbar():Component;
     public var isScrollableHorizontally(get, null):Bool;
     public var isScrollableVertically(get, null):Bool;
     public var isScrollable(get, null):Bool;
