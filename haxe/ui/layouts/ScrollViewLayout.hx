@@ -7,6 +7,7 @@ import haxe.ui.core.Component;
 import haxe.ui.core.Platform;
 import haxe.ui.geom.Size;
 
+@:access(haxe.ui.backend.ComponentImpl)
 class ScrollViewLayout extends DefaultLayout {
     private override function repositionChildren() {
         repositionChild(component.findComponent("empty-contents-component", false, "css"));
@@ -21,18 +22,30 @@ class ScrollViewLayout extends DefaultLayout {
         var borderSize = this.borderSize;
         
         if (hscroll != null && hidden(hscroll) == false) {
+            var offset = 0;
+            if (_component.isHybridScroller) {
+                offset = 1;
+            }
+            var xpos = paddingLeft + borderSize - offset;
+            var ypos = component.componentHeight - hscroll.componentHeight - paddingBottom + marginTop(hscroll) - borderSize - offset;
             #if haxeui_allow_subpixels
-            hscroll.moveComponent(paddingLeft + borderSize, component.componentHeight - hscroll.componentHeight - paddingBottom + marginTop(hscroll) - borderSize);
+            hscroll.moveComponent(xpos, ypos);
             #else
-            hscroll.moveComponent(paddingLeft + borderSize, Math.fround(component.componentHeight - hscroll.componentHeight - paddingBottom + marginTop(hscroll) - borderSize));
+            hscroll.moveComponent(xpos, Math.fround(ypos));
             #end
         }
 
         if (vscroll != null && hidden(vscroll) == false) {
+            var offset = 0;
+            if (_component.isHybridScroller) {
+                offset = 1;
+            }
+            var xpos = component.componentWidth - vscroll.componentWidth - paddingRight + marginLeft(vscroll) - borderSize - offset;
+            var ypos = paddingTop + borderSize - offset;
             #if haxeui_allow_subpixels
-            vscroll.moveComponent(component.componentWidth - vscroll.componentWidth - paddingRight + marginLeft(vscroll) - borderSize, paddingTop + borderSize);
+            vscroll.moveComponent(xpos, ypos);
             #else
-            vscroll.moveComponent(Math.fround(component.componentWidth - vscroll.componentWidth - paddingRight + marginLeft(vscroll)) - borderSize, paddingTop + borderSize);
+            vscroll.moveComponent(Math.fround(xpos), ypos);
             #end
         }
 
