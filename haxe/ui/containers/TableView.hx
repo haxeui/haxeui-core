@@ -83,6 +83,16 @@ class TableView extends ScrollView implements IDataComponent implements IVirtual
 
         return value;
     }
+
+    // TODO: tableview doesnt work properly with native / hybrid scrollers because the header isnt "sticky" and will 
+    // move with the rest of the scroller - disable for now
+    private override function get_isNativeScroller():Bool {
+        return false;
+    }
+
+    private override function get_isHybridScroller():Bool {
+        return false;
+    }
 }
 
 private class CompoundItemRenderer extends ItemRenderer {
