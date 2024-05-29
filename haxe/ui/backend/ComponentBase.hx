@@ -1706,9 +1706,12 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
         return new Point(0, 0);
     }
 
-    private var isNativeScroller(get, null):Bool;
+    private var isNativeScroller(get, set):Bool;
     private function get_isNativeScroller():Bool {
         return false;
+    }
+    private function set_isNativeScroller(value:Bool):Bool {
+        return value;
     }
 
     private var isHybridScroller(get, set):Bool;
