@@ -731,6 +731,7 @@ typedef Inertia = {
 }
 
 @:dox(hide) @:noCompletion
+@:access(haxe.ui.backend.ComponentImpl)
 class ScrollViewEvents extends haxe.ui.events.Events {
     private var _scrollview:ScrollView;
 
@@ -761,7 +762,7 @@ class ScrollViewEvents extends haxe.ui.events.Events {
             vscroll.registerEvent(ScrollEvent.SCROLL, onVScrollScroll);
         }
 
-        if (_scrollview.scrollMode == ScrollMode.DRAG || _scrollview.scrollMode == ScrollMode.INERTIAL) {
+        if (_scrollview.scrollMode == ScrollMode.DRAG || _scrollview.scrollMode == ScrollMode.INERTIAL || _scrollview.isHybridScroller) {
             registerEvent(MouseEvent.MIDDLE_MOUSE_DOWN, onMiddleMouseDown);
             registerEvent(MouseEvent.MOUSE_DOWN, onLeftMouseDown);
             registerEvent(MouseEvent.RIGHT_MOUSE_DOWN, onRightMouseDown);
