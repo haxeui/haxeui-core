@@ -572,6 +572,13 @@ private class ThumbSize extends DataBehaviour {
 @:dox(hide) @:noCompletion
 @:access(haxe.ui.core.Component)
 private class ScrollModeBehaviour extends DataBehaviour {
+    public override function set(value:Variant) {
+        if (value == ScrollMode.HYBRID) {
+            _component.isHybridScroller = true;
+        }
+        super.set(value);
+    }
+
     public override function validateData() {
         _component.registerInternalEvents(true);
     }
