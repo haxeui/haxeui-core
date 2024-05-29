@@ -1711,9 +1711,12 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
         return false;
     }
 
-    private var isHybridScroller(get, null):Bool;
+    private var isHybridScroller(get, set):Bool;
     private function get_isHybridScroller():Bool {
         return false;
+    }
+    private function set_isHybridScroller(value:Bool):Bool {
+        return value;
     }
 
     private function handleFrameworkProperty(id:String, value:Any) {
