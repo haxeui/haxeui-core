@@ -1,5 +1,7 @@
 package haxe.ui.core;
 
+import haxe.ui.constants.ScrollMode;
+
 interface IScroller {
     public function ensureVisible(component:Component):Void;
     public function findHorizontalScrollbar():Component;
@@ -10,4 +12,5 @@ interface IScroller {
     public var vscrollPos(get, set):Float;
     public var hscrollPos(get, set):Float;
     public var virtual(get, set):Bool;
+    public var scrollMode(get, set):ScrollMode;
 }

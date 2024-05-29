@@ -3,6 +3,7 @@ package haxe.ui.constants;
 import haxe.ui.util.Variant;
 
 enum abstract ScrollMode(String) to String {
+	var DEFAULT = "default";
 	var NORMAL = "normal";
 	var DRAG = "drag";
 	var INERTIAL = "inertial";
@@ -11,6 +12,7 @@ enum abstract ScrollMode(String) to String {
 
 	@:from public static function fromString(s:String):ScrollMode {
 		return switch (s.toLowerCase()) {
+			case "default":     DEFAULT;
 			case "normal":      NORMAL;
 			case "drag":        DRAG;
 			case "inertial":    INERTIAL;

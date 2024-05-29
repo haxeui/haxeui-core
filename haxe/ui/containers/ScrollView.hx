@@ -52,7 +52,7 @@ class ScrollView extends InteractiveComponent implements IScroller {
     @:clonable @:behaviour(VScrollThumbSize)                        public var vscrollThumbSize:Null<Float>;
     @:clonable @:behaviour(ThumbSize)                               public var thumbSize:Null<Float>;
     @:clonable @:behaviour(DefaultBehaviour, MouseButton.LEFT)      public var scrollMouseButton:MouseButton;
-    @:clonable @:behaviour(ScrollModeBehaviour, ScrollMode.DRAG)    public var scrollMode:ScrollMode;
+    @:clonable @:behaviour(ScrollModeBehaviour, ScrollMode.DEFAULT) public var scrollMode:ScrollMode;
     @:clonable @:behaviour(ScrollPolicyBehaviour)                   public var scrollPolicy:ScrollPolicy;
     @:clonable @:behaviour(HScrollPolicyBehaviour)                  public var horizontalScrollPolicy:ScrollPolicy;
     @:clonable @:behaviour(VScrollPolicyBehaviour)                  public var verticalScrollPolicy:ScrollPolicy;
@@ -762,7 +762,7 @@ class ScrollViewEvents extends haxe.ui.events.Events {
             vscroll.registerEvent(ScrollEvent.SCROLL, onVScrollScroll);
         }
 
-        if (_scrollview.scrollMode == ScrollMode.DRAG || _scrollview.scrollMode == ScrollMode.INERTIAL || _scrollview.isHybridScroller) {
+        if (_scrollview.scrollMode == ScrollMode.DEFAULT || _scrollview.scrollMode == ScrollMode.DRAG || _scrollview.scrollMode == ScrollMode.INERTIAL || _scrollview.isHybridScroller) {
             registerEvent(MouseEvent.MIDDLE_MOUSE_DOWN, onMiddleMouseDown);
             registerEvent(MouseEvent.MOUSE_DOWN, onLeftMouseDown);
             registerEvent(MouseEvent.RIGHT_MOUSE_DOWN, onRightMouseDown);
