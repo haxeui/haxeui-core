@@ -7,6 +7,7 @@ enum abstract ScrollMode(String) to String {
 	var DRAG = "drag";
 	var INERTIAL = "inertial";
 	var HYBRID = "hybrid";
+	var NATIVE = "native";
 
 	@:from public static function fromString(s:String):ScrollMode {
 		return switch (s.toLowerCase()) {
@@ -14,6 +15,7 @@ enum abstract ScrollMode(String) to String {
 			case "drag":        DRAG;
 			case "inertial":    INERTIAL;
 			case "hybrid":      HYBRID;
+			case "native":      NATIVE;
 			case _: throw "invalid ScrollMode enum value '" + s + "'";
 		}
 	}

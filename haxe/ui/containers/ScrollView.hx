@@ -575,6 +575,8 @@ private class ScrollModeBehaviour extends DataBehaviour {
     public override function set(value:Variant) {
         if (value == ScrollMode.HYBRID) {
             _component.isHybridScroller = true;
+        } else if (value == ScrollMode.NATIVE) {
+            _component.isNativeScroller = true;
         }
         super.set(value);
     }
