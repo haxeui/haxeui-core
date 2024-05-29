@@ -102,6 +102,16 @@ class DataSource<T> {
         var item = get(index);
         return remove(item);
     }
+
+    public function removeAll():Void {
+        var originalAllowCallbacks = _allowCallbacks;
+        _allowCallbacks = false;
+        while (size > 0) {
+            removeAt(0);
+        }
+        _allowCallbacks = originalAllowCallbacks;
+        handleChanged();
+    }
     
     public function update(index:Int, item:T):T {
         var r = handleUpdateItem(index, item);
