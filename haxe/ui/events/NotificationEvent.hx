@@ -1,5 +1,6 @@
 package haxe.ui.events;
 
+import haxe.ui.notifications.NotificationData.NotificationActionData;
 import haxe.ui.notifications.Notification;
 
 class NotificationEvent extends UIEvent {
@@ -8,10 +9,12 @@ class NotificationEvent extends UIEvent {
     public static final ACTION:EventType<ScrollEvent> = EventType.name("notificationaction");
 
     public var notification:Notification = null;
+    public var actionData:NotificationActionData = null;
 
     public override function clone():NotificationEvent {
         var c:NotificationEvent = new NotificationEvent(this.type);
         c.notification = this.notification;
+        c.actionData = this.actionData;
         c.type = this.type;
         c.bubble = this.bubble;
         c.target = this.target;

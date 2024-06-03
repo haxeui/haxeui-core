@@ -92,19 +92,22 @@ class Notification extends VBox {
 
     private function onActionButton(event:MouseEvent) {
         var closeNotification = true;
-
-        var notificationEvent = new NotificationEvent(NotificationEvent.ACTION);
-        notificationEvent.notification = this;
-        dispatch(notificationEvent);
-        if (notificationEvent.canceled) {
-            closeNotification = false;
-        }
-        NotificationManager.instance.dispatch(notificationEvent, this);
-        if (notificationEvent.canceled) {
-            closeNotification = false;
-        }
-
         var actionData:NotificationActionData = event.target.userData;
+
+        if (actionData.callback == null) {
+            var notificationEvent = new NotificationEvent(NotificationEvent.ACTION);
+            notificationEvent.notification = this;
+            notificationEvent.actionData = actionData;
+            dispatch(notificationEvent);
+            if (notificationEvent.canceled) {
+                closeNotification = false;
+            }
+            NotificationManager.instance.dispatch(notificationEvent, this);
+            if (notificationEvent.canceled) {
+                closeNotification = false;
+            }
+        }
+
         if (actionData.callback != null) {
             closeNotification = actionData.callback(actionData);
         }
