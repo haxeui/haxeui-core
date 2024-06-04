@@ -49,9 +49,9 @@ class TableView extends ScrollView implements IDataComponent implements IVirtual
     @:clonable @:behaviour(DefaultBehaviour, 500)                           public var longPressSelectionTime:Int;  //ms
     @:clonable @:behaviour(GetHeader)                                       public var header:Component;
 
-    @:call(ClearTable)                                                      public function clearContents(clearHeader:Bool = false);
+    @:call(ClearTable)                                                      public function clearContents(clearHeader:Bool = false):Void;
     @:call(AddColumn)                                                       public function addColumn(text:String):Column;
-    @:call(RemoveColumn)                                                    public function removeColumn(text:String);
+    @:call(RemoveColumn)                                                    public function removeColumn(text:String):Void;
 
     @:event(ItemEvent.COMPONENT_EVENT)                                      public var onComponentEvent:ItemEvent->Void;
     @:event(SortEvent.SORT_CHANGED)                                         public var onSortChanged:SortEvent->Void;
@@ -456,6 +456,7 @@ private class Builder extends ScrollViewBuilder {
             _header = cast(child, Header);
             _header.registerEvent(UIEvent.COMPONENT_ADDED, onColumnAdded);
             _header.registerEvent(SortEvent.SORT_CHANGED, onSortChanged);
+            _header.registerEvent(UIEvent.READY, onHeaderReady);
             // if the header is hidden, it means its child columns
             // wont have a size since layouts will be skipped for them
             // this means that all rows will end up with zero-width cells
@@ -503,6 +504,14 @@ private class Builder extends ScrollViewBuilder {
         }
     }
     
+    private function onHeaderReady(_) {
+        if (_tableview.itemRenderer == null) {
+            buildDefaultRenderer();
+        } else {
+            fillExistingRenderer();
+        }
+    }
+
     public override function removeComponent(child:Component, dispose:Bool = true, invalidate:Bool = true):Component {
         if ((child is Header) == true) {
             _header = null;
@@ -656,7 +665,6 @@ private class Builder extends ScrollViewBuilder {
             }
         }
     }
-    
     
     @:access(haxe.ui.layouts.VerticalVirtualLayout)
     private function ensureVirtualItemVisible(index:Int) {
@@ -950,10 +958,12 @@ private class ClearTable extends Behaviour {
         if (param == true) {
             if (cast(_component, TableView).itemRenderer != null) {
                 cast(_component, TableView).itemRenderer.removeAllComponents();
+                cast(_component, TableView).itemRenderer = null;
             }
             var header:Header = _component.findComponent(Header);
             if (header != null) {
                 header.removeAllComponents();
+                _component.removeComponent(header);
             }
         }
         var contents = _component.findComponent("tableview-contents", Box, true, "css");
