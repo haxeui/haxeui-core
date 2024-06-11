@@ -77,6 +77,7 @@ class NotificationManager extends EventDispatcher<NotificationEvent> {
         }
 
         var notification = new Notification();
+        notification.registerEvent(UIEvent.DESTROY, onNotificationDestroyed);
         notification.notificationData = notificationData;
         if (!_isAnimating) {
             pushNotification(notification);
@@ -100,6 +101,15 @@ class NotificationManager extends EventDispatcher<NotificationEvent> {
         }
 
         popNotification(notification);
+    }
+
+    private function onNotificationDestroyed(event:UIEvent) {
+        // notifications could actually be destroyed in a variety of ways (like removing directly from Screen)
+        // if that is the case, lets clean up after ourselves and reset our internal state (if required)
+        _currentNotifications.remove(cast event.target);
+        if (_currentNotifications.length == 0) {
+            _isAnimating = false;
+        }
     }
 
     public function clearNotifications():Void {
