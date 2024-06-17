@@ -4,7 +4,7 @@ import builds.ProcessBuild;
 
 class OpenFLBuild extends ProcessBuild {
     public function new() {
-        super("openfl", ["Project.xml"]);
+        super("openfl", ["project.xml"]);
     }
 
     private override function args(params:Params):Array<String> {
@@ -18,6 +18,6 @@ class OpenFLBuild extends ProcessBuild {
         } else if (Util.mapContains("android", params.additional)) {
             target = "android";
         }
-        return ["build", "Project.xml", target];
+        return ["build", "project.xml", target];
     }
 }

@@ -2,6 +2,6 @@
     "name": "openfl-shared",
     "type": "template",
     "templates": [
-        { "src": "Project.xml", "dst": "${target}/Project.xml"}
+        { "src": "project.xml", "dst": "${target}/project.xml"}
     ]
 }

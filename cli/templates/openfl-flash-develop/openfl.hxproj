@@ -4,7 +4,7 @@
   <output>
     <movie outputType="CustomBuild" />
     <movie input="" />
-    <movie path="Project.xml" />
+    <movie path="project.xml" />
     <movie fps="60" />
     <movie width="800" />
     <movie height="600" />
