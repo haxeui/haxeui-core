@@ -1,5 +1,6 @@
 package haxe.ui.validators;
 
+import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.Component;
 
 class Validator implements IValidator {
@@ -65,12 +66,17 @@ class Validator implements IValidator {
         component.removeClasses([validStyleName, invalidStyleName], true, true);
     }
 
+    @:access(haxe.ui.core.InteractiveComponent)
     private function onValid(component:Component) {
         component.swapClass(validStyleName, invalidStyleName, true, true);
+	   // @:privateAccess(haxe.ui.core.InteractiveComponent)
+	   if (component is InteractiveComponent) cast(component, InteractiveComponent)._isComponentDataValid = true;
     }
 
+    @:access(haxe.ui.core.InteractiveComponent)
     private function onInvalid(component:Component) {
         component.swapClass(invalidStyleName, validStyleName, true, true);
+	   if (component is InteractiveComponent) cast(component, InteractiveComponent)._isComponentDataValid = false;
     }
 
     private function validateString(s:String):Null<Bool> {

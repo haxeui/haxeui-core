@@ -1,11 +1,13 @@
 package haxe.ui.containers.properties;
 
+import haxe.ui.behaviours.Behaviour;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.components.Label;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.IDataComponent;
+import haxe.ui.core.InteractiveComponent;
 import haxe.ui.core.IValueComponent;
 import haxe.ui.data.ArrayDataSource;
 import haxe.ui.data.DataSource;
@@ -21,6 +23,7 @@ class Property extends HBox implements IDataComponent {
     @:clonable @:behaviour(DefaultBehaviour)            public var min:Null<Float>;
     @:clonable @:behaviour(DefaultBehaviour)            public var max:Null<Float>;
     @:clonable @:behaviour(DefaultBehaviour)            public var precision:Null<Int>;
+    @:behaviour(DataValidBehaviour)				 public var isComponentDataValid:Bool;
 }
 
 //***********************************************************************************************************
@@ -112,6 +115,26 @@ private class PropertyValueBehaviour extends DataBehaviour {
         if (builder.actualEditor != null) {
             builder.actualEditor.value = Variant.toDynamic(_value);
         }
+    }
+}
+
+@:dox(hide) @:noCompletion
+@:access(haxe.ui.core.Component)
+private class DataValidBehaviour extends Behaviour {
+    private var _property:Property;
+
+    public function new(property:Property) {
+        super(property);
+        _property = property;
+    }
+
+    public override function get():Variant {
+		var builder = cast(_property._compositeBuilder, PropertyBuilder);
+		if (builder.editor != null && (builder.editor is InteractiveComponent)) {
+			return cast(builder.editor, InteractiveComponent).isComponentDataValid;
+		}
+		
+        return true;
     }
 }
 
