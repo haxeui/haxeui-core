@@ -331,7 +331,11 @@ private class Builder extends CompositeBuilder {
 
                 case "boolean":
                     c = new CheckBox();
-                    c.value = property.value;
+                    if (property.value != null) {
+                        c.value = property.value;
+                    } else {
+                        cast(c, CheckBox).value = property.selected;
+                    }
 
                 case "int" | "float" | "number":
                     var stepper = new NumberStepper();
@@ -370,8 +374,10 @@ private class Builder extends CompositeBuilder {
 
                 case "toggle":
                     c = new Button();
-                    cast(c, Button).toggle = true;
-                    c.value = property.value;
+                    var b:Button = cast c;
+                    b.toggle = true;
+                    b.value = property.value;
+                    b.selected = property.selected;
 
                 default:
                     c = new TextField();
