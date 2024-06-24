@@ -68,6 +68,8 @@ class Box extends Component implements IDataComponent {
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************
+    @:noCompletion private var hasDataSource:Bool; // we'll hold a flag for ease since the act of call .dataSource will create a default one (so ".dataSource == null" will always evaluate as false)
+
     private override function createDefaults() {
         super.createDefaults();
         if (_defaultLayoutClass == null) {
@@ -97,7 +99,6 @@ class Box extends Component implements IDataComponent {
 //***********************************************************************************************************
 private class Builder extends CompositeBuilder {
     private var _box:Box;
-    public var hasDataSource:Bool; // we'll hold a flag for ease since the act of call .dataSource will create a default one (so ".dataSource == null" will always evaluate as false)
 
     public function new(box:Box) {
         super(box);
@@ -107,8 +108,7 @@ private class Builder extends CompositeBuilder {
     @:access(haxe.ui.backend.ComponentImpl)
     public override function addComponent(child:Component):Component {
         if ((child is ItemRenderer) && _box.itemRenderer == null) {
-            var builder:Builder = cast(_box._compositeBuilder, Builder);
-            if (builder.hasDataSource) {
+            if (_box.hasDataSource) {
                 _box.itemRenderer = cast(child, ItemRenderer);
                 _box.itemRenderer.ready();
                 _box.itemRenderer.handleVisibility(false);
@@ -125,7 +125,7 @@ private class Builder extends CompositeBuilder {
 
     @:access(haxe.ui.backend.ComponentImpl)
     private function syncChildren() {
-        if (!hasDataSource) {
+        if (!_box.hasDataSource) {
             return;
         }
 
@@ -191,14 +191,13 @@ private class DataSourceBehaviour extends DataBehaviour {
     public override function set(value:Variant) {
         super.set(value);
         var dataSource:DataSource<Dynamic> = _value;
-        var builder:Builder = cast(_box._compositeBuilder, Builder);
         if (dataSource != null) {
-            builder.hasDataSource = true;
+            _box.hasDataSource = true;
             dataSource.onDataSourceChange = function() {
                 _box.invalidateComponentData();
             }
         } else {
-            builder.hasDataSource = false;
+            _box.hasDataSource = false;
             _box.removeAllComponents();
         }
         _box.invalidateComponentData();
@@ -208,8 +207,7 @@ private class DataSourceBehaviour extends DataBehaviour {
         if (_value == null || _value.isNull) {
             _value = new ArrayDataSource<Dynamic>();
             var dataSource:DataSource<Dynamic> = _value;
-            var builder:Builder = cast(_box._compositeBuilder, Builder);
-            builder.hasDataSource = true;
+            _box.hasDataSource = true;
             dataSource.onDataSourceChange = function() {
                 _box.invalidateComponentData();
             }
