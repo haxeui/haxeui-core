@@ -29,8 +29,6 @@ class DialogBase extends Box implements Draggable {
     public var dialogFooterContainer:haxe.ui.containers.Box;
     public var dialogFooter:haxe.ui.containers.HBox;
 
-    public var destroyOnClose:Bool = true;
-    
     public function new() {
         super();
 
@@ -86,6 +84,17 @@ class DialogBase extends Box implements Draggable {
         }
 
         registerEvent(UIEvent.SUBMIT, onSubmit);
+    }
+
+    private var _destroyOnClose:Bool = true;
+    public var destroyOnClose(get, set):Bool;
+    private function get_destroyOnClose():Bool {
+        return _destroyOnClose;
+    }
+    private function set_destroyOnClose(value:Bool) {
+        _destroyOnClose = value;
+        _allowDispose = value;
+        return value;
     }
 
     private function onSubmit(event:UIEvent) {
