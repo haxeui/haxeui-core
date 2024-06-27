@@ -32,6 +32,9 @@ class DialogBase extends Box implements Draggable {
     public function new() {
         super();
 
+        // dialogs start off "hidden" until they are shown
+        _hidden = true;
+
         dialogContainer = new haxe.ui.containers.VBox();
         dialogContainer.id = "dialog-container";
         dialogContainer.styleNames = "dialog-container";
@@ -141,9 +144,8 @@ class DialogBase extends Box implements Draggable {
     }
     
     public override function show() {
-        #if !haxeui_flixel
         handleVisibility(false);
-        #end
+        super.show();
         var dp = dialogParent;
         if (modal) {
             if (_overlay == null) {
@@ -279,7 +281,8 @@ class DialogBase extends Box implements Draggable {
                 if (event.canceled == true) {
                     return;
                 }
-                
+
+                _hidden = true;
                 if (modal && _overlay != null) {
                     if (dp != null) {
                         dp.removeComponent(_overlay, destroyOnClose);
