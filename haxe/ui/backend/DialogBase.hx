@@ -144,7 +144,9 @@ class DialogBase extends Box implements Draggable {
     }
     
     public override function show() {
+        #if !haxeui_flixel
         handleVisibility(false);
+        #end
         super.show();
         var dp = dialogParent;
         if (modal) {
