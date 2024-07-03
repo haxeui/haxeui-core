@@ -50,7 +50,7 @@ class StyleSheet {
         return _mediaQueries.length > 0;
     }
     
-    public function findRule(selector:String):RuleElement {
+    public function findRule(selector:String, useCache = false):RuleElement {
         for (r in rules) {
             if (r.selector.toString() == selector) {
                 return r;
@@ -59,7 +59,7 @@ class StyleSheet {
         return null;
     }
 
-    public function findMatchingRules(selector:String):Array<RuleElement> {
+    public function findMatchingRules(selector:String, useCache = false):Array<RuleElement> {
         var m = [];
         for (r in rules) {
             if (r.selector.toString() == selector) {

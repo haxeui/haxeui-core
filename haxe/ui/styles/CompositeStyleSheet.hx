@@ -98,9 +98,9 @@ class CompositeStyleSheet {
         return null;
     }
 
-    public function findRule(selector:String):RuleElement {
+    public function findRule(selector:String, useCache:Bool = false):RuleElement {
         for (s in _styleSheets) {
-            var el = s.findRule(selector);
+            var el = s.findRule(selector, useCache);
             if (el != null) {
                 return el;
             }
@@ -108,10 +108,17 @@ class CompositeStyleSheet {
         return null;
     }
 
-    public function findMatchingRules(selector:String):Array<RuleElement> {
+    private var _matchingRuleCache:Map<String, Array<RuleElement>> = new Map<String, Array<RuleElement>>();
+    public function findMatchingRules(selector:String, useCache = false):Array<RuleElement> {
+        if (useCache && _matchingRuleCache.exists(selector)) {
+            return _matchingRuleCache.get(selector);
+        }
         var m = [];
         for (s in _styleSheets) {
-            m = m.concat(s.findMatchingRules(selector));
+            m = m.concat(s.findMatchingRules(selector, useCache));
+        }
+        if (useCache && m.length > 0) {
+            _matchingRuleCache.set(selector, m);
         }
         return m;
     }

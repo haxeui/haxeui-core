@@ -3,12 +3,15 @@ package haxe.ui.styles;
 import haxe.ui.styles.elements.AnimationKeyFrames;
 import haxe.ui.styles.elements.AnimationKeyFrame;
 import haxe.ui.styles.elements.Directive;
+import haxe.ui.styles.elements.DirectiveExtension;
 import haxe.ui.styles.elements.ImportElement;
 import haxe.ui.styles.elements.MediaQuery;
 import haxe.ui.styles.elements.RuleElement;
 import haxe.ui.themes.ThemeManager;
 
 // based on: https://github.com/jotform/css.js/blob/master/css.js
+
+using StringTools;
 
 @:access(haxe.ui.themes.ThemeManager)
 class Parser {
@@ -172,6 +175,8 @@ class Parser {
                 return null;
             }
             d = new Directive(cssDirective, ValueTools.parse(cssValue));
+        } else if (line.startsWith(".")) {
+            d = new DirectiveExtension(line);
         } else {
             d = new Directive("", ValueTools.parse(line), true);
         }

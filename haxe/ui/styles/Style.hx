@@ -4,6 +4,7 @@ import haxe.ui.filters.Filter;
 import haxe.ui.filters.FilterParser;
 import haxe.ui.styles.animation.Animation.AnimationOptions;
 import haxe.ui.styles.elements.Directive;
+import haxe.ui.styles.elements.DirectiveExtension;
 import haxe.ui.util.Variant;
 
 enum StyleBorderType {
@@ -197,6 +198,14 @@ class Style {
     public function mergeDirectives(map:Map<String, Directive>) {
         for (key in map.keys()) {
             var v = map.get(key);
+            if ((v is DirectiveExtension)) {
+                var ruleElements = Toolkit.styleSheet.findMatchingRules(v.directive, true);
+                if (ruleElements != null) {
+                    for (ruleElement in ruleElements) {
+                        mergeDirectives(ruleElement.directives);
+                    }
+                }
+            }
 
             switch (key) {
                 case "left":
