@@ -158,13 +158,13 @@ _Note: `Screen` was used here as a universal way to add items to the application
 It is also possible for HaxeUI to take a user interface definition from a markup language (like XML) and use that to build code similar to above:
 
 ```haxe
-var main = ComponentMacros.buildComponent("assets/ui/demo/main.xml");
+var main = haxe.ui.ComponentBuilder.fromFile("assets/ui/demo/main.xml");
 Screen.instance.addComponent(main);
 ```
 If your xml isn't available at compile time you can use `Toolkit.componentFromString`:
 
 ```haxe
-var main = Toolkit.componentFromString('<vbox><button text="Button" /></vbox>', "xml");
+var main = haxe.ui.RuntimeComponentBuilder.fromString('<vbox><button text="Button" /></vbox>', "xml");
 Screen.instance.addComponent(main);
 ```
 
