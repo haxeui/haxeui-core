@@ -107,6 +107,10 @@ class Screen extends ScreenImpl {
      * @return The added component.
      */
     public override function removeComponent(component:Component, dispose:Bool = true, invalidate:Bool = true):Component {
+        if (component == null) {
+            return null;
+        }
+        
         if (@:privateAccess !component._allowDispose) {
             dispose = false;
         }

@@ -27,7 +27,7 @@ class ColorPickerPopup extends DropDown {
     }
     
     private var _liveTracking:Bool = true;
-    public var liveTracking(get, set):Bool;
+    @:clonable public var liveTracking(get, set):Bool;
     private function get_liveTracking():Bool {
         return _liveTracking;
     }
