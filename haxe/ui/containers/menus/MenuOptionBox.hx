@@ -1,11 +1,12 @@
 package haxe.ui.containers.menus;
 
+import haxe.ui.behaviours.Behaviour;
+import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.components.Label;
 import haxe.ui.components.OptionBox;
-import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.Component;
-import haxe.ui.behaviours.DataBehaviour;
-import haxe.ui.behaviours.Behaviour;
+import haxe.ui.core.CompositeBuilder;
+import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.util.Variant;
 
@@ -104,6 +105,11 @@ private class SelectedOptionBehaviour extends Behaviour {
 private class Builder extends CompositeBuilder {
     private var _optionbox:OptionBox;
 
+    public function new(component:Component) {
+        super(component);
+        component.registerEvent(MouseEvent.CLICK, onClick);
+    }
+
     public override function create() {
         _optionbox = new OptionBox();
         _optionbox.styleNames = "menuitem-optionbox";
@@ -121,5 +127,12 @@ private class Builder extends CompositeBuilder {
 
     private function onOptionboxChange(event:UIEvent) {
         _component.dispatch(event);
+    }
+
+    private function onClick(event:MouseEvent) {
+        if (_optionbox.hitTest(event.screenX, event.screenY)) {
+            return;
+        }
+        _optionbox.selected = !_optionbox.selected;
     }
 }

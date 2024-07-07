@@ -1,9 +1,11 @@
 package haxe.ui.containers.menus;
 
+import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.components.CheckBox;
 import haxe.ui.components.Label;
+import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
-import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.util.Variant;
 
@@ -73,6 +75,11 @@ private class SelectedBehaviour extends DataBehaviour {
 private class Builder extends CompositeBuilder {
     private var _checkbox:CheckBox;
 
+    public function new(component:Component) {
+        super(component);
+        component.registerEvent(MouseEvent.CLICK, onClick);
+    }
+
     public override function create() {
         _checkbox = new CheckBox();
         _checkbox.styleNames = "menuitem-checkbox";
@@ -90,5 +97,12 @@ private class Builder extends CompositeBuilder {
 
     private function onCheckboxChange(event:UIEvent) {
         _component.dispatch(event);
+    }
+
+    private function onClick(event:MouseEvent) {
+        if (_checkbox.hitTest(event.screenX, event.screenY)) {
+            return;
+        }
+        _checkbox.selected = !_checkbox.selected;
     }
 }
