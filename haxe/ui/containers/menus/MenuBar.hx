@@ -208,7 +208,7 @@ private class Events extends haxe.ui.events.Events {
         }
         
         if (hasChildren == true) {
-            _currentMenu.dispatch(new MouseEvent(MouseEvent.CLICK));
+            //_currentMenu.dispatch(new MouseEvent(MouseEvent.CLICK));
             var menuEvent = new MenuEvent(MenuEvent.MENU_OPENED);
             menuEvent.menu = _currentMenu;
             _currentMenu.dispatch(menuEvent);
