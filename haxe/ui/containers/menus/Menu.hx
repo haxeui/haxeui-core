@@ -172,20 +172,22 @@ class MenuEvents extends haxe.ui.events.Events {
             var event = new MenuEvent(MenuEvent.MENU_SELECTED);
             event.menu = _menu;
             event.menuItem = item;
-            findRootMenu().dispatch(event);
+            Timer.delay(function() {
+                findRootMenu().dispatch(event);
 
-            if (_menu.menuBar == null) {
-                var beforeCloseEvent = new UIEvent(UIEvent.BEFORE_CLOSE);
-                beforeCloseEvent.relatedComponent = item;
-                findRootMenu().dispatch(beforeCloseEvent);
-                if (beforeCloseEvent.canceled) {
-                    return;
+                if (_menu.menuBar == null) {
+                    var beforeCloseEvent = new UIEvent(UIEvent.BEFORE_CLOSE);
+                    beforeCloseEvent.relatedComponent = item;
+                    findRootMenu().dispatch(beforeCloseEvent);
+                    if (beforeCloseEvent.canceled) {
+                        return;
+                    }
+    
+                    hideMenu();
+                    removeScreenMouseDown();
                 }
-
-                hideMenu();
-                removeScreenMouseDown();
-            }
-            _menu.dispatch(new UIEvent(UIEvent.CLOSE));
+                _menu.dispatch(new UIEvent(UIEvent.CLOSE));
+            }, 100);
         }
     }
 
