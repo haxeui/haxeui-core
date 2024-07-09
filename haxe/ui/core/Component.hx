@@ -1420,6 +1420,14 @@ class Component extends ComponentImpl
         }
     }
 
+    public function toggleClass(name:String, invalidate:Bool = true, recursive:Bool = false) {
+        if (classes.indexOf(name) == -1) {
+            addClass(name, invalidate, recursive);
+        } else {
+            removeClass(name, invalidate, recursive);
+        }
+    }
+
     /**
      * A string representation of the `css` classes associated with this component
      */
