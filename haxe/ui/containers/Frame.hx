@@ -17,6 +17,7 @@ class Frame extends Box {
     @:clonable @:behaviour(CollapsedBehaviour)          public var collapsed:Bool;
     @:clonable @:value(text)                            public var value:Dynamic;
 
+    #if !haxeui_hxwidgets
     public override function set_layout(value:haxe.ui.layouts.Layout):haxe.ui.layouts.Layout {
         if ((value is Layout)) {
             super.set_layout(value);
@@ -26,6 +27,7 @@ class Frame extends Box {
         }
         return value;
     }
+    #end
 }
 
 //***********************************************************************************************************
