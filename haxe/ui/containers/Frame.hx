@@ -16,18 +16,6 @@ class Frame extends Box {
     @:clonable @:behaviour(CollapsibleBehaviour)        public var collapsible:Bool;
     @:clonable @:behaviour(CollapsedBehaviour)          public var collapsed:Bool;
     @:clonable @:value(text)                            public var value:Dynamic;
-
-    #if !haxeui_hxwidgets
-    public override function set_layout(value:haxe.ui.layouts.Layout):haxe.ui.layouts.Layout {
-        if ((value is Layout)) {
-            super.set_layout(value);
-        } else {
-            var builder:Builder = cast(this._compositeBuilder, Builder);
-            @:privateAccess builder._contents.layout = value;
-        }
-        return value;
-    }
-    #end
 }
 
 //***********************************************************************************************************
@@ -225,6 +213,15 @@ private class Builder extends CompositeBuilder {
         } else {
             //_frame.icon = null;
         }
+    }
+
+    public override function setLayout(value:haxe.ui.layouts.Layout):haxe.ui.layouts.Layout {
+        if ((value is Layout)) {
+            return null;
+        } else {
+            _contents.layout = value;
+        }
+        return value;
     }
 }
 

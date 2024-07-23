@@ -1599,6 +1599,13 @@ class Component extends ComponentImpl
             return value;
         }
 
+        if (_compositeBuilder != null) {
+            var r = _compositeBuilder.setLayout(value);
+            if (r != null) {
+                return r;
+            }
+        }
+
         if (_layout != null && Type.getClassName(Type.getClass(value)) == Type.getClassName(Type.getClass(_layout))) {
             return value;
         }

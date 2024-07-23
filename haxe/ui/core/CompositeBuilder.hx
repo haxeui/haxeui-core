@@ -107,4 +107,8 @@ class CompositeBuilder {
     private function get_isComponentClipped():Bool {
         return (_component.componentClipRect != null);
     }
+
+    public function setLayout(value:haxe.ui.layouts.Layout):haxe.ui.layouts.Layout {
+        return null;
+    }
 }
