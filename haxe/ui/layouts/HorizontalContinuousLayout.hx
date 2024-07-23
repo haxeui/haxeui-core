@@ -86,17 +86,20 @@ class HorizontalContinuousLayout extends HorizontalLayout {
         }
 
         var additionalSpacing:Array<Null<Float>> = [];
+        var frontPadding:Array<Null<Float>> = [];
         var varyingWidths:Null<Bool> = null;
         var evenlySpace = false;
         if (component.style != null && (component.style.justifyContent == "space-evenly" || component.style.justifyContent == "space-around" || component.style.justifyContent == "space-between")) {
             evenlySpace = true;
         }
         // now lets do some spacing calculations based on if we are going to justify the content or not
+        var nrow = 0;
+        var lastWidth:Null<Float> = null;
+        var largestSpacing:Float = 0;
         if (evenlySpace) {
-            var x:Int = 0;
-            var lastWidth:Null<Float> = null;
             for (r in dimensions) {
-                var isLastRow = (x == dimensions.length - 1);
+                additionalSpacing.push(0);
+                frontPadding.push(0);
                 var total:Float = 0;
                 for (c in r) {
                     total += c.width;
@@ -108,28 +111,33 @@ class HorizontalContinuousLayout extends HorizontalLayout {
                     }
                 }
                 total += horizontalSpacing * (r.length - 1);
-                if (isLastRow) {
-                    //if ()
-                    if (ucx - total <= total) {
-                        additionalSpacing.push((ucx - total) / (r.length - 1));
-                    } else {
-                        if (additionalSpacing[x - 1] != null) {
-                            additionalSpacing.push(additionalSpacing[x - 1]);
-                        }
+                var diff = ucx - total;
+                var spacing = diff / (r.length - 1);
+                var padding:Float = 0;
+                if (r.length <= 1) {
+                    spacing = 0;
+                    switch (horizontalAlign(r[0].component)) {
+                        case "center":
+                            padding = (ucx - total) / 2;
+                        case "right":
+                            padding = ucx - total;
+                        case _:
+                            padding = 0;                        
                     }
-                } else {
-                    additionalSpacing.push((ucx - total) / (r.length - 1));
                 }
-                x++;
+                if (spacing > largestSpacing) {
+                    largestSpacing = spacing;
+                }
+                additionalSpacing[nrow] = spacing;
+                frontPadding[nrow] = padding;
+                nrow++;
             }
-            if (x <= 1) {
-                if (varyingWidths == false) {
-                    var max = Math.ffloor((ucx + horizontalSpacing) / (lastWidth + horizontalSpacing));
-                    var total = (max * lastWidth) + (horizontalSpacing * (max - 1));
-                    additionalSpacing = [(ucx - total) / (max - 1)];
-                } else {
-                    additionalSpacing = [];
-                }
+        }
+
+        if (!varyingWidths) {
+            for (i in 0...additionalSpacing.length) {
+                additionalSpacing[i] = largestSpacing;
+                frontPadding[i] = 0;
             }
         }
 
@@ -138,15 +146,13 @@ class HorizontalContinuousLayout extends HorizontalLayout {
         for (r in dimensions) {
             var height:Float = heights[x];
             var rowSpacing = horizontalSpacing;
-            if (varyingWidths) {
-                if (additionalSpacing[x] != null) {
-                    rowSpacing += additionalSpacing[x];
-                }
-            } else {
-                if (additionalSpacing[0] != null) {
-                    rowSpacing += additionalSpacing[0];
-                }
+            if (additionalSpacing[x] != null) {
+                rowSpacing += additionalSpacing[x];
             }
+            var padding:Float = 0;
+            if (frontPadding[x] != null) {
+                padding = frontPadding[x];
+            }    
             var spaceX:Float = ((r.length - 1) / r.length) * rowSpacing;
             var n:Int = 0;
             for (c in r) {
@@ -164,6 +170,7 @@ class HorizontalContinuousLayout extends HorizontalLayout {
                 } else {
                     c.left += n * rowSpacing;
                 }
+                c.left += padding;
 
                 c.apply();
 
