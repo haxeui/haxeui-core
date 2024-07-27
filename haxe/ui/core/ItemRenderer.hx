@@ -225,6 +225,7 @@ class ItemRenderer extends Box {
                 valueObject = {text: value};
         }
 
+        var componentsToHide = [];
         for (f in fieldList) {
             var property:String = "value";
             var v = Reflect.getProperty(valueObject, f);
@@ -241,12 +242,14 @@ class ItemRenderer extends Box {
                         for (valueField in Reflect.fields(v)) {
                             var valueFieldValue = Reflect.field(v, valueField);
                             setComponentProperty(c, valueFieldValue, valueField);
+                            if (valueField == "hidden" && valueFieldValue == true) componentsToHide.push(c);
                         }
                     case _:
                         setComponentProperty(c, v, property);
+                        if (property == "hidden" && v == "true") componentsToHide.push(c);
                 }
 
-                //c.show();
+                c.show();
             } else if (c != null) {
                 //c.hide();
             } else if (f != "id" && f != "layout") {
@@ -255,6 +258,10 @@ class ItemRenderer extends Box {
                 } catch (e:Dynamic) {}
             } else if (Type.typeof(v) == TObject) {
                 updateValues(v);
+            }
+
+            for (c in componentsToHide) {
+                c.hide();
             }
         }
     }
