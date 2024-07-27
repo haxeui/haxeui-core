@@ -31,8 +31,8 @@ class BasicItemRenderer extends ItemRenderer {
         addComponent(hbox);
     }
 
-    private override function updateValues(value:Dynamic, fieldList:Array<String> = null) {
-        super.updateValues(value, fieldList);
+    private override function updateValues(value:Dynamic, fieldList:Array<String> = null, componentsToHide:Array<Component> = null, components:Array<Component> = null) {
+        super.updateValues(value, fieldList, componentsToHide, components);
 
         if (value != null) {
             if (value.color != null) {

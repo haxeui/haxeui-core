@@ -131,7 +131,16 @@ class ItemRenderer extends Box {
             }
         }
 
-        updateValues(_data, _fieldList);
+        var components = [];
+        var componentsToHide = [];
+        updateValues(_data, _fieldList,componentsToHide, components );
+        for (c in components) {
+            if (componentsToHide.contains(c)) {
+                c.hide();
+            } else {
+                c.show();
+            }
+        }
 
         if (autoRegisterInteractiveEvents) {
             var components = findComponents(InteractiveComponent);
@@ -208,7 +217,7 @@ class ItemRenderer extends Box {
         dispatch(e2);
     }
 
-    private function updateValues(value:Dynamic, fieldList:Array<String> = null) {
+    private function updateValues(value:Dynamic, fieldList:Array<String> = null, componentsToHide:Array<Component> = null, components:Array<Component> = null) {
         if (fieldList == null) {
             fieldList = Reflect.fields(value);
         }
@@ -225,6 +234,8 @@ class ItemRenderer extends Box {
                 valueObject = {text: value};
         }
 
+        if (componentsToHide == null) componentsToHide = [];
+        if (components == null) components = [];
         for (f in fieldList) {
             var property:String = "value";
             var v = Reflect.getProperty(valueObject, f);
@@ -236,25 +247,28 @@ class ItemRenderer extends Box {
             }
             var c:Component = findComponent(componentId, null, true);
             if (c != null && v != null) {
+                components.push(c);
                 switch (Type.typeof(v)) {
                     case TObject:
                         for (valueField in Reflect.fields(v)) {
-                            var valueFieldValue = Reflect.field(v, valueField);
+                            var valueFieldValue = Reflect.field(v, valueField);   
                             setComponentProperty(c, valueFieldValue, valueField);
+                            if (valueField == "hidden" && valueFieldValue == true) {
+                                componentsToHide.push(c);
+                            }
                         }
                     case _:
                         setComponentProperty(c, v, property);
+                        if (property == "hidden" && v == "true") {
+                            componentsToHide.push(c);
+                        }
                 }
-
-                //c.show();
-            } else if (c != null) {
-                //c.hide();
             } else if (f != "id" && f != "layout") {
                 try {
                     Reflect.setProperty(this, f, v);
                 } catch (e:Dynamic) {}
             } else if (Type.typeof(v) == TObject) {
-                updateValues(v);
+                updateValues(v, componentsToHide, components);
             }
         }
     }
