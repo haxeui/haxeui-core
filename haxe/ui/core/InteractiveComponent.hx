@@ -13,7 +13,7 @@ import haxe.ui.validators.Validators;
 **/
 @:access(haxe.ui.events.Events)
 class InteractiveComponent extends Component implements IFocusable implements IValueComponent {
-    public var actionRepeatInterval = 100;
+    public var actionRepeatInterval:Int = 100;
 
     //***********************************************************************************************************
     // Public API
