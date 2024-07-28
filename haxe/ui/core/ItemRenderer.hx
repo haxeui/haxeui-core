@@ -246,9 +246,9 @@ class ItemRenderer extends Box {
                         setComponentProperty(c, v, property);
                 }
 
-                //c.show();
+                c.show();
             } else if (c != null) {
-                //c.hide();
+                c.hide();
             } else if (f != "id" && f != "layout") {
                 try {
                     Reflect.setProperty(this, f, v);
