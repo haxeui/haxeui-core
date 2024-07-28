@@ -121,8 +121,8 @@ class ItemRenderer extends Box {
                                     fieldList.push(i.substr(4));
                                 }
                             }
-                            _fieldList = fieldList;
                         }
+                        _fieldList = fieldList;
                     } else {
                         _fieldList = ["text"];
                     }
