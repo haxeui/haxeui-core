@@ -95,6 +95,7 @@ class Macros {
 
         buildEvents(builder);
         applyProperties(builder);
+        addPropertiesToRTTI(builder);
         
         #if haxeui_macro_times
         stopTimer();
@@ -152,6 +153,42 @@ class Macros {
         #if haxeui_macro_times
         stopTimer();
         #end
+    }
+
+    static function addPropertiesToRTTI(builder:ClassBuilder) {
+        for (f in builder.fields) {
+            if (f.access.indexOf(APrivate) != -1 || f.access.indexOf(AStatic) != -1) {
+                continue;
+            }
+            if (f.name == "value") {
+                continue;
+            }
+            var isBehaviour = false;
+            for (m in f.meta) {
+                if (m.name == ":behaviour") {
+                    isBehaviour = true;
+                    break;
+                }
+            }
+            if (isBehaviour) {
+                continue;
+            }
+            var t = switch (f.kind) {
+                case FVar(t, _): t;
+                case FProp(_, _, t, _): t;
+                case _: null;
+            }
+
+            if (t != null) {
+                var allowed = switch (t) {
+                    case TFunction(args, ret): false;
+                    case _: true;
+                }
+                if (allowed) {
+                    RTTI.addClassProperty(builder.fullPath, f.name, ComplexTypeTools.toString(t));
+                }
+            }
+        }
     }
     
     static function buildFromXmlMeta(builder:ClassBuilder) {
@@ -579,14 +616,6 @@ class Macros {
                 resolvedValueField = f;
                 break;
             }
-        }
-
-        // "hidden" isnt actually a behaviour (currently), however, we would like it in the RTTI so we can do
-        // automatic type conversions, but since its just a normal getter / setter it will never be included
-        // in this code, so we'll add it manually - it might make sense later to have some @:add-rtti type
-        // metadata, but for now, an explicit, obvious list is clearer
-        if (builder.fullPath == "haxe.ui.core.Component") {
-            RTTI.addClassProperty(builder.fullPath, "hidden", "bool");
         }
 
         for (f in fields) {
