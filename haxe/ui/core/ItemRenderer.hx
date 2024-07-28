@@ -9,12 +9,14 @@ import haxe.ui.events.ItemRendererEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.util.Color;
+import haxe.ui.util.StringUtil;
 import haxe.ui.util.TypeConverter;
 import haxe.ui.util.Variant;
 
 class ItemRenderer extends Box {
     @:clonable public var autoRegisterInteractiveEvents:Bool = true;
     @:clonable public var recursiveStyling:Bool = false;
+    @:clonable public var allowLayoutProperties:Bool = true;
     
     public function new() {
         super();
@@ -245,16 +247,31 @@ class ItemRenderer extends Box {
                     case _:
                         setComponentProperty(c, v, property);
                 }
-
-                //c.show();
-            } else if (c != null) {
-                //c.hide();
-            } else if (f != "id" && f != "layout") {
-                try {
-                    Reflect.setProperty(this, f, v);
-                } catch (e:Dynamic) {}
             } else if (Type.typeof(v) == TObject) {
                 updateValues(v);
+            } else {
+                var isLayoutProp = false;
+                if (f == "layout") {
+                    f = "layoutName";
+                } else {
+                    isLayoutProp = StringTools.startsWith(f, "layout");
+                }
+                if (!isLayoutProp) {
+                    try {
+                        Reflect.setProperty(this, f, v);
+                    } catch (e:Dynamic) {
+                        trace(e);
+                    }
+                } else if (allowLayoutProperties) {
+                    var layoutProp = StringUtil.uncapitalizeFirstLetter(f.substring("layout".length));
+                    if (this.layout != null) {
+                        try {
+                            Reflect.setProperty(this.layout, layoutProp, v);
+                        } catch (e:Dynamic) {
+                            trace(e);
+                        }
+                    }
+                }
             }
         }
     }
