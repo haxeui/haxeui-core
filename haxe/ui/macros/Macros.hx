@@ -581,6 +581,14 @@ class Macros {
             }
         }
 
+        // "hidden" isnt actually a behaviour (currently), however, we would like it in the RTTI so we can do
+        // automatic type conversions, but since its just a normal getter / setter it will never be included
+        // in this code, so we'll add it manually - it might make sense later to have some @:add-rtti type
+        // metadata, but for now, an explicit, obvious list is clearer
+        if (builder.fullPath == "haxe.ui.core.Component") {
+            RTTI.addClassProperty(builder.fullPath, "hidden", "bool");
+        }
+
         for (f in fields) {
             RTTI.addClassProperty(builder.fullPath, f.name, ComplexTypeTools.toString(f.type));
             if (f.name == valueField) {
