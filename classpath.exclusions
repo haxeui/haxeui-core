@@ -14,3 +14,10 @@
 \/swf\/.*\/src\/.*$
 
 \/hxnodejs\/
+\/hxcpp\/
+
+# some common things that shouldnt be on the classpath, but sometimes seem to be ¯\_(ツ)_/¯
+\/node_modules\/
+\/export\/
+\/build\/
+\/dump\/
