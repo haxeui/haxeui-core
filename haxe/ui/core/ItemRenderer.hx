@@ -259,17 +259,13 @@ class ItemRenderer extends Box {
                 if (!isLayoutProp) {
                     try {
                         Reflect.setProperty(this, f, v);
-                    } catch (e:Dynamic) {
-                        trace(e);
-                    }
+                    } catch (e:Dynamic) { }
                 } else if (allowLayoutProperties) {
                     var layoutProp = StringUtil.uncapitalizeFirstLetter(f.substring("layout".length));
                     if (this.layout != null) {
                         try {
                             Reflect.setProperty(this.layout, layoutProp, v);
-                        } catch (e:Dynamic) {
-                            trace(e);
-                        }
+                        } catch (e:Dynamic) { }
                     }
                 }
             }
