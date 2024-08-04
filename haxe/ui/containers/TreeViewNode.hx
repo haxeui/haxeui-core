@@ -52,6 +52,52 @@ class TreeViewNode extends VBox {
         return parts.join("/");
     }
     
+    public function findNodes(fieldValue:Any, fieldName:String = null):Array<TreeViewNode> {
+        if (fieldName == null) { // lets try to guess a field to use
+            fieldName = "text";
+        }
+
+        var foundNodes = [];
+        if (Reflect.hasField(this.data, fieldName)) {
+            var nodeFieldValue = Reflect.field(this.data, fieldName);
+            if (nodeFieldValue == fieldValue) {
+                foundNodes.push(this);
+            }
+        }
+
+        for (child in getNodes()) {
+            var childNodesFound = child.findNodes(fieldValue, fieldName);
+            if (childNodesFound != null && childNodesFound.length > 0) {
+                foundNodes = foundNodes.concat(childNodesFound);
+            }
+        }
+
+        return foundNodes;
+    }
+
+    public function findNode(fieldValue:Any, fieldName:String = null):TreeViewNode {
+        if (fieldName == null) { // lets try to guess a field to use
+            fieldName = "text";
+        }
+
+        if (Reflect.hasField(this.data, fieldName)) {
+            var nodeFieldValue = Reflect.field(this.data, fieldName);
+            if (nodeFieldValue == fieldValue) {
+                return this;
+            }
+        }
+
+        var foundNode = null;
+        for (child in getNodes()) {
+            foundNode = child.findNode(fieldValue, fieldName);
+            if (foundNode != null) {
+                break;
+            }
+        }
+
+        return foundNode;
+    }
+
     public function findNodeByPath(path:String, field:String = null):TreeViewNode {
         var foundNode = null;
         

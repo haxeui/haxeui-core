@@ -95,6 +95,30 @@ class TreeView extends ScrollView implements IDataComponent {
         return value;
     }
     
+    public function findNodes(fieldValue:Any, fieldName:String = null):Array<TreeViewNode> {
+        var foundNodes = [];
+        for (child in getNodes()) {
+            var childNodesFound = child.findNodes(fieldValue, fieldName);
+            if (childNodesFound != null && childNodesFound.length > 0) {
+                foundNodes = foundNodes.concat(childNodesFound);
+            }
+        }
+        return foundNodes;
+    }
+
+    public function findNode(fieldValue:Any, fieldName:String = null):TreeViewNode {
+        var foundNode = null;
+
+        for (child in getNodes()) {
+            foundNode = child.findNode(fieldValue, fieldName);
+            if (foundNode != null) {
+                break;
+            }
+        }
+
+        return foundNode;
+    }
+
     public function findNodeByPath(path:String, field:String = null):TreeViewNode {
         var foundNode = null;
         
