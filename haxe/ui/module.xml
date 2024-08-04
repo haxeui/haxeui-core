@@ -319,6 +319,8 @@
         <cssFilter name="contrast" class="haxe.ui.filters.Contrast" />
         <cssFilter name="hue-rotate" class="haxe.ui.filters.HueRotate" />
         <cssFilter name="saturate" class="haxe.ui.filters.Saturate" />
+        <cssFilter name="brightness" class="haxe.ui.filters.Brightness" />
+        <cssFilter name="invert" class="haxe.ui.filters.Invert" />
     </cssExtensions>
 
     <actions>
