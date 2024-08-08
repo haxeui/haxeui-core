@@ -80,12 +80,12 @@ private class CurrentItemBehaviour extends DataBehaviour {
         _menu.currentIndex = index;
 
         for (child in _menu.childComponents) {
-            child.removeClass(":hover", true, true);
+            //child.removeClass(":hover", true, true);
         }
 
         var item:Component = _value;
         if (menuItem != null) {
-            menuItem.addClass(":hover", true, true);
+            //menuItem.addClass(":hover", true, true);
         }
     }
 }
@@ -102,7 +102,7 @@ class MenuEvents extends haxe.ui.events.Events {
     public var currentSubMenu:Menu = null;
     public var parentMenu:Menu = null;
 
-    private static inline var TIME_MOUSE_OPENS_MS:Int =400;
+    private static inline var TIME_MOUSE_OPENS_MS:Int = 400;
     private var _timer:Timer = null;
 
     public var button:Button = null;
