@@ -172,6 +172,11 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
         return super.set_currentColor(value);
     }
 
+    private override function onReady() {
+        super.onReady();
+        saturationValueGraph.invalidateComponentLayout();
+    }
+
     private override function onCurrentColorChanged() {
         invalidateComponentData();
     }
