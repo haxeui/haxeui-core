@@ -81,7 +81,7 @@ private class ColorPickerImpl extends Box {
     private override function onInitialize() {
         super.onInitialize();
         if (_currentColor == null) {
-            currentColor = 0xff0000;
+            //currentColor = 0xff0000;
         }
     }
     private function onStyleClassChanged() {
@@ -110,34 +110,34 @@ private class ColorPickerImpl extends Box {
                         <label text="{{hue}}" styleName="text-tiny" />
                         <slider id="sliderHue" max="360" allowFocus="false" styleName="simple-slider" />
                         <spacer width="5" />
-                        <textfield id="inputHue" restrictChars="0-9" styleName="text-tiny" />
+                        <textfield id="inputHue" restrictChars="0-9" styleName="text-tiny" allowFocus="false" />
                         
                         <label text="{{saturation}}" styleName="text-tiny" />
                         <slider id="sliderSaturation" allowFocus="false" styleName="simple-slider" />
                         <spacer width="5" />
-                        <textfield id="inputSaturation" restrictChars="0-9" styleName="text-tiny" />
+                        <textfield id="inputSaturation" restrictChars="0-9" styleName="text-tiny" allowFocus="false" />
                         
                         <label text="{{brightness}}" styleName="text-tiny" />
                         <slider id="sliderValue" allowFocus="false" styleName="simple-slider" />
                         <spacer width="5" />
-                        <textfield id="inputValue" restrictChars="0-9" styleName="text-tiny" />
+                        <textfield id="inputValue" restrictChars="0-9" styleName="text-tiny" allowFocus="false" />
                     </grid>
                     
                     <grid id="rgbControls" columns="4" width="100%" style="spacing:0">
                         <label text="{{red}}" styleName="text-tiny" />
                         <slider id="sliderRed" max="255" allowFocus="false" styleName="simple-slider" />
                         <spacer width="5" />
-                        <textfield id="inputRed" restrictChars="0-9" styleName="text-tiny" />
+                        <textfield id="inputRed" restrictChars="0-9" styleName="text-tiny" allowFocus="false" />
                         
                         <label text="{{green}}" styleName="text-tiny" />
                         <slider id="sliderGreen" max="255" allowFocus="false" styleName="simple-slider" />
                         <spacer width="5" />
-                        <textfield id="inputGreen" restrictChars="0-9" styleName="text-tiny" />
+                        <textfield id="inputGreen" restrictChars="0-9" styleName="text-tiny" allowFocus="false" />
                         
                         <label text="{{blue}}" styleName="text-tiny" />
                         <slider id="sliderBlue" max="255" allowFocus="false" styleName="simple-slider" />
                         <spacer width="5" />
-                        <textfield id="inputBlue" restrictChars="0-9" styleName="text-tiny" />
+                        <textfield id="inputBlue" restrictChars="0-9" styleName="text-tiny" allowFocus="false" />
                     </grid>
                 </stack>
                 <image id="nextControls" verticalAlign="center" style="pointer-events:true" onclick="controlsStack.nextPage()" />
@@ -148,7 +148,7 @@ private class ColorPickerImpl extends Box {
                     <box id="colorPreview" width="100%" height="100%" style="background-color: #ff0000">
                     </box>
                 </box>    
-                <textfield horizontalAlign="center" id="inputHex" text="FF0000" styleName="text-tiny" />
+                <textfield horizontalAlign="center" id="inputHex" styleName="text-tiny" allowFocus="false" />
             </vbox>    
         </hbox>    
     </vbox>    
@@ -162,6 +162,7 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
         super();
         saturationValueGraph.componentGraphics.setProperty("html5.graphics.method", "canvas");
         hueGraph.componentGraphics.setProperty("html5.graphics.method", "canvas");
+        pauseEvent(UIEvent.CHANGE);
         currentColor = 0xFF0000;
     }
     
@@ -177,6 +178,9 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
     
     private override function validateComponentData() {
         super.validateComponentData();
+        if (_currentColorRGBF == null) {
+            return;
+        }
         _currentColorRGBF.r = Math.fround(_currentColorRGBF.r);
         _currentColorRGBF.g = Math.fround(_currentColorRGBF.g);
         _currentColorRGBF.b = Math.fround(_currentColorRGBF.b);
@@ -218,6 +222,8 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
             _lastColor = _currentColor;
             dispatch(new UIEvent(UIEvent.CHANGE));
         }
+
+        resumeEvent(UIEvent.CHANGE);
     }
     
     @:bind(this, UIEvent.SHOWN)
@@ -229,6 +235,9 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
     private var _saturationValueGraphBytes:Bytes = null;
     private var _saturationValueGraphLastHue:Null<Float> = null;
     private function updateSaturationValueGraph() {
+        if (_currentColorHSV == null) {
+            return;
+        }
         var cx:Int = Std.int(saturationValueGraph.width);
         var cy:Int = Std.int(saturationValueGraph.height);
         if (cx <= 0 || cy <= 0) {
@@ -388,6 +397,9 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
     ///////////////////////////////////////////////////////////////////////////////////
     @:bind(sliderHue, UIEvent.CHANGE)
     private function onHueSliderChanged(_) {
+        if (_currentColorHSV == null) {
+            return;
+        }
         applyHSV({h: sliderHue.pos, s: _currentColorHSV.s, v: _currentColorHSV.v });
     }
     
@@ -408,6 +420,9 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
     
     @:bind(sliderSaturation, UIEvent.CHANGE)
     private function onSaturationSliderChanged(_) {
+        if (_currentColorHSV == null) {
+            return;
+        }
         applyHSV({h: _currentColorHSV.h, s: sliderSaturation.pos, v: _currentColorHSV.v });
     }
 
@@ -428,6 +443,9 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
     
     @:bind(sliderValue, UIEvent.CHANGE)
     private function onValueSliderChanged(_) {
+        if (_currentColorHSV == null) {
+            return;
+        }
         applyHSV({h: _currentColorHSV.h, s: _currentColorHSV.s, v: sliderValue.pos });
     }
     
@@ -451,6 +469,9 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
     ///////////////////////////////////////////////////////////////////////////////////
     @:bind(sliderRed, UIEvent.CHANGE)
     private function onRedSliderChanged(_) {
+        if (_currentColorRGBF == null) {
+            return;
+        }
         applyHSV(ColorUtil.rgbfToHSV(sliderRed.pos, _currentColorRGBF.g, _currentColorRGBF.b));
     }
 
@@ -471,6 +492,9 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
     
     @:bind(sliderGreen, UIEvent.CHANGE)
     private function onGreenSliderChanged(_) {
+        if (_currentColorRGBF == null) {
+            return;
+        }
         applyHSV(ColorUtil.rgbfToHSV(_currentColorRGBF.r, sliderGreen.pos, _currentColorRGBF.b));
     }
 
@@ -491,6 +515,9 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
 
     @:bind(sliderBlue, UIEvent.CHANGE)
     private function onBlueSliderChanged(_) {
+        if (_currentColorRGBF == null) {
+            return;
+        }
         applyHSV(ColorUtil.rgbfToHSV(_currentColorRGBF.r, _currentColorRGBF.g, sliderBlue.pos));
     }
 
