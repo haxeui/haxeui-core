@@ -163,7 +163,7 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
         saturationValueGraph.componentGraphics.setProperty("html5.graphics.method", "canvas");
         hueGraph.componentGraphics.setProperty("html5.graphics.method", "canvas");
         pauseEvent(UIEvent.CHANGE);
-        currentColor = 0xFF0000;
+        currentColor = 0x000000;
     }
     
     private override function set_currentColor(value:Null<Color>):Null<Color> {
