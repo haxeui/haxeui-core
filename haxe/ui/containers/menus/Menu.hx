@@ -221,7 +221,7 @@ class MenuEvents extends haxe.ui.events.Events {
         if (subMenus.get(item) != null) {
             _menu.currentItem = item;
             lastEventSubMenu = event;
-            _timer = new Timer(TIME_MOUSE_OPENS_MS, function f() { 
+            _timer = new Timer(TIME_MOUSE_OPENS_MS, function() { 
                 showSubMenu(cast(subMenus.get(item), Menu), item);
                 _timer.stop();
                 _timer = null;
@@ -290,6 +290,7 @@ class MenuEvents extends haxe.ui.events.Events {
         var componentOffset = source.getComponentOffset();
         var left = source.screenLeft + source.actualComponentWidth + componentOffset.x;
         var top = source.screenTop;
+        subMenu.handleVisibility(false);
         Screen.instance.addComponent(subMenu);
         subMenu.validateNow();
 
@@ -316,6 +317,9 @@ class MenuEvents extends haxe.ui.events.Events {
         subMenu.top = top - offsetY;
 
         currentSubMenu = subMenu;
+        Toolkit.callLater(() -> {
+            subMenu.handleVisibility(true);
+        });
     }
 
     private function hideMenu() {
