@@ -247,7 +247,7 @@ class ItemPickerBuilder extends CompositeBuilder {
 
     private var _panelFiller:Component = null;
     public function showPanel() {
-        if (panel == null || panelContainer == null) {
+        if (panel == null || panelContainer == null || picker.isPanelOpen) {
             return;
         }
 
@@ -381,6 +381,9 @@ class ItemPickerBuilder extends CompositeBuilder {
     }
 
     public function hidePanel() {
+        if (!picker.isPanelOpen) {
+            return;
+        }
         picker.isPanelOpen = false;
 
         if (picker.animatable) {
