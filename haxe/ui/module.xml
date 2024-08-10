@@ -75,7 +75,7 @@
             <var name="normal-background-color-start" value="#fdfdfd" />
             <var name="normal-background-color-end" value="#f6f6f6" />
             <var name="normal-border-color" value="#d2d2d2" />
-            <var name="normal-text-color" value="#666666" />
+            <var name="normal-text-color" value="#777777" />
             <var name="normal-border-size" value="1px" />
             <var name="normal-border-radius" value="2px" />
             <var name="normal-inner-shadow" value="drop-shadow(1, 45, #888888, 0.1, 1, 1, 1, 3, true)" />
