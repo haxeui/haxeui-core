@@ -286,8 +286,6 @@ class ItemPickerBuilder extends CompositeBuilder {
     }
 
     private function positionPanel() {
-        var panelPosition = "down";
-        var panelOrigin = "left";
         var panelPosition = picker.panelPosition;
         var panelOrigin = picker.panelOrigin;
         var panelWidth:Null<Float> = picker.width;
