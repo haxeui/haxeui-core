@@ -294,10 +294,14 @@ class ItemPickerBuilder extends CompositeBuilder {
         }
 
         if (panelPosition == "auto") {
-            if (picker.screenTop + picker.height + panelHeight > Screen.instance.height) {
-                panelPosition = "up";
-            } else {
+            if (picker.screenTop + picker.height + panelHeight <= Screen.instance.height) {
                 panelPosition = "down";
+            } else if (picker.screenTop + picker.height - panelHeight > 0) {
+                panelPosition = "up";
+            } else if (picker.screenTop + picker.height/2 <= Screen.instance.height/2  ) {
+                panelPosition = "down";
+            } else {
+                panelPosition = "up";
             }
         }
 
