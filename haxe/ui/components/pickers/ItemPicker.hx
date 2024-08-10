@@ -237,7 +237,7 @@ class ItemPickerBuilder extends CompositeBuilder {
 
     private function onTrigger(event:UIEvent) {
         //event.cancel();
-        if (!_panelVisible) {
+        if (!picker.isPanelOpen) {
             picker.focus = true;
             showPanel();
         } else {
@@ -245,7 +245,6 @@ class ItemPickerBuilder extends CompositeBuilder {
         }
     }
 
-    private var _panelVisible:Bool = false;
     private var _panelFiller:Component = null;
     public function showPanel() {
         if (panel == null || panelContainer == null) {
@@ -280,7 +279,6 @@ class ItemPickerBuilder extends CompositeBuilder {
             panelContainer.opacity = 1;
         }
         Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
-        _panelVisible = true;
 
         resumePanelEvents();
     }
@@ -404,7 +402,6 @@ class ItemPickerBuilder extends CompositeBuilder {
             Screen.instance.removeComponent(panelContainer, false);
             Screen.instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
         }
-        _panelVisible = false;
     }
 
     private function onScreenMouseDown(event:MouseEvent) {
