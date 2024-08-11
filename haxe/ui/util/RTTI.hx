@@ -174,9 +174,6 @@ class RTTI {
     }
 
     private static function isPrimitiveProperty(prop:RTTIProperty):Bool {
-        if (prop.propertyName == "data") {
-            return false;
-        }
         if (prop.propertyType == "bool" || prop.propertyType == "int" || prop.propertyType == "float" || prop.propertyType == "string" || prop.propertyType == "variant" || prop.propertyType == "dynamic") {
             return true;
         }

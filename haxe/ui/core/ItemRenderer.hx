@@ -264,8 +264,13 @@ class ItemRenderer extends Box {
                 }
                 if (!isLayoutProp) {
                     try {
-                        if (RTTI.hasPrimitiveClassProperty(this.className, f)) {
-                            Reflect.setProperty(this, f, v);
+                        // "data" is a special case exception here as if the item renderer contained a "data" property
+                        // it would overwrite the item renderers data property, which is, for sure, NOT 
+                        // what we want to happen... ever.
+                        if (f != "data") {
+                            if (RTTI.hasPrimitiveClassProperty(this.className, f)) {
+                                Reflect.setProperty(this, f, v);
+                            }
                         }
                     } catch (e:Dynamic) { }
                 } else if (allowLayoutProperties) {
