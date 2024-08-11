@@ -237,7 +237,7 @@ class ItemPickerBuilder extends CompositeBuilder {
 
     private function onTrigger(event:UIEvent) {
         //event.cancel();
-        if (!_panelVisible) {
+        if (!picker.isPanelOpen) {
             picker.focus = true;
             showPanel();
         } else {
@@ -245,10 +245,9 @@ class ItemPickerBuilder extends CompositeBuilder {
         }
     }
 
-    private var _panelVisible:Bool = false;
     private var _panelFiller:Component = null;
     public function showPanel() {
-        if (panel == null || panelContainer == null) {
+        if (panel == null || panelContainer == null || picker.isPanelOpen) {
             return;
         }
 
@@ -280,14 +279,11 @@ class ItemPickerBuilder extends CompositeBuilder {
             panelContainer.opacity = 1;
         }
         Screen.instance.registerEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
-        _panelVisible = true;
 
         resumePanelEvents();
     }
 
     private function positionPanel() {
-        var panelPosition = "down";
-        var panelOrigin = "left";
         var panelPosition = picker.panelPosition;
         var panelOrigin = picker.panelOrigin;
         var panelWidth:Null<Float> = picker.width;
@@ -298,10 +294,14 @@ class ItemPickerBuilder extends CompositeBuilder {
         }
 
         if (panelPosition == "auto") {
-            if (picker.screenTop + picker.height + panelHeight > Screen.instance.height) {
-                panelPosition = "up";
-            } else {
+            if (picker.screenTop + picker.height + panelHeight <= Screen.instance.height) {
                 panelPosition = "down";
+            } else if (picker.screenTop + picker.height - panelHeight > 0) {
+                panelPosition = "up";
+            } else if (picker.screenTop + picker.height/2 <= Screen.instance.height/2  ) {
+                panelPosition = "down";
+            } else {
+                panelPosition = "up";
             }
         }
 
@@ -385,6 +385,9 @@ class ItemPickerBuilder extends CompositeBuilder {
     }
 
     public function hidePanel() {
+        if (!picker.isPanelOpen) {
+            return;
+        }
         picker.isPanelOpen = false;
 
         if (picker.animatable) {
@@ -406,7 +409,6 @@ class ItemPickerBuilder extends CompositeBuilder {
             Screen.instance.removeComponent(panelContainer, false);
             Screen.instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
         }
-        _panelVisible = false;
     }
 
     private function onScreenMouseDown(event:MouseEvent) {
