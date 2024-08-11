@@ -96,7 +96,21 @@ class RTTI {
     }
     
     public static function hasClassProperty(className:String, propertyName:String) {
-        return getClassProperty(className, propertyName) != null;
+        var props = getClassProperties(className, false, true);
+        if (props == null) {
+            return false;
+        }
+
+        return props.exists(propertyName);
+    }
+    
+    public static function hasPrimitiveClassProperty(className:String, propertyName:String) {
+        var props = getClassProperties(className, true, true);
+        if (props == null) {
+            return false;
+        }
+
+        return props.exists(propertyName);
     }
     
     public static function load() {
@@ -113,6 +127,62 @@ class RTTI {
         classInfo = unserializer.unserialize();
     }
     
+    private static var _allPropertiesCache:Map<String, Map<String, RTTIProperty>> = new Map<String, Map<String, RTTIProperty>>();
+    public static function getClassProperties(className:String, primitiveOnly:Bool = false, allProperties:Bool = true):Map<String, RTTIProperty> {
+        className = className.toLowerCase();
+
+        var cacheKey = className + "_" + primitiveOnly;
+
+        if (allProperties && _allPropertiesCache.exists(cacheKey)) {
+            return _allPropertiesCache.get(cacheKey);
+        }
+
+        var entry = classInfo.get(className);
+        var properties = null;
+        if (entry != null) {
+            properties = new Map<String, RTTIProperty>();
+            for (key in entry.properties.keys()) {
+                var entryProp = entry.properties.get(key);
+                if (!isPrimitiveProperty(entryProp)) {
+                    continue;
+                }
+                properties.set(key, entryProp);
+            }
+
+            var superClass = entry.superClass;
+            while (superClass != null) {
+                var superEntry = getClassInfo(superClass);
+                if (superEntry == null) {
+                    break;
+                }
+                for (key in superEntry.properties.keys()) {
+                    var entryProp = superEntry.properties.get(key);
+                    if (!isPrimitiveProperty(entryProp)) {
+                        continue;
+                    }
+                    properties.set(key, entryProp);
+                }
+                superClass = superEntry.superClass;
+            }
+        }
+
+        if (allProperties && properties != null) {
+            _allPropertiesCache.set(cacheKey, properties);
+        }
+
+        return properties;
+    }
+
+    private static function isPrimitiveProperty(prop:RTTIProperty):Bool {
+        if (prop.propertyName == "data") {
+            return false;
+        }
+        if (prop.propertyType == "bool" || prop.propertyType == "int" || prop.propertyType == "float" || prop.propertyType == "string" || prop.propertyType == "variant" || prop.propertyType == "dynamic") {
+            return true;
+        }
+        return false;
+    }
+
     public static function getClassInfo(className:String):RTTIEntry {
         load();
         

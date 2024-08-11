@@ -31,8 +31,8 @@ class BasicItemRenderer extends ItemRenderer {
         addComponent(hbox);
     }
 
-    private override function updateValues(value:Dynamic, fieldList:Array<String> = null) {
-        super.updateValues(value, fieldList);
+    private override function updateValues(value:Dynamic, fieldList:Array<String> = null, currentRecursionLevel:Null<Int> = 0) {
+        super.updateValues(value, fieldList, currentRecursionLevel);
 
         if (_label.text != null) {
             _label.show();

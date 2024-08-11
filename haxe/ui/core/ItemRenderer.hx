@@ -1,5 +1,6 @@
 package haxe.ui.core;
 
+import haxe.ui.util.RTTI;
 import haxe.ui.components.Image;
 import haxe.ui.components.Label;
 import haxe.ui.containers.Box;
@@ -17,6 +18,7 @@ class ItemRenderer extends Box {
     @:clonable public var autoRegisterInteractiveEvents:Bool = true;
     @:clonable public var recursiveStyling:Bool = false;
     @:clonable public var allowLayoutProperties:Bool = true;
+    @:clonable public var maxRecursionLevel:Null<Int> = 5;
     
     public function new() {
         super();
@@ -210,7 +212,11 @@ class ItemRenderer extends Box {
         dispatch(e2);
     }
 
-    private function updateValues(value:Dynamic, fieldList:Array<String> = null) {
+    private function updateValues(value:Dynamic, fieldList:Array<String> = null, currentRecursionLevel:Null<Int> = 0) {
+        if (currentRecursionLevel > maxRecursionLevel) {
+            return;
+        }
+
         if (fieldList == null) {
             fieldList = Reflect.fields(value);
         }
@@ -248,7 +254,7 @@ class ItemRenderer extends Box {
                         setComponentProperty(c, v, property);
                 }
             } else if (Type.typeof(v) == TObject) {
-                updateValues(v);
+                updateValues(v, null, currentRecursionLevel + 1);
             } else {
                 var isLayoutProp = false;
                 if (f == "layout") {
@@ -258,7 +264,9 @@ class ItemRenderer extends Box {
                 }
                 if (!isLayoutProp) {
                     try {
-                        Reflect.setProperty(this, f, v);
+                        if (RTTI.hasPrimitiveClassProperty(this.className, f)) {
+                            Reflect.setProperty(this, f, v);
+                        }
                     } catch (e:Dynamic) { }
                 } else if (allowLayoutProperties) {
                     var layoutProp = StringUtil.uncapitalizeFirstLetter(f.substring("layout".length));
