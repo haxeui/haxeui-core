@@ -101,7 +101,7 @@ class RTTI {
             return false;
         }
 
-        return props.exists(propertyName);
+        return props.exists(propertyName.toLowerCase());
     }
     
     public static function hasPrimitiveClassProperty(className:String, propertyName:String) {
@@ -110,7 +110,7 @@ class RTTI {
             return false;
         }
 
-        return props.exists(propertyName);
+        return props.exists(propertyName.toLowerCase());
     }
     
     public static function load() {

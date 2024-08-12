@@ -1434,7 +1434,7 @@ class Component extends ComponentImpl
     private var _styleNames:String = null;
     private var _styleNamesList:Array<String> = null;
     @:dox(group = "Style related properties and methods")
-    @clonable public var styleNames(get, set):String;
+    @:clonable public var styleNames(get, set):String;
     private function get_styleNames():String {
         return _styleNames;
     }
