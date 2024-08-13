@@ -108,6 +108,13 @@ private class EnsureVisible extends DefaultBehaviour {
             return null;
         }
 
+        if (!scrollview.isReady) {
+            scrollview.registerEvent(UIEvent.READY, function f(_) {
+                scrollview.ensureVisible(c);
+            });
+            return null;
+        }
+
         var hscroll:HorizontalScroll = scrollview.findComponent(HorizontalScroll, false);
         var hscrollPos:Float = 0;
         if (hscroll != null) {
