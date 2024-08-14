@@ -1675,7 +1675,7 @@ class Component extends ComponentImpl
             behaviours.ready();
             behaviours.update();
             Toolkit.callLater(function() {
-                invalidateComponentData();
+               // invalidateComponentData();
                 invalidateComponentStyle();
 
                 if (_compositeBuilder != null) {
