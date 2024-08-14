@@ -262,6 +262,9 @@ private class ResourceBehaviour extends DataBehaviour {
             _component.addComponent(image);
         } else {
             ImageLoader.instance.load(_value, function(imageInfo) {
+                if (_component == null) {
+                    return;
+                }
                 if (imageInfo != null) {
                     if (_value == null || _value.isNull) { // its possible that while loading the image (async) its been set to null, lets honour it
                         _component.removeImageDisplay();
