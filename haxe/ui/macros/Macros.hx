@@ -848,12 +848,20 @@ class Macros {
                     }, false, true);
                 }
             } else {
+                var getterExpr = macro this.$propName;
+                var setterExpr = macro this.$propName = value;
+                var parts = propName.split(".");
+                if (parts.length > 1) {
+                    propName = parts[1];
+                    getterExpr = macro $i{parts[0]}.$propName;
+                    setterExpr = macro $i{parts[0]}.$propName = value;
+                }
                 builder.addGetter(f.name, macro: Dynamic, macro {
-                    return $i{propName};
+                    return $e{getterExpr};
                 }, false, true);
 
                 builder.addSetter(f.name, macro: Dynamic, macro {
-                    $i{propName} = value;
+                    this.$propName = value;
                     return value;
                 }, false, true);
             }
