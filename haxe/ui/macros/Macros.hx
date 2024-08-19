@@ -398,6 +398,7 @@ class Macros {
         var stopTimer = Context.timer("build property binding");
         #end
 
+        var hasField = builder.hasField(f.name, true);
         var hasGetter = builder.findFunction("get_" + f.name) != null;
         var hasSetter = builder.findFunction("set_" + f.name) != null;
 
@@ -409,14 +410,14 @@ class Macros {
         if (hasGetter == false) {
             builder.addGetter(f.name, f.type, macro {
                 return $i{variable}.$field;
-            });
+            }, null, !hasField, hasField);
         }
 
         if (hasSetter == false) {
             builder.addSetter(f.name, f.type, macro {
                 $i{variable}.$field = value;
                 return value;
-            });
+            }, null, !hasField, hasField);
         }
 
         if (f.expr != null) {
