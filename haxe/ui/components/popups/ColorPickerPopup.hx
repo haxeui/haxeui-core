@@ -13,7 +13,7 @@ import haxe.ui.util.Color;
 <dropdown type="color" width="65">
     <item-renderer width="100%">
         <box id="selectedColorPreviewContainer" width="100%">
-            <box id="selectedColorPreview" width="100%" style="background-color:#ff0000">
+            <box id="selectedColorPreview" width="100%" style="background-color:#000000">
                 <label text="" /> <!-- just to get the right size for a normal (text) dropdown -->
             </box>
         </box>
