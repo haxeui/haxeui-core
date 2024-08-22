@@ -137,6 +137,10 @@ class RTTI {
             return _allPropertiesCache.get(cacheKey);
         }
 
+        if (classInfo == null) {
+            return null;
+        }
+
         var entry = classInfo.get(className);
         var properties = null;
         if (entry != null) {
