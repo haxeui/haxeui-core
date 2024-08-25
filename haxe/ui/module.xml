@@ -19,6 +19,8 @@
             <resource path="haxeui-core/locale/en/expression-replacements.properties" />
             <resource path="haxeui-core/locale/en/std-strings.properties" />
             <resource path="haxeui-core/locale/en/formats.properties" />
+            <resource path="haxeui-core/locale/en/form-strings.properties" />
+            <resource path="haxeui-core/locale/en/messagebox-strings.properties" />
         </locale>
         <locale id="en_US">
             <resource path="haxeui-core/locale/en_US/formats.properties" />
@@ -37,11 +39,20 @@
             <resource path="haxeui-core/locale/fr/expression-replacements.properties" />
             <resource path="haxeui-core/locale/fr/std-strings.properties" />
             <resource path="haxeui-core/locale/fr/formats.properties" />
+            <resource path="haxeui-core/locale/fr/form-strings.properties" />
+            <resource path="haxeui-core/locale/fr/messagebox-strings.properties" />
         </locale>
         <locale id="it">
             <resource path="haxeui-core/locale/it/expression-replacements.properties" />
             <resource path="haxeui-core/locale/it/std-strings.properties" />
             <resource path="haxeui-core/locale/it/formats.properties" />
+        </locale>
+        <locale id="pt">
+            <resource path="haxeui-core/locale/pt/expression-replacements.properties" />
+            <resource path="haxeui-core/locale/pt/std-strings.properties" />
+            <resource path="haxeui-core/locale/pt/formats.properties" />
+            <resource path="haxeui-core/locale/pt/form-strings.properties" />
+            <resource path="haxeui-core/locale/pt/messagebox-strings.properties" />
         </locale>
         <locale id="ru">
             <resource path="haxeui-core/locale/ru/expression-replacements.properties" />
