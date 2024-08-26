@@ -256,7 +256,7 @@ private class Events extends haxe.ui.events.Events {
         _stepper.unregisterEvent(FocusEvent.FOCUS_IN, onFocusIn);
         _stepper.unregisterEvent(FocusEvent.FOCUS_OUT, onFocusOut);
         _stepper.unregisterEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
-        LocaleManager.instance.unregisterEvent(LocaleEvent.LOCALE_CHANGED, onLocaleChanged);
+        removeLocaleChanged();
             
         var value:TextField = _stepper.findComponent("value", TextField);
         value.unregisterEvent(UIEvent.CHANGE, onValueFieldChange);
@@ -268,7 +268,17 @@ private class Events extends haxe.ui.events.Events {
         inc.unregisterEvent(MouseEvent.CLICK, onInc);
         unregisterEvent(ActionEvent.ACTION_START, onActionStart);
     }
-    
+
+    public override function onDispose() {
+        // `unregister()` isn't called when the component is disposed,
+        // so this listener would be left lingering
+        removeLocaleChanged();
+    }
+
+    private function removeLocaleChanged() {
+        LocaleManager.instance.unregisterEvent(LocaleEvent.LOCALE_CHANGED, onLocaleChanged);
+    }
+
     private var _autoCorrectTimer:Timer = null;
     private function onValueFieldChange(event:UIEvent) {
         if (_stepper.autoCorrect == true) {
