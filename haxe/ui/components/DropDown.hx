@@ -337,6 +337,12 @@ private class ListDropDownHandler extends DropDownHandler {
             if (wrapper.layout != null) {
                 offset = wrapper.layout.paddingLeft + wrapper.layout.paddingRight;
             }
+            if (wrapper.style != null && wrapper.style.marginLeft != null) {
+                offset += wrapper.style.marginLeft;
+            }
+            if (wrapper.style != null && wrapper.style.marginRight != null) {
+                offset += wrapper.style.marginRight;
+            }
             _listview.width = _dropdown.width - offset;
         } else {
             _listview.width = _dropdown.dropdownWidth;
@@ -777,10 +783,15 @@ class DropDownEvents extends ButtonEvents {
             handler.prepare(_wrapper);
             _wrapper.syncComponentValidation();
             _wrapper.validateNow();
+            var marginLeft = 0.0;
+            if (_wrapper.style != null && _wrapper.style.marginLeft != null) {
+                marginLeft = _wrapper.style.marginLeft;
+            }
             var marginTop = 0.0;
             if (_wrapper.style != null && _wrapper.style.marginTop != null) {
                 marginTop = _wrapper.style.marginTop;
             }
+            _wrapper.left += marginLeft;
             _wrapper.top += marginTop;
             _wrapper.show();
 
@@ -797,10 +808,15 @@ class DropDownEvents extends ButtonEvents {
                 _wrapper.top = (_dropdown.screenTop - _wrapper.actualComponentHeight) + Toolkit.scaleY;
                 _wrapper.syncComponentValidation();
                 _wrapper.validateNow();
+                var marginLeft = 0.0;
+                if (_wrapper.style != null && _wrapper.style.marginLeft != null) {
+                    marginLeft = _wrapper.style.marginLeft;
+                }
                 var marginTop = 0.0;
                 if (_wrapper.style != null && _wrapper.style.marginTop != null) {
                     marginTop = _wrapper.style.marginTop;
                 }
+                _wrapper.left += marginLeft;
                 _wrapper.top += marginTop;
                 popupFromBottom = true;
             }
@@ -809,6 +825,14 @@ class DropDownEvents extends ButtonEvents {
             var filler:Component = _wrapper.findComponent("dropdown-filler", false);
             if (cx > 0 && filler != null) {
                 _wrapper.addClass("dropdown-popup-expanded");
+                if (_wrapper.style != null) {
+                    if (_wrapper.style.marginLeft != null) {
+                        cx += _wrapper.style.marginLeft;
+                    }
+                    if (_wrapper.style.marginRight != null) {
+                        cx += _wrapper.style.marginRight;
+                    }
+                }
                 filler.width = cx;
                 if (popupToRight) {
                     cx -= Toolkit.scaleX;
