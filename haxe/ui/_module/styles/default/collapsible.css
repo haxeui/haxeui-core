@@ -18,7 +18,6 @@
 }
 
 .collapsible.last .collapsible-header.collapsed {
-    border-bottom: none;
 }
 
 .collapsible-header:hover {
