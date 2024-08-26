@@ -1891,7 +1891,7 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
         var r:Class<Dynamic> = Type.getClass(this);
         while (r != null) {
             var c = Type.getClassName(r);
-            var t = Toolkit.nativeConfig.query('component[id=${c}].@class', null, this);
+            var t = Toolkit.nativeConfig.query('component[id=${c}].@id', null, this);
             if (t != null) {
                 _nativeClassName = c;
                 break;
