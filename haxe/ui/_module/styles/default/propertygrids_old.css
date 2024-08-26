@@ -1,0 +1,128 @@
+.property-grid_o-l-d {
+}
+
+.property-grid_o-l-d .scrollview-contents {
+    padding: 0;
+    width: 100%;
+    spacing: 0;
+}
+
+.property-group_o-l-d {
+    width: 100%;
+    spacing: 0;
+}
+
+.property-group-header_o-l-d {
+    background-color: $solid-background-color;
+    pointer-events: true;
+    width: 100%;
+    padding: 5px;
+    border-color: $normal-border-color;
+    border-bottom-width: 1px;
+    border-bottom-size: 1px;
+    cursor: pointer;
+}
+
+.property-group-header_o-l-d.scrolling {
+    border-right-width: 0px;
+    border-right-size: 0px;
+}
+
+.property-group-header_o-l-d:hover {
+    background-color: $solid-background-color-hover;
+}
+
+.property-group-header-icon_o-l-d {
+    vertical-align: center;
+}
+
+.property-group-header_o-l-d:expanded .property-group-header-icon_o-l-d {
+    resource: $arrow-down-square;
+}
+
+.property-group-header_o-l-d:collapsed .property-group-header-icon_o-l-d {
+    resource: $arrow-right-square;
+}
+
+.property-group-header-label_o-l-d {
+    vertical-align: center;
+    width: 100%;
+}
+
+.property-group-contents_o-l-d {
+    width: 100%;
+    spacing: 1;
+    background-color: $normal-border-color;
+    padding-bottom: 1px;
+}
+
+.property-group_o-l-d.last .property-group-contents_o-l-d.scrolling {
+    padding-bottom: 0px;
+}
+
+.property-group-contents_o-l-d.scrolling {
+    padding-right: 0px;
+}
+
+.property-group-item-label-container_o-l-d {
+    width: 50%;
+    background-color: $secondary-background-color;
+    height: 100%;
+    padding-left: 5px;
+}
+
+.property-group-item-editor-container_o-l-d {
+    width: 50%;
+    background-color: $secondary-background-color;
+}        
+
+.property-group-item-label_o-l-d {
+    vertical-align: center;
+}
+
+.property-group-item-editor_o-l-d {
+    width: 100%;
+}
+
+.property-group_o-l-d .textfield {
+    border: none;
+    filter: none;
+    border-radius: 0;
+}
+
+.property-group_o-l-d .checkbox {
+    padding: 5px;
+    padding-left: 4px;
+    width: auto;
+    horizontal-align: center;
+}
+
+.property-group_o-l-d .checkbox .checkbox-value {
+}
+
+.property-group_o-l-d .number-stepper {
+    padding: 0;
+    border: none;
+}
+
+.property-group_o-l-d .number-stepper .stepper-value {
+    filter: none;
+}
+
+.property-group_o-l-d .number-stepper .stepper-deinc {
+    border-right: 1px solid $normal-border-color;
+}
+
+.property-group_o-l-d .number-stepper .stepper-inc {
+    border-left: 1px solid $normal-border-color;
+}
+
+.property-group_o-l-d .dropdown {
+    border: none;
+    border-radius: none;
+}
+
+.property-group_o-l-d .button {
+    border: none;
+    border-radius: none;
+}

@@ -192,7 +192,9 @@
             <style resource="haxeui-core/styles/default/switches.css" />
             <style resource="haxeui-core/styles/default/calendars.css" />
             <style resource="haxeui-core/styles/default/menus.css" />
+            <style resource="haxeui-core/styles/default/collapsible.css" />
             <style resource="haxeui-core/styles/default/accordion.css" />
+            <style resource="haxeui-core/styles/default/propertygrids_old.css" />
             <style resource="haxeui-core/styles/default/propertygrids.css" />
             <style resource="haxeui-core/styles/default/frames.css" />
             <style resource="haxeui-core/styles/default/splitters.css" />
@@ -205,7 +207,6 @@
             <style resource="haxeui-core/styles/default/notifications.css" />
             <style resource="haxeui-core/styles/default/pickers.css" />
             <style resource="haxeui-core/styles/default/panels.css" />
-            <style resource="haxeui-core/styles/default/collapsible.css" />
             <style resource="haxeui-core/styles/default/last.css" />
         </default>
         <dark parent="default">

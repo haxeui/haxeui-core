@@ -1,128 +1,128 @@
-.property-grid {
-}
-
 .property-grid .scrollview-contents {
+    width: 100%;
+    padding: 0px;
+    spacing: 0px;
+}
+
+.property-grid .property-group {
+    width: 100%;
+}
+
+.property-grid .property-group .collapsible-content {
     padding: 0;
+    spacing: 0;
     width: 100%;
+}
+
+.property {
+    width: 100%;
+    border-bottom: 1px solid $normal-border-color;
     spacing: 0;
 }
 
-.property-group {
-    width: 100%;
-    spacing: 0;
+.property.scrolling.last {
+    border-bottom: none;
 }
 
-.property-group-header {
-    background-color: $solid-background-color;
-    pointer-events: true;
-    width: 100%;
-    padding: 5px;
-    border-color: $normal-border-color;
-    border-bottom-width: 1px;
-    border-bottom-size: 1px;
-    cursor: pointer;
-}
-
-.property-group-header.scrolling {
-    border-right-width: 0px;
-    border-right-size: 0px;
-}
-
-.property-group-header:hover {
-    background-color: $solid-background-color-hover;
-}
-
-.property-group-header-icon {
-    vertical-align: center;
-}
-
-.property-group-header:expanded .property-group-header-icon {
-    resource: $arrow-down-square;
-}
-
-.property-group-header:collapsed .property-group-header-icon {
-    resource: $arrow-right-square;
-}
-
-.property-group-header-label {
-    vertical-align: center;
-    width: 100%;
-}
-
-.property-group-contents {
-    width: 100%;
-    spacing: 1;
-    background-color: $normal-border-color;
-    padding-bottom: 1px;
-}
-
-.property-group.last .property-group-contents.scrolling {
-    padding-bottom: 0px;
-}
-
-.property-group-contents.scrolling {
-    padding-right: 0px;
-}
-
-.property-group-item-label-container {
+.property-label-container {
     width: 50%;
-    background-color: $secondary-background-color;
     height: 100%;
-    padding-left: 5px;
-}
-
-.property-group-item-editor-container {
-    width: 50%;
-    background-color: $secondary-background-color;
-}        
-
-.property-group-item-label {
     vertical-align: center;
-}
-
-.property-group-item-editor {
-    width: 100%;
-}
-
-.property-group .textfield {
-    border: none;
-    filter: none;
-    border-radius: 0;
-}
-
-.property-group .checkbox {
-    padding: 5px;
-    padding-left: 4px;
-    width: auto;
-    horizontal-align: center;
-}
-
-.property-group .checkbox .checkbox-value {
-}
-
-.property-group .number-stepper {
-    padding: 0;
-    border: none;
-}
-
-.property-group .number-stepper .stepper-value {
-    filter: none;
-}
-
-.property-group .number-stepper .stepper-deinc {
+    padding-left: 5px;
     border-right: 1px solid $normal-border-color;
 }
 
-.property-group .number-stepper .stepper-inc {
+.property-label {
+    width: 100%;
+    vertical-align: center;
+}
+
+.property-editor {
+    width: 50%;
+    padding-bottom: 1px;
+}
+
+.property-editor-text {
+}
+
+.property-editor-text .textfield {
+    border: none;
+    border-radius: none;
+    filter: none;
+}
+
+.property-editor-options .horizontal-button-bar {
+    border: none;
+    padding: none;
+    background-color: blue;
+}
+
+.property-editor-options .horizontal-button-bar .button { 
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.property-editor-options .horizontal-button-bar .button {
+    border: none;
+    border-right: 1px solid $normal-border-color;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+.property-editor-options .horizontal-button-bar .button.last {
+    border-right: none;
+}
+
+.property-editor-list .dropdown {
+    border: none;
+    border-radius: 0;
+}
+
+.property-editor-color .dropdown {
+    border: none;
+    border-radius: 0;
+}
+
+.property-editor-date .dropdown {
+    border: none;
+    border-radius: 0;
+}
+
+.property-editor-number .number-stepper {
+    border: none;
+}
+
+.property-editor-boolean {
+    padding: 5px;
+
+}
+
+.property-editor-boolean .checkbox {
+    horizontal-align: center;
+}
+
+.property-editor-file {
+    padding-left: 5px;
+}
+
+.property-editor-file .label {
+    vertical-align: center;
+}
+
+.property-editor-file .button {
+    border: none;
+    padding: 5px 8px;
+    border-radius: none;
     border-left: 1px solid $normal-border-color;
 }
 
-.property-group .dropdown {
-    border: none;
-    border-radius: none;
+.property-editor-dropdown-popup {
+    margin-top: 1px;
+    margin-left: -1px;
+    margin-right: -1px;
 }
 
-.property-group .button {
-    border: none;
-    border-radius: none;
+.property-editor-dropdown-popup .dropdown-filler {
 }
