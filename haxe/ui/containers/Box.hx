@@ -66,19 +66,6 @@ class Box extends Component implements IDataComponent {
         return value;
     }
 
-    
-    private override function onDestroy() {
-        if (_compositeBuilder is Builder) {
-            var builder:Builder = cast(_compositeBuilder, Builder);
-            @:privateAccess if (builder._cachedItemRenderers != null) {
-                for (itemRenderer in builder._cachedItemRenderers) {
-                    itemRenderer.disposeComponent();
-                }
-            }
-        }
-        super.onDestroy();
-    }
-
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************
@@ -202,6 +189,15 @@ private class Builder extends CompositeBuilder {
             }
         }
         return null;
+    }
+
+    public override function destroy() {
+        if (_cachedItemRenderers != null) {
+            for (itemRenderer in _cachedItemRenderers) {
+                itemRenderer.disposeComponent();
+            }
+        }
+        super.destroy();
     }
 }
 
