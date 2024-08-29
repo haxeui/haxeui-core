@@ -155,7 +155,7 @@ private class Builder extends CompositeBuilder {
             renderer.data = item;
         }
 
-        for (child in _component.findComponents(ItemRenderer)) {
+        for (child in _component.findComponents(ItemRenderer, 1)) {
             if (child == _box.itemRenderer) {
                 continue;
             }
