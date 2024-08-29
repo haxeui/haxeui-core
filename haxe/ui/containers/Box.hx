@@ -143,9 +143,11 @@ private class Builder extends CompositeBuilder {
             _box.itemRenderer.handleVisibility(false);
         }
 
+        var childRenderers = _component.findComponents(ItemRenderer, 1);
+
         for (i in 0...dataSource.size) {
             var item = dataSource.get(i);
-            var renderer = findRenderer(item);
+            var renderer = findRenderer(item, childRenderers);
             if (renderer == null) {
                 renderer = itemRenderer.cloneComponent();
                 _box.addComponent(renderer);
@@ -155,7 +157,7 @@ private class Builder extends CompositeBuilder {
             renderer.data = item;
         }
 
-        for (child in _component.findComponents(ItemRenderer)) {
+        for (child in childRenderers) {
             if (child == _box.itemRenderer) {
                 continue;
             }
@@ -165,8 +167,8 @@ private class Builder extends CompositeBuilder {
         }
     }
 
-    private function findRenderer(data:Dynamic):ItemRenderer {
-        for (child in _component.findComponents(ItemRenderer)) {
+    private function findRenderer(data:Dynamic, renderers:Array<ItemRenderer>):ItemRenderer {
+        for (child in renderers) {
             if (child.data == data) {
                 return child;
             }
