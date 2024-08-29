@@ -32,6 +32,7 @@ class Box extends Component implements IDataComponent {
     **/
     @:clonable @:behaviour(DefaultBehaviour)                public var icon:Variant;
     @:clonable @:behaviour(DataSourceBehaviour)             public var dataSource:DataSource<Dynamic>;
+    @:clonable @:behaviour(DefaultBehaviour, true)          public var cacheItemRenderers:Bool;
 
     @:noCompletion private var _layoutName:String;
     @:clonable public var layoutName(get, set):String;
@@ -65,6 +66,19 @@ class Box extends Component implements IDataComponent {
         return value;
     }
 
+    
+    private override function onDestroy() {
+        if (_compositeBuilder is Builder) {
+            var builder:Builder = cast(_compositeBuilder, Builder);
+            @:privateAccess if (builder._cachedItemRenderers != null) {
+                for (itemRenderer in builder._cachedItemRenderers) {
+                    itemRenderer.disposeComponent();
+                }
+            }
+        }
+        super.onDestroy();
+    }
+
     //***********************************************************************************************************
     // Internals
     //***********************************************************************************************************
@@ -76,11 +90,11 @@ class Box extends Component implements IDataComponent {
             _defaultLayoutClass = DefaultLayout;
         }
     }
-    
+
     @:noCompletion private var _direction:String = null;
     private override function applyStyle(style:Style) {
         super.applyStyle(style);
-        
+
         if (style.direction != null && style.direction != _direction) {
             _direction = style.direction;
             this.layout = LayoutFactory.createFromName(_direction);
@@ -99,6 +113,7 @@ class Box extends Component implements IDataComponent {
 //***********************************************************************************************************
 private class Builder extends CompositeBuilder {
     private var _box:Box;
+    private var _cachedItemRenderers:Array<ItemRenderer>;
 
     public function new(box:Box) {
         super(box);
@@ -148,21 +163,34 @@ private class Builder extends CompositeBuilder {
         for (i in 0...dataSource.size) {
             var item = dataSource.get(i);
             var renderer = findRenderer(item, childRenderers);
+            if (renderer == null && _box.cacheItemRenderers && _cachedItemRenderers != null) {
+                renderer = findRenderer(item, _cachedItemRenderers);
+                if (renderer != null){
+                    _cachedItemRenderers.remove(item);
+                    _box.addComponent(renderer);
+                }
+            }
             if (renderer == null) {
                 renderer = itemRenderer.cloneComponent();
                 _box.addComponent(renderer);
             }
+
             renderer.itemIndex = i;
             _box.setComponentIndex(renderer, i);
             renderer.data = item;
         }
-
         for (child in childRenderers) {
             if (child == _box.itemRenderer) {
                 continue;
             }
             if (dataSource.indexOf(child.data) == -1) {
-                _box.removeComponent(child);
+                _box.removeComponent(child, !_box.cacheItemRenderers);
+                if (_box.cacheItemRenderers) {
+                    if (_cachedItemRenderers == null){
+                        _cachedItemRenderers = [];
+                    }
+                    _cachedItemRenderers.push(child);
+                }
             }
         }
     }
