@@ -88,6 +88,8 @@ class TextField extends InteractiveComponent implements ICompositeInteractiveCom
     @:clonable @:behaviour(SelectionStartIndexBehaviour)    public var selectionStartIndex:Int;
     @:clonable @:behaviour(SelectionEndIndexBehaviour)      public var selectionEndIndex:Int;
 
+    @:event(UIEvent.SUBMIT)                                 public var onSubmit:UIEvent->Void;
+
     public var isBlank(get, null):Bool;
     private function get_isBlank():Bool {
         if (text == null) {
