@@ -490,7 +490,9 @@ private class Events extends haxe.ui.events.Events  {
         event.previousValue = e.previousValue;
         event.value = e.value;
         _slider.dispatch(event);
-        _slider.dispatch(new DragEvent(DragEvent.DRAG));
+        if (_activeThumb != null) {
+            _slider.dispatch(new DragEvent(DragEvent.DRAG));
+        }
     }
 
     private function onRangeMouseDown(e:MouseEvent) {
