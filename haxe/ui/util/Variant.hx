@@ -110,6 +110,18 @@ abstract Variant(VariantType) from VariantType {
         }
     }
 
+    public var isNaN(get, never):Bool;
+    private inline function get_isNaN():Bool {
+        if (isNull) {
+            return true;
+        }
+        return switch (this) {
+            case VT_Int(s): Math.isNaN(s);
+            case VT_Float(s): Math.isNaN(s);
+            default: true;
+        }
+    }
+
     // ************************************************************************************************************
     // BOOLS
     // ************************************************************************************************************

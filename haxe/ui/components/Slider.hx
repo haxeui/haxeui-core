@@ -138,6 +138,14 @@ class Slider extends InteractiveComponent implements IDirectionalComponent imple
 @:access(haxe.ui.core.Component)
 private class StartBehaviour extends DataBehaviour {
     private override function validateData() {
+        if (_value == null || _value.isNull) {
+            return;
+        }
+
+        if (_value.isNaN) {
+            return;
+        }
+
         var builder:SliderBuilder = cast(_component._compositeBuilder, SliderBuilder);
         if (_component.findComponent("start-thumb") == null) {
             builder.createThumb("start-thumb");
@@ -170,6 +178,14 @@ private class StartBehaviour extends DataBehaviour {
 @:access(haxe.ui.components.Range)
 private class EndBehaviour extends DataBehaviour {
     private override function validateData() {
+        if (_value == null || _value.isNull) {
+            return;
+        }
+
+        if (_value.isNaN) {
+            return;
+        }
+
         var range = _component.findComponent(Range);
         if (range == null) {
             return;
@@ -211,6 +227,14 @@ private class EndBehaviour extends DataBehaviour {
 @:dox(hide) @:noCompletion
 private class MinBehaviour extends DataBehaviour {
     private override function validateData() {
+        if (_value == null || _value.isNull) {
+            return;
+        }
+
+        if (_value.isNaN) {
+            return;
+        }
+
         var range = _component.findComponent(Range);
         if (range == null) {
             return;
@@ -235,6 +259,14 @@ private class MinBehaviour extends DataBehaviour {
 @:dox(hide) @:noCompletion
 private class MaxBehaviour extends DataBehaviour {
     private override function validateData() {
+        if (_value == null || _value.isNull) {
+            return;
+        }
+
+        if (_value.isNaN) {
+            return;
+        }
+
         var range = _component.findComponent(Range);
         if (range == null) {
             return;
@@ -285,6 +317,10 @@ private class PosBehaviour extends DataBehaviour {
 private class CenterBehaviour extends DefaultBehaviour {
     public override function set(value:Variant) {
         super.set(value);
+        if (_value.isNaN) {
+            return;
+        }
+
         if (value != null && value.isNull == false) {
             var slider:Slider = cast(_component, Slider);
             slider.pos = _value;
@@ -302,6 +338,10 @@ private class CenterBehaviour extends DefaultBehaviour {
 
 private class MinorTicks extends DataBehaviour {
     public override function validateData() {
+        if (_value.isNaN) {
+            return;
+        }
+
         if (_value != null && _value.isNull == false) {
             var slider:Slider = cast(_component, Slider);
             slider.addClass("minor-ticks");
@@ -332,6 +372,10 @@ private class MinorTicks extends DataBehaviour {
 
 private class MajorTicks extends DataBehaviour {
     public override function validateData() {
+        if (_value.isNaN) {
+            return;
+        }
+
         if (_value != null && _value.isNull == false) {
             var slider:Slider = cast(_component, Slider);
             slider.addClass("major-ticks");
