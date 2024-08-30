@@ -54,17 +54,19 @@ private class CollapsedBehaviour extends DataBehaviour {
             // TODO: think about moving this to css animations... yuk.
             if (_component.animatable) {
                 if (_value) {
-                    content.opacity = 0;
+                    //content.opacity = 0;
                     var cy = content.height;
                     var autoHeight = content.autoHeight;
                     var animation = new AnimationBuilder(content, .3, "ease");
                     animation.setPosition(0, "height", cy, true);
                     animation.setPosition(100, "height", 0, true);
+                    /*
                     animation.setPosition(0, "opacity", 1, true);
                     animation.setPosition(100, "opacity", 0, true);
+                    */
                     animation.onComplete = function() {
                         if (autoHeight) {
-                            content.height = null;
+                            @:privateAccess content._height = null;
                         }
                         content.hidden = _value;
                         //_component.dispatch(new UIEvent(UIEvent.CHANGE));
@@ -72,17 +74,19 @@ private class CollapsedBehaviour extends DataBehaviour {
                     animation.play();
                 } else {
                     content.hidden = _value;
-                    content.opacity = 0;
+                    //content.opacity = 0;
                     var cy = content.height;
                     var autoHeight = content.autoHeight;
                     var animation = new AnimationBuilder(content, .3, "ease");
                     animation.setPosition(0, "height", 0, true);
                     animation.setPosition(100, "height", cy, true);
+                    /*
                     animation.setPosition(0, "opacity", 0, true);
                     animation.setPosition(100, "opacity", 1, true);
+                    */
                     animation.onComplete = function() {
                         if (autoHeight) {
-                            content.height = null;
+                            @:privateAccess content._height = null;
                         }
                         //_component.dispatch(new UIEvent(UIEvent.CHANGE));
                     }
