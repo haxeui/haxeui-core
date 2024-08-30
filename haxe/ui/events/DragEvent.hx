@@ -15,7 +15,11 @@ class DragEvent extends UIEvent {
         c.bubble = this.bubble;
         c.target = this.target;
         c.data = this.data;
+        c.value = this.value;
+        c.previousValue = this.previousValue;
         c.canceled = this.canceled;
+        c.relatedEvent = this.relatedEvent;
+        c.relatedComponent = this.relatedComponent;
         c.left = this.left;
         c.top = this.top;
         postClone(c);

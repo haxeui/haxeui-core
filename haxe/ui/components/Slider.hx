@@ -491,7 +491,10 @@ private class Events extends haxe.ui.events.Events  {
         event.value = e.value;
         _slider.dispatch(event);
         if (_activeThumb != null) {
-            _slider.dispatch(new DragEvent(DragEvent.DRAG));
+            var dragEvent = new DragEvent(DragEvent.DRAG);
+            dragEvent.previousValue = e.previousValue;
+            dragEvent.value = e.value;
+            _slider.dispatch(dragEvent);
         }
     }
 
