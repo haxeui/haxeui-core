@@ -148,7 +148,7 @@ private class Builder extends CompositeBuilder {
         var childRenderers = _component.findComponents(ItemRenderer, 1);
 
         for (i in 0...dataSource.size) {
-            var item = dataSource.get(i);
+            var item:Dynamic = dataSource.get(i); // For some reason without :Dynamic it's null on cpp
             var renderer = findRenderer(item, childRenderers);
             if (renderer == null && _box.cacheItemRenderers && _cachedItemRenderers != null) {
                 renderer = findRenderer(item, _cachedItemRenderers);
