@@ -256,33 +256,25 @@ class LocaleManager {
             }
             stringMap.set(k, v);
         }
-        
-        localeId = StringTools.replace(localeId, "-", "_");
-        var parts = localeId.split("_");
-        if (parts.length > 1) {
-            var parent = _localeMap.get(parts[0]);
-            if (parent != null) {
-                for (k in parent.keys()) {
-                    if (stringMap.exists(k) == false) {
-                        stringMap.set(k, parent.get(k));
-                    }
-                }
-            }
-        }
     }
     
     private function getStrings(localeId:String):Map<String, String> {
-        var strings = _localeMap.get(localeId);
-        if (strings != null) {
-            return strings;
-        }
-        
         localeId = StringTools.replace(localeId, "-", "_");
         var parts = localeId.split("_");
         if (!_localeMap.exists(parts[0])) {
             return _localeMap.get("en");
         }
-        return _localeMap.get(parts[0]);
+
+        var parentLocale = _localeMap.get(parts[0]);
+        var locale = _localeMap.get(parts[0]);
+
+        var fusionedLocale:Map<String, String> = new Map();
+        fusionedLocale = parentLocale.copy();
+        for (k in locale.keys()) {
+            var v = map.get(k);
+            fusionedLocale.set(k, v);
+        }
+        return fusionedLocale;
     }
     
     public function hasString(id:String):Bool {
