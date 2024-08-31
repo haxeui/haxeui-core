@@ -271,7 +271,7 @@ class LocaleManager {
         var fusionedLocale:Map<String, String> = new Map();
         fusionedLocale = parentLocale.copy();
         for (k in locale.keys()) {
-            var v = map.get(k);
+            var v = locale.get(k);
             fusionedLocale.set(k, v);
         }
         return fusionedLocale;
