@@ -215,7 +215,7 @@ class CollapsibleBuilder extends CompositeBuilder {
         var parent = _collapsible.parentComponent;
         // TODO: better way to do this??
         while (parent != null) {
-            if (parent.hasClass("collapsible-content") && parent.parentComponent != null && parent.parentComponent is Collapsible) {
+            if (parent.hasClass("collapsible-content") && parent.parentComponent != null && (parent.parentComponent is Collapsible)) {
                 depth++;
             }
             parent = parent.parentComponent;
