@@ -175,7 +175,15 @@ class MenuEvents extends haxe.ui.events.Events {
             var event = new MenuEvent(MenuEvent.MENU_SELECTED);
             event.menu = _menu;
             event.menuItem = item;
+            // we'll add a delay of 100ms here because it "feels nicer" for the menu to 
+            // not just instantly disappear - especially in the case of checkbox menu items
             Timer.delay(function() {
+                // however, its possible that by the time that timer has ticked the menu
+                // has already been destroyed by other means, so lets just make sure
+                // that isnt the case
+                if (@:privateAccess _menu._destroyed) {
+                    return;
+                }
                 findRootMenu().dispatch(event);
 
                 if (_menu.menuBar == null) {
