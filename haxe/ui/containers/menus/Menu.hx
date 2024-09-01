@@ -181,7 +181,7 @@ class MenuEvents extends haxe.ui.events.Events {
                 // however, its possible that by the time that timer has ticked the menu
                 // has already been destroyed by other means, so lets just make sure
                 // that isnt the case
-                if (@:privateAccess _menu._destroyed) {
+                if (@:privateAccess _menu._isDisposed) {
                     return;
                 }
                 findRootMenu().dispatch(event);
