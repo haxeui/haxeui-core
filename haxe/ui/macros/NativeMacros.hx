@@ -13,9 +13,11 @@ class NativeMacros {
     private static var _nativeProcessed:Bool;
 
     macro public static function processNative():Expr {
+        #if !haxeui_experimental_no_cache
         if (_nativeProcessed == true) {
             return macro null;
         }
+        #end
 
         _nativeProcessed = true;
 
@@ -32,9 +34,11 @@ class NativeMacros {
     private static var _nativeConfigLoaded:Bool = false;
     private static var _nativeConfigs:Array<GenericConfig> = new Array<GenericConfig>();
     public static function loadNativeConfig():Array<GenericConfig> {
+        #if !haxeui_experimental_no_cache
         if (_nativeConfigLoaded == true) {
             return _nativeConfigs;
         }
+        #end
 
         #if haxeui_macro_times
         var stopTimer = Context.timer("NativeMacros.loadNativeConfig");

@@ -30,9 +30,11 @@ class ModuleMacros {
     #end
 
     macro public static function processModules():Expr {
+        #if !haxeui_experimental_no_cache
         if (_modulesProcessed == true) {
             return macro null;
         }
+        #end
 
         #if haxeui_macro_times
         var stopTimer = Context.timer("ModuleMacros.processModules");

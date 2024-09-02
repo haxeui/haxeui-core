@@ -11,6 +11,9 @@ typedef RTTIProperty = {
 }
 
 class RTTI {
+    #if haxeui_experimental_no_cache
+    @:persistent
+    #end
     public static var classInfo:Map<String, RTTIEntry> = null;
     
     public static function addClassProperty(className:String, propertyName:String, propertyType:String) {
