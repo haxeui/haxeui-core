@@ -268,13 +268,13 @@ class LocaleManager {
         var parentLocale = _localeMap.get(parts[0]);
         var locale = _localeMap.get(parts[0]);
 
-        var fusionedLocale:Map<String, String> = new Map();
-        fusionedLocale = parentLocale.copy();
+        var mergedLocale:Map<String, String> = new Map();
+        mergedLocale = parentLocale.copy();
         for (k in locale.keys()) {
             var v = locale.get(k);
-            fusionedLocale.set(k, v);
+            mergedLocale.set(k, v);
         }
-        return fusionedLocale;
+        return mergedLocale;
     }
     
     public function hasString(id:String):Bool {
