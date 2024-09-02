@@ -253,6 +253,9 @@ class ComponentMacros {
 
         for (id in buildData.namedComponents.keys()) {
             var safeId:String = StringUtil.capitalizeHyphens(id);
+            if (safeId == "new") {
+                Context.error("'new' is a reserved word and cannot be used to name variables / components (" + resourcePath + ")", Context.currentPos());
+            }
             var varDescription = buildData.namedComponents.get(id);
             var cls:String = varDescription.type;
             if (!builder.hasVar(safeId)) {
@@ -773,6 +776,9 @@ class ComponentMacros {
                 for (namedComponent in namedComponents.keys()) {
                     var details = namedComponents.get(namedComponent);
                     var safeId:String = StringUtil.capitalizeHyphens(namedComponent);
+                    if (safeId == "new") {
+                        Context.error("'new' is a reserved word and cannot be used to name variables / components", Context.currentPos());
+                    }
                     if (usedVars.indexOf(safeId) == -1) {
                         continue;
                     }
