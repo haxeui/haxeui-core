@@ -25,6 +25,10 @@ class PropertyEditor extends HBox {
     private function applyValue(value:Variant) {
     }
 
+    private function applyProperties(property:Property) {
+
+    }
+
     private function onValueChanged(value:Variant) {
         var event = new UIEvent(UIEvent.CHANGE);
         var property = findAncestor(Property);
@@ -141,6 +145,21 @@ class PropertyEditorNumber extends PropertyEditor {
         numberStepper = new NumberStepper();
         numberStepper.percentWidth = 100;
         addComponent(numberStepper);
+    }
+
+    private override function applyProperties(property:Property) {
+        if (property.min != null) {
+            numberStepper.min = property.min;
+        }
+        if (property.max != null) {
+            numberStepper.max = property.max;
+        }
+        if (property.step != null) {
+            numberStepper.step = property.step;
+        }
+        if (property.precision != null) {
+            numberStepper.precision = property.precision;
+        }
     }
 
     @:bind(numberStepper, UIEvent.CHANGE)

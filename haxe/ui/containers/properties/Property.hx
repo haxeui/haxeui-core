@@ -14,6 +14,10 @@ class Property extends HBox implements IDataComponent {
     @:clonable @:behaviour(LabelBehaviour)              public var label:String;
     @:clonable @:behaviour(ValueBehaviour)              public var value:Variant;
     @:clonable @:behaviour(DefaultBehaviour)            public var type:String;
+    @:clonable @:behaviour(DefaultBehaviour, null)      public var min:Null<Float>;
+    @:clonable @:behaviour(DefaultBehaviour, null)      public var max:Null<Float>;
+    @:clonable @:behaviour(DefaultBehaviour, null)      public var step:Null<Float>;
+    @:clonable @:behaviour(DefaultBehaviour, null)      public var precision:Null<Int>;
     @:behaviour(DataSourceBehaviour)                    public var dataSource:DataSource<Dynamic>;
 }
 
@@ -148,6 +152,7 @@ private class Builder extends CompositeBuilder {
 
     private function buildEditor(type:String):PropertyEditor {
         var editor = PropertyGrid.createEditor(type);
+        editor.applyProperties(property);
         return editor;
     }
 
