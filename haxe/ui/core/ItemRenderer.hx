@@ -1,6 +1,5 @@
 package haxe.ui.core;
 
-import haxe.ui.util.RTTI;
 import haxe.ui.components.Image;
 import haxe.ui.components.Label;
 import haxe.ui.containers.Box;
@@ -10,6 +9,7 @@ import haxe.ui.events.ItemRendererEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.util.Color;
+import haxe.ui.util.RTTI;
 import haxe.ui.util.StringUtil;
 import haxe.ui.util.TypeConverter;
 import haxe.ui.util.Variant;
@@ -267,7 +267,10 @@ class ItemRenderer extends Box {
                         // "data" is a special case exception here as if the item renderer contained a "data" property
                         // it would overwrite the item renderers data property, which is, for sure, NOT 
                         // what we want to happen... ever.
-                        if (f != "data") {
+                        // "id" is also a special case, its bad form to start renaming ids of sub components based on the
+                        // datasource, unexpected things can happy when your itemrenderer has an id, then, without knowing
+                        // your datasource changes that id - its "too magic"
+                        if (f != "data" && f != "id") {
                             if (RTTI.hasPrimitiveClassProperty(this.className, f)) {
                                 Reflect.setProperty(this, f, v);
                             }
