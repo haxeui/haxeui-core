@@ -58,7 +58,7 @@ class Component extends ComponentImpl
         var c:Class<Dynamic> = Type.getClass(this);
         while (c != null) {
             var css = Type.getClassName(c);
-            var className:String = css.split(".").pop();
+            var className:String = Std.string(css).split(".").pop();
             addClass(className.toLowerCase(), false);
             addClass(StringUtil.toDashes(className), false);
             if (className.toLowerCase() == "component") {
