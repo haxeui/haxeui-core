@@ -11,6 +11,9 @@ class AnimationSequence {
     }
 
     public function add(builder:AnimationBuilder) {
+        if (builder == null) {
+            return;
+        }
         builders.push(builder);
     }
 
