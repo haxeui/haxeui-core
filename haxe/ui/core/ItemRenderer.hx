@@ -162,12 +162,17 @@ class ItemRenderer extends Box {
         if (itemIndex < 0) {
             return; 
         }
+
         var v = event.target.value;
         if (_data != null && event.target.id != null) {
             var item:Dynamic = Reflect.getProperty(_data, event.target.id);
             switch (Type.typeof(item)) {
                 case TObject:
-                    item.value = v;
+                    if (Type.typeof(v) != TObject) {
+                        item.value = v;
+                    } else {
+                        Reflect.setProperty(_data, event.target.id, v);
+                    }
                 case _:
                     Reflect.setProperty(_data, event.target.id, v);
             }
