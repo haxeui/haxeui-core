@@ -92,6 +92,13 @@ class AnimationBuilder {
     }
     
     public function play() {
+        if (_keyFrames.length == 0) {
+            if (onComplete != null) {
+                onComplete();
+            }
+            return;
+        }
+
         var frames = new AnimationKeyFrames("builder", _keyFrames);
         target.registerEvent(AnimationEvent.END, function(e) {
             target._pauseAnimationStyleChanges = false;
