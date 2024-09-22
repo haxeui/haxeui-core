@@ -16,7 +16,7 @@ import haxe.ui.util.Variant;
  * A switch component that can be used to toggle between two states.
  */
 @:composite(Builder, HorizontalLayout)
-class Switch extends Component implements IValueComponent implements ICompositeInteractiveComponent {
+class Switch extends InteractiveComponent implements IValueComponent implements ICompositeInteractiveComponent {
     //***********************************************************************************************************
     // Public API
     //***********************************************************************************************************
@@ -101,6 +101,7 @@ private class Builder extends CompositeBuilder {
     public override function create() {
         if (_button == null) {
             _button = new SwitchButtonSub();
+			_button.allowFocus = false;
             _button.onChange = function(e) {
                 _switch.selected = _button.selected;
                 _switch.dispatch(new UIEvent(UIEvent.CHANGE));
