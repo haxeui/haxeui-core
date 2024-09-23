@@ -103,9 +103,10 @@ private class CompoundItemRenderer extends ItemRenderer {
     }
     
     private override function onDataChanged(data:Dynamic) {
+        super.onDataChanged(data);
         var renderers = findComponents(ItemRenderer);
         for (r in renderers) {
-            r.onDataChanged(data);
+            r.data = data;
         }
     }
 
