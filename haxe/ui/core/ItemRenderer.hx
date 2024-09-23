@@ -149,6 +149,10 @@ class ItemRenderer extends Box {
             }
         }
         
+        if (parentComponent != null) {
+            parentComponent.assignPositionClasses();
+        }
+
         onDataChanged(_data);
         var event = new ItemRendererEvent(ItemRendererEvent.DATA_CHANGED, this);
         dispatch(event);
