@@ -101,7 +101,7 @@ private class Builder extends CompositeBuilder {
     public override function create() {
         if (_button == null) {
             _button = new SwitchButtonSub();
-			_button.allowFocus = false;
+            _button.allowFocus = false;
             _button.onChange = function(e) {
                 _switch.selected = _button.selected;
                 _switch.dispatch(new UIEvent(UIEvent.CHANGE));
