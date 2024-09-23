@@ -241,10 +241,19 @@ class SimpleExpressionEvaluator {
                     for (propPart in propParts) {
                         ref = Reflect.field(ref, propPart);
                     }
-                    if (Reflect.hasField(ref, propName)) {
-                        result = Reflect.field(ref, propName);
-                    } else {
-                        result = Reflect.getProperty(ref, propName);
+                    if (propName != null) {
+                        if (Reflect.hasField(ref, propName)) {
+                            result = Reflect.field(ref, propName);
+                        } else {
+                            #if js
+                            var getter = js.Syntax.field(ref, "get_" + propName);
+                            if (getter != null) {
+                                result = js.Syntax.field(ref, "get_" + propName)();
+                            }
+                            #else
+                            result = Reflect.getProperty(ref, propName);
+                            #end
+                        }
                     }
                 }
             }
