@@ -10,13 +10,27 @@ import haxe.ui.util.Color;
 class Canvas extends Component implements IDataComponent {
     @:clonable @:behaviour(DataSourceBehaviour)                             public var dataSource:DataSource<Dynamic>;
     
-    public var componentGraphics:ComponentGraphics;
-    
     public function new() {
         super();
-        componentGraphics = new ComponentGraphics(this);
+        _componentGraphics = new ComponentGraphics(this);
     }
     
+    private override function onDestroy() {
+        super.onDestroy();
+        _componentGraphics = null;
+    }
+
+    private var _componentGraphics:ComponentGraphics;
+    public var componentGraphics(get, never):ComponentGraphics;
+    private function get_componentGraphics():ComponentGraphics {
+        if (_componentGraphics == null && _isDisposed) {
+            trace("WARNING: trying to access component graphics on a disposed component");
+            return null;
+        }
+        return _componentGraphics;
+    }
+    
+
     private override function validateComponentLayout():Bool {
         var b = super.validateComponentLayout();
         if (width <= 0  || height <= 0) {
