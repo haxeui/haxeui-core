@@ -161,6 +161,9 @@ private class GifAnimationPlayer extends AnimationPlayer {
     private var _useCache:Bool = true;
     private var _precache:Bool = false;
     private function processBlock() {
+        if (_gifData == null || @:privateAccess _canvas._isDisposed) {
+            return;
+        }
         var block = _blocks[_blockIndex];
         switch (block) {
             case BFrame(_):
