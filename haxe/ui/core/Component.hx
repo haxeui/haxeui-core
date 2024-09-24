@@ -694,6 +694,10 @@ class Component extends ComponentImpl
         LocaleManager.instance.unregisterComponent(this);
         handleDestroy();
         onDestroy();
+        if (_compositeBuilder != null) {
+            @:privateAccess _compositeBuilder._component = null;
+        }
+        _compositeBuilder = null;
     }
 
     private function onDestroy() {
