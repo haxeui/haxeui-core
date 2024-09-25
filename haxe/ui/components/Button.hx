@@ -156,6 +156,8 @@ class ButtonLayout extends DefaultLayout {
             if (label != null) {
                 if (label.textAlign != "center") {
                     label.width = ucx;
+                } else if (label.width > 0 && _component.componentWidth > 0 &&  label.width >= _component.componentWidth) {
+                    label.width = ucx;
                 }
             }
             
