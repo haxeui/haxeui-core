@@ -183,7 +183,7 @@ class ButtonLayout extends DefaultLayout {
     private override function get_usableSize():Size {
         var size = super.get_usableSize();
         var icon:Image = component.findComponent("button-icon", false);
-        if (icon != null && (iconPosition == "far-right" || iconPosition == "far-left" || iconPosition == "left" || iconPosition == "right")) {
+        if (icon != null && (iconPosition == "far-right" || iconPosition == "far-left" || iconPosition == "left" || iconPosition == "right" || iconPosition == "center-left" || iconPosition == "center-right")) {
             size.width -= icon.width + verticalSpacing;
         }
         return size;
@@ -220,8 +220,10 @@ class ButtonLayout extends DefaultLayout {
             icon = null;
         }
 
+        var textAlign = cast(component, Button).textAlign;
+
         switch (iconPosition) {
-            case "far-right"|"center-right"|"right"|"left"|"center-left"|"far-left" if (_component.autoWidth) :
+            case "far-right"|"center-right"|"right"|"left"|"center-left"|"far-left" if (_component.autoWidth || textAlign !="center") :
                 if (label != null && icon != null) {
                     var cx:Float = label.componentWidth + icon.componentWidth + horizontalSpacing;
                     var x:Float = Std.int((component.componentWidth / 2) - (cx / 2));
@@ -270,7 +272,7 @@ class ButtonLayout extends DefaultLayout {
                     label.top = Std.int((component.componentHeight / 2) - (label.componentHeight / 2)) + marginTop(label) - marginBottom(label);
                     icon.top = Std.int((component.componentHeight / 2) - (icon.componentHeight / 2)) + marginTop(icon) - marginBottom(icon);
                 } else if (label != null) {
-                    label.left = paddingLeft;
+                    label.left = getTextAlignPos(label, component.componentWidth);
                     label.top = Std.int((component.componentHeight / 2) - (label.componentHeight / 2)) + marginTop(label) - marginBottom(label);
                 } else if (icon != null) {
                     icon.left = (component.componentWidth - icon.componentWidth - paddingRight) + marginLeft(icon) - marginRight(icon);
@@ -293,10 +295,10 @@ class ButtonLayout extends DefaultLayout {
                     label.top = Std.int((component.componentHeight / 2) - (label.componentHeight / 2)) + marginTop(label) - marginBottom(label);
                     icon.top = Std.int((component.componentHeight / 2) - (icon.componentHeight / 2)) + marginTop(icon) - marginBottom(icon);
                 } else if (label != null) {
-                    label.left = paddingLeft;
+                    label.left = getTextAlignPos(label, component.componentWidth);
                     label.top = Std.int((component.componentHeight / 2) - (label.componentHeight / 2)) + marginTop(label) - marginBottom(label);
                 } else if (icon != null) {
-                    icon.left = Std.int((component.componentWidth / 2) - (icon.componentWidth / 2)); // + marginLeft(icon) - marginRight(icon);
+                    icon.left = paddingLeft + marginLeft(icon) - marginRight(icon);
                     icon.top = Std.int((component.componentHeight / 2) - (icon.componentHeight / 2)) + marginTop(icon) - marginBottom(icon);
                 }
             case "left" | "right" | "center-left" | "center-right":
