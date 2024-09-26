@@ -70,7 +70,7 @@ class Button extends InteractiveComponent implements ICompositeInteractiveCompon
     //***********************************************************************************************************
     // Styles
     //***********************************************************************************************************
-    /** The icon position: `top` `bottom` `left` `right` **/
+    /** The icon position: `top` `bottom` `left` `right` `center-left `center-right` `far-left` `far-right **/
     @:style(layout)                                     public var iconPosition:String;
     /** Font size for button's label **/
     @:style(layout)                                     public var fontSize:Null<Float>;
@@ -271,7 +271,7 @@ class ButtonLayout extends DefaultLayout {
                     icon.left = Std.int((component.componentWidth / 2) - (icon.componentWidth / 2)); // + marginLeft(icon) - marginRight(icon);
                     icon.top = Std.int((component.componentHeight / 2) - (icon.componentHeight / 2)) + marginTop(icon) - marginBottom(icon);
                 }
-            case "left" | "right":
+            case "left" | "right" | "center-left" | "center-right":
                 if (label != null && icon != null) {
                     var cx:Float = label.componentWidth + icon.componentWidth + horizontalSpacing;
                     var x:Float = Std.int((component.componentWidth / 2) - (cx / 2));
@@ -279,14 +279,20 @@ class ButtonLayout extends DefaultLayout {
                         x = paddingLeft;
                     }
 
-                    if (iconPosition == "right") {
+                    if (iconPosition == "right" ) {
                         label.left = x + marginLeft(label) - marginRight(label);
                         x += horizontalSpacing + label.componentWidth;
                         icon.left = x + marginLeft(icon) - marginRight(icon);
-                    } else {
+                    } else if (iconPosition == "left" )  {
                         icon.left = x + marginLeft(icon) - marginRight(icon);
                         x += horizontalSpacing + icon.componentWidth;
                         label.left = x + marginLeft(label) - marginRight(label);
+                    } else if (iconPosition == "center-right")  {
+                        label.left = getTextAlignPos(label, component.componentWidth);
+                        icon.left =  label.left +  label.componentWidth + horizontalSpacing + marginLeft(icon) - marginRight(icon);
+                    } else if (iconPosition == "center-left")  {
+                        label.left = getTextAlignPos(label, component.componentWidth);
+                        icon.left =  label.left - horizontalSpacing  - icon.componentWidth + marginLeft(icon) - marginRight(icon);
                     }
 
                     label.top = Std.int((component.componentHeight / 2) - (label.componentHeight / 2)) + marginTop(label) - marginBottom(label);
