@@ -219,7 +219,35 @@ class ButtonLayout extends DefaultLayout {
         if (icon != null && icon.hidden == true) {
             icon = null;
         }
+
         switch (iconPosition) {
+            case "far-right"|"center-right"|"right"|"left"|"center-left"|"far-left" if (_component.autoWidth) :
+                if (label != null && icon != null) {
+                    var cx:Float = label.componentWidth + icon.componentWidth + horizontalSpacing;
+                    var x:Float = Std.int((component.componentWidth / 2) - (cx / 2));
+                    if (cast(component, Button).textAlign == "left") {
+                        x = paddingLeft;
+                    }
+
+                    if (iconPosition == "right" || iconPosition == "center-right" || iconPosition == "far-right") {
+                        label.left = x + marginLeft(label) - marginRight(label);
+                        x += horizontalSpacing + label.componentWidth;
+                        icon.left = x + marginLeft(icon) - marginRight(icon);
+                    } else if (iconPosition == "left" || iconPosition == "center-left" || iconPosition == "far-left") {
+                        icon.left = x + marginLeft(icon) - marginRight(icon);
+                        x += horizontalSpacing + icon.componentWidth;
+                        label.left = x + marginLeft(label) - marginRight(label);
+                    }
+
+                    label.top = Std.int((component.componentHeight / 2) - (label.componentHeight / 2)) + marginTop(label) - marginBottom(label);
+                    icon.top = Std.int((component.componentHeight / 2) - (icon.componentHeight / 2)) + marginTop(icon) - marginBottom(icon);
+                } else if (label != null) {
+                    label.left = getTextAlignPos(label, component.componentWidth);
+                    label.top = Std.int((component.componentHeight / 2) - (label.componentHeight / 2)) + marginTop(label) - marginBottom(label);
+                } else if (icon != null) {
+                    icon.left = Std.int((component.componentWidth / 2) - (icon.componentWidth / 2)) + marginLeft(icon) - marginRight(icon);
+                    icon.top = Std.int((component.componentHeight / 2) - (icon.componentHeight / 2)) + marginTop(icon) - marginBottom(icon);
+                }
             case "far-right":
                 if (label != null && icon != null) {
                     var cx:Float = label.componentWidth + icon.componentWidth + horizontalSpacing;
