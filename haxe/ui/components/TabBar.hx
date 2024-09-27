@@ -112,7 +112,7 @@ class TabBarLayout extends DefaultLayout {
                 max = b.height;
             }
         }
-        size.height = max;
+        size.height = max + paddingTop + paddingBottom;
         return size;
     }
 }
