@@ -99,6 +99,24 @@ private class Layout extends DefaultLayout {
         }
         return size;
     }
+
+    public override function calcAutoSize(exclusions:Array<Component> = null):Size {
+        var tabs:TabBar = component.findComponent(TabBar, false);
+        var content:Box = component.findComponent(Box, false);
+        if (tabs == null || content == null) {
+            return super.calcAutoSize(exclusions);
+        }
+
+        var size = super.calcAutoSize(exclusions);
+        if (content.autoHeight) {
+            var modifier = 0 - marginTop(tabs);
+            if (component.hasClass(":bottom")) {
+                modifier = -1 - marginTop(tabs);
+            }
+            size.height = tabs.height + content.height + modifier;
+        }
+        return size;
+    }
 }
 
 //***********************************************************************************************************
