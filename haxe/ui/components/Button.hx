@@ -257,115 +257,128 @@ class ButtonLayout extends DefaultLayout {
                 }
         }
 
+        calcLabelPosition();
+        calcIconPosition(label?.left);
+
+    }
+
+    private function calcLabelPosition() {
+        var label:Label = component.findComponent(Label, false);
+        var icon:Image = component.findComponent("button-icon", false);
+        var textAlign = cast(component, Button).textAlign;
+
+
+        if (label == null || label.componentWidth == 0) return;
+
+        if (label != null && icon == null){
+            label.left = getTextAlignPos(label, component.componentWidth);
+            return;
+        }
+
+        if (_component.autoWidth || textAlign != "center") { // label takes full usable size
+            var cx:Float = label.componentWidth + icon.componentWidth + horizontalSpacing;
+            var x:Float = Std.int((component.componentWidth / 2) - (cx / 2));
+            if (textAlign == "left") {
+                x = paddingLeft;
+            }
+            if (iconPosition == "right" || iconPosition == "center-right" || iconPosition == "far-right") {
+                label.left = x + marginLeft(label) - marginRight(label);
+            } else if (iconPosition == "left" || iconPosition == "center-left" || iconPosition == "far-left") {
+                x += horizontalSpacing + icon.componentWidth;
+                label.left = x + marginLeft(label) - marginRight(label);
+            }
+            return;
+        }
 
         switch (iconPosition) {
-            case "far-right"|"center-right"|"right"|"left"|"center-left"|"far-left" if (_component.autoWidth || textAlign != "center") :
-                if (label != null && icon != null && label.componentWidth != 0) {
-                    var cx:Float = label.componentWidth + icon.componentWidth + horizontalSpacing;
-                    var x:Float = Std.int((component.componentWidth / 2) - (cx / 2));
-                    if (textAlign == "left") {
-                        x = paddingLeft;
-                    }
+            case "far-right" | "far-left":
+                label.left = (_component.width - label.width) /2 + marginLeft(label) - marginRight(label);
+            case "center-left" | "center-right":
+                label.left = getTextAlignPos(label, component.componentWidth);
 
-                    if (iconPosition == "right" || iconPosition == "center-right" || iconPosition == "far-right") {
-                        label.left = x + marginLeft(label) - marginRight(label);
-                        x += horizontalSpacing + label.componentWidth;
-                        icon.left = x + marginLeft(icon) - marginRight(icon);
-                    } else if (iconPosition == "left" || iconPosition == "center-left" || iconPosition == "far-left") {
-                        icon.left = x + marginLeft(icon) - marginRight(icon);
-                        x += horizontalSpacing + icon.componentWidth;
-                        label.left = x + marginLeft(label) - marginRight(label);
-                    }
-                } else if (label != null && label.componentWidth != 0) {
-                    label.left = getTextAlignPos(label, component.componentWidth);
-                } else if (icon != null) {
-                    if (iconPosition == "far-right") {
-                        icon.left = (component.componentWidth - icon.componentWidth - paddingRight) + marginLeft(icon) - marginRight(icon);
-                    } else if (iconPosition == "far-left") {
-                        icon.left = paddingLeft + marginLeft(icon) - marginRight(icon);
-                    } else {
-                        icon.left = Std.int((component.componentWidth / 2) - (icon.componentWidth / 2)) + marginLeft(icon) - marginRight(icon);
-                    }
+            case "left" | "right":
+                var cx:Float = label.componentWidth + icon.componentWidth + horizontalSpacing;
+                var x:Float = Std.int((component.componentWidth / 2) - (cx / 2));
+                if (cast(component, Button).textAlign == "left") {
+                    x = paddingLeft;
                 }
-            case "far-right":
-                if (label != null && icon != null && label.componentWidth != 0) {
-                    var cx:Float = label.componentWidth + icon.componentWidth + horizontalSpacing;
-                    var x:Float = Std.int((component.componentWidth / 2) - (cx / 2));
 
-                    if (cx + paddingLeft + paddingRight < component.componentWidth) {
-                        x += horizontalSpacing + label.componentWidth;
-                        icon.left = (component.componentWidth - icon.componentWidth - paddingRight) + marginLeft(icon) - marginRight(icon);
-                    } else {
-                        x += horizontalSpacing + label.componentWidth;
-                        icon.left = x + marginLeft(icon) - marginRight(icon);
-                    }
-
-                    if (label.textAlign == "center") {
-                        label.left = (_component.width - label.width) /2;
-                    } else {
-                        label.left = paddingLeft;
-                    }
-                } else if (label != null && label.componentWidth != 0) {
-                    label.left = getTextAlignPos(label, component.componentWidth);
-                } else if (icon != null) {
-                    icon.left = (component.componentWidth - icon.componentWidth - paddingRight) + marginLeft(icon) - marginRight(icon);
-                }
-            case "far-left":
-                if (label != null && icon != null && label.componentWidth != 0) {
-                    var x:Float = paddingLeft;
-
-                    icon.left = x + marginLeft(icon) - marginRight(icon);
+                if (iconPosition == "right" ) {
+                    label.left = x + marginLeft(label) - marginRight(label);
+                } else if (iconPosition == "left" )  {
                     x += horizontalSpacing + icon.componentWidth;
-                    
-
-                    if (label.textAlign == "center") {
-                        label.left = (_component.width - label.width) /2;
-                    } else {
-                        label.left = x + marginLeft(label) - marginRight(label);
-                    }
-                } else if (label != null && label.componentWidth != 0) {
-                    label.left = getTextAlignPos(label, component.componentWidth);
-                } else if (icon != null) {
-                    icon.left = paddingLeft + marginLeft(icon) - marginRight(icon);
-                }
-            case "left" | "right" | "center-left" | "center-right":
-                if (label != null && icon != null && label.componentWidth != 0) {
-                    var cx:Float = label.componentWidth + icon.componentWidth + horizontalSpacing;
-                    var x:Float = Std.int((component.componentWidth / 2) - (cx / 2));
-                    if (cast(component, Button).textAlign == "left") {
-                        x = paddingLeft;
-                    }
-
-                    if (iconPosition == "right" ) {
-                        label.left = x + marginLeft(label) - marginRight(label);
-                        x += horizontalSpacing + label.componentWidth;
-                        icon.left = x + marginLeft(icon) - marginRight(icon);
-                    } else if (iconPosition == "left" )  {
-                        icon.left = x + marginLeft(icon) - marginRight(icon);
-                        x += horizontalSpacing + icon.componentWidth;
-                        label.left = x + marginLeft(label) - marginRight(label);
-                    } else if (iconPosition == "center-right")  {
-                        label.left = getTextAlignPos(label, component.componentWidth);
-                        icon.left =  label.left +  label.componentWidth + horizontalSpacing + marginLeft(icon) - marginRight(icon);
-                    } else if (iconPosition == "center-left")  {
-                        label.left = getTextAlignPos(label, component.componentWidth);
-                        icon.left =  label.left - horizontalSpacing  - icon.componentWidth + marginLeft(icon) - marginRight(icon);
-                    }
-                } else if (label != null && label.componentWidth != 0) {
-                    label.left = getTextAlignPos(label, component.componentWidth);
-                } else if (icon != null) {
-                    icon.left = Std.int((component.componentWidth / 2) - (icon.componentWidth / 2)); // + marginLeft(icon) - marginRight(icon);
+                    label.left = x + marginLeft(label) - marginRight(label);
                 }
             case "top" | "bottom":
-                if (label != null && icon != null && label.componentWidth != 0) {
-                    label.left = getTextAlignPos(label, component.componentWidth);
-                    icon.left = Std.int((component.componentWidth / 2) - (icon.componentWidth / 2)) + marginLeft(icon) - marginRight(icon);
-                } else if (label != null && label.componentWidth != 0) {
-                    label.left = Std.int((component.componentWidth / 2) - (label.componentWidth / 2)) + marginLeft(label) - marginRight(label);
-                } else if (icon != null) {
-                    icon.left = Std.int((component.componentWidth / 2) - (icon.componentWidth / 2)) + marginLeft(icon) - marginRight(icon);
-                }
+                label.left = getTextAlignPos(label, component.componentWidth);
         }
+
+    }
+
+    private function calcIconPosition(labelLeft:Float = 0) {
+        var icon:Image = component.findComponent("button-icon", false);
+        var label:Label = component.findComponent(Label, false);
+        var textAlign = cast(component, Button).textAlign;
+
+        if (icon == null || icon.componentWidth == 0) return;
+
+        if (label == null && icon != null) {
+            if (iconPosition == "far-right") {
+                icon.left = (component.componentWidth - icon.componentWidth - paddingRight) + marginLeft(icon) - marginRight(icon);
+            } else if (iconPosition == "far-left") {
+                icon.left = paddingLeft + marginLeft(icon) - marginRight(icon);
+            } else {
+                icon.left = Std.int((component.componentWidth / 2) - (icon.componentWidth / 2)) + marginLeft(icon) - marginRight(icon);
+            }
+            return;
+        }
+
+        if (_component.autoWidth || textAlign != "center") { // label takes full usable size
+            var cx:Float = label.componentWidth + icon.componentWidth + horizontalSpacing;
+            var x:Float = Std.int((component.componentWidth / 2) - (cx / 2));
+            if (textAlign == "left") {
+                x = paddingLeft;
+            }
+
+            if (iconPosition == "right" || iconPosition == "center-right" || iconPosition == "far-right") {
+                x += horizontalSpacing + label.componentWidth;
+                icon.left = x + marginLeft(icon) - marginRight(icon);
+            } else if (iconPosition == "left" || iconPosition == "center-left" || iconPosition == "far-left") {
+                icon.left = x + marginLeft(icon) - marginRight(icon);
+            }
+            return;
+        }
+
+        switch (iconPosition) {
+            case "far-right":
+                var cx:Float = label.componentWidth + icon.componentWidth + horizontalSpacing;
+                var x:Float = Std.int((component.componentWidth / 2) - (cx / 2));
+                if (cx + paddingLeft + paddingRight < component.componentWidth) {
+                    x += horizontalSpacing + label.componentWidth;
+                    icon.left = (component.componentWidth - icon.componentWidth - paddingRight) + marginLeft(icon) - marginRight(icon);
+                } else {
+                    x += horizontalSpacing + label.componentWidth;
+                    icon.left = x + marginLeft(icon) - marginRight(icon);
+                }
+            case "far-left":
+                icon.left = paddingLeft + marginLeft(icon) - marginRight(icon);
+            case "left" | "right":
+                var cx:Float = label.componentWidth + icon.componentWidth + horizontalSpacing;
+                var x:Float = Std.int((component.componentWidth / 2) - (cx / 2));
+                if (iconPosition == "right" ) {
+                    x += horizontalSpacing + label.componentWidth;
+                    icon.left = x + marginLeft(icon) - marginRight(icon);
+                } else if (iconPosition == "left" )  {
+                    icon.left = x + marginLeft(icon) - marginRight(icon);
+                }
+            case "center-right":
+                icon.left =  labelLeft +  label.componentWidth + horizontalSpacing + marginLeft(icon) - marginRight(icon);
+            case "center-left":
+                icon.left =  labelLeft  - horizontalSpacing  - icon.componentWidth + marginLeft(icon) - marginRight(icon);
+            case "top" | "bottom":
+                icon.left = Std.int((component.componentWidth / 2) - (icon.componentWidth / 2)) + marginLeft(icon) - marginRight(icon);
+        }
+
     }
 
     private function getTextAlignPos(label:Label, usableWidth:Float):Float {
