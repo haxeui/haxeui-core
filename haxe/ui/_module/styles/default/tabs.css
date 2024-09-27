@@ -23,7 +23,7 @@
 .tabbar-button {
     border-radius: 0px;
     background: $solid-background-color-down $solid-background-color-down vertical;
-    padding: 7px 8px;
+    padding: 7px 14px;
     vertical-align: bottom;
     border-left-width: 0px;
     cursor: pointer;
