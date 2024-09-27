@@ -264,7 +264,7 @@
 }
 
 /************************************************************************
-** TABVIEW ALT STYLES
+** TABVIEW ALT STYLES - COLLAPSIBLE LABELS
 *************************************************************************/
 .collapsible-labels .tabbar-button .label {
     hidden: true;
@@ -274,6 +274,64 @@
     hidden: false;
 }
 
+/************************************************************************
+** TABVIEW ALT STYLES - FULL WIDTH BUTTONS
+*************************************************************************/
 .full-width-buttons .tabbar-button, .full-width-buttons .tabbar > .tabbar-contents {
     width: 100%;
+}
+
+/************************************************************************
+** TABVIEW ALT STYLES - FLAT BUTTONS
+*************************************************************************/
+.tabview.flat-tabs .tabview-content {
+    border: none;
+}
+
+.tabbar.flat-tabs .tabbar-button, .tabview.flat-tabs > .tabbar .tabbar-button {
+    background-color: none;
+    border: none;
+    filter: none;
+}
+
+.tabbar.flat-tabs .tabbar-button-selected, .tabview.flat-tabs > .tabbar .tabbar-button-selected {
+    border-none: none;
+    border-bottom: 1px solid $accent-color;
+    color: $accent-color-darker;
+}
+
+.tabbar.flat-tabs:bottom .tabbar-button-selected, .tabview.flat-tabs > .tabbar:bottom .tabbar-button-selected {
+    border-top: 1px solid $accent-color;
+    border-bottom: none;
+    color: $accent-color-darker;
+}
+
+/************************************************************************
+** TABVIEW ALT STYLES - PILL BUTTONS
+*************************************************************************/
+.tabview.pill-tabs .tabview-content {
+    border: none;
+}
+
+.tabbar.pill-tabs, .tabview.pill-tabs > .tabbar { 
+    background-color: $solid-background-color-down;
+    padding: 5px;
+}
+
+.tabbar.pill-tabs .tabbar-contents, .tabview.pill-tabs > .tabbar .tabbar-contents {
+    border: none;
+    spacing: 5px;
+}
+
+.tabbar.pill-tabs .tabbar-button, .tabview.pill-tabs > .tabbar .tabbar-button {
+    background-color: none;
+    border: none;
+    filter: none;
+    border-radius: 5px;
+    color: $down-text-color;
+}
+
+.tabbar.pill-tabs .tabbar-button-selected, .tabview.pill-tabs > .tabbar .tabbar-button-selected {
+    background-color: $hover-background-color-end;
+    color: $accent-color-darker;
 }
