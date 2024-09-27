@@ -185,8 +185,7 @@ class ButtonLayout extends DefaultLayout {
         var icon:Image = component.findComponent("button-icon", false);
         var textAlign = cast(component, Button).textAlign;
         
-        
-        if (icon != null && (iconPosition == "far-right" || iconPosition == "far-left") && textAlign =="center") {
+        if (icon != null && (iconPosition == "far-right" || iconPosition == "far-left" || iconPosition == "center-left" || iconPosition == "center-right") && textAlign =="center") {
             size.width -= icon.width * 2 + verticalSpacing;
         } else if (icon != null && (iconPosition == "far-right" || iconPosition == "far-left" || icon != null && (iconPosition == "left" || iconPosition == "right" || iconPosition == "center-left" || iconPosition == "center-right"))) {
             size.width -= icon.width + verticalSpacing;
@@ -280,7 +279,13 @@ class ButtonLayout extends DefaultLayout {
                 } else if (label != null && label.componentWidth != 0) {
                     label.left = getTextAlignPos(label, component.componentWidth);
                 } else if (icon != null) {
-                    icon.left = Std.int((component.componentWidth / 2) - (icon.componentWidth / 2)) + marginLeft(icon) - marginRight(icon);
+                    if (iconPosition == "far-right") {
+                        icon.left = (component.componentWidth - icon.componentWidth - paddingRight) + marginLeft(icon) - marginRight(icon);
+                    } else if (iconPosition == "far-left") {
+                        icon.left = paddingLeft + marginLeft(icon) - marginRight(icon);
+                    } else {
+                        icon.left = Std.int((component.componentWidth / 2) - (icon.componentWidth / 2)) + marginLeft(icon) - marginRight(icon);
+                    }
                 }
             case "far-right":
                 if (label != null && icon != null && label.componentWidth != 0) {
