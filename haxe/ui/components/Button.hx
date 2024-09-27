@@ -183,7 +183,12 @@ class ButtonLayout extends DefaultLayout {
     private override function get_usableSize():Size {
         var size = super.get_usableSize();
         var icon:Image = component.findComponent("button-icon", false);
-        if (icon != null && (iconPosition == "far-right" || iconPosition == "far-left" || iconPosition == "left" || iconPosition == "right" || iconPosition == "center-left" || iconPosition == "center-right")) {
+        var textAlign = cast(component, Button).textAlign;
+        
+        
+        if (icon != null && (iconPosition == "far-right" || iconPosition == "far-left") && textAlign =="center") {
+            size.width -= icon.width * 2 + verticalSpacing;
+        } else if (icon != null && (iconPosition == "far-right" || iconPosition == "far-left" || icon != null && (iconPosition == "left" || iconPosition == "right" || iconPosition == "center-left" || iconPosition == "center-right"))) {
             size.width -= icon.width + verticalSpacing;
         }
         return size;
