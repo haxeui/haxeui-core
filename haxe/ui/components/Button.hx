@@ -230,7 +230,7 @@ class ButtonLayout extends DefaultLayout {
         }
         if (icon != null) {
             if (label != null) {
-                icon.left = calcIconPositionLeft(label?.left);
+                icon.left = calcIconPositionLeft(label.left);
             } else {
                 icon.left = calcIconPositionLeft();
             }
