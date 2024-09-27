@@ -224,51 +224,76 @@ class ButtonLayout extends DefaultLayout {
             icon = null;
         }
 
-        var textAlign = cast(component, Button).textAlign;
-
-        switch (iconPosition) {
-            case "top" | "bottom":
-                if (label != null && icon != null && label.componentHeight != 0) {
-                    var cy:Float = label.componentHeight + icon.componentHeight + verticalSpacing;
-                    var y:Float = Std.int((component.componentHeight / 2) - (cy / 2));
-
-                    if (iconPosition == "bottom") {
-                        label.top = y + marginTop(label) - marginBottom(label);
-                        y += verticalSpacing + label.componentHeight;
-                        icon.top = y + marginTop(icon) - marginBottom(icon);
-                    } else {
-                        icon.top = y + marginTop(icon) - marginBottom(icon);
-                        y += verticalSpacing + icon.componentHeight;
-                        label.top = y + marginTop(label) - marginBottom(label);
-                    }
-                } else if (label != null && label.componentHeight != 0) {
-                    label.top = Std.int((component.componentHeight / 2) - (label.componentHeight / 2)) + marginTop(label) - marginBottom(label);
-                } else if (icon != null) {
-                    icon.top = Std.int((component.componentHeight / 2) - (icon.componentHeight / 2)) + marginTop(icon) - marginBottom(icon);
-                }
-            default:
-                if (label != null && icon != null && label.componentHeight != 0) {
-                    label.top = Std.int((component.componentHeight / 2) - (label.componentHeight / 2)) + marginTop(label) - marginBottom(label);
-                    icon.top = Std.int((component.componentHeight / 2) - (icon.componentHeight / 2)) + marginTop(icon) - marginBottom(icon);
-                } else if (label != null && label.componentHeight != 0) {
-                    label.top = Std.int((component.componentHeight / 2) - (label.componentHeight / 2)) + marginTop(label) - marginBottom(label);
-                } else if (icon != null) {
-                    icon.top = Std.int((component.componentHeight / 2) - (icon.componentHeight / 2)) + marginTop(icon) - marginBottom(icon);
-                }
+        if (label != null && label.componentWidth != 0){
+            label.top = calcLabelPositionTop();
+            label.left = calcLabelPositionLeft();
         }
-
-        if (label != null && label.componentWidth != 0) label.left = calcLabelPosition();
         if (icon != null) {
             if (label != null) {
-                icon.left = calcIconPosition(label?.left);
+                icon.left = calcIconPositionLeft(label?.left);
             } else {
-                icon.left = calcIconPosition();
+                icon.left = calcIconPositionLeft();
             }
+            icon.top = calcIconPositionTop();
         }
 
     }
 
-    private function calcLabelPosition():Float {
+    private function calcLabelPositionTop():Float {
+        var label:Label = component.findComponent(Label, false);
+        var icon:Image = component.findComponent("button-icon", false);
+
+
+        if (label == null || label.componentHeight == 0) return 0;
+
+        if (label != null && icon == null){
+            return Std.int((component.componentHeight / 2) - (label.componentHeight / 2)) + marginTop(label) - marginBottom(label);
+        }
+
+        switch (iconPosition) {
+            case "top" | "bottom":
+                var cy:Float = label.componentHeight + icon.componentHeight + verticalSpacing;
+                var y:Float = Std.int((component.componentHeight / 2) - (cy / 2));
+
+                if (iconPosition == "bottom") {
+                    return y + marginTop(label) - marginBottom(label);
+                } else {
+                    y += verticalSpacing + icon.componentHeight;
+                    return y + marginTop(label) - marginBottom(label);
+                }
+            default:
+                return Std.int((component.componentHeight / 2) - (label.componentHeight / 2)) + marginTop(label) - marginBottom(label);
+        }
+    }
+
+    private function calcIconPositionTop():Float {
+        var icon:Image = component.findComponent("button-icon", false);
+        var label:Label = component.findComponent(Label, false);
+
+        if (icon == null || icon.componentWidth == 0) return 0;
+
+        if (label == null && icon != null) {
+            return Std.int((component.componentHeight / 2) - (icon.componentHeight / 2)) + marginTop(icon) - marginBottom(icon);
+        }
+
+        switch (iconPosition) {
+            case "top" | "bottom":
+                var cy:Float = label.componentHeight + icon.componentHeight + verticalSpacing;
+                var y:Float = Std.int((component.componentHeight / 2) - (cy / 2));
+
+                if (iconPosition == "bottom") {
+                    y += verticalSpacing + label.componentHeight;
+                    return y + marginTop(icon) - marginBottom(icon);
+                } else {
+                    return y + marginTop(icon) - marginBottom(icon);
+                }
+            default:
+                return Std.int((component.componentHeight / 2) - (icon.componentHeight / 2)) + marginTop(icon) - marginBottom(icon);
+        }
+
+    }
+
+    private function calcLabelPositionLeft():Float {
         var label:Label = component.findComponent(Label, false);
         var icon:Image = component.findComponent("button-icon", false);
         var textAlign = cast(component, Button).textAlign;
@@ -294,11 +319,7 @@ class ButtonLayout extends DefaultLayout {
             }
         }
 
-        switch (iconPosition) {
-            case "far-right" | "far-left":
-                return (_component.width - label.width) /2 + marginLeft(label) - marginRight(label);
-            case "center-left" | "center-right":
-                return getTextAlignPos(label, component.componentWidth);
+        switch (iconPosition) {    
             case "left" | "right":
                 var cx:Float = label.componentWidth + icon.componentWidth + horizontalSpacing;
                 var x:Float = Std.int((component.componentWidth / 2) - (cx / 2));
@@ -308,15 +329,23 @@ class ButtonLayout extends DefaultLayout {
                     x += horizontalSpacing + icon.componentWidth;
                     return x + marginLeft(label) - marginRight(label);
                 }
-            case "top" | "bottom":
-                return getTextAlignPos(label, component.componentWidth);
             case _:
-                return 0;
+                return getTextAlignPos(label, component.componentWidth);
         }
-
     }
 
-    private function calcIconPosition(labelLeft:Float = 0):Float {
+    private function getTextAlignPos(label:Label, usableWidth:Float):Float {
+        switch (cast(component, Button).textAlign) {
+            case "left":
+                return marginLeft(label) + paddingLeft;
+            case "right":
+                return usableWidth - label.componentWidth - marginRight(label) - paddingRight;
+            default:
+                return Std.int((usableWidth / 2) - (label.componentWidth / 2)) + marginLeft(label) - marginRight(label);
+        }
+    }
+
+    private function calcIconPositionLeft(labelLeft:Float = 0):Float {
         var icon:Image = component.findComponent("button-icon", false);
         var label:Label = component.findComponent(Label, false);
         var textAlign = cast(component, Button).textAlign;
@@ -346,7 +375,6 @@ class ButtonLayout extends DefaultLayout {
             } else if (iconPosition == "left" || iconPosition == "center-left" || iconPosition == "far-left") {
                 return x + marginLeft(icon) - marginRight(icon);
             }
-            return 0;
         }
 
         switch (iconPosition) {
@@ -383,16 +411,7 @@ class ButtonLayout extends DefaultLayout {
 
     }
 
-    private function getTextAlignPos(label:Label, usableWidth:Float):Float {
-        switch (cast(component, Button).textAlign) {
-            case "left":
-                return marginLeft(label) + paddingLeft;
-            case "right":
-                return usableWidth - label.componentWidth - marginRight(label) - paddingRight;
-            default:
-                return Std.int((usableWidth / 2) - (label.componentWidth / 2)) + marginLeft(label) - marginRight(label);
-        }
-    }
+    
 }
 
 //***********************************************************************************************************
