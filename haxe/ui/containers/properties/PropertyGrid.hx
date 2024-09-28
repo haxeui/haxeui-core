@@ -28,6 +28,8 @@ class PropertyGrid extends ScrollView {
         registeredEditors.set("boolean", { editorClass: PropertyEditorBoolean });
         registeredEditors.set("file", { editorClass: PropertyEditorFile });
         registeredEditors.set("date", { editorClass: PropertyEditorDate });
+        registeredEditors.set("action", { editorClass: PropertyEditorAction });
+        registeredEditors.set("toggle", { editorClass: PropertyEditorToggle });
     }
 
     public static function getRegisteredEditorInfo(type:String):RegisteredEditorEntry {

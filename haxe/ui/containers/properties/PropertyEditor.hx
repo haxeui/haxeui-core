@@ -8,6 +8,7 @@ import haxe.ui.components.NumberStepper;
 import haxe.ui.components.TextField;
 import haxe.ui.components.popups.ColorPickerPopup;
 import haxe.ui.data.DataSource;
+import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.util.Color;
 import haxe.ui.util.Variant;
@@ -264,5 +265,66 @@ class PropertyEditorFile extends PropertyEditor {
         hbox.addComponent(button);
 
         addComponent(hbox);
+    }
+}
+
+
+//***********************************************************************************************************
+// PropertyEditorAction
+//***********************************************************************************************************
+class PropertyEditorAction extends PropertyEditor {
+    private var button:Button;
+
+    public function new() {
+        super();
+        button = new Button();
+        button.percentWidth = 100;
+        addComponent(button);
+    }
+
+    private override function applyProperties(property:Property) {
+        if (property.text != null) {
+            button.text = property.text;
+        }
+    }
+
+    public override function applyValue(value:Variant) {
+        button.value = value.toString();
+    }
+
+    @:bind(button, MouseEvent.CLICK)
+    private function onButtonChange(_) {
+        onValueChanged(button.text);
+    }
+}
+
+
+//***********************************************************************************************************
+// PropertyEditorToggle
+//***********************************************************************************************************
+class PropertyEditorToggle extends PropertyEditor {
+    private var button:Button;
+
+    public function new() {
+        super();
+        button = new Button();
+        button.percentWidth = 100;
+        button.toggle = true;
+        addComponent(button);
+    }
+
+    private override function applyProperties(property:Property) {
+        if (property.text != null) {
+            button.text = property.text;
+        }
+    }
+
+    public override function applyValue(value:Variant) {
+        button.selected = value.toBool();
+    }
+
+    @:bind(button, UIEvent.CHANGE)
+    private function onButtonChange(_) {
+        onValueChanged(button.selected);
     }
 }
