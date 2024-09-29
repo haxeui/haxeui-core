@@ -1,10 +1,13 @@
 package haxe.ui.styles;
 
+import haxe.crypto.Sha1;
 import haxe.ui.core.Component;
 import haxe.ui.styles.elements.AnimationKeyFrames;
 import haxe.ui.styles.elements.ImportElement;
 import haxe.ui.styles.elements.MediaQuery;
 import haxe.ui.styles.elements.RuleElement;
+
+using StringTools;
 
 class StyleSheet {
     public var name:String;
@@ -102,7 +105,19 @@ class StyleSheet {
         _animations.set(el.id, el);
     }
 
+    var _parsedCss:Array<String> = [];
     public function parse(css:String) {
+        if (css == null) {
+            return;
+        }
+        if (css.trim().length == 0) {
+            return;
+        }
+        var hash = Sha1.encode(css);
+        if (_parsedCss.indexOf(hash) != -1) {
+            return;
+        }
+
         var parser = new Parser();
         var ss = parser.parse(css);
         var f = new StyleSheet();
@@ -114,6 +129,7 @@ class StyleSheet {
 
         f.merge(ss);
         merge(f);
+        _parsedCss.push(hash);
     }
 
     public function merge(styleSheet:StyleSheet) {
