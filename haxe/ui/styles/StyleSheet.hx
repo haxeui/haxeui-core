@@ -81,6 +81,7 @@ class StyleSheet {
 
     public function removeAllRules() {
         _rules = [];
+        _parsedCss = [];
     }
 
     public function clear() {
