@@ -511,11 +511,7 @@ abstract Variant(VariantType) from VariantType {
                 } else if ((r is String)) {
                     v = cast(r, String);
                 } else {
-                    #if hl
-                    v = null;
-                    #else
                     v = r;
-                    #end
                 }
             } else {
                 if ((r is Component)) {
@@ -534,11 +530,7 @@ abstract Variant(VariantType) from VariantType {
                 } else if ((r is ImageData)) {
                     v = cast(r, ImageData);
                 } else {
-                    #if hl
-                    v = null;
-                    #else
                     v = r;
-                    #end
                 }                
             }
         }
