@@ -80,14 +80,23 @@ class NotificationManager extends EventDispatcher<NotificationEvent> {
         var notification = new Notification();
         notification.registerEvent(UIEvent.DESTROY, onNotificationDestroyed);
         notification.notificationData = notificationData;
-        Timer.delay(function() {
+        if (notificationDisplayDelayMs <= 0) {
             if (!_isAnimating) {
                 pushNotification(notification);
             } else {
                 _addQueue.push(notification);
                 startTimer();
             }
-        }, notificationDisplayDelayMs);
+        } else {
+            Timer.delay(function() {
+                if (!_isAnimating) {
+                    pushNotification(notification);
+                } else {
+                    _addQueue.push(notification);
+                    startTimer();
+                }
+            }, notificationDisplayDelayMs);
+        }
 
         return notification;
     }
@@ -153,6 +162,10 @@ class NotificationManager extends EventDispatcher<NotificationEvent> {
         notification.opacity = 0;
         Screen.instance.addComponent(notification);
         Toolkit.callLater(function () {
+            // its possible that in this notification could have been destroyed in this one frame
+            if (@:privateAccess notification._isDisposed) {
+                return;
+            }
             notification.validateNow();
             var scx = Screen.instance.width;
             var scy = Screen.instance.height;
@@ -176,6 +189,10 @@ class NotificationManager extends EventDispatcher<NotificationEvent> {
 
         if (notification.notificationData.expiryMs > 0) {
             Timer.delay(function () {
+                // its possible that in this notification could have been destroyed in this time
+                if (@:privateAccess notification._isDisposed) {
+                    return;
+                }
                 removeNotification(notification);
             }, notification.notificationData.expiryMs);
         }
