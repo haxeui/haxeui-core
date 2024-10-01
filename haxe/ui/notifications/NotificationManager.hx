@@ -28,6 +28,7 @@ class NotificationManager extends EventDispatcher<NotificationEvent> {
     private static var DEFAULT_EXPIRY:Int = 3000;
 
     public var maxNotifications:Int = -1;
+    public var notificationDisplayDelayMs:Int = 50;
     public var animationFn:Array<Notification>->Array<AnimationBuilder> = AnimateFromBottom;
 
     private var _timer:Timer = null;
@@ -79,12 +80,14 @@ class NotificationManager extends EventDispatcher<NotificationEvent> {
         var notification = new Notification();
         notification.registerEvent(UIEvent.DESTROY, onNotificationDestroyed);
         notification.notificationData = notificationData;
-        if (!_isAnimating) {
-            pushNotification(notification);
-        } else {
-            _addQueue.push(notification);
-            startTimer();
-        }
+        Timer.delay(function() {
+            if (!_isAnimating) {
+                pushNotification(notification);
+            } else {
+                _addQueue.push(notification);
+                startTimer();
+            }
+        }, notificationDisplayDelayMs);
 
         return notification;
     }
