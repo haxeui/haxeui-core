@@ -1358,14 +1358,6 @@ class ScrollViewBuilder extends CompositeBuilder {
             _component.removeComponent(_contents);
             _contents = null;
         }
-        var vscroll:VerticalScroll = _component.findComponent(VerticalScroll, false);
-        if (vscroll != null) {
-            _component.removeComponent(vscroll);
-        }
-        var hscroll:HorizontalScroll = _component.findComponent(HorizontalScroll, false);
-        if (hscroll != null) {
-            _component.removeComponent(hscroll);
-        }
     }
 
     private function checkEmptyContentsComponent(contentsComponent:Component = null) {
