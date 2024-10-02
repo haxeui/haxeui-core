@@ -1353,6 +1353,11 @@ class ScrollViewBuilder extends CompositeBuilder {
     }
 
     public override function destroy() {
+        super.destroy();
+        if (_contents != null) {
+            _component.removeComponent(_contents);
+            _contents = null;
+        }
     }
 
     private function checkEmptyContentsComponent(contentsComponent:Component = null) {
@@ -1394,6 +1399,9 @@ class ScrollViewBuilder extends CompositeBuilder {
     }
 
     private override function get_numComponents():Null<Int> {
+        if (_contents == null) {
+            return 0;
+        }
         return _contents.numComponents;
     }
 
@@ -1417,7 +1425,10 @@ class ScrollViewBuilder extends CompositeBuilder {
                 child.registerEvent(UIEvent.COMPONENT_REMOVED, onContentsChanged);
                 contentsComponent = child;
             }
-            var r = _contents.addComponent(child);
+            var r:Component = null;
+            if (_contents != null) {
+                r = _contents.addComponent(child);
+            }
             checkEmptyContentsComponent(contentsComponent);
             return r;
         }
@@ -1426,7 +1437,10 @@ class ScrollViewBuilder extends CompositeBuilder {
 
     public override function addComponentAt(child:Component, index:Int):Component {
         if ((child is HorizontalScroll) == false && (child is VerticalScroll) == false && child.hasClass("scrollview-contents") == false) {
-            var r = _contents.addComponentAt(child, index);
+            var r:Component = null;
+            if (_contents != null) {
+                r = _contents.addComponentAt(child, index);
+            }
             checkEmptyContentsComponent();
             return r;
         }
@@ -1438,7 +1452,10 @@ class ScrollViewBuilder extends CompositeBuilder {
             return null;
         }
         if ((child is HorizontalScroll) == false && (child is VerticalScroll) == false && child.hasClass("scrollview-contents") == false) {
-            var r = _contents.removeComponent(child, dispose, invalidate);
+            var r:Component = null;
+            if (_contents != null) {
+                r = _contents.removeComponent(child, dispose, invalidate);
+            }
             checkEmptyContentsComponent();
             return r;
         }
@@ -1446,29 +1463,43 @@ class ScrollViewBuilder extends CompositeBuilder {
     }
 
     public override function removeComponentAt(index:Int, dispose:Bool = true, invalidate:Bool = true):Component {
-        var r = _contents.removeComponentAt(index, dispose, invalidate);
+        var r:Component = null;
+        if (_contents != null) {
+            r = _contents.removeComponentAt(index, dispose, invalidate);
+        }
         checkEmptyContentsComponent();
         return r;
     }
 
     public override function removeAllComponents(dispose:Bool = true):Bool {
-        _contents.removeAllComponents(dispose);
+        if (_contents != null) {
+            _contents.removeAllComponents(dispose);
+        }
         checkEmptyContentsComponent();
         return true;
     }
     
     public override function getComponentIndex(child:Component):Int {
+        if (_contents == null) {
+            return -1;
+        }
         return _contents.getComponentIndex(child);
     }
 
     public override function setComponentIndex(child:Component, index:Int):Component {
         if ((child is HorizontalScroll) == false && (child is VerticalScroll) == false && child.hasClass("scrollview-contents") == false) {
+            if (_contents == null) {
+                return null;
+            }
             return _contents.setComponentIndex(child, index);
         }
         return null;
     }
 
     public override function getComponentAt(index:Int):Component {
+        if (_contents == null) {
+            return null;
+        }
         return _contents.getComponentAt(index);
     }
 
