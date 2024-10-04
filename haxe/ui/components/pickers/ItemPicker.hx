@@ -124,10 +124,15 @@ class ItemPickerBuilder extends CompositeBuilder {
         handler.picker = picker;
 
         picker.registerEvent(MouseEvent.MOUSE_DOWN, onPickerMouseDown);
+        picker.registerEvent(UIEvent.RESIZE, onPickerResized);
     }
 
     private function onPickerMouseDown(_) {
         picker.focus = true;
+    }
+
+    private function onPickerResized(_) {
+        positionPanel();
     }
 
     private var _panelSelectionEvent:String = UIEvent.CHANGE;
@@ -172,6 +177,10 @@ class ItemPickerBuilder extends CompositeBuilder {
         picker.addComponent(defaultRenderer);
 
         panelContainer.addClass("item-picker-container");
+    }
+
+    public override function onInitialize() {
+        super.onInitialize();
     }
 
     public override function onReady() {
@@ -284,6 +293,9 @@ class ItemPickerBuilder extends CompositeBuilder {
     }
 
     private function positionPanel() {
+        if (panel == null) {
+            return;
+        }
         var panelPosition = picker.panelPosition;
         var panelOrigin = picker.panelOrigin;
         var panelWidth:Null<Float> = picker.width;
@@ -368,9 +380,15 @@ class ItemPickerBuilder extends CompositeBuilder {
         panel.width = panelWidth - horizontalPadding;
 
         if (panelOrigin == "left") {
+            if (panelWidth > picker.width) {
+                panelContainer.addClass("extended-right");
+            }
             panelContainer.left = picker.screenLeft;
             _panelFiller.left = picker.width - borderSize;
         } else if (panelOrigin == "right") {
+            if (panelWidth > picker.width) {
+                panelContainer.addClass("extended-left");
+            }
             panelContainer.left = picker.screenLeft + picker.width - panelWidth;
             _panelFiller.left = borderSize + offset;
         }
