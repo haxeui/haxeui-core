@@ -1920,7 +1920,9 @@ class Component extends ComponentImpl
     }
 
     private override function validateComponentData() {
-        behaviours.validateData();
+        if (behaviours != null) {
+            behaviours.validateData();
+        }
         
         if (_compositeBuilder != null) {
             _compositeBuilder.validateComponentData();
