@@ -289,6 +289,22 @@ class LocaleManager {
         return translateTo(language, id, param0, param1, param2, param3);
     }
 
+    /**
+        To use a translation unattached to a component
+    **/
+    public function stringToTranslation(s:String):String {
+        var fixedExpr = ExpressionUtil.stringToLanguageExpression(s, "LocaleManager");
+        if (StringTools.endsWith(fixedExpr, ";") == true) {
+            fixedExpr = fixedExpr.substr(0, fixedExpr.length - 1);
+        }
+        var context = {
+            LocaleManager: LocaleManager,
+            MathUtil: MathUtil
+        };
+        var value = SimpleExpressionEvaluator.eval(fixedExpr, context);
+        return value;
+    }
+
     private var _localeStringMap:Map<String, Map<String, LocaleString>> = new Map<String, Map<String, LocaleString>>();
     public function translateTo(lang:String, id:String, param0:Any = null, param1:Any = null, param2:Any = null, param3:Any = null) {
         lang = StringTools.replace(lang, "-", "_");
