@@ -492,12 +492,12 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
         }
         // is it valid to assume it must have :hover?
         var hasHover = cast(this, Component).hasClass(":hover"); // TODO: might want to move "hasClass" et al to this class to avoid cast
-        if (!hasHover && screenBounds.containsPoint(Screen.instance.currentMouseX, Screen.instance.currentMouseY)) {
+        if (!hasHover && hitTest(Screen.instance.currentMouseX, Screen.instance.currentMouseY)) {
             var mouseEvent = new MouseEvent(MouseEvent.MOUSE_OVER);
             mouseEvent.screenX = Screen.instance.currentMouseX;
             mouseEvent.screenY = Screen.instance.currentMouseY;
             dispatch(mouseEvent);
-        } else if (hasHover && !screenBounds.containsPoint(Screen.instance.currentMouseX, Screen.instance.currentMouseY)) {
+        } else if (hasHover && !hitTest(Screen.instance.currentMouseX, Screen.instance.currentMouseY)) {
             var mouseEvent = new MouseEvent(MouseEvent.MOUSE_OUT);
             mouseEvent.screenX = Screen.instance.currentMouseX;
             mouseEvent.screenY = Screen.instance.currentMouseY;
