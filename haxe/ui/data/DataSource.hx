@@ -3,6 +3,9 @@ package haxe.ui.data;
 import haxe.ui.constants.SortDirection;
 import haxe.ui.data.transformation.IItemTransformer;
 
+#if haxeui_expose_all
+@:expose
+#end
 class DataSource<T> {
     @:noCompletion
     public var onDataSourceChange:Void->Void;
