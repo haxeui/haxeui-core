@@ -1,5 +1,8 @@
 package haxe.ui.util;
 
+#if haxeui_expose_all
+@:expose
+#end
 class StringUtil {
     public static function uncapitalizeFirstLetter(s:String):String {
         s = s.substr(0, 1).toLowerCase() + s.substr(1, s.length);
