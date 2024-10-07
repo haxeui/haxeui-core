@@ -57,7 +57,8 @@ class CompositeBuilder {
         return null;
     }
 
-    public function removeAllComponents(dispose:Bool = true) {
+    public function removeAllComponents(dispose:Bool = true):Bool {
+        return false;
     }
     
     public function getComponentIndex(child:Component):Int {

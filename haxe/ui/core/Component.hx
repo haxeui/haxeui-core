@@ -740,7 +740,10 @@ class Component extends ComponentImpl
     @:dox(group = "Display tree related properties and methods")
     public function removeAllComponents(dispose:Bool = true) {
         if (_compositeBuilder != null) {
-            _compositeBuilder.removeAllComponents(dispose);
+            var b = _compositeBuilder.removeAllComponents(dispose);
+            if (b == true) {
+                return;
+            }
         }
         
         if (_children != null) {
