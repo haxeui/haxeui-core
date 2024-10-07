@@ -132,8 +132,12 @@ private class Builder extends CompositeBuilder {
             _stack.selectedIndex = 0;
         }
         var childIndex = _stack.getComponentIndex(child);
+        trace(childIndex, _stack.selectedIndex);
         if (childIndex != _stack.selectedIndex) {
             child.hide();
+        } else if (childIndex == _stack.selectedIndex) {
+            child.show();
+            _currentPage = child;
         }
     }
 }
