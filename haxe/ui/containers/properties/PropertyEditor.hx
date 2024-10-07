@@ -33,13 +33,17 @@ class PropertyEditor extends HBox {
     private function onValueChanged(value:Variant) {
         var event = new UIEvent(UIEvent.CHANGE);
         var property = findAncestor(Property);
-        property.value = value;
-        property.dispatch(event);
+        if (property != null) { // could have been destroyed, or just not attached
+            property.value = value;
+            property.dispatch(event);
+        }
 
         var propertyGrid = findAncestor(PropertyGrid);
-        var event = new UIEvent(UIEvent.CHANGE);
-        event.relatedComponent = property;
-        propertyGrid.dispatch(event);
+        if (propertyGrid != null) { // could have been destroyed, or just not attached
+            var event = new UIEvent(UIEvent.CHANGE);
+            event.relatedComponent = property;
+            propertyGrid.dispatch(event);
+        }
     }
 }
 
