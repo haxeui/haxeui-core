@@ -383,14 +383,18 @@ class ItemPickerBuilder extends CompositeBuilder {
             if (panelWidth > picker.width) {
                 panelContainer.addClass("extended-right");
             }
-            panelContainer.left = picker.screenLeft;
-            _panelFiller.left = picker.width - borderSize;
+            Toolkit.callLater(function() {
+                panelContainer.left = picker.screenLeft;
+                _panelFiller.left = picker.width - borderSize;
+            });
         } else if (panelOrigin == "right") {
             if (panelWidth > picker.width) {
                 panelContainer.addClass("extended-left");
             }
-            panelContainer.left = picker.screenLeft + picker.width - panelWidth;
-            _panelFiller.left = borderSize + offset;
+            Toolkit.callLater(function() {
+                panelContainer.left = picker.screenLeft + picker.width - panelWidth;
+                _panelFiller.left = borderSize + offset;
+            });
         }
 
         if (panelPosition == "down") {
