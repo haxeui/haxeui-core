@@ -1237,7 +1237,15 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
             c = c.parentComponent;
         }
 
-        _screenBounds.set(xpos, ypos, width, height);
+        var cx:Float = width;
+        if (componentWidth != null) {
+            cx = actualComponentWidth;
+        }
+        var cy:Float = height;
+        if (componentHeight != null) {
+            cy = actualComponentHeight;
+        }
+       _screenBounds.set(xpos, ypos, cx, cy);
 
         return _screenBounds;
      }
