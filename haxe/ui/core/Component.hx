@@ -557,6 +557,18 @@ class Component extends ComponentImpl
 
         this._isDisposed = true;
         this.removeAllComponents(true);
+
+        // its possible that a CompositeBuilder has hooked into core and overridden "removeAllComponents" without
+        // also hooking into the destroy sequence - which may be perfectly valid - in cases like this, we'll make
+        // doubly sure that when a component is disposed it disposes all children regardless - this is a safety
+        // measure to stop potential leaks
+        if (_children != null) {
+            while (_children.length > 0) {
+                var child = _children.pop();
+                child.disposeComponent();
+            }
+        }
+
         this.destroyComponent();
         this.unregisterEventsInternal();
         if (this.hasTextDisplay()) {
