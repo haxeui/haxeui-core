@@ -1136,6 +1136,16 @@ class Component extends ComponentImpl
      * @param show When enabled, ensures that this component is actually visible when the fade completes.
      */
     public function fadeIn(onEnd:Void->Void = null, show:Bool = true) {
+        if (opacity == 1) { // its already "faded in", lets do nothing
+            if (show) {
+                this.show();
+            }
+            if (onEnd != null) {
+                onEnd();
+            }
+            return;
+        }
+
         if (onEnd != null || show == true) {
             var prevStart = onAnimationStart;
             var prevEnd = onAnimationEnd;
@@ -1164,6 +1174,15 @@ class Component extends ComponentImpl
      * @param hide When enabled, ensures that this component is actually invisible when the fade completes.
      */
     public function fadeOut(onEnd:Void->Void = null, hide:Bool = true) {
+        if (opacity == 0) { // its already "faded out", lets do nothing
+            if (hide) {
+                this.hide();
+            }
+            if (onEnd != null) {
+                onEnd();
+            }
+            return;
+        }
         if (onEnd != null || hide == true) {
             var prevEnd = onAnimationEnd;
             onAnimationEnd = function(e) {
