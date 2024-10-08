@@ -44,12 +44,13 @@ private class SelectedIndex extends DataBehaviour {
             return;
         }
 
-        var button = cast(_component.getComponentAt(_value), Button);
+        var buttons = _component.findComponents(Button, 1);
+        var button = buttons[_value.toInt()];
         if (currentButton == button) {
             return;
         }
         
-        if (currentButton != null && _value.toInt() < _component.numComponents) {
+        if (currentButton != null && _value.toInt() < buttons.length) {
             builder._currentButton.selected = false;
         }
         
@@ -116,7 +117,8 @@ private class Events extends haxe.ui.events.Events {
 
     private function onButtonChanged(event:UIEvent) {
         var button = cast(event.target, Button);
-        var index = _bar.getComponentIndex(button);
+        var buttons = _bar.findComponents(Button, 1);
+        var index = buttons.indexOf(button);
         if (_bar.allowUnselection == false && index == _bar.selectedIndex && button.selected == false) {
             button.selected = true;
             return;
