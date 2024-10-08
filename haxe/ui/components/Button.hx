@@ -306,16 +306,10 @@ class ButtonLayout extends DefaultLayout {
         }
 
         if (_component.autoWidth || textAlign != "center") { // label takes full usable size
-            var cx:Float = label.componentWidth + icon.componentWidth + horizontalSpacing;
-            var x:Float = Std.int((component.componentWidth / 2) - (cx / 2));
-            if (textAlign == "left") {
-                x = paddingLeft;
-            }
             if (iconPosition == "right" || iconPosition == "center-right" || iconPosition == "far-right") {
-                return x + marginLeft(label) - marginRight(label);
+                return paddingLeft + marginLeft(label) - marginRight(label);
             } else if (iconPosition == "left" || iconPosition == "center-left" || iconPosition == "far-left") {
-                x += horizontalSpacing + icon.componentWidth;
-                return x + marginLeft(label) - marginRight(label);
+                return paddingLeft + horizontalSpacing + icon.componentWidth + marginLeft(label) - marginRight(label);
             }
         }
 
@@ -363,17 +357,10 @@ class ButtonLayout extends DefaultLayout {
         }
 
         if (_component.autoWidth || textAlign != "center") { // label takes full usable size
-            var cx:Float = label.componentWidth + icon.componentWidth + horizontalSpacing;
-            var x:Float = Std.int((component.componentWidth / 2) - (cx / 2));
-            if (textAlign == "left") {
-                x = paddingLeft;
-            }
-
             if (iconPosition == "right" || iconPosition == "center-right" || iconPosition == "far-right") {
-                x += horizontalSpacing + label.componentWidth;
-                return x + marginLeft(icon) - marginRight(icon);
+                return paddingLeft + horizontalSpacing + label.componentWidth + marginLeft(icon) - marginRight(icon);
             } else if (iconPosition == "left" || iconPosition == "center-left" || iconPosition == "far-left") {
-                return x + marginLeft(icon) - marginRight(icon);
+                return paddingLeft + marginLeft(icon) - marginRight(icon);
             }
         }
 
