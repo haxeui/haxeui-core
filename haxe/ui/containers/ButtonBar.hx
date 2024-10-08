@@ -150,6 +150,13 @@ class ButtonBarBuilder extends CompositeBuilder {
     
     public override function addComponent(child:Component):Component {
         if ((child is Button)) {
+            if (_bar.numComponents > 0) {
+                var divider = new Component();
+                divider.addClass("button-bar-divider");
+                divider.scriptAccess = false;
+                _bar.addComponent(divider);
+
+            }
             if (_bar.selectedIndex == _bar.numComponents) {
                 cast(child, Button).selected = true;
             }

@@ -72,6 +72,10 @@ WIP - dunno what looks "right"
     spacing: 0;
 }
 
+.button-bar .button-bar-divider {
+    hidden: true;
+}
+
 .button-bar .button {
     border-radius: 0;
     border: $normal-border-size solid $normal-border-color;
@@ -111,6 +115,40 @@ WIP - dunno what looks "right"
 .vertical-button-bar .button.last {
     border-bottom-left-radius: $normal-border-radius;
     border-bottom-right-radius: $normal-border-radius;
+}
+
+/************************************************************************
+** BUTTON BAR - ALT STYLES - PILL BUTTONS
+*************************************************************************/
+.button-bar.pill-buttons {
+    padding: 5px;
+    background-color: $solid-background-color-down;
+    border-radius: 5px;
+    spacing: 5px;
+}
+
+.button-bar.pill-buttons .button-bar-divider {
+    hidden: false;
+    height: 80%;
+    width: 1px;
+    background-color: $normal-border-color;
+    vertical-align: center;
+}
+
+.button-bar.pill-buttons .button, .button-bar.pill-buttons .button.first, .button-bar.pill-buttons .button.last {
+    border: none;
+    background-color: none;
+    filter: none;
+    border-radius: 5px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.button-bar.pill-buttons .button:down {
+    background-color: $selection-background-color;
+    color: $selection-text-color;
 }
 
 /************************************************************************
