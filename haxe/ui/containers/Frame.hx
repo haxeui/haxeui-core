@@ -37,7 +37,6 @@ private class IconBehaviour extends DataBehaviour {
             icon = new Image();
             icon.addClass("frame-icon");
             icon.id = "frame-icon";
-            icon.scriptAccess = false;
             icon.includeInLayout = false;
             _component.addComponent(icon);
         }
@@ -123,13 +122,11 @@ private class Builder extends CompositeBuilder {
         _border.id = "frame-border";
         _border.addClass("frame-border");
         _border.includeInLayout = false;
-        _border.scriptAccess = false;
         _frame.addComponent(_border);
 
         _contents = new Box();
         _contents.id = "frame-contents";
         _contents.addClass("frame-contents");
-        _contents.scriptAccess = false;
         _frame.addComponent(_contents);
 
         _label = new Label();
@@ -137,21 +134,18 @@ private class Builder extends CompositeBuilder {
         _label.id = "frame-title";
         _label.addClass("frame-title");
         _label.includeInLayout = false;
-        _label.scriptAccess = false;
         _frame.addComponent(_label);
 
         var line = new Component();
         line.id = "frame-left-line";
         line.addClass("frame-left-line");
         line.includeInLayout = false;
-        _label.scriptAccess = false;
         _frame.addComponent(line);
 
         var line = new Component();
         line.id = "frame-right-line";
         line.addClass("frame-right-line");
         line.includeInLayout = false;
-        _label.scriptAccess = false;
         _frame.addComponent(line);
     }
 

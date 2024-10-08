@@ -38,13 +38,11 @@ class DialogBase extends Box implements Draggable {
         dialogContainer = new haxe.ui.containers.VBox();
         dialogContainer.id = "dialog-container";
         dialogContainer.styleNames = "dialog-container";
-        dialogContainer.scriptAccess = false;
         addComponent(dialogContainer);
 
         dialogTitle = new haxe.ui.containers.HBox();
         dialogTitle.id = "dialog-title";
         dialogTitle.styleNames = "dialog-title";
-        dialogTitle.scriptAccess = false;
         dragInitiator = dialogTitle;
         dialogContainer.addComponent(dialogTitle);
 
@@ -52,32 +50,27 @@ class DialogBase extends Box implements Draggable {
         dialogTitleLabel.id = "dialog-title-label";
         dialogTitleLabel.styleNames = "dialog-title-label";
         dialogTitleLabel.text = "HaxeUI";
-        dialogTitleLabel.scriptAccess = false;
         dialogTitle.addComponent(dialogTitleLabel);
 
         dialogCloseButton = new haxe.ui.components.Image();
         dialogCloseButton.id = "dialog-close-button";
         dialogCloseButton.styleNames = "dialog-close-button";
-        dialogCloseButton.scriptAccess = false;
         dialogTitle.addComponent(dialogCloseButton);
 
         dialogContent = new haxe.ui.containers.VBox();
         dialogContent.id = "dialog-content";
         dialogContent.styleNames = "dialog-content";
-        dialogContent.scriptAccess = false;
         dialogContent.registerEvent(UIEvent.RESIZE, onContentResize);
         dialogContainer.addComponent(dialogContent);
 
         dialogFooterContainer = new haxe.ui.containers.Box();
         dialogFooterContainer.id = "dialog-footer-container";
         dialogFooterContainer.styleNames = "dialog-footer-container";
-        dialogFooterContainer.scriptAccess = false;
         dialogContainer.addComponent(dialogFooterContainer);
 
         dialogFooter = new haxe.ui.containers.HBox();
         dialogFooter.id = "dialog-footer";
         dialogFooter.styleNames = "dialog-footer";
-        dialogFooter.scriptAccess = false;
         dialogFooter.registerEvent(UIEvent.RESIZE, onFooterResize);
         dialogFooterContainer.addComponent(dialogFooter);
 

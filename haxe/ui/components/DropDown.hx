@@ -726,18 +726,15 @@ class DropDownEvents extends ButtonEvents {
                 var searchContainer = new VBox();
                 searchContainer.id = "dropdown-search-container";
                 searchContainer.addClass("dropdown-search-container");
-                searchContainer.scriptAccess = false;
 
                 var searchFieldContainer = new HBox();
                 searchFieldContainer.id = "dropdown-search-field-container";
                 searchFieldContainer.addClass("dropdown-search-field-container");
-                searchFieldContainer.scriptAccess = false;
                 searchFieldContainer.addComponent(searchField);
                 
                 var searchFieldSeparator = new Component();
                 searchFieldSeparator.id = "dropdown-search-field-separator";
                 searchFieldSeparator.addClass("dropdown-search-field-separator");
-                searchFieldSeparator.scriptAccess = false;
                 
                 searchContainer.addComponent(searchFieldContainer);
                 searchContainer.addComponent(searchFieldSeparator);
@@ -883,7 +880,6 @@ class DropDownEvents extends ButtonEvents {
         searchField.id = "dropdown-search-field";
         searchField.addClass("dropdown-search-field");
         searchField.placeholder = _dropdown.searchPrompt;
-        searchField.scriptAccess = false;
         searchField.registerEvent(UIEvent.CHANGE, onSearchChange);
         return searchField;
     }

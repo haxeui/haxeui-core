@@ -355,7 +355,6 @@ private class MinorTicks extends DataBehaviour {
                 for (_ in 0...addN) {
                     var tick = new Component();
                     tick.addClass("minor-tick");
-                    tick.scriptAccess = false;
                     slider.addComponent(tick);
                     slider.setComponentIndex(tick, index + 1);
                 }
@@ -389,7 +388,6 @@ private class MajorTicks extends DataBehaviour {
                 for (_ in 0...addN) {
                     var tick = new Component();
                     tick.addClass("major-tick");
-                    tick.scriptAccess = false;
                     slider.addComponent(tick);
                     slider.setComponentIndex(tick, index + 1);
                 }
@@ -641,7 +639,6 @@ class SliderBuilder extends CompositeBuilder {
         if (_component.findComponent("range") == null) {
             var v = createValueComponent();
             if (v != null) {
-                v.scriptAccess = false;
                 v.allowFocus = false;
                 v.id = "range";
                 v.addClass("slider-value");
@@ -671,7 +668,6 @@ class SliderBuilder extends CompositeBuilder {
         }
 
         var b = new Button();
-        b.scriptAccess = false;
         b.allowFocus = false;
         b.id = id;
         b.addClass(id);

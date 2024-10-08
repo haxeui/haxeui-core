@@ -462,7 +462,6 @@ private class TextBehaviour extends DataBehaviour {
                 if (label == null) {
                     label = new Label();
                     label.id = "button-label";
-                    label.scriptAccess = false;
                     _component.addComponent(label);
                     _component.invalidateComponentStyle(true);
                 }
@@ -487,7 +486,6 @@ private class IconBehaviour extends DataBehaviour {
             icon = new Image();
             icon.addClass("icon");
             icon.id = "button-icon";
-            icon.scriptAccess = false;
             _component.addComponentAt(icon, 0);
             _component.invalidateComponentStyle(true);
         }

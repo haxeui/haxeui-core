@@ -68,7 +68,6 @@ private class TextBehaviour extends DataBehaviour {
             label = new Label();
             label.styleNames = "switch-label";
             label.id = "switch-label";
-            label.scriptAccess = false;
             _component.addComponentAt(label, 0);
 
             var spacer = new Spacer(); // TODO: ugly

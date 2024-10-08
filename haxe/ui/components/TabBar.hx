@@ -430,7 +430,6 @@ private class Builder extends CompositeBuilder {
             _filler = new Box();
             _filler.id = "tabbar-filler";
             _filler.addClass("tabbar-filler");
-            _filler.scriptAccess = false;
             _filler.includeInLayout = false;
             _tabbar.addComponent(_filler);
         }
@@ -642,7 +641,6 @@ private class Builder extends CompositeBuilder {
                 leftFiller = new Box();
                 leftFiller.id = "tabbar-filler-left";
                 leftFiller.addClass("tabbar-filler-left");
-                leftFiller.scriptAccess = false;
                 leftFiller.includeInLayout = false;
                 _tabbar.addComponent(leftFiller);
             }
@@ -658,7 +656,6 @@ private class Builder extends CompositeBuilder {
                 rightFiller = new Box();
                 rightFiller.id = "tabbar-filler-right";
                 rightFiller.addClass("tabbar-filler-right");
-                rightFiller.scriptAccess = false;
                 rightFiller.includeInLayout = false;
                 _tabbar.addComponent(rightFiller);
             }
@@ -737,7 +734,6 @@ private class TabBarButton extends Button {
             image.id = "tab-close-button";
             image.addClass("tab-close-button");
             image.includeInLayout = false;
-            image.scriptAccess = false;
             image.onClick = onCloseClicked;
             addComponent(image);
         } else if (existing != null) {

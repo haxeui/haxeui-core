@@ -49,7 +49,6 @@ private class IconBehaviour extends DataBehaviour {
         var icon:Image = _component.findComponent("menuitem-icon", true);
         if (icon == null) {
             icon = new Image();
-            icon.scriptAccess = false;
             icon.id = "menuitem-icon";
             icon.addClass("menuitem-icon");
             icon.addClass("icon");
@@ -67,7 +66,6 @@ private class ExpandableBehaviour extends DataBehaviour {
             image = new Image();
             image.id = "menuitem-expandable";
             image.styleNames = "menuitem-expandable";
-            image.scriptAccess = false;
             _component.addComponent(image);
             _component.invalidateComponentStyle(true);
         } else if (_value == false) {
@@ -122,13 +120,11 @@ private class Builder extends CompositeBuilder {
         label.id = "menuitem-label";
         //label.percentWidth = 100;
         label.styleNames = "menuitem-label";
-        label.scriptAccess = false;
         box.addComponent(label);
 
         var label = new Label();
         label.id = "menuitem-shortcut-label";
         label.styleNames = "menuitem-shortcut-label";
-        label.scriptAccess = false;
         box.addComponent(label);
 
         _component.addComponent(box);

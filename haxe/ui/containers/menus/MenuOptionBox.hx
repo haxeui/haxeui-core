@@ -29,7 +29,6 @@ private class GroupBehaviour extends DataBehaviour {
         if (optionbox == null) {
             optionbox = new OptionBox();
             optionbox.styleNames = "menuitem-optionbox";
-            optionbox.scriptAccess = false;
             _component.addComponent(optionbox);
         }
 
@@ -54,7 +53,6 @@ private class TextBehaviour extends DataBehaviour {
         if (optionbox == null) {
             optionbox = new OptionBox();
             optionbox.styleNames = "menuitem-optionbox";
-            optionbox.scriptAccess = false;
             _component.addComponent(optionbox);
         }
 
@@ -69,7 +67,6 @@ private class SelectedBehaviour extends DataBehaviour {
         if (optionbox == null) {
             optionbox = new OptionBox();
             optionbox.styleNames = "menuitem-optionbox";
-            optionbox.scriptAccess = false;
             _component.addComponent(optionbox);
         }
 
@@ -115,13 +112,11 @@ private class Builder extends CompositeBuilder {
         _optionbox.styleNames = "menuitem-optionbox";
         _optionbox.percentWidth = 100;
         _optionbox.registerEvent(UIEvent.CHANGE, onOptionboxChange);
-        _optionbox.scriptAccess = false;
         _component.addComponent(_optionbox);
 
         var label = new Label();
         label.id = "menuitem-shortcut-label";
         label.styleNames = "menuitem-shortcut-label";
-        label.scriptAccess = false;
         _component.addComponent(label);
     }
 

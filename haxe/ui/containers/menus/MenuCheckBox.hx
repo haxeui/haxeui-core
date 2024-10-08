@@ -26,7 +26,6 @@ private class TextBehaviour extends DataBehaviour {
         if (checkbox == null) {
             checkbox = new CheckBox();
             checkbox.styleNames = "menuitem-checkbox";
-            checkbox.scriptAccess = false;
             _component.addComponent(checkbox);
         }
 
@@ -51,7 +50,6 @@ private class SelectedBehaviour extends DataBehaviour {
         if (checkbox == null) {
             checkbox = new CheckBox();
             checkbox.styleNames = "menuitem-checkbox";
-            checkbox.scriptAccess = false;
             _component.addComponent(checkbox);
         }
 
@@ -85,13 +83,11 @@ private class Builder extends CompositeBuilder {
         _checkbox.styleNames = "menuitem-checkbox";
         _checkbox.percentWidth = 100;
         _checkbox.registerEvent(UIEvent.CHANGE, onCheckboxChange);
-        _checkbox.scriptAccess = false;
         _component.addComponent(_checkbox);
 
         var label = new Label();
         label.id = "menuitem-shortcut-label";
         label.styleNames = "menuitem-shortcut-label";
-        label.scriptAccess = false;
         _component.addComponent(label);
     }
 

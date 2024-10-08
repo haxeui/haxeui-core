@@ -133,9 +133,6 @@ class LocaleManager {
 
         var root = findRoot(component);
         for (k in root.namedComponents) {
-            if (k.scriptAccess == false) {
-                continue;
-            }
             Reflect.setField(context, k.id, k);
         }
         

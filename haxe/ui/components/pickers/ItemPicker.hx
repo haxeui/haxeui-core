@@ -101,7 +101,6 @@ private class DefaultItemPickerRenderer extends HBox {
         super();
 
         addComponent(_renderer);
-        _triggerIcon.scriptAccess = false;
         _triggerIcon.id = "itemPickerTriggerIcon";
         _triggerIcon.addClass("item-picker-trigger-icon");
         addComponent(_triggerIcon);

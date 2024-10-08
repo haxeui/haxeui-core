@@ -2,8 +2,8 @@ package haxe.ui.containers;
 
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.components.Label;
-import haxe.ui.containers.HBox;
 import haxe.ui.containers.Box;
+import haxe.ui.containers.HBox;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 
@@ -52,14 +52,12 @@ private class Builder extends CompositeBuilder {
                 hbox = new HBox();
                 hbox.addClass("card-title-box");
                 hbox.id = "card-title-box";
-                hbox.scriptAccess = false;
                 titleContainer.addComponent(hbox);
             }
             
             titleLabel = new Label();
             titleLabel.addClass("card-title-label");
             titleLabel.id = "card-title-label";
-            titleLabel.scriptAccess = false;
             hbox.addComponentAt(titleLabel, 0);
             
             var line = titleContainer.findComponent("card-title-line", Component);
@@ -67,7 +65,6 @@ private class Builder extends CompositeBuilder {
                 line = new Component();
                 line.id = "card-title-line";
                 line.addClass("card-title-line");
-                line.scriptAccess = false;
                 titleContainer.addComponent(line);
             }
         }
@@ -81,7 +78,6 @@ private class Builder extends CompositeBuilder {
             titleContainer = new VBox();
             titleContainer.addClass("card-title-container");
             titleContainer.id = "card-title-container";
-            titleContainer.scriptAccess = false;
             _card.addComponentAt(titleContainer, 0);
         }
         

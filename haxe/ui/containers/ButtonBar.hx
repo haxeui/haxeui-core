@@ -153,7 +153,6 @@ class ButtonBarBuilder extends CompositeBuilder {
             if (_bar.numComponents > 0) {
                 var divider = new Component();
                 divider.addClass("button-bar-divider");
-                divider.scriptAccess = false;
                 _bar.addComponent(divider);
 
             }

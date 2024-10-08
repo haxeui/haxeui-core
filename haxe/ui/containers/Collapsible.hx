@@ -176,7 +176,6 @@ class CollapsibleBuilder extends CompositeBuilder {
         _content = new VBox();
         _content.addClass("collapsible-content");
         _content.id = "collapsible-content";
-        _content.scriptAccess = false;
         _content.hide();
         _collapsible.addComponent(_content);
         

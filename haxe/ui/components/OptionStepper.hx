@@ -205,14 +205,12 @@ private class Builder extends CompositeBuilder {
         var value = new Label();
         value.id = "value";
         value.addClass("stepper-value");
-        value.scriptAccess = false;
         _stepper.addComponent(value);
         
         var deinc = new Button();
         deinc.id = "deinc";
         deinc.addClass("stepper-deinc");
         deinc.allowFocus = false;
-        deinc.scriptAccess = false;
         deinc.repeater = true;
         _stepper.addComponent(deinc);
 
@@ -220,7 +218,6 @@ private class Builder extends CompositeBuilder {
         inc.id = "inc";
         inc.addClass("stepper-inc");
         inc.allowFocus = false;
-        inc.scriptAccess = false;
         inc.repeater = true;
         _stepper.addComponent(inc);
     }

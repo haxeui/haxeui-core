@@ -116,7 +116,6 @@ private class TextBehaviour extends DataBehaviour {
             label = new Label();
             label.id = '${_component.cssName}-label';
             label.addClass('${_component.cssName}-label');
-            label.scriptAccess = false;
             _component.addComponent(label);
             _component.invalidateComponentStyle(true);
         }
@@ -241,7 +240,6 @@ class CheckBoxBuilder extends CompositeBuilder {
             var value = new CheckBoxValue();
             value.id = '${_checkbox.cssName}-value';
             value.addClass('${_checkbox.cssName}-value');
-            value.scriptAccess = false;
             _checkbox.addComponent(value);
         }
     }

@@ -1,11 +1,11 @@
 package haxe.ui.containers.windows;
 
+import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.components.Button;
+import haxe.ui.components.Image;
+import haxe.ui.core.Component;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.geom.Size;
-import haxe.ui.core.Component;
-import haxe.ui.components.Image;
-import haxe.ui.components.Button;
-import haxe.ui.behaviours.DataBehaviour;
 
 @:xml('
     <hbox width="100%">
@@ -82,7 +82,6 @@ private class WindowListItem extends Button {
         image.id = "window-list-close-button";
         image.addClass("window-list-close-button");
         image.includeInLayout = false;
-        image.scriptAccess = false;
         image.onClick = onCloseClicked;
         image.registerEvent(MouseEvent.MOUSE_DOWN, function(event:MouseEvent) {
             event.cancel();

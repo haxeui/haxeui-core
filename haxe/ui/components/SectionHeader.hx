@@ -39,12 +39,10 @@ private class Builder extends CompositeBuilder {
         
         var label = new Label();
         label.text = "Section Header";
-        label.scriptAccess = false;
         _component.addComponent(label);
         
         var line = new HorizontalRule();
         line.addClasses(["section-line", "line"]);
-        line.scriptAccess = false;
         _component.addComponent(line);
     }
 

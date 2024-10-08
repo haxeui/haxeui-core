@@ -340,7 +340,6 @@ class Component extends ComponentImpl
         if (_compositeBuilder != null) {
             var v = _compositeBuilder.addComponent(child);
             if (v != null) {
-                v.scriptAccess = this.scriptAccess;
                 return v;
             }
         }
@@ -381,7 +380,6 @@ class Component extends ComponentImpl
         dispatch(event);
         child.dispatch(new UIEvent(UIEvent.COMPONENT_ADDED_TO_PARENT));
 
-        child.scriptAccess = this.scriptAccess;
         return child;
     }
 
@@ -422,7 +420,6 @@ class Component extends ComponentImpl
         if (_compositeBuilder != null) {
             var v = _compositeBuilder.addComponentAt(child, index);
             if (v != null) {
-                v.scriptAccess = this.scriptAccess;
                 return v;
             }
         }
@@ -461,7 +458,6 @@ class Component extends ComponentImpl
         dispatch(new UIEvent(UIEvent.COMPONENT_ADDED));
         child.dispatch(new UIEvent(UIEvent.COMPONENT_ADDED_TO_PARENT));
 
-        child.scriptAccess = this.scriptAccess;
         return child;
     }
 
@@ -1776,30 +1772,7 @@ class Component extends ComponentImpl
     //***********************************************************************************************************
     // Script related
     //***********************************************************************************************************
-    
-    @:noCompletion private var _scriptAccess:Bool = true;
-    @:dox(group = "Script related properties and methods")
 
-    /**
-     * Whether or not this component is allowed to be exposed to script interpreters (defaults to `true`)
-     */
-    public var scriptAccess(get, set):Bool;
-    private function get_scriptAccess():Bool {
-        return _scriptAccess;
-    }
-    private function set_scriptAccess(value:Bool):Bool {
-        if (value == _scriptAccess) {
-            return value;
-        }
-        
-        _scriptAccess = value;
-        for (child in childComponents) {
-            child.scriptAccess = value;
-        }
-        
-        return value;
-    }
-    
     @:dox(group = "Script related properties and methods")
     public var namedComponents(get, null):Array<Component>;
     private function get_namedComponents():Array<Component> {

@@ -141,26 +141,22 @@ private class Builder extends CompositeBuilder {
 
     public override function create() {
         _propertyGroupHeader = new HBox();
-        _propertyGroupHeader.scriptAccess = false;
         _propertyGroupHeader.addClass("property-group-header_o-l-d");
         _propertyGroupHeader.addClass(":expanded");
         _propertyGroupHeader.id = "property-group-header";
 
         var image = new Image();
         image.addClass("property-group-header-icon_o-l-d");
-        image.scriptAccess = false;
         _propertyGroupHeader.addComponent(image);
 
         var label = new Label();
         label.addClass("property-group-header-label_o-l-d");
         label.id = "property-group-header-label";
-        label.scriptAccess = false;
         _propertyGroupHeader.addComponent(label);
 
         _propertyGroup.addComponent(_propertyGroupHeader);
 
         _propertyGroupContents = new Grid();
-        _propertyGroupContents.scriptAccess = false;
         _propertyGroupContents.addClass("property-group-contents_o-l-d");
         _propertyGroupContents.id = "property-group-contents";
         _propertyGroup.addComponent(_propertyGroupContents);
@@ -171,12 +167,10 @@ private class Builder extends CompositeBuilder {
             var prop = cast(child, Property_OLD);
 
             var labelContainer = new Box();
-            labelContainer.scriptAccess = false;
             labelContainer.addClass("property-group-item-label-container_o-l-d");
             _propertyGroupContents.addComponent(labelContainer);
 
             var label = new Label();
-            label.scriptAccess = false;
             label.text = prop.label;
             label.addClass("property-group-item-label_o-l-d");
             labelContainer.addComponent(label);
@@ -187,14 +181,12 @@ private class Builder extends CompositeBuilder {
             cast(prop._compositeBuilder, PropertyBuilder).label = label;
 
             var editorContainer = new Box();
-            editorContainer.scriptAccess = false;
             editorContainer.addClass("property-group-item-editor-container_o-l-d");
             _propertyGroupContents.addComponent(editorContainer);
 
             var editor = buildEditor(prop);
             editor.disabled = prop.disabled;
 
-            editor.scriptAccess = false;
             editor.id = child.id;
             editor.addClass("property-group-item-editor_o-l-d");
             editorContainer.addComponent(editor);

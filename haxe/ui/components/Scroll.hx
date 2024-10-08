@@ -116,7 +116,6 @@ class Scroll extends InteractiveComponent implements IDirectionalComponent imple
         if (b == null) {
             b = new Button();
             b.hidden = hidden;
-            b.scriptAccess = false;
             b.customStyle.native = false;
             b.id = 'scroll-${type}-button';
             b.addClass(type);

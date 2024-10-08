@@ -315,7 +315,6 @@ private class IconBehaviour extends DataBehaviour {
                 icon = new Image();
                 icon.id = "textarea-icon";
                 icon.addClass("icon");
-                icon.scriptAccess = false;
                 textarea.addComponentAt(icon, 0);
             }
             icon.resource = _value.toString();
@@ -603,7 +602,6 @@ private class TextAreaBuilder extends CompositeBuilder {
         hscroll.percentWidth = 100;
         hscroll.id = "textarea-hscroll";
         hscroll.allowFocus = false;
-        hscroll.scriptAccess = false;
         _component.addComponent(hscroll);
         _component.registerInternalEvents(true);
         return hscroll;
@@ -617,7 +615,6 @@ private class TextAreaBuilder extends CompositeBuilder {
         vscroll.percentHeight = 100;
         vscroll.id = "textarea-vscroll";
         vscroll.allowFocus = false;
-        vscroll.scriptAccess = false;
         _component.addComponent(vscroll);
         _component.registerInternalEvents(true);
         return vscroll;

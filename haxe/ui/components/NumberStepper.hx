@@ -155,7 +155,6 @@ private class Builder extends CompositeBuilder {
         var value = new TextField();
         value.id = "value";
         value.addClass("stepper-value");
-        value.scriptAccess = false;
         value.allowFocus = false;
         value.restrictChars = "0-9\\-\\.\\,";
         _stepper.addComponent(value);
@@ -164,7 +163,6 @@ private class Builder extends CompositeBuilder {
         deinc.id = "deinc";
         deinc.addClass("stepper-deinc");
         deinc.allowFocus = false;
-        deinc.scriptAccess = false;
         deinc.repeater = true;
         _stepper.addComponent(deinc);
 
@@ -172,7 +170,6 @@ private class Builder extends CompositeBuilder {
         inc.id = "inc";
         inc.addClass("stepper-inc");
         inc.allowFocus = false;
-        inc.scriptAccess = false;
         inc.repeater = true;
         _stepper.addComponent(inc);
     }

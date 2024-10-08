@@ -318,7 +318,6 @@ private class TreeViewNodeBuilder extends CompositeBuilder {
         _nodeContainer = new HBox();
         _nodeContainer.addClass("treenode-container");
         _expandCollapseIcon = new Image();
-        _expandCollapseIcon.scriptAccess = false;
         _expandCollapseIcon.addClass("treenode-expand-collapse-icon");
         _expandCollapseIcon.id = "treenode-expand-collapse-icon";
         _expandCollapseIcon.registerEvent(MouseEvent.CLICK, onExpandCollapseClicked);

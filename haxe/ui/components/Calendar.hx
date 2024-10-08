@@ -313,7 +313,6 @@ private class Builder extends CompositeBuilder {
         for (_ in 0...6) {
             for (_ in 0...7) {
                 var item = new Button();
-                item.scriptAccess = false;
                 _calendar.addComponent(item);
             }
         }

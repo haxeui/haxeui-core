@@ -73,7 +73,6 @@ private class Builder extends CompositeBuilder {
         _dialogMinMaxButton = new Image();
         _dialogMinMaxButton.id = "dialog-minmax-button";
         _dialogMinMaxButton.styleNames = "dialog-minimize-button";
-        _dialogMinMaxButton.scriptAccess = false;
         _dialogMinMaxButton.registerEvent(MouseEvent.CLICK, onMinMaxButton);
         dialogTitle.addComponent(_dialogMinMaxButton);
 

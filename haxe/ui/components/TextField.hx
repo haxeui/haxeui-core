@@ -283,7 +283,6 @@ private class IconBehaviour extends DataBehaviour {
                 icon = new Image();
                 icon.id = "textfield-icon";
                 icon.addClass("icon");
-                icon.scriptAccess = false;
                 textfield.addComponentAt(icon, 0);
             }
             icon.resource = _value.toString();
