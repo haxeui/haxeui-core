@@ -27,6 +27,7 @@
     vertical-align: bottom;
     border-left-width: 0px;
     cursor: pointer;
+    icon-position: far-left;
 }
 
 .tabbar-button .icon {
@@ -279,7 +280,6 @@
 *************************************************************************/
 .full-width-buttons .tabbar-button, .full-width-buttons .tabbar > .tabbar-contents {
     width: 100%;
-    icon-position: far-left;
 }
 
 /************************************************************************
