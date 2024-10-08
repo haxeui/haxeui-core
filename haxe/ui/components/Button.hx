@@ -224,11 +224,11 @@ class ButtonLayout extends DefaultLayout {
             icon = null;
         }
 
-        if (label != null && label.componentWidth != 0){
+        if (label != null && label.componentWidth != 0 && label.componentHeight != 0) {
             label.top = calcLabelPositionTop();
             label.left = calcLabelPositionLeft();
         }
-        if (icon != null) {
+        if (icon != null && icon.componentWidth != 0 && icon.componentHeight != 0) {
             if (label != null) {
                 icon.left = calcIconPositionLeft(label.left);
             } else {
@@ -242,9 +242,6 @@ class ButtonLayout extends DefaultLayout {
     private function calcLabelPositionTop():Float {
         var label:Label = component.findComponent(Label, false);
         var icon:Image = component.findComponent("button-icon", false);
-
-
-        if (label == null || label.componentHeight == 0) return 0;
 
         if (label != null && icon == null){
             return Std.int((component.componentHeight / 2) - (label.componentHeight / 2)) + marginTop(label) - marginBottom(label);
@@ -269,8 +266,6 @@ class ButtonLayout extends DefaultLayout {
     private function calcIconPositionTop():Float {
         var icon:Image = component.findComponent("button-icon", false);
         var label:Label = component.findComponent(Label, false);
-
-        if (icon == null || icon.componentWidth == 0) return 0;
 
         if (label == null && icon != null) {
             return Std.int((component.componentHeight / 2) - (icon.componentHeight / 2)) + marginTop(icon) - marginBottom(icon);
@@ -298,9 +293,6 @@ class ButtonLayout extends DefaultLayout {
         var icon:Image = component.findComponent("button-icon", false);
         var textAlign = cast(component, Button).textAlign;
 
-
-        if (label == null || label.componentWidth == 0) return 0;
-
         if (label != null && icon == null){
             return getTextAlignPos(label, component.componentWidth);
         }
@@ -309,7 +301,9 @@ class ButtonLayout extends DefaultLayout {
             if (iconPosition == "right" || iconPosition == "center-right" || iconPosition == "far-right") {
                 return paddingLeft + marginLeft(label) - marginRight(label);
             } else if (iconPosition == "left" || iconPosition == "center-left" || iconPosition == "far-left") {
-                return paddingLeft + horizontalSpacing + icon.componentWidth + marginLeft(label) - marginRight(label);
+                var x = paddingLeft;
+                if (icon.componentWidth != 0) x += icon.componentWidth + horizontalSpacing;
+                return  x + marginLeft(label) - marginRight(label);
             }
         }
 
@@ -343,8 +337,6 @@ class ButtonLayout extends DefaultLayout {
         var icon:Image = component.findComponent("button-icon", false);
         var label:Label = component.findComponent(Label, false);
         var textAlign = cast(component, Button).textAlign;
-
-        if (icon == null || icon.componentWidth == 0) return 0;
 
         if (label == null && icon != null) {
             if (iconPosition == "far-right") {
