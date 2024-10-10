@@ -1110,9 +1110,15 @@ class ComponentMacros {
                         propType = propInfo.propertyType;
                     }
                     //var propExpr = macro $v{TypeConverter.convertTo(TypeConverter.convertFrom(propValue), propType)};
-                    var pos = Context.currentPos();
-                    var propExpr = macro @:pos(pos) $v{TypeConverter.convertFrom(propValue)};
-                    builder.add(macro $i{varName}.$propName = $propExpr);
+                    if (propType != null) {
+                        var pos = Context.currentPos();
+                        var propExpr = macro @:pos(pos) $v{TypeConverter.convertTo(propValue, propType)};
+                        builder.add(macro $i{varName}.$propName = $propExpr);
+                    } else {
+                        var pos = Context.currentPos();
+                        var propExpr = macro @:pos(pos) $v{TypeConverter.convertFrom(propValue)};
+                        builder.add(macro $i{varName}.$propName = $propExpr);
+                    }
                 } else {
                     
                     var propExpr = macro $v{TypeConverter.convertFrom(propValue)};
