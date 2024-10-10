@@ -154,11 +154,12 @@ class ButtonLayout extends DefaultLayout {
             var label:Label = component.findComponent(Label, false);
             var ucx = usableSize.width;
             if (label != null) {
-                if (label.textAlign != "center") {
-                    label.width = ucx;
-                } else if (label.width > 0 && _component.componentWidth > 0 &&  label.width >= _component.componentWidth) {
-                    label.width = ucx;
-                }
+				if (label.width > 0 && _component.componentWidth > 0 && ucx > 0 && label.width >= ucx) { // changed to compare with the usable space amd not the entire component width (@devezas)
+					label.width = ucx;
+				}
+				else if (label.width > 0 && _component.componentWidth > 0 && ucx > 0) {
+					label.width = label.layout.calcAutoWidth();  // changed to calAutoHeight so it ueses the right height (@devezas)
+				}
             }
             
             var itemRenderer = component.findComponent(ItemRenderer);
@@ -185,11 +186,9 @@ class ButtonLayout extends DefaultLayout {
         var icon:Image = component.findComponent("button-icon", false);
         var textAlign = cast(component, Button).textAlign;
         
-        if (icon != null && (iconPosition == "far-right" || iconPosition == "far-left" || iconPosition == "center-left" || iconPosition == "center-right") && textAlign =="center") {
-            size.width -= icon.width * 2 + verticalSpacing;
-        } else if (icon != null && (iconPosition == "far-right" || iconPosition == "far-left" || icon != null && (iconPosition == "left" || iconPosition == "right" || iconPosition == "center-left" || iconPosition == "center-right"))) {
-            size.width -= icon.width + verticalSpacing;
-        }
+		if (icon != null && iconPosition != "top" && iconPosition != "bottom") { // add the icon width and spacing in the calculation except when it is top or bottom, because they don't influence them (@devezas)
+			size.width -= icon.width + verticalSpacing;
+		}
         return size;
     }
     
@@ -293,17 +292,31 @@ class ButtonLayout extends DefaultLayout {
         var icon:Image = component.findComponent("button-icon", false);
         var textAlign = cast(component, Button).textAlign;
 
-        if (label != null && icon == null){
+        if (label != null && (icon == null || icon.componentWidth == 0 || icon.componentHeight == 0)){ // added for when icon has no width or no height (@devezas)
             return getTextAlignPos(label, component.componentWidth);
         }
 
         if (_component.autoWidth || textAlign != "center") { // label takes full usable size
-            if (iconPosition == "right" || iconPosition == "center-right" || iconPosition == "far-right") {
-                return paddingLeft + marginLeft(label) - marginRight(label);
+			if (iconPosition == "right" || iconPosition == "center-right" || iconPosition == "far-right") {
+				// affets text-right && (icon-right || icon-far-right|| icon-center-right) -> throughout all the range (button larger, nearer and smaller than the content) (@devezas)
+				if (textAlign == "right") {
+					var x = component.componentWidth - label.componentWidth ;
+					if (icon.componentWidth != 0) x -= (icon.componentWidth + horizontalSpacing);
+					return  x - paddingLeft + marginLeft(label) - marginRight(label);
+				// affets text-left && (icon-right || icon-far-right|| icon-center-right) -> throughout all the range (button larger, nearer and smaller than the content) (@devezas)
+				} else {
+                	return paddingLeft + marginLeft(label) - marginRight(label);
+				}
             } else if (iconPosition == "left" || iconPosition == "center-left" || iconPosition == "far-left") {
-                var x = paddingLeft;
-                if (icon.componentWidth != 0) x += icon.componentWidth + horizontalSpacing;
-                return  x + marginLeft(label) - marginRight(label);
+				// affets text-right && (icon-left || icon-far-left|| icon-center-left) -> throughout all the range (button larger, nearer and smaller than the content) (@devezas)
+				if(textAlign == "right") {
+					return  getTextAlignPos(label, component.componentWidth) + marginLeft(label) - marginRight(label);
+				// affets text-left && (icon-left || icon-far-left|| icon-center-left) -> throughout all the range (button larger, nearer and smaller than the content) (@devezas)
+				} else {
+					var x = paddingLeft;
+					if (icon.componentWidth != 0) x += icon.componentWidth + horizontalSpacing;
+					return  x + marginLeft(label) - marginRight(label);
+				}
             }
         }
 
@@ -317,8 +330,48 @@ class ButtonLayout extends DefaultLayout {
                     x += horizontalSpacing + icon.componentWidth;
                     return x + marginLeft(label) - marginRight(label);
                 }
-            case _:
-                return getTextAlignPos(label, component.componentWidth);
+            case _: {
+				if (label.width > 0 && _component.componentWidth > 0 &&  label.width >= usableSize.width) {
+					var cx:Float = label.componentWidth + icon.componentWidth + horizontalSpacing;
+					var x:Float = Std.int((component.componentWidth / 2) - (cx / 2));
+
+					// affets text-center && (icon-far-right || icon-center-right) -> in the range when the content is smaller than the usable space (@devezas)
+					if (iconPosition == "far-right" || iconPosition == "center-right") {
+						return x + marginLeft(label) - marginRight(label);
+					} else {
+						// affets text-center && (icon-top || icon-bottom) -> in the range when the content is smaller than the usable space (@devezas)
+						if (iconPosition == "top" || iconPosition == "bottom") {
+								x += (icon.componentWidth / 2);
+						// affets text-center && (icon-far-left || icon-center-left) -> in the range when the content is smaller than the usable space (@devezas)
+						} else { 
+							x += horizontalSpacing + icon.componentWidth;
+						}
+						return x + marginLeft(label) - marginRight(label);
+					}
+				} else {
+					// affets text-center && (icon-far-right || icon-center-right || icon-far-left || icon-center-left) -> in the range until the logo or the text colides with each at other when coming from higher usable space (@devezas)
+					if (getTextAlignPos(label, component.componentWidth) + label.componentWidth - marginRight(label) + horizontalSpacing + icon.componentWidth + paddingRight < _component.componentWidth) { 
+						return getTextAlignPos(label, component.componentWidth);
+					} else {
+						// affects text-center && (icon-far-left || icon-center-left) -> in the range that the logo or the text colides with each other at lower usable space and before wrapping the text (@devezas)
+						if (iconPosition == "far-left" || iconPosition == "center-left") {
+							var x = paddingLeft;
+							if (icon.componentWidth != 0) x += icon.componentWidth + horizontalSpacing;
+							return  x + marginLeft(label) - marginRight(label);
+
+						// affects text-center && (icon-far-right || icon-center-right) -> in the range that the logo or the text colides with each other at lower usable space and before wrapping the text
+						} else if (iconPosition == "far-right" || iconPosition == "center-right") {
+							var x = component.componentWidth - label.componentWidth ;
+							if (icon.componentWidth != 0) x -= (icon.componentWidth + horizontalSpacing);
+							return x - paddingLeft + marginLeft(label) - marginRight(label);
+						
+						// affects text-center && (icon-top || icon-bottom) -> throughout all the range (button larger, nearer and smaller than the content) (@devezas)
+						} else {
+							return getTextAlignPos(label, component.componentWidth);
+						}
+					}
+				}
+			}
         }
     }
 
@@ -350,9 +403,20 @@ class ButtonLayout extends DefaultLayout {
 
         if (_component.autoWidth || textAlign != "center") { // label takes full usable size
             if (iconPosition == "right" || iconPosition == "center-right" || iconPosition == "far-right") {
-                return paddingLeft + horizontalSpacing + label.componentWidth + marginLeft(icon) - marginRight(icon);
+				if(textAlign == "right" || (textAlign == "left" && iconPosition == "far-right")) {
+					var x = component.componentWidth;
+					if (icon.componentWidth != 0) x -= icon.componentWidth;
+					return  x - paddingRight + marginLeft(icon) - marginRight(icon);
+				} else
+                	return paddingLeft + horizontalSpacing + label.componentWidth + marginLeft(icon) - marginRight(icon);
             } else if (iconPosition == "left" || iconPosition == "center-left" || iconPosition == "far-left") {
-                return paddingLeft + marginLeft(icon) - marginRight(icon);
+				if (textAlign == "right" && (iconPosition == "left" || iconPosition == "center-left" )) {
+					var x = component.componentWidth - label.componentWidth;
+					if (icon.componentWidth != 0) x -= (icon.componentWidth + horizontalSpacing);
+					return  x - paddingRight + marginLeft(icon) - marginRight(icon);			
+				} else {
+					return paddingLeft + marginLeft(icon) - marginRight(icon);
+				}
             }
         }
 
