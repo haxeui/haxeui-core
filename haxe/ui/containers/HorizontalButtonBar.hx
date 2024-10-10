@@ -23,8 +23,8 @@ private class Layout extends HorizontalLayout {
                 continue;
             }
             
-            if (child.height > max) {
-                max = child.height;
+            if (child.layout.calcAutoHeight() > max) { // changed to calcAutoHeight so it uses the right height (@devezas)
+                max = child.layout.calcAutoHeight();
             }
         }
         
@@ -33,7 +33,7 @@ private class Layout extends HorizontalLayout {
                 continue;
             }
             
-            if (child.text == null || child.text.length == 0 || child.height < max) {
+            if (child.text == null || child.text.length == 0 || child.height != max) { // changed so it adjust when the columns decrease the calculated height (@devezas)
                 child.height = max;
             }
         }
