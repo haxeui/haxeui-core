@@ -158,7 +158,7 @@ class ButtonLayout extends DefaultLayout {
 					label.width = ucx;
 				}
 				else if (label.width > 0 && _component.componentWidth > 0 && ucx > 0) {
-					label.width = label.layout.calcAutoWidth();  // changed to calAutoHeight so it ueses the right height (@devezas)
+					label.width = label.layout.calcAutoWidth();  // changed to calAutoHeight so it uses the right height (@devezas)
 				}
             }
             
@@ -187,7 +187,13 @@ class ButtonLayout extends DefaultLayout {
         var textAlign = cast(component, Button).textAlign;
         
 		if (icon != null && iconPosition != "top" && iconPosition != "bottom") { // add the icon width and spacing in the calculation except when it is top or bottom, because they don't influence them (@devezas)
-			size.width -= icon.width + verticalSpacing;
+
+			if (textAlign =="center" && (iconPosition == "far-right" || iconPosition == "far-left" || iconPosition == "center-left" || iconPosition == "center-right")) { // maintain the equal distance (icon width) on both sides in auto width 
+				size.width -= icon.width * 2 + verticalSpacing * 2;
+				trace ("horizontal sapcing = " + horizontalSpacing + "    ;    paddingLeft = " + paddingLeft);
+			} else {
+				size.width -= icon.width + verticalSpacing;
+			}
 		}
         return size;
     }
@@ -242,7 +248,7 @@ class ButtonLayout extends DefaultLayout {
         var label:Label = component.findComponent(Label, false);
         var icon:Image = component.findComponent("button-icon", false);
 
-        if (label != null && icon == null){
+        if (label != null && (icon == null || icon.componentWidth == 0 || icon.componentHeight == 0)){  // added for when icon has no width or no height (@devezas)
             return Std.int((component.componentHeight / 2) - (label.componentHeight / 2)) + marginTop(label) - marginBottom(label);
         }
 
@@ -337,14 +343,14 @@ class ButtonLayout extends DefaultLayout {
 
 					// affets text-center && (icon-far-right || icon-center-right) -> in the range when the content is smaller than the usable space (@devezas)
 					if (iconPosition == "far-right" || iconPosition == "center-right") {
-						return x + marginLeft(label) - marginRight(label);
+						return x + ((icon.componentWidth + horizontalSpacing) / 2) + marginLeft(label) - marginRight(label);
 					} else {
 						// affets text-center && (icon-top || icon-bottom) -> in the range when the content is smaller than the usable space (@devezas)
 						if (iconPosition == "top" || iconPosition == "bottom") {
-								x += (icon.componentWidth / 2);
+							x += (icon.componentWidth / 2);
 						// affets text-center && (icon-far-left || icon-center-left) -> in the range when the content is smaller than the usable space (@devezas)
 						} else { 
-							x += horizontalSpacing + icon.componentWidth;
+							x += horizontalSpacing + icon.componentWidth - ((icon.componentWidth + horizontalSpacing) / 2);
 						}
 						return x + marginLeft(label) - marginRight(label);
 					}
@@ -392,9 +398,9 @@ class ButtonLayout extends DefaultLayout {
         var textAlign = cast(component, Button).textAlign;
 
         if (label == null && icon != null) {
-            if (iconPosition == "far-right") {
+            if (iconPosition == "right" || iconPosition == "far-right") { // DESIGN CHANGE, NEED APROVAL: added the right position, in the sense that if theres no label, I think that a developer expects that the icon goes to the right (@devezas)
                 return (component.componentWidth - icon.componentWidth - paddingRight) + marginLeft(icon) - marginRight(icon);
-            } else if (iconPosition == "far-left") {
+            } else if (iconPosition == "left" || iconPosition == "far-left") { // DESIGN CHANGE, NEED APROVAL: added the left position, in the sense that if theres no label, I think that a developer expects that the icon goes to the left (@devezas)
                 return  paddingLeft + marginLeft(icon) - marginRight(icon);
             } else {
                 return Std.int((component.componentWidth / 2) - (icon.componentWidth / 2)) + marginLeft(icon) - marginRight(icon);
