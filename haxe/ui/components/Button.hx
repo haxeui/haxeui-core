@@ -186,8 +186,7 @@ class ButtonLayout extends DefaultLayout {
         var icon:Image = component.findComponent("button-icon", false);
         var textAlign = cast(component, Button).textAlign;
         
-		// if (isIconRelevant() && iconPosition != "top" && iconPosition != "bottom") { // add the icon width and spacing in the calculation except when it is top or bottom, because they don't influence them (@devezas)
-		if (isIconRelevant()) { // add the icon width and spacing in the calculation except when it is top or bottom, because they don't influence them (@devezas)
+		if (isIconRelevant()) { // add the icon width and spacing in the calculation, this don't affect top or bottom, because they don't influence them (@devezas)
 			if (!_component.autoWidth && textAlign =="center" && (iconPosition == "far-right" || iconPosition == "far-left" || iconPosition == "center-left" || iconPosition == "center-right")) { // maintain the equal distance (icon width) on both sides in fixed width 
 				size.width -= icon.width * 2 + horizontalSpacing * 2;
 			} else {
