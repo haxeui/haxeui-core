@@ -189,10 +189,11 @@ class ButtonLayout extends DefaultLayout {
 		if (isIconRelevant()) { // add the icon width and spacing in the calculation, this don't affect top or bottom, because they don't influence them (@devezas)
 			if (!_component.autoWidth && textAlign =="center" && (iconPosition == "far-right" || iconPosition == "far-left" || iconPosition == "center-left" || iconPosition == "center-right")) { // maintain the equal distance (icon width) on both sides in fixed width 
 				size.width -= icon.width * 2 + horizontalSpacing * 2;
-			} else {
+			} else {		
 				size.width -= icon.width + horizontalSpacing; // swapping verticalSpacing to horizontalSpacing, as I think it was probably a copy/paste mistake, as for the width, makes sense to use horizontalSpacing, I suppose (@devezas)
 			}
 		}
+		
         return size;
     }
     
@@ -324,7 +325,16 @@ class ButtonLayout extends DefaultLayout {
             } else if (iconPosition == "left" || iconPosition == "center-left" || iconPosition == "far-left") {
 				// affets text-right && (icon-left || icon-far-left|| icon-center-left) -> throughout all the range (button larger, nearer and smaller than the content) (@devezas)
 				if (textAlign == "right") {
-					return  getTextAlignPos(label, component.componentWidth) + marginLeft(label) - marginRight(label);
+					 // TODO See if its a bug - this condition exists because I think the component width, when icon is far-left, is not calculated (auto)
+					 // as in when the icon is in the left and center-left position, and I believe it should. Could not be a actual bug, because I might be 
+					 // making a wrong assumption in my limited framework inner logics. (@devezas) 
+					if (iconPosition == "far-left") {
+						var x = paddingLeft;
+						if (icon.componentWidth != 0) x += icon.componentWidth + horizontalSpacing;
+						return  x + marginLeft(label) - marginRight(label);
+					} else {
+						return  getTextAlignPos(label, component.componentWidth) + marginLeft(label) - marginRight(label);
+					}
 				// affets text-left && (icon-left || icon-far-left|| icon-center-left) -> throughout all the range (button larger, nearer and smaller than the content) (@devezas)
 				} else {
 					var x = paddingLeft;
@@ -401,7 +411,7 @@ class ButtonLayout extends DefaultLayout {
 
         if (_component.autoWidth || textAlign != "center") { // label takes full usable size
             if (iconPosition == "right" || iconPosition == "center-right" || iconPosition == "far-right") {
-				if(textAlign == "right" || (textAlign == "left" && iconPosition == "far-right")) {
+				if(textAlign == "right") {
 					var x = component.componentWidth;
 					if (icon.componentWidth != 0) x -= icon.componentWidth;
 					return  x - paddingRight + marginLeft(icon) - marginRight(icon);
