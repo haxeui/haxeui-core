@@ -154,10 +154,8 @@ class ButtonLayout extends DefaultLayout {
             var label:Label = component.findComponent(Label, false);
             var ucx = usableSize.width;
             if (label != null) {
-                if (label.textAlign != "center") {
-                    label.width = ucx;
-                } else if (label.width > 0 && _component.componentWidth > 0 &&  label.width >= _component.componentWidth) {
-                    label.width = ucx;
+                if (label.width > 0 && _component.componentWidth > 0 &&  label.width >= _component.componentWidth) {
+                    label.width = label.layout.calcAutoWidth();
                 }
             }
             
@@ -209,7 +207,7 @@ class ButtonLayout extends DefaultLayout {
     
     private inline function isIconRelevant() {
         var icon:Image = component.findComponent("button-icon", false);
-        return icon != null && (iconPosition == "far-right" || iconPosition == "far-left" || iconPosition == "left" || iconPosition == "right");
+        return icon != null && icon.componentWidth != 0 && icon.componentHeight !=0 && (iconPosition == "far-right" || iconPosition == "far-left" || iconPosition == "left" || iconPosition == "right" || iconPosition == "center-right" || iconPosition == "center-left");
     }
     
     private override function repositionChildren() {
@@ -297,7 +295,7 @@ class ButtonLayout extends DefaultLayout {
             return getTextAlignPos(label, component.componentWidth);
         }
 
-        if (_component.autoWidth || textAlign != "center") { // label takes full usable size
+        if (_component.autoWidth) {
             if (iconPosition == "right" || iconPosition == "center-right" || iconPosition == "far-right") {
                 return paddingLeft + marginLeft(label) - marginRight(label);
             } else if (iconPosition == "left" || iconPosition == "center-left" || iconPosition == "far-left") {
@@ -306,6 +304,36 @@ class ButtonLayout extends DefaultLayout {
                 return  x + marginLeft(label) - marginRight(label);
             }
         }
+
+        if (iconPosition == "right" || iconPosition == "center-right" || iconPosition == "far-right") {
+            if (textAlign == "right") {
+                var x = component.componentWidth - label.componentWidth ;
+                if (icon.componentWidth != 0) x -= (icon.componentWidth + horizontalSpacing);
+                return  x - paddingLeft + marginLeft(label) - marginRight(label);
+            // affets text-left && (icon-right || icon-far-right|| icon-center-right) -> throughout all the range (button larger, nearer and smaller than the content) (@devezas)
+            } else if (textAlign == "left") {
+                return paddingLeft + marginLeft(label) - marginRight(label);
+            }
+
+        } else if (iconPosition == "left" || iconPosition == "center-left" || iconPosition == "far-left") {
+            // affets text-right && (icon-left || icon-far-left|| icon-center-left) -> throughout all the range (button larger, nearer and smaller than the content) (@devezas)
+            if (textAlign == "right") {
+                 // TODO See if its a bug - this condition exists because I think the component width, when icon is far-left, is not calculated (auto)
+                 // as in when the icon is in the left and center-left position, and I believe it should. Could not be a actual bug, because I might be 
+                 // making a wrong assumption in my limited framework inner logics. (@devezas) 
+                if (iconPosition == "far-left") {
+                    var x = paddingLeft;
+                    if (icon.componentWidth != 0) x += icon.componentWidth + horizontalSpacing;
+                    return  x + marginLeft(label) - marginRight(label);
+                } else {
+                    return  getTextAlignPos(label, component.componentWidth) + marginLeft(label) - marginRight(label);
+                }
+            // affets text-left && (icon-left || icon-far-left|| icon-center-left) -> throughout all the range (button larger, nearer and smaller than the content) (@devezas)
+            }
+        }
+
+        
+        
 
         switch (iconPosition) {    
             case "left" | "right":
@@ -348,7 +376,7 @@ class ButtonLayout extends DefaultLayout {
             }
         }
 
-        if (_component.autoWidth || textAlign != "center") { // label takes full usable size
+        if (_component.autoWidth ) { 
             if (iconPosition == "right" || iconPosition == "center-right" || iconPosition == "far-right") {
                 return paddingLeft + horizontalSpacing + label.componentWidth + marginLeft(icon) - marginRight(icon);
             } else if (iconPosition == "left" || iconPosition == "center-left" || iconPosition == "far-left") {
