@@ -141,7 +141,7 @@ class Button extends InteractiveComponent implements ICompositeInteractiveCompon
 class ButtonLayout extends DefaultLayout {
     private var iconPosition(get, null):String;
     private function get_iconPosition():String {
-        if (component.style == null || component.style.iconPosition == null) {
+        if (component.style == null || component.style.iconPosition == null || component.style.iconPosition == "") {
             return "left";
         }
         return component.style.iconPosition;
@@ -371,13 +371,10 @@ class ButtonLayout extends DefaultLayout {
 						}
 						return x + marginLeft(label) - marginRight(label);
 					}
+				// affets text-center && (icon-far-right || icon-center-right || icon-far-left || icon-center-left) -> in the range until the logo or the text colides with each at other when coming from higher usable space (@devezas)
+				// also affets any text alignment && (icon-top || icon-bottom) -> in the range until usable space is smaller than the label auto width (until text wraps) (@devezas)
 				} else {
-					// affets text-center && (icon-far-right || icon-center-right || icon-far-left || icon-center-left) -> in the range until the logo or the text colides with each at other when coming from higher usable space (@devezas)
-					if (getTextAlignPos(label, component.componentWidth) + label.componentWidth - marginRight(label) + horizontalSpacing + icon.componentWidth + paddingRight < _component.componentWidth) { 
-						return getTextAlignPos(label, component.componentWidth);
-					} else {
-							return getTextAlignPos(label, component.componentWidth);
-					}
+					return getTextAlignPos(label, component.componentWidth);
 				}
 			}
         }
