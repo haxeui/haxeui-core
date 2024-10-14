@@ -730,6 +730,7 @@ private class TabBarButton extends Button {
         events.recursiveStyling = false;
         if (_closable == true && existing == null) {
             iconPosition = "far-left";
+            textAlign = "left";
             var image = new Image();
             image.id = "tab-close-button";
             image.addClass("tab-close-button");
