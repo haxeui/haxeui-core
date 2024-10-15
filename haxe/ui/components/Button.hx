@@ -319,7 +319,7 @@ class ButtonLayout extends DefaultLayout {
             if (iconPosition == "right" || iconPosition == "center-right" || iconPosition == "far-right") {
                 var x = component.componentWidth - label.componentWidth ;
                 if (icon.componentWidth != 0) x -= (icon.componentWidth + horizontalSpacing);
-                return  x - paddingLeft + marginLeft(label) - marginRight(label);
+                return  x - paddingRight + marginLeft(label) - marginRight(label);
             } else if (iconPosition == "left"  || iconPosition == "center-left" || iconPosition == "far-left") {
                 return component.componentWidth - label.componentWidth  + marginLeft(label) - marginRight(label) - paddingRight;
             }
