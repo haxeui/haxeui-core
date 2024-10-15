@@ -156,6 +156,9 @@ class ButtonLayout extends DefaultLayout {
             if (label != null) {
                 if (label.width > 0 && _component.componentWidth > 0 && ucx > 0 && label.width >= ucx) {
                     label.width =  ucx;
+                }  else if (label.width > 0 && _component.componentWidth > 0 && ucx > 0) {
+                    //  devezas  so the label width "recovers" when dynamically (percent wise) we change the width of the button from lower (that has the text wrapped) to higher:
+                    label.width = label.layout.calcAutoWidth(); 
                 }
             }
             
@@ -248,7 +251,7 @@ class ButtonLayout extends DefaultLayout {
         var label:Label = component.findComponent(Label, false);
         var icon:Image = component.findComponent("button-icon", false);
 
-        if (label != null && icon == null){
+        if (label != null  && (icon == null || icon.componentWidth == 0 || icon.componentHeight == 0)){
             return Std.int((component.componentHeight / 2) - (label.componentHeight / 2)) + marginTop(label) - marginBottom(label);
         }
 
@@ -298,7 +301,7 @@ class ButtonLayout extends DefaultLayout {
         var icon:Image = component.findComponent("button-icon", false);
         var textAlign = cast(component, Button).textAlign;
 
-        if (label != null && icon == null){
+        if (label != null  && (icon == null || icon.componentWidth == 0 || icon.componentHeight == 0)){
             return getTextAlignPos(label);
         }
 
