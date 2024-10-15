@@ -11,7 +11,7 @@ import haxe.ui.util.Variant;
 @:xml('
 <vbox>
     <box id="headerContainer" width="100%" hidden="true" />
-    <box id="contentContainer" styleName="panel-content" width="100%" />
+    <box id="contentContainer" styleName="panel-content" />
     <box id="footerContainer" width="100%" hidden="true" />
 </vbox>
 ')
@@ -41,6 +41,11 @@ class Panel extends VBox {
     public override function set_percentHeight(value:Null<Float>):Null<Float> {
         contentContainer.percentHeight = 100;
         return super.set_percentHeight(value);
+    }
+
+    public override function set_height(value:Null<Float>):Null<Float> {
+        contentContainer.percentHeight = 100;
+        return super.set_height(value);
     }
 
     public function showFooter() {
