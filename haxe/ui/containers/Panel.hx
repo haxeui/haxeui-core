@@ -18,6 +18,9 @@ import haxe.ui.util.Variant;
 class Panel extends VBox {
     public override function get_text():String {
         var builder:Builder = cast(_compositeBuilder, Builder);
+        if (!builder.hasHeader) {
+            return null;
+        }
         return builder.header.text;
     }
 
@@ -29,6 +32,9 @@ class Panel extends VBox {
 
     public override function get_icon():Variant {
         var builder:Builder = cast(_compositeBuilder, Builder);
+        if (!builder.hasHeader) {
+            return null;
+        }
         return builder.header.icon;
     }
 
@@ -139,6 +145,11 @@ private class Builder extends CompositeBuilder {
         return panel.contentContainer.addComponent(child);
     }
 
+    public var hasHeader(get, never):Bool;
+    private function get_hasHeader():Bool {
+        return _header != null;
+    }
+
     private var _header:PanelHeader = null;
     public var header(get, null):PanelHeader;
     private function get_header():PanelHeader {
@@ -148,6 +159,11 @@ private class Builder extends CompositeBuilder {
             panel.headerContainer.show();
         }
         return _header;
+    }
+
+    public var hasFooter(get, never):Bool;
+    private function get_hasFooter():Bool {
+        return _footer != null;
     }
 
     private var _footer:PanelFooter = null;
