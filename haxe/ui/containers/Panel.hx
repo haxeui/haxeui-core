@@ -43,7 +43,7 @@ class Panel extends VBox {
         return super.set_percentHeight(value);
     }
 
-    public override function set_height(value:Null<Float>):Null<Float> {
+    public override function set_height(value:Float):Float {
         contentContainer.percentHeight = 100;
         return super.set_height(value);
     }
