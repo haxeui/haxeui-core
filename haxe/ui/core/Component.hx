@@ -1148,11 +1148,11 @@ class Component extends ComponentImpl
      */
     public function fadeIn(onEnd:Void->Void = null, show:Bool = true) {
         if (opacity == 1) { // its already "faded in", lets do nothing
-            if (show) {
-                this.show();
-            }
             if (onEnd != null) {
                 onEnd();
+            }
+            if (show) {
+                Toolkit.callLater(this.show);
             }
             return;
         }
@@ -1186,11 +1186,11 @@ class Component extends ComponentImpl
      */
     public function fadeOut(onEnd:Void->Void = null, hide:Bool = true) {
         if (opacity == 0) { // its already "faded out", lets do nothing
-            if (hide) {
-                this.hide();
-            }
             if (onEnd != null) {
                 onEnd();
+            }
+            if (hide) {
+                Toolkit.callLater(this.hide);
             }
             return;
         }
