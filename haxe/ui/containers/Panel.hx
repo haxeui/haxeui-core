@@ -43,10 +43,21 @@ class Panel extends VBox {
         return super.set_percentHeight(value);
     }
 
+    #if ((haxeui_openfl || haxeui_nme) && !haxeui_flixel)
+
     public override function set_height(value:Float):Float {
         contentContainer.percentHeight = 100;
         return super.set_height(value);
     }
+
+    #else
+
+    public override function set_height(value:Null<Float>):Null<Float> {
+        contentContainer.percentHeight = 100;
+        return super.set_height(value);
+    }
+
+    #end
 
     public function showFooter() {
         findComponent(PanelFooter, true).show();
