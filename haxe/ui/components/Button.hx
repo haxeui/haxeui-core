@@ -365,9 +365,12 @@ class ButtonLayout extends DefaultLayout {
         var textAlign = cast(component, Button).textAlign;
 
         if ((label == null && icon != null)) {
-            if (iconPosition == "far-right") {
+            if (component.style == null || component.style.iconPosition == null) {
+                // iconPosition returns left if no iconPosition is set, but when there is no label we want the icon to be in the center and not on the left
+                return Std.int((component.componentWidth / 2) - (icon.componentWidth / 2)) + marginLeft(icon) - marginRight(icon);
+            } else if (iconPosition == "far-right" || iconPosition == "right") {
                 return (component.componentWidth - icon.componentWidth - paddingRight) + marginLeft(icon) - marginRight(icon);
-            } else if (iconPosition == "far-left") {
+            } else if (iconPosition == "far-left" || iconPosition == "left") {
                 return  paddingLeft + marginLeft(icon) - marginRight(icon);
             } else {
                 return Std.int((component.componentWidth / 2) - (icon.componentWidth / 2)) + marginLeft(icon) - marginRight(icon);
