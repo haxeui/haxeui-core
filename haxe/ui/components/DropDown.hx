@@ -475,7 +475,6 @@ private class ListDropDownHandler extends DropDownHandler {
         if (_listview == null) {
             if (_cachedSelectedIndex >= 0 && _cachedSelectedIndex < _dropdown.dataSource.size) {
                 var data = _dropdown.dataSource.get(_cachedSelectedIndex);
-                trace(_cachedSelectedIndex, data);
                 return data;
             } else {
                 return _cachedSelectedItem;
