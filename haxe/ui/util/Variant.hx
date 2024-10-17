@@ -260,7 +260,7 @@ abstract Variant(VariantType) from VariantType {
         return VT_DataSource(s);
     }
 
-    @:to function toDataSource<T>():DataSource<T> {
+    @:to public function toDataSource<T>():DataSource<T> {
         if (this == null) {
             return null;
         }

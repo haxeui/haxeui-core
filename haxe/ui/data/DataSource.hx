@@ -16,7 +16,7 @@ class DataSource<T> {
     public var onAdd:T->Void = null;
     public var onInsert:Int->T->Void = null;
     public var onUpdate:Int->T->Void = null;
-    public var onRemove:T->Void = null;
+    public var onRemove:Int->T->Void = null;
     public var onClear:Void->Void = null;
     public var onChange:Void->Void = null;
 
@@ -93,10 +93,11 @@ class DataSource<T> {
     }
 
     public function remove(item:T):T {
+        var index = indexOf(item);
         var r = handleRemoveItem(item);
         handleChanged();
         if (_allowCallbacks == true && onRemove != null) {
-            onRemove(r);
+            onRemove(index, r);
         }
         return r;
     }

@@ -133,10 +133,33 @@ private class DataSourceBehaviour extends DefaultBehaviour {
             return;
         }
 
+        var ds = value.toDataSource();
+        var currentItem = null;
+        var currentIndex = -1;
+        var dropDown = cast(_component, DropDown);
+        _component.registerEvent(UIEvent.CHANGE, (_) -> {
+            currentItem = dropDown.selectedItem;
+            currentIndex = dropDown.selectedIndex;
+        });
+        ds.onRemove = (index, item) -> {
+            if (item != currentItem) {
+                dropDown.selectedIndex = -1; // to force it to change
+                dropDown.selectedItem = currentItem;
+            } else {
+                dropDown.selectedIndex = -1; // to force it to change
+                dropDown.selectedIndex = index;
+            }
+        }
+        ds.onChange = () -> {
+            if (dropDown.dataSource.size == 0) {
+                dropDown.text = "";
+            }
+        }
+
         var handler:IDropDownHandler = cast(_component._compositeBuilder, DropDownBuilder).handler;
         handler.reset();
         if (_component.text == null && _component.isReady) {
-            cast(_component, DropDown).selectedIndex = 0;
+            dropDown.selectedIndex = 0;
         }
     }
 }
@@ -452,6 +475,7 @@ private class ListDropDownHandler extends DropDownHandler {
         if (_listview == null) {
             if (_cachedSelectedIndex >= 0 && _cachedSelectedIndex < _dropdown.dataSource.size) {
                 var data = _dropdown.dataSource.get(_cachedSelectedIndex);
+                trace(_cachedSelectedIndex, data);
                 return data;
             } else {
                 return _cachedSelectedItem;
