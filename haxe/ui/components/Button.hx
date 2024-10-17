@@ -303,7 +303,7 @@ class ButtonLayout extends DefaultLayout {
 
         if (label != null  && (icon == null || icon.componentWidth == 0 || icon.componentHeight == 0)){
             if (_component.autoWidth) {
-                return marginLeft(label) + paddingLeft;
+                return marginLeft(label) - marginRight(label) + paddingLeft;
             }
             return getTextAlignPos(label);
         }
