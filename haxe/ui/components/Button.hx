@@ -244,6 +244,7 @@ class ButtonLayout extends DefaultLayout {
             }
             icon.top = calcIconPositionTop();
         }
+
     }
 
     private function calcLabelPositionTop():Float {
@@ -303,15 +304,8 @@ class ButtonLayout extends DefaultLayout {
         if (label != null  && (icon == null || icon.componentWidth == 0 || icon.componentHeight == 0)){
             if (_component.autoWidth) {
                 return marginLeft(label) - marginRight(label) + paddingLeft;
-            } else {
-                if (textAlign == "left") {
-                    return marginLeft(label) - marginRight(label) + paddingLeft;
-                } else if (textAlign == "right") {
-                    return  component.componentWidth - label.componentWidth - marginRight(label) +  marginLeft(label) - paddingRight;
-                } else {
-                    return Std.int(( component.componentWidth / 2) - (label.componentWidth / 2)) + marginLeft(label) - marginRight(label);
-                }
             }
+            return getTextAlignPos(label);
         }
 
         if (_component.autoWidth) {
@@ -344,23 +338,29 @@ class ButtonLayout extends DefaultLayout {
             }
         }
 
-        if (textAlign == "center") {
-            if (iconPosition == "left" || iconPosition == "right") {
+        switch (iconPosition) {    
+            case "left" | "right":
                 var cx:Float = label.componentWidth + icon.componentWidth + horizontalSpacing;
                 var x:Float = Std.int((component.componentWidth / 2) - (cx / 2));
                 if (iconPosition == "left" ) {
                     x += horizontalSpacing + icon.componentWidth;
                 }
                 return x + marginLeft(label) - marginRight(label);
-            } else {
-               return Std.int(( component.componentWidth / 2) - (label.componentWidth / 2)) + marginLeft(label) - marginRight(label);
-            }
+            case _:
+                return getTextAlignPos(label);
         }
-
-        return 0;
     }
 
-        
+    private function getTextAlignPos(label:Label):Float {
+        switch (cast(component, Button).textAlign) {
+            case "left":
+                return marginLeft(label) - marginRight(label) + paddingLeft;
+            case "right":
+                return  component.componentWidth - label.componentWidth - marginRight(label) +  marginLeft(label) - paddingRight;
+            default:
+                return Std.int(( component.componentWidth / 2) - (label.componentWidth / 2)) + marginLeft(label) - marginRight(label);
+        }
+    }
 
     private function calcIconPositionLeft(labelLeft:Float = 0):Float {
         var icon:Image = component.findComponent("button-icon", false);
