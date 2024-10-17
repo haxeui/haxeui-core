@@ -209,7 +209,7 @@ class ButtonLayout extends DefaultLayout {
             var label:Label = component.findComponent(Label, false);
             var textAlign = cast(component, Button).textAlign;
             if (label != null && textAlign == "center" && (iconPosition == "center-right" || iconPosition == "center-left")) {
-                if (icon.componentWidth !=0) size.width += icon.componentWidth  + horizontalSpacing;
+                if (icon.componentWidth != 0) size.width += icon.componentWidth  + horizontalSpacing;
             }
         }
         return size;
@@ -302,6 +302,9 @@ class ButtonLayout extends DefaultLayout {
         var textAlign = cast(component, Button).textAlign;
 
         if (label != null  && (icon == null || icon.componentWidth == 0 || icon.componentHeight == 0)){
+            if (_component.autoWidth) {
+                return marginLeft(label) + paddingLeft;
+            }
             return getTextAlignPos(label);
         }
 
@@ -351,9 +354,9 @@ class ButtonLayout extends DefaultLayout {
     private function getTextAlignPos(label:Label):Float {
         switch (cast(component, Button).textAlign) {
             case "left":
-                return marginLeft(label) + paddingLeft;
+                return marginLeft(label) - marginRight(label) + paddingLeft;
             case "right":
-                return  component.componentWidth - label.componentWidth - marginRight(label) - paddingRight;
+                return  component.componentWidth - label.componentWidth - marginRight(label) +  marginLeft(label) - paddingRight;
             default:
                 return Std.int(( component.componentWidth / 2) - (label.componentWidth / 2)) + marginLeft(label) - marginRight(label);
         }
