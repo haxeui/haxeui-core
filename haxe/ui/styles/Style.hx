@@ -422,6 +422,9 @@ class Style {
                 case "font-size":
                     fontSize = ValueTools.calcDimension(v.value);
                 case "font-weight":
+                    if (ValueTools.string(v.value) != null) {
+                        fontBold = ValueTools.string(v.value).toLowerCase() == "bold";
+                    }
                     fontWeight = ValueTools.int(v.value);
                 case "font-bold":
                     fontBold = ValueTools.bool(v.value);
