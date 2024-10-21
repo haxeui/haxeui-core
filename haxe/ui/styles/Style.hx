@@ -23,21 +23,6 @@ enum abstract FontWeight(Int) from Int {
   var BOLD = 700;
   var EXTRA_BOLD = 800;
   var BLACK = 900;
-
-  @:from static public function fromString(value:String) {
-    return switch(value.toLowerCase()) {
-      case 'thin': THIN;
-      case 'extra_light': EXTRA_LIGHT;
-      case 'light': LIGHT;
-      case 'regular': REGULAR;
-      case 'medium': MEDIUM;
-      case 'semi_bold': SEMI_BOLD;
-      case 'bold': BOLD;
-      case 'extra_bold': EXTRA_BOLD; 
-      case 'black': BLACK;
-      default: REGULAR;
-    }
-  }
 }
 
 @:structInit
