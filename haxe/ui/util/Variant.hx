@@ -511,7 +511,13 @@ abstract Variant(VariantType) from VariantType {
                 } else if ((r is String)) {
                     v = cast(r, String);
                 } else {
+                    #if hl // avoid cast error, until we can move away from Variant
+                    if (Type.typeof(r) != TObject) {
+                        v = r;
+                    }
+                    #else
                     v = r;
+                    #end
                 }
             } else {
                 if ((r is Component)) {
@@ -530,7 +536,13 @@ abstract Variant(VariantType) from VariantType {
                 } else if ((r is ImageData)) {
                     v = cast(r, ImageData);
                 } else {
+                    #if hl // avoid cast error, until we can move away from Variant
+                    if (Type.typeof(r) != TObject) {
+                        v = r;
+                    }
+                    #else
                     v = r;
+                    #end
                 }                
             }
         }
