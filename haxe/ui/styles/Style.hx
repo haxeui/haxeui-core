@@ -13,6 +13,18 @@ enum StyleBorderType {
     Compound;
 }
 
+enum abstract FontWeight(Int) from Int {
+  var THIN = 100;
+  var EXTRA_LIGHT = 200;
+  var LIGHT = 300;
+  var REGULAR = 400;
+  var MEDIUM = 500;
+  var SEMI_BOLD = 600;
+  var BOLD = 700;
+  var EXTRA_BOLD = 800;
+  var BLACK = 900;
+}
+
 @:structInit
 class Style {
     /** The left (x) position relative to its parent. **/                           @:optional public var left:Null<Float>;
@@ -118,6 +130,7 @@ class Style {
     /** A path to a font file to be used for the text inside the object **/         @:optional public var fontName:Null<String>;
     /** The visual size of the font **/                                             @:optional public var fontSize:Null<Float>;
     /** Whether or not this text should use the **bold** variation of its font **/  @:optional public var fontBold:Null<Bool>;
+    /** The weight of the font in increments of 100 **/                             @:optional public var fontWeight:Null<FontWeight>;
     /** Whether or not to underline the text **/                                    @:optional public var fontUnderline:Null<Bool>;
     /** Whether or not this text should use the *italic* variation of its font **/  @:optional public var fontItalic:Null<Bool>;
     @:optional public var fontStrikeThrough:Null<Bool>;
@@ -412,6 +425,7 @@ class Style {
                     if (ValueTools.string(v.value) != null) {
                         fontBold = ValueTools.string(v.value).toLowerCase() == "bold";
                     }
+                    fontWeight = ValueTools.int(v.value);
                 case "font-bold":
                     fontBold = ValueTools.bool(v.value);
                 case "font-underline":
@@ -673,6 +687,7 @@ class Style {
         if (s.fontName != null) fontName = s.fontName;
         if (s.fontSize != null) fontSize = s.fontSize;
         if (s.fontBold != null) fontBold = s.fontBold;
+        if (s.fontWeight != null) fontWeight = s.fontWeight;
         if (s.fontUnderline != null) fontUnderline = s.fontUnderline;
         if (s.fontStrikeThrough != null) fontStrikeThrough = s.fontStrikeThrough;
         if (s.fontItalic != null) fontItalic = s.fontItalic;
@@ -836,6 +851,7 @@ class Style {
         if (s.fontName != fontName) return false;
         if (s.fontSize != fontSize) return false;
         if (s.fontBold != fontBold) return false;
+        if (s.fontWeight != fontWeight) return false;
         if (s.fontUnderline != fontUnderline) return false;
         if (s.fontStrikeThrough != fontStrikeThrough) return false;
         if (s.fontItalic != fontItalic) return false;
