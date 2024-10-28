@@ -1710,8 +1710,9 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
     private function unmapEvent(type:String, listener:UIEvent->Void) {
     }
 
+    @:noCompletion private var _cachedComponentOffset:Point = new Point(0, 0);
     private function getComponentOffset():Point {
-        return new Point(0, 0);
+        return _cachedComponentOffset;
     }
 
     private var isNativeScroller(get, set):Bool;
