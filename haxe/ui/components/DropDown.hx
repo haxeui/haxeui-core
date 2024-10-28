@@ -825,7 +825,7 @@ class DropDownEvents extends ButtonEvents {
             _wrapper.removeClass("popup-from-bottom");
             if (_dropdown.dropdownVerticalPosition == "bottom" || _wrapper.screenTop + _wrapper.actualComponentHeight > Screen.instance.actualHeight) {
                 _wrapper.addClass("popup-from-bottom");
-                _wrapper.top = (_dropdown.screenTop - _wrapper.actualComponentHeight) + Toolkit.scaleY;
+                _wrapper.top = (_dropdown.screenTop + componentOffset.y - _wrapper.actualComponentHeight) + Toolkit.scaleY;
                 _wrapper.syncComponentValidation();
                 _wrapper.validateNow();
                 var marginLeft = 0.0;
