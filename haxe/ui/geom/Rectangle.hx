@@ -1,5 +1,8 @@
 package haxe.ui.geom;
 
+#if haxeui_expose_all
+@:expose
+#end
 class Rectangle {
     public var left(default, default):Float;
     public var top(default, default):Float;
