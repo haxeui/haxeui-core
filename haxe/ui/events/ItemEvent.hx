@@ -21,6 +21,8 @@ class ItemEvent extends UIEvent {
         c.target = this.target;
         c.data = this.data;
         c.canceled = this.canceled;
+        c.relatedEvent = this.relatedEvent;
+        c.relatedComponent = this.relatedComponent;
         postClone(c);
         return c;
     }
