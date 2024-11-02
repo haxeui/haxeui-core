@@ -94,8 +94,27 @@ class DefaultLayout extends Layout {
             var cx:Null<Float> = null;
             var cy:Null<Float> = null;
 
-            if (child.percentWidth != null) {
-                var childPercentWidth = child.percentWidth;
+            var childPercentWidth = child.percentWidth;
+            if (hasFixedMinPercentWidth(child)) {
+                if (child.percentWidth != null) {
+                    if (child.percentWidth < minPercentWidth(child)) {
+                        childPercentWidth = minPercentWidth(child);
+                    }
+                } else {
+                    childPercentWidth = minPercentWidth(child);
+                }
+            }
+            if (hasFixedMaxPercentWidth(child)) {
+                if (child.percentWidth != null) {
+                    if (child.percentWidth > maxPercentWidth(child)) {
+                        childPercentWidth = maxPercentWidth(child);
+                    } 
+                } else {
+                    childPercentWidth = maxPercentWidth(child);
+                }
+            }
+
+            if (childPercentWidth != null) {
                 if (childPercentWidth == 100) {
                     childPercentWidth = fullWidthValue;
                 }
@@ -133,14 +152,51 @@ class DefaultLayout extends Layout {
                 */
             }
 
-            if (fixedMinWidth(child) && child.percentWidth != null) {
-                percentWidth -= child.percentWidth;
+            var skipMaxWidth = false;
+            
+            if (hasFixedMinWidth(child) ) {
+                if (child.percentWidth != null) {
+                    if (cx > minWidth(child)) {
+                    } else {
+                        cx = minWidth(child);
+                        skipMaxWidth  = true;
+                    }
+                    //percentWidth -= child.percentWidth;
+                } else {
+                    if (child.width < minWidth(child)) {
+                        cx = minWidth(child);
+                    }
+                }
+            } 
+
+            if (hasFixedMinPercentWidth(child)) {
+                if (child.style != null && child.style.width != null) {
+                    if (cx < child.style.width) {
+                        cx = child.style.width;
+                    }
+                }
             }
-            if (fixedMinHeight(child) && child.percentHeight != null) {
-                percentHeight -= child.percentHeight;
+
+            if (hasFixedMaxPercentWidth(child)) {
+                if (child.style != null && child.style.width != null) {
+                    if (cx > child.style.width) {
+                        cx = child.style.width;
+                    }
+                }
+            }
+            
+            
+            if (!skipMaxWidth && hasFixedMaxWidth(child) ) {
+                if (child.percentWidth != null) {
+                    if (cx > maxWidth(child)) {
+                        cx = maxWidth(child);
+                    }
+                    //percentWidth -= child.percentWidth;
+                }
             }
 
             child.resizeComponent(cx, cy);
+
         }
     }
 

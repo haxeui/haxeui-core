@@ -168,6 +168,70 @@ class Layout implements ILayout {
         return fixedMinWidth;
     }
 
+    private function hasFixedMinWidth(child:Component):Bool {
+        if (child != null && child.style != null && child.style.minWidth != null) {
+            return true;
+        }
+        return false;
+    }
+
+    private function hasFixedMinPercentWidth(child:Component):Bool {
+        if (child != null && child.style != null && child.style.minPercentWidth != null) {
+            return true;
+        }
+        return false;
+    }
+
+    private function hasFixedMaxPercentWidth(child:Component):Bool {
+        if (child != null && child.style != null && child.style.maxPercentWidth != null) {
+            return true;
+        }
+        return false;
+    }
+
+    private function fixedMaxWidth(child:Component):Bool {
+        var fixedMaxWidth = false;
+        if (child != null && child.style != null && child.style.maxWidth != null) {
+            fixedMaxWidth = child.componentWidth >= child.style.maxWidth;
+        }
+        return fixedMaxWidth;
+    }
+
+    private function hasFixedMaxWidth(child:Component):Bool {
+        if (child != null && child.style != null && child.style.maxWidth != null) {
+            return true;
+        }
+        return false;
+    }
+
+    private inline function minWidth(child:Component):Float {
+        if (child != null && child.style != null && child.style.minWidth != null) {
+            return child.style.minWidth;
+        }
+        return 0;
+    }
+
+    private inline function minPercentWidth(child:Component):Float {
+        if (child != null && child.style != null && child.style.minPercentWidth != null) {
+            return child.style.minPercentWidth;
+        }
+        return 0;
+    }
+
+    private inline function maxWidth(child:Component):Float {
+        if (child != null && child.style != null && child.style.maxWidth != null) {
+            return child.style.maxWidth;
+        }
+        return 0;
+    }
+
+    private inline function maxPercentWidth(child:Component):Float {
+        if (child != null && child.style != null && child.style.maxPercentWidth != null) {
+            return child.style.maxPercentWidth;
+        }
+        return 0;
+    }
+
     private function fixedMinHeight(child:Component):Bool {
         var fixedMinHeight = false;
         if (child != null && child.style != null && child.style.minHeight != null) {
@@ -321,7 +385,7 @@ class Layout implements ILayout {
                 continue;
             }
 
-            if (child.percentWidth == null) {
+            if (child.percentWidth == null || minWidth(child) > 0) {
                 if (child.left < x1) {
                     x1 = child.left - marginLeft(child) + marginRight(child);
                 }
@@ -354,6 +418,35 @@ class Layout implements ILayout {
             w += x1;
             h += y1;
         }
+
+        if (hasFixedMinPercentWidth(component)) {
+            var p = component;
+                var min:Float = 0;
+                min = (p.parentComponent.width * p.style.minPercentWidth) / 100;
+                if (min > 0 && w < min) {
+                    w = min;
+                }
+        }
+
+        if (hasFixedMaxPercentWidth(component)) {
+            var p = component;
+                var max:Float = 0;
+                max = (p.parentComponent.width * p.style.maxPercentWidth) / 100;
+                if (max > 0 && w > max) {
+                    w = max;
+                }
+        }
+
+        if (hasFixedMinWidth(component)) {
+            var min = minWidth(component);
+            if (w < min) w = min;
+        }
+
+        if (hasFixedMaxWidth(component)) {
+            var max = maxWidth(component);
+            if (w > max) w = max;
+        }
+        
 
         return new Size(w, h);
     }
