@@ -422,7 +422,7 @@ class Layout implements ILayout {
         if (hasFixedMinPercentWidth(component)) {
             var p = component;
                 var min:Float = 0;
-                min = (p.parentComponent.width * p.style.minPercentWidth) / 100;
+                min = (p.parentComponent.layout.usableSize.width * p.style.minPercentWidth) / 100;
                 if (min > 0 && w < min) {
                     w = min;
                 }
