@@ -431,7 +431,7 @@ class Layout implements ILayout {
         if (hasFixedMaxPercentWidth(component)) {
             var p = component;
                 var max:Float = 0;
-                max = (p.parentComponent.width * p.style.maxPercentWidth) / 100;
+                max = (p.parentComponent.layout.usableSize.width * p.style.maxPercentWidth) / 100;
                 if (max > 0 && w > max) {
                     w = max;
                 }
