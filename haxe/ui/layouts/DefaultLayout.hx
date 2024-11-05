@@ -136,6 +136,28 @@ class DefaultLayout extends Layout {
                 #end
                 */
             }
+
+
+            var childPercentHeight = child.percentHeight;
+            if (hasFixedMinPercentHeight(child)) {
+                if (childPercentHeight != null) {
+                    if (childPercentHeight < minPercentHeight(child)) {
+                        childPercentHeight = minPercentHeight(child);
+                    }
+                } else {
+                    childPercentHeight = minPercentHeight(child);
+                }
+            }
+            if (hasFixedMaxPercentHeight(child)) {
+                if (childPercentHeight != null) {
+                    if (childPercentHeight > maxPercentHeight(child)) {
+                        childPercentHeight = maxPercentHeight(child);
+                    } 
+                } else {
+                    childPercentHeight = maxPercentHeight(child);
+                }
+            }
+
             if (child.percentHeight != null) {
                 var childPercentHeight = child.percentHeight;
                 if (childPercentHeight == 100) {
@@ -190,6 +212,48 @@ class DefaultLayout extends Layout {
                 if (child.percentWidth != null) {
                     if (cx > maxWidth(child)) {
                         cx = maxWidth(child);
+                    }
+                    //percentWidth -= child.percentWidth;
+                }
+            }
+
+            var skipMaxHeight = false;
+            
+            if (hasFixedMinHeight(child) ) {
+                if (child.percentHeight != null) {
+                    if (cy > minHeight(child)) {
+                    } else {
+                        cy = minHeight(child);
+                        skipMaxHeight  = true;
+                    }
+                    //percentWidth -= child.percentWidth;
+                } else {
+                    if (child.height < minHeight(child)) {
+                        cy = minHeight(child);
+                    }
+                }
+            } 
+
+            if (hasFixedMinPercentHeight(child)) {
+                if (child.style != null && child.style.height != null) {
+                    if (cy < child.style.height) {
+                        cy = child.style.height;
+                    }
+                }
+            }
+
+            if (hasFixedMaxPercentHeight(child)) {
+                if (child.style != null && child.style.height != null) {
+                    if (cy > child.style.height) {
+                        cy = child.style.height;
+                    }
+                }
+            }  
+            
+            if (!skipMaxHeight && hasFixedMaxHeight(child) ) {
+                if (child.percentHeight != null) {
+                    if (cy > maxHeight(child)) {
+                        cy = maxHeight(child);
                     }
                     //percentWidth -= child.percentWidth;
                 }
