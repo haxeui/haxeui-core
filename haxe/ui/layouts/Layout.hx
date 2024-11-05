@@ -483,7 +483,7 @@ class Layout implements ILayout {
             h += y1;
         }
 
-        if (hasFixedMinPercentWidth(component)) {
+        if (hasFixedMinPercentWidth(component) && component.parentComponent != null && component.parentComponent.layout != null) {
             var p = component;
             var min:Float = 0;
             min = (p.parentComponent.layout.usableSize.width * p.style.minPercentWidth) / 100;
@@ -492,7 +492,7 @@ class Layout implements ILayout {
             }
         }
 
-        if (hasFixedMaxPercentWidth(component)) {
+        if (hasFixedMaxPercentWidth(component) && component.parentComponent != null && component.parentComponent.layout != null) {
             var p = component;
             var max:Float = 0;
             max = (p.parentComponent.layout.usableSize.width * p.style.maxPercentWidth) / 100;
@@ -501,7 +501,7 @@ class Layout implements ILayout {
             }
         }
 
-        if (hasFixedMinPercentHeight(component)) {
+        if (hasFixedMinPercentHeight(component) && component.parentComponent != null && component.parentComponent.layout != null) {
             var p = component;
             var min:Float = 0;
             min = (p.parentComponent.layout.usableSize.height * p.style.minPercentHeight) / 100;
@@ -510,7 +510,7 @@ class Layout implements ILayout {
             }
         }
 
-        if (hasFixedMaxPercentHeight(component)) {
+        if (hasFixedMaxPercentHeight(component) && component.parentComponent != null &&  component.parentComponent.layout != null) {
             var p = component;
             var max:Float = 0;
             max = (p.parentComponent.layout.usableSize.height * p.style.maxPercentHeight) / 100;
