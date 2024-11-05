@@ -92,6 +92,11 @@ private class LabelLayout extends DefaultLayout {
             #end
         } else {
             component.getTextDisplay().width = component.getTextDisplay().textWidth;
+            if (hasFixedMaxWidth(component)) {
+                if (maxWidth(component) < component.getTextDisplay().textWidth) {
+                    component.width = maxWidth(component);
+                }
+            }
         }
 
         if (component.autoHeight == true) {

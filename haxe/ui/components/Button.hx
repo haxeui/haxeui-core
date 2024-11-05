@@ -159,12 +159,25 @@ class ButtonLayout extends DefaultLayout {
                 }  else if (label.width > 0 && _component.componentWidth > 0 && ucx > 0) {
                     //  devezas  so the label width "recovers" when dynamically (percent wise) we change the width of the button from lower (that has the text wrapped) to higher:
                     label.width = label.layout.calcAutoWidth(); 
+                    if (hasFixedMaxWidth(_component)) {
+                        if (maxWidth(_component) < label.width) {
+                            label.width = maxWidth(_component);
+                        }
+                    }
                 }
             }
             
             var itemRenderer = component.findComponent(ItemRenderer);
             if (itemRenderer != null) {
                 itemRenderer.width = ucx;
+            }
+        } else {
+            if (hasFixedMaxWidth(_component)) {
+                var ucx = usableSize.width;
+                var label:Label = component.findComponent(Label, false);
+                if (maxWidth(_component) == _component.width) {
+                    label.width = ucx;
+                }
             }
         }
 
