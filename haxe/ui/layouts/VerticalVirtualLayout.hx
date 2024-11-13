@@ -181,13 +181,15 @@ class VerticalVirtualLayout extends VirtualLayout {
         if (comp.itemCount > 0 && _component.autoHeight == true) {
             var contents:Component = _component.findComponent("scrollview-contents", false);
             var contentsPadding:Float = 0;
+            var verticalSpacing = this.verticalSpacing;
             if (contents != null) {
                 var layout = contents.layout;
                 if (layout != null) {
                     contentsPadding = layout.paddingTop + layout.paddingBottom;
+                    verticalSpacing = layout.verticalSpacing;
                 }
             }
-            size.height = (itemHeight * comp.itemCount) + paddingTop + paddingBottom + contentsPadding + (borderSize * 2);
+            size.height = (itemHeight * comp.itemCount) + paddingTop + paddingBottom + contentsPadding + (borderSize * 2) + ((comp.itemCount - 1) * verticalSpacing);
         }
 
         return size;
