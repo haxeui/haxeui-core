@@ -63,6 +63,13 @@
     margin-top: -1px;
 }
 
+.textfield.no-background {
+    background-color: none;
+}
+
+.textfield.no-padding {
+    padding: 0;
+}
 /************************************************************************
 ** TEXT AREA
 *************************************************************************/
@@ -127,4 +134,12 @@
 .textarea.no-border {
     border: none;
     filter: none;
+}
+
+.textarea.no-background {
+    background-color: none;
+}
+
+.textarea.no-padding {
+    padding: 0;
 }
