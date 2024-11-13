@@ -178,8 +178,8 @@ private class TextAreaLayout extends DefaultLayout {
         }
 
         if (component.hasTextInput() == true) {
-            component.getTextInput().left = xpos + 2;
-            component.getTextInput().top = paddingTop + 2;
+            component.getTextInput().left = xpos + (borderSize * 2);
+            component.getTextInput().top = paddingTop + (borderSize * 2);
         }
     }
 
