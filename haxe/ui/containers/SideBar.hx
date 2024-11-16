@@ -154,12 +154,12 @@ class SideBar extends Box {
         
         first.set(new Directive("left", Value.VDimension(Dimension.PX(rootComponent.left))));
         first.set(new Directive("top", Value.VDimension(Dimension.PX(rootComponent.top))));
-        first.set(new Directive("width", Value.VDimension(Dimension.PX(Screen.instance.actualWidth ))));
+        first.set(new Directive("width", Value.VDimension(Dimension.PX(Screen.instance.actualWidth))));
         first.set(new Directive("height", Value.VDimension(Dimension.PX(Screen.instance.actualHeight))));
 
         last.set(new Directive("left", Value.VDimension(Dimension.PX(rootComponent.left))));
         last.set(new Directive("top", Value.VDimension(Dimension.PX(rootComponent.top))));
-        last.set(new Directive("width", Value.VDimension(Dimension.PX(Screen.instance.actualWidth ))));
+        last.set(new Directive("width", Value.VDimension(Dimension.PX(Screen.instance.actualWidth))));
         last.set(new Directive("height", Value.VDimension(Dimension.PX(Screen.instance.actualHeight))));
         
         _lastMethod = method;
