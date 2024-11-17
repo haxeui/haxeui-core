@@ -25,7 +25,24 @@ class RuleElement {
     }
 
     public function match(d:Component):Bool {
-        return ruleMatch(selector.parts[selector.parts.length - 1], d);
+        var res = 0;
+        for (s in selector.parts) {
+            res += ruleMatch(s, d) ? 1 : 0;
+            if (s.parent != null && d.parentComponent != null)
+                if (s.direct == true)
+                    res += ruleMatch(s.parent, d.parentComponent) ? 1 : 0;
+                else {
+                    var p = d.parentComponent;
+                    while (p != null) {
+                        if (ruleMatch(s.parent, p)) {
+                            res++;
+                            break;
+                        }
+                        p = p.parentComponent;
+                    }
+                }
+        }
+        return res == selector.parts.length;
     }
 
     private static function ruleMatch( c : SelectorPart, d : Component ):Bool {
@@ -56,29 +73,6 @@ class RuleElement {
             var classNodeName:String = @:privateAccess d.nodeName;
             if (c.nodeName != classNodeName) {
                 return false;
-            }
-        }
-
-        if (c.parent != null) {
-            if (c.direct == true) {
-                var p = d.parentComponent;
-                if (p == null) {
-                    return false;
-                }
-                if (!ruleMatch(c.parent, p)) {
-                    return false;
-                }
-            } else {
-                var p = d.parentComponent;
-                while (p != null) {
-                    if (ruleMatch(c.parent, p)) {
-                        break;
-                    }
-                    p = p.parentComponent;
-                }
-                if (p == null) {
-                    return false;
-                }
             }
         }
 
