@@ -1951,8 +1951,6 @@ class Component extends ComponentImpl
         if (_componentWidth != _actualWidth || _componentHeight != _actualHeight) {
             _actualWidth = _componentWidth;
             _actualHeight = _componentHeight;
-            
-            enforceSizeConstraints();
 
             if (parentComponent != null) {
                 parentComponent.invalidateComponentLayout();
@@ -1971,64 +1969,6 @@ class Component extends ComponentImpl
         }
 
         return sizeChanged;
-    }
-
-    private function enforceSizeConstraints() {
-        if (style != null) {
-            // enforce min width
-            if (style.minWidth != null && _componentWidth < style.minWidth) {
-                _componentWidth = _actualWidth = _width = style.minWidth;
-            }
-            
-            // enforce max width
-            if (style.maxWidth != null && style.maxPercentWidth == null && _componentWidth > style.maxWidth) {
-                _componentWidth = _actualWidth = _width = style.maxWidth;
-            } else if (style.maxWidth == null && style.maxPercentWidth != null) {
-                var p = this;
-                var max:Float = 0;
-                while (p != null) {
-                    if (p.style != null && p.style.maxPercentWidth == null) {
-                        max += p.width;
-                        break;
-                    }
-                    if (p.style != null && p != this) {
-                        max -= (p.style.paddingLeft + p.style.paddingRight);
-                    }
-                    p = p.parentComponent;
-                }
-                max = (max * style.maxPercentWidth) / 100;
-                if (max > 0 && _componentWidth > max) {
-                    _componentWidth = _actualWidth = _width = max;
-                }
-            }
-            
-            // enforce min height
-            if (style.minHeight != null && _componentHeight < style.minHeight) {
-                _componentHeight = _actualHeight = _height = style.minHeight;
-            }
-            
-            // enforce max height
-            if (style.maxHeight != null && style.maxPercentHeight == null && _componentHeight > style.maxHeight) {
-                _componentHeight = _actualHeight = _height = style.maxHeight;
-            } else if (style.maxHeight == null && style.maxPercentHeight != null) {
-                var p = this;
-                var max:Float = 0;
-                while (p != null) {
-                    if (p.style != null && p.style.maxPercentHeight == null) {
-                        max += p.height;
-                        break;
-                    }
-                    if (p.style != null && p != this) {
-                        max -= (p.style.paddingTop + p.style.paddingBottom);
-                    }
-                    p = p.parentComponent;
-                }
-                max = (max * style.maxPercentHeight) / 100;
-                if (max > 0 && _componentHeight > max) {
-                    _componentHeight = _actualHeight = _height = max;
-                }
-            }
-        }
     }
 
     private override function validateComponentStyle() {

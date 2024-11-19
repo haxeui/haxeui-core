@@ -94,8 +94,27 @@ class DefaultLayout extends Layout {
             var cx:Null<Float> = null;
             var cy:Null<Float> = null;
 
-            if (child.percentWidth != null) {
-                var childPercentWidth = child.percentWidth;
+            var childPercentWidth = child.percentWidth;
+            if (hasFixedMinPercentWidth(child)) {
+                if (childPercentWidth != null) {
+                    if (childPercentWidth < minPercentWidth(child)) {
+                        childPercentWidth = minPercentWidth(child);
+                    }
+                } else {
+                    childPercentWidth = minPercentWidth(child);
+                }
+            }
+            if (hasFixedMaxPercentWidth(child)) {
+                if (childPercentWidth != null) {
+                    if (childPercentWidth > maxPercentWidth(child)) {
+                        childPercentWidth = maxPercentWidth(child);
+                    } 
+                } else {
+                    childPercentWidth = maxPercentWidth(child);
+                }
+            }
+
+            if (childPercentWidth != null) {
                 if (childPercentWidth == 100) {
                     childPercentWidth = fullWidthValue;
                 }
@@ -117,6 +136,28 @@ class DefaultLayout extends Layout {
                 #end
                 */
             }
+
+
+            var childPercentHeight = child.percentHeight;
+            if (hasFixedMinPercentHeight(child)) {
+                if (childPercentHeight != null) {
+                    if (childPercentHeight < minPercentHeight(child)) {
+                        childPercentHeight = minPercentHeight(child);
+                    }
+                } else {
+                    childPercentHeight = minPercentHeight(child);
+                }
+            }
+            if (hasFixedMaxPercentHeight(child)) {
+                if (childPercentHeight != null) {
+                    if (childPercentHeight > maxPercentHeight(child)) {
+                        childPercentHeight = maxPercentHeight(child);
+                    } 
+                } else {
+                    childPercentHeight = maxPercentHeight(child);
+                }
+            }
+
             if (child.percentHeight != null) {
                 var childPercentHeight = child.percentHeight;
                 if (childPercentHeight == 100) {
@@ -133,14 +174,91 @@ class DefaultLayout extends Layout {
                 */
             }
 
-            if (fixedMinWidth(child) && child.percentWidth != null) {
-                percentWidth -= child.percentWidth;
+            var skipMaxWidth = false;
+            
+            if (hasFixedMinWidth(child) ) {
+                if (child.percentWidth != null) {
+                    if (cx > minWidth(child)) {
+                    } else {
+                        cx = minWidth(child);
+                        skipMaxWidth  = true;
+                    }
+                    //percentWidth -= child.percentWidth;
+                } else {
+                    if (child.width < minWidth(child)) {
+                        cx = minWidth(child);
+                    }
+                }
+            } 
+
+            if (hasFixedMinPercentWidth(child)) {
+                if (child.style != null && child.style.width != null) {
+                    if (cx < child.style.width) {
+                        cx = child.style.width;
+                    }
+                }
             }
-            if (fixedMinHeight(child) && child.percentHeight != null) {
-                percentHeight -= child.percentHeight;
+
+            if (hasFixedMaxPercentWidth(child)) {
+                if (child.style != null && child.style.width != null) {
+                    if (cx > child.style.width) {
+                        cx = child.style.width;
+                    }
+                }
+            }
+            
+            
+            if (!skipMaxWidth && hasFixedMaxWidth(child) ) {
+                if (child.percentWidth != null) {
+                    if (cx > maxWidth(child)) {
+                        cx = maxWidth(child);
+                    }
+                }
+            }
+
+            var skipMaxHeight = false;
+            
+            if (hasFixedMinHeight(child) ) {
+                if (child.percentHeight != null) {
+                    if (cy > minHeight(child)) {
+                    } else {
+                        cy = minHeight(child);
+                        skipMaxHeight  = true;
+                    }
+                } else {
+                    if (child.height < minHeight(child)) {
+                        cy = minHeight(child);
+                    }
+                }
+            } 
+
+            if (hasFixedMinPercentHeight(child)) {
+                if (child.style != null && child.style.height != null) {
+                    if (cy < child.style.height) {
+                        cy = child.style.height;
+                    }
+                }
+            }
+
+            if (hasFixedMaxPercentHeight(child)) {
+                if (child.style != null && child.style.height != null) {
+                    if (cy > child.style.height) {
+                        cy = child.style.height;
+                    }
+                }
+            }  
+            
+            if (!skipMaxHeight && hasFixedMaxHeight(child) ) {
+                if (child.percentHeight != null) {
+                    if (cy > maxHeight(child)) {
+                        cy = maxHeight(child);
+                    }
+                    //percentWidth -= child.percentWidth;
+                }
             }
 
             child.resizeComponent(cx, cy);
+
         }
     }
 

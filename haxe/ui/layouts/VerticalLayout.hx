@@ -31,7 +31,7 @@ class VerticalLayout extends DefaultLayout {
             }
 
             child.moveComponent(xpos, ypos + marginTop(child));
-            ypos += child.componentHeight + verticalSpacing;
+            if (child.componentHeight > 0) ypos += child.componentHeight + verticalSpacing;
         }
     }
 
@@ -46,7 +46,9 @@ class VerticalLayout extends DefaultLayout {
             }
 
             if (child.componentHeight > 0 && (child.percentHeight == null || fixedMinHeight(child) == true)) { // means its a fixed height, ie, not a % sized control
-                size.height -= child.componentHeight + marginTop(child) + marginBottom(child);
+                if (!hasFixedMinPercentHeight(child)) {
+                    size.height -= child.componentHeight + marginTop(child) + marginBottom(child);
+                }
             }
         }
 
@@ -54,8 +56,9 @@ class VerticalLayout extends DefaultLayout {
             size.height -= verticalSpacing * (visibleChildren - 1);
         }
 
-        if (size.height < 0) {
+        if (size.height <= 0) {
             size.height = 0;
+            visibleChildren--;
         }
         return size;
     }

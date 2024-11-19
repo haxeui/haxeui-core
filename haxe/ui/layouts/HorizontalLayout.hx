@@ -72,7 +72,7 @@ class HorizontalLayout extends DefaultLayout {
             else {
                 child.moveComponent(xpos + marginLeft(child), ypos);
             }
-            xpos += child.componentWidth + spacing;
+            if (child.componentWidth > 0) xpos += child.componentWidth + spacing;
         }
     }
 
@@ -86,8 +86,10 @@ class HorizontalLayout extends DefaultLayout {
                 continue;
             }
 
-            if (child.componentWidth > 0 && (child.percentWidth == null || fixedMinWidth(child) == true)) { // means its a fixed width, ie, not a % sized control
-                size.width -= child.componentWidth + marginLeft(child) + marginRight(child);
+            if (child.componentWidth > 0 && (child.percentWidth == null || hasFixedMinWidth(child) == true)) { // means its a fixed width, ie, not a % sized control
+                if (!hasFixedMinPercentWidth(child)) {
+                    size.width -= child.componentWidth + marginLeft(child) + marginRight(child);
+                }
             }
         }
 
@@ -95,8 +97,9 @@ class HorizontalLayout extends DefaultLayout {
             size.width -= horizontalSpacing * (visibleChildren - 1);
         }
 
-        if (size.width < 0) {
+        if (size.width <= 0) {
             size.width = 0;
+            visibleChildren--;
         }
 
         return size;
