@@ -470,24 +470,11 @@ class Macros {
                         case [param1]:
                             buildPropertyBinding(builder, f, param1, "value"); // input component that has value
                         case [component, event]: // two params, lets assume event binding
-                            var componentString = ExprTools.toString(component);
                             builder.ctor.add(macro @:pos(component.pos) {
-                                if ($v{componentString} == "controller") { // TODO: arguably a hack as its sepcific to MVC, contoller might be null by the time we are linking things
-                                    haxe.ui.Toolkit.callLater(function() {
-                                        var c:haxe.ui.core.IEventDispatcher<haxe.ui.events.UIEvent> = cast ${component};
-                                        if (c != null) {
-                                            c.registerEvent($event, $i{f.name});
-                                        } else {
-                                            trace("WARNING: could not find event dispatcher to register event (" + $v{ExprTools.toString(component)} + ")");
-                                        }
-                                    });
+                                if (${component} != null) {
+                                    ${component}.registerEvent($event, $i{f.name});
                                 } else {
-                                    var c:haxe.ui.core.IEventDispatcher<haxe.ui.events.UIEvent> = cast ${component};
-                                    if (c != null) {
-                                        c.registerEvent($event, $i{f.name});
-                                    } else {
-                                        trace("WARNING: could not find event dispatcher to register event (" + $v{ExprTools.toString(component)} + ")");
-                                    }
+                                    trace("WARNING: could not find event dispatcher to register event (" + $v{ExprTools.toString(component)} + ")");
                                 }
                             }, End);
                         default:
