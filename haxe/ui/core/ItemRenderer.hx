@@ -138,13 +138,25 @@ class ItemRenderer extends Box {
         updateValues(_data, _fieldList);
 
         if (autoRegisterInteractiveEvents) {
-            var components = findComponents(InteractiveComponent);
+            var components = findComponents(Component);
             for (c in components) {
-                if (c.hasEvent(MouseEvent.CLICK, onItemClick) == false) {
-                    c.registerEvent(MouseEvent.CLICK, onItemClick);
+                if ((c is InteractiveComponent)) {
+                    if (c.hasEvent(MouseEvent.CLICK, onItemClick) == false) {
+                        c.registerEvent(MouseEvent.CLICK, onItemClick);
+                    }
+                    if (c.hasEvent(UIEvent.CHANGE, onItemChange) == false) {
+                        c.registerEvent(UIEvent.CHANGE, onItemChange);
+                    }
+                } else if (c.style != null && c.style.pointerEvents != null) {
+                    if (c.hasEvent(MouseEvent.CLICK, onItemClick) == false) {
+                        c.registerEvent(MouseEvent.CLICK, onItemClick);
+                    }
                 }
-                if (c.hasEvent(UIEvent.CHANGE, onItemChange) == false) {
-                    c.registerEvent(UIEvent.CHANGE, onItemChange);
+            }
+
+            if (this.style != null && this.style.pointerEvents != null) {
+                if (this.hasEvent(MouseEvent.CLICK, onItemClick) == false) {
+                    this.registerEvent(MouseEvent.CLICK, onItemClick);
                 }
             }
         }
@@ -319,6 +331,10 @@ class ItemRenderer extends Box {
                 if (c.hasEvent(UIEvent.CHANGE, onItemChange) == false) {
                     c.registerEvent(UIEvent.CHANGE, onItemChange);
                 }
+                if (c.hasEvent(MouseEvent.CLICK, onItemClick) == false) {
+                    c.registerEvent(MouseEvent.CLICK, onItemClick);
+                }
+            } else if (c.style != null && c.style.pointerEvents != null) {
                 if (c.hasEvent(MouseEvent.CLICK, onItemClick) == false) {
                     c.registerEvent(MouseEvent.CLICK, onItemClick);
                 }
