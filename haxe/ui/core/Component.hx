@@ -2234,7 +2234,7 @@ class Component extends ComponentImpl
         }
     }
 
-    private var recursivePointerEvents:Bool = true;
+    @:clonable private var recursivePointerEvents:Bool = true;
     private function onPointerEventsMouseOver(e:MouseEvent) {
         addClass(":hover", true, recursivePointerEvents);
     }
