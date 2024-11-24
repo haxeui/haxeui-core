@@ -211,6 +211,9 @@ class ItemRenderer extends Box {
         e.itemIndex = itemIndex;
         e.data = _data;
         dispatch(e);
+        if (e.canceled) {
+            event.cancel();
+        }
 
         var e2 = new ItemEvent(ItemEvent.COMPONENT_CLICK_EVENT);
         e2.bubble = true;
@@ -219,6 +222,9 @@ class ItemRenderer extends Box {
         e2.itemIndex = itemIndex;
         e2.data = _data;
         dispatch(e2);
+        if (e2.canceled) {
+            event.cancel();
+        }
     }
 
     private function updateValues(value:Dynamic, fieldList:Array<String> = null, currentRecursionLevel:Null<Int> = 0) {
