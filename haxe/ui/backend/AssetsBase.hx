@@ -25,6 +25,10 @@ class AssetsBase {
         callback(null);
     }
 
+    public function imageToBytes(format:String, imageInfo:ImageInfo, callback:Bytes->Void) {
+        callback(null);
+    }
+
     public function imageFromFile(filename:String, callback:ImageInfo->Void) {
         #if sys
 

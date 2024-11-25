@@ -1,5 +1,6 @@
 package haxe.ui.core;
 
+import haxe.io.Bytes;
 import haxe.ui.assets.ImageInfo;
 import haxe.ui.backend.ImageDisplayImpl;
 import haxe.ui.geom.Rectangle;
@@ -102,6 +103,10 @@ class ImageDisplay extends ImageDisplayImpl {
         invalidateComponent(InvalidationFlags.DISPLAY);
 
         return value;
+    }
+
+    public function encodeToBytes(format:String, callback:Bytes->Void) {
+        ToolkitAssets.instance.imageToBytes(format, _imageInfo, callback);
     }
 
     public function isComponentInvalid(flag:String = InvalidationFlags.ALL):Bool {

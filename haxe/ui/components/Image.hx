@@ -1,5 +1,6 @@
 package haxe.ui.components;
 
+import haxe.io.Bytes;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
 import haxe.ui.behaviours.InvalidatingBehaviour;
@@ -77,6 +78,10 @@ class Image extends Component {
      * The value to multiply the images size by when drawing the image to the screen.
      */
     @:clonable @:behaviour(DefaultBehaviour, 1)                            public var imageScale:Float;
+
+    public function encodeToBytes(format:String, callback:Bytes->Void) {
+        getImageDisplay().encodeToBytes(format, callback);
+    }
 }
 
 //***********************************************************************************************************
