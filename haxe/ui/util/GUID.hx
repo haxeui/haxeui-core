@@ -1,5 +1,8 @@
 package haxe.ui.util;
 
+#if haxeui_expose_all
+@:keep @:expose
+#end
 class GUID {
     public static inline function randomIntegerWithinRange(min:Int, max:Int):Int {
         return Math.floor(Math.random() * (1 + max - min) + min);
