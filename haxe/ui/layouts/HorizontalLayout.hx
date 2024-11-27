@@ -2,6 +2,9 @@ package haxe.ui.layouts;
 
 import haxe.ui.geom.Size;
 
+#if haxeui_expose_all
+@:expose
+#end
 class HorizontalLayout extends DefaultLayout {
     public function new() {
         super();
