@@ -99,10 +99,17 @@ class PropertyEditorOptions extends PropertyEditor {
 
     @:bind(buttonBar, UIEvent.CHANGE)
     private function onButtonBarChange(_) {
-        onValueChanged(buttonBar.selectedButton.text);
+        if (buttonBar.selectedButton != null) {
+            onValueChanged(buttonBar.selectedButton.text);
+        } else {
+            onValueChanged(null);
+        }
     }
 
     public override function applyValue(value:Variant) {
+        if (value == null) {
+            buttonBar.selectedIndex = -1;
+        }
         for (button in buttonBar.findComponents(Button)) {
             if (button.text == value.toString() || button.id == value.toString()) {
                 button.selected = true;
