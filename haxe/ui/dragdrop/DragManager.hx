@@ -133,6 +133,7 @@ class DragManager {
     ///////////////
 
     private function onMouseDown(e:MouseEvent) {
+        if (_currentComponent != null) return;
         // set current pending dragging component
         _currentComponent = _mouseTargetToDragTarget.get(e.target);
         if (_currentComponent.parentComponent == null) {
