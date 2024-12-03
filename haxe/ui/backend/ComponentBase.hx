@@ -592,6 +592,9 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
             _interactivityDisabled = false;
             if (updateStyle == true) {
                 cast(this, Component).removeClass(":disabled");
+                if (this.hitTest(Screen.instance.currentMouseX, Screen.instance.currentMouseY)) {
+                    cast(this, Component).addClass(":hover");
+                }
             }
             handleDisabled(false);
             disableInteractiveEvents(false);
