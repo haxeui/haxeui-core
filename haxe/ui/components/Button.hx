@@ -228,7 +228,7 @@ class ButtonLayout extends DefaultLayout {
     
     private inline function isIconRelevant() {
         var icon:Image = component.findComponent("button-icon", false);
-        return icon != null && icon.componentWidth != 0 && icon.componentHeight !=0 && (iconPosition == "far-right" || iconPosition == "far-left" || iconPosition == "left" || iconPosition == "right" || iconPosition == "center-right" || iconPosition == "center-left");
+        return icon != null && icon.hidden == false && icon.componentWidth != 0 && icon.componentHeight !=0 && (iconPosition == "far-right" || iconPosition == "far-left" || iconPosition == "left" || iconPosition == "right" || iconPosition == "center-right" || iconPosition == "center-left");
     }
     
     private override function repositionChildren() {
