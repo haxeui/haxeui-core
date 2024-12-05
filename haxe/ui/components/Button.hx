@@ -170,6 +170,10 @@ class ButtonLayout extends DefaultLayout {
 
         if (_component.autoHeight == false) {
             var icon:Image = component.findComponent("button-icon", false);
+            if (icon != null && icon.hidden) {
+                icon = null;
+            }
+    
             var ucy = usableSize.height;
             if (icon != null) {
                 if (icon.height > 0 && ucy > 0 && icon.height > ucy) {
@@ -184,6 +188,10 @@ class ButtonLayout extends DefaultLayout {
     private override function get_usableSize():Size {
         var size = super.get_usableSize();
         var icon:Image = component.findComponent("button-icon", false);
+        if (icon != null && icon.hidden) {
+            icon = null;
+        }
+
         var textAlign = cast(component, Button).textAlign;
         
         if (icon != null && (iconPosition == "far-right" || iconPosition == "far-left" || iconPosition == "center-left" || iconPosition == "center-right") && textAlign =="center") {
@@ -198,6 +206,9 @@ class ButtonLayout extends DefaultLayout {
         var exclusions:Array<Component> = [];
         var itemRenderer = component.findComponent(ItemRenderer);
         var icon:Image = component.findComponent("button-icon", false);
+        if (icon != null && icon.hidden) {
+            icon = null;
+        }
         if (itemRenderer != null && isIconRelevant()) {
             exclusions.push(icon);
         }
@@ -228,7 +239,7 @@ class ButtonLayout extends DefaultLayout {
             label = null;
         }
         var icon:Image = component.findComponent("button-icon", false);
-        if (icon != null && icon.hidden == true) {
+        if (icon != null && icon.hidden) {
             icon = null;
         }
 
@@ -250,6 +261,9 @@ class ButtonLayout extends DefaultLayout {
     private function calcLabelPositionTop():Float {
         var label:Label = component.findComponent(Label, false);
         var icon:Image = component.findComponent("button-icon", false);
+        if (icon != null && icon.hidden) {
+            icon = null;
+        }
 
         if (label != null  && (icon == null || icon.componentWidth == 0 || icon.componentHeight == 0)){
             return Std.int((component.componentHeight / 2) - (label.componentHeight / 2)) + marginTop(label) - marginBottom(label);
@@ -273,6 +287,10 @@ class ButtonLayout extends DefaultLayout {
 
     private function calcIconPositionTop():Float {
         var icon:Image = component.findComponent("button-icon", false);
+        if (icon != null && icon.hidden) {
+            icon = null;
+        }
+
         var label:Label = component.findComponent(Label, false);
 
         if (label == null && icon != null) {
@@ -299,6 +317,10 @@ class ButtonLayout extends DefaultLayout {
     private function calcLabelPositionLeft():Float {
         var label:Label = component.findComponent(Label, false);
         var icon:Image = component.findComponent("button-icon", false);
+        if (icon != null && icon.hidden) {
+            icon = null;
+        }
+
         var textAlign = cast(component, Button).textAlign;
 
         if (label != null  && (icon == null || icon.componentWidth == 0 || icon.componentHeight == 0)){
@@ -364,6 +386,10 @@ class ButtonLayout extends DefaultLayout {
 
     private function calcIconPositionLeft(labelLeft:Float = 0):Float {
         var icon:Image = component.findComponent("button-icon", false);
+        if (icon != null && icon.hidden) {
+            icon = null;
+        }
+
         var label:Label = component.findComponent(Label, false);
         var textAlign = cast(component, Button).textAlign;
 
