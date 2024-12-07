@@ -1,5 +1,8 @@
 package haxe.ui.locale;
 
+#if haxeui_expose_all
+@:keep @:expose
+#end
 class Formats {
     private static var _dateFormatShort:String = null;
     public static var dateFormatShort(get, set):String;
