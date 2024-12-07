@@ -154,11 +154,15 @@ class ButtonLayout extends DefaultLayout {
             var label:Label = component.findComponent(Label, false);
             var ucx = usableSize.width;
             if (label != null) {
+                //  label mustn't be bigger than usable size
+                //  and label must be resized to auto calculated width if it's bigger than label
+                //  ( don't force multiline into space when a one line can fit)
                 if (label.width > 0 && _component.componentWidth > 0 && ucx > 0 && label.width >= ucx) {
-                    label.width =  ucx;
+                    label.width = ucx;
                 }  else if (label.width > 0 && _component.componentWidth > 0 && ucx > 0) {
-                    //  devezas  so the label width "recovers" when dynamically (percent wise) we change the width of the button from lower (that has the text wrapped) to higher:
-                    label.width = label.layout.calcAutoWidth(); 
+                    // When we did label.width, we removed autowidth, so we need to check manually
+                    var autoWidth = label.layout.calcAutoWidth();
+                    if (autoWidth > label.width) label.width = autoWidth;
                 }
             }
             
