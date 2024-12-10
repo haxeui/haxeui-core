@@ -567,6 +567,12 @@ private class IconBehaviour extends DataBehaviour {
         if (icon == null) {
             icon = new Image();
             icon.addClass("icon");
+            if (_component.hasClass(":hover")) {
+                icon.addClass(":hover");
+            }
+            if (_component.hasClass(":down")) {
+                icon.addClass(":down");
+            }
             icon.id = "button-icon";
             _component.addComponentAt(icon, 0);
             _component.invalidateComponentStyle(true);
