@@ -40,6 +40,9 @@ class FileDialogTypes {
     }
 }
 
+#if haxeui_expose_all
+@:expose
+#end
 class Dialogs {
     public static function messageBox(message:String, title:String = null, type:MessageBoxType = null, modal:Bool = true, callback:DialogButton->Void = null):Dialog {
         if (type == null) {
