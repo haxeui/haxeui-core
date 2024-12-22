@@ -4,6 +4,9 @@ import haxe.ui.core.Component;
 import haxe.ui.events.EventType;
 import haxe.ui.events.UIEvent;
 
+#if haxeui_expose_all
+@:expose
+#end
 class EventMap  {
     private var _map:Map<String, FunctionArray<UIEvent->Void>>;
 
