@@ -26,6 +26,9 @@ typedef SelectedFileInfo = { > FileInfo,
     @:optional var fullPath:String;
 }
 
+#if haxeui_expose_all
+@:expose
+#end
 class FileDialogTypes {
     public static inline var ANY:Array<FileDialogExtensionInfo> = null;
     
