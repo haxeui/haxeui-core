@@ -3,6 +3,10 @@ package haxe.ui.styles.elements;
 class Selector {
     public var parts:Array<SelectorPart> = [];
 
+    private var weightA = 0;
+    private var weightB = 0;
+    private var weightC = 0;
+
     public function new(s:String) {
         s = StringTools.replace(s, ">", " > ");
         var p = s.split(" ");
@@ -45,6 +49,31 @@ class Selector {
             parts.push(current);
             parent = current;
         }
+
+        //  https://developer.mozilla.org/en-US/docs/Web/CSS/Specificity
+        //  Combinators, such as +, >, ~, " ", and ||, may make a selector more specific in what is selected 
+        //  but they don't add any value to the specificity weight.
+        for ( p in parts) {
+            if (p.id != null) {
+                weightA++;
+            }
+            if (p.className != null) {
+                weightB++;
+            }
+            if (p.pseudoClass != null) {
+                weightC++;
+            }
+        }
+    }
+
+    public function hasPrecedenceOrEqualTo(s:Selector) {
+        if (weightA > s.weightA) return true;
+        if (weightA < s.weightA) return false;
+        if (weightB > s.weightB) return true;
+        if (weightB < s.weightB) return false;
+        if (weightC > s.weightC) return true;
+        if (weightC < s.weightC) return false;
+        return true;
     }
 
     public function toString():String {
