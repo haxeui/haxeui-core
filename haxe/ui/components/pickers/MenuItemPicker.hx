@@ -13,7 +13,7 @@ import haxe.ui.util.Variant;
 @:composite(Builder)
 @:xml('
 <item-picker>
-    <hbox id="itemPickerRenderer">
+    <hbox styleName="item-picker-renderer">
         <image id="itemIcon" verticalAlign="center" />
         <label id="itemText" text="Select Item" verticalAlign="center" />
         <box height="100%" styleName="item-picker-trigger-icon-container">
