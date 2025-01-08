@@ -57,7 +57,6 @@ class Panel extends VBox {
     #if (haxeui_openfl || haxeui_nme || haxeui_flixel)
 
     public override function set_width(value:Float):Float {
-        trace(contentContainer);
         if (contentContainer != null) {
             contentContainer.percentWidth = 100;
         }
