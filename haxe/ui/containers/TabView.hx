@@ -75,7 +75,8 @@ private class Layout extends DefaultLayout {
 
         var tabsWidthModifier:Float = 0;
         if (tabs.style == null) {
-            //tabs.validateNow();
+            tabs.invalidateComponentStyle();
+            @:privateAccess tabs.validateComponentStyle();
         }
         if (tabs.marginRight != null) {
             tabsWidthModifier = tabs.marginRight;
