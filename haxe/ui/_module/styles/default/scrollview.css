@@ -33,6 +33,14 @@
     border: none;
 }
 
+.scrollview.no-border .vertical-scroll {
+    border: none;
+}
+
+.scrollview.no-border .horizontal-scroll {
+    border: none;
+}
+
 .scrollview:active {
     border: 1px solid $accent-color;
 }
