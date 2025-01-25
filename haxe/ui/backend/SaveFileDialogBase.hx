@@ -2,8 +2,8 @@ package haxe.ui.backend;
 
 import haxe.ui.containers.dialogs.Dialog.DialogButton;
 import haxe.ui.containers.dialogs.Dialog.DialogEvent;
-import haxe.ui.containers.dialogs.Dialogs;
 import haxe.ui.containers.dialogs.Dialogs.FileDialogExtensionInfo;
+import haxe.ui.containers.dialogs.Dialogs;
 import haxe.ui.containers.dialogs.MessageBox.MessageBoxType;
 
 typedef SaveFileDialogOptions = {
@@ -19,6 +19,7 @@ class SaveFileDialogBase {
     public var onDialogClosed:DialogEvent->Void = null;
     
     public var fileInfo:FileInfo = null;
+    public var selectedFileInfo:SelectedFileInfo = null;
     
     
     public function new(options:SaveFileDialogOptions = null, callback:DialogButton->Bool->String->Void = null) {
@@ -47,8 +48,13 @@ class SaveFileDialogBase {
         Dialogs.messageBox("SaveFileDialog has no implementation on this backend", "Save File", MessageBoxType.TYPE_ERROR);
     }
     
-    private function dialogConfirmed() {
+    private function dialogConfirmed(selectedFileInfo:SelectedFileInfo = null) {
         saveResult = true;
+        if (selectedFileInfo != null) {
+            this.selectedFileInfo = selectedFileInfo;
+            this.fileInfo = selectedFileInfo;
+            this.fullPath = selectedFileInfo.fullPath;
+        }
         if (callback != null) {
             callback(DialogButton.OK, saveResult, fullPath);
         }
