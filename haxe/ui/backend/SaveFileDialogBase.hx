@@ -67,6 +67,10 @@ class SaveFileDialogBase {
     
     private function dialogCancelled() {
         saveResult = false;
+        this.selectedFileInfo = null;
+        this.fileInfo = null;
+        this.fullPath = null;
+
         if (callback != null) {
             callback(DialogButton.CANCEL, saveResult, null);
         }
