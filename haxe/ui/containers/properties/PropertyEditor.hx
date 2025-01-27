@@ -169,6 +169,9 @@ class PropertyEditorNumber extends PropertyEditor {
         if (property.step != null) {
             numberStepper.step = property.step;
         }
+        if (property.forceStep != null) {
+            numberStepper.forceStep = property.forceStep;
+        }
         if (property.precision != null) {
             numberStepper.precision = property.precision;
         }
