@@ -53,7 +53,7 @@ class NumberStepper extends InteractiveComponent implements ICompositeInteractiv
     /**
      * If true, values that differ from the specified `step` will be marked as invalid.
      */
-    @:clonable @:behaviour(DefaultBehaviour, false)                      public var forceStep:Bool;
+    @:clonable @:behaviour(DefaultBehaviour, false)                     public var forceStep:Bool;
 
     /**
      * The highest value this stepper can get to, even when set through code.
