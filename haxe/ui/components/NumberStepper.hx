@@ -51,6 +51,11 @@ class NumberStepper extends InteractiveComponent implements ICompositeInteractiv
     @:clonable @:behaviour(DefaultBehaviour, null)                      public var step:Null<Float>;
 
     /**
+     * If true, values that differ from the specified `step` will be marked as invalid.
+     */
+    @:clonable @:behaviour(DefaultBehaviour, false)                     public var forceStep:Bool;
+
+    /**
      * The highest value this stepper can get to, even when set through code.
      */
     @:clonable @:behaviour(DefaultBehaviour, null)                      public var max:Null<Float>;
@@ -308,7 +313,7 @@ private class Events extends haxe.ui.events.Events {
         }
         var parsedValue = Std.parseFloat(value.text);
         parsedValue = MathUtil.clamp(parsedValue, _stepper.min, _stepper.max);
-        if (_stepper.step != null && parsedValue % _stepper.step != 0) {
+        if (_stepper.step != null && _stepper.forceStep && parsedValue % _stepper.step != 0) {
             parsedValue = MathUtil.roundToNearest(parsedValue, _stepper.step);
         }
 
@@ -491,7 +496,7 @@ private class ValueHelper {
             valid = false;
         }
 
-        if (step != null && MathUtil.fmodulo(parsedValue, step) != 0) {
+        if (step != null && stepper.forceStep && MathUtil.fmodulo(parsedValue, step) != 0) {
             valid = false;
             parsedValue = MathUtil.roundToNearest(parsedValue, step);
         }
@@ -523,7 +528,9 @@ private class ValueHelper {
             }
         } else {
             newValue += step;
-            newValue = MathUtil.roundToNearest(newValue, step);
+            if (stepper.forceStep) {
+                newValue = MathUtil.roundToNearest(newValue, step);
+            }
         }
         
         if (max != null && newValue > max) {
@@ -549,7 +556,9 @@ private class ValueHelper {
             }
         } else {
             newValue -= step;
-            newValue = MathUtil.roundToNearest(newValue, step);
+            if (stepper.forceStep) {
+                newValue = MathUtil.roundToNearest(newValue, step);
+            }
         }
         
         if (min != null && newValue < min) {

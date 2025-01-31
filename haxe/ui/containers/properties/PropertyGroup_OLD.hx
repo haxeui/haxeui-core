@@ -338,6 +338,9 @@ private class Builder extends CompositeBuilder {
                     if (property.step != null) {
                         stepper.step = property.step;
                     }
+                    if (property.forceStep != null) {
+                        stepper.forceStep = property.forceStep;
+                    }
                     if (property.precision != null) {
                         stepper.precision = property.precision;
                     }

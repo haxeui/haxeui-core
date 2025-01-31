@@ -18,6 +18,7 @@ class Property_OLD extends HBox implements IDataComponent {
     @:behaviour(DataSourceBehaviour)                    public var dataSource:DataSource<Dynamic>;
     @:clonable @:behaviour(PropertyValueBehaviour)      public var value:Dynamic;
     @:clonable @:behaviour(DefaultBehaviour)            public var step:Null<Float>;
+    @:clonable @:behaviour(DefaultBehaviour)            public var forceStep:Null<Bool>;
     @:clonable @:behaviour(DefaultBehaviour)            public var min:Null<Float>;
     @:clonable @:behaviour(DefaultBehaviour)            public var max:Null<Float>;
     @:clonable @:behaviour(DefaultBehaviour)            public var precision:Null<Int>;
