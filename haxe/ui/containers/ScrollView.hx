@@ -1226,7 +1226,7 @@ class ScrollViewEvents extends haxe.ui.events.Events {
                 scroll = _scrollview.findComponent(secondaryType, false);
             }
     
-            if (_scrollview.autoHideScrolls == true && _fadeTimer == null) {
+            if (_scrollview.autoHideScrolls == true && _fadeTimer == null && scroll != null) {
                 scroll.fadeIn();
             }
             if (_scrollview.autoHideScrolls == true) {
@@ -1235,7 +1235,9 @@ class ScrollViewEvents extends haxe.ui.events.Events {
                     _fadeTimer = null;
                 }
                 _fadeTimer = new Timer(300, function() {
-                    scroll.fadeOut();
+                    if (scroll != null) {
+                        scroll.fadeOut();
+                    }
                     _fadeTimer.stop();
                     _fadeTimer = null;
                 });
