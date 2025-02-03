@@ -140,24 +140,24 @@
 /************************************************************************
 ** COLOR PICKER VARIANT - NO SLIDERS
 *************************************************************************/
-.color-picker.no-sliders .slider {
+.dropdown-popup.no-sliders .color-picker .slider, .color-picker.no-sliders .slider {
     hidden: true;
 }
 
-.color-picker.no-sliders #controlsStack .label {
+.dropdown-popup.no-sliders .color-picker #controlsStack .label, .color-picker.no-sliders #controlsStack .label {
     width: 100%;
 }
 
 /************************************************************************
 ** COLOR PICKER VARIANT - NO TEXT INPUTS
 *************************************************************************/
-.color-picker.no-text-inputs .textfield {
+.dropdown-popup.no-text-inputs .color-picker .textfield, .color-picker.no-text-inputs .textfield {
     hidden: true;
 }
 
 /************************************************************************
 ** COLOR PICKER VARIANT - NO CONTROLS
 *************************************************************************/
-.color-picker.no-controls .controls-preview-container {
+.dropdown-popup.no-controls .color-picker .controls-preview-container, .color-picker.no-controls .controls-preview-container {
     hidden: true;
 }
