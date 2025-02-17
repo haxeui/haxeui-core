@@ -1243,6 +1243,30 @@ class Component extends ComponentImpl
     // Style related
     //***********************************************************************************************************
 
+    private var _styleCacheKey:String = null;
+    private var styleCacheKey(get, never):String;
+    private function get_styleCacheKey():String {
+        if (_styleCacheKey == null) {
+            var sb = new StringBuf();
+            var ref = this;
+            do {
+                sb.add(ref.className);
+                sb.add("_id:");
+                sb.add(ref.id);
+                sb.add("_classes:");
+                for (c in ref.classes) {
+                    sb.add(c);
+                    sb.add("|");
+                }
+                ref = ref.parentComponent;
+            } while (ref != null);
+
+            //_styleCacheKey = sb.toString();
+            return sb.toString();
+        }
+        return _styleCacheKey;
+    }
+
     @:noCompletion private var _customStyle:Style = null;
 
     /**

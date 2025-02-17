@@ -3,6 +3,7 @@ package haxe.ui.styles;
 import haxe.crypto.Sha1;
 import haxe.ui.core.Component;
 import haxe.ui.styles.elements.AnimationKeyFrames;
+import haxe.ui.styles.elements.Directive;
 import haxe.ui.styles.elements.ImportElement;
 import haxe.ui.styles.elements.MediaQuery;
 import haxe.ui.styles.elements.RuleElement;
@@ -142,17 +143,44 @@ class StyleSheet {
         }
     }
 
+    private var _componentStyleCache = new Map<String, Array<Map<String, Directive>>>();
+
     public function buildStyleFor(c:Component, style:Style = null):Style {
         if (style == null) {
             style = {};
         }
-        for (r in rules) {
-            if (!r.match(c)) {
-                continue;
+
+        var styleCacheKey = @:privateAccess c.styleCacheKey;
+
+        var cachedDirectives = _componentStyleCache.get(styleCacheKey);
+        if (cachedDirectives != null) {
+            for (directives in cachedDirectives) {
+                style.mergeDirectives(directives);
+            }
+            /*
+            var n = 0;
+            for (_ in _componentStyleCache.keys()) {
+                n++;
+            }
+            trace(n);
+            */
+        } else {
+            //trace(styleCacheKey);
+            cachedDirectives = [];
+            for (r in rules) {
+                if (!r.match(c)) {
+                    continue;
+                }
+    
+                cachedDirectives.push(r.directives);
             }
 
-            style.mergeDirectives(r.directives);
+            for (directives in cachedDirectives) {
+                style.mergeDirectives(directives);
+            }
+            _componentStyleCache.set(styleCacheKey, cachedDirectives);
         }
+
 
         return style;
     }
