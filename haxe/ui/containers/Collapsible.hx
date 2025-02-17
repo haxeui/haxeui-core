@@ -151,8 +151,6 @@ class CollapsibleBuilder extends CompositeBuilder {
         super(collapsible);
         _collapsible = collapsible;
         // we'll start off as non-animatable so things dont animate at the start of the component creation
-        _originalAnimatable = _collapsible.animatable;
-        _collapsible.animatable = false;
         _component.recursivePointerEvents = false;
         _header = new HBox();
         _header.percentWidth = 100;
@@ -182,6 +180,11 @@ class CollapsibleBuilder extends CompositeBuilder {
         _collapsible.registerInternalEvents(true);
     }
     
+    public override function onInitialize() {
+        _originalAnimatable = _collapsible.animatable;
+        _collapsible.animatable = false;
+    }
+
     public override function onReady() {
         super.onReady();
         _collapsible.animatable = _originalAnimatable;
