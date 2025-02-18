@@ -1261,6 +1261,7 @@ class Component extends ComponentImpl
     private function set_customStyle(value:Style):Style {
         if (value != _customStyle) {
             invalidateComponentStyle();
+            _updateStyleCacheKey();
         }
         _customStyle = value;
         return value;
@@ -1283,6 +1284,7 @@ class Component extends ComponentImpl
             classes.push(name);
             if (invalidate == true) {
                 invalidateComponentStyle();
+                _updateStyleCacheKey();
             }
         }
 
@@ -1314,6 +1316,7 @@ class Component extends ComponentImpl
 
         if (needsInvalidate == true) {
             invalidateComponentStyle();
+            _updateStyleCacheKey();
         }
 
         if (recursive == true) {
@@ -1336,6 +1339,7 @@ class Component extends ComponentImpl
             classes.remove(name);
             if (invalidate == true) {
                 invalidateComponentStyle();
+                _updateStyleCacheKey();
             }
         }
 
@@ -1367,6 +1371,7 @@ class Component extends ComponentImpl
 
         if (needsInvalidate == true) {
             invalidateComponentStyle();
+            _updateStyleCacheKey();
         }
 
         if (recursive == true) {
@@ -1409,6 +1414,7 @@ class Component extends ComponentImpl
 
         if (invalidate == true && needsInvalidate == true) {
             invalidateComponentStyle();
+            _updateStyleCacheKey();
         }
 
         if (recursive == true) {
@@ -1440,6 +1446,7 @@ class Component extends ComponentImpl
 
         if (invalidate == true && needsInvalidate == true) {
             invalidateComponentStyle();
+            _updateStyleCacheKey();
         }
 
         if (recursive == true) {
@@ -1550,7 +1557,21 @@ class Component extends ComponentImpl
 
         _styleString = value;
         invalidateComponentStyle();
+        _updateStyleCacheKey();
         return value;
+    }
+
+    private var _styleCacheKey:Array<String> = [];
+    function _updateStyleCacheKey() {
+        _styleCacheKey = [];
+        var ref = this;
+        while (ref != null) {
+            _styleCacheKey.push(ref.className);
+            // _styleCacheKey.push(ref.id);
+            _styleCacheKey = _styleCacheKey.concat(ref.classes);
+            ref = ref.parentComponent;
+        }
+        _styleCacheKey.reverse();
     }
 
     // were going to cache the ref (which may be null) so we dont have to
@@ -1706,6 +1727,7 @@ class Component extends ComponentImpl
             Toolkit.callLater(function() {
                 invalidateComponentData();
                 invalidateComponentStyle();
+                _updateStyleCacheKey();
 
                 if (_compositeBuilder != null) {
                     _compositeBuilder.onReady();

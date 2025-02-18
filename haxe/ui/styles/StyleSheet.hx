@@ -17,8 +17,7 @@ using StringTools;
 class StyleSheet {
     public var name:String;
 
-    private var _elementStyleCache = new Map<String, Array<Map<String, Directive>>>();
-    private var _elementStyleCacheCount = 0;
+    private var _styleCacheTree = new haxe.utils.trie.Trie<String, Array<Map<String, Directive>>>();
 
 #if new_selectors
     // private var _directives = new Map<String, Directive>();
@@ -160,23 +159,13 @@ class StyleSheet {
             style = {};
         }
 
-        var eidBuf = new StringBuf();
-        var current = c;
-        do {
-            var classes:Array<String> = @:privateAccess c.classes;
-            eidBuf.add(current.className);
-            eidBuf.add(current.id);
-            eidBuf.add(classes.join(','));
-            current = current.parentComponent;
-        } while(current != null);
-
-        final eid = eidBuf.toString();
-        var cachedDirectives = _elementStyleCache.get(eid);
+        final key = @:privateAccess c._styleCacheKey;
+        var cachedDirectives = _styleCacheTree.get(key);
         if (cachedDirectives != null) {
             for (d in cachedDirectives)
                 style.mergeDirectives(d);
-            _elementStyleCacheCount++;
-        } else {
+        } else 
+        {
 
             cachedDirectives = [];
 
@@ -211,13 +200,7 @@ class StyleSheet {
 
             for (d in cachedDirectives)
                 style.mergeDirectives(d);
-            _elementStyleCache.set(eid, cachedDirectives);
-        }
-
-        // stupid rotation
-        if (_elementStyleCacheCount > 5000) {
-            _elementStyleCache.clear();
-            _elementStyleCacheCount = 0;
+            _styleCacheTree.set(key, cachedDirectives);
         }
 
         return style;
