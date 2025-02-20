@@ -312,8 +312,14 @@ class Animation {
 
     private function _getReverseEasingFunction(easingFunction:EasingFunction):EasingFunction {
         return switch (easingFunction) {
-            case EasingFunction.EASE_OUT:   EasingFunction.EASE_IN;
-            case EasingFunction.EASE_IN:    EasingFunction.EASE_OUT;
+		  case EasingFunction.QUAD_OUT:   EasingFunction.QUAD_IN;
+		  case EasingFunction.QUAD_IN:    EasingFunction.QUAD_OUT;
+		  case EasingFunction.CUBIC_OUT:  EasingFunction.CUBIC_IN;
+		  case EasingFunction.CUBIC_IN:   EasingFunction.CUBIC_OUT;
+		  case EasingFunction.EASE_OUT:   EasingFunction.EASE_IN;
+		  case EasingFunction.EASE_IN:    EasingFunction.EASE_OUT;
+		  case EasingFunction.QUART_OUT:  EasingFunction.QUART_IN;
+		  case EasingFunction.QUART_IN:   EasingFunction.QUART_OUT;
             case _:                         easingFunction;
         }
     }
