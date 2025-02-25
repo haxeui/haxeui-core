@@ -150,11 +150,11 @@ class MacroHelpers {
     private static var primaryClassPathExceptions:Array<EReg> = [];
     private static var secondaryClassPathExceptions:Array<EReg> = [];
 
-		private static var inclusionClassPaths:Array<EReg> = [];
+    private static var inclusionClassPaths:Array<EReg> = [];
 
     private static function loadClassPathReg(filePath:String) {
         #if classpath_scan_verbose
-				var str = #if haxeui_classpath_inclusions "inclusions" #else "exclusions" #end;
+        var str = #if haxeui_classpath_inclusions "inclusions" #else "exclusions" #end;
         Sys.println('classpath cache: loading classpath $str from $filePath');
         #end
 
@@ -170,12 +170,12 @@ class MacroHelpers {
                 Sys.println("    " + line);
             #end
 
-						#if haxeui_classpath_inclusions
-						inclusionClassPaths.push(new EReg(line, "gm"));
-						#else
+            #if haxeui_classpath_inclusions
+            inclusionClassPaths.push(new EReg(line, "gm"));
+            #else
             primaryClassPathExceptions.push(new EReg(line, "gm"));
             secondaryClassPathExceptions.push(new EReg(line, "gm"));
-						#end
+            #end
         }
     }
 
@@ -191,24 +191,24 @@ class MacroHelpers {
         classPathCache = [];
         var paths:Array<String> = Context.getClassPath();
 
-				
+        
         for (path in paths) {
             if (StringTools.trim(path).length == 0) {
                 path = Sys.getCwd();
             }
-						#if haxeui_classpath_inclusions
+            #if haxeui_classpath_inclusions
             path = StringTools.trim(path + "/classpath.inclusions");
-						#else 
-						path = StringTools.trim(path + "/classpath.exclusions");
-						#end
+            #else 
+            path = StringTools.trim(path + "/classpath.exclusions");
+            #end
 
             path = Path.normalize(path);
-						//trace(path);
+            //trace(path);
             if (sys.FileSystem.exists(path)) {
-							trace(path);
-							loadClassPathReg(path);
+              trace(path);
+              loadClassPathReg(path);
             }
-						
+            
         }
 
         for (path in paths) {
@@ -218,14 +218,14 @@ class MacroHelpers {
             var originalPath = path;
             path = StringTools.trim(path);
             path = Path.normalize(path);
-						#if haxeui_classpath_inclusions
-						//trace(path);
-						for (r in inclusionClassPaths) {
-							if (r.match(path)) {
-								cacheClassPathEntries(path, classPathCache, originalPath);
-							}
-						}
-						#else
+            #if haxeui_classpath_inclusions
+            //trace(path);
+            for (r in inclusionClassPaths) {
+              if (r.match(path)) {
+                cacheClassPathEntries(path, classPathCache, originalPath);
+              }
+            }
+            #else
             var exclude = false;
             for (r in primaryClassPathExceptions) {
                 if (r.match(path) == true) {
@@ -236,11 +236,11 @@ class MacroHelpers {
             if (exclude == true) {
                 continue;
             }
-						
+            
             cacheClassPathEntries(path, classPathCache, originalPath);
-						#end
+            #end
         }
-				
+        
         #if haxeui_macro_times
         stopTimer();
         #end
