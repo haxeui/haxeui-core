@@ -1,10 +1,10 @@
 package haxe.ui.macros;
 
 #if macro
-import haxe.macro.Type.ClassType;
 import haxe.io.Path;
 import haxe.macro.Context;
 import haxe.macro.Expr;
+import haxe.macro.Type.ClassType;
 import haxe.ui.macros.helpers.CodeBuilder;
 import haxe.ui.util.GenericConfig;
 #end
@@ -171,6 +171,28 @@ class MacroHelpers {
         }
     }
 
+    private static var classPathInclusions:Array<EReg> = [];
+    private static function loadClassPathInclusions(filePath:String) {
+        #if classpath_scan_verbose
+        Sys.println("classpath cache: loading classpath inclusions from '" + filePath + "'");
+        #end
+
+        var contents = sys.io.File.getContent(filePath);
+        var lines = contents.split("\n");
+        for (line in lines) {
+            line = StringTools.trim(line);
+            if (line.length == 0 || StringTools.startsWith(line, ";")) {
+                continue;
+            }
+
+            #if classpath_scan_verbose
+                Sys.println("    " + line);
+            #end
+
+            classPathInclusions.push(new EReg(line, "gm"));
+        }
+    }
+
     private static function buildClassPathCache() {
         if (classPathCache != null) {
             return;
@@ -186,11 +208,19 @@ class MacroHelpers {
             if (StringTools.trim(path).length == 0) {
                 path = Sys.getCwd();
             }
-            path = StringTools.trim(path + "/classpath.exclusions");
-            path = Path.normalize(path);
-            if (sys.FileSystem.exists(path)) {
-                loadClassPathExclusions(path);
+            var exclusionsFile = Path.normalize(StringTools.trim(path + "/classpath.exclusions"));
+            if (sys.FileSystem.exists(exclusionsFile)) {
+                loadClassPathExclusions(exclusionsFile);
             }
+            var inclusionsFile = Path.normalize(StringTools.trim(path + "/classpath.inclusions"));
+            if (sys.FileSystem.exists(inclusionsFile)) {
+                loadClassPathInclusions(inclusionsFile);
+            }
+        }
+
+        if (classPathInclusions.length != 0) {
+            primaryClassPathExceptions = [];
+            secondaryClassPathExceptions = [];
         }
 
         for (path in paths) {
@@ -206,6 +236,20 @@ class MacroHelpers {
                     exclude = true;
                     break;
                 }
+            }
+            if (classPathInclusions.length != 0) {
+                exclude = true;
+                for (r in classPathInclusions) {
+                    if (r.match(path)) {
+                        exclude = false;
+                        break;
+                    }
+                }
+                #if classpath_scan_verbose            
+                if (exclude) {
+                    Sys.println("classpath cache: excluding '" + path + "' based on classpath.inclusions");
+                }
+                #end
             }
             if (exclude == true) {
                 continue;
@@ -235,7 +279,7 @@ class MacroHelpers {
                 break;
             }
         }
-        if (exclude == true || ! sys.FileSystem.exists(path)) {
+        if (exclude == true || !sys.FileSystem.exists(path)) {
             #if classpath_scan_verbose            
             Sys.println("classpath cache: excluding '" + path + "'");
             #end
