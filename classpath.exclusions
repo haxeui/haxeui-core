@@ -4,9 +4,11 @@
 ^export\/
 
 \/haxe\/std
+\/current\/std
 \/hscript
 
 \/tink_.*\/.*$
+\/linc_.*\/.*$
 
 \/haxeui-core\/(.*\/)?cli.?$
 \/haxeui-core\/(.*\/)?haxe\/ui.*\w+
