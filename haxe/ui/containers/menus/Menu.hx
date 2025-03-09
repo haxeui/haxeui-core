@@ -172,9 +172,9 @@ class MenuEvents extends haxe.ui.events.Events {
     private function onItemClick(event:MouseEvent) {
         var item:MenuItem = cast(event.target, MenuItem);
         if (!item.expandable) {
-            var event = new MenuEvent(MenuEvent.MENU_SELECTED);
-            event.menu = _menu;
-            event.menuItem = item;
+            var menuSelectedEvent = new MenuEvent(MenuEvent.MENU_SELECTED);
+            menuSelectedEvent.menu = _menu;
+            menuSelectedEvent.menuItem = item;
             // we'll add a delay of 100ms here because it "feels nicer" for the menu to 
             // not just instantly disappear - especially in the case of checkbox menu items
             Timer.delay(function() {
@@ -184,11 +184,12 @@ class MenuEvents extends haxe.ui.events.Events {
                 if (@:privateAccess _menu._isDisposed) {
                     return;
                 }
-                findRootMenu().dispatch(event);
+                findRootMenu().dispatch(menuSelectedEvent);
 
-                if (_menu.menuBar == null) {
+                //if (_menu.menuBar == null) {
                     var beforeCloseEvent = new UIEvent(UIEvent.BEFORE_CLOSE);
                     beforeCloseEvent.relatedComponent = item;
+                    beforeCloseEvent.relatedEvent = event;
                     findRootMenu().dispatch(beforeCloseEvent);
                     if (beforeCloseEvent.canceled) {
                         return;
@@ -196,7 +197,7 @@ class MenuEvents extends haxe.ui.events.Events {
     
                     hideMenu();
                     removeScreenMouseDown();
-                }
+                //}
                 _menu.dispatch(new UIEvent(UIEvent.CLOSE));
             }, 100);
         }
@@ -439,6 +440,13 @@ class MenuEvents extends haxe.ui.events.Events {
         }
         
         if (close) {
+            var beforeCloseEvent = new UIEvent(UIEvent.BEFORE_CLOSE);
+            beforeCloseEvent.relatedEvent = event;            
+            findRootMenu().dispatch(beforeCloseEvent);
+            if (beforeCloseEvent.canceled) {
+                return;
+            }
+
             hideMenu();
             removeScreenMouseDown();
             _menu.dispatch(new UIEvent(UIEvent.CLOSE));
