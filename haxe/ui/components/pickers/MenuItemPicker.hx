@@ -165,6 +165,9 @@ private class Handler extends ItemPickerHandler {
                         menuItem.icon = Std.string(item.icon);
                         menuItem.id = item.id;
                         menuItem.userData = item;
+                        if (item.style != null) {
+                            menuItem.styleString = item.style;
+                        }
                         picker.addComponentAt(menuItem, i);
                 }
             } else {
