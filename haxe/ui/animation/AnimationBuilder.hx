@@ -11,6 +11,9 @@ import haxe.ui.styles.elements.Directive;
 import haxe.ui.util.Color;
 
 @:access(haxe.ui.core.Component)
+#if haxeui_expose_all
+@:expose
+#end
 class AnimationBuilder {
     private var _keyFrames:Array<AnimationKeyFrame> = [];
     public var target:Component;

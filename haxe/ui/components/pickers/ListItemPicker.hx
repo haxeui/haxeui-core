@@ -30,7 +30,9 @@ private class Handler extends ItemPickerHandler {
         if (indexToSelect != -1) {
             listItemPicker.listView.selectedIndex = indexToSelect;
             var r = renderer.findComponent(ItemRenderer);
-            r.data = listItemPicker.listView.selectedItem;
+            if (r != null) {
+                r.data = listItemPicker.listView.selectedItem;
+            }
         }
     }
 
@@ -39,6 +41,8 @@ private class Handler extends ItemPickerHandler {
         listItemPicker.selectedIndex = listItemPicker.listView.selectedIndex;
         listItemPicker.selectedItem = listItemPicker.listView.selectedItem;
         var r = renderer.findComponent(ItemRenderer);
-        r.data = listItemPicker.listView.selectedItem;
+        if (r != null) {
+            r.data = listItemPicker.listView.selectedItem;
+        }
     }
 }

@@ -1,5 +1,8 @@
 package haxe.ui.animation;
 
+#if haxeui_expose_all
+@:expose
+#end
 class AnimationSequence {
     public var onComplete:Void->Void = null;
     public var builders:Array<AnimationBuilder> = [];

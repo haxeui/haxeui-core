@@ -368,7 +368,7 @@ class ToolTipManager {
     }
 
     private function createToolTipRenderer(options:ToolTipOptions):ItemRenderer {
-        if (options.renderer != null) {
+        if (options != null && options.renderer != null) {
             return options.renderer;
         }
 
