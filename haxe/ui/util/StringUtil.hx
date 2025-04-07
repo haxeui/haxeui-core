@@ -87,7 +87,7 @@ class StringUtil {
     }
 
     #if !macro // stringtools gets used in macros, but some functions rely on haxeui "bits" (like locales), lets wrap to avoid problems
-    private static var humanReadableRegex = ~/\B(?=(\d{3})+(?!\d))/g;
+    private static var humanReadableRegex = ~/\B(?=(\d{3})+(?!\d))(?<!\.\d*)/g;
     private static inline var THOUSAND:Int = 1000;
     private static inline var MILLION:Int = THOUSAND * THOUSAND;
     private static inline var BILLION:Int = MILLION * THOUSAND;
