@@ -122,13 +122,22 @@ class StringUtil {
                 var p = s.indexOf(".");
                 if (p == -1 && precision > 0) {
                     p = s.length;
-                    s += ".";
+                    s += haxe.ui.locale.Formats.decimalSeparator;
                 }
                 s = StringTools.rpad(s, "0", p + precision + 1);
             }
             s += suffix;
         } else {
-            s = humanReadableRegex.replace(s, haxe.ui.locale.Formats.thousandsSeparator);
+            var decimalSeparatorIndex = s.indexOf(".");
+            if (decimalSeparatorIndex == -1) {
+                s = humanReadableRegex.replace(s, haxe.ui.locale.Formats.thousandsSeparator);
+            } else {
+                var integerPart = s.substring(0, s.indexOf("."));
+                var decimalPart = s.substring(s.indexOf(".") + 1);
+                s = humanReadableRegex.replace(integerPart, haxe.ui.locale.Formats.thousandsSeparator);
+                s += haxe.ui.locale.Formats.decimalSeparator;
+                s += decimalPart;
+            }
         }
 
         return s;
