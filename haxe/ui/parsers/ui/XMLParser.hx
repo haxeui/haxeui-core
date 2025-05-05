@@ -230,7 +230,7 @@ class XMLParser extends ComponentParser {
     private function parseDetails(component:ComponentInfo, xml:Xml) {
         extractNamespaces(xml);
 
-        if (xml.firstChild() != null && '${xml.firstChild().nodeType}' == "1") {
+        if (xml.firstChild() != null && xml.firstChild().nodeType == PCData) {
             var value = StringTools.trim(xml.firstChild().nodeValue);
             if (value != null && value.length > 0) {
                 component.text = value;
