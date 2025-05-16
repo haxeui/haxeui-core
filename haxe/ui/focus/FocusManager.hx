@@ -13,6 +13,7 @@ import Std.isOfType;
 import Std.is as isOfType;
 #end
 
+@:expose
 class FocusManager extends FocusManagerImpl {
     private static var _instance:FocusManager;
     public static var instance(get, null):FocusManager;
