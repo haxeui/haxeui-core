@@ -13,6 +13,9 @@ import Std.isOfType;
 import Std.is as isOfType;
 #end
 
+#if haxeui_expose_all
+@:expose
+#end
 class FocusManager extends FocusManagerImpl {
     private static var _instance:FocusManager;
     public static var instance(get, null):FocusManager;
