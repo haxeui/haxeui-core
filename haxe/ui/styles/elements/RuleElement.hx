@@ -2,15 +2,29 @@ package haxe.ui.styles.elements;
 
 import haxe.ui.core.Component;
 import haxe.ui.styles.Value;
+#if new_selectors
+import haxe.ui.styles.selector.SelectorMatcher;
+import haxe.ui.styles.selector.SelectorParser;
+import haxe.ui.styles.selector.SelectorData;
+#end
 
 @:access(haxe.ui.core.Component)
 class RuleElement {
+#if new_selectors
+    public var selector:SelectorVO;
+    static var matchedPseudoClasses = new MatchedPseudoClassesVO(false, false, false, false, false, false, false, false, false, false, null, null, null);
+#else
     public var selector:Selector;
+#end
     public var directives:Map<String, Directive> = new Map<String, Directive>();
     public var directiveCount:Int = 0;
 
     public function new(selector:String, directives:Array<Directive>) {
+#if new_selectors
+        this.selector = SelectorParser.parse(selector);
+#else
         this.selector = new Selector(selector);
+#end
         //this.directives = directives;
 
         for (d in directives) {
@@ -25,7 +39,122 @@ class RuleElement {
     }
 
     public function match(d:Component):Bool {
+
+#if new_selectors
+        matchedPseudoClasses.hover = false;
+        matchedPseudoClasses.focus = false;
+        matchedPseudoClasses.active = false;
+        matchedPseudoClasses.link = false;
+        matchedPseudoClasses.enabled = false;
+        matchedPseudoClasses.disabled = false;
+        matchedPseudoClasses.checked = false;
+        matchedPseudoClasses.fullscreen = false;
+
+        matchedPseudoClasses.hasClasses = d.classes.length > 0;
+        matchedPseudoClasses.nodeClassList = d.classes;
+
+        if (matchedPseudoClasses.hasClasses) {
+            for (c in (d.classes:Array<String>)) {
+                if (c == ':hover') matchedPseudoClasses.hover = true;
+                else if (c == ':focus') matchedPseudoClasses.focus = true;
+                else if (c == ':active') matchedPseudoClasses.active = true;
+                else if (c == ':link') matchedPseudoClasses.link = true;
+                else if (c == ':enabled') matchedPseudoClasses.enabled = true;
+                else if (c == ':disabled') matchedPseudoClasses.disabled = true;
+                else if (c == ':checked') matchedPseudoClasses.checked = true;
+                else if (c == ':fullscreen') matchedPseudoClasses.fullscreen = true;
+            }
+        }
+        
+        matchedPseudoClasses.hasId = true;
+        matchedPseudoClasses.nodeId = d.id;
+        matchedPseudoClasses.nodeType = d.className;
+
+        // naive version, full match every rule:
+        // final res = SelectorMatcher.match(d, selector, matchedPseudoClasses);
+        // trace('$res: ${selector.toString()} == <${@:privateAccess d.className} id=${d.id} class=${d.classes}>');
+        // return res;
+        
+        var match:Bool = false;
+                            
+        //to optimise speed the matchSelector method must be called
+        //the least time possible
+        
+        //if the selector begins with a class, 
+        //then only match if the node has at least one class,
+        //and contains the first class of the selector
+        if (selector.beginsWithClass) {
+            if (matchedPseudoClasses.hasClasses) {
+                var classListLength:Int = matchedPseudoClasses.nodeClassList.length;
+                for (cls in matchedPseudoClasses.nodeClassList) {
+                    if (cls == selector.firstClass) {
+                        // in this case, the selector only has a single
+                        // class selector, so it is a match
+                        if (selector.isSimpleClassSelector == true) {
+                            match = true;
+                            break;
+                        } 
+                        //else need to perform a full match
+                        else {
+                            match = SelectorMatcher.match(d, selector, matchedPseudoClasses) == true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        //if the selector begins with an id selector, only match node if
+        //it has an id
+        else if (selector.beginsWithId == true) {
+            if (matchedPseudoClasses.hasId == true) {
+                if (matchedPseudoClasses.nodeId == selector.firstId) {
+                    //if the selector consists of only an Id, it is a match
+                    if (selector.isSimpleIdSelector == true)
+                        match = true;
+                    //else need to perform a full match
+                    else
+                        match = SelectorMatcher.match(d, selector, matchedPseudoClasses) == true;
+                }
+            }
+        }
+        //if the selector begins with a type, only match node wih the
+        //same type
+        else if (selector.beginsWithType == true) {
+            if (matchedPseudoClasses.nodeType == selector.firstType) {
+                //if the selector is only a type selector, then it matches
+                if (selector.isSimpleTypeSelector == true)
+                    match = true;
+                //else a full match is needed
+                else
+                    match = SelectorMatcher.match(d, selector, matchedPseudoClasses) == true;
+            }
+        }
+        //in other cases, full match
+        else
+            match = SelectorMatcher.match(d, selector, matchedPseudoClasses) == true;
+        
+        // if (match == true)
+        // {
+        //     //if the selector is matched, store the coresponding style declaration
+        //     //along with the matching selector
+        //     var matchingStyleDeclaration:StyleDeclarationVO = new StyleDeclarationVO();
+        //     matchingStyleDeclaration.style = styleRule.style;
+        //     matchingStyleDeclaration.selector = selectors[k];
+        //     _matchingStyleDeclaration.push(matchingStyleDeclaration);
+            
+        //     //break to prevent from adding a style declaration
+        //     //multiplt time if more than one selector
+        //     //matches
+        //     break;
+        // }
+
+        // if (matchedPseudoClasses.hover)
+            // trace('$match: ${selector.toString()} == <${@:privateAccess d.tagName} id=${d.id} class=${d.classList}> {$directives}');
+
+        return match;
+#else
         return ruleMatch(selector.parts[selector.parts.length - 1], d);
+#end
     }
 
     private static function ruleMatch( c : SelectorPart, d : Component ):Bool {
