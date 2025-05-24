@@ -111,7 +111,14 @@ private class LabelLayout extends DefaultLayout {
     public override function calcAutoSize(exclusions:Array<Component> = null):Size {
         var size:Size = super.calcAutoSize(exclusions);
         if (component.hasTextDisplay() == true) {
+            #if (haxeui_flixel || haxeui_openfl)
+            // 2025.04 Seems There's a bug in openfl where once the width has been set for a label
+            // correct value for TextWidth cannot be reported.
+            size.width += component.getTextDisplay().measureTextWidth();
+            #else 
             size.width += component.getTextDisplay().textWidth;
+            #end
+
             size.height += component.getTextDisplay().textHeight;
         }
         return size;
