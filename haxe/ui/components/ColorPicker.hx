@@ -253,6 +253,8 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
         var requiresRedraw = true;
         if (_saturationValueGraphLastHue != null && _saturationValueGraphLastHue == _currentColorHSV.h) {
             requiresRedraw = false;
+            // Sometimes html element image data "disappears" so we still need to set pixels
+            saturationValueGraph.componentGraphics.setPixels(_saturationValueGraphBytes);
         }
 
         //Seemingly breaks the color picker for no reason, commenting just in case.
