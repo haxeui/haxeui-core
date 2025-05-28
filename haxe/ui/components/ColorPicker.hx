@@ -108,7 +108,7 @@ private class ColorPickerImpl extends Box {
                 <stack id="controlsStack" width="100%" selectedIndex="0">
                     <grid id="hsvControls" columns="4" width="100%" style="spacing:0px">
                         <label text="{{hue}}" styleName="text-tiny" />
-                        <slider id="sliderHue" max="360" allowFocus="false" styleName="simple-slider" />
+                        <slider id="sliderHue" max="360" allowFocus="false" styleName="simple-slider" step="1" />
                         <spacer width="5" />
                         <textfield id="inputHue" restrictChars="0-9" styleName="text-tiny" allowFocus="false" />
                         
@@ -168,7 +168,7 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
     
     private override function set_currentColor(value:Null<Color>):Null<Color> {
         _currentColorHSV = ColorUtil.toHSV(value);
-        _currentColorRGBF = ColorUtil.hsvToRGBF(_currentColorHSV.h, _currentColorHSV.s, _currentColorHSV.v);
+        _currentColorRGBF = {r:value.r, g:value.g, b:value.b};
         return super.set_currentColor(value);
     }
 
@@ -561,7 +561,7 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
         var b = Std.parseInt("0x" + hexB);
         
         if (_trackingSaturationValue == false && _sliderTracking == false) {
-            applyHSV(ColorUtil.rgbfToHSV(r, g, b));
+            applyRGBA({r:r, g:g, b:b});
         }
     }
     
@@ -572,6 +572,12 @@ private class HSVColorPickerImpl extends ColorPickerImpl {
     private function applyHSV(newHSV:HSV) {
         _currentColorHSV = newHSV;
         _currentColorRGBF = ColorUtil.hsvToRGBF(newHSV.h, newHSV.s, newHSV.v);
+        onCurrentColorChanged();
+    }
+
+    private function applyRGBA(newRGBF:RGBF) {
+        _currentColorHSV = ColorUtil.rgbfToHSV(newRGBF.r, newRGBF.g, newRGBF.b);
+        _currentColorRGBF = newRGBF;
         onCurrentColorChanged();
     }
     
