@@ -6,6 +6,7 @@ import haxe.macro.TypeTools;
 import haxe.macro.ComplexTypeTools;
 import haxe.macro.Context;
 import haxe.macro.Expr.Field;
+import haxe.macro.Expr;
 
 using StringTools;
 #end
@@ -31,6 +32,7 @@ class NavigationMacros {
             BackendMacros.additionalExprs.push(macro haxe.ui.navigation.NavigationManager.instance.subDomain = $v{navigationSubDomain});
         }
 
+        var routeExpr:Expr = null;
         if (routeDetailsMeta != null) {
             var routePathExpr = routeDetailsMeta.params[0];
             var initialRoute = localMeta.has(":initialRoute") || localMeta.has("initialRoute");
@@ -40,21 +42,23 @@ class NavigationMacros {
             if (routePathExpr != null) {
                 var parts = localClass.toString().split(".");
                 parts.push("new");
-                BackendMacros.additionalExprs.push(macro haxe.ui.navigation.NavigationManager.instance.registerRoute($routePathExpr, {
+                routeExpr = macro haxe.ui.navigation.NavigationManager.instance.registerRoute($routePathExpr, {
                     viewCtor: $p{parts},
                     initial: $v{initialRoute},
                     error: $v{errorRoute},
                     preserveView: $v{preserveView}
-                }));
+                });
             }
         }
 
         var applyParamsField = null;
+        var initField = null;
         var fields = Context.getBuildFields();
         for (f in fields) {
             if (f.name == "applyParams") {
                 applyParamsField = f;
-                break;
+            } else if (f.name == "__init__") {
+                initField = f;
             }
         }
 
@@ -71,6 +75,20 @@ class NavigationMacros {
             });
         }
 
+
+        if (initField == null && routeExpr != null) {
+            fields.push({
+                name: "__init__",
+                access: [AStatic],
+                kind: FFun({
+                    args: [],
+                    expr: macro {
+                        ${routeExpr}
+                    }
+                }),
+                pos: Context.currentPos()
+            });
+        }
 
         return fields;
     }
