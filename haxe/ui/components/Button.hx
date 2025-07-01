@@ -538,12 +538,14 @@ private class TextBehaviour extends DataBehaviour {
             var label:Label = _component.findComponent(Label, false);
             if (_value == null || _value.isNull) {
                 if (label != null) {
+                    _component.removeClass("has-label", false);
                     _component.removeComponent(label);
                 }
             } else {
                 if (label == null) {
                     label = new Label();
                     label.id = "button-label";
+                    _component.addClass("has-label", false);
                     _component.addComponent(label);
                     _component.invalidateComponentStyle(true);
                 }
@@ -560,6 +562,7 @@ private class IconBehaviour extends DataBehaviour {
 
         if ((_value == null || _value.isNull || _value == "") && icon != null) {
             _component.customStyle.icon = null;
+            _component.removeClass("has-icon", false);
             _component.removeComponent(icon);
             return;
         }
@@ -574,6 +577,7 @@ private class IconBehaviour extends DataBehaviour {
                 icon.addClass(":down");
             }
             icon.id = "button-icon";
+            _component.addClass("has-icon", false);
             _component.addComponentAt(icon, 0);
             _component.invalidateComponentStyle(true);
         }
