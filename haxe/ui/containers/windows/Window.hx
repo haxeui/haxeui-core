@@ -1,21 +1,22 @@
 package haxe.ui.containers.windows;
 
-import haxe.ui.util.Variant;
-import haxe.ui.containers.dialogs.Dialog;
-import haxe.ui.containers.dialogs.Dialog.DialogEvent;
-import haxe.ui.containers.dialogs.Dialog.DialogButton;
-import haxe.ui.containers.dialogs.MessageBox;
-import haxe.ui.components.Label;
+import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.components.Image;
-import haxe.ui.geom.Point;
-import haxe.ui.core.Screen;
-import haxe.ui.geom.Rectangle;
-import haxe.ui.geom.Slice9;
-import haxe.ui.events.MouseEvent;
+import haxe.ui.components.Label;
+import haxe.ui.containers.dialogs.Dialog.DialogButton;
+import haxe.ui.containers.dialogs.Dialog.DialogEvent;
+import haxe.ui.containers.dialogs.Dialog;
+import haxe.ui.containers.dialogs.MessageBox;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
-import haxe.ui.behaviours.DataBehaviour;
+import haxe.ui.core.Screen;
+import haxe.ui.dragdrop.DragManager;
+import haxe.ui.events.MouseEvent;
 import haxe.ui.extensions.Draggable;
+import haxe.ui.geom.Point;
+import haxe.ui.geom.Rectangle;
+import haxe.ui.geom.Slice9;
+import haxe.ui.util.Variant;
 
 @:xml('
     <vbox style="spacing:0;">
@@ -439,6 +440,10 @@ private class Builder extends CompositeBuilder {
 
     private function onMouseMove(e:MouseEvent) {
         if (_window.maximized) {
+            return;
+        }
+
+        if (DragManager.instance.isDragging) {
             return;
         }
 
