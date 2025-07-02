@@ -102,6 +102,9 @@ class DragManager {
         }
 
         var dragOptions:DragOptions = getDragOptions(component);
+        if (_currentComponent == component) {
+            _currentComponent = null;
+        }
 
         // Unregister events //
         if (dragOptions != null && dragOptions.mouseTarget != null) {
