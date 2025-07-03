@@ -444,7 +444,7 @@ class ComponentMacros {
                 if (componentInfo.condition != null && SimpleExpressionEvaluator.evalCondition(componentInfo.condition) == false) {
                     return;
                 }
-                codeBuilder.add(macro $i{rootVarName}.addComponent($i{componentId}));
+                codeBuilder.add(macro @:pos(Context.currentPos()) $i{rootVarName}.addComponent($i{componentId}));
                 for (scriptString in componentInfo.scriptlets) {
                     fullScript += scriptString;
                 }
