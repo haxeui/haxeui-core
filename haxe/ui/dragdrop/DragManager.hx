@@ -1,14 +1,14 @@
 package haxe.ui.dragdrop;
 
 import haxe.ui.Toolkit;
+import haxe.ui.core.Component;
+import haxe.ui.core.Screen;
 import haxe.ui.events.DragEvent;
+import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.geom.Point;
-import haxe.ui.util.MathUtil;
 import haxe.ui.geom.Rectangle;
-import haxe.ui.core.Screen;
-import haxe.ui.core.Component;
-import haxe.ui.events.MouseEvent;
+import haxe.ui.util.MathUtil;
 
 class DragManager {
     private static var _instance:DragManager;
@@ -102,6 +102,9 @@ class DragManager {
         }
 
         var dragOptions:DragOptions = getDragOptions(component);
+        if (_currentComponent == component) {
+            _currentComponent = null;
+        }
 
         // Unregister events //
         if (dragOptions != null && dragOptions.mouseTarget != null) {
