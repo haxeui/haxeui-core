@@ -243,6 +243,7 @@ class ListViewEvents extends ScrollViewEvents {
 
             case SelectionMode.ONE_ITEM:
                 _listview.selectedIndex = renderer.itemIndex;
+                dispatch(new UIEvent(UIEvent.SUBMIT));
 
             case SelectionMode.ONE_ITEM_REPEATED:
                 _listview.selectedIndices = [renderer.itemIndex];
@@ -325,6 +326,8 @@ class ListViewEvents extends ScrollViewEvents {
                     _listview.selectedIndex = n;
                 }
                 event.repeater = true;
+            case ActionType.CONFIRM:
+                dispatch(new UIEvent(UIEvent.SUBMIT));
             case _:    
         }
     }
