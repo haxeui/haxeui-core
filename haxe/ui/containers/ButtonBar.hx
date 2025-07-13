@@ -59,7 +59,9 @@ private class SelectedIndex extends DataBehaviour {
             builder._currentButton = button;
         }
         
-        _component.dispatch(new UIEvent(UIEvent.CHANGE));
+	var event = new UIEvent(UIEvent.CHANGE);
+        event.previousValue = _previousValue;
+        _component.dispatch(event);
     }
 }
 
