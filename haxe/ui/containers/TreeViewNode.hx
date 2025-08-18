@@ -13,6 +13,7 @@ import haxe.ui.core.ItemRenderer;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.TreeViewEvent;
 import haxe.ui.util.Variant;
+import haxe.ui.containers.TreeView.TreeViewEvent;
 
 #if (haxe_ver >= 4.2)
 import Std.isOfType;
@@ -366,8 +367,13 @@ private class TreeViewNodeBuilder extends CompositeBuilder {
             return;
         }
         event.cancel();
+        var treeview = _node.findAncestor(TreeView);
         _node.expanded = !_node.expanded;
         updateIconClass();
+        var event = new TreeViewEvent(TreeViewEvent.NODE_COLLAPSE_EXPAND);
+        event.expand = _node.expanded;
+        event.affected_node = _node;
+        treeview.dispatch(event);
     }
     
     public function updateIconClass() {
