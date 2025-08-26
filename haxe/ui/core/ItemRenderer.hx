@@ -190,7 +190,7 @@ class ItemRenderer extends Box {
                         Reflect.setProperty(_data, event.target.id, v);
                     }
                 case _:
-                    if (Reflect.hasField(_data, event.target.id)) {
+                    if (_fieldList.contains(event.target.id) || Reflect.hasField(_data, event.target.id)) {
                         Reflect.setProperty(_data, event.target.id, v);
                     }
             }
