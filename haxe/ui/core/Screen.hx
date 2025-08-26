@@ -335,6 +335,32 @@ class Screen extends ScreenImpl {
     }
 
     private function _onMappedEvent(event:UIEvent) {
+        if (_pausedEvents != null && _pausedEvents.indexOf(event.type) != -1) {
+            return;
+        }
+
         _eventMap.invoke(event.type, event);
+    }
+
+    @:noCompletion private var _pausedEvents:Array<String> = null;
+    public function pauseEvent(type:String) {
+        if (_pausedEvents == null) {
+            _pausedEvents = [];
+        }
+        if (_pausedEvents.indexOf(type) == -1) {
+            _pausedEvents.push(type);
+        }
+    }
+    
+    public function resumeEvent(type:String, nextFrame:Bool = false) {
+        if (nextFrame) {
+            Toolkit.callLater(function() {
+                resumeEvent(type, false);
+            });
+        } else {
+            if (_pausedEvents != null && _pausedEvents.indexOf(type) != -1) {
+                _pausedEvents.remove(type);
+            }
+        }
     }
 }
