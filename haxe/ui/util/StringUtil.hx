@@ -142,5 +142,43 @@ class StringUtil {
 
         return s;
     }
+
+    public static function standardNotationSuffix(n:Float) {
+        var a = Math.abs(n);
+        var i = n;
+        var suffix = "";
+        if (a >= 0 && a < THOUSAND) {
+            suffix = "";
+        } else if (a >= THOUSAND && a < MILLION) {
+            suffix = "K";
+        } else if (a >= MILLION && a < BILLION) {
+            suffix = "M";
+        } else {
+            suffix = "B";
+        }
+        return suffix;
+    }
+
+    public static function valueForSuffix(n:Float, suffix:String) {
+        return switch(suffix) {
+            case "K": n / THOUSAND;
+            case "M": n / MILLION;
+            case "B": n / BILLION;
+            case _ : n;
+        }
+    }
+
+    /**
+    *   Formats number in standard notation,  the step defines the precision
+    *   If the step is 250K, for 1250000 it will be 1.25 M and not rounded 1.3 M 
+    **/
+    public static function formatNumberForStep(n:Float, step:Float) {
+        // It means the step shouldn't be rounded
+        // If step is 250K It should be be 1.25 M and not rounded 1.3 M or whatever.
+        var suffix = standardNotationSuffix(n);
+        var stepValueForSuffix = valueForSuffix(step, suffix);
+        var precision = MathUtil.precision(stepValueForSuffix);
+        return formatNumber(n, precision);
+    }
     #end
 }
