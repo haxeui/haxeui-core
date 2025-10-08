@@ -47,6 +47,14 @@ class ComponentGraphicsBase {
     public function fillStyle(color:Null<Color>, alpha:Null<Float> = 1) {
         addDrawCommand(FillStyle(color, alpha));
     }
+
+    public function fontStyle(size:Null<Int>, family:Null<String> = null, anchor:Null<String> = null) {
+        addDrawCommand(FontStyle(size, family, anchor));
+    }
+
+    public function text(x:Float, y:Float, t:String) {
+        addDrawCommand(Text(x, y, t));
+    }
     
     public function curveTo(controlX:Float, controlY:Float, anchorX:Float, anchorY:Float) {
         addDrawCommand(CurveTo(controlX, controlY, anchorX, anchorY));
@@ -106,6 +114,10 @@ class ComponentGraphicsBase {
                     circle(x, y, radius);
                 case FillStyle(color, alpha):
                     fillStyle(color, alpha);
+                case FontStyle(size, family, anchor):
+                    fontStyle(size, family, anchor);
+                case Text(x, y, t):
+                    text(x, y, t);
                 case CurveTo(controlX, controlY, anchorX, anchorY):
                     curveTo(controlX, controlY, anchorX, anchorY);
                 case CubicCurveTo(controlX1, controlY1, controlX2, controlY2, anchorX, anchorY):
