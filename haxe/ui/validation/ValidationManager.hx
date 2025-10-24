@@ -57,32 +57,11 @@ class ValidationManager {
         }
 
         var queueLength:Int = _queue.length;
-        if (isValidating == true) {
-            //skip queueSortFunction overhead. the queue is already ordered. insertion with binary search
-            var depth:Int = object.depth;
-            var min:Int = 0;
-            var max:Int = queueLength;
-            var i:Int = 0;
-            var otherDepth:Int = 0;
-            while (max > min) {
-                i = (min + max) >>> 1;  // division 2 with unsigned int. avoid Std.int cast
-                otherDepth = _queue[i].depth;
-                if (otherDepth == depth) {
-                    break;
-                } else if (otherDepth < depth) {
-                    max = i;        //Down to top
-                    //min = i + 1;  //Top to down
-                } else {
-                    min = i + 1;    //Down to top
-                    //max = i;      //Top to down
-                }
-            }
-
-            if (otherDepth >= depth) {
-                i += 1;
-            }
-
-            this._queue.insert(i, object);
+        if (isValidating) {
+            isPending = true;
+            Toolkit.callLater(() -> {
+                add(object);
+            });
         } else {
             this._queue[queueLength] = object;
             if (isPending == false) {
