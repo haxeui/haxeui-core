@@ -9,6 +9,8 @@ import haxe.ui.focus.FocusManager;
 import haxe.ui.focus.IFocusable;
 import haxe.ui.styles.elements.AnimationKeyFrame;
 import haxe.ui.styles.elements.Directive;
+import haxe.ui.styles.Value;
+import haxe.ui.styles.Dimension;
 
 class BoxFocusApplicator extends FocusApplicator {
     private var _box:Box = null;
