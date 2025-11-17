@@ -1162,6 +1162,8 @@ class ComponentMacros {
         
         if (StringTools.startsWith(bindingExpr, "${") && StringTools.endsWith(bindingExpr, "}")) {
             bindingExpr = bindingExpr.substring(2, bindingExpr.length - 1);
+        } else if (bindingExpr.indexOf("${") != -1) {
+            trace("ERROR: property value " + varProp +" contains \"${\" string, if you want to use code it must start with a \"${\" and end with with a \"}\"");
         }
         var expr = Context.parseInlineString(bindingExpr, Context.currentPos());
         expr = ExprTools.map(expr, replaceInternalShortNames);
