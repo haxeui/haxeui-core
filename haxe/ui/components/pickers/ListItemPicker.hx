@@ -17,6 +17,10 @@ class ListItemPicker extends ItemPicker {
 }
 
 private class Builder extends ItemPickerBuilder {
+    private override function get_panelSelectionEvent():String {
+        return UIEvent.SUBMIT;
+    }
+
     private override function get_handlerClass():Class<ItemPickerHandler> {
         return Handler;
     }

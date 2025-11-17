@@ -1,5 +1,6 @@
 package haxe.ui.components.pickers;
 
+import haxe.ui.actions.ActionType;
 import haxe.ui.components.Image;
 import haxe.ui.containers.Box;
 import haxe.ui.containers.HBox;
@@ -13,6 +14,7 @@ import haxe.ui.core.ItemRenderer;
 import haxe.ui.core.Screen;
 import haxe.ui.data.ArrayDataSource;
 import haxe.ui.data.DataSource;
+import haxe.ui.events.ActionEvent;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.geom.Size;
@@ -158,6 +160,7 @@ class ItemPickerBuilder extends CompositeBuilder {
         var target = renderer.findComponent("itemPickerTrigger", Component);
         if (target != null) {
             picker.unregisterEvent(triggerEvent, onTrigger);
+            picker.unregisterEvent(ActionEvent.ACTION_START, onActionStart);
             picker.removeClass("item-picker-trigger");
             return target;
         }
@@ -210,7 +213,10 @@ class ItemPickerBuilder extends CompositeBuilder {
     private function registerTriggerEvents() {
         triggerTarget.addClass("item-picker-trigger");
         if (!triggerTarget.hasEvent(triggerEvent, onTrigger)) {
-            triggerTarget.registerEvent(triggerEvent, onTrigger);
+            triggerTarget.registerEvent(triggerEvent, onTrigger);  
+        }
+        if (!triggerTarget.hasEvent(ActionEvent.ACTION_START, onActionStart)) {
+            triggerTarget.registerEvent(ActionEvent.ACTION_START, onActionStart);
         }
     }
 
@@ -250,6 +256,14 @@ class ItemPickerBuilder extends CompositeBuilder {
             showPanel();
         } else {
             hidePanel();
+        }
+    }
+    private function onActionStart(event:ActionEvent) {
+        switch (event.action) {
+            case ActionType.CONFIRM | ActionType.PRESS:
+                event.cancel();
+                onTrigger(null);
+            case _:
         }
     }
 
