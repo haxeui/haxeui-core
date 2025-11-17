@@ -55,8 +55,8 @@ private class CollapsedBehaviour extends DataBehaviour {
             if (_component.animatable) {
                 if (_value) {
                     //content.opacity = 0;
-                    var cy = content.height;
                     var autoHeight = content.autoHeight;
+                    var cy = content.height;
                     var animation = new AnimationBuilder(content, .3, "ease");
                     animation.setPosition(0, "height", cy, true);
                     animation.setPosition(100, "height", 0, true);
@@ -75,8 +75,11 @@ private class CollapsedBehaviour extends DataBehaviour {
                 } else {
                     content.hidden = _value;
                     //content.opacity = 0;
-                    var cy = content.height;
                     var autoHeight = content.autoHeight;
+                    var cy = content.height;
+                    content.height = 0;
+                    @:privateAccess content._height = 0;
+                    content.validateNow();
                     var animation = new AnimationBuilder(content, .3, "ease");
                     animation.setPosition(0, "height", 0, true);
                     animation.setPosition(100, "height", cy, true);
