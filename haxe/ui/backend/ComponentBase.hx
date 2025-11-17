@@ -1386,6 +1386,10 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
             return;     //it should be added into the queue later
         }
 
+        if (isComponentValidationPaused) {
+            return;
+        }
+
         var isAlreadyInvalid:Bool = isComponentInvalid(flag);
         var isAlreadyDelayedInvalid:Bool = false;
         if (_isValidating == true) {
@@ -1576,7 +1580,35 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
         }
     }
 
+    private var _validationPaused:Bool = false;
+    public function pauseComponentValidation() {
+        _validationPaused = true;
+    }
+
+    private var isComponentValidationPaused(get, never):Bool;
+    private function get_isComponentValidationPaused():Bool {
+        var ref = this;
+        while (ref != null) {
+            if (ref._validationPaused) {
+                return true;
+            }
+            ref = ref.parentComponent;
+        }
+        return false;
+    }
+
+    public function resumeComponentValidation() {
+        Toolkit.callLater(() -> {
+            _validationPaused = false;
+            invalidateComponent(true);
+        });
+    }
+
     private function validateComponentInternal(nextFrame:Bool = true) {
+        if (isComponentValidationPaused) {
+            return;
+        }
+
         var dataInvalid = isComponentInvalid(InvalidationFlags.DATA);
         var styleInvalid = isComponentInvalid(InvalidationFlags.STYLE);
         var textDisplayInvalid = isComponentInvalid(InvalidationFlags.TEXT_DISPLAY) && hasTextDisplay();
