@@ -355,6 +355,7 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
     }
 
     @:noCompletion private var __events:EventMap;
+    @:noCompletion private var _watchingMoveEvents:Bool = false;
 
     /**
      Register a listener for a certain `UIEvent`
@@ -474,9 +475,13 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
     @:noCompletion 
     private function checkWatchForMoveEvents() {
         if (hasEvent(MouseEvent.MOUSE_OVER) || hasEvent(MouseEvent.MOUSE_OUT)) {
-            if (!hasEvent(UIEvent.MOVE, _onMoveInternal)) {
+            if (!_watchingMoveEvents) {
+                _watchingMoveEvents = true;
                 registerEvent(UIEvent.MOVE, _onMoveInternal);
             }
+        } else if (_watchingMoveEvents) {
+            _watchingMoveEvents = false;
+            unregisterEvent(UIEvent.MOVE, _onMoveInternal);
         }
     }
 
