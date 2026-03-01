@@ -955,13 +955,17 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
  
      @:noCompletion private var _width:Null<Float>;
      private override function set_width(value:Float):Float {
+         /*
          if (value == 0) {
              return value;
          }
+         */    
          if (_width == value) {
              return value;
          }
-         _width = value;
+         if (value != 0) {
+            _width = value;
+         }
          componentWidth = value;
          return value;
      }
@@ -973,13 +977,17 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
  
      @:noCompletion private var _height:Null<Float>;
      private override function set_height(value:Float):Float {
+        /*
          if (value == 0) {
              return value;
          }
+        */     
          if (_height == value) {
              return value;
          }
-         _height = value;
+         if (value != 0) {
+             _height = value;
+         }
          componentHeight = value;
          return value;
      }
