@@ -39,11 +39,11 @@ class EventMap  {
         var arr:FunctionArray<UIEvent->Void> = _map.get(type);
         if (arr == null) {
             arr = new FunctionArray<UIEvent->Void>();
-            arr.push(cast listener, priority);
+            arr.push(cast listener, priority, listener);
             _map.set(type, arr);
             b = true;
-        } else if (arr.contains(cast listener) == false) {
-            arr.push(cast listener, priority);
+        } else if (arr.contains(cast listener, listener) == false) {
+            arr.push(cast listener, priority, listener);
         }
         return b;
     }
@@ -55,7 +55,7 @@ class EventMap  {
         var b:Bool = false;
         var arr:FunctionArray<UIEvent->Void> = _map.get(type);
         if (arr != null) {
-            arr.remove(cast listener);
+            arr.remove(cast listener, listener);
             if (arr.length == 0) {
                 _map.remove(type);
                 b = true;
@@ -68,7 +68,7 @@ class EventMap  {
         var b:Bool = false;
         var arr:FunctionArray<UIEvent->Void> = _map.get(type);
         if (arr != null) {
-            b = (listener != null) ? arr.contains(cast listener) : true;
+            b = (listener != null) ? arr.contains(cast listener, listener) : true;
         }
         return b;
     }

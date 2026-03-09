@@ -5,7 +5,7 @@ import haxe.ui.core.Component;
 import haxe.ui.events.MouseEvent;
 import haxe.ui.events.UIEvent;
 import haxe.ui.focus.FocusManager;
-import haxe.ui.util.EventMap;
+
 
 #if (haxe_ver >= 4.2)
 import Std.isOfType;
@@ -33,7 +33,7 @@ class Screen extends ScreenImpl {
     //***********************************************************************************************************
     // Instance
     //***********************************************************************************************************
-    private var _eventMap:EventMap = new EventMap();
+
 
     /**
      * The `x` position of the mouse on screen.
@@ -299,38 +299,38 @@ class Screen extends ScreenImpl {
     // Events
     //***********************************************************************************************************
 
-    /**
-     * Adds an event listener, that listens to a certain type of event.
-     * 
-     * @param type The name of the event to listen to
-     * @param listener a function with one argument that returns nothing
-     * @param priority A higher value will make this event dispatch "sooner", while a lower value does the opposite.
-     */
-    public function registerEvent(type:String, listener:Dynamic->Void, priority:Int = 0) {
+    private var _screenListeners:Map<String, Array<{raw:Dynamic, fn:Dynamic->Void}>> = new Map();
+
+    public function registerEvent(type:String, listener:Dynamic, priority:Int = 0) {
         if (supportsEvent(type) == true) {
-            if (_eventMap.add(type, listener, priority) == true) {
+            if (!_screenListeners.exists(type)) {
+                _screenListeners.set(type, []);
                 mapEvent(type, _onMappedEvent);
             }
-        } else {
-            #if debug
-            trace('WARNING: Screen event "${type}" not supported');
-            #end
+            _screenListeners.get(type).push({raw: listener, fn: cast listener});
         }
     }
 
-    public function hasEvent(type:String, listener:Dynamic->Void):Bool {
-        return _eventMap.contains(type, listener);
+    public function hasEvent(type:String, listener:Dynamic):Bool {
+        if (!_screenListeners.exists(type)) return false;
+        for (pair in _screenListeners.get(type)) {
+            if (Reflect.compareMethods(pair.raw, listener)) return true;
+        }
+        return false;
     }
 
-    /**
-     * Removes an event listener from a specific type of event.
-     * 
-     * @param type The name of the event to listen to
-     * @param listener a function with one argument that returns nothing
-     */
-    public function unregisterEvent(type:String, listener:Dynamic->Void) {
-        if (_eventMap.remove(type, listener) == true) {
-            unmapEvent(type, _onMappedEvent);
+    public function unregisterEvent(type:String, listener:Dynamic) {
+        if (!_screenListeners.exists(type)) return;
+        var listeners = _screenListeners.get(type);
+        for (i in 0...listeners.length) {
+            if (Reflect.compareMethods(listeners[i].raw, listener)) {
+                listeners.splice(i, 1);
+                if (listeners.length == 0) {
+                    _screenListeners.remove(type);
+                    unmapEvent(type, _onMappedEvent);
+                }
+                return;
+            }
         }
     }
 
@@ -339,7 +339,15 @@ class Screen extends ScreenImpl {
             return;
         }
 
-        _eventMap.invoke(event.type, event);
+        if (!_screenListeners.exists(event.type)) return;
+        var listeners = _screenListeners.get(event.type).copy();
+        for (pair in listeners) {
+            if (event.canceled) break;
+            var c = event.clone();
+            pair.fn(c);
+            event.copyFrom(c);
+            event.canceled = c.canceled;
+        }
     }
 
     @:noCompletion private var _pausedEvents:Array<String> = null;
