@@ -29,7 +29,13 @@ class Window extends VBox implements Draggable {
     @:behaviour(Collapsable, true) public var collapsable:Bool;
     @:behaviour(Maximizable, true) public var maximizable:Bool;
     @:behaviour(Closable, true) public var closable:Bool;
-    public var resizable:Bool;
+    public var resizable:Bool = false;
+
+    public var minimumResizeWidth:Float = -1;
+    public var minimumResizeHeight:Float = -1;
+
+    public var maximumResizeWidth:Float = -1;
+    public var maximumResizeHeight:Float = -1;
 
     @:behaviour(Maximized) public var maximized:Bool;
     @:behaviour(Minimized) public var minimized:Bool;
@@ -371,16 +377,24 @@ private class Builder extends CompositeBuilder {
     }
 
     private function onScreenMouseMove(e:MouseEvent) {
+        if (!_window.resizable) return;
         var dx = e.screenX - _downPoint.x;
         var dy = e.screenY - _downPoint.y;
 
+        var minWidth = Math.max(_window.minimumResizeWidth, 1);
+        var minHeight = Math.max(_window.minimumResizeHeight, 1);
+
         var prevWidth = _window.width;
         if (_resizeE) {
-            _window.width = Math.max(_window.width + dx, 1);
+            _window.width = Math.max(_window.width + dx, minWidth);
+            if (_window.maximumResizeWidth >= 1) 
+                _window.width = Math.min(_window.width, _window.maximumResizeWidth);
             _window.syncComponentValidation();
             _downPoint.x -= prevWidth - _window.width;
         } else if (_resizeW) {
-            _window.width = Math.max(_window.width - dx, 1);
+            _window.width = Math.max(_window.width - dx, minWidth);
+            if (_window.maximumResizeWidth >= 1) 
+                _window.width = Math.min(_window.width, _window.maximumResizeWidth);
             _window.syncComponentValidation();
             _window.left += prevWidth - _window.width;
             _downPoint.x += prevWidth - _window.width;
@@ -388,11 +402,15 @@ private class Builder extends CompositeBuilder {
 
         var prevHeight = _window.height;
         if (_resizeS) {
-            _window.height = Math.max(_window.height + dy, 1);
+            _window.height = Math.max(_window.height + dy, minHeight);
+            if (_window.maximumResizeHeight >= 1) 
+                _window.height = Math.min(_window.height, _window.maximumResizeHeight);
             _window.syncComponentValidation();
             _downPoint.y -= prevHeight - _window.height;
         } else if (_resizeN) {
-            _window.height = Math.max(_window.height - dy, 1);
+            _window.height = Math.max(_window.height - dy, minHeight);
+            if (_window.maximumResizeHeight >= 1) 
+                _window.height = Math.min(_window.height, _window.maximumResizeHeight);
             _window.syncComponentValidation();
             _window.top += prevHeight - _window.height;
             _downPoint.y += prevHeight - _window.height;
