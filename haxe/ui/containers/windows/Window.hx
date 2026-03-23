@@ -325,7 +325,7 @@ private class Builder extends CompositeBuilder {
         if (title == null) {
             title = new WindowTitle();
             title.registerEvent(MouseEvent.DBL_CLICK, function(_) {
-                if (_window.windowManager != null) {
+                if (_window.windowManager != null && _window.maximizable) {
                     if (_window.maximized) {
                         _window.windowManager.restoreWindow(_window); 
                     } else {
@@ -555,7 +555,7 @@ private class Builder extends CompositeBuilder {
                 title = cast child;
                 _window.dragInitiator = title;
                 title.registerEvent(MouseEvent.DBL_CLICK, function(_) {
-                    if (_window.windowManager != null) {
+                    if (_window.windowManager != null && _window.maximizable) {
                         if (_window.maximized) {
                             _window.windowManager.restoreWindow(_window); 
                         } else {
