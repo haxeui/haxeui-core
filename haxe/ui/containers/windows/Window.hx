@@ -29,6 +29,7 @@ class Window extends VBox implements Draggable {
     @:behaviour(Collapsable, true) public var collapsable:Bool;
     @:behaviour(Maximizable, true) public var maximizable:Bool;
     @:behaviour(Closable, true) public var closable:Bool;
+    public var resizable:Bool;
 
     @:behaviour(Maximized) public var maximized:Bool;
     @:behaviour(Minimized) public var minimized:Bool;
@@ -460,43 +461,45 @@ private class Builder extends CompositeBuilder {
 
         var classToAdd = null;
         var cursor = null;
-        var rects = Slice9.buildSrcRects(w, h, new Rectangle(_tolerance, _tolerance, w - _tolerance * 2, h - _tolerance * 2));
-        if (rects[0].containsPoint(x, y)) { // top left
-            _resizeN = true;
-            _resizeW = true;
-            classToAdd = "size-nw";
-            cursor = "nwse-resize";
-        } else if (rects[1].containsPoint(x, y)) { // top middle
-            _resizeN = true;
-            classToAdd = "size-n";
-            cursor = "ns-resize";
-        } else if (rects[2].containsPoint(x, y)) { // top right
-            _resizeN = true;
-            _resizeE = true;
-            classToAdd = "size-ne";
-            cursor = "nesw-resize";
-        } else if (rects[3].containsPoint(x, y)) { // left middle
-            _resizeW = true;
-            classToAdd = "size-w";
-            cursor = "ew-resize";
-        } else if (rects[5].containsPoint(x, y)) { // right middle
-            _resizeE = true;
-            classToAdd = "size-e";
-            cursor = "ew-resize";
-        } else if (rects[6].containsPoint(x, y)) { // bottom left
-            _resizeS = true;
-            _resizeW = true;
-            classToAdd = "size-sw";
-            cursor = "nesw-resize";
-        } else if (rects[7].containsPoint(x, y)) { // bottom middle
-            _resizeS = true;
-            classToAdd = "size-s";
-            cursor = "ns-resize";
-        } else if (rects[8].containsPoint(x, y)) { // bottom right
-            _resizeS = true;
-            _resizeE = true;
-            classToAdd = "size-se";
-            cursor = "nwse-resize";
+        if (_window.resizable) {
+            var rects = Slice9.buildSrcRects(w, h, new Rectangle(_tolerance, _tolerance, w - _tolerance * 2, h - _tolerance * 2));
+            if (rects[0].containsPoint(x, y)) { // top left
+                _resizeN = true;
+                _resizeW = true;
+                classToAdd = "size-nw";
+                cursor = "nwse-resize";
+            } else if (rects[1].containsPoint(x, y)) { // top middle
+                _resizeN = true;
+                classToAdd = "size-n";
+                cursor = "ns-resize";
+            } else if (rects[2].containsPoint(x, y)) { // top right
+                _resizeN = true;
+                _resizeE = true;
+                classToAdd = "size-ne";
+                cursor = "nesw-resize";
+            } else if (rects[3].containsPoint(x, y)) { // left middle
+                _resizeW = true;
+                classToAdd = "size-w";
+                cursor = "ew-resize";
+            } else if (rects[5].containsPoint(x, y)) { // right middle
+                _resizeE = true;
+                classToAdd = "size-e";
+                cursor = "ew-resize";
+            } else if (rects[6].containsPoint(x, y)) { // bottom left
+                _resizeS = true;
+                _resizeW = true;
+                classToAdd = "size-sw";
+                cursor = "nesw-resize";
+            } else if (rects[7].containsPoint(x, y)) { // bottom middle
+                _resizeS = true;
+                classToAdd = "size-s";
+                cursor = "ns-resize";
+            } else if (rects[8].containsPoint(x, y)) { // bottom right
+                _resizeS = true;
+                _resizeE = true;
+                classToAdd = "size-se";
+                cursor = "nwse-resize";
+            }
         }
 
         if (classToAdd != null) {
