@@ -78,6 +78,7 @@ class WindowManager extends EventDispatcher<WindowEvent> {
     }
 
     private var _nextWindowPos = new Point(0, 0);
+    private var _windowResetPos = 60;
     public function addWindow(window:Window) {
         if (window.left == 0) {
             window.left = _nextWindowPos.x;
@@ -86,6 +87,25 @@ class WindowManager extends EventDispatcher<WindowEvent> {
         if (window.top == 0) {
             window.top = _nextWindowPos.y;
             _nextWindowPos.y += 30;
+        }
+
+        if (window.left + (window.width/2) > this.container.width || window.top + (window.width/2) > this.container.height) {
+            _nextWindowPos.x = _windowResetPos;
+            _nextWindowPos.y = 0;
+
+            if (_windowResetPos + window.width > this.container.width ) {
+                _windowResetPos = -45;
+            }
+
+            _windowResetPos += 60;
+        }
+
+        // just a safeguard
+        if (window.left > container.width || window.top > container.height) {
+            window.setPosition(0,0);
+            _nextWindowPos.x = 0;
+            _nextWindowPos.y = 0;
+            _windowResetPos = 60;
         }
 
         window.windowManager = this;
