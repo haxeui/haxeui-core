@@ -106,7 +106,8 @@ class WindowManager extends EventDispatcher<WindowEvent> {
         // window to have a very small sliver be visible. I'd rather have it react early 
         // than too late.
         if (windowMiddle.x > container.width || windowMiddle.y > container.height) {
-            window.setPosition(0,0);
+            window.x = 0;
+            window.y = 0;
             _nextWindowPos.x = 0;
             _nextWindowPos.y = 0;
             _windowResetPos = 60;
