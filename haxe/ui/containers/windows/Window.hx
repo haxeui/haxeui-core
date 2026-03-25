@@ -29,6 +29,13 @@ class Window extends VBox implements Draggable {
     @:behaviour(Collapsable, true) public var collapsable:Bool;
     @:behaviour(Maximizable, true) public var maximizable:Bool;
     @:behaviour(Closable, true) public var closable:Bool;
+    public var resizable:Bool = false;
+
+    public var minimumResizeWidth:Float = -1;
+    public var minimumResizeHeight:Float = -1;
+
+    public var maximumResizeWidth:Float = -1;
+    public var maximumResizeHeight:Float = -1;
 
     @:behaviour(Maximized) public var maximized:Bool;
     @:behaviour(Minimized) public var minimized:Bool;
@@ -318,7 +325,7 @@ private class Builder extends CompositeBuilder {
         if (title == null) {
             title = new WindowTitle();
             title.registerEvent(MouseEvent.DBL_CLICK, function(_) {
-                if (_window.windowManager != null) {
+                if (_window.windowManager != null && _window.maximizable) {
                     if (_window.maximized) {
                         _window.windowManager.restoreWindow(_window); 
                     } else {
@@ -370,16 +377,24 @@ private class Builder extends CompositeBuilder {
     }
 
     private function onScreenMouseMove(e:MouseEvent) {
+        if (!_window.resizable) return;
         var dx = e.screenX - _downPoint.x;
         var dy = e.screenY - _downPoint.y;
 
+        var minWidth = Math.max(_window.minimumResizeWidth, 1);
+        var minHeight = Math.max(_window.minimumResizeHeight, 1);
+
         var prevWidth = _window.width;
         if (_resizeE) {
-            _window.width = Math.max(_window.width + dx, 1);
+            _window.width = Math.max(_window.width + dx, minWidth);
+            if (_window.maximumResizeWidth >= 1) 
+                _window.width = Math.min(_window.width, _window.maximumResizeWidth);
             _window.syncComponentValidation();
             _downPoint.x -= prevWidth - _window.width;
         } else if (_resizeW) {
-            _window.width = Math.max(_window.width - dx, 1);
+            _window.width = Math.max(_window.width - dx, minWidth);
+            if (_window.maximumResizeWidth >= 1) 
+                _window.width = Math.min(_window.width, _window.maximumResizeWidth);
             _window.syncComponentValidation();
             _window.left += prevWidth - _window.width;
             _downPoint.x += prevWidth - _window.width;
@@ -387,11 +402,15 @@ private class Builder extends CompositeBuilder {
 
         var prevHeight = _window.height;
         if (_resizeS) {
-            _window.height = Math.max(_window.height + dy, 1);
+            _window.height = Math.max(_window.height + dy, minHeight);
+            if (_window.maximumResizeHeight >= 1) 
+                _window.height = Math.min(_window.height, _window.maximumResizeHeight);
             _window.syncComponentValidation();
             _downPoint.y -= prevHeight - _window.height;
         } else if (_resizeN) {
-            _window.height = Math.max(_window.height - dy, 1);
+            _window.height = Math.max(_window.height - dy, minHeight);
+            if (_window.maximumResizeHeight >= 1) 
+                _window.height = Math.min(_window.height, _window.maximumResizeHeight);
             _window.syncComponentValidation();
             _window.top += prevHeight - _window.height;
             _downPoint.y += prevHeight - _window.height;
@@ -460,43 +479,45 @@ private class Builder extends CompositeBuilder {
 
         var classToAdd = null;
         var cursor = null;
-        var rects = Slice9.buildSrcRects(w, h, new Rectangle(_tolerance, _tolerance, w - _tolerance * 2, h - _tolerance * 2));
-        if (rects[0].containsPoint(x, y)) { // top left
-            _resizeN = true;
-            _resizeW = true;
-            classToAdd = "size-nw";
-            cursor = "nwse-resize";
-        } else if (rects[1].containsPoint(x, y)) { // top middle
-            _resizeN = true;
-            classToAdd = "size-n";
-            cursor = "ns-resize";
-        } else if (rects[2].containsPoint(x, y)) { // top right
-            _resizeN = true;
-            _resizeE = true;
-            classToAdd = "size-ne";
-            cursor = "nesw-resize";
-        } else if (rects[3].containsPoint(x, y)) { // left middle
-            _resizeW = true;
-            classToAdd = "size-w";
-            cursor = "ew-resize";
-        } else if (rects[5].containsPoint(x, y)) { // right middle
-            _resizeE = true;
-            classToAdd = "size-e";
-            cursor = "ew-resize";
-        } else if (rects[6].containsPoint(x, y)) { // bottom left
-            _resizeS = true;
-            _resizeW = true;
-            classToAdd = "size-sw";
-            cursor = "nesw-resize";
-        } else if (rects[7].containsPoint(x, y)) { // bottom middle
-            _resizeS = true;
-            classToAdd = "size-s";
-            cursor = "ns-resize";
-        } else if (rects[8].containsPoint(x, y)) { // bottom right
-            _resizeS = true;
-            _resizeE = true;
-            classToAdd = "size-se";
-            cursor = "nwse-resize";
+        if (_window.resizable) {
+            var rects = Slice9.buildSrcRects(w, h, new Rectangle(_tolerance, _tolerance, w - _tolerance * 2, h - _tolerance * 2));
+            if (rects[0].containsPoint(x, y)) { // top left
+                _resizeN = true;
+                _resizeW = true;
+                classToAdd = "size-nw";
+                cursor = "nwse-resize";
+            } else if (rects[1].containsPoint(x, y)) { // top middle
+                _resizeN = true;
+                classToAdd = "size-n";
+                cursor = "ns-resize";
+            } else if (rects[2].containsPoint(x, y)) { // top right
+                _resizeN = true;
+                _resizeE = true;
+                classToAdd = "size-ne";
+                cursor = "nesw-resize";
+            } else if (rects[3].containsPoint(x, y)) { // left middle
+                _resizeW = true;
+                classToAdd = "size-w";
+                cursor = "ew-resize";
+            } else if (rects[5].containsPoint(x, y)) { // right middle
+                _resizeE = true;
+                classToAdd = "size-e";
+                cursor = "ew-resize";
+            } else if (rects[6].containsPoint(x, y)) { // bottom left
+                _resizeS = true;
+                _resizeW = true;
+                classToAdd = "size-sw";
+                cursor = "nesw-resize";
+            } else if (rects[7].containsPoint(x, y)) { // bottom middle
+                _resizeS = true;
+                classToAdd = "size-s";
+                cursor = "ns-resize";
+            } else if (rects[8].containsPoint(x, y)) { // bottom right
+                _resizeS = true;
+                _resizeE = true;
+                classToAdd = "size-se";
+                cursor = "nwse-resize";
+            }
         }
 
         if (classToAdd != null) {
@@ -534,7 +555,7 @@ private class Builder extends CompositeBuilder {
                 title = cast child;
                 _window.dragInitiator = title;
                 title.registerEvent(MouseEvent.DBL_CLICK, function(_) {
-                    if (_window.windowManager != null) {
+                    if (_window.windowManager != null && _window.maximizable) {
                         if (_window.maximized) {
                             _window.windowManager.restoreWindow(_window); 
                         } else {

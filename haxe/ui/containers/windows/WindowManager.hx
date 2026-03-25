@@ -78,7 +78,10 @@ class WindowManager extends EventDispatcher<WindowEvent> {
     }
 
     private var _nextWindowPos = new Point(0, 0);
+    private var _windowResetPos = 60;
     public function addWindow(window:Window) {
+        var windowMiddle = new Point(window.left + (window.width/2), window.top + (window.height/2));
+
         if (window.left == 0) {
             window.left = _nextWindowPos.x;
             _nextWindowPos.x += 30;
@@ -86,6 +89,28 @@ class WindowManager extends EventDispatcher<WindowEvent> {
         if (window.top == 0) {
             window.top = _nextWindowPos.y;
             _nextWindowPos.y += 30;
+        }
+
+        if (window.left + (window.width/2) > this.container.width || window.top + (window.width/2) > this.container.height) {
+            _nextWindowPos.x = _windowResetPos;
+            _nextWindowPos.y = 0;
+
+            if (_windowResetPos + window.width > this.container.width ) {
+                _windowResetPos = -45;
+            }
+
+            _windowResetPos += 60;
+        }
+
+        // I do this instead of using "isComponentOffscreen" because I don't want the 
+        // window to have a very small sliver be visible. I'd rather have it react early 
+        // than too late.
+        if (windowMiddle.x > container.width || windowMiddle.y > container.height) {
+            window.left = 0;
+            window.top = 0;
+            _nextWindowPos.x = 0;
+            _nextWindowPos.y = 0;
+            _windowResetPos = 60;
         }
 
         window.windowManager = this;
@@ -294,6 +319,7 @@ class WindowManager extends EventDispatcher<WindowEvent> {
                 if (existing != null) {
                     existing.removeClass(":hover");
                 }
+
                 window.fadeOut(function() {
                     // lets find the prev window _before_ we've removed the window, since, once removed
                     // it we'll no longer be able to find its index, therefore cant find one previous 
