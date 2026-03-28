@@ -13,6 +13,9 @@ class Events {
     // Instead, we track registered call sites using PosInfos (file + line)
     // which the compiler fills in automatically at each call site.
     private var _cppRegisteredKeys:Map<String, Bool> = new Map<String, Bool>();
+    // For registerEventOn, we need per-child tracking since the same call site
+    // may register on different children (e.g. in a loop over tabs).
+    private var _cppChildEventKeys:haxe.ds.ObjectMap<Component, Map<String, Bool>> = new haxe.ds.ObjectMap<Component, Map<String, Bool>>();
     #end
 
     public function new(target:Component) {
@@ -25,6 +28,7 @@ class Events {
     public function unregister() {
         #if cpp
         _cppRegisteredKeys = new Map<String, Bool>();
+        _cppChildEventKeys = new haxe.ds.ObjectMap<Component, Map<String, Bool>>();
         #end
     }
 
@@ -65,11 +69,16 @@ class Events {
             return;
         }
         #if cpp
+        var childKeys = _cppChildEventKeys.get(child);
+        if (childKeys == null) {
+            childKeys = new Map<String, Bool>();
+            _cppChildEventKeys.set(child, childKeys);
+        }
         var key = '${pos.lineNumber}:${pos.fileName}:${type}';
-        if (_cppRegisteredKeys.exists(key)) {
+        if (childKeys.exists(key)) {
             return;
         }
-        _cppRegisteredKeys.set(key, true);
+        childKeys.set(key, true);
         child.registerEvent(type, listener, priority);
         #else
         if (child.hasEvent(type, listener) == false) {

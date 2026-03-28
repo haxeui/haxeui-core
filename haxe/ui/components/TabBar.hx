@@ -365,9 +365,7 @@ private class Events extends haxe.ui.events.Events {
     public override function register() {
         var builder:Builder = cast(_tabbar._compositeBuilder, Builder);
         for (t in builder._container.childComponents) {
-            if (t.hasEvent(MouseEvent.MOUSE_DOWN, onTabMouseDown) == false) {
-                t.registerEvent(MouseEvent.MOUSE_DOWN, onTabMouseDown);
-            }
+            registerEventOn(t, MouseEvent.MOUSE_DOWN, onTabMouseDown);
         }
         registerEvent(MouseEvent.MOUSE_WHEEL, onMouseWheel);
     }
