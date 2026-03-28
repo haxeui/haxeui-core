@@ -355,6 +355,7 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
     }
 
     @:noCompletion private var __events:EventMap;
+    @:noCompletion private var _watchingMoveEvents:Bool = false;
 
     /**
      Register a listener for a certain `UIEvent`
@@ -362,7 +363,7 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
     @:dox(group = "Event related properties and methods")
     public function registerEvent<T:UIEvent>(type:EventType<T>, listener:T->Void, priority:Int = 0) {
         if (cast(this, Component).hasClass(":mobile")
-            // TODO: would be nice not to have the Std.string, and really, would make sense to review 
+            // TODO: would be nice not to have the Std.string, and really, would make sense to review
             // the whole concept of "block over / out if mobile"
             && (Std.string(type) == Std.string(MouseEvent.MOUSE_OVER) || Std.string(type) == Std.string(MouseEvent.MOUSE_OUT))) {
             return;
@@ -474,22 +475,28 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
     @:noCompletion 
     private function checkWatchForMoveEvents() {
         if (hasEvent(MouseEvent.MOUSE_OVER) || hasEvent(MouseEvent.MOUSE_OUT)) {
-            if (!hasEvent(UIEvent.MOVE, _onMoveInternal)) {
+            if (!_watchingMoveEvents) {
+                _watchingMoveEvents = true;
                 registerEvent(UIEvent.MOVE, _onMoveInternal);
             }
+        } else if (_watchingMoveEvents) {
+            _watchingMoveEvents = false;
+            unregisterEvent(UIEvent.MOVE, _onMoveInternal);
         }
     }
 
-    @:noCompletion 
+    @:noCompletion
     private function _onMoveInternal(_) {
-        checkComponentBounds();
+        checkComponentBounds(false);
     }
 
-    @:noCompletion 
+    @:noCompletion private var _checkingBounds:Bool = false;
     private function checkComponentBounds(checkNextFrame:Bool = true) {
+        if (_checkingBounds) return;
         if (Screen.instance.currentMouseX == null || Screen.instance.currentMouseY == null) {
             return;
         }
+        _checkingBounds = true;
         // is it valid to assume it must have :hover?
         var hasHover = cast(this, Component).hasClass(":hover"); // TODO: might want to move "hasClass" et al to this class to avoid cast
         if (!hasHover && hitTest(Screen.instance.currentMouseX, Screen.instance.currentMouseY)) {
@@ -503,6 +510,7 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
             mouseEvent.screenY = Screen.instance.currentMouseY;
             dispatch(mouseEvent);
         }
+        _checkingBounds = false;
 
         if (checkNextFrame) { // find any stragglers
             Toolkit.callLater(function() {

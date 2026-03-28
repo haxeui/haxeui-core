@@ -433,27 +433,15 @@ private class Events extends haxe.ui.events.Events  {
 
     public override function register() {
         _startThumb = _slider.findComponent("start-thumb");
-        if (_startThumb != null && _startThumb.hasEvent(MouseEvent.MOUSE_DOWN, onThumbMouseDown) == false) {
-            _startThumb.registerEvent(MouseEvent.MOUSE_DOWN, onThumbMouseDown);
-        }
+        registerEventOn(_startThumb, MouseEvent.MOUSE_DOWN, onThumbMouseDown);
 
         _endThumb = _slider.findComponent("end-thumb");
-        if (_endThumb != null && _endThumb.hasEvent(MouseEvent.MOUSE_DOWN, onThumbMouseDown) == false) {
-            _endThumb.registerEvent(MouseEvent.MOUSE_DOWN, onThumbMouseDown);
-        }
+        registerEventOn(_endThumb, MouseEvent.MOUSE_DOWN, onThumbMouseDown);
 
-        if (_range != null && _range.hasEvent(MouseEvent.MOUSE_DOWN, onRangeMouseDown) == false) {
-            _range.registerEvent(MouseEvent.MOUSE_DOWN, onRangeMouseDown);
-        }
-        if (_range != null && _range.hasEvent(UIEvent.CHANGE, onRangeChange) == false) {
-            _range.registerEvent(UIEvent.CHANGE, onRangeChange);
-        }
-        if (hasEvent(ActionEvent.ACTION_START, onActionStart) == false) {
-            registerEvent(ActionEvent.ACTION_START, onActionStart);
-        }
-        if (hasEvent(ActionEvent.ACTION_END, onActionEnd) == false) {
-            registerEvent(ActionEvent.ACTION_END, onActionEnd);
-        }
+        registerEventOn(_range, MouseEvent.MOUSE_DOWN, onRangeMouseDown);
+        registerEventOn(_range, UIEvent.CHANGE, onRangeChange);
+        registerEvent(ActionEvent.ACTION_START, onActionStart);
+        registerEvent(ActionEvent.ACTION_END, onActionEnd);
     }
 
     public override function unregister() {
