@@ -85,9 +85,15 @@ class Screen extends ScreenImpl {
             rootComponents.push(component);
         }
         FocusManager.instance.pushView(component);
+        #if cpp
+        // On hxcpp, component.hasEvent uses broken function comparison.
+        // Always register; duplicate calls are harmless for this handler.
+        component.registerEvent(UIEvent.RESIZE, _onRootComponentResize);
+        #else
         if (component.hasEvent(UIEvent.RESIZE, _onRootComponentResize) == false) {
             component.registerEvent(UIEvent.RESIZE, _onRootComponentResize);
         }
+        #end
         
         if (wasReady && component.hidden == false) {
             component.dispatch(new UIEvent(UIEvent.SHOWN));
@@ -299,29 +305,77 @@ class Screen extends ScreenImpl {
     // Events
     //***********************************************************************************************************
 
+    #if cpp
+    // On hxcpp, function comparison is broken (cast closures and
+    // Reflect.compareMethods falsely compare as equal). We use PosInfos-based
+    // dedup for registration and className-based matching for unregistration.
+    private var _screenListeners:Map<String, Array<{className:String, regKey:String, fn:Dynamic->Void}>> = new Map();
+    private var _cppScreenKeys:Map<String, Bool> = new Map<String, Bool>();
+    #else
     private var _screenListeners:Map<String, Array<{raw:Dynamic, fn:Dynamic->Void}>> = new Map();
+    #end
 
-    public function registerEvent(type:String, listener:Dynamic, priority:Int = 0) {
+    public function registerEvent(type:String, listener:Dynamic, priority:Int = 0, ?pos:haxe.PosInfos) {
         if (supportsEvent(type) == true) {
+            #if cpp
+            var regKey = '${pos.lineNumber}:${pos.fileName}:${type}';
+            if (_cppScreenKeys.exists(regKey)) {
+                return;
+            }
+            _cppScreenKeys.set(regKey, true);
+            if (!_screenListeners.exists(type)) {
+                _screenListeners.set(type, []);
+                mapEvent(type, _onMappedEvent);
+            }
+            _screenListeners.get(type).push({className: pos.className, regKey: regKey, fn: cast listener});
+            #else
             if (!_screenListeners.exists(type)) {
                 _screenListeners.set(type, []);
                 mapEvent(type, _onMappedEvent);
             }
             _screenListeners.get(type).push({raw: listener, fn: cast listener});
+            #end
         }
     }
 
-    public function hasEvent(type:String, listener:Dynamic):Bool {
+    public function hasEvent(type:String, listener:Dynamic, ?pos:haxe.PosInfos):Bool {
         if (!_screenListeners.exists(type)) return false;
+        #if cpp
+        // On hxcpp, function comparison is broken. Return false and rely on
+        // registerEvent's PosInfos-based dedup to prevent double registration.
+        return false;
+        #else
         for (pair in _screenListeners.get(type)) {
             if (Reflect.compareMethods(pair.raw, listener)) return true;
         }
         return false;
+        #end
     }
 
-    public function unregisterEvent(type:String, listener:Dynamic) {
+    public function unregisterEvent(type:String, listener:Dynamic, ?pos:haxe.PosInfos) {
         if (!_screenListeners.exists(type)) return;
         var listeners = _screenListeners.get(type);
+        #if cpp
+        // Match by className from PosInfos. Remove the last listener from the
+        // calling class to correctly handle stack-like register/unregister patterns.
+        var foundIdx = -1;
+        var i = listeners.length - 1;
+        while (i >= 0) {
+            if (listeners[i].className == pos.className) {
+                foundIdx = i;
+                break;
+            }
+            i--;
+        }
+        if (foundIdx >= 0) {
+            _cppScreenKeys.remove(listeners[foundIdx].regKey);
+            listeners.splice(foundIdx, 1);
+            if (listeners.length == 0) {
+                _screenListeners.remove(type);
+                unmapEvent(type, _onMappedEvent);
+            }
+        }
+        #else
         for (i in 0...listeners.length) {
             if (Reflect.compareMethods(listeners[i].raw, listener)) {
                 listeners.splice(i, 1);
@@ -332,6 +386,7 @@ class Screen extends ScreenImpl {
                 return;
             }
         }
+        #end
     }
 
     private function _onMappedEvent(event:UIEvent) {
