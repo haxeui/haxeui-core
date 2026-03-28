@@ -44,9 +44,9 @@ class EventMap  {
             b = true;
         } else {
             #if cpp
-            // Workaround: hxcpp has a bug where cast closures and Dynamic-stored
-            // closures falsely compare as equal, causing different listeners to be
-            // incorrectly deduplicated. Skip the contains check on cpp targets.
+            // On hxcpp, function comparison is broken (cast closures falsely
+            // compare as equal). Skip contains check; dedup is handled at the
+            // Events class level using call-site PosInfos instead.
             arr.push(cast listener, priority, listener);
             #else
             if (arr.contains(cast listener, listener) == false) {
