@@ -42,8 +42,17 @@ class EventMap  {
             arr.push(cast listener, priority, listener);
             _map.set(type, arr);
             b = true;
-        } else if (arr.contains(cast listener, listener) == false) {
+        } else {
+            #if cpp
+            // Workaround: hxcpp has a bug where cast closures and Dynamic-stored
+            // closures falsely compare as equal, causing different listeners to be
+            // incorrectly deduplicated. Skip the contains check on cpp targets.
             arr.push(cast listener, priority, listener);
+            #else
+            if (arr.contains(cast listener, listener) == false) {
+                arr.push(cast listener, priority, listener);
+            }
+            #end
         }
         return b;
     }

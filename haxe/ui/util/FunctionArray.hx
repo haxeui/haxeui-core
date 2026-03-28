@@ -11,6 +11,10 @@ class FunctionArray<T> {
         return _array[index].callback;
     }
 
+    public function getOriginalRef(index:Int):Dynamic {
+        return _array[index].originalRef;
+    }
+
     public var length(get, null):Int;
     private function get_length():Int {
         return _array.length;
@@ -35,13 +39,12 @@ class FunctionArray<T> {
 
     public function indexOf(x:T, fromIndex:Int = 0, ?originalRef:Dynamic):Int {
         for (i in fromIndex..._array.length) {
-            if (_array[i].callback == x || Reflect.compareMethods(_array[i].callback, x)) {
-                return i;
-            }
             if (originalRef != null && _array[i].originalRef != null) {
                 if (_array[i].originalRef == originalRef || Reflect.compareMethods(_array[i].originalRef, originalRef)) {
                     return i;
                 }
+            } else if (_array[i].callback == x || Reflect.compareMethods(_array[i].callback, x)) {
+                return i;
             }
         }
         return -1;
