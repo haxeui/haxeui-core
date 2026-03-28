@@ -13,6 +13,8 @@ enum DrawCommand {
     StrokeStyle(color:Null<Color>, thickness:Null<Float>, alpha:Null<Float>);
     Circle(x:Float, y:Float, radius:Float);
     FillStyle(color:Null<Color>, alpha:Null<Float>);
+    FontStyle(size:Null<Int>, family:Null<String>, anchor:Null<String>);
+    Text(x:Float, y:Float, t:String);
     CurveTo(controlX:Float, controlY:Float, anchorX:Float, anchorY:Float);
     CubicCurveTo(controlX1:Float, controlY1:Float, controlX2:Float, controlY2:Float, anchorX:Float, anchorY:Float);
     Rectangle(x:Float, y:Float, width:Float, height:Float);
