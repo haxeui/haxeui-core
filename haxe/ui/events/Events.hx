@@ -24,9 +24,16 @@ class Events {
         if (_target == null || _target._isDisposed) {
             return;
         }
+        #if cpp
+        // On hxcpp, function comparison is broken (cast closures falsely compare
+        // as equal), so hasEvent would incorrectly block new listeners. Skip the
+        // check and let EventMap.add handle it.
+        _target.registerEvent(type, listener, priority);
+        #else
         if (hasEvent(type, listener) == false) {
             _target.registerEvent(type, listener, priority);
         }
+        #end
     }
 
     private function hasEvent<T:UIEvent>(type:EventType<T>, listener:T->Void):Bool {
@@ -34,6 +41,19 @@ class Events {
             return false;
         }
         return _target.hasEvent(type, listener);
+    }
+
+    private function registerEventOn<T:UIEvent>(child:Component, type:EventType<T>, listener:T->Void, priority:Int = 0) {
+        if (child == null || child._isDisposed) {
+            return;
+        }
+        #if cpp
+        child.registerEvent(type, listener, priority);
+        #else
+        if (child.hasEvent(type, listener) == false) {
+            child.registerEvent(type, listener, priority);
+        }
+        #end
     }
 
     private function unregisterEvent<T:UIEvent>(type:EventType<T>, listener:T->Void) {

@@ -145,26 +145,11 @@ private class Events extends haxe.ui.events.Events  {
         _thumb = _scroll.findComponent("scroll-thumb-button");
     }
 
-    private var _thumbMouseDownRegistered:Bool = false;
-
     public override function register() {
-        if (hasEvent(MouseEvent.MOUSE_DOWN, onMouseDown) == false) {
-            registerEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
-        }
-        if (_deincButton != null && _deincButton.hasEvent(MouseEvent.CLICK, onDeinc) == false) {
-            _deincButton.registerEvent(MouseEvent.CLICK, onDeinc);
-        }
-        if (_incButton != null && _incButton.hasEvent(MouseEvent.CLICK, onInc) == false) {
-            _incButton.registerEvent(MouseEvent.CLICK, onInc);
-        }
-        if (_thumb != null && !_thumbMouseDownRegistered) {
-            // Use a boolean flag instead of hasEvent to guard against double-registration.
-            // hasEvent uses function comparison which is broken on hxcpp (cast closures
-            // falsely compare as equal), so it would incorrectly report that
-            // onThumbMouseDown is already registered when only ButtonEvents.onMouseDown is.
-            _thumbMouseDownRegistered = true;
-            _thumb.registerEvent(MouseEvent.MOUSE_DOWN, onThumbMouseDown);
-        }
+        registerEvent(MouseEvent.MOUSE_DOWN, onMouseDown);
+        registerEventOn(_deincButton, MouseEvent.CLICK, onDeinc);
+        registerEventOn(_incButton, MouseEvent.CLICK, onInc);
+        registerEventOn(_thumb, MouseEvent.MOUSE_DOWN, onThumbMouseDown);
     }
 
     public override function unregister() {
@@ -176,7 +161,6 @@ private class Events extends haxe.ui.events.Events  {
             _incButton.unregisterEvent(MouseEvent.CLICK, onInc);
         }
         if (_thumb != null) {
-            _thumbMouseDownRegistered = false;
             _thumb.unregisterEvent(MouseEvent.MOUSE_DOWN, onThumbMouseDown);
         }
     }
