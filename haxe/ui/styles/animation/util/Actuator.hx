@@ -147,7 +147,7 @@ class Actuator<T> {
             }
 
             var isVariant = false;
-            if (start != null) {
+            if (start != null && Std.isOfType(start, VariantType)) {
                 try { // some neko strangness here with exception being thrown on the switch
                     switch (start) {
                         case VariantType.VT_String(v):
@@ -158,7 +158,7 @@ class Actuator<T> {
                 } catch (e:Dynamic) { }
             }
 
-            if (end != null) {
+            if (end != null && Std.isOfType(end, VariantType)) {
                 try { // some neko strangness here with exception being thrown on the switch
                     switch (end) {
                         case VariantType.VT_String(v):
@@ -172,6 +172,7 @@ class Actuator<T> {
             if (start == null || end == null) {
                 continue;
             }
+            
             switch (end) {
                 case Value.VColor(v):
                     var startColor:Color = cast(start, Color);
