@@ -91,11 +91,18 @@ class WindowManager extends EventDispatcher<WindowEvent> {
             _nextWindowPos.y += 30;
         }
 
-        if (window.left + (window.width/2) > this.container.width || window.top + (window.width/2) > this.container.height) {
+        var containerWidth = Screen.instance.width;
+        var containerHeight = Screen.instance.height;
+        if (_container != null) {
+            containerWidth = _container.width;
+            containerHeight = _container.height;
+        }
+
+        if (window.left + (window.width/2) > containerWidth || window.top + (window.width/2) > containerHeight) {
             _nextWindowPos.x = _windowResetPos;
             _nextWindowPos.y = 0;
 
-            if (_windowResetPos + window.width > this.container.width ) {
+            if (_windowResetPos + window.width > containerWidth) {
                 _windowResetPos = -45;
             }
 
@@ -105,7 +112,7 @@ class WindowManager extends EventDispatcher<WindowEvent> {
         // I do this instead of using "isComponentOffscreen" because I don't want the 
         // window to have a very small sliver be visible. I'd rather have it react early 
         // than too late.
-        if (windowMiddle.x > container.width || windowMiddle.y > container.height) {
+        if (windowMiddle.x > containerWidth || windowMiddle.y > containerHeight) {
             window.left = 0;
             window.top = 0;
             _nextWindowPos.x = 0;
