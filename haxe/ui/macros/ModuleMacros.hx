@@ -75,6 +75,7 @@ class ModuleMacros {
                 var exclusions = ModuleResourceEntry.globalExclusions.concat(r.exclusions);
 
                 if (r.path != null) {
+                    r.path = StringTools.replace(r.path, "<module>", m.rootPath);
                     if (r.prefix == null) {
                         r.prefix = r.path;
                     }
