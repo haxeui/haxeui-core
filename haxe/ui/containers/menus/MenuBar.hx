@@ -168,7 +168,7 @@ private class Events extends haxe.ui.events.Events {
                 menu.addComponent(filler);
             }
             menu.pauseEvent(MouseEvent.MOUSE_OVER, true);
-            menu.show();
+            menu.openPopup();
             menu.syncComponentValidation();
             menu.resumeEvent(MouseEvent.MOUSE_OVER, true, true);
 
@@ -248,7 +248,7 @@ private class Events extends haxe.ui.events.Events {
             this.dispatch(menuEvent);
             
             _currentMenu.unregisterEvent(MenuEvent.MENU_SELECTED, onMenuSelected);
-            _currentMenu.hide();
+            _currentMenu.closePopup();
             _currentButton.selected = false;
             _currentButton = null;
             _currentMenu = null;
