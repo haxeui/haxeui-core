@@ -84,6 +84,24 @@ class LocaleManager {
     public function unregisterComponent(component:Component) {
         _registeredComponents.remove(component);
     }
+
+    public function unregisterProperty(component:Component, prop:String) {
+        var propMap = _registeredComponents.get(component);
+        if (propMap == null) {
+            return;
+        }
+        propMap.remove(prop);
+    }
+
+    /*
+        Guards the Reflect.setProperty calls in refreshFor below: those re-invoke the same
+        generated property setter that calls unregisterProperty above for any non-{{}} value, since
+        by the time refreshFor resolves a binding to a plain string, that string no longer contains
+        "{{"/"}}" either. Without this guard, applying a freshly-registered binding for the first
+        time would immediately unregister the very entry refreshFor just used, silently turning every
+        binding into a one-shot that never updates again on a later locale change.
+    */
+    public var isRefreshing(default, null):Bool = false;
     
     public function findBindingExpr(component:Component, prop:String):String {
         var propMap = _registeredComponents.get(component);
@@ -137,6 +155,7 @@ class LocaleManager {
         }
         
         
+        isRefreshing = true;
         for (prop in propMap.keys()) {
             var entry = propMap.get(prop);
             if (entry.callback != null) {
@@ -147,6 +166,7 @@ class LocaleManager {
                 Reflect.setProperty(component, prop, value);
             }
         }
+        isRefreshing = false;
     }
     
     public function refreshAll() {
