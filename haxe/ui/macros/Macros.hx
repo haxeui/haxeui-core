@@ -676,7 +676,10 @@ class Macros {
                                         haxe.ui.locale.LocaleManager.instance.registerComponent(cast this, $v{f.name}, value);
                                         return value;
                                     }
-                                case _:    
+                                case _:
+                            }
+                            if (haxe.ui.locale.LocaleManager.instance.isRefreshing == false) {
+                                haxe.ui.locale.LocaleManager.instance.unregisterProperty(cast this, $v{f.name});
                             }
                             if (behaviours == null) {
                                 behaviours = new haxe.ui.behaviours.Behaviours(cast this);
