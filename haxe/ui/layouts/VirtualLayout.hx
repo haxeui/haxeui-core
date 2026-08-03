@@ -138,7 +138,7 @@ class VirtualLayout extends ScrollViewLayout {
             if (n < contents.childComponents.length) {
                 item = cast(contents.childComponents[n], ItemRenderer);
                 if (item.data == data) {
-                    item.invalidateComponentData();
+                    //item.invalidateComponentData();
                     continue;
                 }
 
