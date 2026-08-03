@@ -742,7 +742,25 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
              _componentHeight = h;
              invalidate = true;
          }
- 
+
+         if (w != null && style != null) {
+             if (style.minWidth != null && w < style.minWidth) {
+                 w = style.minWidth;
+             }
+             if (style.maxWidth != null && w > style.maxWidth) {
+                 w = style.maxWidth;
+             }
+         }
+         
+         if (h != null && style != null) {
+             if (style.minHeight != null && h < style.minHeight) {
+                 h = style.minHeight;
+             }
+             if (style.maxHeight != null && h > style.maxHeight) {
+                 h = style.maxHeight;
+             }
+         }
+         
          if (invalidate == true && isComponentInvalid(InvalidationFlags.LAYOUT) == false) {
              invalidateComponentLayout();
          }
