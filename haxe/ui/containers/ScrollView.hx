@@ -1388,27 +1388,36 @@ class ScrollViewBuilder extends CompositeBuilder {
         }
 
         var containsEmptyContentsComponent = _scrollview.containsChildComponent(emptyContentsComponent);
-        if (contentsComponent.numComponents == 0) {
-            if (!containsEmptyContentsComponent) {
-                emptyContentsComponent.addClass("empty-contents-component");
-                _scrollview.addComponent(emptyContentsComponent);
-            }
-
-            if (_scrollview.emptyContentsText != null) {
-                if ((emptyContentsComponent is Label)) {
-                    emptyContentsComponent.text = _scrollview.emptyContentsText;
-                } else {
-                    var label = emptyContentsComponent.findComponent(Label, true);
-                    if (label != null) {
-                        label.text = _scrollview.emptyContentsText;
-                    }
-                }                
-            }
-
-            emptyContentsComponent.show();
+        if (!containsContent(contentsComponent)) {
+            showEmptyContentsComponent();
         } else if (containsEmptyContentsComponent) {
             emptyContentsComponent.hide();
         }
+    }
+
+    private function showEmptyContentsComponent() {
+        var emptyContentsComponent:Component = _scrollview.emptyContentsComponent;
+        if (emptyContentsComponent == null) {
+            return;
+        }
+        var containsEmptyContentsComponent = _scrollview.containsChildComponent(emptyContentsComponent);
+        if (!containsEmptyContentsComponent) {
+            emptyContentsComponent.addClass("empty-contents-component");
+            _scrollview.addComponent(emptyContentsComponent);
+        }
+
+        if (_scrollview.emptyContentsText != null) {
+            if ((emptyContentsComponent is Label)) {
+                emptyContentsComponent.text = _scrollview.emptyContentsText;
+            } else {
+                var label = emptyContentsComponent.findComponent(Label, true);
+                if (label != null) {
+                    label.text = _scrollview.emptyContentsText;
+                }
+            }                
+        }
+
+        emptyContentsComponent.show();
     }
 
     private override function get_numComponents():Null<Int> {
@@ -1431,10 +1440,9 @@ class ScrollViewBuilder extends CompositeBuilder {
         if ((child is HorizontalScroll) == false && (child is VerticalScroll) == false && child.hasClass("scrollview-contents") == false) {
             var contentsComponent = null;
             if ((child is Box)) {
-                child.registerEvent(UIEvent.COMPONENT_ADDED, onContentsChanged);
-                child.registerEvent(UIEvent.COMPONENT_REMOVED, onContentsChanged);
                 contentsComponent = child;
             }
+            registerEventForChildrenBoxes(child);
             var r = _contents.addComponent(child);
             checkEmptyContentsComponent(contentsComponent);
             return r;
@@ -1442,10 +1450,33 @@ class ScrollViewBuilder extends CompositeBuilder {
         return null;
     }
 
+    private function registerEventForChildrenBoxes(b:Component) {
+        if ((b is Box)||(b is ScrollView)){
+            b.registerEvent(UIEvent.COMPONENT_ADDED, onContentsChanged);
+            b.registerEvent(UIEvent.COMPONENT_REMOVED, onContentsChanged);
+            for ( c in b.childComponents) {
+                registerEventForChildrenBoxes(c);
+            }
+        }
+    }
+    
+    private function containsContent(b:Component) {
+        if (!(b is Box) && !(b is ScrollView)) {
+            return true;
+        } else {
+            for ( c in b.childComponents) {
+                if (containsContent(c)) return true;
+            }
+        }
+        return false;
+    }
+
     public override function addComponentAt(child:Component, index:Int):Component {
         if ((child is HorizontalScroll) == false && (child is VerticalScroll) == false && child.hasClass("scrollview-contents") == false) {
             var r = _contents.addComponentAt(child, index);
-            checkEmptyContentsComponent();
+            if ( _scrollview.emptyContentsComponent != null && !_scrollview.emptyContentsComponent.hidden && containsContent(child)) {
+                checkEmptyContentsComponent();
+            }
             return r;
         }
         return null;
@@ -1457,7 +1488,9 @@ class ScrollViewBuilder extends CompositeBuilder {
         }
         if ((child is HorizontalScroll) == false && (child is VerticalScroll) == false && child.hasClass("scrollview-contents") == false) {
             var r = _contents.removeComponent(child, dispose, invalidate);
-            checkEmptyContentsComponent();
+            if (containsContent(child)) {
+                checkEmptyContentsComponent();
+            }
             return r;
         }
         return null;
@@ -1503,8 +1536,16 @@ class ScrollViewBuilder extends CompositeBuilder {
         }
     }
 
-    private function onContentsChanged(event:UIEvent) { 
-        checkEmptyContentsComponent(event.target);
+    private function onContentsChanged(event:UIEvent) {
+        var child = event.relatedComponent;
+        registerEventForChildrenBoxes(child);
+        if (event.type == UIEvent.COMPONENT_ADDED) {
+            if ( _scrollview.emptyContentsComponent != null && !_scrollview.emptyContentsComponent.hidden && containsContent(child)) {
+                _scrollview.emptyContentsComponent.hide();
+            }
+        } else if ( _scrollview.emptyContentsComponent != null && _scrollview.emptyContentsComponent.hidden && containsContent(child)) {
+            checkEmptyContentsComponent();
+        }
     }
 
     private function horizontalConstraintModifier():Float {
