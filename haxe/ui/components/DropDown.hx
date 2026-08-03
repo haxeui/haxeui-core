@@ -155,9 +155,10 @@ private class DataSourceBehaviour extends DefaultBehaviour {
                 dropDown.text = "";
             }
         }
-
-        var handler:IDropDownHandler = cast(_component._compositeBuilder, DropDownBuilder).handler;
-        handler.reset();
+        if(_component._compositeBuilder!=null){
+            var handler:IDropDownHandler = cast(_component._compositeBuilder, DropDownBuilder).handler;
+            handler.reset();
+        }
         if (_component.text == null && _component.isReady) {
             dropDown.selectedIndex = 0;
         }

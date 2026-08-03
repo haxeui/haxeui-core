@@ -647,14 +647,14 @@ class Macros {
                 if (f.name == valueField) {
                     if (f.isDynamic == true) {
                         newField = builder.addSetter(f.name, f.type, macro { // add a normal (Variant) setter but let the binding manager know that the value has changed
-                            behaviours.setDynamic($v{f.name}, value);
+                            if (behaviours != null) behaviours.setDynamic($v{f.name}, value);
                             dispatch(new haxe.ui.events.UIEvent(haxe.ui.events.UIEvent.PROPERTY_CHANGE, $v{f.name}));
                             dispatch(new haxe.ui.events.UIEvent(haxe.ui.events.UIEvent.PROPERTY_CHANGE, "value"));
                             return value;
                         }, f.access);
                     } else {
                         newField = builder.addSetter(f.name, f.type, macro { // add a normal (Variant) setter but let the binding manager know that the value has changed
-                            behaviours.set($v{f.name}, value);
+                            if (behaviours != null) behaviours.set($v{f.name}, value);
                             dispatch(new haxe.ui.events.UIEvent(haxe.ui.events.UIEvent.PROPERTY_CHANGE, $v{f.name}));
                             dispatch(new haxe.ui.events.UIEvent(haxe.ui.events.UIEvent.PROPERTY_CHANGE, "value"));
                             return value;
@@ -664,7 +664,7 @@ class Macros {
                 } else {
                     if (f.isDynamic == true) {
                         newField = builder.addSetter(f.name, f.type, macro { // add a normal (Variant) setter
-                            behaviours.setDynamic($v{f.name}, value);
+                            if (behaviours != null) behaviours.setDynamic($v{f.name}, value);
                             dispatch(new haxe.ui.events.UIEvent(haxe.ui.events.UIEvent.PROPERTY_CHANGE, $v{f.name}));
                             return value;
                         }, f.access);
