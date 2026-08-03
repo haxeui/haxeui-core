@@ -104,6 +104,7 @@ class AnimationBuilder {
 
         var frames = new AnimationKeyFrames("builder", _keyFrames);
         target.registerEvent(AnimationEvent.END, function(e) {
+            target.invalidateComponent();
             target._pauseAnimationStyleChanges = false;
             target._componentAnimation = null;
             target.unregisterEvents(AnimationEvent.END);
