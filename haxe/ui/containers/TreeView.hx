@@ -23,6 +23,8 @@ import haxe.ui.data.ArrayDataSource;
 import haxe.ui.data.DataSource;
 import haxe.ui.events.UIEvent;
 import haxe.ui.util.Variant;
+import haxe.ui.events.EventType;
+
 
 @:access(haxe.ui.containers.TreeViewNode)
 @:composite(TreeViewEvents, TreeViewBuilder)
@@ -34,6 +36,8 @@ class TreeView extends ScrollView implements IDataComponent {
     @:call(ClearNodes)                  public function clearNodes():Void;
     @:call(GetNodesInternal)            private function getNodesInternal():Array<Component>;
     
+    @:event(TreeViewEvent.NODE_COLLAPSE_EXPAND)        public var onCollapseExpand:TreeViewEvent->Void;
+
     private var _dataSource:DataSource<Dynamic> = null;
     public var dataSource(get, set):DataSource<Dynamic>;
     private function get_dataSource():DataSource<Dynamic> {
@@ -262,7 +266,28 @@ private class TreeViewBuilder extends ScrollViewBuilder {
     }
 }
 
+class TreeViewEvent extends UIEvent{
+    public static final NODE_COLLAPSE_EXPAND:EventType<TreeViewEvent> = EventType.name("nodecollapseexpand");
 
+    public var expand:Bool = false;
+    public var affected_node:TreeViewNode;
+    public function new(type:EventType<TreeViewEvent>, expand:Bool = false, bubble:Null<Bool> = false, data:Dynamic = null){
+        super(type, bubble, data);
+        this.expand = expand;
+    }
+    public override function clone():TreeViewEvent {
+        var c:TreeViewEvent = new TreeViewEvent(this.type);
+        c.expand = this.expand;
+        c.affected_node = this.affected_node;
+        c.type = this.type;
+        c.bubble = this.bubble;
+        c.target = this.target;
+        c.data = this.data;
+        c.canceled = this.canceled;
+        postClone(c);
+        return c;
+    }
+}
 
 
 /***************************************************************************************************
