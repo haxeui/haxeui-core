@@ -263,11 +263,24 @@ class ToolTipManager {
             return;
         }
         
+        var options = _toolTipOptions.get(component);
+        if (options == null) {
+            // Unregistered while the delay timer was running, so there is
+            // nothing left to show. Not a rare race: the hover starts the
+            // timer, and anything that rebuilds the part of the UI under the
+            // cursor before it fires - a selection change that replaces a
+            // property panel, a list that repopulates - unregisters the
+            // component the timer is still holding. Reading tipData off the
+            // missing options then takes the application down with a null
+            // access, for the sin of moving the mouse.
+            stopCurrent();
+            return;
+        }
+
         createToolTip();
 
         _toolTip.hide();
 
-        var options = _toolTipOptions.get(component);
         var renderer = createToolTipRenderer(options);
         if (_toolTip.childComponents[0] != renderer) {
             if (_toolTip.childComponents.length > 0) {
