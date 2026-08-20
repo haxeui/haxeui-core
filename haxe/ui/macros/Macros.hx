@@ -67,7 +67,7 @@ class Macros {
 
         return builder.fields;
     }
-    
+
     macro static function build():Array<Field> {
         var builder = new ClassBuilder(Context.getBuildFields(), Context.getLocalType(), Context.currentPos());
         #if haxeui_expose_all
@@ -96,7 +96,7 @@ class Macros {
         buildEvents(builder);
         applyProperties(builder);
         addPropertiesToRTTI(builder);
-        
+
         #if haxeui_macro_times
         stopTimer();
         #end
@@ -112,7 +112,7 @@ class Macros {
             builder.addFunction("new", macro { super(); });
         }
     }
-    
+
     static function applyProperties(builder:ClassBuilder) {
         #if haxeui_macro_times
         var stopTimer = Context.timer("apply properties");
@@ -190,7 +190,7 @@ class Macros {
             }
         }
     }
-    
+
     static function buildFromXmlMeta(builder:ClassBuilder) {
         #if haxeui_macro_times
         var stopTimer = Context.timer("build from xml meta");
@@ -239,7 +239,7 @@ class Macros {
         ComponentMacros.buildLanguageBindings(codeBuilder, buildData);
         // TODO: namespace shouldnt always be default
         ComponentClassMap.register("urn::haxeui::org/" + builder.name, builder.fullPath);
-        
+
         builder.ctor.add(codeBuilder, AfterSuper);
 
         #if haxeui_macro_times
@@ -357,7 +357,7 @@ class Macros {
                 }
                 return value;
             });
-            
+
             if (f.name == "borderColor") {
                 codeBuilder.add(macro {
                     customStyle.borderTopColor = value;
@@ -374,7 +374,7 @@ class Macros {
                 });
             }
             codeBuilder.add(macro invalidateComponentStyle());
-            
+
             if (f.hasMetaParam("style", "layout")) {
                 codeBuilder.add(macro
                     invalidateComponentLayout()
@@ -386,6 +386,10 @@ class Macros {
                 );
             }
             builder.addSetter(f.name, f.type, codeBuilder.expr);
+            var setterFn = builder.findFunction('set_${f.name}');
+            if (setterFn != null) {
+                setterFn.field.meta.push({name: ":keep", params: [], pos: setterFn.field.pos});
+            }
         }
 
         #if haxeui_macro_times
@@ -493,7 +497,7 @@ class Macros {
         #if haxeui_macro_times
         var stopTimer = Context.timer("build clonable");
         #end
-        
+
         var useSelf:Bool = (builder.fullPath == "haxe.ui.backend.ComponentBase");
 
         var cloneFn = builder.findFunction("cloneComponent");
@@ -529,7 +533,7 @@ class Macros {
                     c.addComponent(child.cloneComponent());
                 }
             }
-            
+
             postCloneComponent(cast c);
         });
         cloneFn.add(macro return c);
@@ -611,7 +615,7 @@ class Macros {
             if (f.name == valueField) {
                 RTTI.addClassProperty(builder.fullPath, "value", ComplexTypeTools.toString(f.type));
             }
-            
+
             f.remove();
             var defVal:Dynamic = null;
             if (f.isBool) {
@@ -676,7 +680,7 @@ class Macros {
                                         haxe.ui.locale.LocaleManager.instance.registerComponent(cast this, $v{f.name}, value);
                                         return value;
                                     }
-                                case _:    
+                                case _:
                             }
                             if (behaviours == null) {
                                 behaviours = new haxe.ui.behaviours.Behaviours(cast this);
@@ -758,7 +762,7 @@ class Macros {
             f.remove();
 
             var propName = f.getMetaValueString("value");
-            if (resolvedValueField != null && (resolvedValueField.isVariant || 
+            if (resolvedValueField != null && (resolvedValueField.isVariant ||
                                                resolvedValueField.isString ||
                                                resolvedValueField.isNumeric ||
                                                resolvedValueField.isBool)) {
@@ -860,7 +864,7 @@ class Macros {
             var superFullPath = superClass.t.get().pack.join(".") + "." + superClass.t.get().name;
             RTTI.setSuperClass(builder.fullPath, superFullPath);
         }
-        
+
         //buildEvents(builder);
         buildStyles(builder);
         buildBindings(builder);
@@ -870,7 +874,7 @@ class Macros {
         }
 
         RTTI.save();
-        
+
         #if haxeui_macro_times
         stopTimer();
         #end
