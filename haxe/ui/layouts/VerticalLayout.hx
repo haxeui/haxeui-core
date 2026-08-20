@@ -34,7 +34,7 @@ class VerticalLayout extends DefaultLayout {
             }
 
             child.moveComponent(xpos, ypos + marginTop(child));
-            ypos += child.componentHeight + verticalSpacing;
+            ypos += child.componentHeight + marginTop(child) + marginBottom(child) + verticalSpacing;
         }
     }
 
