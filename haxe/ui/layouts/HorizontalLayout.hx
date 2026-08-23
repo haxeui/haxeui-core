@@ -75,7 +75,7 @@ class HorizontalLayout extends DefaultLayout {
             else {
                 child.moveComponent(xpos + marginLeft(child), ypos);
             }
-            xpos += child.componentWidth + spacing;
+            xpos += child.componentWidth + marginLeft(child) + marginRight(child) + spacing;
         }
     }
 
