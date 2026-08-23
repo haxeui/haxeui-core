@@ -115,6 +115,9 @@ class FocusManager extends FocusManagerImpl {
     
     private var _lastFocuses:Map<Component, IFocusable> = new Map<Component, IFocusable>();
     private function set_focus(value:IFocusable):IFocusable {
+        if (!enabled) {
+            return value;
+        }
         if (value != null) {
             var c = cast(value, Component);
             var root = c.rootComponent;
