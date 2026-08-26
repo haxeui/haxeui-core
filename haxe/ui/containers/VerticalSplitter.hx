@@ -26,25 +26,35 @@ private class VerticalSplitterEvents extends SplitterEvents {
     }
 
     private override function handleResize(prev:Component, next:Component, event:MouseEvent) {
-        var screenY = _splitter.screenTop;
-        var delta = event.screenY - screenY - _currentOffset.y;
-        var ucy = _splitter.layout.usableHeight;
-        
-        var prevCY = delta;
-        var nextCY = ucy - delta;
-        
-        var prevMinHeight:Float = 0;
-        var nextMinHeight:Float = 0;
-        
-        var prevMaxHeight:Null<Float> = null;
-        var nextMaxHeight:Null<Float> = null;
-        
+        if (prev == null || next == null) {
+            return;
+        }
+
+        // The horizontal twin carries the account of both fixes.
+        var ucy = _dragTotalCY;
+        var prevCY = _dragPrevCY + (event.screenY - _dragFromY);
+        var nextCY = ucy - prevCY;
+
+        // See the horizontal twin: these four have always been named for the
+        // panes' own limits and never read them.
+        var prevMinHeight:Float = minHeightOf(prev);
+        var nextMinHeight:Float = minHeightOf(next);
+
+        var prevMaxHeight:Null<Float> = maxHeightOf(prev);
+        var nextMaxHeight:Null<Float> = maxHeightOf(next);
+
+        if (prevMinHeight + nextMinHeight > ucy) {
+            var scale = (prevMinHeight + nextMinHeight > 0) ? ucy / (prevMinHeight + nextMinHeight) : 0;
+            prevMinHeight *= scale;
+            nextMinHeight *= scale;
+        }
+
         // limit to min sizes
-        if (prevCY <= prevMinHeight) {
+        if (prevCY < prevMinHeight) {
             prevCY = prevMinHeight;
             nextCY = ucy - prevMinHeight;
         }
-        if (nextCY <= nextMinHeight) {
+        if (nextCY < nextMinHeight) {
             prevCY = ucy - nextMinHeight;
             nextCY = nextMinHeight;
         }
@@ -58,7 +68,7 @@ private class VerticalSplitterEvents extends SplitterEvents {
             prevCY = ucy - nextMaxHeight;
             nextCY = nextMaxHeight;
         }
-        
+
         // bit of a hack to make things look a little nicer
         if (prevCY <= 0) {
             @:privateAccess prev.handleVisibility(false);
@@ -70,41 +80,33 @@ private class VerticalSplitterEvents extends SplitterEvents {
         } else {
             @:privateAccess next.handleVisibility(true);
         }
-        
-        // assign new sizes
-        if (prev.percentHeight != null) {
-            prev.percentHeight = (prevCY / ucy) * 100;
-        } else {
-            prev.height = prevCY;
-        }
-        if (next.percentHeight != null) {
-            next.percentHeight = (nextCY / ucy) * 100;
-        } else {
-            next.height = nextCY;
-        }
-        
-        /*
-        var delta = event.screenY - _currentOffset.y;
-        var prevCY = prev.height += delta;
-        var nextCY = next.height -= delta;
-        var ucy = _splitter.layout.usableHeight;
-        
-        if (prevCY <= 0 || nextCY <= 0) {
-            return;
-        }
-        
-        if (prev.percentHeight != null) {
-            prev.percentHeight = (prevCY / ucy) * 100;
-        } else {
-            prev.height = prevCY;
-        }
 
+        // assign new sizes
+        var after = usableAfterV(_splitter.layout.usableHeight, prev, next, prevCY, nextCY);
+        if (prev.percentHeight != null) {
+            prev.percentHeight = (after > 0) ? (prevCY / after) * 100 : 0;
+        } else {
+            prev.height = prevCY;
+        }
         if (next.percentHeight != null) {
-            next.percentHeight = (nextCY / ucy) * 100;
+            next.percentHeight = (after > 0) ? (nextCY / after) * 100 : 0;
         } else {
             next.height = nextCY;
         }
-        */
+    }
+
+    private static function minHeightOf(c:Component):Float {
+        if (c == null || c.style == null || c.style.minHeight == null) {
+            return 0;
+        }
+        return c.style.minHeight;
+    }
+
+    private static function maxHeightOf(c:Component):Null<Float> {
+        if (c == null || c.style == null) {
+            return null;
+        }
+        return c.style.maxHeight;
     }
 }
 

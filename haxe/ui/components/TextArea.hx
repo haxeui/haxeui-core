@@ -116,9 +116,37 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICo
         super.validateComponentInternal(nextFrame);
 
         if (scrollInvalid || layoutInvalid || dataInvalid) {
+            applyAutoHeight();
             if (_compositeBuilder != null) {
                 cast(_compositeBuilder, TextAreaBuilder).checkScrolls(); // TODO: would be nice to not have this
             }
+        }
+    }
+
+    /**
+        Size an `auto` height text area to the text it holds, up to `max-height`.
+
+        Also done as the user types (see the change handler below), but this is
+        what makes it true of text the application SET: the height comes from a
+        measurement, and the measurement is only real once the text has been laid
+        out - which is here, after the validation that lays it out, rather than at
+        the moment the text was assigned.
+
+        Beyond `max-height` the height stops and the rest of the text scrolls,
+        which is the whole point of having a maximum: without the clamp the box
+        simply stayed at whatever height it had already reached.
+    **/
+    private function applyAutoHeight() {
+        if (style == null || style.autoHeight != true || !hasTextInput()) {
+            return;
+        }
+        var newHeight = getTextInput().textHeight + 8; // TODO: magic number, as above
+        var maxHeight = style.maxHeight;
+        if (maxHeight != null && newHeight > maxHeight) {
+            newHeight = maxHeight;
+        }
+        if (newHeight > 0 && this.height != newHeight) {
+            this.height = newHeight;
         }
     }
 }
@@ -466,13 +494,7 @@ private class Events extends haxe.ui.events.Events {
                     }
                     _textarea.text = text;
                     _textarea.dispatch(new UIEvent(UIEvent.CHANGE));
-                    if (_textarea.style.autoHeight == true) {
-                        var maxHeight = _textarea.style.maxHeight;
-                        var newHeight = _textarea.getTextInput().textHeight + 8; // TODO: where does this magic number come from, seems to work across all backends - doesnt seem to be padding
-                        if (maxHeight == null || newHeight < maxHeight) {
-                            _textarea.height = newHeight;
-                        }
-                    }
+                    @:privateAccess _textarea.applyAutoHeight();
 
                     cast(_textarea._compositeBuilder, TextAreaBuilder).checkScrolls();
                 }
@@ -558,16 +580,7 @@ private class Events extends haxe.ui.events.Events {
     }
 
     private function onScrollChange(event:UIEvent) {
-        if (_textarea.style.autoHeight == true) {
-            var maxHeight = _textarea.style.maxHeight;
-            var newHeight = _textarea.getTextInput().textHeight + 8; // TODO: where does this magic number come from, seems to work across all backends - doesnt seem to be padding
-            if (maxHeight == null || newHeight < maxHeight) {
-                _textarea.height = newHeight;
-            }
-            if (maxHeight != null && newHeight > maxHeight) {
-                _textarea.height = maxHeight;
-            }
-        }
+        @:privateAccess _textarea.applyAutoHeight();
         var hscroll:HorizontalScroll = _textarea.findComponent(HorizontalScroll, false);
         if (hscroll != null) {
             _textarea.getTextInput().hscrollPos = hscroll.pos;
