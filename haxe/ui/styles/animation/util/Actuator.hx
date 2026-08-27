@@ -389,28 +389,64 @@ private class Ease {
         return switch (easingFunction) {
             case EasingFunction.LINEAR:
                 linear;
-            case EasingFunction.EASE, EasingFunction.EASE_IN_OUT:
-                easeInOut;
-            case EasingFunction.EASE_IN:
-                easeIn;
-            case EasingFunction.EASE_OUT:
-                easeOut;
+		  case EasingFunction.QUAD_IN:
+		      quadIn;
+		  case EasingFunction.QUAD_OUT:
+			 quadOut;
+		  case EasingFunction.QUAD_IN_OUT:
+		      quadInOut;
+            case EasingFunction.EASE, EasingFunction.EASE_IN_OUT, EasingFunction.CUBIC_IN_OUT:
+                cubicInOut;
+            case EasingFunction.EASE_IN, EasingFunction.CUBIC_IN:
+                cubicIn;
+            case EasingFunction.EASE_OUT, EasingFunction.CUBIC_OUT:
+                cubicOut;
+		  case EasingFunction.QUART_IN:
+		      quartIn;
+		  case EasingFunction.QUART_OUT:
+		      quartOut;
+		  case EasingFunction.QUART_IN_OUT:
+		      quartInOut;
         }
     }
 
     public static function linear(k:Float):Float {
         return k;
     }
+    
+    public static function quadIn(k:Float):Float {
+	   return k * k;
+    }
+    
+    public static function quadOut(k:Float):Float {
+	   return -k * (k - 2);
+    }
+    
+    public static function quadInOut(k:Float):Float {
+	   return k <= .5 ? k * k * 2 : 1 - (--k) * k * 2;
+    }
 
-    public static function easeIn(k:Float):Float {
+    public static function cubicIn(k:Float):Float {
         return k * k * k;
     }
 
-    public static function easeOut(k:Float):Float {
+    public static function cubicOut(k:Float):Float {
         return --k * k * k + 1;
     }
 
-    public static function easeInOut(k:Float):Float {
+    public static function cubicInOut(k:Float):Float {
         return ((k /= 1 / 2) < 1) ? 0.5 * k * k * k : 0.5 * ((k -= 2) * k * k + 2);
+    }
+
+    public static function quartIn(k:Float):Float {
+        return k * k * k * k;
+    }
+
+    public static function quartOut(k:Float):Float {
+        return 1 - (k -= 1) * k * k * k;
+    }
+
+    public static function quartInOut(k:Float):Float {
+        return k <= .5 ? k * k * k * k * 8 : (1 - (k = k * 2 - 2) * k * k * k) / 2 + .5;
     }
 }
