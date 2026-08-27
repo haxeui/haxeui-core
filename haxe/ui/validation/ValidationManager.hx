@@ -5,6 +5,7 @@ import haxe.ui.events.UIEvent;
 import haxe.ui.events.ValidationEvent;
 import haxe.ui.util.EventMap;
 
+@:access(haxe.ui.backend.ComponentBase)
 class ValidationManager {
     static public var instance(get, null):ValidationManager;
     static private function get_instance():ValidationManager {
@@ -132,10 +133,21 @@ class ValidationManager {
         dispatch(new ValidationEvent(ValidationEvent.START));
 
         //check length every time because add() might have added a new item during the last validation
+        var __loopCount = 0;
         while (_queue.length > 0) {
             var item:IValidating = _queue.shift();
             if (item.depth < 0) {
                 continue;   //no longer on the display list
+            }
+            __loopCount++;
+            if (__loopCount > 5000) {
+                var comp = cast(item, haxe.ui.core.Component);
+                trace('[VLOOP] iter=$__loopCount id=${comp.id} cls=${Type.getClassName(Type.getClass(comp))} invCount=${comp._invalidateCount} isAllInv=${comp._isAllInvalid} qLen=${_queue.length}');
+                if (__loopCount > 5020) {
+                    trace('[VLOOP] BREAKING');
+                    _queue.splice(0, _queue.length);
+                    break;
+                }
             }
             item.validateComponent();
         }

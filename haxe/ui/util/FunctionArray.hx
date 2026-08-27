@@ -11,13 +11,18 @@ class FunctionArray<T> {
         return _array[index].callback;
     }
 
+    public function getOriginalRef(index:Int):Dynamic {
+        return _array[index].originalRef;
+    }
+
     public var length(get, null):Int;
     private function get_length():Int {
         return _array.length;
     }
 
-    public function push(x:T, priority:Int = 0):Int {
+    public function push(x:T, priority:Int = 0, ?originalRef:Dynamic):Int {
         var listener:Listener<T> = new Listener(x, priority);
+        listener.originalRef = originalRef;
         for (i in 0..._array.length) {
             if (_array[i].priority < priority) {
                 _array.insert(i, listener);
@@ -32,30 +37,21 @@ class FunctionArray<T> {
         return _array.pop().callback;
     }
 
-    public function indexOf(x:T, fromIndex:Int = 0):Int {
-        #if neko
-        if (Reflect.isFunction(x) == false) {
-            return _array.indexOf(cast x);
-        } else {
-            for (i in fromIndex..._array.length) {
-                if (Reflect.compareMethods(_array[i].callback, x) == true) {
+    public function indexOf(x:T, fromIndex:Int = 0, ?originalRef:Dynamic):Int {
+        for (i in fromIndex..._array.length) {
+            if (originalRef != null && _array[i].originalRef != null) {
+                if (_array[i].originalRef == originalRef || Reflect.compareMethods(_array[i].originalRef, originalRef)) {
                     return i;
                 }
-            }
-            return -1;
-        }
-        #else
-        for (i in fromIndex..._array.length) {
-            if (_array[i].callback == x) {
+            } else if (_array[i].callback == x || Reflect.compareMethods(_array[i].callback, x)) {
                 return i;
             }
         }
         return -1;
-        #end
     }
 
-    public function remove(x:T):Bool {
-        var index:Int = indexOf(x);
+    public function remove(x:T, ?originalRef:Dynamic):Bool {
+        var index:Int = indexOf(x, 0, originalRef);
         if (index != -1) {
             _array.splice(index, 1);
         }
@@ -63,8 +59,8 @@ class FunctionArray<T> {
         return index != -1;
     }
 
-    public function contains(x:T):Bool {
-        return indexOf(x) != -1;
+    public function contains(x:T, ?originalRef:Dynamic):Bool {
+        return indexOf(x, 0, originalRef) != -1;
     }
 
     public function iterator():Iterator<Listener<T>> {

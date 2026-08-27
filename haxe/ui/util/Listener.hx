@@ -1,6 +1,6 @@
 package haxe.ui.util;
 
-@:forward(callback, priority)
+@:forward(callback, priority, originalRef)
 abstract Listener<T>(ListenerInternal<T>) {
     public inline function new(callback:T, priority:Int){
         this = new ListenerInternal(callback, priority);
@@ -26,6 +26,7 @@ abstract Listener<T>(ListenerInternal<T>) {
 private class ListenerInternal<T> {
     public var callback(default, null):T;
     public var priority(default, null):Int;
+    public var originalRef:Dynamic;
 
     public function new (callback:T, priority:Int) {
         this.callback = callback;
