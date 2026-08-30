@@ -164,7 +164,9 @@ class ThemeManager {
             style += "\n" + styleData;
         }
         if (style != null) {
-            addStyleString(style);
+            var p = haxe.io.Path.directory(resourceId);
+            addStyleString(style, p); //haxe.io.Path.directory(resourceId));
+            //priority++;
         } else {
             #if debug
             trace("WARNING: could not find " + resourceId);
@@ -172,8 +174,8 @@ class ThemeManager {
         }
     }
 
-    public function addStyleString(style:String) {
-        Toolkit.styleSheet.parse(style);
+    public function addStyleString(style:String, sheetName:String) {
+        Toolkit.styleSheet.parse(style, sheetName);
     }
 
     private function buildThemeVars(themeName:String, vars:Map<String, String>) {
