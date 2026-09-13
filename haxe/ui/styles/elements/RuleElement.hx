@@ -114,13 +114,27 @@ class RuleElement {
             case "border":
                 processComposite(d, ["border-size", "border-style", "border-color"]);
             case "border-top":
-                processComposite(d, ["border-top-size", "border-style", "border-top-color"]);
+                processComposite(d, ["border-top-size", "border-top-style", "border-top-color"]);
             case "border-left":
-                processComposite(d, ["border-left-size", "border-style", "border-left-color"]);
+                processComposite(d, ["border-left-size", "border-left-style", "border-left-color"]);
             case "border-bottom":
-                processComposite(d, ["border-bottom-size", "border-style", "border-bottom-color"]);
+                processComposite(d, ["border-bottom-size", "border-bottom-style", "border-bottom-color"]);
             case "border-right":
-                processComposite(d, ["border-right-size", "border-style", "border-right-color"]);
+                processComposite(d, ["border-right-size", "border-right-style", "border-right-color"]);
+            case "border-style":
+                // expand to the per side styles (like border-size / border-color), but also keep
+                // the plain border-style directive so Style.borderStyle is still populated
+                var parts = ["border-top-style", "border-left-style", "border-right-style", "border-bottom-style"];
+                switch (d.value) {
+                    case Value.VConstant(_) | Value.VString(_) | Value.VNone:
+                        for (p in parts) {
+                            directives.set(p, new Directive(p, d.value));
+                        }
+                    case Value.VComposite(_):
+                        processComposite(d, parts);
+                    case _:
+                }
+                directives.set(d.directive, d);
             case "border-size":
                 processComposite(d, ["border-top-size", "border-left-size", "border-right-size", "border-bottom-size"]);
             case "border-color":

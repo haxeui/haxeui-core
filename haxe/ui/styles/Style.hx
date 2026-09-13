@@ -114,6 +114,10 @@ class Style {
     /** A value between 0 and 1 deciding the object's border opacity 
         0 is transparent **/                                                        @:optional public var borderOpacity:Null<Float>;
     /** The style to use for this border's design **/                               @:optional public var borderStyle:Null<String>;
+    /** The style to use for the upper side of the border **/                       @:optional public var borderTopStyle:Null<String>;
+    /** The style to use for the left side of the border **/                        @:optional public var borderLeftStyle:Null<String>;
+    /** The style to use for the lower side of the border **/                       @:optional public var borderBottomStyle:Null<String>;
+    /** The style to use for the right side of the border **/                       @:optional public var borderRightStyle:Null<String>;
 
     /** A path to an image file to be shown as an icon inside of the object **/     @:optional public var icon:Variant;
     /** The position of the icon inside the object - `left`, `right`... **/         @:optional public var iconPosition:Null<String>;
@@ -396,6 +400,14 @@ class Style {
                     borderOpacity = ValueTools.float(v.value);
                 case "border-style":
                     borderStyle = ValueTools.string(v.value);
+                case "border-top-style":
+                    borderTopStyle = ValueTools.string(v.value);
+                case "border-left-style":
+                    borderLeftStyle = ValueTools.string(v.value);
+                case "border-right-style":
+                    borderRightStyle = ValueTools.string(v.value);
+                case "border-bottom-style":
+                    borderBottomStyle = ValueTools.string(v.value);
 
                 case "icon":
                     switch (v.value) {
@@ -667,6 +679,10 @@ class Style {
         if (s.borderRadiusBottomRight != null) borderRadiusBottomRight = s.borderRadiusBottomRight;
         if (s.borderOpacity != null) borderOpacity = s.borderOpacity;
         if (s.borderStyle != null) borderStyle = s.borderStyle;
+        if (s.borderTopStyle != null) borderTopStyle = s.borderTopStyle;
+        if (s.borderLeftStyle != null) borderLeftStyle = s.borderLeftStyle;
+        if (s.borderBottomStyle != null) borderBottomStyle = s.borderBottomStyle;
+        if (s.borderRightStyle != null) borderRightStyle = s.borderRightStyle;
 
         if (s.filter != null) filter = s.filter.copy();
         if (s.backdropFilter != null) backdropFilter = s.backdropFilter.copy();
@@ -774,6 +790,10 @@ class Style {
         if (s.borderRadiusBottomRight != borderRadiusBottomRight) return false;
         if (s.borderOpacity != borderOpacity) return false;
         if (s.borderStyle != borderStyle) return false;
+        if (s.borderTopStyle != borderTopStyle) return false;
+        if (s.borderLeftStyle != borderLeftStyle) return false;
+        if (s.borderBottomStyle != borderBottomStyle) return false;
+        if (s.borderRightStyle != borderRightStyle) return false;
         
         if (s.color != color) return false;
 
