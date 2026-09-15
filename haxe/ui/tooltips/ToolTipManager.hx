@@ -172,7 +172,7 @@ class ToolTipManager {
         _timer = null;
         if (_currentRegion != null) {
             showToolTipForRegion(_currentRegion);
-        } else if (_currentComponent != null) {
+        } else if (_currentComponent != null && _currentComponent.exists) {
             showToolTipForComponent(_currentComponent);
         }
     }
