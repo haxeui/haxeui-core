@@ -45,9 +45,8 @@ class RuleElement {
             }
         }
 
-        if (c.pseudoClass != null) {
-            var pc = ":" + c.pseudoClass;
-            if (d.hasClass(pc) == false) {
+        for (pseudoClass in c.pseudoClasses) {
+            if (d.hasClass(":" + pseudoClass) == false) {
                 return false;
             }
         }

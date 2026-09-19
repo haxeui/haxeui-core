@@ -26,7 +26,7 @@ class Selector {
             current.parent = parent;
 
             var p1 = i.split(":");
-            current.pseudoClass = p1[1];
+            current.pseudoClasses = p1.slice(1);
 
             var main = p1[0];
 

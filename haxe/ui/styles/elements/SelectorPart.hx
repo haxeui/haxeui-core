@@ -3,7 +3,7 @@ package haxe.ui.styles.elements;
 class SelectorPart {
     public var parent:SelectorPart = null;
 
-    public var pseudoClass:String = null;
+    public var pseudoClasses:Array<String> = [];
     public var className:String = null;
     public var id:String = null;
     public var nodeName:String = null;
@@ -36,7 +36,7 @@ class SelectorPart {
         if (className != null) {
             sb.add("." + className);
         }
-        if (pseudoClass != null) {
+        for (pseudoClass in pseudoClasses) {
             sb.add(":" + pseudoClass);
         }
 
