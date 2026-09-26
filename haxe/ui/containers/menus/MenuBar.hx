@@ -32,6 +32,18 @@ class MenuBar extends HBox {
     @:event(MenuEvent.MENU_OPENED)          public var onMenuOpened:MenuEvent->Void;
     @:event(MenuEvent.MENU_CLOSED)          public var onMenuClosed:MenuEvent->Void;
 
+    /**
+     Closes the currently open menu, if any, the same way the menubar itself does when the user
+     dismisses it: the menu is hidden, its button is deselected and `MenuEvent.MENU_CLOSED` is dispatched
+    **/
+    public function closeCurrentMenu() {
+        if (_internalEvents == null) {
+            return;
+        }
+        var events:Events = cast(_internalEvents, Events);
+        @:privateAccess events.hideCurrentMenu(true);
+    }
+
     private override function onThemeChanged() {
         super.onThemeChanged();
         var builder:Builder = cast(this._compositeBuilder, Builder);
