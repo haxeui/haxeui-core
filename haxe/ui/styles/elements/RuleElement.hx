@@ -151,7 +151,11 @@ class RuleElement {
                     v1 = [d.value];
                 }
                 for (v in v1) {
-                    var s = ValueTools.string(v).toLowerCase();
+                    var s = ValueTools.string(v);
+                    if (s == null) {
+                        continue;
+                    }
+                    s = s.toLowerCase();
                     if (s == "bold") {
                         directives.set("font-bold", new Directive("font-bold", Value.VBool(true)));
                     } else if (s == "italic") {
