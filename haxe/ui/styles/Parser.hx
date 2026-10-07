@@ -20,6 +20,7 @@ class Parser {
     static var combinedCSSMediaRegex:EReg = ~/((\s*?(?:\/\*[\s\S]*?\*\/)?\s*?@media[\s\S]*?)\{([\s\S]*?)\}\s*?\})|(([\s\S]*?)\{([\s\S]*?)\})/gi; //to match css & media queries together
     static var cssCommentsRegex:EReg = ~/(\/\*[\s\S]*?\*\/)/gi;
     static var cssImportStatementRegex:EReg = ~/@import .*?;/gi;
+    static var cssImportantRegex:EReg = ~/\s*!\s*important$/i;
 
     static var newlineRegex:EReg = new EReg("\n+", "g");
 
@@ -169,6 +170,8 @@ class Parser {
             var parts = line.split(':');
             var cssDirective = StringTools.trim(parts[0]);
             var cssValue = StringTools.trim(parts.slice(1).join(':'));
+            // importance isn't supported, ignore a trailing "!important" so it doesn't become part of the value
+            cssValue = cssImportantRegex.replace(cssValue, "");
 
             //more checks
             if (cssDirective.length < 1 || cssValue.length < 1) {
