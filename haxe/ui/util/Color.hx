@@ -156,11 +156,14 @@ abstract Color(Int) from Int {
     }
 
     @:from static public function fromString(s:String):Color {
+        if (StringTools.startsWith(s, "#") && s.length == 4) { // #rgb -> #rrggbb
+            var r = s.charAt(1);
+            var g = s.charAt(2);
+            var b = s.charAt(3);
+            return Std.parseInt("0x" + r + r + g + g + b + b);
+        }
         if (StringTools.startsWith(s, "0x") || StringTools.startsWith(s, "#")) {
             return Std.parseInt("0x" + s.substring(s.length - 6));
-        }
-        if (StringTools.startsWith(s, "#") && s.length == 4) {
-            return Std.parseInt("0x" + s.substring(s.length - 3));
         }
         if (colors.exists(s)) {
             return colors.get(s);
