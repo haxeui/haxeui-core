@@ -223,6 +223,9 @@ class ThemeManager {
     // Helpers
     //****************************************************************************************************
     public function image(id:String):String {
+        if (_themeImages == null) {
+            return null;
+        }
         var image = _themeImages.get(id);
         if (image == null) {
             return null;
