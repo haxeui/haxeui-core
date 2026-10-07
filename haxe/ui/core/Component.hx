@@ -2070,6 +2070,7 @@ class Component extends ComponentImpl
         dispatch(new UIEvent(UIEvent.MOVE));
     }
 
+    @:noCompletion private var _clipRectApplied:Bool = false;
     @:dox(group = "Internal")
     public function updateComponentDisplay() {
         if (componentWidth == null || componentHeight == null) {
@@ -2085,6 +2086,10 @@ class Component extends ComponentImpl
         if (_componentClipRect != null ||
             (style != null && style.clip != null && style.clip == true)) {
             handleClipRect(_componentClipRect != null ? _componentClipRect : new Rectangle(0, 0, componentWidth, componentHeight));
+            _clipRectApplied = true;
+        } else if (_clipRectApplied == true) {
+            handleClipRect(null);
+            _clipRectApplied = false;
         }
     }
 
