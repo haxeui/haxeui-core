@@ -88,23 +88,9 @@ class RuleElement {
     private function processDirective(d:Directive) {
         switch (d.directive) {
             case "padding":
-                var vl = ValueTools.composite(d.value);
-                if (vl.length == 4 || vl.length == 1) {
-                    processComposite(d, ["padding-top", "padding-left", "padding-right", "padding-bottom"]);
-                } else if (vl.length == 2) {
-                    processComposite(new Directive("", vl[0]), ["padding-top", "padding-bottom"]);
-                    processComposite(new Directive("", vl[1]), ["padding-left", "padding-right"]);
-                } else if (vl.length == 0) {
-                    processComposite(d, ["padding-top", "padding-left", "padding-right", "padding-bottom"]);
-                }
+                processSidesComposite(d, ["padding-top", "padding-right", "padding-bottom", "padding-left"]);
             case "margin":
-                var vl = ValueTools.composite(d.value);
-                if (vl.length == 4 || vl.length == 1) {
-                    processComposite(d, ["margin-top", "margin-left", "margin-right", "margin-bottom"]);
-                } else if (vl.length == 2) {
-                    processComposite(new Directive("", vl[0]), ["margin-top", "margin-bottom"]);
-                    processComposite(new Directive("", vl[1]), ["margin-left", "margin-right"]);
-                }
+                processSidesComposite(d, ["margin-top", "margin-right", "margin-bottom", "margin-left"]);
             case "background-position":
                 processComposite(d, ["background-position-x", "background-position-y"]);
             case "spacing":
@@ -122,9 +108,9 @@ class RuleElement {
             case "border-right":
                 processComposite(d, ["border-right-size", "border-style", "border-right-color"]);
             case "border-size":
-                processComposite(d, ["border-top-size", "border-left-size", "border-right-size", "border-bottom-size"]);
+                processSidesComposite(d, ["border-top-size", "border-right-size", "border-bottom-size", "border-left-size"]);
             case "border-color":
-                processComposite(d, ["border-top-color", "border-left-color", "border-right-color", "border-bottom-color"], true);
+                processSidesComposite(d, ["border-top-color", "border-right-color", "border-bottom-color", "border-left-color"], true);
             case "background-image-clip":
                 processComposite(d, ["background-image-clip-top", "background-image-clip-left", "background-image-clip-bottom", "background-image-clip-right"]);
             case "background-image-slice":
@@ -162,6 +148,19 @@ class RuleElement {
                 }
             case _:
                 directives.set(d.directive, d);
+        }
+    }
+
+    // css box shorthand: parts are top, right, bottom, left; 1 to 3 values are expanded to all four sides
+    private function processSidesComposite(d:Directive, parts:Array<String>, duplicate:Bool = false) {
+        switch (d.value) {
+            case Value.VComposite(vl) if (vl.length > 0 && vl.length < 4):
+                var top = vl[0];
+                var right = (vl.length > 1) ? vl[1] : top;
+                var bottom = (vl.length > 2) ? vl[2] : top;
+                processComposite(new Directive(d.directive, Value.VComposite([top, right, bottom, right])), parts, duplicate);
+            case _:
+                processComposite(d, parts, duplicate);
         }
     }
 
