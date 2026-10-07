@@ -702,6 +702,7 @@ class Component extends ComponentImpl
         }
         LocaleManager.instance.unregisterComponent(this);
         ToolTipManager.instance.unregisterTooltip(this);
+        screen.unregisterEvent(MouseEvent.MOUSE_UP, onPointerEventsMouseUp);
         handleDestroy();
         onDestroy();
         if (_compositeBuilder != null) {
@@ -2247,9 +2248,12 @@ class Component extends ComponentImpl
 
     private function onPointerEventsMouseDown(e:MouseEvent) {
         addClass(":down", true, recursivePointerEvents);
+        // listen on the screen too, so :down is cleared even if the mouse is released outside the component
+        screen.registerEvent(MouseEvent.MOUSE_UP, onPointerEventsMouseUp);
     }
 
     private function onPointerEventsMouseUp(e:MouseEvent) {
+        screen.unregisterEvent(MouseEvent.MOUSE_UP, onPointerEventsMouseUp);
         removeClass(":down", true, recursivePointerEvents);
     }
 
