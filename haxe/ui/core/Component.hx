@@ -2174,8 +2174,11 @@ class Component extends ComponentImpl
         }
 
         if (_pauseAnimationStyleChanges == false) {
+            var animationKeyFrames:AnimationKeyFrames = null;
             if (style.animationName != null) {
-                var animationKeyFrames:AnimationKeyFrames = Toolkit.styleSheet.animations.get(style.animationName);
+                animationKeyFrames = Toolkit.styleSheet.animations.get(style.animationName);
+            }
+            if (animationKeyFrames != null) {
                 applyAnimationKeyFrame(animationKeyFrames, style.animationOptions);
             } else if (componentAnimation != null) {
                 componentAnimation = null;
@@ -2258,7 +2261,7 @@ class Component extends ComponentImpl
     //***********************************************************************************************************
 
     private function applyAnimationKeyFrame(animationKeyFrames:AnimationKeyFrames, options:AnimationOptions) {
-        if (_animatable == false || options == null || options.duration == 0 ||
+        if (animationKeyFrames == null || _animatable == false || options == null || options.duration == 0 ||
             (_componentAnimation != null && _componentAnimation.name == animationKeyFrames.id && options.compareToAnimation(_componentAnimation) == true)) {
             return;
         }
