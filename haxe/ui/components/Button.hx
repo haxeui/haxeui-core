@@ -230,6 +230,12 @@ class ButtonLayout extends DefaultLayout {
         return size;
     }
     
+    // an auto width button held at its min-width is wider than its content,
+    // so its content is positioned like in a fixed width button
+    private function isContentWidth():Bool {
+        return _component.autoWidth == true && fixedMinWidth(_component) == false;
+    }
+
     private inline function isIconRelevant() {
         var icon:Image = component.findComponent("button-icon", false);
         return icon != null && icon.hidden == false && icon.componentWidth != 0 && icon.componentHeight !=0 && (iconPosition == "far-right" || iconPosition == "far-left" || iconPosition == "left" || iconPosition == "right" || iconPosition == "center-right" || iconPosition == "center-left");
@@ -328,13 +334,13 @@ class ButtonLayout extends DefaultLayout {
         var textAlign = cast(component, Button).textAlign;
 
         if (label != null  && (icon == null || icon.componentWidth == 0 || icon.componentHeight == 0)){
-            if (_component.autoWidth) {
+            if (isContentWidth()) {
                 return marginLeft(label) - marginRight(label) + paddingLeft;
             }
             return getTextAlignPos(label);
         }
 
-        if (_component.autoWidth) {
+        if (isContentWidth()) {
             if (iconPosition == "right" || iconPosition == "far-right" || (iconPosition == "center-right" && textAlign != "center")) {
                 return paddingLeft + marginLeft(label) - marginRight(label);
             } else if (iconPosition == "left" || iconPosition == "center-left" || iconPosition == "far-left" || (iconPosition == "center-right" && textAlign == "center")) {
@@ -410,7 +416,7 @@ class ButtonLayout extends DefaultLayout {
             }
         }
 
-        if (_component.autoWidth ) { 
+        if (isContentWidth()) {
             if (iconPosition == "center-right" && textAlign == "center") {
                 return paddingLeft + label.componentWidth + 2 * horizontalSpacing + marginLeft(icon) - marginRight(icon) + icon.componentWidth;
             }

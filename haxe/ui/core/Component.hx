@@ -2096,14 +2096,24 @@ class Component extends ComponentImpl
         if (autoWidth == true || autoHeight == true) {
             var s:Size = layout.calcAutoSize();
             if (autoWidth == true) {
-                if (s.width != _componentWidth) {
-                    _componentWidth = s.width;
+                var w = s.width;
+                // min-width is a floor, clamp the auto size only (setting _width would turn autoWidth off)
+                if (style != null && style.minWidth != null && w < style.minWidth) {
+                    w = style.minWidth;
+                }
+                if (w != _componentWidth) {
+                    _componentWidth = w;
                     invalidate = true;
                 }
             }
             if (autoHeight == true) {
-                if (s.height != _componentHeight) {
-                    _componentHeight = s.height;
+                var h = s.height;
+                // min-height is a floor, clamp the auto size only (setting _height would turn autoHeight off)
+                if (style != null && style.minHeight != null && h < style.minHeight) {
+                    h = style.minHeight;
+                }
+                if (h != _componentHeight) {
+                    _componentHeight = h;
                     invalidate = true;
                 }
             }

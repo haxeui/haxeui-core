@@ -579,8 +579,25 @@ private class Builder extends CompositeBuilder {
 }
 
 private class Layout extends VerticalLayout {
+    // an auto width menu held at its min-width, with all items narrower than it, is laid out like a fixed width menu
+    private function isHeldAtMinWidth():Bool {
+        if (fixedMinWidth(_component) == false) {
+            return false;
+        }
+        var usableWidth = usableSize.width;
+        for (child in component.childComponents) {
+            if (child.includeInLayout == false) {
+                continue;
+            }
+            if (child.width <= 0 || child.width + marginLeft(child) + marginRight(child) > usableWidth) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private override function resizeChildren() {
-        if (!_component.autoWidth) {
+        if (!_component.autoWidth || isHeldAtMinWidth()) {
             for (child in component.childComponents) {
                 if (child.includeInLayout == false) {
                     continue;

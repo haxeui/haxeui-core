@@ -103,7 +103,20 @@ private class LabelLayout extends DefaultLayout {
 
     private override function repositionChildren() {
         if (component.hasTextDisplay() == true) {
-            component.getTextDisplay().left = paddingLeft;
+            var left = paddingLeft;
+            if (component.autoWidth == true && fixedMinWidth(component) == true) {
+                // an auto width label held at its min-width is wider than its text, so align the text in it
+                var space = component.componentWidth - paddingLeft - paddingRight - component.getTextDisplay().width;
+                if (space > 0) {
+                    switch (textAlign(component)) {
+                        case "center":
+                            left += Std.int(space / 2);
+                        case "right":
+                            left += space;
+                    }
+                }
+            }
+            component.getTextDisplay().left = left;
             component.getTextDisplay().top = paddingTop;
         }
     }

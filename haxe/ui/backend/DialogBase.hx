@@ -173,7 +173,9 @@ class DialogBase extends Box implements Draggable {
             Screen.instance.addComponent(this);
         }
         this.syncComponentValidation();
-        if (autoHeight == false) {
+        // an auto height dialog held at its min-height is laid out like a fixed height dialog
+        var heldAtMinHeight = autoHeight == true && style != null && style.minHeight != null && componentHeight <= style.minHeight;
+        if (autoHeight == false || heldAtMinHeight == true) {
             dialogContainer.percentHeight = 100;
             dialogContent.percentHeight = 100;
         }
