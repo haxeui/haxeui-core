@@ -5,7 +5,7 @@ class Selector {
 
     public function new(s:String) {
         s = StringTools.replace(s, ">", " > ");
-        var p = s.split(" ");
+        var p = ~/\s+/g.split(s);
         var parent = null;
         var nextDirect:Bool = false;
         for (i in p) {
