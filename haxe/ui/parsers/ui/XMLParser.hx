@@ -179,8 +179,14 @@ class XMLParser extends ComponentParser {
         extractNamespaces(xml);
 
         var styleText = null;
-        if (xml.firstChild() != null) {
-            styleText = xml.firstChild().nodeValue;
+        for (child in xml) {
+            // text and cdata nodes are joined in document order, comments are skipped
+            if (child.nodeType == PCData || child.nodeType == CData) {
+                if (styleText == null) {
+                    styleText = "";
+                }
+                styleText += child.nodeValue;
+            }
         }
 
         if (xml.get("source") != null) {
