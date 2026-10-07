@@ -944,8 +944,6 @@ class ScrollViewEvents extends haxe.ui.events.Events {
             return;
         }
 
-        _scrollview.addClass(":down");
-
         _lastMousePos = new Point(event.screenX, event.screenY);
 
         var componentOffset = _scrollview.getComponentOffset();
@@ -989,6 +987,8 @@ class ScrollViewEvents extends haxe.ui.events.Events {
 
             _inertia.timestamp = haxe.Timer.stamp();
         }
+
+        _scrollview.addClass(":down");
 
         Screen.instance.registerEvent(MouseEvent.MOUSE_MOVE, onMouseMove);
         Screen.instance.registerEvent(MouseEvent.MIDDLE_MOUSE_UP, onMouseUp);
@@ -1097,6 +1097,8 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         Screen.instance.unregisterEvent(MouseEvent.RIGHT_MOUSE_UP, onMouseUp);
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_UP, onMouseUp);
 
+        _scrollview.removeClass(":down");
+
         if (_scrollview.scrollMode == ScrollMode.INERTIAL) {
             var now = haxe.Timer.stamp();
             var elapsed = (now - _inertia.timestamp) * 1000;
@@ -1157,7 +1159,6 @@ class ScrollViewEvents extends haxe.ui.events.Events {
 
             Toolkit.callLater(inertialScroll);
         } else {
-            _scrollview.removeClass(":down");
             dispatch(new ScrollEvent(ScrollEvent.STOP));
             Toolkit.callLater(resumeContainerEvents);
         }
