@@ -27,11 +27,11 @@ class SelectorPart {
     public function toString():String {
         var sb:StringBuf = new StringBuf();
 
-        if (id != null) {
-            sb.add("#" + id);
-        }
         if (nodeName != null) {
             sb.add(nodeName);
+        }
+        if (id != null) {
+            sb.add("#" + id);
         }
         if (className != null) {
             sb.add("." + className);

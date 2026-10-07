@@ -30,16 +30,22 @@ class Selector {
 
             var main = p1[0];
 
-            if (main.charAt(0) == ".") {
-                current.className = main.substring(1);
-            } else {
-                var p2 = main.split(".");
-                if (p2[0].charAt(0) == "#") {
-                    current.id = p2[0].substring(1);
-                } else {
-                    current.nodeName = p2[0].toLowerCase();
+            // compound selector, eg: "button#id.a.b", "#id.a.b", ".a.b#id"
+            var classNames:Array<String> = [];
+            var p2 = main.split(".");
+            for (n in 0...p2.length) {
+                var p3 = p2[n].split("#");
+                if (n > 0) {
+                    classNames.push(p3[0]);
+                } else if (main.charAt(0) != "." && main.charAt(0) != "#") {
+                    current.nodeName = p3[0].toLowerCase();
                 }
-                current.className = p2[1];
+                if (p3.length > 1) {
+                    current.id = p3[1];
+                }
+            }
+            if (classNames.length > 0) {
+                current.className = classNames.join(".");
             }
 
             parts.push(current);
