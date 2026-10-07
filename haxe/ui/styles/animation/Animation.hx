@@ -171,7 +171,7 @@ class Animation {
         _currentIterationCount = 0;
         running = true;
         _saveState();
-        _runNextKeyframe(onFinish);
+        _runIteration(onFinish);
     }
 
     /**
@@ -203,6 +203,7 @@ class Animation {
     private var _initialState:Map<String, Dynamic>;
     private var _initialized:Bool = false;
     private var _keyframes:Array<KeyFrame>;
+    private var _startingIteration:Bool = false;
 
     private function get_keyframeCount():Int {
         return _keyframes == null ? 0 : _keyframes.length;
@@ -266,6 +267,12 @@ class Animation {
         _initialized = true;
     }
 
+    private function _runIteration(onFinish:Void->Void = null) {
+        _startingIteration = true;
+        _runNextKeyframe(onFinish);
+        _startingIteration = false;
+    }
+
     private function _runNextKeyframe(onFinish:Void->Void = null) {
         if (running == false) {
             return;
@@ -275,9 +282,11 @@ class Animation {
             _currentKeyFrameIndex = -1;
             _restoreState();
 
-            if (iterationCount == -1 || ++_currentIterationCount < iterationCount) {
+            // an iteration that completed synchronously takes no time (eg, a zero duration), repeating it
+            // would only recurse until the stack overflows, so treat it as the last iteration
+            if (_startingIteration == false && (iterationCount == -1 || ++_currentIterationCount < iterationCount)) {
                 _saveState();
-                _runNextKeyframe(onFinish);
+                _runIteration(onFinish);
             } else {
                 running = false;
                 if (onFinish != null) {
