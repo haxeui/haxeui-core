@@ -118,12 +118,27 @@ class Parser {
 
             //determine the type
             if (selector.indexOf('@media') != -1) {
-                var n1 = selector.indexOf("(");
-                var n2 = selector.lastIndexOf(")");
-                var mediaQuery = selector.substring(n1 + 1, n2);
+                // parse each top level "(feature: value)" group, so "screen and (a: x) and (b: y)" yields all features
+                var directives:Array<Directive> = [];
+                var depth = 0;
+                var n1 = 0;
+                for (i in 0...selector.length) {
+                    var c = selector.charAt(i);
+                    if (c == "(") {
+                        if (depth == 0) {
+                            n1 = i + 1;
+                        }
+                        depth++;
+                    } else if (c == ")" && depth > 0) {
+                        depth--;
+                        if (depth == 0) {
+                            directives = directives.concat(parseDirectives(selector.substring(n1, i)));
+                        }
+                    }
+                }
 
                 var mediaStyleSheet = new Parser().parse(e.matched(3) + '\n}');
-                var mq = new MediaQuery(parseDirectives(mediaQuery), mediaStyleSheet);
+                var mq = new MediaQuery(directives, mediaStyleSheet);
                 styleSheet.addMediaQuery(mq);
             } else {
                 //we have standard css
