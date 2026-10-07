@@ -919,7 +919,18 @@ class Style {
         }
         switch (value) {
             case Value.VCall(f, vl):
-                var arr = ValueTools.array(vl);
+                var arr:Array<Any> = [];
+                for (v in vl) {
+                    switch (v) {
+                        case Value.VDimension(Dimension.PERCENT(p)):
+                            arr.push(p + "%"); // keep the unit, what 100% means is up to each filter
+                        case _:
+                            var a = ValueTools.any(v);
+                            if (a != null) {
+                                arr.push(a);
+                            }
+                    }
+                }
                 arr.insert(0, f);
                 var filter = FilterParser.parseFilter(arr);
                 if (filter != null) {
