@@ -1975,16 +1975,44 @@ class Component extends ComponentImpl
         return sizeChanged;
     }
 
+    public override function resizeComponent(w:Null<Float>, h:Null<Float>) {
+        // layouts re-apply % sizes on every pass, so clamp those here too: if only enforceSizeConstraints
+        // clamped them, the parent would keep putting the unclamped size back and the two would
+        // invalidate each other forever. Other sizes are still clamped by enforceSizeConstraints only,
+        // against the style that is current when the component validates
+        if (w != null && _percentWidth != null) {
+            w = constrainWidth(w);
+        }
+        if (h != null && _percentHeight != null) {
+            h = constrainHeight(h);
+        }
+        super.resizeComponent(w, h);
+    }
+
     private function enforceSizeConstraints() {
         if (style != null) {
+            var w = constrainWidth(_componentWidth);
+            if (w != _componentWidth) {
+                _componentWidth = _actualWidth = _width = w;
+            }
+
+            var h = constrainHeight(_componentHeight);
+            if (h != _componentHeight) {
+                _componentHeight = _actualHeight = _height = h;
+            }
+        }
+    }
+
+    private function constrainWidth(w:Null<Float>):Null<Float> {
+        if (style != null) {
             // enforce min width
-            if (style.minWidth != null && _componentWidth < style.minWidth) {
-                _componentWidth = _actualWidth = _width = style.minWidth;
+            if (style.minWidth != null && w < style.minWidth) {
+                w = style.minWidth;
             }
             
             // enforce max width
-            if (style.maxWidth != null && style.maxPercentWidth == null && _componentWidth > style.maxWidth) {
-                _componentWidth = _actualWidth = _width = style.maxWidth;
+            if (style.maxWidth != null && style.maxPercentWidth == null && w > style.maxWidth) {
+                w = style.maxWidth;
             } else if (style.maxWidth == null && style.maxPercentWidth != null) {
                 var p = this;
                 var max:Float = 0;
@@ -1999,19 +2027,24 @@ class Component extends ComponentImpl
                     p = p.parentComponent;
                 }
                 max = (max * style.maxPercentWidth) / 100;
-                if (max > 0 && _componentWidth > max) {
-                    _componentWidth = _actualWidth = _width = max;
+                if (max > 0 && w > max) {
+                    w = max;
                 }
             }
-            
+        }
+        return w;
+    }
+
+    private function constrainHeight(h:Null<Float>):Null<Float> {
+        if (style != null) {
             // enforce min height
-            if (style.minHeight != null && _componentHeight < style.minHeight) {
-                _componentHeight = _actualHeight = _height = style.minHeight;
+            if (style.minHeight != null && h < style.minHeight) {
+                h = style.minHeight;
             }
             
             // enforce max height
-            if (style.maxHeight != null && style.maxPercentHeight == null && _componentHeight > style.maxHeight) {
-                _componentHeight = _actualHeight = _height = style.maxHeight;
+            if (style.maxHeight != null && style.maxPercentHeight == null && h > style.maxHeight) {
+                h = style.maxHeight;
             } else if (style.maxHeight == null && style.maxPercentHeight != null) {
                 var p = this;
                 var max:Float = 0;
@@ -2026,11 +2059,12 @@ class Component extends ComponentImpl
                     p = p.parentComponent;
                 }
                 max = (max * style.maxPercentHeight) / 100;
-                if (max > 0 && _componentHeight > max) {
-                    _componentHeight = _actualHeight = _height = max;
+                if (max > 0 && h > max) {
+                    h = max;
                 }
             }
         }
+        return h;
     }
 
     private override function validateComponentStyle() {
