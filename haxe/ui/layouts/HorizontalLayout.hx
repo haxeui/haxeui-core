@@ -89,8 +89,12 @@ class HorizontalLayout extends DefaultLayout {
                 continue;
             }
 
-            if (child.componentWidth > 0 && (child.percentWidth == null || fixedMinWidth(child) == true)) { // means its a fixed width, ie, not a % sized control
-                size.width -= child.componentWidth + marginLeft(child) + marginRight(child);
+            if (child.percentWidth == null || fixedMinWidth(child) == true) { // means its a fixed width, ie, not a % sized control
+                if (child.componentWidth > 0) {
+                    size.width -= child.componentWidth;
+                }
+                // margins are always applied in repositionChildren, so always reserve them (even for zero width children)
+                size.width -= marginLeft(child) + marginRight(child);
             }
         }
 
