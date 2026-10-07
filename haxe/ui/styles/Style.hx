@@ -246,7 +246,7 @@ class Style {
                     percentHeight = ValueTools.percent(v.value);
                 case "initial-height":
                     initialHeight = ValueTools.calcDimension(v.value);
-                    initialPercentHeight = ValueTools.calcDimension(v.value);
+                    initialPercentHeight = ValueTools.percent(v.value);
                 case "min-height":
                     minHeight = ValueTools.calcDimension(v.value);
                     minPercentHeight = ValueTools.percent(v.value);
