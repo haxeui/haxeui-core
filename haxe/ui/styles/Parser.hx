@@ -32,17 +32,13 @@ class Parser {
         if (source.indexOf("$") != -1) {
             var n1 = source.indexOf("$");
             while (n1 != -1) {
-                var n2 = n1;
-                while (n2 <= source.length - 1) {
-                    var c = source.charAt(n2);
-                    if (c == " " || c == ";" || c == "\n" || c == ",") {
-                        break;
-                    }
+                var n2 = n1 + 1;
+                while (n2 < source.length && isVarNameChar(source.charCodeAt(n2))) {
                     n2++;
                 }
 
-                if (n2 != source.length - 1) {
-                    var key = source.substring(n1 + 1, n2);
+                var key = source.substring(n1 + 1, n2);
+                if (key.length > 0) {
                     var value = ThemeManager.instance.currentThemeVars.get(key);
                     if (value != null) {
                         var before = source.substring(0, n1);
@@ -182,5 +178,9 @@ class Parser {
         }
 
         return d;
+    }
+
+    private static inline function isVarNameChar(c:Int):Bool {
+        return (c >= 'a'.code && c <= 'z'.code) || (c >= 'A'.code && c <= 'Z'.code) || (c >= '0'.code && c <= '9'.code) || c == '-'.code || c == '_'.code;
     }
 }
