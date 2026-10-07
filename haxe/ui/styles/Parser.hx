@@ -15,7 +15,7 @@ using StringTools;
 
 @:access(haxe.ui.themes.ThemeManager)
 class Parser {
-    static var cssKeyframesRegex:EReg = ~/@keyframes\s*(\w+?)\s*\{([\s\S]*?\}\s*?)\}/gi;
+    static var cssKeyframesRegex:EReg = ~/@keyframes\s*([\w-]+?)\s*\{([\s\S]*?\}\s*?)\}/gi;
     static var cssKeyframeSelectorRegex:EReg = ~/([\w%]+)\s*\{\s*([\s\S]*?)\s*\}/gi;
     static var combinedCSSMediaRegex:EReg = ~/((\s*?(?:\/\*[\s\S]*?\*\/)?\s*?@media[\s\S]*?)\{([\s\S]*?)\}\s*?\})|(([\s\S]*?)\{([\s\S]*?)\})/gi; //to match css & media queries together
     static var cssCommentsRegex:EReg = ~/(\/\*[\s\S]*?\*\/)/gi;
