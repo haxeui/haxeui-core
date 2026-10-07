@@ -87,6 +87,9 @@ class CssFunctions {
     }
 
     public static function rgb(vl:Array<Value>):Any {
+        if (vl.length == 1 && ValueTools.compositeParts(vl[0]) >= 3) { // space separated syntax, eg: rgb(255 0 0)
+            vl = ValueTools.composite(vl[0]);
+        }
         return Color.fromComponents(ValueTools.int(vl[0]), ValueTools.int(vl[1]), ValueTools.int(vl[2]), 0).toInt();
     }
 
