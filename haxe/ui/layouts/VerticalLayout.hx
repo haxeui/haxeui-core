@@ -27,7 +27,7 @@ class VerticalLayout extends DefaultLayout {
                     xpos = ((usableSize.width - child.componentWidth) / 2) + paddingLeft + marginLeft(child) - marginRight(child);
                 case "right":
                     if (child.componentWidth < component.componentWidth) {
-                        xpos = component.componentWidth - (child.componentWidth + paddingRight + marginLeft(child));
+                        xpos = component.componentWidth - (child.componentWidth + paddingRight + marginRight(child));
                     }
                 default:
                     xpos = paddingLeft + marginLeft(child);

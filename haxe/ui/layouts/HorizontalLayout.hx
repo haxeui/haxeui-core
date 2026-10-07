@@ -60,7 +60,7 @@ class HorizontalLayout extends DefaultLayout {
                     ypos = ((usableSize.height - child.componentHeight) / 2) + paddingTop + marginTop(child) - marginBottom(child);
                 case "bottom":
                     if (child.componentHeight < component.componentHeight) {
-                        ypos = component.componentHeight - (child.componentHeight + paddingBottom + marginTop(child));
+                        ypos = component.componentHeight - (child.componentHeight + paddingBottom + marginBottom(child));
                     }
                 default:
                     ypos = paddingTop + marginTop(child);
