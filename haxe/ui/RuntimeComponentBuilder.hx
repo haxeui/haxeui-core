@@ -171,6 +171,11 @@ class RuntimeComponentBuilder {
                 if (propInfo != null && propInfo.propertyType == "variant") {
                     propValue = Variant.fromDynamic(propValue);
                     Reflect.setProperty(component, propName, propValue);
+                } else if (propInfo != null && (propInfo.propertyType == "int" || propInfo.propertyType == "float")) {
+                    // numeric properties are converted using their declared type (like the macro builder does), otherwise
+                    // values like "10px" or "4 8" would be left as strings and end up in numeric fields
+                    propValue = TypeConverter.convertTo(propValue, propInfo.propertyType);
+                    Reflect.setProperty(component, propName, propValue);
                 } else {
                     propValue = TypeConverter.convertFrom(propValue);
                     Reflect.setProperty(component, propName, propValue);
