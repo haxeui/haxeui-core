@@ -156,6 +156,8 @@ class RuleElement {
                         directives.set("font-bold", new Directive("font-bold", Value.VBool(true)));
                     } else if (s == "italic") {
                         directives.set("font-italic", new Directive("font-italic", Value.VBool(true)));
+                    } else if (s == "normal") {
+                        directives.set("font-italic", new Directive("font-italic", Value.VBool(false)));
                     } else if (s == "underline") {
                         directives.set("font-underline", new Directive("font-underline", Value.VBool(true)));
                     }

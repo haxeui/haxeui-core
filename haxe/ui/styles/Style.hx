@@ -437,7 +437,10 @@ class Style {
                         fontItalic = ValueTools.string(v.value).toLowerCase() == "italic";
                     }
                 case "text-decoration":
-                    if (ValueTools.string(v.value) != null) {
+                    if (ValueTools.none(v.value) == true) {
+                        fontUnderline = false;
+                        fontStrikeThrough = false;
+                    } else if (ValueTools.string(v.value) != null) {
                         fontUnderline = ValueTools.string(v.value).toLowerCase() == "underline";
                         fontStrikeThrough = ValueTools.string(v.value).toLowerCase() == "line-through";
                     }
