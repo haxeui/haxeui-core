@@ -171,6 +171,10 @@ class RuntimeComponentBuilder {
                 if (propInfo != null && propInfo.propertyType == "variant") {
                     propValue = Variant.fromDynamic(propValue);
                     Reflect.setProperty(component, propName, propValue);
+                } else if (propInfo != null && propInfo.propertyType == "color") {
+                    // same for colors, the abstract's "from String" (Color.fromString) only applies at compile time
+                    propValue = TypeConverter.convertTo(propValue, propInfo.propertyType);
+                    Reflect.setProperty(component, propName, propValue);
                 } else {
                     propValue = TypeConverter.convertFrom(propValue);
                     Reflect.setProperty(component, propName, propValue);
