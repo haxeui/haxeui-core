@@ -34,7 +34,19 @@ class Menu extends Box {
      Utility property to add a single `MenuEvent.MENU_SELECTED` event
     **/
     @:event(MenuEvent.MENU_SELECTED)        public var onMenuSelected:MenuEvent->Void;
-    
+
+    // Opens/closes this menu's dropdown popup. Kept separate from the inherited `show()`/`hide()`
+    // (and hence from the `hidden` property): MenuBar uses these for the popup, so that toggling
+    // whether this menu's own bar button is visible (via `hidden`) never has the side effect of
+    // popping its dropdown open or closed, and vice versa.
+    public function openPopup():Void {
+        cast(this._compositeBuilder, Builder).openPopup();
+    }
+
+    public function closePopup():Void {
+        cast(this._compositeBuilder, Builder).closePopup();
+    }
+
     private override function onThemeChanged() {
         super.onThemeChanged();
         var builder:Builder = cast(this._compositeBuilder, Builder);
@@ -56,7 +68,7 @@ private class CurrentIndexBehaviour extends DataBehaviour {
         if (value >= menuItemCount) {
             value = 0;
         }
-        super.set(value); 
+        super.set(value);
     }
 
     private override function validateData() {
@@ -64,7 +76,7 @@ private class CurrentIndexBehaviour extends DataBehaviour {
         var items = _menu.findComponents(MenuItem, 1);
         var menuItemIndex:Int = _value;
         if (menuItemIndex > 0) {
-            _menu.currentItem = items[menuItemIndex]; 
+            _menu.currentItem = items[menuItemIndex];
         }
     }
 }
@@ -106,7 +118,7 @@ class MenuEvents extends haxe.ui.events.Events {
     private var _timer:Timer = null;
 
     public var button:Button = null;
-    
+
     public function new(menu:Menu) {
         super(menu);
         _menu = menu;
@@ -175,7 +187,7 @@ class MenuEvents extends haxe.ui.events.Events {
             var menuSelectedEvent = new MenuEvent(MenuEvent.MENU_SELECTED);
             menuSelectedEvent.menu = _menu;
             menuSelectedEvent.menuItem = item;
-            // we'll add a delay of 100ms here because it "feels nicer" for the menu to 
+            // we'll add a delay of 100ms here because it "feels nicer" for the menu to
             // not just instantly disappear - especially in the case of checkbox menu items
             Timer.delay(function() {
                 // however, its possible that by the time that timer has ticked the menu
@@ -194,7 +206,7 @@ class MenuEvents extends haxe.ui.events.Events {
                     if (beforeCloseEvent.canceled) {
                         return;
                     }
-    
+
                     hideMenu();
                     removeScreenMouseDown();
                 //}
@@ -233,7 +245,7 @@ class MenuEvents extends haxe.ui.events.Events {
         if (subMenus.get(item) != null) {
             _menu.currentItem = item;
             lastEventSubMenu = event;
-            _timer = new Timer(TIME_MOUSE_OPENS_MS, function() { 
+            _timer = new Timer(TIME_MOUSE_OPENS_MS, function() {
                 showSubMenu(cast(subMenus.get(item), Menu), item);
                 _timer.stop();
                 _timer = null;
@@ -244,7 +256,7 @@ class MenuEvents extends haxe.ui.events.Events {
                     hideCurrentSubMenu();
                     lastEventSubMenu = null;
                 } else {
-                    _timer = new Timer(TIME_MOUSE_OPENS_MS, function f() { 
+                    _timer = new Timer(TIME_MOUSE_OPENS_MS, function f() {
                         hideCurrentSubMenu();
                         _timer.stop();
                         _timer = null;
@@ -339,19 +351,19 @@ class MenuEvents extends haxe.ui.events.Events {
         if (root == null) {
             return;
         }
-        
+
         var events:MenuEvents = cast(root._internalEvents, MenuEvents);
-        
+
         if (events.button == null) {
             for (child in root.childComponents) {
                 child.removeClass(":hover", true, true);
             }
-            
+
             events.hideCurrentSubMenu();
             Screen.instance.removeComponent(root, false);
         }
     }
-    
+
     private function hideCurrentSubMenu() {
         if (currentSubMenu == null) {
             return;
@@ -408,7 +420,7 @@ class MenuEvents extends haxe.ui.events.Events {
             Screen.instance.registerEvent(MouseEvent.RIGHT_MOUSE_DOWN, onScreenMouseDown);
         }
     }
-    
+
     private function removeScreenMouseDown() {
         var root = findRootMenu();
         var events:MenuEvents = cast(root._internalEvents, MenuEvents);
@@ -416,7 +428,7 @@ class MenuEvents extends haxe.ui.events.Events {
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_DOWN, onScreenMouseDown);
         Screen.instance.unregisterEvent(MouseEvent.RIGHT_MOUSE_DOWN, onScreenMouseDown);
     }
-    
+
     private function onScreenMouseDown(event:MouseEvent) {
         var close:Bool = true;
         if (_menu.hitTest(event.screenX, event.screenY)) {
@@ -438,10 +450,10 @@ class MenuEvents extends haxe.ui.events.Events {
                 refSubMenu = refEvents.currentSubMenu;
             }
         }
-        
+
         if (close) {
             var beforeCloseEvent = new UIEvent(UIEvent.BEFORE_CLOSE);
-            beforeCloseEvent.relatedEvent = event;            
+            beforeCloseEvent.relatedEvent = event;
             findRootMenu().dispatch(beforeCloseEvent);
             if (beforeCloseEvent.canceled) {
                 return;
@@ -508,7 +520,7 @@ private class Builder extends CompositeBuilder {
             }
         }
     }
-    
+
     public override function onComponentAdded(child:Component) {
         if ((child is Menu) || (child is MenuItem)) {
             _menu.registerInternalEvents(true);
@@ -533,7 +545,7 @@ private class Builder extends CompositeBuilder {
         }
         return cast match;
     }
-    
+
     public override function findComponents<T:Component>(styleName:String = null, type:Class<T> = null, maxDepth:Int = 5):Array<T> {
         var r:Array<T> = [];
         for (menu in _subMenus) {
@@ -544,7 +556,7 @@ private class Builder extends CompositeBuilder {
             if (type != null && isOfType(menu, type) == false) {
                 match = false;
             }
-            
+
             if (match == true) {
                 r.push(cast menu);
             } else {
@@ -556,7 +568,7 @@ private class Builder extends CompositeBuilder {
         }
         return r;
     }
-    
+
     public override function destroy() {
         super.destroy();
         if (_menu != null && _menu._isDisposed == false) {
@@ -567,14 +579,24 @@ private class Builder extends CompositeBuilder {
         }
     }
 
+    // Falls through to the base Component hide/show logic (returning false, not true) so that
+    // `hidden`/`hide()`/`show()` behave normally for a Menu. Closing the popup on hide is kept
+    // as a defensive side effect (in case it happened to be open), but showing does not open it.
     public override function hide() {
         Screen.instance.removeComponent(_menu, false);
-        return true;
+        return false;
     }
 
     public override function show() {
+        return false;
+    }
+
+    public function openPopup() {
         Screen.instance.addComponent(_menu);
-        return true;
+    }
+
+    public function closePopup() {
+        Screen.instance.removeComponent(_menu, false);
     }
 }
 
@@ -601,7 +623,7 @@ private class Layout extends VerticalLayout {
                 }
 
                 if (child.width <= 0) {
-                    child.validateNow();    
+                    child.validateNow();
                 }
 
                 if (child.width > biggest) {
@@ -618,7 +640,7 @@ private class Layout extends VerticalLayout {
                 cx = 100;
 
                 child.width = biggest;
-            }    
+            }
         }
     }
 }
