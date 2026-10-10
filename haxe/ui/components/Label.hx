@@ -97,7 +97,7 @@ private class LabelLayout extends DefaultLayout {
         if (component.autoHeight == true) {
             component.getTextDisplay().height = component.getTextDisplay().textHeight;
         } else {
-            component.getTextDisplay().height = component.height;
+            component.getTextDisplay().height = component.componentHeight - paddingTop - paddingBottom;
         }
     }
 
