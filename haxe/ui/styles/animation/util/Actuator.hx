@@ -115,6 +115,13 @@ class Actuator<T> {
     private var _colorPropertyDetails:Array<ColorPropertyDetails<T>>;
     private var _stringPropertyDetails:Array<StringPropertyDetails<T>>;
 
+    private static function isVariantType(value:Dynamic):Bool {
+        return switch (Type.typeof(value)) {
+            case TEnum(e): e == VariantType;
+            case _: false;
+        }
+    }
+
     private function _initialize() {
         if (_isValid() == false) {
             stop();
@@ -147,7 +154,10 @@ class Actuator<T> {
             }
 
             var isVariant = false;
-            if (start != null) {
+            // hxcpp matches a Dynamic enum switch on constructor index alone, so a Value
+            // (or any enum) at VT_String's index would match and have its argument read
+            // as a String, crashing natively. Only switch when it really is a VariantType.
+            if (start != null && isVariantType(start)) {
                 try { // some neko strangness here with exception being thrown on the switch
                     switch (start) {
                         case VariantType.VT_String(v):
@@ -158,7 +168,7 @@ class Actuator<T> {
                 } catch (e:Dynamic) { }
             }
 
-            if (end != null) {
+            if (end != null && isVariantType(end)) {
                 try { // some neko strangness here with exception being thrown on the switch
                     switch (end) {
                         case VariantType.VT_String(v):

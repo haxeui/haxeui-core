@@ -328,6 +328,7 @@ private class Builder extends CompositeBuilder {
     }
 
     public override function applyStyle(style:Style) {
+        super.applyStyle(style);
         if (style.resource != null) {
             _image.resource = style.resource;
         }

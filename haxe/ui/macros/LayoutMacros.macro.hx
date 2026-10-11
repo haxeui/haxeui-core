@@ -1,13 +1,13 @@
 package haxe.ui.macros;
 
-#if macro
+
 import haxe.macro.Context;
 import haxe.macro.Expr;
 import haxe.macro.TypeTools;
 import haxe.ui.macros.helpers.ClassBuilder;
 import haxe.ui.macros.helpers.CodePos;
 import haxe.ui.util.StringUtil;
-#end
+
 
 class LayoutMacros {
     macro static function build():Array<Field> {

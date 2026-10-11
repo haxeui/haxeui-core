@@ -400,4 +400,8 @@ class SideBar extends Box {
         
         activeSideBar = null;
     }
+
+		override function onDestroy() {
+				super.onDestroy();
+		}
 }
