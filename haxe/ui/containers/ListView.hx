@@ -514,11 +514,15 @@ private class SelectedIndicesBehaviour extends DataBehaviour {
         var builder:ListViewBuilder = cast(_component._compositeBuilder, ListViewBuilder);
         var events:ListViewEvents = cast(_component._internalEvents, ListViewEvents);
 
+        // Only rows whose selection changed are restyled: restyling walks every component in
+        // a row, so doing it for every rendered row made each selection cost all of them.
         for (child in contents.childComponents) {
-            if (selectedIndices.indexOf(cast(child, ItemRenderer).itemIndex) != -1) {
-                builder.addItemRendererClass(child, ":selected");
-            } else {
-                builder.addItemRendererClass(child, ":selected", false);
+            var selected = selectedIndices.indexOf(cast(child, ItemRenderer).itemIndex) != -1;
+            if (selected != child.hasClass(":selected")) {
+                builder.addItemRendererClass(child, ":selected", selected);
+            } else if (selected) {
+                var renderer = cast(child, ItemRenderer);
+                Toolkit.callLater(() -> @:privateAccess builder.ensureVisible(renderer));
             }
         }
 

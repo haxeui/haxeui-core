@@ -13,6 +13,12 @@ class DataSource<T> {
 
     private var _changed:Bool;
 
+    /**
+     * Goes up on every change to the data or its items, so a virtual layout can tell a pass
+     * caused by scrolling from one where the data changed and every row must rebind.
+     */
+    public var changeCount(default, null):Int = 0;
+
     public var onAdd:T->Void = null;
     public var onInsert:Int->T->Void = null;
     public var onUpdate:Int->T->Void = null;
@@ -161,6 +167,7 @@ class DataSource<T> {
     }
     
     private function handleChanged() {
+        changeCount++;
         _changed = true;
         if (_currentSortFn != null) {
             handleSort(_currentSortFn, _currentSortDirection);
@@ -278,6 +285,7 @@ class DataSource<T> {
     }
 
     private function onDataItemChange() {
+        changeCount++;
         if (_filterFn != null) {
             handleFilter(_filterFn);
         } else {

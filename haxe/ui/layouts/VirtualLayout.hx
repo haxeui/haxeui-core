@@ -108,6 +108,23 @@ class VirtualLayout extends ScrollViewLayout {
         super.refresh();
     }
 
+    private var _lastDataSource:DataSource<Dynamic> = null;
+    private var _lastChangeCount:Int = -1;
+
+    /**
+     * Whether the data changed since the last pass. Layout passes also come from scrolling and
+     * resizing, often twice per frame, and rebinding a row that already shows its item restyles
+     * and re-reads it for nothing. Data changed in place must go through the data source
+     * (`update`, or an `IDataItem`) for its rows to rebind.
+     */
+    private function takeDataChanged():Bool {
+        var source:DataSource<Dynamic> = dataSource;
+        var changed = source != _lastDataSource || source.changeCount != _lastChangeCount;
+        _lastDataSource = source;
+        _lastChangeCount = source.changeCount;
+        return changed;
+    }
+
     private function refreshData() {
         if (dataSource == null) {
             return;
@@ -132,13 +149,16 @@ class VirtualLayout extends ScrollViewLayout {
 
         var dataSource:DataSource<Dynamic> = dataSource;
         var contents:Component = this.contents;
+        var dataChanged = takeDataChanged();
         for (n in 0...dataSource.size) {
             var data:Dynamic = dataSource.get(n);
             var item:ItemRenderer = null;
             if (n < contents.childComponents.length) {
                 item = cast(contents.childComponents[n], ItemRenderer);
                 if (item.data == data) {
-                    item.invalidateComponentData();
+                    if (dataChanged) {
+                        item.invalidateComponentData();
+                    }
                     continue;
                 }
 
@@ -185,15 +205,18 @@ class VirtualLayout extends ScrollViewLayout {
         updateScroll();
 
         var dataSource:DataSource<Dynamic> = dataSource;
+        var dataChanged = takeDataChanged();
         var i = 0;
         for (n in _firstIndex..._lastIndex) {
             var data:Dynamic = dataSource.get(n);
 
             var item:ItemRenderer = null;
             var cls = itemClass(n, data);
+            var placed = false;
             if (contents.childComponents.length <= i) {
                 item = getRenderer(cls, n);
                 contents.addComponent(item);
+                placed = true;
             } else {
                 item = cast(contents.childComponents[i], ItemRenderer);
 
@@ -201,7 +224,9 @@ class VirtualLayout extends ScrollViewLayout {
                 if (!isOfType(item, cls)) {
                     item = getRenderer(cls, n);
                     contents.addComponentAt(item, i);
+                    placed = true;
                 } else if (item.itemIndex != n) {
+                    placed = true;
                     if (_component.hasEvent(UIEvent.RENDERER_DESTROYED)) {
                         _component.dispatch(new UIEvent(UIEvent.RENDERER_DESTROYED, item));
                     }
@@ -222,7 +247,9 @@ class VirtualLayout extends ScrollViewLayout {
                 item.addClass(className);
             }
 
-            item.data = data;
+            if (dataChanged || placed || item.data != data) {
+                item.data = data;
+            }
 
             i++;
         }
