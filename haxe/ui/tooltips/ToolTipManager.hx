@@ -73,6 +73,10 @@ class ToolTipManager {
         target.unregisterEvent(MouseEvent.MOUSE_OUT, onTargetMouseOut);
         target.unregisterEvent(MouseEvent.MOUSE_MOVE, onTargetMouseMove);
         _toolTipOptions.remove(target);
+        if (target == _currentComponent) {
+            stopCurrent();
+            hideCurrentToolTip();
+        }
     }
 
     public function getTooltipOptions(target:Component):ToolTipOptions {
