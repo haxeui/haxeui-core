@@ -58,16 +58,8 @@ class Component extends ComponentImpl
         #end
         addClass(Backend.id, false);
 
-        var c:Class<Dynamic> = Type.getClass(this);
-        while (c != null) {
-            var css = Type.getClassName(c);
-            var className:String = Std.string(css).split(".").pop();
-            addClass(className.toLowerCase(), false);
-            addClass(StringUtil.toDashes(className), false);
-            if (className.toLowerCase() == "component") {
-                break;
-            }
-            c = Type.getSuperClass(c);
+        for (name in classNamesFor(Type.getClass(this))) {
+            addClass(name, false);
         }
 
         // we dont want to actually apply the classes, just find out if native is there or not
@@ -531,6 +523,30 @@ class Component extends ComponentImpl
         child.dispatch(new UIEvent(UIEvent.COMPONENT_REMOVED_FROM_PARENT));
 
         return child;
+    }
+
+    // The style classes each component class gets, worked out once per class: each of its classes up to Component, by
+    // name in lower case and with dashes. Worked out for every component made, the walk up the classes and the regex in
+    // StringUtil.toDashes took nearly half the time of making one of the toolkit's buttons on a phone.
+    private static var _classNames:Map<String, Array<String>> = new Map<String, Array<String>>();
+
+    private static function classNamesFor(c:Class<Dynamic>):Array<String> {
+        var key = Type.getClassName(c);
+        var names = _classNames.get(key);
+        if (names == null) {
+            names = [];
+            while (c != null) {
+                var className:String = Type.getClassName(c).split(".").pop();
+                names.push(className.toLowerCase());
+                names.push(StringUtil.toDashes(className));
+                if (className.toLowerCase() == "component") {
+                    break;
+                }
+                c = Type.getSuperClass(c);
+            }
+            _classNames.set(key, names);
+        }
+        return names;
     }
 
     // this specifies if the component is allowed to be disposed or not, it mainly comes in useful
