@@ -1,6 +1,7 @@
 package haxe.ui.core;
 
 import haxe.ui.tooltips.ToolTipManager;
+import haxe.ui.tooltips.ToolTipOptions;
 import haxe.ui.backend.ComponentImpl;
 import haxe.ui.events.AnimationEvent;
 import haxe.ui.events.MouseEvent;
@@ -36,6 +37,7 @@ import Std.is as isOfType;
  * Base class of all HaxeUI controls
  */
 @:allow(haxe.ui.backend.ComponentImpl)
+@:allow(haxe.ui.tooltips.ToolTipManager)
 class Component extends ComponentImpl
     #if haxeui_allow_drag_any_component
     implements haxe.ui.extensions.Draggable
@@ -540,6 +542,12 @@ class Component extends ComponentImpl
     // its not needed)
     @:noCompletion
     private var _allowDispose:Bool = true;
+
+    // Its tooltip's options (ToolTipManager.registerTooltip), kept here rather than in a map of every component with a
+    // tooltip, which held each one, and all around it, until it was destroyed: one never shown, or removed without
+    // being disposed, never was.
+    @:noCompletion
+    private var _toolTipOptions:ToolTipOptions = null;
 
     /**
      * Removes this component from memory.

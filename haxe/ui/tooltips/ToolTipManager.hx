@@ -29,11 +29,9 @@ class ToolTipManager {
     // Instance
     //****************************************************************************************************
     private var _lastMouseEvent:MouseEvent = null;
-    private var _toolTipOptions:Map<Component, ToolTipOptions>;
     private var _toolTipRegions:Array<ToolTipRegionOptions> = [];
 
     private function new() {
-        _toolTipOptions = new Map<Component, ToolTipOptions>();
     }
 
     public function registerTooltipRegion(options:ToolTipRegionOptions):ToolTipRegionOptions {
@@ -58,13 +56,13 @@ class ToolTipManager {
     }
 
     public function registerTooltip(target:Component, options:ToolTipOptions = null) {
-        if (_toolTipOptions.exists(target)) {
+        if (target._toolTipOptions != null) {
             return;
         }
 
         if (options == null) options = {};
         if (options.tipData == null) options.tipData = { text: target.tooltip };
-        _toolTipOptions.set(target, options);
+        target._toolTipOptions = options;
         target.registerEvent(MouseEvent.MOUSE_OVER, onTargetMouseOver, Priority.LOW);
     }
 
@@ -72,7 +70,7 @@ class ToolTipManager {
         target.unregisterEvent(MouseEvent.MOUSE_OVER, onTargetMouseOver);
         target.unregisterEvent(MouseEvent.MOUSE_OUT, onTargetMouseOut);
         target.unregisterEvent(MouseEvent.MOUSE_MOVE, onTargetMouseMove);
-        _toolTipOptions.remove(target);
+        target._toolTipOptions = null;
         // A target removed while hovered must not leave its delay timer running.
         if (target == _currentComponent) {
             stopCurrent();
@@ -81,15 +79,15 @@ class ToolTipManager {
     }
 
     public function getTooltipOptions(target:Component):ToolTipOptions {
-        return _toolTipOptions.get(target);
+        return target._toolTipOptions;
     }
 
     public function updateTooltipRenderer(target:Component, renderer:ItemRenderer) {
-        if (!_toolTipOptions.exists(target)) {
+        var options = target._toolTipOptions;
+        if (options == null) {
             return;
         }
 
-        var options = _toolTipOptions.get(target);
         options.renderer = renderer;
     }
 
@@ -272,7 +270,7 @@ class ToolTipManager {
 
         _toolTip.hide();
 
-        var options = _toolTipOptions.get(component);
+        var options = component._toolTipOptions;
         if (options == null) {
             stopCurrent();
             return;
