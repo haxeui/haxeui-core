@@ -65,8 +65,11 @@ class Component extends ComponentImpl
         // we dont want to actually apply the classes, just find out if native is there or not
         //TODO - we could include the initialization in the validate method
         //var s = Toolkit.styleSheet.applyClasses(this, false);
-        var s = Toolkit.styleSheet.buildStyleFor(this);
-        if (s.native != null && hasNativeEntry == true) {
+        // Only a component with a native entry can be native, so only one builds a style to find out: building a whole
+        // style for every component made, to throw it away, was a seventh of building a page of the toolkit's
+        // components on a phone, and the style is built again when the component is added.
+        var s = hasNativeEntry == true ? Toolkit.styleSheet.buildStyleFor(this) : null;
+        if (s != null && s.native != null) {
             native = s.native;
         } else {
             create();
