@@ -1614,7 +1614,10 @@ class ScrollViewEvents extends haxe.ui.events.Events {
     /** Sets one axis's position `t` seconds into its fling, as a drag does, and says whether it moves on. **/
     private function flingAxis(motion:FlingMotion, from:Float, t:Float, scroll:Scroll):Bool {
         var pos = from + motion.position(t);
-        var atEnd = pos <= scroll.min || pos >= scroll.max;
+        // Only the end it heads for: a fling that starts at the top heading down leaves it, as one handed on from a
+        // sheet to a list resting at its top does, rather than ending there before it moves.
+        var heading = motion.position(motion.duration);
+        var atEnd = (pos <= scroll.min && heading < 0) || (pos >= scroll.max && heading > 0);
         scroll.pos = Math.max(scroll.min, Math.min(scroll.max, pos));
         // A shared fling that reaches the top hands what's left to what the view sits in: a sheet carries on down. A
         // scroll view it sits in takes only a fling from the end it heads for, which this view can't move, the drag
