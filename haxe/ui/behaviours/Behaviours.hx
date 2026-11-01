@@ -173,8 +173,7 @@ class Behaviours {
     public function dispose() {
         _component = null;
         _registry = null;
-        for (key in _instances.keys()) {
-            var inst = _instances.get(key);
+        for (inst in _instances) {
             @:privateAccess inst._component = null;
         }
         _instances = null;

@@ -660,17 +660,11 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
             for (eventType in __events.keys()) {
                 copy.push(eventType);
             }
+            // A type's listeners all at once: removed one by one, each was searched for in its list (and the list was
+            // walked while it shrank).
             for (eventType in copy) {
-                var listeners = __events.listeners(eventType);
-                if (listeners != null) {
-                    for (listener in listeners) {
-                        if (listener != null) {
-                            if (__events.remove(eventType, listener) == true) {
-                                unmapEvent(eventType, _onMappedEvent);
-                            }
-                        }
-                    }
-                }
+                __events.removeAll(eventType);
+                unmapEvent(eventType, _onMappedEvent);
             }
         }
     }

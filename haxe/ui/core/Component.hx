@@ -510,7 +510,9 @@ class Component extends ComponentImpl
         }
 
         handleRemoveComponent(child, dispose);
-        assignPositionClasses(invalidate);
+        if (!_removingAll) {
+            assignPositionClasses(invalidate);
+        }
         if (_children != null && invalidate == true) {
             invalidateComponentLayout();
         }
@@ -788,15 +790,23 @@ class Component extends ComponentImpl
         }
         
         if (_children != null) {
+            // Every child goes, so none is left to mark first or last: each removal did that for all the rest.
+            _removingAll = true;
             while (_children.length > 0) {
                 if (dispose) {
                     _children[0].removeAllComponents(dispose);
                 }
                 removeComponent(_children[0], dispose, false);
             }
-            invalidateComponentLayout();
+            _removingAll = false;
+            // A component being disposed is going too: laying it out again would be for nothing.
+            if (!_isDisposed) {
+                invalidateComponentLayout();
+            }
         }
     }
+
+    private var _removingAll:Bool = false;
 
     private function matchesSearch<T>(criteria:String = null, type:Class<T> = null, searchType:String = "id"):Bool {
         if (criteria != null) {
