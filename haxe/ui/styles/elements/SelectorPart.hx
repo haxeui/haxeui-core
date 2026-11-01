@@ -3,7 +3,22 @@ package haxe.ui.styles.elements;
 class SelectorPart {
     public var parent:SelectorPart = null;
 
-    public var pseudoClass:String = null;
+    public var pseudoClass(default, set):String = null;
+    private function set_pseudoClass(value:String):String {
+        _pseudoClassName = null;
+        return pseudoClass = value;
+    }
+
+    /** The class a component has for `pseudoClass` (":hover"), made once: matching a rule made it each time. **/
+    public var pseudoClassName(get, never):String;
+    private var _pseudoClassName:String = null;
+    private function get_pseudoClassName():String {
+        if (_pseudoClassName == null && pseudoClass != null) {
+            _pseudoClassName = ":" + pseudoClass;
+        }
+        return _pseudoClassName;
+    }
+
     public var className:String = null;
     public var id:String = null;
     public var nodeName:String = null;

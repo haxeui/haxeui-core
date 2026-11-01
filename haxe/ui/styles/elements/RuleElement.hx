@@ -24,6 +24,21 @@ class RuleElement {
     public function addDirective(directive:String, value:Value) {
         var d = new Directive(directive, value);
         processDirective(d);
+        _directiveList = null;
+    }
+
+    /**
+        The directives as a list, in the map's order, made from it once: a style merges a matching rule's directives
+        for every component styled (`Style.mergeDirectiveList`), and walking the map made an array of its keys and
+        looked each one up again.
+    **/
+    public var directiveList(get, never):Array<Directive>;
+    private var _directiveList:Array<Directive> = null;
+    private function get_directiveList():Array<Directive> {
+        if (_directiveList == null) {
+            _directiveList = [for (key in directives.keys()) directives.get(key)];
+        }
+        return _directiveList;
     }
 
     public function match(d:Component):Bool {
@@ -48,8 +63,7 @@ class RuleElement {
         }
 
         if (c.pseudoClass != null) {
-            var pc = ":" + c.pseudoClass;
-            if (d.hasClass(pc) == false) {
+            if (d.hasClass(c.pseudoClassName) == false) {
                 return false;
             }
         }

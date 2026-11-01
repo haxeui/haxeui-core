@@ -210,363 +210,377 @@ class Style {
 
     public function mergeDirectives(map:Map<String, Directive>) {
         for (key in map.keys()) {
-            var v = map.get(key);
-            if ((v is DirectiveExtension)) {
-                var ruleElements = Toolkit.styleSheet.findMatchingRules(v.directive, true);
-                if (ruleElements != null) {
-                    for (ruleElement in ruleElements) {
-                        mergeDirectives(ruleElement.directives);
-                    }
+            mergeDirective(key, map.get(key), map);
+        }
+    }
+
+    /**
+        As `mergeDirectives`, from a rule's directives as a list (`RuleElement.directiveList`, in its map's order), with
+        the map (`RuleElement.directives`) that some of them consult. Styling a component merges every rule that matches
+        it, and walking a map made an array of its keys and looked each one up again.
+    **/
+    public function mergeDirectiveList(list:Array<Directive>, map:Map<String, Directive>) {
+        for (v in list) {
+            mergeDirective(v.directive, v, map);
+        }
+    }
+
+    private function mergeDirective(key:String, v:Directive, map:Map<String, Directive>) {
+        if ((v is DirectiveExtension)) {
+            var ruleElements = Toolkit.styleSheet.findMatchingRules(v.directive, true);
+            if (ruleElements != null) {
+                for (ruleElement in ruleElements) {
+                    mergeDirectiveList(ruleElement.directiveList, ruleElement.directives);
                 }
             }
+        }
 
-            switch (key) {
-                case "left":
-                    left = ValueTools.calcDimension(v.value);
-                case "top":
-                    top = ValueTools.calcDimension(v.value);
+        switch (key) {
+            case "left":
+                left = ValueTools.calcDimension(v.value);
+            case "top":
+                top = ValueTools.calcDimension(v.value);
 
-                case "width":
-                    autoWidth = ValueTools.constant(v.value, "auto");
-                    width = ValueTools.calcDimension(v.value);
-                    percentWidth = ValueTools.percent(v.value);
-                case "initial-width":
-                    initialWidth = ValueTools.calcDimension(v.value);
-                    initialPercentWidth = ValueTools.percent(v.value);
-                case "min-width":
-                    minWidth = ValueTools.calcDimension(v.value);
-                    minPercentWidth = ValueTools.percent(v.value);
-                case "max-width":
-                    maxWidth = ValueTools.calcDimension(v.value);
-                    maxPercentWidth = ValueTools.percent(v.value);
+            case "width":
+                autoWidth = ValueTools.constant(v.value, "auto");
+                width = ValueTools.calcDimension(v.value);
+                percentWidth = ValueTools.percent(v.value);
+            case "initial-width":
+                initialWidth = ValueTools.calcDimension(v.value);
+                initialPercentWidth = ValueTools.percent(v.value);
+            case "min-width":
+                minWidth = ValueTools.calcDimension(v.value);
+                minPercentWidth = ValueTools.percent(v.value);
+            case "max-width":
+                maxWidth = ValueTools.calcDimension(v.value);
+                maxPercentWidth = ValueTools.percent(v.value);
 
-                case "height":
-                    autoHeight = ValueTools.constant(v.value, "auto");
-                    height = ValueTools.calcDimension(v.value);
-                    percentHeight = ValueTools.percent(v.value);
-                case "initial-height":
-                    initialHeight = ValueTools.calcDimension(v.value);
-                    initialPercentHeight = ValueTools.calcDimension(v.value);
-                case "min-height":
-                    minHeight = ValueTools.calcDimension(v.value);
-                    minPercentHeight = ValueTools.percent(v.value);
-                case "max-height":
-                    maxHeight = ValueTools.calcDimension(v.value);
-                    maxPercentHeight = ValueTools.percent(v.value);
+            case "height":
+                autoHeight = ValueTools.constant(v.value, "auto");
+                height = ValueTools.calcDimension(v.value);
+                percentHeight = ValueTools.percent(v.value);
+            case "initial-height":
+                initialHeight = ValueTools.calcDimension(v.value);
+                initialPercentHeight = ValueTools.calcDimension(v.value);
+            case "min-height":
+                minHeight = ValueTools.calcDimension(v.value);
+                minPercentHeight = ValueTools.percent(v.value);
+            case "max-height":
+                maxHeight = ValueTools.calcDimension(v.value);
+                maxPercentHeight = ValueTools.percent(v.value);
 
-                case "padding-top":
-                    paddingTop = ValueTools.calcDimension(v.value);
-                case "padding-left":
-                    paddingLeft = ValueTools.calcDimension(v.value);
-                case "padding-right":
-                    paddingRight = ValueTools.calcDimension(v.value);
-                case "padding-bottom":
-                    paddingBottom = ValueTools.calcDimension(v.value);
+            case "padding-top":
+                paddingTop = ValueTools.calcDimension(v.value);
+            case "padding-left":
+                paddingLeft = ValueTools.calcDimension(v.value);
+            case "padding-right":
+                paddingRight = ValueTools.calcDimension(v.value);
+            case "padding-bottom":
+                paddingBottom = ValueTools.calcDimension(v.value);
 
-                case "margin-top":
-                    marginTop = ValueTools.calcDimension(v.value);
-                case "margin-left":
-                    marginLeft = ValueTools.calcDimension(v.value);
-                case "margin-right":
-                    marginRight = ValueTools.calcDimension(v.value);
-                case "margin-bottom":
-                    marginBottom = ValueTools.calcDimension(v.value);
+            case "margin-top":
+                marginTop = ValueTools.calcDimension(v.value);
+            case "margin-left":
+                marginLeft = ValueTools.calcDimension(v.value);
+            case "margin-right":
+                marginRight = ValueTools.calcDimension(v.value);
+            case "margin-bottom":
+                marginBottom = ValueTools.calcDimension(v.value);
 
-                case "horizontal-spacing":
-                    horizontalSpacing = ValueTools.calcDimension(v.value);
-                case "vertical-spacing":
-                    verticalSpacing = ValueTools.calcDimension(v.value);
+            case "horizontal-spacing":
+                horizontalSpacing = ValueTools.calcDimension(v.value);
+            case "vertical-spacing":
+                verticalSpacing = ValueTools.calcDimension(v.value);
 
-                case "color":
-                    color = ValueTools.int(v.value);
+            case "color":
+                color = ValueTools.int(v.value);
 
-                case "background-color":
-                    switch (v.value) {
-                        default:
-                            backgroundColor = ValueTools.int(v.value);
-                            if (map.exists("background-color-end")) {
-                                backgroundColorEnd = ValueTools.int(map.get("background-color-end").value);
-                            } else {
-                                backgroundColorEnd = null;
-                            }
-                    }
-                case "background-color-end":
-                    backgroundColorEnd = ValueTools.int(v.value);
-                case "background-gradient-style":
-                    backgroundGradientStyle = ValueTools.string(v.value);
-                case "background-opacity":
-                    backgroundOpacity = ValueTools.float(v.value);
-
-                case "background-image":
-                    backgroundImage = ValueTools.variant(v.value);
-                case "background-image-repeat":
-                    backgroundImageRepeat = ValueTools.string(v.value);
-                case "background-width":
-                    backgroundWidth = ValueTools.calcDimension(v.value);
-                    backgroundWidthPercent = ValueTools.percent(v.value);
-                case "background-height":
-                    backgroundHeight = ValueTools.calcDimension(v.value);
-                    backgroundHeightPercent = ValueTools.percent(v.value);
-
-                case "background-position-x":
-                    backgroundPositionX = ValueTools.calcDimension(v.value);
-                case "background-position-y":
-                    backgroundPositionY = ValueTools.calcDimension(v.value);
-                    
-                case "background-image-clip-top":
-                    backgroundImageClipTop = ValueTools.calcDimension(v.value);
-                case "background-image-clip-left":
-                    backgroundImageClipLeft = ValueTools.calcDimension(v.value);
-                case "background-image-clip-right":
-                    backgroundImageClipRight = ValueTools.calcDimension(v.value);
-                case "background-image-clip-bottom":
-                    backgroundImageClipBottom = ValueTools.calcDimension(v.value);
-
-                case "background-image-slice-top":
-                    backgroundImageSliceTop = ValueTools.calcDimension(v.value);
-                case "background-image-slice-left":
-                    backgroundImageSliceLeft = ValueTools.calcDimension(v.value);
-                case "background-image-slice-right":
-                    backgroundImageSliceRight = ValueTools.calcDimension(v.value);
-                case "background-image-slice-bottom":
-                    backgroundImageSliceBottom = ValueTools.calcDimension(v.value);
-
-                case "border-color":
-                    borderColor = ValueTools.int(v.value);
-                case "border-top-color":
-                    borderTopColor = ValueTools.int(v.value);
-                case "border-left-color":
-                    borderLeftColor = ValueTools.int(v.value);
-                case "border-right-color":
-                    borderRightColor = ValueTools.int(v.value);
-                case "border-bottom-color":
-                    borderBottomColor = ValueTools.int(v.value);
-
-                case "border-size" | "border-width":
-                    if (v.value == VNone) {
-                        borderSize = 0;
-                        borderTopSize = 0;
-                        borderLeftSize = 0;
-                        borderBottomSize = 0;
-                        borderRightSize = 0;
-                    } else {
-                        borderSize = ValueTools.calcDimension(v.value);
-                        borderTopSize = ValueTools.calcDimension(v.value);
-                        borderLeftSize = ValueTools.calcDimension(v.value);
-                        borderBottomSize = ValueTools.calcDimension(v.value);
-                        borderRightSize = ValueTools.calcDimension(v.value);
-                    }
-                case "border-top-size" | "border-top-width":
-                    if (v.value == VNone) {
-                        borderTopSize = 0;
-                    } else {
-                        borderTopSize = ValueTools.calcDimension(v.value);
-                    }
-                case "border-left-size" | "border-left-width":
-                    if (v.value == VNone) {
-                        borderLeftSize = 0;
-                    } else {
-                        borderLeftSize = ValueTools.calcDimension(v.value);
-                    }
-                case "border-right-size" | "border-right-width":
-                    if (v.value == VNone) {
-                        borderRightSize = 0;
-                    } else {
-                        borderRightSize = ValueTools.calcDimension(v.value);
-                    }
-                case "border-bottom-size" | "border-bottom-width":
-                    if (v.value == VNone) {
-                        borderBottomSize = 0;
-                    } else {
-                        borderBottomSize = ValueTools.calcDimension(v.value);
-                    }
-
-                case "border-radius":
-                    borderRadius = ValueTools.calcDimension(v.value);
-                case "border-top-left-radius":
-                    borderRadiusTopLeft = ValueTools.calcDimension(v.value);
-                case "border-top-right-radius":
-                    borderRadiusTopRight = ValueTools.calcDimension(v.value);
-                case "border-bottom-left-radius":
-                    borderRadiusBottomLeft = ValueTools.calcDimension(v.value);
-                case "border-bottom-right-radius":
-                    borderRadiusBottomRight = ValueTools.calcDimension(v.value);
-
-                case "border-opacity":
-                    borderOpacity = ValueTools.float(v.value);
-                case "border-style":
-                    borderStyle = ValueTools.string(v.value);
-
-                case "icon":
-                    switch (v.value) {
-                        case Value.VNone:
-                            icon = "";
-                        case _:
-                            icon = ValueTools.variant(v.value);
-                    }
-                case "icon-position":
-                    iconPosition = ValueTools.string(v.value);
-
-                case "horizontal-align":
-                    horizontalAlign = ValueTools.string(v.value);
-                case "vertical-align":
-                    verticalAlign = ValueTools.string(v.value);
-                case "text-align":
-                    textAlign = ValueTools.string(v.value);
-
-                case "opacity":
-                    opacity = ValueTools.float(v.value);
-
-                case "font-name" | "font-family":
-                    fontName = ValueTools.string(v.value);
-                case "font-size":
-                    fontSize = ValueTools.calcDimension(v.value);
-                case "font-weight":
-                    if (ValueTools.string(v.value) != null) {
-                        fontBold = ValueTools.string(v.value).toLowerCase() == "bold";
-                    }
-                    fontWeight = ValueTools.int(v.value);
-                case "font-bold":
-                    fontBold = ValueTools.bool(v.value);
-                case "font-underline":
-                    fontUnderline = ValueTools.bool(v.value);
-                case "font-italic":
-                    fontItalic = ValueTools.bool(v.value);
-                case "font-style":
-                    if (ValueTools.string(v.value) != null) {
-                        fontItalic = ValueTools.string(v.value).toLowerCase() == "italic";
-                    }
-                case "text-decoration":
-                    if (ValueTools.string(v.value) != null) {
-                        fontUnderline = ValueTools.string(v.value).toLowerCase() == "underline";
-                        fontStrikeThrough = ValueTools.string(v.value).toLowerCase() == "line-through";
-                    }
-
-                case "cursor-name":
-                    cursorOffsetX = null;
-                    cursorOffsetY = null;
-                    cursor = ValueTools.string(v.value);
-                case "cursor-offset-x":
-                    cursorOffsetX = ValueTools.int(v.value);
-                case "cursor-offset-y":
-                    cursorOffsetY = ValueTools.int(v.value);
-                case "hidden":
-                    hidden = ValueTools.bool(v.value);
-                case "display":
-                    hidden = ValueTools.none(v.value);
-
-                case "clip":
-                    clip = ValueTools.bool(v.value);
-                case "native":
-                    native = ValueTools.bool(v.value);
-
-                case "filter":
-                    #if (!haxeui_nofilters && !haxeui_no_filters)
-                    filter = parseFilter(v.value);  
-                    #end
-
-                case "backdrop-filter":
-                    #if (!haxeui_nofilters && !haxeui_no_filters)
-                    backdropFilter = parseFilter(v.value);
-                    #end
-
-                case "resource":
-                    resource = ValueTools.variant(v.value);
-                case "animation-name":
-                    animationName = ValueTools.string(v.value);
-                case "animation-duration":
-                    createAnimationOptions();
-                    animationOptions.duration = ValueTools.time(v.value);
-                case "animation-timing-function":
-                    createAnimationOptions();
-                    animationOptions.easingFunction = ValueTools.calcEasing(v.value);
-                case "animation-delay":
-                    createAnimationOptions();
-                    animationOptions.delay = ValueTools.time(v.value);
-                case "animation-iteration-count":
-                    createAnimationOptions();
-                    animationOptions.iterationCount = switch (v.value) {
-                        case Value.VConstant(val):
-                            (val == "infinite") ? -1 : 0;
-                        case _:
-                            ValueTools.int(v.value);
-                    };
-                case "animation-direction":
-                    createAnimationOptions();
-                    animationOptions.direction = ValueTools.string(v.value);
-                case "animation-fill-mode":
-                    createAnimationOptions();
-                    animationOptions.fillMode = ValueTools.string(v.value);
-                case "mode":
-                    mode = ValueTools.string(v.value);
-                case "pointer-events":
-                    switch (v.value) {
-                        case VNone:
-                            pointerEvents = "none";
-                        case _:
-                            pointerEvents = ValueTools.string(v.value);
-                    }
-                case "content-type":
-                    contentType = ValueTools.string(v.value);
-                case "direction":
-                    direction = ValueTools.string(v.value);
-
-                case "scale-mode":
-                    if (ValueTools.none(v.value)) {
-                        scaleMode = "none";
-                    } else {
-                        scaleMode = ValueTools.string(v.value);
-                    }    
-                case "content-width":
-                    contentWidth = ValueTools.calcDimension(v.value);
-                    contentWidthPercent = ValueTools.percent(v.value);
-                case "content-height":
-                    contentHeight = ValueTools.calcDimension(v.value);
-                    contentHeightPercent = ValueTools.percent(v.value);
-                case "word-wrap":
-                    wordWrap = ValueTools.bool(v.value);
-                case "image-rendering":
-                    switch (v.value) {
-                        case VNone:
-                            imageRendering = null;
-                        case _:    
-                            imageRendering = ValueTools.string(v.value);
-                    }
-                case "layout":
-                    switch (v.value) {
-                        case VNone:
-                            layout = null;
-                        case _:    
-                            layout = ValueTools.string(v.value);
-                    }
-                case "include-in-layout":
-                    includeInLayout = ValueTools.bool(v.value);
-                case "justify-content":
-                    justifyContent = ValueTools.string(v.value);
-                case _:
-                    if (StringTools.startsWith(key, "layout-")) {
-                        var layoutPropName = key.substring("layout-".length);
-                        if (layoutProperties == null) {
-                            layoutProperties = new Map<String, Any>();
+            case "background-color":
+                switch (v.value) {
+                    default:
+                        backgroundColor = ValueTools.int(v.value);
+                        if (map.exists("background-color-end")) {
+                            backgroundColorEnd = ValueTools.int(map.get("background-color-end").value);
+                        } else {
+                            backgroundColorEnd = null;
                         }
-                        layoutProperties.set(layoutPropName, ValueTools.any(v.value));
-                    } else {
-                        var use = DirectiveHandler.hasDirectiveHandler(v.directive);
-                        #if haxeui_custom_directives_relaxed // means we dont require a handler, so the backend can just do "anything" with them
-                            use = true;
-                        #end
-                        if (use) {
-                            if (customDirectives == null) {
-                                customDirectives = new Map<String, Directive>();
-                            }
-                            if (v.value == null || v.value == VNone) {
-                                customDirectives.remove(v.directive);
-                            } else {
-                                customDirectives.set(v.directive, v);
-                            }
+                }
+            case "background-color-end":
+                backgroundColorEnd = ValueTools.int(v.value);
+            case "background-gradient-style":
+                backgroundGradientStyle = ValueTools.string(v.value);
+            case "background-opacity":
+                backgroundOpacity = ValueTools.float(v.value);
+
+            case "background-image":
+                backgroundImage = ValueTools.variant(v.value);
+            case "background-image-repeat":
+                backgroundImageRepeat = ValueTools.string(v.value);
+            case "background-width":
+                backgroundWidth = ValueTools.calcDimension(v.value);
+                backgroundWidthPercent = ValueTools.percent(v.value);
+            case "background-height":
+                backgroundHeight = ValueTools.calcDimension(v.value);
+                backgroundHeightPercent = ValueTools.percent(v.value);
+
+            case "background-position-x":
+                backgroundPositionX = ValueTools.calcDimension(v.value);
+            case "background-position-y":
+                backgroundPositionY = ValueTools.calcDimension(v.value);
+                
+            case "background-image-clip-top":
+                backgroundImageClipTop = ValueTools.calcDimension(v.value);
+            case "background-image-clip-left":
+                backgroundImageClipLeft = ValueTools.calcDimension(v.value);
+            case "background-image-clip-right":
+                backgroundImageClipRight = ValueTools.calcDimension(v.value);
+            case "background-image-clip-bottom":
+                backgroundImageClipBottom = ValueTools.calcDimension(v.value);
+
+            case "background-image-slice-top":
+                backgroundImageSliceTop = ValueTools.calcDimension(v.value);
+            case "background-image-slice-left":
+                backgroundImageSliceLeft = ValueTools.calcDimension(v.value);
+            case "background-image-slice-right":
+                backgroundImageSliceRight = ValueTools.calcDimension(v.value);
+            case "background-image-slice-bottom":
+                backgroundImageSliceBottom = ValueTools.calcDimension(v.value);
+
+            case "border-color":
+                borderColor = ValueTools.int(v.value);
+            case "border-top-color":
+                borderTopColor = ValueTools.int(v.value);
+            case "border-left-color":
+                borderLeftColor = ValueTools.int(v.value);
+            case "border-right-color":
+                borderRightColor = ValueTools.int(v.value);
+            case "border-bottom-color":
+                borderBottomColor = ValueTools.int(v.value);
+
+            case "border-size" | "border-width":
+                if (v.value == VNone) {
+                    borderSize = 0;
+                    borderTopSize = 0;
+                    borderLeftSize = 0;
+                    borderBottomSize = 0;
+                    borderRightSize = 0;
+                } else {
+                    borderSize = ValueTools.calcDimension(v.value);
+                    borderTopSize = ValueTools.calcDimension(v.value);
+                    borderLeftSize = ValueTools.calcDimension(v.value);
+                    borderBottomSize = ValueTools.calcDimension(v.value);
+                    borderRightSize = ValueTools.calcDimension(v.value);
+                }
+            case "border-top-size" | "border-top-width":
+                if (v.value == VNone) {
+                    borderTopSize = 0;
+                } else {
+                    borderTopSize = ValueTools.calcDimension(v.value);
+                }
+            case "border-left-size" | "border-left-width":
+                if (v.value == VNone) {
+                    borderLeftSize = 0;
+                } else {
+                    borderLeftSize = ValueTools.calcDimension(v.value);
+                }
+            case "border-right-size" | "border-right-width":
+                if (v.value == VNone) {
+                    borderRightSize = 0;
+                } else {
+                    borderRightSize = ValueTools.calcDimension(v.value);
+                }
+            case "border-bottom-size" | "border-bottom-width":
+                if (v.value == VNone) {
+                    borderBottomSize = 0;
+                } else {
+                    borderBottomSize = ValueTools.calcDimension(v.value);
+                }
+
+            case "border-radius":
+                borderRadius = ValueTools.calcDimension(v.value);
+            case "border-top-left-radius":
+                borderRadiusTopLeft = ValueTools.calcDimension(v.value);
+            case "border-top-right-radius":
+                borderRadiusTopRight = ValueTools.calcDimension(v.value);
+            case "border-bottom-left-radius":
+                borderRadiusBottomLeft = ValueTools.calcDimension(v.value);
+            case "border-bottom-right-radius":
+                borderRadiusBottomRight = ValueTools.calcDimension(v.value);
+
+            case "border-opacity":
+                borderOpacity = ValueTools.float(v.value);
+            case "border-style":
+                borderStyle = ValueTools.string(v.value);
+
+            case "icon":
+                switch (v.value) {
+                    case Value.VNone:
+                        icon = "";
+                    case _:
+                        icon = ValueTools.variant(v.value);
+                }
+            case "icon-position":
+                iconPosition = ValueTools.string(v.value);
+
+            case "horizontal-align":
+                horizontalAlign = ValueTools.string(v.value);
+            case "vertical-align":
+                verticalAlign = ValueTools.string(v.value);
+            case "text-align":
+                textAlign = ValueTools.string(v.value);
+
+            case "opacity":
+                opacity = ValueTools.float(v.value);
+
+            case "font-name" | "font-family":
+                fontName = ValueTools.string(v.value);
+            case "font-size":
+                fontSize = ValueTools.calcDimension(v.value);
+            case "font-weight":
+                if (ValueTools.string(v.value) != null) {
+                    fontBold = ValueTools.string(v.value).toLowerCase() == "bold";
+                }
+                fontWeight = ValueTools.int(v.value);
+            case "font-bold":
+                fontBold = ValueTools.bool(v.value);
+            case "font-underline":
+                fontUnderline = ValueTools.bool(v.value);
+            case "font-italic":
+                fontItalic = ValueTools.bool(v.value);
+            case "font-style":
+                if (ValueTools.string(v.value) != null) {
+                    fontItalic = ValueTools.string(v.value).toLowerCase() == "italic";
+                }
+            case "text-decoration":
+                if (ValueTools.string(v.value) != null) {
+                    fontUnderline = ValueTools.string(v.value).toLowerCase() == "underline";
+                    fontStrikeThrough = ValueTools.string(v.value).toLowerCase() == "line-through";
+                }
+
+            case "cursor-name":
+                cursorOffsetX = null;
+                cursorOffsetY = null;
+                cursor = ValueTools.string(v.value);
+            case "cursor-offset-x":
+                cursorOffsetX = ValueTools.int(v.value);
+            case "cursor-offset-y":
+                cursorOffsetY = ValueTools.int(v.value);
+            case "hidden":
+                hidden = ValueTools.bool(v.value);
+            case "display":
+                hidden = ValueTools.none(v.value);
+
+            case "clip":
+                clip = ValueTools.bool(v.value);
+            case "native":
+                native = ValueTools.bool(v.value);
+
+            case "filter":
+                #if (!haxeui_nofilters && !haxeui_no_filters)
+                filter = parseFilter(v.value);  
+                #end
+
+            case "backdrop-filter":
+                #if (!haxeui_nofilters && !haxeui_no_filters)
+                backdropFilter = parseFilter(v.value);
+                #end
+
+            case "resource":
+                resource = ValueTools.variant(v.value);
+            case "animation-name":
+                animationName = ValueTools.string(v.value);
+            case "animation-duration":
+                createAnimationOptions();
+                animationOptions.duration = ValueTools.time(v.value);
+            case "animation-timing-function":
+                createAnimationOptions();
+                animationOptions.easingFunction = ValueTools.calcEasing(v.value);
+            case "animation-delay":
+                createAnimationOptions();
+                animationOptions.delay = ValueTools.time(v.value);
+            case "animation-iteration-count":
+                createAnimationOptions();
+                animationOptions.iterationCount = switch (v.value) {
+                    case Value.VConstant(val):
+                        (val == "infinite") ? -1 : 0;
+                    case _:
+                        ValueTools.int(v.value);
+                };
+            case "animation-direction":
+                createAnimationOptions();
+                animationOptions.direction = ValueTools.string(v.value);
+            case "animation-fill-mode":
+                createAnimationOptions();
+                animationOptions.fillMode = ValueTools.string(v.value);
+            case "mode":
+                mode = ValueTools.string(v.value);
+            case "pointer-events":
+                switch (v.value) {
+                    case VNone:
+                        pointerEvents = "none";
+                    case _:
+                        pointerEvents = ValueTools.string(v.value);
+                }
+            case "content-type":
+                contentType = ValueTools.string(v.value);
+            case "direction":
+                direction = ValueTools.string(v.value);
+
+            case "scale-mode":
+                if (ValueTools.none(v.value)) {
+                    scaleMode = "none";
+                } else {
+                    scaleMode = ValueTools.string(v.value);
+                }    
+            case "content-width":
+                contentWidth = ValueTools.calcDimension(v.value);
+                contentWidthPercent = ValueTools.percent(v.value);
+            case "content-height":
+                contentHeight = ValueTools.calcDimension(v.value);
+                contentHeightPercent = ValueTools.percent(v.value);
+            case "word-wrap":
+                wordWrap = ValueTools.bool(v.value);
+            case "image-rendering":
+                switch (v.value) {
+                    case VNone:
+                        imageRendering = null;
+                    case _:    
+                        imageRendering = ValueTools.string(v.value);
+                }
+            case "layout":
+                switch (v.value) {
+                    case VNone:
+                        layout = null;
+                    case _:    
+                        layout = ValueTools.string(v.value);
+                }
+            case "include-in-layout":
+                includeInLayout = ValueTools.bool(v.value);
+            case "justify-content":
+                justifyContent = ValueTools.string(v.value);
+            case _:
+                if (StringTools.startsWith(key, "layout-")) {
+                    var layoutPropName = key.substring("layout-".length);
+                    if (layoutProperties == null) {
+                        layoutProperties = new Map<String, Any>();
+                    }
+                    layoutProperties.set(layoutPropName, ValueTools.any(v.value));
+                } else {
+                    var use = DirectiveHandler.hasDirectiveHandler(v.directive);
+                    #if haxeui_custom_directives_relaxed // means we dont require a handler, so the backend can just do "anything" with them
+                        use = true;
+                    #end
+                    if (use) {
+                        if (customDirectives == null) {
+                            customDirectives = new Map<String, Directive>();
+                        }
+                        if (v.value == null || v.value == VNone) {
+                            customDirectives.remove(v.directive);
+                        } else {
+                            customDirectives.set(v.directive, v);
                         }
                     }
-            }
+                }
         }
     }
 

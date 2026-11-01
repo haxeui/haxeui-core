@@ -188,7 +188,7 @@ class StyleSheet {
                 continue;
             }
 
-            style.mergeDirectives(r.directives);
+            style.mergeDirectiveList(r.directiveList, r.directives);
         }
         for (mq in _mediaQueries) {
             if (mq.relevant) {
