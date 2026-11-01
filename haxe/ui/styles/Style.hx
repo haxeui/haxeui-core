@@ -5,6 +5,7 @@ import haxe.ui.filters.FilterParser;
 import haxe.ui.styles.animation.Animation.AnimationOptions;
 import haxe.ui.styles.elements.Directive;
 import haxe.ui.styles.elements.DirectiveExtension;
+import haxe.ui.styles.elements.DirectiveId;
 import haxe.ui.util.Variant;
 
 enum StyleBorderType {
@@ -235,67 +236,67 @@ class Style {
             }
         }
 
-        switch (key) {
-            case "left":
+        switch (v.id) {
+            case DirectiveId.Left:
                 left = ValueTools.calcDimension(v.value);
-            case "top":
+            case DirectiveId.Top:
                 top = ValueTools.calcDimension(v.value);
 
-            case "width":
+            case DirectiveId.Width:
                 autoWidth = ValueTools.constant(v.value, "auto");
                 width = ValueTools.calcDimension(v.value);
                 percentWidth = ValueTools.percent(v.value);
-            case "initial-width":
+            case DirectiveId.InitialWidth:
                 initialWidth = ValueTools.calcDimension(v.value);
                 initialPercentWidth = ValueTools.percent(v.value);
-            case "min-width":
+            case DirectiveId.MinWidth:
                 minWidth = ValueTools.calcDimension(v.value);
                 minPercentWidth = ValueTools.percent(v.value);
-            case "max-width":
+            case DirectiveId.MaxWidth:
                 maxWidth = ValueTools.calcDimension(v.value);
                 maxPercentWidth = ValueTools.percent(v.value);
 
-            case "height":
+            case DirectiveId.Height:
                 autoHeight = ValueTools.constant(v.value, "auto");
                 height = ValueTools.calcDimension(v.value);
                 percentHeight = ValueTools.percent(v.value);
-            case "initial-height":
+            case DirectiveId.InitialHeight:
                 initialHeight = ValueTools.calcDimension(v.value);
                 initialPercentHeight = ValueTools.calcDimension(v.value);
-            case "min-height":
+            case DirectiveId.MinHeight:
                 minHeight = ValueTools.calcDimension(v.value);
                 minPercentHeight = ValueTools.percent(v.value);
-            case "max-height":
+            case DirectiveId.MaxHeight:
                 maxHeight = ValueTools.calcDimension(v.value);
                 maxPercentHeight = ValueTools.percent(v.value);
 
-            case "padding-top":
+            case DirectiveId.PaddingTop:
                 paddingTop = ValueTools.calcDimension(v.value);
-            case "padding-left":
+            case DirectiveId.PaddingLeft:
                 paddingLeft = ValueTools.calcDimension(v.value);
-            case "padding-right":
+            case DirectiveId.PaddingRight:
                 paddingRight = ValueTools.calcDimension(v.value);
-            case "padding-bottom":
+            case DirectiveId.PaddingBottom:
                 paddingBottom = ValueTools.calcDimension(v.value);
 
-            case "margin-top":
+            case DirectiveId.MarginTop:
                 marginTop = ValueTools.calcDimension(v.value);
-            case "margin-left":
+            case DirectiveId.MarginLeft:
                 marginLeft = ValueTools.calcDimension(v.value);
-            case "margin-right":
+            case DirectiveId.MarginRight:
                 marginRight = ValueTools.calcDimension(v.value);
-            case "margin-bottom":
+            case DirectiveId.MarginBottom:
                 marginBottom = ValueTools.calcDimension(v.value);
 
-            case "horizontal-spacing":
+            case DirectiveId.HorizontalSpacing:
                 horizontalSpacing = ValueTools.calcDimension(v.value);
-            case "vertical-spacing":
+            case DirectiveId.VerticalSpacing:
                 verticalSpacing = ValueTools.calcDimension(v.value);
 
-            case "color":
+            case DirectiveId.Color:
                 color = ValueTools.int(v.value);
 
-            case "background-color":
+            case DirectiveId.BackgroundColor:
                 switch (v.value) {
                     default:
                         backgroundColor = ValueTools.int(v.value);
@@ -305,59 +306,59 @@ class Style {
                             backgroundColorEnd = null;
                         }
                 }
-            case "background-color-end":
+            case DirectiveId.BackgroundColorEnd:
                 backgroundColorEnd = ValueTools.int(v.value);
-            case "background-gradient-style":
+            case DirectiveId.BackgroundGradientStyle:
                 backgroundGradientStyle = ValueTools.string(v.value);
-            case "background-opacity":
+            case DirectiveId.BackgroundOpacity:
                 backgroundOpacity = ValueTools.float(v.value);
 
-            case "background-image":
+            case DirectiveId.BackgroundImage:
                 backgroundImage = ValueTools.variant(v.value);
-            case "background-image-repeat":
+            case DirectiveId.BackgroundImageRepeat:
                 backgroundImageRepeat = ValueTools.string(v.value);
-            case "background-width":
+            case DirectiveId.BackgroundWidth:
                 backgroundWidth = ValueTools.calcDimension(v.value);
                 backgroundWidthPercent = ValueTools.percent(v.value);
-            case "background-height":
+            case DirectiveId.BackgroundHeight:
                 backgroundHeight = ValueTools.calcDimension(v.value);
                 backgroundHeightPercent = ValueTools.percent(v.value);
 
-            case "background-position-x":
+            case DirectiveId.BackgroundPositionX:
                 backgroundPositionX = ValueTools.calcDimension(v.value);
-            case "background-position-y":
+            case DirectiveId.BackgroundPositionY:
                 backgroundPositionY = ValueTools.calcDimension(v.value);
                 
-            case "background-image-clip-top":
+            case DirectiveId.BackgroundImageClipTop:
                 backgroundImageClipTop = ValueTools.calcDimension(v.value);
-            case "background-image-clip-left":
+            case DirectiveId.BackgroundImageClipLeft:
                 backgroundImageClipLeft = ValueTools.calcDimension(v.value);
-            case "background-image-clip-right":
+            case DirectiveId.BackgroundImageClipRight:
                 backgroundImageClipRight = ValueTools.calcDimension(v.value);
-            case "background-image-clip-bottom":
+            case DirectiveId.BackgroundImageClipBottom:
                 backgroundImageClipBottom = ValueTools.calcDimension(v.value);
 
-            case "background-image-slice-top":
+            case DirectiveId.BackgroundImageSliceTop:
                 backgroundImageSliceTop = ValueTools.calcDimension(v.value);
-            case "background-image-slice-left":
+            case DirectiveId.BackgroundImageSliceLeft:
                 backgroundImageSliceLeft = ValueTools.calcDimension(v.value);
-            case "background-image-slice-right":
+            case DirectiveId.BackgroundImageSliceRight:
                 backgroundImageSliceRight = ValueTools.calcDimension(v.value);
-            case "background-image-slice-bottom":
+            case DirectiveId.BackgroundImageSliceBottom:
                 backgroundImageSliceBottom = ValueTools.calcDimension(v.value);
 
-            case "border-color":
+            case DirectiveId.BorderColor:
                 borderColor = ValueTools.int(v.value);
-            case "border-top-color":
+            case DirectiveId.BorderTopColor:
                 borderTopColor = ValueTools.int(v.value);
-            case "border-left-color":
+            case DirectiveId.BorderLeftColor:
                 borderLeftColor = ValueTools.int(v.value);
-            case "border-right-color":
+            case DirectiveId.BorderRightColor:
                 borderRightColor = ValueTools.int(v.value);
-            case "border-bottom-color":
+            case DirectiveId.BorderBottomColor:
                 borderBottomColor = ValueTools.int(v.value);
 
-            case "border-size" | "border-width":
+            case DirectiveId.BorderSize | DirectiveId.BorderWidth:
                 if (v.value == VNone) {
                     borderSize = 0;
                     borderTopSize = 0;
@@ -371,134 +372,134 @@ class Style {
                     borderBottomSize = ValueTools.calcDimension(v.value);
                     borderRightSize = ValueTools.calcDimension(v.value);
                 }
-            case "border-top-size" | "border-top-width":
+            case DirectiveId.BorderTopSize | DirectiveId.BorderTopWidth:
                 if (v.value == VNone) {
                     borderTopSize = 0;
                 } else {
                     borderTopSize = ValueTools.calcDimension(v.value);
                 }
-            case "border-left-size" | "border-left-width":
+            case DirectiveId.BorderLeftSize | DirectiveId.BorderLeftWidth:
                 if (v.value == VNone) {
                     borderLeftSize = 0;
                 } else {
                     borderLeftSize = ValueTools.calcDimension(v.value);
                 }
-            case "border-right-size" | "border-right-width":
+            case DirectiveId.BorderRightSize | DirectiveId.BorderRightWidth:
                 if (v.value == VNone) {
                     borderRightSize = 0;
                 } else {
                     borderRightSize = ValueTools.calcDimension(v.value);
                 }
-            case "border-bottom-size" | "border-bottom-width":
+            case DirectiveId.BorderBottomSize | DirectiveId.BorderBottomWidth:
                 if (v.value == VNone) {
                     borderBottomSize = 0;
                 } else {
                     borderBottomSize = ValueTools.calcDimension(v.value);
                 }
 
-            case "border-radius":
+            case DirectiveId.BorderRadius:
                 borderRadius = ValueTools.calcDimension(v.value);
-            case "border-top-left-radius":
+            case DirectiveId.BorderTopLeftRadius:
                 borderRadiusTopLeft = ValueTools.calcDimension(v.value);
-            case "border-top-right-radius":
+            case DirectiveId.BorderTopRightRadius:
                 borderRadiusTopRight = ValueTools.calcDimension(v.value);
-            case "border-bottom-left-radius":
+            case DirectiveId.BorderBottomLeftRadius:
                 borderRadiusBottomLeft = ValueTools.calcDimension(v.value);
-            case "border-bottom-right-radius":
+            case DirectiveId.BorderBottomRightRadius:
                 borderRadiusBottomRight = ValueTools.calcDimension(v.value);
 
-            case "border-opacity":
+            case DirectiveId.BorderOpacity:
                 borderOpacity = ValueTools.float(v.value);
-            case "border-style":
+            case DirectiveId.BorderStyle:
                 borderStyle = ValueTools.string(v.value);
 
-            case "icon":
+            case DirectiveId.Icon:
                 switch (v.value) {
                     case Value.VNone:
                         icon = "";
                     case _:
                         icon = ValueTools.variant(v.value);
                 }
-            case "icon-position":
+            case DirectiveId.IconPosition:
                 iconPosition = ValueTools.string(v.value);
 
-            case "horizontal-align":
+            case DirectiveId.HorizontalAlign:
                 horizontalAlign = ValueTools.string(v.value);
-            case "vertical-align":
+            case DirectiveId.VerticalAlign:
                 verticalAlign = ValueTools.string(v.value);
-            case "text-align":
+            case DirectiveId.TextAlign:
                 textAlign = ValueTools.string(v.value);
 
-            case "opacity":
+            case DirectiveId.Opacity:
                 opacity = ValueTools.float(v.value);
 
-            case "font-name" | "font-family":
+            case DirectiveId.FontName | DirectiveId.FontFamily:
                 fontName = ValueTools.string(v.value);
-            case "font-size":
+            case DirectiveId.FontSize:
                 fontSize = ValueTools.calcDimension(v.value);
-            case "font-weight":
+            case DirectiveId.FontWeight:
                 if (ValueTools.string(v.value) != null) {
                     fontBold = ValueTools.string(v.value).toLowerCase() == "bold";
                 }
                 fontWeight = ValueTools.int(v.value);
-            case "font-bold":
+            case DirectiveId.FontBold:
                 fontBold = ValueTools.bool(v.value);
-            case "font-underline":
+            case DirectiveId.FontUnderline:
                 fontUnderline = ValueTools.bool(v.value);
-            case "font-italic":
+            case DirectiveId.FontItalic:
                 fontItalic = ValueTools.bool(v.value);
-            case "font-style":
+            case DirectiveId.FontStyle:
                 if (ValueTools.string(v.value) != null) {
                     fontItalic = ValueTools.string(v.value).toLowerCase() == "italic";
                 }
-            case "text-decoration":
+            case DirectiveId.TextDecoration:
                 if (ValueTools.string(v.value) != null) {
                     fontUnderline = ValueTools.string(v.value).toLowerCase() == "underline";
                     fontStrikeThrough = ValueTools.string(v.value).toLowerCase() == "line-through";
                 }
 
-            case "cursor-name":
+            case DirectiveId.CursorName:
                 cursorOffsetX = null;
                 cursorOffsetY = null;
                 cursor = ValueTools.string(v.value);
-            case "cursor-offset-x":
+            case DirectiveId.CursorOffsetX:
                 cursorOffsetX = ValueTools.int(v.value);
-            case "cursor-offset-y":
+            case DirectiveId.CursorOffsetY:
                 cursorOffsetY = ValueTools.int(v.value);
-            case "hidden":
+            case DirectiveId.Hidden:
                 hidden = ValueTools.bool(v.value);
-            case "display":
+            case DirectiveId.Display:
                 hidden = ValueTools.none(v.value);
 
-            case "clip":
+            case DirectiveId.Clip:
                 clip = ValueTools.bool(v.value);
-            case "native":
+            case DirectiveId.Native:
                 native = ValueTools.bool(v.value);
 
-            case "filter":
+            case DirectiveId.Filter:
                 #if (!haxeui_nofilters && !haxeui_no_filters)
                 filter = parseFilter(v.value);  
                 #end
 
-            case "backdrop-filter":
+            case DirectiveId.BackdropFilter:
                 #if (!haxeui_nofilters && !haxeui_no_filters)
                 backdropFilter = parseFilter(v.value);
                 #end
 
-            case "resource":
+            case DirectiveId.Resource:
                 resource = ValueTools.variant(v.value);
-            case "animation-name":
+            case DirectiveId.AnimationName:
                 animationName = ValueTools.string(v.value);
-            case "animation-duration":
+            case DirectiveId.AnimationDuration:
                 createAnimationOptions();
                 animationOptions.duration = ValueTools.time(v.value);
-            case "animation-timing-function":
+            case DirectiveId.AnimationTimingFunction:
                 createAnimationOptions();
                 animationOptions.easingFunction = ValueTools.calcEasing(v.value);
-            case "animation-delay":
+            case DirectiveId.AnimationDelay:
                 createAnimationOptions();
                 animationOptions.delay = ValueTools.time(v.value);
-            case "animation-iteration-count":
+            case DirectiveId.AnimationIterationCount:
                 createAnimationOptions();
                 animationOptions.iterationCount = switch (v.value) {
                     case Value.VConstant(val):
@@ -506,57 +507,57 @@ class Style {
                     case _:
                         ValueTools.int(v.value);
                 };
-            case "animation-direction":
+            case DirectiveId.AnimationDirection:
                 createAnimationOptions();
                 animationOptions.direction = ValueTools.string(v.value);
-            case "animation-fill-mode":
+            case DirectiveId.AnimationFillMode:
                 createAnimationOptions();
                 animationOptions.fillMode = ValueTools.string(v.value);
-            case "mode":
+            case DirectiveId.Mode:
                 mode = ValueTools.string(v.value);
-            case "pointer-events":
+            case DirectiveId.PointerEvents:
                 switch (v.value) {
                     case VNone:
                         pointerEvents = "none";
                     case _:
                         pointerEvents = ValueTools.string(v.value);
                 }
-            case "content-type":
+            case DirectiveId.ContentType:
                 contentType = ValueTools.string(v.value);
-            case "direction":
+            case DirectiveId.Direction:
                 direction = ValueTools.string(v.value);
 
-            case "scale-mode":
+            case DirectiveId.ScaleMode:
                 if (ValueTools.none(v.value)) {
                     scaleMode = "none";
                 } else {
                     scaleMode = ValueTools.string(v.value);
                 }    
-            case "content-width":
+            case DirectiveId.ContentWidth:
                 contentWidth = ValueTools.calcDimension(v.value);
                 contentWidthPercent = ValueTools.percent(v.value);
-            case "content-height":
+            case DirectiveId.ContentHeight:
                 contentHeight = ValueTools.calcDimension(v.value);
                 contentHeightPercent = ValueTools.percent(v.value);
-            case "word-wrap":
+            case DirectiveId.WordWrap:
                 wordWrap = ValueTools.bool(v.value);
-            case "image-rendering":
+            case DirectiveId.ImageRendering:
                 switch (v.value) {
                     case VNone:
                         imageRendering = null;
                     case _:    
                         imageRendering = ValueTools.string(v.value);
                 }
-            case "layout":
+            case DirectiveId.Layout:
                 switch (v.value) {
                     case VNone:
                         layout = null;
                     case _:    
                         layout = ValueTools.string(v.value);
                 }
-            case "include-in-layout":
+            case DirectiveId.IncludeInLayout:
                 includeInLayout = ValueTools.bool(v.value);
-            case "justify-content":
+            case DirectiveId.JustifyContent:
                 justifyContent = ValueTools.string(v.value);
             case _:
                 if (StringTools.startsWith(key, "layout-")) {
