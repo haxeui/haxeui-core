@@ -2134,6 +2134,11 @@ class ScrollViewBuilder extends CompositeBuilder {
         // device pixels on a phone, which showed at slow speeds. A backend rounds it to its own pixels.
         var newClipRect:Rectangle = new Rectangle(xpos, ypos, Math.fround(clipCX), Math.fround(clipCY));
         _contents.componentClipRect = newClipRect;
+        // With no MOVE listener anywhere, as during a fling, there's no one to tell: the walk visited every component
+        // of the contents on every scroll step.
+        if (haxe.ui.util.EventMap.moveMaps <= 0) {
+            return;
+        }
         _contents.walkComponents(function(c) {
             // we dont usually check see if a component has an event before dispatching it
             // however, in this specific case we are going to, potentially, be disaptching

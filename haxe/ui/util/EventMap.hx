@@ -8,6 +8,16 @@ import haxe.ui.events.UIEvent;
 @:expose
 #end
 class EventMap  {
+    /**
+        How many maps hold UIEvent.MOVE (counting one cleared by `removeAll()`, which keeps its types): a scroll view
+        sends MOVE through all its contents on every scroll step only while some do (`ScrollViewBuilder.updateScrollRect`).
+    **/
+    public static var moveMaps(default, null):Int = 0;
+
+    private static inline function isMove(type:String):Bool {
+        return type == (UIEvent.MOVE:String);
+    }
+
     private var _map:Map<String, FunctionArray<UIEvent->Void>>;
 
     public function new() {
@@ -23,6 +33,9 @@ class EventMap  {
             if (_map.exists(type)) {
                 _map.get(type).removeAll();
                 _map.remove(type);
+                if (isMove(type)) {
+                    moveMaps--;
+                }
             }
         } else {
             for (type in _map.keys()) {
@@ -42,6 +55,9 @@ class EventMap  {
             arr.push(cast listener, priority, listener);
             _map.set(type, arr);
             b = true;
+            if (isMove(type)) {
+                moveMaps++;
+            }
         } else {
             #if cpp
             // On hxcpp, function comparison is broken (cast closures falsely
@@ -68,6 +84,9 @@ class EventMap  {
             if (arr.length == 0) {
                 _map.remove(type);
                 b = true;
+                if (isMove(type)) {
+                    moveMaps--;
+                }
             }
         }
         return b;
