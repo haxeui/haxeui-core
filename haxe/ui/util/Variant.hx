@@ -492,7 +492,15 @@ abstract Variant(VariantType) from VariantType {
         if (this == null) {
             return true;
         }
-        return toString() == null;
+        // What toString gives null for, without writing a number out as text to find out: comparing a scroll
+        // position (Behaviours.set) did that on every frame of a scroll.
+        return switch (this) {
+            case VT_String(s): s == null;
+            case VT_Component(s): s == null;
+            case VT_DataSource(s): s == null;
+            case VT_ImageData(s): s == null;
+            case VT_Int(_) | VT_Float(_) | VT_Bool(_) | VT_Array(_) | VT_Date(_): false;
+        }
     }
 
     public static function fromDynamic<T>(r:Dynamic):Variant {
