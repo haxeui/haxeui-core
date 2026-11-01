@@ -1566,20 +1566,36 @@ class Component extends ComponentImpl
     private function get_styleString():String {
         return _styleString;
     }
+    // Style strings already parsed, by their text: parsing runs HaxeUI's CSS parser and its regular expressions, and
+    // the same few strings are set on every component of a kind as it's made. Merging only reads what's kept here.
+    private static var _parsedStyleStrings:Map<String, Map<String, haxe.ui.styles.elements.Directive>> = new Map();
+    private static var _parsedStyleStringCount:Int = 0;
+
     private function set_styleString(value:String):String {
         if (value == null || value == _styleString) {
             return value;
         }
-        var cssString = StringTools.trim(value);
-        if (cssString.length == 0) {
-            return value;
+        var directives = _parsedStyleStrings.get(value);
+        if (directives == null) {
+            var cssString = StringTools.trim(value);
+            if (cssString.length == 0) {
+                return value;
+            }
+            if (StringTools.endsWith(cssString, ";") == false) {
+                cssString += ";";
+            }
+            cssString = "_ { " + cssString + "}";
+            var s = new Parser().parse(cssString);
+            directives = s.rules[0].directives;
+            // Strings made afresh each time (with a measurement in them, say) would otherwise pile up.
+            if (_parsedStyleStringCount >= 256) {
+                _parsedStyleStrings.clear();
+                _parsedStyleStringCount = 0;
+            }
+            _parsedStyleStrings.set(value, directives);
+            _parsedStyleStringCount++;
         }
-        if (StringTools.endsWith(cssString, ";") == false) {
-            cssString += ";";
-        }
-        cssString = "_ { " + cssString + "}";
-        var s = new Parser().parse(cssString);
-        customStyle.mergeDirectives(s.rules[0].directives);
+        customStyle.mergeDirectives(directives);
 
         _styleString = value;
         invalidateComponentStyle();
