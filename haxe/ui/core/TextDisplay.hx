@@ -4,6 +4,7 @@ import haxe.ui.backend.TextDisplayImpl;
 import haxe.ui.styles.Style;
 import haxe.ui.validation.IValidating;
 import haxe.ui.validation.InvalidationFlags;
+import haxe.ui.validation.InvalidationSet;
 
 class TextDisplayData {
     public var multiline:Bool = false;
@@ -19,7 +20,8 @@ class TextDisplayData {
 **/
 class TextDisplay extends TextDisplayImpl implements IValidating {
 
-    private var _invalidationFlags:Map<String, Bool> = new Map<String, Bool>();
+    private var _invalidationFlags:InvalidationSet = new InvalidationSet();
+    @:noCompletion public var validationQueued:Bool = false;
     private var _isAllInvalid:Bool = false;
     private var _isValidating:Bool = false;
 
@@ -250,11 +252,7 @@ class TextDisplay extends TextDisplayImpl implements IValidating {
         }
 
         if (flag == InvalidationFlags.ALL) {
-            for (value in _invalidationFlags) {
-                return true;
-            }
-
-            return false;
+            return !_invalidationFlags.isEmpty();
         }
 
         return _invalidationFlags.exists(flag);
@@ -265,7 +263,7 @@ class TextDisplay extends TextDisplayImpl implements IValidating {
             _isAllInvalid = true;
             parentComponent.invalidateComponent(InvalidationFlags.TEXT_DISPLAY);
         } else if (!_invalidationFlags.exists(flag)) {
-            _invalidationFlags.set(flag, true);
+            _invalidationFlags.set(flag);
             parentComponent.invalidateComponent(InvalidationFlags.TEXT_DISPLAY);
         }
     }
@@ -298,11 +296,7 @@ class TextDisplay extends TextDisplayImpl implements IValidating {
 
         validateComponentInternal();
 
-        #if (haxe_ver < 4)
-        _invalidationFlags = new Map<String, Bool>();
-        #else
         _invalidationFlags.clear();
-        #end
 
         _isAllInvalid = false;
         _isValidating = false;

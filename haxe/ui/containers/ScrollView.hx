@@ -831,12 +831,23 @@ private class EmptyContentsText extends DefaultBehaviour {
 //***********************************************************************************************************
 // Events
 //***********************************************************************************************************
-/** A fling along one axis: the offset from where the drag let go, `t` seconds later, and when it stops. **/
-typedef FlingMotion = {
-    var position:Float->Float;
+/**
+    A fling along one axis: the offset from where the drag let go, `t` seconds later, and when it stops. Made like a
+    structure (`{position: ..., duration: ...}`), but a class, so a fling's frames call its functions directly: read
+    from a structure they were looked up by name and called through Dynamic, which allocated in every frame.
+**/
+@:structInit
+class FlingMotion {
+    public var position:Float->Float;
     /** Its velocity `t` seconds after it let go, in units a second: what it hands an overscroll effect at an end. **/
-    @:optional var velocity:Float->Float;
-    var duration:Float;
+    public var velocity:Float->Float;
+    public var duration:Float;
+
+    public function new(position:Float->Float, duration:Float, ?velocity:Float->Float) {
+        this.position = position;
+        this.duration = duration;
+        this.velocity = velocity;
+    }
 }
 
 /**
@@ -1055,6 +1066,8 @@ class ScrollViewEvents extends haxe.ui.events.Events {
 
     // A fling under way: when it started, from where, and its motion along each axis (null for none).
     private var _flinging:Bool = false;
+    // flingStep as a function made once: naming the method makes a new closure each time, and a fling asks for it every frame.
+    private var _flingStepFn:Void->Void = null;
     private var _flingStart:Float = 0;
     private var _flingFromX:Float = 0;
     private var _flingFromY:Float = 0;
@@ -1603,7 +1616,10 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         // otherwise wait for the next frame: a fling drew a frame late, then skipped frames.
         ValidationManager.instance.process();
         if (movingX || movingY) {
-            Toolkit.callLater(flingStep);
+            if (_flingStepFn == null) {
+                _flingStepFn = flingStep;
+            }
+            Toolkit.callLater(_flingStepFn);
             return;
         }
         _flinging = false;

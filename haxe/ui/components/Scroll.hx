@@ -241,15 +241,23 @@ private class ScrollValueBehaviour extends DataBehaviour {
     private override function validateData() {
         var scroll:Scroll = cast(_component, Scroll);
 
-        var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
-        changeEvent.previousValue = _previousValue;
-        changeEvent.value = _value;
-        scroll.dispatch(changeEvent);
-        
-        var scrollEvent:ScrollEvent = new ScrollEvent(ScrollEvent.SCROLL);
-        scroll.dispatch(scrollEvent);
+        // None of these bubble, so each is made only for a listener: a scroll's position changes every frame of a
+        // fling, and making all three each time was a twentieth of what a scrolling page allocated.
+        if (scroll.hasEvent(UIEvent.CHANGE)) {
+            var changeEvent:UIEvent = new UIEvent(UIEvent.CHANGE);
+            changeEvent.previousValue = _previousValue;
+            changeEvent.value = _value;
+            scroll.dispatch(changeEvent);
+        }
 
-        scroll.dispatch(new DragEvent(DragEvent.DRAG));
+        if (scroll.hasEvent(ScrollEvent.SCROLL)) {
+            var scrollEvent:ScrollEvent = new ScrollEvent(ScrollEvent.SCROLL);
+            scroll.dispatch(scrollEvent);
+        }
+
+        if (scroll.hasEvent(DragEvent.DRAG)) {
+            scroll.dispatch(new DragEvent(DragEvent.DRAG));
+        }
     }
 }
 

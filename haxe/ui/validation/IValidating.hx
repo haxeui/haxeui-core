@@ -33,4 +33,10 @@ interface IValidating {
     function updateComponentDisplay():Void;
     
     var isComponentOffscreen(get, null):Bool;
+
+    /**
+        Whether it's in `ValidationManager`'s queue: kept on the object, so queuing it and taking it off allocate
+        nothing (a map of the queued, set and cleared as components were queued in every frame of a scroll, did).
+    **/
+    @:noCompletion var validationQueued:Bool;
 }

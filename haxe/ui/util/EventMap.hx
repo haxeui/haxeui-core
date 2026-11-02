@@ -108,8 +108,9 @@ class EventMap  {
 
         var arr:FunctionArray<UIEvent->Void> = _map.get(type);
         if (arr != null && arr.length > 0) {
-            arr = arr.copy();
-            for (listener in arr) {
+            var listeners = @:privateAccess arr.borrow();
+            for (i in 0...listeners.length) {
+                var listener = listeners[i];
                 if (event.canceled) {
                     break;
                 }
@@ -122,6 +123,7 @@ class EventMap  {
                 event.copyFrom(c);
                 event.canceled = c.canceled;
             }
+            @:privateAccess arr.giveBack(listeners);
         }
     }
 

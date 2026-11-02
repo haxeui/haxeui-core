@@ -20,7 +20,33 @@ class FunctionArray<T> {
         return _array.length;
     }
 
+    // How many dispatches are walking `_array` as it is (`borrow`); a change while any is copies it first, so they
+    // go on over the listeners as they were. Copying it for each dispatch instead allocated an array per event.
+    private var _borrowed:Int = 0;
+
+    /** The listeners as they are, for `EventMap.invoke` to walk; give them back with `giveBack`. **/
+    @:allow(haxe.ui.util.EventMap)
+    private function borrow():Array<Listener<T>> {
+        _borrowed++;
+        return _array;
+    }
+
+    @:allow(haxe.ui.util.EventMap)
+    private function giveBack(array:Array<Listener<T>>) {
+        if (array == _array && _borrowed > 0) {
+            _borrowed--;
+        }
+    }
+
+    private inline function beforeChange() {
+        if (_borrowed > 0) {
+            _array = _array.copy();
+            _borrowed = 0;
+        }
+    }
+
     public function push(x:T, priority:Int = 0, ?originalRef:Dynamic):Int {
+        beforeChange();
         var listener:Listener<T> = new Listener(x, priority);
         listener.originalRef = originalRef;
         for (i in 0..._array.length) {
@@ -34,6 +60,7 @@ class FunctionArray<T> {
     }
 
     public function pop():Null<T> {
+        beforeChange();
         return _array.pop().callback;
     }
 
@@ -53,6 +80,7 @@ class FunctionArray<T> {
     public function remove(x:T, ?originalRef:Dynamic):Bool {
         var index:Int = indexOf(x, 0, originalRef);
         if (index != -1) {
+            beforeChange();
             _array.splice(index, 1);
         }
 
@@ -88,5 +116,6 @@ class FunctionArray<T> {
 
     public function removeAll() {
         _array = [];
+        _borrowed = 0;
     }
 }

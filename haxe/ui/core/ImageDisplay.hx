@@ -5,12 +5,13 @@ import haxe.ui.assets.ImageInfo;
 import haxe.ui.backend.ImageDisplayImpl;
 import haxe.ui.geom.Rectangle;
 import haxe.ui.validation.InvalidationFlags;
+import haxe.ui.validation.InvalidationSet;
 
 /**
  Class that represents a framework specific method to display an image inside a component
 **/
 class ImageDisplay extends ImageDisplayImpl {
-    private var _invalidationFlags:Map<String, Bool> = new Map<String, Bool>();
+    private var _invalidationFlags:InvalidationSet = new InvalidationSet();
     private var _isAllInvalid:Bool = false;
     private var _isValidating:Bool = false;
 
@@ -115,11 +116,7 @@ class ImageDisplay extends ImageDisplayImpl {
         }
 
         if (flag == InvalidationFlags.ALL) {
-            for (value in _invalidationFlags) {
-                return true;
-            }
-
-            return false;
+            return !_invalidationFlags.isEmpty();
         }
 
         return _invalidationFlags.exists(flag);
@@ -133,7 +130,7 @@ class ImageDisplay extends ImageDisplayImpl {
             _isAllInvalid = true;
             parentComponent.invalidateComponent(InvalidationFlags.IMAGE_DISPLAY);
         } else if (!_invalidationFlags.exists(flag)) {
-            _invalidationFlags.set(flag, true);
+            _invalidationFlags.set(flag);
             parentComponent.invalidateComponent(InvalidationFlags.IMAGE_DISPLAY);
         }
     }
@@ -148,9 +145,7 @@ class ImageDisplay extends ImageDisplayImpl {
 
         handleValidate();
 
-        for (flag in _invalidationFlags.keys()) {
-            _invalidationFlags.remove(flag);
-        }
+        _invalidationFlags.clear();
 
         _isAllInvalid = false;
         _isValidating = false;

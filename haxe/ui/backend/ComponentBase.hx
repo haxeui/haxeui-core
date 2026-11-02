@@ -28,6 +28,7 @@ import haxe.ui.util.EventMap;
 import haxe.ui.util.FunctionArray;
 import haxe.ui.util.Variant;
 import haxe.ui.validation.InvalidationFlags;
+import haxe.ui.validation.InvalidationSet;
 import haxe.ui.validation.ValidationManager;
 
 @:build(haxe.ui.macros.Macros.buildBehaviours())
@@ -1386,9 +1387,13 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
     //***********************************************************************************************************
     // Validation
     //***********************************************************************************************************
-    @:noCompletion private var _invalidationFlags:Map<String, Bool> = new Map<String, Bool>();
-    @:noCompletion private var _delayedInvalidationFlags:Map<String, Bool> = new Map<String, Bool>();
+    @:noCompletion private var _invalidationFlags:InvalidationSet = new InvalidationSet();
+    @:noCompletion private var _delayedInvalidationFlags:InvalidationSet = new InvalidationSet();
     @:noCompletion private var _isAllInvalid:Bool = false;
+    /** Whether it's in `ValidationManager`'s validation queue (`IValidating`). **/
+    @:noCompletion public var validationQueued:Bool = false;
+    /** Whether it's in `ValidationManager`'s display queue. **/
+    @:noCompletion private var _displayQueued:Bool = false;
     @:noCompletion private var _isValidating:Bool = false;
     @:noCompletion private var _isInitialized:Bool = false;
     @:noCompletion private var _isDisposed:Bool = false;
@@ -1420,11 +1425,7 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
         }
 
         if (flag == InvalidationFlags.ALL) {
-            for (value in _invalidationFlags) {
-                return true;
-            }
-
-            return false;
+            return !_invalidationFlags.isEmpty();
         }
 
         return _invalidationFlags.exists(flag);
@@ -1442,23 +1443,20 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
         var isAlreadyInvalid:Bool = isComponentInvalid(flag);
         var isAlreadyDelayedInvalid:Bool = false;
         if (_isValidating == true) {
-            for (value in _delayedInvalidationFlags) {
-                isAlreadyDelayedInvalid = true;
-                break;
-            }
+            isAlreadyDelayedInvalid = !_delayedInvalidationFlags.isEmpty();
         }
 
         if (flag == InvalidationFlags.ALL) {
             if (_isValidating == true) {
-                _delayedInvalidationFlags.set(InvalidationFlags.ALL, true);
+                _delayedInvalidationFlags.set(InvalidationFlags.ALL);
             } else {
                 _isAllInvalid = true;
             }
         } else {
             if (_isValidating == true) {
-                _delayedInvalidationFlags.set(flag, true);
-            } else if (flag != InvalidationFlags.ALL && !_invalidationFlags.exists(flag)) {
-                _invalidationFlags.set(flag, true);
+                _delayedInvalidationFlags.set(flag);
+            } else if (flag != InvalidationFlags.ALL) {
+                _invalidationFlags.set(flag);
             }
         }
 
@@ -1564,26 +1562,10 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
         validateComponentInternal(nextFrame);
         validateInitialSize(isInitialized);
 
-        #if (haxe_ver < 4)
-        _invalidationFlags = new Map<String, Bool>();
-        #else
         _invalidationFlags.clear();
-        #end
-
-        _isAllInvalid = false;
-
-        for (flag in _delayedInvalidationFlags.keys()) {
-            if (flag == InvalidationFlags.ALL) {
-                _isAllInvalid = true;
-            } else {
-                _invalidationFlags.set(flag, true);
-            }
-        }
-        #if (haxe_ver < 4)
-        _delayedInvalidationFlags = new Map<String, Bool>();
-        #else
+        _isAllInvalid = _delayedInvalidationFlags.exists(InvalidationFlags.ALL);
+        _delayedInvalidationFlags.addTo(_invalidationFlags);
         _delayedInvalidationFlags.clear();
-        #end
 
         _isValidating = false;
     }

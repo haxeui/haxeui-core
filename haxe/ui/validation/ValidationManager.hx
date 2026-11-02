@@ -20,10 +20,11 @@ class ValidationManager {
 
     private var _queue:Array<IValidating> = [];
     private var _displayQueue:Array<Component> = [];
-    // What's in each queue, so adding doesn't search it: on hxcpp, indexOf on these arrays compares every element
-    // dynamically, which was the biggest single cost in a large screen's first layout.
-    private var _queued:haxe.ds.ObjectMap<IValidating, Bool> = new haxe.ds.ObjectMap();
-    private var _displayQueued:haxe.ds.ObjectMap<Component, Bool> = new haxe.ds.ObjectMap();
+    // What's in each queue is marked on the items (`IValidating.validationQueued`, `Component._displayQueued`), so
+    // adding doesn't search it: on hxcpp, indexOf on these arrays compares every element dynamically, which was the
+    // biggest single cost in a large screen's first layout; and maps of them allocated as items came and went.
+    // `process` as a function made once, for queuing it each time.
+    private var _processFn:Void->Void = null;
     private var _events:EventMap;
 
     private function new() {
@@ -45,23 +46,26 @@ class ValidationManager {
         }
     }
 
-    private function dispatch(event:UIEvent) {
+    // The event is made only when something listens: nothing does, as a rule, and process runs every frame.
+    private function dispatch(type:String) {
         if (_events != null) {
-            _events.invoke(event.type, event);
+            _events.invoke(type, new ValidationEvent(type));
         }
     }
 
     public function dispose() {
         isValidating = false;
+        for (item in _queue) {
+            item.validationQueued = false;
+        }
         _queue.splice(0, _queue.length);
-        _queued.clear();
     }
 
     public function add(object:IValidating) {
-        if (_queued.exists(object)) {
+        if (object.validationQueued) {
             return;
         }
-        _queued.set(object, true);
+        object.validationQueued = true;
 
         var queueLength:Int = _queue.length;
         if (isValidating == true) {
@@ -94,14 +98,17 @@ class ValidationManager {
             this._queue[queueLength] = object;
             if (isPending == false) {
                 isPending = true;
-                Toolkit.callLater(process);
+                if (_processFn == null) {
+                    _processFn = process;
+                }
+                Toolkit.callLater(_processFn);
             }
         }
     }
 
     public function addDisplay(item:Component, nextFrame:Bool = true) {
-        if (!_displayQueued.exists(item)) {
-            _displayQueued.set(item, true);
+        if (!item._displayQueued) {
+            item._displayQueued = true;
             _displayQueue.push(item);
         }
         if (nextFrame == false) {
@@ -137,35 +144,45 @@ class ValidationManager {
             _queue.sort(queueSortFunction);
         }
 
-        dispatch(new ValidationEvent(ValidationEvent.START));
+        dispatch(ValidationEvent.START);
 
         //check length every time because add() might have added a new item during the last validation
         while (_queue.length > 0) {
             var item:IValidating = _queue.shift();
-            _queued.remove(item);
+            item.validationQueued = false;
             if (item.depth < 0) {
                 continue;   //no longer on the display list
             }
-            if (countValidation(item) > MAX_VALIDATIONS_PER_PASS) {
+            _passValidations++;
+            if (_passValidations > COUNT_AFTER && countValidation(item) > MAX_VALIDATIONS_PER_PASS) {
                 abandonValidation(item);
                 continue;
             }
             item.validateComponent();
         }
-        _passCounts.clear();
+        if (_passValidations > COUNT_AFTER) {
+            _passCounts.clear();
+        }
+        _passValidations = 0;
 
         for (i in 0..._displayQueue.length) {
             var item = _displayQueue[i];
             item.updateComponentDisplay();
         }
+        // Marked until the pass ends, as a map of them was: one queued again while its display updates stays once.
+        for (item in _displayQueue) {
+            item._displayQueued = false;
+        }
         _displayQueue.splice(0, _displayQueue.length);
-        _displayQueued.clear();
 
         isValidating = false;
         
         if (_queue.length > 0) { // lets process any stragglers - items maybe have been added while processing other parts
             isPending = true;
-            Toolkit.callLater(process);
+            if (_processFn == null) {
+                _processFn = process;
+            }
+            Toolkit.callLater(_processFn);
         } else {
             isPending = false;
         }
@@ -189,13 +206,17 @@ class ValidationManager {
         trace("InvalidationManager.process: current=" + haxe.ui.util.MathUtil.round(delta, 2) + "ms, avg=" + haxe.ui.util.MathUtil.round(_profileAvg, 2) + "ms, count=" + _profileCount + ", min=" + haxe.ui.util.MathUtil.round(_profileMin, 2) + "ms, max=" + haxe.ui.util.MathUtil.round(_profileMax, 2) + "ms, tot=" + haxe.ui.util.MathUtil.round(_profileTot, 2) + "ms");
         #end
         
-        dispatch(new ValidationEvent(ValidationEvent.STOP));
+        dispatch(ValidationEvent.STOP);
         
     }
 
     // A normal pass validates a component fewer than 20 times (a 200-item list peaks at 11), so more than this
     // means components keep invalidating each other and the pass would never end.
     private static inline var MAX_VALIDATIONS_PER_PASS:Int = 100;
+    // Each component's validations are counted only once a pass has made this many, so the passes of a scroll or an
+    // animation, a few components each frame, don't allocate the counts: a loop is still caught, a little later.
+    private static inline var COUNT_AFTER:Int = 1000;
+    private var _passValidations:Int = 0;
     private var _passCounts:haxe.ds.ObjectMap<IValidating, Int> = new haxe.ds.ObjectMap();
     private var _reportedLoops:Map<String, Bool> = new Map();
 

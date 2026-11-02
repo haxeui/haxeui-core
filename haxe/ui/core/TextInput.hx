@@ -4,6 +4,7 @@ import haxe.ui.backend.TextInputImpl;
 import haxe.ui.styles.Style;
 import haxe.ui.validation.IValidating;
 import haxe.ui.validation.InvalidationFlags;
+import haxe.ui.validation.InvalidationSet;
 
 class TextInputData {
     public var password:Bool = false;
@@ -29,7 +30,8 @@ class TextInputData {
  Class that represents a framework specific method to display editable text inside a component
 **/
 class TextInput extends TextInputImpl implements IValidating {
-    private var _invalidationFlags:Map<String, Bool> = new Map<String, Bool>();
+    private var _invalidationFlags:InvalidationSet = new InvalidationSet();
+    @:noCompletion public var validationQueued:Bool = false;
     private var _isAllInvalid:Bool = false;
     private var _isValidating:Bool = false;
 
@@ -302,11 +304,7 @@ class TextInput extends TextInputImpl implements IValidating {
         }
 
         if (flag == InvalidationFlags.ALL) {
-            for (value in _invalidationFlags) {
-                return true;
-            }
-
-            return false;
+            return !_invalidationFlags.isEmpty();
         }
 
         return _invalidationFlags.exists(flag);
@@ -317,7 +315,7 @@ class TextInput extends TextInputImpl implements IValidating {
             _isAllInvalid = true;
             parentComponent.invalidateComponent(InvalidationFlags.TEXT_INPUT);
         } else if (!_invalidationFlags.exists(flag)) {
-            _invalidationFlags.set(flag, true);
+            _invalidationFlags.set(flag);
             parentComponent.invalidateComponent(InvalidationFlags.TEXT_INPUT);
         }
     }
@@ -351,9 +349,7 @@ class TextInput extends TextInputImpl implements IValidating {
 
         validateComponentInternal();
 
-        for (flag in _invalidationFlags.keys()) {
-            _invalidationFlags.remove(flag);
-        }
+        _invalidationFlags.clear();
 
         _isAllInvalid = false;
         _isValidating = false;
