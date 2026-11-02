@@ -19,6 +19,12 @@ class ValidationManager {
     public var isPending(default, null):Bool;
 
     private var _queue:Array<IValidating> = [];
+
+    /** The one the queue is validating now. **/
+    public var current(default, null):IValidating = null;
+
+    // Those whose layout waited for their parent to size them this pass (`ComponentBase.waitsForParentSize`).
+    private var _waiting:Array<Component> = [];
     private var _displayQueue:Array<Component> = [];
     // What's in each queue is marked on the items (`IValidating.validationQueued`, `Component._displayQueued`), so
     // adding doesn't search it: on hxcpp, indexOf on these arrays compares every element dynamically, which was the
@@ -59,6 +65,31 @@ class ValidationManager {
             item.validationQueued = false;
         }
         _queue.splice(0, _queue.length);
+    }
+
+    /** `c`'s layout waited for its parent to size it; checked as the pass ends (`releaseWaiting`). **/
+    public function waitForParent(c:Component) {
+        _waiting.push(c);
+    }
+
+    /**
+        Those that waited and still have no size from their parent lay out now, as they would have: a layout that
+        never sizes its child (or a child it leaves out) can't leave it unlaid. Whether any did.
+    **/
+    private function releaseWaiting():Bool {
+        if (_waiting.length == 0) {
+            return false;
+        }
+        var released = false;
+        for (c in _waiting) {
+            if (c._isDisposed == false && c.waitsForParentSize()) {
+                c._sizeWaitReleased = true;
+                c.invalidateComponentLayout();
+                released = true;
+            }
+        }
+        _waiting.resize(0);
+        return released;
     }
 
     public function add(object:IValidating) {
@@ -146,20 +177,24 @@ class ValidationManager {
 
         dispatch(ValidationEvent.START);
 
-        //check length every time because add() might have added a new item during the last validation
-        while (_queue.length > 0) {
-            var item:IValidating = _queue.shift();
-            item.validationQueued = false;
-            if (item.depth < 0) {
-                continue;   //no longer on the display list
+        do {
+            //check length every time because add() might have added a new item during the last validation
+            while (_queue.length > 0) {
+                var item:IValidating = _queue.shift();
+                item.validationQueued = false;
+                if (item.depth < 0) {
+                    continue;   //no longer on the display list
+                }
+                _passValidations++;
+                if (_passValidations > COUNT_AFTER && countValidation(item) > MAX_VALIDATIONS_PER_PASS) {
+                    abandonValidation(item);
+                    continue;
+                }
+                current = item;
+                item.validateComponent();
+                current = null;
             }
-            _passValidations++;
-            if (_passValidations > COUNT_AFTER && countValidation(item) > MAX_VALIDATIONS_PER_PASS) {
-                abandonValidation(item);
-                continue;
-            }
-            item.validateComponent();
-        }
+        } while (releaseWaiting());
         if (_passValidations > COUNT_AFTER) {
             _passCounts.clear();
         }

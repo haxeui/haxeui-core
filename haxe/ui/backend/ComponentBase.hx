@@ -862,6 +862,29 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
          return value;
      }
  
+     /**
+      * Its parent's layout sets its size, as it does a percent-sized child's: a composite's own part, such as the
+      * input a text field places. Until the parent has sized it, it doesn't lay out or take its style's initial size.
+      */
+     @:dox(group = "Size related properties and methods")
+     public var sizedByParent:Bool = false;
+
+     // Set when a pass ended without its parent sizing it: it lays out from then on as any component does.
+     @:noCompletion private var _sizeWaitReleased:Bool = false;
+
+     /**
+      * Whether its layout waits for its parent to size it: it has a percent size (or `sizedByParent`) that its parent
+      * hasn't set yet. A layout before then is at no size, and is thrown away when the parent's layout sizes it,
+      * which in a new page comes later in the same pass (the queue lays out the deepest first).
+      */
+     private function waitsForParentSize():Bool {
+         if (parentComponent == null || _sizeWaitReleased) {
+             return false;
+         }
+         return (_componentWidth == null && (_percentWidth != null || sizedByParent))
+             || (_componentHeight == null && (_percentHeight != null || sizedByParent));
+     }
+
      @:noCompletion private var _percentWidth:Null<Float>;
  
      /**
@@ -1620,6 +1643,11 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
         var positionInvalid = isComponentInvalid(InvalidationFlags.POSITION);
         var displayInvalid = isComponentInvalid(InvalidationFlags.DISPLAY);
         var layoutInvalid = isComponentInvalid(InvalidationFlags.LAYOUT) && _layoutLocked == false;
+        // Only in the queue's pass, which checks it again as the pass ends: `validateNow` lays out at once.
+        if (layoutInvalid && ValidationManager.instance.current == (cast this : haxe.ui.core.Component) && waitsForParentSize()) {
+            layoutInvalid = false;
+            ValidationManager.instance.waitForParent(cast this);
+        }
 
         if (dataInvalid) {
             validateComponentData();

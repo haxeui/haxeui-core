@@ -1965,7 +1965,8 @@ class Component extends ComponentImpl
 
     @:noCompletion private var _initialSizeApplied:Bool = false;
     private override function validateInitialSize(isInitialized:Bool) {
-        if (isInitialized == false && _style != null && _initialSizeApplied == false) {
+        // One its parent sizes takes the size it's given, not its style's default.
+        if (isInitialized == false && _style != null && _initialSizeApplied == false && sizedByParent == false) {
             if ((_style.initialWidth != null || _style.initialPercentWidth != null) && (width <= 0 && percentWidth == null)) {
                 if (_style.initialWidth != null) {
                     width = _style.initialWidth;
