@@ -1763,8 +1763,11 @@ class Component extends ComponentImpl
             behaviours.ready();
             behaviours.update();
             Toolkit.callLater(function() {
+                // Its style isn't invalidated again here: the invalidation above already restyles it, with the tree as
+                // it is by then, and doing it again ran each component's whole style a second time after its first
+                // validation (a toolkit demo page's opening restyled 1140 times for 260 components, 495 without).
+                // Whatever onReady changes invalidates what it changes.
                 invalidateComponentData();
-                invalidateComponentStyle();
 
                 if (_compositeBuilder != null) {
                     _compositeBuilder.onReady();
