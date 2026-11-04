@@ -124,9 +124,10 @@ class ScrollView extends InteractiveComponent implements IScroller implements IN
     }
 
     /**
-        How far a touch drag that starts on a component taking drags along one axis (`IAxisDrag`, such as a slider)
-        moves before the scroll view decides whose it is: along that axis it's the component's, across it the scroll
-        view's. Android's touch slop, 8.
+        How far a touch moves along an axis the view scrolls before it's a drag: short of that it's a tap, however the
+        finger wobbles, and nothing moves. A touch drag that starts on a component taking drags along one axis
+        (`IAxisDrag`, such as a slider) moves this far before the scroll view decides whose it is: along that axis it's
+        the component's, across it the scroll view's. Android's touch slop, 8.
     **/
     public static var dragSlop:Float = 8;
 
@@ -1055,6 +1056,10 @@ class ScrollViewEvents extends haxe.ui.events.Events {
     private var _nested:INestedScroll = null;
     private var _flingNested:INestedScroll = null;
     private var _sampleFinger:Array<Float> = [];
+    private var _sampleFingerX:Array<Float> = [];
+    // When the backend knows them, the moves' own times (MouseEvent.touchTime), for their speed; 0 for one without.
+    private var _sampleTouch:Array<Float> = [];
+    private var _touchTime:Float = 0;
     private var _downX:Float = 0;
     private var _downY:Float = 0;
 
@@ -1191,8 +1196,15 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         _sampleX.resize(0);
         _sampleY.resize(0);
         _sampleFinger.resize(0);
+        _sampleFingerX.resize(0);
+        _sampleTouch.resize(0);
+        _fingerX = event.screenX;
         _fingerY = event.screenY;
+        _touchTime = event.touchTime;
         addSample(hscroll, vscroll);
+
+        // A press on something already moving (a fling, a stretch returning to rest) drags straight away, as on Android.
+        _dragging = !event.touchEvent || _caughtAt >= 0 || _overscrollX != 0 || _overscrollY != 0;
 
         Screen.instance.registerEvent(MouseEvent.MOUSE_MOVE, onMouseMove);
         Screen.instance.registerEvent(MouseEvent.MIDDLE_MOUSE_UP, onMouseUp);
@@ -1240,6 +1252,67 @@ class ScrollViewEvents extends haxe.ui.events.Events {
 
     private var _movementThreshold:Int = 3;
     private var _lastMousePos:Point = null;
+    // Whether the press has become a drag (see passSlop).
+    private var _dragging:Bool = false;
+
+    /**
+        Whether a touch has moved `dragSlop` along an axis this view scrolls, so it's a drag and no longer a tap: the
+        view takes it from here, without a jump, and what's under the finger is no longer pressed. Moving with every
+        pixel, a finger's wobble in a tap moved the view.
+    **/
+    private function passSlop(event:MouseEvent):Bool {
+        var hscroll:HorizontalScroll = _scrollview.findComponent(HorizontalScroll, false);
+        var vscroll:VerticalScroll = _scrollview.findComponent(VerticalScroll, false);
+        var alongX = hscroll != null && Math.abs(event.screenX - _downX) > ScrollView.dragSlop;
+        var alongY = vscroll != null && Math.abs(event.screenY - _downY) > ScrollView.dragSlop;
+        if (!alongX && !alongY) {
+            return false;
+        }
+        var pressedAt = _sampleTimes[0];
+        var pressedTouch = _sampleTouch[0];
+        startDragHere(event, hscroll, vscroll);
+        // The view catches up with the finger, all but the slop, as on Android: a first move can be a long way past it,
+        // in a quick flick or after a slow frame (on an LG G6, 200dp after the first frame in minutes took 110 ms).
+        var catchX = alongX ? pastSlop(_downX - event.screenX) : 0;
+        var catchY = alongY ? pastSlop(_downY - event.screenY) : 0;
+        _offset.x += catchX;
+        _offset.y += catchY;
+        _lastMousePos = new Point(event.screenX + catchX, event.screenY + catchY);
+        // The press stays a sample, as far behind the view as the finger has come: a quick flick may have no other move
+        // before it lifts, and with one sample it has no speed.
+        _sampleTimes.push(pressedAt);
+        _sampleX.push(hscroll != null ? hscroll.pos + catchX - (_downX - event.screenX) : 0);
+        _sampleY.push(vscroll != null ? vscroll.pos + catchY - (_downY - event.screenY) : 0);
+        _sampleFinger.push(-_downY);
+        _sampleFingerX.push(-_downX);
+        _sampleTouch.push(pressedTouch);
+        pauseContainerEvents();
+        return true;
+    }
+
+    /** How far a finger that's moved `distance` is past the slop, with the distance's sign. **/
+    private static function pastSlop(distance:Float):Float {
+        return distance > 0 ? distance - ScrollView.dragSlop : distance + ScrollView.dragSlop;
+    }
+
+    /** The drag goes on from where the finger is now, without a jump, and its speed counts from here. **/
+    private function startDragHere(event:MouseEvent, hscroll:HorizontalScroll, vscroll:VerticalScroll) {
+        _dragging = true;
+        if (hscroll != null) {
+            _offset.x = hscroll.pos + _overscrollX + event.screenX;
+        }
+        if (vscroll != null) {
+            _offset.y = vscroll.pos + _overscrollY + event.screenY;
+        }
+        _lastMousePos = new Point(event.screenX, event.screenY);
+        _sampleTimes.resize(0);
+        _sampleX.resize(0);
+        _sampleY.resize(0);
+        _sampleFinger.resize(0);
+        _sampleFingerX.resize(0);
+        _sampleTouch.resize(0);
+    }
+
     private function onMouseMove(event:MouseEvent) {
         if (_axisDrag != null && !decideAxisDrag(event)) {
             return;
@@ -1247,8 +1320,13 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         if (_caughtAt >= 0 && !_caughtFlick) {
             caughtMove(event);
         }
+        if (!_dragging && !passSlop(event)) {
+            return;
+        }
         event.cancel();
         var hscroll:HorizontalScroll = _scrollview.findComponent(HorizontalScroll, false);
+        _fingerX = event.screenX;
+        _touchTime = event.touchTime;
         if (hscroll != null) {
             dragTo(hscroll, _offset.x - event.screenX, false, event.touchEvent);
             var distX = Math.abs(event.screenX - _lastMousePos.x);
@@ -1307,18 +1385,7 @@ class ScrollViewEvents extends haxe.ui.events.Events {
             _scrollview.removeClass(":down");
             return false;
         }
-        var hscroll:HorizontalScroll = _scrollview.findComponent(HorizontalScroll, false);
-        var vscroll:VerticalScroll = _scrollview.findComponent(VerticalScroll, false);
-        if (hscroll != null) {
-            _offset.x = hscroll.pos + _overscrollX + event.screenX;
-        }
-        if (vscroll != null) {
-            _offset.y = vscroll.pos + _overscrollY + event.screenY;
-        }
-        _lastMousePos = new Point(event.screenX, event.screenY);
-        _sampleTimes.resize(0);
-        _sampleX.resize(0);
-        _sampleY.resize(0);
+        startDragHere(event, _scrollview.findComponent(HorizontalScroll, false), _scrollview.findComponent(VerticalScroll, false));
         return true;
     }
 
@@ -1328,14 +1395,19 @@ class ScrollViewEvents extends haxe.ui.events.Events {
             _sampleX.shift();
             _sampleY.shift();
             _sampleFinger.shift();
+            _sampleFingerX.shift();
+            _sampleTouch.shift();
         }
         _sampleTimes.push(frameSeconds());
         _sampleX.push(hscroll != null ? hscroll.pos : 0);
         _sampleY.push(vscroll != null ? vscroll.pos : 0);
         // As a scroll position: up as the finger moves up.
         _sampleFinger.push(-_fingerY);
+        _sampleFingerX.push(-_fingerX);
+        _sampleTouch.push(_touchTime);
     }
 
+    private var _fingerX:Float = 0;
     private var _fingerY:Float = 0;
 
     /**
@@ -1391,22 +1463,26 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         default (LSQ2): a quadratic fitted by least squares to the positions in the 100 ms up to the last move, and its
         slope at that move, so a flick's speeding up at the end counts in full; 0 when it held still for the last 40 ms.
     **/
-    private function releaseVelocity(positions:Array<Float>, now:Float):Float {
-        var last = _sampleTimes.length - 1;
-        if (last < 1 || now - _sampleTimes[last] > 0.04) {
+    private function releaseVelocity(positions:Array<Float>, times:Array<Float>, now:Float):Float {
+        var last = times.length - 1;
+        if (last < 1 || now - times[last] > 0.04) {
             return 0;
         }
         var first = last;
-        while (first > 0 && _sampleTimes[last] - _sampleTimes[first - 1] <= 0.1) {
+        while (first > 0 && times[last] - times[first - 1] <= 0.1) {
             first--;
         }
-        if (_sampleTimes[last] - _sampleTimes[first] < 0.001) {
+        // A slow frame can leave only the last move in that time: the one before it still says how fast the finger went.
+        if (first == last) {
+            first = last - 1;
+        }
+        if (times[last] - times[first] < 0.001) {
             return 0;
         }
         // Times and positions from the last move's: x = a + b t + c t², and the velocity there is b.
         var s0 = 0.0, s1 = 0.0, s2 = 0.0, s3 = 0.0, s4 = 0.0, sx = 0.0, stx = 0.0, st2x = 0.0;
         for (i in first...last + 1) {
-            var t = _sampleTimes[i] - _sampleTimes[last];
+            var t = times[i] - times[last];
             var x = positions[i] - positions[last];
             s0 += 1;
             s1 += t;
@@ -1508,8 +1584,15 @@ class ScrollViewEvents extends haxe.ui.events.Events {
             var now = frameSeconds();
             _flingHScroll = _scrollview.findComponent(HorizontalScroll, false);
             _flingVScroll = _scrollview.findComponent(VerticalScroll, false);
-            var vx = _flingHScroll != null ? releaseVelocity(_sampleX, now) : 0;
-            var vy = _flingVScroll != null ? releaseVelocity(_nested != null ? _sampleFinger : _sampleY, now) : 0;
+            // From the finger, as Android's are: the view stops at its ends, and a fit through moves that stop there tilted
+            // back at the last one, so a flick into an end flung away from it.
+            // Timed by the moves themselves where the backend says when they were: a frame shows a move up to a refresh
+            // after it, by an amount that varies, which threw a 60 Hz phone's flings out by 20% either way.
+            var touched = event.touchTime > 0 && _sampleTouch.indexOf(0) < 0;
+            var times = touched ? _sampleTouch : _sampleTimes;
+            var at = touched ? event.touchTime : now;
+            var vx = _flingHScroll != null ? releaseVelocity(_sampleFingerX, times, at) : 0;
+            var vy = _flingVScroll != null ? releaseVelocity(_sampleFinger, times, at) : 0;
             if (_caughtFlick) {
                 vx = flywheel(vx, speedOf(_caughtX, now - _caughtStart));
                 vy = flywheel(vy, speedOf(_caughtY, now - _caughtStart));

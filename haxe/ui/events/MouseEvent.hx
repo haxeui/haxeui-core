@@ -28,6 +28,11 @@ class MouseEvent extends UIEvent {
     /** A sideways wheel or touchpad scroll, as `delta` is up and down: positive to the right. **/
     public var deltaX:Float = 0;
     public var touchEvent:Bool;
+    /**
+        When a touch happened, in seconds, where the backend knows: it only means something against another touch's,
+        and it's truer than the frame that shows the touch, which comes up to a refresh later. 0 where there's none.
+    **/
+    public var touchTime:Float = 0;
     public var ctrlKey:Bool;
     public var shiftKey:Bool;
 
@@ -64,6 +69,7 @@ class MouseEvent extends UIEvent {
         c.delta = this.delta;
         c.deltaX = this.deltaX;
         c.touchEvent = this.touchEvent;
+        c.touchTime = this.touchTime;
         c.ctrlKey = this.ctrlKey;
         c.shiftKey = this.shiftKey;
         postClone(c);
