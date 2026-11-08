@@ -1780,54 +1780,67 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         if (_scrollview.scrollPolicy == ScrollPolicy.NEVER) {
             return;
         }
-        var primaryType:Class<Scroll> = VerticalScroll;
-        var secondaryType:Class<Scroll> = HorizontalScroll;
-        if (event.shiftKey) {
-            primaryType = HorizontalScroll;
-            secondaryType = VerticalScroll;
+        // The exact amounts where the backend has them (a touchpad's fractions of a step), else the whole steps.
+        var delta = event.preciseDelta != null ? event.preciseDelta : event.delta;
+        var deltaX = event.preciseDeltaX != null ? event.preciseDeltaX : event.deltaX;
+        if (delta != 0) {
+            var primaryType:Class<Scroll> = VerticalScroll;
+            var secondaryType:Class<Scroll> = HorizontalScroll;
+            if (event.shiftKey) {
+                primaryType = HorizontalScroll;
+                secondaryType = VerticalScroll;
+            }
+            var scroll:Scroll = _scrollview.findComponent(primaryType, false);
+            if (scroll == null) {
+                scroll = _scrollview.findComponent(secondaryType, false);
+            }
+            // A wheel turned up moves back towards the start, up the page or along the row.
+            wheelScroll(event, scroll, -delta, event.preciseDelta != null);
         }
-        var scroll:Scroll = _scrollview.findComponent(primaryType, false);
+        // A sideways scroll (a touchpad, a tilting wheel) moves only a view that scrolls sideways; another passes it on.
+        if (deltaX != 0) {
+            wheelScroll(event, _scrollview.findComponent(HorizontalScroll, false), deltaX, event.preciseDeltaX != null);
+        }
+    }
+
+    /**
+        Moves `scroll` on by `by` wheel steps, back where negative: in proportion where `precise`, else a whole step
+        whatever the amount. At its end already, or with nothing to scroll, the wheel goes on to a scroll view around this
+        one, as a browser's does.
+    **/
+    private function wheelScroll(event:MouseEvent, scroll:Scroll, by:Float, precise:Bool) {
         if (scroll == null) {
-            scroll = _scrollview.findComponent(secondaryType, false);
+            return;
         }
-
-        if (scroll != null) {
-            var currentScrollPolicy = scroll.id == 'scrollview-vscroll'
-            ? _scrollview.verticalScrollPolicy
-            : _scrollview.horizontalScrollPolicy;
-
-            if (currentScrollPolicy == ScrollPolicy.NEVER) {
-              return;
+        var currentScrollPolicy = scroll.id == 'scrollview-vscroll'
+        ? _scrollview.verticalScrollPolicy
+        : _scrollview.horizontalScrollPolicy;
+        if (currentScrollPolicy == ScrollPolicy.NEVER) {
+            return;
+        }
+        if ((by > 0 && scroll.pos >= scroll.max) || (by < 0 && scroll.pos <= scroll.min)) {
+            return;
+        }
+        if (_scrollview.autoHideScrolls == true && _fadeTimer == null) {
+            scroll.fadeIn();
+        }
+        event.cancel();
+        var amount = 50; // TODO: calculate this
+        #if haxeui_pdcurses
+        amount = 2;
+        #end
+        // In proportion: a whole step moves `amount`, and a touchpad's fraction of a step that much less.
+        scroll.pos += precise ? by * amount : (by > 0 ? amount : -amount);
+        if (_scrollview.autoHideScrolls == true) {
+            if (_fadeTimer != null) {
+                _fadeTimer.stop();
+                _fadeTimer = null;
             }
-
-            // At its end already, the wheel goes on to a scroll view around this one, as a browser's does.
-            if ((event.delta < 0 && scroll.pos >= scroll.max) || (event.delta > 0 && scroll.pos <= scroll.min)) {
-                return;
-            }
-            if (_scrollview.autoHideScrolls == true && _fadeTimer == null) {
-                scroll.fadeIn();
-            }
-            event.cancel();
-            var amount = 50; // TODO: calculate this
-            #if haxeui_pdcurses
-            amount = 2;
-            #end
-            if (event.delta > 0) {
-                scroll.pos -= amount;
-            } else if (event.delta < 0) {
-                scroll.pos += amount;
-            }
-            if (_scrollview.autoHideScrolls == true) {
-                if (_fadeTimer != null) {
-                    _fadeTimer.stop();
-                    _fadeTimer = null;
-                }
-                _fadeTimer = new Timer(300, function() {
-                    scroll.fadeOut();
-                    _fadeTimer.stop();
-                    _fadeTimer = null;
-                });
-            }
+            _fadeTimer = new Timer(300, function() {
+                scroll.fadeOut();
+                _fadeTimer.stop();
+                _fadeTimer = null;
+            });
         }
     }
     

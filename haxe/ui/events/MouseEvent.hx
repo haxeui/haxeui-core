@@ -36,6 +36,14 @@ class MouseEvent extends UIEvent {
     public var delta:Float;
     /** A sideways wheel or touchpad scroll, as `delta` is up and down: positive to the right. **/
     public var deltaX:Float = 0;
+    /**
+        The scroll's exact amounts, in wheel steps, where the backend has them, the same way round as `delta` and
+        `deltaX`: a touchpad sends fractions of a step, which `delta` and `deltaX` hold back until they add up to a whole
+        step. Moving by these follows the fingers; something that moves a step at a time keeps to `delta`. Null where the
+        backend has none.
+    **/
+    public var preciseDelta:Null<Float> = null;
+    public var preciseDeltaX:Null<Float> = null;
     public var touchEvent:Bool;
     /**
         When a touch happened, in seconds, where the backend knows: it only means something against another touch's,
@@ -79,6 +87,8 @@ class MouseEvent extends UIEvent {
         c.buttonDown = this.buttonDown;
         c.delta = this.delta;
         c.deltaX = this.deltaX;
+        c.preciseDelta = this.preciseDelta;
+        c.preciseDeltaX = this.preciseDeltaX;
         c.touchEvent = this.touchEvent;
         c.touchTime = this.touchTime;
         c.pinchScale = this.pinchScale;
