@@ -309,11 +309,21 @@ class Screen extends ScreenImpl {
     // On hxcpp, function comparison is broken (cast closures and
     // Reflect.compareMethods falsely compare as equal). We use PosInfos-based
     // dedup for registration and className-based matching for unregistration.
-    private var _screenListeners:Map<String, Array<{className:String, regKey:String, fn:Dynamic->Void}>> = new Map();
+    private var _screenListeners:Map<String, Array<{className:String, regKey:String, priority:Int, fn:Dynamic->Void}>> = new Map();
     private var _cppScreenKeys:Map<String, Bool> = new Map<String, Bool>();
     #else
-    private var _screenListeners:Map<String, Array<{raw:Dynamic, fn:Dynamic->Void}>> = new Map();
+    private var _screenListeners:Map<String, Array<{raw:Dynamic, priority:Int, fn:Dynamic->Void}>> = new Map();
     #end
+
+    // Higher priorities first, and the same priority in the order registered, as a component's own events go: a
+    // listener can then see a key before Toolkit's own moves focus on Tab, and cancel it.
+    private static function addListener<T:{priority:Int}>(listeners:Array<T>, listener:T) {
+        var i = 0;
+        while (i < listeners.length && listeners[i].priority >= listener.priority) {
+            i++;
+        }
+        listeners.insert(i, listener);
+    }
 
     public function registerEvent(type:String, listener:Dynamic, priority:Int = 0, ?pos:haxe.PosInfos) {
         if (supportsEvent(type) == true) {
@@ -327,13 +337,13 @@ class Screen extends ScreenImpl {
                 _screenListeners.set(type, []);
                 mapEvent(type, _onMappedEvent);
             }
-            _screenListeners.get(type).push({className: pos.className, regKey: regKey, fn: cast listener});
+            addListener(_screenListeners.get(type), {className: pos.className, regKey: regKey, priority: priority, fn: cast listener});
             #else
             if (!_screenListeners.exists(type)) {
                 _screenListeners.set(type, []);
                 mapEvent(type, _onMappedEvent);
             }
-            _screenListeners.get(type).push({raw: listener, fn: cast listener});
+            addListener(_screenListeners.get(type), {raw: listener, priority: priority, fn: cast listener});
             #end
         }
     }
