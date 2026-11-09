@@ -1138,8 +1138,9 @@ class ScrollViewEvents extends haxe.ui.events.Events {
                 }
             }
             // a press on a text input is its own, to select in it; with touch a single line lets the page scroll,
-            // as on a phone, and selects with a long press instead
-            if (c.hasTextInput() && (!event.touchEvent || c.getTextInput().multiline)) {
+            // as on a phone, and selects with a long press instead, and so do lines that all fit (a field growing with
+            // its text), keeping only a drag on lines it can scroll
+            if (c.hasTextInput() && (!event.touchEvent || (c.getTextInput().multiline && c.getTextInput().vscrollMax > 0))) {
                 return;
             }
             if (c is Scroll) {
