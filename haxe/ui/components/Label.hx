@@ -3,7 +3,10 @@ package haxe.ui.components;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
+import haxe.ui.events.FocusEvent;
 import haxe.ui.events.UIEvent;
+import haxe.ui.focus.FocusManager;
+import haxe.ui.focus.IFocusable;
 import haxe.ui.geom.Size;
 import haxe.ui.layouts.DefaultLayout;
 import haxe.ui.styles.Style;
@@ -12,7 +15,7 @@ import haxe.ui.styles.Style;
  * A way to display static (uneditable) text.
  */
 @:composite(Builder, LabelLayout)
-class Label extends Component {
+class Label extends Component implements IFocusable {
     //***********************************************************************************************************
     // Styles
     //***********************************************************************************************************
@@ -60,6 +63,88 @@ class Label extends Component {
     @:clonable @:behaviour(SelectableBehaviour) public var selectable:Bool;
 
     @:style public var fontSize:Null<Float>;
+
+    //***********************************************************************************************************
+    // Focus (opt in)
+    //***********************************************************************************************************
+    private var _focusableLinks:Bool = false;
+    /**
+     * Whether the links in `htmlText` can be reached by keyboard: the label then takes its turn in the focus order
+     * (Tab) while its `htmlText` has a link, where the backend supports it. Off by default, so a label stays out of
+     * the focus order and clicking one takes focus from what has it, as before.
+     */
+    public var focusableLinks(get, set):Bool;
+    private function get_focusableLinks():Bool {
+        return _focusableLinks;
+    }
+    private function set_focusableLinks(value:Bool):Bool {
+        if (_focusableLinks == value) {
+            return value;
+        }
+        _focusableLinks = value;
+        if (value == false && _focus == true) {
+            focus = false;
+        }
+        return value;
+    }
+
+    private var _focus:Bool = false;
+    /**
+     * Whether the label has focus: only with `focusableLinks` and a link in its `htmlText`.
+     */
+    public var focus(get, set):Bool;
+    private function get_focus():Bool {
+        return _focus;
+    }
+    private function set_focus(value:Bool):Bool {
+        if (_focus == value || (value == true && allowFocus == false)) {
+            return value;
+        }
+        _focus = value;
+        if (_focus == true) {
+            FocusManager.instance.focus = cast(this, IFocusable);
+            var scrollview = findScroller();
+            if (scrollview != null) {
+                scrollview.ensureVisible(this);
+            }
+        } else if (FocusManager.instance.focus == cast(this, IFocusable)) {
+            FocusManager.instance.focus = null;
+        }
+        dispatch(new FocusEvent(_focus == true ? FocusEvent.FOCUS_IN : FocusEvent.FOCUS_OUT));
+        return value;
+    }
+
+    private var _allowFocus:Bool = true;
+    /**
+     * Whether the label takes focus: `focusableLinks` on, a link in its `htmlText`, and not set false (as a parent
+     * keeping focus out of what's inside it does).
+     */
+    public var allowFocus(get, set):Bool;
+    private function get_allowFocus():Bool {
+        return _focusableLinks == true && _allowFocus == true && hasLink();
+    }
+    private function set_allowFocus(value:Bool):Bool {
+        _allowFocus = value;
+        return value;
+    }
+
+    /**
+     * Never focused on its own when a view opens.
+     */
+    public var autoFocus(get, set):Bool;
+    private function get_autoFocus():Bool {
+        return false;
+    }
+    private function set_autoFocus(value:Bool):Bool {
+        return value;
+    }
+
+    private static var linkPattern = ~/<a[\s>]/i;
+
+    private function hasLink():Bool {
+        var html = htmlText;
+        return html != null && linkPattern.match(html);
+    }
 }
 
 //***********************************************************************************************************

@@ -45,7 +45,8 @@ class FocusManager extends FocusManagerImpl {
     private function onScreenMouseDown(event:MouseEvent) {
         var list = Screen.instance.findComponentsUnderPoint(event.screenX, event.screenY);
         for (l in list) {
-            if (isOfType(l, IFocusable)) {
+            // A label is focusable only when it takes focus (`Label.focusableLinks`).
+            if (isOfType(l, IFocusable) && !(isOfType(l, haxe.ui.components.Label) && cast(l, IFocusable).allowFocus == false)) {
                 return;
             }
         }
