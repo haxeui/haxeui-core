@@ -2020,6 +2020,12 @@ class ComponentToolTipBehaviour extends DataBehaviour {
     }
 
     public override function setDynamic(value:Dynamic) {
+        var options = ToolTipManager.instance.getTooltipOptions(_component);
+        if (options != null && value != null && options.tipData == value && options.renderer == cast _component.tooltipRenderer) {
+            // Set to what it already is (a list refreshing its rows): leave the
+            // registration, and any tooltip it has up, as they are.
+            return;
+        }
         ToolTipManager.instance.unregisterTooltip(_component);
         if (value != null) {
             ToolTipManager.instance.registerTooltip(_component, {

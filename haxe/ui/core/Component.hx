@@ -515,6 +515,7 @@ class Component extends ComponentImpl
                 child.disposeComponent();
             } else {
                 child.dispatch(new UIEvent(UIEvent.HIDDEN));
+                ToolTipManager.instance.componentGone(child);
                 // sometimes (on some backends, like browser), mouse out doesnt fire when removing from screen
                 child.removeClass(":hover", false, true);
             }
@@ -654,6 +655,7 @@ class Component extends ComponentImpl
             child.removeAllComponents(true);
         } else {
             child.dispatch(new UIEvent(UIEvent.HIDDEN));
+            ToolTipManager.instance.componentGone(child);
             // sometimes (on some backends, like browser), mouse out doesnt fire when removing from screen
             child.removeClass(":hover", false, true);
         }
@@ -1269,6 +1271,7 @@ class Component extends ComponentImpl
                 parentComponent.invalidateComponentLayout();
             }
             positionInLayoutChanged(wasInLayout);
+            ToolTipManager.instance.componentGone(this);
 
             dispatchRecursively(new UIEvent(UIEvent.HIDDEN));
         }
@@ -1290,6 +1293,7 @@ class Component extends ComponentImpl
                 parentComponent.invalidateComponentLayout();
             }
             positionInLayoutChanged(wasInLayout);
+            ToolTipManager.instance.componentGone(this);
 
             if (dispatchChildren == true) {
                 dispatchRecursively(new UIEvent(UIEvent.HIDDEN));
