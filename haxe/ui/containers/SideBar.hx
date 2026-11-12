@@ -23,7 +23,7 @@ class SideBar extends Box {
     
     public function new() {
         super();
-        super.hide();
+        hideNow();
         this.position = "left";
         animatable = false;
         Screen.instance.registerEvent(UIEvent.RESIZE, function(_) {
@@ -357,6 +357,15 @@ class SideBar extends Box {
     }
         
     private function onHideAnimationEnd() {
+        super.hide();
+    }
+
+    /**
+     * Hidden from the start, without the slide: Box's own hide. A method rather than
+     * `super.hide()` in the constructor, which C# cannot compile (Haxe puts constructor
+     * bodies in a static method there, where `base` does not exist).
+     */
+    private function hideNow() {
         super.hide();
     }
 

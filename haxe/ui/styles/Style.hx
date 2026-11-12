@@ -941,8 +941,25 @@ class Style {
         return filters;
     }
     
+    /**
+     * A blank Style, allocated without running the generated constructor.
+     *
+     * `@:structInit` turns `({} : Style)` into a call passing one argument per
+     * field, and this class has 112 of them. That is poor codegen everywhere,
+     * and on HashLink it is fatal: its JIT refuses any call wider than 32
+     * arguments (`MAX_TMP_ARGS`, src/jit_emit.c), so a single `{}` here aborted
+     * every HaxeUI application at startup, before main() ran.
+     *
+     * `createEmptyInstance` allocates the object and leaves every field null,
+     * which is exactly what `{}` produced — the generated constructor only ever
+     * assigned the arguments it was passed, and it was never passed any.
+     */
+    public static function empty():Style {
+        return cast Type.createEmptyInstance(Style);
+    }
+
     public function clone():Style {
-        var c:Style = {};
+        var c:Style = Style.empty();
         c.apply(this);
         return c;
     }

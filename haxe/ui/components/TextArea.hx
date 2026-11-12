@@ -3,6 +3,7 @@ package haxe.ui.components;
 import haxe.ui.behaviours.Behaviour;
 import haxe.ui.behaviours.DataBehaviour;
 import haxe.ui.behaviours.DefaultBehaviour;
+import haxe.ui.behaviours.ValueBehaviour;
 import haxe.ui.core.Component;
 import haxe.ui.core.CompositeBuilder;
 import haxe.ui.core.ICompositeInteractiveComponent;
@@ -90,6 +91,21 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICo
     **/
     @:call(ScrollToBottom)                  public function scrollToBottom();
 
+    /**
+        The caret's position in `text` itself, with no wrapping counted.
+    **/
+    @:clonable @:behaviour(CaretIndexBehaviour)             public var caretIndex:Int;
+
+    /**
+        Where the selection starts in `text`. Set this, then `selectionEndIndex`.
+    **/
+    @:clonable @:behaviour(SelectionStartIndexBehaviour)    public var selectionStartIndex:Int;
+
+    /**
+        Where the selection ends in `text`. Set `selectionStartIndex` first.
+    **/
+    @:clonable @:behaviour(SelectionEndIndexBehaviour)      public var selectionEndIndex:Int;
+
     @:clonable @:behaviour(IconBehaviour)   public var icon:String;
     @:style(layout)                         public var iconPosition:String;
 
@@ -99,6 +115,22 @@ class TextArea extends InteractiveComponent implements IFocusable implements ICo
             return true;
         }
         return StringTools.trim(text).length == 0;
+    }
+
+    /**
+        Sets `text` to `value` exactly as given, as typing does. Setting `text` reads a value
+        holding `{{` and `}}` as a translation to look up; this never does, and drops any
+        translation `text` had, so text a person wrote stays as written.
+    **/
+    public function setLiteralText(value:String):String {
+        haxe.ui.locale.LocaleManager.instance.unregisterComponentProperty(this, "text");
+        if (behaviours == null) {
+            behaviours = new haxe.ui.behaviours.Behaviours(this);
+            registerBehaviours();
+        }
+        behaviours.set("text", value);
+        dispatch(new UIEvent(UIEvent.PROPERTY_CHANGE, "text"));
+        return value;
     }
 
     //***********************************************************************************************************
@@ -373,6 +405,42 @@ private class ScrollToBottom extends Behaviour {
 }
 
 @:dox(hide) @:noCompletion
+private class CaretIndexBehaviour extends ValueBehaviour {
+    public override function get():Variant {
+        return _component.getTextInput().caretIndex;
+    }
+    public override function set(value:Variant) {
+        super.set(value);
+        _component.syncComponentValidation();
+        _component.getTextInput().caretIndex = value;
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class SelectionStartIndexBehaviour extends ValueBehaviour {
+    public override function get():Variant {
+        return _component.getTextInput().selectionStartIndex;
+    }
+    public override function set(value:Variant) {
+        super.set(value);
+        _component.syncComponentValidation();
+        _component.getTextInput().selectionStartIndex = value;
+    }
+}
+
+@:dox(hide) @:noCompletion
+private class SelectionEndIndexBehaviour extends ValueBehaviour {
+    public override function get():Variant {
+        return _component.getTextInput().selectionEndIndex;
+    }
+    public override function set(value:Variant) {
+        super.set(value);
+        _component.syncComponentValidation();
+        _component.getTextInput().selectionEndIndex = value;
+    }
+}
+
+@:dox(hide) @:noCompletion
 private class IconBehaviour extends DataBehaviour {
     public override function validateData() {
         var textarea:TextArea = cast(_component, TextArea);
@@ -492,7 +560,7 @@ private class Events extends haxe.ui.events.Events {
                     if (text == null) {
                         text = "";
                     }
-                    _textarea.text = text;
+                    _textarea.setLiteralText(text); // typed text is never a translation
                     _textarea.dispatch(new UIEvent(UIEvent.CHANGE));
                     @:privateAccess _textarea.applyAutoHeight();
 

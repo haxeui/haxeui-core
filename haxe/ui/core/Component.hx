@@ -365,7 +365,7 @@ class Component extends ComponentImpl
             child.ready();
         }
 
-        assignPositionClasses();
+        childPositionEntered(child, _children.length - 1);
         invalidateComponentLayout();
         if (disabled) {
             child.disabled = true;
@@ -445,7 +445,8 @@ class Component extends ComponentImpl
             child.ready();
         }
 
-        assignPositionClasses();
+        // insert appends past the end, and counts a negative index from it
+        childPositionEntered(child, index < 0 ? _children.indexOf(child) : (index < _children.length ? index : _children.length - 1));
         invalidateComponentLayout();
         if (disabled) {
             child.disabled = true;
@@ -486,8 +487,10 @@ class Component extends ComponentImpl
             }
         }
 
+        var index = -1;
         if (_children != null) {
-            if (_children.indexOf(child) == -1) {
+            index = _children.indexOf(child);
+            if (index == -1) {
                 var childId = child.className;
                 if (child.id != null) {
                     childId += "#" + child.id;
@@ -499,6 +502,11 @@ class Component extends ComponentImpl
                 trace("WARNING: trying to remove a child (" + childId + ") that is not a child of this component (" + thisId + ")");
                 return child;
             }
+            #if cs
+            if (dispose == true) {
+                releaseFocusWithin(child);
+            }
+            #end
             if (_children.remove(child)) {
                 child.parentComponent = null;
                 child.depth = -1;
@@ -507,13 +515,16 @@ class Component extends ComponentImpl
                 child.disposeComponent();
             } else {
                 child.dispatch(new UIEvent(UIEvent.HIDDEN));
+                ToolTipManager.instance.componentGone(child);
                 // sometimes (on some backends, like browser), mouse out doesnt fire when removing from screen
                 child.removeClass(":hover", false, true);
             }
         }
 
         handleRemoveComponent(child, dispose);
-        assignPositionClasses(invalidate);
+        if (index != -1) {
+            childPositionLeft(child, index, true, invalidate);
+        }
         if (_children != null && invalidate == true) {
             invalidateComponentLayout();
         }
@@ -565,6 +576,9 @@ class Component extends ComponentImpl
                 child.disposeComponent();
             }
         }
+        _positionsKnown = false;
+        _firstPositioned = null;
+        _lastPositioned = null;
 
         this.destroyComponent();
         this.unregisterEventsInternal();
@@ -630,12 +644,18 @@ class Component extends ComponentImpl
         if (child == null) {
             return null;
         }
-        
+        #if cs
+        if (dispose == true) {
+            releaseFocusWithin(child);
+        }
+        #end
+
         if (dispose == true) {
             child._isDisposed = true;
             child.removeAllComponents(true);
         } else {
             child.dispatch(new UIEvent(UIEvent.HIDDEN));
+            ToolTipManager.instance.componentGone(child);
             // sometimes (on some backends, like browser), mouse out doesnt fire when removing from screen
             child.removeClass(":hover", false, true);
         }
@@ -648,8 +668,8 @@ class Component extends ComponentImpl
             child.destroyComponent();
             child.unregisterEventsInternal();
         }
-        
-        assignPositionClasses(invalidate);
+
+        childPositionLeft(child, index, true, invalidate);
         if (invalidate == true) {
             invalidateComponentLayout();
         }
@@ -668,31 +688,182 @@ class Component extends ComponentImpl
     private function onComponentRemoved(child:Component) {
     }
 
+    /*
+     * The "first" and "last" classes. The first and last children in the layout (those whose own
+     * `includeInLayout` is true, so not hidden themselves) carry them, one child both, and the other
+     * children in the layout neither. Children out of the layout keep what they had, except that an
+     * end that leaves the layout loses its classes.
+     *
+     * Setting them used to walk every child on every add and removal and every item renderer's data
+     * change, so filling or refreshing a container of n children was O(n²). Now one walk remembers
+     * the two ends, and from then on a child coming, going, moving, hiding or showing updates only
+     * the old and new ends; a data change does nothing. Only that walk makes the ends known, so a
+     * container that overrides assignPositionClasses to do nothing stays out of the classes.
+     *
+     * A child under a hidden ancestor is in the layout here (the walk used to skip it, via
+     * `hidden`), so a container filled while hidden has its classes when shown.
+     */
+    private static var POSITION_CLASSES:Array<String> = ["first", "last"];
+    @:noCompletion private var _positionsKnown:Bool = false;
+    @:noCompletion private var _firstPositioned:Component = null;
+    @:noCompletion private var _lastPositioned:Component = null;
+
     private function assignPositionClasses(invalidate:Bool = true) {
-        var effectiveChildren = [];
+        var first:Component = null;
+        var last:Component = null;
         for (c in childComponents) {
-            if (!c.includeInLayout || c.hidden) {
-                continue;
+            if (c.includeInLayout) {
+                if (first == null) {
+                    first = c;
+                }
+                last = c;
             }
-            effectiveChildren.push(c);
+        }
+        for (c in childComponents) {
+            if (c != first && c != last && c.includeInLayout) {
+                c.removeClasses(POSITION_CLASSES, invalidate);
+            }
         }
 
-        if (effectiveChildren.length == 1) {
-            effectiveChildren[0].addClasses(["first", "last"], invalidate);
+        _firstPositioned = null;
+        _lastPositioned = null;
+        setPositionEnds(first, last, invalidate);
+        _positionsKnown = true;
+    }
+
+    /**
+     * Assigns the first and last classes if no walk has yet, as after a move the ends could not follow.
+     */
+    private function checkPositionClasses() {
+        if (!_positionsKnown) {
+            assignPositionClasses();
+        }
+    }
+
+    // `child`, now at `index`, may have come into the layout: added, moved, shown or included.
+    private function childPositionEntered(child:Component, index:Int, invalidate:Bool = true) {
+        if (!_positionsKnown) {
+            assignPositionClasses(invalidate);
+            return;
+        }
+        if (!child.includeInLayout) {
             return;
         }
 
-        var n = 0;
-        for (c in effectiveChildren) {
-            if (n == 0) {
-                c.swapClass("first", "last", invalidate);
-            } else if (n == effectiveChildren.length - 1) {
-                c.swapClass("last", "first", invalidate);
-            } else {
-                c.removeClasses(["first", "last"], invalidate);
+        var first = _firstPositioned;
+        var last = _lastPositioned;
+        if (first == null) {
+            first = last = child;
+        } else if (index == _children.length - 1) {
+            last = child;
+        } else if (index == 0) {
+            first = child;
+        } else {
+            var firstIndex = _children.indexOf(first);
+            var lastIndex = _children.indexOf(last);
+            if (firstIndex == -1 || lastIndex == -1) {
+                assignPositionClasses(invalidate);
+                return;
             }
+            if (index < firstIndex) {
+                first = child;
+            } else if (index > lastIndex) {
+                last = child;
+            } else {
+                child.removeClasses(POSITION_CLASSES, invalidate);
+                return;
+            }
+        }
+        setPositionEnds(first, last, invalidate);
+    }
 
-            n++;
+    // `child`, which was at `index`, may have left the layout: removed (`gone`, no longer in the
+    // children), moved, hidden or left out. A child that has gone keeps its classes.
+    private function childPositionLeft(child:Component, index:Int, gone:Bool, invalidate:Bool = true) {
+        if (!_positionsKnown) {
+            assignPositionClasses(invalidate);
+            return;
+        }
+
+        var first = _firstPositioned;
+        var last = _lastPositioned;
+        if (child != first && child != last) {
+            return;
+        }
+        if (gone) {
+            if (_firstPositioned == child) {
+                _firstPositioned = null;
+            }
+            if (_lastPositioned == child) {
+                _lastPositioned = null;
+            }
+        }
+
+        if (child == first && child == last) {
+            first = last = null;
+        } else if (child == first) {
+            first = null;
+            var i = gone ? index : index + 1;
+            while (first == null && i < _children.length) {
+                var c = _children[i++];
+                if (c.includeInLayout) {
+                    first = c;
+                }
+            }
+        } else {
+            last = null;
+            var i = index - 1;
+            while (last == null && i >= 0) {
+                var c = _children[i--];
+                if (c.includeInLayout) {
+                    last = c;
+                }
+            }
+        }
+        if (first == null && last != null || last == null && first != null) { // the ends were not what was known
+            assignPositionClasses(invalidate);
+            return;
+        }
+        setPositionEnds(first, last, invalidate);
+    }
+
+    // Makes `first` and `last` the ends, taking the classes from former ends that no longer are.
+    private function setPositionEnds(first:Component, last:Component, invalidate:Bool) {
+        var oldFirst = _firstPositioned;
+        var oldLast = _lastPositioned;
+        _firstPositioned = first;
+        _lastPositioned = last;
+        if (oldFirst != null && oldFirst != first && oldFirst != last) {
+            oldFirst.removeClasses(POSITION_CLASSES, invalidate);
+        }
+        if (oldLast != null && oldLast != oldFirst && oldLast != first && oldLast != last) {
+            oldLast.removeClasses(POSITION_CLASSES, invalidate);
+        }
+
+        if (first == null) {
+        } else if (first == last) {
+            first.addClasses(POSITION_CLASSES, invalidate);
+        } else {
+            first.swapClass("first", "last", invalidate);
+            last.swapClass("last", "first", invalidate);
+        }
+    }
+
+    // This component's own hidden or includeInLayout changed: it may have come into or left its
+    // parent's layout, moving the parent's ends.
+    private function positionInLayoutChanged(wasInLayout:Bool) {
+        var parent = parentComponent;
+        if (parent == null || parent._children == null || wasInLayout == includeInLayout) {
+            return;
+        }
+        var index = parent._children.indexOf(this);
+        if (index == -1) { // TabView gives its pages a parent before adding them
+            return;
+        }
+        if (wasInLayout) {
+            parent.childPositionLeft(this, index, false);
+        } else {
+            parent.childPositionEntered(this, index);
         }
     }
 
@@ -741,6 +912,33 @@ class Component extends ComponentImpl
             }
         }
     }
+
+    #if cs
+    /**
+     * A component removed for good quietly stops being anyone's focus, as a browser drops a
+     * removed element's. Kept, the FocusManager would send it FOCUS_OUT on the next focus
+     * change, by then disposed, with listeners that read nulls (haxeui-cs: a text field's late
+     * commit of `null`). Quietly, because an event here would re-enter whatever is tearing the
+     * component down.
+     */
+    private function releaseFocusWithin(child:Component) {
+        var lastFocuses:Map<Component, haxe.ui.focus.IFocusable> = @:privateAccess haxe.ui.focus.FocusManager.instance._lastFocuses;
+        for (root in [for (k in lastFocuses.keys()) k]) {
+            var focused:Dynamic = lastFocuses.get(root);
+            if (!(focused is InteractiveComponent)) {
+                continue;
+            }
+            var c:Component = cast focused;
+            while (c != null && c != child) {
+                c = c.parentComponent;
+            }
+            if (c == child) {
+                lastFocuses.remove(root);
+                @:privateAccess cast(focused, InteractiveComponent)._focus = false;
+            }
+        }
+    }
+    #end
 
     /**
      * Removes all child component from this component's display tree.
@@ -1018,8 +1216,17 @@ class Component extends ComponentImpl
 
         if (index >= 0 && index <= _children.length && child.parentComponent == this) {
             handleSetComponentIndex(child, index);
+            var oldIndex = _children.indexOf(child);
             _children.remove(child);
+            var newIndex = index < _children.length ? index : _children.length;
+            var moves = oldIndex != newIndex && child.includeInLayout;
+            if (moves && oldIndex != -1) {
+                childPositionLeft(child, oldIndex, true);
+            }
             _children.insert(index, child);
+            if (moves) {
+                childPositionEntered(child, newIndex);
+            }
             invalidateComponentLayout();
         }
         return child;
@@ -1057,11 +1264,14 @@ class Component extends ComponentImpl
         }
 
         if (_hidden == false) {
+            var wasInLayout = includeInLayout;
             _hidden = true;
             handleVisibility(false);
             if (parentComponent != null) {
                 parentComponent.invalidateComponentLayout();
             }
+            positionInLayoutChanged(wasInLayout);
+            ToolTipManager.instance.componentGone(this);
 
             dispatchRecursively(new UIEvent(UIEvent.HIDDEN));
         }
@@ -1076,11 +1286,14 @@ class Component extends ComponentImpl
         }
 
         if (_hidden == false) {
+            var wasInLayout = includeInLayout;
             _hidden = true;
             handleVisibility(false);
             if (parentComponent != null) {
                 parentComponent.invalidateComponentLayout();
             }
+            positionInLayoutChanged(wasInLayout);
+            ToolTipManager.instance.componentGone(this);
 
             if (dispatchChildren == true) {
                 dispatchRecursively(new UIEvent(UIEvent.HIDDEN));
@@ -1107,6 +1320,7 @@ class Component extends ComponentImpl
         }
 
         if (_hidden == true) {
+            var wasInLayout = includeInLayout;
             _hidden = false;
             handleVisibility(true);
             invalidateComponentLayout(_invalidateRecursivelyOnShow);
@@ -1114,6 +1328,7 @@ class Component extends ComponentImpl
             if (parentComponent != null) {
                 parentComponent.invalidateComponentLayout();
             }
+            positionInLayoutChanged(wasInLayout);
 
             dispatchRecursively(new UIEvent(UIEvent.SHOWN));
         }
@@ -1128,12 +1343,14 @@ class Component extends ComponentImpl
         }
 
         if (_hidden == true) {
+            var wasInLayout = includeInLayout;
             _hidden = false;
             handleVisibility(true);
             invalidateComponentLayout();
             if (parentComponent != null) {
                 parentComponent.invalidateComponentLayout();
             }
+            positionInLayoutChanged(wasInLayout);
 
             if (dispatchChildren == true) {
                 dispatchRecursively(new UIEvent(UIEvent.SHOWN));
@@ -1256,7 +1473,9 @@ class Component extends ComponentImpl
     public var customStyle(get, set):Style;
     private function get_customStyle():Style {
         if (_customStyle == null) {
-            _customStyle = {};
+            // Style.empty(), not `{}` — see Style.empty. A @:structInit literal
+            // here compiles to a 113-argument call, which HashLink's JIT refuses.
+            _customStyle = Style.empty();
         }
         return _customStyle;
     }
@@ -1612,7 +1831,12 @@ class Component extends ComponentImpl
         return _includeInLayout;
     }
     private function set_includeInLayout(value:Bool):Bool {
+        if (value == _includeInLayout) {
+            return value;
+        }
+        var wasInLayout = includeInLayout;
         _includeInLayout = value;
+        positionInLayoutChanged(wasInLayout);
         return value;
     }
 
@@ -1977,9 +2201,14 @@ class Component extends ComponentImpl
 
     private function enforceSizeConstraints() {
         if (style != null) {
-            // enforce min width
+            // enforce min width - an auto-sized component stays auto: writing _width would fix it at
+            // its minimum for good, so it could never grow when its content does (a row whose text
+            // wraps after its first layout overlapped the next row)
             if (style.minWidth != null && _componentWidth < style.minWidth) {
-                _componentWidth = _actualWidth = _width = style.minWidth;
+                _componentWidth = _actualWidth = style.minWidth;
+                if (autoWidth == false) {
+                    _width = style.minWidth;
+                }
             }
             
             // enforce max width
@@ -2004,9 +2233,12 @@ class Component extends ComponentImpl
                 }
             }
             
-            // enforce min height
+            // enforce min height - an auto-sized component stays auto (see min width)
             if (style.minHeight != null && _componentHeight < style.minHeight) {
-                _componentHeight = _actualHeight = _height = style.minHeight;
+                _componentHeight = _actualHeight = style.minHeight;
+                if (autoHeight == false) {
+                    _height = style.minHeight;
+                }
             }
             
             // enforce max height
@@ -2095,15 +2327,26 @@ class Component extends ComponentImpl
         var invalidate:Bool = false;
         if (autoWidth == true || autoHeight == true) {
             var s:Size = layout.calcAutoSize();
+            // A min-width / min-height is a floor under the auto size, applied here so the size is
+            // stable from pass to pass and still grows when the content does (enforceSizeConstraints
+            // leaves an auto-sized component auto).
             if (autoWidth == true) {
-                if (s.width != _componentWidth) {
-                    _componentWidth = s.width;
+                var w = s.width;
+                if (style != null && style.minWidth != null && w < style.minWidth) {
+                    w = style.minWidth;
+                }
+                if (w != _componentWidth) {
+                    _componentWidth = w;
                     invalidate = true;
                 }
             }
             if (autoHeight == true) {
-                if (s.height != _componentHeight) {
-                    _componentHeight = s.height;
+                var h = s.height;
+                if (style != null && style.minHeight != null && h < style.minHeight) {
+                    h = style.minHeight;
+                }
+                if (h != _componentHeight) {
+                    _componentHeight = h;
                     invalidate = true;
                 }
             }
@@ -2303,7 +2546,7 @@ class Component extends ComponentImpl
         }
         if (customStyle != null) {
             if (c.customStyle == null) {
-                c.customStyle = {};
+                c.customStyle = Style.empty();
             }
             c.customStyle.apply(customStyle);
         }

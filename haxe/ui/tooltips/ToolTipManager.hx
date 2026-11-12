@@ -69,10 +69,35 @@ class ToolTipManager {
     }
 
     public function unregisterTooltip(target:Component) {
+        if (target == _currentComponent) {
+            dropCurrent();
+        }
         target.unregisterEvent(MouseEvent.MOUSE_OVER, onTargetMouseOver);
         target.unregisterEvent(MouseEvent.MOUSE_OUT, onTargetMouseOut);
         target.unregisterEvent(MouseEvent.MOUSE_MOVE, onTargetMouseMove);
         _toolTipOptions.remove(target);
+    }
+
+    /**
+     * `component` has left the display tree or been hidden. If the tooltip
+     * showing, or about to show, is its own or one of its descendants', that
+     * tooltip goes with it: no mouse out will ever arrive from a component
+     * that is no longer there, and without one the tooltip stays up, over
+     * whatever replaced the view, until the next mouse down.
+     */
+    public function componentGone(component:Component) {
+        if (_currentComponent == null) {
+            return;
+        }
+        if (_currentComponent == component || component.containsChildComponent(_currentComponent, true)) {
+            dropCurrent();
+        }
+    }
+
+    private function dropCurrent() {
+        _currentComponent.unregisterEvent(MouseEvent.MOUSE_MOVE, onTargetMouseMove);
+        stopCurrent();
+        hideCurrentToolTip();
     }
 
     public function getTooltipOptions(target:Component):ToolTipOptions {
@@ -362,6 +387,9 @@ class ToolTipManager {
 
         if (x + w > maxX) {
             x = x - w;
+        }
+        if (x < 0) {
+            x = 0;
         }
         if (y + h > maxY) {
             y = _lastMouseEvent.screenY - h - (_toolTip.marginTop / 2);

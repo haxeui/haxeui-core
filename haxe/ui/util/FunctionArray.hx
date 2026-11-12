@@ -33,7 +33,7 @@ class FunctionArray<T> {
     }
 
     public function indexOf(x:T, fromIndex:Int = 0):Int {
-        #if neko
+        #if (neko || cs)
         if (Reflect.isFunction(x) == false) {
             return _array.indexOf(cast x);
         } else {

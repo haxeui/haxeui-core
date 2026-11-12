@@ -47,7 +47,8 @@ class PropertyGrid extends ScrollView {
 
     private static function createEditor(type:String):PropertyEditor {
         initDefaultEditors();
-        if (!registeredEditors.exists(type)) {
+        // A property with no type gets the default editor (C#'s StringMap throws on a null key).
+        if (type == null || !registeredEditors.exists(type)) {
             type = defaultEditorType;
         }
         var editorEntry = registeredEditors.get(type);

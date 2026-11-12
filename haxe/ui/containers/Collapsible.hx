@@ -36,9 +36,9 @@ private class TextBehaviour extends DataBehaviour {
 @:dox(hide) @:noCompletion
 private class CollapsedBehaviour extends DataBehaviour {
     private override function validateData() {
-        var header = _component.findComponent("collapsible-header");
-        var icon = _component.findComponent("collapsible-icon");
-        var label = _component.findComponent("collapsible-label");
+        var header:Component = _component.findComponent("collapsible-header");
+        var icon:Component = _component.findComponent("collapsible-icon");
+        var label:Component = _component.findComponent("collapsible-label");
         if (_value == true) {
             header.swapClass("collapsed", "expanded");
             icon.swapClass("collapsed", "expanded");
@@ -116,14 +116,14 @@ private class Events extends haxe.ui.events.Events {
     }
     
     public override function register() {
-        var header = _collapsible.findComponent("collapsible-header");
+        var header:Component = _collapsible.findComponent("collapsible-header");
         if (header != null && header.hasEvent(MouseEvent.CLICK, onHeaderClicked) == false) {
             header.registerEvent(MouseEvent.CLICK, onHeaderClicked);
         }
     }
 
     public override function unregister() {
-        var header = _collapsible.findComponent("collapsible-header");
+        var header:Component = _collapsible.findComponent("collapsible-header");
         if (header != null) {
             header.unregisterEvent(MouseEvent.CLICK, onHeaderClicked);
         }
@@ -247,7 +247,7 @@ class CollapsibleLayout extends VerticalLayout {
         var builder = cast(component._compositeBuilder, CollapsibleBuilder);
         var depth = builder.calculateDepth();
 
-        var header = findComponent("collapsible-header");
+        var header:Component = findComponent("collapsible-header");
         var offset = 0;
         if (depth == 0) {
             offset = 5;

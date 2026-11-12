@@ -1508,9 +1508,23 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
 
         _isValidating = true;
 
-        validateComponentInternal(nextFrame);
-        validateInitialSize(isInitialized);
+        try {
+            validateComponentInternal(nextFrame);
+            validateInitialSize(isInitialized);
+        } catch (e:haxe.Exception) {
+            // A throw must not leave the component stuck mid-validation, or it never validates
+            // again: it is finished as if validated, and comes back when something invalidates it.
+            finishValidation();
+            #if cs
+            cs.Syntax.code("throw"); // C#'s bare rethrow keeps the original stack; `throw e` resets it
+            #else
+            throw e;
+            #end
+        }
+        finishValidation();
+    }
 
+    private function finishValidation() {
         #if (haxe_ver < 4)
         _invalidationFlags = new Map<String, Bool>();
         #else
@@ -2006,6 +2020,12 @@ class ComponentToolTipBehaviour extends DataBehaviour {
     }
 
     public override function setDynamic(value:Dynamic) {
+        var options = ToolTipManager.instance.getTooltipOptions(_component);
+        if (options != null && value != null && options.tipData == value && options.renderer == cast _component.tooltipRenderer) {
+            // Set to what it already is (a list refreshing its rows): leave the
+            // registration, and any tooltip it has up, as they are.
+            return;
+        }
         ToolTipManager.instance.unregisterTooltip(_component);
         if (value != null) {
             ToolTipManager.instance.registerTooltip(_component, {

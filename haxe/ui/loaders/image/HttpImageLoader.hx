@@ -5,6 +5,11 @@ import haxe.ui.assets.ImageInfo;
 import haxe.ui.util.Variant;
 
 class HttpImageLoader extends ImageLoaderBase {
+    #if cs
+    /** One System.Net.Http.HttpClient for every request, as .NET recommends; it is thread-safe. **/
+    private static var _client:Dynamic = null;
+    #end
+
     public override function load(resource:Variant, callback:ImageInfo->Void) {
         var stringResource:String = resource;
         loadFromHttp(stringResource, function(imageInfo) {
@@ -74,16 +79,28 @@ class HttpImageLoader extends ImageLoaderBase {
 
         #elseif cs // hxcs bytes are wrong in haxe.Http
 
-        var request = cs.system.net.WebRequest.Create(url);
-        var buffer = new cs.NativeArray<cs.types.UInt8>(32768);
-        var reader = new cs.system.io.StreamReader(request.GetResponse().GetResponseStream());
-        var memStream = new cs.system.io.MemoryStream();
-        var bytesRead = 0;
-        while ((bytesRead = reader.BaseStream.Read(buffer, 0, buffer.Length)) > 0) {
-            memStream.Write(buffer, 0, bytesRead);
-        }
-        reader.Close();
-        Toolkit.assets.imageFromBytes(Bytes.ofData(memStream.ToArray()), callback);
+        // Fetched on a worker thread, so the UI never waits on the network; the answer comes
+        // back through this thread's event loop (thread-safe, and pumped by the app). A failed
+        // request (error status, no connection) is no image, as on the other targets.
+        var events = sys.thread.Thread.current().events;
+        sys.thread.Thread.create(function() {
+            var data:haxe.io.BytesData = null;
+            try {
+                if (_client == null) {
+                    _client = cs.Syntax.code("new System.Net.Http.HttpClient()");
+                }
+                data = cs.Syntax.code("((System.Net.Http.HttpClient){0}).GetByteArrayAsync({1}).GetAwaiter().GetResult()", _client, url);
+            } catch (e:Dynamic) {
+                data = null;
+            }
+            events.run(function() {
+                if (data == null) {
+                    callback(null);
+                } else {
+                    Toolkit.assets.imageFromBytes(Bytes.ofData(data), callback);
+                }
+            });
+        });
 
         #else
 

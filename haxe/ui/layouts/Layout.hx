@@ -355,6 +355,17 @@ class Layout implements ILayout {
             h += y1;
         }
 
+        // CLAMP (JoeClash fork). x2/y2 only advance for a child that HAS a
+        // componentWidth/Height, while x1/y1 track every child's left/top
+        // regardless — so one child positioned at top:5 with a null height
+        // leaves y1=5 against y2=0 and this returns a height of -5. A
+        // negative auto-size is not a size; downstream it is clamped in some
+        // paths and not others, and the disagreement re-invalidates the
+        // component forever: a freeze with no exception and no growing stack.
+        // Observed as exactly (0, -5) under an embedded epubreader page.
+        if (w < 0) w = 0;
+        if (h < 0) h = 0;
+
         return new Size(w, h);
     }
 

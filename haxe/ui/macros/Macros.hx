@@ -348,7 +348,15 @@ class Macros {
                     return value;
                 }
                 if (_style == null) {
-                    _style = {};
+                    // Style.empty(), not `{}`. Style is @:structInit with 112
+                    // fields, so a literal here compiles to a 113-argument call
+                    // — and this block is generated into EVERY @:style setter,
+                    // on every component. HashLink's JIT refuses calls wider
+                    // than 32 arguments (MAX_TMP_ARGS, src/jit_emit.c), so each
+                    // one aborted the program at startup. Fully qualified
+                    // because a class carrying @:style fields need not import
+                    // Style itself.
+                    _style = haxe.ui.styles.Style.empty();
                 }
                 if (value == null) {
                     $p{["customStyle", f.name]} = null;

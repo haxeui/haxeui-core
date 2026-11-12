@@ -109,6 +109,27 @@ class ValidationManager {
     private var _profileTot:Float = 0;
     #end
     
+    /** A spinning item for the trace: its class, id and current size. */
+    private static function describeSpinning(item:IValidating):String {
+        var name = Type.getClassName(Type.getClass(item));
+        if (Std.isOfType(item, haxe.ui.core.Component)) {
+            var c:haxe.ui.core.Component = cast item;
+            name += (c.id != null ? '#${c.id}' : "") + ' [${Math.round(c.width)}x${Math.round(c.height)}]';
+        }
+        return name;
+    }
+
+    private function endPass() {
+        isValidating = false;
+
+        if (_queue.length > 0) { // lets process any stragglers - items maybe have been added while processing other parts
+            isPending = true;
+            Toolkit.callLater(process);
+        } else {
+            isPending = false;
+        }
+    }
+
     public function process() {
         if (isValidating == true || isPending == false) {
             return;
@@ -132,29 +153,52 @@ class ValidationManager {
         dispatch(new ValidationEvent(ValidationEvent.START));
 
         //check length every time because add() might have added a new item during the last validation
-        while (_queue.length > 0) {
-            var item:IValidating = _queue.shift();
-            if (item.depth < 0) {
-                continue;   //no longer on the display list
+        // SPIN GUARD (JoeClash fork). This loop drains a queue that validation
+        // itself REFILLS, with no bound. Two components that invalidate each
+        // other keep it non-empty forever inside this one call: no frame is
+        // drawn, the stack does not grow, and the callLater valve below is
+        // never reached — an unkillable freeze with no diagnostic of any kind.
+        // Assigning Toolkit.theme over a large screen graph is one way in.
+        // SpinGuard turns that freeze into a crash that names the cycle. It
+        // judges one component coming back again and again, not the length of
+        // the pass: a big screen's first layout (an 800-row outline is ~92,000
+        // validations, none of one component over 26) must finish.
+        var spin = new SpinGuard();
+        try {
+            while (_queue.length > 0) {
+                var item:IValidating = _queue.shift();
+                if (item.depth < 0) {
+                    continue;   //no longer on the display list
+                }
+                if (spin.count(item)) {
+                    trace("[haxeui] VALIDATION SPIN — a component validated " + SpinGuard.LIMIT + " times after "
+                        + SpinGuard.QUIET + " validations in one process() pass (" + spin.total + " in all). "
+                        + "Components re-queueing each other, most frequent first:");
+                    for (b in spin.busiest(25)) trace("  " + b.count + " x " + describeSpinning(cast b.item));
+                    // A cycle would only spin again on the next pass: drop it, and say so once.
+                    _queue.splice(0, _queue.length);
+                    throw "haxeui validation spin (see the list above)";
+                }
+                item.validateComponent();
             }
-            item.validateComponent();
-        }
 
-        for (i in 0..._displayQueue.length) {
-            var item = _displayQueue[i];
-            item.updateComponentDisplay();
+            for (i in 0..._displayQueue.length) {
+                var item = _displayQueue[i];
+                item.updateComponentDisplay();
+            }
+            _displayQueue.splice(0, _displayQueue.length);
+        } catch (e:haxe.Exception) {
+            // A throw must not leave the manager mid-pass: with isValidating stuck, nothing would
+            // lay out again. The item that threw has left the queue; the rest wait for the next pass.
+            endPass();
+            #if cs
+            cs.Syntax.code("throw"); // C#'s bare rethrow keeps the original stack; `throw e` resets it
+            #else
+            throw e;
+            #end
         }
-        _displayQueue.splice(0, _displayQueue.length);
+        endPass();
 
-        isValidating = false;
-        
-        if (_queue.length > 0) { // lets process any stragglers - items maybe have been added while processing other parts
-            isPending = true;
-            Toolkit.callLater(process);
-        } else {
-            isPending = false;
-        }
-        
 
         #if profile_validation
         _profileCount++;

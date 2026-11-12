@@ -1,0 +1,10 @@
+# Typed braces stay literal in TextArea and TextField (setLiteralText): a headless run on haxeui-cs.
+# From this folder: haxe build.hxml (needs utest and haxeui-cs; prints the results and exits 1 on a failure).
+-cp .
+-main TestMain
+-lib utest
+-lib haxeui-core
+-lib haxeui-cs
+-D haxeui_cs_headless
+-D haxeui_cs_run
+-cs bin

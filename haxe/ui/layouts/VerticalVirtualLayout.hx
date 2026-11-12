@@ -23,8 +23,8 @@ class VerticalVirtualLayout extends VirtualLayout {
                         c.top = pos;
                     }
 
-                    var size:Null<Float> = _sizeCache[i];
-                    pos += (size != null && size != 0 ? size : itemHeight) + verticalSpacing;
+                    var size:Null<Float> = _sizes.get(dataSource.get(i), i);
+                    pos += (size != null ? size : itemHeight) + verticalSpacing;
                 }
             } else {
                 for (child in contents.childComponents) {
@@ -77,27 +77,33 @@ class VerticalVirtualLayout extends VirtualLayout {
         }
 
         if (comp.variableItemSize == true) {
+            // Text wraps differently at another width: every measured height is stale.
+            _sizes.widthIs(contents.width);
             var totalSize:Float = 0;
             var requireInvalidation:Bool = false;
             var newFirstIndex:Int = -1;
+            var rendered:Int = contents.childComponents.length;
             for (i in 0...dataSource.size) {
-                var size:Null<Float> = _sizeCache[i];
+                var item:Dynamic = dataSource.get(i);
 
-                //Extract the itemrenderer size from the cache or child component
-                if (size == null || size == 0) {
-                    if (isIndexVisible(i)) {
-                        var c:Component = contents.getComponentAt(i - _firstIndex);
-                        if (c != null && c.componentHeight > 0) {
-                            _sizeCache[i] = c.componentHeight;
-                            size = c.componentHeight;
+                // A row that has a renderer gives its height now, so one whose content changed
+                // corrects its entry; a renderer not laid out yet asks for one more pass. Only
+                // rows with a renderer: `_lastIndex` itself is never rendered, and waiting on it
+                // re-invalidated the list from inside its own validation until haxeui threw.
+                // A row off screen uses what was measured when it was last on screen.
+                if (i >= _firstIndex && i < _firstIndex + rendered) {
+                    var c:Component = contents.getComponentAt(i - _firstIndex);
+                    if (c != null) {
+                        if (c.componentHeight > 0) {
+                            _sizes.set(item, i, c.componentHeight);
                         } else {
                             requireInvalidation = true;
-                            size = itemHeight;
                         }
-                    } else {
-                        requireInvalidation = true;
-                        size = itemHeight;
                     }
+                }
+                var size:Null<Float> = _sizes.get(item, i);
+                if (size == null) {
+                    size = itemHeight;
                 }
 
                 size += verticalSpacing;
@@ -156,8 +162,8 @@ class VerticalVirtualLayout extends VirtualLayout {
         if (comp.variableItemSize == true) {
             scrollMax = -usableSize.height;
             for (i in 0...dataSource.size) {
-                var size:Null<Float> = _sizeCache[i];
-                if (size == null || size == 0) {
+                var size:Null<Float> = _sizes.get(dataSource.get(i), i);
+                if (size == null) {
                     size = itemHeight;
                 }
 

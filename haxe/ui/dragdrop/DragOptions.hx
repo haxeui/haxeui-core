@@ -45,4 +45,21 @@ typedef DragOptions = {
      * Default: dragging
      */
     @:optional var draggingStyleName:String;
+
+    /**
+     * What the drag carries, for drag and drop. Setting it (or `dragProxy`) makes the drag a
+     * drag-and-drop: the component stays where it is, and the drop targets under the mouse
+     * (DragManager.registerDropTarget) get DRAG_ENTER, DRAG_LEAVE and DROP events with this as
+     * their `data`.
+     * Default: null (the component itself is moved, as before)
+     */
+    @:optional var dragData:Dynamic;
+
+    /**
+     * For drag and drop: a component that follows the mouse while dragging, in place of moving
+     * the draggable component. It is added to the Screen when the drag starts and removed when it
+     * ends, positioned at the mouse plus `dragOffsetX`/`dragOffsetY`.
+     * Default: null (nothing follows the mouse)
+     */
+    @:optional var dragProxy:Component;
 }

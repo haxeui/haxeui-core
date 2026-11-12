@@ -162,7 +162,7 @@ class ItemRenderer extends Box {
         }
         
         if (parentComponent != null) {
-            parentComponent.assignPositionClasses();
+            parentComponent.checkPositionClasses(); // new data never moves the first or last
         }
 
         onDataChanged(_data);
@@ -247,7 +247,7 @@ class ItemRenderer extends Box {
         }
 
         if (fieldList == null) {
-            fieldList = Reflect.fields(value);
+            fieldList = value != null ? Reflect.fields(value) : []; // Reflect.fields(null) throws on some targets (C#)
         }
 
         var valueObject = null;

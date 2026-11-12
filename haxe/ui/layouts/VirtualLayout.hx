@@ -18,7 +18,8 @@ class VirtualLayout extends ScrollViewLayout {
     private var _firstIndex:Int = -1;
     private var _lastIndex:Int = -1;
     private var _rendererPool:Array<ItemRenderer> = [];
-    private var _sizeCache:Array<Float> = [];
+    /** Rows' measured sizes with `variableItemSize`, by item (see VirtualSizeCache). */
+    private var _sizes:VirtualSizeCache = new VirtualSizeCache();
 
     private var contents(get, null):Component;
     private function get_contents():Component {

@@ -138,6 +138,8 @@ class SplitterEvents extends haxe.ui.events.Events {
         Screen.instance.unregisterEvent(MouseEvent.MOUSE_UP, onScreenMouseUp);
         #if haxeui_html5
         js.Browser.document.body.style.cursor = null;
+        #elseif haxeui_cs
+        haxe.ui.backend.cs.ScreenCursor.clear();
         #end
     }
 }
@@ -158,9 +160,15 @@ class SplitterBuilder extends CompositeBuilder {
 
     public override function addComponent(child:Component):Component {
         if (_splitter.childComponents.length > 0 && child.hasClass(getSplitterClass()) == false) {
+            var before = _splitter.childComponents[_splitter.childComponents.length - 1];
             var gripper = new SizerGripper();
             gripper.id = getSplitterClass();
             gripper.addClass(getSplitterClass());
+            // The child is added after this returns, so syncGrippers cannot see it yet: the new
+            // gripper goes by its two panes here (a pane declared hidden may never send HIDDEN).
+            if (before._hidden == true || child._hidden == true) {
+                gripper.hide();
+            }
             _splitter.addComponent(gripper);
             _splitter.registerInternalEvents(true);
         }
@@ -168,10 +176,6 @@ class SplitterBuilder extends CompositeBuilder {
         if (child.hasClass(getSplitterClass()) == false) {
             child.registerEvent(UIEvent.SHOWN, onComponentShown);
             child.registerEvent(UIEvent.HIDDEN, onComponentHidden);
-        }
-
-        if (child.hidden == true) {
-            onComponentHidden(null);
         }
 
         return null;
@@ -182,45 +186,33 @@ class SplitterBuilder extends CompositeBuilder {
     }
 
     private function onComponentShown(e:UIEvent) {
-        var children = _splitter.childComponents.copy();
-        for (c in children) {
-            if (c.hidden == true) {
-                if ((c is SizerGripper)) {
-                    c.show();
-                }
-                break;
-            }
-        }
-
-        children.reverse();
-        for (c in children) {
-            if (c.hidden == true) {
-                if ((c is SizerGripper)) {
-                    c.show();
-                }
-                break;
-            }
-        }
+        syncGrippers();
     }
 
     private function onComponentHidden(e:UIEvent) {
-        var children = _splitter.childComponents.copy();
-        for (c in children) {
-            if (c.hidden == false) {
-                if ((c is SizerGripper)) {
-                    c.hide();
-                }
-                break;
-            }
-        }
+        syncGrippers();
+    }
 
-        children.reverse();
-        for (c in children) {
-            if (c.hidden == false) {
-                if ((c is SizerGripper)) {
-                    c.hide();
-                }
-                break;
+    /**
+     * Shows each gripper exactly when the panes on both sides of it are shown. The panes' own
+     * hidden flags, not `hidden`, which also reports a hidden ancestor: a pane coming back while
+     * the splitter's page is hidden must not decide anything. (It scanned from each end for the
+     * first hidden child instead, so the other pane coming back re-showed the gripper beside a
+     * pane still hidden - and dragging it then drew that pane.)
+     */
+    private function syncGrippers() {
+        var children = _splitter.childComponents;
+        for (i in 0...children.length) {
+            var c = children[i];
+            if (!(c is SizerGripper)) {
+                continue;
+            }
+            var before = i > 0 ? children[i - 1] : null;
+            var after = i + 1 < children.length ? children[i + 1] : null;
+            var shown = before != null && after != null && !(before is SizerGripper) && !(after is SizerGripper)
+                && before._hidden == false && after._hidden == false;
+            if (shown == c._hidden) {
+                shown ? c.show() : c.hide();
             }
         }
     }

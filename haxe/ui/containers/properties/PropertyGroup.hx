@@ -43,7 +43,7 @@ private class Layout extends CollapsibleLayout {
         //super.applyIndent(content, depth);
         var properties = content.findComponents(Property, 1);
         for (property in properties) {
-            var label = property.findComponent("property-label-container", true, "css");
+            var label:Component = property.findComponent("property-label-container", true, "css");
             label.paddingLeft = (depth + 1) * 16;
         }
     }

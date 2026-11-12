@@ -28,11 +28,57 @@ class RuleElement {
         return ruleMatch(selector.parts[selector.parts.length - 1], d);
     }
 
+    /**
+     Whether the component could match going only by its own name, id and classes, leaving aside
+     its ancestors.
+    **/
+    public function couldMatch(d:Component):Bool {
+        var c = selector.parts[selector.parts.length - 1];
+        return c.nodeName == "*" || selfMatch(c, d);
+    }
+
+    /** The id the component must have to match, if there is one. **/
+    public var idNeeded(get, never):String;
+    private function get_idNeeded():String {
+        return selector.parts[selector.parts.length - 1].id;
+    }
+
     private static function ruleMatch( c : SelectorPart, d : Component ):Bool {
         if (c.nodeName == "*") {
             return true;
         }
 
+        if (!selfMatch(c, d)) {
+            return false;
+        }
+
+        if (c.parent != null) {
+            if (c.direct == true) {
+                var p = d.parentComponent;
+                if (p == null) {
+                    return false;
+                }
+                if (!ruleMatch(c.parent, p)) {
+                    return false;
+                }
+            } else {
+                var p = d.parentComponent;
+                while (p != null) {
+                    if (ruleMatch(c.parent, p)) {
+                        break;
+                    }
+                    p = p.parentComponent;
+                }
+                if (p == null) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private static function selfMatch( c : SelectorPart, d : Component ):Bool {
         if (c.id != null && c.id != d.id) {
             return false;
         }
@@ -56,29 +102,6 @@ class RuleElement {
             var classNodeName:String = @:privateAccess d.nodeName;
             if (c.nodeName != classNodeName) {
                 return false;
-            }
-        }
-
-        if (c.parent != null) {
-            if (c.direct == true) {
-                var p = d.parentComponent;
-                if (p == null) {
-                    return false;
-                }
-                if (!ruleMatch(c.parent, p)) {
-                    return false;
-                }
-            } else {
-                var p = d.parentComponent;
-                while (p != null) {
-                    if (ruleMatch(c.parent, p)) {
-                        break;
-                    }
-                    p = p.parentComponent;
-                }
-                if (p == null) {
-                    return false;
-                }
             }
         }
 

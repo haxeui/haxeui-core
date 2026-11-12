@@ -97,6 +97,22 @@ class TextField extends InteractiveComponent implements ICompositeInteractiveCom
         }
         return StringTools.trim(text).length == 0;
     }
+
+    /**
+     * Sets `text` to `value` exactly as given, as typing does. Setting `text` reads a value
+     * holding `{{` and `}}` as a translation to look up; this never does, and drops any
+     * translation `text` had, so text a person wrote stays as written.
+     */
+    public function setLiteralText(value:String):String {
+        haxe.ui.locale.LocaleManager.instance.unregisterComponentProperty(this, "text");
+        if (behaviours == null) {
+            behaviours = new haxe.ui.behaviours.Behaviours(this);
+            registerBehaviours();
+        }
+        behaviours.set("text", value);
+        dispatch(new UIEvent(UIEvent.PROPERTY_CHANGE, "text"));
+        return value;
+    }
 }
 
 //***********************************************************************************************************
@@ -435,7 +451,7 @@ private class Events extends haxe.ui.events.Events {
             _textfield.getTextInput().multiline = false;
             _textfield.getTextInput().data.onChangedCallback = function() {
                 if (_textfield.hasClass(":empty") == false) {
-                    _textfield.text = _textfield.getTextInput().text;
+                    _textfield.setLiteralText(_textfield.getTextInput().text); // typed text is never a translation
                     _textfield.dispatch(new UIEvent(UIEvent.CHANGE));
                 }
             };

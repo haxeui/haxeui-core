@@ -132,7 +132,7 @@ class CompositeStyleSheet {
     }
     
     public function buildStyleFor(c:Component):Style {
-        var style:Style = {};
+        var style:Style = Style.empty();
 
         for (s in _styleSheets) {
             style = s.buildStyleFor(c, style);

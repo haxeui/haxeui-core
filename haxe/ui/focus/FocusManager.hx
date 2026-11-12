@@ -216,9 +216,16 @@ class FocusManager extends FocusManagerImpl {
         }
 
         var childList = c.childComponents.copy();
-        childList.sort(function(c1, c2) {
+        var byTabIndex = function(c1:Component, c2:Component) {
             return c1.componentTabIndex - c2.componentTabIndex;
-        });
+        };
+        #if cs
+        // C#'s Array.sort is not stable: equal tab indexes (the usual case) came back
+        // shuffled, so auto-focus and Tab order did not follow child order.
+        haxe.ds.ArraySort.sort(childList, byTabIndex);
+        #else
+        childList.sort(byTabIndex);
+        #end
         
         for (child in childList) {
             var f:IFocusable = buildFocusableList(child, list, considerAutoFocus);

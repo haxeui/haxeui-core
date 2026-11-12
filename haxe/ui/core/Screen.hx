@@ -131,6 +131,7 @@ class Screen extends ScreenImpl {
             component.disposeComponent();
         } else {
             component.dispatch(new UIEvent(UIEvent.HIDDEN));
+            haxe.ui.tooltips.ToolTipManager.instance.componentGone(component);
             // sometimes (on some backends, like browser), mouse out doesnt fire when removing from screen
             component.removeClass(":hover", false, true);
         }

@@ -84,6 +84,21 @@ class LocaleManager {
     public function unregisterComponent(component:Component) {
         _registeredComponents.remove(component);
     }
+
+    /**
+     Drops the component's translation for one property (if any), so a locale change no longer
+     rewrites it; its other translated properties are kept.
+    **/
+    public function unregisterComponentProperty(component:Component, prop:String) {
+        var propMap = _registeredComponents.get(component);
+        if (propMap == null) {
+            return;
+        }
+        propMap.remove(prop);
+        if (!propMap.iterator().hasNext()) {
+            _registeredComponents.remove(component);
+        }
+    }
     
     public function findBindingExpr(component:Component, prop:String):String {
         var propMap = _registeredComponents.get(component);

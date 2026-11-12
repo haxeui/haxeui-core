@@ -515,6 +515,10 @@ abstract Variant(VariantType) from VariantType {
                     if (Type.typeof(r) != TObject) {
                         v = r;
                     }
+                    #elseif cs // C# checks the cast to VariantType: anything else would throw
+                    if ((r is VariantType)) {
+                        v = r;
+                    }
                     #else
                     v = r;
                     #end
@@ -538,6 +542,10 @@ abstract Variant(VariantType) from VariantType {
                 } else {
                     #if hl // avoid cast error, until we can move away from Variant
                     if (Type.typeof(r) != TObject) {
+                        v = r;
+                    }
+                    #elseif cs // C# checks the cast to VariantType: anything else would throw
+                    if ((r is VariantType)) {
                         v = r;
                     }
                     #else

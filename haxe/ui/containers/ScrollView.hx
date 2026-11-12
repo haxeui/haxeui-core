@@ -951,9 +951,10 @@ class ScrollViewEvents extends haxe.ui.events.Events {
         var componentOffset = _scrollview.getComponentOffset();
         // we want to disallow mouse scrolling if we are under a textfield/textarea as this stops selection of data in textfield
         // if we are under a scrollbar, lets let the scroll bar handle it (rather than scrollview intefering) 
+        // and if we are under something draggable, the press is the start of its drag, not a scroll
         var under = _scrollview.findComponentsUnderPoint(event.screenX - componentOffset.x, event.screenY - componentOffset.y);
         for (c in under) {
-            if (c.hasTextInput() || (c is Scroll)) {
+            if (c.hasTextInput() || (c is Scroll) || haxe.ui.dragdrop.DragManager.instance.isRegisteredDraggable(c)) {
                 return;
             }
         }
@@ -1551,6 +1552,8 @@ class ScrollViewBuilder extends CompositeBuilder {
             }
         }
 
+        // the horizontal scroll may have just come or gone, and with it some usable height
+        usableSize = _component.layout.usableSize;
         if (virtualVertical == false && usableSize.height > 0) {
             var verticalConstraint = _contents;
             var vscroll:VerticalScroll = _component.findComponent(VerticalScroll, false);

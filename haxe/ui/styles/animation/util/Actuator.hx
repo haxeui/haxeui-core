@@ -10,6 +10,12 @@ import haxe.ui.util.StyleUtil;
 import haxe.ui.util.Variant.VariantType;
 import haxe.ui.util.Variant;
 
+#if (haxe_ver >= 4.2)
+import Std.isOfType;
+#else
+import Std.is as isOfType;
+#end
+
 @:structInit
 class ActuatorOptions {
     @:optional public var delay:Null<Float>;
@@ -147,7 +153,9 @@ class Actuator<T> {
             }
 
             var isVariant = false;
-            if (start != null) {
+            // switching a non-enum Dynamic on enum cases throws on C# (caught below,
+            // but costly and noisy in a debugger), so only switch on VariantTypes
+            if (start != null && isOfType(start, VariantType)) {
                 try { // some neko strangness here with exception being thrown on the switch
                     switch (start) {
                         case VariantType.VT_String(v):
@@ -158,7 +166,7 @@ class Actuator<T> {
                 } catch (e:Dynamic) { }
             }
 
-            if (end != null) {
+            if (end != null && isOfType(end, VariantType)) {
                 try { // some neko strangness here with exception being thrown on the switch
                     switch (end) {
                         case VariantType.VT_String(v):

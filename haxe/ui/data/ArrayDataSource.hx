@@ -37,10 +37,18 @@ class ArrayDataSource<T> extends DataSource<T> {
     }
     
     private override function handleSort(fn:T->T->SortDirection->Int, direction:SortDirection = null) {
+        #if cs
+        // C#'s Array.sort is not stable: rows with equal keys would come back shuffled.
+        haxe.ds.ArraySort.sort(_array, fn.bind(_, _, direction));
+        if (_filteredArray != null) {
+            haxe.ds.ArraySort.sort(_filteredArray, fn.bind(_, _, direction));
+        }
+        #else
         _array.sort(fn.bind(_, _, direction));
         if (_filteredArray != null) {
             _filteredArray.sort(fn.bind(_, _, direction));
         }
+        #end
     }
     
     private override function handleGetSize():Int {
